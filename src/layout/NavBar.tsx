@@ -9,8 +9,13 @@ import {
   NavbarMenuItem,
   Link,
   Button,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
 } from "@nextui-org/react";
 import { ThemeContext } from "../hooks/useTheme";
+import { Box, ChevronDown, Home } from "lucide-react";
 // import LOGO from "../assets/react.svg"
 
 export default function NavBar() {
@@ -38,7 +43,10 @@ export default function NavBar() {
       shouldHideOnScroll
       isBordered
       isBlurred
-      style={{ backgroundColor: theme.colors.dark, color: theme.colors.primary }}
+      style={{
+        backgroundColor: theme.colors.dark,
+        color: theme.colors.primary,
+      }}
     >
       <NavbarContent>
         <NavbarMenuToggle
@@ -61,24 +69,53 @@ export default function NavBar() {
         </NavbarItem>
       </NavbarContent>
       <NavbarMenu>
-        {menuItems.map((item, index) => (
-          <NavbarMenuItem key={`${item}-${index}`}>
-            <Link
-              color={
-                index === 2
-                  ? "primary"
-                  : index === menuItems.length - 1
-                  ? "danger"
-                  : "foreground"
-              }
-              className="w-full"
-              href="#"
-              size="lg"
-            >
-              {item}
-            </Link>
-          </NavbarMenuItem>
-        ))}
+        <NavbarMenuItem>
+          <div className="grid grid-cols-5 gap-8">
+            <div className="flex text-xl font-semibold">
+              <Home />
+              <span className="ml-3">Inicio</span>
+            </div>
+            <div>
+              <Dropdown>
+                <NavbarItem>
+                  <DropdownTrigger>
+                    <Button
+                      disableRipple
+                      className="p-0 bg-transparent data-[hover=true]:bg-transparent text-xl font-semibold"
+                      endContent={<ChevronDown />}
+                      radius="sm"
+                      variant="light"
+                    >
+                      <Box /> Features
+                    </Button>
+                  </DropdownTrigger>
+                </NavbarItem>
+                <DropdownMenu
+                  aria-label="ACME features"
+                  className="w-[340px]"
+                  itemClasses={{
+                    base: "gap-4",
+                  }}
+                >
+                  <DropdownItem
+                    key="autoscaling"
+                    description="ACME scales apps to meet user demand, automagically, based on load."
+                    startContent={<Home />}
+                  >
+                    Productos
+                  </DropdownItem>
+                  <DropdownItem
+                    key="usage_metrics"
+                    description="Real-time metrics to debug issues. Slow query added? We’ll show you exactly where."
+                    startContent={<Home />}
+                  >
+                    Categorias
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+            </div>
+          </div>
+        </NavbarMenuItem>
       </NavbarMenu>
     </Navbar>
   );

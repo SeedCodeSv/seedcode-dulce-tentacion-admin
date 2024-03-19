@@ -1,0 +1,27 @@
+import axios from "axios";
+import {
+  IGetCategories,
+  IGetCategoriesPaginated,
+} from "../types/categories.types";
+import { API_URL } from "../utils/constants";
+
+export const get_products_categories = (page = 1, limit = 8, name = "") => {
+  return axios.get<IGetCategoriesPaginated>(
+    API_URL +
+      `/category-products/list-paginated?page=${page}&limit=${limit}&name=${name}`
+  );
+};
+
+export const create_category = ({ name }: { name: string }) => {
+  return axios.post<{ ok: boolean }>(API_URL + "/category-products", { name });
+};
+
+export const update_category = ({ name }: { name: string }, id: number) => {
+  return axios.patch<{ ok: boolean }>(API_URL + "/category-products/" + id, {
+    name,
+  });
+};
+
+export const get_categories = () => {
+  return axios.get<IGetCategories>(API_URL + "/category-products");
+};

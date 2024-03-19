@@ -20,11 +20,15 @@ export interface Theme {
 interface ThemeContextType {
   theme: Theme;
   toggleTheme: (themeName: Theme) => void;
+  navbar: string;
+  toggleNavBar: (themeName: string) => void;
 }
 
 export const ThemeContext = React.createContext<ThemeContextType>({
   theme: {} as Theme,
   toggleTheme: () => {},
+  navbar: "",
+  toggleNavBar: () => {},
 });
 
 function ThemeProvider(props: Props) {
@@ -34,13 +38,19 @@ function ThemeProvider(props: Props) {
     themeConfigured ? JSON.parse(themeConfigured) : THEMES.themes[0]
   );
 
+  const [navbar, setNavbar] = React.useState("sidebar");
+
+  const toggleNavBar = (barType: string) => {
+    setNavbar(barType);
+  };
+
   const toggleTheme = (themeName: Theme) => {
     setTheme(themeName);
     localStorage.setItem("theme", JSON.stringify(themeName));
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme, toggleTheme, navbar, toggleNavBar }}>
       {props.children}
     </ThemeContext.Provider>
   );

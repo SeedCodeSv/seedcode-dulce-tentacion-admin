@@ -43,7 +43,7 @@ function Tables() {
   ];
 
   return (
-    <Layout>
+    <Layout title="Inicio">
       <div className="p-10 w-full h-full">
         <h1>Tables</h1>
         <div className="w-full hidden lg:flex">
