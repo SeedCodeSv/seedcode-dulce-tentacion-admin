@@ -6,19 +6,40 @@ import Layout from "../layout/Layout";
 import { Card } from "@nextui-org/react";
 import { Check } from "lucide-react";
 import NavBar from "../layout/NavBar";
+import { pdf } from "@react-pdf/renderer";
+import { MyDocument } from "./Invoice";
 
 function Home() {
   const { theme, toggleTheme } = useContext(ThemeContext);
 
+  const handleSaveToPC = async () => {
+    const blob = await pdf(<MyDocument />).toBlob();
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.download = "filename.pdf";
+    link.href = url;
+    link.click();
+
+    // const fileData = JSON.stringify(THEME);
+    // const blob = new Blob([fileData], {type: "text/plain"});
+    // console.log(blob)
+    // const url = URL.createObjectURL(blob);
+    // const link = document.createElement('a');
+    // link.download = 'filename.json';
+    // link.href = url;
+    // link.click();
+  };
+
   return (
-    <Layout>
+    <Layout title="Home">
       <>
         <div className="p-10">
           <div className="grid grid-cols-4 gap-10">
             {THEME.themes.map((themeS, index) => (
               <Card
                 key={index}
-                className="w-full grid grid-cols-6 shadow border"
+                className="grid w-full grid-cols-6 border shadow"
                 isPressable
                 onClick={() => toggleTheme(themeS)}
               >
@@ -28,36 +49,37 @@ function Home() {
                   )}
                 </div>
                 <span
-                  className="h-44 w-full"
+                  className="w-full h-44"
                   style={{ backgroundColor: themeS.colors.danger }}
                 ></span>
                 <span
-                  className="h-44 w-full"
+                  className="w-full h-44"
                   style={{ backgroundColor: themeS.colors.warning }}
                 ></span>
                 <span
-                  className="h-44 w-full"
+                  className="w-full h-44"
                   style={{ backgroundColor: themeS.colors.primary }}
                 ></span>
                 <span
-                  className="h-44 w-full"
+                  className="w-full h-44"
                   style={{ backgroundColor: themeS.colors.secondary }}
                 ></span>
                 <span
-                  className="h-44 w-full"
+                  className="w-full h-44"
                   style={{ backgroundColor: themeS.colors.third }}
                 ></span>
                 <span
-                  className="h-44 w-full"
+                  className="w-full h-44"
                   style={{ backgroundColor: themeS.colors.dark }}
                 ></span>
               </Card>
             ))}
           </div>
 
-          <div className="mt-10 flex gap-5">
+          <div className="flex gap-5 mt-10">
             <Button />
           </div>
+          <button onClick={handleSaveToPC}>Guardar</button>
         </div>
       </>
     </Layout>
