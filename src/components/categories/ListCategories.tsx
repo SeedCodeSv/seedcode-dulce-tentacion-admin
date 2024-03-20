@@ -35,6 +35,8 @@ import {
 import { useCategoriesStore } from "../../store/categories.store";
 import { CategoryProduct } from "../../types/categories.types";
 import { ThemeContext } from "../../hooks/useTheme";
+import AddCategory from "./AddCategory";
+import ModalGlobal from "../global/ModalGlobal";
 // import { CategoryProduct } from "../../types/products.types";
 // import ModalGlobal from "../global/ModalGlobal";
 // import AddNewCategory from "./AddNewCategory";
@@ -101,7 +103,11 @@ function ListCategories() {
           />
           <div className="flex justify-end w-full">
             <Button
-              className="h-10 max-w-72 bg-coffee-green text-background"
+              className="h-10 font-semibold max-w-72"
+              style={{
+                backgroundColor: theme.colors.third,
+                color: theme.colors.primary,
+              }}
               endContent={<PlusIcon />}
               size="sm"
               onClick={() => {
@@ -139,7 +145,7 @@ function ListCategories() {
 
   return (
     <div className="w-full h-full p-5 bg-gray-50">
-      <div className="hidden lg:flex bg-white rounded p-5 w-full">
+      <div className="hidden w-full p-5 bg-white rounded lg:flex">
         <Table
           isHeaderSticky
           bottomContentPlacement="outside"
@@ -228,7 +234,7 @@ function ListCategories() {
           </TableBody>
         </Table>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 w-full h-full lg:hidden">
+      <div className="grid w-full h-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:hidden">
         <div className="w-full col-span-1 sm:col-span-2 md:col-span-3">
           {topContent}
         </div>
@@ -271,17 +277,17 @@ function ListCategories() {
           </div>
         </div>
       </div>
-      {/* <ModalGlobal
+      <ModalGlobal
         size="md"
         title={selectedCategory ? "Editar categoría" : "Nueva categoría"}
         isOpen={modalAdd.isOpen}
         onClose={modalAdd.onClose}
       >
-        <AddNewCategory
+        <AddCategory
           closeModal={modalAdd.onClose}
           category={selectedCategory}
         />
-      </ModalGlobal> */}
+      </ModalGlobal>
     </div>
   );
 }
@@ -316,7 +322,7 @@ export const DeletePopover = ({ category }: PopProps) => {
           <p className="mt-3 text-center text-gray-600 w-72">
             ¿Estas seguro de eliminar este registro?
           </p>
-          <div className="mt-4 flex gap-5">
+          <div className="flex gap-5 mt-4">
             <Button onClick={onClose}>No, cancelar</Button>
             <Button
               style={{

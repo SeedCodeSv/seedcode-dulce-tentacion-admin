@@ -26,7 +26,7 @@ export const LayoutItems = () => {
         }}
       >
         <Image src={LOGO} className="w-[50px]" />
-        <p className="font-sans text-sm ml-3 font-bold text-coffee-brown">
+        <p className="ml-3 font-sans text-sm font-bold text-coffee-brown">
           COFFEE PLACE
         </p>
       </div>
@@ -63,15 +63,15 @@ export const LayoutItems = () => {
       <NavLink
         to={"/categories"}
         className={
-            " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 hover:border-coffee-green"
-          }
-          style={({ isActive }) => {
-            return {
-              backgroundColor: isActive ? "#dedede" : "transparent",
-              borderLeftColor: isActive ? theme.colors.dark : "transparent",
-              borderLeftWidth: 5,
-            };
-          }}
+          " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 hover:border-coffee-green"
+        }
+        style={({ isActive }) => {
+          return {
+            backgroundColor: isActive ? "#dedede" : "transparent",
+            borderLeftColor: isActive ? theme.colors.dark : "transparent",
+            borderLeftWidth: 5,
+          };
+        }}
       >
         <Box size={20} />
         <p className="ml-2 text-base">Categorías</p>
@@ -92,13 +92,15 @@ export const LayoutItems = () => {
       </NavLink>
       <NavLink
         to={"/users"}
-        className={({ isActive }) => {
-          return (
-            (isActive
-              ? "text-coffee-green font-semibold bg-gray-50 border-coffee-green"
-              : "text-coffee-brown font-semibold border-white") +
-            " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 hover:border-coffee-green"
-          );
+        className={
+          " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 hover:border-coffee-green"
+        }
+        style={({ isActive }) => {
+          return {
+            backgroundColor: isActive ? "#dedede" : "transparent",
+            borderLeftColor: isActive ? theme.colors.dark : "transparent",
+            borderLeftWidth: 5,
+          };
         }}
       >
         <User size={20} />
@@ -106,13 +108,15 @@ export const LayoutItems = () => {
       </NavLink>
       <NavLink
         to={"/employees"}
-        className={({ isActive }) => {
-          return (
-            (isActive
-              ? "text-coffee-green font-semibold bg-gray-50 border-coffee-green"
-              : "text-coffee-brown font-semibold border-white") +
-            " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 hover:border-coffee-green"
-          );
+        className={
+          " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 hover:border-coffee-green"
+        }
+        style={({ isActive }) => {
+          return {
+            backgroundColor: isActive ? "#dedede" : "transparent",
+            borderLeftColor: isActive ? theme.colors.dark : "transparent",
+            borderLeftWidth: 5,
+          };
         }}
       >
         <Users size={20} />
@@ -120,13 +124,15 @@ export const LayoutItems = () => {
       </NavLink>
       <NavLink
         to={"/clients"}
-        className={({ isActive }) => {
-          return (
-            (isActive
-              ? "text-coffee-green font-semibold bg-gray-50 border-coffee-green"
-              : "text-coffee-brown font-semibold border-white") +
-            " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 hover:border-coffee-green"
-          );
+        className={
+          " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 hover:border-coffee-green"
+        }
+        style={({ isActive }) => {
+          return {
+            backgroundColor: isActive ? "#dedede" : "transparent",
+            borderLeftColor: isActive ? theme.colors.dark : "transparent",
+            borderLeftWidth: 5,
+          };
         }}
       >
         <BookUser size={20} />

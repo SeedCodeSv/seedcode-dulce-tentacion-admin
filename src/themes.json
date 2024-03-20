@@ -30,7 +30,7 @@
         "secondary": "#ff8fab",
         "third": "#fb6f92",
         "warning":"#ffbe0b",
-        "dark": "#000814"
+        "dark": "#ef476f"
       }
     },
     {
@@ -75,6 +75,17 @@
         "third": "#e0afa0",
         "warning":"#ff8600",
         "dark": "#463f3a"
+      }
+    },
+    {
+      "name": "theme8",
+      "colors": {
+        "danger": "#df2935",
+        "primary": "#e2fdff",
+        "secondary": "#788bff",
+        "third": "#7f95d1",
+        "warning":"#ffb627",
+        "dark": "#5465ff"
       }
     }
   ]
