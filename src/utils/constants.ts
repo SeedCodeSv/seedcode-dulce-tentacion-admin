@@ -1,4 +1,4 @@
-export const API_URL = "http://localhost:3000/api";
+export const API_URL = "http://localhost:8080/api";
 export const FACTURACION_API = "https://starfish-app-vsd6x.ondigitalocean.app/api";
 
 export const messages = {
