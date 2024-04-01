@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { get_token, is_authenticate, is_expired_token } from "../storage/localStorage";
+import { get_token, is_authenticate } from "../storage/localStorage";
 
-interface SessionContext {
+interface SessionContextI {
   token: string;
   isAuth: boolean;
   setToken: (token: string) => void;
@@ -12,9 +12,9 @@ interface Props {
   children: React.ReactNode;
 }
 
-export const ThemeContext = React.createContext<SessionContext>({
-  token: "",
-  isAuth: false,
+export const SessionContext = React.createContext<SessionContextI>({
+  token: get_token() ?? "",
+  isAuth: is_authenticate(),
   setToken: () => {},
   setIsAuth: () => {},
 });
@@ -24,10 +24,10 @@ export default function SessionProvider({ children }: Props) {
   const [isAuth, setIsAuth] = useState(is_authenticate());
 
   return (
-    <ThemeContext.Provider
+    <SessionContext.Provider
       value={{ token, setToken: (token) => setToken(token), isAuth, setIsAuth }}
     >
       {children}
-    </ThemeContext.Provider>
+    </SessionContext.Provider>
   );
 }

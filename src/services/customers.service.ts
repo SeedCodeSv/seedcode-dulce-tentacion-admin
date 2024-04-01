@@ -4,6 +4,7 @@ import {
   IGetCustomerPagination,
   PayloadCustomer,
 } from "../types/customers.types";
+import { get_user } from "../storage/localStorage";
 
 export const get_customers_pagination = (
   page = 1,
@@ -11,16 +12,17 @@ export const get_customers_pagination = (
   name = "",
   email = ""
 ) => {
+  const user = get_user()
   return axios.get<IGetCustomerPagination>(
     API_URL +
-      "/customers/list-paginated?page=" +
-      page +
-      "&limit=" +
-      limit +
-      "&nombre=" +
-      name +
-      "&correo=" +
-      email
+    "/customers/list-paginated/" + user?.transmitterId + "?page=" +
+    page +
+    "&limit=" +
+    limit +
+    "&nombre=" +
+    name +
+    "&correo=" +
+    email
   );
 };
 

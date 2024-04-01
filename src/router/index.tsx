@@ -5,46 +5,37 @@ import ProductsCategories from "../pages/ProductsCategories";
 import Users from "../pages/Users";
 import Employees from "../pages/Employees";
 import Customers from "../pages/Customers";
-import Auth from "../pages/Auth";
-import { useContext } from "react";
-import { ThemeContext } from "../hooks/useSession";
+import Branch from "../pages/Branch";
 
 export const router = () => {
-  const { isAuth } = useContext(ThemeContext);
-
-  return createBrowserRouter(
-    isAuth
-      ? [
-          {
-            path: "/",
-            element: <Home />,
-          },
-          {
-            path: "/tables",
-            element: <Tables />,
-          },
-          {
-            path: "/categories",
-            element: <ProductsCategories />,
-          },
-          {
-            path: "/users",
-            element: <Users />,
-          },
-          {
-            path: "/employees",
-            element: <Employees />,
-          },
-          {
-            path: "/clients",
-            element: <Customers />,
-          },
-        ]
-      : [
-          {
-            path: "/",
-            element: <Auth />,
-          },
-        ]
-  );
+  return createBrowserRouter([
+    {
+      path: "/",
+      element: <Home />,
+    },
+    {
+      path: "/tables",
+      element: <Tables />,
+    },
+    {
+      path: "/categories",
+      element: <ProductsCategories />,
+    },
+    {
+      path: "/users",
+      element: <Users />,
+    },
+    {
+      path: "/employees",
+      element: <Employees />,
+    },
+    {
+      path: "/clients",
+      element: <Customers />,
+    },
+    {
+      path:"/branches",
+      element: <Branch />
+    }
+  ]);
 };

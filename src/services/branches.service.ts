@@ -5,6 +5,7 @@ import {
   IGetBranchesList,
   IGetBranchesPaginated,
 } from "../types/branches.types";
+import { get_user } from "../storage/localStorage";
 
 export const get_branches_pagination = (
   page: number,
@@ -13,18 +14,20 @@ export const get_branches_pagination = (
   phone: string,
   address: string
 ) => {
+  const user = get_user()
+
   return axios.get<IGetBranchesPaginated>(
     API_URL +
-      "/branches/list-paginated?page=" +
-      page +
-      "&limit=" +
-      limit +
-      "&name=" +
-      name +
-      "&phone=" +
-      phone +
-      "&address=" +
-      address
+    "/branches/list-paginated/" + user?.transmitterId + "?page=" +
+    page +
+    "&limit=" +
+    limit +
+    "&name=" +
+    name +
+    "&phone=" +
+    phone +
+    "&address=" +
+    address
   );
 };
 

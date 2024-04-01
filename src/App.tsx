@@ -1,11 +1,9 @@
-import { useState } from "react";
 import "./App.css";
-import { RouterProvider } from "react-router-dom";
-import { router } from "./router";
 import ThemeProvider from "./hooks/useTheme";
 import { NextUIProvider } from "@nextui-org/react";
 import { Toaster } from "sonner";
 import SessionProvider from "./hooks/useSession";
+import Main from "./pages/Main";
 
 function App() {
   return (
@@ -13,7 +11,7 @@ function App() {
       <ThemeProvider>
         <Toaster richColors />
         <NextUIProvider>
-          <RouterProvider router={router()} />
+          <Main />
         </NextUIProvider>
       </ThemeProvider>
     </SessionProvider>

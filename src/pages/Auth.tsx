@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import { useContext, useState } from "react";
 import BUSINESS from "../assets/bussines.jpg";
 import { Button, Input } from "@nextui-org/react";
 import { Eye, EyeOff } from "lucide-react";
@@ -7,11 +7,16 @@ import LOGO from "../assets/fac3.png";
 import * as yup from "yup";
 import { IAuthPayload } from "../types/auth.types";
 import { Formik } from "formik";
+import { useAuthStore } from "../store/auth.store";
+import { SessionContext } from "../hooks/useSession";
+import { redirect } from "react-router";
 
 function Auth() {
   const [showPassword, setShowPassword] = useState(false);
+  const { postLogin } = useAuthStore();
 
   const { theme } = useContext(ThemeContext);
+  const { setToken, setIsAuth, isAuth } = useContext(SessionContext);
 
   const initialValues = {
     userName: "",
@@ -23,7 +28,20 @@ function Auth() {
     password: yup.string().required("La contraseña es requerida"),
   });
 
-  const handleSubmit = (values: IAuthPayload) => {};
+  const handleSubmit = (values: IAuthPayload) => {
+    postLogin(values).then((response) => {
+      if (response) {
+        setIsAuth(true);
+        setToken(response.token);
+        redirect("/")
+      } else {
+        setIsAuth(false);
+        setToken("");
+      }
+    });
+  };
+
+  console.log(isAuth)
 
   return (
     <div className="h-screen w-screen bg-gray-50 flex items-center justify-center">

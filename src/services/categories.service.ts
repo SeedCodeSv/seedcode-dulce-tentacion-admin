@@ -4,16 +4,19 @@ import {
   IGetCategoriesPaginated,
 } from "../types/categories.types";
 import { API_URL } from "../utils/constants";
+import { get_user } from "../storage/localStorage";
 
 export const get_products_categories = (page = 1, limit = 8, name = "") => {
+  const user = get_user()
   return axios.get<IGetCategoriesPaginated>(
     API_URL +
-      `/category-products/list-paginated?page=${page}&limit=${limit}&name=${name}`
+    `/category-products/list-paginated/${user?.transmitterId}?page=${page}&limit=${limit}&name=${name}`
   );
 };
 
 export const create_category = ({ name }: { name: string }) => {
-  return axios.post<{ ok: boolean }>(API_URL + "/category-products", { name });
+  const user = get_user()
+  return axios.post<{ ok: boolean }>(API_URL + "/category-products", { name, transmitterId: user!.transmitterId });
 };
 
 export const update_category = ({ name }: { name: string }, id: number) => {
