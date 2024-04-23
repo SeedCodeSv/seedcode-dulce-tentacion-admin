@@ -7,7 +7,7 @@
         "primary": "#f1faee",
         "secondary": "#5eb8e0",
         "third": "#457b9d",
-        "warning": "#e9c46a",
+        "warning": "#f35b04",
         "dark": "#1d3557"
       }
     },
@@ -18,7 +18,7 @@
         "primary": "#ffffff",
         "secondary": "#70d6ff",
         "third": "#2ec4b6",
-        "warning": "#ffbf69",
+        "warning": "#fe7f2d",
         "dark": "#00224D"
       }
     },
@@ -40,7 +40,7 @@
         "primary": "#f8f9fa",
         "secondary": "#b8c0ff",
         "third": "#0077b6",
-        "warning":"#fdc500",
+        "warning":"#fca311",
         "dark": "#03045e"
       }
     },
@@ -59,10 +59,10 @@
       "name": "theme6",
       "colors": {
         "danger": "#ff006e",
-        "primary": "#e8f1f2",
+        "primary": "#f9f7f3",
         "secondary": "#028090",
         "third": "#00a896",
-        "warning":"#efca08",
+        "warning":"#f48c06",
         "dark": "#05668d"
       }
     },

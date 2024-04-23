@@ -4,17 +4,22 @@ import { NextUIProvider } from "@nextui-org/react";
 import { Toaster } from "sonner";
 import SessionProvider from "./hooks/useSession";
 import Main from "./pages/Main";
+import Tailwind from "primereact/passthrough/tailwind";
+
+import { PrimeReactProvider } from "primereact/api";
 
 function App() {
   return (
-    <SessionProvider>
-      <ThemeProvider>
-        <Toaster richColors />
-        <NextUIProvider>
-          <Main />
-        </NextUIProvider>
-      </ThemeProvider>
-    </SessionProvider>
+    <PrimeReactProvider value={{ unstyled: true, pt: Tailwind }}>
+      <SessionProvider>
+        <ThemeProvider>
+          <Toaster richColors />
+          <NextUIProvider>
+            <Main />
+          </NextUIProvider>
+        </ThemeProvider>
+      </SessionProvider>
+    </PrimeReactProvider>
   );
 }
 

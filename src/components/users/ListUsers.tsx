@@ -11,20 +11,34 @@ import {
   Card,
   CardBody,
   CardHeader,
-  Table,
-  TableBody,
-  TableCell,
-  TableColumn,
-  TableHeader,
-  TableRow,
+  Input,
+  // Table,
+  // TableBody,
+  // TableCell,
+  // TableColumn,
+  // TableHeader,
+  // TableRow,
   useDisclosure,
 } from "@nextui-org/react";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
 import ModalGlobal from "../global/ModalGlobal";
 import AddUsers from "./AddUsers";
-import { Key, PlusIcon, User, UserCog } from "lucide-react";
+import {
+  Key,
+  PlusIcon,
+  Search,
+  Table as ITable,
+  User,
+  UserCog,
+  CreditCard,
+  List,
+} from "lucide-react";
 import UpdatePassword from "./UpdatePassword";
 import { User as TUser } from "../../types/users.types";
 import { ThemeContext } from "../../hooks/useTheme";
+import { ButtonGroup } from "@nextui-org/react";
+import MobileView from "./MobileView";
 
 function ListUsers() {
   const { theme } = useContext(ThemeContext);
@@ -68,9 +82,238 @@ function ListUsers() {
 
   const [selectId, setSelectedId] = useState(0);
 
+  const style = {
+    backgroundColor: theme.colors.dark,
+    color: theme.colors.primary,
+  };
+
+  const [view, setView] = useState<"table" | "grid" | "list">("table");
+
   return (
     <>
-      <div className="w-full h-full p-5 bg-gray-50">
+      <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
+        <div className="w-full h-full p-5 bg-white shadow rounded-xl overflow-y-auto dark:bg-transparent">
+          <div className="flex flex-col justify-between w-full mb-10 md:flex-row">
+            <div className="w-96">
+              <Input
+                startContent={<Search />}
+                className="w-full"
+                variant="bordered"
+                labelPlacement="outside"
+                label="Buscar"
+                classNames={{ label: "font-semibold text-gray-700" }}
+                size="lg"
+                placeholder="Escribe para buscar..."
+              />
+            </div>
+            <div className="flex justify-end items-center gap-10">
+              <ButtonGroup>
+                <Button
+                  size="lg"
+                  isIconOnly
+                  color="secondary"
+                  style={{
+                    backgroundColor:
+                      view === "table" ? theme.colors.third : "#e5e5e5",
+                    color: view === "table" ? theme.colors.primary : "#3e3e3e",
+                  }}
+                  onClick={() => setView("table")}
+                >
+                  <ITable />
+                </Button>
+                <Button
+                  size="lg"
+                  isIconOnly
+                  color="default"
+                  style={{
+                    backgroundColor:
+                      view === "grid" ? theme.colors.third : "#e5e5e5",
+                    color: view === "grid" ? theme.colors.primary : "#3e3e3e",
+                  }}
+                  onClick={() => setView("grid")}
+                >
+                  <CreditCard />
+                </Button>
+                <Button
+                  size="lg"
+                  isIconOnly
+                  color="default"
+                  style={{
+                    backgroundColor:
+                      view === "list" ? theme.colors.third : "#e5e5e5",
+                    color: view === "list" ? theme.colors.primary : "#3e3e3e",
+                  }}
+                  onClick={() => setView("list")}
+                >
+                  <List />
+                </Button>
+              </ButtonGroup>
+              <Button
+                className="font-semibold max-w-72"
+                endContent={<PlusIcon />}
+                size="lg"
+                onClick={() => modalAdd.onOpen()}
+                style={{
+                  backgroundColor: theme.colors.third,
+                  color: theme.colors.primary,
+                }}
+              >
+                Agregar nuevo
+              </Button>
+            </div>
+          </div>
+          <div className="w-full flex justify-end py-3"></div>
+          {(view === "grid" || view === "list") && (
+            <MobileView layout={view as "grid" | "list"} />
+          )}
+          {view === "table" && (
+            <DataTable
+              className="shadow"
+              value={users}
+              tableStyle={{ minWidth: "50rem" }}
+            >
+              <Column
+                headerClassName="text-sm font-semibold"
+                headerStyle={{ ...style, borderTopLeftRadius: "10px" }}
+                field="id"
+                header="No."
+              />
+              <Column
+                headerClassName="text-sm font-semibold"
+                headerStyle={style}
+                field="employee.fullName"
+                header="Empleado"
+              />
+              <Column
+                headerClassName="text-sm font-semibold"
+                headerStyle={style}
+                field="userName"
+                header="Nombre de usuario"
+              />
+              <Column
+                headerClassName="text-sm font-semibold"
+                headerStyle={style}
+                field="role.name"
+                header="Rol"
+              />
+              <Column
+                headerStyle={{ ...style, borderTopRightRadius: "10px" }}
+                header="Acciones"
+                body={(item) => (
+                  <Button
+                    onClick={() => {
+                      setSelectedId(item.id);
+                      modalChangePassword.onOpen();
+                    }}
+                    isIconOnly
+                    style={{
+                      backgroundColor: theme.colors.danger,
+                    }}
+                  >
+                    <Key color={theme.colors.primary} size={20} />
+                  </Button>
+                )}
+              />
+            </DataTable>
+          )}
+          {/* <div className="flex flex-col justify-between w-full mb-10 md:flex-row">
+            <div className="w-96">
+              <Input
+                startContent={<Search />}
+                className="w-full"
+                variant="bordered"
+                labelPlacement="outside"
+                label="Buscar"
+                classNames={{ label: "font-semibold text-gray-700" }}
+                size="lg"
+                placeholder="Escribe para buscar..."
+              />
+            </div>
+            <div className="flex justify-end gap-3 mt-5 md:mt-0">
+            <Button
+              className="h-10 font-semibold max-w-72"
+              endContent={<PlusIcon />}
+              size="sm"
+              onClick={() => modalAdd.onOpen()}
+              style={{
+                backgroundColor: theme.colors.third,
+                color: theme.colors.primary,
+              }}
+            >
+              Agregar nuevo
+            </Button>
+            </div>
+          </div>
+          <DataTable
+            className="shadow"
+            value={users}
+            tableStyle={{ minWidth: "50rem" }}
+          >
+            <Column
+              headerClassName="text-sm font-semibold"
+              headerStyle={{ ...style, borderTopLeftRadius: "10px" }}
+              field="id"
+              header="No."
+            />
+            <Column
+              headerClassName="text-sm font-semibold"
+              headerStyle={style}
+              field="employee.fullName"
+              header="Empleado"
+            />
+            <Column
+              headerClassName="text-sm font-semibold"
+              headerStyle={style}
+              field="userName"
+              header="Nombre de usuario"
+            />
+            <Column
+              headerClassName="text-sm font-semibold"
+              headerStyle={style}
+              field="role.name"
+              header="Rol"
+            />
+            <Column
+              headerStyle={{ ...style, borderTopRightRadius: "10px" }}
+              header="Acciones"
+              body={(item) => (
+                <Button
+                  onClick={() => {
+                    setSelectedId(item.id);
+                    modalChangePassword.onOpen();
+                  }}
+                  isIconOnly
+                  style={{
+                    backgroundColor: theme.colors.danger,
+                  }}
+                >
+                  <Key color={theme.colors.primary} size={20} />
+                </Button>
+              )}
+            />
+          </DataTable> */}
+        </div>
+        <ModalGlobal
+          isOpen={modalAdd.isOpen}
+          onClose={modalAdd.onClose}
+          title="Agregar usuario"
+          size="lg"
+        >
+          <AddUsers onClose={modalAdd.onClose} />
+        </ModalGlobal>
+        <ModalGlobal
+          isOpen={modalChangePassword.isOpen}
+          onClose={modalChangePassword.onClose}
+          title="Actualizar contraseña"
+          size="lg"
+        >
+          <UpdatePassword
+            id={selectId}
+            closeModal={modalChangePassword.onClose}
+          />
+        </ModalGlobal>
+      </div>
+      {/* <div className="w-full h-full p-5 bg-gray-50">
         <div className="flex justify-end w-full">
           <Button
             className="h-10 max-w-72"
@@ -171,7 +414,7 @@ function ListUsers() {
           id={selectId}
           closeModal={modalChangePassword.onClose}
         />
-      </ModalGlobal>
+      </ModalGlobal> */}
     </>
   );
 }

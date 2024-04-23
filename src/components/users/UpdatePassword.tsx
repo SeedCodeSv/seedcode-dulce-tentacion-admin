@@ -32,7 +32,7 @@ function UpdatePassword(props: Props) {
   };
 
   return (
-    <div className="mb-32 sm:mb-0">
+    <div className="mb-32 p t-5 sm:mb-0">
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -52,6 +52,7 @@ function UpdatePassword(props: Props) {
                 label="Nombre"
                 labelPlacement="outside"
                 name="password"
+                size="lg"
                 value={values.password}
                 onChange={handleChange("password")}
                 onBlur={handleBlur("password")}

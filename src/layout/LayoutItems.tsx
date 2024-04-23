@@ -27,7 +27,7 @@ export const LayoutItems = () => {
       >
         <Image src={LOGO} className="w-[50px]" />
         <p className="ml-3 font-sans text-sm font-bold text-coffee-brown">
-          COFFEE PLACE
+          SeedCodeERP
         </p>
       </div>
       <NavLink
@@ -85,6 +85,13 @@ export const LayoutItems = () => {
               : "text-coffee-brown font-semibold border-white") +
             " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 hover:border-coffee-green"
           );
+        }}
+        style={({ isActive }) => {
+          return {
+            backgroundColor: isActive ? "#dedede" : "transparent",
+            borderLeftColor: isActive ? theme.colors.dark : "transparent",
+            borderLeftWidth: 5,
+          };
         }}
       >
         <Store size={20} />

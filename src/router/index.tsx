@@ -6,6 +6,7 @@ import Users from "../pages/Users";
 import Employees from "../pages/Employees";
 import Customers from "../pages/Customers";
 import Branch from "../pages/Branch";
+import Error404 from "../pages/Error404";
 
 export const router = () => {
   return createBrowserRouter([
@@ -34,8 +35,12 @@ export const router = () => {
       element: <Customers />,
     },
     {
-      path:"/branches",
+      path: "/branches",
       element: <Branch />
+    },
+    {
+      path: "*",
+      element: <Error404 />,
     }
   ]);
 };

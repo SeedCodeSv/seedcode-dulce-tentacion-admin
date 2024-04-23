@@ -3,7 +3,7 @@ import ListUsers from "../components/users/ListUsers";
 
 function Users() {
   return (
-    <Layout title="Users">
+    <Layout title="Usuarios">
       <ListUsers />
     </Layout>
   );

@@ -161,11 +161,11 @@ function ListCategories() {
                   showControls
                   showShadow
                   boundaries={2}
-                  color="primary"
+                  color="default"
                   onChange={(page) => changePage(page)}
                   classNames={{
                     cursor: "cursor-pagination",
-                    next: "cursor-pagination",
+                    next: "cursor-pagination !hover:bg-red-500 !active:bg-red-500",
                     prev: "cursor-pagination",
                   }}
                 />

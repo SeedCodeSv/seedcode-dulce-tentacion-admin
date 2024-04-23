@@ -55,7 +55,7 @@ export default function NavBar() {
         />
         <NavbarBrand>
           {/* < /> */}
-          <p className="font-bold text-inherit">ACME</p>
+          <p className="font-bold text-inherit">SeedCodeERP</p>
         </NavbarBrand>
       </NavbarContent>
       <NavbarContent justify="end">
