@@ -2,6 +2,7 @@
   "themes": [
     {
       "name": "theme1",
+      "context": "dark",
       "colors": {
         "danger": "#e63946",
         "primary": "#f1faee",
@@ -13,10 +14,11 @@
     },
     {
       "name": "theme2",
+      "context": "dark",
       "colors": {
         "danger": "#dc2f02",
         "primary": "#ffffff",
-        "secondary": "#70d6ff",
+        "secondary": "#3a86ff",
         "third": "#2ec4b6",
         "warning": "#fe7f2d",
         "dark": "#00224D"
@@ -24,68 +26,86 @@
     },
     {
       "name": "theme3",
+      "context": "dark",
       "colors": {
         "danger": "#ff006e",
         "primary": "#ffe5ec",
         "secondary": "#ff8fab",
         "third": "#fb6f92",
-        "warning":"#ffbe0b",
+        "warning": "#ffbe0b",
         "dark": "#ef476f"
       }
     },
     {
       "name": "theme4",
+      "context": "dark",
       "colors": {
         "danger": "#ef233c",
         "primary": "#f8f9fa",
-        "secondary": "#b8c0ff",
+        "secondary": "#9b5de5",
         "third": "#0077b6",
-        "warning":"#fca311",
+        "warning": "#fca311",
         "dark": "#03045e"
       }
     },
     {
       "name": "theme5",
+      "context": "light",
       "colors": {
         "danger": "#f2b5d4",
         "primary": "#444054",
         "secondary": "#b5e2fa",
         "third": "#f7d6e0",
-        "warning":"#ede7b1",
+        "warning": "#ede7b1",
         "dark": "#7bdff2"
       }
     },
     {
       "name": "theme6",
+      "context": "dark",
       "colors": {
         "danger": "#ff006e",
         "primary": "#f9f7f3",
         "secondary": "#028090",
         "third": "#00a896",
-        "warning":"#f48c06",
+        "warning": "#f48c06",
         "dark": "#05668d"
       }
     },
     {
       "name": "theme7",
+      "context": "dark",
       "colors": {
         "danger": "#bf4342",
         "primary": "#f4f3ee",
         "secondary": "#8d775f",
         "third": "#e0afa0",
-        "warning":"#ff8600",
+        "warning": "#ff8600",
         "dark": "#463f3a"
       }
     },
     {
       "name": "theme8",
+      "context": "dark",
       "colors": {
         "danger": "#df2935",
         "primary": "#e2fdff",
         "secondary": "#788bff",
         "third": "#7f95d1",
-        "warning":"#ffb627",
+        "warning": "#ffb627",
         "dark": "#5465ff"
+      }
+    },
+    {
+      "name": "theme9",
+      "context":"light",
+      "colors": {
+        "danger": "#f4acb7",
+        "primary": "#4a4e69",
+        "secondary": "#e2fdff",
+        "third": "#cdb4db",
+        "warning": "#ffe5d9",
+        "dark": "#bde0fe"
       }
     }
   ]

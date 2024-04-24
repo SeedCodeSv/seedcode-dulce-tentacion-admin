@@ -1,23 +1,10 @@
-import {
-  Dispatch,
-  SetStateAction,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useUsersStore } from "../../store/users.store";
 import {
   Button,
-  Card,
-  CardBody,
-  CardHeader,
   Input,
-  // Table,
-  // TableBody,
-  // TableCell,
-  // TableColumn,
-  // TableHeader,
-  // TableRow,
+  Select,
+  SelectItem,
   useDisclosure,
 } from "@nextui-org/react";
 import { DataTable } from "primereact/datatable";
@@ -26,56 +13,32 @@ import ModalGlobal from "../global/ModalGlobal";
 import AddUsers from "./AddUsers";
 import {
   Key,
-  PlusIcon,
   Search,
   Table as ITable,
-  User,
-  UserCog,
   CreditCard,
+  TrashIcon,
   List,
 } from "lucide-react";
 import UpdatePassword from "./UpdatePassword";
-import { User as TUser } from "../../types/users.types";
 import { ThemeContext } from "../../hooks/useTheme";
 import { ButtonGroup } from "@nextui-org/react";
 import MobileView from "./MobileView";
+import { ConfirmPopup } from "primereact/confirmpopup";
+import AddButton from "../global/AddButton";
+import { Paginator } from "primereact/paginator";
+import { paginator_styles } from "../../styles/paginator.styles";
+import { useAuthStore } from "../../store/auth.store";
+import Pagination from "../global/Pagination";
 
 function ListUsers() {
   const { theme } = useContext(ThemeContext);
-
-  const { getUsers, users } = useUsersStore();
+  const { user } = useAuthStore();
+  const [limit, setLimit] = useState(5);
+  const { users_paginated, getUsersPaginated } = useUsersStore();
 
   useEffect(() => {
-    getUsers();
-  }, []);
-
-  const columns = [
-    {
-      name: "NO.",
-      key: "id",
-      sortable: false,
-    },
-    {
-      name: "Nombre de usuario",
-      key: "name",
-      sortable: false,
-    },
-    {
-      name: "Rol",
-      key: "role",
-      sortable: false,
-    },
-    {
-      name: "Empleado",
-      key: "employee",
-      sortable: false,
-    },
-    {
-      name: "Acciones",
-      key: "actions",
-      sortable: false,
-    },
-  ];
+    getUsersPaginated(user?.id ?? 1, 1, limit, "");
+  }, [limit]);
 
   const modalAdd = useDisclosure();
   const modalChangePassword = useDisclosure();
@@ -89,24 +52,57 @@ function ListUsers() {
 
   const [view, setView] = useState<"table" | "grid" | "list">("table");
 
+  const [userName, setUserName] = useState("");
+
+  const handleSearch = (searchParam = "") => {
+    getUsersPaginated(
+      user?.id ?? 1,
+      1,
+      limit,
+      searchParam !== "" ? userName : searchParam
+    );
+  };
+
   return (
     <>
       <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
-        <div className="w-full h-full p-5 bg-white shadow rounded-xl overflow-y-auto dark:bg-transparent">
-          <div className="flex flex-col justify-between w-full mb-10 md:flex-row">
-            <div className="w-96">
+        <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
+          <div className="flex flex-col justify-between w-full gap-5 mb-5 lg:mb-10 lg:flex-row lg:gap-0">
+            <div className="flex items-end gap-3">
               <Input
                 startContent={<Search />}
-                className="w-full"
+                className="w-full xl:w-96"
                 variant="bordered"
                 labelPlacement="outside"
                 label="Buscar"
-                classNames={{ label: "font-semibold text-gray-700" }}
+                classNames={{
+                  label: "font-semibold text-gray-700",
+                  inputWrapper: "pr-0",
+                }}
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
                 size="lg"
                 placeholder="Escribe para buscar..."
+                isClearable
+                onClear={() => {
+                  setUserName("");
+                  handleSearch();
+                }}
               />
+              <Button
+                style={{
+                  backgroundColor: theme.colors.secondary,
+                  color: theme.colors.primary,
+                }}
+                className="font-semibold"
+                color="primary"
+                size="lg"
+                onClick={() => handleSearch()}
+              >
+                Buscar
+              </Button>
             </div>
-            <div className="flex justify-end items-center gap-10">
+            <div className="flex items-end justify-between gap-10 mt lg:justify-end">
               <ButtonGroup>
                 <Button
                   size="lg"
@@ -148,28 +144,45 @@ function ListUsers() {
                   <List />
                 </Button>
               </ButtonGroup>
-              <Button
-                className="font-semibold max-w-72"
-                endContent={<PlusIcon />}
-                size="lg"
-                onClick={() => modalAdd.onOpen()}
-                style={{
-                  backgroundColor: theme.colors.third,
-                  color: theme.colors.primary,
-                }}
-              >
-                Agregar nuevo
-              </Button>
+              <AddButton onClick={() => modalAdd.onOpen()} />
             </div>
           </div>
-          <div className="w-full flex justify-end py-3"></div>
+          <div className="flex justify-end w-full">
+            <Select
+              className="w-44"
+              variant="bordered"
+              size="lg"
+              label="Mostrar"
+              labelPlacement="outside"
+              classNames={{
+                label: "font-semibold",
+              }}
+              value={limit}
+              onChange={(e) => {
+                setLimit(Number(e.target.value !== "" ? e.target.value : "5"));
+              }}
+            >
+              <SelectItem key={"5"}>5</SelectItem>
+              <SelectItem key={"10"}>10</SelectItem>
+              <SelectItem key={"20"}>20</SelectItem>
+              <SelectItem key={"30"}>30</SelectItem>
+              <SelectItem key={"40"}>40</SelectItem>
+              <SelectItem key={"50"}>50</SelectItem>
+              <SelectItem key={"100"}>100</SelectItem>
+            </Select>
+          </div>
+          <div className="flex justify-end w-full py-3 bg-first-300"></div>
           {(view === "grid" || view === "list") && (
-            <MobileView layout={view as "grid" | "list"} />
+            <MobileView
+              deletePopover={DeletePopUp}
+              layout={view as "grid" | "list"}
+            />
           )}
           {view === "table" && (
             <DataTable
               className="shadow"
-              value={users}
+              emptyMessage="No se encontraron resultados"
+              value={users_paginated.users}
               tableStyle={{ minWidth: "50rem" }}
             >
               <Column
@@ -200,98 +213,50 @@ function ListUsers() {
                 headerStyle={{ ...style, borderTopRightRadius: "10px" }}
                 header="Acciones"
                 body={(item) => (
-                  <Button
-                    onClick={() => {
-                      setSelectedId(item.id);
-                      modalChangePassword.onOpen();
-                    }}
-                    isIconOnly
-                    style={{
-                      backgroundColor: theme.colors.danger,
-                    }}
-                  >
-                    <Key color={theme.colors.primary} size={20} />
-                  </Button>
+                  <div className="flex w-full gap-5">
+                    <DeletePopUp id={item.id} />
+                    <Button
+                      size="lg"
+                      onClick={() => {
+                        setSelectedId(item.id);
+                        modalChangePassword.onOpen();
+                      }}
+                      isIconOnly
+                      style={{
+                        backgroundColor: theme.colors.danger,
+                      }}
+                    >
+                      <Key color={theme.colors.primary} size={20} />
+                    </Button>
+                  </div>
                 )}
               />
             </DataTable>
           )}
-          {/* <div className="flex flex-col justify-between w-full mb-10 md:flex-row">
-            <div className="w-96">
-              <Input
-                startContent={<Search />}
-                className="w-full"
-                variant="bordered"
-                labelPlacement="outside"
-                label="Buscar"
-                classNames={{ label: "font-semibold text-gray-700" }}
-                size="lg"
-                placeholder="Escribe para buscar..."
-              />
-            </div>
-            <div className="flex justify-end gap-3 mt-5 md:mt-0">
-            <Button
-              className="h-10 font-semibold max-w-72"
-              endContent={<PlusIcon />}
-              size="sm"
-              onClick={() => modalAdd.onOpen()}
-              style={{
-                backgroundColor: theme.colors.third,
-                color: theme.colors.primary,
+          <div className="hidden w-full mt-5 md:flex">
+            <Pagination
+              previousPage={users_paginated.prevPag}
+              nextPage={users_paginated.nextPag}
+              currentPage={users_paginated.currentPag}
+              totalPages={users_paginated.totalPag}
+              onPageChange={(page) => {
+                getUsersPaginated(user?.id ?? 1, page, limit, userName);
               }}
-            >
-              Agregar nuevo
-            </Button>
-            </div>
+            />
           </div>
-          <DataTable
-            className="shadow"
-            value={users}
-            tableStyle={{ minWidth: "50rem" }}
-          >
-            <Column
-              headerClassName="text-sm font-semibold"
-              headerStyle={{ ...style, borderTopLeftRadius: "10px" }}
-              field="id"
-              header="No."
+          <div className="flex w-full mt-5 md:hidden">
+            <Paginator
+              pt={paginator_styles(1)}
+              className="flex justify-between w-full"
+              first={users_paginated.currentPag}
+              rows={limit}
+              totalRecords={users_paginated.total}
+              template={{
+                layout: "PrevPageLink CurrentPageReport NextPageLink",
+              }}
+              currentPageReportTemplate="{currentPage} de {totalPages}"
             />
-            <Column
-              headerClassName="text-sm font-semibold"
-              headerStyle={style}
-              field="employee.fullName"
-              header="Empleado"
-            />
-            <Column
-              headerClassName="text-sm font-semibold"
-              headerStyle={style}
-              field="userName"
-              header="Nombre de usuario"
-            />
-            <Column
-              headerClassName="text-sm font-semibold"
-              headerStyle={style}
-              field="role.name"
-              header="Rol"
-            />
-            <Column
-              headerStyle={{ ...style, borderTopRightRadius: "10px" }}
-              header="Acciones"
-              body={(item) => (
-                <Button
-                  onClick={() => {
-                    setSelectedId(item.id);
-                    modalChangePassword.onOpen();
-                  }}
-                  isIconOnly
-                  style={{
-                    backgroundColor: theme.colors.danger,
-                  }}
-                >
-                  <Key color={theme.colors.primary} size={20} />
-                </Button>
-              )}
-            />
-          </DataTable> */}
+          </div>
         </div>
         <ModalGlobal
           isOpen={modalAdd.isOpen}
@@ -313,157 +278,68 @@ function ListUsers() {
           />
         </ModalGlobal>
       </div>
-      {/* <div className="w-full h-full p-5 bg-gray-50">
-        <div className="flex justify-end w-full">
-          <Button
-            className="h-10 max-w-72"
-            endContent={<PlusIcon />}
-            size="sm"
-            onClick={() => modalAdd.onOpen()}
-            style={{
-              backgroundColor: theme.colors.third,
-              color: theme.colors.primary,
-            }}
-          >
-            Agregar nuevo
-          </Button>
-        </div>
-        <div className="hidden w-full p-5 bg-white rounded shadow lg:flex">
-          <Table
-            isHeaderSticky
-            bottomContentPlacement="outside"
-            topContentPlacement="outside"
-            classNames={{
-              wrapper: "max-h-[450px] 2xl:max-h-[600px]",
-            }}
-          >
-            <TableHeader columns={columns}>
-              {(column) => (
-                <TableColumn
-                  key={column.key}
-                  className="font-semibold"
-                  align={column.key === "actions" ? "center" : "start"}
-                  allowsSorting={column.sortable}
-                  style={{
-                    backgroundColor: theme.colors.dark,
-                    color: theme.colors.primary,
-                  }}
-                >
-                  {column.name}
-                </TableColumn>
-              )}
-            </TableHeader>
-            <TableBody items={users}>
-              {(item) => (
-                <TableRow key={item.id}>
-                  {(columnKey) => (
-                    <TableCell>
-                      {columnKey === "id" && item.id}
-                      {columnKey === "name" && item.userName}
-                      {columnKey === "role" && item.role.name}
-                      {columnKey === "employee" && item.employee.fullName}
-                      {columnKey === "actions" && (
-                        <div className="flex gap-3">
-                          <Button
-                            onClick={() => {
-                              setSelectedId(item.id);
-                              modalChangePassword.onOpen();
-                            }}
-                            isIconOnly
-                            style={{
-                              backgroundColor: theme.colors.danger,
-                            }}
-                          >
-                            <Key color={theme.colors.primary} size={20} />
-                          </Button>
-                        </div>
-                      )}
-                    </TableCell>
-                  )}
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
-        <div className="grid w-full h-auto grid-cols-1 gap-5 mt-3 sm:grid-cols-2 md:grid-cols-3 lg:hidden">
-          {users.map((user) => (
-            <CardItem
-              key={user.id}
-              user={user}
-              setUser={setSelectedId}
-              setOpenModal={modalChangePassword.onOpen}
-            />
-          ))}
-        </div>
-      </div>
-      <ModalGlobal
-        isOpen={modalAdd.isOpen}
-        onClose={modalAdd.onClose}
-        title="Agregar usuario"
-        size="lg"
-      >
-        <AddUsers onClose={modalAdd.onClose} />
-      </ModalGlobal>
-      <ModalGlobal
-        isOpen={modalChangePassword.isOpen}
-        onClose={modalChangePassword.onClose}
-        title="Agregar usuario"
-        size="lg"
-      >
-        <UpdatePassword
-          id={selectId}
-          closeModal={modalChangePassword.onClose}
-        />
-      </ModalGlobal> */}
     </>
   );
 }
 
 export default ListUsers;
 
-interface CardProps {
-  user: TUser;
-  setUser: Dispatch<SetStateAction<number>>;
-  setOpenModal: any;
+interface Props {
+  id: number;
 }
 
-export const CardItem = ({ user, setUser, setOpenModal }: CardProps) => {
+const DeletePopUp = ({ id }: Props) => {
+  const buttonRef = useRef<HTMLButtonElement>();
+
+  const { theme } = useContext(ThemeContext);
+
+  const [visible, setVisible] = useState(false);
+
+  const handleDelete = () => {};
+
   return (
-    <Card isBlurred isPressable>
-      <CardHeader>
-        <div className="flex">
-          <div className="flex flex-col">
-            <p className="ml-3 text-sm font-semibold text-gray-600">
-              {user.userName}
-            </p>
-          </div>
-        </div>
-      </CardHeader>
-      <CardBody>
-        <p className="flex ml-3 text-sm font-semibold text-gray-700">
-          <UserCog size={25} className="text-default-400" />
-          <p className="ml-3">{user.role.name}</p>
-        </p>
-        <p className="flex mt-5 ml-3 text-sm font-semibold text-gray-700">
-          <User size={25} className="text-default-400" />
-          <p className="ml-3">{user.employee.fullName}</p>
-        </p>
-      </CardBody>
-      <CardHeader>
-        <div className="flex gap-3">
-          <Button
-            onClick={() => {
-              setUser(user.id);
-              setOpenModal(true);
-            }}
-            isIconOnly
-            className="bg-[#FF8E8F]"
-          >
-            <Key className="text-white" size={20} />
-          </Button>
-          {/* <DeletePopover employee={employee} /> */}
-        </div>
-      </CardHeader>
-    </Card>
+    <>
+      <Button
+        ref={buttonRef as any}
+        style={{
+          backgroundColor: theme.colors.warning,
+          color: theme.colors.primary,
+        }}
+        size="lg"
+        isIconOnly
+        onClick={() => setVisible(!visible)}
+      >
+        <TrashIcon size={20} />
+      </Button>
+      <ConfirmPopup
+        visible={visible}
+        onHide={() => setVisible(false)}
+        target={buttonRef.current}
+        message="¿Deseas eliminar este usuario?"
+        content={({ message, acceptBtnRef, rejectBtnRef }) => (
+          <>
+            <div className="p-5 border border-gray-100 shadow-2xl rounded-xl">
+              <p className="text-lg font-semibold text-center">{message}</p>
+              <div className="flex justify-between gap-5 mt-5">
+                <Button
+                  ref={acceptBtnRef}
+                  size="lg"
+                  className="font-semibold"
+                  style={{
+                    backgroundColor: theme.colors.third,
+                    color: theme.colors.primary,
+                  }}
+                >
+                  Eliminar
+                </Button>
+                <Button size="lg" ref={rejectBtnRef}>
+                  Cancelar
+                </Button>
+              </div>
+            </div>
+          </>
+        )}
+      />
+    </>
   );
 };

@@ -10,7 +10,7 @@ export const get_products_categories = (page = 1, limit = 8, name = "") => {
   const user = get_user()
   return axios.get<IGetCategoriesPaginated>(
     API_URL +
-    `/category-products/list-paginated/${user?.transmitterId}?page=${page}&limit=${limit}&name=${name}`
+    `/category-products/list-paginated/${user?.employee.branch.transmitterId}?page=${page}&limit=${limit}&name=${name}`
   );
 };
 

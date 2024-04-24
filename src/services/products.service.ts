@@ -3,7 +3,7 @@ import { IGetProductsPaginated, ProductPayload } from "../types/products.types";
 import { API_URL } from "../utils/constants";
 
 export const get_products = (
-  page = 11,
+  page = 1,
   limit = 5,
   category = "",
   name = ""

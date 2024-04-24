@@ -30,6 +30,7 @@ export interface Employee {
 export interface UserLogin {
 	id: number;
 	userName: string;
+	branch: Branch;
 	active: boolean;
 	role: Role;
 	employee: Employee;

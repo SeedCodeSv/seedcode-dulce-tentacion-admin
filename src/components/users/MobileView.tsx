@@ -13,20 +13,20 @@ import {
 } from "lucide-react";
 import { ThemeContext } from "../../hooks/useTheme";
 
-interface Props{
-  layout: "grid" | "list"
+interface Props {
+  layout: "grid" | "list";
+  deletePopover: ({ id }: { id: number }) => JSX.Element;
 }
 
-function MobileView({layout} : Props) {
-  const { users } = useUsersStore();
-  
+function MobileView({ layout }: Props) {
+  const { users_paginated } = useUsersStore();
+
   return (
     <div className="w-full pb-10">
       <DataView
-        value={users}
+        value={users_paginated.users}
         gutter
         layout={layout}
-        className=" max-h-screen overflow-y-auto"
         pt={{
           grid: () => ({
             className:
@@ -52,19 +52,19 @@ const gridItem = (user: User, layout: "grid" | "list") => {
           )}
           key={user.id}
         >
-          <div className="w-full flex gap-2">
+          <div className="flex w-full gap-2">
             <IUser color={"#274c77"} size={35} />
             {user.userName}
           </div>
-          <div className="w-full flex gap-2 mt-3">
+          <div className="flex w-full gap-2 mt-3">
             <SquareUserRound color="#00bbf9" size={35} />
             {user.employee.fullName}
           </div>
-          <div className="w-full flex gap-2 mt-3">
+          <div className="flex w-full gap-2 mt-3">
             <ShieldCheck color={"#006d77"} size={35} />
             {user.role.name}
           </div>
-          <div className="w-ful flex justify-between mt-5">
+          <div className="flex justify-between mt-5 w-ful">
             <Button
               isIconOnly
               size="lg"
@@ -96,22 +96,22 @@ const ListItem = ({ user }: { user: User }) => {
   const { theme } = useContext(ThemeContext);
   return (
     <>
-      <div className="w-full flex p-5 border-b shadow col-span-1 md:col-span-2 lg:col-span-3 xl:col-span-4">
+      <div className="flex w-full col-span-1 p-5 border-b shadow md:col-span-2 lg:col-span-3 xl:col-span-4">
         <div className="w-full">
-          <div className="w-full flex items-center gap-2">
+          <div className="flex items-center w-full gap-2">
             <IUser color={"#274c77"} size={35} />
             {user.userName}
           </div>
-          <div className="w-full flex items-center gap-2 mt-3">
+          <div className="flex items-center w-full gap-2 mt-3">
             <SquareUserRound color="#00bbf9" size={35} />
             {user.employee.fullName}
           </div>
-          <div className="w-full flex items-center gap-2 mt-3">
+          <div className="flex items-center w-full gap-2 mt-3">
             <ShieldCheck color={"#006d77"} size={35} />
             {user.role.name}
           </div>
         </div>
-        <div className="w-full flex flex-col items-end justify-between">
+        <div className="flex flex-col items-end justify-between w-full">
           <Button
             isIconOnly
             size="lg"

@@ -8,7 +8,9 @@ export default {
     "./node_modules/primereact/**/*.{js,ts,jsx,tsx}"
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {}
+    },
   },
   plugins: [nextui()],
 }

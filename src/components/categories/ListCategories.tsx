@@ -37,6 +37,8 @@ import { CategoryProduct } from "../../types/categories.types";
 import { ThemeContext } from "../../hooks/useTheme";
 import AddCategory from "./AddCategory";
 import ModalGlobal from "../global/ModalGlobal";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
 // import { CategoryProduct } from "../../types/products.types";
 // import ModalGlobal from "../global/ModalGlobal";
 // import AddNewCategory from "./AddNewCategory";
@@ -84,6 +86,11 @@ function ListCategories() {
   };
 
   const modalAdd = useDisclosure();
+
+  const style = {
+    backgroundColor: theme.colors.dark,
+    color: theme.colors.primary,
+  };
 
   const topContent = useMemo(() => {
     return (
@@ -146,7 +153,7 @@ function ListCategories() {
   return (
     <div className="w-full h-full p-5 bg-gray-50">
       <div className="hidden w-full p-5 bg-white rounded lg:flex">
-        <Table
+        {/* <Table
           isHeaderSticky
           bottomContentPlacement="outside"
           topContentPlacement="outside"
@@ -232,7 +239,54 @@ function ListCategories() {
               </TableRow>
             )}
           </TableBody>
-        </Table>
+        </Table> */}
+        <DataTable
+          className="w-full shadow"
+          emptyMessage="No se encontraron resultados"
+          value={paginated_categories.categoryProducts}
+          tableStyle={{ minWidth: "50rem" }}
+        >
+          <Column
+            headerClassName="text-sm font-semibold"
+            headerStyle={{ ...style, borderTopLeftRadius: "10px" }}
+            field="id"
+            header="No."
+          />
+          <Column
+            headerClassName="text-sm font-semibold"
+            headerStyle={style}
+            field="name"
+            header="Nombre"
+          />
+           <Column
+                headerStyle={{ ...style, borderTopRightRadius: "10px" }}
+                header="Acciones"
+                body={(item) => (
+                  <div className="flex gap-6">
+                  <Button
+                    onClick={() => {
+                      setSelectedCategory({
+                        id: item.id,
+                        name: item.name,
+                      });
+                      modalAdd.onOpen();
+                    }}
+                    isIconOnly
+                    size="lg"
+                    style={{
+                      backgroundColor: theme.colors.secondary,
+                    }}
+                  >
+                    <EditIcon
+                      style={{ color: theme.colors.primary }}
+                      size={20}
+                    />
+                  </Button>
+                  <DeletePopover category={item} />
+                </div>
+                )}
+              />
+        </DataTable>
       </div>
       <div className="grid w-full h-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:hidden">
         <div className="w-full col-span-1 sm:col-span-2 md:col-span-3">
@@ -309,6 +363,7 @@ export const DeletePopover = ({ category }: PopProps) => {
         <Button
           onClick={onOpen}
           isIconOnly
+          size="lg"
           style={{ backgroundColor: theme.colors.danger }}
         >
           <TrashIcon style={{ color: theme.colors.primary }} size={20} />

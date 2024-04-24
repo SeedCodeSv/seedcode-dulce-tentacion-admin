@@ -15,6 +15,7 @@ export interface Color {
 
 export interface Theme {
   name: string;
+  context: "light" | "dark";
   colors: Color;
 }
 interface ThemeContextType {

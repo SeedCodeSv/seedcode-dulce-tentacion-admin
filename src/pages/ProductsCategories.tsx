@@ -4,7 +4,7 @@ import ListCategories from '../components/categories/ListCategories'
 
 function ProductsCategories() {
   return (
-    <Layout title="Products Categories">
+    <Layout title="Categorías de producto">
       <ListCategories />
     </Layout>
   )

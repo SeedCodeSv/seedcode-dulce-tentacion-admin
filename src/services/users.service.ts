@@ -1,9 +1,23 @@
 import axios from "axios";
 import { API_URL } from "../utils/constants";
-import { IGetUsers, UserPayload } from "../types/users.types";
+import { IGetUserPaginated, IGetUsers, UserPayload } from "../types/users.types";
 
 export const get_users_list = () => {
   return axios.get<IGetUsers>(API_URL + "/users");
+};
+
+export const get_user_paginated = (
+  id: number,
+  page = 1,
+  limit = 5,
+  userName = ""
+) => {
+  return axios.get<IGetUserPaginated>(
+    API_URL +
+      "/users/paginated/" +
+      id +
+      `?page=${page}&limit=${limit}&userName=${userName}`
+  );
 };
 
 export const save_user = (payload: UserPayload) => {
