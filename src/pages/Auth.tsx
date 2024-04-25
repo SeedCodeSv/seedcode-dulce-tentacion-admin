@@ -30,12 +30,10 @@ function Auth() {
 
   const handleSubmit = (values: IAuthPayload) => {
     postLogin(values).then((response) => {
-      if (response) {
-        if (response.ok) {
-          setIsAuth(true);
-          setToken(response.token);
-          redirect("/");
-        }
+      if (response?.ok) {
+        setIsAuth(true);
+        setToken(response.token);
+        redirect("/")
       } else {
         setIsAuth(false);
         setToken("");
@@ -44,7 +42,7 @@ function Auth() {
   };
 
   return (
-    <div className="h-screen w-screen bg-gray-50 flex items-center justify-center">
+    <div className="flex items-center justify-center w-screen h-screen bg-gray-50">
       <div className="text-3xl flex w-[80vw] h-[90vh] border shadow bg-white p-5 rounded-2xl">
         <div
           className="hidden md:flex md:w-[50%] xl:w-[60%] h-full bg-cover bg-center rounded-2xl shadow"
@@ -70,7 +68,7 @@ function Auth() {
               handleSubmit,
             }) => (
               <>
-                <div className="mt-16 flex flex-col">
+                <div className="flex flex-col mt-16">
                   <Input
                     classNames={{ label: "text-sm font-semibold" }}
                     variant="bordered"
@@ -86,7 +84,7 @@ function Auth() {
                     <p className="text-red-500">{errors.userName}</p>
                   )}
                 </div>
-                <div className="mt-10 flex flex-col">
+                <div className="flex flex-col mt-10">
                   <Input
                     classNames={{ label: "text-sm font-semibold" }}
                     variant="bordered"

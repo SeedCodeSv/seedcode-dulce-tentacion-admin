@@ -74,10 +74,10 @@ const AddCategory = (props: Props) => {
             </div>
             <Button
               onClick={() => handleSubmit()}
-              size="md"
+              size="lg"
               className="w-full mt-4 text-sm font-semibold"
               style={{
-                backgroundColor: theme.colors.dark,
+                backgroundColor: theme.colors.third,
                 color: theme.colors.primary,
               }}
             >

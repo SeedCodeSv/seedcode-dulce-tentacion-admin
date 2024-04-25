@@ -18,7 +18,7 @@ export const useAuthStore = create<IAuthStore>((set) => ({
                 set_token(data.token)
                 save_user(data.user)
                 toast.success("Bienvenido")
-            } else {
+            }else{
                 toast.error("Datos incorrectos")
             }
             return data
