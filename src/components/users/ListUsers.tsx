@@ -54,13 +54,8 @@ function ListUsers() {
 
   const [userName, setUserName] = useState("");
 
-  const handleSearch = (searchParam = "") => {
-    getUsersPaginated(
-      user?.id ?? 1,
-      1,
-      limit,
-      searchParam !== "" ? userName : searchParam
-    );
+  const handleSearch = (searchParam: string | undefined) => {
+    getUsersPaginated(user?.id ?? 1, 1, limit, searchParam ?? userName);
   };
 
   return (
@@ -86,7 +81,7 @@ function ListUsers() {
                 isClearable
                 onClear={() => {
                   setUserName("");
-                  handleSearch();
+                  handleSearch("");
                 }}
               />
               <Button
@@ -97,7 +92,7 @@ function ListUsers() {
                 className="font-semibold"
                 color="primary"
                 size="lg"
-                onClick={() => handleSearch()}
+                onClick={() => handleSearch(undefined)}
               >
                 Buscar
               </Button>
