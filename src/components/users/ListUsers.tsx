@@ -166,7 +166,6 @@ function ListUsers() {
               <SelectItem key={"100"}>100</SelectItem>
             </Select>
           </div>
-          <div className="flex justify-end w-full py-3 bg-first-300"></div>
           {(view === "grid" || view === "list") && (
             <MobileView
               deletePopover={DeletePopUp}

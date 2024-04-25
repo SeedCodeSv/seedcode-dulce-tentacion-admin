@@ -1,17 +1,11 @@
-import { useState, useEffect, useContext, useMemo } from "react";
+import { useState, useEffect, useContext, useMemo, useRef } from "react";
 import { useBranchesStore } from "../../store/branches.store";
-import {
-  Button,
-  Input,
-  Table,
-  TableBody,
-  TableCell,
-  TableColumn,
-  TableHeader,
-  TableRow,
-} from "@nextui-org/react";
-import { PlusIcon, SearchIcon } from "lucide-react";
+import { Button, Input } from "@nextui-org/react";
+import { Edit, PhoneIcon, PlusIcon, SearchIcon, TrashIcon, MapPinIcon } from "lucide-react";
 import { ThemeContext } from "../../hooks/useTheme";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
+import { ConfirmPopup } from "primereact/confirmpopup";
 
 function ListBranch() {
   const { theme } = useContext(ThemeContext);
@@ -56,6 +50,11 @@ function ListBranch() {
 
   const changePage = (page: number) => {
     getBranchesPaginated(page, limit, name, phone, address);
+  };
+
+  const style = {
+    backgroundColor: theme.colors.dark,
+    color: theme.colors.primary,
   };
 
   const topContent = useMemo(() => {
@@ -115,10 +114,10 @@ function ListBranch() {
           />
           <div className="col-span-1 md:col-span-3 lg:col-span-1 flex justify-end w-full">
             <Button
-            style={{
-              backgroundColor: theme.colors.third,
-              color: theme.colors.primary,
-            }}
+              style={{
+                backgroundColor: theme.colors.third,
+                color: theme.colors.primary,
+              }}
               className="h-10 max-w-72"
               endContent={<PlusIcon />}
               size="sm"
@@ -136,9 +135,74 @@ function ListBranch() {
   }, [branches_paginated]);
 
   return (
-    <div className="w-full h-full p-5 bg-gray-50">
-      <div className="hidden w-full p-5 bg-white rounded lg:flex">
-        <Table isHeaderSticky topContent={topContent} topContentPlacement="outside">
+    <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
+      <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
+        <div className="w-full grid grid-cols-3 gap-5 mb-10">
+          <div>
+            <Input placeholder="Escribe para buscar..." startContent={<SearchIcon />} className="w-full" size="lg" variant="bordered" />
+          </div>
+          <div>
+            <Input placeholder="Escribe para buscar..." startContent={<PhoneIcon />}  className="w-full" size="lg" variant="bordered" />
+          </div>
+          <div>
+            <Input placeholder="Escribe para buscar..." startContent={<MapPinIcon />} className="w-full" size="lg" variant="bordered" />
+          </div>
+        </div>
+        <DataTable
+          className="shadow"
+          emptyMessage="No se encontraron resultados"
+          value={branches_paginated.branches}
+          tableStyle={{ minWidth: "50rem" }}
+        >
+          <Column
+            headerClassName="text-sm font-semibold"
+            headerStyle={{ ...style, borderTopLeftRadius: "10px" }}
+            field="id"
+            header="No."
+          />
+          <Column
+            headerClassName="text-sm font-semibold"
+            headerStyle={style}
+            field="name"
+            header="Nombre"
+          />
+          <Column
+            headerClassName="text-sm font-semibold"
+            headerStyle={style}
+            field="phone"
+            header="Teléfono"
+          />
+          <Column
+            headerClassName="text-sm font-semibold"
+            headerStyle={style}
+            field="address"
+            header="Dirección"
+          />
+          <Column
+            headerStyle={{ ...style, borderTopRightRadius: "10px" }}
+            header="Acciones"
+            body={(item) => (
+              <div className="flex w-full gap-5">
+                <DeletePopUp id={item.id} />
+                <Button
+                  size="lg"
+                  // onClick={() => {
+                  //   setSelectedId(item.id);
+                  //   modalChangePassword.onOpen();
+                  // }}
+                  isIconOnly
+                  style={{
+                    backgroundColor: theme.colors.third,
+                    color: theme.colors.primary,
+                  }}
+                >
+                  <Edit />
+                </Button>
+              </div>
+            )}
+          />
+        </DataTable>
+        {/* <Table isHeaderSticky topContent={topContent} topContentPlacement="outside">
           <TableHeader columns={columns}>
             {(column) => (
               <TableColumn
@@ -169,10 +233,70 @@ function ListBranch() {
               </TableRow>
             )}
           </TableBody>
-        </Table>
+        </Table> */}
       </div>
     </div>
   );
 }
 
 export default ListBranch;
+
+interface Props {
+  id: number;
+}
+
+const DeletePopUp = ({ id }: Props) => {
+  const buttonRef = useRef<HTMLButtonElement>();
+
+  const { theme } = useContext(ThemeContext);
+
+  const [visible, setVisible] = useState(false);
+
+  const handleDelete = () => {};
+
+  return (
+    <>
+      <Button
+        ref={buttonRef as any}
+        style={{
+          backgroundColor: theme.colors.danger,
+          color: theme.colors.primary,
+        }}
+        size="lg"
+        isIconOnly
+        onClick={() => setVisible(!visible)}
+      >
+        <TrashIcon size={20} />
+      </Button>
+      <ConfirmPopup
+        visible={visible}
+        onHide={() => setVisible(false)}
+        target={buttonRef.current}
+        message="¿Deseas eliminar esta sucursal?"
+        content={({ message, acceptBtnRef, rejectBtnRef }) => (
+          <>
+            <div className="p-5 border border-gray-100 shadow-2xl rounded-xl">
+              <p className="text-lg font-semibold text-center">{message}</p>
+              <div className="flex justify-between gap-5 mt-5">
+                <Button
+                  ref={acceptBtnRef}
+                  size="lg"
+                  className="font-semibold"
+                  style={{
+                    backgroundColor: theme.colors.third,
+                    color: theme.colors.primary,
+                  }}
+                >
+                  Eliminar
+                </Button>
+                <Button size="lg" ref={rejectBtnRef}>
+                  Cancelar
+                </Button>
+              </div>
+            </div>
+          </>
+        )}
+      />
+    </>
+  );
+};

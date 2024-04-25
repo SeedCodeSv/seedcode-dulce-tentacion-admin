@@ -18,7 +18,7 @@ export const get_branches_pagination = (
 
   return axios.get<IGetBranchesPaginated>(
     API_URL +
-    "/branches/list-paginated/" + user?.transmitterId + "?page=" +
+    "/branches/list-paginated/" + user?.employee.branch.transmitterId + "?page=" +
     page +
     "&limit=" +
     limit +
