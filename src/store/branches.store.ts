@@ -22,8 +22,8 @@ export const useBranchesStore = create<IBranchStore>((set, get) => ({
     ok: false,
   },
   branch_list: [],
-  async getBranchesList() {
-    return get_branches_list()
+  async getBranchesList(id: number) {
+    return get_branches_list(id)
       .then(({ data }) => {
         set((state) => ({ ...state, branch_list: data.branches }));
       })
