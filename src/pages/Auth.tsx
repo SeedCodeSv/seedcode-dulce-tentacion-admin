@@ -41,8 +41,6 @@ function Auth() {
     });
   };
 
-  console.log(isAuth)
-
   return (
     <div className="flex items-center justify-center w-screen h-screen bg-gray-50">
       <div className="text-3xl flex w-[80vw] h-[90vh] border shadow bg-white p-5 rounded-2xl">
