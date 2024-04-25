@@ -14,9 +14,13 @@ export const useAuthStore = create<IAuthStore>((set) => ({
     user: get_user(),
     postLogin: async (payload) => {
         return await post_login(payload).then(({ data }) => {
-            set_token(data.token)
-            save_user(data.user)
-            toast.success("Bienvenido")
+            if (data.ok) {
+                set_token(data.token)
+                save_user(data.user)
+                toast.success("Bienvenido")
+            } else {
+                toast.error("Datos incorrectos")
+            }
             return data
         }).catch(() => {
             delete_token()

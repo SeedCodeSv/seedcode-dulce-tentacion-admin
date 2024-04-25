@@ -31,17 +31,17 @@ function Auth() {
   const handleSubmit = (values: IAuthPayload) => {
     postLogin(values).then((response) => {
       if (response) {
-        setIsAuth(true);
-        setToken(response.token);
-        redirect("/")
+        if (response.ok) {
+          setIsAuth(true);
+          setToken(response.token);
+          redirect("/");
+        }
       } else {
         setIsAuth(false);
         setToken("");
       }
     });
   };
-
-  console.log(isAuth)
 
   return (
     <div className="h-screen w-screen bg-gray-50 flex items-center justify-center">
