@@ -82,7 +82,11 @@ const ListClients = () => {
   };
 
   const modalAdd = useDisclosure();
-
+  const modalUpdate = useDisclosure();
+const clearModal = () => {
+modalAdd.onClose
+handleChangeCustomer({} as Customer, "")
+}
   const [selectedCustomer, setSelectedCustomer] = useState<PayloadCustomer>();
   const [selectedCustomerDirection, setSelectedCustomerDirection] =
     useState<CustomerDirection>();
@@ -591,9 +595,10 @@ const ListClients = () => {
         <ModalGlobal
           title="Nuevo cliente"
           isOpen={modalAdd.isOpen}
-          onClose={modalAdd.onClose}
+          onClose={clearModal}
           size={typeClient === "contribuyente" ? "2xl" : "lg"}
           isDismissable={false}
+          
         >
           <>
             {typeClient === "normal" && (

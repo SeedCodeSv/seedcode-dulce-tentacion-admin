@@ -242,7 +242,7 @@ const AddClientNormal = (props: Props) => {
                   onBlur={handleBlur("departamento")}
                   label="Departamento"
                   labelPlacement="outside"
-                  placeholder="Selecciona el departamento"
+                  placeholder={values.nombreDepartamento ? values.nombreDepartamento : "Selecciona el departamento"} 
                   variant="bordered"
                   classNames={{
                     base: "font-semibold text-gray-500 text-sm",
@@ -280,7 +280,7 @@ const AddClientNormal = (props: Props) => {
                   onBlur={handleBlur("municipio")}
                   label="Municipio"
                   labelPlacement="outside"
-                  placeholder="Selecciona el departamento"
+                  placeholder={values.nombreMunicipio ?  values.nombreMunicipio : "Selecciona el municipio"} 
                   variant="bordered"
                   classNames={{
                     base: "font-semibold text-gray-500 text-sm",
