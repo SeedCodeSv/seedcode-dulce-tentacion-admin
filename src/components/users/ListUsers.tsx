@@ -142,7 +142,7 @@ function ListUsers() {
               <AddButton onClick={() => modalAdd.onOpen()} />
             </div>
           </div>
-          <div className="flex justify-end w-full">
+          <div className="flex justify-end w-full mb-1">
             <Select
               className="w-44"
               variant="bordered"

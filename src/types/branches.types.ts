@@ -19,15 +19,19 @@ export interface IGetBranchesPaginated {
   status: number;
 }
 
-export interface IBranchPayload {
+export interface IBranchForm {
   name: string;
   phone: string;
   address: string;
 }
 
+export interface IBranchPayload extends IBranchForm {
+  transmitterId: number;
+}
+
 export interface IGetBranchesList {
-	ok: boolean;
-	message: string;
-	branches: Branches[];
-	status: number;
+  ok: boolean;
+  message: string;
+  branches: Branches[];
+  status: number;
 }

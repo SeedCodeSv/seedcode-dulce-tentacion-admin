@@ -7,6 +7,8 @@ import {
 export interface IBranchStore {
   branches_paginated: IGetBranchesPaginated;
   branch_list: Branches[];
+  limit: number;
+  loading: boolean;
   saveBranchesPaginated: (data: IGetBranchesPaginated) => void;
   getBranchesPaginated: (
     page: number,
