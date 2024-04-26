@@ -1,15 +1,15 @@
-import React, { useState, useContext, Dispatch, SetStateAction } from "react";
+import { useContext } from "react";
 import { Button } from "@nextui-org/react";
-import { DataView, DataViewLayoutOptions } from "primereact/dataview";
+import { DataView } from "primereact/dataview";
 import { useCustomerStore } from "../../store/customers.store";
-import { User } from "../../types/users.types";
 import { classNames } from "primereact/utils";
 import {
   User as IUser,
   Key,
-  ShieldCheck,
-  SquareUserRound,
   Trash,
+  Phone,
+  Mail,
+  Users2Icon
 } from "lucide-react";
 import { ThemeContext } from "../../hooks/useTheme";
 import { Customer } from "../../types/customers.types";
@@ -58,15 +58,15 @@ const gridItem = (customers: Customer, layout: "grid" | "list") => {
             {customers.nombre}
           </div>
           <div className="flex w-full gap-2 mt-3">
-            <SquareUserRound color="#00bbf9" size={35} />
+            <Phone color="#00bbf9" size={33} />
             {customers.telefono}
           </div>
           <div className="flex w-full gap-2 mt-3">
-            <ShieldCheck color={"#006d77"} size={35} />
+            <Mail color={"#006d77"} size={35} />
             {customers.correo}
           </div>
           <div className="flex w-full gap-2 mt-3">
-            <ShieldCheck color={"#006d77"} size={35} />
+            <Users2Icon color={"#006d77"} size={35} />
             {customers.esContribuyente ? "Si" : "No"}
           </div>
           <div className="flex justify-between mt-5 w-ful">
@@ -108,15 +108,15 @@ const ListItem = ({ customers }: { customers: Customer }) => {
             {customers.nombre}
           </div>
           <div className="flex items-center w-full gap-2 mt-3">
-            <SquareUserRound color="#00bbf9" size={35} />
+            <Phone color="#00bbf9" size={35} />
             {customers.telefono}
           </div>
           <div className="flex items-center w-full gap-2 mt-3">
-            <ShieldCheck color={"#006d77"} size={35} />
+            <Mail color={"#006d77"} size={35} />
             {customers.correo}
           </div>
           <div className="flex items-center w-full gap-2 mt-3">
-            <ShieldCheck color={"#006d77"} size={35} />
+            <Users2Icon color={"#006d77"} size={35} />
             {customers.esContribuyente ? "Si" : "No"}
           </div>
         </div>

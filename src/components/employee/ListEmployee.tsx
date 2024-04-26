@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useEmployeeStore } from "../../store/employee.store";
 import {
   Button,
@@ -11,7 +11,6 @@ import {
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import {
-  SearchIcon,
   TrashIcon,
   Table as ITable,
   CreditCard,
@@ -20,6 +19,7 @@ import {
   Search,
   Phone,
   Truck,
+  Filter,
 } from "lucide-react";
 import { Employee } from "../../types/employees.types";
 import AddButton from "../global/AddButton";
@@ -31,6 +31,9 @@ import { paginator_styles } from "../../styles/paginator.styles";
 import MobileView from "./MobileView";
 import ModalGlobal from "../global/ModalGlobal";
 import AddEmployee from "./AddEmployee";
+import { Drawer } from "vaul";
+import { global_styles } from "../../styles/global.styles";
+
 function ListEmployee() {
   const { theme } = useContext(ThemeContext);
 
@@ -41,6 +44,7 @@ function ListEmployee() {
   const [phone, setPhone] = useState("");
   const [limit, setLimit] = useState(8);
   const [view, setView] = useState<"table" | "grid" | "list">("table");
+  const [openVaul, setOpenVaul] = useState(false);
 
   const modalAdd = useDisclosure();
   const [selectedEmployee, setSelectedEmployee] = useState<Employee>();
@@ -52,50 +56,91 @@ function ListEmployee() {
     backgroundColor: theme.colors.dark,
     color: theme.colors.primary,
   };
-  // useEffect(() => {
-  //   getEmployeesPaginated(1, limit, fullName, branch, phone);
-  // }, [limit, fullName, branch, phone]);
+  useEffect(() => {
+    getEmployeesPaginated(1, 8, "", "", "");
+  }, []);
+  const filters = useMemo(() => {
+    return (
+      <>
+        <Input
+          classNames={{
+            label: "font-semibold text-gray-700",
+            inputWrapper: "pr-0",
+          }}
+          className="w-full xl:w-96"
+          placeholder="Buscar por nombre..."
+          size="lg"
+          startContent={<Search />}
+          variant="bordered"
+          name="searchName"
+          id="searchName"
+          value={fullName}
+          autoComplete="search"
+          onChange={(e) => setFullName(e.target.value)}
+          isClearable
+          onClear={() => setFullName("")}
+        />
+        <Input
+          classNames={{
+            label: "font-semibold text-gray-700",
+            inputWrapper: "pr-0",
+          }}
+          placeholder="Buscar por teléfono..."
+          size="lg"
+          startContent={<Phone size={20} />}
+          className="w-full xl:w-96"
+          variant="bordered"
+          name="searchPhone"
+          value={phone}
+          id="searchPhone"
+          onChange={(e) => setPhone(e.target.value)}
+          isClearable
+          onClear={() => setPhone("")}
+        />
+        <Input
+          classNames={{
+            label: "font-semibold text-gray-700",
+            inputWrapper: "pr-0",
+          }}
+          placeholder="Buscar por sucursal..."
+          size="lg"
+          startContent={<Truck size={20} />}
+          className="w-full xl:w-96"
+          variant="bordered"
+          name="searchAddress"
+          id="searchAddress"
+          value={branch}
+          autoComplete="search"
+          onChange={(e) => setBranch(e.target.value)}
+          isClearable
+          onClear={() => setBranch("")}
+        />
+      </>
+    );
+  }, [fullName, setFullName, phone, setPhone, branch, setBranch]);
 
   return (
     <>
       <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
         <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
-          <div className="grid items-end grid-cols-3 gap-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 2xl:mt-4 mb-7">
-            <Input
-              classNames={{
-                label: "font-semibold text-gray-700",
-                inputWrapper: "pr-0",
-              }}
-              className="w-full xl:w-96"
-              placeholder="Buscar por nombre..."
-              size="lg"
-              startContent={<Search />}
-              variant="bordered"
-              name="searchName"
-              id="searchName"
-              value={fullName}
-              autoComplete="search"
-              onChange={(e) => setFullName(e.target.value)}
-              isClearable
-              onClear={() => setFullName("")}
-            />
-            <Input
-              classNames={{
-                label: "font-semibold text-gray-700",
-                inputWrapper: "pr-0",
-              }}
-              placeholder="Buscar por teléfono..."
-              size="lg"
-              startContent={<Phone size={20} />}
-              className="w-full xl:w-96"
-              variant="bordered"
-              name="searchPhone"
-              value={phone}
-              id="searchPhone"
-              onChange={(e) => setPhone(e.target.value)}
-              isClearable
-              onClear={() => setPhone("")}
-            />
+          <div className="hidden w-full grid-cols-3 gap-5 mb-4 md:grid ">
+            {filters}
+          </div>
+          <div className="grid w-full grid-cols-1 gap-5 mb-4 md:grid-cols-2">
+            <div className="hidden md:flex">
+              <Button
+                style={{
+                  backgroundColor: theme.colors.secondary,
+                  color: theme.colors.primary,
+                }}
+                className="w-full xl:w-72 "
+                color="primary"
+                size="lg"
+                onClick={() => changePage()}
+              >
+                Buscar
+              </Button>
+            </div>
             <div className="flex items-end justify-between gap-10 mt lg:justify-end">
               <ButtonGroup>
                 <Button
@@ -138,76 +183,90 @@ function ListEmployee() {
                   <List />
                 </Button>
               </ButtonGroup>
-              <AddButton
-                onClick={() => {
-                  modalAdd.onOpen();
-                  setSelectedEmployee(undefined);
-                }}
-              />
+              <div className="flex items-center gap-5">
+                <div className="block md:hidden">
+                  <Drawer.Root
+                    shouldScaleBackground
+                    open={openVaul}
+                    onClose={() => setOpenVaul(false)}
+                  >
+                    <Drawer.Trigger asChild>
+                      <Button
+                        style={global_styles().thirdStyle}
+                        size="lg"
+                        isIconOnly
+                        onClick={() => setOpenVaul(true)}
+                      >
+                        <Filter />
+                      </Button>
+                    </Drawer.Trigger>
+                    <Drawer.Portal>
+                      <Drawer.Overlay className="fixed inset-0 bg-black/40 z-[60]" onClick={() => setOpenVaul(false)}/>
+                      <Drawer.Content className="bg-gray-100 z-[60] flex flex-col rounded-t-[10px] h-auto mt-24 max-h-[80%] fixed bottom-0 left-0 right-0">
+                        <div className="p-4 bg-white rounded-t-[10px] flex-1">
+                          <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-gray-300 mb-8" />
+                          <Drawer.Title className="mb-4 font-medium">
+                            Filtros disponibles
+                          </Drawer.Title>
+                          <div className="flex flex-col gap-3">
+                            {filters}
+                            <Button
+                              style={global_styles().secondaryStyle}
+                              className="mb-10 font-semibold"
+                              size="lg"
+                              onClick={() => {
+                                changePage();
+                                setOpenVaul(false);
+                              }}
+                            >
+                              Aplicar
+                            </Button>
+                          </div>
+                        </div>
+                      </Drawer.Content>
+                    </Drawer.Portal>
+                  </Drawer.Root>
+                </div>
+                <AddButton
+                  onClick={() => {
+                    modalAdd.onOpen();
+                    setSelectedEmployee(undefined);
+                  }}
+                />
+              </div>
             </div>
           </div>
-          <div className="grid grid-cols-3 gap-5 items-end">
-            <Input
+          <div className="flex justify-end w-full mb-5">
+            <Select
+            className="w-44"
+            variant="bordered"
+              size="lg"
+              label="Mostrar"
+              labelPlacement="outside"
               classNames={{
-                label: "font-semibold text-gray-700",
-                inputWrapper: "pr-0",
+                label: "font-semibold",
               }}
-              placeholder="Buscar por sucursal..."
-              size="lg"
-              startContent={<Truck size={20} />}
-              className="w-full xl:w-96"
-              variant="bordered"
-              name="searchAddress"
-              id="searchAddress"
-              value={branch}
-              autoComplete="search"
-              onChange={(e) => setBranch(e.target.value)}
-              isClearable
-              onClear={() => setBranch("")}
-            />
-            <Button
-              style={{
-                backgroundColor: theme.colors.secondary,
-                color: theme.colors.primary,
+              value={limit}
+              onChange={(e) => {
+                setLimit(Number(e.target.value !== "" ? e.target.value : "5"));
               }}
-              className="w-full xl:w-72 "
-              color="primary"
-              size="lg"
-              onClick={() => changePage()}
             >
-              Buscar
-            </Button>
-            <div className="flex items-center justify-end w-full">
-              <Select
-              className="w-full xl:w-72 "
-              variant="bordered"
-                size="lg"
-                label="Mostrar"
-                labelPlacement="outside"
-                classNames={{
-                  label: "font-semibold",
-                }}
-                value={limit}
-                onChange={(e) => {
-                  setLimit(
-                    Number(e.target.value !== "" ? e.target.value : "5")
-                  );
-                }}
-              >
-                <SelectItem key={"5"}>5</SelectItem>
-                <SelectItem key={"10"}>10</SelectItem>
-                <SelectItem key={"20"}>20</SelectItem>
-                <SelectItem key={"30"}>30</SelectItem>
-                <SelectItem key={"40"}>40</SelectItem>
-                <SelectItem key={"50"}>50</SelectItem>
-                <SelectItem key={"100"}>100</SelectItem>
-              </Select>
-            </div>
+              <SelectItem key={"5"}>5</SelectItem>
+              <SelectItem key={"10"}>10</SelectItem>
+              <SelectItem key={"20"}>20</SelectItem>
+              <SelectItem key={"30"}>30</SelectItem>
+              <SelectItem key={"40"}>40</SelectItem>
+              <SelectItem key={"50"}>50</SelectItem>
+              <SelectItem key={"100"}>100</SelectItem>
+            </Select>
           </div>
-          <div className="flex justify-end w-full py-3 bg-first-300"></div>
           {(view === "grid" || view === "list") && (
             <MobileView
               deletePopover={DeletePopover}
+              openEditModal={(employee) => {
+                setSelectedEmployee(employee);
+                modalAdd.onOpen();
+              }}
               layout={view as "grid" | "list"}
             />
           )}

@@ -311,7 +311,8 @@ const ListClients = () => {
               <Column
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
-                field="esContribuyente"
+                // field="esContribuyente"
+                body={(item) => (item.esContribuyente ? "Si" : "No")}
                 header="Contribuyente"
               />
               <Column
