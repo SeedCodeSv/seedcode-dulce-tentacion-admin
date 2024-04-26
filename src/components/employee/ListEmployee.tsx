@@ -1,9 +1,4 @@
-import {
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useEmployeeStore } from "../../store/employee.store";
 import {
   Button,
@@ -22,6 +17,9 @@ import {
   CreditCard,
   List,
   Edit,
+  Search,
+  Phone,
+  Truck,
 } from "lucide-react";
 import { Employee } from "../../types/employees.types";
 import AddButton from "../global/AddButton";
@@ -47,242 +45,264 @@ function ListEmployee() {
   const modalAdd = useDisclosure();
   const [selectedEmployee, setSelectedEmployee] = useState<Employee>();
 
-  // const changePage = (page: number) => {
-  //   getEmployeesPaginated(page, limit, fullName, branch, phone);
-  // };
+  const changePage = () => {
+    getEmployeesPaginated(1, limit, fullName, branch, phone);
+  };
   const style = {
     backgroundColor: theme.colors.dark,
     color: theme.colors.primary,
   };
-  useEffect(() => {
-    getEmployeesPaginated(1, limit, fullName, branch, phone);
-  }, [limit, fullName, branch, phone]);
+  // useEffect(() => {
+  //   getEmployeesPaginated(1, limit, fullName, branch, phone);
+  // }, [limit, fullName, branch, phone]);
 
   return (
     <>
-    <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
-      <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
-        <div className="grid items-end grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:mt-4">
-          <Input
-            classNames={{
-              base: "w-full bg-white",
-              inputWrapper: "border-1 h-10",
-            }}
-            placeholder="Buscar por nombre..."
-            size="sm"
-            startContent={<SearchIcon size={20} className="text-default-300" />}
-            variant="bordered"
-            name="searchName"
-            id="searchName"
-            value={fullName}
-            autoComplete="search"
-            onChange={(e) => setFullName(e.target.value)}
-            isClearable
-            onClear={() => setFullName("")}
-          />
-          <Input
-            classNames={{
-              base: "w-full bg-white",
-              inputWrapper: "border-1 h-10",
-            }}
-            placeholder="Buscar por teléfono..."
-            size="sm"
-            startContent={<SearchIcon size={20} className="text-default-300" />}
-            variant="bordered"
-            name="searchPhone"
-            value={phone}
-            id="searchPhone"
-            onChange={(e) => setPhone(e.target.value)}
-            isClearable
-            onClear={() => setPhone("")}
-          />
-          <Input
-            classNames={{
-              base: "w-full bg-white",
-              inputWrapper: "border-1 h-10",
-            }}
-            placeholder="Buscar por sucursal..."
-            size="sm"
-            startContent={<SearchIcon size={20} className="text-default-300" />}
-            variant="bordered"
-            name="searchAddress"
-            id="searchAddress"
-            value={branch}
-            autoComplete="search"
-            onChange={(e) => setBranch(e.target.value)}
-            isClearable
-            onClear={() => setBranch("")}
-          />
-          <div className="flex items-end justify-between gap-10 mt lg:justify-end">
-            <ButtonGroup>
-              <Button
-                size="lg"
-                isIconOnly
-                color="secondary"
-                style={{
-                  backgroundColor:
-                    view === "table" ? theme.colors.third : "#e5e5e5",
-                  color: view === "table" ? theme.colors.primary : "#3e3e3e",
+      <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
+        <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
+          <div className="grid items-end grid-cols-3 gap-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 2xl:mt-4 mb-7">
+            <Input
+              classNames={{
+                label: "font-semibold text-gray-700",
+                inputWrapper: "pr-0",
+              }}
+              className="w-full xl:w-96"
+              placeholder="Buscar por nombre..."
+              size="lg"
+              startContent={<Search />}
+              variant="bordered"
+              name="searchName"
+              id="searchName"
+              value={fullName}
+              autoComplete="search"
+              onChange={(e) => setFullName(e.target.value)}
+              isClearable
+              onClear={() => setFullName("")}
+            />
+            <Input
+              classNames={{
+                label: "font-semibold text-gray-700",
+                inputWrapper: "pr-0",
+              }}
+              placeholder="Buscar por teléfono..."
+              size="lg"
+              startContent={<Phone size={20} />}
+              className="w-full xl:w-96"
+              variant="bordered"
+              name="searchPhone"
+              value={phone}
+              id="searchPhone"
+              onChange={(e) => setPhone(e.target.value)}
+              isClearable
+              onClear={() => setPhone("")}
+            />
+            <div className="flex items-end justify-between gap-10 mt lg:justify-end">
+              <ButtonGroup>
+                <Button
+                  size="lg"
+                  isIconOnly
+                  color="secondary"
+                  style={{
+                    backgroundColor:
+                      view === "table" ? theme.colors.third : "#e5e5e5",
+                    color: view === "table" ? theme.colors.primary : "#3e3e3e",
+                  }}
+                  onClick={() => setView("table")}
+                >
+                  <ITable />
+                </Button>
+                <Button
+                  size="lg"
+                  isIconOnly
+                  color="default"
+                  style={{
+                    backgroundColor:
+                      view === "grid" ? theme.colors.third : "#e5e5e5",
+                    color: view === "grid" ? theme.colors.primary : "#3e3e3e",
+                  }}
+                  onClick={() => setView("grid")}
+                >
+                  <CreditCard />
+                </Button>
+                <Button
+                  size="lg"
+                  isIconOnly
+                  color="default"
+                  style={{
+                    backgroundColor:
+                      view === "list" ? theme.colors.third : "#e5e5e5",
+                    color: view === "list" ? theme.colors.primary : "#3e3e3e",
+                  }}
+                  onClick={() => setView("list")}
+                >
+                  <List />
+                </Button>
+              </ButtonGroup>
+              <AddButton
+                onClick={() => {
+                  modalAdd.onOpen();
+                  setSelectedEmployee(undefined);
                 }}
-                onClick={() => setView("table")}
-              >
-                <ITable />
-              </Button>
-              <Button
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-3 gap-5 items-end">
+            <Input
+              classNames={{
+                label: "font-semibold text-gray-700",
+                inputWrapper: "pr-0",
+              }}
+              placeholder="Buscar por sucursal..."
+              size="lg"
+              startContent={<Truck size={20} />}
+              className="w-full xl:w-96"
+              variant="bordered"
+              name="searchAddress"
+              id="searchAddress"
+              value={branch}
+              autoComplete="search"
+              onChange={(e) => setBranch(e.target.value)}
+              isClearable
+              onClear={() => setBranch("")}
+            />
+            <Button
+              style={{
+                backgroundColor: theme.colors.secondary,
+                color: theme.colors.primary,
+              }}
+              className="w-full xl:w-72 "
+              color="primary"
+              size="lg"
+              onClick={() => changePage()}
+            >
+              Buscar
+            </Button>
+            <div className="flex items-center justify-end w-full">
+              <Select
+              className="w-full xl:w-72 "
+              variant="bordered"
                 size="lg"
-                isIconOnly
-                color="default"
-                style={{
-                  backgroundColor:
-                    view === "grid" ? theme.colors.third : "#e5e5e5",
-                  color: view === "grid" ? theme.colors.primary : "#3e3e3e",
+                label="Mostrar"
+                labelPlacement="outside"
+                classNames={{
+                  label: "font-semibold",
                 }}
-                onClick={() => setView("grid")}
-              >
-                <CreditCard />
-              </Button>
-              <Button
-                size="lg"
-                isIconOnly
-                color="default"
-                style={{
-                  backgroundColor:
-                    view === "list" ? theme.colors.third : "#e5e5e5",
-                  color: view === "list" ? theme.colors.primary : "#3e3e3e",
+                value={limit}
+                onChange={(e) => {
+                  setLimit(
+                    Number(e.target.value !== "" ? e.target.value : "5")
+                  );
                 }}
-                onClick={() => setView("list")}
               >
-                <List />
-              </Button>
-            </ButtonGroup>
-            <AddButton onClick={() => {modalAdd.onOpen()
-              setSelectedEmployee(undefined)
-            }} />
+                <SelectItem key={"5"}>5</SelectItem>
+                <SelectItem key={"10"}>10</SelectItem>
+                <SelectItem key={"20"}>20</SelectItem>
+                <SelectItem key={"30"}>30</SelectItem>
+                <SelectItem key={"40"}>40</SelectItem>
+                <SelectItem key={"50"}>50</SelectItem>
+                <SelectItem key={"100"}>100</SelectItem>
+              </Select>
+            </div>
+          </div>
+          <div className="flex justify-end w-full py-3 bg-first-300"></div>
+          {(view === "grid" || view === "list") && (
+            <MobileView
+              deletePopover={DeletePopover}
+              layout={view as "grid" | "list"}
+            />
+          )}
+          {view === "table" && (
+            <DataTable
+              className="shadow"
+              emptyMessage="No se encontraron resultados"
+              value={employee_paginated.employees}
+              tableStyle={{ minWidth: "50rem" }}
+            >
+              <Column
+                headerClassName="text-sm font-semibold"
+                headerStyle={{ ...style, borderTopLeftRadius: "10px" }}
+                field="id"
+                header="No."
+              />
+              <Column
+                headerClassName="text-sm font-semibold"
+                headerStyle={style}
+                field="fullName"
+                header="Nombre"
+              />
+              <Column
+                headerClassName="text-sm font-semibold"
+                headerStyle={style}
+                field="phone"
+                header="Teléfono"
+              />
+              <Column
+                headerClassName="text-sm font-semibold"
+                headerStyle={style}
+                field="branch.name"
+                header="Sucursal"
+              />
+              <Column
+                headerStyle={{ ...style, borderTopRightRadius: "10px" }}
+                header="Acciones"
+                body={(item) => (
+                  <div className="flex w-full gap-5">
+                    <DeletePopover employee={item} />
+                    <Button
+                      size="lg"
+                      onClick={() => {
+                        setSelectedEmployee(item);
+                        modalAdd.onOpen();
+                      }}
+                      isIconOnly
+                      style={{
+                        backgroundColor: theme.colors.dark,
+                      }}
+                    >
+                      <Edit color={theme.colors.primary} size={20} />
+                    </Button>
+                  </div>
+                )}
+              />
+            </DataTable>
+          )}
+          <div className="hidden w-full mt-5 md:flex">
+            <Pagination
+              previousPage={employee_paginated.prevPag}
+              nextPage={employee_paginated.nextPag}
+              currentPage={employee_paginated.currentPag}
+              totalPages={employee_paginated.totalPag}
+              onPageChange={(page) => {
+                getEmployeesPaginated(page, limit, fullName, branch, phone);
+              }}
+            />
+          </div>
+          <div className="flex w-full mt-5 md:hidden">
+            <Paginator
+              pt={paginator_styles(1)}
+              className="flex justify-between w-full"
+              first={employee_paginated.currentPag}
+              rows={limit}
+              totalRecords={employee_paginated.total}
+              template={{
+                layout: "PrevPageLink CurrentPageReport NextPageLink",
+              }}
+              currentPageReportTemplate="{currentPage} de {totalPages}"
+            />
           </div>
         </div>
-        <div className="flex justify-end w-full">
-          <Select
-            className="w-44"
-            variant="bordered"
-            size="lg"
-            label="Mostrar"
-            labelPlacement="outside"
-            classNames={{
-              label: "font-semibold",
-            }}
-            value={limit}
-            onChange={(e) => {
-              setLimit(Number(e.target.value !== "" ? e.target.value : "5"));
-            }}
-          >
-            <SelectItem key={"5"}>5</SelectItem>
-            <SelectItem key={"10"}>10</SelectItem>
-            <SelectItem key={"20"}>20</SelectItem>
-            <SelectItem key={"30"}>30</SelectItem>
-            <SelectItem key={"40"}>40</SelectItem>
-            <SelectItem key={"50"}>50</SelectItem>
-            <SelectItem key={"100"}>100</SelectItem>
-          </Select>
-        </div>
-        <div className="flex justify-end w-full py-3 bg-first-300"></div>
-        {(view === "grid" || view === "list") && (
-        <MobileView
-          deletePopover={DeletePopover}
-          layout={view as "grid" | "list"}
-        />
-      )}
-        {view === "table" && (
-          <DataTable
-            className="shadow"
-            emptyMessage="No se encontraron resultados"
-            value={employee_paginated.employees}
-            tableStyle={{ minWidth: "50rem" }}
-          >
-            <Column
-              headerClassName="text-sm font-semibold"
-              headerStyle={{ ...style, borderTopLeftRadius: "10px" }}
-              field="id"
-              header="No."
-            />
-            <Column
-              headerClassName="text-sm font-semibold"
-              headerStyle={style}
-              field="fullName"
-              header="Nombre"
-            />
-            <Column
-              headerClassName="text-sm font-semibold"
-              headerStyle={style}
-              field="phone"
-              header="Teléfono"
-            />
-            <Column
-              headerClassName="text-sm font-semibold"
-              headerStyle={style}
-              field="branch.name"
-              header="Sucursal"
-            />
-            <Column
-              headerStyle={{ ...style, borderTopRightRadius: "10px" }}
-              header="Acciones"
-              body={(item) => (
-                <div className="flex w-full gap-5">
-                  <DeletePopover employee={item} />
-                  <Button
-                  size="lg"
-                  onClick={() => {
-                    setSelectedEmployee(item);
-                    modalAdd.onOpen();
-                  }}
-                  isIconOnly
-                  style={{
-                    backgroundColor: theme.colors.danger,
-                  }}
-                >
-                  <Edit color={theme.colors.primary} size={20} />
-                </Button>
-                </div>
-              )}
-            />
-          </DataTable>
-        )}
-        <div className="hidden w-full mt-5 md:flex">
-          <Pagination
-            previousPage={employee_paginated.prevPag}
-            nextPage={employee_paginated.nextPag}
-            currentPage={employee_paginated.currentPag}
-            totalPages={employee_paginated.totalPag}
-            onPageChange={(page) => {
-              getEmployeesPaginated(page, limit, fullName, branch, phone);
-            }}
-          />
-        </div>
-        <div className="flex w-full mt-5 md:hidden">
-          <Paginator
-            pt={paginator_styles(1)}
-            className="flex justify-between w-full"
-            first={employee_paginated.currentPag}
-            rows={limit}
-            totalRecords={employee_paginated.total}
-            template={{
-              layout: "PrevPageLink CurrentPageReport NextPageLink",
-            }}
-            currentPageReportTemplate="{currentPage} de {totalPages}"
-          />
-        </div>
       </div>
-    </div>
       <ModalGlobal
-      isOpen={modalAdd.isOpen}
-      onClose={modalAdd.onClose}
-      title={selectedEmployee ? "Editar Empleado" : "Agregar Empleado"}
-      size="lg"
-    >
-      <AddEmployee
-        closeModal={modalAdd.onClose}
-        employee={selectedEmployee}
-      />
-    </ModalGlobal>
+        isOpen={modalAdd.isOpen}
+        onClose={modalAdd.onClose}
+        title={selectedEmployee ? "Editar Empleado" : "Agregar Empleado"}
+        size="lg"
+      >
+        <AddEmployee
+          closeModal={modalAdd.onClose}
+          employee={selectedEmployee}
+        />
+      </ModalGlobal>
     </>
   );
 }

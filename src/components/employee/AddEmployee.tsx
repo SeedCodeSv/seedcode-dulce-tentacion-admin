@@ -32,7 +32,7 @@ function AddEmployee(props: Props) {
   const { patchEmployee, postEmployee } = useEmployeeStore();
 
   useEffect(() => {
-    getBranchesList(1);
+    getBranchesList();
   }, []);
 
   const validationSchema = yup.object().shape({

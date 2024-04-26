@@ -31,8 +31,9 @@ export const get_branches_pagination = (
   );
 };
 
-export const get_branches_list = (id: number) => {
-  return axios.get<IGetBranchesList>(API_URL + `/branches/list-by-transmitter/${id}`);
+export const get_branches_list = () => {
+  const user = get_user()
+  return axios.get<IGetBranchesList>(API_URL + `/branches/list-by-transmitter/${user?.employee.branch.transmitterId}`);
 };
 
 export const save_branch = (payload: IBranchPayload) => {

@@ -15,7 +15,7 @@ export const get_customers_pagination = (
   const user = get_user()
   return axios.get<IGetCustomerPagination>(
     API_URL +
-    "/customers/list-paginated/" + user?.transmitterId + "?page=" +
+    `/customers/list-paginated/${user?.employee.branch.transmitterId}` + "?page=" +
     page +
     "&limit=" +
     limit +
