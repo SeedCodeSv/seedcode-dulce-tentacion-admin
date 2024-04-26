@@ -80,7 +80,7 @@ function AddEmployee(props: Props) {
         handleSubmit,
       }) => (
         <>
-          <div className="flex flex-col">
+          <div className="flex flex-col mt-4">
             <Input
               name="name"
               labelPlacement="outside"
@@ -102,7 +102,7 @@ function AddEmployee(props: Props) {
               </>
             )}
           </div>
-          <div className="flex flex-col">
+          <div className="flex flex-col mt-4">
             <Input
               name="name"
               labelPlacement="outside"
@@ -124,7 +124,7 @@ function AddEmployee(props: Props) {
               </>
             )}
           </div>
-          <div>
+          <div className="mt-4">
             <Autocomplete
               onSelectionChange={(key) => {
                 if (key) {

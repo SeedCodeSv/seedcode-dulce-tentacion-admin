@@ -40,11 +40,8 @@ export const get_branches_pagination = (
 };
 
 export const get_branches_list = () => {
-  return axios.get<IGetBranchesList>(API_URL + "/branches", {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  });
+  const user = get_user()
+  return axios.get<IGetBranchesList>(API_URL + `/branches/list-by-transmitter/${user?.employee.branch.transmitterId}`);
 };
 
 export const save_branch = (payload: IBranchPayload) => {

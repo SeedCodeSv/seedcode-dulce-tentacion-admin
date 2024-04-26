@@ -4,48 +4,46 @@ import {
   CardHeader,
   CardBody,
   Input,
-  Pagination,
   Popover,
   PopoverContent,
   PopoverTrigger,
-  Table,
-  TableBody,
-  TableCell,
-  TableColumn,
-  TableHeader,
-  TableRow,
   useDisclosure,
+  Select,
+  SelectItem,
 } from "@nextui-org/react";
 import { useCustomerStore } from "../../store/customers.store";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
 import {
   Dispatch,
   SetStateAction,
   useContext,
   useEffect,
-  useMemo,
   useState,
 } from "react";
 import {
-  ChevronLeft,
-  ChevronRight,
   EditIcon,
   MailIcon,
   Phone,
   PlusIcon,
   Repeat,
-  SearchIcon,
   TrashIcon,
+  Search,
+  List,
+  CreditCard,
+  Table as ITable,
 } from "lucide-react";
 import ModalGlobal from "../global/ModalGlobal";
 import AddClientNormal from "./AddClientNormal";
 import AddClientContributor from "./AddClientContributor";
+import { ButtonGroup } from "@nextui-org/react";
 import {
   Customer,
   CustomerDirection,
   PayloadCustomer,
 } from "../../types/customers.types";
 import { ThemeContext } from "../../hooks/useTheme";
-
+import MobileView from "./MobileView"
 const ListClients = () => {
   const { theme } = useContext(ThemeContext);
 
@@ -53,86 +51,41 @@ const ListClients = () => {
   const [limit, setLimit] = useState(8);
   const [search, setSearch] = useState("");
   const [email, setEmail] = useState("");
-
+  const style = {
+    backgroundColor: theme.colors.dark,
+    color: theme.colors.primary,
+  };
   // const [selectedCustomer, setSelectedCustomer] = useState<Customer>();
   const [typeClient, setTypeClient] = useState("normal");
-
+  // const handleSearch = (searchParam: string | undefined) => {
+  //   getCustomersPagination(
+  //     1,
+  //     limit,
+  //     searchParam ?? search,
+  //     searchParam ?? email
+  //   );
+  //   useEffect(() => {
+  //     if (search !== "") {
+  //       getCustomersPagination(1, limit, search, email);
+  //     } else {
+  //       getCustomersPagination(1, limit, "", email);
+  //     }
+  //   }, [search, limit, email]);
+  // }
   useEffect(() => {
-    if (search !== "") {
-      getCustomersPagination(1, limit, search, email);
-    } else {
-      getCustomersPagination(1, limit, "", email);
-    }
-  }, [search, limit, email]);
+    getCustomersPagination(1, limit, search, email);
+  }, []);
+  const [view, setView] = useState<"table" | "grid" | "list">("table");
 
-  const columns = [
-    {
-      name: "NO.",
-      key: "id",
-      sortable: true,
-    },
-    {
-      name: "NOMBRE",
-      key: "name",
-      sortable: true,
-    },
-    {
-      name: "TELÉFONO",
-      key: "phone",
-      sortable: false,
-    },
-    {
-      name: "CORREO",
-      key: "email",
-      sortable: false,
-    },
-    {
-      name: "CONTR.",
-      key: "tribute",
-      sortable: false,
-    },
-    {
-      name: "ACCIONES",
-      key: "actions",
-      sortable: false,
-    },
-  ];
-
-  const changePage = (page: number) => {
-    getCustomersPagination(page, limit, search, email);
+  const handleSearch = (searchParam: string | undefined) => {
+    getCustomersPagination(1, limit, searchParam ?? search, searchParam ?? email);
   };
 
   const modalAdd = useDisclosure();
 
-  const bottomContent = useMemo(() => {
-    if (customer_pagination.total === 0) {
-      return <div>No se encontraron resultados</div>;
-    }
-    return (
-      <div className="mt-10 mb-20 lg:mb-0">
-        <Pagination
-          total={customer_pagination.totalPag}
-          initialPage={customer_pagination.currentPag}
-          page={customer_pagination.currentPag}
-          showControls
-          showShadow
-          boundaries={2}
-          color="primary"
-          onChange={(page) => changePage(page)}
-          classNames={{
-            cursor: "cursor-pagination",
-            next: "cursor-pagination",
-            prev: "cursor-pagination",
-          }}
-        />
-      </div>
-    );
-  }, [customer_pagination, customer_pagination.customers]);
-
   const [selectedCustomer, setSelectedCustomer] = useState<PayloadCustomer>();
-  const [selectedCustomerDirection, setSelectedCustomerDirection] = useState<
-    CustomerDirection
-  >();
+  const [selectedCustomerDirection, setSelectedCustomerDirection] =
+    useState<CustomerDirection>();
   const [selectedId, setSelectedId] = useState<number>(0);
 
   const handleChangeCustomer = (customer: Customer, type = "edit") => {
@@ -184,10 +137,220 @@ const ListClients = () => {
   };
 
   return (
-    <div className="w-full h-full p-5 bg-gray-50">
-      <style>{` .cursor-pagination { background: ${theme.colors.dark}; color: ${theme.colors.primary} } `}</style>
-      <div className="hidden w-full p-5 bg-white rounded lg:flex">
-        <Table
+    <>
+      <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
+        <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
+          <div className="flex flex-col justify-between w-full gap-5 mb-5 lg:mb-10 lg:flex-row lg:gap-0">
+            <div className="flex items-end gap-3">
+              <Input
+                startContent={<Search />}
+                className="w-full xl:w-96"
+                variant="bordered"
+                labelPlacement="outside"
+                label="Buscar"
+                classNames={{
+                  label: "font-semibold text-gray-700",
+                  inputWrapper: "pr-0",
+                }}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                size="lg"
+                placeholder="Escribe para buscar..."
+                isClearable
+                onClear={() => {
+                  // handleSearch("");
+                  setSearch("");
+                }}
+              />
+              <Input
+                startContent={<Search />}
+                className="w-full xl:w-96"
+                variant="bordered"
+                labelPlacement="outside"
+                label="Buscar"
+                classNames={{
+                  label: "font-semibold text-gray-700",
+                  inputWrapper: "pr-0",
+                }}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                size="lg"
+                placeholder="Escribe para buscar..."
+                isClearable
+                onClear={() => {
+                  // handleSearch("");
+                  setEmail("");
+                }}
+              />
+              <Button
+                style={{
+                  backgroundColor: theme.colors.secondary,
+                  color: theme.colors.primary,
+                }}
+                className="font-semibold"
+                color="primary"
+                size="lg"
+                onClick={() => handleSearch(undefined)}
+              >
+                Buscar
+              </Button>
+            </div>
+            <div className="flex items-end justify-between gap-10 mt lg:justify-end">
+              <ButtonGroup>
+                <Button
+                  size="lg"
+                  isIconOnly
+                  color="secondary"
+                  style={{
+                    backgroundColor:
+                      view === "table" ? theme.colors.third : "#e5e5e5",
+                    color: view === "table" ? theme.colors.primary : "#3e3e3e",
+                  }}
+                  onClick={() => setView("table")}
+                >
+                  <ITable />
+                </Button>
+                <Button
+                  size="lg"
+                  isIconOnly
+                  color="default"
+                  style={{
+                    backgroundColor:
+                      view === "grid" ? theme.colors.third : "#e5e5e5",
+                    color: view === "grid" ? theme.colors.primary : "#3e3e3e",
+                  }}
+                  onClick={() => setView("grid")}
+                >
+                  <CreditCard />
+                </Button>
+                <Button
+                  size="lg"
+                  isIconOnly
+                  color="default"
+                  style={{
+                    backgroundColor:
+                      view === "list" ? theme.colors.third : "#e5e5e5",
+                    color: view === "list" ? theme.colors.primary : "#3e3e3e",
+                  }}
+                  onClick={() => setView("list")}
+                >
+                  <List />
+                </Button>
+              </ButtonGroup>
+              <div className="flex justify-end w-full">
+                <BottomAdd
+                  setTypeClient={setTypeClient}
+                  openModal={modalAdd.onOpen}
+                />
+              </div>
+            </div>
+          </div>
+          <div className="flex justify-end w-full">
+            <Select
+              className="w-44"
+              variant="bordered"
+              size="lg"
+              label="Mostrar"
+              labelPlacement="outside"
+              classNames={{
+                label: "font-semibold",
+              }}
+              value={limit}
+              onChange={(e) => {
+                setLimit(Number(e.target.value !== "" ? e.target.value : "5"));
+              }}
+            >
+              <SelectItem key={"5"}>5</SelectItem>
+              <SelectItem key={"10"}>10</SelectItem>
+              <SelectItem key={"20"}>20</SelectItem>
+              <SelectItem key={"30"}>30</SelectItem>
+              <SelectItem key={"40"}>40</SelectItem>
+              <SelectItem key={"50"}>50</SelectItem>
+              <SelectItem key={"100"}>100</SelectItem>
+            </Select>
+          </div>
+          {(view === "grid" || view === "list") && (
+            <MobileView
+              deletePopover={DeletePopover}
+              layout={view as "grid" | "list"}
+            />
+          )}
+          <div className="flex justify-end w-full py-3 bg-first-300"></div>
+
+          {view === "table" && (
+            <DataTable
+              className="shadow"
+              emptyMessage="No se encontraron resultados"
+              value={customer_pagination.customers}
+              tableStyle={{ minWidth: "50rem" }}
+            >
+              <Column
+                headerClassName="text-sm font-semibold"
+                headerStyle={{ ...style, borderTopLeftRadius: "10px" }}
+                field="id"
+                header="No."
+              />
+              <Column
+                headerClassName="text-sm font-semibold"
+                headerStyle={style}
+                field="nombre"
+                header="Nombre"
+              />
+              <Column
+                headerClassName="text-sm font-semibold"
+                headerStyle={style}
+                field="telefono"
+                header="Teléfono"
+              />
+              <Column
+                headerClassName="text-sm font-semibold"
+                headerStyle={style}
+                field="correo"
+                header="Correo"
+              />
+              <Column
+                headerClassName="text-sm font-semibold"
+                headerStyle={style}
+                // field="esContribuyente"
+                body={(item) => (item.esContribuyente ? "Si" : "No")}
+                header="Contribuyente"
+              />
+              <Column
+                headerStyle={{ ...style, borderTopRightRadius: "10px" }}
+                header="Acciones"
+                body={(item) => (
+                  <div className="flex w-full gap-5">
+                    <Button
+                      onClick={() => handleChangeCustomer(item, "edit")}
+                      isIconOnly
+                      style={{
+                        backgroundColor: theme.colors.secondary,
+                      }}
+                    >
+                      <EditIcon
+                        style={{ color: theme.colors.primary }}
+                        size={20}
+                      />
+                    </Button>
+                    <Button
+                      onClick={() => handleChangeCustomer(item, "change")}
+                      isIconOnly
+                      style={{
+                        backgroundColor: theme.colors.third,
+                      }}
+                    >
+                      <Repeat
+                        style={{ color: theme.colors.primary }}
+                        size={20}
+                      />
+                    </Button>
+                    <DeletePopover customers={item} />
+                  </div>
+                )}
+              />
+            </DataTable>
+          )}
+          {/* <Table
           isHeaderSticky
           bottomContentPlacement="outside"
           topContentPlacement="outside"
@@ -324,142 +487,144 @@ const ListClients = () => {
               </TableRow>
             )}
           </TableBody>
-        </Table>
-      </div>
-      <div className="grid w-full h-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:hidden">
-        <div className="w-full col-span-1 sm:col-span-2 md:col-span-3">
-          <div className="flex flex-col w-full gap-4">
-            <div className="grid items-end grid-cols-1 gap-3 sm:grid-cols-3 md:flex-row 2xl:mt-4">
-              <Input
-                aria-label="input-search"
-                classNames={{
-                  base: "w-full bg-white",
-                  inputWrapper: "border-1 h-10",
-                }}
-                placeholder="Buscar por nombre..."
-                size="sm"
-                startContent={
-                  <SearchIcon size={20} className="text-default-300" />
-                }
-                variant="bordered"
-                onChange={(e) => setSearch(e.target.value)}
-              />
-              <Input
-                aria-label="input-search"
-                classNames={{
-                  base: "w-full bg-white",
-                  inputWrapper: "border-1 h-10",
-                }}
-                placeholder="Buscar por correo..."
-                size="sm"
-                startContent={
-                  <MailIcon size={20} className="text-default-300" />
-                }
-                variant="bordered"
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <div className="flex justify-end w-full">
-                <BottomAdd
-                  setTypeClient={setTypeClient}
-                  openModal={modalAdd.onOpen}
+        </Table> */}
+        </div>
+        {/* <div className="grid w-full h-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:hidden">
+          <div className="w-full col-span-1 sm:col-span-2 md:col-span-3">
+            <div className="flex flex-col w-full gap-4">
+              <div className="grid items-end grid-cols-1 gap-3 sm:grid-cols-3 md:flex-row 2xl:mt-4">
+                <Input
+                  aria-label="input-search"
+                  classNames={{
+                    base: "w-full bg-white",
+                    inputWrapper: "border-1 h-10",
+                  }}
+                  placeholder="Buscar por nombre..."
+                  size="sm"
+                  startContent={
+                    <SearchIcon size={20} className="text-default-300" />
+                  }
+                  variant="bordered"
+                  onChange={(e) => setSearch(e.target.value)}
                 />
+                <Input
+                  aria-label="input-search"
+                  classNames={{
+                    base: "w-full bg-white",
+                    inputWrapper: "border-1 h-10",
+                  }}
+                  placeholder="Buscar por correo..."
+                  size="sm"
+                  startContent={
+                    <MailIcon size={20} className="text-default-300" />
+                  }
+                  variant="bordered"
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                <div className="flex justify-end w-full">
+                  <BottomAdd
+                    setTypeClient={setTypeClient}
+                    openModal={modalAdd.onOpen}
+                  />
+                </div>
+              </div>
+              <div className="flex items-center justify-between 2xl:mt-6 2xl:mb-6">
+                <span className="text-xs sm:text-small text-default-400 ">
+                  Total {customer_pagination.customers.length} clientes
+                </span>
+                <label className="flex items-center text-xs text-default-400 sm:text-small">
+                  Productos por pagina
+                  <select
+                    defaultValue={limit.toString()}
+                    className="bg-transparent outline-none text-default-400 text-small"
+                    onChange={(e) => {
+                      setLimit(Number(e.target.value));
+                    }}
+                  >
+                    <option value="5">5</option>
+                    <option value="8">8</option>
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                  </select>
+                </label>
               </div>
             </div>
-            <div className="flex items-center justify-between 2xl:mt-6 2xl:mb-6">
-              <span className="text-xs sm:text-small text-default-400 ">
-                Total {customer_pagination.customers.length} clientes
-              </span>
-              <label className="flex items-center text-xs text-default-400 sm:text-small">
-                Productos por pagina
-                <select
-                  defaultValue={limit.toString()}
-                  className="bg-transparent outline-none text-default-400 text-small"
-                  onChange={(e) => {
-                    setLimit(Number(e.target.value));
-                  }}
-                >
-                  <option value="5">5</option>
-                  <option value="8">8</option>
-                  <option value="10">10</option>
-                  <option value="15">15</option>
-                </select>
-              </label>
+          </div>
+          <div className="grid w-full grid-cols-1 col-span-3 gap-5 my-3 sm:grid-cols-2 md:grid-cols-3">
+            {customer_pagination.customers.map((customer) => (
+              <CardItem
+                key={customer.id}
+                customer={customer}
+                handleChange={handleChangeCustomer}
+              />
+            ))}
+          </div>
+          <div className="col-span-1 mb-10 sm:col-span-2 md:col-span-3 lg:mb-0">
+            <div className="hidden sm:flex">{bottomContent}</div>
+            <div className="flex items-center justify-between pb-10 sm:hidden">
+              <Button
+                isIconOnly
+                className="bg-coffee-brown"
+                disabled={customer_pagination.currentPag === 1}
+                onClick={() => changePage(customer_pagination.currentPag - 1)}
+              >
+                <ChevronLeft color="white" />
+              </Button>
+              <p className="text-sm font-semibold text-gray-600">
+                {customer_pagination.currentPag} de{" "}
+                {customer_pagination.totalPag}
+              </p>
+              <Button
+                isIconOnly
+                className="bg-coffee-brown"
+                disabled={
+                  customer_pagination.currentPag ===
+                  customer_pagination.totalPag
+                }
+                onClick={() => changePage(customer_pagination.currentPag + 1)}
+              >
+                <ChevronRight color="white" />
+              </Button>
             </div>
           </div>
-        </div>
-        <div className="grid w-full grid-cols-1 col-span-3 gap-5 my-3 sm:grid-cols-2 md:grid-cols-3">
-          {customer_pagination.customers.map((customer) => (
-            <CardItem
-              key={customer.id}
-              customer={customer}
-              handleChange={handleChangeCustomer}
-            />
-          ))}
-        </div>
-        <div className="col-span-1 mb-10 sm:col-span-2 md:col-span-3 lg:mb-0">
-          <div className="hidden sm:flex">{bottomContent}</div>
-          <div className="flex items-center justify-between pb-10 sm:hidden">
-            <Button
-              isIconOnly
-              className="bg-coffee-brown"
-              disabled={customer_pagination.currentPag === 1}
-              onClick={() => changePage(customer_pagination.currentPag - 1)}
-            >
-              <ChevronLeft color="white" />
-            </Button>
-            <p className="text-sm font-semibold text-gray-600">
-              {customer_pagination.currentPag} de {customer_pagination.totalPag}
-            </p>
-            <Button
-              isIconOnly
-              className="bg-coffee-brown"
-              disabled={
-                customer_pagination.currentPag === customer_pagination.totalPag
-              }
-              onClick={() => changePage(customer_pagination.currentPag + 1)}
-            >
-              <ChevronRight color="white" />
-            </Button>
-          </div>
-        </div>
+        </div> */}
+        <ModalGlobal
+          title="Nuevo cliente"
+          isOpen={modalAdd.isOpen}
+          onClose={modalAdd.onClose}
+          size={typeClient === "contribuyente" ? "2xl" : "lg"}
+          isDismissable={false}
+        >
+          <>
+            {typeClient === "normal" && (
+              <AddClientNormal
+                closeModal={modalAdd.onClose}
+                customer={selectedCustomer}
+                customer_direction={selectedCustomerDirection}
+                id={selectedId}
+              />
+            )}
+            {typeClient === "contribuyente" && (
+              <AddClientContributor
+                closeModal={modalAdd.onClose}
+                customer={selectedCustomer}
+                customer_direction={selectedCustomerDirection}
+                id={selectedId}
+              />
+            )}
+          </>
+        </ModalGlobal>
       </div>
-      <ModalGlobal
-        title="Nuevo cliente"
-        isOpen={modalAdd.isOpen}
-        onClose={modalAdd.onClose}
-        size={typeClient === "contribuyente" ? "2xl" : "lg"}
-        isDismissable={false}
-      >
-        <>
-          {typeClient === "normal" && (
-            <AddClientNormal
-              closeModal={modalAdd.onClose}
-              customer={selectedCustomer}
-              customer_direction={selectedCustomerDirection}
-              id={selectedId}
-            />
-          )}
-          {typeClient === "contribuyente" && (
-            <AddClientContributor
-              closeModal={modalAdd.onClose}
-              customer={selectedCustomer}
-              customer_direction={selectedCustomerDirection}
-              id={selectedId}
-            />
-          )}
-        </>
-      </ModalGlobal>
-    </div>
+    </>
   );
 };
-
 export default ListClients;
 
 interface PopProps {
-  customer: Customer;
+  customers: Customer;
 }
 
-export const DeletePopover = ({ customer }: PopProps) => {
+export const DeletePopover = ({ customers }: PopProps) => {
   const { theme } = useContext(ThemeContext);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -491,7 +656,7 @@ export const DeletePopover = ({ customer }: PopProps) => {
       <PopoverContent>
         <div className="w-full p-5">
           <p className="font-semibold text-gray-600">
-            Eliminar {customer.nombre}
+            Eliminar {customers.nombre}
           </p>
           <p className="mt-3 text-center text-gray-600 w-72">
             ¿Estas seguro de eliminar este registro?
@@ -499,7 +664,7 @@ export const DeletePopover = ({ customer }: PopProps) => {
           <div className="mt-4">
             <Button onClick={onClose}>No, cancelar</Button>
             <Button
-              onClick={() => handleDelete(customer.id)}
+              onClick={() => handleDelete(customers.id)}
               className="ml-5"
               style={{
                 backgroundColor: theme.colors.danger,
@@ -558,7 +723,7 @@ export const CardItem = ({ customer, handleChange }: CardProps) => {
           >
             <Repeat className="text-white" size={20} />
           </Button>
-          <DeletePopover customer={customer} />
+          <DeletePopover customers={customer} />
         </div>
       </CardHeader>
     </Card>
