@@ -6,6 +6,7 @@ import {
   save_branch,
   delete_branch,
   get_branches_list,
+  disable_branch,
 } from "../services/branches.service";
 import { messages } from "../utils/constants";
 import { toast } from "sonner";
@@ -24,6 +25,7 @@ export const useBranchesStore = create<IBranchStore>((set, get) => ({
   branch_list: [],
   limit: 5,
   loading: false,
+  active: 1 as 1 | 0,
   async getBranchesList() {
     return get_branches_list()
       .then(({ data }) => {
@@ -33,11 +35,25 @@ export const useBranchesStore = create<IBranchStore>((set, get) => ({
         set((state) => ({ ...state, branch_list: [] }));
       });
   },
+  async disableBranch(id, state) {
+    return disable_branch(id, state)
+      .then(({ data }) => {
+        get().getBranchesPaginated(1, get().limit, "", "", "", get().active);
+        toast.success(messages.success);
+        return data.ok;
+      })
+      .catch(() => {
+        toast.error(messages.error);
+        return false;
+      })
+  },
   saveBranchesPaginated: (data) => set({ branches_paginated: data }),
-  getBranchesPaginated: (page, limit, name, phone, address) => {
-    set({ loading: true, limit });
-    get_branches_pagination(page, limit, name, phone, address)
-      .then((branches) => set({ branches_paginated: branches.data, loading: false }))
+  getBranchesPaginated: (page, limit, name, phone, address, active = 1) => {
+    set({ loading: true, limit, active });
+    get_branches_pagination(page, limit, name, phone, address, active)
+      .then((branches) =>
+        set({ branches_paginated: branches.data, loading: false })
+      )
       .catch(() => {
         set({
           branches_paginated: {
@@ -55,31 +71,33 @@ export const useBranchesStore = create<IBranchStore>((set, get) => ({
       });
   },
   async postBranch(payload) {
-    return save_branch(payload).then((result) => {
-      get().getBranchesPaginated(1, get().limit, "", "", "");
-      toast.success(messages.success);
-      return result.data.ok
-    }).catch(() => {
-      toast.error(messages.error);
-      return false;
-    });
-
+    return save_branch(payload)
+      .then((result) => {
+        get().getBranchesPaginated(1, get().limit, "", "", "", get().active);
+        toast.success(messages.success);
+        return result.data.ok;
+      })
+      .catch(() => {
+        toast.error(messages.error);
+        return false;
+      });
   },
-  async patchBranch(paylad, id) {
-    try {
-      const res = await patch_branch(paylad, id);
-      get().getBranchesPaginated(1, get().limit, "", "", "");
-      toast.success(messages.success);
-      return res.data.ok;
-    } catch {
-      toast.error(messages.error);
-      return false;
-    }
+  async patchBranch(payload, id) {
+    return patch_branch(payload, id)
+      .then(({ data }) => {
+        get().getBranchesPaginated(1, get().limit, "", "", "", get().active);
+        toast.success(messages.success);
+        return data.ok;
+      })
+      .catch(() => {
+        toast.error(messages.error);
+        return false;
+      });
   },
   async deleteBranch(id) {
     try {
       const { data } = await delete_branch(id);
-      get().getBranchesPaginated(1, get().limit, "", "", "");
+      get().getBranchesPaginated(1, get().limit, "", "", "", get().active);
       toast.success(messages.success);
       return data.ok;
     } catch {

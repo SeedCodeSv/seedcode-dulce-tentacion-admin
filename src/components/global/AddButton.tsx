@@ -24,10 +24,12 @@ function AddButton(props: Props) {
         style={style}
         className="hidden font-semibold md:flex"
         size="lg"
+        type="button"
       >
         Agregar nuevo
       </Button>
       <Button
+        type="button"
         onClick={props.onClick}
         style={style}
         className="flex font-semibold md:hidden"

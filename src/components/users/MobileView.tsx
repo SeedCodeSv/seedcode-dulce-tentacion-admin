@@ -1,6 +1,6 @@
-import React, { useState, useContext, Dispatch, SetStateAction } from "react";
+import { useContext } from "react";
 import { Button } from "@nextui-org/react";
-import { DataView, DataViewLayoutOptions } from "primereact/dataview";
+import { DataView } from "primereact/dataview";
 import { useUsersStore } from "../../store/users.store";
 import { User } from "../../types/users.types";
 import { classNames } from "primereact/utils";

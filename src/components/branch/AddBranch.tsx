@@ -1,42 +1,51 @@
 import { Button, Input, Textarea } from "@nextui-org/react";
-import React from "react";
 import { global_styles } from "../../styles/global.styles";
 import * as yup from "yup";
 import { Formik } from "formik";
-import { IBranchForm } from "../../types/branches.types";
+import { Branches, IBranchForm } from "../../types/branches.types";
 import { useBranchesStore } from "../../store/branches.store";
 import { useAuthStore } from "../../store/auth.store";
 
 interface Props {
   closeModal: () => void;
+  branch?: Branches | undefined;
 }
 
 function AddBranch(props: Props) {
   const validationSchema = yup.object().shape({
     name: yup.string().required("El nombre es requerido"),
     address: yup.string().required("La dirección es requerida"),
-    phone: yup.string().required("El telefono es requerido"),
+    phone: yup.string().required("El teléfono es requerido"),
   });
 
   const { user } = useAuthStore();
 
-  const { postBranch } = useBranchesStore();
+  const { postBranch, patchBranch } = useBranchesStore();
 
   const handleSubmit = (values: IBranchForm) => {
-    postBranch({
-      ...values,
-      transmitterId: user?.employee.branch.transmitterId ?? 0,
-    }).then((res) => {
-      if (res) props.closeModal();
-    });
+    if (props.branch) {
+      patchBranch(
+        { ...values, transmitterId: user?.employee.branch.transmitterId ?? 0 },
+        props.branch.id
+      ).then((res) => {
+        if (res) props.closeModal();
+      });
+    } else {
+      postBranch({
+        ...values,
+        transmitterId: user?.employee.branch.transmitterId ?? 0,
+      }).then((res) => {
+        if (res) props.closeModal();
+      });
+    }
   };
 
   return (
     <Formik
       initialValues={{
-        name: "",
-        address: "",
-        phone: "",
+        name: props.branch?.name ?? "",
+        address: props.branch?.address ?? "",
+        phone: props.branch?.phone ?? "",
       }}
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
@@ -115,7 +124,7 @@ function AddBranch(props: Props) {
                 className="w-full font-semibold"
                 size="lg"
               >
-                Aplicar
+                {props.branch ? "Guardar cambios" : "Crear sucursal"}
               </Button>
             </div>
           </div>
