@@ -22,6 +22,8 @@ export const useBranchesStore = create<IBranchStore>((set, get) => ({
     ok: false,
   },
   branch_list: [],
+  limit: 5,
+  loading: false,
   async getBranchesList() {
     return get_branches_list()
       .then(({ data }) => {
@@ -33,8 +35,9 @@ export const useBranchesStore = create<IBranchStore>((set, get) => ({
   },
   saveBranchesPaginated: (data) => set({ branches_paginated: data }),
   getBranchesPaginated: (page, limit, name, phone, address) => {
+    set({ loading: true, limit });
     get_branches_pagination(page, limit, name, phone, address)
-      .then((branches) => set({ branches_paginated: branches.data }))
+      .then((branches) => set({ branches_paginated: branches.data, loading: false }))
       .catch(() => {
         set({
           branches_paginated: {
@@ -47,24 +50,25 @@ export const useBranchesStore = create<IBranchStore>((set, get) => ({
             status: 404,
             ok: false,
           },
+          loading: false,
         });
       });
   },
   async postBranch(payload) {
-    try {
-      const res = await save_branch(payload);
-      get().getBranchesPaginated(1, 8, "", "", "");
+    return save_branch(payload).then((result) => {
+      get().getBranchesPaginated(1, get().limit, "", "", "");
       toast.success(messages.success);
-      return res.data.ok;
-    } catch {
+      return result.data.ok
+    }).catch(() => {
       toast.error(messages.error);
       return false;
-    }
+    });
+
   },
   async patchBranch(paylad, id) {
     try {
       const res = await patch_branch(paylad, id);
-      get().getBranchesPaginated(1, 8, "", "", "");
+      get().getBranchesPaginated(1, get().limit, "", "", "");
       toast.success(messages.success);
       return res.data.ok;
     } catch {
@@ -75,7 +79,7 @@ export const useBranchesStore = create<IBranchStore>((set, get) => ({
   async deleteBranch(id) {
     try {
       const { data } = await delete_branch(id);
-      get().getBranchesPaginated(1, 8, "", "", "");
+      get().getBranchesPaginated(1, get().limit, "", "", "");
       toast.success(messages.success);
       return data.ok;
     } catch {

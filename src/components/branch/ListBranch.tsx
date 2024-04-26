@@ -1,178 +1,402 @@
-import { useState, useEffect, useContext, useMemo } from "react";
+import { useState, useEffect, useContext, useMemo, useRef } from "react";
 import { useBranchesStore } from "../../store/branches.store";
 import {
   Button,
+  ButtonGroup,
   Input,
-  Table,
-  TableBody,
-  TableCell,
-  TableColumn,
-  TableHeader,
-  TableRow,
+  Select,
+  SelectItem,
+  useDisclosure,
 } from "@nextui-org/react";
-import { PlusIcon, SearchIcon } from "lucide-react";
+import {
+  Edit,
+  PhoneIcon,
+  PlusIcon,
+  SearchIcon,
+  TrashIcon,
+  MapPinIcon,
+  Table as ITable,
+  CreditCard,
+  List,
+  Filter,
+} from "lucide-react";
 import { ThemeContext } from "../../hooks/useTheme";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
+import { ConfirmPopup } from "primereact/confirmpopup";
+import AddButton from "../global/AddButton";
+import { Drawer } from "vaul";
+import Pagination from "../global/Pagination";
+import { Paginator } from "primereact/paginator";
+import { paginator_styles } from "../../styles/paginator.styles";
+import ModalGlobal from "../global/ModalGlobal";
+import AddBranch from "./AddBranch";
+import { global_styles } from "../../styles/global.styles";
 
 function ListBranch() {
   const { theme } = useContext(ThemeContext);
 
   const { getBranchesPaginated, branches_paginated } = useBranchesStore();
-  const columns = [
-    {
-      name: "NO.",
-      key: "id",
-      sortable: true,
-    },
-    {
-      name: "Nombre",
-      key: "name",
-      sortable: true,
-    },
-    {
-      name: "Dirección",
-      key: "address",
-      sortable: false,
-    },
-    {
-      name: "Teléfono",
-      key: "phone",
-      sortable: false,
-    },
-    {
-      name: "Acciones",
-      key: "actions",
-      sortable: false,
-    },
-  ];
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [limit, setLimit] = useState(8);
 
+  const [view, setView] = useState<"table" | "grid" | "list">("table");
+
   useEffect(() => {
     getBranchesPaginated(1, limit, name, phone, address);
-  }, [limit, name, phone, address]);
+  }, [limit]);
 
   const changePage = (page: number) => {
     getBranchesPaginated(page, limit, name, phone, address);
   };
 
-  const topContent = useMemo(() => {
+  const modalAdd = useDisclosure();
+
+  const filters = useMemo(() => {
     return (
-      <div className="flex flex-col w-full gap-4">
-        <style>{` .cursor-pagination { background: ${theme.colors.dark}; color: ${theme.colors.primary} } `}</style>
-        <div className="grid items-end grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:mt-4">
+      <>
+        <div>
           <Input
-            classNames={{
-              base: "w-full bg-white",
-              inputWrapper: "border-1 h-10",
-            }}
-            placeholder="Buscar por nombre..."
-            size="sm"
-            startContent={<SearchIcon size={20} className="text-default-300" />}
+            placeholder="Escribe para buscar..."
+            startContent={<SearchIcon />}
+            className="w-full"
+            size="lg"
             variant="bordered"
-            name="searchName"
-            id="searchName"
+            isClearable
             value={name}
-            autoComplete="search"
             onChange={(e) => setName(e.target.value)}
-            isClearable
-            onClear={() => setName("")}
-          />
-          <Input
-            classNames={{
-              base: "w-full bg-white",
-              inputWrapper: "border-1 h-10",
+            onClear={() => {
+              setName("");
+              getBranchesPaginated(1, limit, "", phone, address);
             }}
-            placeholder="Buscar por teléfono..."
-            size="sm"
-            startContent={<SearchIcon size={20} className="text-default-300" />}
-            variant="bordered"
-            name="searchPhone"
-            value={phone}
-            id="searchPhone"
-            onChange={(e) => setPhone(e.target.value)}
-            isClearable
-            onClear={() => setPhone("")}
           />
-          <Input
-            classNames={{
-              base: "w-full bg-white",
-              inputWrapper: "border-1 h-10",
-            }}
-            placeholder="Buscar por dirección..."
-            size="sm"
-            startContent={<SearchIcon size={20} className="text-default-300" />}
-            variant="bordered"
-            name="searchAddress"
-            id="searchAddress"
-            value={address}
-            autoComplete="search"
-            onChange={(e) => setAddress(e.target.value)}
-            isClearable
-            onClear={() => setAddress("")}
-          />
-          <div className="col-span-1 md:col-span-3 lg:col-span-1 flex justify-end w-full">
-            <Button
-            style={{
-              backgroundColor: theme.colors.third,
-              color: theme.colors.primary,
-            }}
-              className="h-10 max-w-72"
-              endContent={<PlusIcon />}
-              size="sm"
-              // onClick={() => {
-              //   modalAdd.onOpen();
-              //   setSelectedBranch(undefined);
-              // }}
-            >
-              Agregar nuevo
-            </Button>
-          </div>
         </div>
-      </div>
+        <div>
+          <Input
+            placeholder="Escribe para buscar..."
+            startContent={<PhoneIcon />}
+            className="w-full"
+            size="lg"
+            variant="bordered"
+            isClearable
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            onClear={() => {
+              setPhone("");
+              getBranchesPaginated(1, limit, name, "", address);
+            }}
+          />
+        </div>
+        <div>
+          <Input
+            placeholder="Escribe para buscar..."
+            startContent={<MapPinIcon />}
+            className="w-full"
+            size="lg"
+            variant="bordered"
+            isClearable
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            onClear={() => {
+              setAddress("");
+              getBranchesPaginated(1, limit, name, phone, "");
+            }}
+          />
+        </div>
+      </>
     );
-  }, [branches_paginated]);
+  }, [name,setName, phone, setPhone, address, setAddress]);
+
+  const [openVaul, setOpenVaul] = useState(false);
+
+  const handleSearch = () => {
+    getBranchesPaginated(1, limit, name, phone, address);
+  };
 
   return (
-    <div className="w-full h-full p-5 bg-gray-50">
-      <div className="hidden w-full p-5 bg-white rounded lg:flex">
-        <Table isHeaderSticky topContent={topContent} topContentPlacement="outside">
-          <TableHeader columns={columns}>
-            {(column) => (
-              <TableColumn
-                key={column.key}
-                className="font-semibold"
+    <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
+      <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
+        <div className="hidden w-full grid-cols-3 gap-5 mb-4 md:grid ">
+          {filters}
+        </div>
+        <div className="grid w-full grid-cols-1 gap-5 mb-4 md:grid-cols-2">
+          <div className="hidden md:flex">
+            <Button
+              style={global_styles().secondaryStyle}
+              className="px-12 font-semibold max-w-72"
+              size="lg"
+              onClick={() => handleSearch()}
+            >
+              Buscar
+            </Button>
+          </div>
+          <div className="flex items-end justify-between gap-10 mt lg:justify-end">
+            <ButtonGroup>
+              <Button
+                size="lg"
+                isIconOnly
+                color="secondary"
                 style={{
-                  backgroundColor: theme.colors.dark,
-                  color: theme.colors.primary,
+                  backgroundColor:
+                    view === "table" ? theme.colors.third : "#e5e5e5",
+                  color: view === "table" ? theme.colors.primary : "#3e3e3e",
                 }}
-                align={column.key === "actions" ? "center" : "start"}
-                allowsSorting={column.sortable}
+                onClick={() => setView("table")}
               >
-                {column.name}
-              </TableColumn>
+                <ITable />
+              </Button>
+              <Button
+                size="lg"
+                isIconOnly
+                color="default"
+                style={{
+                  backgroundColor:
+                    view === "grid" ? theme.colors.third : "#e5e5e5",
+                  color: view === "grid" ? theme.colors.primary : "#3e3e3e",
+                }}
+                onClick={() => setView("grid")}
+              >
+                <CreditCard />
+              </Button>
+              <Button
+                size="lg"
+                isIconOnly
+                color="default"
+                style={{
+                  backgroundColor:
+                    view === "list" ? theme.colors.third : "#e5e5e5",
+                  color: view === "list" ? theme.colors.primary : "#3e3e3e",
+                }}
+                onClick={() => setView("list")}
+              >
+                <List />
+              </Button>
+            </ButtonGroup>
+            <div className="flex items-center gap-5">
+              <div className="block md:hidden">
+                <Drawer.Root
+                  shouldScaleBackground
+                  open={openVaul}
+                  onClose={() => setOpenVaul(false)}
+                >
+                  <Drawer.Trigger asChild>
+                    <Button
+                      style={global_styles().thirdStyle}
+                      size="lg"
+                      isIconOnly
+                      onClick={() => setOpenVaul(true)}
+                    >
+                      <Filter />
+                    </Button>
+                  </Drawer.Trigger>
+                  <Drawer.Portal>
+                    <Drawer.Overlay className="fixed inset-0 bg-black/40 z-[60]" />
+                    <Drawer.Content className="bg-gray-100 z-[60] flex flex-col rounded-t-[10px] h-auto mt-24 max-h-[80%] fixed bottom-0 left-0 right-0">
+                      <div className="p-4 bg-white rounded-t-[10px] flex-1">
+                        <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-gray-300 mb-8" />
+                        <Drawer.Title className="mb-4 font-medium">
+                          Filtros disponibles
+                        </Drawer.Title>
+                        <div className="flex flex-col gap-3">
+                          {filters}
+                          <Button
+                            style={global_styles().secondaryStyle}
+                            className="mb-10 font-semibold"
+                            size="lg"
+                            onClick={() => {
+                              handleSearch();
+                              setOpenVaul(false);
+                            }}
+                          >
+                            Aplicar
+                          </Button>
+                        </div>
+                      </div>
+                    </Drawer.Content>
+                  </Drawer.Portal>
+                </Drawer.Root>
+              </div>
+              <AddButton onClick={() => modalAdd.onOpen()} />
+            </div>
+          </div>
+        </div>
+        <div className="flex justify-end w-full mb-5">
+          <Select
+            className="w-44"
+            variant="bordered"
+            size="lg"
+            label="Mostrar"
+            labelPlacement="outside"
+            classNames={{
+              label: "font-semibold",
+            }}
+            defaultSelectedKeys={["5"]}
+            value={limit}
+            onChange={(e) => {
+              setLimit(Number(e.target.value !== "" ? e.target.value : "5"));
+            }}
+          >
+            <SelectItem key={"5"}>5</SelectItem>
+            <SelectItem key={"10"}>10</SelectItem>
+            <SelectItem key={"20"}>20</SelectItem>
+            <SelectItem key={"30"}>30</SelectItem>
+            <SelectItem key={"40"}>40</SelectItem>
+            <SelectItem key={"50"}>50</SelectItem>
+            <SelectItem key={"100"}>100</SelectItem>
+          </Select>
+        </div>
+        <DataTable
+          className="shadow"
+          emptyMessage="No se encontraron resultados"
+          value={branches_paginated.branches}
+          tableStyle={{ minWidth: "50rem" }}
+        >
+          <Column
+            headerClassName="text-sm font-semibold"
+            headerStyle={{
+              ...global_styles().darkStyle,
+              borderTopLeftRadius: "10px",
+            }}
+            field="id"
+            header="No."
+          />
+          <Column
+            headerClassName="text-sm font-semibold"
+            headerStyle={global_styles().darkStyle}
+            field="name"
+            header="Nombre"
+          />
+          <Column
+            headerClassName="text-sm font-semibold"
+            headerStyle={global_styles().darkStyle}
+            field="phone"
+            header="Teléfono"
+          />
+          <Column
+            headerClassName="text-sm font-semibold"
+            headerStyle={global_styles().darkStyle}
+            field="address"
+            header="Dirección"
+          />
+          <Column
+            headerStyle={{
+              ...global_styles().darkStyle,
+              borderTopRightRadius: "10px",
+            }}
+            header="Acciones"
+            body={(item) => (
+              <div className="flex w-full gap-5">
+                <DeletePopUp id={item.id} />
+                <Button
+                  size="lg"
+                  // onClick={() => {
+                  //   setSelectedId(item.id);
+                  //   modalChangePassword.onOpen();
+                  // }}
+                  isIconOnly
+                  style={global_styles().secondaryStyle}
+                >
+                  <Edit />
+                </Button>
+              </div>
             )}
-          </TableHeader>
-          <TableBody items={branches_paginated.branches}>
-            {(item) => (
-              <TableRow key={item.id}>
-                {(columnKey) => (
-                  <TableCell>
-                    {columnKey === "id" && item.id}
-                    {columnKey === "name" && item.name}
-                    {columnKey === "address" && item.address}
-                    {columnKey === "phone" && item.phone}
-                  </TableCell>
-                )}
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+          />
+        </DataTable>
+        <div className="hidden w-full mt-5 md:flex">
+          <Pagination
+            previousPage={branches_paginated.prevPag}
+            nextPage={branches_paginated.nextPag}
+            currentPage={branches_paginated.currentPag}
+            totalPages={branches_paginated.totalPag}
+            onPageChange={(page) => {
+              changePage(page);
+            }}
+          />
+        </div>
+        <div className="flex w-full mt-5 md:hidden">
+          <Paginator
+            pt={paginator_styles(1)}
+            className="flex justify-between w-full"
+            first={branches_paginated.currentPag}
+            rows={limit}
+            totalRecords={branches_paginated.total}
+            template={{
+              layout: "PrevPageLink CurrentPageReport NextPageLink",
+            }}
+            currentPageReportTemplate="{currentPage} de {totalPages}"
+            onPageChange={(e) => {
+              changePage(e.page + 1);
+            }}
+          />
+        </div>
       </div>
+      <ModalGlobal
+        isOpen={modalAdd.isOpen}
+        onClose={modalAdd.onClose}
+        title="Nueva sucursal"
+        size="lg"
+      >
+        <AddBranch closeModal={modalAdd.onClose} />
+      </ModalGlobal>
     </div>
   );
 }
 
 export default ListBranch;
+
+interface Props {
+  id: number;
+}
+
+const DeletePopUp = ({ id }: Props) => {
+  const buttonRef = useRef<HTMLButtonElement>();
+
+  const { theme } = useContext(ThemeContext);
+
+  const [visible, setVisible] = useState(false);
+
+  const handleDelete = () => {};
+
+  return (
+    <>
+      <Button
+        ref={buttonRef as any}
+        style={global_styles().dangerStyles}
+        size="lg"
+        isIconOnly
+        onClick={() => setVisible(!visible)}
+      >
+        <TrashIcon size={20} />
+      </Button>
+      <ConfirmPopup
+        visible={visible}
+        onHide={() => setVisible(false)}
+        target={buttonRef.current}
+        message="¿Deseas eliminar esta sucursal?"
+        content={({ message, acceptBtnRef, rejectBtnRef }) => (
+          <>
+            <div className="p-5 border border-gray-100 shadow-2xl rounded-xl">
+              <p className="text-lg font-semibold text-center">{message}</p>
+              <div className="flex justify-between gap-5 mt-5">
+                <Button
+                  ref={acceptBtnRef}
+                  size="lg"
+                  className="font-semibold"
+                  style={global_styles().thirdStyle}
+                >
+                  Eliminar
+                </Button>
+                <Button size="lg" ref={rejectBtnRef}>
+                  Cancelar
+                </Button>
+              </div>
+            </div>
+          </>
+        )}
+      />
+    </>
+  );
+};
