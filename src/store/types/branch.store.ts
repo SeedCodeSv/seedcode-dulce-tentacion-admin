@@ -15,7 +15,8 @@ export interface IBranchStore {
     limit: number,
     name: string,
     phone: string,
-    address: string
+    address: string,
+    active?: 1 | 0
   ) => void;
   getBranchesList: () => Promise<void>;
   postBranch: (paylad: IBranchPayload) => Promise<boolean>;

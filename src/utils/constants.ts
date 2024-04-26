@@ -7,3 +7,5 @@ export const messages = {
     error: "Ocurrió un error al procesar la petición",
     success: "Petición procesada con éxito"
 }
+
+export const limit_options = ["5", "10", "20", "30", "40", "50", "75", "100"]

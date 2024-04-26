@@ -34,10 +34,12 @@ export const useBranchesStore = create<IBranchStore>((set, get) => ({
       });
   },
   saveBranchesPaginated: (data) => set({ branches_paginated: data }),
-  getBranchesPaginated: (page, limit, name, phone, address) => {
+  getBranchesPaginated: (page, limit, name, phone, address, active = 1) => {
     set({ loading: true, limit });
-    get_branches_pagination(page, limit, name, phone, address)
-      .then((branches) => set({ branches_paginated: branches.data, loading: false }))
+    get_branches_pagination(page, limit, name, phone, address, active)
+      .then((branches) =>
+        set({ branches_paginated: branches.data, loading: false })
+      )
       .catch(() => {
         set({
           branches_paginated: {
@@ -55,26 +57,28 @@ export const useBranchesStore = create<IBranchStore>((set, get) => ({
       });
   },
   async postBranch(payload) {
-    return save_branch(payload).then((result) => {
-      get().getBranchesPaginated(1, get().limit, "", "", "");
-      toast.success(messages.success);
-      return result.data.ok
-    }).catch(() => {
-      toast.error(messages.error);
-      return false;
-    });
-
+    return save_branch(payload)
+      .then((result) => {
+        get().getBranchesPaginated(1, get().limit, "", "", "");
+        toast.success(messages.success);
+        return result.data.ok;
+      })
+      .catch(() => {
+        toast.error(messages.error);
+        return false;
+      });
   },
-  async patchBranch(paylad, id) {
-    try {
-      const res = await patch_branch(paylad, id);
-      get().getBranchesPaginated(1, get().limit, "", "", "");
-      toast.success(messages.success);
-      return res.data.ok;
-    } catch {
-      toast.error(messages.error);
-      return false;
-    }
+  async patchBranch(payload, id) {
+    return patch_branch(payload, id)
+      .then(({ data }) => {
+        get().getBranchesPaginated(1, get().limit, "", "", "");
+        toast.success(messages.success);
+        return data.ok;
+      })
+      .catch(() => {
+        toast.error(messages.error);
+        return false;
+      });
   },
   async deleteBranch(id) {
     try {
