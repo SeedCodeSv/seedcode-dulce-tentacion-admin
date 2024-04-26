@@ -1,7 +1,5 @@
-import React, { useContext } from "react";
 import { useBranchesStore } from "../../store/branches.store";
 import { DataView } from "primereact/dataview";
-import { ThemeContext } from "../../hooks/useTheme";
 import { Branches } from "../../types/branches.types";
 import { Edit, MapPin, Phone, Scroll } from "lucide-react";
 import { Button } from "@nextui-org/react";
@@ -10,7 +8,7 @@ import { global_styles } from "../../styles/global.styles";
 
 interface Props {
   layout: "grid" | "list";
-  deletePopover: ({ id }: { id: number }) => JSX.Element;
+  deletePopover: ({ branch }: { branch: Branches }) => JSX.Element;
   handleEdit: (branch: Branches) => void;
 }
 
@@ -43,7 +41,7 @@ export default MobileView;
 const gridItem = (
   branch: Branches,
   layout: "grid" | "list",
-  deletePopover: ({ id }: { id: number }) => JSX.Element,
+  deletePopover: ({ branch }: { branch: Branches }) => JSX.Element,
   handleEdit: (branch: Branches) => void
 ) => {
   return (
@@ -68,7 +66,7 @@ const gridItem = (
             {branch.phone}
           </div>
           <div className="flex justify-between mt-5 w-ful">
-            {deletePopover({ id: branch.id })}
+            {deletePopover({ branch })}
             <Button
               onClick={() => handleEdit(branch)}
               isIconOnly
@@ -91,7 +89,7 @@ const gridItem = (
 };
 
 interface ListProps {
-  deletePopover: ({ id }: { id: number }) => JSX.Element;
+  deletePopover: ({ branch }: { branch: Branches }) => JSX.Element;
   handleEdit: (branch: Branches) => void;
   branch: Branches;
 }
@@ -117,7 +115,7 @@ const ListItem = ({ branch, deletePopover, handleEdit }: ListProps) => {
           </div>
         </div>
         <div className="flex flex-col items-end justify-between w-full">
-          {deletePopover({ id: branch.id })}
+          {deletePopover({ branch })}
           <Button
             onClick={() => handleEdit(branch)}
             isIconOnly

@@ -60,6 +60,14 @@ export const patch_branch = (payload: IBranchPayload, id: number) => {
   });
 };
 
+export const disable_branch = (id: number, state: boolean) => {
+  return axios.patch<{ ok: boolean }>(API_URL + "/branches/disable/" + id, { state }, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+};
+
 export const delete_branch = (id: number) => {
   return axios.delete<{ ok: boolean }>(API_URL + "/branches/" + id, {
     headers: {

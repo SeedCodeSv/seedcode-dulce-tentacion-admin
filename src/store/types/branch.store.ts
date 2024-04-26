@@ -9,6 +9,7 @@ export interface IBranchStore {
   branch_list: Branches[];
   limit: number;
   loading: boolean;
+  active: 1 | 0;
   saveBranchesPaginated: (data: IGetBranchesPaginated) => void;
   getBranchesPaginated: (
     page: number,
@@ -22,4 +23,5 @@ export interface IBranchStore {
   postBranch: (paylad: IBranchPayload) => Promise<boolean>;
   patchBranch: (paylad: IBranchPayload, id: number) => Promise<boolean>;
   deleteBranch: (id: number) => Promise<boolean>;
+  disableBranch: (id: number, state: boolean) => Promise<boolean>;
 }

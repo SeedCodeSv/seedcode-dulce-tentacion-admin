@@ -39,12 +39,16 @@ import { toast } from "sonner";
 function ListBranch() {
   const { theme } = useContext(ThemeContext);
 
-  const { getBranchesPaginated, branches_paginated } = useBranchesStore();
+  const {
+    getBranchesPaginated,
+    branches_paginated,
+    disableBranch,
+  } = useBranchesStore();
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
-  const [limit, setLimit] = useState(8);
+  const [limit, setLimit] = useState(5);
   const [active, setActive] = useState<1 | 0>(1);
 
   const [view, setView] = useState<"table" | "grid" | "list">("table");
@@ -125,6 +129,10 @@ function ListBranch() {
   const handleEdit = (item: Branches) => {
     setSelectedBranch(item);
     modalAdd.onOpen();
+  };
+
+  const handleInactive = (item: Branches) => {
+    disableBranch(item.id, !item.isActive);
   };
 
   return (
@@ -209,7 +217,10 @@ function ListBranch() {
                     </Button>
                   </Drawer.Trigger>
                   <Drawer.Portal>
-                    <Drawer.Overlay className="fixed inset-0 bg-black/40 z-[60]" onClick={() => setOpenVaul(false)} />
+                    <Drawer.Overlay
+                      className="fixed inset-0 bg-black/40 z-[60]"
+                      onClick={() => setOpenVaul(false)}
+                    />
                     <Drawer.Content className="bg-gray-100 z-[60] flex flex-col rounded-t-[10px] h-auto mt-24 max-h-[80%] fixed bottom-0 left-0 right-0">
                       <div className="p-4 bg-white rounded-t-[10px] flex-1">
                         <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-gray-300 mb-8" />
@@ -278,17 +289,31 @@ function ListBranch() {
             actionsElement={(item) => (
               <>
                 <div className="flex w-full gap-5">
-                  <DeletePopUp id={item.id} />
-                  <Button
-                    size="lg"
-                    onClick={() => {
-                      handleEdit(item);
-                    }}
-                    isIconOnly
-                    style={global_styles().secondaryStyle}
-                  >
-                    <Edit />
-                  </Button>
+                  <DeletePopUp branch={item} />
+                  {item.isActive ? (
+                    <>
+                      <Button
+                        size="lg"
+                        onClick={() => {
+                          handleEdit(item);
+                        }}
+                        isIconOnly
+                        style={global_styles().secondaryStyle}
+                      >
+                        <Edit />
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Switch
+                        onValueChange={() => handleInactive(item)}
+                        defaultSelected={item.isActive}
+                        size="lg"
+                      >
+                        Activar
+                      </Switch>
+                    </>
+                  )}
                 </div>
               </>
             )}
@@ -353,25 +378,36 @@ function ListBranch() {
 export default ListBranch;
 
 interface Props {
-  id: number;
+  branch: Branches;
 }
 
-const DeletePopUp = ({ id }: Props) => {
+const DeletePopUp = ({ branch }: Props) => {
   const buttonRef = useRef<HTMLButtonElement>();
 
-  const { deleteBranch } = useBranchesStore();
+  const { deleteBranch, disableBranch } = useBranchesStore();
 
   const [visible, setVisible] = useState(false);
 
   const handleDelete = () => {
-    deleteBranch(id).then((res) => {
-      if (res) {
-        toast.success(messages.success);
-        setVisible(false);
-      } else {
-        toast.error(messages.error);
-      }
-    });
+    if (branch.isActive) {
+      disableBranch(branch.id, !branch.isActive).then((res) => {
+        if (res) {
+          toast.success(messages.success);
+          setVisible(false);
+        } else {
+          toast.error(messages.error);
+        }
+      });
+    } else {
+      deleteBranch(branch.id).then((res) => {
+        if (res) {
+          toast.success(messages.success);
+          setVisible(false);
+        } else {
+          toast.error(messages.error);
+        }
+      });
+    }
   };
 
   return (
