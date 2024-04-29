@@ -51,6 +51,7 @@ export interface PayloadCustomer {
   telefono?: string;
   correo?: string;
   esContribuyente?: number;
+  transmitterId?: number;
 }
 
 export interface CustomerDirection {

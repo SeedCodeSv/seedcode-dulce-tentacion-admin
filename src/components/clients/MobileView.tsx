@@ -9,7 +9,9 @@ import {
   Trash,
   Phone,
   Mail,
-  Users2Icon
+  Users2Icon,
+  EditIcon,
+  Repeat,
 } from "lucide-react";
 import { ThemeContext } from "../../hooks/useTheme";
 import { Customer } from "../../types/customers.types";
@@ -17,9 +19,10 @@ import { Customer } from "../../types/customers.types";
 interface Props {
   layout: "grid" | "list";
   deletePopover: ({ customers }: { customers: Customer }) => JSX.Element;
+  handleChangeCustomer: (customer: Customer, type: string) => void;
 }
 
-function MobileView({ layout }: Props) {
+function MobileView({ layout, handleChangeCustomer }: Props) {
   const { customer_pagination } = useCustomerStore();
 
   return (
@@ -35,14 +38,20 @@ function MobileView({ layout }: Props) {
           }),
         }}
         color="surface"
-        itemTemplate={gridItem}
+        itemTemplate={(customer) =>
+          gridItem(customer, layout, handleChangeCustomer)
+        }
         emptyMessage="No customers found"
       />
     </div>
   );
 }
 
-const gridItem = (customers: Customer, layout: "grid" | "list") => {
+const gridItem = (
+  customers: Customer,
+  layout: "grid" | "list",
+  handleChangeCustomer: (customer: Customer, type: string) => void
+) => {
   const { theme } = useContext(ThemeContext);
   return (
     <>
@@ -71,13 +80,22 @@ const gridItem = (customers: Customer, layout: "grid" | "list") => {
           </div>
           <div className="flex justify-between mt-5 w-ful">
             <Button
+              onClick={() => handleChangeCustomer(customers, "edit")}
               isIconOnly
-              size="lg"
               style={{
-                backgroundColor: theme.colors.warning,
+                backgroundColor: theme.colors.secondary,
               }}
             >
-              <Key color={theme.colors.primary} size={20} />
+              <EditIcon style={{ color: theme.colors.primary }} size={20} />
+            </Button>
+            <Button
+              onClick={() => handleChangeCustomer(customers, "change")}
+              isIconOnly
+              style={{
+                backgroundColor: theme.colors.third,
+              }}
+            >
+              <Repeat style={{ color: theme.colors.primary }} size={20} />
             </Button>
             <Button
               isIconOnly
@@ -91,13 +109,22 @@ const gridItem = (customers: Customer, layout: "grid" | "list") => {
           </div>
         </div>
       ) : (
-        <ListItem customers={customers} />
+        <ListItem
+          customers={customers}
+          handleChangeCustomer={handleChangeCustomer}
+        />
       )}
     </>
   );
 };
 
-const ListItem = ({ customers }: { customers: Customer }) => {
+const ListItem = ({
+  customers,
+  handleChangeCustomer,
+}: {
+  customers: Customer;
+  handleChangeCustomer: (customer: Customer, type: string) => void;
+}) => {
   const { theme } = useContext(ThemeContext);
   return (
     <>
@@ -121,15 +148,24 @@ const ListItem = ({ customers }: { customers: Customer }) => {
           </div>
         </div>
         <div className="flex flex-col items-end justify-between w-full">
-          <Button
-            isIconOnly
-            size="lg"
-            style={{
-              backgroundColor: theme.colors.warning,
-            }}
-          >
-            <Key color={theme.colors.primary} size={20} />
-          </Button>
+        <Button
+              onClick={() => handleChangeCustomer(customers, "edit")}
+              isIconOnly
+              style={{
+                backgroundColor: theme.colors.secondary,
+              }}
+            >
+              <EditIcon style={{ color: theme.colors.primary }} size={20} />
+            </Button>
+            <Button
+              onClick={() => handleChangeCustomer(customers, "change")}
+              isIconOnly
+              style={{
+                backgroundColor: theme.colors.third,
+              }}
+            >
+              <Repeat style={{ color: theme.colors.primary }} size={20} />
+            </Button>
           <Button
             isIconOnly
             size="lg"

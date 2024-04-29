@@ -3,7 +3,7 @@ import ListClients from '../components/clients/ListClients'
 
 function Customers() {
   return (
-    <Layout title='Customers'>
+    <Layout title='CLIENTES'>
       <ListClients />
     </Layout>
   )

@@ -3,7 +3,7 @@ import ListEmployee from '../components/employee/ListEmployee'
 
 function Employees() {
   return (
-    <Layout title="Employees">
+    <Layout title="EMPLEADOS">
       <ListEmployee />
     </Layout>
   )

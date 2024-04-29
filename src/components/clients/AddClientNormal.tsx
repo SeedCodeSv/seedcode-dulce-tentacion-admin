@@ -27,8 +27,7 @@ interface Props {
 }
 
 const AddClientNormal = (props: Props) => {
-
-  const {theme} = useContext(ThemeContext)
+  const { theme } = useContext(ThemeContext);
 
   const initialValues = {
     nombre: props.customer?.nombre ?? "",
@@ -187,6 +186,7 @@ const AddClientNormal = (props: Props) => {
             <div className="grid grid-cols-2 gap-5">
               <div>
                 <Input
+                  type="number"
                   label="Teléfono"
                   labelPlacement="outside"
                   name="telefono"
@@ -207,6 +207,7 @@ const AddClientNormal = (props: Props) => {
               </div>
               <div>
                 <Input
+                  isReadOnly
                   label="Numero documento"
                   labelPlacement="outside"
                   name="numDocumento"
@@ -242,7 +243,11 @@ const AddClientNormal = (props: Props) => {
                   onBlur={handleBlur("departamento")}
                   label="Departamento"
                   labelPlacement="outside"
-                  placeholder={values.nombreDepartamento ? values.nombreDepartamento : "Selecciona el departamento"} 
+                  placeholder={
+                    values.nombreDepartamento
+                      ? values.nombreDepartamento
+                      : "Selecciona el departamento"
+                  }
                   variant="bordered"
                   classNames={{
                     base: "font-semibold text-gray-500 text-sm",
@@ -266,6 +271,94 @@ const AddClientNormal = (props: Props) => {
                   </span>
                 )}
               </div>
+              {!values.nombreDepartamento ? (
+                <div className="pt-2">
+                  <Autocomplete
+                    onSelectionChange={(key) => {
+                      if (key) {
+                        const depSelected = JSON.parse(
+                          key as string
+                        ) as Departamento;
+                        handleChange("municipio")(depSelected.codigo);
+                        handleChange("nombreMunicipio")(depSelected.valores);
+                      }
+                    }}
+                    onBlur={handleBlur("municipio")}
+                    label="Municipio"
+                    labelPlacement="outside"
+                    placeholder={
+                      values.nombreMunicipio
+                        ? values.nombreMunicipio
+                        : "Selecciona el municipio"
+                    }
+                    variant="bordered"
+                    classNames={{
+                      base: "font-semibold text-gray-500 text-sm",
+                    }}
+                    // selectedKey={selectedKeyCity}
+                    defaultSelectedKey={selectedKeyCity}
+                    value={selectedKeyCity}
+                  >
+                    {filteredMunicipios.map((dep) => (
+                      <AutocompleteItem
+                        value={dep.codigo}
+                        key={JSON.stringify(dep)}
+                      >
+                        {dep.valores}
+                      </AutocompleteItem>
+                    ))}
+                  </Autocomplete>
+                  {errors.municipio && touched.municipio && (
+                    <span className="text-sm font-semibold text-red-500">
+                      {errors.municipio}
+                    </span>
+                  )}
+                </div>
+              ) : (
+                <div className="pt-2">
+                  <Autocomplete
+                    isDisabled
+                    onSelectionChange={(key) => {
+                      if (key) {
+                        const depSelected = JSON.parse(
+                          key as string
+                        ) as Departamento;
+                        handleChange("municipio")(depSelected.codigo);
+                        handleChange("nombreMunicipio")(depSelected.valores);
+                      }
+                    }}
+                    onBlur={handleBlur("municipio")}
+                    label="Municipio"
+                    labelPlacement="outside"
+                    placeholder={
+                      values.nombreMunicipio
+                        ? values.nombreMunicipio
+                        : "Selecciona el municipio"
+                    }
+                    variant="bordered"
+                    classNames={{
+                      base: "font-semibold text-gray-500 text-sm",
+                    }}
+                    // selectedKey={selectedKeyCity}
+                    defaultSelectedKey={selectedKeyCity}
+                    value={selectedKeyCity}
+                  >
+                    {filteredMunicipios.map((dep) => (
+                      <AutocompleteItem
+                        value={dep.codigo}
+                        key={JSON.stringify(dep)}
+                      >
+                        {dep.valores}
+                      </AutocompleteItem>
+                    ))}
+                  </Autocomplete>
+                  {errors.municipio && touched.municipio && (
+                    <span className="text-sm font-semibold text-red-500">
+                      {errors.municipio}
+                    </span>
+                  )}
+                </div>
+              )}
               <div className="pt-2">
                 <Autocomplete
                   onSelectionChange={(key) => {
@@ -280,12 +373,16 @@ const AddClientNormal = (props: Props) => {
                   onBlur={handleBlur("municipio")}
                   label="Municipio"
                   labelPlacement="outside"
-                  placeholder={values.nombreMunicipio ?  values.nombreMunicipio : "Selecciona el municipio"} 
+                  placeholder={
+                    values.nombreMunicipio
+                      ? values.nombreMunicipio
+                      : "Selecciona el municipio"
+                  }
                   variant="bordered"
                   classNames={{
                     base: "font-semibold text-gray-500 text-sm",
                   }}
-                  selectedKey={selectedKeyCity}
+                  // selectedKey={selectedKeyCity}
                   defaultSelectedKey={selectedKeyCity}
                   value={selectedKeyCity}
                 >

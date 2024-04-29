@@ -20,6 +20,7 @@ import {
   PayloadCustomer,
 } from "../../types/customers.types";
 import { ThemeContext } from "../../hooks/useTheme";
+import { get_user } from "../../storage/localStorage";
 
 interface Props {
   closeModal: () => void;
@@ -29,7 +30,6 @@ interface Props {
 }
 
 function AddClientContributor(props: Props) {
-
   const { theme } = useContext(ThemeContext);
 
   const initialValues = {
@@ -106,7 +106,6 @@ function AddClientContributor(props: Props) {
     getCat013Municipios();
     getCat019CodigoActividadEconomica();
   }, []);
-
   const filteredMunicipios = useMemo(() => {
     if (selectedCodeDep === "0") {
       return cat_013_municipios;
@@ -131,15 +130,26 @@ function AddClientContributor(props: Props) {
       .slice(0, itemsPerPage);
   }, [search, cat_019_codigo_de_actividad_economica]);
 
-  const { postCustomer } = useCustomerStore();
+  const { postCustomer, patchCustomer } = useCustomerStore();
+  const user = get_user();
 
   const onSubmit = async (payload: PayloadCustomer) => {
-    const values = {
-      ...payload,
-      esContribuyente: 1,
-    };
-    const result = await postCustomer(values);
-    result && props.closeModal();
+    if (props.id || props.id !== 0) {
+      const values = {
+        ...payload,
+        esContribuyente: 1,
+        transmitterId: Number(user?.employee.branch.transmitterId),
+      };
+      patchCustomer(values, props.id!);
+    } else {
+      const values = {
+        ...payload,
+        esContribuyente: 1,
+        transmitterId: Number(user?.employee.branch.transmitterId),
+      };
+      postCustomer(values);
+    }
+    props.closeModal();
   };
 
   const selectedKeyDepartment = useMemo(() => {
@@ -188,7 +198,7 @@ function AddClientContributor(props: Props) {
     cat_019_codigo_de_actividad_economica,
     cat_019_codigo_de_actividad_economica.length,
   ]);
-
+  console.log(selectedKeyCodActivity);
   return (
     <div className="mb-32 sm:mb-0">
       <Formik
@@ -268,6 +278,7 @@ function AddClientContributor(props: Props) {
               </div>
               <div className="pt-2">
                 <Input
+                  type="number"
                   label="Teléfono"
                   labelPlacement="outside"
                   name="telefono"
@@ -288,6 +299,7 @@ function AddClientContributor(props: Props) {
               </div>
               <div className="pt-2">
                 <Input
+                  isReadOnly
                   label="Numero documento"
                   labelPlacement="outside"
                   name="numDocumento"
@@ -318,23 +330,31 @@ function AddClientContributor(props: Props) {
                     }
                   }}
                   onBlur={handleBlur("codActividad")}
-                  label="codActividad"
+                  label="Actividad"
                   labelPlacement="outside"
-                  placeholder="Selecciona el codigo de actividad"
+                  placeholder={
+                    props.customer?.descActividad
+                      ? props.customer?.descActividad
+                      : "Selecciona la actividad"
+                  }
                   variant="bordered"
                   classNames={{
                     base: "font-semibold text-gray-500 text-sm",
                   }}
                   onInputChange={(text) => setSearch(text)}
-                  selectedKey={selectedKeyCodActivity}
-                  defaultSelectedKey={selectedKeyCodActivity}
+                  // selectedKey={selectedKeyCodActivity}
+                  defaultSelectedKey={values.descActividad}
                   value={selectedKeyCodActivity}
                 >
-                  {filterCodeActividad.map((dep) => (
-                    <AutocompleteItem value={dep.codigo} key={dep.codigo}>
-                      {dep.valores}
-                    </AutocompleteItem>
-                  ))}
+                  {filterCodeActividad &&
+                    filterCodeActividad.map((dep) => (
+                      <AutocompleteItem
+                        value={dep.codigo}
+                        key={JSON.stringify(dep)}
+                      >
+                        {dep.valores}
+                      </AutocompleteItem>
+                    ))}
                 </Autocomplete>
                 {errors.codActividad && touched.codActividad && (
                   <span className="text-sm font-semibold text-red-500">
@@ -359,12 +379,12 @@ function AddClientContributor(props: Props) {
                   onBlur={handleBlur("departamento")}
                   label="Departamento"
                   labelPlacement="outside"
-                  placeholder="Selecciona el departamento"
+                  placeholder={"Selecciona el departamento"}
                   variant="bordered"
                   classNames={{
                     base: "font-semibold text-gray-500 text-sm",
                   }}
-                  selectedKey={selectedKeyDepartment}
+                  // selectedKey={selectedKeyDepartment}
                   defaultSelectedKey={selectedKeyDepartment}
                   value={selectedKeyDepartment}
                 >
@@ -443,6 +463,7 @@ function AddClientContributor(props: Props) {
               </div>
               <div className="pt-2">
                 <Input
+                  isReadOnly
                   label="NIT"
                   labelPlacement="outside"
                   name="name"
@@ -463,6 +484,7 @@ function AddClientContributor(props: Props) {
               </div>
               <div className="pt-2">
                 <Input
+                  isReadOnly
                   label="NRC"
                   labelPlacement="outside"
                   name="name"

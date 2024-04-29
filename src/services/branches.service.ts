@@ -41,7 +41,11 @@ export const get_branches_pagination = (
 
 export const get_branches_list = () => {
   const user = get_user()
-  return axios.get<IGetBranchesList>(API_URL + `/branches/list-by-transmitter/${user?.employee.branch.transmitterId}`);
+  return axios.get<IGetBranchesList>(API_URL + `/branches/list-by-transmitter/${user?.employee.branch.transmitterId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
 };
 
 export const save_branch = (payload: IBranchPayload) => {

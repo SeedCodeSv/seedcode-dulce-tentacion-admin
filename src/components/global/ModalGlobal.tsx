@@ -26,7 +26,7 @@ function ModalGlobal({
       <Dialog
         as="div"
         className="relative z-[50]"
-        onClose={() => (isDismissable ? onClose() : null)}
+        onClose={() => (isDismissable ? onClose() : undefined)}
       >
         <Transition.Child
           as={Fragment}

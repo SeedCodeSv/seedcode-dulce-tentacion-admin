@@ -8,6 +8,7 @@ import {
 } from "../services/customers.service";
 import { toast } from "sonner";
 import { messages } from "../utils/constants";
+import { AxiosError } from "axios";
 
 export const useCustomerStore = create<IUseCustomersStore>((set, get) => ({
   customer_pagination: {
@@ -52,7 +53,8 @@ export const useCustomerStore = create<IUseCustomersStore>((set, get) => ({
           return false;
         }
       })
-      .catch(() => {
+      .catch((error: AxiosError) => {
+        console.log(error);
         toast.warning(messages.error);
         return false;
       });
@@ -73,6 +75,7 @@ export const useCustomerStore = create<IUseCustomersStore>((set, get) => ({
   },
   deleteCustomer: async (id) => {
     return await delete_customer(id).then(({ data }) => {
+      get().getCustomersPagination(1, 8, "", "");
       toast.success(messages.success);
       return data.ok;
     }).catch(()=>{

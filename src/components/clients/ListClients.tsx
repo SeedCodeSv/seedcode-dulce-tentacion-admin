@@ -23,27 +23,31 @@ import {
 } from "react";
 import {
   EditIcon,
+  User,
   MailIcon,
   Phone,
   PlusIcon,
   Repeat,
   TrashIcon,
-  Search,
   List,
   CreditCard,
   Table as ITable,
+  Mail
 } from "lucide-react";
 import ModalGlobal from "../global/ModalGlobal";
 import AddClientNormal from "./AddClientNormal";
 import AddClientContributor from "./AddClientContributor";
 import { ButtonGroup } from "@nextui-org/react";
+import { Paginator } from "primereact/paginator";
 import {
   Customer,
   CustomerDirection,
   PayloadCustomer,
 } from "../../types/customers.types";
+import { paginator_styles } from "../../styles/paginator.styles";
 import { ThemeContext } from "../../hooks/useTheme";
-import MobileView from "./MobileView"
+import MobileView from "./MobileView";
+import Pagination from "../global/Pagination";
 const ListClients = () => {
   const { theme } = useContext(ThemeContext);
 
@@ -78,20 +82,23 @@ const ListClients = () => {
   const [view, setView] = useState<"table" | "grid" | "list">("table");
 
   const handleSearch = (searchParam: string | undefined) => {
-    getCustomersPagination(1, limit, searchParam ?? search, searchParam ?? email);
+    getCustomersPagination(
+      1,
+      limit,
+      searchParam ?? search,
+      searchParam ?? email
+    );
   };
 
   const modalAdd = useDisclosure();
-  const modalUpdate = useDisclosure();
-const clearModal = () => {
-modalAdd.onClose
-handleChangeCustomer({} as Customer, "")
-}
+
   const [selectedCustomer, setSelectedCustomer] = useState<PayloadCustomer>();
   const [selectedCustomerDirection, setSelectedCustomerDirection] =
     useState<CustomerDirection>();
   const [selectedId, setSelectedId] = useState<number>(0);
-
+  console.log(selectedCustomer);
+  console.log("tipo cliente", typeClient);
+  console.log(selectedId);
   const handleChangeCustomer = (customer: Customer, type = "edit") => {
     const payload_customer: PayloadCustomer = {
       nombre: customer.nombre,
@@ -139,7 +146,13 @@ handleChangeCustomer({} as Customer, "")
     }
     modalAdd.onOpen();
   };
-
+  const clearClose = () => {
+    modalAdd.onClose()
+    handleChangeCustomer({} as Customer, "");
+    setTypeClient("normal")
+    setSelectedId(0)
+    setSelectedCustomer(undefined)
+  };
   return (
     <>
       <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
@@ -147,7 +160,7 @@ handleChangeCustomer({} as Customer, "")
           <div className="flex flex-col justify-between w-full gap-5 mb-5 lg:mb-10 lg:flex-row lg:gap-0">
             <div className="flex items-end gap-3">
               <Input
-                startContent={<Search />}
+                startContent={<User />}
                 className="w-full xl:w-96"
                 variant="bordered"
                 labelPlacement="outside"
@@ -167,7 +180,7 @@ handleChangeCustomer({} as Customer, "")
                 }}
               />
               <Input
-                startContent={<Search />}
+                startContent={<Mail />}
                 className="w-full xl:w-96"
                 variant="bordered"
                 labelPlacement="outside"
@@ -275,6 +288,10 @@ handleChangeCustomer({} as Customer, "")
           </div>
           {(view === "grid" || view === "list") && (
             <MobileView
+            handleChangeCustomer={(customer, type) => {
+              handleChangeCustomer(customer, type)
+              
+            }}
               deletePopover={DeletePopover}
               layout={view as "grid" | "list"}
             />
@@ -354,6 +371,30 @@ handleChangeCustomer({} as Customer, "")
               />
             </DataTable>
           )}
+          <div className="hidden w-full mt-5 md:flex">
+            <Pagination
+              previousPage={customer_pagination.prevPag}
+              nextPage={customer_pagination.nextPag}
+              currentPage={customer_pagination.currentPag}
+              totalPages={customer_pagination.totalPag}
+              onPageChange={(page) => {
+                getCustomersPagination(page, limit, search, email);
+              }}
+            />
+          </div>
+          <div className="flex w-full mt-5 md:hidden">
+            <Paginator
+              pt={paginator_styles(1)}
+              className="flex justify-between w-full"
+              first={customer_pagination.currentPag}
+              rows={limit}
+              totalRecords={customer_pagination.total}
+              template={{
+                layout: "PrevPageLink CurrentPageReport NextPageLink",
+              }}
+              currentPageReportTemplate="{currentPage} de {totalPages}"
+            />
+          </div>
           {/* <Table
           isHeaderSticky
           bottomContentPlacement="outside"
@@ -593,12 +634,13 @@ handleChangeCustomer({} as Customer, "")
           </div>
         </div> */}
         <ModalGlobal
-          title="Nuevo cliente"
           isOpen={modalAdd.isOpen}
-          onClose={clearModal}
+          onClose={() => {
+            clearClose();
+            modalAdd.onClose()
+          }}
+          title={selectedCustomer ? "Editar cliente" : "Nuevo cliente"}
           size={typeClient === "contribuyente" ? "2xl" : "lg"}
-          isDismissable={false}
-          
         >
           <>
             {typeClient === "normal" && (
@@ -754,14 +796,14 @@ export const BottomAdd = ({ setTypeClient, openModal }: PopoverAddProps) => {
     >
       <PopoverTrigger>
         <Button
-          className="h-10 max-w-72"
+          className="h-12 max-w-72"
           style={{
             backgroundColor: theme.colors.third,
             color: theme.colors.primary,
           }}
           endContent={<PlusIcon />}
           onClick={() => (isOpen ? onClose() : onOpen())}
-          size="sm"
+          size="lg"
         >
           Agregar nuevo
         </Button>

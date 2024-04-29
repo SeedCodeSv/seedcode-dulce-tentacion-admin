@@ -4,7 +4,9 @@ import {
   IGetCustomerPagination,
   PayloadCustomer,
 } from "../types/customers.types";
-import { get_user } from "../storage/localStorage";
+import { get_token, get_user } from "../storage/localStorage";
+
+const token = get_token() ?? "";
 
 export const get_customers_pagination = (
   page = 1,
@@ -12,28 +14,46 @@ export const get_customers_pagination = (
   name = "",
   email = ""
 ) => {
-  const user = get_user()
+  const user = get_user();
   return axios.get<IGetCustomerPagination>(
     API_URL +
-    `/customers/list-paginated/${user?.employee.branch.transmitterId}` + "?page=" +
-    page +
-    "&limit=" +
-    limit +
-    "&nombre=" +
-    name +
-    "&correo=" +
-    email
+      `/customers/list-paginated/${user?.employee.branch.transmitterId}` +
+      "?page=" +
+      page +
+      "&limit=" +
+      limit +
+      "&nombre=" +
+      name +
+      "&correo=" +
+      email,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
   );
 };
 
 export const save_customers = (payload: PayloadCustomer) => {
-  return axios.post<{ ok: boolean }>(API_URL + "/customers", payload);
+  return axios.post<{ ok: boolean }>(API_URL + "/customers", payload, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 };
 
 export const update_customers = (payload: PayloadCustomer, id: number) => {
-  return axios.patch<{ ok: boolean }>(API_URL + "/customers/" + id, payload);
+  return axios.patch<{ ok: boolean }>(API_URL + "/customers/" + id, payload, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 };
 
 export const delete_customer = (id: number) => {
-  return axios.delete<{ ok: boolean }>(API_URL + "/customers/" + id);
+  return axios.delete<{ ok: boolean }>(API_URL + "/customers/" + id, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 };

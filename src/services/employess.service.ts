@@ -5,6 +5,8 @@ import {
   GetEmployeeList,
   IGetEmployeesPaginated,
 } from "../types/employees.types";
+import { get_token } from "../storage/localStorage";
+const token = get_token() ?? ""
 
 export const get_employees_paginated = (
   page: number,
@@ -24,7 +26,12 @@ export const get_employees_paginated = (
       "&branch=" +
       branch +
       "&phone=" +
-      phone
+      phone,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
   );
 };
 
