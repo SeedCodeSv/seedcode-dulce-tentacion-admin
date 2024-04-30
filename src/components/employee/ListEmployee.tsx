@@ -201,7 +201,10 @@ function ListEmployee() {
                       </Button>
                     </Drawer.Trigger>
                     <Drawer.Portal>
-                      <Drawer.Overlay className="fixed inset-0 bg-black/40 z-[60]" onClick={() => setOpenVaul(false)}/>
+                      <Drawer.Overlay
+                        className="fixed inset-0 bg-black/40 z-[60]"
+                        onClick={() => setOpenVaul(false)}
+                      />
                       <Drawer.Content className="bg-gray-100 z-[60] flex flex-col rounded-t-[10px] h-auto mt-24 max-h-[80%] fixed bottom-0 left-0 right-0">
                         <div className="p-4 bg-white rounded-t-[10px] flex-1">
                           <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-gray-300 mb-8" />
@@ -238,8 +241,8 @@ function ListEmployee() {
           </div>
           <div className="flex justify-end w-full mb-5">
             <Select
-            className="w-44"
-            variant="bordered"
+              className="w-44"
+              variant="bordered"
               size="lg"
               label="Mostrar"
               labelPlacement="outside"
@@ -325,30 +328,34 @@ function ListEmployee() {
               />
             </DataTable>
           )}
-          <div className="hidden w-full mt-5 md:flex">
-            <Pagination
-              previousPage={employee_paginated.prevPag}
-              nextPage={employee_paginated.nextPag}
-              currentPage={employee_paginated.currentPag}
-              totalPages={employee_paginated.totalPag}
-              onPageChange={(page) => {
-                getEmployeesPaginated(page, limit, fullName, branch, phone);
-              }}
-            />
-          </div>
-          <div className="flex w-full mt-5 md:hidden">
-            <Paginator
-              pt={paginator_styles(1)}
-              className="flex justify-between w-full"
-              first={employee_paginated.currentPag}
-              rows={limit}
-              totalRecords={employee_paginated.total}
-              template={{
-                layout: "PrevPageLink CurrentPageReport NextPageLink",
-              }}
-              currentPageReportTemplate="{currentPage} de {totalPages}"
-            />
-          </div>
+          {employee_paginated.totalPag > 1 && (
+            <>
+              <div className="hidden w-full mt-5 md:flex">
+                <Pagination
+                  previousPage={employee_paginated.prevPag}
+                  nextPage={employee_paginated.nextPag}
+                  currentPage={employee_paginated.currentPag}
+                  totalPages={employee_paginated.totalPag}
+                  onPageChange={(page) => {
+                    getEmployeesPaginated(page, limit, fullName, branch, phone);
+                  }}
+                />
+              </div>
+              <div className="flex w-full mt-5 md:hidden">
+                <Paginator
+                  pt={paginator_styles(1)}
+                  className="flex justify-between w-full"
+                  first={employee_paginated.currentPag}
+                  rows={limit}
+                  totalRecords={employee_paginated.total}
+                  template={{
+                    layout: "PrevPageLink CurrentPageReport NextPageLink",
+                  }}
+                  currentPageReportTemplate="{currentPage} de {totalPages}"
+                />
+              </div>
+            </>
+          )}
         </div>
       </div>
       <ModalGlobal

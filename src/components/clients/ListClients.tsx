@@ -32,7 +32,7 @@ import {
   List,
   CreditCard,
   Table as ITable,
-  Mail
+  Mail,
 } from "lucide-react";
 import ModalGlobal from "../global/ModalGlobal";
 import AddClientNormal from "./AddClientNormal";
@@ -96,9 +96,8 @@ const ListClients = () => {
   const [selectedCustomerDirection, setSelectedCustomerDirection] =
     useState<CustomerDirection>();
   const [selectedId, setSelectedId] = useState<number>(0);
-  console.log(selectedCustomer);
-  console.log("tipo cliente", typeClient);
-  console.log(selectedId);
+  const [selectedTitle, setSelectedTitle] = useState("");
+
   const handleChangeCustomer = (customer: Customer, type = "edit") => {
     const payload_customer: PayloadCustomer = {
       nombre: customer.nombre,
@@ -147,11 +146,12 @@ const ListClients = () => {
     modalAdd.onOpen();
   };
   const clearClose = () => {
-    modalAdd.onClose()
+    modalAdd.onClose();
     handleChangeCustomer({} as Customer, "");
-    setTypeClient("normal")
-    setSelectedId(0)
-    setSelectedCustomer(undefined)
+    setTypeClient("normal");
+    setSelectedId(0);
+    setSelectedCustomer(undefined);
+    setSelectedTitle("");
   };
   return (
     <>
@@ -288,10 +288,9 @@ const ListClients = () => {
           </div>
           {(view === "grid" || view === "list") && (
             <MobileView
-            handleChangeCustomer={(customer, type) => {
-              handleChangeCustomer(customer, type)
-              
-            }}
+              handleChangeCustomer={(customer, type) => {
+                handleChangeCustomer(customer, type);
+              }}
               deletePopover={DeletePopover}
               layout={view as "grid" | "list"}
             />
@@ -354,7 +353,10 @@ const ListClients = () => {
                       />
                     </Button>
                     <Button
-                      onClick={() => handleChangeCustomer(item, "change")}
+                      onClick={() => {
+                        setSelectedTitle("Cambiar el tipo de cliente");
+                        handleChangeCustomer(item, "change");
+                      }}
                       isIconOnly
                       style={{
                         backgroundColor: theme.colors.third,
@@ -371,30 +373,34 @@ const ListClients = () => {
               />
             </DataTable>
           )}
-          <div className="hidden w-full mt-5 md:flex">
-            <Pagination
-              previousPage={customer_pagination.prevPag}
-              nextPage={customer_pagination.nextPag}
-              currentPage={customer_pagination.currentPag}
-              totalPages={customer_pagination.totalPag}
-              onPageChange={(page) => {
-                getCustomersPagination(page, limit, search, email);
-              }}
-            />
-          </div>
-          <div className="flex w-full mt-5 md:hidden">
-            <Paginator
-              pt={paginator_styles(1)}
-              className="flex justify-between w-full"
-              first={customer_pagination.currentPag}
-              rows={limit}
-              totalRecords={customer_pagination.total}
-              template={{
-                layout: "PrevPageLink CurrentPageReport NextPageLink",
-              }}
-              currentPageReportTemplate="{currentPage} de {totalPages}"
-            />
-          </div>
+          {customer_pagination.totalPag > 1 && (
+            <>
+              <div className="hidden w-full mt-5 md:flex">
+                <Pagination
+                  previousPage={customer_pagination.prevPag}
+                  nextPage={customer_pagination.nextPag}
+                  currentPage={customer_pagination.currentPag}
+                  totalPages={customer_pagination.totalPag}
+                  onPageChange={(page) => {
+                    getCustomersPagination(page, limit, search, email);
+                  }}
+                />
+              </div>
+              <div className="flex w-full mt-5 md:hidden">
+                <Paginator
+                  pt={paginator_styles(1)}
+                  className="flex justify-between w-full"
+                  first={customer_pagination.currentPag}
+                  rows={limit}
+                  totalRecords={customer_pagination.total}
+                  template={{
+                    layout: "PrevPageLink CurrentPageReport NextPageLink",
+                  }}
+                  currentPageReportTemplate="{currentPage} de {totalPages}"
+                />
+              </div>
+            </>
+          )}
           {/* <Table
           isHeaderSticky
           bottomContentPlacement="outside"
@@ -637,9 +643,15 @@ const ListClients = () => {
           isOpen={modalAdd.isOpen}
           onClose={() => {
             clearClose();
-            modalAdd.onClose()
+            modalAdd.onClose();
           }}
-          title={selectedCustomer ? "Editar cliente" : "Nuevo cliente"}
+          title={
+            selectedCustomer
+              ? selectedTitle !== ""
+                ? selectedTitle
+                : "Editar cliente"
+              : "Nuevo cliente"
+          }
           size={typeClient === "contribuyente" ? "2xl" : "lg"}
         >
           <>

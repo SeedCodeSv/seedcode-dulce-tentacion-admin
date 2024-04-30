@@ -143,7 +143,7 @@ const AddClientNormal = (props: Props) => {
           handleSubmit,
         }) => (
           <>
-            <div>
+            <div className="pt-3">
               <Input
                 label="Nombre"
                 labelPlacement="outside"
@@ -163,7 +163,7 @@ const AddClientNormal = (props: Props) => {
                 </span>
               )}
             </div>
-            <div>
+            <div className="pt-3">
               <Input
                 label="Correo electrónico"
                 labelPlacement="outside"
@@ -183,7 +183,7 @@ const AddClientNormal = (props: Props) => {
                 </span>
               )}
             </div>
-            <div className="grid grid-cols-2 gap-5">
+            <div className="grid grid-cols-2 gap-5 pt-3">
               <div>
                 <Input
                   type="number"
@@ -227,7 +227,7 @@ const AddClientNormal = (props: Props) => {
                 )}
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-5">
+            <div className="grid grid-cols-2 gap-5 pt-3">
               <div>
                 <Autocomplete
                   onSelectionChange={(key) => {
@@ -252,7 +252,7 @@ const AddClientNormal = (props: Props) => {
                   classNames={{
                     base: "font-semibold text-gray-500 text-sm",
                   }}
-                  selectedKey={selectedKeyDepartment}
+                  // selectedKey={selectedKeyDepartment}
                   defaultSelectedKey={selectedKeyDepartment}
                   value={selectedKeyDepartment}
                 >
@@ -271,8 +271,8 @@ const AddClientNormal = (props: Props) => {
                   </span>
                 )}
               </div>
-              {!values.nombreDepartamento ? (
-                <div className="pt-2">
+              {selectedCodeDep ? (
+                <div>
                   <Autocomplete
                     onSelectionChange={(key) => {
                       if (key) {
@@ -359,7 +359,7 @@ const AddClientNormal = (props: Props) => {
                   )}
                 </div>
               )}
-              <div className="pt-2">
+              {/* <div className="pt-2">
                 <Autocomplete
                   onSelectionChange={(key) => {
                     if (key) {
@@ -400,7 +400,7 @@ const AddClientNormal = (props: Props) => {
                     {errors.municipio}
                   </span>
                 )}
-              </div>
+              </div> */}
             </div>
             <div className="pt-2">
               <Textarea

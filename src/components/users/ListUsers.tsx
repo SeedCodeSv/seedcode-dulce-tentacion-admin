@@ -227,30 +227,34 @@ function ListUsers() {
               />
             </DataTable>
           )}
-          <div className="hidden w-full mt-5 md:flex">
-            <Pagination
-              previousPage={users_paginated.prevPag}
-              nextPage={users_paginated.nextPag}
-              currentPage={users_paginated.currentPag}
-              totalPages={users_paginated.totalPag}
-              onPageChange={(page) => {
-                getUsersPaginated(user?.id ?? 1, page, limit, userName);
-              }}
-            />
-          </div>
-          <div className="flex w-full mt-5 md:hidden">
-            <Paginator
-              pt={paginator_styles(1)}
-              className="flex justify-between w-full"
-              first={users_paginated.currentPag}
-              rows={limit}
-              totalRecords={users_paginated.total}
-              template={{
-                layout: "PrevPageLink CurrentPageReport NextPageLink",
-              }}
-              currentPageReportTemplate="{currentPage} de {totalPages}"
-            />
-          </div>
+          {users_paginated.totalPag > 1 && (
+            <>
+              <div className="hidden w-full mt-5 md:flex">
+                <Pagination
+                  previousPage={users_paginated.prevPag}
+                  nextPage={users_paginated.nextPag}
+                  currentPage={users_paginated.currentPag}
+                  totalPages={users_paginated.totalPag}
+                  onPageChange={(page) => {
+                    getUsersPaginated(user?.id ?? 1, page, limit, userName);
+                  }}
+                />
+              </div>
+              <div className="flex w-full mt-5 md:hidden">
+                <Paginator
+                  pt={paginator_styles(1)}
+                  className="flex justify-between w-full"
+                  first={users_paginated.currentPag}
+                  rows={limit}
+                  totalRecords={users_paginated.total}
+                  template={{
+                    layout: "PrevPageLink CurrentPageReport NextPageLink",
+                  }}
+                  currentPageReportTemplate="{currentPage} de {totalPages}"
+                />
+              </div>
+            </>
+          )}
         </div>
         <ModalGlobal
           isOpen={modalAdd.isOpen}

@@ -214,9 +214,10 @@ function AddClientContributor(props: Props) {
           handleChange,
           handleSubmit,
         }) => (
+          <>
           <div className="grid grid-cols-2 gap-5">
             <div>
-              <div>
+              <div className="mt-10">
                 <Input
                   label="Nombre"
                   labelPlacement="outside"
@@ -364,7 +365,7 @@ function AddClientContributor(props: Props) {
               </div>
             </div>
             <div>
-              <div>
+              <div className="mt-4">
                 <Autocomplete
                   onSelectionChange={(key) => {
                     if (key) {
@@ -379,7 +380,7 @@ function AddClientContributor(props: Props) {
                   onBlur={handleBlur("departamento")}
                   label="Departamento"
                   labelPlacement="outside"
-                  placeholder={"Selecciona el departamento"}
+                  placeholder={props.customer_direction?.nombreDepartamento ? props.customer_direction?.nombreDepartamento : "Selecciona el departamento"}
                   variant="bordered"
                   classNames={{
                     base: "font-semibold text-gray-500 text-sm",
@@ -417,12 +418,12 @@ function AddClientContributor(props: Props) {
                   onBlur={handleBlur("municipio")}
                   label="Municipio"
                   labelPlacement="outside"
-                  placeholder="Selecciona el departamento"
+                  placeholder={props.customer_direction?.nombreMunicipio ? props.customer_direction?.nombreMunicipio : "Selecciona el departamento"}
                   variant="bordered"
                   classNames={{
                     base: "font-semibold text-gray-500 text-sm",
                   }}
-                  selectedKey={selectedKeyCity}
+                  // selectedKey={selectedKeyCity}
                   defaultSelectedKey={selectedKeyCity}
                   value={selectedKeyCity}
                 >
@@ -446,6 +447,7 @@ function AddClientContributor(props: Props) {
                   label="Complemento de dirección"
                   classNames={{
                     label: "font-semibold text-gray-500 text-sm",
+                    input: "min-h-[90px]"
                   }}
                   labelPlacement="outside"
                   variant="bordered"
@@ -503,20 +505,21 @@ function AddClientContributor(props: Props) {
                   </span>
                 )}
               </div>
-              <div className="pt-4">
-                <Button
-                  onClick={() => handleSubmit()}
-                  className="w-full font-semibold"
-                  style={{
-                    backgroundColor: theme.colors.dark,
-                    color: theme.colors.primary,
-                  }}
-                >
-                  Guardar
-                </Button>
-              </div>
             </div>
           </div>
+             <div className="pt-4">
+             <Button
+               onClick={() => handleSubmit()}
+               className="w-full font-semibold"
+               style={{
+                 backgroundColor: theme.colors.dark,
+                 color: theme.colors.primary,
+               }}
+             >
+               Guardar
+             </Button>
+           </div>
+           </>
         )}
       </Formik>
     </div>
