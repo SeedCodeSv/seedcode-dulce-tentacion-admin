@@ -7,7 +7,7 @@ import Employees from "../pages/Employees";
 import Customers from "../pages/Customers";
 import Branch from "../pages/Branch";
 import Error404 from "../pages/Error404";
-
+import Product from "../pages/Product"
 export const router = () => {
   return createBrowserRouter([
     {
@@ -37,6 +37,10 @@ export const router = () => {
     {
       path: "/branches",
       element: <Branch />
+    },
+    {
+      path: "/products",
+      element: <Product />
     },
     {
       path: "*",

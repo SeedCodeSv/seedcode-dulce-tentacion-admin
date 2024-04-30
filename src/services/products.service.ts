@@ -1,21 +1,28 @@
 import axios from "axios";
 import { IGetProductsPaginated, ProductPayload } from "../types/products.types";
 import { API_URL } from "../utils/constants";
+import { get_token, get_user } from "../storage/localStorage";
+const token = get_token() ?? "";
 
-export const get_products = (
-  page = 1,
-  limit = 5,
-  category = "",
-  name = ""
-) => {
+export const get_products = (page = 1, limit = 5, category = "", name = "") => {
+  const user = get_user();
   return axios.get<IGetProductsPaginated>(
     API_URL +
-      `/products/list-paginated/?page=${page}&limit=${limit}&category=${category}&name=${name}`
+      `/products/list-paginated/${user?.employee.branch.transmitterId}?page=${page}&limit=${limit}&category=${category}&name=${name}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
   );
 };
 
 export const create_products = (values: ProductPayload) => {
-  return axios.post<{ ok: boolean }>(API_URL + "/products", values);
+  return axios.post<{ ok: boolean }>(API_URL + "/products", values, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 };
 
 export const update_products = (values: ProductPayload, id: number) => {

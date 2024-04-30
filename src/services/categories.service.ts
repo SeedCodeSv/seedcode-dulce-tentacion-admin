@@ -51,7 +51,8 @@ export const update_category = ({ name }: { name: string }, id: number) => {
 };
 
 export const get_categories = () => {
-  return axios.get<IGetCategories>(API_URL + "/category-products", {
+  const user = get_user();
+  return axios.get<IGetCategories>(API_URL + `/category-products/list-by-transmitter/${user?.employee.branch.transmitterId}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

@@ -14,4 +14,5 @@ export interface IProductsStore {
   ) => void;
   postProducts: (payload: ProductPayload) => void;
   patchProducts: (payload: ProductPayload, id:number) => void
+  // deleteProducts: (id: number) => Promise<boolean>;
 }

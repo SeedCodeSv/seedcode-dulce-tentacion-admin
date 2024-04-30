@@ -7,8 +7,9 @@ import {
   tv,
   CheckboxGroup,
   Button,
+  Autocomplete,
+  AutocompleteItem,
 } from "@nextui-org/react";
-import { AutoComplete } from "antd";
 import { Formik } from "formik";
 import { Check } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
@@ -16,7 +17,8 @@ import * as yup from "yup";
 import { useCategoriesStore } from "../../store/categories.store";
 import { Product, ProductPayload } from "../../types/products.types";
 import { useProductsStore } from "../../store/products.store";
-
+import React, { useRef } from "react";
+import { CategoryProduct } from "../../types/categories.types";
 interface Props {
   product?: Product;
   onCloseModal: () => void;
@@ -26,9 +28,10 @@ function AddProducts(props: Props) {
   const validationSchema = yup.object().shape({
     name: yup.string().required("**El nombre es requerido**"),
     description: yup.string().required("**La descripción es requerida**"),
-    price: yup.number().required("**El precio es requerido**").typeError(
-      "**El precio es requerido**"
-    ),
+    price: yup
+      .number()
+      .required("**El precio es requerido**")
+      .typeError("**El precio es requerido**"),
     code: yup.string().required("**El Código es requerido**"),
     type: yup.string().required("**El tipo es requerido**"),
     categoryProductId: yup
@@ -91,9 +94,18 @@ function AddProducts(props: Props) {
 
     props.onCloseModal();
   };
+  const selectedKeyCategory = useMemo(() => {
+    if (props.product) {
+      const category = list_categories.find(
+        (category) => category.id === props.product?.categoryProductId
+      );
+
+      return JSON.stringify(category);
+    }
+  }, [props, props.product, list_categories]);
 
   return (
-    <div className="mb-32 sm:mb-0">
+    <div className="mb-32 sm:mb-0 w-96">
       <Formik
         validationSchema={validationSchema}
         initialValues={initialValues}
@@ -170,47 +182,39 @@ function AddProducts(props: Props) {
                 </span>
               )}
             </div>
-            <div className="flex flex-col mt-2">
-              <AutoComplete
-                onSearch={(text) => {
-                  setSearch(text);
+            <div className="mt-4">
+              <Autocomplete
+                onSelectionChange={(key) => {
+                  if (key) {
+                    const branchSelected = JSON.parse(
+                      key as string
+                    ) as CategoryProduct;
+                    handleChange("categoryProductId")(branchSelected.id.toString());
+                  }
                 }}
-                aria-labelledby="custom-dropdown"
-                popupClassName="certain-category-search-dropdown"
-                options={items_selected}
-                filterOption={false}
-                showSearch={true}
-                defaultValue={
-                  props.product?.name
-                    ? props.product?.categoryProductId +
-                      " - " +
-                      props.product?.categoryProduct.name
-                    : ""
-                }
                 onBlur={handleBlur("categoryProductId")}
-                onSelect={(item) => {
-                  const id = item.split(" - ")[0];
-                  handleChange("categoryProductId")(id);
+                label="Categoría producto"
+                labelPlacement="outside"
+                placeholder="Selecciona la categoría"
+                variant="bordered"
+                classNames={{
+                  base: "font-semibold text-gray-500 text-sm",
                 }}
+                selectedKey={selectedKeyCategory}
+                defaultSelectedKey={selectedKeyCategory}
+                value={selectedKeyCategory}
               >
-                <Input
-                  variant="bordered"
-                  size="md"
-                  label="Categoría del producto"
-                  placeholder="Escribe para buscar"
-                  labelPlacement="outside"
-                  classNames={{
-                    label: "text-sm font-semibold",
-                  }}
-                />
-              </AutoComplete>
-              <div className="mt-8">
-                {errors.categoryProductId && touched.categoryProductId && (
-                  <span className="text-sm font-semibold text-red-500">
-                    {errors.categoryProductId}
-                  </span>
-                )}
-              </div>
+                {list_categories.map((bra) => (
+                  <AutocompleteItem value={bra.name} key={JSON.stringify(bra)}>
+                    {bra.name}
+                  </AutocompleteItem>
+                ))}
+              </Autocomplete>
+              {errors.categoryProductId && touched.categoryProductId && (
+                <span className="text-sm font-semibold text-red-500">
+                  {errors.categoryProductId}
+                </span>
+              )}
             </div>
             <div className="mt-8">
               <Input
@@ -239,7 +243,7 @@ function AddProducts(props: Props) {
               <CheckboxGroup
                 orientation="horizontal"
                 onChange={(e) => {
-                  const selected = (e as unknown) as Array<string>;
+                  const selected = e as unknown as Array<string>;
                   handleChange("type")(selected[selected.length - 1] ?? "");
                 }}
                 onBlur={handleBlur("type")}
@@ -278,15 +282,13 @@ const checkbox = tv({
   variants: {
     isSelected: {
       true: {
-        base:
-          "border-success bg-success hover:bg-success-500 hover:border-success-500",
+        base: "border-success bg-success hover:bg-success-500 hover:border-success-500",
         content: "text-primary-foreground pl-1",
       },
     },
     isFocusVisible: {
       true: {
-        base:
-          "outline-none ring-2 ring-focus ring-offset-2 ring-offset-background",
+        base: "outline-none ring-2 ring-focus ring-offset-2 ring-offset-background",
       },
     },
   },
@@ -321,7 +323,6 @@ export const CustomCheckBox = (props: any) => {
           isSelected ? <Check className="ml-1" color="white" /> : null
         }
         variant="faded"
-        {...getLabelProps()}
       >
         {children ? children : isSelected ? "Enabled" : "Disabled"}
       </Chip>

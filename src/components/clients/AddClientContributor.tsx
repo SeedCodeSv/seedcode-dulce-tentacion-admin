@@ -198,7 +198,6 @@ function AddClientContributor(props: Props) {
     cat_019_codigo_de_actividad_economica,
     cat_019_codigo_de_actividad_economica.length,
   ]);
-  console.log(selectedKeyCodActivity);
   return (
     <div className="mb-32 sm:mb-0">
       <Formik
