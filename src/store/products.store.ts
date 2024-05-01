@@ -4,10 +4,11 @@ import {
   create_products,
   get_products,
   update_products,
+  delete_products
 } from "../services/products.service";
 import { IProductsStore } from "./types/products.store";
 import { toast } from "sonner";
-import { messages } from "../utils/constants";
+import { messages } from '../utils/constants';
 
 export const useProductsStore = create<IProductsStore>((set, get) => ({
   paginated_products: {
@@ -65,5 +66,14 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
         toast.error(messages.error);
       });
   },
-  
+  async deleteProducts(id) {
+    delete_products(id)
+      .then(() => {
+        toast.success(messages.success)
+        get().getPaginatedProducts(1, 8, "", "")
+      })
+      .catch(() => {
+        toast.error(messages.error)
+      })
+  },
 }));

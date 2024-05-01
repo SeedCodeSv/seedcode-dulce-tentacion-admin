@@ -346,6 +346,7 @@ const ListClients = () => {
                       style={{
                         backgroundColor: theme.colors.secondary,
                       }}
+                      size="lg"
                     >
                       <EditIcon
                         style={{ color: theme.colors.primary }}
@@ -361,6 +362,7 @@ const ListClients = () => {
                       style={{
                         backgroundColor: theme.colors.third,
                       }}
+                      size="lg"
                     >
                       <Repeat
                         style={{ color: theme.colors.primary }}
@@ -703,6 +705,7 @@ export const DeletePopover = ({ customers }: PopProps) => {
           style={{
             backgroundColor: theme.colors.danger,
           }}
+          size="lg"
         >
           <TrashIcon
             style={{

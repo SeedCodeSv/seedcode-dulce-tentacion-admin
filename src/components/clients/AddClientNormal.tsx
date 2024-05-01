@@ -18,6 +18,7 @@ import { useContext, useEffect, useMemo, useState } from "react";
 import { Municipio } from "../../types/billing/cat-013-municipio.types";
 import { Departamento } from "../../types/billing/cat-012-departamento.types";
 import { ThemeContext } from "../../hooks/useTheme";
+import { get_user } from "../../storage/localStorage";
 
 interface Props {
   closeModal: () => void;
@@ -76,12 +77,23 @@ const AddClientNormal = (props: Props) => {
   const [selectedCodeDep, setSelectedCodeDep] = useState("0");
 
   const { postCustomer, patchCustomer } = useCustomerStore();
+  const user = get_user();
 
   const onSubmit = (payload: PayloadCustomer) => {
     if (props.id || props.id !== 0) {
-      patchCustomer(payload, props.id!);
+      const values = {
+        ...payload,
+        esContribuyente: 0,
+        transmitterId: Number(user?.employee.branch.transmitterId),
+      };
+      patchCustomer(values, props.id!);
     } else {
-      postCustomer(payload);
+      const values = {
+        ...payload,
+        esContribuyente: 0,
+        transmitterId: Number(user?.employee.branch.transmitterId),
+      };
+      postCustomer(values);
     }
     props.closeModal();
   };
@@ -207,7 +219,7 @@ const AddClientNormal = (props: Props) => {
               </div>
               <div>
                 <Input
-                  isReadOnly
+                  type="number"
                   label="Numero documento"
                   labelPlacement="outside"
                   name="numDocumento"
@@ -296,7 +308,7 @@ const AddClientNormal = (props: Props) => {
                       base: "font-semibold text-gray-500 text-sm",
                     }}
                     // selectedKey={selectedKeyCity}
-                    defaultSelectedKey={selectedKeyCity}
+                    defaultSelectedKey={props.customer_direction?.municipio}
                     value={selectedKeyCity}
                   >
                     {filteredMunicipios.map((dep) => (

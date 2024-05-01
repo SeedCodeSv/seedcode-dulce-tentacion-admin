@@ -7,6 +7,9 @@ import {
   Select,
   SelectItem,
   ButtonGroup,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
 } from "@nextui-org/react";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
@@ -15,7 +18,7 @@ import {
   Table as ITable,
   CreditCard,
   List,
-  Edit,
+  EditIcon,
   Search,
   Phone,
   Truck,
@@ -23,7 +26,6 @@ import {
 } from "lucide-react";
 import { Employee } from "../../types/employees.types";
 import AddButton from "../global/AddButton";
-import { ConfirmPopup } from "primereact/confirmpopup";
 import Pagination from "../global/Pagination";
 import { Paginator } from "primereact/paginator";
 import { ThemeContext } from "../../hooks/useTheme";
@@ -309,7 +311,6 @@ function ListEmployee() {
                 header="Acciones"
                 body={(item) => (
                   <div className="flex w-full gap-5">
-                    <DeletePopover employee={item} />
                     <Button
                       size="lg"
                       onClick={() => {
@@ -318,11 +319,12 @@ function ListEmployee() {
                       }}
                       isIconOnly
                       style={{
-                        backgroundColor: theme.colors.dark,
+                        backgroundColor: theme.colors.secondary,
                       }}
                     >
-                      <Edit color={theme.colors.primary} size={20} />
+                      <EditIcon style={{ color: theme.colors.primary }} size={20} />
                     </Button>
+                    <DeletePopover employee={item} />
                   </div>
                 )}
               />
@@ -380,59 +382,59 @@ interface PopProps {
 
 export const DeletePopover = ({ employee }: PopProps) => {
   const { theme } = useContext(ThemeContext);
-  const buttonRef = useRef<HTMLButtonElement>();
 
   const { deleteEmployee } = useEmployeeStore();
-  const [visible, setVisible] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleDelete = async () => {
     await deleteEmployee(employee.id);
+    onClose();
   };
 
   return (
     <>
-      <Button
-        ref={buttonRef as any}
-        style={{
-          backgroundColor: theme.colors.warning,
-          color: theme.colors.primary,
-        }}
-        size="lg"
-        isIconOnly
-        onClick={() => setVisible(!visible)}
-      >
-        <TrashIcon size={20} />
-      </Button>
-      <ConfirmPopup
-        visible={visible}
-        onHide={() => setVisible(false)}
-        target={buttonRef.current}
-        message="¿Deseas eliminar este usuario?"
-        content={({ message, acceptBtnRef, rejectBtnRef }) => (
-          <>
-            <div className="p-5 border border-gray-100 shadow-2xl rounded-xl">
-              <p className="text-lg font-semibold text-center">{message}</p>
-              <div className="flex justify-between gap-5 mt-5">
-                <Button
-                  ref={acceptBtnRef}
-                  size="lg"
-                  className="font-semibold"
-                  style={{
-                    backgroundColor: theme.colors.third,
-                    color: theme.colors.primary,
-                  }}
-                  onPress={handleDelete}
-                >
-                  Eliminar
-                </Button>
-                <Button size="lg" ref={rejectBtnRef}>
-                  Cancelar
-                </Button>
-              </div>
+      <Popover isOpen={isOpen} onClose={onClose} backdrop="blur" showArrow>
+        <PopoverTrigger>
+          <Button
+            onClick={onOpen}
+            isIconOnly
+            style={{
+              backgroundColor: theme.colors.danger,
+            }}
+            size="lg"
+          >
+            <TrashIcon
+              style={{
+                color: theme.colors.primary,
+              }}
+              size={20}
+            />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent>
+          <div className="w-full p-5">
+            <p className="font-semibold text-gray-600">
+              Eliminar {employee.fullName}
+            </p>
+            <p className="mt-3 text-center text-gray-600 w-72">
+              ¿Estas seguro de eliminar este registro?
+            </p>
+            <div className="mt-4">
+              <Button onClick={onClose}>No, cancelar</Button>
+              <Button
+                onClick={() => handleDelete()}
+                className="ml-5"
+                style={{
+                  backgroundColor: theme.colors.danger,
+                  color: theme.colors.primary,
+                }}
+              >
+                Si, eliminar
+              </Button>
             </div>
-          </>
-        )}
-      />
+          </div>
+        </PopoverContent>
+      </Popover>
     </>
   );
 };

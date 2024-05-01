@@ -1,30 +1,20 @@
 import {
-  Table,
-  TableHeader,
-  TableColumn,
-  TableBody,
-  TableRow,
-  TableCell,
   Input,
   Button,
-  Card,
-  CardHeader,
-  CardBody,
   useDisclosure,
   Popover,
   PopoverTrigger,
   PopoverContent,
   Select,
   SelectItem,
+  Autocomplete,
+  AutocompleteItem,
 } from "@nextui-org/react";
-import { useEffect, useMemo, useState, useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import {
-  ChevronLeft,
-  ChevronRight,
   EditIcon,
-  PlusIcon,
   SearchIcon,
   TrashIcon,
   List,
@@ -45,7 +35,8 @@ import { useCategoriesStore } from "../../store/categories.store";
 import { ThemeContext } from "../../hooks/useTheme";
 import { ButtonGroup } from "@nextui-org/react";
 import { paginator_styles } from "../../styles/paginator.styles";
-
+import { CategoryProduct } from "../../types/categories.types";
+import MobileView from "./MobileView"
 
 // import ReturnImgCategory from "../global/ReturnImgCategory";
 
@@ -61,7 +52,7 @@ function ListProducts() {
   const [category, setCategory] = useState("");
   const [limit, setLimit] = useState(8);
   const [view, setView] = useState<"table" | "grid" | "list">("table");
-
+const [page, serPage] = useState(1)
   useEffect(() => {
     getPaginatedProducts(1, 8, "", "");
   }, []);
@@ -71,8 +62,8 @@ function ListProducts() {
     getListCategories();
   }, []);
 
-  const changePage = (page: number) => {
-    getPaginatedProducts(page, 8, category, search);
+  const handleSearch = (searchParam: string | undefined) => {
+    getPaginatedProducts(page, 8, searchParam ?? category, searchParam ?? search);
   };
 
   const modalAdd = useDisclosure();
@@ -89,7 +80,7 @@ function ListProducts() {
             <div className="flex items-end gap-3">
              <Input
                 startContent={<SearchIcon />}
-                className="w-full xl:w-96"
+                className="w-full xl:w-80"
                 variant="bordered"
                 labelPlacement="outside"
                 label="Buscar"
@@ -107,34 +98,35 @@ function ListProducts() {
                   setSearch("");
                 }}
               />
-              <Select
-                aria-labelledby="select-label"
-                className="bg-white"
-                placeholder="Buscar por categoría..."
-                size="sm"
-                startContent={
-                  <SearchIcon size={20} className="text-default-300" />
-                }
-                variant="bordered"
-                onChange={(e) => {
-                  if (e.target.value) {
-                    setCategory(e.target.value);
-                  } else {
-                    setCategory("");
+              <Autocomplete
+                onSelectionChange={(key) => {
+                  if (key) {
+                    const branchSelected = JSON.parse(
+                      key as string
+                    ) as CategoryProduct;
+                    setCategory(branchSelected.name);
                   }
                 }}
+                className="w-full xl:w-80"
+                label="Categoría producto"
+                labelPlacement="outside"
+                placeholder="Selecciona la categoría"
+                variant="bordered"
+                classNames={{
+                  base: "font-semibold text-gray-500 text-sm",
+                }}
+                size="lg"
+                value={category}
+                clearButtonProps={{
+                  onClick: () => setCategory("")
+                }}
               >
-                {list_categories.map((list) => (
-                  <SelectItem key={list.name} textValue={list.name}>
-                    <div className="flex items-center gap-2">
-                      {/* <ReturnImgCategory category={list.name} /> */}
-                      <div className="flex flex-col">
-                        <span className="text-small">{list.name}</span>
-                      </div>
-                    </div>
-                  </SelectItem>
+                {list_categories.map((bra) => (
+                  <AutocompleteItem value={bra.name} key={JSON.stringify(bra)}>
+                    {bra.name}
+                  </AutocompleteItem>
                 ))}
-              </Select>
+              </Autocomplete>
               <Button
                 style={{
                   backgroundColor: theme.colors.secondary,
@@ -143,20 +135,10 @@ function ListProducts() {
                 className="font-semibold"
                 color="primary"
                 size="lg"
-                // onClick={() => handleSearch(undefined)}
+                onClick={() => handleSearch(undefined)}
               >
                 Buscar
               </Button>
-              {/* <div className="flex justify-end w-full">
-                <Button
-                  className="h-10 max-w-72 bg-coffee-green text-background"
-                  endContent={<PlusIcon />}
-                  size="sm"
-                  onClick={() => modalAdd.onOpen()}
-                >
-                  Agregar nuevo
-                </Button>
-              </div> */}
             </div>
             <div className="flex items-end justify-between gap-10 mt lg:justify-end">
               <ButtonGroup>
@@ -201,19 +183,16 @@ function ListProducts() {
                 </Button>
               </ButtonGroup>
               <div className="flex justify-end w-full">
-                {/* <BottomAdd
-                  setTypeClient={setTypeClient}
-                  openModal={modalAdd.onOpen}
-                /> */}
                  <AddButton
                   onClick={() => {
                     modalAdd.onOpen();
+                    setSelectedProduct(undefined)
                   }}
                 />
               </div>
             </div>
           </div>
-          <div className="flex justify-end w-full">
+          <div className="flex justify-end w-full mb-5">
             <Select
               className="w-44"
               variant="bordered"
@@ -237,7 +216,16 @@ function ListProducts() {
               <SelectItem key={"100"}>100</SelectItem>
             </Select>
           </div>
-          <div className="flex justify-end w-full py-3 bg-first-300"></div>
+          {(view === "grid" || view === "list") && (
+            <MobileView
+            DeletePopover={DeletePopover}
+              openEditModal={(product) => {
+                setSelectedProduct(product);
+                modalAdd.onOpen();
+              }}
+              layout={view as "grid" | "list"}
+            />
+          )}
           {view === "table" && (
             <DataTable
               className="shadow"
@@ -281,7 +269,10 @@ function ListProducts() {
                 body={(item) => (
                   <div className="flex w-full gap-5">
                     <Button
-                      // onClick={() => handleChangeCustomer(item, "edit")}
+                      onClick={() => {
+                        setSelectedProduct(item);
+                        modalAdd.onOpen();
+                      }}
                       isIconOnly
                       style={{
                         backgroundColor: theme.colors.secondary,
@@ -307,6 +298,7 @@ function ListProducts() {
                   currentPage={paginated_products.currentPag}
                   totalPages={paginated_products.totalPag}
                   onPageChange={(page) => {
+                    serPage(page)
                     getPaginatedProducts(page, limit, category, search);
                   }}
                 />
@@ -521,10 +513,10 @@ export const DeletePopover = ({ product }: PopProps) => {
   const { theme } = useContext(ThemeContext);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const { } = useProductsStore();
+  const {deleteProducts} = useProductsStore();
 
-  const handleDelete = async (id: number) => {
-    // await deleteCustomer(id);
+  const handleDelete = async () => {
+    await deleteProducts(product.id);
     onClose();
   };
 
@@ -549,7 +541,7 @@ export const DeletePopover = ({ product }: PopProps) => {
       <PopoverContent>
         <div className="w-full p-5">
           <p className="font-semibold text-gray-600">
-            Eliminar
+            Eliminar {product.name}
           </p>
           <p className="mt-3 text-center text-gray-600 w-72">
             ¿Estas seguro de eliminar este registro?
@@ -557,7 +549,7 @@ export const DeletePopover = ({ product }: PopProps) => {
           <div className="mt-4">
             <Button onClick={onClose}>No, cancelar</Button>
             <Button
-              // onClick={() => handleDelete(customers.id)}
+              onClick={() => handleDelete()}
               className="ml-5"
               style={{
                 backgroundColor: theme.colors.danger,

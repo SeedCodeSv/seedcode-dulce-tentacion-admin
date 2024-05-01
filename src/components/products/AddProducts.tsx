@@ -17,7 +17,6 @@ import * as yup from "yup";
 import { useCategoriesStore } from "../../store/categories.store";
 import { Product, ProductPayload } from "../../types/products.types";
 import { useProductsStore } from "../../store/products.store";
-import React, { useRef } from "react";
 import { CategoryProduct } from "../../types/categories.types";
 interface Props {
   product?: Product;
@@ -189,18 +188,24 @@ function AddProducts(props: Props) {
                     const branchSelected = JSON.parse(
                       key as string
                     ) as CategoryProduct;
-                    handleChange("categoryProductId")(branchSelected.id.toString());
+                    handleChange("categoryProductId")(
+                      branchSelected.id.toString()
+                    );
                   }
                 }}
                 onBlur={handleBlur("categoryProductId")}
                 label="Categoría producto"
                 labelPlacement="outside"
-                placeholder="Selecciona la categoría"
+                placeholder={
+                  props.product?.categoryProduct.name ??
+                  props.product?.categoryProduct.name ??
+                  "Selecciona la categoría"
+                }
                 variant="bordered"
                 classNames={{
                   base: "font-semibold text-gray-500 text-sm",
                 }}
-                selectedKey={selectedKeyCategory}
+                // selectedKey={selectedKeyCategory}
                 defaultSelectedKey={selectedKeyCategory}
                 value={selectedKeyCategory}
               >
@@ -243,7 +248,7 @@ function AddProducts(props: Props) {
               <CheckboxGroup
                 orientation="horizontal"
                 onChange={(e) => {
-                  const selected = e as unknown as Array<string>;
+                  const selected = (e as unknown) as Array<string>;
                   handleChange("type")(selected[selected.length - 1] ?? "");
                 }}
                 onBlur={handleBlur("type")}
@@ -282,13 +287,15 @@ const checkbox = tv({
   variants: {
     isSelected: {
       true: {
-        base: "border-success bg-success hover:bg-success-500 hover:border-success-500",
+        base:
+          "border-success bg-success hover:bg-success-500 hover:border-success-500",
         content: "text-primary-foreground pl-1",
       },
     },
     isFocusVisible: {
       true: {
-        base: "outline-none ring-2 ring-focus ring-offset-2 ring-offset-background",
+        base:
+          "outline-none ring-2 ring-focus ring-offset-2 ring-offset-background",
       },
     },
   },

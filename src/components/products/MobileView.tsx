@@ -1,7 +1,6 @@
 import { useContext } from "react";
 import { Button } from "@nextui-org/react";
 import { DataView } from "primereact/dataview";
-import { useCustomerStore } from "../../store/customers.store";
 import { classNames } from "primereact/utils";
 import {
   User as IUser,
@@ -10,24 +9,28 @@ import {
   Mail,
   Users2Icon,
   EditIcon,
-  Repeat,
+  ShoppingBag,
+  ClipboardList,
+  Barcode,
+  DollarSign
 } from "lucide-react";
 import { ThemeContext } from "../../hooks/useTheme";
-import { Customer } from "../../types/customers.types";
+import { Product } from "../../types/products.types";
+import { useProductsStore } from "../../store/products.store";
 
 interface Props {
   layout: "grid" | "list";
-  deletePopover: ({ customers }: { customers: Customer }) => JSX.Element;
-  handleChangeCustomer: (customer: Customer, type: string) => void;
+  DeletePopover: ({ product }: { product: Product }) => JSX.Element;
+  openEditModal: (product: Product) => void;
 }
 
-function MobileView({ layout, handleChangeCustomer }: Props) {
-  const { customer_pagination } = useCustomerStore();
+function MobileView({ layout, openEditModal }: Props) {
+    const { paginated_products } = useProductsStore();
 
   return (
     <div className="w-full pb-10">
       <DataView
-        value={customer_pagination.customers}
+        value={paginated_products.products}
         gutter
         layout={layout}
         pt={{
@@ -37,9 +40,7 @@ function MobileView({ layout, handleChangeCustomer }: Props) {
           }),
         }}
         color="surface"
-        itemTemplate={(customer) =>
-          gridItem(customer, layout, handleChangeCustomer)
-        }
+        itemTemplate={(customer) => gridItem(customer, layout, openEditModal)}
         emptyMessage="No customers found"
       />
     </div>
@@ -47,9 +48,9 @@ function MobileView({ layout, handleChangeCustomer }: Props) {
 }
 
 const gridItem = (
-  customers: Customer,
+  product: Product,
   layout: "grid" | "list",
-  handleChangeCustomer: (customer: Customer, type: string) => void
+  openEditModal: (product: Product) => void
 ) => {
   const { theme } = useContext(ThemeContext);
   return (
@@ -59,42 +60,33 @@ const gridItem = (
           className={classNames(
             "w-full shadow-sm hover:shadow-lg p-8 rounded-2xl"
           )}
-          key={customers.id}
+          key={product.id}
         >
           <div className="flex w-full gap-2">
-            <IUser color={"#274c77"} size={35} />
-            {customers.nombre}
+            <ShoppingBag color={"#274c77"} size={33} />
+            {product.name}
           </div>
           <div className="flex w-full gap-2 mt-3">
-            <Phone color="#00bbf9" size={33} />
-            {customers.telefono}
+            <ClipboardList color="#00bbf9" size={33} />
+            {product.type}
           </div>
           <div className="flex w-full gap-2 mt-3">
-            <Mail color={"#006d77"} size={35} />
-            {customers.correo}
+            <Barcode color={"#006d77"} size={33} />
+            {product.code}
           </div>
           <div className="flex w-full gap-2 mt-3">
-            <Users2Icon color={"#006d77"} size={35} />
-            {customers.esContribuyente ? "Si" : "No"}
+            <DollarSign color={"#006d77"} size={33} />
+            {product.price}
           </div>
           <div className="flex justify-between mt-5 w-ful">
             <Button
-              onClick={() => handleChangeCustomer(customers, "edit")}
+              onClick={() => openEditModal(product)}
               isIconOnly
               style={{
                 backgroundColor: theme.colors.secondary,
               }}
             >
               <EditIcon style={{ color: theme.colors.primary }} size={20} />
-            </Button>
-            <Button
-              onClick={() => handleChangeCustomer(customers, "change")}
-              isIconOnly
-              style={{
-                backgroundColor: theme.colors.third,
-              }}
-            >
-              <Repeat style={{ color: theme.colors.primary }} size={20} />
             </Button>
             <Button
               isIconOnly
@@ -108,21 +100,18 @@ const gridItem = (
           </div>
         </div>
       ) : (
-        <ListItem
-          customers={customers}
-          handleChangeCustomer={handleChangeCustomer}
-        />
+        <ListItem product={product} openEditModal={openEditModal} />
       )}
     </>
   );
 };
 
 const ListItem = ({
-  customers,
-  handleChangeCustomer,
+  product,
+  openEditModal,
 }: {
-  customers: Customer;
-  handleChangeCustomer: (customer: Customer, type: string) => void;
+  product: Product;
+  openEditModal: (product: Product) => void;
 }) => {
   const { theme } = useContext(ThemeContext);
   return (
@@ -130,41 +119,32 @@ const ListItem = ({
       <div className="flex w-full col-span-1 p-5 border-b shadow md:col-span-2 lg:col-span-3 xl:col-span-4">
         <div className="w-full">
           <div className="flex items-center w-full gap-2">
-            <IUser color={"#274c77"} size={35} />
-            {customers.nombre}
+            <ShoppingBag color={"#274c77"} size={33} />
+            {product.name}
           </div>
           <div className="flex items-center w-full gap-2 mt-3">
-            <Phone color="#00bbf9" size={35} />
-            {customers.telefono}
+            <ClipboardList color="#00bbf9" size={33} />
+            {product.type}
           </div>
           <div className="flex items-center w-full gap-2 mt-3">
-            <Mail color={"#006d77"} size={35} />
-            {customers.correo}
+            <Barcode color={"#006d77"} size={33} />
+            {product.code}
           </div>
           <div className="flex items-center w-full gap-2 mt-3">
-            <Users2Icon color={"#006d77"} size={35} />
-            {customers.esContribuyente ? "Si" : "No"}
+            <DollarSign color={"#006d77"} size={33} />
+            {product.price}
           </div>
         </div>
         <div className="flex flex-col items-end justify-between w-full">
-        <Button
-              onClick={() => handleChangeCustomer(customers, "edit")}
-              isIconOnly
-              style={{
-                backgroundColor: theme.colors.secondary,
-              }}
-            >
-              <EditIcon style={{ color: theme.colors.primary }} size={20} />
-            </Button>
-            <Button
-              onClick={() => handleChangeCustomer(customers, "change")}
-              isIconOnly
-              style={{
-                backgroundColor: theme.colors.third,
-              }}
-            >
-              <Repeat style={{ color: theme.colors.primary }} size={20} />
-            </Button>
+          <Button
+            onClick={() => openEditModal(product)}
+            isIconOnly
+            style={{
+              backgroundColor: theme.colors.secondary,
+            }}
+          >
+            <EditIcon style={{ color: theme.colors.primary }} size={20} />
+          </Button>
           <Button
             isIconOnly
             size="lg"

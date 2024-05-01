@@ -8,7 +8,7 @@ export const get_products = (page = 1, limit = 5, category = "", name = "") => {
   const user = get_user();
   return axios.get<IGetProductsPaginated>(
     API_URL +
-      `/products/list-paginated/${user?.employee.branch.transmitterId}?page=${page}&limit=${limit}&category=${category}&name=${name}`,
+    `/products/list-paginated/${user?.employee.branch.transmitterId}?page=${page}&limit=${limit}&category=${category}&name=${name}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -26,5 +26,18 @@ export const create_products = (values: ProductPayload) => {
 };
 
 export const update_products = (values: ProductPayload, id: number) => {
-  return axios.patch<{ ok: boolean }>(API_URL + "/products/" + id, values);
+  return axios.patch<{ ok: boolean }>(API_URL + "/products/" + id, values,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 };
+export const delete_products = (id: number) => {
+  return axios.delete<{ ok: boolean }>(API_URL + "/products/" + id, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
