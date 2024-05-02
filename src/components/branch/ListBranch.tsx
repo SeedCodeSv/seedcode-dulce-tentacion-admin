@@ -11,6 +11,7 @@ import {
 } from "@nextui-org/react";
 import {
   Edit,
+  ShoppingBag,
   PhoneIcon,
   SearchIcon,
   TrashIcon,
@@ -35,15 +36,12 @@ import TableBranch from "./TableBranch";
 import MobileView from "./MobileView";
 import { Branches } from "../../types/branches.types";
 import { toast } from "sonner";
-
+import ListBranchProduct from "./branch_product/ListBranchProduct";
 function ListBranch() {
   const { theme } = useContext(ThemeContext);
 
-  const {
-    getBranchesPaginated,
-    branches_paginated,
-    disableBranch,
-  } = useBranchesStore();
+  const { getBranchesPaginated, branches_paginated, disableBranch } =
+    useBranchesStore();
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -62,7 +60,7 @@ function ListBranch() {
   };
 
   const modalAdd = useDisclosure();
-
+  const modalBranchProduct = useDisclosure();
   const filters = useMemo(() => {
     return (
       <>
@@ -262,6 +260,17 @@ function ListBranch() {
           >
             {active === 1 ? "Mostrar inactivos" : "Mostrar activos"}
           </Switch>
+          {/* <div className="hidden md:flex">
+            <Button
+              style={global_styles().secondaryStyle}
+              className="px-12 font-semibold max-w-72"
+              size="lg"
+              onClick={() => handleSearch()}
+              type="button"
+            >
+              p
+            </Button>
+          </div> */}
           <Select
             className="w-44"
             variant="bordered"
@@ -289,7 +298,6 @@ function ListBranch() {
             actionsElement={(item) => (
               <>
                 <div className="flex w-full gap-5">
-                  <DeletePopUp branch={item} />
                   {item.isActive ? (
                     <>
                       <Button
@@ -314,6 +322,17 @@ function ListBranch() {
                       </Switch>
                     </>
                   )}
+                  <Button
+                    size="lg"
+                    onClick={() => {
+                      modalBranchProduct.onOpen()
+                    }}
+                    isIconOnly
+                    style={global_styles().thirdStyle}
+                  >
+                    <ShoppingBag />
+                  </Button>
+                  <DeletePopUp branch={item} />
                 </div>
               </>
             )}
@@ -370,6 +389,16 @@ function ListBranch() {
         size="w-96 sm:w-[28rem] md:w-[30rem] lg:w-[32rem] xl:w-[34rem]"
       >
         <AddBranch branch={selectedBranch} closeModal={modalAdd.onClose} />
+      </ModalGlobal>
+      <ModalGlobal
+        isOpen={modalBranchProduct.isOpen}
+        onClose={() => {
+          modalBranchProduct.onClose();
+        }}
+        title={selectedBranch ? "Editar sucursal" : "Nueva sucursal"}
+        size="auto"
+      >
+        <ListBranchProduct id={1} />
       </ModalGlobal>
     </div>
   );

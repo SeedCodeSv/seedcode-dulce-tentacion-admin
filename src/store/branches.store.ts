@@ -7,6 +7,7 @@ import {
   delete_branch,
   get_branches_list,
   disable_branch,
+  get_branch_products
 } from "../services/branches.service";
 import { messages } from "../utils/constants";
 import { toast } from "sonner";
@@ -26,6 +27,7 @@ export const useBranchesStore = create<IBranchStore>((set, get) => ({
   limit: 5,
   loading: false,
   active: 1 as 1 | 0,
+  branch_products_list: [],
   async getBranchesList() {
     return get_branches_list()
       .then(({ data }) => {
@@ -105,4 +107,13 @@ export const useBranchesStore = create<IBranchStore>((set, get) => ({
       return false;
     }
   },
+  async getBranchProducts(id, name, category) {
+      await get_branch_products(id, name, category)
+      .then(({ data }) => {
+        set({ branch_products_list: data.branchProducts });
+      }).catch(() => {
+        set({ branch_products_list: [] });
+        toast.error(messages.error);
+      })
+  }
 }));

@@ -27,17 +27,15 @@ import { ConfirmPopup } from "primereact/confirmpopup";
 import AddButton from "../global/AddButton";
 import { Paginator } from "primereact/paginator";
 import { paginator_styles } from "../../styles/paginator.styles";
-import { useAuthStore } from "../../store/auth.store";
 import Pagination from "../global/Pagination";
 
 function ListUsers() {
   const { theme } = useContext(ThemeContext);
-  const { user } = useAuthStore();
   const [limit, setLimit] = useState(5);
   const { users_paginated, getUsersPaginated } = useUsersStore();
 
   useEffect(() => {
-    getUsersPaginated(user?.id ?? 1, 1, limit, "");
+    getUsersPaginated(1, limit, "");
   }, [limit]);
 
   const modalAdd = useDisclosure();
@@ -55,7 +53,7 @@ function ListUsers() {
   const [userName, setUserName] = useState("");
 
   const handleSearch = (searchParam: string | undefined) => {
-    getUsersPaginated(user?.id ?? 1, 1, limit, searchParam ?? userName);
+    getUsersPaginated(1, limit, searchParam ?? userName);
   };
 
   return (
@@ -208,7 +206,6 @@ function ListUsers() {
                 header="Acciones"
                 body={(item) => (
                   <div className="flex w-full gap-5">
-                    <DeletePopUp id={item.id} />
                     <Button
                       size="lg"
                       onClick={() => {
@@ -217,11 +214,12 @@ function ListUsers() {
                       }}
                       isIconOnly
                       style={{
-                        backgroundColor: theme.colors.danger,
+                        backgroundColor: theme.colors.warning,
                       }}
                     >
                       <Key color={theme.colors.primary} size={20} />
                     </Button>
+                    <DeletePopUp id={item.id} />
                   </div>
                 )}
               />
@@ -236,7 +234,7 @@ function ListUsers() {
                   currentPage={users_paginated.currentPag}
                   totalPages={users_paginated.totalPag}
                   onPageChange={(page) => {
-                    getUsersPaginated(user?.id ?? 1, page, limit, userName);
+                    getUsersPaginated(page, limit, userName);
                   }}
                 />
               </div>
@@ -290,17 +288,20 @@ const DeletePopUp = ({ id }: Props) => {
   const buttonRef = useRef<HTMLButtonElement>();
 
   const { theme } = useContext(ThemeContext);
+  const { deleteUser } = useUsersStore();
 
   const [visible, setVisible] = useState(false);
 
-  const handleDelete = () => {};
+  const handleDelete = () => {
+    deleteUser(id)
+  };
 
   return (
     <>
       <Button
         ref={buttonRef as any}
         style={{
-          backgroundColor: theme.colors.warning,
+          backgroundColor: theme.colors.danger,
           color: theme.colors.primary,
         }}
         size="lg"
@@ -327,6 +328,7 @@ const DeletePopUp = ({ id }: Props) => {
                     backgroundColor: theme.colors.third,
                     color: theme.colors.primary,
                   }}
+                  onClick={handleDelete}
                 >
                   Eliminar
                 </Button>

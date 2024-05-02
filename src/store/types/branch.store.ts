@@ -2,6 +2,7 @@ import {
   Branches,
   IBranchPayload,
   IGetBranchesPaginated,
+  IGetBranchProduct
 } from "../../types/branches.types";
 
 export interface IBranchStore {
@@ -10,6 +11,7 @@ export interface IBranchStore {
   limit: number;
   loading: boolean;
   active: 1 | 0;
+  branch_products_list: IGetBranchProduct[];
   saveBranchesPaginated: (data: IGetBranchesPaginated) => void;
   getBranchesPaginated: (
     page: number,
@@ -24,4 +26,5 @@ export interface IBranchStore {
   patchBranch: (paylad: IBranchPayload, id: number) => Promise<boolean>;
   deleteBranch: (id: number) => Promise<boolean>;
   disableBranch: (id: number, state: boolean) => Promise<boolean>;
+  getBranchProducts: (id: number, name: string, category: string) => Promise<void>;
 }

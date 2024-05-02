@@ -2,6 +2,7 @@ import axios from "axios";
 import { API_URL } from "../utils/constants";
 import {
   IBranchPayload,
+  IGetBranchProductList,
   IGetBranchesList,
   IGetBranchesPaginated,
 } from "../types/branches.types";
@@ -79,3 +80,10 @@ export const delete_branch = (id: number) => {
     }
   });
 };
+export const get_branch_products = (id: number, name: string, category: string) => {
+  return axios.get<IGetBranchProductList>(API_URL + `/branch-products/by-branch/${id}?name=${name}&category=${category}`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+}

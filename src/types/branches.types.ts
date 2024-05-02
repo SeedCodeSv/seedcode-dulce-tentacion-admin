@@ -1,3 +1,4 @@
+import {Product} from "./products.types"
 export interface Branches {
   id: number;
   name: string;
@@ -34,4 +35,19 @@ export interface IGetBranchesList {
   message: string;
   branches: Branches[];
   status: number;
+}
+export interface IGetBranchProduct {
+  id: number;
+  stock: number;
+  price: number;
+  branch: Branches;
+  branchId: number;
+  product: Product;
+  productId: number;
+  isActive: boolean;
+}
+export interface IGetBranchProductList {
+  branchProducts: IGetBranchProduct[];
+  ok: boolean;
+  message: string;
 }
