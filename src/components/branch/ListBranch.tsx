@@ -48,7 +48,7 @@ function ListBranch() {
   const [address, setAddress] = useState("");
   const [limit, setLimit] = useState(5);
   const [active, setActive] = useState<1 | 0>(1);
-
+  const [BranchId, setBranchId] = useState(0)
   const [view, setView] = useState<"table" | "grid" | "list">("table");
 
   useEffect(() => {
@@ -325,6 +325,7 @@ function ListBranch() {
                   <Button
                     size="lg"
                     onClick={() => {
+                      setBranchId(item.id)
                       modalBranchProduct.onOpen()
                     }}
                     isIconOnly
@@ -395,10 +396,10 @@ function ListBranch() {
         onClose={() => {
           modalBranchProduct.onClose();
         }}
-        title={selectedBranch ? "Editar sucursal" : "Nueva sucursal"}
+        title={"Productos de la sucursal"}
         size="auto"
       >
-        <ListBranchProduct id={1} />
+        <ListBranchProduct id={BranchId} />
       </ModalGlobal>
     </div>
   );

@@ -5,31 +5,20 @@ import {
   Input,
   Select,
   SelectItem,
-  ButtonGroup,
   Autocomplete,
   AutocompleteItem,
 } from "@nextui-org/react";
-import {
-  CreditCard,
-  List,
-  Search,
-  Filter,
-} from "lucide-react";
-// import Pagination from "../../global/Pagination";
-// import { Paginator } from "primereact/paginator";
+import { Search, Filter } from "lucide-react";
 import { ThemeContext } from "../../../hooks/useTheme";
-// import { paginator_styles } from "../../../styles/paginator.styles";
 import MobileView from "./MobileView";
-// import ModalGlobal from "../../global/ModalGlobal";
-// import AddEmployee from "./AddEmployee";
 import { Drawer } from "vaul";
 import { global_styles } from "../../../styles/global.styles";
 import { CategoryProduct } from "../../../types/categories.types";
 import { useCategoriesStore } from "../../../store/categories.store";
 interface Props {
-  id: number
+  id: number;
 }
-function ListEmployee({id}: Props) {
+function ListEmployee({ id }: Props) {
   const { theme } = useContext(ThemeContext);
 
   const { getBranchProducts } = useBranchesStore();
@@ -39,7 +28,7 @@ function ListEmployee({id}: Props) {
 
   const [name, setName] = useState("");
   const [limit, setLimit] = useState(8);
-  const [view, setView] = useState<"grid" | "list">("grid");
+  const [view, setView] = useState("grid");
   const [openVaul, setOpenVaul] = useState(false);
 
   //   const modalAdd = useDisclosure();
@@ -85,7 +74,6 @@ function ListEmployee({id}: Props) {
             }
           }}
           className="w-full xl:w-80"
-          label="Categoría producto"
           labelPlacement="outside"
           placeholder="Selecciona la categoría"
           variant="bordered"
@@ -112,17 +100,17 @@ function ListEmployee({id}: Props) {
     <>
       <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
         <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
-          <div className="hidden w-full grid-cols-3 gap-5 mb-4 md:grid ">
+          <div className="hidden w-full grid-cols-2 gap-5 mb-4 md:grid ">
             {filters}
           </div>
-          <div className="grid w-full grid-cols-1 gap-5 mb-4 md:grid-cols-2">
+          <div className="grid w-full grid-cols-1 gap-5  md:grid-cols-2">
             <div className="hidden md:flex">
               <Button
                 style={{
                   backgroundColor: theme.colors.secondary,
                   color: theme.colors.primary,
                 }}
-                className="w-full xl:w-72 "
+                className="w-full xl:w-72"
                 color="primary"
                 size="lg"
                 onClick={() => changePage()}
@@ -130,35 +118,33 @@ function ListEmployee({id}: Props) {
                 Buscar
               </Button>
             </div>
+            <Select
+                className="w-full xl:w-80"
+                variant="bordered"
+                size="lg"
+                // label="Mostrar"
+                placeholder="Mostrar"
+                labelPlacement="outside"
+                classNames={{
+                  label: "font-semibold",
+                }}
+                value={limit}
+                onChange={(e) => {
+                  setLimit(
+                    Number(e.target.value !== "" ? e.target.value : "5")
+                  );
+                }}
+              >
+                <SelectItem key={"5"}>5</SelectItem>
+                <SelectItem key={"10"}>10</SelectItem>
+                <SelectItem key={"20"}>20</SelectItem>
+                <SelectItem key={"30"}>30</SelectItem>
+                <SelectItem key={"40"}>40</SelectItem>
+                <SelectItem key={"50"}>50</SelectItem>
+                <SelectItem key={"100"}>100</SelectItem>
+              </Select>
             <div className="flex items-end justify-between gap-10 mt lg:justify-end">
-              <ButtonGroup>
-                <Button
-                  size="lg"
-                  isIconOnly
-                  color="default"
-                  style={{
-                    backgroundColor:
-                      view === "grid" ? theme.colors.third : "#e5e5e5",
-                    color: view === "grid" ? theme.colors.primary : "#3e3e3e",
-                  }}
-                  onClick={() => setView("grid")}
-                >
-                  <CreditCard />
-                </Button>
-                <Button
-                  size="lg"
-                  isIconOnly
-                  color="default"
-                  style={{
-                    backgroundColor:
-                      view === "list" ? theme.colors.third : "#e5e5e5",
-                    color: view === "list" ? theme.colors.primary : "#3e3e3e",
-                  }}
-                  onClick={() => setView("list")}
-                >
-                  <List />
-                </Button>
-              </ButtonGroup>
+             
               <div className="flex items-center gap-5">
                 <div className="block md:hidden">
                   <Drawer.Root
@@ -208,30 +194,6 @@ function ListEmployee({id}: Props) {
                 </div>
               </div>
             </div>
-          </div>
-          <div className="flex justify-end w-full mb-5">
-            <Select
-              className="w-44"
-              variant="bordered"
-              size="lg"
-              label="Mostrar"
-              labelPlacement="outside"
-              classNames={{
-                label: "font-semibold",
-              }}
-              value={limit}
-              onChange={(e) => {
-                setLimit(Number(e.target.value !== "" ? e.target.value : "5"));
-              }}
-            >
-              <SelectItem key={"5"}>5</SelectItem>
-              <SelectItem key={"10"}>10</SelectItem>
-              <SelectItem key={"20"}>20</SelectItem>
-              <SelectItem key={"30"}>30</SelectItem>
-              <SelectItem key={"40"}>40</SelectItem>
-              <SelectItem key={"50"}>50</SelectItem>
-              <SelectItem key={"100"}>100</SelectItem>
-            </Select>
           </div>
           {(view === "grid" || view === "list") && (
             <MobileView layout={view as "grid" | "list"} />

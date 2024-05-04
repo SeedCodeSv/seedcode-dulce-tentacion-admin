@@ -1,9 +1,6 @@
-import { useContext } from "react";
-import { Button } from "@nextui-org/react";
 import { DataView } from "primereact/dataview";
 import { classNames } from "primereact/utils";
-import { User as IUser, Trash, Truck, Phone, Edit } from "lucide-react";
-import { ThemeContext } from "../../../hooks/useTheme";
+import {Truck, ShoppingBag, Barcode, FileSpreadsheet, DollarSign} from "lucide-react";
 import { useBranchesStore } from "../../../store/branches.store";
 import { IGetBranchProduct } from "../../../types/branches.types";
 
@@ -35,7 +32,6 @@ function MobileView({ layout }: Props) {
 }
 
 const gridItem = (branchProduct: IGetBranchProduct, layout: "grid" | "list") => {
-  const { theme } = useContext(ThemeContext);
   return (
     <>
       {layout === "grid" ? (
@@ -46,40 +42,25 @@ const gridItem = (branchProduct: IGetBranchProduct, layout: "grid" | "list") => 
           key={branchProduct.id}
         >
           <div className="flex w-full gap-2">
-            <IUser color={"#274c77"} size={35} />
+            <Truck color={"#274c77"} size={35} />
             {branchProduct.branch.name}
           </div>
           <div className="flex w-full gap-2 mt-3">
-            <Phone color="#00bbf9" size={35} className="" />
+            <ShoppingBag color="#00bbf9" size={35} className="" />
             {branchProduct.product.name}
           </div>
           <div className="flex w-full gap-2 mt-3">
-            <Truck color={"#006d77"} size={35} />
+            <Barcode color={"#221"} size={35} />
             {branchProduct.product.code}
           </div>
-          {/* <div className="flex justify-between mt-5 w-ful">
-            <Button
-              isIconOnly
-              size="lg"
-              style={{
-                backgroundColor: theme.colors.warning,
-              }}
-              onClick={() => {
-                openEditModal(employee)
-              }}
-            >
-              <Edit color={theme.colors.primary} size={20} />
-            </Button>
-            <Button
-              isIconOnly
-              size="lg"
-              style={{
-                backgroundColor: theme.colors.danger,
-              }}
-            >
-              <Trash color={theme.colors.primary} size={20} />
-            </Button>
-          </div> */}
+          <div className="flex w-full gap-2 mt-3">
+            <FileSpreadsheet color={"#006d77"} size={35} />
+            {branchProduct.product.description}
+          </div>
+          <div className="flex w-full gap-2 mt-3">
+            <DollarSign color={"#050"} size={35} />
+            {branchProduct.product.price}
+          </div>
         </div>
       ) : (
         <ListItem branchProduct={branchProduct}/>
@@ -89,17 +70,16 @@ const gridItem = (branchProduct: IGetBranchProduct, layout: "grid" | "list") => 
 };
 
 const ListItem = ({ branchProduct }: { branchProduct: IGetBranchProduct}) => {
-  const { theme } = useContext(ThemeContext);
   return (
     <>
       <div className="flex w-full col-span-1 p-5 border-b shadow md:col-span-2 lg:col-span-3 xl:col-span-4">
         <div className="w-full">
           <div className="flex items-center w-full gap-2">
-            <IUser color={"#274c77"} size={35} />
+            <Truck color={"#274c77"} size={35} />
             {branchProduct.branch.name}
           </div>
           <div className="flex items-center w-full gap-2 mt-3">
-            <Phone color="#00bbf9" size={35} />
+            <ShoppingBag color="#00bbf9" size={35} />
             {branchProduct.product.name}
           </div>
           <div className="flex items-center w-full gap-2 mt-3">
@@ -107,29 +87,6 @@ const ListItem = ({ branchProduct }: { branchProduct: IGetBranchProduct}) => {
             {branchProduct.branch.name}
           </div>
         </div>
-        {/* <div className="flex flex-col items-end justify-between w-full">
-          <Button
-            isIconOnly
-            size="lg"
-            style={{
-              backgroundColor: theme.colors.warning,
-            }}
-            onClick={() => {
-              openEditModal(employee)
-            }}
-          >
-            <Edit color={theme.colors.primary} size={20} />
-          </Button>
-          <Button
-            isIconOnly
-            size="lg"
-            style={{
-              backgroundColor: theme.colors.danger,
-            }}
-          >
-            <Trash color={theme.colors.primary} size={20} />
-          </Button>
-        </div> */}
       </div>
     </>
   );
