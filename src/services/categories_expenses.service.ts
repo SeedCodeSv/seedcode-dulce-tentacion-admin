@@ -1,17 +1,55 @@
 import axios from "axios";
 import { API_URL } from "../utils/constants";
-import { get_token } from "../storage/localStorage";
-import { ExpensePayload, IGetExpensesPaginated } from "../types/categories_expenses.types";
+import { get_token, get_user } from "../storage/localStorage";
+import {
+  CategoryExpensePayload,
+  IGetCategoryExpensesList,
+  IGetCategoryExpensesPaginated,
+} from "../types/categories_expenses.types";
 
 const token = get_token() ?? "";
 
-export const save_categories_expenses = (payload: ExpensePayload) => {
+export const save_categories_expenses = (payload: CategoryExpensePayload) => {
   return axios.post<{ ok: boolean }>(API_URL + "/category-expenses", payload, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
 };
-export const get_categories_expenses_paginated = (page: number, limit: number, name: string) => {
-return axios.get<IGetExpensesPaginated>(API_URL + `/category-expenses/paginated`)
+export const get_categories_expenses_paginated = (
+  page: number,
+  limit: number,
+  name: string
+) => {
+  const user = get_user();
+  return axios.get<IGetCategoryExpensesPaginated>(
+    API_URL +
+      `/category-expenses/paginated/${user?.employee.branch.transmitterId}?page=${page}&limit=${limit}&name=${name}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};
+export const get_List_categories_expenses = () => {
+  return axios.get<IGetCategoryExpensesList>(API_URL + "/category-expenses", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+export const update_categories_expenses = (id: number, payload: CategoryExpensePayload) => {
+  return axios.patch<{ ok: boolean }>(API_URL + "/category-expenses/" + id, payload, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+export const delete_categories_expenses = (id: number) => {
+  return axios.delete<{ ok: boolean }>(API_URL + "/category-expenses/" + id, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 }

@@ -1,7 +1,7 @@
 import { useBranchesStore } from "../../store/branches.store";
 import { DataView } from "primereact/dataview";
 import { Branches } from "../../types/branches.types";
-import { Edit, MapPin, Phone, Scroll } from "lucide-react";
+import { Edit, MapPin, Phone, Scroll, ShoppingBag } from "lucide-react";
 import { Button } from "@nextui-org/react";
 import { classNames } from "primereact/utils";
 import { global_styles } from "../../styles/global.styles";
@@ -10,9 +10,15 @@ interface Props {
   layout: "grid" | "list";
   deletePopover: ({ branch }: { branch: Branches }) => JSX.Element;
   handleEdit: (branch: Branches) => void;
+  handleBranchProduct: (id: number) => void;
 }
 
-function MobileView({ layout, deletePopover, handleEdit }: Props) {
+function MobileView({
+  layout,
+  deletePopover,
+  handleEdit,
+  handleBranchProduct,
+}: Props) {
   const { branches_paginated } = useBranchesStore();
   return (
     <div className="w-full pb-10">
@@ -28,7 +34,13 @@ function MobileView({ layout, deletePopover, handleEdit }: Props) {
         }}
         color="surface"
         itemTemplate={(item, layout) =>
-          gridItem(item, layout as "grid" | "list", deletePopover, handleEdit)
+          gridItem(
+            item,
+            layout as "grid" | "list",
+            deletePopover,
+            handleEdit,
+            handleBranchProduct
+          )
         }
         emptyMessage="No users found"
       />
@@ -42,7 +54,8 @@ const gridItem = (
   branch: Branches,
   layout: "grid" | "list",
   deletePopover: ({ branch }: { branch: Branches }) => JSX.Element,
-  handleEdit: (branch: Branches) => void
+  handleEdit: (branch: Branches) => void,
+  handleBranchProduct: (id: number) => void
 ) => {
   return (
     <>
@@ -66,7 +79,6 @@ const gridItem = (
             {branch.phone}
           </div>
           <div className="flex justify-between mt-5 w-ful">
-            {deletePopover({ branch })}
             <Button
               onClick={() => handleEdit(branch)}
               isIconOnly
@@ -75,6 +87,17 @@ const gridItem = (
             >
               <Edit />
             </Button>
+            <Button
+              size="lg"
+              onClick={() => {
+                handleBranchProduct(branch.id);
+              }}
+              isIconOnly
+              style={global_styles().thirdStyle}
+            >
+              <ShoppingBag />
+            </Button>
+            {deletePopover({ branch })}
           </div>
         </div>
       ) : (
@@ -82,6 +105,7 @@ const gridItem = (
           branch={branch}
           deletePopover={deletePopover}
           handleEdit={handleEdit}
+          handleBranchProduct={handleBranchProduct}
         />
       )}
     </>
@@ -92,9 +116,10 @@ interface ListProps {
   deletePopover: ({ branch }: { branch: Branches }) => JSX.Element;
   handleEdit: (branch: Branches) => void;
   branch: Branches;
+  handleBranchProduct: (id: number) => void
 }
 
-const ListItem = ({ branch, deletePopover, handleEdit }: ListProps) => {
+const ListItem = ({ branch, deletePopover, handleEdit, handleBranchProduct }: ListProps) => {
   return (
     <>
       <div className="flex w-full col-span-1 p-5 border-b shadow md:col-span-2 lg:col-span-3 xl:col-span-4">
@@ -114,8 +139,7 @@ const ListItem = ({ branch, deletePopover, handleEdit }: ListProps) => {
             {branch.phone}
           </div>
         </div>
-        <div className="flex flex-col items-end justify-between w-full">
-          {deletePopover({ branch })}
+        <div className="flex flex-col items-end justify-between w-full gap-4">
           <Button
             onClick={() => handleEdit(branch)}
             isIconOnly
@@ -124,6 +148,17 @@ const ListItem = ({ branch, deletePopover, handleEdit }: ListProps) => {
           >
             <Edit />
           </Button>
+          <Button
+            size="lg"
+            onClick={() => {
+              handleBranchProduct(branch.id);
+            }}
+            isIconOnly
+            style={global_styles().thirdStyle}
+          >
+            <ShoppingBag />
+          </Button>
+          {deletePopover({ branch })}
         </div>
       </div>
     </>

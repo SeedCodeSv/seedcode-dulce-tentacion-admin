@@ -5,6 +5,7 @@ import {
   get_categories,
   get_products_categories,
   update_category,
+  delete_category,
 } from "../services/categories.service";
 import { toast } from "sonner";
 import { messages } from "../utils/constants";
@@ -67,5 +68,15 @@ export const useCategoriesStore = create<ICategoriesStore>((set, get) => ({
       .catch(() => {
         toast.error(messages.success);
       });
+  },
+  deleteCategory: async (id) => {
+    return await delete_category(id).then(({ data }) => {
+      get().getPaginatedCategories(1, 8, "");
+      toast.success(messages.success);
+      return data.ok;
+    }).catch(() => {
+      toast.warning(messages.error);
+      return false
+    })
   },
 }));

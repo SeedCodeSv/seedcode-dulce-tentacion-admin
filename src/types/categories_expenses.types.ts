@@ -1,23 +1,23 @@
 import { Transmitter } from "./categories.types";
-export interface Expense {
+export interface CategoryExpense {
   id: number;
   name: string;
   isActive: boolean;
   transmitter: Transmitter;
   transmitterId: number;
 }
-export interface ExpensePayload {
+export interface CategoryExpensePayload {
   name: string;
   transmitterId: number;
 }
-export interface IGetExpensesList {
-  categoryExpenses: Expense[];
+export interface IGetCategoryExpensesList {
+  categoryExpenses: CategoryExpense[];
   ok: boolean;
   message: string;
 }
-export interface IGetExpensesPaginated {
+export interface IGetCategoryExpensesPaginated {
   ok: boolean;
-  categoryExpenses: Expense[];
+  categoryExpenses: CategoryExpense[];
   total: number;
   totalPag: number;
   currentPag: number;

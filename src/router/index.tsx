@@ -7,7 +7,9 @@ import Employees from "../pages/Employees";
 import Customers from "../pages/Customers";
 import Branch from "../pages/Branch";
 import Error404 from "../pages/Error404";
-import Product from "../pages/Product"
+import Product from "../pages/Product";
+import ExpensesCategories from "../pages/ExpensesCategories";
+import Expenses from "../pages/Expenses";
 export const router = () => {
   return createBrowserRouter([
     {
@@ -36,15 +38,23 @@ export const router = () => {
     },
     {
       path: "/branches",
-      element: <Branch />
+      element: <Branch />,
     },
     {
       path: "/products",
-      element: <Product />
+      element: <Product />,
+    },
+    {
+      path: "/expensesCategories",
+      element: <ExpensesCategories />,
+    },
+    {
+      path: "/expenses",
+      element: <Expenses/>
     },
     {
       path: "*",
       element: <Error404 />,
-    }
+    },
   ]);
 };

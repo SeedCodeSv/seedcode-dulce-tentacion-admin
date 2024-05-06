@@ -1,3 +1,6 @@
+import { useContext, useEffect, useState } from "react";
+import { useCategoriesExpenses } from "../../store/categories_expenses.store.ts";
+import { ThemeContext } from "../../hooks/useTheme";
 import {
   Input,
   Button,
@@ -9,7 +12,7 @@ import {
   PopoverTrigger,
   PopoverContent,
 } from "@nextui-org/react";
-import { useContext, useEffect, useState } from "react";
+import { CategoryExpense } from "../../types/categories_expenses.types.ts";
 import {
   EditIcon,
   Search,
@@ -18,23 +21,20 @@ import {
   CreditCard,
   List,
 } from "lucide-react";
-import { useCategoriesStore } from "../../store/categories.store";
-import { ThemeContext } from "../../hooks/useTheme";
-import AddCategory from "./AddCategory";
-import ModalGlobal from "../global/ModalGlobal";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
 import AddButton from "../global/AddButton";
 import MobileView from "./MobileView";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
 import Pagination from "../global/Pagination";
 import { Paginator } from "primereact/paginator";
 import { paginator_styles } from "../../styles/paginator.styles";
-import { CategoryProduct } from "../../types/categories.types";
-
-function ListCategories() {
+import ModalGlobal from "../global/ModalGlobal";
+import AddExpensesCategories from "../../components/expenses_categories/AddExpensesCategories";
+const ListExpensesCategories = () => {
   const { theme } = useContext(ThemeContext);
 
-  const { paginated_categories, getPaginatedCategories } = useCategoriesStore();
+  const { paginated_categories_expenses, getPaginatedCategoriesExpenses } =
+    useCategoriesExpenses();
 
   const [selectedCategory, setSelectedCategory] = useState<
     { id: number; name: string } | undefined
@@ -44,11 +44,11 @@ function ListCategories() {
   const [limit, setLimit] = useState(8);
 
   useEffect(() => {
-    getPaginatedCategories(1, limit, search);
+    getPaginatedCategoriesExpenses(1, limit, search);
   }, []);
 
   const handleSearch = (name: string | undefined) => {
-    getPaginatedCategories(1, limit, name ?? search);
+    getPaginatedCategoriesExpenses(1, limit, name ?? search);
   };
 
   const modalAdd = useDisclosure();
@@ -60,7 +60,7 @@ function ListCategories() {
 
   const [view, setView] = useState<"table" | "grid" | "list">("table");
 
-  const handleEdit = (item: CategoryProduct) => {
+  const handleEdit = (item: CategoryExpense) => {
     setSelectedCategory({
       id: item.id,
       name: item.name,
@@ -193,7 +193,7 @@ function ListCategories() {
           <DataTable
             className="w-full shadow"
             emptyMessage="No se encontraron resultados"
-            value={paginated_categories.categoryProducts}
+            value={paginated_categories_expenses.categoryExpenses}
             tableStyle={{ minWidth: "50rem" }}
           >
             <Column
@@ -226,7 +226,7 @@ function ListCategories() {
                       size={20}
                     />
                   </Button>
-                  <DeletePopUp category={item} />
+                  <DeletePopUp categoryExpenses={item} />
                 </div>
               )}
             />
@@ -234,12 +234,12 @@ function ListCategories() {
         )}
         <div className="hidden w-full mt-5 md:flex">
           <Pagination
-            previousPage={paginated_categories.prevPag}
-            nextPage={paginated_categories.nextPag}
-            currentPage={paginated_categories.currentPag}
-            totalPages={paginated_categories.totalPag}
+            previousPage={paginated_categories_expenses.prevPag}
+            nextPage={paginated_categories_expenses.nextPag}
+            currentPage={paginated_categories_expenses.currentPag}
+            totalPages={paginated_categories_expenses.totalPag}
             onPageChange={(page) => {
-              getPaginatedCategories(page, limit, search);
+              getPaginatedCategoriesExpenses(page, limit, search);
             }}
           />
         </div>
@@ -247,9 +247,9 @@ function ListCategories() {
           <Paginator
             pt={paginator_styles(1)}
             className="flex justify-between w-full"
-            first={paginated_categories.currentPag}
+            first={paginated_categories_expenses.currentPag}
             rows={limit}
-            totalRecords={paginated_categories.total}
+            totalRecords={paginated_categories_expenses.total}
             template={{
               layout: "PrevPageLink CurrentPageReport NextPageLink",
             }}
@@ -258,33 +258,37 @@ function ListCategories() {
         </div>
       </div>
       <ModalGlobal
-        size="md"
-        title={selectedCategory ? "Editar categoría" : "Nueva categoría"}
+        size="lg"
+        title={
+          selectedCategory
+            ? "Editar categoría de gastos"
+            : "Nueva categoría de gastos"
+        }
         isOpen={modalAdd.isOpen}
         onClose={modalAdd.onClose}
       >
-        <AddCategory
+        <AddExpensesCategories
           closeModal={modalAdd.onClose}
-          category={selectedCategory}
+          categoryExpenses={selectedCategory}
         />
       </ModalGlobal>
     </div>
   );
-}
+};
 
-export default ListCategories;
+export default ListExpensesCategories;
+
 interface Props {
-  category: CategoryProduct;
+  categoryExpenses: CategoryExpense;
 }
-
-const DeletePopUp = ({ category }: Props) => {
+const DeletePopUp = ({ categoryExpenses }: Props) => {
   const { theme } = useContext(ThemeContext);
 
-  const { deleteCategory } = useCategoriesStore();
+  const { deleteCategoriesExpenses } = useCategoriesExpenses();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleDelete = async () => {
-    await deleteCategory(category.id);
+    await deleteCategoriesExpenses(categoryExpenses.id);
     onClose();
   };
 
@@ -311,7 +315,7 @@ const DeletePopUp = ({ category }: Props) => {
         <PopoverContent>
           <div className="w-full p-5">
             <p className="font-semibold text-gray-600">
-              Eliminar {category.name}
+              Eliminar {categoryExpenses.name}
             </p>
             <p className="mt-3 text-center text-gray-600 w-72">
               ¿Estas seguro de eliminar este registro?

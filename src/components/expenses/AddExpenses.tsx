@@ -1,0 +1,202 @@
+import {
+  Button,
+  Input,
+  Textarea,
+  Autocomplete,
+  AutocompleteItem,
+} from "@nextui-org/react";
+import { global_styles } from "../../styles/global.styles";
+import * as yup from "yup";
+import { useExpenseStore } from "../../store/expenses.store.ts";
+import { IExpense, IExpensePayload } from "../../types/expenses.types.ts";
+import { Formik } from "formik";
+import { CategoryExpense } from "../../types/categories_expenses.types.ts";
+import { useCategoriesExpenses } from "../../store/categories_expenses.store.ts";
+import { useEffect } from "react";
+
+interface Props {
+  closeModal: () => void;
+  expenses?: IExpense | undefined;
+}
+const AddExpenses = (props: Props) => {
+  const initialValues = {
+    description: props.expenses?.description ?? "",
+    categoryExpenseId: props.expenses?.categoryExpenseId ?? 0,
+    total: props.expenses?.total ?? 0,
+    // boxId: 0,
+  };
+  const validationSchema = yup.object().shape({
+    description: yup.string().required("La descripción es requerido"),
+    total: yup.number().required("El total es requerida"),
+    // boxId: yup.number().required("La caja es requerido"),
+    categoryExpenseId: yup.number().required("La categoría es requerido").min(1, "La categoría es requerida"),
+  });
+  const { getListCategoriesExpenses, list_categories_expenses } =
+    useCategoriesExpenses();
+  // const { getBoxList, box_list } = useBoxStore();
+    const { postExpenses, patchExpenses } = useExpenseStore();
+  useEffect(() => {
+    getListCategoriesExpenses();
+    // getBoxList();
+  }, []);
+    const handleSubmit = (values: IExpensePayload) => {
+      if (props.expenses) {
+        patchExpenses(
+          props.expenses.id,
+          values
+        ).then((res) => {
+          if (res) props.closeModal();
+        });
+      } else {
+        postExpenses({
+          ...values,
+        }).then((res) => {
+          if (res) props.closeModal();
+        });
+      }
+    };
+  return (
+    <Formik
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      onSubmit={(values) => {
+        handleSubmit(values);
+      }}
+    >
+      {({
+        values,
+        errors,
+        touched,
+        handleBlur,
+        handleChange,
+        handleSubmit,
+      }) => (
+        <>
+          <div className="w-full mt-4">
+            <div className="pt-2">
+              <Autocomplete
+                onSelectionChange={(key) => {
+                  if (key) {
+                    const depSelected = JSON.parse(
+                      key as string
+                    ) as CategoryExpense;
+                    handleChange("categoryExpenseId")(
+                      depSelected.id.toString()
+                    );
+                  }
+                }}
+                size="lg"
+                onBlur={handleBlur("categoryExpenseId")}
+                label="Categoría de gastos"
+                labelPlacement="outside"
+                placeholder="Selecciona la categoría"
+                variant="bordered"
+                classNames={{
+                  base: "font-semibold text-gray-500 text-sm",
+                }}
+              >
+                {list_categories_expenses.map((dep) => (
+                  <AutocompleteItem value={dep.id} key={JSON.stringify(dep)}>
+                    {dep.name}
+                  </AutocompleteItem>
+                ))}
+              </Autocomplete>
+              {errors.categoryExpenseId && touched.categoryExpenseId && (
+                <span className="text-sm font-semibold text-red-500">
+                  {errors.categoryExpenseId}
+                </span>
+              )}
+            </div>
+            {/* <div className="pt-2">
+              <Autocomplete
+                onSelectionChange={(key) => {
+                  if (key) {
+                    const depSelected = JSON.parse(
+                      key as string
+                    ) as CategoryExpense;
+                    handleChange("categoryExpenseId")(
+                      depSelected.id.toString()
+                    );
+                  }
+                }}
+                size="lg"
+                onBlur={handleBlur("categoryExpenseId")}
+                label="Rol"
+                labelPlacement="outside"
+                placeholder="Selecciona la categoría"
+                variant="bordered"
+                classNames={{
+                  base: "font-semibold text-gray-500 text-sm",
+                }}
+              >
+                {box_list.map((dep) => (
+                  <AutocompleteItem value={dep.id} key={JSON.stringify(dep)}>
+                    {dep.}
+                  </AutocompleteItem>
+                ))}
+              </Autocomplete>
+              {errors.categoryExpenseId && touched.categoryExpenseId && (
+                <span className="text-sm font-semibold text-red-500">
+                  {errors.categoryExpenseId}
+                </span>
+              )}
+            </div> */}
+            <div className="mt-10">
+              <Input
+                label="Total"
+                labelPlacement="outside"
+                name="total"
+                value={values.total.toString()}
+                onChange={handleChange("total")}
+                onBlur={handleBlur("total")}
+                placeholder="00.00"
+                classNames={{
+                  label: "font-semibold text-gray-500 text-sm",
+                }}
+                variant="bordered"
+                type="number"
+                startContent="$"
+              />
+              {errors.total && touched.total && (
+                <span className="text-sm font-semibold text-red-500">
+                  {errors.total}
+                </span>
+              )}
+            </div>
+            <div className="w-full pt-3 mb-8">
+              <Textarea
+                label="Descripción"
+                placeholder="Descripción"
+                size="lg"
+                variant="bordered"
+                classNames={{ label: "font-semibold" }}
+                labelPlacement="outside"
+                onChange={handleChange("description")}
+                onBlur={handleBlur("description")}
+                value={values.description}
+              />
+              {errors.description && touched.description && (
+                <span className="text-sm font-semibold text-red-500">
+                  {errors.description}
+                </span>
+              )}
+            </div>
+            <div>
+              <Button
+                type="submit"
+                onClick={() => handleSubmit()}
+                style={global_styles().thirdStyle}
+                className="w-full font-semibold"
+                size="lg"
+              >
+                Guardar
+              </Button>
+            </div>
+          </div>
+        </>
+      )}
+    </Formik>
+  );
+};
+
+export default AddExpenses;

@@ -58,3 +58,10 @@ export const get_categories = () => {
     },
   });
 };
+export const delete_category = (id: number) => {
+  return axios.delete<{ ok: boolean }>(API_URL + "/category-products/" + id, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}

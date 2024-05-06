@@ -9,5 +9,6 @@ import {
     getPaginatedCategories: (page: number, limit: number, name: string) => void;
     postCategories: (name: string) => void;
     patchCategory: (name: string, id: number) => void;
+    deleteCategory: (id: number) => Promise<boolean>;
   }
   

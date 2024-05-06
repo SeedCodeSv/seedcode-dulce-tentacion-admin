@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { Button } from "@nextui-org/react";
 import { DataView } from "primereact/dataview";
 import { classNames } from "primereact/utils";
-import { User as IUser, Trash, Truck, Phone, Edit } from "lucide-react";
+import { User as IUser, Truck, Phone, Edit } from "lucide-react";
 import { ThemeContext } from "../../hooks/useTheme";
 import { Employee } from "../../types/employees.types";
 import { useEmployeeStore } from "../../store/employee.store";
@@ -13,9 +13,9 @@ interface Props {
   openEditModal: (employee: Employee) => void;
 }
 
-function MobileView({ layout, openEditModal }: Props) {
+function MobileView({ layout, openEditModal, deletePopover }: Props) {
   const { employee_paginated } = useEmployeeStore();
-  
+
   return (
     <div className="w-full pb-10">
       <DataView
@@ -29,14 +29,21 @@ function MobileView({ layout, openEditModal }: Props) {
           }),
         }}
         color="surface"
-        itemTemplate={(employee) => gridItem(employee, layout, openEditModal)}
+        itemTemplate={(employee) =>
+          gridItem(employee, layout, openEditModal, deletePopover)
+        }
         emptyMessage="No employee found"
       />
     </div>
   );
 }
 
-const gridItem = (employee: Employee, layout: "grid" | "list", openEditModal: (employee: Employee) => void) => {
+const gridItem = (
+  employee: Employee,
+  layout: "grid" | "list",
+  openEditModal: (employee: Employee) => void,
+  deletePopover: ({ employee }: { employee: Employee }) => JSX.Element
+) => {
   const { theme } = useContext(ThemeContext);
   return (
     <>
@@ -64,33 +71,41 @@ const gridItem = (employee: Employee, layout: "grid" | "list", openEditModal: (e
               isIconOnly
               size="lg"
               style={{
-                backgroundColor: theme.colors.warning,
+                backgroundColor: theme.colors.secondary,
               }}
               onClick={() => {
-                openEditModal(employee)
+                openEditModal(employee);
               }}
             >
               <Edit color={theme.colors.primary} size={20} />
             </Button>
-            <Button
-              isIconOnly
-              size="lg"
-              style={{
-                backgroundColor: theme.colors.danger,
-              }}
-            >
-              <Trash color={theme.colors.primary} size={20} />
-            </Button>
+            {deletePopover({ employee: employee })}
           </div>
         </div>
       ) : (
-        <ListItem employee={employee} openEditModal={openEditModal}/>
+        <ListItem
+          employee={employee}
+          openEditModal={openEditModal}
+          deletePopover={deletePopover}
+        />
       )}
     </>
   );
 };
 
-const ListItem = ({ employee, openEditModal }: { employee: Employee, openEditModal: (employee: Employee) => void}) => {
+const ListItem = ({
+  employee,
+  openEditModal,
+  deletePopover,
+}: {
+  employee: Employee;
+  openEditModal: (employee: Employee) => void;
+  deletePopover: ({
+    employee,
+  }: {
+    employee: Employee;
+  }) => JSX.Element;
+}) => {
   const { theme } = useContext(ThemeContext);
   return (
     <>
@@ -114,23 +129,15 @@ const ListItem = ({ employee, openEditModal }: { employee: Employee, openEditMod
             isIconOnly
             size="lg"
             style={{
-              backgroundColor: theme.colors.warning,
+              backgroundColor: theme.colors.secondary,
             }}
             onClick={() => {
-              openEditModal(employee)
+              openEditModal(employee);
             }}
           >
             <Edit color={theme.colors.primary} size={20} />
           </Button>
-          <Button
-            isIconOnly
-            size="lg"
-            style={{
-              backgroundColor: theme.colors.danger,
-            }}
-          >
-            <Trash color={theme.colors.primary} size={20} />
-          </Button>
+          {deletePopover({ employee: employee })}
         </div>
       </div>
     </>

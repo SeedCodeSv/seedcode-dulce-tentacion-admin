@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { useEmployeeStore } from "../../store/employee.store";
 import {
   Button,
@@ -322,7 +322,10 @@ function ListEmployee() {
                         backgroundColor: theme.colors.secondary,
                       }}
                     >
-                      <EditIcon style={{ color: theme.colors.primary }} size={20} />
+                      <EditIcon
+                        style={{ color: theme.colors.primary }}
+                        size={20}
+                      />
                     </Button>
                     <DeletePopover employee={item} />
                   </div>

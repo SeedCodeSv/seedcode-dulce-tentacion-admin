@@ -128,6 +128,10 @@ function ListBranch() {
     setSelectedBranch(item);
     modalAdd.onOpen();
   };
+  const handleBranchProduct = (id: number) => {
+    setBranchId(id)
+    modalBranchProduct.onOpen()
+  }
 
   const handleInactive = (item: Branches) => {
     disableBranch(item.id, !item.isActive);
@@ -260,17 +264,6 @@ function ListBranch() {
           >
             {active === 1 ? "Mostrar inactivos" : "Mostrar activos"}
           </Switch>
-          {/* <div className="hidden md:flex">
-            <Button
-              style={global_styles().secondaryStyle}
-              className="px-12 font-semibold max-w-72"
-              size="lg"
-              onClick={() => handleSearch()}
-              type="button"
-            >
-              p
-            </Button>
-          </div> */}
           <Select
             className="w-44"
             variant="bordered"
@@ -345,6 +338,7 @@ function ListBranch() {
               layout={view as "grid" | "list"}
               deletePopover={DeletePopUp}
               handleEdit={handleEdit}
+              handleBranchProduct={handleBranchProduct}
             />
           </>
         )}
