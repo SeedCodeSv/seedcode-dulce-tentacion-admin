@@ -421,7 +421,6 @@ function ListBranch() {
           clearClose()
           modalBoxBranch.onClose();
         }}
-        // title={"Caja"}
         size="auto"
       >
         <BoxBranch branch={Branch} closeModal={modalBoxBranch.onClose} setBranch={setBranch}/>
