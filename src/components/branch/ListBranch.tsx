@@ -15,6 +15,7 @@ import {
   PhoneIcon,
   SearchIcon,
   TrashIcon,
+  BoxIcon,
   MapPinIcon,
   Table as ITable,
   CreditCard,
@@ -37,6 +38,8 @@ import MobileView from "./MobileView";
 import { Branches } from "../../types/branches.types";
 import { toast } from "sonner";
 import ListBranchProduct from "./branch_product/ListBranchProduct";
+import BoxBranch from "./BoxBranch"
+import {verify_box} from "../../services/Boxes.service.ts"
 function ListBranch() {
   const { theme } = useContext(ThemeContext);
 
@@ -48,7 +51,7 @@ function ListBranch() {
   const [address, setAddress] = useState("");
   const [limit, setLimit] = useState(5);
   const [active, setActive] = useState<1 | 0>(1);
-  const [BranchId, setBranchId] = useState(0)
+  const [BranchId, setBranchId] = useState(0);
   const [view, setView] = useState<"table" | "grid" | "list">("table");
 
   useEffect(() => {
@@ -61,6 +64,7 @@ function ListBranch() {
 
   const modalAdd = useDisclosure();
   const modalBranchProduct = useDisclosure();
+  const modalBoxBranch = useDisclosure();
   const filters = useMemo(() => {
     return (
       <>
@@ -123,18 +127,22 @@ function ListBranch() {
   };
 
   const [selectedBranch, setSelectedBranch] = useState<Branches>();
-
+  const [Branch, setBranch] = useState<Branches>();
+  
   const handleEdit = (item: Branches) => {
     setSelectedBranch(item);
     modalAdd.onOpen();
   };
   const handleBranchProduct = (id: number) => {
-    setBranchId(id)
-    modalBranchProduct.onOpen()
-  }
+    setBranchId(id);
+    modalBranchProduct.onOpen();
+  };
 
   const handleInactive = (item: Branches) => {
     disableBranch(item.id, !item.isActive);
+  };
+  const clearClose = () => {
+    setBranch(undefined)
   };
 
   return (
@@ -315,11 +323,23 @@ function ListBranch() {
                       </Switch>
                     </>
                   )}
+                  {/* <BoxPopUp branch={item}/> */}
                   <Button
                     size="lg"
                     onClick={() => {
-                      setBranchId(item.id)
-                      modalBranchProduct.onOpen()
+                      setBranch(item)
+                      modalBoxBranch.onOpen()
+                    }}
+                    isIconOnly
+                    style={global_styles().darkStyle}
+                  >
+                    <BoxIcon />
+                  </Button>
+                  <Button
+                    size="lg"
+                    onClick={() => {
+                      setBranchId(item.id);
+                      modalBranchProduct.onOpen();
                     }}
                     isIconOnly
                     style={global_styles().thirdStyle}
@@ -394,6 +414,17 @@ function ListBranch() {
         size="auto"
       >
         <ListBranchProduct id={BranchId} />
+      </ModalGlobal>
+      <ModalGlobal
+        isOpen={modalBoxBranch.isOpen}
+        onClose={() => {
+          clearClose()
+          modalBoxBranch.onClose();
+        }}
+        // title={"Caja"}
+        size="auto"
+      >
+        <BoxBranch branch={Branch} closeModal={modalBoxBranch.onClose} setBranch={setBranch}/>
       </ModalGlobal>
     </div>
   );

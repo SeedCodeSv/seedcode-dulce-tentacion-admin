@@ -13,7 +13,7 @@ import { Formik } from "formik";
 import { CategoryExpense } from "../../types/categories_expenses.types.ts";
 import { useCategoriesExpenses } from "../../store/categories_expenses.store.ts";
 import { useEffect } from "react";
-
+import {get_box} from "../../storage/localStorage.ts"
 interface Props {
   closeModal: () => void;
   expenses?: IExpense | undefined;
@@ -23,38 +23,37 @@ const AddExpenses = (props: Props) => {
     description: props.expenses?.description ?? "",
     categoryExpenseId: props.expenses?.categoryExpenseId ?? 0,
     total: props.expenses?.total ?? 0,
-    // boxId: 0,
   };
   const validationSchema = yup.object().shape({
     description: yup.string().required("La descripción es requerido"),
     total: yup.number().required("El total es requerida"),
-    // boxId: yup.number().required("La caja es requerido"),
-    categoryExpenseId: yup.number().required("La categoría es requerido").min(1, "La categoría es requerida"),
+    categoryExpenseId: yup
+      .number()
+      .required("La categoría es requerido")
+      .min(1, "La categoría es requerida"),
   });
   const { getListCategoriesExpenses, list_categories_expenses } =
     useCategoriesExpenses();
-  // const { getBoxList, box_list } = useBoxStore();
-    const { postExpenses, patchExpenses } = useExpenseStore();
+  const { postExpenses, patchExpenses } = useExpenseStore();
   useEffect(() => {
     getListCategoriesExpenses();
-    // getBoxList();
+    get_box()
   }, []);
-    const handleSubmit = (values: IExpensePayload) => {
-      if (props.expenses) {
-        patchExpenses(
-          props.expenses.id,
-          values
-        ).then((res) => {
-          if (res) props.closeModal();
-        });
-      } else {
-        postExpenses({
-          ...values,
-        }).then((res) => {
-          if (res) props.closeModal();
-        });
-      }
-    };
+  const handleSubmit = (values: IExpensePayload) => {
+    const box = get_box()
+    if (props.expenses) {
+      patchExpenses(props.expenses.id, values).then((res) => {
+        if (res) props.closeModal();
+      });
+    } else {
+      postExpenses({
+        ...values,
+        boxId: Number(box),
+      }).then((res) => {
+        if (res) props.closeModal();
+      });
+    }
+  };
   return (
     <Formik
       initialValues={initialValues}
@@ -72,7 +71,7 @@ const AddExpenses = (props: Props) => {
         handleSubmit,
       }) => (
         <>
-          <div className="w-full mt-4">
+          <div className=" w-64 mt-4">
             <div className="pt-2">
               <Autocomplete
                 onSelectionChange={(key) => {
@@ -89,7 +88,11 @@ const AddExpenses = (props: Props) => {
                 onBlur={handleBlur("categoryExpenseId")}
                 label="Categoría de gastos"
                 labelPlacement="outside"
-                placeholder="Selecciona la categoría"
+                placeholder={
+                  props.expenses?.categoryExpense.name
+                    ? props.expenses?.categoryExpense.name
+                    : "Selecciona la categoría"
+                }
                 variant="bordered"
                 classNames={{
                   base: "font-semibold text-gray-500 text-sm",
