@@ -50,12 +50,12 @@ function ListProducts() {
 
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
-  const [limit, setLimit] = useState(8);
+  const [limit, setLimit] = useState(5);
   const [view, setView] = useState<"table" | "grid" | "list">("table");
 const [page, serPage] = useState(1)
   useEffect(() => {
-    getPaginatedProducts(1, 8, "", "");
-  }, []);
+    getPaginatedProducts(1, limit, category, search);
+  }, [limit]);
 
   const { list_categories, getListCategories } = useCategoriesStore();
   useEffect(() => {
@@ -63,7 +63,7 @@ const [page, serPage] = useState(1)
   }, []);
 
   const handleSearch = (searchParam: string | undefined) => {
-    getPaginatedProducts(page, 8, searchParam ?? category, searchParam ?? search);
+    getPaginatedProducts(page, limit, searchParam ?? category, searchParam ?? search);
   };
 
   const modalAdd = useDisclosure();
@@ -83,7 +83,7 @@ const [page, serPage] = useState(1)
                 className="w-full xl:w-80"
                 variant="bordered"
                 labelPlacement="outside"
-                label="Buscar"
+                label="Nombre"
                 classNames={{
                   label: "font-semibold text-gray-700",
                   inputWrapper: "pr-0",

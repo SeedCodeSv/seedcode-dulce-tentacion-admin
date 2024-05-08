@@ -45,7 +45,7 @@ function ListCategories() {
 
   useEffect(() => {
     getPaginatedCategories(1, limit, search);
-  }, []);
+  }, [limit]);
 
   const handleSearch = (name: string | undefined) => {
     getPaginatedCategories(1, limit, name ?? search);
@@ -170,10 +170,10 @@ function ListCategories() {
             }}
             value={limit}
             onChange={(e) => {
-              setLimit(Number(e.target.value !== "" ? e.target.value : "5"));
+              setLimit(Number(e.target.value !== "" ? e.target.value : "8"));
             }}
           >
-            <SelectItem key={"5"}>5</SelectItem>
+            <SelectItem key={"8"}>8</SelectItem>
             <SelectItem key={"10"}>10</SelectItem>
             <SelectItem key={"20"}>20</SelectItem>
             <SelectItem key={"30"}>30</SelectItem>
@@ -232,30 +232,34 @@ function ListCategories() {
             />
           </DataTable>
         )}
-        <div className="hidden w-full mt-5 md:flex">
-          <Pagination
-            previousPage={paginated_categories.prevPag}
-            nextPage={paginated_categories.nextPag}
-            currentPage={paginated_categories.currentPag}
-            totalPages={paginated_categories.totalPag}
-            onPageChange={(page) => {
-              getPaginatedCategories(page, limit, search);
-            }}
-          />
-        </div>
-        <div className="flex w-full mt-5 md:hidden">
-          <Paginator
-            pt={paginator_styles(1)}
-            className="flex justify-between w-full"
-            first={paginated_categories.currentPag}
-            rows={limit}
-            totalRecords={paginated_categories.total}
-            template={{
-              layout: "PrevPageLink CurrentPageReport NextPageLink",
-            }}
-            currentPageReportTemplate="{currentPage} de {totalPages}"
-          />
-        </div>
+        {paginated_categories.totalPag > 1 && (
+          <>
+            <div className="hidden w-full mt-5 md:flex">
+              <Pagination
+                previousPage={paginated_categories.prevPag}
+                nextPage={paginated_categories.nextPag}
+                currentPage={paginated_categories.currentPag}
+                totalPages={paginated_categories.totalPag}
+                onPageChange={(page) => {
+                  getPaginatedCategories(page, limit, search);
+                }}
+              />
+            </div>
+            <div className="flex w-full mt-5 md:hidden">
+              <Paginator
+                pt={paginator_styles(1)}
+                className="flex justify-between w-full"
+                first={paginated_categories.currentPag}
+                rows={limit}
+                totalRecords={paginated_categories.total}
+                template={{
+                  layout: "PrevPageLink CurrentPageReport NextPageLink",
+                }}
+                currentPageReportTemplate="{currentPage} de {totalPages}"
+              />
+            </div>
+          </>
+        )}
       </div>
       <ModalGlobal
         size="md"

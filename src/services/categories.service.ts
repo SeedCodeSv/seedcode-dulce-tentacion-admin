@@ -26,7 +26,7 @@ export const create_category = ({ name }: { name: string }) => {
     API_URL + "/category-products",
     {
       name,
-      transmitterId: user!.transmitterId,
+      transmitterId: user?.employee.branch.transmitterId,
     },
     {
       headers: {

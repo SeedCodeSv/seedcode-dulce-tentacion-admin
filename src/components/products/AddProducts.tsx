@@ -159,7 +159,7 @@ function AddProducts(props: Props) {
                 </span>
               )}
             </div>
-            <div className="mt-2">
+            <div className="pt-2">
               <Input
                 label="Precio"
                 labelPlacement="outside"

@@ -49,8 +49,8 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
   postProducts(payload) {
     create_products(payload)
       .then(() => {
+        get().getPaginatedProducts(1, 5, "", "");
         toast.success(messages.success);
-        get().getPaginatedProducts(1, 8, "", "");
       })
       .catch(() => {
         toast.error(messages.error);
@@ -59,8 +59,8 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
   patchProducts(payload, id) {
     update_products(payload, id)
       .then(() => {
+        get().getPaginatedProducts(1, 5, "", "");
         toast.success(messages.success);
-        get().getPaginatedProducts(1, 8, "", "");
       })
       .catch(() => {
         toast.error(messages.error);
@@ -70,7 +70,7 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
     delete_products(id)
       .then(() => {
         toast.success(messages.success)
-        get().getPaginatedProducts(1, 8, "", "")
+        get().getPaginatedProducts(1, 5, "", "")
       })
       .catch(() => {
         toast.error(messages.error)
