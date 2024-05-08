@@ -11,6 +11,7 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import ModalGlobal from "../global/ModalGlobal";
 import AddUsers from "./AddUsers";
+import UpdateUsers from "./UpdateUsers";
 import {
   Key,
   Search,
@@ -18,6 +19,7 @@ import {
   CreditCard,
   TrashIcon,
   List,
+  EditIcon,
 } from "lucide-react";
 import UpdatePassword from "./UpdatePassword";
 import { ThemeContext } from "../../hooks/useTheme";
@@ -28,17 +30,19 @@ import AddButton from "../global/AddButton";
 import { Paginator } from "primereact/paginator";
 import { paginator_styles } from "../../styles/paginator.styles";
 import Pagination from "../global/Pagination";
+import { User } from "../../types/users.types";
 
 function ListUsers() {
   const { theme } = useContext(ThemeContext);
   const [limit, setLimit] = useState(5);
   const { users_paginated, getUsersPaginated } = useUsersStore();
-
+const [user, setUser] = useState<User | undefined>()
   useEffect(() => {
     getUsersPaginated(1, limit, "");
   }, [limit]);
 
   const modalAdd = useDisclosure();
+  const modalUpdate = useDisclosure();
   const modalChangePassword = useDisclosure();
 
   const [selectId, setSelectedId] = useState(0);
@@ -206,6 +210,22 @@ function ListUsers() {
                 header="Acciones"
                 body={(item) => (
                   <div className="flex w-full gap-5">
+                     <Button
+                      onClick={() => {
+                        setUser(item);
+                        modalUpdate.onOpen();
+                      }}
+                      isIconOnly
+                      style={{
+                        backgroundColor: theme.colors.secondary,
+                      }}
+                      size="lg"
+                    >
+                      <EditIcon
+                        style={{ color: theme.colors.primary }}
+                        size={20}
+                      />
+                    </Button>
                     <Button
                       size="lg"
                       onClick={() => {
@@ -258,7 +278,7 @@ function ListUsers() {
           isOpen={modalAdd.isOpen}
           onClose={modalAdd.onClose}
           title="Agregar usuario"
-          size="lg"
+          size="auto"
         >
           <AddUsers onClose={modalAdd.onClose} />
         </ModalGlobal>
@@ -272,6 +292,14 @@ function ListUsers() {
             id={selectId}
             closeModal={modalChangePassword.onClose}
           />
+        </ModalGlobal>
+        <ModalGlobal
+          isOpen={modalUpdate.isOpen}
+          onClose={modalUpdate.onClose}
+          title="Editar usuario"
+          size="lg"
+        >
+          <UpdateUsers onClose={modalUpdate.onClose} user={user}/>
         </ModalGlobal>
       </div>
     </>

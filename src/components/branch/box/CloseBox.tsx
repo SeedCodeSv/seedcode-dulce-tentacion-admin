@@ -10,7 +10,7 @@ import {
   PopoverContent,
 } from "@nextui-org/react";
 //   import Layout from "@renderer/components/global/Layout";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import OneDollar from "../../../assets/dollars/1.jpg";
 import FiveDollar from "../../../assets/dollars/5.png";
 import ThenDollar from "../../../assets/dollars/10.png";
@@ -30,7 +30,14 @@ import { toast } from "sonner";
 import { IGetBox } from "../../../types/box.types";
 import { useNavigate } from "react-router";
 import { ThemeContext } from "../../../hooks/useTheme";
+import { get_box } from "../../../storage/localStorage";
 function Box() {
+const [idBox, setIdBox] = useState(0)
+  useEffect(() => {
+    const box = get_box()
+    setIdBox(Number(box))
+    console.log(box)
+  },[])
   const { theme } = useContext(ThemeContext);
 
   const [boxValues, setBoxValues] = useState<ICloseBox>({
@@ -50,13 +57,13 @@ function Box() {
     state: "false",
   });
 
-  const { current_box, OnRemoveBox } = useBoxStore();
+  const { has_current_box, current_box, OnRemoveBox } = useBoxStore();
   const [boxPreview, setBoxpreview] = useState<IGetBox>();
 
   const popover = useDisclosure();
-
+console.log( current_box, has_current_box, idBox)
   const preview_box = () => {
-    close_box(boxValues, current_box)
+    close_box(boxValues, idBox)
       .then(({ data }) => {
         if (data.ok) {
           setBoxpreview(data);
@@ -75,7 +82,7 @@ function Box() {
 
   const completeBox = () => {
     popover.onClose();
-    close_box({ ...boxValues, state: "true" }, current_box)
+    close_box({ ...boxValues, state: "true" }, idBox)
       .then(({ data }) => {
         if (data.ok) {
           OnRemoveBox(), toast.success("Caja cerrada");

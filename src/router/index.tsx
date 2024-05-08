@@ -10,6 +10,7 @@ import Error404 from "../pages/Error404";
 import Product from "../pages/Product";
 import ExpensesCategories from "../pages/ExpensesCategories";
 import Expenses from "../pages/Expenses";
+import ActionRol from "../pages/ActionRol"
 export const router = () => {
   return createBrowserRouter([
     {
@@ -51,6 +52,10 @@ export const router = () => {
     {
       path: "/expenses",
       element: <Expenses/>
+    },
+    {
+      path: "/actionRol",
+      element: <ActionRol/>
     },
     {
       path: "*",

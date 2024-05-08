@@ -39,7 +39,6 @@ import { Branches } from "../../types/branches.types";
 import { toast } from "sonner";
 import ListBranchProduct from "./branch_product/ListBranchProduct";
 import BoxBranch from "./BoxBranch"
-import {verify_box} from "../../services/Boxes.service.ts"
 function ListBranch() {
   const { theme } = useContext(ThemeContext);
 

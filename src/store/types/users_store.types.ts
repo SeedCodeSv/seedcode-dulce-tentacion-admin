@@ -1,4 +1,4 @@
-import { IGetUserPaginated, User, UserPayload } from "../../types/users.types";
+import { IGetUserPaginated, User, UserPayload, UserUpdate } from "../../types/users.types";
 
 export interface UsersStore {
   users: User[];
@@ -6,7 +6,7 @@ export interface UsersStore {
   saveUsers: (users: User[]) => void;
   getUsers: () => void;
   postUser: (payload: UserPayload) => Promise<boolean>;
-  patchUser: (payload: UserPayload, id: number) => Promise<boolean>;
+  patchUser: (payload: UserUpdate, id: number) => Promise<boolean>;
   deleteUser: (id: number) => Promise<boolean>;
   updatePassword: (id: number, password: string) => Promise<boolean>;
   getUsersPaginated: (page: number, limit: number, userName: string) => Promise<void>;

@@ -10,7 +10,11 @@ export interface UserPayload {
     roleId: number;
     employeeId: number;
 }
-
+export interface UserUpdate {
+    userName: string;
+    roleId: number;
+    employeeId: number;
+}
 export interface Role {
     id: number;
     name: string;

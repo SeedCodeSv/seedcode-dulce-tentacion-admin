@@ -12,52 +12,55 @@ import { useEmployeeStore } from "../../store/employee.store";
 import { Employee } from "../../types/employees.types";
 import { Role } from "../../types/roles.types";
 import { useUsersStore } from "../../store/users.store";
-import { UserPayload } from "../../types/users.types";
+import { User, UserUpdate } from "../../types/users.types";
 import { ThemeContext } from "../../hooks/useTheme";
 
 interface Props {
   onClose: () => void;
+  user?: User;
 }
 
 function AddUsers(props: Props) {
   const { theme } = useContext(ThemeContext);
 
   const initialValues = {
-    userName: "",
-    password: "",
-    roleId: 0,
-    employeeId: 0,
+    userName: props.user?.userName ?? "",
+    roleId: props.user?.roleId ?? 0,
+    employeeId: props.user?.employeeId ?? 0,
   };
 
   const validationSchema = yup.object().shape({
     userName: yup.string().required("El usuario es requerido"),
-    password: yup.string().required("La contraseña es requerida"),
-    roleId: yup.number().required("El rol es requerido").min(1,"El rol es requerido"),
-    employeeId: yup.number().required("El usuario es requerido").min(1,"El usuario es requerido"),
+    roleId: yup
+      .number()
+      .required("El rol es requerido")
+      .min(1, "El rol es requerido"),
+    employeeId: yup
+      .number()
+      .required("El usuario es requerido")
+      .min(1, "El usuario es requerido"),
   });
 
   const { roles_list, getRolesList } = useRolesStore();
   const { employee_list, getEmployeesList } = useEmployeeStore();
-  const { postUser } = useUsersStore();
+  const { patchUser } = useUsersStore();
 
   useEffect(() => {
     getRolesList();
     getEmployeesList();
   }, []);
 
-  const handleSubmit = (values: UserPayload) => {
-    postUser(values);
+  const handleSubmit = (values: UserUpdate) => {
+    patchUser(values, Number(props?.user?.id));
     props.onClose();
   };
 
   return (
-    <div className="w-96 mb-32 sm:mb-0">
+    <div className="mb-32 sm:mb-0">
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={(values) => {
-          handleSubmit(values);
-        }}
+        onSubmit={handleSubmit}
       >
         {({
           values,
@@ -68,7 +71,7 @@ function AddUsers(props: Props) {
           handleSubmit,
         }) => (
           <>
-            <div className="mt-10">
+            <div>
               <Input
                 label="Nombre de usuario"
                 labelPlacement="outside"
@@ -79,35 +82,13 @@ function AddUsers(props: Props) {
                 onBlur={handleBlur("userName")}
                 placeholder="Ingresa el nombre de usuario"
                 classNames={{
-                  label: "text-gray-500 text-base",
+                  label: "font-semibold text-gray-500 text-sm",
                 }}
                 variant="bordered"
               />
               {errors.userName && touched.userName && (
                 <span className="text-sm font-semibold text-red-500">
                   {errors.userName}
-                </span>
-              )}
-            </div>
-            <div className="pt-2">
-              <Input
-                label="Contraseña"
-                labelPlacement="outside"
-                size="lg"
-                name="userName"
-                value={values.password}
-                onChange={handleChange("password")}
-                onBlur={handleBlur("password")}
-                placeholder="Ingresa la Contraseña"
-                type="password"
-                classNames={{
-                  label: "text-gray-500 text-base",
-                }}
-                variant="bordered"
-              />
-              {errors.password && touched.password && (
-                <span className="text-sm font-semibold text-red-500">
-                  {errors.password}
                 </span>
               )}
             </div>
@@ -123,10 +104,14 @@ function AddUsers(props: Props) {
                 onBlur={handleBlur("employeeId")}
                 label="Empleado"
                 labelPlacement="outside"
-                placeholder="Selecciona el empleado"
+                placeholder={
+                  props.user?.employee.fullName
+                    ? props.user?.employee.fullName
+                    : "Selecciona el empleado"
+                }
                 variant="bordered"
                 classNames={{
-                  base: "text-gray-500 text-sm",
+                  base: "font-semibold text-gray-500 text-sm",
                 }}
               >
                 {employee_list.map((dep) => (
@@ -153,10 +138,14 @@ function AddUsers(props: Props) {
                 onBlur={handleBlur("roleId")}
                 label="Rol"
                 labelPlacement="outside"
-                placeholder="Selecciona el rol"
+                placeholder={
+                  props.user?.role.name
+                    ? props.user?.role.name
+                    : "Selecciona el rol"
+                }
                 variant="bordered"
                 classNames={{
-                  base: "text-gray-500 text-sm",
+                  base: "font-semibold text-gray-500 text-sm",
                 }}
               >
                 {roles_list.map((dep) => (
@@ -172,7 +161,7 @@ function AddUsers(props: Props) {
               )}
             </div>
             <Button
-            size="lg"
+              size="lg"
               onClick={() => handleSubmit()}
               className="w-full mt-4 text-sm font-semibold"
               style={{

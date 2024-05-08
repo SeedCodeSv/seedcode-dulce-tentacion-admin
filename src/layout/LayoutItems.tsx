@@ -10,6 +10,9 @@ import {
   BookUser,
   Users,
   Book,
+  ShieldHalf,
+  CalculatorIcon, 
+  Grid2X2Icon
 } from "lucide-react";
 import { useContext } from "react";
 import { ThemeContext } from "../hooks/useTheme";
@@ -216,7 +219,7 @@ export const LayoutItems = () => {
           };
         }}
       >
-        <Book size={20} />
+        <Grid2X2Icon size={20} />
         <p className="ml-2 text-base">Categoria de gastos</p>
       </NavLink>
       <NavLink
@@ -237,8 +240,29 @@ export const LayoutItems = () => {
           };
         }}
       >
-        <Book size={20} />
+        <CalculatorIcon size={20} />
         <p className="ml-2 text-base">Gastos</p>
+      </NavLink>
+      <NavLink
+        to={"/actionRol"}
+        className={({ isActive }) => {
+          return (
+            (isActive
+              ? "text-coffee-green font-semibold bg-gray-50 border-coffee-green"
+              : "text-coffee-brown font-semibold border-white") +
+            " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 hover:border-coffee-green"
+          );
+        }}
+        style={({ isActive }) => {
+          return {
+            backgroundColor: isActive ? "#dedede" : "transparent",
+            borderLeftColor: isActive ? theme.colors.dark : "transparent",
+            borderLeftWidth: 5,
+          };
+        }}
+      >
+        <ShieldHalf size={20} />
+        <p className="ml-2 text-base">Permisos</p>
       </NavLink>
     </>
   );

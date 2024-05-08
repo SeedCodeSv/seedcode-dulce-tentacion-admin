@@ -4,6 +4,7 @@ import {
   IGetUserPaginated,
   IGetUsers,
   UserPayload,
+  UserUpdate,
 } from "../types/users.types";
 import { get_token, get_user } from "../storage/localStorage";
 const token = get_token() ?? "";
@@ -43,7 +44,7 @@ export const save_user = (payload: UserPayload) => {
   });
 };
 
-export const patch_user = (payload: UserPayload, id: number) => {
+export const patch_user = (payload: UserUpdate, id: number) => {
   return axios.patch<{ ok: boolean }>(API_URL + "/users/" + id, payload, {
     headers: {
       Authorization: `Bearer ${token}`,

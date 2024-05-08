@@ -1,7 +1,7 @@
 import Layout from '../layout/Layout'
 import ListExpenses from '../components/expenses/ListExpenses'
 
-function ExpensesCategories() {
+function Expenses() {
   return (
     <Layout title="Gastos">
       <ListExpenses />
@@ -9,4 +9,4 @@ function ExpensesCategories() {
   )
 }
 
-export default ExpensesCategories
+export default Expenses

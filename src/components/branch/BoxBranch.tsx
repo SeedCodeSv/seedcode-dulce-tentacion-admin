@@ -14,7 +14,7 @@ import { useBoxStore } from "../../store/Boxes.store";
 import { IBoxPayload } from "../../types/box.types";
 import { useContext, useEffect, useState } from "react";
 import { verify_box } from "../../services/Boxes.service";
-import { BoxIcon, TrashIcon } from "lucide-react";
+import { BoxIcon } from "lucide-react";
 import { post_box } from "../../storage/localStorage";
 import ModalGlobal from "../global/ModalGlobal";
 import CloseBox from "./box/CloseBox";
@@ -34,7 +34,7 @@ function AddBranch(props: Props) {
     start: yup.string().required("El monto inicial es requerido"),
   });
 
-  const { postBox } = useBoxStore();
+  const { postBox, closeBox } = useBoxStore();
 
   const handleSubmit = (values: IBoxPayload) => {
     if (props.branch) {
@@ -44,8 +44,8 @@ function AddBranch(props: Props) {
       };
       postBox(payload);
     }
-    props.setBranch(undefined);
     props.closeModal();
+    props.setBranch(undefined);
   };
   const [visible, setVisible] = useState(false);
   const [idBox, setIdBox] = useState(0);
@@ -53,6 +53,11 @@ function AddBranch(props: Props) {
     post_box(idBox.toString());
     props.closeModal();
   };
+  const handleCloseBoxId = () => {
+    closeBox(idBox)
+    props.closeModal();
+    props.setBranch(undefined);
+  }
   useEffect(() => {
     (async () => {
       verify_box(Number(props.branch?.id)).then(({ data }) => {
@@ -103,20 +108,20 @@ function AddBranch(props: Props) {
                 </PopoverTrigger>
                 <PopoverContent>
                   <div className="w-full p-5">
-                    <p className="font-semibold text-gray-600">Eliminar</p>
+                    <p className="font-semibold text-gray-600 text-center">Cierres de cajas</p>
                     <p className="mt-3 text-center text-gray-600 w-72">
-                      ¿Estas seguro de eliminar este registro?
+                      ¿Como quieres cerrar la caja?
                     </p>
                     <div className="mt-4">
-                      <Button onClick={onClose}>No, cancelar</Button>
+                      <Button onClick={() => modalCloseBox.onOpen()}>Cierre contabilizado</Button>
                       <Button
-                        // onClick={() => handleDelete()}
+                        onClick={() => handleCloseBoxId()}
                         className="ml-5"
                         style={{
                           backgroundColor: theme.colors.third,
                         }}
                       >
-                        Si, eliminar
+                        Solo cerrar caja
                       </Button>
                     </div>
                   </div>

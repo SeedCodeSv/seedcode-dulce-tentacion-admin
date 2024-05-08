@@ -33,3 +33,10 @@ export const close_box = (closeBox: ICloseBox, idBox: number) => {
     },
   });
 }
+export const close_box_by_id = (idBox: number) => {
+  return axios.delete<IGetBox>(API_URL + `/box/close-box/` + idBox, {
+     headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}

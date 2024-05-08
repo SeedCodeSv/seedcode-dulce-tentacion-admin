@@ -6,4 +6,5 @@ export interface IBoxStore {
     getBoxList: () => void;
     postBox: (box: IBoxPayload) => void;
     OnRemoveBox: ()=> void
+    closeBox: (idBox: number) => void
 }
