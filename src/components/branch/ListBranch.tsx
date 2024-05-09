@@ -42,8 +42,11 @@ import BoxBranch from "./BoxBranch";
 function ListBranch() {
   const { theme } = useContext(ThemeContext);
 
-  const { getBranchesPaginated, branches_paginated, disableBranch } =
-    useBranchesStore();
+  const {
+    getBranchesPaginated,
+    branches_paginated,
+    disableBranch,
+  } = useBranchesStore();
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -70,7 +73,7 @@ function ListBranch() {
         <div>
           <Input
             startContent={<User />}
-            className="w-full"
+            className="w-full dark:text-white"
             size="lg"
             variant="bordered"
             labelPlacement="outside"
@@ -91,11 +94,11 @@ function ListBranch() {
         </div>
         <div>
           <Input
-           labelPlacement="outside"
-           label="Teléfono"
+            labelPlacement="outside"
+            label="Teléfono"
             placeholder="Escribe para buscar..."
             startContent={<PhoneIcon />}
-            className="w-full"
+            className="w-full dark:text-white"
             size="lg"
             classNames={{
               label: "font-semibold text-gray-700",
@@ -115,7 +118,7 @@ function ListBranch() {
           <Input
             placeholder="Escribe para buscar..."
             startContent={<MapPinIcon />}
-            className="w-full"
+            className="w-full dark:text-white"
             size="lg"
             variant="bordered"
             isClearable
@@ -290,7 +293,7 @@ function ListBranch() {
             {active === 1 ? "Mostrar inactivos" : "Mostrar activos"}
           </Switch>
           <Select
-            className="w-44"
+            className="w-44 dark:text-white"
             variant="bordered"
             size="lg"
             label="Mostrar"
@@ -418,7 +421,7 @@ function ListBranch() {
           setSelectedBranch(undefined);
         }}
         title={selectedBranch ? "Editar sucursal" : "Nueva sucursal"}
-        size="w-96 sm:w-[28rem] md:w-[30rem] lg:w-[32rem] xl:w-[34rem]"
+        size="w-full md:w-[500px]"
       >
         <AddBranch branch={selectedBranch} closeModal={modalAdd.onClose} />
       </ModalGlobal>
@@ -438,7 +441,7 @@ function ListBranch() {
           clearClose();
           modalBoxBranch.onClose();
         }}
-        size="auto"
+        size="w-full md:w-[500px]"
       >
         <BoxBranch
           branch={Branch}

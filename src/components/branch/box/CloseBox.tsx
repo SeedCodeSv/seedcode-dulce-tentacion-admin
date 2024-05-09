@@ -98,15 +98,14 @@ console.log( current_box, has_current_box, idBox)
 
   return (
     <>
-      <div className=" text-center text-3xl font-semibold">Cierre de caja</div>
-      <div className="w-full h-screen overflow-x-hidden p-6 py-10 pt-14 flex flex-row bg-[#FEFBF6]">
-        <div>
-          <div className="grid w-full h-auto grid-cols-5 gap-5 xl:grid-cols-6 place-items-center - ">
+      <div className="w-full h-full p-6 py-10 pt-14 flex flex-row">
+        <div className="w-full h-full">
+          <div className="grid w-full h-auto grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5 2xl:grid-cols-6 place-items-center">
             <Card className="w-full py-4 max-h-64">
               <CardBody className="flex flex-col items-center justify-center py-2 overflow-visible">
                 <Image
                   alt="Card background"
-                  className="object-cover rounded-xl"
+                  className="object-cover"
                   src={OneDollar}
                 />
                 <Input
@@ -124,10 +123,11 @@ console.log( current_box, has_current_box, idBox)
                       oneDollar: parseInt(e.target.value),
                     });
                   }}
+                  type="number"
                 />
               </CardBody>
             </Card>
-            <Card className="w-full py-4 max-h-64">
+            <Card className="w-full py-4">
               <CardBody className="flex flex-col items-center justify-center py-2 overflow-visible">
                 <Image
                   alt="Card background"
@@ -149,10 +149,11 @@ console.log( current_box, has_current_box, idBox)
                       fiveDollars: parseInt(e.target.value),
                     });
                   }}
+                  type="number"
                 />
               </CardBody>
             </Card>
-            <Card className="w-full py-4 max-h-64">
+            <Card className="w-full py-4">
               <CardBody className="flex flex-col items-center justify-center py-2 overflow-visible">
                 <Image
                   alt="Card background"
@@ -174,10 +175,11 @@ console.log( current_box, has_current_box, idBox)
                       tenDollars: parseInt(e.target.value),
                     });
                   }}
+                  type="number"
                 />
               </CardBody>
             </Card>
-            <Card className="w-full py-4 max-h-64">
+            <Card className="w-full py-4">
               <CardBody className="flex flex-col items-center justify-center py-2 overflow-visible">
                 <Image
                   alt="Card background"
@@ -199,10 +201,11 @@ console.log( current_box, has_current_box, idBox)
                       twentyDollars: parseInt(e.target.value),
                     });
                   }}
+                  type="number"
                 />
               </CardBody>
             </Card>
-            <Card className="w-full py-4 max-h-64">
+            <Card className="w-full py-4">
               <CardBody className="flex flex-col items-center justify-center py-2 overflow-visible">
                 <Image
                   alt="Card background"
@@ -224,10 +227,11 @@ console.log( current_box, has_current_box, idBox)
                       fiftyDollars: parseInt(e.target.value),
                     });
                   }}
+                  type="number"
                 />
               </CardBody>
             </Card>
-            <Card className="w-full py-4 max-h-64">
+            <Card className="w-full py-4">
               <CardBody className="flex flex-col items-center justify-center py-2 overflow-visible">
                 <Image
                   alt="Card background"
@@ -249,14 +253,15 @@ console.log( current_box, has_current_box, idBox)
                       hundredDollars: parseInt(e.target.value),
                     });
                   }}
+                  type="number"
                 />
               </CardBody>
             </Card>
-            <Card className="w-full py-4 max-h-64">
+            <Card className="w-full py-4">
               <CardBody className="flex flex-col items-center justify-center py-2 overflow-visible">
                 <Image
                   alt="Card background"
-                  className="object-cover w-full max-h-16"
+                  className="object-cover w-full max-h-32"
                   src={OneCent}
                 />
                 <Input
@@ -274,14 +279,15 @@ console.log( current_box, has_current_box, idBox)
                       oneCents: parseInt(e.target.value),
                     });
                   }}
+                  type="number"
                 />
               </CardBody>
             </Card>
-            <Card className="w-full py-4 max-h-64">
+            <Card className="w-full py-4">
               <CardBody className="flex flex-col items-center justify-center py-2 overflow-visible">
                 <Image
                   alt="Card background"
-                  className="object-cover w-full max-h-16"
+                  className="object-cover w-full max-h-32"
                   src={FiveCent}
                 />
                 <Input
@@ -299,14 +305,15 @@ console.log( current_box, has_current_box, idBox)
                       fiveCents: parseInt(e.target.value),
                     });
                   }}
+                  type="number"
                 />
               </CardBody>
             </Card>
-            <Card className="w-full py-4 max-h-64">
+            <Card className="w-full py-4">
               <CardBody className="flex flex-col items-center justify-center py-2 overflow-visible">
                 <Image
                   alt="Card background"
-                  className="object-cover w-full max-h-16"
+                  className="object-cover w-full max-h-32"
                   src={TenCent}
                 />
                 <Input
@@ -324,14 +331,15 @@ console.log( current_box, has_current_box, idBox)
                       tenCents: parseInt(e.target.value),
                     });
                   }}
+                  type="number"
                 />
               </CardBody>
             </Card>
-            <Card className="w-full py-4 max-h-64">
+            <Card className="w-full py-4">
               <CardBody className="flex flex-col items-center justify-center py-2 overflow-visible">
                 <Image
                   alt="Card background"
-                  className="object-cover w-full max-h-16"
+                  className="object-cover w-full max-h-32"
                   src={TwentyFiveCent}
                 />
                 <Input
@@ -349,14 +357,15 @@ console.log( current_box, has_current_box, idBox)
                       twentyFiveCents: parseInt(e.target.value),
                     });
                   }}
+                  type="number"
                 />
               </CardBody>
             </Card>
-            <Card className="w-full py-4 max-h-64">
+            <Card className="w-full py-4">
               <CardBody className="flex flex-col items-center justify-center py-2 overflow-visible">
                 <Image
                   alt="Card background"
-                  className="object-cover w-full max-h-16"
+                  className="object-cover w-full max-h-32"
                   src={OneHundredCent}
                 />
                 <Input
@@ -374,6 +383,7 @@ console.log( current_box, has_current_box, idBox)
                       oneDollarCents: parseInt(e.target.value),
                     });
                   }}
+                  type="number"
                 />
               </CardBody>
             </Card>

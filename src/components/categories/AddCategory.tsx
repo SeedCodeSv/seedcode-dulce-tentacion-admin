@@ -36,7 +36,7 @@ const AddCategory = (props: Props) => {
   };
 
   return (
-    <div className=" w-72 mb-32 sm:mb-0">
+    <div className="mb-32 sm:mb-0">
       <Formik
         validationSchema={validationSchema}
         initialValues={{ name: props.category?.name ?? "" }}
