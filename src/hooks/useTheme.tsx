@@ -1,5 +1,5 @@
 import React from "react";
-import THEMES from "../themes.json";
+import { defaultTheme } from "../utils/constants";
 
 interface Props {
   children: React.ReactNode;
@@ -40,7 +40,7 @@ function ThemeProvider(props: Props) {
   const themeConfigured = localStorage.getItem("theme");
 
   const [theme, setTheme] = React.useState(
-    themeConfigured ? JSON.parse(themeConfigured) : THEMES.themes[0]
+    themeConfigured ? JSON.parse(themeConfigured) : defaultTheme as Theme
   );
 
   const [navbar, setNavbar] = React.useState("sidebar");
