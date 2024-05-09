@@ -255,12 +255,6 @@ function ListProducts() {
               <Column
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
-                field="type"
-                header="Tipo"
-              />
-              <Column
-                headerClassName="text-sm font-semibold"
-                headerStyle={style}
                 field="code"
                 header="Código"
               />

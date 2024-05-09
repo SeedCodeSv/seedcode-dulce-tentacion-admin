@@ -153,6 +153,10 @@ function ListBranch() {
     setSelectedBranch(item);
     modalAdd.onOpen();
   };
+  const handleBox = (item: Branches) => {
+    setBranch(item);
+    modalBoxBranch.onOpen();
+  }
   const handleBranchProduct = (id: number) => {
     setBranchId(id);
     modalBranchProduct.onOpen();
@@ -343,7 +347,6 @@ function ListBranch() {
                       </Switch>
                     </>
                   )}
-                  {/* <BoxPopUp branch={item}/> */}
                   <Button
                     size="lg"
                     onClick={() => {
@@ -379,6 +382,7 @@ function ListBranch() {
               deletePopover={DeletePopUp}
               handleEdit={handleEdit}
               handleBranchProduct={handleBranchProduct}
+              handleBox={handleBox}
             />
           </>
         )}

@@ -32,6 +32,5 @@ export interface ProductPayload {
   description: string;
   price: number;
   code: string;
-  type: string;
   categoryProductId: number;
 }

@@ -27,7 +27,6 @@ function AddProducts(props: Props) {
       .required("**El precio es requerido**")
       .typeError("**El precio es requerido**"),
     code: yup.string().required("**El Código es requerido**"),
-    type: yup.string().required("**El tipo es requerido**"),
     categoryProductId: yup
       .number()
       .required("**Debes seleccionar la categoría**")
@@ -39,7 +38,6 @@ function AddProducts(props: Props) {
     description: props.product?.description ?? "N/A",
     price: Number(props.product?.price) ?? 0,
     code: props.product?.code ?? "N/A",
-    type: props.product?.type ?? "NORMAL",
     categoryProductId: props.product?.categoryProductId ?? 0,
   };
 

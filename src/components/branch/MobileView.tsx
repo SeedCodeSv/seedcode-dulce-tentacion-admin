@@ -1,7 +1,14 @@
 import { useBranchesStore } from "../../store/branches.store";
 import { DataView } from "primereact/dataview";
 import { Branches } from "../../types/branches.types";
-import { Edit, MapPin, Phone, Scroll, ShoppingBag } from "lucide-react";
+import {
+  BoxIcon,
+  Edit,
+  MapPin,
+  Phone,
+  Scroll,
+  ShoppingBag,
+} from "lucide-react";
 import { Button } from "@nextui-org/react";
 import { classNames } from "primereact/utils";
 import { global_styles } from "../../styles/global.styles";
@@ -11,6 +18,7 @@ interface Props {
   deletePopover: ({ branch }: { branch: Branches }) => JSX.Element;
   handleEdit: (branch: Branches) => void;
   handleBranchProduct: (id: number) => void;
+  handleBox: (branch: Branches) => void;
 }
 
 function MobileView({
@@ -18,6 +26,7 @@ function MobileView({
   deletePopover,
   handleEdit,
   handleBranchProduct,
+  handleBox,
 }: Props) {
   const { branches_paginated } = useBranchesStore();
   return (
@@ -39,7 +48,8 @@ function MobileView({
             layout as "grid" | "list",
             deletePopover,
             handleEdit,
-            handleBranchProduct
+            handleBranchProduct,
+            handleBox
           )
         }
         emptyMessage="No users found"
@@ -55,7 +65,8 @@ const gridItem = (
   layout: "grid" | "list",
   deletePopover: ({ branch }: { branch: Branches }) => JSX.Element,
   handleEdit: (branch: Branches) => void,
-  handleBranchProduct: (id: number) => void
+  handleBranchProduct: (id: number) => void,
+  handleBox: (branch: Branches) => void
 ) => {
   return (
     <>
@@ -89,6 +100,14 @@ const gridItem = (
             </Button>
             <Button
               size="lg"
+              onClick={() => handleBox(branch)}
+              isIconOnly
+              style={global_styles().darkStyle}
+            >
+              <BoxIcon />
+            </Button>
+            <Button
+              size="lg"
               onClick={() => {
                 handleBranchProduct(branch.id);
               }}
@@ -106,6 +125,7 @@ const gridItem = (
           deletePopover={deletePopover}
           handleEdit={handleEdit}
           handleBranchProduct={handleBranchProduct}
+          handleBox={handleBox}
         />
       )}
     </>
@@ -116,10 +136,17 @@ interface ListProps {
   deletePopover: ({ branch }: { branch: Branches }) => JSX.Element;
   handleEdit: (branch: Branches) => void;
   branch: Branches;
-  handleBranchProduct: (id: number) => void
+  handleBranchProduct: (id: number) => void;
+  handleBox: (branch: Branches) => void;
 }
 
-const ListItem = ({ branch, deletePopover, handleEdit, handleBranchProduct }: ListProps) => {
+const ListItem = ({
+  branch,
+  deletePopover,
+  handleEdit,
+  handleBranchProduct,
+  handleBox,
+}: ListProps) => {
   return (
     <>
       <div className="flex w-full col-span-1 p-5 border-b shadow md:col-span-2 lg:col-span-3 xl:col-span-4">
@@ -147,6 +174,14 @@ const ListItem = ({ branch, deletePopover, handleEdit, handleBranchProduct }: Li
             style={global_styles().secondaryStyle}
           >
             <Edit />
+          </Button>
+          <Button
+            size="lg"
+            onClick={() => handleBox(branch)}
+            isIconOnly
+            style={global_styles().darkStyle}
+          >
+            <BoxIcon />
           </Button>
           <Button
             size="lg"
