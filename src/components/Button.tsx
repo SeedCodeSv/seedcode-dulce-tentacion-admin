@@ -1,10 +1,12 @@
 import { useContext } from "react";
-import { ThemeContext } from "../hooks/useTheme";
+import { Theme, ThemeContext } from "../hooks/useTheme";
 import * as NextUI from "@nextui-org/react";
 
-function Button() {
-  const { theme } = useContext(ThemeContext);
+interface Props {
+  theme: Theme;
+}
 
+function Button({ theme }: Props) {
   return (
     <>
       <NextUI.Button
@@ -15,27 +17,7 @@ function Button() {
         }}
         className="font-semibold"
       >
-        Button
-      </NextUI.Button>
-      <NextUI.Button
-        color="primary"
-        style={{
-          backgroundColor: theme.colors.secondary,
-          color: theme.colors.primary,
-        }}
-        className="font-semibold"
-      >
-        Button 2
-      </NextUI.Button>
-      <NextUI.Button
-        color="primary"
-        style={{
-          backgroundColor: theme.colors.third,
-          color: theme.colors.primary,
-        }}
-        className="font-semibold"
-      >
-        Button 3
+        Danger
       </NextUI.Button>
       <NextUI.Button
         color="primary"
@@ -45,8 +27,29 @@ function Button() {
         }}
         className="font-semibold"
       >
-        Button 4
+        Dark
       </NextUI.Button>
+      <NextUI.Button
+        color="primary"
+        style={{
+          backgroundColor: theme.colors.secondary,
+          color: theme.colors.primary,
+        }}
+        className="font-semibold"
+      >
+        Secondary
+      </NextUI.Button>
+      <NextUI.Button
+        color="primary"
+        style={{
+          backgroundColor: theme.colors.third,
+          color: theme.colors.primary,
+        }}
+        className="font-semibold"
+      >
+        Third
+      </NextUI.Button>
+
       <NextUI.Button
         color="primary"
         style={{
@@ -55,7 +58,7 @@ function Button() {
         }}
         className="font-semibold"
       >
-        Button 4
+        Warning
       </NextUI.Button>
     </>
   );

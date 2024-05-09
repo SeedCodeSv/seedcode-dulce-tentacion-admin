@@ -71,7 +71,7 @@ function ListEmployee() {
           }}
           labelPlacement="outside"
           label="Nombre"
-          className="w-full xl:w-96"
+          className="w-full xl:w-96 dark:text-white"
           placeholder="Buscar por nombre..."
           size="lg"
           startContent={<User />}
@@ -94,7 +94,7 @@ function ListEmployee() {
           placeholder="Buscar por teléfono..."
           size="lg"
           startContent={<Phone size={20} />}
-          className="w-full xl:w-96"
+          className="w-full xl:w-96 dark:text-white"
           variant="bordered"
           name="searchPhone"
           value={phone}
@@ -113,7 +113,7 @@ function ListEmployee() {
           placeholder="Buscar por sucursal..."
           size="lg"
           startContent={<Truck size={20} />}
-          className="w-full xl:w-96"
+          className="w-full xl:w-96 dark:text-white"
           variant="bordered"
           name="searchAddress"
           id="searchAddress"
@@ -249,7 +249,7 @@ function ListEmployee() {
           </div>
           <div className="flex justify-end w-full mb-5">
             <Select
-              className="w-44"
+              className="w-44 dark:text-white"
               variant="bordered"
               size="lg"
               label="Mostrar"
@@ -373,7 +373,7 @@ function ListEmployee() {
         isOpen={modalAdd.isOpen}
         onClose={modalAdd.onClose}
         title={selectedEmployee ? "Editar Empleado" : "Agregar Empleado"}
-        size="lg"
+        size="w-full sm:w-[500px]"
       >
         <AddEmployee
           closeModal={modalAdd.onClose}

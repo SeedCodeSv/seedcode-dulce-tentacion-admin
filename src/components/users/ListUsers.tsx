@@ -288,7 +288,7 @@ function ListUsers() {
           isOpen={modalAdd.isOpen}
           onClose={modalAdd.onClose}
           title="Agregar usuario"
-          size="auto"
+          size="w-full sm:w-[500px]"
         >
           <AddUsers onClose={modalAdd.onClose} />
         </ModalGlobal>
@@ -296,7 +296,8 @@ function ListUsers() {
           isOpen={modalChangePassword.isOpen}
           onClose={modalChangePassword.onClose}
           title="Actualizar contraseña"
-          size="lg"
+          size="w-full sm:w-[500px]"
+
         >
           <UpdatePassword
             id={selectId}
@@ -307,7 +308,8 @@ function ListUsers() {
           isOpen={modalUpdate.isOpen}
           onClose={modalUpdate.onClose}
           title="Editar usuario"
-          size="lg"
+          size="w-full sm:w-[500px]"
+
         >
           <UpdateUsers onClose={modalUpdate.onClose} user={user} />
         </ModalGlobal>

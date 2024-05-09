@@ -35,7 +35,7 @@ const MobileView = ({ layout, deletePopover, handleEdit }: Props) => {
         itemTemplate={(cat, layout) =>
           gridItem(cat, layout as "grid" | "list", deletePopover, handleEdit)
         }
-        emptyMessage="No category expenses found"
+        emptyMessage="No se encontraron categorías de gastos"
       />
     </div>
   );

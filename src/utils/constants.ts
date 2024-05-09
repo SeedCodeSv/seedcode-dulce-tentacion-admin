@@ -9,3 +9,16 @@ export const messages = {
 }
 
 export const limit_options = ["5", "10", "20", "30", "40", "50", "75", "100"]
+
+export const defaultTheme = {
+    name: "theme1",
+    context: "dark",
+    colors: {
+        danger: "#e63946",
+        primary: "#f1faee",
+        secondary: "#5eb8e0",
+        third: "#457b9d",
+        warning: "#f35b04",
+        dark: "#1d3557"
+    }
+}

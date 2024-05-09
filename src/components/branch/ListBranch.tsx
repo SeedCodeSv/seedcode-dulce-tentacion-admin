@@ -445,7 +445,7 @@ function ListBranch() {
           clearClose();
           modalBoxBranch.onClose();
         }}
-        size="w-full md:w-[500px]"
+        size="w-full sm:w-[500px]"
       >
         <BoxBranch
           branch={Branch}

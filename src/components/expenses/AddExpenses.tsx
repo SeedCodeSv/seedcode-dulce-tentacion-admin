@@ -71,7 +71,7 @@ const AddExpenses = (props: Props) => {
         handleSubmit,
       }) => (
         <>
-          <div className=" w-64 mt-4">
+          <div className="">
             <div className="pt-2">
               <Autocomplete
                 onSelectionChange={(key) => {

@@ -7,16 +7,11 @@ export const paginator_styles = (currentPage:number): PaginatorPassThroughOption
 
   return {
     pageButton: (item) => {
-      console.log(item)
       return {
         className: "!rounded-full font-semibold",
         style: {
           backgroundColor: currentPage === item?.props.first ? theme.colors.dark : "#fff",
-          color: currentPage === item?.props.first
-            ? theme.colors.primary
-            : theme.context === "dark"
-            ? theme.colors.dark
-            : theme.colors.primary,
+          color: "#fff !important",
           borderWidth: 1,
           borderColor: currentPage === item?.props.first
             ? theme.colors.dark

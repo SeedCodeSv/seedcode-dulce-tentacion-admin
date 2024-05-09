@@ -31,7 +31,7 @@ function MobileView({ layout, deletePopover, handleEdit }: Props) {
         itemTemplate={(cat, layout) =>
           gridItem(cat, layout as "grid" | "list", deletePopover, handleEdit)
         }
-        emptyMessage="No expenses found"
+        emptyMessage="No se encontraron gastos"
       />
     </div>
   );

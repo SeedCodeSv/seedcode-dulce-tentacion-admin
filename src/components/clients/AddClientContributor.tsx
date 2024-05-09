@@ -199,7 +199,7 @@ function AddClientContributor(props: Props) {
     cat_019_codigo_de_actividad_economica.length,
   ]);
   return (
-    <div className="mb-32 sm:mb-0">
+    <div>
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -229,6 +229,7 @@ function AddClientContributor(props: Props) {
                       label: "font-semibold text-gray-500 text-sm",
                     }}
                     variant="bordered"
+                    size="lg"
                   />
                   {errors.nombre && touched.nombre && (
                     <span className="text-sm font-semibold text-red-500">
@@ -249,6 +250,7 @@ function AddClientContributor(props: Props) {
                       label: "font-semibold text-gray-500 text-sm",
                     }}
                     variant="bordered"
+                    size="lg"
                   />
                   {errors.nombreComercial && touched.nombreComercial && (
                     <span className="text-sm font-semibold text-red-500">
@@ -269,6 +271,7 @@ function AddClientContributor(props: Props) {
                       label: "font-semibold text-gray-500 text-sm",
                     }}
                     variant="bordered"
+                    size="lg"
                   />
                   {errors.correo && touched.correo && (
                     <span className="text-sm font-semibold text-red-500">
@@ -290,6 +293,7 @@ function AddClientContributor(props: Props) {
                       label: "font-semibold text-gray-500 text-sm",
                     }}
                     variant="bordered"
+                    size="lg"
                   />
                   {errors.telefono && touched.telefono && (
                     <span className="text-sm font-semibold text-red-500">
@@ -311,6 +315,7 @@ function AddClientContributor(props: Props) {
                       label: "font-semibold text-gray-500 text-sm",
                     }}
                     variant="bordered"
+                    size="lg"
                   />
                   {errors.numDocumento && touched.numDocumento && (
                     <span className="text-sm font-semibold text-red-500">
@@ -345,6 +350,7 @@ function AddClientContributor(props: Props) {
                     // selectedKey={selectedKeyCodActivity}
                     defaultSelectedKey={values.descActividad}
                     value={selectedKeyCodActivity}
+                    size="lg"
                   >
                     {filterCodeActividad &&
                       filterCodeActividad.map((dep) => (
@@ -391,6 +397,7 @@ function AddClientContributor(props: Props) {
                     // selectedKey={selectedKeyDepartment}
                     defaultSelectedKey={selectedKeyDepartment}
                     value={selectedKeyDepartment}
+                    size="lg"
                   >
                     {cat_012_departamento.map((dep) => (
                       <AutocompleteItem
@@ -435,6 +442,7 @@ function AddClientContributor(props: Props) {
                       props.customer_direction?.nombreMunicipio
                     }
                     value={selectedKeyCity}
+                    size="lg"
                   >
                     {filteredMunicipios.map((dep) => (
                       <AutocompleteItem
@@ -465,6 +473,7 @@ function AddClientContributor(props: Props) {
                     value={values.complemento}
                     onChange={handleChange("complemento")}
                     onBlur={handleBlur("complemento")}
+                    size="lg"
                   />
                   {errors.complemento && touched.complemento && (
                     <span className="text-sm font-semibold text-red-500">
@@ -486,6 +495,7 @@ function AddClientContributor(props: Props) {
                       label: "font-semibold text-gray-500 text-sm",
                     }}
                     variant="bordered"
+                    size="lg"
                   />
                   {errors.nit && touched.nit && (
                     <span className="text-sm font-semibold text-red-500">
@@ -507,6 +517,7 @@ function AddClientContributor(props: Props) {
                       label: "font-semibold text-gray-500 text-sm",
                     }}
                     variant="bordered"
+                    size="lg"
                   />
                   {errors.nrc && touched.nrc && (
                     <span className="text-sm font-semibold text-red-500">
