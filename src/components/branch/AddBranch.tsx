@@ -59,7 +59,7 @@ function AddBranch(props: Props) {
         handleSubmit,
       }) => (
         <>
-          <div className="w-full mt-4">
+          <div className="w-full">
             <div className="w-full pt-3">
               <Input
                 size="lg"
@@ -69,7 +69,7 @@ function AddBranch(props: Props) {
                 onChange={handleChange("name")}
                 onBlur={handleBlur("name")}
                 value={values.name}
-                classNames={{ label: "font-semibold" }}
+                classNames={{ label: "font-semibold text-sm" }}
                 labelPlacement="outside"
               />
               {errors.name && touched.name && (
@@ -85,7 +85,7 @@ function AddBranch(props: Props) {
                 placeholder="Teléfono de la sucursal"
                 size="lg"
                 variant="bordered"
-                classNames={{ label: "font-semibold" }}
+                classNames={{ label: "font-semibold text-sm" }}
                 labelPlacement="outside"
                 onChange={handleChange("phone")}
                 onBlur={handleBlur("phone")}
@@ -103,7 +103,7 @@ function AddBranch(props: Props) {
                 placeholder="Dirección de la sucursal"
                 size="lg"
                 variant="bordered"
-                classNames={{ label: "font-semibold" }}
+                classNames={{ label: "font-semibold text-sm" }}
                 labelPlacement="outside"
                 className="mb-4"
                 onChange={handleChange("address")}

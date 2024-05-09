@@ -74,18 +74,20 @@ function AddBranch(props: Props) {
 
   return (
     <>
-      <div>
+      <div className="w-full">
         {visible ? (
           <>
             <div className=" justify-center items-center">
               <div className=" text-center text-xl font-semibold mb-2">
                 Esta sucursal cuenta con una caja activa
               </div>
-              <div className=" text-center text-sm font-semibold">
+              <div className=" text-center text-sm">
                 Puedes cerrar la caja y activar una nueva o puedes usar usar la
                 caja activa
               </div>
-              <BoxIcon size={45} className=" justify-center items-center" />
+              <div className="w-full flex justify-center py-5">
+              <BoxIcon size={60} className=" justify-center items-center" />
+              </div>
             </div>
             <div className="flex justify-between gap-5 mt-5">
               {/* <Button size="lg" onClick={() => modalCloseBox.onOpen()}>
@@ -156,7 +158,7 @@ function AddBranch(props: Props) {
                 handleSubmit,
               }) => (
                 <>
-                  <div className=" w-52 mt-4">
+                  <div className="">
                     <div className="w-full pt-3 mb-4">
                       <Input
                         size="lg"
@@ -198,7 +200,9 @@ function AddBranch(props: Props) {
         onClose={() => {
           modalCloseBox.onClose();
         }}
-        size="auto"
+        title="Cierre de caja"
+        size="w-full"
+        isFull
       >
         <CloseBox />
       </ModalGlobal>

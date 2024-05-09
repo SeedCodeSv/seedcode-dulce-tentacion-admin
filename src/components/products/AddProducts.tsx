@@ -1,23 +1,18 @@
 import {
   Input,
   Textarea,
-  useCheckbox,
-  Chip,
-  VisuallyHidden,
-  tv,
-  CheckboxGroup,
   Button,
   Autocomplete,
   AutocompleteItem,
 } from "@nextui-org/react";
 import { Formik } from "formik";
-import { Check } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import * as yup from "yup";
 import { useCategoriesStore } from "../../store/categories.store";
 import { Product, ProductPayload } from "../../types/products.types";
 import { useProductsStore } from "../../store/products.store";
 import { CategoryProduct } from "../../types/categories.types";
+import { ThemeContext } from "../../hooks/useTheme";
 interface Props {
   product?: Product;
   onCloseModal: () => void;
@@ -54,9 +49,8 @@ function AddProducts(props: Props) {
     getListCategories();
   }, []);
 
-  const [search, setSearch] = useState("");
-
   const { postProducts, patchProducts } = useProductsStore();
+  const { theme } = useContext(ThemeContext);
 
   const handleSave = (values: ProductPayload) => {
     if (props.product) {
@@ -103,7 +97,8 @@ function AddProducts(props: Props) {
                 onBlur={handleBlur("name")}
                 placeholder="Ingresa el nombre"
                 classNames={{
-                  label: "font-semibold text-gray-500 text-sm",
+                  label:
+                    "font-semibold text-gray-500 dark:text-gray-200 text-sm",
                 }}
                 variant="bordered"
               />
@@ -216,8 +211,13 @@ function AddProducts(props: Props) {
               )}
             </div>
             <Button
+              size="lg"
               onClick={() => handleSubmit()}
-              className="w-full mt-4 text-sm font-semibold text-white bg-[#B06161]"
+              className="w-full mt-4 text-sm font-semibold"
+              style={{
+                backgroundColor: theme.colors.third,
+                color: theme.colors.primary,
+              }}
             >
               Guardar
             </Button>

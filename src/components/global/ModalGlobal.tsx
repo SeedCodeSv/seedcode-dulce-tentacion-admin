@@ -1,8 +1,9 @@
 // import { Dialog, Transition } from "@headlessui/react";
-import { Fragment } from "react";
+import { Fragment, useContext } from "react";
 import classNames from "classnames";
 import { Dialog } from "primereact/dialog";
-import { useColorScheme } from '../../../../seedwaresv-erp-app/components/useColorScheme.web';
+import { useColorScheme } from "../../../../seedwaresv-erp-app/components/useColorScheme.web";
+import { ThemeContext } from "../../hooks/useTheme";
 
 interface Props {
   children: React.ReactNode;
@@ -24,29 +25,33 @@ function ModalGlobal({
   size,
   isFull,
 }: Props) {
+  const { context } = useContext(ThemeContext);
 
   return (
     <Dialog
       visible={isOpen}
       className={classNames(
-        isFull && "w-full h-full",
+        context === "light" ? "light" : "dark",
+        isFull && "w-full h-full overflow-y-auto",
         size,
-        "bg-red-700 dark:bg-gray-800"
+        "dark:bg-gray-800"
       )}
       pt={{
         content: () => {
           return {
             style: {
-              backgroundColor: "rgb(31 41 55)",
-              color: "#ffffff",
+              backgroundColor:
+                context === "light" ? "#ffffff" : "rgb(31 41 55)",
+              color: context === "light" ? "rgb(31 41 55)" : "#ffffff",
             },
           };
         },
         header: () => {
           return {
             style: {
-              backgroundColor: "rgb(31 41 55)",
-              color: "#ffffff",
+              backgroundColor:
+                context === "light" ? "#ffffff" : "rgb(31 41 55)",
+              color: context === "light" ? "rgb(31 41 55)" : "#ffffff",
             },
           };
         },
