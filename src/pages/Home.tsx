@@ -1,11 +1,10 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import Button from "../components/Button";
-import { ThemeContext } from "../hooks/useTheme";
+import { Theme, ThemeContext } from "../hooks/useTheme";
 import THEME from "../themes.json";
 import Layout from "../layout/Layout";
 import { Card } from "@nextui-org/react";
 import { Check } from "lucide-react";
-import NavBar from "../layout/NavBar";
 import { pdf } from "@react-pdf/renderer";
 import { MyDocument } from "./Invoice";
 
@@ -41,7 +40,7 @@ function Home() {
                 key={index}
                 className="grid w-full grid-cols-6 border shadow"
                 isPressable
-                onClick={() => toggleTheme(themeS)}
+                onClick={() => toggleTheme(themeS as Theme)}
               >
                 <div className="absolute top-5 right-5">
                   {themeS.name === theme.name && (

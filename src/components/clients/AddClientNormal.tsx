@@ -140,7 +140,7 @@ const AddClientNormal = (props: Props) => {
   ]);
 
   return (
-    <div className="mb-32 sm:mb-0">
+    <div>
       <Formik
         initialValues={{ ...initialValues }}
         validationSchema={validationSchema}
@@ -168,6 +168,7 @@ const AddClientNormal = (props: Props) => {
                   label: "font-semibold text-gray-500 text-sm",
                 }}
                 variant="bordered"
+                size="lg"
               />
               {errors.nombre && touched.nombre && (
                 <span className="text-sm font-semibold text-red-500">
@@ -188,6 +189,7 @@ const AddClientNormal = (props: Props) => {
                   label: "font-semibold text-gray-500 text-sm",
                 }}
                 variant="bordered"
+                size="lg"
               />
               {errors.correo && touched.correo && (
                 <span className="text-sm font-semibold text-red-500">
@@ -210,6 +212,7 @@ const AddClientNormal = (props: Props) => {
                     label: "font-semibold text-gray-500 text-sm",
                   }}
                   variant="bordered"
+                  size="lg"
                 />
                 {errors.telefono && touched.telefono && (
                   <span className="text-sm font-semibold text-red-500">
@@ -231,6 +234,7 @@ const AddClientNormal = (props: Props) => {
                     label: "font-semibold text-gray-500 text-sm",
                   }}
                   variant="bordered"
+                  size="lg"
                 />
                 {errors.numDocumento && touched.numDocumento && (
                   <span className="text-sm font-semibold text-red-500">
@@ -267,6 +271,7 @@ const AddClientNormal = (props: Props) => {
                   // selectedKey={selectedKeyDepartment}
                   defaultSelectedKey={selectedKeyDepartment}
                   value={selectedKeyDepartment}
+                  size="lg"
                 >
                   {cat_012_departamento.map((dep) => (
                     <AutocompleteItem
@@ -310,6 +315,7 @@ const AddClientNormal = (props: Props) => {
                     // selectedKey={selectedKeyCity}
                     defaultSelectedKey={props.customer_direction?.municipio}
                     value={selectedKeyCity}
+                    size="lg"
                   >
                     {filteredMunicipios.map((dep) => (
                       <AutocompleteItem
@@ -354,6 +360,7 @@ const AddClientNormal = (props: Props) => {
                     // selectedKey={selectedKeyCity}
                     defaultSelectedKey={selectedKeyCity}
                     value={selectedKeyCity}
+                    size="lg"
                   >
                     {filteredMunicipios.map((dep) => (
                       <AutocompleteItem
@@ -371,48 +378,6 @@ const AddClientNormal = (props: Props) => {
                   )}
                 </div>
               )}
-              {/* <div className="pt-2">
-                <Autocomplete
-                  onSelectionChange={(key) => {
-                    if (key) {
-                      const depSelected = JSON.parse(
-                        key as string
-                      ) as Departamento;
-                      handleChange("municipio")(depSelected.codigo);
-                      handleChange("nombreMunicipio")(depSelected.valores);
-                    }
-                  }}
-                  onBlur={handleBlur("municipio")}
-                  label="Municipio"
-                  labelPlacement="outside"
-                  placeholder={
-                    values.nombreMunicipio
-                      ? values.nombreMunicipio
-                      : "Selecciona el municipio"
-                  }
-                  variant="bordered"
-                  classNames={{
-                    base: "font-semibold text-gray-500 text-sm",
-                  }}
-                  // selectedKey={selectedKeyCity}
-                  defaultSelectedKey={selectedKeyCity}
-                  value={selectedKeyCity}
-                >
-                  {filteredMunicipios.map((dep) => (
-                    <AutocompleteItem
-                      value={dep.codigo}
-                      key={JSON.stringify(dep)}
-                    >
-                      {dep.valores}
-                    </AutocompleteItem>
-                  ))}
-                </Autocomplete>
-                {errors.municipio && touched.municipio && (
-                  <span className="text-sm font-semibold text-red-500">
-                    {errors.municipio}
-                  </span>
-                )}
-              </div> */}
             </div>
             <div className="pt-2">
               <Textarea
@@ -427,6 +392,7 @@ const AddClientNormal = (props: Props) => {
                 value={values.complemento}
                 onChange={handleChange("complemento")}
                 onBlur={handleBlur("complemento")}
+                size="lg"
               />
               {errors.complemento && touched.complemento && (
                 <span className="text-sm font-semibold text-red-500">

@@ -57,7 +57,7 @@ function AddUsers(props: Props) {
   };
 
   return (
-    <div className="w-96 mb-32 sm:mb-0">
+    <div>
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}

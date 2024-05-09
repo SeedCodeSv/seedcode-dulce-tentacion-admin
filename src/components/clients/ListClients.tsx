@@ -93,8 +93,9 @@ const ListClients = () => {
   const modalAdd = useDisclosure();
 
   const [selectedCustomer, setSelectedCustomer] = useState<PayloadCustomer>();
-  const [selectedCustomerDirection, setSelectedCustomerDirection] =
-    useState<CustomerDirection>();
+  const [selectedCustomerDirection, setSelectedCustomerDirection] = useState<
+    CustomerDirection
+  >();
   const [selectedId, setSelectedId] = useState<number>(0);
   const [selectedTitle, setSelectedTitle] = useState("");
 
@@ -161,7 +162,7 @@ const ListClients = () => {
             <div className="flex items-end gap-3">
               <Input
                 startContent={<User />}
-                className="w-full xl:w-96"
+                className="w-full xl:w-96 dark:text-white"
                 variant="bordered"
                 labelPlacement="outside"
                 label="Nombre"
@@ -181,7 +182,7 @@ const ListClients = () => {
               />
               <Input
                 startContent={<Mail />}
-                className="w-full xl:w-96"
+                className="w-full xl:w-96 dark:text-white"
                 variant="bordered"
                 labelPlacement="outside"
                 label="correo"
@@ -417,7 +418,11 @@ const ListClients = () => {
                 : "Editar cliente"
               : "Nuevo cliente"
           }
-          size={typeClient === "contribuyente" ? "2xl" : "lg"}
+          size={
+            typeClient === "contribuyente"
+              ? "w-full md:w-[600px] lg:w-[800px] xl:w-[1000px]"
+              : "w-full md:w-[500px] lg:w-[700px] xl:w-[800px]"
+          }
         >
           <>
             {typeClient === "normal" && (
@@ -587,7 +592,7 @@ export const BottomAdd = ({ setTypeClient, openModal }: PopoverAddProps) => {
         </Button>
       </PopoverTrigger>
       <PopoverContent aria-labelledby="popover-title">
-        <div className="flex flex-col gap-5 p-3">
+        <div className="flex flex-col gap-5 p-3 bg-white">
           <Button
             onClick={() => {
               onClose();

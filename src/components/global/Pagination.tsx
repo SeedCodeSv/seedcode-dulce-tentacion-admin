@@ -1,6 +1,6 @@
 import { Button } from "@nextui-org/react";
 import React, { useContext, useState } from "react";
-import { classNames } from "primereact/utils";
+import classNames from "classnames";
 import {
   ChevronLeft,
   ChevronRight,
@@ -32,7 +32,7 @@ const Pagination: React.FC<PaginationProps> = ({
   
   const inactiveStyle = {
     background: theme.colors.primary,
-    color: theme.context === "light" ? theme.colors.primary : theme.colors.dark,
+    color: theme.colors.dark,
   }
 
   const handlePageChange = (pageNumber: number) => {

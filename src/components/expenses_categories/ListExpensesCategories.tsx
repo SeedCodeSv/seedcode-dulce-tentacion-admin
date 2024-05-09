@@ -69,14 +69,14 @@ const ListExpensesCategories = () => {
   };
 
   return (
-    <div className="w-full h-full p-5 bg-gray-50">
-      <div className="flex flex-col w-full p-5 bg-white rounded">
+    <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
+      <div className="flex flex-col w-full p-5  rounded">
         <div className="flex flex-col justify-between w-full gap-5 mb-5 lg:mb-10 lg:flex-row lg:gap-0">
           <div className="flex items-end gap-3">
             <div className="flex items-end gap-3">
               <Input
                 startContent={<User />}
-                className="w-full xl:w-96"
+                className="w-full xl:w-96 dark:text-white"
                 variant="bordered"
                 labelPlacement="outside"
                 label="Nombre"
@@ -160,7 +160,7 @@ const ListExpensesCategories = () => {
         </div>
         <div className="flex justify-end w-full mb-5">
           <Select
-            className="w-44"
+            className="w-44 dark:text-white"
             variant="bordered"
             size="lg"
             label="Mostrar"
@@ -262,7 +262,7 @@ const ListExpensesCategories = () => {
         )}
       </div>
       <ModalGlobal
-        size="lg"
+        size="w-full sm:w-[500px]"
         title={
           selectedCategory
             ? "Editar categoría de gastos"
