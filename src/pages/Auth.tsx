@@ -81,7 +81,7 @@ function Auth() {
                     placeholder="Ingresa tu usuario"
                   />
                   {errors.userName && touched.userName && (
-                    <p className="text-red-500">{errors.userName}</p>
+                    <p className="text-red-500 text-sm font-semibold">{errors.userName}</p>
                   )}
                 </div>
                 <div className="flex flex-col mt-10">
@@ -111,7 +111,7 @@ function Auth() {
                     }
                   />
                   {errors.password && touched.password && (
-                    <p className="text-red-500">{errors.password}</p>
+                    <p className="text-red-500 text-sm font-semibold">{errors.password}</p>
                   )}
                 </div>
 

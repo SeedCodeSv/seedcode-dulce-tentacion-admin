@@ -81,11 +81,11 @@ function ListProducts() {
     <>
       <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
         <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
-          <div className="flex flex-col justify-between w-full gap-5 mb-5 lg:mb-10 lg:flex-row lg:gap-0">
-            <div className="flex items-end gap-3">
+          <div className="w-full">
+            <div className="flex w-full justify-between items-end gap-3">
               <Input
                 startContent={<SearchIcon />}
-                className="w-full xl:w-80"
+                className="w-full xl:w-80 dark:text-white"
                 variant="bordered"
                 labelPlacement="outside"
                 label="Nombre"
@@ -112,7 +112,7 @@ function ListProducts() {
                     setCategory(branchSelected.name);
                   }
                 }}
-                className="w-full xl:w-80"
+                className="w-full xl:w-80 dark:text-white"
                 label="Categoría producto"
                 labelPlacement="outside"
                 placeholder="Selecciona la categoría"
@@ -145,7 +145,9 @@ function ListProducts() {
                 Buscar
               </Button>
             </div>
-            <div className="flex items-end justify-between gap-10 mt lg:justify-end">
+          </div>
+          <div className="flex flex-col mt-4 justify-between w-full gap-5 xl:flex-row xl:gap-0">
+            <div className="flex w-full items-end justify-between gap-10 mt lg:justify-end">
               <ButtonGroup>
                 <Button
                   size="lg"
@@ -199,7 +201,7 @@ function ListProducts() {
           </div>
           <div className="flex justify-end w-full mb-5">
             <Select
-              className="w-44"
+              className="w-44 dark:text-white"
               variant="bordered"
               size="lg"
               label="Mostrar"
@@ -328,7 +330,7 @@ function ListProducts() {
         <ModalGlobal
           title={selectedProduct ? "Editar producto" : "Nuevo producto"}
           onClose={modalAdd.onClose}
-          size="lg"
+          size="w-full md:w-[500px]"
           isOpen={modalAdd.isOpen}
         >
           <AddProducts

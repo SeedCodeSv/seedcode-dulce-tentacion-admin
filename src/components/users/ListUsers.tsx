@@ -64,13 +64,13 @@ function ListUsers() {
 
   return (
     <>
-      <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
+      <div className="w-full h-full p-5 bg-gray-100 dark:bg-gray-800">
         <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
           <div className="flex flex-col justify-between w-full gap-5 mb-5 lg:mb-10 lg:flex-row lg:gap-0">
             <div className="flex items-end gap-3">
               <Input
                 startContent={<User2 />}
-                className="w-full xl:w-96"
+                className="w-full xl:w-96 dark:text-white"
                 variant="bordered"
                 labelPlacement="outside"
                 label="Nombre"

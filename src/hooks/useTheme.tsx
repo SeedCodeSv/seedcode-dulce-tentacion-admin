@@ -23,6 +23,8 @@ interface ThemeContextType {
   toggleTheme: (themeName: Theme) => void;
   navbar: string;
   toggleNavBar: (themeName: string) => void;
+  context: "light" | "dark";
+  toggleContext: (context: "light" | "dark") => void;
 }
 
 export const ThemeContext = React.createContext<ThemeContextType>({
@@ -30,6 +32,8 @@ export const ThemeContext = React.createContext<ThemeContextType>({
   toggleTheme: () => {},
   navbar: "",
   toggleNavBar: () => {},
+  context: "light",
+  toggleContext: () => {},
 });
 
 function ThemeProvider(props: Props) {
@@ -50,8 +54,19 @@ function ThemeProvider(props: Props) {
     localStorage.setItem("theme", JSON.stringify(themeName));
   };
 
+  const [context, setContext] = React.useState<"light" | "dark">(
+    localStorage.getItem("context") as "light" | "dark"
+  );
+
+  const toggleContext = (context: "light" | "dark") => {
+    setContext(context);
+    localStorage.setItem("context", context);
+  };
+
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, navbar, toggleNavBar }}>
+    <ThemeContext.Provider
+      value={{ theme, toggleTheme, navbar, toggleNavBar, context, toggleContext }}
+    >
       {props.children}
     </ThemeContext.Provider>
   );
