@@ -62,7 +62,7 @@ export const delete_user = (id: number) => {
 
 export const patch_password = (password: string, id: number) => {
   return axios.patch<{ ok: boolean }>(
-    API_URL + "/employees/change-password/" + id,
+    API_URL + "/users/change-password/" + id,
     {
       password,
     },

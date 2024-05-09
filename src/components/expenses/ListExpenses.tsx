@@ -15,7 +15,7 @@ import {
 import { IExpense } from "../../types/expenses.types";
 import {
   EditIcon,
-  Search,
+  User,
   TrashIcon,
   Table as ITable,
   CreditCard,
@@ -69,11 +69,11 @@ const ListExpenses = () => {
           <div className="flex items-end gap-3">
             <div className="flex items-end gap-3">
               <Input
-                startContent={<Search />}
+                startContent={<User />}
                 className="w-full xl:w-96"
                 variant="bordered"
                 labelPlacement="outside"
-                label="Buscar"
+                label="Nombre"
                 classNames={{
                   label: "font-semibold text-gray-700",
                   inputWrapper: "pr-0",
@@ -238,30 +238,34 @@ const ListExpenses = () => {
             />
           </DataTable>
         )}
-        <div className="hidden w-full mt-5 md:flex">
-          <Pagination
-            previousPage={expenses_paginated.prevPag}
-            nextPage={expenses_paginated.nextPag}
-            currentPage={expenses_paginated.currentPag}
-            totalPages={expenses_paginated.totalPag}
-            onPageChange={(page) => {
-              getExpensesPaginated(1, page, limit, category);
-            }}
-          />
-        </div>
-        <div className="flex w-full mt-5 md:hidden">
-          <Paginator
-            pt={paginator_styles(1)}
-            className="flex justify-between w-full"
-            first={expenses_paginated.currentPag}
-            rows={limit}
-            totalRecords={expenses_paginated.total}
-            template={{
-              layout: "PrevPageLink CurrentPageReport NextPageLink",
-            }}
-            currentPageReportTemplate="{currentPage} de {totalPages}"
-          />
-        </div>
+        {expenses_paginated.totalPag > 1 && (
+          <>
+            <div className="hidden w-full mt-5 md:flex">
+              <Pagination
+                previousPage={expenses_paginated.prevPag}
+                nextPage={expenses_paginated.nextPag}
+                currentPage={expenses_paginated.currentPag}
+                totalPages={expenses_paginated.totalPag}
+                onPageChange={(page) => {
+                  getExpensesPaginated(1, page, limit, category);
+                }}
+              />
+            </div>
+            <div className="flex w-full mt-5 md:hidden">
+              <Paginator
+                pt={paginator_styles(1)}
+                className="flex justify-between w-full"
+                first={expenses_paginated.currentPag}
+                rows={limit}
+                totalRecords={expenses_paginated.total}
+                template={{
+                  layout: "PrevPageLink CurrentPageReport NextPageLink",
+                }}
+                currentPageReportTemplate="{currentPage} de {totalPages}"
+              />
+            </div>
+          </>
+        )}
       </div>
       <ModalGlobal
         size="sm"

@@ -13,7 +13,7 @@ import {
   Edit,
   ShoppingBag,
   PhoneIcon,
-  SearchIcon,
+  User,
   TrashIcon,
   BoxIcon,
   MapPinIcon,
@@ -38,7 +38,7 @@ import MobileView from "./MobileView";
 import { Branches } from "../../types/branches.types";
 import { toast } from "sonner";
 import ListBranchProduct from "./branch_product/ListBranchProduct";
-import BoxBranch from "./BoxBranch"
+import BoxBranch from "./BoxBranch";
 function ListBranch() {
   const { theme } = useContext(ThemeContext);
 
@@ -69,13 +69,19 @@ function ListBranch() {
       <>
         <div>
           <Input
-            placeholder="Escribe para buscar..."
-            startContent={<SearchIcon />}
+            startContent={<User />}
             className="w-full"
             size="lg"
             variant="bordered"
+            labelPlacement="outside"
+            label="Nombre"
+            classNames={{
+              label: "font-semibold text-gray-700",
+              inputWrapper: "pr-0",
+            }}
             isClearable
             value={name}
+            placeholder="Escribe para buscar..."
             onChange={(e) => setName(e.target.value)}
             onClear={() => {
               setName("");
@@ -85,10 +91,16 @@ function ListBranch() {
         </div>
         <div>
           <Input
+           labelPlacement="outside"
+           label="Teléfono"
             placeholder="Escribe para buscar..."
             startContent={<PhoneIcon />}
             className="w-full"
             size="lg"
+            classNames={{
+              label: "font-semibold text-gray-700",
+              inputWrapper: "pr-0",
+            }}
             variant="bordered"
             isClearable
             value={phone}
@@ -107,6 +119,12 @@ function ListBranch() {
             size="lg"
             variant="bordered"
             isClearable
+            labelPlacement="outside"
+            label="Dirección"
+            classNames={{
+              label: "font-semibold text-gray-700",
+              inputWrapper: "pr-0",
+            }}
             value={address}
             onChange={(e) => setAddress(e.target.value)}
             onClear={() => {
@@ -127,7 +145,7 @@ function ListBranch() {
 
   const [selectedBranch, setSelectedBranch] = useState<Branches>();
   const [Branch, setBranch] = useState<Branches>();
-  
+
   const handleEdit = (item: Branches) => {
     setSelectedBranch(item);
     modalAdd.onOpen();
@@ -141,7 +159,7 @@ function ListBranch() {
     disableBranch(item.id, !item.isActive);
   };
   const clearClose = () => {
-    setBranch(undefined)
+    setBranch(undefined);
   };
 
   return (
@@ -326,8 +344,8 @@ function ListBranch() {
                   <Button
                     size="lg"
                     onClick={() => {
-                      setBranch(item)
-                      modalBoxBranch.onOpen()
+                      setBranch(item);
+                      modalBoxBranch.onOpen();
                     }}
                     isIconOnly
                     style={global_styles().darkStyle}
@@ -417,12 +435,16 @@ function ListBranch() {
       <ModalGlobal
         isOpen={modalBoxBranch.isOpen}
         onClose={() => {
-          clearClose()
+          clearClose();
           modalBoxBranch.onClose();
         }}
         size="auto"
       >
-        <BoxBranch branch={Branch} closeModal={modalBoxBranch.onClose} setBranch={setBranch}/>
+        <BoxBranch
+          branch={Branch}
+          closeModal={modalBoxBranch.onClose}
+          setBranch={setBranch}
+        />
       </ModalGlobal>
     </div>
   );

@@ -1,8 +1,11 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useUsersStore } from "../../store/users.store";
 import {
   Button,
   Input,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
   Select,
   SelectItem,
   useDisclosure,
@@ -14,7 +17,7 @@ import AddUsers from "./AddUsers";
 import UpdateUsers from "./UpdateUsers";
 import {
   Key,
-  Search,
+  User2,
   Table as ITable,
   CreditCard,
   TrashIcon,
@@ -25,7 +28,6 @@ import UpdatePassword from "./UpdatePassword";
 import { ThemeContext } from "../../hooks/useTheme";
 import { ButtonGroup } from "@nextui-org/react";
 import MobileView from "./MobileView";
-import { ConfirmPopup } from "primereact/confirmpopup";
 import AddButton from "../global/AddButton";
 import { Paginator } from "primereact/paginator";
 import { paginator_styles } from "../../styles/paginator.styles";
@@ -36,7 +38,7 @@ function ListUsers() {
   const { theme } = useContext(ThemeContext);
   const [limit, setLimit] = useState(5);
   const { users_paginated, getUsersPaginated } = useUsersStore();
-const [user, setUser] = useState<User | undefined>()
+  const [user, setUser] = useState<User | undefined>();
   useEffect(() => {
     getUsersPaginated(1, limit, "");
   }, [limit]);
@@ -67,11 +69,11 @@ const [user, setUser] = useState<User | undefined>()
           <div className="flex flex-col justify-between w-full gap-5 mb-5 lg:mb-10 lg:flex-row lg:gap-0">
             <div className="flex items-end gap-3">
               <Input
-                startContent={<Search />}
+                startContent={<User2 />}
                 className="w-full xl:w-96"
                 variant="bordered"
                 labelPlacement="outside"
-                label="Buscar"
+                label="Nombre"
                 classNames={{
                   label: "font-semibold text-gray-700",
                   inputWrapper: "pr-0",
@@ -171,6 +173,14 @@ const [user, setUser] = useState<User | undefined>()
           {(view === "grid" || view === "list") && (
             <MobileView
               deletePopover={DeletePopUp}
+              openEditModal={(user) => {
+                setUser(user);
+                modalUpdate.onOpen();
+              }}
+              openKeyModal={(user) => {
+                setSelectedId(user.id);
+                modalChangePassword.onOpen();
+              }}
               layout={view as "grid" | "list"}
             />
           )}
@@ -210,7 +220,7 @@ const [user, setUser] = useState<User | undefined>()
                 header="Acciones"
                 body={(item) => (
                   <div className="flex w-full gap-5">
-                     <Button
+                    <Button
                       onClick={() => {
                         setUser(item);
                         modalUpdate.onOpen();
@@ -239,7 +249,7 @@ const [user, setUser] = useState<User | undefined>()
                     >
                       <Key color={theme.colors.primary} size={20} />
                     </Button>
-                    <DeletePopUp id={item.id} />
+                    <DeletePopUp user={item} />
                   </div>
                 )}
               />
@@ -299,7 +309,7 @@ const [user, setUser] = useState<User | undefined>()
           title="Editar usuario"
           size="lg"
         >
-          <UpdateUsers onClose={modalUpdate.onClose} user={user}/>
+          <UpdateUsers onClose={modalUpdate.onClose} user={user} />
         </ModalGlobal>
       </div>
     </>
@@ -309,65 +319,63 @@ const [user, setUser] = useState<User | undefined>()
 export default ListUsers;
 
 interface Props {
-  id: number;
+  user: User;
 }
 
-const DeletePopUp = ({ id }: Props) => {
-  const buttonRef = useRef<HTMLButtonElement>();
-
+const DeletePopUp = ({ user }: Props) => {
   const { theme } = useContext(ThemeContext);
   const { deleteUser } = useUsersStore();
-
-  const [visible, setVisible] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleDelete = () => {
-    deleteUser(id)
+    deleteUser(user.id);
+    onClose();
   };
 
   return (
     <>
-      <Button
-        ref={buttonRef as any}
-        style={{
-          backgroundColor: theme.colors.danger,
-          color: theme.colors.primary,
-        }}
-        size="lg"
-        isIconOnly
-        onClick={() => setVisible(!visible)}
-      >
-        <TrashIcon size={20} />
-      </Button>
-      <ConfirmPopup
-        visible={visible}
-        onHide={() => setVisible(false)}
-        target={buttonRef.current}
-        message="¿Deseas eliminar este usuario?"
-        content={({ message, acceptBtnRef, rejectBtnRef }) => (
-          <>
-            <div className="p-5 border border-gray-100 shadow-2xl rounded-xl">
-              <p className="text-lg font-semibold text-center">{message}</p>
-              <div className="flex justify-between gap-5 mt-5">
-                <Button
-                  ref={acceptBtnRef}
-                  size="lg"
-                  className="font-semibold"
-                  style={{
-                    backgroundColor: theme.colors.third,
-                    color: theme.colors.primary,
-                  }}
-                  onClick={handleDelete}
-                >
-                  Eliminar
-                </Button>
-                <Button size="lg" ref={rejectBtnRef}>
-                  Cancelar
-                </Button>
-              </div>
+      <Popover isOpen={isOpen} onClose={onClose} backdrop="blur" showArrow>
+        <PopoverTrigger>
+          <Button
+            onClick={onOpen}
+            isIconOnly
+            style={{
+              backgroundColor: theme.colors.danger,
+            }}
+            size="lg"
+          >
+            <TrashIcon
+              style={{
+                color: theme.colors.primary,
+              }}
+              size={20}
+            />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent>
+          <div className="w-full p-5">
+            <p className="font-semibold text-gray-600">
+              Eliminar {user.userName}
+            </p>
+            <p className="mt-3 text-center text-gray-600 w-72">
+              ¿Estas seguro de eliminar este registro?
+            </p>
+            <div className="mt-4">
+              <Button onClick={onClose}>No, cancelar</Button>
+              <Button
+                onClick={() => handleDelete()}
+                className="ml-5"
+                style={{
+                  backgroundColor: theme.colors.danger,
+                  color: theme.colors.primary,
+                }}
+              >
+                Si, eliminar
+              </Button>
             </div>
-          </>
-        )}
-      />
+          </div>
+        </PopoverContent>
+      </Popover>
     </>
   );
 };

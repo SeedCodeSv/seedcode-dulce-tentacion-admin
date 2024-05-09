@@ -60,7 +60,7 @@ function AddBranch(props: Props) {
       }) => (
         <>
           <div className="w-full mt-4">
-            <div className="w-full pt-3 mb-4">
+            <div className="w-full pt-3">
               <Input
                 size="lg"
                 label="Nombre"
@@ -80,6 +80,7 @@ function AddBranch(props: Props) {
             </div>
             <div className="w-full pt-3">
               <Input
+                type="number"
                 label="Teléfono"
                 placeholder="Teléfono de la sucursal"
                 size="lg"
@@ -96,7 +97,6 @@ function AddBranch(props: Props) {
                 </span>
               )}
             </div>
-
             <div className="w-full pt-3">
               <Textarea
                 label="Dirección"

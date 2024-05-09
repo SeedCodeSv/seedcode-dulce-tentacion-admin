@@ -3,16 +3,11 @@ import { Button } from "@nextui-org/react";
 import { DataView } from "primereact/dataview";
 import { classNames } from "primereact/utils";
 import {
-  User as IUser,
-  Trash,
-  Phone,
-  Mail,
-  Users2Icon,
   EditIcon,
   ShoppingBag,
   ClipboardList,
   Barcode,
-  DollarSign
+  DollarSign,
 } from "lucide-react";
 import { ThemeContext } from "../../hooks/useTheme";
 import { Product } from "../../types/products.types";
@@ -24,8 +19,8 @@ interface Props {
   openEditModal: (product: Product) => void;
 }
 
-function MobileView({ layout, openEditModal }: Props) {
-    const { paginated_products } = useProductsStore();
+function MobileView({ layout, openEditModal, DeletePopover }: Props) {
+  const { paginated_products } = useProductsStore();
 
   return (
     <div className="w-full pb-10">
@@ -40,7 +35,9 @@ function MobileView({ layout, openEditModal }: Props) {
           }),
         }}
         color="surface"
-        itemTemplate={(customer) => gridItem(customer, layout, openEditModal)}
+        itemTemplate={(customer) =>
+          gridItem(customer, layout, openEditModal, DeletePopover)
+        }
         emptyMessage="No customers found"
       />
     </div>
@@ -50,7 +47,8 @@ function MobileView({ layout, openEditModal }: Props) {
 const gridItem = (
   product: Product,
   layout: "grid" | "list",
-  openEditModal: (product: Product) => void
+  openEditModal: (product: Product) => void,
+  deletePopover: ({ product }: { product: Product }) => JSX.Element
 ) => {
   const { theme } = useContext(ThemeContext);
   return (
@@ -85,22 +83,19 @@ const gridItem = (
               style={{
                 backgroundColor: theme.colors.secondary,
               }}
+              size="lg"
             >
               <EditIcon style={{ color: theme.colors.primary }} size={20} />
             </Button>
-            <Button
-              isIconOnly
-              size="lg"
-              style={{
-                backgroundColor: theme.colors.danger,
-              }}
-            >
-              <Trash color={theme.colors.primary} size={20} />
-            </Button>
+            {deletePopover({ product: product })}
           </div>
         </div>
       ) : (
-        <ListItem product={product} openEditModal={openEditModal} />
+        <ListItem
+          product={product}
+          openEditModal={openEditModal}
+          deletePopover={deletePopover}
+        />
       )}
     </>
   );
@@ -109,9 +104,11 @@ const gridItem = (
 const ListItem = ({
   product,
   openEditModal,
+  deletePopover,
 }: {
   product: Product;
   openEditModal: (product: Product) => void;
+  deletePopover: ({ product }: { product: Product }) => JSX.Element;
 }) => {
   const { theme } = useContext(ThemeContext);
   return (
@@ -142,18 +139,11 @@ const ListItem = ({
             style={{
               backgroundColor: theme.colors.secondary,
             }}
+            size="lg"
           >
             <EditIcon style={{ color: theme.colors.primary }} size={20} />
           </Button>
-          <Button
-            isIconOnly
-            size="lg"
-            style={{
-              backgroundColor: theme.colors.danger,
-            }}
-          >
-            <Trash color={theme.colors.primary} size={20} />
-          </Button>
+          {deletePopover({ product: product })}
         </div>
       </div>
     </>

@@ -46,7 +46,7 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
   postEmployee(payload) {
     return save_employee(payload)
       .then(({ data }) => {
-        get().getEmployeesPaginated(1, 8, "", "", "");
+        get().getEmployeesPaginated(1, 5, "", "", "");
         toast.success(messages.success);
         return data.ok;
       })
@@ -58,7 +58,7 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
   patchEmployee(payload, id) {
     return patch_employee(payload, id)
       .then(({ data }) => {
-        get().getEmployeesPaginated(1, 8, "", "", "");
+        get().getEmployeesPaginated(1, 5, "", "", "");
         toast.success(messages.success);
         return data.ok;
       })
@@ -70,7 +70,7 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
   deleteEmployee(id) {
     return delete_employee(id)
       .then(({ data }) => {
-        get().getEmployeesPaginated(1, 8, "", "", "");
+        get().getEmployeesPaginated(1, 5, "", "", "");
         toast.success(messages.success);
         return data.ok;
       })

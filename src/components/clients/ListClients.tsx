@@ -52,7 +52,7 @@ const ListClients = () => {
   const { theme } = useContext(ThemeContext);
 
   const { getCustomersPagination, customer_pagination } = useCustomerStore();
-  const [limit, setLimit] = useState(8);
+  const [limit, setLimit] = useState(5);
   const [search, setSearch] = useState("");
   const [email, setEmail] = useState("");
   const style = {
@@ -78,7 +78,7 @@ const ListClients = () => {
   // }
   useEffect(() => {
     getCustomersPagination(1, limit, search, email);
-  }, []);
+  }, [limit]);
   const [view, setView] = useState<"table" | "grid" | "list">("table");
 
   const handleSearch = (searchParam: string | undefined) => {
@@ -164,7 +164,7 @@ const ListClients = () => {
                 className="w-full xl:w-96"
                 variant="bordered"
                 labelPlacement="outside"
-                label="Buscar"
+                label="Nombre"
                 classNames={{
                   label: "font-semibold text-gray-700",
                   inputWrapper: "pr-0",
@@ -184,7 +184,7 @@ const ListClients = () => {
                 className="w-full xl:w-96"
                 variant="bordered"
                 labelPlacement="outside"
-                label="Buscar"
+                label="correo"
                 classNames={{
                   label: "font-semibold text-gray-700",
                   inputWrapper: "pr-0",
@@ -403,244 +403,7 @@ const ListClients = () => {
               </div>
             </>
           )}
-          {/* <Table
-          isHeaderSticky
-          bottomContentPlacement="outside"
-          topContentPlacement="outside"
-          topContent={
-            <>
-              <div className="flex flex-col w-full gap-4">
-                <div className="grid items-end grid-cols-1 gap-3 sm:grid-cols-3 md:flex-row 2xl:mt-4">
-                  <Input
-                    aria-label="input-search"
-                    classNames={{
-                      base: "w-full bg-white",
-                      inputWrapper: "border-1 h-10",
-                    }}
-                    placeholder="Buscar por nombre..."
-                    size="sm"
-                    startContent={
-                      <SearchIcon size={20} className="text-default-300" />
-                    }
-                    variant="bordered"
-                    onChange={(e) => setSearch(e.target.value)}
-                  />
-                  <Input
-                    aria-label="input-search"
-                    classNames={{
-                      base: "w-full bg-white",
-                      inputWrapper: "border-1 h-10",
-                    }}
-                    placeholder="Buscar por correo..."
-                    size="sm"
-                    startContent={
-                      <MailIcon size={20} className="text-default-300" />
-                    }
-                    variant="bordered"
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                  <div className="flex justify-end w-full">
-                    <BottomAdd
-                      setTypeClient={setTypeClient}
-                      openModal={modalAdd.onOpen}
-                    />
-                  </div>
-                </div>
-                <div className="flex items-center justify-between 2xl:mt-6 2xl:mb-6">
-                  <span className="text-xs sm:text-small text-default-400 ">
-                    Total {customer_pagination.customers.length} clientes
-                  </span>
-                  <label className="flex items-center text-xs text-default-400 sm:text-small">
-                    Productos por pagina
-                    <select
-                      defaultValue={limit.toString()}
-                      className="bg-transparent outline-none text-default-400 text-small"
-                      onChange={(e) => {
-                        setLimit(Number(e.target.value));
-                      }}
-                    >
-                      <option value="5">5</option>
-                      <option value="8">8</option>
-                      <option value="10">10</option>
-                      <option value="15">15</option>
-                    </select>
-                  </label>
-                </div>
-              </div>
-            </>
-          }
-          bottomContent={bottomContent}
-          classNames={{
-            wrapper: "max-h-[450px] 2xl:max-h-[600px]",
-          }}
-        >
-          <TableHeader columns={columns}>
-            {(column) => (
-              <TableColumn
-                key={column.key}
-                className={"font-semibold"}
-                allowsSorting={column.sortable}
-                style={{
-                  backgroundColor: theme.colors.dark,
-                  color: theme.colors.primary,
-                }}
-              >
-                {column.name}
-              </TableColumn>
-            )}
-          </TableHeader>
-          <TableBody
-            items={customer_pagination.customers}
-            className="overflow-y-auto h-96 max-h-96"
-          >
-            {(item) => (
-              <TableRow key={item.id}>
-                {(columnKey) => (
-                  <TableCell>
-                    {columnKey === "id" && item.id}
-                    {columnKey === "name" && item.nombre}
-                    {columnKey === "phone" && item.telefono}
-                    {columnKey === "email" && item.correo}
-                    {columnKey === "tribute" && (
-                      <p>{item.esContribuyente ? "Si" : "No"}</p>
-                    )}
-                    {columnKey === "actions" && (
-                      <>
-                        <div className="flex gap-3">
-                          <Button
-                            onClick={() => handleChangeCustomer(item, "edit")}
-                            isIconOnly
-                            style={{
-                              backgroundColor: theme.colors.secondary,
-                            }}
-                          >
-                            <EditIcon
-                              style={{ color: theme.colors.primary }}
-                              size={20}
-                            />
-                          </Button>
-                          <Button
-                            onClick={() => handleChangeCustomer(item, "change")}
-                            isIconOnly
-                            style={{
-                              backgroundColor: theme.colors.third,
-                            }}
-                          >
-                            <Repeat
-                              style={{ color: theme.colors.primary }}
-                              size={20}
-                            />
-                          </Button>
-                          <DeletePopover customer={item} />
-                        </div>
-                      </>
-                    )}
-                  </TableCell>
-                )}
-              </TableRow>
-            )}
-          </TableBody>
-        </Table> */}
         </div>
-        {/* <div className="grid w-full h-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:hidden">
-          <div className="w-full col-span-1 sm:col-span-2 md:col-span-3">
-            <div className="flex flex-col w-full gap-4">
-              <div className="grid items-end grid-cols-1 gap-3 sm:grid-cols-3 md:flex-row 2xl:mt-4">
-                <Input
-                  aria-label="input-search"
-                  classNames={{
-                    base: "w-full bg-white",
-                    inputWrapper: "border-1 h-10",
-                  }}
-                  placeholder="Buscar por nombre..."
-                  size="sm"
-                  startContent={
-                    <SearchIcon size={20} className="text-default-300" />
-                  }
-                  variant="bordered"
-                  onChange={(e) => setSearch(e.target.value)}
-                />
-                <Input
-                  aria-label="input-search"
-                  classNames={{
-                    base: "w-full bg-white",
-                    inputWrapper: "border-1 h-10",
-                  }}
-                  placeholder="Buscar por correo..."
-                  size="sm"
-                  startContent={
-                    <MailIcon size={20} className="text-default-300" />
-                  }
-                  variant="bordered"
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-                <div className="flex justify-end w-full">
-                  <BottomAdd
-                    setTypeClient={setTypeClient}
-                    openModal={modalAdd.onOpen}
-                  />
-                </div>
-              </div>
-              <div className="flex items-center justify-between 2xl:mt-6 2xl:mb-6">
-                <span className="text-xs sm:text-small text-default-400 ">
-                  Total {customer_pagination.customers.length} clientes
-                </span>
-                <label className="flex items-center text-xs text-default-400 sm:text-small">
-                  Productos por pagina
-                  <select
-                    defaultValue={limit.toString()}
-                    className="bg-transparent outline-none text-default-400 text-small"
-                    onChange={(e) => {
-                      setLimit(Number(e.target.value));
-                    }}
-                  >
-                    <option value="5">5</option>
-                    <option value="8">8</option>
-                    <option value="10">10</option>
-                    <option value="15">15</option>
-                  </select>
-                </label>
-              </div>
-            </div>
-          </div>
-          <div className="grid w-full grid-cols-1 col-span-3 gap-5 my-3 sm:grid-cols-2 md:grid-cols-3">
-            {customer_pagination.customers.map((customer) => (
-              <CardItem
-                key={customer.id}
-                customer={customer}
-                handleChange={handleChangeCustomer}
-              />
-            ))}
-          </div>
-          <div className="col-span-1 mb-10 sm:col-span-2 md:col-span-3 lg:mb-0">
-            <div className="hidden sm:flex">{bottomContent}</div>
-            <div className="flex items-center justify-between pb-10 sm:hidden">
-              <Button
-                isIconOnly
-                className="bg-coffee-brown"
-                disabled={customer_pagination.currentPag === 1}
-                onClick={() => changePage(customer_pagination.currentPag - 1)}
-              >
-                <ChevronLeft color="white" />
-              </Button>
-              <p className="text-sm font-semibold text-gray-600">
-                {customer_pagination.currentPag} de{" "}
-                {customer_pagination.totalPag}
-              </p>
-              <Button
-                isIconOnly
-                className="bg-coffee-brown"
-                disabled={
-                  customer_pagination.currentPag ===
-                  customer_pagination.totalPag
-                }
-                onClick={() => changePage(customer_pagination.currentPag + 1)}
-              >
-                <ChevronRight color="white" />
-              </Button>
-            </div>
-          </div>
-        </div> */}
         <ModalGlobal
           isOpen={modalAdd.isOpen}
           onClose={() => {

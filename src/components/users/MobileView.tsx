@@ -5,20 +5,27 @@ import { useUsersStore } from "../../store/users.store";
 import { User } from "../../types/users.types";
 import { classNames } from "primereact/utils";
 import {
+  EditIcon,
   User as IUser,
   Key,
   ShieldCheck,
   SquareUserRound,
-  Trash,
 } from "lucide-react";
 import { ThemeContext } from "../../hooks/useTheme";
 
 interface Props {
   layout: "grid" | "list";
-  deletePopover: ({ id }: { id: number }) => JSX.Element;
+  deletePopover: ({ user }: { user: User }) => JSX.Element;
+  openEditModal: (user: User) => void;
+  openKeyModal: (user: User) => void;
 }
 
-function MobileView({ layout }: Props) {
+function MobileView({
+  layout,
+  deletePopover,
+  openEditModal,
+  openKeyModal,
+}: Props) {
   const { users_paginated } = useUsersStore();
 
   return (
@@ -34,14 +41,22 @@ function MobileView({ layout }: Props) {
           }),
         }}
         color="surface"
-        itemTemplate={gridItem}
+        itemTemplate={(user) =>
+          gridItem(user, layout, deletePopover, openEditModal, openKeyModal)
+        }
         emptyMessage="No users found"
       />
     </div>
   );
 }
 
-const gridItem = (user: User, layout: "grid" | "list") => {
+const gridItem = (
+  user: User,
+  layout: "grid" | "list",
+  deletePopover: ({ user }: { user: User }) => JSX.Element,
+  openEditModal: (user: User) => void,
+  openKeyModal: (user: User) => void
+) => {
   const { theme } = useContext(ThemeContext);
   return (
     <>
@@ -66,6 +81,17 @@ const gridItem = (user: User, layout: "grid" | "list") => {
           </div>
           <div className="flex justify-between mt-5 w-ful">
             <Button
+              onClick={() => openEditModal(user)}
+              isIconOnly
+              style={{
+                backgroundColor: theme.colors.secondary,
+              }}
+              size="lg"
+            >
+              <EditIcon style={{ color: theme.colors.primary }} size={20} />
+            </Button>
+            <Button
+              onClick={() => openKeyModal(user)}
               isIconOnly
               size="lg"
               style={{
@@ -74,25 +100,32 @@ const gridItem = (user: User, layout: "grid" | "list") => {
             >
               <Key color={theme.colors.primary} size={20} />
             </Button>
-            <Button
-              isIconOnly
-              size="lg"
-              style={{
-                backgroundColor: theme.colors.danger,
-              }}
-            >
-              <Trash color={theme.colors.primary} size={20} />
-            </Button>
+            {deletePopover({ user: user })}
           </div>
         </div>
       ) : (
-        <ListItem user={user} />
+        <ListItem
+          user={user}
+          openEditModal={openEditModal}
+          deletePopover={deletePopover}
+          openKeyModal={openKeyModal}
+        />
       )}
     </>
   );
 };
 
-const ListItem = ({ user }: { user: User }) => {
+const ListItem = ({
+  user,
+  openEditModal,
+  deletePopover,
+  openKeyModal,
+}: {
+  user: User;
+  openEditModal: (user: User) => void;
+  deletePopover: ({ user }: { user: User }) => JSX.Element;
+  openKeyModal: (user: User) => void;
+}) => {
   const { theme } = useContext(ThemeContext);
   return (
     <>
@@ -111,8 +144,21 @@ const ListItem = ({ user }: { user: User }) => {
             {user.role.name}
           </div>
         </div>
-        <div className="flex flex-col items-end justify-between w-full">
+        <div className="flex flex-col items-end justify-between w-full gap-4">
           <Button
+            isIconOnly
+            size="lg"
+            style={{
+              backgroundColor: theme.colors.secondary,
+            }}
+            onClick={() => {
+              openEditModal(user);
+            }}
+          >
+            <EditIcon color={theme.colors.primary} size={20} />
+          </Button>
+          <Button
+            onClick={() => openKeyModal(user)}
             isIconOnly
             size="lg"
             style={{
@@ -121,15 +167,7 @@ const ListItem = ({ user }: { user: User }) => {
           >
             <Key color={theme.colors.primary} size={20} />
           </Button>
-          <Button
-            isIconOnly
-            size="lg"
-            style={{
-              backgroundColor: theme.colors.danger,
-            }}
-          >
-            <Trash color={theme.colors.primary} size={20} />
-          </Button>
+          {deletePopover({ user: user })}
         </div>
       </div>
     </>

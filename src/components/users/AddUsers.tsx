@@ -32,8 +32,14 @@ function AddUsers(props: Props) {
   const validationSchema = yup.object().shape({
     userName: yup.string().required("El usuario es requerido"),
     password: yup.string().required("La contraseña es requerida"),
-    roleId: yup.number().required("El rol es requerido").min(1,"El rol es requerido"),
-    employeeId: yup.number().required("El usuario es requerido").min(1,"El usuario es requerido"),
+    roleId: yup
+      .number()
+      .required("El rol es requerido")
+      .min(1, "El rol es requerido"),
+    employeeId: yup
+      .number()
+      .required("El empleado es requerido")
+      .min(1, "El empleado es requerido"),
   });
 
   const { roles_list, getRolesList } = useRolesStore();
@@ -172,7 +178,7 @@ function AddUsers(props: Props) {
               )}
             </div>
             <Button
-            size="lg"
+              size="lg"
               onClick={() => handleSubmit()}
               className="w-full mt-4 text-sm font-semibold"
               style={{

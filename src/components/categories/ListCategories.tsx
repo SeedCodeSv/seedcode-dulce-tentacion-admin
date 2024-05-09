@@ -12,7 +12,7 @@ import {
 import { useContext, useEffect, useState } from "react";
 import {
   EditIcon,
-  Search,
+  User,
   TrashIcon,
   Table as ITable,
   CreditCard,
@@ -75,11 +75,11 @@ function ListCategories() {
           <div className="flex items-end gap-3">
             <div className="flex items-end gap-3">
               <Input
-                startContent={<Search />}
+                startContent={<User />}
                 className="w-full xl:w-96"
                 variant="bordered"
                 labelPlacement="outside"
-                label="Buscar"
+                label="Nombre"
                 classNames={{
                   label: "font-semibold text-gray-700",
                   inputWrapper: "pr-0",

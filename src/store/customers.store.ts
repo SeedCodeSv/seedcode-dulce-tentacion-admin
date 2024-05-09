@@ -45,7 +45,7 @@ export const useCustomerStore = create<IUseCustomersStore>((set, get) => ({
     return save_customers(payload)
       .then(({ data }) => {
         if (data) {
-          get().getCustomersPagination(1, 8, "", "");
+          get().getCustomersPagination(1, 5, "", "");
           toast.success(messages.success);
           return true;
         } else {
@@ -63,7 +63,7 @@ export const useCustomerStore = create<IUseCustomersStore>((set, get) => ({
     update_customers(payload, id)
       .then(({ data }) => {
         if (data) {
-          get().getCustomersPagination(1, 8, "", "");
+          get().getCustomersPagination(1, 5, "", "");
           toast.success(messages.success);
         } else {
           toast.warning(messages.error);
@@ -75,7 +75,7 @@ export const useCustomerStore = create<IUseCustomersStore>((set, get) => ({
   },
   deleteCustomer: async (id) => {
     return await delete_customer(id).then(({ data }) => {
-      get().getCustomersPagination(1, 8, "", "");
+      get().getCustomersPagination(1, 5, "", "");
       toast.success(messages.success);
       return data.ok;
     }).catch(()=>{

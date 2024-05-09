@@ -54,7 +54,7 @@ export const useCategoriesExpenses = create<ICategoriesExpensesStore>(
     postCategoriesExpenses(payload) {
       save_categories_expenses(payload)
         .then(() => {
-          get().getPaginatedCategoriesExpenses(1, 8, "");
+          get().getPaginatedCategoriesExpenses(1, 5, "");
           toast.success(messages.success);
         })
         .catch(() => {
@@ -64,7 +64,7 @@ export const useCategoriesExpenses = create<ICategoriesExpensesStore>(
     pathCategoriesExpenses(id, payload) {
       update_categories_expenses(id, payload)
         .then(() => {
-          get().getPaginatedCategoriesExpenses(1, 8, "");
+          get().getPaginatedCategoriesExpenses(1, 5, "");
           toast.success(messages.success);
         })
         .catch(() => {
@@ -74,7 +74,7 @@ export const useCategoriesExpenses = create<ICategoriesExpensesStore>(
     deleteCategoriesExpenses: async (id) => {
       return await delete_categories_expenses(id)
         .then(({ data }) => {
-          get().getPaginatedCategoriesExpenses(1, 8, "");
+          get().getPaginatedCategoriesExpenses(1, 5, "");
           toast.success(messages.success);
           return data.ok;
         })
