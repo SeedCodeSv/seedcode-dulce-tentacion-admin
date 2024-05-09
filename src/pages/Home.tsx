@@ -34,7 +34,7 @@ function Home() {
   return (
     <Layout title="Home">
       <>
-        <div className="p-10">
+        <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
           <div className="grid grid-cols-4 gap-10">
             {THEME.themes.map((themeS, index) => (
               <Card

@@ -36,7 +36,7 @@ import { ThemeContext } from "../../hooks/useTheme";
 import { ButtonGroup } from "@nextui-org/react";
 import { paginator_styles } from "../../styles/paginator.styles";
 import { CategoryProduct } from "../../types/categories.types";
-import MobileView from "./MobileView"
+import MobileView from "./MobileView";
 
 // import ReturnImgCategory from "../global/ReturnImgCategory";
 
@@ -52,7 +52,7 @@ function ListProducts() {
   const [category, setCategory] = useState("");
   const [limit, setLimit] = useState(5);
   const [view, setView] = useState<"table" | "grid" | "list">("table");
-const [page, serPage] = useState(1)
+  const [page, serPage] = useState(1);
   useEffect(() => {
     getPaginatedProducts(1, limit, category, search);
   }, [limit]);
@@ -63,7 +63,12 @@ const [page, serPage] = useState(1)
   }, []);
 
   const handleSearch = (searchParam: string | undefined) => {
-    getPaginatedProducts(page, limit, searchParam ?? category, searchParam ?? search);
+    getPaginatedProducts(
+      page,
+      limit,
+      searchParam ?? category,
+      searchParam ?? search
+    );
   };
 
   const modalAdd = useDisclosure();
@@ -76,11 +81,11 @@ const [page, serPage] = useState(1)
     <>
       <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
         <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
-          <div className="flex flex-col justify-between w-full gap-5 mb-5 lg:mb-10 lg:flex-row lg:gap-0">
-            <div className="flex items-end gap-3">
-             <Input
+          <div className="w-full">
+            <div className="flex w-full justify-between items-end gap-3">
+              <Input
                 startContent={<SearchIcon />}
-                className="w-full xl:w-80"
+                className="w-full xl:w-80 dark:text-white"
                 variant="bordered"
                 labelPlacement="outside"
                 label="Nombre"
@@ -107,7 +112,7 @@ const [page, serPage] = useState(1)
                     setCategory(branchSelected.name);
                   }
                 }}
-                className="w-full xl:w-80"
+                className="w-full xl:w-80 dark:text-white"
                 label="Categoría producto"
                 labelPlacement="outside"
                 placeholder="Selecciona la categoría"
@@ -118,7 +123,7 @@ const [page, serPage] = useState(1)
                 size="lg"
                 value={category}
                 clearButtonProps={{
-                  onClick: () => setCategory("")
+                  onClick: () => setCategory(""),
                 }}
               >
                 {list_categories.map((bra) => (
@@ -140,7 +145,9 @@ const [page, serPage] = useState(1)
                 Buscar
               </Button>
             </div>
-            <div className="flex items-end justify-between gap-10 mt lg:justify-end">
+          </div>
+          <div className="flex flex-col mt-4 justify-between w-full gap-5 xl:flex-row xl:gap-0">
+            <div className="flex w-full items-end justify-between gap-10 mt lg:justify-end">
               <ButtonGroup>
                 <Button
                   size="lg"
@@ -183,10 +190,10 @@ const [page, serPage] = useState(1)
                 </Button>
               </ButtonGroup>
               <div className="flex justify-end w-full">
-                 <AddButton
+                <AddButton
                   onClick={() => {
                     modalAdd.onOpen();
-                    setSelectedProduct(undefined)
+                    setSelectedProduct(undefined);
                   }}
                 />
               </div>
@@ -194,7 +201,7 @@ const [page, serPage] = useState(1)
           </div>
           <div className="flex justify-end w-full mb-5">
             <Select
-              className="w-44"
+              className="w-44 dark:text-white"
               variant="bordered"
               size="lg"
               label="Mostrar"
@@ -218,7 +225,7 @@ const [page, serPage] = useState(1)
           </div>
           {(view === "grid" || view === "list") && (
             <MobileView
-            DeletePopover={DeletePopover}
+              DeletePopover={DeletePopover}
               openEditModal={(product) => {
                 setSelectedProduct(product);
                 modalAdd.onOpen();
@@ -298,7 +305,7 @@ const [page, serPage] = useState(1)
                   currentPage={paginated_products.currentPag}
                   totalPages={paginated_products.totalPag}
                   onPageChange={(page) => {
-                    serPage(page)
+                    serPage(page);
                     getPaginatedProducts(page, limit, category, search);
                   }}
                 />
@@ -322,7 +329,7 @@ const [page, serPage] = useState(1)
         <ModalGlobal
           title={selectedProduct ? "Editar producto" : "Nuevo producto"}
           onClose={modalAdd.onClose}
-          size="lg"
+          size="w-full md:w-[500px]"
           isOpen={modalAdd.isOpen}
         >
           <AddProducts
@@ -332,174 +339,6 @@ const [page, serPage] = useState(1)
         </ModalGlobal>
       </div>
     </>
-    //   );
-
-    // const bottomContent = useMemo(() => {
-    //   if (paginated_products.total === 0) {
-    //     return <div>No se encontraron resultados</div>;
-    //   }
-    //   return (
-    //     <div className="mt-10 mb-20 lg:mb-0">
-    //       <Pagination
-    //         total={paginated_products.totalPag}
-    //         initialPage={paginated_products.currentPag}
-    //         page={paginated_products.currentPag}
-    //         showControls
-    //         showShadow
-    //         boundaries={2}
-    //         color="primary"
-    //         onChange={(page) => changePage(page)}
-    //         classNames={{
-    //           cursor: "bg-[#65451F] shadow shadow-[#65451F] font-semibold",
-    //           next: "bg-[#65451F] text-white",
-    //           prev: "bg-[#65451F] text-white",
-    //         }}
-    //       />
-    //     </div>
-    //   );
-    // }, [paginated_products, paginated_products.products]);
-
-    // return (
-    //   <div className="w-full h-full p-5 bg-gray-50">
-    //     <div className="hidden p-5 bg-white rounded lg:flex">
-    //       <Table
-    //         topContent={topContent}
-    //         bottomContentPlacement="outside"
-    //         topContentPlacement="outside"
-    //         bottomContent={bottomContent}
-    //         isHeaderSticky={true}
-    //         classNames={{
-    //           wrapper: "max-h-[450px] 2xl:max-h-[600px]",
-    //         }}
-    //       >
-    //         <TableHeader columns={columns}>
-    //           {(column) => (
-    //             <TableColumn
-    //               key={column.key}
-    //               className="font-semibold text-white bg-coffee-brown"
-    //               align={column.key === "actions" ? "center" : "start"}
-    //               allowsSorting={column.sortable}
-    //             >
-    //               {column.name}
-    //             </TableColumn>
-    //           )}
-    //         </TableHeader>
-    //         <TableBody items={paginated_products.products}>
-    //           {(item) => (
-    //             <TableRow key={item.id}>
-    //               {(columnKey) => (
-    //                 <TableCell>
-    //                   {columnKey === "id" && item.id}
-    //                   {columnKey === "name" && (
-    //                     <>
-    //                       {/* <ReturnImageCategory
-    //                         category={item.categoryProduct.name}
-    //                         product_name={item.name}
-    //                         description={item.description}
-    //                       /> */}
-    //                     </>
-    //                   )}
-    //                   {columnKey === "price" && "$" + item.price}
-    //                   {columnKey === "code" && item.code}
-    //                   {columnKey === "category" && item.categoryProduct.name}
-    //                   {columnKey === "actions" && (
-    //                     <>
-    //                       <div className="flex gap-3">
-    //                         <Button
-    //                           onClick={() => {
-    //                             setSelectedProduct(item);
-    //                             modalAdd.onOpen();
-    //                           }}
-    //                           isIconOnly
-    //                           className="bg-coffee-green"
-    //                         >
-    //                           <EditIcon className="text-white" size={20} />
-    //                         </Button>
-    //                         <PopoverDelete product={item} />
-    //                       </div>
-    //                     </>
-    //                   )}
-    //                 </TableCell>
-    //               )}
-    //             </TableRow>
-    //           )}
-    //         </TableBody>
-    //       </Table>
-    //     </div>
-    //     <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:hidden">
-    //       <div className="col-span-1 sm:col-span-2 md:col-span-3 ">
-    //         {topContent}
-    //       </div>
-    //       {paginated_products.products.map((product) => (
-    //         <Card key={product.id} isPressable isBlurred>
-    //           <CardHeader>
-    //             <div className="flex">
-    //               {/* <ReturnAvatarImage category={product.categoryProduct.name} /> */}
-    //               <div className="flex flex-col">
-    //                 <p className="ml-3 text-sm font-semibold text-gray-600">
-    //                   {product.name}
-    //                 </p>
-    //                 <p className="ml-3 text-sm text-gray-600">
-    //                   {product.description}
-    //                 </p>
-    //               </div>
-    //             </div>
-    //           </CardHeader>
-    //           <CardBody>
-    //             <p className="text-sm font-semibold text-gray-600">
-    //               Precio: <span className="font-normal">${product.price}</span>
-    //             </p>
-    //             <p className="text-sm font-semibold text-gray-600">
-    //               Categoría:{" "}
-    //               <span className="font-normal">
-    //                 {product.categoryProduct.name}
-    //               </span>
-    //             </p>
-    //           </CardBody>
-    //           <CardHeader>
-    //             <div className="flex gap-3">
-    //               <Button
-    //                 onClick={() => {
-    //                   setSelectedProduct(product);
-    //                   modalAdd.onOpen();
-    //                 }}
-    //                 isIconOnly
-    //                 className="bg-coffee-green"
-    //               >
-    //                 <EditIcon className="text-white" size={20} />
-    //               </Button>
-    //               <PopoverDelete product={product} />
-    //             </div>
-    //           </CardHeader>
-    //         </Card>
-    //       ))}
-    //       <div className="col-span-1 mb-10 sm:col-span-2 md:col-span-3 lg:mb-0">
-    //         <div className="hidden sm:flex">{bottomContent}</div>
-    //         <div className="flex items-center justify-between sm:hidden">
-    //           <Button
-    //             isIconOnly
-    //             className="bg-coffee-brown"
-    //             disabled={paginated_products.currentPag === 1}
-    //             onClick={() => changePage(paginated_products.currentPag - 1)}
-    //           >
-    //             <ChevronLeft color="white" />
-    //           </Button>
-    //           <p className="text-sm font-semibold text-gray-600">
-    //             {paginated_products.currentPag} de {paginated_products.totalPag}
-    //           </p>
-    //           <Button
-    //             isIconOnly
-    //             className="bg-coffee-brown"
-    //             disabled={
-    //               paginated_products.currentPag === paginated_products.totalPag
-    //             }
-    //             onClick={() => changePage(paginated_products.currentPag + 1)}
-    //           >
-    //             <ChevronRight color="white" />
-    //           </Button>
-    //         </div>
-    //       </div>
-    //     </div>
   );
 }
 
@@ -513,7 +352,7 @@ export const DeletePopover = ({ product }: PopProps) => {
   const { theme } = useContext(ThemeContext);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const {deleteProducts} = useProductsStore();
+  const { deleteProducts } = useProductsStore();
 
   const handleDelete = async () => {
     await deleteProducts(product.id);
@@ -540,9 +379,7 @@ export const DeletePopover = ({ product }: PopProps) => {
       </PopoverTrigger>
       <PopoverContent>
         <div className="w-full p-5">
-          <p className="font-semibold text-gray-600">
-            Eliminar {product.name}
-          </p>
+          <p className="font-semibold text-gray-600">Eliminar {product.name}</p>
           <p className="mt-3 text-center text-gray-600 w-72">
             ¿Estas seguro de eliminar este registro?
           </p>

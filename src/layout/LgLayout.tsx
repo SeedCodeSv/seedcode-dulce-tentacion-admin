@@ -4,7 +4,7 @@ interface Props {
   
   export const LgLayout = ({ items }: Props) => {
     return (
-      <div className="fixed z-50 w-64 h-screen bg-white shadow-2xl">
+      <div className="fixed z-50 w-64 h-screen bg-white dark:bg-gray-900 dark:text-white shadow-2xl">
         {items()}
       </div>
     );

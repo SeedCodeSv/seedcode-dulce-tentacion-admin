@@ -6,6 +6,7 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
+  Switch,
   User,
 } from "@nextui-org/react";
 import { SmLayout } from "./SmLayout";

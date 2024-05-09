@@ -1,4 +1,4 @@
-import { Image } from "@nextui-org/react";
+import { Image, Switch } from "@nextui-org/react";
 import { NavLink } from "react-router-dom";
 import LOGO from "../assets/react.svg";
 import {
@@ -11,14 +11,14 @@ import {
   Users,
   Book,
   ShieldHalf,
-  CalculatorIcon, 
-  Grid2X2Icon
+  CalculatorIcon,
+  Grid2X2Icon,
 } from "lucide-react";
 import { useContext } from "react";
 import { ThemeContext } from "../hooks/useTheme";
 
 export const LayoutItems = () => {
-  const { theme } = useContext(ThemeContext);
+  const { theme, toggleContext, context } = useContext(ThemeContext);
   return (
     <>
       <div
@@ -38,14 +38,13 @@ export const LayoutItems = () => {
         className={({ isActive }) => {
           return (
             (isActive
-              ? "text-coffee-green font-semibold bg-gray-50 border-coffee-green"
+              ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
               : "text-coffee-brown font-semibold border-white") +
-            " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 hover:border-coffee-green"
+            " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
           );
         }}
         style={({ isActive }) => {
           return {
-            backgroundColor: isActive ? "#dedede" : "transparent",
             borderLeftColor: isActive ? theme.colors.dark : "transparent",
             borderLeftWidth: 5,
           };
@@ -59,14 +58,13 @@ export const LayoutItems = () => {
         className={({ isActive }) => {
           return (
             (isActive
-              ? "text-coffee-green font-semibold bg-gray-50 border-coffee-green"
+              ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
               : "text-coffee-brown font-semibold border-white") +
-            " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 hover:border-coffee-green"
+            " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
           );
         }}
         style={({ isActive }) => {
           return {
-            backgroundColor: isActive ? "#dedede" : "transparent",
             borderLeftColor: isActive ? theme.colors.dark : "transparent",
             borderLeftWidth: 5,
           };
@@ -80,14 +78,13 @@ export const LayoutItems = () => {
         className={({ isActive }) => {
           return (
             (isActive
-              ? "text-coffee-green font-semibold bg-gray-50 border-coffee-green"
+              ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
               : "text-coffee-brown font-semibold border-white") +
-            " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 hover:border-coffee-green"
+            " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
           );
         }}
         style={({ isActive }) => {
           return {
-            backgroundColor: isActive ? "#dedede" : "transparent",
             borderLeftColor: isActive ? theme.colors.dark : "transparent",
             borderLeftWidth: 5,
           };
@@ -101,14 +98,13 @@ export const LayoutItems = () => {
         className={({ isActive }) => {
           return (
             (isActive
-              ? "text-coffee-green font-semibold bg-gray-50 border-coffee-green"
+              ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
               : "text-coffee-brown font-semibold border-white") +
-            " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 hover:border-coffee-green"
+            " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
           );
         }}
         style={({ isActive }) => {
           return {
-            backgroundColor: isActive ? "#dedede" : "transparent",
             borderLeftColor: isActive ? theme.colors.dark : "transparent",
             borderLeftWidth: 5,
           };
@@ -122,14 +118,13 @@ export const LayoutItems = () => {
         className={({ isActive }) => {
           return (
             (isActive
-              ? "text-coffee-green font-semibold bg-gray-50 border-coffee-green"
+              ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
               : "text-coffee-brown font-semibold border-white") +
-            " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 hover:border-coffee-green"
+            " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
           );
         }}
         style={({ isActive }) => {
           return {
-            backgroundColor: isActive ? "#dedede" : "transparent",
             borderLeftColor: isActive ? theme.colors.dark : "transparent",
             borderLeftWidth: 5,
           };
@@ -143,14 +138,13 @@ export const LayoutItems = () => {
         className={({ isActive }) => {
           return (
             (isActive
-              ? "text-coffee-green font-semibold bg-gray-50 border-coffee-green"
+              ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
               : "text-coffee-brown font-semibold border-white") +
-            " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 hover:border-coffee-green"
+            " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
           );
         }}
         style={({ isActive }) => {
           return {
-            backgroundColor: isActive ? "#dedede" : "transparent",
             borderLeftColor: isActive ? theme.colors.dark : "transparent",
             borderLeftWidth: 5,
           };
@@ -164,14 +158,13 @@ export const LayoutItems = () => {
         className={({ isActive }) => {
           return (
             (isActive
-              ? "text-coffee-green font-semibold bg-gray-50 border-coffee-green"
+              ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
               : "text-coffee-brown font-semibold border-white") +
-            " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 hover:border-coffee-green"
+            " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
           );
         }}
         style={({ isActive }) => {
           return {
-            backgroundColor: isActive ? "#dedede" : "transparent",
             borderLeftColor: isActive ? theme.colors.dark : "transparent",
             borderLeftWidth: 5,
           };
@@ -185,14 +178,13 @@ export const LayoutItems = () => {
         className={({ isActive }) => {
           return (
             (isActive
-              ? "text-coffee-green font-semibold bg-gray-50 border-coffee-green"
+              ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
               : "text-coffee-brown font-semibold border-white") +
-            " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 hover:border-coffee-green"
+            " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
           );
         }}
         style={({ isActive }) => {
           return {
-            backgroundColor: isActive ? "#dedede" : "transparent",
             borderLeftColor: isActive ? theme.colors.dark : "transparent",
             borderLeftWidth: 5,
           };
@@ -206,14 +198,13 @@ export const LayoutItems = () => {
         className={({ isActive }) => {
           return (
             (isActive
-              ? "text-coffee-green font-semibold bg-gray-50 border-coffee-green"
+              ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
               : "text-coffee-brown font-semibold border-white") +
-            " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 hover:border-coffee-green"
+            " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
           );
         }}
         style={({ isActive }) => {
           return {
-            backgroundColor: isActive ? "#dedede" : "transparent",
             borderLeftColor: isActive ? theme.colors.dark : "transparent",
             borderLeftWidth: 5,
           };
@@ -227,14 +218,13 @@ export const LayoutItems = () => {
         className={({ isActive }) => {
           return (
             (isActive
-              ? "text-coffee-green font-semibold bg-gray-50 border-coffee-green"
+              ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
               : "text-coffee-brown font-semibold border-white") +
-            " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 hover:border-coffee-green"
+            " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
           );
         }}
         style={({ isActive }) => {
           return {
-            backgroundColor: isActive ? "#dedede" : "transparent",
             borderLeftColor: isActive ? theme.colors.dark : "transparent",
             borderLeftWidth: 5,
           };
@@ -248,14 +238,13 @@ export const LayoutItems = () => {
         className={({ isActive }) => {
           return (
             (isActive
-              ? "text-coffee-green font-semibold bg-gray-50 border-coffee-green"
+              ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
               : "text-coffee-brown font-semibold border-white") +
-            " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 hover:border-coffee-green"
+            " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
           );
         }}
         style={({ isActive }) => {
           return {
-            backgroundColor: isActive ? "#dedede" : "transparent",
             borderLeftColor: isActive ? theme.colors.dark : "transparent",
             borderLeftWidth: 5,
           };
@@ -264,6 +253,18 @@ export const LayoutItems = () => {
         <ShieldHalf size={20} />
         <p className="ml-2 text-base">Permisos</p>
       </NavLink>
+      <div
+        className={
+          " flex w-full py-4 pl-5 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
+        }
+      >
+        <Switch
+          onValueChange={(isDark) => toggleContext(isDark ? "dark" : "light")}
+          isSelected={context === "dark"}
+        >
+          {context === "dark" ? "Modo claro" : "Modo oscuro"}
+        </Switch>
+      </div>
     </>
   );
 };

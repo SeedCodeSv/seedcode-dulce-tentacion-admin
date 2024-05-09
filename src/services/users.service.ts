@@ -7,6 +7,7 @@ import {
   UserUpdate,
 } from "../types/users.types";
 import { get_token, get_user } from "../storage/localStorage";
+
 const token = get_token() ?? "";
 
 export const get_users_list = () => {
