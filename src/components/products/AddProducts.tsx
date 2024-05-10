@@ -6,7 +6,7 @@ import {
   AutocompleteItem,
 } from "@nextui-org/react";
 import { Formik } from "formik";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo } from "react";
 import * as yup from "yup";
 import { useCategoriesStore } from "../../store/categories.store";
 import { Product, ProductPayload } from "../../types/products.types";
@@ -101,6 +101,7 @@ function AddProducts(props: Props) {
                     "font-semibold text-gray-500 dark:text-gray-200 text-sm",
                 }}
                 variant="bordered"
+                size="lg"
               />
               {errors.name && touched.name && (
                 <span className="text-sm font-semibold text-red-500">
@@ -121,6 +122,7 @@ function AddProducts(props: Props) {
                   label: "font-semibold text-gray-500 text-sm",
                 }}
                 variant="bordered"
+                size="lg"
               />
               {errors.description && touched.description && (
                 <span className="text-sm font-semibold text-red-500">
@@ -143,6 +145,7 @@ function AddProducts(props: Props) {
                 variant="bordered"
                 type="number"
                 startContent="$"
+                size="lg"
               />
               {errors.price && touched.price && (
                 <span className="text-sm font-semibold text-red-500">
@@ -177,6 +180,7 @@ function AddProducts(props: Props) {
                 // selectedKey={selectedKeyCategory}
                 defaultSelectedKey={selectedKeyCategory}
                 value={selectedKeyCategory}
+                size="lg"
               >
                 {list_categories.map((bra) => (
                   <AutocompleteItem value={bra.name} key={JSON.stringify(bra)}>
@@ -203,6 +207,7 @@ function AddProducts(props: Props) {
                   label: "font-semibold text-sm",
                 }}
                 variant="bordered"
+                size="lg"
               />
               {errors.code && touched.code && (
                 <span className="text-sm font-semibold text-red-500">

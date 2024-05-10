@@ -35,9 +35,10 @@ import ModalGlobal from "../global/ModalGlobal";
 import AddEmployee from "./AddEmployee";
 import { Drawer } from "vaul";
 import { global_styles } from "../../styles/global.styles";
+import classNames from "classnames";
 
 function ListEmployee() {
-  const { theme } = useContext(ThemeContext);
+  const { theme, context } = useContext(ThemeContext);
 
   const { getEmployeesPaginated, employee_paginated } = useEmployeeStore();
 
@@ -213,10 +214,15 @@ function ListEmployee() {
                         className="fixed inset-0 bg-black/40 z-[60]"
                         onClick={() => setOpenVaul(false)}
                       />
-                      <Drawer.Content className="bg-gray-100 z-[60] flex flex-col rounded-t-[10px] h-auto mt-24 max-h-[80%] fixed bottom-0 left-0 right-0">
-                        <div className="p-4 bg-white rounded-t-[10px] flex-1">
+                      <Drawer.Content
+                        className={classNames(
+                          "bg-gray-100 z-[60] flex flex-col rounded-t-[10px] h-auto mt-24 max-h-[80%] fixed bottom-0 left-0 right-0",
+                          context === "dark" ? "dark" : ""
+                        )}
+                      >
+                        <div className="p-4 bg-white dark:bg-gray-800 rounded-t-[10px] flex-1">
                           <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-gray-300 mb-8" />
-                          <Drawer.Title className="mb-4 font-medium">
+                          <Drawer.Title className="mb-4 dark:text-white font-medium">
                             Filtros disponibles
                           </Drawer.Title>
                           <div className="flex flex-col gap-3">

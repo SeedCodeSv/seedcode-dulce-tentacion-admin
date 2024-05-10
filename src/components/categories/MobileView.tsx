@@ -54,7 +54,7 @@ const gridItem = (
       {layout === "grid" ? (
         <div
           className={classNames(
-            "w-full shadow-sm hover:shadow-lg p-8 rounded-2xl"
+            "w-full shadow-sm hover:shadow-lg p-8 dark:border dark:border-gray-600 rounded-2xl"
           )}
           key={category.id}
         >

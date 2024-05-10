@@ -1,5 +1,4 @@
-import { useContext } from "react";
-import { Theme, ThemeContext } from "../hooks/useTheme";
+import { Theme } from "../hooks/useTheme";
 import * as NextUI from "@nextui-org/react";
 
 interface Props {

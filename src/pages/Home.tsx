@@ -10,8 +10,6 @@ import {
   Input,
 } from "@nextui-org/react";
 import { Check } from "lucide-react";
-import { pdf } from "@react-pdf/renderer";
-import { MyDocument } from "./Invoice";
 import { ColorPicker } from "primereact/colorpicker";
 import { defaultTheme } from "../utils/constants";
 import { ThemePayload } from "../types/themes.types";
@@ -236,7 +234,7 @@ function Home() {
           <div className="mt-10">
             <NButton onClick={handleSave}>Guardar</NButton>
           </div>
-          <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {themes.map((themeS, index) => (
               <Card
                 key={index}

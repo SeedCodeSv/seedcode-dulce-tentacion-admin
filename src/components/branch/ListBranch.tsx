@@ -39,8 +39,9 @@ import { Branches } from "../../types/branches.types";
 import { toast } from "sonner";
 import ListBranchProduct from "./branch_product/ListBranchProduct";
 import BoxBranch from "./BoxBranch";
+import classNames from "classnames";
 function ListBranch() {
-  const { theme } = useContext(ThemeContext);
+  const { theme, context } = useContext(ThemeContext);
 
   const {
     getBranchesPaginated,
@@ -251,10 +252,10 @@ function ListBranch() {
                       className="fixed inset-0 bg-black/40 z-[60]"
                       onClick={() => setOpenVaul(false)}
                     />
-                    <Drawer.Content className="bg-gray-100 z-[60] flex flex-col rounded-t-[10px] h-auto mt-24 max-h-[80%] fixed bottom-0 left-0 right-0">
-                      <div className="p-4 bg-white rounded-t-[10px] flex-1">
-                        <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-gray-300 mb-8" />
-                        <Drawer.Title className="mb-4 font-medium">
+                    <Drawer.Content className={classNames("bg-gray-100 z-[60] flex flex-col rounded-t-[10px] h-auto mt-24 max-h-[80%] fixed bottom-0 left-0 right-0", context === "dark" ? "dark" : "")}>
+                      <div className="p-4 bg-white dark:bg-gray-800 rounded-t-[10px] flex-1">
+                        <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-gray-300 dark:bg-gray-400 mb-8" />
+                        <Drawer.Title className="mb-4 dark:text-white font-medium">
                           Filtros disponibles
                         </Drawer.Title>
                         <div className="flex flex-col gap-3">

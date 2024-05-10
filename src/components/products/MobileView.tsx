@@ -56,24 +56,33 @@ const gridItem = (
       {layout === "grid" ? (
         <div
           className={classNames(
-            "w-full shadow-sm border border-gray-600 hover:shadow-lg p-8 rounded-2xl"
+            "w-full shadow-sm dark:border border-gray-600 hover:shadow-lg p-8 rounded-2xl"
           )}
           key={product.id}
         >
           <div className="flex w-full gap-2">
-            <ShoppingBag color={"#274c77"} size={33} />
+            <ShoppingBag
+              className="dark:text-gray-400 text-[#274c77]"
+              size={33}
+            />
             {product.name}
           </div>
           <div className="flex w-full gap-2 mt-3">
-            <ClipboardList color="#00bbf9" size={33} />
-            {product.type}
+            <ClipboardList
+              className="dark:text-gray-400 text-[#00bbf9]"
+              size={33}
+            />
+            {product.categoryProduct.name}
           </div>
           <div className="flex w-full gap-2 mt-3">
-            <Barcode color={"#006d77"} size={33} />
+            <Barcode className="dark:text-gray-400 text-[#006d77]" size={33} />
             {product.code}
           </div>
           <div className="flex w-full gap-2 mt-3">
-            <DollarSign color={"#006d77"} size={33} />
+            <DollarSign
+              className="dark:text-gray-400 text-[#006d77]"
+              size={33}
+            />
             {product.price}
           </div>
           <div className="flex justify-between mt-5 w-ful">
@@ -116,19 +125,28 @@ const ListItem = ({
       <div className="flex w-full col-span-1 p-5 border-b shadow md:col-span-2 lg:col-span-3 xl:col-span-4">
         <div className="w-full">
           <div className="flex items-center w-full gap-2">
-            <ShoppingBag color={"#274c77"} size={33} />
+            <ShoppingBag
+              className="dark:text-gray-400 text-[#274c77]"
+              size={33}
+            />
             {product.name}
           </div>
           <div className="flex items-center w-full gap-2 mt-3">
-            <ClipboardList color="#00bbf9" size={33} />
-            {product.type}
+            <ClipboardList
+              className="dark:text-gray-400 text-[#00bbf9]"
+              size={33}
+            />
+            {product.categoryProduct.name}
           </div>
           <div className="flex items-center w-full gap-2 mt-3">
-            <Barcode color={"#006d77"} size={33} />
+            <Barcode className="dark:text-gray-400 text-[#006d77]" size={33} />
             {product.code}
           </div>
           <div className="flex items-center w-full gap-2 mt-3">
-            <DollarSign color={"#006d77"} size={33} />
+            <DollarSign
+              className="dark:text-gray-400 text-[#006d77]"
+              size={33}
+            />
             {product.price}
           </div>
         </div>
