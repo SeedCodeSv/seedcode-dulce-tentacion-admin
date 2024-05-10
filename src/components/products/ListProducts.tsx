@@ -85,7 +85,7 @@ function ListProducts() {
             <div className="flex w-full justify-between items-end gap-3">
               <Input
                 startContent={<SearchIcon />}
-                className="w-full xl:w-80 dark:text-white"
+                className="w-full dark:text-white"
                 variant="bordered"
                 labelPlacement="outside"
                 label="Nombre"
@@ -112,7 +112,7 @@ function ListProducts() {
                     setCategory(branchSelected.name);
                   }
                 }}
-                className="w-full xl:w-80 dark:text-white"
+                className="w-full dark:text-white"
                 label="Categoría producto"
                 labelPlacement="outside"
                 placeholder="Selecciona la categoría"

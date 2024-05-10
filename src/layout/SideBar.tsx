@@ -6,14 +6,14 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
-  Switch,
   User,
 } from "@nextui-org/react";
 import { SmLayout } from "./SmLayout";
 import { LayoutItems } from "./LayoutItems";
 import { LgLayout } from "./LgLayout";
-import USER from "../assets/react.svg";
+import USER from "../assets/user.png";
 import { ThemeContext } from "../hooks/useTheme";
+import { useAuthStore } from "../store/auth.store";
 
 interface Props {
   children: ReactNode;
@@ -25,7 +25,7 @@ export const SideBar = (props: Props) => {
 
   const { theme } = useContext(ThemeContext);
 
-  //   const { user, makeLogout } = useAuthStore();
+  const { user } = useAuthStore();
 
   const [windowSize, setWindowSize] = useState({
     width: window.innerWidth,
@@ -66,12 +66,17 @@ export const SideBar = (props: Props) => {
             color: theme.colors.primary,
           }}
         >
-          <div className="">
+          <div className="flex justify-end lg:hidden">
+            <Button isIconOnly onClick={() => setIsOpen(!isOpen)}>
+              <Menu />
+            </Button>
+          </div>
+          <div className="ml-3 lg:ml-0">
             <p className="text-sm uppercase font-bold text-coffee-brown">
               {props.title}
             </p>
           </div>
-          <div className="flex justify-end w-full mr-10">
+          <div className="flex justify-end w-full">
             <Dropdown placement="bottom-start" showArrow>
               <DropdownTrigger>
                 <User
@@ -81,26 +86,24 @@ export const SideBar = (props: Props) => {
                     src: USER,
                     alt: "No image",
                   }}
+                  classNames={{
+                    description: "text-gray-400",
+                  }}
                   className="transition-transform"
-                  description={"Juan perez"}
-                  name={"Juan perez"}
+                  description={user?.userName}
+                  name={user?.employee.fullName}
                 />
               </DropdownTrigger>
               <DropdownMenu aria-label="User Actions" variant="flat">
                 <DropdownItem key="profile" className="h-14 gap-2">
                   <p className="font-bold">Sesión iniciada</p>
-                  <p className="font-bold">{"Juan perex"}</p>
+                  <p className="font-bold">{user?.employee.fullName}</p>
                 </DropdownItem>
                 <DropdownItem key="logout" color="danger">
                   Cerrar sesión
                 </DropdownItem>
               </DropdownMenu>
             </Dropdown>
-          </div>
-          <div className="flex justify-end lg:hidden">
-            <Button isIconOnly onClick={() => setIsOpen(!isOpen)}>
-              <Menu />
-            </Button>
           </div>
         </div>
         <div className="w-full h-full overflow-y-auto bg-gray-50 mt-14 lg">

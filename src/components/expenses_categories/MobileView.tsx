@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { Button } from "@nextui-org/react";
 import { DataView } from "primereact/dataview";
-import { classNames } from "primereact/utils";
+import classNames from "classnames";
 import { EditIcon, ClipboardCheck} from "lucide-react";
 import { ThemeContext } from "../../hooks/useTheme";
 import { useCategoriesExpenses } from "../../store/categories_expenses.store";
@@ -57,7 +57,7 @@ const gridItem = (
       {layout === "grid" ? (
         <div
           className={classNames(
-            "w-full shadow-sm hover:shadow-lg p-8 rounded-2xl"
+            "w-full shadow-sm hover:shadow-lg dark:border dark:border-gray-600 p-8 rounded-2xl"
           )}
           key={categoryExpenses.id}
         >

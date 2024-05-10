@@ -50,7 +50,7 @@ const gridItem = (
       {layout === "grid" ? (
         <div
           className={classNames(
-            "w-full shadow-sm hover:shadow-lg p-8 rounded-2xl"
+            "w-full shadow-sm hover:shadow-lg border dark:border-gray-600 p-8 rounded-2xl"
           )}
           key={employee.id}
         >

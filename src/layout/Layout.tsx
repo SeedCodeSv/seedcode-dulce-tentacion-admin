@@ -1,5 +1,4 @@
-import React, { Dispatch, SetStateAction, useContext, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { useContext } from "react";
 import { ThemeContext } from "../hooks/useTheme";
 import NavBar from "./NavBar";
 import { SideBar } from "./SideBar";
@@ -11,7 +10,6 @@ interface Props {
 }
 
 function Layout(props: Props) {
-  const [showMenu, setShowMenu] = useState(false);
   const { context, navbar } = useContext(ThemeContext);
 
   return (
