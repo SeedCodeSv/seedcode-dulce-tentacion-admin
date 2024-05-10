@@ -6,3 +6,11 @@ export interface IAction {
   view: IView;
   actionId: number;
 }
+export interface IActionPayload {
+  names: {name: string}[]
+  viewId: number
+}
+export interface IGetActionRol {
+  ok: boolean;
+  actionsId: IAction[];
+}

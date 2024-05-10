@@ -207,7 +207,7 @@ const ListActionRol = () => {
         size="w-full md:w-[500px]"
         isOpen={modalAdd.isOpen}
       >
-        <AddActionRol />
+        <AddActionRol closeModal={modalAdd.onClose} />
       </ModalGlobal>
     </>
   );

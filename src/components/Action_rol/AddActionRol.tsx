@@ -13,26 +13,31 @@ import { ThemeContext } from "../../hooks/useTheme";
 import { useViewsStore } from "../../store/views.store";
 import { IView } from "../../types/view.types";
 import { useActionsRolStore } from "../../store/actions_rol.store";
-const AddActionRol = () => {
+import { toast } from "sonner";
+interface Props {
+  closeModal: () => void;
+}
+const AddActionRol = ({closeModal}: Props) => {
   const [showActions, setShowActions] = useState(false);
-  const [selectedRol, setSelectedRol] = useState<Role | null>(null);
+  const [selectedRol, setSelectedRol] = useState<Role>();
   const [selectedView, setSelectedView] = useState<IView>();
 
   const { theme } = useContext(ThemeContext);
-  const [nombres, setNombres] = useState<{ nombre: string }[]>([
-    { nombre: "Mostrar" },
+  const [nombres, setNombres] = useState<{ name: string }[]>([
+    { name: "Mostrar" },
   ]);
-  console.log(selectedRol, selectedView)
+  console.log(selectedRol, selectedView);
   const { getRolesList, roles_list } = useRolesStore();
   const { getViews, views_list } = useViewsStore();
-  const { getActionsByRolView, actions_by_view_and_rol } = useActionsRolStore();
+  const { getActionsByRolView, actions_by_view_and_rol, OnCreateActionsRol } =
+    useActionsRolStore();
   useEffect(() => {
     getRolesList();
     getViews();
   }, []);
   useEffect(() => {
-    if (selectedRol !== undefined && selectedView !== undefined) {
-      getActionsByRolView(Number(selectedRol?.id), selectedView.id);
+    if (selectedRol && selectedView) {
+      getActionsByRolView(selectedRol.id, selectedView.id);
       setShowActions(true);
       // OnGetActionsByView(selectedView.id).then(() => {
       //   setIsLoading(false);
@@ -41,42 +46,41 @@ const AddActionRol = () => {
       setShowActions(false);
     }
   }, [selectedRol, selectedView]);
-  const selectName = (nombre: string, state: boolean) => {
+  const selectName = (name: string, state: boolean) => {
     if (state) {
-      setNombres([...nombres, { nombre }]);
+      setNombres([...nombres, { name }]);
     } else {
-      setNombres(nombres.filter((n) => n.nombre !== nombre));
+      setNombres(nombres.filter((n) => n.name !== name));
     }
   };
+  console.log("actions",actions_by_view_and_rol)
   const save_actions = async () => {
     // setShowModal(true);
-    const actions_filter = nombres.filter((nombre) => {
-      //   return !actions_by_view.includes(nombre.nombre);
-      // });
-      // if (selectedRol) {
-      //   if (selectedView) {
-      //     if (actions_by_view.length < 4) {
-      //       const payload = {
-      //         nombres: actions_filter,
-      //         vistaId: selectedView?.id,
-      //       };
-      //       const res = await OnCreateActions(payload, selectedRol.id);
-      //       if (res) {
-      //         closeModal();
-      //         onCreateView();
-      //         closeModal2();
-      //         toast.success("Registro creado correctamente");
-      //       }
-      //     } else {
-      //       ShowToast("warning", "Este rol ya cuenta con todos los permisos");
-      //     }
-      //   } else {
-      //     ShowToast("warning", "Selecciona el modulo");
-      //   }
-      // } else {
-      //   ShowToast("warning", "Seleccione un rol");
-      // }
+    const actions_filter = nombres.filter((names) => {
+      return !actions_by_view_and_rol.includes(names.name);
     });
+    if (selectedRol) {
+      if (selectedView) {
+        if (actions_by_view_and_rol.length < 4) {
+          const payload = {
+            names: actions_filter,
+            viewId: selectedView?.id,
+          };
+          const res = await OnCreateActionsRol(payload, selectedRol.id);
+          if (res) {
+            setShowActions(false);
+            closeModal()
+          }
+        } else {
+          toast.info("Este rol ya cuenta con todos los permisos");
+
+        }
+      } else {
+        toast.info("Selecciona el modulo");
+      }
+    } else {
+      toast.info("Seleccione un rol");
+    }
   };
   const validationSchema = yup.object().shape({
     viewId: yup
@@ -93,7 +97,6 @@ const AddActionRol = () => {
     viewId: 0,
     rolId: 0,
   };
-
   return (
     <div>
       <Formik
@@ -119,9 +122,6 @@ const AddActionRol = () => {
                 variant="bordered"
                 classNames={{
                   base: "font-semibold text-gray-500 text-sm",
-                }}
-                onClear={() => {
-                  setSelectedRol(null);
                 }}
               >
                 {roles_list.map((rol) => (
@@ -153,9 +153,6 @@ const AddActionRol = () => {
                 classNames={{
                   base: "font-semibold text-gray-500 text-sm",
                 }}
-                onClear={() => {
-                  setSelectedView(undefined);
-                }}
               >
                 {views_list.map((view) => (
                   <AutocompleteItem
@@ -182,13 +179,13 @@ const AddActionRol = () => {
               <div> */}
                   {actions_by_view_and_rol.includes("Agregar") ? (
                     <Checkbox defaultSelected lineThrough size="lg" isSelected>
-                      Agregar
+                      Agregar1
                     </Checkbox>
                   ) : (
                     <Checkbox
                       lineThrough
                       size="lg"
-                      checked={nombres.includes({ nombre: "Agregar" })}
+                      checked={nombres.includes({ name: "Agregar" })}
                       onChange={(checked) =>
                         selectName("Agregar", checked.target.checked)
                       }
@@ -206,7 +203,7 @@ const AddActionRol = () => {
                     <Checkbox
                       lineThrough
                       size="lg"
-                      checked={nombres.includes({ nombre: "Editar" })}
+                      checked={nombres.includes({ name: "Editar" })}
                       onChange={(checked) =>
                         selectName("Editar", checked.target.checked)
                       }
@@ -224,7 +221,7 @@ const AddActionRol = () => {
                     <Checkbox
                       lineThrough
                       size="lg"
-                      checked={nombres.includes({ nombre: "Eliminar" })}
+                      checked={nombres.includes({ name: "Eliminar" })}
                       onChange={(checked) =>
                         selectName("Eliminar", checked.target.checked)
                       }

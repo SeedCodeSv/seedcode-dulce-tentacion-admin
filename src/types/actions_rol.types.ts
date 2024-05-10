@@ -10,3 +10,9 @@ export interface IGetActionRolList {
   ok: boolean;
   roleActions: IActionRol[];
 }
+export interface IAddActionRol {
+  roleId: number,
+  actionIds: {
+    id: number
+  }[];
+}
