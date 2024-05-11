@@ -6,4 +6,5 @@ export interface IAuthStore {
     user: UserLogin | undefined
     postLogin: (payload: IAuthPayload) => Promise<IAuthResponse | null>
     makeLogout: () => void
-} 
+    OnLoginMH: (id: number, token: string) => Promise<void>;
+}

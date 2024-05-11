@@ -14,7 +14,7 @@ import { LgLayout } from "./LgLayout";
 import USER from "../assets/user.png";
 import { ThemeContext } from "../hooks/useTheme";
 import { useAuthStore } from "../store/auth.store";
-
+import { redirect } from "react-router";
 interface Props {
   children: ReactNode;
   title: string;
@@ -25,13 +25,16 @@ export const SideBar = (props: Props) => {
 
   const { theme } = useContext(ThemeContext);
 
-  const { user } = useAuthStore();
+  const { user, makeLogout } = useAuthStore();
 
   const [windowSize, setWindowSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight,
   });
-
+  const close_login = () => {
+    makeLogout()
+    redirect("/")
+  }
   useEffect(() => {
     const handleResize = () => {
       setWindowSize({
@@ -99,7 +102,7 @@ export const SideBar = (props: Props) => {
                   <p className="font-bold">Sesión iniciada</p>
                   <p className="font-bold">{user?.employee.fullName}</p>
                 </DropdownItem>
-                <DropdownItem key="logout" color="danger">
+                <DropdownItem key="logout" color="danger" onClick={()=> close_login()}>
                   Cerrar sesión
                 </DropdownItem>
               </DropdownMenu>

@@ -11,6 +11,7 @@ import Product from "../pages/Product";
 import ExpensesCategories from "../pages/ExpensesCategories";
 import Expenses from "../pages/Expenses";
 import ActionRol from "../pages/ActionRol"
+import NewSales from "../pages/NewSales"
 export const router = () => {
   return createBrowserRouter([
     {
@@ -56,6 +57,10 @@ export const router = () => {
     {
       path: "/actionRol",
       element: <ActionRol/>
+    },
+    {
+      path: "/newSales",
+      element: <NewSales/>
     },
     {
       path: "*",
