@@ -2,14 +2,18 @@ import { create } from "zustand";
 import { IActionsRolStore } from "./types/actions_rol.store.types";
 import {
   get_actions_by_rol_and_view,
+  get_actions_role,
   save_action_rol,
 } from "../services/actions_rol.service";
 import { messages } from "../utils/constants";
 import { toast } from "sonner";
 import { save_action } from "../services/actions.service";
+import { formatActionsRole } from "../utils";
 export const useActionsRolStore = create<IActionsRolStore>((set, get) => ({
   actions_by_view_and_rol: [],
   actions_view: [],
+  actions_roles_grouped: [],
+  roleAction: [],
   getActionsByRolView(idRol, idView) {
     get_actions_by_rol_and_view(idRol, idView)
       .then(({ data }) => {
@@ -70,4 +74,33 @@ export const useActionsRolStore = create<IActionsRolStore>((set, get) => ({
     }
     return true;
   },
+
+  async OnGetActionsRoleList() {
+    get_actions_role()
+    .then(async ({data}) => {
+      if (data.ok) {
+        set((state) => {
+          return {
+            ...state,
+          actions_roles_grouped: formatActionsRole(data.roleActions)
+          };
+        });
+      } else {
+        set((state) => {
+          return {
+            ...state,
+            actions_roles_grouped: [],
+          }
+        })
+      }
+    })
+    .catch(() => {
+      set((state) => {
+        return {
+          ...state,
+          actions_roles_grouped: [],
+        }
+      })
+    })
+  }
 }));
