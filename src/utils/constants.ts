@@ -1,4 +1,4 @@
-export const API_URL = "http://localhost:8080/api";
+export const API_URL = "http://192.168.0.19:8080/api";
 export const FACTURACION_API = "https://cats-facturacion-43ay7.ondigitalocean.app/api";
 
 export const ambiente = "00";

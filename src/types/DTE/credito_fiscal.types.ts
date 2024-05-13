@@ -14,29 +14,6 @@ export interface Identificacion {
   horEmi: string;
 }
 
-// export interface Direccion {
-// 	departamento: string;
-// 	municipio: string;
-// 	complemento: string;
-// }
-
-// export interface Emisor {
-// 	nit: string;
-// 	nrc: string;
-// 	nombre: string;
-// 	nombreComercial: string;
-// 	codActividad: string;
-// 	descActividad: string;
-// 	tipoEstablecimiento: string;
-// 	direccion: Direccion;
-// 	telefono: string;
-// 	correo: string;
-// 	codEstable: string;
-// 	codEstableMH?: any;
-// 	codPuntoVenta: string;
-// 	codPuntoVentaMH?: any;
-// }
-
 export interface Direccion {
   departamento: string;
   municipio: string;
