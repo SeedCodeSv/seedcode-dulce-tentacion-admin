@@ -75,7 +75,7 @@ export const SideBar = (props: Props) => {
             </Button>
           </div>
           <div className="ml-3 lg:ml-0">
-            <p className="text-sm uppercase font-bold text-coffee-brown">
+            <p className="text-sm uppercase font-bold whitespace-nowrap">
               {props.title}
             </p>
           </div>

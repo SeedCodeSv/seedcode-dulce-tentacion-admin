@@ -3,7 +3,7 @@ import MainView from '../components/new_sales/MainView'
 
 function NewSales() {
   return (
-    <Layout title="Ventas">
+    <Layout title="Nueva Venta">
       <MainView />
     </Layout>
   )
