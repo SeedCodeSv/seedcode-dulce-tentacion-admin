@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { IBranchProductStore } from "./types/branch_product.types";
-import { get_branch_product } from "../services/branch_product.service";
+import { get_branch_product, get_product_by_code } from "../services/branch_product.service";
 
 export const useBranchProductStore = create<IBranchProductStore>(
   (set, get) => ({
@@ -45,6 +45,22 @@ export const useBranchProductStore = create<IBranchProductStore>(
             },
           });
         });
+    },
+    getProductByCode(transmitter_id, code) {
+        get_product_by_code(transmitter_id, code).then(({ data }) => {
+            const { cart_products } = get();
+            const existProduct = cart_products.find(cp => cp.id === data.product.id);
+            if (existProduct) {
+                get().onPlusQuantity(existProduct.id);
+            } else {
+                set({
+                    cart_products: [...cart_products, {
+                        ...data.product,
+                        quantity: 1,
+                    }]
+                })
+            }
+        })
     },
     addProductCart(product) {
       const { cart_products } = get();

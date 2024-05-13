@@ -6,9 +6,14 @@ import { Customer } from "../../types/customers.types";
 import { toast } from "sonner";
 import { ITipoDocumento } from "../../types/DTE/tipo_documento.types";
 import { IFormasDePago } from "../../types/DTE/forma_de_pago.types";
-
+import { generate_factura } from "../../utils/DTE/factura";
+import {useTransmitterStore} from "../../store/transmitter.store"
+import { useBranchProductStore } from "../../store/branch_product.store";
 function FormMakeSale() {
   const [Customer, setCustomer] = useState<Customer>();
+  const {
+    cart_products
+  } = useBranchProductStore();
   const [tipeDocument, setTipeDocument] = useState<ITipoDocumento>();
   const [tipePayment, setTipePayment] = useState<IFormasDePago>();
 
@@ -17,110 +22,42 @@ function FormMakeSale() {
     getCat017FormasDePago,
     getCat02TipoDeDocumento,
     tipos_de_documento,
+    OnSignInvoiceDocument
   } = useBillingStore();
-
+const {gettransmitter, transmitter} = useTransmitterStore()
   const { getCustomersList, customer_list } = useCustomerStore();
 
   useEffect(() => {
     getCat017FormasDePago();
     getCat02TipoDeDocumento();
     getCustomersList();
+    gettransmitter()
   }, []);
 
   const generateFactura = async () => {
     // setLoading(true); // Mostrar mensaje de espera
-    if (!typePay) {
-      ShowToast("success", "Debes seleccionar el método de pago");
+    if (!tipePayment) {
+      toast.info("Debes seleccionar el método de pago");
+
       return;
     }
-    if (!typeDocument) {
-      ShowToast("success", "Debes seleccionar el tipo de documento");
+    if (!tipeDocument) {
+      toast.info("Debes seleccionar el tipo de documento");
+
       return;
     }
     if (!Customer) {
       toast.info("Debes seleccionar el cliente");
-      // ShowToast("success", "Debes seleccionar el cliente");
       return;
     }
 
-    // const sel_vehicle = await get_unidad_info();
+    const generate = generate_factura(transmitter, 1, tipeDocument, Customer, cart_products, tipePayment)
+    OnSignInvoiceDocument(generate, generate.dteJson.resumen.subTotal)
 
-    const DTE: DteJson = {
-      nit: emisor.nit,
-      activo: true,
-      passwordPri: emisor.clavePublica,
-      dteJson: {
-        identificacion: {
-          version: 1,
-          codigoGeneracion: generate_uuid().toUpperCase(),
-          ambiente: "00",
-          tipoDte: "01",
-          numeroControl: generate_control(
-            "01",
-            emisor.codEstable!,
-            emisor.codPuntoVenta!,
-            formatearNumero(Number(1))
-          ),
-          tipoModelo: 1,
-          tipoOperacion: 1,
-          tipoContingencia: null,
-          motivoContin: null,
-          tipoMoneda: "USD",
-          ...getElSalvadorDateTime(),
-        },
-        documentoRelacionado: null,
-        emisor: { ...generate_emisor(emisor) },
-        receptor: { ...generate_receptor(client!) },
-        // receptor: { ...generate_receptor(client!, "01") },
-        otrosDocumentos: null,
-        ventaTercero: null,
-        cuerpoDocumento: make_cuerpo_documento(productsCarts),
-        resumen: {
-          totalNoSuj: 0,
-          totalExenta: 0,
-          totalGravada: Number(total().toFixed(2)),
-          subTotalVentas: Number(total().toFixed(2)),
-          descuNoSuj: 0,
-          descuExenta: 0,
-          descuGravada: 0,
-          porcentajeDescuento: Number(
-            calcularPorcentajeDescuento(
-              total_without_discount(),
-              total()
-            ).toFixed(2)
-          ),
-          totalDescu: Number(calDiscount().toFixed(2)),
-          tributos: null,
-          subTotal: Number(total().toFixed(2)),
-          ivaRete1: 0,
-          reteRenta: 0,
-          totalIva: Number(total_iva().toFixed(2)),
-          montoTotalOperacion: Number(total().toFixed(2)),
-          totalNoGravado: 0,
-          totalPagar: Number(total().toFixed(2)),
-          totalLetras: convertCurrencyFormat(total().toFixed(2)),
-          saldoFavor: 0,
-          condicionOperacion: 1,
-          pagos: [
-            {
-              codigo: typePay.codigo!,
-              montoPago: Number(total().toFixed(2)),
-              referencia: "",
-              plazo: null,
-              periodo: null,
-            },
-          ],
-          numPagoElectronico: null,
-        },
-        extension: null,
-        apendice: null,
-      },
-    };
+    const json_url = `CLIENTES/${transmitter.nombre}/VENTAS/FACTURAS/${generate.dteJson.identificacion.codigoGeneracion}.json`;
+    const pdf_url = `CLIENTES/${transmitter.nombre}/VENTAS/FACTURAS/${DTE.dteJson.identificacion.codigoGeneracion}.pdf`;
 
-    const json_url = `CLIENTES/${emisor.nombre}/VENTAS/FACTURAS/${DTE.dteJson.identificacion.codigoGeneracion}.json`;
-    const pdf_url = `CLIENTES/${emisor.nombre}/VENTAS/FACTURAS/${DTE.dteJson.identificacion.codigoGeneracion}.pdf`;
-
-    const JSON_DTE = JSON.stringify(DTE.dteJson, null, 2);
+    const JSON_DTE = JSON.stringify(generate.dteJson, null, 2);
     const json_blob = new Blob([JSON_DTE], { type: "application/json" });
 
     const blob = await pdf(<Invoice DTE={DTE} />).toBlob();
