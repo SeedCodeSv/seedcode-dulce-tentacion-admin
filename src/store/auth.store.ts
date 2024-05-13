@@ -11,8 +11,8 @@ import {
   save_mh_token,
   delete_box,
   delete_mh_token,
-  save_branch,
-  delete_branch,
+  save_branch_id,
+  delete_branch_id,
 } from "../storage/localStorage";
 import { post_login } from "../services/auth.service";
 import { toast } from "sonner";
@@ -31,7 +31,7 @@ export const useAuthStore = create<IAuthStore>((set, get) => ({
           set_token(data.token);
           save_user(data.user);
           if (is_admin(data.user.role.name)) {
-            await save_branch(String(data.user.employee.branch.id))
+            await save_branch_id(String(data.user.employee.branch.id))
           }
           await get()
             .OnLoginMH(data.user.employee.branch.transmitterId, data.token)
@@ -85,6 +85,6 @@ export const useAuthStore = create<IAuthStore>((set, get) => ({
     await delete_box();
     await delete_user();
     await delete_token();
-    await delete_branch();
+    await delete_branch_id();
   },
 }));
