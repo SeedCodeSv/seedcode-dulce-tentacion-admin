@@ -17,7 +17,7 @@ import {
   Trash,
   Send,
 } from "lucide-react";
-import { useContext, useEffect, useState } from "react";
+import { EventHandler, useContext, useEffect, useState } from "react";
 import { ThemeContext } from "../../hooks/useTheme";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
@@ -30,6 +30,8 @@ import { global_styles } from "../../styles/global.styles";
 import CartProducts from "./CartProducts";
 import ModalGlobal from "../global/ModalGlobal";
 import FormMakeSale from "./FormMakeSale";
+import useEventListener from "../../hooks/useEventListeners";
+import { useAuthStore } from "../../store/auth.store";
 
 const MainView = () => {
   const { theme } = useContext(ThemeContext);
@@ -43,12 +45,8 @@ const MainView = () => {
     branch_products,
     pagination_branch_products,
     getPaginatedBranchProducts,
-    cart_products,
-    onPlusQuantity,
-    onMinusQuantity,
-    onRemoveProduct,
     addProductCart,
-    onUpdateQuantity,
+    getProductByCode,
   } = useBranchProductStore();
 
   useEffect(() => {
@@ -104,6 +102,24 @@ const MainView = () => {
       code
     );
   };
+
+  const { user } = useAuthStore();
+
+  let barcode = "";
+  let interval: NodeJS.Timeout | undefined;
+
+  const handler = (evt: KeyboardEvent) => {
+    if (interval) clearInterval(interval);
+    if (evt.code === "Enter") {
+      if (barcode) getProductByCode(user?.employee.branch.transmitterId ?? 0, barcode);
+      barcode = "";
+      return;
+    }
+    if (evt.key !== "Shift") barcode += evt.key;
+    interval = setInterval(() => (barcode = ""), 200000);
+  };
+
+  useEventListener("keydown", handler as any);
 
   return (
     <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
