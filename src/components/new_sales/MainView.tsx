@@ -15,6 +15,7 @@ import {
   Plus,
   Minus,
   Trash,
+  Send,
 } from "lucide-react";
 import { useContext, useEffect, useState } from "react";
 import { ThemeContext } from "../../hooks/useTheme";
@@ -25,6 +26,7 @@ import { return_branch_id } from "../../storage/localStorage";
 import { BranchProduct, ICartProduct } from "../../types/branch_products.types";
 import Pagination from "../global/Pagination";
 import { limit_options } from "../../utils/constants";
+import { global_styles } from "../../styles/global.styles";
 
 const MainView = () => {
   const { theme } = useContext(ThemeContext);
@@ -101,6 +103,8 @@ const MainView = () => {
   };
 
   const cellEditor = (product: ICartProduct) => {
+    const product_finded = cart_products.find((p) => p.id === product.id);
+
     return (
       <div className="w-full">
         <Input
@@ -108,7 +112,7 @@ const MainView = () => {
           color="primary"
           className="w-32"
           type="number"
-          defaultValue={product.quantity.toString()}
+          defaultValue={product_finded?.quantity.toString()}
           size="lg"
           onChange={(e) => onUpdateQuantity(product.id, Number(e.target.value))}
         />
@@ -118,9 +122,9 @@ const MainView = () => {
 
   return (
     <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
-      <div className="grid grid-cols-1 lg:grid-cols-2">
+      <div className="w-full h-full grid grid-cols-1 lg:grid-cols-2">
         <div className="w-full h-full overflow-y-auto p-4 flex flex-col">
-          <div className="w-full h-[70%]">
+          <div className="w-full h-[70%] pb-5">
             <DataTable
               className="w-full shadow mt-5"
               emptyMessage="No se encontraron resultados"
@@ -128,10 +132,11 @@ const MainView = () => {
               tableStyle={{ minWidth: "50rem" }}
               size="small"
               scrollable
+              scrollHeight="flex"
             >
               <Column
                 headerClassName="text-sm font-semibold"
-                headerStyle={{ ...style, borderTopLeftRadius: "10px" }}
+                headerStyle={{ ...style }}
                 field="product.name"
                 body={nameBodyTemplate}
                 header="Nombre"
@@ -155,7 +160,7 @@ const MainView = () => {
               />
 
               <Column
-                headerStyle={{ ...style, borderTopRightRadius: "10px" }}
+                headerStyle={{ ...style }}
                 header="Acciones"
                 frozen={true}
                 alignFrozen="right"
@@ -199,7 +204,38 @@ const MainView = () => {
               />
             </DataTable>
           </div>
-          <div className="w-full h-[30%] bg-gray-100 dark:bg-gray-900 p-5"></div>
+          <div className="w-full h-[30%]  pt-10">
+            <div className="w-full h-full bg-gray-100 dark:bg-gray-900 p-5">
+              <div className="grid grid-cols-2">
+                <p className="text-lg font-semibold dark:text-white">
+                  Total: <span className="font-normal">$100</span>
+                </p>
+                <p className="text-lg font-semibold dark:text-white">
+                  Descuento: <span className="font-normal">$0</span>
+                </p>
+              </div>
+             <div className="flex items-end w-full mt-5">
+             <Select
+                variant="bordered"
+                size="lg"
+                className="mt-5 flex justify-center items-center dark:text-white"
+                label="Método de pago:"
+                labelPlacement="outside"
+                placeholder="Selecciona el método de pago"
+                classNames={{
+                  label: "text-lg whitespace-nowrap font-semibold",
+                }}
+              >
+                <SelectItem value="1" key={1} className="text-lg font-semibold">
+                  Efectivo
+                </SelectItem>
+              </Select>
+              <Button style={global_styles().thirdStyle} className="ml-5" isIconOnly size="lg">
+                <Send />
+              </Button>
+             </div>
+            </div>
+          </div>
         </div>
         <div className="w-full h-full overflow-y-auto p-4">
           <Input
@@ -328,10 +364,11 @@ const MainView = () => {
               tableStyle={{ minWidth: "50rem" }}
               size="small"
               scrollable
+              // scrollHeight="400px"
             >
               <Column
                 headerClassName="text-sm font-semibold"
-                headerStyle={{ ...style, borderTopLeftRadius: "10px" }}
+                headerStyle={{ ...style }}
                 field="product.name"
                 body={nameBodyTemplate}
                 header="Nombre"
@@ -350,7 +387,7 @@ const MainView = () => {
                 header="Categoría"
               />
               <Column
-                headerStyle={{ ...style, borderTopRightRadius: "10px" }}
+                headerStyle={{ ...style }}
                 header="Acciones"
                 frozen={true}
                 alignFrozen="right"
