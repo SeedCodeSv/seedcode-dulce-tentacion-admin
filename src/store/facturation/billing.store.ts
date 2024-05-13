@@ -3,11 +3,15 @@ import { IGlobalBillingStore } from "./types/global.types";
 import { cat_012_departamento } from "../../services/facturation/cat-012-departamento.service";
 import { cat_013_municipio } from "../../services/facturation/cat-013-municipio.service";
 import { cat_019_codigo_de_actividad_economica } from "../../services/facturation/cat-019-codigo-de-actividad-economica.service";
-
+import {get_ambiente_destino, get_metodos_de_pago, get_tipos_de_documento, get_tipos_de_tributo} from "../../services/DTE.service"
 export const useBillingStore = create<IGlobalBillingStore>((set) => ({
   cat_012_departamento: [],
   cat_013_municipios: [],
   cat_019_codigo_de_actividad_economica: [],
+  ambiente_destino: [],
+  metodos_de_pago: [],
+  tipos_de_documento: [],
+  tipos_tributo:[],
   getCat012Departamento: () => {
     cat_012_departamento()
       .then(({ data }) => {
@@ -40,5 +44,33 @@ export const useBillingStore = create<IGlobalBillingStore>((set) => ({
           cat_019_codigo_de_actividad_economica: [],
         }));
       });
+  },
+  OnGetTiposTributos() {
+    get_tipos_de_tributo().then(({ data }) => {
+      set((state) => ({ ...state, tipos_tributo: data.object }));
+    }).catch(() => {
+      set((state) => ({ ...state, tipos_tributo: [] }));
+    })
+  },
+  OnGetAmbienteDestino() {
+    get_ambiente_destino().then(({ data }) => {
+      set((state) => ({ ...state, ambiente_destino: data.object }));
+    }).catch(() => {
+      set((state) => ({ ...state, ambiente_destino: [] }));
+    })
+  },
+  OnGetFormasDePago() {
+    get_metodos_de_pago().then(({ data }) => {
+      set((state) => ({ ...state, metodos_de_pago: data.object }));
+    }).catch(() => {
+      set((state) => ({ ...state, metodos_de_pago: [] }));
+    })
+  },
+  OnGetTipoDeDocumento() {
+    get_tipos_de_documento().then(({ data }) => {
+      set((state) => ({ ...state, tipos_de_documento: data.objects }));
+    }).catch(() => {
+      set((state) => ({ ...state, tipos_de_standard: [] }));
+    })
   },
 }));

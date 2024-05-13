@@ -70,3 +70,12 @@ export const return_mh_token = async () => {
 export const delete_mh_token = async () => {
   return await localStorage.removeItem("mh_token")
 }
+export const save_branch = (id: string) => {
+   localStorage.setItem("branch", id)
+}
+export const get_branch = async () => {
+  return await localStorage.getItem("branch")
+}
+export const delete_branch = async () => {
+  localStorage.removeItem("branch")
+}

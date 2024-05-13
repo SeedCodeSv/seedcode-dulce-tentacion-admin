@@ -23,6 +23,7 @@
     "jwt-decode": "^4.0.0",
     "lucide": "^0.358.0",
     "lucide-react": "^0.358.0",
+    "moment-timezone": "^0.5.45",
     "primeflex": "^3.3.1",
     "primereact": "^10.6.3",
     "qs": "^6.12.1",
