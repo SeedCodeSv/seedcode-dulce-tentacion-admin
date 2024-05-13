@@ -94,5 +94,10 @@ export const useBranchProductStore = create<IBranchProductStore>((set, get) => (
         set(state => ({
             cart_products: state.cart_products.filter(cp => cp.id !== id)
         }))
+    },
+    onUpdateQuantity(id, quantity) {
+        set(state => ({
+            cart_products: state.cart_products.map(cp => cp.id === id ? { ...cp, quantity } : cp)
+        }))
     }
 }))
