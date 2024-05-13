@@ -12,4 +12,5 @@ export interface IBranchProductStore {
     onPlusQuantity: (id: number) => void
     onMinusQuantity: (id: number) => void
     onRemoveProduct: (id: number) => void
+    onUpdateQuantity: (id: number, quantity: number) => void
 }

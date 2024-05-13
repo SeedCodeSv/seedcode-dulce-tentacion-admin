@@ -13,6 +13,8 @@ import {
   Search,
   Table as ITable,
   Plus,
+  Minus,
+  Trash,
 } from "lucide-react";
 import { useContext, useEffect, useState } from "react";
 import { ThemeContext } from "../../hooks/useTheme";
@@ -20,7 +22,7 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { useBranchProductStore } from "../../store/branch_product.store";
 import { return_branch_id } from "../../storage/localStorage";
-import { BranchProduct } from "../../types/branch_products.types";
+import { BranchProduct, ICartProduct } from "../../types/branch_products.types";
 import Pagination from "../global/Pagination";
 import { limit_options } from "../../utils/constants";
 
@@ -36,6 +38,12 @@ const MainView = () => {
     branch_products,
     pagination_branch_products,
     getPaginatedBranchProducts,
+    cart_products,
+    onPlusQuantity,
+    onMinusQuantity,
+    onRemoveProduct,
+    addProductCart,
+    onUpdateQuantity,
   } = useBranchProductStore();
 
   useEffect(() => {
@@ -92,11 +100,105 @@ const MainView = () => {
     );
   };
 
+  const cellEditor = (product: ICartProduct) => {
+    return (
+      <div className="w-full">
+        <Input
+          variant="bordered"
+          color="primary"
+          className="w-32"
+          type="number"
+          defaultValue={product.quantity.toString()}
+          size="lg"
+          onChange={(e) => onUpdateQuantity(product.id, Number(e.target.value))}
+        />
+      </div>
+    );
+  };
+
   return (
     <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
       <div className="grid grid-cols-1 lg:grid-cols-2">
         <div className="w-full h-full overflow-y-auto p-4 flex flex-col">
-          <div className="w-full h-[70%]"></div>
+          <div className="w-full h-[70%]">
+            <DataTable
+              className="w-full shadow mt-5"
+              emptyMessage="No se encontraron resultados"
+              value={cart_products}
+              tableStyle={{ minWidth: "50rem" }}
+              size="small"
+              scrollable
+            >
+              <Column
+                headerClassName="text-sm font-semibold"
+                headerStyle={{ ...style, borderTopLeftRadius: "10px" }}
+                field="product.name"
+                body={nameBodyTemplate}
+                header="Nombre"
+              />
+              <Column
+                headerClassName="text-sm font-semibold"
+                headerStyle={style}
+                field="quantity"
+                header="Cantidad"
+                editor={(options) =>
+                  cellEditor(options.rowData as ICartProduct)
+                }
+              />
+
+              <Column
+                headerClassName="text-sm font-semibold"
+                headerStyle={style}
+                field="price"
+                body={priceBodyTemplate}
+                header="Precio"
+              />
+
+              <Column
+                headerStyle={{ ...style, borderTopRightRadius: "10px" }}
+                header="Acciones"
+                frozen={true}
+                alignFrozen="right"
+                body={(item) => (
+                  <div className="flex gap-2">
+                    <Button
+                      style={{
+                        backgroundColor: theme.colors.secondary,
+                      }}
+                      isIconOnly
+                      onClick={() => {
+                        onPlusQuantity(item.id);
+                      }}
+                    >
+                      <Plus size={18} className="text-white" />
+                    </Button>
+                    <Button
+                      style={{
+                        backgroundColor: theme.colors.warning,
+                      }}
+                      isIconOnly
+                      onClick={() => {
+                        onMinusQuantity(item.id);
+                      }}
+                    >
+                      <Minus size={18} className="text-white" />
+                    </Button>
+                    <Button
+                      style={{
+                        backgroundColor: theme.colors.danger,
+                      }}
+                      isIconOnly
+                      onClick={() => {
+                        onRemoveProduct(item.id);
+                      }}
+                    >
+                      <Trash size={18} className="text-white" />
+                    </Button>
+                  </div>
+                )}
+              />
+            </DataTable>
+          </div>
           <div className="w-full h-[30%] bg-gray-100 dark:bg-gray-900 p-5"></div>
         </div>
         <div className="w-full h-full overflow-y-auto p-4">
@@ -260,6 +362,9 @@ const MainView = () => {
                       }}
                       size="lg"
                       isIconOnly
+                      onClick={() => {
+                        addProductCart(item);
+                      }}
                     >
                       <Plus className="text-white" />
                     </Button>
