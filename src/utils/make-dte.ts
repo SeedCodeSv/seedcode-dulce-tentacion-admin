@@ -3,7 +3,7 @@ import { ITransmitter } from "../types/transmitter.types";
 import { IProductCart } from "../types/products.types";
 import { convertCurrencyFormat } from "./money";
 import { Customer } from "../types/customers.types";
-import { ResponseMHSuccess } from "../utils/DTE/contingencia.types";
+import { ResponseMHSuccess } from "../types/DTE/contingencia.types";
 import { ISendMHFiscal } from "../types/DTE/credito_fiscal.types";
 
 

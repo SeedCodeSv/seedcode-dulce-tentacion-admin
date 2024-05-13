@@ -1,5 +1,5 @@
 import { FiscalReceptor } from "../../types/DTE/credito_fiscal.types";
-import { ResponseMHSuccess } from "./contingencia.types";
+import { ResponseMHSuccess } from "../../types/DTE/contingencia.types";
 import { ISendMHFiscal } from "../../types/DTE/credito_fiscal.types";
 import { IFormasDePago } from "../../types/DTE/forma_de_pago.types";
 import { ITipoDocumento } from "../../types/DTE/tipo_documento.types";
