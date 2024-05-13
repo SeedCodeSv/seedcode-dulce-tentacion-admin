@@ -15,10 +15,11 @@ import { IBoxPayload } from "../../types/box.types";
 import { useContext, useEffect, useState } from "react";
 import { verify_box } from "../../services/Boxes.service";
 import { BoxIcon } from "lucide-react";
-import { post_box } from "../../storage/localStorage";
+import { post_box, save_branch_id } from "../../storage/localStorage";
 import ModalGlobal from "../global/ModalGlobal";
 import CloseBox from "./box/CloseBox";
 import { ThemeContext } from "../../hooks/useTheme";
+import Branch from "../../pages/Branch";
 interface Props {
   closeModal: () => void;
   branch?: Branches | undefined;
@@ -46,12 +47,14 @@ function AddBranch(props: Props) {
     }
     props.closeModal();
     props.setBranch(undefined);
+    save_branch_id(props.branch?.id.toString()!);
   };
   const [visible, setVisible] = useState(false);
   const [idBox, setIdBox] = useState(0);
   const handleActivate = () => {
     post_box(idBox.toString());
     props.closeModal();
+    save_branch_id(props.branch?.id.toString()!);
   };
   const handleCloseBoxId = () => {
     closeBox(idBox)
@@ -60,6 +63,7 @@ function AddBranch(props: Props) {
   }
   useEffect(() => {
     (async () => {
+     if(props.branch){
       verify_box(Number(props.branch?.id)).then(({ data }) => {
         if (data.box) {
           setVisible(true);
@@ -68,6 +72,7 @@ function AddBranch(props: Props) {
           setVisible(false);
         }
       });
+     }
     })();
   }, [props.branch]);
   const { isOpen, onOpen, onClose } = useDisclosure();
