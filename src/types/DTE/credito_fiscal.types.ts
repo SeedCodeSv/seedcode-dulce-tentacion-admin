@@ -23,7 +23,7 @@ export interface CuerpoDocumento {
   uniMedida: number | string;
   numeroDocumento?: any;
   cantidad: number | string;
-  codigo: string;
+  codigo: string | null;
   codTributo?: any;
   descripcion: string;
   precioUni: number | string;
@@ -41,7 +41,7 @@ export interface ICuerpoDocumento {
   tipoItem: number;
   numeroDocumento: null | string;
   cantidad: number;
-  codigo: string;
+  codigo: string | null;
   codTributo: null | string;
   uniMedida: number;
   descripcion: string;
@@ -64,7 +64,7 @@ export interface DteJson {
 export interface JSONSend {
   identificacion: Identificacion;
   documentoRelacionado: any;
-  transmitter: ITransmitter;
+  emisor: ITransmitter;
   receptor: Receptor;
   otrosDocumentos: any;
   ventaTercero: any;
@@ -106,7 +106,7 @@ export interface IResumen {
 export interface DteJson {
   identificacion: Identificacion;
   documentoRelacionado?: any;
-  transmitter: ITransmitter;
+  emisor: ITransmitter;
   receptor: Receptor;
   otrosDocumentos?: any;
   ventaTercero?: any;

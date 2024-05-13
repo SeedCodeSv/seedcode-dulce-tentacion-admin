@@ -5,6 +5,7 @@ import {
   Select,
   SelectItem,
   Tooltip,
+  useDisclosure,
 } from "@nextui-org/react";
 import {
   Barcode,
@@ -38,17 +39,13 @@ const MainView = () => {
   const [name, setName] = useState<string>("");
   const [code, setCode] = useState<string>("");
   const [limit, setLimit] = useState<number>(5);
+  const modalAdd = useDisclosure();
 
   const {
     branch_products,
     pagination_branch_products,
     getPaginatedBranchProducts,
-    cart_products,
-    onPlusQuantity,
-    onMinusQuantity,
-    onRemoveProduct,
     addProductCart,
-    onUpdateQuantity,
   } = useBranchProductStore();
 
   useEffect(() => {
@@ -128,6 +125,7 @@ const MainView = () => {
                   className="ml-5"
                   isIconOnly
                   size="lg"
+                  onClick={modalAdd.onOpen}
                 >
                   <Send />
                 </Button>
@@ -330,8 +328,8 @@ const MainView = () => {
         </div>
       </div>
       <ModalGlobal
-        isOpen={false}
-        onClose={() => {}}
+        isOpen={modalAdd.isOpen}
+        onClose={modalAdd.onClose}
         title="Nueva venta"
         size="w-full md:w-[500px] lg:w-[600px]"
       >

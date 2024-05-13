@@ -5,6 +5,7 @@ import { convertCurrencyFormat } from "./money";
 import { Customer } from "../types/customers.types";
 import { ResponseMHSuccess } from "../types/DTE/contingencia.types";
 import { ISendMHFiscal } from "../types/DTE/credito_fiscal.types";
+import { ICartProduct } from "../types/branch_products.types";
 
 
 export const generate_emisor = (transmitter: ITransmitter) => {
@@ -32,18 +33,18 @@ export const generate_emisor = (transmitter: ITransmitter) => {
 };
 
 export const make_cuerpo_documento = (
-  products_cart: IProductCart[]
+  products_cart: ICartProduct[]
 ): ICuerpoDocumento[] => {
   return products_cart.map((cp, index) => {
     return {
       numItem: index + 1,
       tipoItem: 1,
-      uniMedida: Number(cp.producto.unidadDeMedida),
+      uniMedida: Number(26),
       numeroDocumento: null,
       cantidad: cp.quantity,
-      codigo: cp.producto.codigo,
+      codigo: null,
       codTributo: null,
-      descripcion: cp.producto.nombre,
+      descripcion: cp.product.name,
       precioUni:
         Number(cp.price) < Number(cp.base_price)
           ? Number(cp.base_price)

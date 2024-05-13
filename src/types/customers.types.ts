@@ -26,7 +26,10 @@ export interface Customer {
   direccion: CustomerDirection | null;
   direccionId: number;
 }
-
+export interface IGetCustomers {
+  ok: boolean;
+  customers: Customer[];
+}
 export interface IGetCustomerPagination {
   ok: boolean;
   customers: Customer[];
