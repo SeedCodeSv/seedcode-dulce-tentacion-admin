@@ -3,8 +3,14 @@ import { IGlobalBillingStore } from "./types/global.types";
 import { cat_012_departamento } from "../../services/facturation/cat-012-departamento.service";
 import { cat_013_municipio } from "../../services/facturation/cat-013-municipio.service";
 import { cat_019_codigo_de_actividad_economica } from "../../services/facturation/cat-019-codigo-de-actividad-economica.service";
-import {get_ambiente_destino, get_metodos_de_pago, get_tipos_de_documento, get_tipos_de_tributo} from "../../services/DTE.service"
-export const useBillingStore = create<IGlobalBillingStore>((set) => ({
+import {firmarDocumentoFactura, get_ambiente_destino, get_metodos_de_pago, get_tipos_de_documento, get_tipos_de_tributo, send_to_mh} from "../../services/DTE.service"
+import { DTEToPDFFiscal, PayloadMH } from "../../types/DTE/credito_fiscal.types";
+import { toast } from "sonner";
+import { return_mh_token } from "../../storage/localStorage";
+import { make_to_pdf } from "../../utils/make-dte";
+import { SendMHFailed } from "../../types/transmitter.types";
+import { AxiosError } from "axios";
+export const useBillingStore = create<IGlobalBillingStore>((set, get) => ({
   cat_012_departamento: [],
   cat_013_municipios: [],
   cat_019_codigo_de_actividad_economica: [],
@@ -71,6 +77,66 @@ export const useBillingStore = create<IGlobalBillingStore>((set) => ({
       set((state) => ({ ...state, tipos_de_documento: data.objects }));
     }).catch(() => {
       set((state) => ({ ...state, tipos_de_standard: [] }));
+    })
+  },
+  OnSignInvoiceDocument(DTE, total) {
+    firmarDocumentoFactura(DTE)
+    .then(async (firmador) => {
+      const token_mh = await return_mh_token();
+
+      if (firmador.data.body) {
+        const data_send: PayloadMH = {
+          ambiente: "00",
+          idEnvio: 1,
+          version: 1,
+          tipoDte: "01",
+          documento: firmador.data.body,
+        };
+
+        toast.info("Se ah enviado a hacienda, esperando respuesta");
+        send_to_mh(data_send, token_mh!)
+          .then(async ({ data }) => {
+            const data_pdf: DTEToPDFFiscal = make_to_pdf(DTE, total, data);
+            toast.info("El DTE ah sido validado por hacienda");
+            // await saveFactura(data_pdf, DTE, data, firmador.data.body);
+          })
+          .catch((error: AxiosError<SendMHFailed>) => {
+            if (error.response?.status === 401) {
+              toast.error("No tienes los accesos necesarios");
+              // setLoadingSave(false);
+              return;
+            } else {
+              //////-----------------------
+              if (error.response?.data) {
+                // Alert.alert(
+                //   error.response?.data.descripcionMsg,
+                //   error.response.data.observaciones &&
+                //     error.response.data.observaciones.length > 0
+                //     ? error.response?.data.observaciones.join("\n\n")
+                //     : ""
+                // );
+                // toast.error(error.response?.data.descripcionMsg,
+                //   error.response.data.observaciones &&
+                //     error.response.data.observaciones.length > 0
+                //     ? error.response?.data.observaciones.join("\n\n")
+                //     : "")
+                // Dte_Error(
+                //   DTE,
+                //   error,
+                //   data_send,
+                //   error.response?.data,
+                //   error.response.data.observaciones.join("\n\n")
+                // );
+                return;
+              } else {
+               
+                return;
+              }
+            }
+          });
+      } else {
+       
+      }
     })
   },
 }));

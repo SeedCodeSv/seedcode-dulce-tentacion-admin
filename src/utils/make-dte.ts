@@ -79,7 +79,7 @@ export const make_to_pdf = (
   data: ResponseMHSuccess
 ) => {
   return {
-    emisor: DTE.dteJson.transmitter,
+    transmitter: DTE.dteJson.transmitter,
     receptor: DTE.dteJson.receptor,
     resumen: {
       ...DTE.dteJson.resumen,
