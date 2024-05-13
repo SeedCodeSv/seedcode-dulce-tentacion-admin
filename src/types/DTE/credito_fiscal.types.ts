@@ -1,4 +1,7 @@
 import { ITransmitter } from "../transmitter.types";
+import { Resumen } from "./factura.types";
+import { Pago } from "./sub_interface/payment.types";
+import { Receptor } from "./sub_interface/receiver.types";
 export interface Identificacion {
   version: number;
   codigoGeneracion: string;
@@ -12,24 +15,6 @@ export interface Identificacion {
   tipoMoneda: string;
   fecEmi: string;
   horEmi: string;
-}
-
-export interface Direccion {
-  departamento: string;
-  municipio: string;
-  complemento: string;
-}
-
-export interface Receptor {
-  nit: string;
-  nrc: string;
-  nombre: string;
-  codActividad: string;
-  descActividad: string;
-  nombreComercial: string;
-  direccion: Direccion;
-  telefono: string;
-  correo: string;
 }
 
 export interface CuerpoDocumento {
@@ -94,44 +79,6 @@ export interface Tributo {
   valor: number;
 }
 
-export interface Pago {
-  codigo: string;
-  montoPago: number;
-  referencia: string;
-  plazo?: any;
-  periodo?: any;
-}
-
-export interface Resumen {
-  totalNoSuj: number | string;
-  totalExenta: number | string;
-  totalGravada: number | string;
-  subTotalVentas: number | string;
-  descuNoSuj: number | string;
-  descuExenta: number | string;
-  descuGravada: number | string;
-  porcentajeDescuento: number | string;
-  totalDescu: number | string;
-  tributos:
-    | null
-    | {
-        codigo: string;
-        descripcion: string;
-        valor: number;
-      }[];
-  subTotal: number | string;
-  ivaRete1: number | string;
-  reteRenta: number | string;
-  montoTotalOperacion: number | string;
-  totalNoGravado: number | string;
-  totalPagar: number | string;
-  totalLetras: string;
-  totalIva: number | string;
-  saldoFavor: number | string;
-  condicionOperacion: number;
-  pagos: Pago[];
-  numPagoElectronico: string | null;
-}
 export interface IResumen {
   totalNoSuj: number | string;
   totalExenta: number | string;
@@ -190,7 +137,7 @@ export interface DTEToPDFFiscal {
   observaciones: string[];
   transmitter: ITransmitter;
   receptor: Receptor;
-  resumen: Resumen;
+  resumen: IResumen;
   numeroControl: string;
   cuerpoDocumento: CuerpoDocumento[];
 }
