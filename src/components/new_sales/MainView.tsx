@@ -1,4 +1,11 @@
-import { Button, ButtonGroup, Input, Tooltip } from "@nextui-org/react";
+import {
+  Button,
+  ButtonGroup,
+  Input,
+  Select,
+  SelectItem,
+  Tooltip,
+} from "@nextui-org/react";
 import {
   Barcode,
   CreditCard,
@@ -14,6 +21,8 @@ import { Column } from "primereact/column";
 import { useBranchProductStore } from "../../store/branch_product.store";
 import { return_branch_id } from "../../storage/localStorage";
 import { BranchProduct } from "../../types/branch_products.types";
+import Pagination from "../global/Pagination";
+import { limit_options } from "../../utils/constants";
 
 const MainView = () => {
   const { theme } = useContext(ThemeContext);
@@ -21,6 +30,7 @@ const MainView = () => {
 
   const [name, setName] = useState<string>("");
   const [code, setCode] = useState<string>("");
+  const [limit, setLimit] = useState<number>(5);
 
   const {
     branch_products,
@@ -29,8 +39,14 @@ const MainView = () => {
   } = useBranchProductStore();
 
   useEffect(() => {
-    getPaginatedBranchProducts(Number(return_branch_id()), 1, 5, name, code);
-  }, [name, code]);
+    getPaginatedBranchProducts(
+      Number(return_branch_id()),
+      1,
+      limit,
+      code,
+      name
+    );
+  }, [limit]);
 
   const style = {
     backgroundColor: theme.colors.dark,
@@ -66,11 +82,24 @@ const MainView = () => {
     );
   };
 
+  const handleSearch = () => {
+    getPaginatedBranchProducts(
+      Number(return_branch_id()),
+      1,
+      limit,
+      name,
+      code
+    );
+  };
+
   return (
     <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
       <div className="grid grid-cols-1 lg:grid-cols-2">
-        <div>1</div>
-        <div>
+        <div className="w-full h-full overflow-y-auto p-4 flex flex-col">
+          <div className="w-full h-[70%]"></div>
+          <div className="w-full h-[30%] bg-gray-100 dark:bg-gray-900 p-5"></div>
+        </div>
+        <div className="w-full h-full overflow-y-auto p-4">
           <Input
             variant="bordered"
             placeholder="Escribe para buscar..."
@@ -81,10 +110,12 @@ const MainView = () => {
               label: "text-sm font-semibold",
               inputWrapper: "pr-0",
             }}
+            onChange={(e) => setName(e.target.value)}
             size="lg"
             startContent={<Search size={20} />}
             endContent={
               <Button
+                onClick={handleSearch}
                 size="lg"
                 style={{
                   backgroundColor: theme.colors.secondary,
@@ -107,8 +138,10 @@ const MainView = () => {
             }}
             size="lg"
             startContent={<Barcode size={20} />}
+            onChange={(e) => setCode(e.target.value)}
             endContent={
               <Button
+                onClick={handleSearch}
                 size="lg"
                 style={{
                   backgroundColor: theme.colors.secondary,
@@ -119,7 +152,7 @@ const MainView = () => {
               </Button>
             }
           />
-          <div className="w-full mt-5 flex justify-end">
+          <div className="w-full mt-5 flex justify-between">
             <ButtonGroup>
               <Button
                 size="lg"
@@ -161,16 +194,38 @@ const MainView = () => {
                 <List />
               </Button>
             </ButtonGroup>
+            <Select
+              className="w-44 dark:text-white"
+              variant="bordered"
+              size="lg"
+              label="Mostrar"
+              labelPlacement="outside"
+              classNames={{
+                label: "font-semibold",
+              }}
+              value={limit}
+              onChange={(e) => {
+                setLimit(Number(e.target.value !== "" ? e.target.value : "5"));
+              }}
+            >
+              {limit_options.map((option) => (
+                <SelectItem key={option} value={option}>
+                  {option}
+                </SelectItem>
+              ))}
+            </Select>
           </div>
-          <div className="w-full mt-5 p-5 bg-gray-100 dark:bg-gray-900 h-full overflow-y-auto rounded">
+          <div className="w-full mt-5 p-5 bg-gray-100 dark:bg-gray-900 overflow-y-auto rounded">
             <h1 className="text-lg font-semibold dark:text-white">
               Lista de productos
             </h1>
             <DataTable
-              className="w-full shadow"
+              className="w-full shadow mt-5"
               emptyMessage="No se encontraron resultados"
               value={branch_products}
               tableStyle={{ minWidth: "50rem" }}
+              size="small"
+              scrollable
             >
               <Column
                 headerClassName="text-sm font-semibold"
@@ -195,6 +250,8 @@ const MainView = () => {
               <Column
                 headerStyle={{ ...style, borderTopRightRadius: "10px" }}
                 header="Acciones"
+                frozen={true}
+                alignFrozen="right"
                 body={(item) => (
                   <div className="flex gap-6">
                     <Button
@@ -210,6 +267,25 @@ const MainView = () => {
                 )}
               />
             </DataTable>
+            {pagination_branch_products.totalPag > 1 && (
+              <div className="w-full mt-5">
+                <Pagination
+                  totalPages={pagination_branch_products.totalPag}
+                  currentPage={pagination_branch_products.currentPag}
+                  previousPage={pagination_branch_products.prevPag}
+                  nextPage={pagination_branch_products.nextPag}
+                  onPageChange={(page) => {
+                    getPaginatedBranchProducts(
+                      Number(return_branch_id()),
+                      page,
+                      limit,
+                      name,
+                      code
+                    );
+                  }}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>

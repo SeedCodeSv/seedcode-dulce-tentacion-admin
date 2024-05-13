@@ -46,3 +46,7 @@ export interface IGetBranchProductPaginated {
 	prevPag: number;
 	status: number;
 }
+
+export interface ICartProduct extends BranchProduct {
+    quantity: number;
+}
