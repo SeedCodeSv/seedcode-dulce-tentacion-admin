@@ -1,5 +1,9 @@
 import { Color, Theme } from "../hooks/useTheme";
 
+export const is_admin = (rol: string) => {
+  const patron = /administrador/i;
+  return !patron.test(rol);
+};
 export const normalize = (text: string) =>
   text
     .normalize("NFD")
