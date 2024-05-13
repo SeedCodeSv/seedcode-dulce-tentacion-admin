@@ -19,7 +19,6 @@ import { post_box, save_branch_id } from "../../storage/localStorage";
 import ModalGlobal from "../global/ModalGlobal";
 import CloseBox from "./box/CloseBox";
 import { ThemeContext } from "../../hooks/useTheme";
-import Branch from "../../pages/Branch";
 interface Props {
   closeModal: () => void;
   branch?: Branches | undefined;

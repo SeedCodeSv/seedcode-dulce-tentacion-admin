@@ -27,6 +27,9 @@ import { BranchProduct, ICartProduct } from "../../types/branch_products.types";
 import Pagination from "../global/Pagination";
 import { limit_options } from "../../utils/constants";
 import { global_styles } from "../../styles/global.styles";
+import CartProducts from "./CartProducts";
+import ModalGlobal from "../global/ModalGlobal";
+import FormMakeSale from "./FormMakeSale";
 
 const MainView = () => {
   const { theme } = useContext(ThemeContext);
@@ -102,111 +105,16 @@ const MainView = () => {
     );
   };
 
-  const cellEditor = (product: ICartProduct) => {
-    const product_finded = cart_products.find((p) => p.id === product.id);
-
-    return (
-      <div className="w-full">
-        <Input
-          variant="bordered"
-          color="primary"
-          className="w-32"
-          type="number"
-          defaultValue={product_finded?.quantity.toString()}
-          size="lg"
-          onChange={(e) => onUpdateQuantity(product.id, Number(e.target.value))}
-        />
-      </div>
-    );
-  };
-
   return (
     <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
       <div className="w-full h-full grid grid-cols-1 lg:grid-cols-2">
         <div className="w-full h-full overflow-y-auto p-4 flex flex-col">
-          <div className="w-full h-[70%] pb-5">
-            <DataTable
-              className="w-full shadow mt-5"
-              emptyMessage="No se encontraron resultados"
-              value={cart_products}
-              tableStyle={{ minWidth: "50rem" }}
-              size="small"
-              scrollable
-              scrollHeight="flex"
-            >
-              <Column
-                headerClassName="text-sm font-semibold"
-                headerStyle={{ ...style }}
-                field="product.name"
-                body={nameBodyTemplate}
-                header="Nombre"
-              />
-              <Column
-                headerClassName="text-sm font-semibold"
-                headerStyle={style}
-                field="quantity"
-                header="Cantidad"
-                editor={(options) =>
-                  cellEditor(options.rowData as ICartProduct)
-                }
-              />
-
-              <Column
-                headerClassName="text-sm font-semibold"
-                headerStyle={style}
-                field="price"
-                body={priceBodyTemplate}
-                header="Precio"
-              />
-
-              <Column
-                headerStyle={{ ...style }}
-                header="Acciones"
-                frozen={true}
-                alignFrozen="right"
-                body={(item) => (
-                  <div className="flex gap-2">
-                    <Button
-                      style={{
-                        backgroundColor: theme.colors.secondary,
-                      }}
-                      isIconOnly
-                      onClick={() => {
-                        onPlusQuantity(item.id);
-                      }}
-                    >
-                      <Plus size={18} className="text-white" />
-                    </Button>
-                    <Button
-                      style={{
-                        backgroundColor: theme.colors.warning,
-                      }}
-                      isIconOnly
-                      onClick={() => {
-                        onMinusQuantity(item.id);
-                      }}
-                    >
-                      <Minus size={18} className="text-white" />
-                    </Button>
-                    <Button
-                      style={{
-                        backgroundColor: theme.colors.danger,
-                      }}
-                      isIconOnly
-                      onClick={() => {
-                        onRemoveProduct(item.id);
-                      }}
-                    >
-                      <Trash size={18} className="text-white" />
-                    </Button>
-                  </div>
-                )}
-              />
-            </DataTable>
+          <div className="w-full h-[75%] pb-5">
+            <CartProducts />
           </div>
-          <div className="w-full h-[30%]  pt-10">
-            <div className="w-full h-full bg-gray-100 dark:bg-gray-900 p-5">
-              <div className="grid grid-cols-2">
+          <div className="w-full h-[25%]  pt-10">
+            <div className="w-full h-full flex flex-col justify-center items-center bg-gray-100 dark:bg-gray-900 p-5">
+              <div className="grid grid-cols-2 w-full">
                 <p className="text-lg font-semibold dark:text-white">
                   Total: <span className="font-normal">$100</span>
                 </p>
@@ -214,26 +122,16 @@ const MainView = () => {
                   Descuento: <span className="font-normal">$0</span>
                 </p>
               </div>
-             <div className="flex items-end w-full mt-5">
-             <Select
-                variant="bordered"
-                size="lg"
-                className="mt-5 flex justify-center items-center dark:text-white"
-                label="Método de pago:"
-                labelPlacement="outside"
-                placeholder="Selecciona el método de pago"
-                classNames={{
-                  label: "text-lg whitespace-nowrap font-semibold",
-                }}
-              >
-                <SelectItem value="1" key={1} className="text-lg font-semibold">
-                  Efectivo
-                </SelectItem>
-              </Select>
-              <Button style={global_styles().thirdStyle} className="ml-5" isIconOnly size="lg">
-                <Send />
-              </Button>
-             </div>
+              <div className="flex items-end justify-end w-full mt-5">
+                <Button
+                  style={global_styles().thirdStyle}
+                  className="ml-5"
+                  isIconOnly
+                  size="lg"
+                >
+                  <Send />
+                </Button>
+              </div>
             </div>
           </div>
         </div>
@@ -431,6 +329,14 @@ const MainView = () => {
           </div>
         </div>
       </div>
+      <ModalGlobal
+        isOpen={false}
+        onClose={() => {}}
+        title="Nueva venta"
+        size="w-full md:w-[500px] lg:w-[600px]"
+      >
+        <FormMakeSale />
+      </ModalGlobal>
     </div>
   );
 };

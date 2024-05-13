@@ -65,14 +65,14 @@ export const useBillingStore = create<IGlobalBillingStore>((set, get) => ({
       set((state) => ({ ...state, ambiente_destino: [] }));
     })
   },
-  OnGetFormasDePago() {
+  getCat017FormasDePago() {
     get_metodos_de_pago().then(({ data }) => {
       set((state) => ({ ...state, metodos_de_pago: data.object }));
     }).catch(() => {
       set((state) => ({ ...state, metodos_de_pago: [] }));
     })
   },
-  OnGetTipoDeDocumento() {
+  getCat02TipoDeDocumento() {
     get_tipos_de_documento().then(({ data }) => {
       set((state) => ({ ...state, tipos_de_documento: data.objects }));
     }).catch(() => {

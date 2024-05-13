@@ -21,8 +21,8 @@ export interface IGlobalBillingStore {
   tipos_tributo: TipoTributo[]
 
   OnGetTiposTributos: ()=> void
-  OnGetTipoDeDocumento: ()=> void
-  OnGetFormasDePago: ()=>void
+  getCat02TipoDeDocumento: ()=> void
+  getCat017FormasDePago: ()=>void
   OnGetAmbienteDestino: () => void;
   OnSignInvoiceDocument: (DTE: DteJson, total: number) => void;
 }
