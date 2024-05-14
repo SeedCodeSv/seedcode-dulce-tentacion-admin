@@ -28,7 +28,7 @@ export interface ICreacteConfiguaration {
 }
 
 export interface GetByTransmitter {
+  personalization: IConfiguration[];
   ok: boolean;
   messages: string;
-  personalization: IConfiguration
 }

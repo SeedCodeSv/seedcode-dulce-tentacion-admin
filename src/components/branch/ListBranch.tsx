@@ -43,11 +43,8 @@ import classNames from "classnames";
 function ListBranch() {
   const { theme, context } = useContext(ThemeContext);
 
-  const {
-    getBranchesPaginated,
-    branches_paginated,
-    disableBranch,
-  } = useBranchesStore();
+  const { getBranchesPaginated, branches_paginated, disableBranch } =
+    useBranchesStore();
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -157,7 +154,7 @@ function ListBranch() {
   const handleBox = (item: Branches) => {
     setBranch(item);
     modalBoxBranch.onOpen();
-  }
+  };
   const handleBranchProduct = (id: number) => {
     setBranchId(id);
     modalBranchProduct.onOpen();
@@ -256,7 +253,12 @@ function ListBranch() {
                       className="fixed inset-0 bg-black/40 z-[60]"
                       onClick={() => setOpenVaul(false)}
                     />
-                    <Drawer.Content className={classNames("bg-gray-100 z-[60] flex flex-col rounded-t-[10px] h-auto mt-24 max-h-[80%] fixed bottom-0 left-0 right-0", context === "dark" ? "dark" : "")}>
+                    <Drawer.Content
+                      className={classNames(
+                        "bg-gray-100 z-[60] flex flex-col rounded-t-[10px] h-auto mt-24 max-h-[80%] fixed bottom-0 left-0 right-0",
+                        context === "dark" ? "dark" : ""
+                      )}
+                    >
                       <div className="p-4 bg-white dark:bg-gray-800 rounded-t-[10px] flex-1">
                         <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-gray-300 dark:bg-gray-400 mb-8" />
                         <Drawer.Title className="mb-4 dark:text-white font-medium">
@@ -436,7 +438,8 @@ function ListBranch() {
           modalBranchProduct.onClose();
         }}
         title={"Productos de la sucursal"}
-        size="auto"
+        size="w-full h-auto"
+        isFull
       >
         <ListBranchProduct id={BranchId} />
       </ModalGlobal>
