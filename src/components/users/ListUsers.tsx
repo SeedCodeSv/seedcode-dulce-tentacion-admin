@@ -297,7 +297,6 @@ function ListUsers() {
           onClose={modalChangePassword.onClose}
           title="Actualizar contraseña"
           size="w-full sm:w-[500px]"
-
         >
           <UpdatePassword
             id={selectId}
@@ -309,7 +308,6 @@ function ListUsers() {
           onClose={modalUpdate.onClose}
           title="Editar usuario"
           size="w-full sm:w-[500px]"
-
         >
           <UpdateUsers onClose={modalUpdate.onClose} user={user} />
         </ModalGlobal>
