@@ -91,7 +91,7 @@ function CreateConfiguration() {
         <div className="mt-2">
           <label htmlFor="fileInput">
             <Button
-              color="danger"
+              color="default"
               className="text-white font-semibold px-5"
               onClick={handleButtonClick}
             >
@@ -123,7 +123,8 @@ function CreateConfiguration() {
         </div>
         <Button
           size="lg"
-          className="bg-gradient-to-tr md:w-40 from-[#39c8c2] to-[#168b8a] text-bold text-white shadow-lg"
+          color="primary"
+          className="bg-gradient-to-tr md:w-40 text-bold text-white shadow-lg"
           onClick={() => {
             handleSave(formData);
           }}
