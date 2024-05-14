@@ -194,7 +194,7 @@ export const generate_receptor = (value: Customer, type_document: string) => {
       value!.numDocumento === "0" || value.numDocumento === "N/A"
         ? null
         : value!.numDocumento,
-    nrc: null,
+    nrc: Number(value!.nrc) === 0 ? null : value!.nrc,
     nombre: value!.nombre,
     codActividad:
       Number(value!.codActividad) === 0 ? null : value!.codActividad,

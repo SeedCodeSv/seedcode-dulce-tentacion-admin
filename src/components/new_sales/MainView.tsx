@@ -18,7 +18,7 @@ import {
   Trash,
   Send,
 } from "lucide-react";
-import { EventHandler, useContext, useEffect, useState } from "react";
+import { EventHandler, useContext, useEffect, useMemo, useState } from "react";
 import { ThemeContext } from "../../hooks/useTheme";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
@@ -34,6 +34,7 @@ import FormMakeSale from "./FormMakeSale";
 // import CreditoFiscal from "./CreditoFiscal";
 import useEventListener from "../../hooks/useEventListeners";
 import { useAuthStore } from "../../store/auth.store";
+import { toast } from "sonner";
 
 const MainView = () => {
   const { theme } = useContext(ThemeContext);
@@ -50,6 +51,7 @@ const MainView = () => {
     getPaginatedBranchProducts,
     addProductCart,
     getProductByCode,
+    cart_products,
   } = useBranchProductStore();
 
   useEffect(() => {
@@ -114,7 +116,8 @@ const MainView = () => {
   const handler = (evt: KeyboardEvent) => {
     if (interval) clearInterval(interval);
     if (evt.code === "Enter") {
-      if (barcode) getProductByCode(user?.employee.branch.transmitterId ?? 0, barcode);
+      if (barcode)
+        getProductByCode(user?.employee.branch.transmitterId ?? 0, barcode);
       barcode = "";
       return;
     }
@@ -123,6 +126,13 @@ const MainView = () => {
   };
 
   useEventListener("keydown", handler as any);
+
+  const total = useMemo(() => {
+    const total = cart_products.reduce((acc, product) => {
+      return acc + Number(product.price) * product.quantity;
+    }, 0);
+    return formatCurrency(total);
+  }, [cart_products]);
 
   return (
     <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
@@ -135,7 +145,7 @@ const MainView = () => {
             <div className="w-full h-full flex flex-col justify-center items-center bg-gray-100 dark:bg-gray-900 p-5">
               <div className="grid grid-cols-2 w-full">
                 <p className="text-lg font-semibold dark:text-white">
-                  Total: <span className="font-normal">$100</span>
+                  Total: <span className="font-normal">{total}</span>
                 </p>
                 <p className="text-lg font-semibold dark:text-white">
                   Descuento: <span className="font-normal">$0</span>
@@ -147,7 +157,11 @@ const MainView = () => {
                   className="ml-5"
                   isIconOnly
                   size="lg"
-                  onClick={modalAdd.onOpen}
+                  onClick={() => {
+                    cart_products.length > 0
+                      ? modalAdd.onOpen()
+                      : toast.error("No tienes productos agregados");
+                  }}
                 >
                   <Send />
                 </Button>

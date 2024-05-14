@@ -1,7 +1,6 @@
 import { IFormasDePago } from "../../types/DTE/forma_de_pago.types";
 import { ITipoDocumento } from "../../types/DTE/tipo_documento.types";
 import { Customer } from "../../types/customers.types";
-import { IProductCart } from "../../types/products.types";
 import { ITransmitter } from "../../types/transmitter.types";
 import { getElSalvadorDateTime } from "../dates";
 import { generate_control } from "../dte";
@@ -113,9 +112,11 @@ const calDiscount = (productsCarts: ICartProduct[]) => {
     return productsCarts.map((prd) => prd.discount).reduce((a, b) => a + b, 0);
   };
 const total = (productsCarts: ICartProduct[]) => {
-    return productsCarts
+    const total = productsCarts
       .map((cp) => Number(cp.quantity) * Number(cp.price))
       .reduce((a, b) => a + b, 0);
+
+      return total;
   };
 
   const total_iva = (productsCarts: ICartProduct[]) => {
