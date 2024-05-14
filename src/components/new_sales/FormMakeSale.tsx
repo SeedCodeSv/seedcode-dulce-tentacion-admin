@@ -28,13 +28,15 @@ import { ambiente, API_URL } from "../../utils/constants";
 import axios, { AxiosError } from "axios";
 import { SendMHFailed } from "../../types/transmitter.types";
 import { Invoice } from "../../pages/Invoice";
-
+import { TipoTributo } from "../../types/DTE/tipo_tributo.types";
+import CreditoFiscal from "./CreditoFiscal";
 function FormMakeSale() {
   const [Customer, setCustomer] = useState<Customer>();
   const { cart_products } = useBranchProductStore();
   const [tipeDocument, setTipeDocument] = useState<ITipoDocumento>();
   const [tipePayment, setTipePayment] = useState<IFormasDePago>();
-
+  const [tipeTribute, setTipeTribute] = useState<TipoTributo>();
+  
   const [currentDTE, setCurrentDTE] = useState<DteJson>();
 
   const {
@@ -42,6 +44,8 @@ function FormMakeSale() {
     getCat017FormasDePago,
     getCat02TipoDeDocumento,
     tipos_de_documento,
+    OnGetTiposTributos,
+    tipos_tributo,
   } = useBillingStore();
   const { gettransmitter, transmitter } = useTransmitterStore();
   const { getCustomersList, customer_list } = useCustomerStore();
@@ -51,6 +55,7 @@ function FormMakeSale() {
     getCat02TipoDeDocumento();
     getCustomersList();
     gettransmitter();
+    OnGetTiposTributos();
   }, []);
 
   const modalError = useDisclosure();
@@ -59,7 +64,7 @@ function FormMakeSale() {
   const [loading, setLoading] = useState(false);
 
   const { getCorrelativesByDte } = useCorrelativesDteStore();
-
+  console.log(tipeDocument);
   const generateFactura = async () => {
     // setLoading(true); // Mostrar mensaje de espera
     if (!tipePayment) {
@@ -287,7 +292,13 @@ function FormMakeSale() {
         });
     }
   };
-
+  const props = {
+    Customer: Customer,
+    tipePayment: tipePayment,
+    tipeDocument: tipeDocument,
+    tipeTribute: tipeTribute
+    // closeModal: 
+  }
   return (
     <div>
       <Autocomplete
@@ -353,22 +364,50 @@ function FormMakeSale() {
           </AutocompleteItem>
         ))}
       </Autocomplete>
-      <div className="flex justify-center mt-4 mb-4 w-full">
-        <div className="w-full flex  justify-center">
-          {loading ? (
-            <LoaderCircle size={50} className=" animate-spin " />
-          ) : (
-            <Button
-              style={global_styles().secondaryStyle}
-              className="w-full"
-              size="lg"
-              onClick={generateFactura}
-            >
-              Generar Factura
-            </Button>
-          )}
+      {tipeDocument?.codigo === "03" && (
+        <Autocomplete
+          onSelectionChange={(key) => {
+            if (key) {
+              const tipeTributeSelected = JSON.parse(
+                key as string
+              ) as TipoTributo;
+              setTipeTribute(tipeTributeSelected);
+            }
+          }}
+          className="pt-5"
+          variant="bordered"
+          label="Tipo de tributo"
+          labelPlacement="outside"
+          placeholder="Selecciona el tipo de tributo"
+          size="lg"
+        >
+          {tipos_tributo.map((item) => (
+            <AutocompleteItem key={JSON.stringify(item)} value={item.codigo}>
+              {item.valores}
+            </AutocompleteItem>
+          ))}
+        </Autocomplete>
+      )}
+      {tipeDocument?.codigo === "01" ? (
+        <div className="flex justify-center mt-4 mb-4 w-full">
+          <div className="w-full flex  justify-center">
+            {loading ? (
+              <LoaderCircle size={50} className=" animate-spin " />
+            ) : (
+              <Button
+                style={global_styles().secondaryStyle}
+                className="w-full"
+                size="lg"
+                onClick={generateFactura}
+              >
+                Generar Factura
+              </Button>
+            )}
+          </div>
         </div>
-      </div>
+      ) : (
+        <CreditoFiscal {...props}/>
+      )}
       <ModalGlobal
         title={title}
         size="w-full md:w-[600px]"
