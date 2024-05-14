@@ -1,4 +1,5 @@
 export interface CreditoCuerpoDocumento {
+    id?: number;
     numItem: number;
     tipoItem: number;
     uniMedida: number;
@@ -12,8 +13,9 @@ export interface CreditoCuerpoDocumento {
     ventaNoSuj: number ;
     ventaExenta: number ;
     ventaGravada: number 
-    tributos: string[] | null;
+    tributoId: string;
     psv: number ;
     noGravado: number 
-    ivaItem: number 
+    ivaItem: number
+    ventaId: number
 }

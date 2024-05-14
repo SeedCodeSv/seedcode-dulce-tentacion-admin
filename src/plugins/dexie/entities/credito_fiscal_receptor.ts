@@ -1,13 +1,15 @@
 export interface CreditoReceptor {
-    tipoDocumento: null | string;
-    numDocumento: null | string;
+    id: string
+    tipoDocumento: string;
+    numDocumento: string;
     nit: string;
     nrc: string;
     nombre: string;
     codActividad: string;
     descActividad: string;
     nombreComercial: string;
-    // direccion: Direccion;
+    addressId: string
     telefono: string;
     correo: string;
+    ventaId: number
 }

@@ -1,4 +1,5 @@
 export interface CreditoResumen {
+    id?: number
     totalNoSuj: number | string;
     totalExenta: number | string;
     totalGravada: number | string;
@@ -8,7 +9,7 @@ export interface CreditoResumen {
     descuGravada: number | string;
     porcentajeDescuento: number | string;
     totalDescu: number | string;
-    // tributos: Tributo[];
+    tributos: string;
     subTotal: number | string;
     ivaRete1: number | string;
     reteRenta: number | string;
@@ -19,7 +20,8 @@ export interface CreditoResumen {
     totalLetras: string;
     saldoFavor: number | string;
     condicionOperacion: number;
-    // pagos: Pago[];
+    pagosId: string;
     numPagoElectronico: any;
     totalIva: number | string;
+    ventaId: number
 }
