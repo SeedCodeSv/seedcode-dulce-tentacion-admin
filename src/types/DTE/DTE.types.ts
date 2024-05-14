@@ -81,7 +81,8 @@ export interface Receptor {
   direccion: Direccion;
   telefono: null | string;
   correo: string;
-  bienTitulo?: string | null
+  bienTitulo?: string | null,
+  nombreComercial: string
 }
 
 export interface FiscalReceptor {

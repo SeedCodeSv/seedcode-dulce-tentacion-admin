@@ -14,7 +14,7 @@ import {
 } from "../make-dte";
 import { convertCurrencyFormat } from "../money";
 import {ambiente} from "../constants"
-import { useBranchProductStore } from "../../store/branch_product.store";
+
 export const make_to_pdf_fiscal = (
   DTE: ISendMHFiscal,
   total: number,
@@ -78,15 +78,15 @@ export const make_cuerpo_documento_pdf_fiscal = (DTE: ISendMHFiscal) => {
     };
   });
 };
-const { cart_products } = useBranchProductStore();
 
-const total = () => {
+
+const total = (cart_products:IProductCart[]) => {
   return cart_products
     .map((cp) => Number(cp.quantity) * Number(cp.price))
     .reduce((a, b) => a + b, 0);
 };
 
-const total_iva = () => {
+const total_iva = (cart_products:IProductCart[]) => {
   return cart_products
     .map((cp) => {
       const total = Number(cp.price) * Number(cp.quantity);
@@ -142,8 +142,8 @@ export const generate_credito_fiscal = (
       resumen: {
         totalNoSuj: 0,
         totalExenta: 0,
-        totalGravada: Number(total().toFixed(2)),
-        subTotalVentas: Number(total().toFixed(2)),
+        totalGravada: Number(total(products_carts).toFixed(2)),
+        subTotalVentas: Number(total(products_carts).toFixed(2)),
         descuNoSuj: 0,
         descuExenta: 0,
         descuGravada: 0,
@@ -153,23 +153,23 @@ export const generate_credito_fiscal = (
           {
             codigo: tributo!.codigo,
             descripcion: tributo!.valores,
-            valor: Number(total_iva().toFixed(2)),
+            valor: Number(total_iva(products_carts).toFixed(2)),
           },
         ],
-        subTotal: Number(total().toFixed(2)),
+        subTotal: Number(total(products_carts).toFixed(2)),
         ivaRete1: 0,
         reteRenta: 0,
         ivaPerci1: 0,
-        montoTotalOperacion: Number((total() + total_iva()).toFixed(2)),
+        montoTotalOperacion: Number((total(products_carts) + total_iva(products_carts)).toFixed(2)),
         totalNoGravado: 0,
-        totalPagar: Number((total() + total_iva()).toFixed(2)),
-        totalLetras: convertCurrencyFormat((total() + total_iva()).toFixed(2)),
+        totalPagar: Number((total(products_carts) + total_iva(products_carts)).toFixed(2)),
+        totalLetras: convertCurrencyFormat((total(products_carts) + total_iva(products_carts)).toFixed(2)),
         saldoFavor: 0,
         condicionOperacion: 1,
         pagos: [
           {
             codigo: tipo_pago.codigo,
-            montoPago: Number((total() + total_iva()).toFixed(2)),
+            montoPago: Number((total(products_carts) + total_iva(products_carts)).toFixed(2)),
             referencia: "",
             plazo: null,
             periodo: null,

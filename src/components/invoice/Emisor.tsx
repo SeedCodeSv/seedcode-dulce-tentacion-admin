@@ -1,6 +1,11 @@
 import { View, Text } from "@react-pdf/renderer";
+import { DteJson } from "../../types/DTE/DTE.types";
 
-export default function Emisor() {
+interface Props {
+  DTE: DteJson;
+}
+
+export default function Emisor(props: Props) {
   return (
     <View style={{ width: "50%", display: "flex", height: "auto" }}>
       <Text
@@ -33,7 +38,7 @@ export default function Emisor() {
             Nombre o razón social:
           </Text>
           <Text style={{ margin: 0, padding: 0, fontSize: 7, width: "65%" }}>
-            HERNANDEZ MARQUEZ, JOSE MANUEL
+            {props.DTE.dteJson.emisor.nombre}
           </Text>
         </View>
         <View
@@ -56,7 +61,7 @@ export default function Emisor() {
             NIT:
           </Text>
           <Text style={{ margin: 0, padding: 0, fontSize: 7, width: "65%" }}>
-            03160902981010
+            {props.DTE.dteJson.emisor.nit}
           </Text>
         </View>
         <View
@@ -79,7 +84,7 @@ export default function Emisor() {
             NRC:
           </Text>
           <Text style={{ margin: 0, padding: 0, fontSize: 7, width: "65%" }}>
-            3165298
+            {props.DTE.dteJson.emisor.nrc}
           </Text>
         </View>
         <View
@@ -102,8 +107,7 @@ export default function Emisor() {
             Actividad económica:
           </Text>
           <Text style={{ margin: 0, padding: 0, fontSize: 7, width: "65%" }}>
-            Otras actividades de tegnologia de informacion y servicios de
-            computadora
+            {props.DTE.dteJson.emisor.descActividad}
           </Text>
         </View>
         <View
@@ -126,7 +130,9 @@ export default function Emisor() {
             Dirección:
           </Text>
           <Text style={{ margin: 0, padding: 0, fontSize: 7, width: "65%" }}>
-            Avenida santa lucia Block K casa #5 , 16 , 03
+            {props.DTE.dteJson.emisor.direccion.departamento},{" "}
+            {props.DTE.dteJson.emisor.direccion.municipio},{" "}
+            {props.DTE.dteJson.emisor.direccion.complemento}
           </Text>
         </View>
         <View
@@ -149,7 +155,7 @@ export default function Emisor() {
             Número de teléfono:
           </Text>
           <Text style={{ margin: 0, padding: 0, fontSize: 7, width: "65%" }}>
-            70245680
+            {props.DTE.dteJson.emisor.telefono}
           </Text>
         </View>
         <View
@@ -172,7 +178,7 @@ export default function Emisor() {
             Correo electrónico:
           </Text>
           <Text style={{ margin: 0, padding: 0, fontSize: 7, width: "65%" }}>
-            seedcodesv@gmail.com
+            {props.DTE.dteJson.emisor.correo}
           </Text>
         </View>
       </View>
