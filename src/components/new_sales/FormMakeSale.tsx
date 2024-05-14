@@ -325,8 +325,8 @@ function FormMakeSale(props: Props) {
     Customer: Customer,
     tipePayment: tipePayment,
     tipeDocument: tipeDocument,
-    tipeTribute: tipeTribute
-    // closeModal: 
+    tipeTribute: tipeTribute,
+    clear: props.clear
   }
 
   const handleVerify = () => {
@@ -456,7 +456,7 @@ function FormMakeSale(props: Props) {
           ))}
         </Autocomplete>
       )}
-      {tipeDocument?.codigo === "01" ? (
+      {tipeDocument?.codigo === "01" || tipeDocument?.codigo === undefined ? (
         <div className="flex justify-center mt-4 mb-4 w-full">
           <div className="w-full flex  justify-center">
             {loading ? (

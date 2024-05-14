@@ -1,7 +1,4 @@
-import {
-  Button,
-  useDisclosure,
-} from "@nextui-org/react";
+import { Button, useDisclosure } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import { Customer } from "../../types/customers.types";
 import { toast } from "sonner";
@@ -20,7 +17,7 @@ import { s3Client } from "../../plugins/s3";
 import { SendMHFailed } from "../../types/transmitter.types";
 import { Invoice } from "../../pages/Invoice";
 import { pdf } from "@react-pdf/renderer";
-import { API_URL } from "../../utils/constants";
+import { API_URL, MH_QUERY, ambiente } from "../../utils/constants";
 import { useCorrelativesDteStore } from "../../store/correlatives_dte.store";
 import ModalGlobal from "../global/ModalGlobal";
 import { LoaderCircle, ShieldAlert } from "lucide-react";
@@ -28,19 +25,14 @@ import { global_styles } from "../../styles/global.styles";
 import { DteJson } from "../../types/DTE/DTE.types";
 
 interface Props {
-  // closeModal: () => void;
+  clear: () => void;
   Customer?: Customer;
   tipePayment?: IFormasDePago;
   tipeDocument?: ITipoDocumento;
   tipeTribute?: TipoTributo;
 }
 
-function CreditoFiscal({
-  Customer,
-  tipeDocument,
-  tipePayment,
-  tipeTribute,
-}: Props) {
+function CreditoFiscal(props: Props) {
   const { cart_products } = useBranchProductStore();
   const [errorMessage, setErrorMessage] = useState("");
   const [title, setTitle] = useState<string>("");
@@ -48,40 +40,37 @@ function CreditoFiscal({
   const [loading, setLoading] = useState(false);
 
   const modalError = useDisclosure();
-  // const {
-  //   metodos_de_pago,
-  //   getCat017FormasDePago,
-  //   getCat02TipoDeDocumento,
-  //   tipos_de_documento,
-  //   OnGetTiposTributos,
-  //   tipos_tributo,
-  // } = useBillingStore();
   const { getCorrelativesByDte } = useCorrelativesDteStore();
 
   const { gettransmitter, transmitter } = useTransmitterStore();
-  // const { getCustomersList, customer_list } = useCustomerStore();
-
+  const generateURLMH = (
+    ambiente: string,
+    codegen: string,
+    fechaEmi: string
+  ) => {
+    return `${MH_QUERY}?ambiente=${ambiente}&codGen=${codegen}&fechaEmi=${fechaEmi}`;
+  };
   useEffect(() => {
     gettransmitter();
   }, []);
 
   const generateFactura = async () => {
     // setLoading(true); // Mostrar mensaje de espera
-    if (!tipePayment) {
+    if (!props.tipePayment) {
       toast.info("Debes seleccionar el método de pago");
 
       return;
     }
-    if (!tipeDocument) {
+    if (!props.tipeDocument) {
       toast.info("Debes seleccionar el tipo de documento");
 
       return;
     }
-    if (!Customer) {
+    if (!props.Customer) {
       toast.info("Debes seleccionar el cliente");
       return;
     }
-    if (!tipeTribute) {
+    if (!props.tipeTribute) {
       toast.info("Debes seleccionar el tipo de tributo");
       return;
     }
@@ -91,38 +80,38 @@ function CreditoFiscal({
       return;
     }
     if (
-      Customer.nit === "N/A" ||
-      Customer.nrc === "N/A" ||
-      Customer.codActividad === "N/A" ||
-      Customer.descActividad === "N/A" ||
-      Customer.correo === "N/A"
+      props.Customer.nit === "N/A" ||
+      props.Customer.nrc === "N/A" ||
+      props.Customer.codActividad === "N/A" ||
+      props.Customer.descActividad === "N/A" ||
+      props.Customer.correo === "N/A"
     ) {
       return;
     }
     const receptor = {
-      nit: Customer!.nit,
-      nrc: Customer!.nrc,
-      nombre: Customer!.nombre,
-      codActividad: Customer!.codActividad,
-      descActividad: Customer!.descActividad,
+      nit: props.Customer!.nit,
+      nrc: props.Customer!.nrc,
+      nombre: props.Customer!.nombre,
+      codActividad: props.Customer!.codActividad,
+      descActividad: props.Customer!.descActividad,
       nombreComercial:
-        Customer!.nombreComercial === "N/A" ? null : Customer!.nombreComercial,
+      props.Customer!.nombreComercial === "N/A" ? null : props.Customer!.nombreComercial,
       direccion: {
-        departamento: Customer?.direccion?.departamento!,
-        municipio: Customer?.direccion?.municipio!,
-        complemento: Customer?.direccion?.complemento!,
+        departamento: props.Customer?.direccion?.departamento!,
+        municipio: props.Customer?.direccion?.municipio!,
+        complemento: props.Customer?.direccion?.complemento!,
       },
-      telefono: Customer!.telefono === "N/A" ? null : Customer!.telefono,
-      correo: Customer!.correo,
+      telefono: props.Customer!.telefono === "N/A" ? null : props.Customer!.telefono,
+      correo: props.Customer!.correo,
     };
     const generate = generate_credito_fiscal(
       transmitter,
-      tipeDocument,
+      props.tipeDocument,
       Number(correlatives!.siguiente),
       receptor,
       cart_products,
-      tipeTribute,
-      tipePayment
+      props.tipeTribute,
+      props.tipePayment
     );
     console.log(generate);
     setCurrentDTE(generate);
@@ -155,7 +144,15 @@ function CreditoFiscal({
                   });
 
                   const blob = await pdf(
-                    <Invoice DTE={generate} sello={data.selloRecibido} />
+                    <Invoice
+                      DTE={generate}
+                      sello={data.selloRecibido}
+                      MHUrl={generateURLMH(
+                        ambiente,
+                        generate.dteJson.identificacion.codigoGeneracion,
+                        generate.dteJson.identificacion.fecEmi
+                      )}
+                    />
                   ).toBlob();
 
                   if (json_blob && blob) {
@@ -213,6 +210,7 @@ function CreditoFiscal({
                                     toast.success(
                                       "Se completo con éxito la venta"
                                     );
+                                    props.clear()
                                     setLoading(false);
                                   })
                                   .catch(() => {
@@ -302,6 +300,7 @@ function CreditoFiscal({
               )
               .then(() => {
                 toast.success("Se envió la factura a contingencia");
+                props.clear()
                 setLoading(false);
               })
               .catch(() => {
