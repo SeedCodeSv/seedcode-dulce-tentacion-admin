@@ -68,6 +68,7 @@ function ConfigurationList() {
       save_theme(payload)
         .then(() => {
           toast.success("Se guardo el tema");
+          location.reload();
         })
         .catch(() => {
           toast.error("Error al guardar el tema");
@@ -269,7 +270,7 @@ function ConfigurationList() {
               className="w-full"
               labelPlacement="outside"
               placeholder="Ingrese un nombre"
-              value={color.name}
+            //   value={color.name}
               onChange={(e) => {
                 setColor({ ...color, name: e.target.value });
               }}
