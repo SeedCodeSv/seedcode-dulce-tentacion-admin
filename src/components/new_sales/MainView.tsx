@@ -31,6 +31,7 @@ import { global_styles } from "../../styles/global.styles";
 import CartProducts from "./CartProducts";
 import ModalGlobal from "../global/ModalGlobal";
 import FormMakeSale from "./FormMakeSale";
+import CreditoFiscal from "./CreditoFiscal";
 import useEventListener from "../../hooks/useEventListeners";
 import { useAuthStore } from "../../store/auth.store";
 
@@ -354,7 +355,7 @@ const MainView = () => {
         title="Nueva venta"
         size="w-full md:w-[500px] lg:w-[600px]"
       >
-        <FormMakeSale />
+        <CreditoFiscal />
       </ModalGlobal>
     </div>
   );

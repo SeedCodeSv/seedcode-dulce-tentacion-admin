@@ -11,7 +11,7 @@ import QR from "../assets/codigo-qr-1024x1024-1.jpg";
 import Emisor from "../components/invoice/Emisor";
 import Receptor from "../components/invoice/Receptor";
 import TableProducts from "../components/invoice/TableProducts";
-import { DteJson } from '../types/DTE/credito_fiscal.types';
+import { DteJson } from "../types/DTE/DTE.types";
 // Create styles
 const styles = StyleSheet.create({
   page: {
@@ -28,10 +28,11 @@ const styles = StyleSheet.create({
 
 interface Props {
   DTE: DteJson;
+  sello: string;
 }
 
 // Create Document Component
-export const MyDocument = () => (
+export const Invoice = (props: Props) => (
   <Document>
     <Page size="A4" style={styles.page}>
       <View
@@ -72,14 +73,13 @@ export const MyDocument = () => (
       >
         <View style={{ width: "50%" }}>
           <Text style={{ fontSize: 8 }}>
-            Código de Generación: 417D5232-92E2-41FE-8F36-96BAB25BBAFA
+            Código de Generación:{" "}
+            {props.DTE.dteJson.identificacion.codigoGeneracion}
           </Text>
           <Text style={{ fontSize: 8 }}>
-            Número de Control: DTE-01-M001P001-000000000000973
+            Número de Control: {props.DTE.dteJson.identificacion.numeroControl}
           </Text>
-          <Text style={{ fontSize: 8 }}>
-            Sello de Recepción: 202401297779B58149D5883E13D8D9CDFAEDCGAS
-          </Text>
+          <Text style={{ fontSize: 8 }}>Sello de Recepción: {props.sello}</Text>
         </View>
         <View
           style={{
@@ -95,7 +95,9 @@ export const MyDocument = () => (
             Tipo de Transmisión: Normal
           </Text>
           <Text style={{ fontSize: 8, textAlign: "right" }}>
-            Fecha y Hora de Generación: 19/03/2024 15:39:07
+            Fecha y Hora de Generación:{" "}
+            {props.DTE.dteJson.identificacion.fecEmi}{" "}
+            {props.DTE.dteJson.identificacion.horEmi}
           </Text>
         </View>
       </View>
@@ -109,8 +111,8 @@ export const MyDocument = () => (
           height: "auto",
         }}
       >
-        <Emisor />
-        <Receptor />
+        <Emisor DTE={props.DTE} />
+        <Receptor DTE={props.DTE} />
       </View>
       <View
         style={{
@@ -258,7 +260,7 @@ export const MyDocument = () => (
         </TR>
       </Table>
       <View style={{ width: "100%", marginTop: 5 }}>
-        <TableProducts />
+        <TableProducts DTE={props.DTE} />
       </View>
     </Page>
   </Document>

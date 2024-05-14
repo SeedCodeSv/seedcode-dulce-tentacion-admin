@@ -1,14 +1,11 @@
 import {
   Autocomplete,
   AutocompleteItem,
-  Modal,
-  ModalHeader,
-  ModalBody,
   Button,
   useDisclosure,
 } from "@nextui-org/react";
 import { useBillingStore } from "../../store/facturation/billing.store";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useCustomerStore } from "../../store/customers.store";
 import { Customer } from "../../types/customers.types";
 import { toast } from "sonner";
@@ -22,18 +19,17 @@ import { pdf } from "@react-pdf/renderer";
 import { s3Client } from "../../plugins/s3";
 import { useCorrelativesDteStore } from "../../store/correlatives_dte.store";
 import { firmarDocumentoFactura, send_to_mh } from "../../services/DTE.service";
-import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import ModalGlobal from "../global/ModalGlobal";
 import { ShieldAlert } from "lucide-react";
-import { ThemeContext } from "../../hooks/useTheme";
 import { global_styles } from "../../styles/global.styles";
 import { return_mh_token } from "../../storage/localStorage";
 import { PayloadMH } from "../../types/DTE/DTE.types";
-import { ambiente } from "../../utils/constants";
-import { AxiosError } from "axios";
+import { ambiente, API_URL } from "../../utils/constants";
+import axios, { AxiosError } from "axios";
 import { SendMHFailed } from "../../types/transmitter.types";
+import { Invoice } from "../../pages/Invoice";
+
 function FormMakeSale() {
-  const { theme } = useContext(ThemeContext);
 
   const [Customer, setCustomer] = useState<Customer>();
   const { cart_products } = useBranchProductStore();
@@ -111,7 +107,75 @@ function FormMakeSale() {
 
           if (token_mh) {
             send_to_mh(data_send, token_mh)
-              .then(({ data }) => {})
+              .then(async ({ data }) => {
+                if (data.selloRecibido) {
+                  const json_url = `CLIENTES/${transmitter.nombre}/VENTAS/FACTURAS/${generate.dteJson.identificacion.codigoGeneracion}.json`;
+                  const pdf_url = `CLIENTES/${transmitter.nombre}/VENTAS/FACTURAS/${generate.dteJson.identificacion.codigoGeneracion}.pdf`;
+
+                  const JSON_DTE = JSON.stringify(generate.dteJson, null, 2);
+                  const json_blob = new Blob([JSON_DTE], {
+                    type: "application/json",
+                  });
+
+                  const blob = await pdf(
+                    <Invoice DTE={generate} sello={data.selloRecibido} />
+                  ).toBlob();
+
+                  if (json_blob && blob) {
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement("a");
+                    link.download = "filename.pdf";
+                    link.href = url;
+                    link.click();
+
+                    const url2 = URL.createObjectURL(json_blob);
+                    const link2 = document.createElement("a");
+                    link2.download = "filename.json";
+                    link2.href = url2;
+                    link2.click();
+
+                    const uploadParams: PutObjectCommandInput = {
+                      Bucket: "seedcode-sv",
+                      Key: json_url,
+                      Body: json_blob,
+                    };
+                    const uploadParamsPDF: PutObjectCommandInput = {
+                      Bucket: "seedcode-sv",
+                      Key: pdf_url,
+                      Body: blob,
+                    };
+
+                    s3Client
+                      .send(new PutObjectCommand(uploadParamsPDF))
+                      .then((response) => {
+                        if (response.$metadata) {
+                          s3Client
+                            .send(new PutObjectCommand(uploadParams))
+                            .then((response) => {
+                              if (response.$metadata) {
+                                axios
+                                  .post(API_URL + "/sales/factura-sale", {
+                                    pdf: pdf_url,
+                                    dte: json_url,
+                                    cajaId: Number(localStorage.getItem("box")),
+                                    codigoEmpleado: 1,
+                                    sello: data.selloRecibido,
+                                  })
+                                  .then(() => {
+                                    toast.success(
+                                      "Se completo con exito la venta"
+                                    );
+                                  })
+                                  .catch(() => {
+                                    toast.error("Error al guardar la venta");
+                                  });
+                              }
+                            });
+                        }
+                      });
+                  }
+                }
+              })
               .catch((error: AxiosError<SendMHFailed>) => {
                 if (error.response?.data) {
                   setErrorMessage(
@@ -120,7 +184,10 @@ function FormMakeSale() {
                       ? error.response?.data.observaciones.join("\n\n")
                       : ""
                   );
-                  setTitle(error.response.data.descripcionMsg ?? "Error al procesar venta");
+                  setTitle(
+                    error.response.data.descripcionMsg ??
+                      "Error al procesar venta"
+                  );
                   modalError.onOpen();
                 }
               });
@@ -130,14 +197,14 @@ function FormMakeSale() {
             return;
           }
         } else {
-          setTitle("Error en el firmador")
+          setTitle("Error en el firmador");
           setErrorMessage("Error al firmar el documento");
           modalError.onOpen();
           return;
         }
       })
       .catch(() => {
-        setTitle("Error en el firmador")
+        setTitle("Error en el firmador");
         setErrorMessage("Error al firmar el documento");
         modalError.onOpen();
       });
@@ -145,62 +212,6 @@ function FormMakeSale() {
     console.log(JSON.stringify(generate, null, 2));
 
     return;
-
-    // OnSignInvoiceDocument(generate, Number(generate.dteJson.resumen.subTotal));
-
-    const json_url = `CLIENTES/${transmitter.nombre}/VENTAS/FACTURAS/${generate.dteJson.identificacion.codigoGeneracion}.json`;
-    const pdf_url = `CLIENTES/${transmitter.nombre}/VENTAS/FACTURAS/${generate.dteJson.identificacion.codigoGeneracion}.pdf`;
-
-    const JSON_DTE = JSON.stringify(generate.dteJson, null, 2);
-    const json_blob = new Blob([JSON_DTE], { type: "application/json" });
-
-    const blob = await pdf(<Invoice DTE={DTE} />).toBlob();
-
-    if (blob && json_blob) {
-      const uploadParams: PutObjectCommandInput = {
-        Bucket: "imexca",
-        Key: json_url,
-        Body: json_blob,
-      };
-      const uploadParamsPDF: PutObjectCommandInput = {
-        Bucket: "imexca",
-        Key: pdf_url,
-        Body: blob,
-      };
-      s3Client
-        .send(new PutObjectCommand(uploadParamsPDF))
-        .then((response) => {
-          if (response.$metadata) {
-            s3Client
-              .send(new PutObjectCommand(uploadParams))
-              .then((result) => {
-                if (result.$metadata) {
-                  OnSaveVentas({
-                    dte: json_url,
-                    pdf: pdf_url,
-                    codigoEmpleado: 1,
-                    cajaId: 3,
-                  })
-                    .then(() => {
-                      setLoading(false); // Ocultar mensaje de espera
-                      // Si todo está correcto, mostrar mensaje de éxito
-                      ShowToast("success", "Venta realizada con éxito");
-
-                      // Abrir el modal de confirmación
-                      handleOpenModal();
-                    })
-                    .catch(() => {});
-                }
-              })
-              .catch(() => {
-                toast.error("Error al subir el archivo");
-              });
-          }
-        })
-        .catch(() => {
-          toast.error("Error al subir el archivo");
-        });
-    }
   };
 
   return (
@@ -292,7 +303,10 @@ function FormMakeSale() {
         </div>
         <div className="grid grid-cols-2 gap-5 mt-5">
           <Button
-            onClick={generateFactura}
+            onClick={() => {
+              modalError.onClose();
+              generateFactura();
+            }}
             style={global_styles().secondaryStyle}
           >
             Re-intentar

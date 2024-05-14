@@ -10,8 +10,8 @@ export interface Identificacion {
   numeroControl: string;
   tipoModelo: number;
   tipoOperacion: number;
-  tipoContingencia?: any;
-  motivoContin?: any;
+  tipoContingencia: any;
+  motivoContin: any;
   tipoMoneda: string;
   fecEmi: string;
   horEmi: string;
@@ -34,6 +34,7 @@ export interface CuerpoDocumento {
   tributos: string[] | null;
   psv: number | string;
   noGravado: number | string;
+  ivaItem: number | string;
 }
 
 export interface ICuerpoDocumento {
@@ -108,8 +109,8 @@ export interface DteJson {
   documentoRelacionado?: any;
   emisor: ITransmitter;
   receptor: Receptor;
-  otrosDocumentos?: any;
-  ventaTercero?: any;
+  otrosDocumentos: any;
+  ventaTercero: any;
   cuerpoDocumento: CuerpoDocumento[];
   resumen: IResumen;
   extension?: any;
@@ -142,6 +143,8 @@ export interface DTEToPDFFiscal {
   cuerpoDocumento: CuerpoDocumento[];
 }
 export interface FiscalReceptor {
+  tipoDocumento: null | string;
+  numDocumento: null | string;
   nit: string | null;
   nrc: string | null;
   nombre: string | null;

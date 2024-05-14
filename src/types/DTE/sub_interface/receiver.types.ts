@@ -4,6 +4,8 @@ export interface Direccion {
     complemento: string;
   }
 export interface Receptor {
+    tipoDocumento: null | string;
+    numDocumento: null | string;
     nit: string;
     nrc: string;
     nombre: string;

@@ -6,15 +6,20 @@ import { Customer } from "../../types/customers.types";
 import { toast } from "sonner";
 import { ITipoDocumento } from "../../types/DTE/tipo_documento.types";
 import { IFormasDePago } from "../../types/DTE/forma_de_pago.types";
-import { generate_credito_fiscal, make_to_pdf_fiscal } from "../../utils/DTE/credito_fiscal";
+import { generate_credito_fiscal } from "../../utils/DTE/credito_fiscal";
 import { useTransmitterStore } from "../../store/transmitter.store";
 import { useBranchProductStore } from "../../store/branch_product.store";
 import { firmarDocumentoFiscal, send_to_mh } from "../../services/DTE.service";
 import { TipoTributo } from "../../types/DTE/tipo_tributo.types";
 import { return_mh_token } from "../../storage/localStorage";
-import { DTEToPDFFiscal, PayloadMH } from "../../types/DTE/credito_fiscal.types";
-import { AxiosError } from "axios";
+import { PayloadMH } from "../../types/DTE/credito_fiscal.types";
+import axios, { AxiosError } from "axios";
+import { PutObjectCommand, PutObjectCommandInput } from "@aws-sdk/client-s3";
+import { s3Client } from "../../plugins/s3";
 import { SendMHFailed } from "../../types/transmitter.types";
+import { Invoice } from "../../pages/Invoice";
+import { pdf } from "@react-pdf/renderer";
+import { API_URL } from "../../utils/constants";
 function FormMakeSale() {
   const [Customer, setCustomer] = useState<Customer>();
   const { cart_products } = useBranchProductStore();
@@ -28,7 +33,7 @@ function FormMakeSale() {
     getCat02TipoDeDocumento,
     tipos_de_documento,
     OnGetTiposTributos,
-    tipos_tributo
+    tipos_tributo,
   } = useBillingStore();
   const { gettransmitter, transmitter } = useTransmitterStore();
   const { getCustomersList, customer_list } = useCustomerStore();
@@ -38,7 +43,7 @@ function FormMakeSale() {
     getCat02TipoDeDocumento();
     getCustomersList();
     gettransmitter();
-    OnGetTiposTributos()
+    OnGetTiposTributos();
   }, []);
 
   const generateFactura = async () => {
@@ -67,13 +72,15 @@ function FormMakeSale() {
       return;
     }
     const receptor = {
+      tipoDocumento: Customer.tipoDocumento,
+  numDocumento: Customer.numDocumento,
       nit: Customer!.nit,
       nrc: Customer!.nrc,
       nombre: Customer!.nombre,
       codActividad: Customer!.codActividad,
       descActividad: Customer!.descActividad,
       nombreComercial:
-      Customer!.nombreComercial === "N/A" ? null : Customer!.nombreComercial,
+        Customer!.nombreComercial === "N/A" ? null : Customer!.nombreComercial,
       direccion: {
         departamento: Customer.direccion!.departamento,
         municipio: Customer.direccion!.municipio,
@@ -81,7 +88,7 @@ function FormMakeSale() {
       },
       telefono: Customer!.telefono === "N/A" ? null : Customer!.telefono,
       correo: Customer!.correo,
-    }; 
+    };
     const generate = generate_credito_fiscal(
       transmitter,
       tipeDocument,
@@ -89,7 +96,7 @@ function FormMakeSale() {
       receptor,
       cart_products,
       tipeTribute,
-      tipePayment,
+      tipePayment
     );
     firmarDocumentoFiscal(generate)
       .then(async (firmador) => {
@@ -106,6 +113,73 @@ function FormMakeSale() {
           toast.info("Se ah enviado a hacienda, esperando respuesta");
           send_to_mh(data_send, token_mh!)
             .then(async ({ data }) => {
+              if (data.selloRecibido) {
+                const json_url = `CLIENTES/${transmitter.nombre}/VENTAS/FACTURAS/${generate.dteJson.identificacion.codigoGeneracion}.json`;
+                const pdf_url = `CLIENTES/${transmitter.nombre}/VENTAS/FACTURAS/${generate.dteJson.identificacion.codigoGeneracion}.pdf`;
+
+                const JSON_DTE = JSON.stringify(generate.dteJson, null, 2);
+                const json_blob = new Blob([JSON_DTE], {
+                  type: "application/json",
+                });
+
+                const blob = await pdf(
+                  <Invoice DTE={generate} sello={data.selloRecibido} />
+                ).toBlob();
+
+                if (json_blob && blob) {
+                  const url = URL.createObjectURL(blob);
+                  const link = document.createElement("a");
+                  link.download = "filename.pdf";
+                  link.href = url;
+                  link.click();
+
+                  const url2 = URL.createObjectURL(json_blob);
+                  const link2 = document.createElement("a");
+                  link2.download = "filename.json";
+                  link2.href = url2;
+                  link2.click();
+
+                  const uploadParams: PutObjectCommandInput = {
+                    Bucket: "seedcode-sv",
+                    Key: json_url,
+                    Body: json_blob,
+                  };
+                  const uploadParamsPDF: PutObjectCommandInput = {
+                    Bucket: "seedcode-sv",
+                    Key: pdf_url,
+                    Body: blob,
+                  };
+
+                  s3Client
+                    .send(new PutObjectCommand(uploadParamsPDF))
+                    .then((response) => {
+                      if (response.$metadata) {
+                        s3Client
+                          .send(new PutObjectCommand(uploadParams))
+                          .then((response) => {
+                            if (response.$metadata) {
+                              axios
+                                .post(API_URL + "/sales/factura-sale", {
+                                  pdf: pdf_url,
+                                  dte: json_url,
+                                  cajaId: Number(localStorage.getItem("box")),
+                                  codigoEmpleado: 1,
+                                  sello: data.selloRecibido,
+                                })
+                                .then(() => {
+                                  toast.success(
+                                    "Se completo con exito la venta"
+                                  );
+                                })
+                                .catch(() => {
+                                  toast.error("Error al guardar la venta");
+                                });
+                            }
+                          });
+                      }
+                    });
+                }
+              }
               // const data_pdf: DTEToPDFFiscal = make_to_pdf_fiscal(
               //   PayloadMH,
               //   total,

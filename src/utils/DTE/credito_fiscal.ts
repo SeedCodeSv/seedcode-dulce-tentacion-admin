@@ -16,6 +16,7 @@ import {ambiente} from "../constants"
 import { useBranchProductStore } from "../../store/branch_product.store";
 import { generate_uuid } from "../random/random";
 import { ICartProduct } from "../../types/branch_products.types";
+
 export const make_to_pdf_fiscal = (
   DTE: ISendMHFiscal,
   total: number,
@@ -79,7 +80,8 @@ export const make_cuerpo_documento_pdf_fiscal = (DTE: ISendMHFiscal) => {
     };
   });
 };
-const { cart_products } = useBranchProductStore();
+
+const {cart_products} = useBranchProductStore()
 
 const total = () => {
   return cart_products
@@ -109,7 +111,7 @@ const calDiscount = () => {
 };
 
 export const generate_credito_fiscal = (
-  transmitter: ITransmitter,
+  emisor: ITransmitter,
   valueTipo: ITipoDocumento,
   next_number: number,
   receptor: FiscalReceptor,
@@ -118,9 +120,9 @@ export const generate_credito_fiscal = (
   tipo_pago?: IFormasDePago,
 ) => {
   return {
-    nit: transmitter.nit,
+    nit: emisor.nit,
     activo: true,
-    passwordPri: transmitter.clavePublica,
+    passwordPri: emisor.clavePublica,
     dteJson: {
       identificacion: {
         version: valueTipo.codigo === "03" ? 3 : 1,
@@ -129,8 +131,8 @@ export const generate_credito_fiscal = (
         tipoDte: valueTipo!.codigo,
         numeroControl: generate_control(
           valueTipo!.codigo,
-          transmitter.codEstable!,
-          transmitter.codPuntoVenta!,
+          emisor.codEstable!,
+          emisor.codPuntoVenta!,
           formatearNumero(next_number)
         ),
         tipoModelo: 1,
@@ -141,7 +143,7 @@ export const generate_credito_fiscal = (
         ...getElSalvadorDateTime(),
       },
       documentoRelacionado: null,
-      emisor: { ...generate_emisor(transmitter) },
+      emisor: { ...generate_emisor(emisor) },
       receptor,
       otrosDocumentos: null,
       ventaTercero: null,
@@ -187,7 +189,7 @@ export const generate_credito_fiscal = (
       extension: null,
       apendice: null,
     },
-  } as ISendMHFiscal;
+  } as unknown as ISendMHFiscal;
 };
 export const make_cuerpo_documento_fiscal = (
   products_cart: ICartProduct[],

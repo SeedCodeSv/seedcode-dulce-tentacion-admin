@@ -7,7 +7,7 @@ export interface DteJson {
 
 export interface JSONSend {
   identificacion: Identificacion;
-  documentoRelacionado: any;
+  documentoRelacionado?: any;
   emisor: Emisor;
   receptor: Receptor;
   otrosDocumentos: any;
@@ -81,7 +81,8 @@ export interface Receptor {
   direccion: Direccion;
   telefono: null | string;
   correo: string;
-  bienTitulo?: string | null
+  bienTitulo?: string | null,
+  nombreComercial: string
 }
 
 export interface FiscalReceptor {
