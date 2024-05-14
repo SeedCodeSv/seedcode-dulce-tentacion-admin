@@ -51,3 +51,5 @@ export interface DTEToPDF {
     numeroControl: string;
     cuerpoDocumento: CuerpoDocumento[];
   }
+
+  

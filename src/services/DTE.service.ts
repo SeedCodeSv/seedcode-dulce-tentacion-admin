@@ -8,6 +8,7 @@ import { IGetTiposDocumento } from "../types/DTE/tipo_documento.types";
 import { IGetTipoTributos } from "../types/DTE/tipo_tributo.types";
 import { ISendMHFiscal } from "../types/DTE/credito_fiscal.types";
 import { IContingencia, ISendMHContingencia } from "../types/DTE/contingencia.types";
+import {DteJson as FDteJSON} from "../types/DTE/DTE.types"
 
 export const get_ambiente_destino = () => {
   return axios<IGetAmbienteDestino>(
@@ -50,7 +51,7 @@ export const firmarDocumentoFiscal = (payload: ISendMHFiscal) => {
   return axios.post<{ body: string }>(API_FIRMADOR, payload);
 };
 
-export const firmarDocumentoFactura = (payload: DteJson) => {
+export const firmarDocumentoFactura = (payload: FDteJSON) => {
   return axios.post<{ body: string }>(API_FIRMADOR, payload);
 };
 

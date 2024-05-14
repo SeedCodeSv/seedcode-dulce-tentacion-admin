@@ -5,6 +5,7 @@ import {
   get_customers_pagination,
   save_customers,
   update_customers,
+  get_customer
 } from "../services/customers.service";
 import { toast } from "sonner";
 import { messages } from "../utils/constants";
@@ -21,6 +22,8 @@ export const useCustomerStore = create<IUseCustomersStore>((set, get) => ({
     status: 404,
     ok: false,
   },
+  customer_list: [],
+
   saveCustomersPagination: (customer_pagination) =>
     set({ customer_pagination }),
   getCustomersPagination: (page, limit, name, email) => {
@@ -72,6 +75,14 @@ export const useCustomerStore = create<IUseCustomersStore>((set, get) => ({
       .catch(() => {
         toast.warning(messages.error);
       });
+  },
+  getCustomersList() {
+    get_customer()
+    .then(({data}) => {
+      set((state) => ({ ...state, customer_list: data.customers }))
+    }).catch(() => {
+      set((state) => ({ ...state, customer_list: [] }))
+    })
   },
   deleteCustomer: async (id) => {
     return await delete_customer(id).then(({ data }) => {

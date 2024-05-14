@@ -5,6 +5,7 @@ import {
   Select,
   SelectItem,
   Tooltip,
+  useDisclosure,
 } from "@nextui-org/react";
 import {
   Barcode,
@@ -17,7 +18,7 @@ import {
   Trash,
   Send,
 } from "lucide-react";
-import { useContext, useEffect, useState } from "react";
+import { EventHandler, useContext, useEffect, useState } from "react";
 import { ThemeContext } from "../../hooks/useTheme";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
@@ -30,6 +31,8 @@ import { global_styles } from "../../styles/global.styles";
 import CartProducts from "./CartProducts";
 import ModalGlobal from "../global/ModalGlobal";
 import FormMakeSale from "./FormMakeSale";
+import useEventListener from "../../hooks/useEventListeners";
+import { useAuthStore } from "../../store/auth.store";
 
 const MainView = () => {
   const { theme } = useContext(ThemeContext);
@@ -38,17 +41,14 @@ const MainView = () => {
   const [name, setName] = useState<string>("");
   const [code, setCode] = useState<string>("");
   const [limit, setLimit] = useState<number>(5);
+  const modalAdd = useDisclosure();
 
   const {
     branch_products,
     pagination_branch_products,
     getPaginatedBranchProducts,
-    cart_products,
-    onPlusQuantity,
-    onMinusQuantity,
-    onRemoveProduct,
     addProductCart,
-    onUpdateQuantity,
+    getProductByCode,
   } = useBranchProductStore();
 
   useEffect(() => {
@@ -105,6 +105,24 @@ const MainView = () => {
     );
   };
 
+  const { user } = useAuthStore();
+
+  let barcode = "";
+  let interval: NodeJS.Timeout | undefined;
+
+  const handler = (evt: KeyboardEvent) => {
+    if (interval) clearInterval(interval);
+    if (evt.code === "Enter") {
+      if (barcode) getProductByCode(user?.employee.branch.transmitterId ?? 0, barcode);
+      barcode = "";
+      return;
+    }
+    if (evt.key !== "Shift") barcode += evt.key;
+    interval = setInterval(() => (barcode = ""), 200000);
+  };
+
+  useEventListener("keydown", handler as any);
+
   return (
     <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
       <div className="w-full h-full grid grid-cols-1 lg:grid-cols-2">
@@ -128,6 +146,7 @@ const MainView = () => {
                   className="ml-5"
                   isIconOnly
                   size="lg"
+                  onClick={modalAdd.onOpen}
                 >
                   <Send />
                 </Button>
@@ -330,8 +349,8 @@ const MainView = () => {
         </div>
       </div>
       <ModalGlobal
-        isOpen={false}
-        onClose={() => {}}
+        isOpen={modalAdd.isOpen}
+        onClose={modalAdd.onClose}
         title="Nueva venta"
         size="w-full md:w-[500px] lg:w-[600px]"
       >

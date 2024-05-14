@@ -7,14 +7,16 @@ import { getElSalvadorDateTime } from "../dates";
 import { generate_control } from "../dte";
 import { formatearNumero, generate_emisor, generate_receptor, make_cuerpo_documento } from "../make-dte";
 import { convertCurrencyFormat } from "../money";
+import {generate_uuid} from "../random/random"
+import {ambiente} from "../../utils/constants.ts"
+import { ICartProduct } from "../../types/branch_products.types.ts";
+import { DteJson } from "../../types/DTE/DTE.types.ts";
 export const generate_factura = (
   transmitter: ITransmitter,
-  numero_generacion: string,
-  ambiente: string,
   next_number: number,
   valueTipo: ITipoDocumento,
   customer: Customer,
-  products_carts: IProductCart[],
+  products_carts: ICartProduct[],
   tipo_pago: IFormasDePago,
 ) => {
   return {
@@ -24,8 +26,8 @@ export const generate_factura = (
     dteJson: {
       identificacion: {
         version: 1,
-        codigoGeneracion: numero_generacion,
-        ambiente,
+        codigoGeneracion: generate_uuid().toUpperCase(),
+        ambiente: ambiente,
         tipoDte: "01",
         numeroControl: generate_control(
           valueTipo!.codigo,
@@ -41,7 +43,7 @@ export const generate_factura = (
         ...getElSalvadorDateTime(),
       },
       documentoRelacionado: null,
-      transmitter: { ...generate_emisor(transmitter) },
+      emisor: { ...generate_emisor(transmitter) },
       receptor: { ...generate_receptor(customer!, "01") },
       otrosDocumentos: null,
       ventaTercero: null,
@@ -86,7 +88,7 @@ export const generate_factura = (
       extension: null,
       apendice: null,
     },
-  };
+  } as DteJson
 };
 function calcularPorcentajeDescuento(
     totalSinDescuento: number,
@@ -94,7 +96,7 @@ function calcularPorcentajeDescuento(
   ): number {
     return ((totalSinDescuento - totalDescuento) / totalSinDescuento) * 100;
   }
-  const total_without_discount = (productsCarts: IProductCart[]) => {
+  const total_without_discount = (productsCarts: ICartProduct[]) => {
     const total = productsCarts
       .map((prd) => {
         const price =
@@ -107,16 +109,16 @@ function calcularPorcentajeDescuento(
 
     return total;
   };
-const calDiscount = (productsCarts: IProductCart[]) => {
+const calDiscount = (productsCarts: ICartProduct[]) => {
     return productsCarts.map((prd) => prd.discount).reduce((a, b) => a + b, 0);
   };
-const total = (productsCarts: IProductCart[]) => {
+const total = (productsCarts: ICartProduct[]) => {
     return productsCarts
       .map((cp) => Number(cp.quantity) * Number(cp.price))
       .reduce((a, b) => a + b, 0);
   };
 
-  const total_iva = (productsCarts: IProductCart[]) => {
+  const total_iva = (productsCarts: ICartProduct[]) => {
     return productsCarts
       .map((cp) => {
         const total = Number(cp.price) * Number(cp.quantity);

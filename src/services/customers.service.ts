@@ -2,6 +2,7 @@ import axios from "axios";
 import { API_URL } from "../utils/constants";
 import {
   IGetCustomerPagination,
+  IGetCustomers,
   PayloadCustomer,
 } from "../types/customers.types";
 import { get_token, get_user } from "../storage/localStorage";
@@ -59,3 +60,12 @@ export const delete_customer = (id: number) => {
     },
   });
 };
+export const get_customer = () => {
+  const user = get_user();
+  const token = get_token() ?? "";
+  return axios.get<IGetCustomers>(API_URL + `/customers/list-by-transmitter/${user?.employee.branch.transmitterId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    }
+  });
+} 

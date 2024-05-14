@@ -23,7 +23,7 @@ import { make_to_pdf } from "../../utils/make-dte";
 import { SendMHFailed } from "../../types/transmitter.types";
 import { AxiosError } from "axios";
 import { make_to_pdf_fiscal } from "../../utils/DTE/credito_fiscal";
-export const useBillingStore = create<IGlobalBillingStore>((set, get) => ({
+export const useBillingStore = create<IGlobalBillingStore>((set) => ({
   cat_012_departamento: [],
   cat_013_municipios: [],
   cat_019_codigo_de_actividad_economica: [],
@@ -150,6 +150,7 @@ export const useBillingStore = create<IGlobalBillingStore>((set, get) => ({
             }
           });
       } else {
+        console.log("")
       }
     });
   },
