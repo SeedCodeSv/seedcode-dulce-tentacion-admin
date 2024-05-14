@@ -6,7 +6,14 @@ export interface IResponseContigence {
   nextPag: number;
   prevPag: number;
 }
-
+export interface IResponseNotContigence {
+  ok: boolean;
+  saless: Sale[];
+  totalPag: number;
+  currentPag: number;
+  nextPag: number;
+  prevPag: number;
+}
 export interface Sale {
   id: number;
   numeroControl: string;
@@ -42,5 +49,7 @@ export interface Sale {
 
 export interface ISalesContigenceStore {
   sales: Sale[];
+  saless: Sale[];
   OnGetSalesContigence: (id: number, page: number, limit: number) => void;
+  OnGetSalesNotContigence: (id: number, page: number, limit: number) => void;
 }
