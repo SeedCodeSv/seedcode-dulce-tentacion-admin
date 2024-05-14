@@ -13,10 +13,9 @@ function Home() {
 
   return (
     <Layout title="Home">
-      <>
-        <h1>Home</h1>
-        <button onClick={handleAdd}>Nuevo</button>
-      </>
+      <div className="flex w-full h-full justify-center items-center">
+        <p>Bienvenido</p>
+      </div>
     </Layout>
   );
 }

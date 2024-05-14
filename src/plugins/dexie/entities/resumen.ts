@@ -21,4 +21,5 @@ export interface Resumen {
     saldoFavor: number
     condicionOperacion: number
     numPagoElectronico: string;
+    ventaId: number
 }
