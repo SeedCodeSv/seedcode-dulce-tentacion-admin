@@ -95,13 +95,16 @@ function CreditoFiscal(props: Props) {
       codActividad: props.Customer!.codActividad,
       descActividad: props.Customer!.descActividad,
       nombreComercial:
-      props.Customer!.nombreComercial === "N/A" ? null : props.Customer!.nombreComercial,
+        props.Customer!.nombreComercial === "N/A"
+          ? null
+          : props.Customer!.nombreComercial,
       direccion: {
         departamento: props.Customer?.direccion?.departamento!,
         municipio: props.Customer?.direccion?.municipio!,
         complemento: props.Customer?.direccion?.complemento!,
       },
-      telefono: props.Customer!.telefono === "N/A" ? null : props.Customer!.telefono,
+      telefono:
+        props.Customer!.telefono === "N/A" ? null : props.Customer!.telefono,
       correo: props.Customer!.correo,
     };
     const generate = generate_credito_fiscal(
@@ -132,49 +135,53 @@ function CreditoFiscal(props: Props) {
 
           toast.info("Se ah enviado a hacienda, esperando respuesta");
           if (token_mh) {
-            send_to_mh(data_send, token_mh!)
+            const source = axios.CancelToken.source();
+            const timeout = setTimeout(() => {
+              source.cancel("El tiempo de espera ha expirado");
+            }, 25000);
+            send_to_mh(data_send, token_mh!, source)
               .then(async ({ data }) => {
                 if (data.selloRecibido) {
-                  const json_url = `CLIENTES/${transmitter.nombre}/VENTAS/FACTURAS/${generate.dteJson.identificacion.codigoGeneracion}.json`;
-                  const pdf_url = `CLIENTES/${transmitter.nombre}/VENTAS/FACTURAS/${generate.dteJson.identificacion.codigoGeneracion}.pdf`;
+                  clearTimeout(timeout);
+                  toast.success("Hacienda respondió correctamente", {
+                    description: "Estamos guardando tus datos",
+                  });
+                  const json_url = `CLIENTES/${transmitter.nombre}/VENTAS/CRÉDITO_FISCAL/${generate.dteJson.identificacion.codigoGeneracion}.json`;
+                  const pdf_url = `CLIENTES/${transmitter.nombre}/VENTAS/CRÉDITO_FISCAL/${generate.dteJson.identificacion.codigoGeneracion}.pdf`;
 
-                  const JSON_DTE = JSON.stringify(generate.dteJson, null, 2);
+                  const JSON_DTE = JSON.stringify(
+                    {
+                      ...generate.dteJson,
+                      respuestaMH: data,
+                      firma: firmador.data.body,
+                    },
+                    null,
+                    2
+                  );
                   const json_blob = new Blob([JSON_DTE], {
                     type: "application/json",
                   });
 
                   const blob = await pdf(
                     <Invoice
-                      DTE={generate}
-                      sello={data.selloRecibido}
                       MHUrl={generateURLMH(
                         ambiente,
                         generate.dteJson.identificacion.codigoGeneracion,
                         generate.dteJson.identificacion.fecEmi
                       )}
+                      DTE={generate}
+                      sello={data.selloRecibido}
                     />
                   ).toBlob();
 
                   if (json_blob && blob) {
-                    const url = URL.createObjectURL(blob);
-                    const link = document.createElement("a");
-                    link.download = "filename.pdf";
-                    link.href = url;
-                    link.click();
-
-                    const url2 = URL.createObjectURL(json_blob);
-                    const link2 = document.createElement("a");
-                    link2.download = "filename.json";
-                    link2.href = url2;
-                    link2.click();
-
                     const uploadParams: PutObjectCommandInput = {
-                      Bucket: "seedcode-sv",
+                      Bucket: "seedcode-facturacion",
                       Key: json_url,
                       Body: json_blob,
                     };
                     const uploadParamsPDF: PutObjectCommandInput = {
-                      Bucket: "seedcode-sv",
+                      Bucket: "seedcode-facturacion",
                       Key: pdf_url,
                       Body: blob,
                     };
@@ -210,7 +217,7 @@ function CreditoFiscal(props: Props) {
                                     toast.success(
                                       "Se completo con éxito la venta"
                                     );
-                                    props.clear()
+                                    props.clear();
                                     setLoading(false);
                                   })
                                   .catch(() => {
@@ -300,7 +307,7 @@ function CreditoFiscal(props: Props) {
               )
               .then(() => {
                 toast.success("Se envió la factura a contingencia");
-                props.clear()
+                props.clear();
                 setLoading(false);
               })
               .catch(() => {
@@ -318,15 +325,19 @@ function CreditoFiscal(props: Props) {
   return (
     <div>
       <div className="flex justify-center mt-4 mb-4 w-full">
-        <div className="w-full">
-          <Button
-            style={global_styles().secondaryStyle}
-            onClick={() => generateFactura()}
-            size="lg"
-            className="w-full"
-          >
-            Generar Crédito fiscal
-          </Button>
+        <div className="w-full flex  justify-center">
+          {loading ? (
+            <LoaderCircle size={50} className=" animate-spin " />
+          ) : (
+            <Button
+              style={global_styles().secondaryStyle}
+              onClick={() => generateFactura()}
+              size="lg"
+              className="w-full"
+            >
+              Generar Crédito fiscal
+            </Button>
+          )}
         </div>
       </div>
       <ModalGlobal
