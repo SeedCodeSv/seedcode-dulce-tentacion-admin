@@ -252,7 +252,7 @@ export const LayoutItems = () => {
         }}
       >
         <ShoppingCart size={20} />
-        <p className="ml-2 text-base">Ventas</p>
+        <p className="ml-2 text-base">Nueva venta</p>
       </NavLink>
 
       <NavLink

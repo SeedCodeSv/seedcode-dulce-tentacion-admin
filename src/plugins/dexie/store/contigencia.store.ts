@@ -9,6 +9,8 @@ import { add_receptor } from "../services/factura_receptor.service";
 import { Pagos } from "../entities/pagos";
 import { add_pagos } from "../services/pagos.service";
 import { Resumen } from "../entities/resumen";
+import { add_resumen } from "../services/resumen.service";
+import { CuerpoDocumento } from "../entities/cuerpo_documento";
 
 export const useContingenciaStore = create<IContingenciaStore>(() => ({
     createContingencia: async (DteJson) => {
@@ -81,6 +83,33 @@ export const useContingenciaStore = create<IContingenciaStore>(() => ({
                             condicionOperacion: Number(DteJson.dteJson.resumen.condicionOperacion),
                             numPagoElectronico: "0",
                             ventaId: result.id
+                        }
+
+                        const resumen_result = await add_resumen(resumen)
+
+                        if (resumen_result?.id) {
+                            // const cuerpo_documento: CuerpoDocumento[] = DteJson.dteJson.cuerpoDocumento.map((cuerpo) => {
+                            //     return {
+                            //         numItem: cuerpo.numItem,
+                            //         tipoItem: cuerpo.tipoItem,
+                            //         uniMedida: cuerpo.uniMedida,
+                            //         numeroDocumento: cuerpo.numeroDocumento,
+                            //         cantidad: cuerpo.cantidad,
+                            //         codigo: cuerpo.codigo,
+                            //         codTributo: cuerpo.codTributo,
+                            //         descripcion: cuerpo.descripcion,
+                            //         precioUni: cuerpo.precioUni,
+                            //         montoDescu: cuerpo.montoDescu,
+                            //         ventaNoSuj: cuerpo.ventaNoSuj,
+                            //         ventaExenta: cuerpo.ventaExenta,
+                            //         ventaGravada: cuerpo.ventaGravada,
+                            //         ivaItem: cuerpo.ivaItem,
+                            //         tributos: "0",
+                            //         psv: "0",
+                            //         noGravado: "0",
+                            //         ventaId: result.id
+                            //     }
+                            // })
                         }
                     }
                 }
