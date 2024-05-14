@@ -11,6 +11,7 @@ import QR from "../assets/codigo-qr-1024x1024-1.jpg";
 import Emisor from "../components/invoice/Emisor";
 import Receptor from "../components/invoice/Receptor";
 import TableProducts from "../components/invoice/TableProducts";
+import { DteJson } from '../types/DTE/credito_fiscal.types';
 // Create styles
 const styles = StyleSheet.create({
   page: {
@@ -24,6 +25,10 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
 });
+
+interface Props {
+  DTE: DteJson;
+}
 
 // Create Document Component
 export const MyDocument = () => (

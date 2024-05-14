@@ -1,19 +1,42 @@
-import { Autocomplete, AutocompleteItem } from "@nextui-org/react";
+import {
+  Autocomplete,
+  AutocompleteItem,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  Button,
+  useDisclosure,
+} from "@nextui-org/react";
 import { useBillingStore } from "../../store/facturation/billing.store";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useCustomerStore } from "../../store/customers.store";
 import { Customer } from "../../types/customers.types";
 import { toast } from "sonner";
 import { ITipoDocumento } from "../../types/DTE/tipo_documento.types";
 import { IFormasDePago } from "../../types/DTE/forma_de_pago.types";
 import { generate_factura } from "../../utils/DTE/factura";
-import {useTransmitterStore} from "../../store/transmitter.store"
+import { useTransmitterStore } from "../../store/transmitter.store";
 import { useBranchProductStore } from "../../store/branch_product.store";
+import { PutObjectCommand, PutObjectCommandInput } from "@aws-sdk/client-s3";
+import { pdf } from "@react-pdf/renderer";
+import { s3Client } from "../../plugins/s3";
+import { useCorrelativesDteStore } from "../../store/correlatives_dte.store";
+import { firmarDocumentoFactura, send_to_mh } from "../../services/DTE.service";
+import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
+import ModalGlobal from "../global/ModalGlobal";
+import { ShieldAlert } from "lucide-react";
+import { ThemeContext } from "../../hooks/useTheme";
+import { global_styles } from "../../styles/global.styles";
+import { return_mh_token } from "../../storage/localStorage";
+import { PayloadMH } from "../../types/DTE/DTE.types";
+import { ambiente } from "../../utils/constants";
+import { AxiosError } from "axios";
+import { SendMHFailed } from "../../types/transmitter.types";
 function FormMakeSale() {
+  const { theme } = useContext(ThemeContext);
+
   const [Customer, setCustomer] = useState<Customer>();
-  const {
-    cart_products
-  } = useBranchProductStore();
+  const { cart_products } = useBranchProductStore();
   const [tipeDocument, setTipeDocument] = useState<ITipoDocumento>();
   const [tipePayment, setTipePayment] = useState<IFormasDePago>();
 
@@ -22,17 +45,22 @@ function FormMakeSale() {
     getCat017FormasDePago,
     getCat02TipoDeDocumento,
     tipos_de_documento,
-    OnSignInvoiceDocument
   } = useBillingStore();
-const {gettransmitter, transmitter} = useTransmitterStore()
+  const { gettransmitter, transmitter } = useTransmitterStore();
   const { getCustomersList, customer_list } = useCustomerStore();
 
   useEffect(() => {
     getCat017FormasDePago();
     getCat02TipoDeDocumento();
     getCustomersList();
-    gettransmitter()
+    gettransmitter();
   }, []);
+
+  const modalError = useDisclosure();
+  const [errorMessage, setErrorMessage] = useState("");
+  const [title, setTitle] = useState<string>("");
+
+  const { getCorrelativesByDte } = useCorrelativesDteStore();
 
   const generateFactura = async () => {
     // setLoading(true); // Mostrar mensaje de espera
@@ -51,11 +79,77 @@ const {gettransmitter, transmitter} = useTransmitterStore()
       return;
     }
 
-    const generate = generate_factura(transmitter, 1, tipeDocument, Customer, cart_products, tipePayment)
-    OnSignInvoiceDocument(generate, generate.dteJson.resumen.subTotal)
+    const correlatives = await getCorrelativesByDte(transmitter.id, "01");
+
+    if (!correlatives) {
+      toast.error("No se encontraron correlativos");
+      return;
+    }
+
+    const generate = generate_factura(
+      transmitter,
+      Number(correlatives!.siguiente),
+      tipeDocument,
+      Customer,
+      cart_products,
+      tipePayment
+    );
+    toast.info("Estamos firmado tu documento");
+
+    firmarDocumentoFactura(generate)
+      .then(async ({ data }) => {
+        const token_mh = await return_mh_token();
+        if (data.body) {
+          const data_send: PayloadMH = {
+            ambiente: ambiente,
+            idEnvio: 1,
+            version: 1,
+            tipoDte: "01",
+            documento: data.body,
+          };
+          toast.info("Se ah enviado a hacienda, esperando respuesta");
+
+          if (token_mh) {
+            send_to_mh(data_send, token_mh)
+              .then(({ data }) => {})
+              .catch((error: AxiosError<SendMHFailed>) => {
+                if (error.response?.data) {
+                  setErrorMessage(
+                    error.response.data.observaciones &&
+                      error.response.data.observaciones.length > 0
+                      ? error.response?.data.observaciones.join("\n\n")
+                      : ""
+                  );
+                  setTitle(error.response.data.descripcionMsg ?? "Error al procesar venta");
+                  modalError.onOpen();
+                }
+              });
+          } else {
+            setErrorMessage("No se ha podido obtener el token de hacienda");
+            modalError.onOpen();
+            return;
+          }
+        } else {
+          setTitle("Error en el firmador")
+          setErrorMessage("Error al firmar el documento");
+          modalError.onOpen();
+          return;
+        }
+      })
+      .catch(() => {
+        setTitle("Error en el firmador")
+        setErrorMessage("Error al firmar el documento");
+        modalError.onOpen();
+      });
+
+    console.log(JSON.stringify(generate, null, 2));
+
+    return;
+
+    // OnSignInvoiceDocument(generate, Number(generate.dteJson.resumen.subTotal));
 
     const json_url = `CLIENTES/${transmitter.nombre}/VENTAS/FACTURAS/${generate.dteJson.identificacion.codigoGeneracion}.json`;
-    const pdf_url = `CLIENTES/${transmitter.nombre}/VENTAS/FACTURAS/${DTE.dteJson.identificacion.codigoGeneracion}.pdf`;
+    const pdf_url = `CLIENTES/${transmitter.nombre}/VENTAS/FACTURAS/${generate.dteJson.identificacion.codigoGeneracion}.pdf`;
 
     const JSON_DTE = JSON.stringify(generate.dteJson, null, 2);
     const json_blob = new Blob([JSON_DTE], { type: "application/json" });
@@ -133,7 +227,9 @@ const {gettransmitter, transmitter} = useTransmitterStore()
       <Autocomplete
         onSelectionChange={(key) => {
           if (key) {
-            const tipePaymentSelected = JSON.parse(key as string) as IFormasDePago;
+            const tipePaymentSelected = JSON.parse(
+              key as string
+            ) as IFormasDePago;
             setTipePayment(tipePaymentSelected);
           }
         }}
@@ -153,7 +249,9 @@ const {gettransmitter, transmitter} = useTransmitterStore()
       <Autocomplete
         onSelectionChange={(key) => {
           if (key) {
-            const tipeDocumentSelected = JSON.parse(key as string) as ITipoDocumento;
+            const tipeDocumentSelected = JSON.parse(
+              key as string
+            ) as ITipoDocumento;
             setTipeDocument(tipeDocumentSelected);
           }
         }}
@@ -170,16 +268,44 @@ const {gettransmitter, transmitter} = useTransmitterStore()
           </AutocompleteItem>
         ))}
       </Autocomplete>
-      <div className="flex justify-center mt-4 mb-4">
-        <div className="mr-4">
-          <button
+      <div className="flex justify-center mt-4 mb-4 w-full">
+        <div className="w-full">
+          <Button
+            style={global_styles().secondaryStyle}
             onClick={() => generateFactura()}
-            className="flex items-center p-2 px-2 rounded-md bg-[#02382A] text-white"
+            size="lg"
+            className="w-full"
           >
             Completar
-          </button>
+          </Button>
         </div>
       </div>
+      <ModalGlobal
+        title={title}
+        size="w-full md:w-[500px]"
+        isOpen={modalError.isOpen}
+        onClose={modalError.onClose}
+      >
+        <div className="flex flex-col justify-center items-center">
+          <ShieldAlert size={75} color="red" />
+          <p className="text-lg font-semibold">{errorMessage}</p>
+        </div>
+        <div className="grid grid-cols-2 gap-5 mt-5">
+          <Button
+            onClick={generateFactura}
+            style={global_styles().secondaryStyle}
+          >
+            Re-intentar
+          </Button>
+          <Button style={global_styles().dangerStyles}>
+            Enviar a contingencia
+          </Button>
+        </div>
+      </ModalGlobal>
+      {/* <Modal isOpen>
+        <ModalHeader>Error al realizar la venta</ModalHeader>
+        <ModalBody>Mensaje de error</ModalBody>
+      </Modal> */}
     </div>
   );
 }
