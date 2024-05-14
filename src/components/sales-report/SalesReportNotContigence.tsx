@@ -29,8 +29,6 @@ function SalesReportNotContigence() {
       <div className="flex justify-end mt-4">
         <Switch defaultSelected>Sin Contigencias</Switch>
       </div>
-    
-
       <div className="w-full h-full p-5 bg-gray-100 dark:bg-gray-800">
         <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
           <DataTable

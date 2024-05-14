@@ -5,10 +5,8 @@ import { Switch } from "@nextui-org/react";
 import { ThemeContext } from "../../hooks/useTheme";
 import { useReportContigenceStore } from "../../store/report_contigence.store";
 import { get_user } from "../../storage/localStorage";
-
 function SalesReportContigence() {
   const [branchId, setBranchId] = useState(0);
-
   const { sales, saless, OnGetSalesContigence, OnGetSalesNotContigence } =
     useReportContigenceStore();
   useEffect(() => {
@@ -17,15 +15,18 @@ function SalesReportContigence() {
       setBranchId(data?.employee.branch.id || 0);
     };
     getSalesContigence();
-    OnGetSalesContigence(branchId, 1, 5);
-    OnGetSalesNotContigence(branchId, 1, 5);
+    {
+      if (branchId !== 0) {
+        OnGetSalesContigence(branchId, 1, 5);
+        OnGetSalesNotContigence(branchId, 1, 5);
+      }
+    }
   }, [branchId]);
   const { theme } = useContext(ThemeContext);
   const style = {
     backgroundColor: theme.colors.dark,
     color: theme.colors.primary,
   };
-
   const [isActive, setIsActive] = useState(false);
 
   const formatCurrency = (value: number) => {
@@ -38,15 +39,14 @@ function SalesReportContigence() {
 
   return (
     <>
-      <div className="flex justify-end mt-4">
-        <Switch onChange={() => setIsActive(!isActive)} defaultSelected>
-          Sin Contigencias
-        </Switch>
-      </div>
-
       {isActive === true ? (
         <div className="w-full h-full p-5 bg-gray-100 dark:bg-gray-800">
           <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
+            <div className="flex overflow-hidden justify-end  mb-2 mr-3">
+              <Switch onChange={() => setIsActive(!isActive)} defaultSelected>
+                {isActive ? "No Contigencia" : "Contigencia"}
+              </Switch>
+            </div>
             <DataTable
               className="shadow"
               emptyMessage="No se encontraron resultados"
@@ -91,6 +91,11 @@ function SalesReportContigence() {
       ) : (
         <div className="w-full h-full p-5 bg-gray-100 dark:bg-gray-800">
           <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
+            <div className="flex overflow-hidden justify-end  mb-2 mr-3">
+              <Switch onChange={() => setIsActive(!isActive)} defaultSelected>
+                {isActive ? "No Contigencia" : "Contigencia"}
+              </Switch>
+            </div>
             <DataTable
               className="shadow"
               emptyMessage="No se encontraron resultados"
