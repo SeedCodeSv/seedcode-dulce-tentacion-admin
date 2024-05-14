@@ -1,13 +1,16 @@
-import { ChangeEvent, useRef, useState } from "react";
+import { ChangeEvent, useContext, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Image as NextImage, Button, Input } from "@nextui-org/react";
 import { useConfigurationStore } from "../../store/perzonalitation.store";
 import { ICreacteConfiguaration } from "../../types/configuration.types";
 import DefaultImage from "../../assets/react.svg";
+import { ThemeContext } from "../../hooks/useTheme";
 
 function CreateConfiguration() {
   const { OnCreateConfiguration } = useConfigurationStore();
   const [selectedImage, setSelectedImage] = useState(DefaultImage);
+
+  const { theme } = useContext(ThemeContext);
 
   const [formData, setFormData] = useState<ICreacteConfiguaration>({
     name: "",
@@ -66,7 +69,6 @@ function CreateConfiguration() {
 
     try {
       await OnCreateConfiguration(values);
-      toast.success("Guardando la información");
     } catch (error) {
       toast.error("Ocurrió un error al guardar");
     }
@@ -86,14 +88,17 @@ function CreateConfiguration() {
           src={selectedImage}
           alt="Cargando..."
           fallbackSrc={DefaultImage}
-          className="h-60 w-60 rounded-lg object-cover"
+          className="h-720 w-72 rounded-lg object-cover"
         ></NextImage>
         <div className="mt-2">
           <label htmlFor="fileInput">
             <Button
-              color="default"
               className="text-white font-semibold px-5"
               onClick={handleButtonClick}
+              style={{
+                backgroundColor: theme.colors.dark,
+                color: theme.colors.primary,
+              }}
             >
               Selecciona un archivo
             </Button>
@@ -107,13 +112,13 @@ function CreateConfiguration() {
             ref={fileInputRef}
           />
         </div>
-        <div className="mt-2">
+        <div className="mt-2 w-full">
           <Input
             isRequired
             type="text"
             name="name"
             variant="bordered"
-            placeholder="Ej: Doggie"
+            placeholder="Nombre"
             defaultValue={formData.name}
             onChange={(event) =>
               setFormData({ ...formData, name: event.target.value })
@@ -124,12 +129,13 @@ function CreateConfiguration() {
         <Button
           size="lg"
           color="primary"
-          className="bg-gradient-to-tr md:w-40 text-bold text-white shadow-lg"
+          className="font-semibold w-full mt-4 text-sm text-white shadow-lg"
           onClick={() => {
             handleSave(formData);
           }}
           style={{
-            borderColor: "#5DAF4F",
+            backgroundColor: theme.colors.third,
+            color: theme.colors.primary,
           }}
         >
           Guardar
