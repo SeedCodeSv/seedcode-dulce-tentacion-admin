@@ -14,24 +14,21 @@ import {
   Search,
   Table as ITable,
   Plus,
-  Minus,
-  Trash,
   Send,
 } from "lucide-react";
-import { EventHandler, useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { ThemeContext } from "../../hooks/useTheme";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { useBranchProductStore } from "../../store/branch_product.store";
 import { return_branch_id } from "../../storage/localStorage";
-import { BranchProduct, ICartProduct } from "../../types/branch_products.types";
+import { BranchProduct } from "../../types/branch_products.types";
 import Pagination from "../global/Pagination";
 import { limit_options } from "../../utils/constants";
 import { global_styles } from "../../styles/global.styles";
 import CartProducts from "./CartProducts";
 import ModalGlobal from "../global/ModalGlobal";
 import FormMakeSale from "./FormMakeSale";
-// import CreditoFiscal from "./CreditoFiscal";
 import useEventListener from "../../hooks/useEventListeners";
 import { useAuthStore } from "../../store/auth.store";
 import { toast } from "sonner";
@@ -52,6 +49,7 @@ const MainView = () => {
     addProductCart,
     getProductByCode,
     cart_products,
+    emptyCart,
   } = useBranchProductStore();
 
   useEffect(() => {
@@ -369,7 +367,12 @@ const MainView = () => {
         title="Nueva venta"
         size="w-full md:w-[500px] lg:w-[600px]"
       >
-        <FormMakeSale />
+        <FormMakeSale
+          clear={() => {
+            modalAdd.onClose();
+            emptyCart();
+          }}
+        />
       </ModalGlobal>
     </div>
   );
