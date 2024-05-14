@@ -13,7 +13,8 @@ import {
   ShieldHalf,
   CalculatorIcon,
   Grid2X2Icon,
-  ShoppingCart
+  ShoppingCart,
+  DollarSign
 } from "lucide-react";
 import { useContext } from "react";
 import { ThemeContext } from "../hooks/useTheme";
@@ -252,6 +253,27 @@ export const LayoutItems = () => {
         }}
       >
         <ShoppingCart size={20} />
+        <p className="ml-2 text-base">Ventas</p>
+      </NavLink>
+
+      <NavLink
+        to={"/sales-reports"}
+        className={({ isActive }) => {
+          return (
+            (isActive
+              ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
+              : "text-coffee-brown font-semibold border-white") +
+            " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
+          );
+        }}
+        style={({ isActive }) => {
+          return {
+            borderLeftColor: isActive ? theme.colors.dark : "transparent",
+            borderLeftWidth: 5,
+          };
+        }}
+      >
+        <DollarSign  size={20}/>
         <p className="ml-2 text-base">Ventas</p>
       </NavLink>
       <NavLink

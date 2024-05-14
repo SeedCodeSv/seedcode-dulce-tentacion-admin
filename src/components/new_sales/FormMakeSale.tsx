@@ -35,6 +35,7 @@ import { Invoice } from "../../pages/Invoice";
 import { TipoTributo } from "../../types/DTE/tipo_tributo.types";
 import CreditoFiscal from "./CreditoFiscal";
 import { ICheckResponse } from "../../types/DTE/check.types";
+import { useContingenciaStore } from "../../plugins/dexie/store/contigencia.store";
 
 interface Props {
   clear: () => void;
@@ -46,7 +47,7 @@ function FormMakeSale(props: Props) {
   const [tipeDocument, setTipeDocument] = useState<ITipoDocumento>();
   const [tipePayment, setTipePayment] = useState<IFormasDePago>();
   const [tipeTribute, setTipeTribute] = useState<TipoTributo>();
-  
+
   const [currentDTE, setCurrentDTE] = useState<DteJson>();
 
   const {
@@ -283,10 +284,13 @@ function FormMakeSale(props: Props) {
       });
   };
 
+  const { createContingencia } = useContingenciaStore();
+
   const sendToContingencia = () => {
     setLoading(true);
     modalError.onClose();
     if (currentDTE) {
+      createContingencia(currentDTE);
       const json_url = `CLIENTES/${transmitter.nombre}/VENTAS/FACTURAS/${currentDTE.dteJson.identificacion.codigoGeneracion}.json`;
 
       const JSON_DTE = JSON.stringify(currentDTE.dteJson, null, 2);
@@ -341,9 +345,9 @@ function FormMakeSale(props: Props) {
     Customer: Customer,
     tipePayment: tipePayment,
     tipeDocument: tipeDocument,
-    tipeTribute: tipeTribute
-    // closeModal: 
-  }
+    tipeTribute: tipeTribute,
+    clear: props.clear,
+  };
 
   const handleVerify = () => {
     setLoading(true);
@@ -472,7 +476,7 @@ function FormMakeSale(props: Props) {
           ))}
         </Autocomplete>
       )}
-      {tipeDocument?.codigo === "01" ? (
+      {tipeDocument?.codigo === "01" || tipeDocument?.codigo === undefined ? (
         <div className="flex justify-center mt-4 mb-4 w-full">
           <div className="w-full flex  justify-center">
             {loading ? (
@@ -490,7 +494,7 @@ function FormMakeSale(props: Props) {
           </div>
         </div>
       ) : (
-        <CreditoFiscal {...propsCredito}/>
+        <CreditoFiscal {...propsCredito} />
       )}
       <ModalGlobal
         title={title}
