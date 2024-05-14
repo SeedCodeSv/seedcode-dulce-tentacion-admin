@@ -36,6 +36,7 @@ import { TipoTributo } from "../../types/DTE/tipo_tributo.types";
 import CreditoFiscal from "./CreditoFiscal";
 import { ICheckResponse } from "../../types/DTE/check.types";
 import { useContingenciaStore } from "../../plugins/dexie/store/contigencia.store";
+import { save_logs } from "../../services/logs.service";
 
 interface Props {
   clear: () => void;
@@ -324,7 +325,12 @@ function FormMakeSale(props: Props) {
                   },
                 }
               )
-              .then(() => {
+              .then(async () => {
+                await save_logs({
+                  title: title,
+                  message: errorMessage,
+                  generationCode: currentDTE.dteJson.identificacion.codigoGeneracion
+                })
                 toast.success("Se envió la factura a contingencia");
                 props.clear();
                 setLoading(false);

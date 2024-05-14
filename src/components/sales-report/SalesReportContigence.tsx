@@ -35,8 +35,6 @@ function SalesReportContigence() {
       currency: "USD",
     });
   };
-  
-
   return (
     <>
       {isActive === true ? (
@@ -76,14 +74,14 @@ function SalesReportContigence() {
                 headerStyle={style}
                 field="subTotal"
                 header="Subtotal"
-                body={(rowData) => <p>${formatCurrency(rowData.subTotal)}</p>}
+                body={(rowData) => formatCurrency(Number(rowData.subTotal))}
               />
               <Column
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
                 // field="totalIva"
                 header="Total IVA"
-                body={(rowData) => <p>${formatCurrency(rowData.totalIva)}</p>}
+                body={(rowData) => formatCurrency(Number(rowData.totalIva))}
               />
             </DataTable>
           </div>
@@ -125,14 +123,14 @@ function SalesReportContigence() {
                 headerStyle={style}
                 field="subTotal"
                 header="Subtotal"
-                body={(rowData) => <p>${formatCurrency(rowData.subTotal)}</p>}
+                body={(rowData) => formatCurrency(Number(rowData.subTotal))}
               />
               <Column
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
                 // field="totalIva"
                 header="Total IVA"
-                body={(rowData) => <p>${formatCurrency(rowData.totalIva)}</p>}
+                body={(rowData) => formatCurrency(Number(rowData.totalIva))}
               />
             </DataTable>
           </div>

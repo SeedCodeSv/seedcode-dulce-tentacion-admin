@@ -11,6 +11,7 @@ import { add_pagos } from "../services/pagos.service";
 import { Resumen } from "../entities/resumen";
 import { add_resumen } from "../services/resumen.service";
 import { CuerpoDocumento } from "../entities/cuerpo_documento";
+import { add_cuerpo } from "../services/cuerpo_documento.service";
 
 export const useContingenciaStore = create<IContingenciaStore>(() => ({
     createContingencia: async (DteJson) => {
@@ -88,28 +89,31 @@ export const useContingenciaStore = create<IContingenciaStore>(() => ({
                         const resumen_result = await add_resumen(resumen)
 
                         if (resumen_result?.id) {
-                            // const cuerpo_documento: CuerpoDocumento[] = DteJson.dteJson.cuerpoDocumento.map((cuerpo) => {
-                            //     return {
-                            //         numItem: cuerpo.numItem,
-                            //         tipoItem: cuerpo.tipoItem,
-                            //         uniMedida: cuerpo.uniMedida,
-                            //         numeroDocumento: cuerpo.numeroDocumento,
-                            //         cantidad: cuerpo.cantidad,
-                            //         codigo: cuerpo.codigo,
-                            //         codTributo: cuerpo.codTributo,
-                            //         descripcion: cuerpo.descripcion,
-                            //         precioUni: cuerpo.precioUni,
-                            //         montoDescu: cuerpo.montoDescu,
-                            //         ventaNoSuj: cuerpo.ventaNoSuj,
-                            //         ventaExenta: cuerpo.ventaExenta,
-                            //         ventaGravada: cuerpo.ventaGravada,
-                            //         ivaItem: cuerpo.ivaItem,
-                            //         tributos: "0",
-                            //         psv: "0",
-                            //         noGravado: "0",
-                            //         ventaId: result.id
-                            //     }
-                            // })
+                            const cuerpo_documento: CuerpoDocumento[] = DteJson.dteJson.cuerpoDocumento.map((cuerpo) => {
+                                return {
+                                    numItem: cuerpo.numItem,
+                                    tipoItem: cuerpo.tipoItem,
+                                    uniMedida: cuerpo.uniMedida,
+                                    numeroDocumento: cuerpo.numeroDocumento ?? "0",
+                                    cantidad: cuerpo.cantidad,
+                                    codigo: cuerpo.codigo ?? "0",
+                                    codTributo: cuerpo.codTributo ?? "0",
+                                    descripcion: cuerpo.descripcion,
+                                    precioUni: Number(cuerpo.precioUni),
+                                    montoDescu: Number(cuerpo.montoDescu),
+                                    ventaNoSuj: Number(cuerpo.ventaNoSuj),
+                                    ventaExenta: Number(cuerpo.ventaExenta),
+                                    ventaGravada: Number(cuerpo.ventaGravada),
+                                    ivaItem: Number(cuerpo.ivaItem),
+                                    tributos: "0",
+                                    psv: 0,
+                                    noGravado: 0,
+                                    ventaId: result.id!
+                                }
+                            })
+                            add_cuerpo(cuerpo_documento).then(() => {
+                                console.log("todo guardado")
+                            })
                         }
                     }
                 }

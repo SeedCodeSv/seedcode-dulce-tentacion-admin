@@ -99,7 +99,7 @@ export default function TableProducts(props: Props) {
           </TD>
         </TR>
       ))}
-      <TableFooter />
+      <TableFooter DTE={props.DTE} />
     </Table>
   );
 }
