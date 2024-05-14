@@ -94,9 +94,6 @@ function AddBranch(props: Props) {
               </div>
             </div>
             <div className="flex justify-between gap-5 mt-5">
-              {/* <Button size="lg" onClick={() => modalCloseBox.onOpen()}>
-                Métodos de cierre
-              </Button> */}
               <Popover
                 isOpen={isOpen}
                 onClose={onClose}
@@ -107,25 +104,23 @@ function AddBranch(props: Props) {
                   <Button
                     onClick={onOpen}
                     isIconOnly
-                    style={{ width: 200, height: 50}}
+                    style={{ width: 200, height: 50, ...global_styles().dangerStyles }}
                   >
                     Métodos de cierre
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent>
                   <div className="w-full p-5">
-                    <p className="font-semibold text-gray-600 text-center">Cierres de cajas</p>
+                    <p className="font-semibold text-gray-600 text-center text-base">Cierres de cajas</p>
                     <p className="mt-3 text-center text-gray-600 w-72">
                       ¿Como quieres cerrar la caja?
                     </p>
                     <div className="mt-4">
-                      <Button onClick={() => modalCloseBox.onOpen()}>Cierre contabilizado</Button>
+                      <Button  style={global_styles().dangerStyles} onClick={() => modalCloseBox.onOpen()}>Cierre contabilizado</Button>
                       <Button
                         onClick={() => handleCloseBoxId()}
                         className="ml-5"
-                        style={{
-                          backgroundColor: theme.colors.third,
-                        }}
+                        style={global_styles().darkStyle}
                       >
                         Solo cerrar caja
                       </Button>
@@ -136,7 +131,7 @@ function AddBranch(props: Props) {
               <Button
                 size="lg"
                 className="font-semibold"
-                style={global_styles().thirdStyle}
+                style={global_styles().darkStyle}
                 onClick={handleActivate}
               >
                 Usar caja activa
