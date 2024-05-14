@@ -135,26 +135,26 @@ export interface DTEToPDFFiscal {
   codigoMsg: string;
   descripcionMsg: string;
   observaciones: string[];
-  transmitter: ITransmitter;
+  emisor: ITransmitter;
   receptor: Receptor;
   resumen: IResumen;
   numeroControl: string;
   cuerpoDocumento: CuerpoDocumento[];
 }
 export interface FiscalReceptor {
-  nit: string;
-  nrc: string;
-  nombre: string;
-  codActividad: string;
-  descActividad: string;
-  nombreComercial: string;
+  nit: string | null;
+  nrc: string | null;
+  nombre: string | null;
+  codActividad: string | null;
+  descActividad: string | null;
+  nombreComercial: string | null;
   direccion: {
-    departamento: string;
-    municipio: string;
-    complemento: string;
+    departamento: string | null;
+    municipio: string | null
+    complemento: string | null;
   };
-  telefono: string;
-  correo: string;
+  telefono: string | null;
+  correo: string | null;
 }
 export interface PayloadMH {
   ambiente: string;

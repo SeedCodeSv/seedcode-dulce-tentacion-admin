@@ -5,7 +5,6 @@ import { IFormasDePago } from "../../types/DTE/forma_de_pago.types";
 import { ITipoDocumento } from "../../types/DTE/tipo_documento.types";
 import { TipoTributo } from "../../types/DTE/tipo_tributo.types";
 import { ITransmitter } from "../../types/transmitter.types";
-import { IProductCart } from "../../types/products.types";
 import { getElSalvadorDateTime } from "../dates";
 import { generate_control } from "../dte";
 import { 
@@ -15,6 +14,8 @@ import {
 import { convertCurrencyFormat } from "../money";
 import {ambiente} from "../constants"
 import { useBranchProductStore } from "../../store/branch_product.store";
+import { generate_uuid } from "../random/random";
+import { ICartProduct } from "../../types/branch_products.types";
 export const make_to_pdf_fiscal = (
   DTE: ISendMHFiscal,
   total: number,
@@ -97,18 +98,24 @@ const total_iva = () => {
     })
     .reduce((a, b) => a + b, 0);
 };
+function calcularPorcentajeDescuento(
+  totalSinDescuento: number,
+  totalDescuento: number
+): number {
+  return ((totalSinDescuento - totalDescuento) / totalSinDescuento) * 100;
+}
+const calDiscount = () => {
+  return cart_products.map((prd) => prd.discount).reduce((a, b) => a + b, 0);
+};
 
 export const generate_credito_fiscal = (
   transmitter: ITransmitter,
   valueTipo: ITipoDocumento,
   next_number: number,
   receptor: FiscalReceptor,
-  products_carts: IProductCart[],
-  tributo: TipoTributo,
-  discount: number,
-  tipo_pago: IFormasDePago,
-  numero_generacion: string,
-  percentageDiscount: number
+  products_carts: ICartProduct[],
+  tributo?: TipoTributo,
+  tipo_pago?: IFormasDePago,
 ) => {
   return {
     nit: transmitter.nit,
@@ -117,7 +124,7 @@ export const generate_credito_fiscal = (
     dteJson: {
       identificacion: {
         version: valueTipo.codigo === "03" ? 3 : 1,
-        codigoGeneracion: numero_generacion,
+        codigoGeneracion: generate_uuid().toUpperCase(),
         ambiente: ambiente,
         tipoDte: valueTipo!.codigo,
         numeroControl: generate_control(
@@ -147,8 +154,8 @@ export const generate_credito_fiscal = (
         descuNoSuj: 0,
         descuExenta: 0,
         descuGravada: 0,
-        porcentajeDescuento: Number(percentageDiscount.toFixed(2)),
-        totalDescu: Number(discount.toFixed(2)),
+        porcentajeDescuento: Number(calcularPorcentajeDescuento(total(), calDiscount()).toFixed(2)),
+        totalDescu: Number(calDiscount().toFixed(2)),
         tributos: [
           {
             codigo: tributo!.codigo,
@@ -168,7 +175,7 @@ export const generate_credito_fiscal = (
         condicionOperacion: 1,
         pagos: [
           {
-            codigo: tipo_pago.codigo,
+            codigo: tipo_pago?.codigo,
             montoPago: Number((total() + total_iva()).toFixed(2)),
             referencia: "",
             plazo: null,
@@ -183,18 +190,18 @@ export const generate_credito_fiscal = (
   } as ISendMHFiscal;
 };
 export const make_cuerpo_documento_fiscal = (
-  products_cart: IProductCart[],
+  products_cart: ICartProduct[],
 ) => {
   return products_cart.map((cp, index) => {
     return {
       numItem: index + 1,
       tipoItem: 1,
-      uniMedida: Number(cp.producto.unidadDeMedida),
+      uniMedida: Number(26),
       numeroDocumento: null,
       cantidad: cp.quantity,
-      codigo: cp.producto.codigo,
+      codigo: null,
       codTributo: null,
-      descripcion: cp.producto.nombre,
+      descripcion: cp.product.name,
       precioUni:
         Number(cp.price) < Number(cp.base_price)
           ? Number(cp.base_price)

@@ -12,7 +12,9 @@ import { useBranchProductStore } from "../../store/branch_product.store";
 import { firmarDocumentoFiscal, send_to_mh } from "../../services/DTE.service";
 import { TipoTributo } from "../../types/DTE/tipo_tributo.types";
 import { return_mh_token } from "../../storage/localStorage";
-import { PayloadMH } from "../../types/DTE/credito_fiscal.types";
+import { DTEToPDFFiscal, PayloadMH } from "../../types/DTE/credito_fiscal.types";
+import { AxiosError } from "axios";
+import { SendMHFailed } from "../../types/transmitter.types";
 function FormMakeSale() {
   const [Customer, setCustomer] = useState<Customer>();
   const { cart_products } = useBranchProductStore();
@@ -64,11 +66,27 @@ function FormMakeSale() {
     ) {
       return;
     }
+    const receptor = {
+      nit: Customer!.nit,
+      nrc: Customer!.nrc,
+      nombre: Customer!.nombre,
+      codActividad: Customer!.codActividad,
+      descActividad: Customer!.descActividad,
+      nombreComercial:
+      Customer!.nombreComercial === "N/A" ? null : Customer!.nombreComercial,
+      direccion: {
+        departamento: Customer.direccion!.departamento,
+        municipio: Customer.direccion!.municipio,
+        complemento: Customer.direccion!.complemento,
+      },
+      telefono: Customer!.telefono === "N/A" ? null : Customer!.telefono,
+      correo: Customer!.correo,
+    }; 
     const generate = generate_credito_fiscal(
       transmitter,
       tipeDocument,
       1,
-      Customer,
+      receptor,
       cart_products,
       tipeTribute,
       tipePayment,
@@ -88,11 +106,11 @@ function FormMakeSale() {
           toast.info("Se ah enviado a hacienda, esperando respuesta");
           send_to_mh(data_send, token_mh!)
             .then(async ({ data }) => {
-              const data_pdf: DTEToPDFFiscal = make_to_pdf_fiscal(
-                PayloadMH,
-                total,
-                data
-              );
+              // const data_pdf: DTEToPDFFiscal = make_to_pdf_fiscal(
+              //   PayloadMH,
+              //   total,
+              //   data
+              // );
               toast.info("El DTE ah sido validado por hacienda");
               //guardar factura
               // await generate_fiscal(
