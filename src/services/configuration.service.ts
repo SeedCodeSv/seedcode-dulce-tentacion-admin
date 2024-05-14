@@ -1,7 +1,6 @@
 import { GetByTransmitter, IGetConfiguration } from "./../types/configuration.types";
 import axios from "axios";
 import { API_URL } from "../utils/constants";
-import { get_token } from "../storage/localStorage";
 
 export const create_configuration = async (
   configuration: IGetConfiguration
