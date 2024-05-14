@@ -11,7 +11,7 @@ export const useConfigurationStore = create<IConfigurationStore>(
     OnCreateConfiguration: (payload: IGetConfiguration) => {
       create_configuration(payload)
         .then(() => {
-          toast.success("Se creo con éxito");
+          toast.success("Personalización guardada");
         })
         .catch((error: any) => {
           console.error("Error al crear:", error);
