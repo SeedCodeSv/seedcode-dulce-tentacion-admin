@@ -1,7 +1,7 @@
 import axios from "axios";
 import { IGetAmbienteDestino } from "../types/DTE/ambiente_destino.types";
 import { API_FIRMADOR, FACTURACION_API, MH_DTE, MH_URL } from "../utils/constants";
-import { DteJson, PayloadMH } from "../types/DTE/credito_fiscal.types";
+import { PayloadMH } from "../types/DTE/credito_fiscal.types";
 import { ResponseMHSuccess } from "../types/DTE/contingencia.types";
 import { IGetFormasDePago } from "../types/DTE/forma_de_pago.types";
 import { IGetTiposDocumento } from "../types/DTE/tipo_documento.types";

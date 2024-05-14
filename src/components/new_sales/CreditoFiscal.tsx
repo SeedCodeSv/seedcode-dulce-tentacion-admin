@@ -1,4 +1,9 @@
-import { Autocomplete, AutocompleteItem } from "@nextui-org/react";
+import {
+  Autocomplete,
+  AutocompleteItem,
+  Button,
+  useDisclosure,
+} from "@nextui-org/react";
 import { useBillingStore } from "../../store/facturation/billing.store";
 import { useEffect, useState } from "react";
 import { useCustomerStore } from "../../store/customers.store";
@@ -21,12 +26,20 @@ import { Invoice } from "../../pages/Invoice";
 import { pdf } from "@react-pdf/renderer";
 import { API_URL } from "../../utils/constants";
 import { useCorrelativesDteStore } from "../../store/correlatives_dte.store";
+import ModalGlobal from "../global/ModalGlobal";
+import { ShieldAlert } from "lucide-react";
+import { global_styles } from "../../styles/global.styles";
+import CreditoFiscal from "./CreditoFiscal";
+
 function FormMakeSale() {
   const [Customer, setCustomer] = useState<Customer>();
   const { cart_products } = useBranchProductStore();
   const [tipeDocument, setTipeDocument] = useState<ITipoDocumento>();
   const [tipePayment, setTipePayment] = useState<IFormasDePago>();
   const [tipeTribute, setTipeTribute] = useState<TipoTributo>();
+  const [errorMessage, setErrorMessage] = useState("");
+  const [title, setTitle] = useState<string>("");
+  const modalError = useDisclosure();
   const {
     metodos_de_pago,
     getCat017FormasDePago,
@@ -39,7 +52,6 @@ function FormMakeSale() {
 
   const { gettransmitter, transmitter } = useTransmitterStore();
   const { getCustomersList, customer_list } = useCustomerStore();
-  console.log(customer_list);
 
   useEffect(() => {
     getCat017FormasDePago();
@@ -48,7 +60,7 @@ function FormMakeSale() {
     gettransmitter();
     OnGetTiposTributos();
   }, []);
-
+ 
   const generateFactura = async () => {
     // setLoading(true); // Mostrar mensaje de espera
     if (!tipePayment) {
@@ -74,7 +86,6 @@ function FormMakeSale() {
       toast.error("No se encontraron correlativos");
       return;
     }
-    console.log("llego");
     if (
       Customer.nit === "N/A" ||
       Customer.nrc === "N/A" ||
@@ -100,7 +111,6 @@ function FormMakeSale() {
       telefono: Customer!.telefono === "N/A" ? null : Customer!.telefono,
       correo: Customer!.correo,
     };
-    console.log(tipeTribute);
     const generate = generate_credito_fiscal(
       transmitter,
       tipeDocument,
@@ -110,6 +120,7 @@ function FormMakeSale() {
       tipeTribute,
       tipePayment
     );
+    console.log(generate)
     firmarDocumentoFiscal(generate)
       .then(async (firmador) => {
         const token_mh = await return_mh_token();
@@ -192,38 +203,28 @@ function FormMakeSale() {
                     });
                 }
               }
-              // const data_pdf: DTEToPDFFiscal = make_to_pdf_fiscal(
-              //   PayloadMH,
-              //   total,
-              //   data
-              // );
-              toast.info("El DTE ah sido validado por hacienda");
-              //guardar factura
-              // await generate_fiscal(
-              //   data_pdf,
-              //   generation,
-              //   data,
-              //   firmador.data.body
-              // );
             })
             .catch((error: AxiosError<SendMHFailed>) => {
-              if (error.response?.status === 401) {
-                // ToastAndroid.show(
-                //   "No tienes los accesos necesarios",
-                //   ToastAndroid.SHORT
-                // );
-                toast.error("No tienes los accesos necesarios");
-                // setLoadingSave(false);
+              if (error.response?.data) {
+                setErrorMessage(
+                  error.response.data.observaciones &&
+                    error.response.data.observaciones.length > 0
+                    ? error.response?.data.observaciones.join("\n\n")
+                    : ""
+                );
+                setTitle(
+                  error.response.data.descripcionMsg ??
+                    "Error al procesar venta"
+                );
+                modalError.onOpen();
               } else {
                 if (error.response?.data) {
-                  // Alert.alert(
-                  //   error.response?.data.descripcionMsg,
-                  //   error.response.data.observaciones &&
-                  //     error.response.data.observaciones.length > 0
-                  //     ? error.response?.data.observaciones.join("\n\n")
-                  //     : ""
-                  // );
-                  // setLoadingSave(false);
+                  setErrorMessage(
+                    "No se ha podido obtener el token de hacienda"
+                  );
+                  setErrorMessage("Error al firmar el documento");
+                  modalError.onOpen();
+                  return;
                 } else {
                   // ToastAndroid.show(
                   //   "No tienes los accesos necesarios",
@@ -337,16 +338,43 @@ function FormMakeSale() {
           </AutocompleteItem>
         ))}
       </Autocomplete>
-      <div className="flex justify-center mt-4 mb-4">
-        <div className="mr-4">
-          <button
+      <div className="flex justify-center mt-4 mb-4 w-full">
+        <div className="w-full">
+          <Button
+            style={global_styles().secondaryStyle}
             onClick={() => generateFactura()}
-            className="flex items-center p-2 px-2 rounded-md bg-[#02382A] text-white"
+            size="lg"
+            className="w-full"
           >
             Completar
-          </button>
+          </Button>
         </div>
       </div>
+      <ModalGlobal
+        title={title}
+        size="w-full md:w-[500px]"
+        isOpen={modalError.isOpen}
+        onClose={modalError.onClose}
+      >
+        <div className="flex flex-col justify-center items-center">
+          <ShieldAlert size={75} color="red" />
+          <p className="text-lg font-semibold">{errorMessage}</p>
+        </div>
+        <div className="grid grid-cols-2 gap-5 mt-5">
+          <Button
+            onClick={() => {
+              modalError.onClose();
+              generateFactura();
+            }}
+            style={global_styles().secondaryStyle}
+          >
+            Re-intentar
+          </Button>
+          <Button style={global_styles().dangerStyles}>
+            Enviar a contingencia
+          </Button>
+        </div>
+      </ModalGlobal>
     </div>
   );
 }
