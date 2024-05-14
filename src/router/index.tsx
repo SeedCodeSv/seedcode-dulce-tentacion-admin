@@ -13,6 +13,8 @@ import Expenses from "../pages/Expenses";
 import ActionRol from "../pages/ActionRol"
 import NewSales from "../pages/NewSales"
 import Configuration from "../pages/Configuration";
+import CreateConfiguration from "../components/configuration/CreateConfiguration";
+
 export const router = () => {
   return createBrowserRouter([
     {
@@ -66,6 +68,10 @@ export const router = () => {
     {
       path: "/configuration",
       element: <Configuration/>
+    },
+    {
+      path: "/create-configuration",
+      element: <CreateConfiguration/>
     },
     {
       path: "*",
