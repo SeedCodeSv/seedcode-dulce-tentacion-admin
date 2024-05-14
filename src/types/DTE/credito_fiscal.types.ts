@@ -18,23 +18,23 @@ export interface Identificacion {
 }
 
 export interface CuerpoDocumento {
-  numItem: number | string;
-  tipoItem: number | string;
-  uniMedida: number | string;
-  numeroDocumento?: any;
-  cantidad: number | string;
-  codigo: string | null;
-  codTributo?: any;
+  numItem: number;
+  tipoItem: number;
+  uniMedida: number;
+  numeroDocumento: any;
+  cantidad: number;
+  codigo: string ;
+  codTributo: any;
   descripcion: string;
-  precioUni: number | string;
-  montoDescu: number | string;
-  ventaNoSuj: number | string;
-  ventaExenta: number | string;
-  ventaGravada: number | string;
+  precioUni: number ;
+  montoDescu: number ;
+  ventaNoSuj: number ;
+  ventaExenta: number ;
+  ventaGravada: number 
   tributos: string[] | null;
-  psv: number | string;
-  noGravado: number | string;
-  ivaItem: number | string;
+  psv: number ;
+  noGravado: number 
+  ivaItem: number 
 }
 
 export interface ICuerpoDocumento {
@@ -100,9 +100,10 @@ export interface IResumen {
   totalPagar: number | string;
   totalLetras: string;
   saldoFavor: number | string;
-  condicionOperacion: number | string;
+  condicionOperacion: number;
   pagos: Pago[];
-  numPagoElectronico?: any;
+  numPagoElectronico: any;
+  totalIva: number | string;
 }
 export interface DteJson {
   identificacion: Identificacion;
@@ -113,8 +114,8 @@ export interface DteJson {
   ventaTercero: any;
   cuerpoDocumento: CuerpoDocumento[];
   resumen: IResumen;
-  extension?: any;
-  apendice?: any;
+  extension: any;
+  apendice: any;
 }
 
 export interface ISendMHFiscal {
@@ -143,8 +144,7 @@ export interface DTEToPDFFiscal {
   cuerpoDocumento: CuerpoDocumento[];
 }
 export interface FiscalReceptor {
-  tipoDocumento: null | string;
-  numDocumento: null | string;
+  
   nit: string | null;
   nrc: string | null;
   nombre: string | null;

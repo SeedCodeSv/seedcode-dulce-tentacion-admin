@@ -24,6 +24,6 @@ export interface IGlobalBillingStore {
   getCat02TipoDeDocumento: ()=> void
   getCat017FormasDePago: ()=>void
   OnGetAmbienteDestino: () => void;
-  OnSignInvoiceDocument: (DTE: DteJson, total: number) => void;
-  OnSignInvoiceDocumentFiscal: (PayloadMH: ISendMHFiscal, total: number) => void;
+  // OnSignInvoiceDocument: (DTE: DteJson, total: number) => void;
+  // OnSignInvoiceDocumentFiscal: (PayloadMH: ISendMHFiscal, total: number) => void;
 }
