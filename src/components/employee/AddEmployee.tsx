@@ -79,14 +79,14 @@ function AddEmployee(props: Props) {
           handleSubmit,
         }) => (
           <>
-            <div className="flex flex-col mt-4">
+            <div className="flex flex-col">
               <Input
                 name="name"
                 labelPlacement="outside"
                 value={values.fullName}
                 onChange={handleChange("fullName")}
                 onBlur={handleBlur("fullName")}
-                placeholder="Ingresa el nombre de la categoría"
+                placeholder="Ingresa el nombre"
                 size="lg"
                 classNames={{ label: "font-semibold text-sm  text-gray-600" }}
                 variant="bordered"
