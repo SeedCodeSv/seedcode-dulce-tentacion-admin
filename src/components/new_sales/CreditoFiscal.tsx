@@ -380,7 +380,7 @@ function CreditoFiscal(props: Props) {
       </div>
       <ModalGlobal
         title={title}
-        size="w-full md:w-[500px]"
+        size="w-full md:w-[600px] lg:w-[700px]"
         isOpen={modalError.isOpen}
         onClose={modalError.onClose}
       >
@@ -393,7 +393,7 @@ function CreditoFiscal(props: Props) {
             <LoaderCircle size={50} className=" animate-spin " />
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-5 mt-5">
+          <div className="grid grid-cols-3 gap-5 mt-5">
             <Button
               onClick={() => {
                 modalError.onClose();
