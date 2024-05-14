@@ -1,9 +1,6 @@
 import { ChangeEvent, useRef, useState } from "react";
 import { toast } from "sonner";
-import {
-  Image as NextImage,
-  Button,
-} from "@nextui-org/react";
+import { Image as NextImage, Button, Input } from "@nextui-org/react";
 import { useConfigurationStore } from "../../store/perzonalitation.store";
 import { ICreacteConfiguaration } from "../../types/configuration.types";
 import DefaultImage from "../../assets/react.svg";
@@ -108,6 +105,20 @@ function CreateConfiguration() {
             style={{ display: "none" }}
             onChange={handleFileChange}
             ref={fileInputRef}
+          />
+        </div>
+        <div className="mt-2">
+          <Input
+            isRequired
+            type="text"
+            name="name"
+            variant="bordered"
+            placeholder="Ej: Doggie"
+            defaultValue={formData.name}
+            onChange={(event) =>
+              setFormData({ ...formData, name: event.target.value })
+            }
+            label="Ingrese el nombre"
           />
         </div>
         <Button

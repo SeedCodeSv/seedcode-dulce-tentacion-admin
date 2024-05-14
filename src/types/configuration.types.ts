@@ -9,19 +9,18 @@ export interface IConfiguration {
 }
 
 export interface ConfigurationPayload {
-  // logo: string;
-  // ext: string;
+  logo: string;
+  ext: string;
   name: string;
   themeId: number;
   transmitterId: number;
 }
 
-export interface IGetConfiguration extends ConfigurationPayload {
+export interface IGetConfiguration extends ICreacteConfiguaration {
   file?: File | Blob | null | undefined;
 }
 
 export interface ICreacteConfiguaration {
-  id?: number;
   name: string;
   themeId: number;
   transmitterId: number;
