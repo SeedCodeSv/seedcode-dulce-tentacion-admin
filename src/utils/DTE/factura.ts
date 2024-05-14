@@ -10,7 +10,7 @@ import { convertCurrencyFormat } from "../money";
 import {generate_uuid} from "../random/random"
 import {ambiente} from "../../utils/constants.ts"
 import { ICartProduct } from "../../types/branch_products.types.ts";
-import { DteJson } from "../../types/DTE/credito_fiscal.types.ts";
+import { DteJson } from "../../types/DTE/DTE.types.ts";
 export const generate_factura = (
   transmitter: ITransmitter,
   next_number: number,
