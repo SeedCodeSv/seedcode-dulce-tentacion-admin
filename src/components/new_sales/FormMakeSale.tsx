@@ -128,6 +128,18 @@ function FormMakeSale() {
                   ).toBlob();
 
                   if (json_blob && blob) {
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement("a");
+                    link.download = "filename.pdf";
+                    link.href = url;
+                    link.click();
+
+                    const url2 = URL.createObjectURL(json_blob);
+                    const link2 = document.createElement("a");
+                    link2.download = "filename.json";
+                    link2.href = url2;
+                    link2.click();
+
                     const uploadParams: PutObjectCommandInput = {
                       Bucket: "seedcode-sv",
                       Key: json_url,
