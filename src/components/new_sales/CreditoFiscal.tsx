@@ -1,7 +1,4 @@
-import {
-  Button,
-  useDisclosure,
-} from "@nextui-org/react";
+import { Button, useDisclosure } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import { Customer } from "../../types/customers.types";
 import { toast } from "sonner";
@@ -20,7 +17,7 @@ import { s3Client } from "../../plugins/s3";
 import { SendMHFailed } from "../../types/transmitter.types";
 import { Invoice } from "../../pages/Invoice";
 import { pdf } from "@react-pdf/renderer";
-import { API_URL } from "../../utils/constants";
+import { API_URL, MH_QUERY, ambiente } from "../../utils/constants";
 import { useCorrelativesDteStore } from "../../store/correlatives_dte.store";
 import ModalGlobal from "../global/ModalGlobal";
 import { LoaderCircle, ShieldAlert } from "lucide-react";
@@ -28,19 +25,14 @@ import { global_styles } from "../../styles/global.styles";
 import { DteJson } from "../../types/DTE/DTE.types";
 
 interface Props {
-  // closeModal: () => void;
+  clear: () => void;
   Customer?: Customer;
   tipePayment?: IFormasDePago;
   tipeDocument?: ITipoDocumento;
   tipeTribute?: TipoTributo;
 }
 
-function CreditoFiscal({
-  Customer,
-  tipeDocument,
-  tipePayment,
-  tipeTribute,
-}: Props) {
+function CreditoFiscal(props: Props) {
   const { cart_products } = useBranchProductStore();
   const [errorMessage, setErrorMessage] = useState("");
   const [title, setTitle] = useState<string>("");
@@ -48,40 +40,37 @@ function CreditoFiscal({
   const [loading, setLoading] = useState(false);
 
   const modalError = useDisclosure();
-  // const {
-  //   metodos_de_pago,
-  //   getCat017FormasDePago,
-  //   getCat02TipoDeDocumento,
-  //   tipos_de_documento,
-  //   OnGetTiposTributos,
-  //   tipos_tributo,
-  // } = useBillingStore();
   const { getCorrelativesByDte } = useCorrelativesDteStore();
 
   const { gettransmitter, transmitter } = useTransmitterStore();
-  // const { getCustomersList, customer_list } = useCustomerStore();
-
+  const generateURLMH = (
+    ambiente: string,
+    codegen: string,
+    fechaEmi: string
+  ) => {
+    return `${MH_QUERY}?ambiente=${ambiente}&codGen=${codegen}&fechaEmi=${fechaEmi}`;
+  };
   useEffect(() => {
     gettransmitter();
   }, []);
 
   const generateFactura = async () => {
     // setLoading(true); // Mostrar mensaje de espera
-    if (!tipePayment) {
+    if (!props.tipePayment) {
       toast.info("Debes seleccionar el método de pago");
 
       return;
     }
-    if (!tipeDocument) {
+    if (!props.tipeDocument) {
       toast.info("Debes seleccionar el tipo de documento");
 
       return;
     }
-    if (!Customer) {
+    if (!props.Customer) {
       toast.info("Debes seleccionar el cliente");
       return;
     }
-    if (!tipeTribute) {
+    if (!props.tipeTribute) {
       toast.info("Debes seleccionar el tipo de tributo");
       return;
     }
@@ -91,38 +80,41 @@ function CreditoFiscal({
       return;
     }
     if (
-      Customer.nit === "N/A" ||
-      Customer.nrc === "N/A" ||
-      Customer.codActividad === "N/A" ||
-      Customer.descActividad === "N/A" ||
-      Customer.correo === "N/A"
+      props.Customer.nit === "N/A" ||
+      props.Customer.nrc === "N/A" ||
+      props.Customer.codActividad === "N/A" ||
+      props.Customer.descActividad === "N/A" ||
+      props.Customer.correo === "N/A"
     ) {
       return;
     }
     const receptor = {
-      nit: Customer!.nit,
-      nrc: Customer!.nrc,
-      nombre: Customer!.nombre,
-      codActividad: Customer!.codActividad,
-      descActividad: Customer!.descActividad,
+      nit: props.Customer!.nit,
+      nrc: props.Customer!.nrc,
+      nombre: props.Customer!.nombre,
+      codActividad: props.Customer!.codActividad,
+      descActividad: props.Customer!.descActividad,
       nombreComercial:
-        Customer!.nombreComercial === "N/A" ? null : Customer!.nombreComercial,
+        props.Customer!.nombreComercial === "N/A"
+          ? null
+          : props.Customer!.nombreComercial,
       direccion: {
-        departamento: Customer?.direccion?.departamento!,
-        municipio: Customer?.direccion?.municipio!,
-        complemento: Customer?.direccion?.complemento!,
+        departamento: props.Customer?.direccion?.departamento!,
+        municipio: props.Customer?.direccion?.municipio!,
+        complemento: props.Customer?.direccion?.complemento!,
       },
-      telefono: Customer!.telefono === "N/A" ? null : Customer!.telefono,
-      correo: Customer!.correo,
+      telefono:
+        props.Customer!.telefono === "N/A" ? null : props.Customer!.telefono,
+      correo: props.Customer!.correo,
     };
     const generate = generate_credito_fiscal(
       transmitter,
-      tipeDocument,
+      props.tipeDocument,
       Number(correlatives!.siguiente),
       receptor,
       cart_products,
-      tipeTribute,
-      tipePayment
+      props.tipeTribute,
+      props.tipePayment
     );
     console.log(generate);
     setCurrentDTE(generate);
@@ -143,41 +135,53 @@ function CreditoFiscal({
 
           toast.info("Se ah enviado a hacienda, esperando respuesta");
           if (token_mh) {
-            send_to_mh(data_send, token_mh!)
+            const source = axios.CancelToken.source();
+            const timeout = setTimeout(() => {
+              source.cancel("El tiempo de espera ha expirado");
+            }, 25000);
+            send_to_mh(data_send, token_mh!, source)
               .then(async ({ data }) => {
                 if (data.selloRecibido) {
-                  const json_url = `CLIENTES/${transmitter.nombre}/VENTAS/FACTURAS/${generate.dteJson.identificacion.codigoGeneracion}.json`;
-                  const pdf_url = `CLIENTES/${transmitter.nombre}/VENTAS/FACTURAS/${generate.dteJson.identificacion.codigoGeneracion}.pdf`;
+                  clearTimeout(timeout);
+                  toast.success("Hacienda respondió correctamente", {
+                    description: "Estamos guardando tus datos",
+                  });
+                  const json_url = `CLIENTES/${transmitter.nombre}/VENTAS/CRÉDITO_FISCAL/${generate.dteJson.identificacion.codigoGeneracion}.json`;
+                  const pdf_url = `CLIENTES/${transmitter.nombre}/VENTAS/CRÉDITO_FISCAL/${generate.dteJson.identificacion.codigoGeneracion}.pdf`;
 
-                  const JSON_DTE = JSON.stringify(generate.dteJson, null, 2);
+                  const JSON_DTE = JSON.stringify(
+                    {
+                      ...generate.dteJson,
+                      respuestaMH: data,
+                      firma: firmador.data.body,
+                    },
+                    null,
+                    2
+                  );
                   const json_blob = new Blob([JSON_DTE], {
                     type: "application/json",
                   });
 
                   const blob = await pdf(
-                    <Invoice DTE={generate} sello={data.selloRecibido} />
+                    <Invoice
+                      MHUrl={generateURLMH(
+                        ambiente,
+                        generate.dteJson.identificacion.codigoGeneracion,
+                        generate.dteJson.identificacion.fecEmi
+                      )}
+                      DTE={generate}
+                      sello={data.selloRecibido}
+                    />
                   ).toBlob();
 
                   if (json_blob && blob) {
-                    const url = URL.createObjectURL(blob);
-                    const link = document.createElement("a");
-                    link.download = "filename.pdf";
-                    link.href = url;
-                    link.click();
-
-                    const url2 = URL.createObjectURL(json_blob);
-                    const link2 = document.createElement("a");
-                    link2.download = "filename.json";
-                    link2.href = url2;
-                    link2.click();
-
                     const uploadParams: PutObjectCommandInput = {
-                      Bucket: "seedcode-sv",
+                      Bucket: "seedcode-facturacion",
                       Key: json_url,
                       Body: json_blob,
                     };
                     const uploadParamsPDF: PutObjectCommandInput = {
-                      Bucket: "seedcode-sv",
+                      Bucket: "seedcode-facturacion",
                       Key: pdf_url,
                       Body: blob,
                     };
@@ -213,6 +217,7 @@ function CreditoFiscal({
                                     toast.success(
                                       "Se completo con éxito la venta"
                                     );
+                                    props.clear();
                                     setLoading(false);
                                   })
                                   .catch(() => {
@@ -302,6 +307,7 @@ function CreditoFiscal({
               )
               .then(() => {
                 toast.success("Se envió la factura a contingencia");
+                props.clear();
                 setLoading(false);
               })
               .catch(() => {
@@ -319,15 +325,19 @@ function CreditoFiscal({
   return (
     <div>
       <div className="flex justify-center mt-4 mb-4 w-full">
-        <div className="w-full">
-          <Button
-            style={global_styles().secondaryStyle}
-            onClick={() => generateFactura()}
-            size="lg"
-            className="w-full"
-          >
-            Generar Crédito fiscal
-          </Button>
+        <div className="w-full flex  justify-center">
+          {loading ? (
+            <LoaderCircle size={50} className=" animate-spin " />
+          ) : (
+            <Button
+              style={global_styles().secondaryStyle}
+              onClick={() => generateFactura()}
+              size="lg"
+              className="w-full"
+            >
+              Generar Crédito fiscal
+            </Button>
+          )}
         </div>
       </div>
       <ModalGlobal

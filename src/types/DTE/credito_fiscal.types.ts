@@ -144,7 +144,6 @@ export interface DTEToPDFFiscal {
   cuerpoDocumento: CuerpoDocumento[];
 }
 export interface FiscalReceptor {
-  
   nit: string | null;
   nrc: string | null;
   nombre: string | null;
