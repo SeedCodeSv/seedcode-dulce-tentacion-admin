@@ -18,19 +18,29 @@ import { PutObjectCommand, PutObjectCommandInput } from "@aws-sdk/client-s3";
 import { pdf } from "@react-pdf/renderer";
 import { s3Client } from "../../plugins/s3";
 import { useCorrelativesDteStore } from "../../store/correlatives_dte.store";
-import { firmarDocumentoFactura, send_to_mh } from "../../services/DTE.service";
+import {
+  check_dte,
+  firmarDocumentoFactura,
+  send_to_mh,
+} from "../../services/DTE.service";
 import ModalGlobal from "../global/ModalGlobal";
 import { LoaderCircle, ShieldAlert } from "lucide-react";
 import { global_styles } from "../../styles/global.styles";
 import { get_token, return_mh_token } from "../../storage/localStorage";
 import { DteJson, PayloadMH } from "../../types/DTE/DTE.types";
-import { ambiente, API_URL } from "../../utils/constants";
+import { ambiente, API_URL, MH_QUERY } from "../../utils/constants";
 import axios, { AxiosError } from "axios";
 import { SendMHFailed } from "../../types/transmitter.types";
 import { Invoice } from "../../pages/Invoice";
 import { TipoTributo } from "../../types/DTE/tipo_tributo.types";
 import CreditoFiscal from "./CreditoFiscal";
-function FormMakeSale() {
+import { ICheckResponse } from "../../types/DTE/check.types";
+
+interface Props {
+  clear: () => void;
+}
+
+function FormMakeSale(props: Props) {
   const [Customer, setCustomer] = useState<Customer>();
   const { cart_products } = useBranchProductStore();
   const [tipeDocument, setTipeDocument] = useState<ITipoDocumento>();
@@ -65,6 +75,15 @@ function FormMakeSale() {
 
   const { getCorrelativesByDte } = useCorrelativesDteStore();
   console.log(tipeDocument);
+
+  const generateURLMH = (
+    ambiente: string,
+    codegen: string,
+    fechaEmi: string
+  ) => {
+    return `${MH_QUERY}?ambiente=${ambiente}&codGen=${codegen}&fechaEmi=${fechaEmi}`;
+  };
+
   const generateFactura = async () => {
     // setLoading(true); // Mostrar mensaje de espera
     if (!tipePayment) {
@@ -141,7 +160,15 @@ function FormMakeSale() {
                   });
 
                   const blob = await pdf(
-                    <Invoice DTE={generate} sello={data.selloRecibido} />
+                    <Invoice
+                      MHUrl={generateURLMH(
+                        ambiente,
+                        generate.dteJson.identificacion.codigoGeneracion,
+                        generate.dteJson.identificacion.fecEmi
+                      )}
+                      DTE={generate}
+                      sello={data.selloRecibido}
+                    />
                   ).toBlob();
 
                   if (json_blob && blob) {
@@ -188,6 +215,7 @@ function FormMakeSale() {
                                     toast.success(
                                       "Se completo con éxito la venta"
                                     );
+                                    props.clear();
                                     setLoading(false);
                                   })
                                   .catch(() => {
@@ -278,6 +306,7 @@ function FormMakeSale() {
               )
               .then(() => {
                 toast.success("Se envió la factura a contingencia");
+                props.clear();
                 setLoading(false);
               })
               .catch(() => {
@@ -292,13 +321,52 @@ function FormMakeSale() {
         });
     }
   };
-  const props = {
+  const propsCredito = {
     Customer: Customer,
     tipePayment: tipePayment,
     tipeDocument: tipeDocument,
     tipeTribute: tipeTribute
     // closeModal: 
   }
+
+  const handleVerify = () => {
+    setLoading(true);
+
+    const payload = {
+      nitEmisor: transmitter.nit,
+      tdte: currentDTE?.dteJson.identificacion.tipoDte ?? "01",
+      codigoGeneracion:
+        currentDTE?.dteJson.identificacion.codigoGeneracion ?? "",
+    };
+
+    const token_mh = return_mh_token();
+
+    check_dte(payload, token_mh ?? "")
+      .then((response) => {
+        toast.success(response.data.estado, {
+          description: `Sello recibido: ${response.data.selloRecibido}`,
+        });
+        setLoading(false);
+      })
+      .catch((error: AxiosError<ICheckResponse>) => {
+        if (error.status === 500) {
+          toast.error("NO ENCONTRADO", {
+            description: "DTE no encontrado en hacienda",
+          });
+          setLoading(false);
+          return;
+        }
+
+        toast.error("ERROR", {
+          description: `Error: ${
+            error.response?.data.descripcionMsg ??
+            "DTE no encontrado en hacienda"
+          }`,
+        });
+        setLoading(false);
+      });
+  };
+
   return (
     <div>
       <Autocomplete
@@ -406,11 +474,11 @@ function FormMakeSale() {
           </div>
         </div>
       ) : (
-        <CreditoFiscal {...props}/>
+        <CreditoFiscal {...propsCredito}/>
       )}
       <ModalGlobal
         title={title}
-        size="w-full md:w-[600px]"
+        size="w-full md:w-[600px] lg:w-[700px]"
         isOpen={modalError.isOpen}
         onClose={modalError.onClose}
       >
@@ -423,7 +491,7 @@ function FormMakeSale() {
             <LoaderCircle size={50} className=" animate-spin " />
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-5 mt-5">
+          <div className="grid grid-cols-3 gap-5 mt-5">
             <Button
               onClick={() => {
                 modalError.onClose();
@@ -433,6 +501,13 @@ function FormMakeSale() {
               size="lg"
             >
               Re-intentar
+            </Button>
+            <Button
+              onClick={handleVerify}
+              style={global_styles().warningStyles}
+              size="lg"
+            >
+              Verificar
             </Button>
             <Button
               onClick={sendToContingencia}

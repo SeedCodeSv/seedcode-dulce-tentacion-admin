@@ -16,6 +16,13 @@ export interface ConfigurationPayload {
   transmitterId: number;
 }
 
-export interface IGetConfiguration extends ConfigurationPayload {
-    file?: File | Blob | null | undefined;
-  }
+export interface IGetConfiguration extends ICreacteConfiguaration {
+  file?: File | Blob | null | undefined;
+}
+
+export interface ICreacteConfiguaration {
+  name: string;
+  themeId: number;
+  transmitterId: number;
+  file?: File | Blob | null;
+}

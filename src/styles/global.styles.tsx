@@ -21,5 +21,9 @@ export const global_styles = () => {
       backgroundColor: theme.colors.danger,
       color: theme.colors.primary,
     },
+    warningStyles:{
+      backgroundColor: theme.colors.warning,
+      color: theme.colors.primary,
+    }
   };
 };

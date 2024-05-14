@@ -1,12 +1,14 @@
 export const API_URL = "http://localhost:8080/api";
 export const FACTURACION_API = "https://cats-facturacion-43ay7.ondigitalocean.app/api";
-
+export const MH_QUERY = "https://admin.factura.gob.sv/consultaPublica";
 export const ambiente = "00";
 export const API_FIRMADOR = "https://firmadorseedcodesv.online/firmardocumento/";
 export const MH_DTE = "https://apitest.dtes.mh.gob.sv/fesv/recepciondte";
 export const MH_URL = "https://apitest.dtes.mh.gob.sv/fesv/";
 
 export const AUTH_MH = "https://apitest.dtes.mh.gob.sv/seguridad/auth";
+
+export const CHECK_URL = "https://apitest.dtes.mh.gob.sv/fesv/recepcion/consultadte/"
 
 export const messages = {
     error: "Ocurrió un error al procesar la petición",

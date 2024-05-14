@@ -9,11 +9,9 @@ export const create_configuration = async (
   if (configuration.file) {
     formData.append("file", configuration.file);
   }
-  formData.append("logo", configuration.logo);
-  formData.append("ext", configuration.ext);
-  formData.append("ext", configuration.name);
-  formData.append("themeId", configuration.themeId.toString());
-  formData.append("transmitterId", configuration.transmitterId.toString());
+  formData.append("name", configuration.name);
+  formData.append("themeId", configuration.themeId.toLocaleString());
+  formData.append("transmitterId", configuration.transmitterId.toLocaleString());
   return axios.post<{ ok: boolean; status: number }>(
     API_URL + "/personalization",
     formData,

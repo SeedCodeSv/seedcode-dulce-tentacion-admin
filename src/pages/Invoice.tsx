@@ -7,7 +7,6 @@ import {
   Image,
 } from "@react-pdf/renderer";
 import { Table, TR, TH, TD } from "@ag-media/react-pdf-table";
-import QR from "../assets/codigo-qr-1024x1024-1.jpg";
 import Emisor from "../components/invoice/Emisor";
 import Receptor from "../components/invoice/Receptor";
 import TableProducts from "../components/invoice/TableProducts";
@@ -29,6 +28,7 @@ const styles = StyleSheet.create({
 interface Props {
   DTE: DteJson;
   sello: string;
+  MHUrl: string
 }
 
 // Create Document Component
@@ -58,7 +58,7 @@ export const Invoice = (props: Props) => (
             gap: 10,
           }}
         >
-          <Image src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={{seedCodeImage}}`} style={{ width: 75, height: 75 }} />
+          <Image src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${props.MHUrl}`} style={{ width: 75, height: 75 }} />
           <Image src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://wwww.seedcodesv.com`} style={{ width: 75, height: 75 }} />
         </View>
       </View>
