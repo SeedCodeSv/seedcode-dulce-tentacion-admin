@@ -114,7 +114,7 @@ export interface ICuerpoDocumento {
   tipoItem: number;
   numeroDocumento: null | string;
   cantidad: number;
-  codigo: string;
+  codigo: string | null;
   codTributo: null | string;
   uniMedida: number;
   descripcion: string;
@@ -164,8 +164,8 @@ export interface Pago {
   codigo: string;
   montoPago: number;
   referencia: null | string;
-  plazo: null | string;
-  periodo: null | string;
+  plazo?: null | string;
+  periodo?: null | string;
 }
 
 export interface Extension {

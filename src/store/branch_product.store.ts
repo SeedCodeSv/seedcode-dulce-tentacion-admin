@@ -57,6 +57,10 @@ export const useBranchProductStore = create<IBranchProductStore>(
                     cart_products: [...cart_products, {
                         ...data.product,
                         quantity: 1,
+              base_price: Number(data.product.price),
+              discount: 0,
+              total: Number(data.product.price),
+              percentage: 0,
                     }]
                 })
             }

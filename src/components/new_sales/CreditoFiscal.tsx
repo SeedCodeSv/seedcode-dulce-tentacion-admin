@@ -20,13 +20,13 @@ import { SendMHFailed } from "../../types/transmitter.types";
 import { Invoice } from "../../pages/Invoice";
 import { pdf } from "@react-pdf/renderer";
 import { API_URL } from "../../utils/constants";
+import { useCorrelativesDteStore } from "../../store/correlatives_dte.store";
 function FormMakeSale() {
   const [Customer, setCustomer] = useState<Customer>();
   const { cart_products } = useBranchProductStore();
   const [tipeDocument, setTipeDocument] = useState<ITipoDocumento>();
   const [tipePayment, setTipePayment] = useState<IFormasDePago>();
   const [tipeTribute, setTipeTribute] = useState<TipoTributo>();
-
   const {
     metodos_de_pago,
     getCat017FormasDePago,
@@ -35,8 +35,11 @@ function FormMakeSale() {
     OnGetTiposTributos,
     tipos_tributo,
   } = useBillingStore();
+  const { getCorrelativesByDte } = useCorrelativesDteStore();
+
   const { gettransmitter, transmitter } = useTransmitterStore();
   const { getCustomersList, customer_list } = useCustomerStore();
+  console.log(customer_list);
 
   useEffect(() => {
     getCat017FormasDePago();
@@ -62,6 +65,16 @@ function FormMakeSale() {
       toast.info("Debes seleccionar el cliente");
       return;
     }
+    if (!tipeTribute) {
+      toast.info("Debes seleccionar el tipo de tributo");
+      return;
+    }
+    const correlatives = await getCorrelativesByDte(transmitter.id, "03");
+    if (!correlatives) {
+      toast.error("No se encontraron correlativos");
+      return;
+    }
+    console.log("llego");
     if (
       Customer.nit === "N/A" ||
       Customer.nrc === "N/A" ||
@@ -72,8 +85,6 @@ function FormMakeSale() {
       return;
     }
     const receptor = {
-      tipoDocumento: Customer.tipoDocumento,
-  numDocumento: Customer.numDocumento,
       nit: Customer!.nit,
       nrc: Customer!.nrc,
       nombre: Customer!.nombre,
@@ -82,17 +93,18 @@ function FormMakeSale() {
       nombreComercial:
         Customer!.nombreComercial === "N/A" ? null : Customer!.nombreComercial,
       direccion: {
-        departamento: Customer.direccion!.departamento,
-        municipio: Customer.direccion!.municipio,
-        complemento: Customer.direccion!.complemento,
+        departamento: Customer?.direccion?.departamento!,
+        municipio: Customer?.direccion?.municipio!,
+        complemento: Customer?.direccion?.complemento!,
       },
       telefono: Customer!.telefono === "N/A" ? null : Customer!.telefono,
       correo: Customer!.correo,
     };
+    console.log(tipeTribute);
     const generate = generate_credito_fiscal(
       transmitter,
       tipeDocument,
-      1,
+      Number(correlatives!.siguiente),
       receptor,
       cart_products,
       tipeTribute,
@@ -159,7 +171,7 @@ function FormMakeSale() {
                           .then((response) => {
                             if (response.$metadata) {
                               axios
-                                .post(API_URL + "/sales/factura-sale", {
+                                .post(API_URL + "/sales/credit-transaction", {
                                   pdf: pdf_url,
                                   dte: json_url,
                                   cajaId: Number(localStorage.getItem("box")),

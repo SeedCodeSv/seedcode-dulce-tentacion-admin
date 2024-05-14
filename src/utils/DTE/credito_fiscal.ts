@@ -1,4 +1,4 @@
-import { FiscalReceptor } from "../../types/DTE/credito_fiscal.types";
+import { DteJson, FiscalReceptor } from "../../types/DTE/credito_fiscal.types";
 import { ResponseMHSuccess } from "../../types/DTE/contingencia.types";
 import { ISendMHFiscal } from "../../types/DTE/credito_fiscal.types";
 import { IFormasDePago } from "../../types/DTE/forma_de_pago.types";
@@ -81,22 +81,32 @@ export const make_cuerpo_documento_pdf_fiscal = (DTE: ISendMHFiscal) => {
   });
 };
 
-const {cart_products} = useBranchProductStore()
 
-const total = () => {
+const total = (cart_products: ICartProduct[]) => {
   return cart_products
     .map((cp) => Number(cp.quantity) * Number(cp.price))
     .reduce((a, b) => a + b, 0);
 };
 
-const total_iva = () => {
+// const total_iva = (cart_products: ICartProduct[]) => {
+//   return cart_products
+//     .map((cp) => {
+//       const total = Number(cp.price) * Number(cp.quantity);
+
+//       const iva = total / 1.13;
+
+//       return total - iva;
+//     })
+//     .reduce((a, b) => a + b, 0);
+// };
+const total_iva = (cart_products: ICartProduct[]) => {
   return cart_products
     .map((cp) => {
       const total = Number(cp.price) * Number(cp.quantity);
 
-      const iva = total / 1.13;
+      const iva = total * 0.13;
 
-      return total - iva;
+      return iva;
     })
     .reduce((a, b) => a + b, 0);
 };
@@ -106,7 +116,7 @@ function calcularPorcentajeDescuento(
 ): number {
   return ((totalSinDescuento - totalDescuento) / totalSinDescuento) * 100;
 }
-const calDiscount = () => {
+const calDiscount = (cart_products: ICartProduct[]) => {
   return cart_products.map((prd) => prd.discount).reduce((a, b) => a + b, 0);
 };
 
@@ -151,34 +161,34 @@ export const generate_credito_fiscal = (
       resumen: {
         totalNoSuj: 0,
         totalExenta: 0,
-        totalGravada: Number(total().toFixed(2)),
-        subTotalVentas: Number(total().toFixed(2)),
+        totalGravada: Number(total(products_carts).toFixed(2)),
+        subTotalVentas: Number(total(products_carts).toFixed(2)),
         descuNoSuj: 0,
         descuExenta: 0,
         descuGravada: 0,
-        porcentajeDescuento: Number(calcularPorcentajeDescuento(total(), calDiscount()).toFixed(2)),
-        totalDescu: Number(calDiscount().toFixed(2)),
+        porcentajeDescuento: Number(calcularPorcentajeDescuento(total(products_carts), calDiscount(products_carts)).toFixed(2)),
+        totalDescu: Number(calDiscount(products_carts).toFixed(2)),
         tributos: [
           {
             codigo: tributo!.codigo,
             descripcion: tributo!.valores,
-            valor: Number(total_iva().toFixed(2)),
+            valor: Number(total_iva(products_carts).toFixed(2)),
           },
         ],
-        subTotal: Number(total().toFixed(2)),
+        subTotal: Number(total(products_carts).toFixed(2)),
         ivaRete1: 0,
         reteRenta: 0,
         ivaPerci1: 0,
-        montoTotalOperacion: Number((total() + total_iva()).toFixed(2)),
+        montoTotalOperacion: Number((total(products_carts) + total_iva(products_carts)).toFixed(2)),
         totalNoGravado: 0,
-        totalPagar: Number((total() + total_iva()).toFixed(2)),
-        totalLetras: convertCurrencyFormat((total() + total_iva()).toFixed(2)),
+        totalPagar: Number((total(products_carts) + total_iva(products_carts)).toFixed(2)),
+        totalLetras: convertCurrencyFormat((total(products_carts) + total_iva(products_carts)).toFixed(2)),
         saldoFavor: 0,
         condicionOperacion: 1,
         pagos: [
           {
             codigo: tipo_pago?.codigo,
-            montoPago: Number((total() + total_iva()).toFixed(2)),
+            montoPago: Number((total(products_carts) + total_iva(products_carts)).toFixed(2)),
             referencia: "",
             plazo: null,
             periodo: null,
