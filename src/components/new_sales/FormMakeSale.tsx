@@ -129,9 +129,16 @@ function FormMakeSale(props: Props) {
           toast.info("Se ah enviado a hacienda, esperando respuesta");
 
           if (token_mh) {
-            send_to_mh(data_send, token_mh)
+            const source = axios.CancelToken.source();
+
+            const timeout = setTimeout(() => {
+              source.cancel("El tiempo de espera ha expirado");
+            }, 25000);
+
+            send_to_mh(data_send, token_mh, source)
               .then(async ({ data }) => {
                 if (data.selloRecibido) {
+                  clearTimeout(timeout);
                   toast.success("Hacienda respondió correctamente", {
                     description: "Estamos guardando tus datos",
                   });
@@ -223,6 +230,15 @@ function FormMakeSale(props: Props) {
                 }
               })
               .catch((error: AxiosError<SendMHFailed>) => {
+                clearTimeout(timeout);
+
+                if (axios.isCancel(error)) {
+                  setTitle("Tiempo de espera agotado");
+                  setErrorMessage("El tiempo limite de espera ha expirado");
+                  modalError.onOpen();
+                  setLoading(false);
+                }
+
                 if (error.response?.data) {
                   setErrorMessage(
                     error.response.data.observaciones &&
