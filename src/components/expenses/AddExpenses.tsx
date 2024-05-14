@@ -14,6 +14,7 @@ import { CategoryExpense } from "../../types/categories_expenses.types.ts";
 import { useCategoriesExpenses } from "../../store/categories_expenses.store.ts";
 import { useEffect } from "react";
 import {get_box} from "../../storage/localStorage.ts"
+import { toast } from "sonner";
 interface Props {
   closeModal: () => void;
   expenses?: IExpense | undefined;
@@ -46,6 +47,10 @@ const AddExpenses = (props: Props) => {
         if (res) props.closeModal();
       });
     } else {
+      if(box === null){
+        toast.info("No tienes una caja activa")
+        return
+      }
       postExpenses({
         ...values,
         boxId: Number(box),
