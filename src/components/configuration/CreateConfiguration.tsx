@@ -81,7 +81,7 @@ function CreateConfiguration() {
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center m-4 2xl:mt-10">
+      <div className="flex flex-col items-center justify-center m-4 2xl   :mt-10">
         <NextImage
           src={selectedImage}
           alt="Cargando..."
