@@ -58,8 +58,8 @@ export const Invoice = (props: Props) => (
             gap: 10,
           }}
         >
-          <Image src={QR} style={{ width: 75, height: 75 }} />
-          <Image src={QR} style={{ width: 75, height: 75 }} />
+          <Image src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={{seedCodeImage}}`} style={{ width: 75, height: 75 }} />
+          <Image src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://wwww.seedcodesv.com`} style={{ width: 75, height: 75 }} />
         </View>
       </View>
       <View

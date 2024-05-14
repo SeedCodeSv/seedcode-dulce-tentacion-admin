@@ -3,9 +3,9 @@ import { S3 } from "@aws-sdk/client-s3";
 export const s3Client = new S3({
   forcePathStyle: false,
   endpoint: "https://sfo3.digitaloceanspaces.com",
-  region: "nyc3",
+  region: "sf03",
   credentials: {
-    accessKeyId: "DO00EEMBQD2EGDFWHV7A",
-    secretAccessKey: "gbFwEXTjlp51MVxl50STP0vetl2Xmcd8eTNiKJokiF0",
+    accessKeyId: "DO00JDTDLKTFQ73DZY2Q",
+    secretAccessKey: "DdWXEn4Z3UAb9M4/aZGNI+VrYP/tXsvvPUxQboGr/sY",
   },
 });

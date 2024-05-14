@@ -1,64 +1,80 @@
 export function convertCurrencyFormat(input: string) {
-    // Separar la cantidad y los centavos
-    const [amount, cents = "00"] = input.includes(".")
-      ? input.split(".")
-      : [input];
-  
-    // Función para convertir números a palabras
-    const numberToWords = (num: number) => {
+  const [amount, cents = "00"] = input.includes(".")
+    ? input.split(".")
+    : [input];
+
+  const numberToWords = (num: number): string => {
       const units = [
-        "",
-        "UNO",
-        "DOS",
-        "TRES",
-        "CUATRO",
-        "CINCO",
-        "SEIS",
-        "SIETE",
-        "OCHO",
-        "NUEVE",
-        "DIEZ",
-        "ONCE",
-        "DOCE",
-        "TRECE",
-        "CATORCE",
-        "QUINCE",
-        "DIECISEIS",
-        "DIECISIETE",
-        "DIECIOCHO",
-        "DIECINUEVE",
+          "",
+          "UNO",
+          "DOS",
+          "TRES",
+          "CUATRO",
+          "CINCO",
+          "SEIS",
+          "SIETE",
+          "OCHO",
+          "NUEVE",
+          "DIEZ",
+          "ONCE",
+          "DOCE",
+          "TRECE",
+          "CATORCE",
+          "QUINCE",
+          "DIECISEIS",
+          "DIECISIETE",
+          "DIECIOCHO",
+          "DIECINUEVE",
       ];
       const tens = [
-        "",
-        "",
-        "VEINTE",
-        "TREINTA",
-        "CUARENTA",
-        "CINCUENTA",
-        "SESENTA",
-        "SETENTA",
-        "OCHENTA",
-        "NOVENTA",
+          "",
+          "",
+          "VEINTE",
+          "TREINTA",
+          "CUARENTA",
+          "CINCUENTA",
+          "SESENTA",
+          "SETENTA",
+          "OCHENTA",
+          "NOVENTA",
       ];
-  
-      if (num < 20) {
-        return units[num];
-      } else {
-        const unit = num % 10;
-        const ten = Math.floor(num / 10);
-        if (unit === 0) {
-          return tens[ten];
-        } else {
-          return tens[ten] + " Y " + units[unit];
-        }
+      const hundreds = [
+          "",
+          "CIEN",
+          "DOSCIENTOS",
+          "TRESCIENTOS",
+          "CUATROCIENTOS",
+          "QUINIENTOS",
+          "SEISCIENTOS",
+          "SETECIENTOS",
+          "OCHOCIENTOS",
+          "NOVECIENTOS",
+      ];
+
+      if (num < 20) return units[num];
+      if (num < 100) {
+          const unit = num % 10;
+          const ten = Math.floor(num / 10);
+          return unit === 0 ? tens[ten] : `${tens[ten]} Y ${units[unit]}`;
       }
-    };
-  
-    // Convertir cantidad a palabras
-    const amountInWords = numberToWords(parseInt(amount));
-  
-    // Formatear los centavos
-    const centsFormatted = cents.padEnd(2, "0");
-  
-    return `${amountInWords} ${centsFormatted}/100 DOLARES AMERICANOS`;
-  }
+      if (num < 1000) {
+          const hundred = Math.floor(num / 100);
+          const remainder = num % 100;
+          const remainderInWords = remainder > 0 ? ` ${numberToWords(remainder)}` : "";
+          return hundreds[hundred] + remainderInWords;
+      }
+      if (num < 1000000) {
+          const thousands = Math.floor(num / 1000);
+          const remainder = num % 1000;
+          const thousandsInWords = thousands > 1 ? numberToWords(thousands) + " MIL" : "MIL";
+          const remainderInWords = remainder > 0 ? ` ${numberToWords(remainder)}` : "";
+          return thousandsInWords + remainderInWords;
+      }
+      return "";
+  };
+
+  const amountInWords = numberToWords(parseInt(amount));
+  const centsFormatted = cents.padEnd(2, "0");
+
+  return `${amountInWords} ${centsFormatted}/100 DOLARES AMERICANOS`;
+}
