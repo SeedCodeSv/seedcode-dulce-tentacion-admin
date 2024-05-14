@@ -61,14 +61,14 @@ export const get_box = () => {
 export const delete_box = () => {
   localStorage.removeItem("box");
 }
-export const save_mh_token = async (token: string) => {
-  return await localStorage.setItem("mh_token", token)
+export const save_mh_token = (token: string) => {
+  return localStorage.setItem("mh_token", token)
 }
-export const return_mh_token = async () => {
-  return await localStorage.getItem("mh_token")
+export const return_mh_token = () => {
+  return localStorage.getItem("mh_token")
 }
-export const delete_mh_token = async () => {
-  return await localStorage.removeItem("mh_token")
+export const delete_mh_token = () => {
+  return localStorage.removeItem("mh_token")
 }
 
 export const save_branch_id = (branch_id: string) => {

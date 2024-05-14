@@ -1,6 +1,6 @@
 import axios from "axios";
 import { IGetAmbienteDestino } from "../types/DTE/ambiente_destino.types";
-import { API_FIRMADOR, FACTURACION_API, MH_DTE, MH_URL } from "../utils/constants";
+import { API_FIRMADOR, CHECK_URL, FACTURACION_API, MH_DTE, MH_URL } from "../utils/constants";
 import { PayloadMH } from "../types/DTE/credito_fiscal.types";
 import { ResponseMHSuccess } from "../types/DTE/contingencia.types";
 import { IGetFormasDePago } from "../types/DTE/forma_de_pago.types";
@@ -8,7 +8,8 @@ import { IGetTiposDocumento } from "../types/DTE/tipo_documento.types";
 import { IGetTipoTributos } from "../types/DTE/tipo_tributo.types";
 import { ISendMHFiscal } from "../types/DTE/credito_fiscal.types";
 import { IContingencia, ISendMHContingencia } from "../types/DTE/contingencia.types";
-import {DteJson as FDteJSON} from "../types/DTE/DTE.types"
+import { DteJson as FDteJSON } from "../types/DTE/DTE.types"
+import { ICheckPayload, ICheckResponse } from "../types/DTE/check.types";
 
 export const get_ambiente_destino = () => {
   return axios<IGetAmbienteDestino>(
@@ -58,3 +59,13 @@ export const firmarDocumentoFactura = (payload: FDteJSON) => {
 export const firmarDocumentoContingencia = (payload: IContingencia) => {
   return axios.post<{ body: string }>(API_FIRMADOR, payload);
 };
+
+export const check_dte = (payload: ICheckPayload, token: string) => {
+  return axios.post<ICheckResponse>(CHECK_URL, {
+    ...payload
+  }, {
+    headers: {
+      Authorization: token
+    }
+  })
+}
