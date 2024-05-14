@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { CancelTokenSource } from "axios";
 import { IGetAmbienteDestino } from "../types/DTE/ambiente_destino.types";
 import { API_FIRMADOR, CHECK_URL, FACTURACION_API, MH_DTE, MH_URL } from "../utils/constants";
 import { PayloadMH } from "../types/DTE/credito_fiscal.types";
@@ -17,11 +17,12 @@ export const get_ambiente_destino = () => {
   );
 };
 
-export const send_to_mh = async (payload: PayloadMH, token: string) => {
+export const send_to_mh = async (payload: PayloadMH, token: string, cancelToken: CancelTokenSource) => {
   return axios.post<ResponseMHSuccess>(MH_DTE, payload, {
     headers: {
       Authorization: token,
     },
+    cancelToken: cancelToken.token
   });
 };
 
