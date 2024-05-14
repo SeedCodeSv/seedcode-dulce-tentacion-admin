@@ -7,7 +7,7 @@ import { IFormasDePago } from "../../types/DTE/forma_de_pago.types";
 import { generate_credito_fiscal } from "../../utils/DTE/credito_fiscal";
 import { useTransmitterStore } from "../../store/transmitter.store";
 import { useBranchProductStore } from "../../store/branch_product.store";
-import { firmarDocumentoFiscal, send_to_mh } from "../../services/DTE.service";
+import { check_dte, firmarDocumentoFiscal, send_to_mh } from "../../services/DTE.service";
 import { TipoTributo } from "../../types/DTE/tipo_tributo.types";
 import { get_token, return_mh_token } from "../../storage/localStorage";
 import { PayloadMH } from "../../types/DTE/credito_fiscal.types";
@@ -23,6 +23,7 @@ import ModalGlobal from "../global/ModalGlobal";
 import { LoaderCircle, ShieldAlert } from "lucide-react";
 import { global_styles } from "../../styles/global.styles";
 import { DteJson } from "../../types/DTE/DTE.types";
+import { ICheckResponse } from "../../types/DTE/check.types";
 
 interface Props {
   clear: () => void;
@@ -322,6 +323,43 @@ function CreditoFiscal(props: Props) {
         });
     }
   };
+  const handleVerify = () => {
+    setLoading(true);
+
+    const payload = {
+      nitEmisor: transmitter.nit,
+      tdte: currentDTE?.dteJson.identificacion.tipoDte ?? "03",
+      codigoGeneracion:
+        currentDTE?.dteJson.identificacion.codigoGeneracion ?? "",
+    };
+
+    const token_mh = return_mh_token();
+
+    check_dte(payload, token_mh ?? "")
+      .then((response) => {
+        toast.success(response.data.estado, {
+          description: `Sello recibido: ${response.data.selloRecibido}`,
+        });
+        setLoading(false);
+      })
+      .catch((error: AxiosError<ICheckResponse>) => {
+        if (error.status === 500) {
+          toast.error("NO ENCONTRADO", {
+            description: "DTE no encontrado en hacienda",
+          });
+          setLoading(false);
+          return;
+        }
+
+        toast.error("ERROR", {
+          description: `Error: ${
+            error.response?.data.descripcionMsg ??
+            "DTE no encontrado en hacienda"
+          }`,
+        });
+        setLoading(false);
+      });
+  };
   return (
     <div>
       <div className="flex justify-center mt-4 mb-4 w-full">
@@ -365,6 +403,13 @@ function CreditoFiscal(props: Props) {
               size="lg"
             >
               Re-intentar
+            </Button>
+            <Button
+              onClick={handleVerify}
+              style={global_styles().warningStyles}
+              size="lg"
+            >
+              Verificar
             </Button>
             <Button
               onClick={sendToContingencia}
