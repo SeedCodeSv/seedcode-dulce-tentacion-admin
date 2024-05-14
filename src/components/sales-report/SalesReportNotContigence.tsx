@@ -63,12 +63,12 @@ function SalesReportNotContigence() {
               field="subTotal"
               header="Subtotal"
             />
-            <Column
+            {/* <Column
               headerClassName="text-sm font-semibold"
               headerStyle={style}
               field="totalIva"
               header="Total IVA"
-            />
+            /> */}
             <Column
               headerClassName="text-sm font-semibold"
               headerStyle={style}

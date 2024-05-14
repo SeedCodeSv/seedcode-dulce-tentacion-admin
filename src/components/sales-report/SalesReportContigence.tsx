@@ -28,6 +28,14 @@ function SalesReportContigence() {
 
   const [isActive, setIsActive] = useState(false);
 
+  const formatCurrency = (value: number) => {
+    return value.toLocaleString("en-US", {
+      style: "currency",
+      currency: "USD",
+    });
+  };
+  
+
   return (
     <>
       <div className="flex justify-end mt-4">
@@ -68,18 +76,14 @@ function SalesReportContigence() {
                 headerStyle={style}
                 field="subTotal"
                 header="Subtotal"
+                body={(rowData) => <p>${formatCurrency(rowData.subTotal)}</p>}
               />
               <Column
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
-                field="totalIva"
+                // field="totalIva"
                 header="Total IVA"
-              />
-              <Column
-                headerClassName="text-sm font-semibold"
-                headerStyle={style}
-                field="totalPagar"
-                header="Total a pagar"
+                body={(rowData) => <p>${formatCurrency(rowData.totalIva)}</p>}
               />
             </DataTable>
           </div>
@@ -116,18 +120,14 @@ function SalesReportContigence() {
                 headerStyle={style}
                 field="subTotal"
                 header="Subtotal"
+                body={(rowData) => <p>${formatCurrency(rowData.subTotal)}</p>}
               />
               <Column
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
-                field="totalIva"
+                // field="totalIva"
                 header="Total IVA"
-              />
-              <Column
-                headerClassName="text-sm font-semibold"
-                headerStyle={style}
-                field="totalPagar"
-                header="Total a pagar"
+                body={(rowData) => <p>${formatCurrency(rowData.totalIva)}</p>}
               />
             </DataTable>
           </div>
