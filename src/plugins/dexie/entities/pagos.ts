@@ -5,4 +5,5 @@ export interface Pagos {
     referencia: string
     plazo: string
     periodo: string
+    ventaId: number
 }

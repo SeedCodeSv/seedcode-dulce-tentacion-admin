@@ -9,4 +9,5 @@ export interface Receptor {
     telefono: string
     correo: string
     addressId: string
+    ventaId: number
 }

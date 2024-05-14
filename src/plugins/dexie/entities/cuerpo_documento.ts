@@ -17,4 +17,5 @@ export interface CuerpoDocumento {
     tributos: string
     psv: number
     noGravado: number
+    ventaId: number
 }
