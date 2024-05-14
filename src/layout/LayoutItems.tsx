@@ -13,7 +13,8 @@ import {
   ShieldHalf,
   CalculatorIcon,
   Grid2X2Icon,
-  ShoppingCart
+  ShoppingCart,
+  DollarSign
 } from "lucide-react";
 import { useContext } from "react";
 import { ThemeContext } from "../hooks/useTheme";
@@ -272,7 +273,7 @@ export const LayoutItems = () => {
           };
         }}
       >
-        <ShoppingCart size={20} />
+        <DollarSign  size={20}/>
         <p className="ml-2 text-base">Ventas</p>
       </NavLink>
       <NavLink
