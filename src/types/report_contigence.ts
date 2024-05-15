@@ -1,17 +1,23 @@
+import { IPagination } from './global.types';
+
 export interface IResponseContigence {
   ok: boolean;
   sales: Sale[];
   totalPag: number;
+  total: number;
   currentPag: number;
   nextPag: number;
+  status : number
   prevPag: number;
 }
 export interface IResponseNotContigence {
   ok: boolean;
   saless: Sale[];
   totalPag: number;
+  total: number;
   currentPag: number;
   nextPag: number;
+  status: number;
   prevPag: number;
 }
 export interface Sale {
@@ -50,6 +56,8 @@ export interface Sale {
 export interface ISalesContigenceStore {
   sales: Sale[];
   saless: Sale[];
-  OnGetSalesContigence: (id: number, page: number, limit: number) => void;
-  OnGetSalesNotContigence: (id: number, page: number, limit: number) => void;
+  pagination_sales: IPagination;
+  pagination_saless: IPagination;
+  OnGetSalesContigence: (id: number, page: number, limit: number , startDate: string, endDate: string) => void;
+  OnGetSalesNotContigence: (id: number, page: number, limit: number, startDate: string, endDate: string) => void;
 }
