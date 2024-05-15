@@ -1,17 +1,35 @@
 import { create } from "zustand";
 import { IContingenciaCreditoStore } from "./types/contingencia_credito_store.types";
 import { CreditoVenta } from "../entities/credito_venta";
-import { add_credito_venta } from "../services/credito_venta.service";
+import {
+  add_credito_venta,
+  get_credito_venta_by_codigo_generacion,
+} from "../services/credito_venta.service";
 import { AddressCredito } from "../entities/address_credito_fiscal";
-import { save_address_credito } from "../services/credito_address.service";
+import {
+  save_address_credito,
+  get_address_credito,
+} from "../services/credito_address.service";
 import { CreditoReceptor } from "../entities/credito_fiscal_receptor";
-import { add_credito_receptor } from "../services/credito_receptor.service";
+import {
+  add_credito_receptor,
+  geT_credito_receptor_by_venta,
+} from "../services/credito_receptor.service";
 import { CreditoPagos } from "../entities/pagos_credito_fiscal";
-import { add_credito_pagos } from "../services/credito_pagos.service";
+import {
+  add_credito_pagos,
+  get_credito_pagos_por_id,
+} from "../services/credito_pagos.service";
 import { CreditoResumen } from "../entities/resumen_credito_fiscal";
-import { add_credito_resumen } from "../services/credito_resumen.service";
+import {
+  add_credito_resumen,
+  get_credito_resumen_by_venta,
+} from "../services/credito_resumen.service";
 import { CreditoCuerpoDocumento } from "../entities/cuerpo_documento_credito_fiscal";
-import { add_credito_cuerpo } from "../services/credito_cuerpo_documento.service";
+import {
+  add_credito_cuerpo,
+  get_credito_cuerpo_documento_by_venta,
+} from "../services/credito_cuerpo_documento.service";
 
 export const useContingenciaCreditoStore = create<IContingenciaCreditoStore>(
   () => ({
@@ -159,6 +177,48 @@ export const useContingenciaCreditoStore = create<IContingenciaCreditoStore>(
           }
         }
       }
+    },
+    async getVentaByCodigo(codigo) {
+      const credito_venta = await get_credito_venta_by_codigo_generacion(
+        codigo
+      );
+
+      if (credito_venta) {
+        const credito_pagos = await get_credito_pagos_por_id(
+          Number(credito_venta.id)
+        );
+        const credito_receptor = await geT_credito_receptor_by_venta(
+          Number(credito_venta.id)
+        );
+        const credito_resumen = await get_credito_resumen_by_venta(
+          Number(credito_venta.id)
+        );
+        const credito_cuerpo_documento =
+          await get_credito_cuerpo_documento_by_venta(Number(credito_venta.id));
+        const credito_address = await get_address_credito(
+          Number(credito_receptor?.addressId)
+        );
+
+        if (
+          !credito_pagos ||
+          !credito_receptor ||
+          !credito_resumen ||
+          !credito_cuerpo_documento ||
+          !credito_address
+        ) {
+          return undefined;
+        }
+
+        return {
+          credito_pagos: credito_pagos!,
+          credito_receptor: credito_receptor!,
+          credito_resumen: credito_resumen!,
+          credito_cuerpo_documento: credito_cuerpo_documento!,
+          credito_venta: credito_venta!,
+          credito_address: credito_address!,
+        }
+      }
+      return undefined
     },
   })
 );

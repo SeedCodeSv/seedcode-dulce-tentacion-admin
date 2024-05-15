@@ -17,20 +17,17 @@ import {
   DollarSign,
   Contact,
 } from "lucide-react";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { ThemeContext } from "../hooks/useTheme";
 import { useAuthStore } from "../store/auth.store";
 import { delete_seller_mode, save_seller_mode } from "../storage/localStorage";
 import { redirect } from "react-router";
 import { SessionContext } from "../hooks/useSession";
-import { return_seller_mode } from "../storage/localStorage";
 import { useConfigurationStore } from "../store/perzonalitation.store";
 export const LayoutItems = () => {
   const { theme, toggleContext, context } = useContext(ThemeContext);
   const { makeLogout } = useAuthStore();
-  // const [mode, setMode] = useState("");
   const { setIsAuth, setToken, mode, setMode } = useContext(SessionContext);
-
 
   const handleSeller = () => {
     setMode("vendedor")
@@ -48,11 +45,6 @@ export const LayoutItems = () => {
     setToken("");
     redirect("/");
   };
-  useEffect(() => {
-    const mode = return_seller_mode();
-    // setMode(String(mode));
-  }, []);
-  console.log("Modo layout", mode);
 
   const { user } = useAuthStore();
   const transmitter = user?.employee?.branch?.transmitterId;
@@ -68,18 +60,6 @@ export const LayoutItems = () => {
 
   return (
     <>
-      {/* <div
-        className="flex items-center justify-center w-full border-b shadow h-14"
-        style={{
-          backgroundColor: theme.colors.dark,
-          color: theme.colors.primary,
-        }}
-      >
-        <Image src={LOGO} className="w-[50px]" />
-        <p className="ml-3 font-sans text-sm font-bold text-coffee-brown">
-          SeedCodeERP
-        </p>
-      </div> */}
       {personalization.length === 0 ? (
         <div
           className="flex items-center pl-5 w-full border-b shadow h-[70px]"

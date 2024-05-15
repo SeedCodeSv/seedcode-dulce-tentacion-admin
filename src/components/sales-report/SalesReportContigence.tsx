@@ -332,13 +332,12 @@ function SalesReportContigence() {
             .then((contingencia) => {
               if (contingencia.data.estado === "RECIBIDO") {
                 toast.success("Contingencia exitosa");
-
+                if(sale.tipoDte === "01"){
                 const data = generateFactura(
                   result_generation,
                   transmitter,
                   sale
                 );
-
                 firmarDocumentoFactura(data).then((firmador) => {
                   const data_send: PayloadMH = {
                     ambiente: ambiente,
@@ -499,7 +498,10 @@ function SalesReportContigence() {
                       }
                     });
                 });
+              }else{
+                  
               }
+            }
             })
             .catch(() => {
               modalLoading.onClose();
