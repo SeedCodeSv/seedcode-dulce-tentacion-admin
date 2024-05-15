@@ -54,6 +54,38 @@ export interface Sale {
   direccion: Direccion;
   employeeId: number;
   paymentTypeId: any;
+}  
+export interface CreditSale {
+  id: number;
+  numeroControl: string;
+  codigoGeneracion: string;
+  tipoDte: string;
+  fecEmi: string;
+  horEmi: string;
+  selloRecibido: string;
+  sello: boolean;
+  codeEmployee: string;
+  totalNoSuj: string;
+  totalExenta: string;
+  totalGravada: string;
+  subTotalVentas: string;
+  descuNoSuj: string;
+  descuExenta: string;
+  descuGravada: string;
+  porcentajeDescuento: string;
+  totalDescu: string;
+  subTotal: string;
+  totalIva: string;
+  montoTotalOperacion: string;
+  totalPagar: string;
+  totalLetras: string;
+  pathPdf: string;
+  pathJson: string;
+  isActivated: boolean;
+  boxId: number;
+  customerId: any;
+  employeeId: number;
+  paymentTypeId: any;
 }
 export interface Direccion {
   id: number
