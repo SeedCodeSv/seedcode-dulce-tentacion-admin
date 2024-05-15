@@ -1,7 +1,7 @@
 import { db } from "../db"
 import { Receptor } from "../entities/factura-receptor"
 
-export const geT_receptor_by_venta = async (id: number) => {
+export const get_receptor_by_venta = async (id: number) => {
     return await db.factura_receptor.filter(receptor => receptor.ventaId === id).first()
 }
 

@@ -13,7 +13,6 @@ export interface CreditoCuerpoDocumento {
     ventaNoSuj: number ;
     ventaExenta: number ;
     ventaGravada: number 
-    tributoId: string;
     psv: number ;
     noGravado: number 
     ivaItem: number
