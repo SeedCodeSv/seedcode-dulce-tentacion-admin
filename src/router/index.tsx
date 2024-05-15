@@ -10,7 +10,11 @@ import Error404 from "../pages/Error404";
 import Product from "../pages/Product";
 import ExpensesCategories from "../pages/ExpensesCategories";
 import Expenses from "../pages/Expenses";
-import ActionRol from "../pages/ActionRol"
+import ActionRol from "../pages/ActionRol";
+import NewSales from "../pages/NewSales";
+import Configuration from "../pages/Configuration";
+import CreateConfiguration from "../components/configuration/CreateConfiguration";
+import SalesReportContigencePage from "../pages/SalesReportContigencePage";
 import { useActionsRolStore } from "../store/actions_rol.store";
 import { useEffect, useState } from "react";
 export const router = () => {
@@ -77,15 +81,31 @@ export const router = () => {
     },
     {
       path: "/expenses",
-      element: <Expenses/>
+      element: <Expenses />,
     },
     {
       path: "/actionRol",
-      element: <ActionRol/>
+      element: <ActionRol />,
+    },
+    {
+      path: "/newSales",
+      element: <NewSales />,
+    },
+    {
+      path: "/configuration",
+      element: <Configuration />,
+    },
+    {
+      path: "/create-configuration",
+      element: <CreateConfiguration />,
     },
     {
       path: "*",
       element: <Error404 />,
+    },
+    {
+      path: "sales-reports",
+      element: <SalesReportContigencePage />,
     },
   ]);
 };

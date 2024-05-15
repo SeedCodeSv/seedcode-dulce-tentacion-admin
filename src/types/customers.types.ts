@@ -23,10 +23,13 @@ export interface Customer {
   correo: string;
   isActive: boolean;
   esContribuyente: boolean;
-  direccion: CustomerDirection | null;
+  direccion: CustomerDirection;
   direccionId: number;
 }
-
+export interface IGetCustomers {
+  ok: boolean;
+  customers: Customer[];
+}
 export interface IGetCustomerPagination {
   ok: boolean;
   customers: Customer[];

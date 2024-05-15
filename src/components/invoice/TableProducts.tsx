@@ -1,8 +1,13 @@
 import { Table, TR, TH, TD } from "@ag-media/react-pdf-table";
 import TableFooter from "./TableFooter";
 import { StyleSheet } from "@react-pdf/renderer";
+import { DteJson } from "../../types/DTE/DTE.types";
 
-export default function TableProducts() {
+interface Props {
+  DTE: DteJson;
+}
+
+export default function TableProducts(props: Props) {
   const styles = StyleSheet.create({
     th_content: {
       fontSize: 7,
@@ -18,6 +23,13 @@ export default function TableProducts() {
       justifyContent: "center",
     },
   });
+
+  const formatCurrency = (value: number) => {
+    return value.toLocaleString("en-US", {
+      style: "currency",
+      currency: "USD",
+    });
+  };
 
   return (
     <Table>
@@ -53,39 +65,41 @@ export default function TableProducts() {
           Ventas Grav.
         </TD>
       </TH>
-      <TR>
-        <TD weighting={0.1} style={styles.td_content}>
-          1
-        </TD>
-        <TD weighting={0.1} style={styles.td_content}>
-          10
-        </TD>
-        <TD weighting={0.1} style={styles.td_content}>
-          26
-        </TD>
-        <TD weighting={0.3} style={styles.td_content}>
-          CHOCOLATINA SALUD CARTÓN 236 ML
-        </TD>
-        <TD weighting={0.1} style={styles.td_content}>
-          $0.35
-        </TD>
-        <TD weighting={0.1} style={styles.td_content}>
-          $0.00
-        </TD>
-        <TD weighting={0.1} style={styles.td_content}>
-          $0.00
-        </TD>
-        <TD weighting={0.1} style={styles.td_content}>
-          $0.00
-        </TD>
-        <TD weighting={0.1} style={styles.td_content}>
-          $0.00
-        </TD>
-        <TD weighting={0.1} style={styles.td_content}>
-          $0.35
-        </TD>
-      </TR>
-      <TableFooter />
+      {props.DTE.dteJson.cuerpoDocumento.map((cuerpo, index) => (
+        <TR>
+          <TD weighting={0.1} style={styles.td_content}>
+            {index + 1}
+          </TD>
+          <TD weighting={0.1} style={styles.td_content}>
+            {cuerpo.cantidad}
+          </TD>
+          <TD weighting={0.1} style={styles.td_content}>
+            {cuerpo.uniMedida}
+          </TD>
+          <TD weighting={0.3} style={styles.td_content}>
+            {cuerpo.descripcion}
+          </TD>
+          <TD weighting={0.1} style={styles.td_content}>
+            {formatCurrency(Number(cuerpo.precioUni))}
+          </TD>
+          <TD weighting={0.1} style={styles.td_content}>
+            {formatCurrency(Number(0))}
+          </TD>
+          <TD weighting={0.1} style={styles.td_content}>
+            {formatCurrency(Number(cuerpo.montoDescu))}
+          </TD>
+          <TD weighting={0.1} style={styles.td_content}>
+            {formatCurrency(Number(cuerpo.ventaNoSuj))}
+          </TD>
+          <TD weighting={0.1} style={styles.td_content}>
+            {formatCurrency(Number(cuerpo.ventaExenta))}
+          </TD>
+          <TD weighting={0.1} style={styles.td_content}>
+            {formatCurrency(Number(cuerpo.ventaGravada))}
+          </TD>
+        </TR>
+      ))}
+      <TableFooter DTE={props.DTE} />
     </Table>
   );
 }

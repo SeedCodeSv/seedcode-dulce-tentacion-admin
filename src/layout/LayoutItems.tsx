@@ -13,6 +13,8 @@ import {
   ShieldHalf,
   CalculatorIcon,
   Grid2X2Icon,
+  ShoppingCart,
+  DollarSign
 } from "lucide-react";
 import { useContext, useEffect } from "react";
 import { ThemeContext } from "../hooks/useTheme";
@@ -60,29 +62,28 @@ export const LayoutItems = () => {
         <>
           {views.includes("Inicio") && (
             <NavLink
-            to={"/"}
-            className={({ isActive }) => {
-              return (
-                (isActive
-                  ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
-                  : "text-coffee-brown font-semibold border-white") +
-                " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
-              );
-            }}
-            style={({ isActive }) => {
-              return {
-                borderLeftColor: isActive ? theme.colors.dark : "transparent",
-                borderLeftWidth: 5,
-              };
-            }}
-          >
-            <Home size={20} />
-            <p className="ml-2 text-base">Inicio</p>
-          </NavLink>
+              to={"/"}
+              className={({ isActive }) => {
+                return (
+                  (isActive
+                    ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
+                    : "text-coffee-brown font-semibold border-white") +
+                  " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
+                );
+              }}
+              style={({ isActive }) => {
+                return {
+                  borderLeftColor: isActive ? theme.colors.dark : "transparent",
+                  borderLeftWidth: 5,
+                };
+              }}
+            >
+              <Home size={20} />
+              <p className="ml-2 text-base">Inicio</p>
+            </NavLink>
           )}
-          
-            {views.includes("Products") && (
-              <NavLink
+          {views.includes("Productos") && (
+            <NavLink
               to={"/products"}
               className={({ isActive }) => {
                 return (
@@ -102,51 +103,50 @@ export const LayoutItems = () => {
               <Coffee size={20} />
               <p className="ml-2 text-base">Productos</p>
             </NavLink>
-            )}
-        
+          )}
           {views.includes("Categorias") && (
             <NavLink
-            to={"/categories"}
-            className={({ isActive }) => {
-              return (
-                (isActive
-                  ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
-                  : "text-coffee-brown font-semibold border-white") +
-                " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
-              );
-            }}
-            style={({ isActive }) => {
-              return {
-                borderLeftColor: isActive ? theme.colors.dark : "transparent",
-                borderLeftWidth: 5,
-              };
-            }}
-          >
-            <Box size={20} />
-            <p className="ml-2 text-base">Categorías</p>
-          </NavLink>
+              to={"/categories"}
+              className={({ isActive }) => {
+                return (
+                  (isActive
+                    ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
+                    : "text-coffee-brown font-semibold border-white") +
+                  " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
+                );
+              }}
+              style={({ isActive }) => {
+                return {
+                  borderLeftColor: isActive ? theme.colors.dark : "transparent",
+                  borderLeftWidth: 5,
+                };
+              }}
+            >
+              <Box size={20} />
+              <p className="ml-2 text-base">Categorías</p>
+            </NavLink>
           )}
           {views.includes("Sucursales") && (
             <NavLink
-            to={"/branches"}
-            className={({ isActive }) => {
-              return (
-                (isActive
-                  ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
-                  : "text-coffee-brown font-semibold border-white") +
-                " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
-              );
-            }}
-            style={({ isActive }) => {
-              return {
-                borderLeftColor: isActive ? theme.colors.dark : "transparent",
-                borderLeftWidth: 5,
-              };
-            }}
-          >
-            <Store size={20} />
-            <p className="ml-2 text-base">Sucursales</p>
-          </NavLink>
+              to={"/branches"}
+              className={({ isActive }) => {
+                return (
+                  (isActive
+                    ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
+                    : "text-coffee-brown font-semibold border-white") +
+                  " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
+                );
+              }}
+              style={({ isActive }) => {
+                return {
+                  borderLeftColor: isActive ? theme.colors.dark : "transparent",
+                  borderLeftWidth: 5,
+                };
+              }}
+            >
+              <Store size={20} />
+              <p className="ml-2 text-base">Sucursales</p>
+            </NavLink>
           )}
           {views.includes("Usuario") && (
             <NavLink
@@ -172,115 +172,160 @@ export const LayoutItems = () => {
           )}
           {views.includes("Empleados") && (
             <NavLink
-            to={"/employees"}
-            className={({ isActive }) => {
-              return (
-                (isActive
-                  ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
-                  : "text-coffee-brown font-semibold border-white") +
-                " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
-              );
-            }}
-            style={({ isActive }) => {
-              return {
-                borderLeftColor: isActive ? theme.colors.dark : "transparent",
-                borderLeftWidth: 5,
-              };
-            }}
-          >
-            <Users size={20} />
-            <p className="ml-2 text-base">Empleados</p>
-          </NavLink>
+              to={"/employees"}
+              className={({ isActive }) => {
+                return (
+                  (isActive
+                    ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
+                    : "text-coffee-brown font-semibold border-white") +
+                  " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
+                );
+              }}
+              style={({ isActive }) => {
+                return {
+                  borderLeftColor: isActive ? theme.colors.dark : "transparent",
+                  borderLeftWidth: 5,
+                };
+              }}
+            >
+              <Users size={20} />
+              <p className="ml-2 text-base">Empleados</p>
+            </NavLink>
           )}
           {views.includes("Clientes") && (
             <NavLink
-            to={"/clients"}
-            className={({ isActive }) => {
-              return (
-                (isActive
-                  ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
-                  : "text-coffee-brown font-semibold border-white") +
-                " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
-              );
-            }}
-            style={({ isActive }) => {
-              return {
-                borderLeftColor: isActive ? theme.colors.dark : "transparent",
-                borderLeftWidth: 5,
-              };
-            }}
-          >
-            <BookUser size={20} />
-            <p className="ml-2 text-base">Clientes</p>
-          </NavLink>
+              to={"/clients"}
+              className={({ isActive }) => {
+                return (
+                  (isActive
+                    ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
+                    : "text-coffee-brown font-semibold border-white") +
+                  " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
+                );
+              }}
+              style={({ isActive }) => {
+                return {
+                  borderLeftColor: isActive ? theme.colors.dark : "transparent",
+                  borderLeftWidth: 5,
+                };
+              }}
+            >
+              <BookUser size={20} />
+              <p className="ml-2 text-base">Clientes</p>
+            </NavLink>
           )}
           {views.includes("Reportes") && (
             <NavLink
-            to={"/reports"}
-            className={({ isActive }) => {
-              return (
-                (isActive
-                  ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
-                  : "text-coffee-brown font-semibold border-white") +
-                " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
-              );
-            }}
-            style={({ isActive }) => {
-              return {
-                borderLeftColor: isActive ? theme.colors.dark : "transparent",
-                borderLeftWidth: 5,
-              };
-            }}
-          >
-            <Book size={20} />
-            <p className="ml-2 text-base">Reportes</p>
-          </NavLink>
+              to={"/reports"}
+              className={({ isActive }) => {
+                return (
+                  (isActive
+                    ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
+                    : "text-coffee-brown font-semibold border-white") +
+                  " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
+                );
+              }}
+              style={({ isActive }) => {
+                return {
+                  borderLeftColor: isActive ? theme.colors.dark : "transparent",
+                  borderLeftWidth: 5,
+                };
+              }}
+            >
+              <Book size={20} />
+              <p className="ml-2 text-base">Reportes</p>
+            </NavLink>
           )}
-          {views.includes("CategoriaGastos") && (
+          {views.includes("Categoria de gastos") && (
             <NavLink
-            to={"/expensesCategories"}
-            className={({ isActive }) => {
-              return (
-                (isActive
-                  ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
-                  : "text-coffee-brown font-semibold border-white") +
-                " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
-              );
-            }}
-            style={({ isActive }) => {
-              return {
-                borderLeftColor: isActive ? theme.colors.dark : "transparent",
-                borderLeftWidth: 5,
-              };
-            }}
-          >
-            <Grid2X2Icon size={20} />
-            <p className="ml-2 text-base">Categoria de gastos</p>
-          </NavLink>
+              to={"/expensesCategories"}
+              className={({ isActive }) => {
+                return (
+                  (isActive
+                    ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
+                    : "text-coffee-brown font-semibold border-white") +
+                  " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
+                );
+              }}
+              style={({ isActive }) => {
+                return {
+                  borderLeftColor: isActive ? theme.colors.dark : "transparent",
+                  borderLeftWidth: 5,
+                };
+              }}
+            >
+              <Grid2X2Icon size={20} />
+              <p className="ml-2 text-base">Categoria de gastos</p>
+            </NavLink>
           )}
           {views.includes("Gastos") && (
             <NavLink
-            to={"/expenses"}
-            className={({ isActive }) => {
-              return (
-                (isActive
-                  ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
-                  : "text-coffee-brown font-semibold border-white") +
-                " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
-              );
-            }}
-            style={({ isActive }) => {
-              return {
-                borderLeftColor: isActive ? theme.colors.dark : "transparent",
-                borderLeftWidth: 5,
-              };
-            }}
-          >
-            <CalculatorIcon size={20} />
-            <p className="ml-2 text-base">Gastos</p>
-          </NavLink>
+              to={"/expenses"}
+              className={({ isActive }) => {
+                return (
+                  (isActive
+                    ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
+                    : "text-coffee-brown font-semibold border-white") +
+                  " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
+                );
+              }}
+              style={({ isActive }) => {
+                return {
+                  borderLeftColor: isActive ? theme.colors.dark : "transparent",
+                  borderLeftWidth: 5,
+                };
+              }}
+            >
+              <CalculatorIcon size={20} />
+              <p className="ml-2 text-base">Gastos</p>
+            </NavLink>
           )}
-          {views.includes("actionsRol") && (
+          {views.includes("Ventas") && (
+            <NavLink
+              to={"/newSales"}
+              className={({ isActive }) => {
+                return (
+                  (isActive
+                    ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
+                    : "text-coffee-brown font-semibold border-white") +
+                  " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
+                );
+              }}
+              style={({ isActive }) => {
+                return {
+                  borderLeftColor: isActive ? theme.colors.dark : "transparent",
+                  borderLeftWidth: 5,
+                };
+              }}
+            >
+              <ShoppingCart size={20} />
+              <p className="ml-2 text-base">Nueva venta</p>
+            </NavLink>
+          )}
+
+          {views.includes("Reporte de ventas") && (
+            <NavLink
+              to={"/sales-reports"}
+              className={({ isActive }) => {
+                return (
+                  (isActive
+                    ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
+                    : "text-coffee-brown font-semibold border-white") +
+                  " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
+                );
+              }}
+              style={({ isActive }) => {
+                return {
+                  borderLeftColor: isActive ? theme.colors.dark : "transparent",
+                  borderLeftWidth: 5,
+                };
+              }}
+            >
+              <DollarSign  size={20}/>
+              <p className="ml-2 text-base">Ventas</p>
+            </NavLink>
+          )}
+          {views.includes("Permisos") && (
             <NavLink
             to={"/actionRol"}
             className={({ isActive }) => {
@@ -304,26 +349,6 @@ export const LayoutItems = () => {
           )}
         </>
       )}
-      {/* <NavLink
-              to={"/users"}
-              className={({ isActive }) => {
-                return (
-                  (isActive
-                    ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
-                    : "text-coffee-brown font-semibold border-white") +
-                  " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
-                );
-              }}
-              style={({ isActive }) => {
-                return {
-                  borderLeftColor: isActive ? theme.colors.dark : "transparent",
-                  borderLeftWidth: 5,
-                };
-              }}
-            >
-              <User size={20} />
-              <p className="ml-2 text-base">Usuarios</p>
-            </NavLink> */}
       <div
         className={
           " flex w-full py-4 pl-5 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"

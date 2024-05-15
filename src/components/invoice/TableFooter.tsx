@@ -1,6 +1,12 @@
 import { TD, TR } from "@ag-media/react-pdf-table";
 import { StyleSheet } from "@react-pdf/renderer";
-export default function TableFooter() {
+import { DteJson } from "../../types/DTE/DTE.types";
+import { formatCurrency } from "../../utils/dte";
+
+interface Props {
+  DTE: DteJson;
+}
+export default function TableFooter(props: Props) {
   const styles = StyleSheet.create({
     td_without_border: {
       fontSize: 7,
@@ -25,16 +31,16 @@ export default function TableFooter() {
         <TD weighting={0.1} style={styles.td_without_border}></TD>
         <TD weighting={0.3} style={styles.td_without_border}></TD>
         <TD weighting={0.334} style={styles.td_with_border}>
-          $0.35
+          Suma de ventas:
         </TD>
         <TD weighting={0.1} style={styles.td_with_border}>
-          $0.00
+          ${formatCurrency(Number(props.DTE.dteJson.resumen.totalNoSuj))}
         </TD>
         <TD weighting={0.1} style={styles.td_with_border}>
-          $0.00
+          ${formatCurrency(Number(props.DTE.dteJson.resumen.totalExenta))}
         </TD>
         <TD weighting={0.1} style={styles.td_with_border}>
-          $0.35
+          ${formatCurrency(Number(props.DTE.dteJson.resumen.totalGravada))}
         </TD>
       </TR>
       <TR>
@@ -49,7 +55,7 @@ export default function TableFooter() {
           Sumatoria de ventas:
         </TD>
         <TD weighting={0.1} style={styles.td_with_border}>
-          $0.35
+          ${formatCurrency(Number(props.DTE.dteJson.resumen.subTotalVentas))}
         </TD>
       </TR>
       <TR>
@@ -64,7 +70,7 @@ export default function TableFooter() {
           Monto global Desc., Rebajas y otros a ventas no sujetas:
         </TD>
         <TD weighting={0.1} style={styles.td_with_border}>
-          $0.35
+          ${formatCurrency(Number(props.DTE.dteJson.resumen.descuNoSuj))}
         </TD>
       </TR>
       <TR>
@@ -79,7 +85,7 @@ export default function TableFooter() {
           Monto global Desc., Rebajas y otros a ventas Exentas:
         </TD>
         <TD weighting={0.1} style={styles.td_with_border}>
-          $0.35
+          ${formatCurrency(Number(props.DTE.dteJson.resumen.descuExenta))}
         </TD>
       </TR>
       <TR>
@@ -94,7 +100,7 @@ export default function TableFooter() {
           Monto global Desc., Rebajas y otros a ventas gravadas:
         </TD>
         <TD weighting={0.1} style={styles.td_with_border}>
-          $0.35
+          ${formatCurrency(Number(props.DTE.dteJson.resumen.descuGravada))}
         </TD>
       </TR>
       <TR>
@@ -109,24 +115,26 @@ export default function TableFooter() {
           Sub-Total:
         </TD>
         <TD weighting={0.1} style={styles.td_with_border}>
-          $0.35
+          ${formatCurrency(Number(props.DTE.dteJson.resumen.subTotal))}
         </TD>
       </TR>
-      <TR>
-        <TD weighting={0.1} style={styles.td_without_border}></TD>
-        <TD weighting={0.1} style={styles.td_without_border}></TD>
-        <TD weighting={0.1} style={styles.td_without_border}></TD>
-        <TD weighting={0.3} style={styles.td_without_border}></TD>
-        <TD
-          weighting={0.566}
-          style={{ ...styles.td_with_border, justifyContent: "flex-end" }}
-        >
-          Impuesto al Valor Agregado 13%:
-        </TD>
-        <TD weighting={0.1} style={styles.td_with_border}>
-          $0.35
-        </TD>
-      </TR>
+      {/* {props.DTE.dteJson.identificacion.tipoDte === "03" && (
+        <TR>
+          <TD weighting={0.1} style={styles.td_without_border}></TD>
+          <TD weighting={0.1} style={styles.td_without_border}></TD>
+          <TD weighting={0.1} style={styles.td_without_border}></TD>
+          <TD weighting={0.3} style={styles.td_without_border}></TD>
+          <TD
+            weighting={0.566}
+            style={{ ...styles.td_with_border, justifyContent: "flex-end" }}
+          >
+            Impuesto al Valor Agregado 13%:
+          </TD>
+          <TD weighting={0.1} style={styles.td_with_border}>
+            ${props.DTE.dteJson.resumen.ivaRete1}
+          </TD>
+        </TR>
+      )} */}
       <TR>
         <TD weighting={0.1} style={styles.td_without_border}></TD>
         <TD weighting={0.1} style={styles.td_without_border}></TD>
@@ -139,7 +147,7 @@ export default function TableFooter() {
           IVA Retenido:
         </TD>
         <TD weighting={0.1} style={styles.td_with_border}>
-          $0.35
+          ${formatCurrency(Number(props.DTE.dteJson.resumen.ivaRete1))}
         </TD>
       </TR>
       <TR>
@@ -154,7 +162,7 @@ export default function TableFooter() {
           Retención Renta:
         </TD>
         <TD weighting={0.1} style={styles.td_with_border}>
-          $0.35
+          ${formatCurrency(Number(props.DTE.dteJson.resumen.reteRenta))}
         </TD>
       </TR>
       <TR>
@@ -169,7 +177,10 @@ export default function TableFooter() {
           Monto Total de la Operación:
         </TD>
         <TD weighting={0.1} style={styles.td_with_border}>
-          $0.35
+          $
+          {formatCurrency(
+            Number(props.DTE.dteJson.resumen.montoTotalOperacion)
+          )}
         </TD>
       </TR>
       <TR>
@@ -184,7 +195,7 @@ export default function TableFooter() {
           Total Otros Montos No Afectos:
         </TD>
         <TD weighting={0.1} style={styles.td_with_border}>
-          $0.35
+          ${formatCurrency(Number(props.DTE.dteJson.resumen.totalNoGravado))}
         </TD>
       </TR>
       <TR>
@@ -199,7 +210,7 @@ export default function TableFooter() {
           Total a Pagar:
         </TD>
         <TD weighting={0.1} style={styles.td_with_border}>
-          $0.35
+          ${formatCurrency(Number(props.DTE.dteJson.resumen.totalPagar))}
         </TD>
       </TR>
     </>

@@ -10,6 +10,8 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
+  Autocomplete,
+  AutocompleteItem,
 } from "@nextui-org/react";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
@@ -36,7 +38,8 @@ import AddEmployee from "./AddEmployee";
 import { Drawer } from "vaul";
 import { global_styles } from "../../styles/global.styles";
 import classNames from "classnames";
-
+import { useBranchesStore } from "../../store/branches.store";
+import { Branches } from "../../types/branches.types";
 function ListEmployee() {
   const { theme, context } = useContext(ThemeContext);
 
@@ -48,19 +51,22 @@ function ListEmployee() {
   const [limit, setLimit] = useState(5);
   const [view, setView] = useState<"table" | "grid" | "list">("table");
   const [openVaul, setOpenVaul] = useState(false);
-
+  const { getBranchesList, branch_list } = useBranchesStore();
   const modalAdd = useDisclosure();
   const [selectedEmployee, setSelectedEmployee] = useState<Employee>();
 
   const changePage = () => {
-    getEmployeesPaginated(1, limit, fullName, fullName, phone);
+    getEmployeesPaginated(1, limit, fullName, branch, phone);
   };
   const style = {
     backgroundColor: theme.colors.dark,
     color: theme.colors.primary,
   };
   useEffect(() => {
-    getEmployeesPaginated(1, limit, fullName, fullName, phone);
+    getBranchesList();
+  }, []);
+  useEffect(() => {
+    getEmployeesPaginated(1, limit, fullName, branch, phone);
   }, [limit]);
   const filters = useMemo(() => {
     return (
@@ -104,26 +110,34 @@ function ListEmployee() {
           isClearable
           onClear={() => setPhone("")}
         />
-        <Input
-          classNames={{
-            label: "font-semibold text-gray-700",
-            inputWrapper: "pr-0",
+        <Autocomplete
+          onSelectionChange={(key) => {
+            if (key) {
+              const branchSelected = JSON.parse(
+                key as string
+              ) as Branches;
+              setBranch(branchSelected.name);
+            }
           }}
-          labelPlacement="outside"
+          className="w-full dark:text-white"
           label="Sucursal"
-          placeholder="Buscar por sucursal..."
-          size="lg"
-          startContent={<Truck size={20} />}
-          className="w-full xl:w-96 dark:text-white"
+          labelPlacement="outside"
+          placeholder="Selecciona una sucursal"
           variant="bordered"
-          name="searchAddress"
-          id="searchAddress"
-          value={branch}
-          autoComplete="search"
-          onChange={(e) => setBranch(e.target.value)}
-          isClearable
-          onClear={() => setBranch("")}
-        />
+          classNames={{
+            base: "font-semibold text-gray-500 text-sm",
+          }}
+          size="lg"
+          clearButtonProps={{
+            onClick: () => setBranch(""),
+          }}
+        >
+          {branch_list.map((bra) => (
+            <AutocompleteItem value={bra.name} key={JSON.stringify(bra)}>
+              {bra.name}
+            </AutocompleteItem>
+          ))}
+        </Autocomplete>
       </>
     );
   }, [fullName, setFullName, phone, setPhone, branch, setBranch]);

@@ -98,8 +98,8 @@ function ListEmployee({ id }: Props) {
 
   return (
     <>
-      <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
-        <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
+      <div className="w-full max-h-full p-6 py-10 pt-1 flex flex-row bg-gray-50 dark:bg-gray-800">
+        <div className="w-full h-auto p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
           <div className="hidden w-full grid-cols-2 gap-5 mb-4 md:grid ">
             {filters}
           </div>

@@ -30,6 +30,7 @@ import { paginator_styles } from "../../styles/paginator.styles";
 import ModalGlobal from "../global/ModalGlobal";
 import AddExpenses from "./AddExpenses";
 import MobileView from "./MobileView";
+import {formatCurrency} from "../../utils/dte"
 const ListExpenses = () => {
   const { theme } = useContext(ThemeContext);
 
@@ -207,6 +208,7 @@ const ListExpenses = () => {
               headerStyle={style}
               field="total"
               header="Total"
+              body={(rowData) => formatCurrency(Number(rowData.total))}
             />
             <Column
               headerClassName="text-sm font-semibold"
@@ -271,8 +273,8 @@ const ListExpenses = () => {
         size="w-full sm:w-[500px]"
         title={
           selectedCategory
-            ? "Editar categoría de gastos"
-            : "Nueva categoría de gastos"
+            ? "Editar gastos"
+            : "Nueva gastos"
         }
         isOpen={modalAdd.isOpen}
         onClose={modalAdd.onClose}

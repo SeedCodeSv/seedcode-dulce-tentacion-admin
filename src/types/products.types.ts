@@ -34,3 +34,76 @@ export interface ProductPayload {
   code: string;
   categoryProductId: number;
 }
+export interface IProductCart extends IUnidadProducto {
+  quantity: number;
+  discount: number;
+  percentage: number;
+  total: number;
+  base_price: number;
+}
+//---------------------------unit_product---------------------------------------
+export interface IProducto {
+  id: number;
+  nombre: string;
+  codigo: string;
+  tipoItem: number;
+  codigoDeBarra: string;
+  unidadDeMedida: number;
+  precioUnitario: string;
+  precio: string;
+  cantidad: number;
+  nombreUnidadDeMedida: string;
+  active: boolean;
+}
+
+export interface IUnidad {
+  id: number;
+  placa: string;
+  codigo: string;
+  active: boolean;
+  userId: number;
+}
+
+export interface IUnidadProducto {
+  id: number;
+  stock: number;
+  price: string;
+  isActive: boolean;
+  producto: IProducto;
+  unidade: IUnidad;
+  unidadeId: number;
+  productoId: number;
+}
+export interface IGetUnitProduct {
+  id: number;
+  price: number;
+  producto: {
+    id: number;
+    nombre: string;
+    codigo: string;
+    tipoItem: number;
+    codigoDeBarra: string;
+    unidadDeMedida: number;
+    precioUnitario: number;
+    precio: number;
+    cantidad: number;
+    nombreUnidadDeMedida: string;
+    active: boolean;
+  };
+  unidadeId: number;
+}
+export interface IGetUnitProducts {
+  ok: boolean;
+  status: number;
+  productos: IGetUnitProduct[];
+}
+
+export interface IGetProductVehicle {
+  productos: IUnidadProducto[];
+}
+
+export interface IGetProductByCodeVehicle {
+  ok: boolean;
+  unidadProducto: IUnidadProducto;
+  status: number;
+}

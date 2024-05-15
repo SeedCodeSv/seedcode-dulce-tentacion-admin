@@ -14,7 +14,8 @@ import { LgLayout } from "./LgLayout";
 import USER from "../assets/user.png";
 import { ThemeContext } from "../hooks/useTheme";
 import { useAuthStore } from "../store/auth.store";
-
+import { redirect, useNavigate } from "react-router";
+import { SessionContext } from "../hooks/useSession";
 interface Props {
   children: ReactNode;
   title: string;
@@ -22,16 +23,22 @@ interface Props {
 
 export const SideBar = (props: Props) => {
   const [isOpen, setIsOpen] = useState(false);
-
+  const navigate = useNavigate();
   const { theme } = useContext(ThemeContext);
 
-  const { user } = useAuthStore();
+  const { user, makeLogout } = useAuthStore();
+  const { setIsAuth, setToken } = useContext(SessionContext);
 
   const [windowSize, setWindowSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight,
   });
-
+  const close_login = () => {
+    makeLogout();
+    setIsAuth(false);
+    setToken("");
+    redirect("/");
+  };
   useEffect(() => {
     const handleResize = () => {
       setWindowSize({
@@ -72,7 +79,7 @@ export const SideBar = (props: Props) => {
             </Button>
           </div>
           <div className="ml-3 lg:ml-0">
-            <p className="text-sm uppercase font-bold text-coffee-brown">
+            <p className="text-sm uppercase font-bold whitespace-nowrap">
               {props.title}
             </p>
           </div>
@@ -99,7 +106,18 @@ export const SideBar = (props: Props) => {
                   <p className="font-bold">Sesión iniciada</p>
                   <p className="font-bold">{user?.employee.fullName}</p>
                 </DropdownItem>
-                <DropdownItem key="logout" color="danger">
+                <DropdownItem
+                  key="logout"
+                  color="primary"
+                  onClick={() => navigate("/configuration")}
+                >
+                  Configuración
+                </DropdownItem>
+                <DropdownItem
+                  key="logout"
+                  color="danger"
+                  onClick={() => close_login()}
+                >
                   Cerrar sesión
                 </DropdownItem>
               </DropdownMenu>
