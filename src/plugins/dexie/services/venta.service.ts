@@ -10,3 +10,19 @@ export const add_venta = async (venta: Venta) => {
 
     return await db.venta.get(id)
 }
+
+export const delete_venta = async (codigoGeneracion: string) => {
+    const venta = await db.venta.filter(venta => venta.codigoGeneracion === codigoGeneracion).first()
+    if (venta) {
+        const receptor = await db.factura_receptor.filter(receptor => receptor.ventaId === venta.id).first()
+        if (receptor) {
+            await db.direccion.where({ id: receptor.addressId }).delete()
+        }
+
+        await db.factura_receptor.where({ ventaId: venta.id }).delete()
+        await db.pagos.where({ ventaId: venta.id }).delete()
+        await db.resumen.where({ ventaId: venta.id }).delete()
+        await db.venta.where({ id: venta.id }).delete()
+    }
+
+}

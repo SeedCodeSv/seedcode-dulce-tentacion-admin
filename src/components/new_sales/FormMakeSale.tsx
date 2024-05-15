@@ -37,6 +37,7 @@ import CreditoFiscal from "./CreditoFiscal";
 import { ICheckResponse } from "../../types/DTE/check.types";
 import { useContingenciaStore } from "../../plugins/dexie/store/contigencia.store";
 import { save_logs } from "../../services/logs.service";
+import { formatDate } from "../../utils/dates";
 
 interface Props {
   clear: () => void;
@@ -151,8 +152,16 @@ function FormMakeSale(props: Props) {
                     description: "Estamos guardando tus datos",
                   });
 
-                  const json_url = `CLIENTES/${transmitter.nombre}/VENTAS/FACTURAS/${generate.dteJson.identificacion.codigoGeneracion}.json`;
-                  const pdf_url = `CLIENTES/${transmitter.nombre}/VENTAS/FACTURAS/${generate.dteJson.identificacion.codigoGeneracion}.pdf`;
+                  const json_url = `CLIENTES/${
+                    transmitter.nombre
+                  }/${new Date().getFullYear()}/VENTAS/FACTURAS/${formatDate()}/${
+                    generate.dteJson.identificacion.codigoGeneracion
+                  }/${generate.dteJson.identificacion.codigoGeneracion}.json`;
+                  const pdf_url = `CLIENTES/${
+                    transmitter.nombre
+                  }/${new Date().getFullYear()}/VENTAS/FACTURAS/${formatDate()}/${
+                    generate.dteJson.identificacion.codigoGeneracion
+                  }/${generate.dteJson.identificacion.codigoGeneracion}.pdf`;
 
                   const JSON_DTE = JSON.stringify(
                     {
@@ -328,8 +337,9 @@ function FormMakeSale(props: Props) {
                 await save_logs({
                   title: title,
                   message: errorMessage,
-                  generationCode: currentDTE.dteJson.identificacion.codigoGeneracion
-                })
+                  generationCode:
+                    currentDTE.dteJson.identificacion.codigoGeneracion,
+                });
                 toast.success("Se envió la factura a contingencia");
                 props.clear();
                 setLoading(false);

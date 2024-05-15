@@ -68,6 +68,7 @@ import { Invoice } from "../../pages/Invoice";
 import { PutObjectCommand, PutObjectCommandInput } from "@aws-sdk/client-s3";
 import { s3Client } from "../../plugins/s3";
 import SalesUpdate from "./SalesUpdate";
+import { delete_venta } from "../../plugins/dexie/services/venta.service";
 
 function SalesReportContigence() {
   const [branchId, setBranchId] = useState(0);
@@ -186,8 +187,10 @@ function SalesReportContigence() {
   const [loading, setLoading] = useState(false);
 
   const { gettransmitter, transmitter } = useTransmitterStore();
-  const { cat_005_tipo_de_contingencia, getCat005TipoDeContingencia } =
-    useBillingStore();
+  const {
+    cat_005_tipo_de_contingencia,
+    getCat005TipoDeContingencia,
+  } = useBillingStore();
   useEffect(() => {
     gettransmitter();
     getCat005TipoDeContingencia();
@@ -362,8 +365,16 @@ function SalesReportContigence() {
                         description: "Estamos guardando tus datos",
                       });
 
-                      const json_url = `CLIENTES/${transmitter.nombre}/VENTAS/FACTURAS/${data.dteJson.identificacion.codigoGeneracion}.json`;
-                      const pdf_url = `CLIENTES/${transmitter.nombre}/VENTAS/FACTURAS/${data.dteJson.identificacion.codigoGeneracion}.pdf`;
+                      const json_url = `CLIENTES/${
+                        transmitter.nombre
+                      }/${new Date().getFullYear()}/VENTAS/FACTURAS/${formatDate()}/${
+                        data.dteJson.identificacion.codigoGeneracion
+                      }/${data.dteJson.identificacion.codigoGeneracion}.json`;
+                      const pdf_url = `CLIENTES/${
+                        transmitter.nombre
+                      }/${new Date().getFullYear()}/VENTAS/FACTURAS/${formatDate()}/${
+                        data.dteJson.identificacion.codigoGeneracion
+                      }/${data.dteJson.identificacion.codigoGeneracion}.pdf`;
 
                       const JSON_DTE = JSON.stringify(
                         {
@@ -414,7 +425,8 @@ function SalesReportContigence() {
 
                                     axios
                                       .put(
-                                        API_URL + "/sales/sale-update-transaction",
+                                        API_URL +
+                                          "/sales/sale-update-transaction",
                                         {
                                           pdf: pdf_url,
                                           dte: json_url,
@@ -433,6 +445,10 @@ function SalesReportContigence() {
                                       .then(() => {
                                         toast.success(
                                           "Se completo con éxito la venta"
+                                        );
+                                        delete_venta(
+                                          data.dteJson.identificacion
+                                            .codigoGeneracion
                                         );
                                         modalLoading.onClose();
                                         OnGetSalesNotContigence(
@@ -520,7 +536,7 @@ function SalesReportContigence() {
     }
   };
 
-  const modalEdit = useDisclosure()
+  const modalEdit = useDisclosure();
 
   const generateURLMH = (
     ambiente: string,
@@ -860,9 +876,7 @@ function SalesReportContigence() {
         size="w-full  md:w-[500px]"
         isOpen={modalEdit.isOpen}
       >
-        <SalesUpdate onCloseModal={modalEdit.onClose}>
-
-        </SalesUpdate>
+        <SalesUpdate onCloseModal={modalEdit.onClose}></SalesUpdate>
       </ModalGlobal>
     </>
   );
