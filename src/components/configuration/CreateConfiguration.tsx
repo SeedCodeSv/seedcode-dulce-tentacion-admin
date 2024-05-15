@@ -1,4 +1,4 @@
-import { ChangeEvent, useContext, useEffect, useRef, useState } from "react";
+import { ChangeEvent, useContext, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Image as NextImage, Button, Input } from "@nextui-org/react";
 import { useConfigurationStore } from "../../store/perzonalitation.store";
