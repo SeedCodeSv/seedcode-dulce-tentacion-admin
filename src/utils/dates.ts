@@ -47,7 +47,7 @@ export function getElSalvadorDateTime(): { fecEmi: string; horEmi: string } {
 
   return { fecEmi: formattedDatePart, horEmi: timePart };
 
-  
+
 }
 
 const fechaActual = new Date();
@@ -56,5 +56,5 @@ let month = fechaActual.getMonth() + 1;
 let day = fechaActual.getDate();
 const monthString = month < 10 ? `0${month}` : `${month}`;
 const dayString = day < 10 ? `0${day}` : `${day}`;
-export const 
-fechaActualString = `${year}-${monthString}-${dayString}`;
+export const
+  fechaActualString = `${year}-${monthString}-${dayString}`;

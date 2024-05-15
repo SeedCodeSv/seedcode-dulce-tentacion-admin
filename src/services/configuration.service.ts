@@ -24,7 +24,7 @@ export const create_configuration = async (
 };
 
 export const get_by_transmitter = (id: number) => {
-  return axios.get<GetByTransmitter>(`${API_URL}/personalization${id}`, {
+  return axios.get<GetByTransmitter>(`${API_URL}/personalization/${id}`, {
       headers: {
         Authorization: "Bearer" + localStorage.getItem("token"),
       },

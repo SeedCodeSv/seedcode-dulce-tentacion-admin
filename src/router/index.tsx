@@ -15,6 +15,7 @@ import NewSales from "../pages/NewSales";
 import Configuration from "../pages/Configuration";
 import CreateConfiguration from "../components/configuration/CreateConfiguration";
 import SalesReportContigencePage from "../pages/SalesReportContigencePage";
+import SalesUpdate from "../components/sales-report/SalesUpdate";
 
 export const router = () => {
   return createBrowserRouter([
@@ -75,12 +76,16 @@ export const router = () => {
       element: <CreateConfiguration />,
     },
     {
-      path: "*",
-      element: <Error404 />,
+      path: "/UpdateSales",
+      element: <SalesUpdate />,
     },
     {
       path: "sales-reports",
       element: <SalesReportContigencePage />,
+    },
+    {
+      path: "*",
+      element: <Error404 />,
     },
   ]);
 };

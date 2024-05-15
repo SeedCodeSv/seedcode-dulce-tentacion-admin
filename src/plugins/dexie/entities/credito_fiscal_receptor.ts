@@ -1,5 +1,5 @@
 export interface CreditoReceptor {
-    id: string
+    id?: string
     tipoDocumento: string;
     numDocumento: string;
     nit: string;
@@ -8,7 +8,7 @@ export interface CreditoReceptor {
     codActividad: string;
     descActividad: string;
     nombreComercial: string;
-    addressId: string
+    addressId: number
     telefono: string;
     correo: string;
     ventaId: number

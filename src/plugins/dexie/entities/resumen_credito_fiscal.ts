@@ -20,7 +20,7 @@ export interface CreditoResumen {
     totalLetras: string;
     saldoFavor: number | string;
     condicionOperacion: number;
-    pagosId: string;
+    pagosId: number;
     numPagoElectronico: any;
     totalIva: number | string;
     ventaId: number

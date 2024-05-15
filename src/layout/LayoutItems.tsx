@@ -15,6 +15,7 @@ import {
   Grid2X2Icon,
   ShoppingCart,
   DollarSign,
+  Contact,
 } from "lucide-react";
 import { useContext, useEffect, useState } from "react";
 import { ThemeContext } from "../hooks/useTheme";
@@ -23,6 +24,7 @@ import { delete_seller_mode, save_seller_mode } from "../storage/localStorage";
 import { redirect } from "react-router";
 import { SessionContext } from "../hooks/useSession";
 import { return_seller_mode } from "../storage/localStorage";
+import { useConfigurationStore } from "../store/perzonalitation.store";
 export const LayoutItems = () => {
   const { theme, toggleContext, context } = useContext(ThemeContext);
   const { makeLogout } = useAuthStore();
@@ -48,9 +50,21 @@ export const LayoutItems = () => {
     setMode(String(mode));
   }, []);
   console.log("Modo layout", mode);
+ 
+
+  const { user } = useAuthStore();
+  const transmitter = user?.employee?.branch?.transmitterId;
+
+  const { personalization, GetConfigurationByTransmitter } =
+    useConfigurationStore();
+
+  useEffect(() => {
+    GetConfigurationByTransmitter(transmitter || 0);
+  }, []);
+
   return (
     <>
-      <div
+      {/* <div
         className="flex items-center justify-center w-full border-b shadow h-14"
         style={{
           backgroundColor: theme.colors.dark,
@@ -61,14 +75,46 @@ export const LayoutItems = () => {
         <p className="ml-3 font-sans text-sm font-bold text-coffee-brown">
           SeedCodeERP
         </p>
-      </div>
+      </div> */}
+      {personalization.length === 0 ? (
+        <div
+          className="flex items-center justify-center w-full border-b shadow h-14"
+          style={{
+            backgroundColor: theme.colors.dark,
+            color: theme.colors.primary,
+          }}
+        >
+          <Image src={LOGO} className="w-[50px]" />
+          <p className="ml-3 font-sans text-sm font-bold text-coffee-brown">
+            SeedCodeERP
+          </p>
+        </div>
+      ) : (
+        <>
+          {personalization.map((item) => (
+            <div
+              key={item.id}
+              className="flex items-center justify-center w-full border-b shadow h-14"
+              style={{
+                backgroundColor: theme.colors.dark,
+                color: theme.colors.primary,
+              }}
+            >
+              <Image src={item.logo} className="w-[50px] h-[50px]" />
+              <p className="ml-3 font-sans text-sm font-bold text-coffee-brown">
+                {item.name}
+              </p>
+            </div>
+          ))}
+        </>
+      )}
       {mode === "null" ? (
         <div className=" justify-center items-center px-3">
           <Button
             onClick={() => handleSeller()}
             className="text-coffee-green font-semibold bg-gray-100  border-coffee-green justify-center items-center bg-transparent"
           >
-            <Store size={20} />
+            <ShoppingCart size={20} />
             <p className="ml-2 text-base">modo venta</p>
           </Button>
         </div>
@@ -78,7 +124,7 @@ export const LayoutItems = () => {
             onClick={() => handleAdmin()}
             className="text-coffee-green font-semibold bg-gray-100  border-coffee-green justify-center items-center bg-transparent"
           >
-            <Store size={20} />
+            <Contact size={20} />
             <p className="ml-2 text-base">Administración</p>
           </Button>
         </div>
