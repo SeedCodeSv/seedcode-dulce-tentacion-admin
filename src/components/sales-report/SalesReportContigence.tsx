@@ -8,6 +8,7 @@ import {
   SelectItem,
   Switch,
   Textarea,
+  modal,
   useDisclosure,
 } from "@nextui-org/react";
 import { ThemeContext } from "../../hooks/useTheme";
@@ -17,7 +18,13 @@ import {
   get_user,
   return_mh_token,
 } from "../../storage/localStorage";
-import { LoaderCircle, ScanEye, Send, SquareChevronRight } from "lucide-react";
+import {
+  EditIcon,
+  LoaderCircle,
+  ScanEye,
+  Send,
+  SquareChevronRight,
+} from "lucide-react";
 import { global_styles } from "../../styles/global.styles";
 import ModalGlobal from "../global/ModalGlobal";
 import Terminal, {
@@ -60,6 +67,7 @@ import { pdf } from "@react-pdf/renderer";
 import { Invoice } from "../../pages/Invoice";
 import { PutObjectCommand, PutObjectCommandInput } from "@aws-sdk/client-s3";
 import { s3Client } from "../../plugins/s3";
+import SalesUpdate from "./SalesUpdate";
 
 function SalesReportContigence() {
   const [branchId, setBranchId] = useState(0);
@@ -178,10 +186,8 @@ function SalesReportContigence() {
   const [loading, setLoading] = useState(false);
 
   const { gettransmitter, transmitter } = useTransmitterStore();
-  const {
-    cat_005_tipo_de_contingencia,
-    getCat005TipoDeContingencia,
-  } = useBillingStore();
+  const { cat_005_tipo_de_contingencia, getCat005TipoDeContingencia } =
+    useBillingStore();
   useEffect(() => {
     gettransmitter();
     getCat005TipoDeContingencia();
@@ -512,6 +518,8 @@ function SalesReportContigence() {
     }
   };
 
+  const modalEdit = useDisclosure()
+
   const generateURLMH = (
     ambiente: string,
     codegen: string,
@@ -718,6 +726,18 @@ function SalesReportContigence() {
                       >
                         <Send size={20} />
                       </Button>
+
+                      <Button
+                        style={global_styles().secondaryStyle}
+                        size="lg"
+                        isIconOnly
+                        onClick={() => {
+                          setSelectedSale(rowData.id);
+                          modalEdit.onOpen();
+                        }}
+                      >
+                        <EditIcon size={20} />
+                      </Button>
                     </div>
                   )}
                 />
@@ -831,6 +851,16 @@ function SalesReportContigence() {
           <LoaderCircle className=" animate-spin" size={75} color="red" />
           <p className="text-lg font-semibold">Cargando por favor espere...</p>
         </div>
+      </ModalGlobal>
+
+      <ModalGlobal
+        onClose={modalEdit.onClose}
+        size="w-full  md:w-[500px]"
+        isOpen={modalEdit.isOpen}
+      >
+        <SalesUpdate onCloseModal={modalEdit.onClose}>
+
+        </SalesUpdate>
       </ModalGlobal>
     </>
   );

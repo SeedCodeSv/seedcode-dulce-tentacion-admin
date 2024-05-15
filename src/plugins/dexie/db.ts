@@ -9,7 +9,9 @@ import { Venta } from "./entities/venta";
 import { CreditoVenta } from "./entities/credito_venta";
 import { CreditoCuerpoDocumento } from "./entities/cuerpo_documento_credito_fiscal";
 import { CreditoPagos } from "./entities/pagos_credito_fiscal";
-
+import {CreditoReceptor} from "./entities/credito_fiscal_receptor"
+import {AddressCredito} from "./entities/address_credito_fiscal"
+import {CreditoResumen} from "./entities/resumen_credito_fiscal"
 export class SeedCodeSvDB extends Dexie {
   venta!: Table<Venta>;
   direccion!: Table<Address>;
@@ -21,6 +23,10 @@ export class SeedCodeSvDB extends Dexie {
   credito_venta!: Table<CreditoVenta>;
   credito_cuerpo_documento!: Table<CreditoCuerpoDocumento>;
   credito_pagos!: Table<CreditoPagos>;
+  credito_receptor!: Table<CreditoReceptor>;
+  credito_address!: Table<AddressCredito>;
+  credito_resumen!: Table<CreditoResumen>;
+
   constructor() {
     super("seedcodeERP");
     this.version(1).stores({
@@ -35,8 +41,11 @@ export class SeedCodeSvDB extends Dexie {
         "++id, totalNoSuj, totalExenta, totalGravada, subTotalVentas, descuNoSuj, descuExenta, descuGravada, porcentajeDescuento, totalDescu, tributos, subTotal, ivaRete1, reteRenta, totalIva, montoTotalOperacion, totalNoGravado, totalPagar, totalLetras, saldoFavor, condicionOperacion, numPagoElectronico,ventaId",
       credito_venta: "++id, fecha, total, codigoGeneracion",
       credito_cuerpo_documento:
-        "++id, numItem, tipoItem, uniMedida, numeroDocumento, cantidad, codigo, codTributo, descripcion,precioUni, montoDescu, ventaNoSuj, ventaExenta, ventaGravada, ivaItem, tributoId, psv, noGravado,ventaId",
-        credito_pagos: "++id, codigo, montoPago, referencia, plazo,periodo,ventaId"
+        "++id, numItem, tipoItem, uniMedida, numeroDocumento, cantidad, codigo, codTributo, descripcion,precioUni, montoDescu, ventaNoSuj, ventaExenta, ventaGravada, ivaItem, psv, noGravado,ventaId",
+        credito_pagos: "++id, codigo, montoPago, referencia, plazo,periodo,ventaId",
+        credito_receptor: "++id, tipoDocumento, numDocumento,nit,nrc,nombre,codActividad,descActividad,nombreComercial,telefono,correo, addressId, ventaId",
+        credito_address: "++id,departamento, municipio, complemento",
+        credito_resumen: "++id, totalNoSuj, totalExenta, totalGravada, subTotalVentas, descuNoSuj, descuExenta, descuGravada, porcentajeDescuento, totalDescu, tributos, subTotal, ivaRete1, reteRenta,ivaPerci1,totalIva, montoTotalOperacion, totalNoGravado, totalPagar, totalLetras, saldoFavor, condicionOperacion,pagosId,numPagoElectronico,ventaId",
     });
   }
 }
