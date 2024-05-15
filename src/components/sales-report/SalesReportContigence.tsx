@@ -1,11 +1,19 @@
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { useContext, useEffect, useState } from "react";
-import { Button, Input, Switch, useDisclosure } from "@nextui-org/react";
+import {
+  Button,
+  Input,
+  Select,
+  SelectItem,
+  Switch,
+  Textarea,
+  useDisclosure,
+} from "@nextui-org/react";
 import { ThemeContext } from "../../hooks/useTheme";
 import { useReportContigenceStore } from "../../store/report_contigence.store";
-import { get_user } from "../../storage/localStorage";
-import { SquareChevronRight } from "lucide-react";
+import { get_user, return_mh_token } from "../../storage/localStorage";
+import { LoaderCircle, ScanEye, Send, SquareChevronRight } from "lucide-react";
 import { global_styles } from "../../styles/global.styles";
 import ModalGlobal from "../global/ModalGlobal";
 import Terminal, {
@@ -17,6 +25,13 @@ import { fechaActualString, formatDate } from "../../utils/dates";
 import Pagination from "../global/Pagination";
 import { Paginator } from "primereact/paginator";
 import { useLogsStore } from "../../store/logs.store";
+import { useTransmitterStore } from "../../store/transmitter.store";
+import { Sale } from "../../types/report_contigence";
+import { check_dte } from "../../services/DTE.service";
+import { toast } from "sonner";
+import { AxiosError } from "axios";
+import { ICheckResponse } from "../../types/DTE/check.types";
+import { useBillingStore } from "../../store/facturation/billing.store";
 
 function SalesReportContigence() {
   const [branchId, setBranchId] = useState(0);
@@ -59,7 +74,7 @@ function SalesReportContigence() {
     OnGetSalesContigence(branchId, 1, 5, dateInitial, dateEnd);
   };
   const searchSalesNotContigence = () => {
-    searchSalesContigence()
+    searchSalesContigence();
     OnGetSalesNotContigence(branchId, 1, 5, dateInitial, dateEnd);
   };
   const { theme } = useContext(ThemeContext);
@@ -84,8 +99,9 @@ function SalesReportContigence() {
   };
 
   const modalContingencia = useDisclosure();
+  const modalLoading = useDisclosure();
 
-  const [terminalLineData, setTerminalLineData] = useState([
+  const baseData = [
     <TerminalOutput>Bienvenido a la terminar de contingencia</TerminalOutput>,
     <TerminalOutput></TerminalOutput>,
     <TerminalOutput>Tienes estos comandos disponibles:</TerminalOutput>,
@@ -96,26 +112,148 @@ function SalesReportContigence() {
       '2' - Verificar si la venta ya fue procesada en MH.
     </TerminalOutput>,
     <TerminalOutput>'3' - Envía la venta a MH.</TerminalOutput>,
+    <TerminalOutput>'4' - Reiniciar.</TerminalOutput>,
     <TerminalOutput>'0' - Limpia la consola.</TerminalOutput>,
-  ]);
+  ];
+
+  const [terminalLineData, setTerminalLineData] = useState(baseData);
+
+  const [selectedSale, setSelectedSale] = useState<Sale>();
 
   async function onInput(input: string) {
     let ld = [...terminalLineData];
     ld.push(<TerminalInput>{input}</TerminalInput>);
     if (input.toLocaleLowerCase().trim() === "1") {
+      ld.push(<TerminalOutput>Errores encontrados: </TerminalOutput>);
       logs.forEach((log) => {
+        ld.push(<TerminalOutput>{log.title}</TerminalOutput>);
         ld.push(<TerminalOutput>{log.message}</TerminalOutput>);
       });
     } else if (input.toLocaleLowerCase().trim() === "2") {
-      ld.push(<TerminalOutput>Jimmy Gay 2</TerminalOutput>);
+      handleVerifyConsole();
+      return;
     } else if (input.toLocaleLowerCase().trim() === "3") {
       ld.push(<TerminalOutput>Jimmy Gay 3</TerminalOutput>);
+    } else if (input.toLocaleLowerCase().trim() === "4") {
+      setTerminalLineData(baseData);
+      return;
     } else if (input.toLocaleLowerCase().trim() === "0") {
       ld = [];
     } else if (input) {
       ld.push(<TerminalOutput>No se encontró el comando</TerminalOutput>);
     }
     setTerminalLineData(ld);
+  }
+
+  const [loading, setLoading] = useState(false);
+
+  const { gettransmitter, transmitter } = useTransmitterStore();
+  const {
+    cat_005_tipo_de_contingencia,
+    getCat005TipoDeContingencia,
+  } = useBillingStore();
+  useEffect(() => {
+    gettransmitter();
+    getCat005TipoDeContingencia();
+  }, []);
+
+  const handleVerifyConsole = () => {
+    if (selectedSale) {
+      const payload = {
+        nitEmisor: transmitter.nit,
+        tdte: selectedSale.tipoDte,
+        codigoGeneracion: selectedSale.codigoGeneracion,
+      };
+
+      const newLd = <TerminalOutput>Se envió a hacienda</TerminalOutput>;
+
+      const newLd2 = (
+        <TerminalOutput>Procesando por favor espere...</TerminalOutput>
+      );
+
+      setTerminalLineData((prev) => [...prev, newLd, newLd2]);
+
+      const token_mh = return_mh_token();
+      check_dte(payload, token_mh ?? "")
+        .then((res) => {
+          const newLd = (
+            <TerminalOutput>{`Respuesta: DTE ya fue procesado - Sello recepción ${res.data.selloRecibido}`}</TerminalOutput>
+          );
+
+          setTerminalLineData((prev) => [...prev, newLd]);
+        })
+        .catch((error: AxiosError<ICheckResponse>) => {
+          if (error.response?.status === 500) {
+            const newLd = (
+              <TerminalOutput>{`Respuesta: DTE no encontrado en hacienda`}</TerminalOutput>
+            );
+
+            setTerminalLineData((prev) => [...prev, newLd]);
+            return;
+          }
+
+          if (error.response?.data) {
+            const newLd = (
+              <TerminalOutput>{`Respuesta: ${
+                error.response?.data.descripcionMsg ?? "RECHAZADO"
+              }`}</TerminalOutput>
+            );
+
+            setTerminalLineData((prev) => [...prev, newLd]);
+          }
+        })
+        .finally(() => {
+          const newLd2 = (
+            <TerminalOutput>{`Petición finalizada`}</TerminalOutput>
+          );
+
+          setTerminalLineData((prev) => [...prev, newLd2]);
+        });
+    }
+  };
+
+  const handleVerify = (sale: Sale) => {
+    setLoading(true);
+    modalLoading.onOpen();
+    const payload = {
+      nitEmisor: transmitter.nit,
+      tdte: sale.tipoDte,
+      codigoGeneracion: sale.codigoGeneracion,
+    };
+
+    const token_mh = return_mh_token();
+
+    check_dte(payload, token_mh ?? "")
+      .then((response) => {
+        toast.success(response.data.estado, {
+          description: `Sello recibido: ${response.data.selloRecibido}`,
+        });
+        setLoading(false);
+        modalLoading.onClose();
+      })
+      .catch((error: AxiosError<ICheckResponse>) => {
+        if (error.status === 500) {
+          toast.error("NO ENCONTRADO", {
+            description: "DTE no encontrado en hacienda",
+          });
+          setLoading(false);
+          modalLoading.onClose();
+          return;
+        }
+
+        toast.error("ERROR", {
+          description: `Error: ${
+            error.response?.data.descripcionMsg ??
+            "DTE no encontrado en hacienda"
+          }`,
+        });
+        modalLoading.onClose();
+        setLoading(false);
+      });
+  };
+
+  const handleSendToContingenci = (sale: Sale) => {
+    
   }
 
   return (
@@ -284,16 +422,37 @@ function SalesReportContigence() {
                   // field="totalIva"
                   header="Acciones"
                   body={(rowData) => (
-                    <div>
+                    <div className="flex gap-5">
                       <Button
                         style={global_styles().dangerStyles}
+                        size="lg"
+                        isIconOnly
+                        onClick={() => {
+                          setSelectedSale(rowData);
+                          handleSelectLogs(rowData.codigoGeneracion);
+                        }}
+                      >
+                        <SquareChevronRight />
+                      </Button>
+                      <Button
+                        style={global_styles().warningStyles}
+                        size="lg"
+                        isIconOnly
+                        onClick={() => {
+                          handleVerify(rowData);
+                        }}
+                      >
+                        <ScanEye size={20} />
+                      </Button>
+                      <Button
+                        style={global_styles().thirdStyle}
                         size="lg"
                         isIconOnly
                         onClick={() => {
                           handleSelectLogs(rowData.codigoGeneracion);
                         }}
                       >
-                        <SquareChevronRight />
+                        <Send size={20} />
                       </Button>
                     </div>
                   )}
@@ -336,12 +495,48 @@ function SalesReportContigence() {
         </div>
       </div>
       <ModalGlobal
+        title="Enviar a Contingencia"
+        isOpen={false}
+        size="w-full lg:w-[600px]"
+        onClose={() => {
+          modalContingencia.onClose();
+          setTerminalLineData(baseData);
+        }}
+      >
+        <div>
+          <Select
+            size="lg"
+            label="Motivo contingencia"
+            labelPlacement="outside"
+            variant="bordered"
+            placeholder="Selecciona el motivo"
+          >
+            {cat_005_tipo_de_contingencia.map((tCon) => (
+              <SelectItem key={tCon.codigo} value={tCon.codigo}>
+                {tCon.valores}
+              </SelectItem>
+            ))}
+          </Select>
+
+          <div className="mt-5">
+          <Textarea
+            size="lg"
+            label="Información adicional"
+            labelPlacement="outside"
+            variant="bordered"
+            placeholder="Ingresa tus observaciones y comentarios"
+          ></Textarea>
+          </div>
+        </div>
+      </ModalGlobal>
+      <ModalGlobal
         title=""
         isOpen={modalContingencia.isOpen}
-        size="w-full
-        
-        "
-        onClose={modalContingencia.onClose}
+        size="w-full lg:w-[700px] xl:w-[800px] 2xl:w-[900px]"
+        onClose={() => {
+          modalContingencia.onClose();
+          setTerminalLineData(baseData);
+        }}
       >
         <div>
           <Terminal
@@ -351,6 +546,17 @@ function SalesReportContigence() {
           >
             {terminalLineData}
           </Terminal>
+        </div>
+      </ModalGlobal>
+      <ModalGlobal
+        title={"Procesando"}
+        size="w-full md:w-[600px]"
+        isOpen={modalLoading.isOpen}
+        onClose={modalLoading.onClose}
+      >
+        <div className="flex flex-col justify-center items-center">
+          <LoaderCircle className=" animate-spin" size={75} color="red" />
+          <p className="text-lg font-semibold">Cargando por favor espere...</p>
         </div>
       </ModalGlobal>
     </>
