@@ -28,10 +28,12 @@ import { useConfigurationStore } from "../store/perzonalitation.store";
 export const LayoutItems = () => {
   const { theme, toggleContext, context } = useContext(ThemeContext);
   const { makeLogout } = useAuthStore();
-  const [mode, setMode] = useState("");
-  const { setIsAuth, setToken } = useContext(SessionContext);
+  // const [mode, setMode] = useState("");
+  const { setIsAuth, setToken, mode, setMode } = useContext(SessionContext);
+
 
   const handleSeller = () => {
+    setMode("vendedor")
     save_seller_mode("vendedor");
     makeLogout();
     setIsAuth(false);
@@ -39,24 +41,26 @@ export const LayoutItems = () => {
     redirect("/");
   };
   const handleAdmin = () => {
+    setMode("")
     makeLogout();
-    delete_seller_mode()
+    delete_seller_mode();
     setIsAuth(false);
     setToken("");
     redirect("/");
   };
   useEffect(() => {
     const mode = return_seller_mode();
-    setMode(String(mode));
+    // setMode(String(mode));
   }, []);
   console.log("Modo layout", mode);
- 
 
   const { user } = useAuthStore();
   const transmitter = user?.employee?.branch?.transmitterId;
 
-  const { personalization, GetConfigurationByTransmitter } =
-    useConfigurationStore();
+  const {
+    personalization,
+    GetConfigurationByTransmitter,
+  } = useConfigurationStore();
 
   useEffect(() => {
     GetConfigurationByTransmitter(transmitter || 0);
@@ -78,29 +82,30 @@ export const LayoutItems = () => {
       </div> */}
       {personalization.length === 0 ? (
         <div
-          className="flex items-center justify-center w-full border-b shadow h-14"
+          className="flex items-center pl-5 w-full border-b shadow h-[70px]"
           style={{
             backgroundColor: theme.colors.dark,
             color: theme.colors.primary,
           }}
         >
-          <Image src={LOGO} className="h-12" />
+          <Image src={LOGO} className="max-h-14 w-full max-w-32" />
           <p className="ml-3 font-sans text-sm font-bold text-coffee-brown">
             SeedCodeERP
           </p>
         </div>
       ) : (
         <>
+        {mode}
           {personalization.map((item) => (
             <div
               key={item.id}
-              className="flex items-center justify-center w-full border-b shadow h-14"
+              className="flex items-center pl-5 w-full border-b shadow h-[70px]"
               style={{
                 backgroundColor: theme.colors.dark,
                 color: theme.colors.primary,
               }}
             >
-              <Image src={item.logo} className="h-12" />
+              <Image src={item.logo} className="max-h-14 w-full max-w-32" />
               <p className="ml-3 font-sans text-sm font-bold text-coffee-brown">
                 {item.name}
               </p>
@@ -108,7 +113,7 @@ export const LayoutItems = () => {
           ))}
         </>
       )}
-      {mode === "null" ? (
+      {mode !== "vendedor" ? (
         <div className=" justify-center items-center px-3">
           <Button
             onClick={() => handleSeller()}
@@ -130,7 +135,7 @@ export const LayoutItems = () => {
         </div>
       )}
 
-      {mode === "null" && (
+      {mode !== "vendedor" && (
         <>
           <NavLink
             to={"/"}
@@ -375,7 +380,7 @@ export const LayoutItems = () => {
         <DollarSign size={20} />
         <p className="ml-2 text-base">Ventas</p>
       </NavLink>
-      {mode === null && (
+      {mode !== "vendedor" && (
         <NavLink
           to={"/actionRol"}
           className={({ isActive }) => {

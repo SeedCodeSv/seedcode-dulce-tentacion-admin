@@ -6,15 +6,18 @@ import { SessionContext } from "../hooks/useSession";
 import Auth from "./Auth";
 function Main() {
   const { isAuth, mode } = useContext(SessionContext);
-  console.log("main page", mode);
-  return isAuth ? (
-    mode !== "" ? (
-      <RouterProvider router={router_seller()} />
-    ) : (
-      <RouterProvider router={router()} />
-    )
-  ) : (
-    <Auth />
+  return (
+    <>
+      {isAuth ? (
+        mode !== "" ? (
+          <RouterProvider router={router_seller()} />
+        ) : (
+          <RouterProvider router={router()} />
+        )
+      ) : (
+        <Auth />
+      )}
+    </>
   );
 }
 

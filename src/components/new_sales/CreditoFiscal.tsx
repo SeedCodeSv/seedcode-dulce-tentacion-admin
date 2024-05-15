@@ -7,7 +7,11 @@ import { IFormasDePago } from "../../types/DTE/forma_de_pago.types";
 import { generate_credito_fiscal } from "../../utils/DTE/credito_fiscal";
 import { useTransmitterStore } from "../../store/transmitter.store";
 import { useBranchProductStore } from "../../store/branch_product.store";
-import { check_dte, firmarDocumentoFiscal, send_to_mh } from "../../services/DTE.service";
+import {
+  check_dte,
+  firmarDocumentoFiscal,
+  send_to_mh,
+} from "../../services/DTE.service";
 import { TipoTributo } from "../../types/DTE/tipo_tributo.types";
 import { get_token, return_mh_token } from "../../storage/localStorage";
 import { PayloadMH } from "../../types/DTE/credito_fiscal.types";
@@ -22,8 +26,9 @@ import { useCorrelativesDteStore } from "../../store/correlatives_dte.store";
 import ModalGlobal from "../global/ModalGlobal";
 import { LoaderCircle, ShieldAlert } from "lucide-react";
 import { global_styles } from "../../styles/global.styles";
-import { DteJson } from "../../types/DTE/DTE.types";
 import { ICheckResponse } from "../../types/DTE/check.types";
+import { useContingenciaCreditoStore } from "../../plugins/dexie/store/contingencia_credito.store";
+import { ISendMHFiscal } from "../../types/DTE/credito_fiscal.types";
 
 interface Props {
   clear: () => void;
@@ -37,7 +42,7 @@ function CreditoFiscal(props: Props) {
   const { cart_products } = useBranchProductStore();
   const [errorMessage, setErrorMessage] = useState("");
   const [title, setTitle] = useState<string>("");
-  const [currentDTE, setCurrentDTE] = useState<DteJson>();
+  const [currentDTE, setCurrentDTE] = useState<ISendMHFiscal>();
   const [loading, setLoading] = useState(false);
 
   const modalError = useDisclosure();
@@ -268,10 +273,13 @@ function CreditoFiscal(props: Props) {
         setLoading(false);
       });
   };
+  const { createContingenciaCredito } = useContingenciaCreditoStore();
   const sendToContingencia = () => {
     setLoading(true);
     modalError.onClose();
     if (currentDTE) {
+      console.log(currentDTE);
+      createContingenciaCredito(currentDTE);
       const json_url = `CLIENTES/${transmitter.nombre}/VENTAS/FACTURAS/${currentDTE.dteJson.identificacion.codigoGeneracion}.json`;
 
       const JSON_DTE = JSON.stringify(currentDTE.dteJson, null, 2);
@@ -306,18 +314,18 @@ function CreditoFiscal(props: Props) {
                 }
               )
               .then(() => {
-                toast.success("Se envió la factura a contingencia");
+                toast.success("Se envió el credito fiscal a contingencia");
                 props.clear();
                 setLoading(false);
               })
               .catch(() => {
-                toast.error("Error al guardar tu factura");
+                toast.error("Error al guardar tu credito fiscal");
                 setLoading(false);
               });
           }
         })
         .catch(() => {
-          toast.error("Error al subir la factura a contingencia");
+          toast.error("Error al subir el credito fiscal a contingencia");
           setLoading(false);
         });
     }
