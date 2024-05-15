@@ -82,7 +82,6 @@ export interface Receptor {
   telefono: null | string;
   correo: string;
   bienTitulo?: string | null,
-  nombreComercial: string
 }
 
 export interface FiscalReceptor {
