@@ -33,7 +33,7 @@ import Pagination from "../global/Pagination";
 import { Paginator } from "primereact/paginator";
 import { useLogsStore } from "../../store/logs.store";
 import { useTransmitterStore } from "../../store/transmitter.store";
-import { Sale } from "../../types/report_contigence";
+import { Customer, Sale } from "../../types/report_contigence";
 import { check_dte } from "../../services/DTE.service";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
@@ -41,6 +41,7 @@ import { ICheckResponse } from "../../types/DTE/check.types";
 import { useBillingStore } from "../../store/facturation/billing.store";
 import SalesUpdate from "./SalesUpdate";
 import SalesEdit from "./SalesUpdate";
+import UpdateCustomerSales from "./UpdateCustomerSale";
 
 function SalesReportContigence() {
   const [branchId, setBranchId] = useState(0);
@@ -201,9 +202,8 @@ function SalesReportContigence() {
 
           if (error.response?.data) {
             const newLd = (
-              <TerminalOutput>{`Respuesta: ${
-                error.response?.data.descripcionMsg ?? "RECHAZADO"
-              }`}</TerminalOutput>
+              <TerminalOutput>{`Respuesta: ${error.response?.data.descripcionMsg ?? "RECHAZADO"
+                }`}</TerminalOutput>
             );
 
             setTerminalLineData((prev) => [...prev, newLd]);
@@ -219,10 +219,9 @@ function SalesReportContigence() {
     }
   };
 
-  const handleEdit = () => {
-    <SalesEdit />;
-  };
-
+  // const handleEdit = () => {
+  //   <SalesEdit />;
+  // };
   const handleVerify = (sale: Sale) => {
     setLoading(true);
     modalLoading.onOpen();
@@ -231,9 +230,7 @@ function SalesReportContigence() {
       tdte: sale.tipoDte,
       codigoGeneracion: sale.codigoGeneracion,
     };
-
     const token_mh = return_mh_token();
-
     check_dte(payload, token_mh ?? "")
       .then((response) => {
         toast.success(response.data.estado, {
@@ -253,20 +250,20 @@ function SalesReportContigence() {
         }
 
         toast.error("ERROR", {
-          description: `Error: ${
-            error.response?.data.descripcionMsg ??
+          description: `Error: ${error.response?.data.descripcionMsg ??
             "DTE no encontrado en hacienda"
-          }`,
+            }`,
         });
         modalLoading.onClose();
         setLoading(false);
       });
   };
 
-  const handleSendToContingenci = (sale: Sale) => {};
+  const handleSendToContingenci = (sale: Sale) => { };
 
   const modalEdit = useDisclosure();
-
+  const [codigoGeneracion, setCodigoGeneracion] = useState("")
+  const [dataCustomer, setDataCustomer] = useState<Customer>()
   return (
     <>
       <div className="w-full h-full p-5 bg-gray-100 dark:bg-gray-800">
@@ -465,12 +462,16 @@ function SalesReportContigence() {
                       >
                         <Send size={20} />
                       </Button>
-
                       <Button
                         style={global_styles().secondaryStyle}
                         size="lg"
                         isIconOnly
                         onClick={() => {
+                          setDataCustomer((prev) => ({
+                            ...prev,
+                            ...rowData.customer,
+                          }));
+                          setCodigoGeneracion(rowData.codigoGeneracion)
                           setSelectedSale(rowData.id);
                           modalEdit.onOpen();
                         }}
@@ -583,14 +584,16 @@ function SalesReportContigence() {
         </div>
       </ModalGlobal>
 
+
       <ModalGlobal
+        title="cccccccccc"
         onClose={modalEdit.onClose}
-        size="w-full  md:w-[500px]"
+        size="w-full  md:w-[900px]"
         isOpen={modalEdit.isOpen}
       >
-        <SalesUpdate onCloseModal={modalEdit.onClose}>
+        <UpdateCustomerSales codigoGeneracion={codigoGeneracion} customer={dataCustomer}>
 
-        </SalesUpdate>
+        </UpdateCustomerSales>
       </ModalGlobal>
     </>
   );

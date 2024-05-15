@@ -7,7 +7,7 @@ export interface IResponseContigence {
   total: number;
   currentPag: number;
   nextPag: number;
-  status : number
+  status: number
   prevPag: number;
 }
 export interface IResponseNotContigence {
@@ -49,15 +49,53 @@ export interface Sale {
   isActivated: boolean;
   boxId: number;
   customerId: any;
+  customer: Customer
+  employee: Employee
+  direccion: Direccion;
   employeeId: number;
   paymentTypeId: any;
 }
+export interface Direccion {
+  id: number
+  departamento: string
+  nombreDepartamento: string
+  municipio: string
+  nombreMunicipio: string
+  complemento: string
+  active: boolean
+}
 
+export interface Customer {
+  id: number
+  nombre: string
+  nombreComercial: string
+  nrc: string
+  nit: string
+  tipoDocumento: string
+  numDocumento: string
+  codActividad: string
+  descActividad: string
+  bienTitulo: string
+  telefono: string
+  correo: string
+  isActive: boolean
+  direccion: Direccion
+  esContribuyente: boolean
+  direccionId: number
+  transmitterId: number
+}
+export interface Employee {
+  id: number
+  fullName: string
+  phone: string
+  isActive: boolean
+  branchId: number
+}
 export interface ISalesContigenceStore {
   sales: Sale[];
   saless: Sale[];
   pagination_sales: IPagination;
   pagination_saless: IPagination;
-  OnGetSalesContigence: (id: number, page: number, limit: number , startDate: string, endDate: string) => void;
+  OnGetSalesContigence: (id: number, page: number, limit: number, startDate: string, endDate: string) => void;
   OnGetSalesNotContigence: (id: number, page: number, limit: number, startDate: string, endDate: string) => void;
 }
