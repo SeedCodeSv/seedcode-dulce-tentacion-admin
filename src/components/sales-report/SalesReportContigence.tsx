@@ -1,13 +1,23 @@
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { useContext, useEffect, useState } from "react";
-import { Button, Input, Switch } from "@nextui-org/react";
+import { Button, Input, Switch, useDisclosure } from "@nextui-org/react";
 import { ThemeContext } from "../../hooks/useTheme";
 import { useReportContigenceStore } from "../../store/report_contigence.store";
 import { get_user } from "../../storage/localStorage";
+import { SquareChevronRight } from "lucide-react";
+import { global_styles } from "../../styles/global.styles";
+import ModalGlobal from "../global/ModalGlobal";
+import Terminal, {
+  ColorMode,
+  TerminalInput,
+  TerminalOutput,
+} from "react-terminal-ui";
+import { fechaActualString } from "../../utils/dates";
 import Pagination from "../global/Pagination";
 import { Paginator } from "primereact/paginator";
-import { fechaActualString } from "../../utils/dates";
+import { useLogsStore } from "../../store/logs.store";
+
 function SalesReportContigence() {
   const [branchId, setBranchId] = useState(0);
   const {
@@ -64,6 +74,49 @@ function SalesReportContigence() {
       currency: "USD",
     });
   };
+
+  const { logs, getLogs } = useLogsStore();
+
+  const handleSelectLogs = (code: string) => {
+    getLogs(code);
+    modalContingencia.onOpen();
+  };
+
+  const modalContingencia = useDisclosure();
+
+  const [terminalLineData, setTerminalLineData] = useState([
+    <TerminalOutput>Bienvenido a la terminar de contingencia</TerminalOutput>,
+    <TerminalOutput></TerminalOutput>,
+    <TerminalOutput>Tienes estos comandos disponibles:</TerminalOutput>,
+    <TerminalOutput>
+      '1' - Muestra todos los errores de la venta.
+    </TerminalOutput>,
+    <TerminalOutput>
+      '2' - Verificar si la venta ya fue procesada en MH.
+    </TerminalOutput>,
+    <TerminalOutput>'3' - Envía la venta a MH.</TerminalOutput>,
+    <TerminalOutput>'0' - Limpia la consola.</TerminalOutput>,
+  ]);
+
+  async function onInput(input: string) {
+    let ld = [...terminalLineData];
+    ld.push(<TerminalInput>{input}</TerminalInput>);
+    if (input.toLocaleLowerCase().trim() === "1") {
+      logs.forEach((log) => {
+        ld.push(<TerminalOutput>{log.message}</TerminalOutput>);
+      });
+    } else if (input.toLocaleLowerCase().trim() === "2") {
+      ld.push(<TerminalOutput>Jimmy Gay 2</TerminalOutput>);
+    } else if (input.toLocaleLowerCase().trim() === "3") {
+      ld.push(<TerminalOutput>Jimmy Gay 3</TerminalOutput>);
+    } else if (input.toLocaleLowerCase().trim() === "0") {
+      ld = [];
+    } else if (input) {
+      ld.push(<TerminalOutput>No se encontró el comando</TerminalOutput>);
+    }
+    setTerminalLineData(ld);
+  }
+
   return (
     <>
       {isActive === true ? (
@@ -261,6 +314,26 @@ function SalesReportContigence() {
                 header="Total IVA"
                 body={(rowData) => formatCurrency(Number(rowData.totalIva))}
               />
+              <Column
+                headerClassName="text-sm font-semibold"
+                headerStyle={style}
+                // field="totalIva"
+                header="Acciones"
+                body={(rowData) => (
+                  <div>
+                    <Button
+                      style={global_styles().dangerStyles}
+                      size="lg"
+                      isIconOnly
+                      onClick={() => {
+                        handleSelectLogs(rowData.codigoGeneracion);
+                      }}
+                    >
+                      <SquareChevronRight />
+                    </Button>
+                  </div>
+                )}
+              />
             </DataTable>
             {pagination_sales.totalPag > 1 && (
               <>
@@ -297,6 +370,24 @@ function SalesReportContigence() {
           </div>
         </div>
       )}
+      <ModalGlobal
+        title=""
+        isOpen={modalContingencia.isOpen}
+        size="w-full
+        
+        "
+        onClose={modalContingencia.onClose}
+      >
+        <div>
+          <Terminal
+            onInput={onInput}
+            name="Contingencia"
+            colorMode={ColorMode.Dark}
+          >
+            {terminalLineData}
+          </Terminal>
+        </div>
+      </ModalGlobal>
     </>
   );
 }
