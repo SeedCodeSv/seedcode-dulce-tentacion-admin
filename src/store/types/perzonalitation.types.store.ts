@@ -3,4 +3,5 @@ import { IConfiguration, IGetConfiguration } from "../../types/configuration.typ
 export interface IConfigurationStore {
     personalization: IConfiguration[];
     OnCreateConfiguration: (payload: IGetConfiguration) => void;
+    GetConfigurationByTransmitter: (id: number) => Promise<void>;
 }

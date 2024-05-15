@@ -1,21 +1,24 @@
-import { ChangeEvent, useContext, useRef, useState } from "react";
+import { ChangeEvent, useContext, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Image as NextImage, Button, Input } from "@nextui-org/react";
 import { useConfigurationStore } from "../../store/perzonalitation.store";
 import { ICreacteConfiguaration } from "../../types/configuration.types";
 import DefaultImage from "../../assets/react.svg";
 import { ThemeContext } from "../../hooks/useTheme";
+import { useAuthStore } from "../../store/auth.store";
 
 function CreateConfiguration() {
   const { OnCreateConfiguration } = useConfigurationStore();
   const [selectedImage, setSelectedImage] = useState(DefaultImage);
 
   const { theme } = useContext(ThemeContext);
+  const { user } = useAuthStore();
+
 
   const [formData, setFormData] = useState<ICreacteConfiguaration>({
     name: "",
     themeId: 1,
-    transmitterId: 1,
+    transmitterId: user?.employee?.branch?.transmitterId || 0,
   });
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
