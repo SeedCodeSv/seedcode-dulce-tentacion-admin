@@ -128,6 +128,7 @@ function SalesReportContigence() {
                 placeholder="Buscar por nombre..."
                 size="lg"
                 type="date"
+                defaultValue={fechaActualString}
                 variant="bordered"
                 label="Fecha inicial"
                 labelPlacement="outside"
@@ -140,6 +141,7 @@ function SalesReportContigence() {
                 onChange={(e) => setDateEnd(e.target.value)}
                 placeholder="Buscar por nombre..."
                 size="lg"
+                defaultValue={fechaActualString}
                 variant="bordered"
                 label="Fecha final"
                 type="date"
@@ -213,8 +215,8 @@ function SalesReportContigence() {
                         branchId,
                         pageNumber,
                         5,
-                        fechaActualString,
-                        fechaActualString
+                        "",
+                        ""
                       )
                     }
                   />
@@ -243,6 +245,7 @@ function SalesReportContigence() {
                 placeholder="Buscar por nombre..."
                 size="lg"
                 type="date"
+                defaultValue={fechaActualString}
                 variant="bordered"
                 label="Fecha inicial"
                 labelPlacement="outside"
@@ -256,6 +259,7 @@ function SalesReportContigence() {
                 placeholder="Buscar por nombre..."
                 size="lg"
                 variant="bordered"
+                defaultValue={fechaActualString}
                 label="Fecha final"
                 type="date"
                 labelPlacement="outside"
@@ -348,23 +352,13 @@ function SalesReportContigence() {
                         branchId,
                         pageNumber,
                         5,
-                        fechaActualString,
-                        fechaActualString
+                        "",
+                        ""
                       )
                     }
                   />
                 </div>
-                <div className="flex w-full mt-5 md:hidden">
-                  <Paginator
-                    className="flex justify-between w-full"
-                    first={pagination_sales.currentPag}
-                    totalRecords={pagination_sales.total}
-                    template={{
-                      layout: "PrevPageLink CurrentPageReport NextPageLink",
-                    }}
-                    currentPageReportTemplate="{currentPage} de {totalPages}"
-                  />
-                </div>
+
               </>
             )}
           </div>
