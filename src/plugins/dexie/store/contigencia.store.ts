@@ -1,17 +1,17 @@
 import { create } from "zustand";
 import { IContingenciaStore } from "./types/contingencia_store.types";
 import { Venta } from "../entities/venta";
-import { add_venta } from "../services/venta.service";
+import { add_venta, get_venta_by_codigo_generacion } from "../services/venta.service";
 import { Address } from "../entities/address";
-import { add_address } from "../services/address.service";
+import { add_address, get_address_by_id } from "../services/address.service";
 import { Receptor } from "../entities/factura-receptor";
-import { add_receptor } from "../services/factura_receptor.service";
+import { add_receptor, get_receptor_by_venta } from "../services/factura_receptor.service";
 import { Pagos } from "../entities/pagos";
-import { add_pagos } from "../services/pagos.service";
+import { add_pagos, get_pagos_por_id } from "../services/pagos.service";
 import { Resumen } from "../entities/resumen";
-import { add_resumen } from "../services/resumen.service";
+import { add_resumen, get_resumen_by_venta } from "../services/resumen.service";
 import { CuerpoDocumento } from "../entities/cuerpo_documento";
-import { add_cuerpo } from "../services/cuerpo_documento.service";
+import { add_cuerpo, get_cuerpo_documento_by_venta } from "../services/cuerpo_documento.service";
 
 export const useContingenciaStore = create<IContingenciaStore>(() => ({
     createContingencia: async (DteJson) => {
@@ -119,5 +119,31 @@ export const useContingenciaStore = create<IContingenciaStore>(() => ({
                 }
             }
         }
-    }
+    },
+    async getVentaByCodigo(codigo) {
+        const venta = await get_venta_by_codigo_generacion(codigo)
+
+        if (venta) {
+            const pagos = await get_pagos_por_id(Number(venta.id))
+            const receptor = await get_receptor_by_venta(Number(venta.id))
+            const resumen = await get_resumen_by_venta(Number(venta.id))
+            const cuerpo_documento = await get_cuerpo_documento_by_venta(Number(venta.id))
+            const direccion = await get_address_by_id(Number(receptor?.addressId))
+
+            if (!pagos || !receptor || !resumen || !cuerpo_documento || !direccion) {
+                return undefined
+            }
+
+            return {
+                pagos: pagos!,
+                receptor: receptor!,
+                resumen: resumen!,
+                cuerpo_documento: cuerpo_documento!,
+                venta: venta!,
+                direccion_receptor: direccion!
+            }
+
+        }
+        return undefined
+    },
 }))

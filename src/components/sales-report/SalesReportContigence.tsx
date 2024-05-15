@@ -13,7 +13,11 @@ import {
 } from "@nextui-org/react";
 import { ThemeContext } from "../../hooks/useTheme";
 import { useReportContigenceStore } from "../../store/report_contigence.store";
-import { get_user, return_mh_token } from "../../storage/localStorage";
+import {
+  get_token,
+  get_user,
+  return_mh_token,
+} from "../../storage/localStorage";
 import {
   EditIcon,
   LoaderCircle,
@@ -28,20 +32,42 @@ import Terminal, {
   TerminalInput,
   TerminalOutput,
 } from "react-terminal-ui";
-import { fechaActualString, formatDate } from "../../utils/dates";
+import {
+  fechaActualString,
+  formatDate,
+  getElSalvadorDateTime,
+  getElSalvadorDateTimeParam,
+} from "../../utils/dates";
 import Pagination from "../global/Pagination";
 import { Paginator } from "primereact/paginator";
 import { useLogsStore } from "../../store/logs.store";
 import { useTransmitterStore } from "../../store/transmitter.store";
-import { Customer, Sale } from "../../types/report_contigence";
-import { check_dte } from "../../services/DTE.service";
+import { Sale } from "../../types/report_contigence";
+import {
+  check_dte,
+  firmarDocumentoContingencia,
+  firmarDocumentoFactura,
+  send_to_mh,
+  send_to_mh_contingencia,
+} from "../../services/DTE.service";
 import { toast } from "sonner";
-import { AxiosError } from "axios";
+import axios, { AxiosError } from "axios";
 import { ICheckResponse } from "../../types/DTE/check.types";
 import { useBillingStore } from "../../store/facturation/billing.store";
+import { useContingenciaStore } from "../../plugins/dexie/store/contigencia.store";
+import { generate_uuid } from "../../utils/random/random";
+import { IContingencia } from "../../types/DTE/contingencia.types";
+import { ambiente, API_URL, MH_QUERY } from "../../utils/constants";
+import { generate_contingencia } from "../../utils/DTE/contigencia";
+import { generateFactura } from "./generate";
+import { PayloadMH } from "../../types/DTE/DTE.types";
+import { SendMHFailed } from "../../types/transmitter.types";
+import { save_logs } from "../../services/logs.service";
+import { pdf } from "@react-pdf/renderer";
+import { Invoice } from "../../pages/Invoice";
+import { PutObjectCommand, PutObjectCommandInput } from "@aws-sdk/client-s3";
+import { s3Client } from "../../plugins/s3";
 import SalesUpdate from "./SalesUpdate";
-import SalesEdit from "./SalesUpdate";
-import UpdateCustomerSales from "./UpdateCustomerSale";
 
 function SalesReportContigence() {
   const [branchId, setBranchId] = useState(0);
@@ -135,8 +161,10 @@ function SalesReportContigence() {
     ld.push(<TerminalInput>{input}</TerminalInput>);
     if (input.toLocaleLowerCase().trim() === "1") {
       ld.push(<TerminalOutput>Errores encontrados: </TerminalOutput>);
-      logs.forEach((log) => {
-        ld.push(<TerminalOutput>{log.title}</TerminalOutput>);
+      logs.forEach((log, index) => {
+        ld.push(
+          <TerminalOutput>{`${index + 1}: ${log.title}`}</TerminalOutput>
+        );
         ld.push(<TerminalOutput>{log.message}</TerminalOutput>);
       });
     } else if (input.toLocaleLowerCase().trim() === "2") {
@@ -219,9 +247,11 @@ function SalesReportContigence() {
     }
   };
 
-  // const handleEdit = () => {
-  //   <SalesEdit />;
-  // };
+  const [errorMessage, setErrorMessage] = useState("");
+  const [title, setTitle] = useState<string>("");
+  const [loadingContingencia, setLoadingContingencia] = useState(false);
+  const modalErrorContingencia = useDisclosure();
+
   const handleVerify = (sale: Sale) => {
     setLoading(true);
     modalLoading.onOpen();
@@ -259,11 +289,241 @@ function SalesReportContigence() {
       });
   };
 
-  const handleSendToContingenci = (sale: Sale) => { };
+  const { getVentaByCodigo } = useContingenciaStore();
 
-  const modalEdit = useDisclosure();
-  const [codigoGeneracion, setCodigoGeneracion] = useState("")
-  const [dataCustomer, setDataCustomer] = useState<Customer>()
+  const [contingencia, setContingencia] = useState("2");
+  const [motivoContigencia, setMotivoContigencia] = useState("");
+
+  const handleSendToContingencia = async (sale: Sale) => {
+    const result_generation = await getVentaByCodigo(sale.codigoGeneracion);
+    if (result_generation) {
+      const token_mh = return_mh_token();
+
+      const correlatives = [
+        {
+          noItem: 1,
+          codigoGeneracion: generate_uuid().toUpperCase(),
+          tipoDoc: sale.tipoDte,
+        },
+      ];
+
+      const contingencia_send: IContingencia = generate_contingencia(
+        transmitter,
+        correlatives,
+        contingencia,
+        motivoContigencia
+      );
+
+      setLoadingContingencia(true);
+      modalLoading.onOpen();
+
+      firmarDocumentoContingencia(contingencia_send)
+        .then((result) => {
+          const send = {
+            nit: transmitter.nit,
+            documento: result.data.body,
+          };
+
+          send_to_mh_contingencia(send, token_mh ?? "")
+            .then((contingencia) => {
+              if (contingencia.data.estado === "RECIBIDO") {
+                toast.success("Contingencia exitosa");
+
+                const data = generateFactura(
+                  result_generation,
+                  transmitter,
+                  sale
+                );
+
+                firmarDocumentoFactura(data).then((firmador) => {
+                  const data_send: PayloadMH = {
+                    ambiente: ambiente,
+                    idEnvio: 1,
+                    version: 1,
+                    tipoDte: "01",
+                    documento: firmador.data.body,
+                  };
+
+                  toast.info("Se ah enviado a hacienda, esperando respuesta");
+
+                  const source = axios.CancelToken.source();
+
+                  const timeout = setTimeout(() => {
+                    source.cancel("El tiempo de espera ha expirado");
+                  }, 25000);
+
+                  send_to_mh(data_send, token_mh ?? "", source)
+                    .then(async (respuestaMH) => {
+                      clearTimeout(timeout);
+                      toast.success("Hacienda respondió correctamente", {
+                        description: "Estamos guardando tus datos",
+                      });
+
+                      const json_url = `CLIENTES/${transmitter.nombre}/VENTAS/FACTURAS/${data.dteJson.identificacion.codigoGeneracion}.json`;
+                      const pdf_url = `CLIENTES/${transmitter.nombre}/VENTAS/FACTURAS/${data.dteJson.identificacion.codigoGeneracion}.pdf`;
+
+                      const JSON_DTE = JSON.stringify(
+                        {
+                          ...data.dteJson,
+                          respuestaMH: respuestaMH.data,
+                          firma: firmador.data.body,
+                        },
+                        null,
+                        2
+                      );
+                      const json_blob = new Blob([JSON_DTE], {
+                        type: "application/json",
+                      });
+
+                      const blob = await pdf(
+                        <Invoice
+                          MHUrl={generateURLMH(
+                            ambiente,
+                            data.dteJson.identificacion.codigoGeneracion,
+                            data.dteJson.identificacion.fecEmi
+                          )}
+                          DTE={data}
+                          sello={respuestaMH.data.selloRecibido}
+                        />
+                      ).toBlob();
+
+                      if (json_blob && blob) {
+                        const uploadParams: PutObjectCommandInput = {
+                          Bucket: "seedcode-facturacion",
+                          Key: json_url,
+                          Body: json_blob,
+                        };
+                        const uploadParamsPDF: PutObjectCommandInput = {
+                          Bucket: "seedcode-facturacion",
+                          Key: pdf_url,
+                          Body: blob,
+                        };
+
+                        s3Client
+                          .send(new PutObjectCommand(uploadParamsPDF))
+                          .then((response) => {
+                            if (response.$metadata) {
+                              s3Client
+                                .send(new PutObjectCommand(uploadParams))
+                                .then((response) => {
+                                  if (response.$metadata) {
+                                    const token = get_token() ?? "";
+
+                                    axios
+                                      .put(
+                                        API_URL + "/sales/sale-update-transaction",
+                                        {
+                                          pdf: pdf_url,
+                                          dte: json_url,
+                                          cajaId: Number(
+                                            localStorage.getItem("box")
+                                          ),
+                                          codigoEmpleado: 1,
+                                          sello: true,
+                                        },
+                                        {
+                                          headers: {
+                                            Authorization: `Bearer ${token}`,
+                                          },
+                                        }
+                                      )
+                                      .then(() => {
+                                        toast.success(
+                                          "Se completo con éxito la venta"
+                                        );
+                                        modalLoading.onClose();
+                                        OnGetSalesNotContigence(
+                                          branchId,
+                                          1,
+                                          5,
+                                          dateInitial,
+                                          dateEnd
+                                        );
+                                        setLoading(false);
+                                      })
+                                      .catch(() => {
+                                        toast.error(
+                                          "Error al guardar la venta"
+                                        );
+                                        setLoading(false);
+                                        modalLoading.onClose();
+                                      });
+                                  }
+                                });
+                            }
+                          });
+                      }
+                    })
+                    .catch(async (error: AxiosError<SendMHFailed>) => {
+                      clearTimeout(timeout);
+                      modalLoading.onClose();
+                      if (axios.isCancel(error)) {
+                        setTitle("Tiempo de espera agotado");
+                        setErrorMessage(
+                          "El tiempo limite de espera ha expirado"
+                        );
+                        modalErrorContingencia.onOpen();
+                        setLoading(false);
+                      }
+
+                      if (error.response?.data) {
+                        await save_logs({
+                          title:
+                            "Contingencia: " +
+                            error.response.data.descripcionMsg ??
+                            "Error al procesar venta",
+                          message:
+                            error.response.data.observaciones &&
+                              error.response.data.observaciones.length > 0
+                              ? error.response?.data.observaciones.join("\n\n")
+                              : "",
+                          generationCode:
+                            data.dteJson.identificacion.codigoGeneracion,
+                        });
+                        setErrorMessage(
+                          error.response.data.observaciones &&
+                            error.response.data.observaciones.length > 0
+                            ? error.response?.data.observaciones.join("\n\n")
+                            : ""
+                        );
+                        setTitle(
+                          error.response.data.descripcionMsg ??
+                          "Error al procesar venta"
+                        );
+                        modalErrorContingencia.onOpen();
+                        setLoading(false);
+                      }
+                    });
+                });
+              }
+            })
+            .catch(() => {
+              modalLoading.onClose();
+              toast.error("Error al enviar el documento de contingencia");
+              modalErrorContingencia.onOpen();
+              setTitle("Error al enviar el documento de contingencia");
+              setErrorMessage("Error al enviar el documento de contingencia");
+            });
+        })
+        .catch(() => {
+          modalLoading.onClose();
+          toast.error("Error al firmar el documento de contingencia");
+          setTitle("Error al firmar el documento de contingencia");
+          setErrorMessage("Error al firmar el documento de contingencia");
+        });
+    }
+  };
+
+  const modalEdit = useDisclosure()
+
+  const generateURLMH = (
+    ambiente: string,
+    codegen: string,
+    fechaEmi: string
+  ) => {
+    return `${MH_QUERY}?ambiente=${ambiente}&codGen=${codegen}&fechaEmi=${fechaEmi}`;
+  };
+
   return (
     <>
       <div className="w-full h-full p-5 bg-gray-100 dark:bg-gray-800">
@@ -457,7 +717,7 @@ function SalesReportContigence() {
                         size="lg"
                         isIconOnly
                         onClick={() => {
-                          handleSelectLogs(rowData.codigoGeneracion);
+                          handleSendToContingencia(rowData);
                         }}
                       >
                         <Send size={20} />
@@ -467,11 +727,11 @@ function SalesReportContigence() {
                         size="lg"
                         isIconOnly
                         onClick={() => {
-                          setDataCustomer((prev) => ({
-                            ...prev,
-                            ...rowData.customer,
-                          }));
-                          setCodigoGeneracion(rowData.codigoGeneracion)
+                          // setDataCustomer((prev) => ({
+                          //   ...prev,
+                          //   ...rowData.customer,
+                          // }));
+                          // setCodigoGeneracion(rowData.codigoGeneracion)
                           setSelectedSale(rowData.id);
                           modalEdit.onOpen();
                         }}
@@ -534,6 +794,13 @@ function SalesReportContigence() {
             labelPlacement="outside"
             variant="bordered"
             placeholder="Selecciona el motivo"
+            defaultSelectedKeys={["2"]}
+            value={contingencia}
+            onChange={(e) => {
+              if (e.target.value) {
+                setContingencia(e.target.value);
+              }
+            }}
           >
             {cat_005_tipo_de_contingencia.map((tCon) => (
               <SelectItem key={tCon.codigo} value={tCon.codigo}>
@@ -542,15 +809,17 @@ function SalesReportContigence() {
             ))}
           </Select>
 
-          <div className="mt-5">
-            <Textarea
-              size="lg"
-              label="Información adicional"
-              labelPlacement="outside"
-              variant="bordered"
-              placeholder="Ingresa tus observaciones y comentarios"
-            ></Textarea>
-          </div>
+          {contingencia === "5" && (
+            <div className="mt-5">
+              <Textarea
+                size="lg"
+                label="Información adicional"
+                labelPlacement="outside"
+                variant="bordered"
+                placeholder="Ingresa tus observaciones y comentarios"
+              ></Textarea>
+            </div>
+          )}
         </div>
       </ModalGlobal>
       <ModalGlobal
@@ -585,7 +854,7 @@ function SalesReportContigence() {
       </ModalGlobal>
 
 
-      <ModalGlobal
+      {/* <ModalGlobal
         title="cccccccccc"
         onClose={modalEdit.onClose}
         size="w-full  md:w-[900px]"
@@ -594,7 +863,7 @@ function SalesReportContigence() {
         <UpdateCustomerSales codigoGeneracion={codigoGeneracion} customer={dataCustomer}>
 
         </UpdateCustomerSales>
-      </ModalGlobal>
+      </ModalGlobal> */}
     </>
   );
 }

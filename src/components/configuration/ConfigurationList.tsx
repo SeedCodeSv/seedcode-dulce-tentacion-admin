@@ -1,5 +1,5 @@
 import { useContext, useEffect, } from "react";
-import { Card, useDisclosure } from "@nextui-org/react";
+import { Card, useDisclosure, Image } from "@nextui-org/react";
 import { useThemeStore } from "../../store/theme.store";
 import { Theme, ThemeContext } from "../../hooks/useTheme";
 import { Check } from "lucide-react";
@@ -113,7 +113,7 @@ function ConfigurationList() {
                   >
                     <CardHeader className="flex gap-3">
                       <div className="flex items-center justify-center w-full">
-                        <Avatar
+                        <Image
                           src={item.logo}
                           className="w-36 h-36 text-large"
                         />

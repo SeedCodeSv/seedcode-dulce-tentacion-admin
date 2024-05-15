@@ -80,3 +80,12 @@ export const return_branch_id = () => {
 export const delete_branch_id = () => {
   return localStorage.removeItem("branch_id")
 }
+export const save_seller_mode = (mode: string) => {
+  localStorage.setItem("seller_mode", mode)
+}
+export const return_seller_mode = () => {
+  return localStorage.getItem("seller_mode")
+}
+export const delete_seller_mode = () => {
+  return localStorage.removeItem("seller_mode")
+}
