@@ -8,12 +8,19 @@ import {
   SelectItem,
   Switch,
   Textarea,
+  modal,
   useDisclosure,
 } from "@nextui-org/react";
 import { ThemeContext } from "../../hooks/useTheme";
 import { useReportContigenceStore } from "../../store/report_contigence.store";
 import { get_user, return_mh_token } from "../../storage/localStorage";
-import { LoaderCircle, ScanEye, Send, SquareChevronRight } from "lucide-react";
+import {
+  EditIcon,
+  LoaderCircle,
+  ScanEye,
+  Send,
+  SquareChevronRight,
+} from "lucide-react";
 import { global_styles } from "../../styles/global.styles";
 import ModalGlobal from "../global/ModalGlobal";
 import Terminal, {
@@ -32,6 +39,8 @@ import { toast } from "sonner";
 import { AxiosError } from "axios";
 import { ICheckResponse } from "../../types/DTE/check.types";
 import { useBillingStore } from "../../store/facturation/billing.store";
+import SalesUpdate from "./SalesUpdate";
+import SalesEdit from "./SalesUpdate";
 
 function SalesReportContigence() {
   const [branchId, setBranchId] = useState(0);
@@ -148,10 +157,8 @@ function SalesReportContigence() {
   const [loading, setLoading] = useState(false);
 
   const { gettransmitter, transmitter } = useTransmitterStore();
-  const {
-    cat_005_tipo_de_contingencia,
-    getCat005TipoDeContingencia,
-  } = useBillingStore();
+  const { cat_005_tipo_de_contingencia, getCat005TipoDeContingencia } =
+    useBillingStore();
   useEffect(() => {
     gettransmitter();
     getCat005TipoDeContingencia();
@@ -212,6 +219,10 @@ function SalesReportContigence() {
     }
   };
 
+  const handleEdit = () => {
+    <SalesEdit />;
+  };
+
   const handleVerify = (sale: Sale) => {
     setLoading(true);
     modalLoading.onOpen();
@@ -252,9 +263,9 @@ function SalesReportContigence() {
       });
   };
 
-  const handleSendToContingenci = (sale: Sale) => {
-    
-  }
+  const handleSendToContingenci = (sale: Sale) => {};
+
+  const modalEdit = useDisclosure();
 
   return (
     <>
@@ -454,6 +465,18 @@ function SalesReportContigence() {
                       >
                         <Send size={20} />
                       </Button>
+
+                      <Button
+                        style={global_styles().secondaryStyle}
+                        size="lg"
+                        isIconOnly
+                        onClick={() => {
+                          setSelectedSale(rowData.id);
+                          modalEdit.onOpen();
+                        }}
+                      >
+                        <EditIcon size={20} />
+                      </Button>
                     </div>
                   )}
                 />
@@ -519,13 +542,13 @@ function SalesReportContigence() {
           </Select>
 
           <div className="mt-5">
-          <Textarea
-            size="lg"
-            label="Información adicional"
-            labelPlacement="outside"
-            variant="bordered"
-            placeholder="Ingresa tus observaciones y comentarios"
-          ></Textarea>
+            <Textarea
+              size="lg"
+              label="Información adicional"
+              labelPlacement="outside"
+              variant="bordered"
+              placeholder="Ingresa tus observaciones y comentarios"
+            ></Textarea>
           </div>
         </div>
       </ModalGlobal>
@@ -558,6 +581,16 @@ function SalesReportContigence() {
           <LoaderCircle className=" animate-spin" size={75} color="red" />
           <p className="text-lg font-semibold">Cargando por favor espere...</p>
         </div>
+      </ModalGlobal>
+
+      <ModalGlobal
+        onClose={modalEdit.onClose}
+        size="w-full  md:w-[500px]"
+        isOpen={modalEdit.isOpen}
+      >
+        <SalesUpdate onCloseModal={modalEdit.onClose}>
+
+        </SalesUpdate>
       </ModalGlobal>
     </>
   );
