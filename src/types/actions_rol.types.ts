@@ -2,9 +2,9 @@ import { Role } from "./roles.types";
 import { IAction } from "./actions.types";
 export interface IActionRol {
   id: number;
-  isActivated: boolean;
   role: Role;
   action: IAction;
+  isActive: boolean;
 }
 export interface IGetActionRolList {
   ok: boolean;
@@ -16,4 +16,10 @@ export interface IAddActionRol {
   actionIds: {
     id: number
   }[];
+}
+
+export interface RoleViewAction {
+  name: string;
+  roleId: number;
+  view: {name: string; actions: {name: string}[] } [];
 }

@@ -18,7 +18,7 @@ export interface IGetActionRol {
 
 export interface RoleAction {
   id: number;
-  isActivated: boolean;
+  isActive: boolean;
   action: IAction;
   role: Role;
 }

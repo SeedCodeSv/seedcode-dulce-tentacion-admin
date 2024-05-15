@@ -1,4 +1,5 @@
 import { Color, Theme } from "../hooks/useTheme";
+import { RoleViewAction } from "../types/actions_rol.types";
 
 export const normalize = (text: string) =>
   text
@@ -16,4 +17,10 @@ export function formatThemeData(themesData: any[]): Theme[] {
       return acc;
     }, {} as Color)
   }));
+}
+
+export const filterActions = (name: string, actions: RoleViewAction) => {
+  const actions_return = actions.view.find((vi) => vi.name === name);
+
+  return actions_return;
 }

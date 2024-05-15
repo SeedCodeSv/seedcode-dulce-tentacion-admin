@@ -11,11 +11,37 @@ import Product from "../pages/Product";
 import ExpensesCategories from "../pages/ExpensesCategories";
 import Expenses from "../pages/Expenses";
 import ActionRol from "../pages/ActionRol"
+import { useActionsRolStore } from "../store/actions_rol.store";
+import { useEffect, useState } from "react";
 export const router = () => {
+  const { role_view_action, OnGetActionsByRole } = useActionsRolStore();
+  const [userRoleId, setUserRoleId] = useState(null);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+      if (user && user.roleId) {
+        setUserRoleId(user.roleId);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (userRoleId) {
+      OnGetActionsByRole(userRoleId);
+    }
+  }, [OnGetActionsByRole, userRoleId]);
+
+  const views =
+    role_view_action &&
+    role_view_action.view &&
+    role_view_action.view.map((view) => view.name);
+
   return createBrowserRouter([
     {
       path: "/",
-      element: <Home />,
+      element: views && views.includes("Inicio") &&  <Home /> 
     },
     {
       path: "/tables",
@@ -23,11 +49,11 @@ export const router = () => {
     },
     {
       path: "/categories",
-      element: <ProductsCategories />,
+      element: views && views.includes("Categoria") && <ProductsCategories />,
     },
     {
       path: "/users",
-      element: <Users />,
+      element: views && views.includes("Usuario") && <Users /> 
     },
     {
       path: "/employees",

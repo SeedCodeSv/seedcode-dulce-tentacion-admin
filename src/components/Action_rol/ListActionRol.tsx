@@ -23,6 +23,7 @@ const ListActionRol = () => {
   const [view, setView] = useState<"table" | "grid" | "list">("table");
   const [limit, setLimit] = useState(8);
   const modalAdd = useDisclosure();
+  const [idCounter] = useState(1);
   const {OnGetActionsRoleList, actions_roles_grouped} = useActionsRolStore()
   useEffect(() => {
     OnGetActionsRoleList()
@@ -157,6 +158,10 @@ const ListActionRol = () => {
                 headerClassName="text-sm font-semibold"
                 headerStyle={{ ...style, borderTopLeftRadius: "10px" }}
                 field="id"
+                body={(rowData) => {
+                  const actionId = idCounter + actions_roles_grouped.indexOf(rowData)
+                  return actionId;
+                }}
                 header="No."
               />
               <Column
@@ -174,7 +179,15 @@ const ListActionRol = () => {
               <Column
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
-                field="action"
+                body={(rowData) => (
+                  <div>
+                    {rowData.action.map((action: any, index: number) => (
+                      <div key={index} className="text-slate-950">
+                        • {action}
+                      </div>
+                    ))}
+                  </div>
+                )}
                 header="Permisos"
               />
               <Column
