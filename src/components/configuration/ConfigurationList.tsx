@@ -1,6 +1,5 @@
-import { useContext, useEffect, useState } from "react";
-import { defaultTheme } from "../../utils/constants";
-import { Card, Button as NButton, useDisclosure } from "@nextui-org/react";
+import { useContext, useEffect, } from "react";
+import { Card, useDisclosure } from "@nextui-org/react";
 import { useThemeStore } from "../../store/theme.store";
 import { Theme, ThemeContext } from "../../hooks/useTheme";
 import { Check } from "lucide-react";
@@ -10,18 +9,21 @@ import CreateConfiguration from "./CreateConfiguration";
 import CreateTheme from "./CreateTheme";
 import { useConfigurationStore } from "../../store/perzonalitation.store";
 import { Avatar } from "@nextui-org/react";
-import { CardHeader, CardBody, CardFooter, Divider } from "@nextui-org/react";
+import { CardHeader, CardFooter, Divider } from "@nextui-org/react";
+import DefaultImage from "../../assets/react.svg";
+import { useAuthStore } from "../../store/auth.store";
 
 function ConfigurationList() {
-  const [color, setColor] = useState(defaultTheme);
   const { getPaginatedThemes, themes } = useThemeStore();
   const { theme, toggleTheme } = useContext(ThemeContext);
 
   const { personalization, GetConfigurationByTransmitter } =
     useConfigurationStore();
+  const { user } = useAuthStore();
+  const tramsiter = user?.employee?.branch?.transmitterId;
 
   useEffect(() => {
-    GetConfigurationByTransmitter(1);
+    GetConfigurationByTransmitter(tramsiter || 0);
     getPaginatedThemes(1);
   }, []);
 
@@ -84,18 +86,14 @@ function ConfigurationList() {
             <AddButton onClick={() => addLogo.onOpen()} />
           </div>
 
-          <div className="flex items-center justify-center w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
+          <div className="flex justify-center w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
             <div className="flex flex-wrap justify-center">
-              {" "}
-              {personalization.map((item) => (
-                <Card
-                  key={item.id}
-                  className="hover:shadow-xl hover:border border border-gray-400 hover:border-blue-400 w-72 h-56 m-4"
-                >
+              {personalization.length === 0 ? (
+                <Card className="hover:shadow-xl hover:border border border-gray-400 hover:border-blue-400 w-72 h-56 m-4">
                   <CardHeader className="flex gap-3">
                     <div className="flex items-center justify-center w-full">
                       <Avatar
-                        src={item.logo}
+                        src={DefaultImage}
                         className="w-36 h-36 text-large"
                       />
                     </div>
@@ -103,11 +101,33 @@ function ConfigurationList() {
                   <Divider />
                   <CardFooter className="flex justify-between">
                     <div className="w-full text-center">
-                      <p>{item.name}</p>
+                      <p>Seed code ERP</p>
                     </div>
                   </CardFooter>
                 </Card>
-              ))}
+              ) : (
+                personalization.map((item) => (
+                  <Card
+                    key={item.id}
+                    className="hover:shadow-xl hover:border border border-gray-400 hover:border-blue-400 w-72 h-56 m-4"
+                  >
+                    <CardHeader className="flex gap-3">
+                      <div className="flex items-center justify-center w-full">
+                        <Avatar
+                          src={item.logo}
+                          className="w-36 h-36 text-large"
+                        />
+                      </div>
+                    </CardHeader>
+                    <Divider />
+                    <CardFooter className="flex justify-between">
+                      <div className="w-full text-center">
+                        <p>{item.name}</p>
+                      </div>
+                    </CardFooter>
+                  </Card>
+                ))
+              )}
             </div>
           </div>
         </div>

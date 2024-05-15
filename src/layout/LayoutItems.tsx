@@ -14,27 +14,59 @@ import {
   CalculatorIcon,
   Grid2X2Icon,
   ShoppingCart,
-  DollarSign
+  DollarSign,
 } from "lucide-react";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { ThemeContext } from "../hooks/useTheme";
+import { useConfigurationStore } from "../store/perzonalitation.store";
+import { useAuthStore } from "../store/auth.store";
 
 export const LayoutItems = () => {
   const { theme, toggleContext, context } = useContext(ThemeContext);
+  const { user } = useAuthStore();
+  const transmitter = user?.employee?.branch?.transmitterId;
+
+  const { personalization, GetConfigurationByTransmitter } =
+    useConfigurationStore();
+
+  useEffect(() => {
+    GetConfigurationByTransmitter(transmitter || 0);
+  }, []);
+
   return (
     <>
-      <div
-        className="flex items-center justify-center w-full border-b shadow h-14"
-        style={{
-          backgroundColor: theme.colors.dark,
-          color: theme.colors.primary,
-        }}
-      >
-        <Image src={LOGO} className="w-[50px]" />
-        <p className="ml-3 font-sans text-sm font-bold text-coffee-brown">
-          SeedCodeERP
-        </p>
-      </div>
+      {personalization.length === 0 ? (
+        <div
+          className="flex items-center justify-center w-full border-b shadow h-14"
+          style={{
+            backgroundColor: theme.colors.dark,
+            color: theme.colors.primary,
+          }}
+        >
+          <Image src={LOGO} className="w-[50px]" />
+          <p className="ml-3 font-sans text-sm font-bold text-coffee-brown">
+            SeedCodeERP
+          </p>
+        </div>
+      ) : (
+        <>
+          {personalization.map((item) => (
+            <div
+              key={item.id}
+              className="flex items-center justify-center w-full border-b shadow h-14"
+              style={{
+                backgroundColor: theme.colors.dark,
+                color: theme.colors.primary,
+              }}
+            >
+              <Image src={item.logo} className="w-[50px] h-[50px]" />
+              <p className="ml-3 font-sans text-sm font-bold text-coffee-brown">
+                {item.name}
+              </p>
+            </div>
+          ))}
+        </>
+      )}
       <NavLink
         to={"/"}
         className={({ isActive }) => {
@@ -273,7 +305,7 @@ export const LayoutItems = () => {
           };
         }}
       >
-        <DollarSign  size={20}/>
+        <DollarSign size={20} />
         <p className="ml-2 text-base">Ventas</p>
       </NavLink>
       <NavLink
