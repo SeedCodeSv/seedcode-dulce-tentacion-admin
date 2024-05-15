@@ -81,7 +81,7 @@ export const useAuthStore = create<IAuthStore>((set, get) => ({
       token: "",
       isAuth: false,
     })),
-      await delete_mh_token();
+    await delete_mh_token();
     await delete_box();
     await delete_user();
     await delete_token();
