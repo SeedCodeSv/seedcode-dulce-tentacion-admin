@@ -43,7 +43,7 @@ export const LayoutItems = () => {
             color: theme.colors.primary,
           }}
         >
-          <Image src={LOGO} className="w-[50px]" />
+          <Image src={LOGO} className="h-12" />
           <p className="ml-3 font-sans text-sm font-bold text-coffee-brown">
             SeedCodeERP
           </p>
@@ -59,7 +59,7 @@ export const LayoutItems = () => {
                 color: theme.colors.primary,
               }}
             >
-              <Image src={item.logo} className="w-[50px] h-[50px]" />
+              <Image src={item.logo} className="h-12" />
               <p className="ml-3 font-sans text-sm font-bold text-coffee-brown">
                 {item.name}
               </p>
