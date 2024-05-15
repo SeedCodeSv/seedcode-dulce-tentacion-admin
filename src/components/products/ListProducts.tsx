@@ -23,11 +23,8 @@ import {
 } from "lucide-react";
 import AddButton from "../global/AddButton";
 import { Paginator } from "primereact/paginator";
-// import ReturnImageCategory from "../global/ReturnImageCategory";
 import { useProductsStore } from "../../store/products.store";
 import Pagination from "../global/Pagination";
-
-// import ReturnAvatarImage from "../global/ReturnAvatarImage";
 import { Product } from "../../types/products.types";
 import ModalGlobal from "../global/ModalGlobal";
 import AddProducts from "./AddProducts";
@@ -37,8 +34,7 @@ import { ButtonGroup } from "@nextui-org/react";
 import { paginator_styles } from "../../styles/paginator.styles";
 import { CategoryProduct } from "../../types/categories.types";
 import MobileView from "./MobileView";
-
-// import ReturnImgCategory from "../global/ReturnImgCategory";
+import {formatCurrency} from "../../utils/dte"
 
 function ListProducts() {
   const { theme } = useContext(ThemeContext);
@@ -76,7 +72,6 @@ function ListProducts() {
   const [selectedProduct, setSelectedProduct] = useState<Product | undefined>(
     undefined
   );
-
   return (
     <>
       <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
@@ -261,8 +256,9 @@ function ListProducts() {
               <Column
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
-                field="price"
+                // field="price"
                 header="Precio"
+                body={(rowData) => formatCurrency(Number(rowData.price))}
               />
               <Column
                 headerStyle={{ ...style, borderTopRightRadius: "10px" }}

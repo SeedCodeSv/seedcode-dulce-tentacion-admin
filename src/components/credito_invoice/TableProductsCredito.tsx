@@ -1,5 +1,5 @@
 import { Table, TR, TH, TD } from "@ag-media/react-pdf-table";
-import TableFooter from "./TableFooter";
+import TableFooterCredito from "./TableFooterCredito";
 import { StyleSheet } from "@react-pdf/renderer";
 import { DteJson } from "../../types/DTE/DTE.types";
 
@@ -7,7 +7,7 @@ interface Props {
   DTE: DteJson;
 }
 
-export default function TableProducts(props: Props) {
+export default function TableProductsCredito({DTE}: Props) {
   const styles = StyleSheet.create({
     th_content: {
       fontSize: 7,
@@ -65,7 +65,7 @@ export default function TableProducts(props: Props) {
           Ventas Grav.
         </TD>
       </TH>
-      {props.DTE.dteJson.cuerpoDocumento.map((cuerpo, index) => (
+      {DTE.dteJson.cuerpoDocumento.map((cuerpo, index) => (
         <TR>
           <TD weighting={0.1} style={styles.td_content}>
             {index + 1}
@@ -99,7 +99,7 @@ export default function TableProducts(props: Props) {
           </TD>
         </TR>
       ))}
-      <TableFooter DTE={props.DTE} />
+      <TableFooterCredito DTE={DTE}/>
     </Table>
   );
 }

@@ -75,12 +75,12 @@ export const router = () => {
       element: <CreateConfiguration />,
     },
     {
-      path: "*",
-      element: <Error404 />,
-    },
-    {
       path: "sales-reports",
       element: <SalesReportContigencePage />,
+    },
+    {
+      path: "*",
+      element: <Error404 />,
     },
   ]);
 };

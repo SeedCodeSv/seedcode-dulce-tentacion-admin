@@ -11,4 +11,9 @@ export const generate_control = (
     const nuevoNumero = numero.toString().padStart(14, "0");
     return str.replace(/\d{14}$/, nuevoNumero);
   }
-  
+  export const formatCurrency = (value: number) => {
+    return value.toLocaleString("en-US", {
+      style: "currency",
+      currency: "USD",
+    });
+  };
