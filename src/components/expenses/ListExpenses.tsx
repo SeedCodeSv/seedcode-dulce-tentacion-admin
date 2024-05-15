@@ -271,8 +271,8 @@ const ListExpenses = () => {
         size="w-full sm:w-[500px]"
         title={
           selectedCategory
-            ? "Editar categoría de gastos"
-            : "Nueva categoría de gastos"
+            ? "Editar gastos"
+            : "Nueva gastos"
         }
         isOpen={modalAdd.isOpen}
         onClose={modalAdd.onClose}

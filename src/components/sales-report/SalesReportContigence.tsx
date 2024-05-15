@@ -57,6 +57,13 @@ function SalesReportContigence() {
     color: theme.colors.primary,
   };
   const [isActive, setIsActive] = useState(false);
+
+  const formatCurrency = (value: number) => {
+    return value.toLocaleString("en-US", {
+      style: "currency",
+      currency: "USD",
+    });
+  };
   return (
     <>
       {isActive === true ? (
@@ -128,18 +135,14 @@ function SalesReportContigence() {
                 headerStyle={style}
                 field="subTotal"
                 header="Subtotal"
+                body={(rowData) => formatCurrency(Number(rowData.subTotal))}
               />
               <Column
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
-                field="totalIva"
+                // field="totalIva"
                 header="Total IVA"
-              />
-              <Column
-                headerClassName="text-sm font-semibold"
-                headerStyle={style}
-                field="totalPagar"
-                header="Total a pagar"
+                body={(rowData) => formatCurrency(Number(rowData.totalIva))}
               />
             </DataTable>
             {pagination_sales.totalPag > 1 && (
@@ -245,18 +248,14 @@ function SalesReportContigence() {
                 headerStyle={style}
                 field="subTotal"
                 header="Subtotal"
+                body={(rowData) => formatCurrency(Number(rowData.subTotal))}
               />
               <Column
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
-                field="totalIva"
+                // field="totalIva"
                 header="Total IVA"
-              />
-              <Column
-                headerClassName="text-sm font-semibold"
-                headerStyle={style}
-                field="totalPagar"
-                header="Total a pagar"
+                body={(rowData) => formatCurrency(Number(rowData.totalIva))}
               />
             </DataTable>
             {pagination_saless.totalPag > 1 && (

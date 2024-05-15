@@ -26,3 +26,9 @@ export interface ICreacteConfiguaration {
   transmitterId: number;
   file?: File | Blob | null;
 }
+
+export interface GetByTransmitter {
+  personalization: IConfiguration[];
+  ok: boolean;
+  messages: string;
+}

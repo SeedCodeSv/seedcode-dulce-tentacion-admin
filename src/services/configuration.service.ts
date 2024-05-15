@@ -1,4 +1,4 @@
-import { IGetConfiguration } from "./../types/configuration.types";
+import { GetByTransmitter, IGetConfiguration } from "./../types/configuration.types";
 import axios from "axios";
 import { API_URL } from "../utils/constants";
 
@@ -22,3 +22,11 @@ export const create_configuration = async (
     }
   );
 };
+
+export const get_by_transmitter = (id: number) => {
+  return axios.get<GetByTransmitter>(`${API_URL}/personalization${id}`, {
+      headers: {
+        Authorization: "Bearer" + localStorage.getItem("token"),
+      },
+  });
+}

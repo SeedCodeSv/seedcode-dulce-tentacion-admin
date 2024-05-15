@@ -15,7 +15,7 @@ import axios, { AxiosError } from "axios";
 import { PutObjectCommand, PutObjectCommandInput } from "@aws-sdk/client-s3";
 import { s3Client } from "../../plugins/s3";
 import { SendMHFailed } from "../../types/transmitter.types";
-import { Invoice } from "../../pages/Invoice";
+import { CreditoInvoice } from "../../pages/CreditInvoice";
 import { pdf } from "@react-pdf/renderer";
 import { API_URL, MH_QUERY, ambiente } from "../../utils/constants";
 import { useCorrelativesDteStore } from "../../store/correlatives_dte.store";
@@ -117,7 +117,6 @@ function CreditoFiscal(props: Props) {
       props.tipeTribute,
       props.tipePayment
     );
-    console.log(generate);
     setCurrentDTE(generate);
     setLoading(true);
     toast.info("Estamos firmado tu documento");
@@ -164,7 +163,7 @@ function CreditoFiscal(props: Props) {
                   });
 
                   const blob = await pdf(
-                    <Invoice
+                    <CreditoInvoice
                       MHUrl={generateURLMH(
                         ambiente,
                         generate.dteJson.identificacion.codigoGeneracion,
@@ -380,7 +379,7 @@ function CreditoFiscal(props: Props) {
       </div>
       <ModalGlobal
         title={title}
-        size="w-full md:w-[500px]"
+        size="w-full md:w-[600px] lg:w-[700px]"
         isOpen={modalError.isOpen}
         onClose={modalError.onClose}
       >
@@ -393,7 +392,7 @@ function CreditoFiscal(props: Props) {
             <LoaderCircle size={50} className=" animate-spin " />
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-5 mt-5">
+          <div className="grid grid-cols-3 gap-5 mt-5">
             <Button
               onClick={() => {
                 modalError.onClose();

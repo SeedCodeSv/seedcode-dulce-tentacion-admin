@@ -1,5 +1,5 @@
 export interface Receptor {
-    id: string
+    id?: string
     tipoDocumento: string;
     numDocumento: string;
     nrc: string;
@@ -8,6 +8,6 @@ export interface Receptor {
     descActividad: string;
     telefono: string
     correo: string
-    addressId: string
+    addressId: number
     ventaId: number
 }
