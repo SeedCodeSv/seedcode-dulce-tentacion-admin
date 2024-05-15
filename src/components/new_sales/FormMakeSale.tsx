@@ -77,7 +77,6 @@ function FormMakeSale(props: Props) {
   const [loading, setLoading] = useState(false);
 
   const { getCorrelativesByDte } = useCorrelativesDteStore();
-  console.log(tipeDocument);
 
   const generateURLMH = (
     ambiente: string,

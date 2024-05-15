@@ -18,35 +18,23 @@ export const useConfigurationStore = create<IConfigurationStore>(
         });
     },
 
-    async GetConfigurationByTransmitter(id:number ) {
+    async GetConfigurationByTransmitter(id: number) {
       try {
-        const response = await get_by_transmitter(id);
-        if (typeof response.data.personalization === 'object') {
-          // Convertir el objeto a un array de un solo elemento
-          const mappedData: IConfiguration[] = [response.data.personalization];
-          set({ personalization: mappedData });
-        } else if (Array.isArray(response.data.personalization)) {
-          // Utilizar el array directamente
-          const mappedData: IConfiguration[] = response.data.personalization.map((item: any) => ({
-            logo: item.logo,
-            ext: item.ext,
-            name: item.name,
-            themeId: item.themeId,
-            transmitterId: item.transmitterId
-          }));
-          set({ personalization: mappedData });
+        const { data } = await get_by_transmitter(id);
+        if (data.personalization) {
+          set({
+            personalization: [data.personalization],
+          });
         } else {
-          set({ personalization: [] });
-          toast.error("La respuesta de la API no contiene datos de personalización válidos");
+          toast.error("No se encontró información de personalización");
         }
       } catch (error) {
-        console.error("Error al obtener la información de personalización:", error);
-        set({ personalization: [] });
-        toast.error("Ocurrió un error al obtener la información de personalización");
+        toast.error(
+          "Ocurrió un error al obtener la información de personalización"
+        );
       }
     }
-    
-    
-    
   })
+    
+
 );
