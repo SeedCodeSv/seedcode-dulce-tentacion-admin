@@ -75,10 +75,10 @@ export const router = () => {
       path: "/create-configuration",
       element: <CreateConfiguration />,
     },
-    {
-      path: "/UpdateSales",
-      element: <SalesUpdate />,
-    },
+    // {
+    //   path: "/UpdateSales",
+    //   element: <SalesUpdate />,
+    // },
     {
       path: "sales-reports",
       element: <SalesReportContigencePage />,
