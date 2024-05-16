@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { IConfigurationStore } from "./types/perzonalitation.types.store";
-import { IConfiguration, IGetConfiguration } from "../types/configuration.types";
+import { IGetConfiguration } from "../types/configuration.types";
 import { create_configuration, get_by_transmitter } from "../services/configuration.service";
 import { toast } from "sonner";
 import { get_personalization } from "../storage/localStorage";
