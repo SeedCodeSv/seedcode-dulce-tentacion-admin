@@ -1,9 +1,9 @@
-import { BranchProduct, ICartProduct } from "../../types/branch_products.types";
-import { IPagination } from "../../types/global.types";
+import { BranchProduct, ICartProduct, IGetBranchProductPaginated } from "../../types/branch_products.types";
+// import { IPagination } from "../../types/global.types";
 
 export interface IBranchProductStore {
     branch_products: BranchProduct[],
-    pagination_branch_products: IPagination,
+    pagination_branch_products: IGetBranchProductPaginated,
     cart_products: ICartProduct[],
     getPaginatedBranchProducts: (branchId: number, page?: number, limit?: number, name?: string, code?: string) => void,
     addProductCart: (product: BranchProduct) => void

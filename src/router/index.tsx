@@ -16,12 +16,37 @@ import Configuration from "../pages/Configuration";
 import CreateConfiguration from "../components/configuration/CreateConfiguration";
 import SalesReportContigencePage from "../pages/SalesReportContigencePage";
 import SalesUpdate from "../components/sales-report/SalesUpdate";
-
+import { useActionsRolStore } from "../store/actions_rol.store";
+import { useEffect, useState } from "react";
 export const router = () => {
+  const { role_view_action, OnGetActionsByRole } = useActionsRolStore();
+  const [userRoleId, setUserRoleId] = useState(null);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+      if (user && user.roleId) {
+        setUserRoleId(user.roleId);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (userRoleId) {
+      OnGetActionsByRole(userRoleId);
+    }
+  }, [OnGetActionsByRole, userRoleId]);
+
+  const views =
+    role_view_action &&
+    role_view_action.view &&
+    role_view_action.view.map((view) => view.name);
+
   return createBrowserRouter([
     {
       path: "/",
-      element: <Home />,
+      element: views && views.includes("Inicio") &&  <Home /> 
     },
     {
       path: "/tables",
@@ -29,43 +54,43 @@ export const router = () => {
     },
     {
       path: "/categories",
-      element: <ProductsCategories />,
+      element: views && views.includes("Categorias") && <ProductsCategories />,
     },
     {
       path: "/users",
-      element: <Users />,
+      element: views && views.includes("Usuarios") && <Users /> 
     },
     {
       path: "/employees",
-      element: <Employees />,
+      element: views && views.includes("Empleados") && <Employees />,
     },
     {
       path: "/clients",
-      element: <Customers />,
+      element: views && views.includes("Clientes") && <Customers />,
     },
     {
       path: "/branches",
-      element: <Branch />,
+      element: views && views.includes("Sucursales") && <Branch />,
     },
     {
       path: "/products",
-      element: <Product />,
+      element: views && views.includes("Productos") && <Product />,
     },
     {
       path: "/expensesCategories",
-      element: <ExpensesCategories />,
+      element: views && views.includes("Categoria de gastos") && <ExpensesCategories />,
     },
     {
       path: "/expenses",
-      element: <Expenses />,
+      element: views && views.includes("Gastos") && <Expenses />,
     },
     {
       path: "/actionRol",
-      element: <ActionRol />,
+      element: views && views.includes("Permisos") && <ActionRol />,
     },
     {
       path: "/newSales",
-      element: <NewSales />,
+      element: views && views.includes("Ventas") && <NewSales />,
     },
     {
       path: "/configuration",
@@ -81,7 +106,7 @@ export const router = () => {
     // },
     {
       path: "sales-reports",
-      element: <SalesReportContigencePage />,
+      element: views && views.includes("Reporte de ventas") && <SalesReportContigencePage />,
     },
     {
       path: "*",

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { useUsersStore } from "../../store/users.store";
 import {
   Button,
@@ -23,6 +23,7 @@ import {
   TrashIcon,
   List,
   EditIcon,
+  Filter,
 } from "lucide-react";
 import UpdatePassword from "./UpdatePassword";
 import { ThemeContext } from "../../hooks/useTheme";
@@ -33,9 +34,14 @@ import { Paginator } from "primereact/paginator";
 import { paginator_styles } from "../../styles/paginator.styles";
 import Pagination from "../global/Pagination";
 import { User } from "../../types/users.types";
+import { ActionsContext } from "../../hooks/useActions";
+import { filterActions } from "../../utils/filters";
+import { Drawer } from "vaul";
+import { global_styles } from "../../styles/global.styles";
+import classNames from "classnames";
 
 function ListUsers() {
-  const { theme } = useContext(ThemeContext);
+  const { theme, context } = useContext(ThemeContext);
   const [limit, setLimit] = useState(5);
   const { users_paginated, getUsersPaginated } = useUsersStore();
   const [user, setUser] = useState<User | undefined>();
@@ -62,46 +68,63 @@ function ListUsers() {
     getUsersPaginated(1, limit, searchParam ?? userName);
   };
 
+  const { roleActions } = useContext(ActionsContext);
+
+  const actions_role_view = useMemo(() => {
+    if (roleActions) {
+      return filterActions("Usuarios", roleActions)?.actions.map(
+        (re) => re.name
+      );
+    }
+    return undefined;
+  }, [roleActions]);
+
+  const [openVaul, setOpenVaul] = useState(false);
+
   return (
     <>
       <div className="w-full h-full p-5 bg-gray-100 dark:bg-gray-800">
         <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
           <div className="flex flex-col justify-between w-full gap-5 mb-5 lg:mb-10 lg:flex-row lg:gap-0">
-            <div className="flex items-end gap-3">
-              <Input
-                startContent={<User2 />}
-                className="w-full xl:w-96 dark:text-white"
-                variant="bordered"
-                labelPlacement="outside"
-                label="Nombre"
-                classNames={{
-                  label: "font-semibold text-gray-700",
-                  inputWrapper: "pr-0",
-                }}
-                value={userName}
-                onChange={(e) => setUserName(e.target.value)}
-                size="lg"
-                placeholder="Escribe para buscar..."
-                isClearable
-                onClear={() => {
-                  setUserName("");
-                  handleSearch("");
-                }}
-              />
-              <Button
-                style={{
-                  backgroundColor: theme.colors.secondary,
-                  color: theme.colors.primary,
-                }}
-                className="font-semibold"
-                color="primary"
-                size="lg"
-                onClick={() => handleSearch(undefined)}
-              >
-                Buscar
-              </Button>
+            <div className="hidden w-full gap-5 md:flex">
+              <div className="w-1/2">
+                <Input
+                  startContent={<User2 />}
+                  className=" dark:text-white"
+                  variant="bordered"
+                  labelPlacement="outside"
+                  label="Nombre"
+                  classNames={{
+                    label: "font-semibold text-gray-700",
+                    inputWrapper: "pr-0",
+                  }}
+                  value={userName}
+                  onChange={(e) => setUserName(e.target.value)}
+                  size="lg"
+                  placeholder="Escribe para buscar..."
+                  isClearable
+                  onClear={() => {
+                    setUserName("");
+                    handleSearch("");
+                  }}
+                />
+              </div>
+              <div className="w-1/2 mt-6">
+                <Button
+                  style={{
+                    backgroundColor: theme.colors.secondary,
+                    color: theme.colors.primary,
+                  }}
+                  className="font-semibold"
+                  color="primary"
+                  size="lg"
+                  onClick={() => handleSearch(undefined)}
+                >
+                  Buscar
+                </Button>
+              </div>
             </div>
-            <div className="flex items-end justify-between gap-10 mt lg:justify-end">
+            <div className="flex items-end justify-between gap-10 lg:justify-end">
               <ButtonGroup>
                 <Button
                   size="lg"
@@ -143,7 +166,89 @@ function ListUsers() {
                   <List />
                 </Button>
               </ButtonGroup>
-              <AddButton onClick={() => modalAdd.onOpen()} />
+              <div className="flex items-center gap-5">
+                <div className="block md:hidden">
+                  <Drawer.Root
+                    shouldScaleBackground
+                    open={openVaul}
+                    onClose={() => setOpenVaul(false)}
+                  >
+                    <Drawer.Trigger asChild>
+                      <Button
+                        style={global_styles().thirdStyle}
+                        size="lg"
+                        isIconOnly
+                        onClick={() => setOpenVaul(true)}
+                        type="button"
+                      >
+                        <Filter />
+                      </Button>
+                    </Drawer.Trigger>
+                    <Drawer.Portal>
+                      <Drawer.Overlay
+                        className="fixed inset-0 bg-black/40 z-[60]"
+                        onClick={() => setOpenVaul(false)}
+                      />
+                      <Drawer.Content
+                        className={classNames(
+                          "bg-gray-100 z-[60] flex flex-col rounded-t-[10px] h-auto mt-24 max-h-[80%] fixed bottom-0 left-0 right-0",
+                          context === "dark" ? "dark" : ""
+                        )}
+                      >
+                        <div className="p-4 bg-white dark:bg-gray-800 rounded-t-[10px] flex-1">
+                          <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-gray-300 dark:bg-gray-400 mb-8" />
+                          <Drawer.Title className="mb-4 dark:text-white font-medium">
+                            Filtros disponibles
+                          </Drawer.Title>
+
+                          <div className="flex flex-col gap-3">
+                            <div className="w-full">
+                              <Input
+                                startContent={<User2 />}
+                                className=" dark:text-white"
+                                variant="bordered"
+                                labelPlacement="outside"
+                                label="Nombre"
+                                classNames={{
+                                  label: "font-semibold text-gray-700",
+                                  inputWrapper: "pr-0",
+                                }}
+                                value={userName}
+                                onChange={(e) => setUserName(e.target.value)}
+                                size="lg"
+                                placeholder="Escribe para buscar..."
+                                isClearable
+                                onClear={() => {
+                                  setUserName("");
+                                  handleSearch("");
+                                }}
+                              />
+                            </div>
+                            <Button
+                              style={{
+                                backgroundColor: theme.colors.secondary,
+                                color: theme.colors.primary,
+                              }}
+                              className="mb-10 font-semibold"
+                              color="primary"
+                              size="lg"
+                              onClick={() => {
+                                handleSearch(undefined);
+                                setOpenVaul(false);
+                              }}
+                            >
+                              Aplicar
+                            </Button>
+                          </div>
+                        </div>
+                      </Drawer.Content>
+                    </Drawer.Portal>
+                  </Drawer.Root>
+                </div>
+              </div>
+              {actions_role_view && actions_role_view?.includes("Agregar") && (
+                <AddButton onClick={() => modalAdd.onOpen()} />
+              )}
             </div>
           </div>
           <div className="flex justify-end w-full mb-1">
@@ -220,22 +325,25 @@ function ListUsers() {
                 header="Acciones"
                 body={(item) => (
                   <div className="flex w-full gap-5">
-                    <Button
-                      onClick={() => {
-                        setUser(item);
-                        modalUpdate.onOpen();
-                      }}
-                      isIconOnly
-                      style={{
-                        backgroundColor: theme.colors.secondary,
-                      }}
-                      size="lg"
-                    >
-                      <EditIcon
-                        style={{ color: theme.colors.primary }}
-                        size={20}
-                      />
-                    </Button>
+                    {actions_role_view &&
+                      actions_role_view?.includes("Editar") && (
+                        <Button
+                          onClick={() => {
+                            setUser(item);
+                            modalUpdate.onOpen();
+                          }}
+                          isIconOnly
+                          style={{
+                            backgroundColor: theme.colors.secondary,
+                          }}
+                          size="lg"
+                        >
+                          <EditIcon
+                            style={{ color: theme.colors.primary }}
+                            size={20}
+                          />
+                        </Button>
+                      )}
                     <Button
                       size="lg"
                       onClick={() => {
@@ -249,7 +357,10 @@ function ListUsers() {
                     >
                       <Key color={theme.colors.primary} size={20} />
                     </Button>
-                    <DeletePopUp user={item} />
+                    {actions_role_view &&
+                      actions_role_view?.includes("Eliminar") && (
+                        <DeletePopUp user={item} />
+                      )}
                   </div>
                 )}
               />
