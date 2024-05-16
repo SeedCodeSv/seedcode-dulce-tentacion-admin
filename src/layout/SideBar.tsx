@@ -16,6 +16,7 @@ import { ThemeContext } from "../hooks/useTheme";
 import { useAuthStore } from "../store/auth.store";
 import { redirect, useNavigate } from "react-router";
 import { SessionContext } from "../hooks/useSession";
+import {delete_seller_mode} from "../storage/localStorage"
 interface Props {
   children: ReactNode;
   title: string;
@@ -35,6 +36,7 @@ export const SideBar = (props: Props) => {
   });
   const close_login = () => {
     makeLogout();
+    delete_seller_mode()
     setIsAuth(false);
     setToken("");
     redirect("/");
@@ -67,7 +69,7 @@ export const SideBar = (props: Props) => {
       )}
       <div className="flex flex-col w-full lg:ml-64">
         <div
-          className="fixed top-0 z-[30] w-screen left-0 lg:pl-72 shadow h-14 flex justify-between items-center lg:grid lg:grid-cols-2 px-6"
+          className="fixed top-0 z-[30] w-screen left-0 lg:pl-72 shadow h-[70px] flex justify-between items-center lg:grid lg:grid-cols-2 px-6"
           style={{
             backgroundColor: theme.colors.dark,
             color: theme.colors.primary,

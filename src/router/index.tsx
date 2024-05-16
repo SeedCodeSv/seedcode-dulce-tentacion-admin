@@ -15,6 +15,7 @@ import NewSales from "../pages/NewSales";
 import Configuration from "../pages/Configuration";
 import CreateConfiguration from "../components/configuration/CreateConfiguration";
 import SalesReportContigencePage from "../pages/SalesReportContigencePage";
+import SalesUpdate from "../components/sales-report/SalesUpdate";
 import { useActionsRolStore } from "../store/actions_rol.store";
 import { useEffect, useState } from "react";
 export const router = () => {
@@ -99,13 +100,17 @@ export const router = () => {
       path: "/create-configuration",
       element: <CreateConfiguration />,
     },
-    {
-      path: "*",
-      element: <Error404 />,
-    },
+    // {
+    //   path: "/UpdateSales",
+    //   element: <SalesUpdate />,
+    // },
     {
       path: "sales-reports",
       element: views && views.includes("Reporte de ventas") && <SalesReportContigencePage />,
+    },
+    {
+      path: "*",
+      element: <Error404 />,
     },
   ]);
 };

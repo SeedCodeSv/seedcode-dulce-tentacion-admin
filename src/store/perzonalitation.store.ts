@@ -1,13 +1,12 @@
 import { create } from "zustand";
 import { IConfigurationStore } from "./types/perzonalitation.types.store";
-import { IGetConfiguration } from "../types/configuration.types";
+import { IConfiguration, IGetConfiguration } from "../types/configuration.types";
 import { create_configuration, get_by_transmitter } from "../services/configuration.service";
 import { toast } from "sonner";
 
 export const useConfigurationStore = create<IConfigurationStore>(
   (set, get) => ({
     personalization: [],
-    get_personalization: [],
     OnCreateConfiguration: (payload: IGetConfiguration) => {
       create_configuration(payload)
         .then(() => {
@@ -19,14 +18,23 @@ export const useConfigurationStore = create<IConfigurationStore>(
         });
     },
 
-      async GetConfigurationByTransmitter(id:number ) {
-      await get_by_transmitter(id)
-      .then(({ data }) => {
-        set({ personalization: data.personalization });
-      }).catch(() => {
-        set({ personalization: [] });
-        toast.error("Ocurrió un error al obtener la información")
-      })
-  }
+    async GetConfigurationByTransmitter(id: number) {
+      try {
+        const { data } = await get_by_transmitter(id);
+        if (data.personalization) {
+          set({
+            personalization: [data.personalization],
+          });
+        } else {
+          toast.error("No se encontró información de personalización");
+        }
+      } catch (error) {
+        toast.error(
+          "Ocurrió un error al obtener la información de personalización"
+        );
+      }
+    }
   })
+    
+
 );
