@@ -6,6 +6,7 @@ export const useBranchProductStore = create<IBranchProductStore>(
   (set, get) => ({
     branch_products: [],
     pagination_branch_products: {
+      branchProducts: [],
       total: 0,
       totalPag: 0,
       currentPag: 0,
@@ -21,6 +22,7 @@ export const useBranchProductStore = create<IBranchProductStore>(
           set({
             branch_products: data.branchProducts,
             pagination_branch_products: {
+              branchProducts: [],
               total: data.total,
               totalPag: data.totalPag,
               currentPag: data.currentPag,
@@ -35,6 +37,7 @@ export const useBranchProductStore = create<IBranchProductStore>(
           set({
             branch_products: [],
             pagination_branch_products: {
+              branchProducts: [],
               total: 0,
               totalPag: 0,
               currentPag: 0,
