@@ -159,7 +159,7 @@ const ListClients = () => {
       <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
         <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
           <div className="flex flex-col justify-between w-full gap-5 mb-5 lg:mb-10 lg:flex-row lg:gap-0">
-            <div className="flex items-end gap-3">
+            <div className="hidden w-full gap-5 md:flex">
               <Input
                 startContent={<User />}
                 className="w-full xl:w-96 dark:text-white"
@@ -200,6 +200,7 @@ const ListClients = () => {
                   setEmail("");
                 }}
               />
+              <div className="mt-6">
               <Button
                 style={{
                   backgroundColor: theme.colors.secondary,
@@ -212,6 +213,7 @@ const ListClients = () => {
               >
                 Buscar
               </Button>
+              </div>
             </div>
             <div className="flex items-end justify-between gap-10 mt lg:justify-end">
               <ButtonGroup>

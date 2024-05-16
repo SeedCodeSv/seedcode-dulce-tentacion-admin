@@ -912,6 +912,7 @@ function SalesReportContigence() {
                           }));
                           setCodigoGeneracion(rowData.codigoGeneracion);
                           setSelectedSale(rowData.id);
+                          handleVerify(rowData);
                           modalEdit.onOpen();
                         }}
                       >
@@ -1033,7 +1034,7 @@ function SalesReportContigence() {
       </ModalGlobal>
 
       <ModalGlobal
-        title="cccccccccc"
+        title="Editar"
         onClose={modalEdit.onClose}
         size="w-full  md:w-[900px]"
         isOpen={modalEdit.isOpen}

@@ -6,25 +6,28 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import {
-  EditIcon,
-  Search,
-  TrashIcon,
   Table as ITable,
   CreditCard,
   List,
 } from "lucide-react";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ThemeContext } from "../../hooks/useTheme";
 import AddButton from "../global/AddButton";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import ModalGlobal from "../global/ModalGlobal";
 import AddActionRol from "./AddActionRol";
+import { useActionsRolStore } from "../../store/actions_rol.store";
 const ListActionRol = () => {
   const { theme } = useContext(ThemeContext);
   const [view, setView] = useState<"table" | "grid" | "list">("table");
   const [limit, setLimit] = useState(8);
   const modalAdd = useDisclosure();
+  const [idCounter] = useState(1);
+  const {OnGetActionsRoleList, actions_roles_grouped} = useActionsRolStore()
+  useEffect(() => {
+    OnGetActionsRoleList()
+  }, [])
 
   const style = {
     backgroundColor: theme.colors.dark,
@@ -148,54 +151,66 @@ const ListActionRol = () => {
             <DataTable
               className="w-full shadow"
               emptyMessage="No se encontraron resultados"
-              // value={paginated_categories_expenses.categoryExpenses}
+              value={actions_roles_grouped}
               tableStyle={{ minWidth: "50rem" }}
             >
               <Column
                 headerClassName="text-sm font-semibold"
                 headerStyle={{ ...style, borderTopLeftRadius: "10px" }}
                 field="id"
+                body={(rowData) => {
+                  const actionId = idCounter + actions_roles_grouped.indexOf(rowData)
+                  return actionId;
+                }}
                 header="No."
               />
               <Column
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
-                field="name"
+                field="role"
                 header="Rol"
               />
               <Column
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
-                field="name"
+                field="view"
                 header="Modulo"
               />
               <Column
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
-                field="name"
+                body={(rowData) => (
+                  <div>
+                    {rowData.action.map((action: any, index: number) => (
+                      <div key={index}>
+                        • {action}
+                      </div>
+                    ))}
+                  </div>
+                )}
                 header="Permisos"
               />
               <Column
                 headerStyle={{ ...style, borderTopRightRadius: "10px" }}
                 header="Acciones"
-                body={(item) => (
-                  <div className="flex gap-6">
-                    <Button
-                      // onClick={() => handleEdit(item)}
-                      isIconOnly
-                      size="lg"
-                      style={{
-                        backgroundColor: theme.colors.secondary,
-                      }}
-                    >
-                      <EditIcon
-                        style={{ color: theme.colors.primary }}
-                        size={20}
-                      />
-                    </Button>
-                    {/* <DeletePopUp categoryExpenses={item} /> */}
-                  </div>
-                )}
+                // body={(item) => (
+                //   <div className="flex gap-6">
+                //     <Button
+                //       // onClick={() => handleEdit(item)}
+                //       isIconOnly
+                //       size="lg"
+                //       style={{
+                //         backgroundColor: theme.colors.secondary,
+                //       }}
+                //     >
+                //       <EditIcon
+                //         style={{ color: theme.colors.primary }}
+                //         size={20}
+                //       />
+                //     </Button>
+                //     {/* <DeletePopUp categoryExpenses={item} /> */}
+                //   </div>
+                // )}
               />
             </DataTable>
           )}

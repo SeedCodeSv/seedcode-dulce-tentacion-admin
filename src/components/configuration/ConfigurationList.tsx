@@ -1,5 +1,5 @@
-import { useContext, useEffect, } from "react";
-import { Card, useDisclosure, Image } from "@nextui-org/react";
+import { useContext, useEffect, useState } from "react";
+import { Card, useDisclosure } from "@nextui-org/react";
 import { useThemeStore } from "../../store/theme.store";
 import { Theme, ThemeContext } from "../../hooks/useTheme";
 import { Check } from "lucide-react";
@@ -12,10 +12,13 @@ import { Avatar } from "@nextui-org/react";
 import { CardHeader, CardFooter, Divider } from "@nextui-org/react";
 import DefaultImage from "../../assets/react.svg";
 import { useAuthStore } from "../../store/auth.store";
+import UpdateFile from "./UpdateFile";
+import { Image } from "primereact/image";
 
 function ConfigurationList() {
   const { getPaginatedThemes, themes } = useThemeStore();
   const { theme, toggleTheme } = useContext(ThemeContext);
+  const [logoId, setLogoId] = useState(0);
 
   const { personalization, GetConfigurationByTransmitter } =
     useConfigurationStore();
@@ -29,15 +32,16 @@ function ConfigurationList() {
 
   const modalAdd = useDisclosure();
   const addLogo = useDisclosure();
+  const UpdateImgModal = useDisclosure();
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-0">
-        <div className="p-4">
+      <div className="grid grid-cols-2 gap-0 bg-gray-50 dark:bg-gray-800 h-full w-full">
+        <div className="p-4 ">
           <div className="flex items-end justify-between gap-10 mt lg:justify-end mt-5 mr-5">
             <AddButton onClick={() => modalAdd.onOpen()} />
           </div>
-          <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
+          <div className="p-5 bg-gray-50 dark:bg-gray-800">
             <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {themes.map((themeS, index) => (
                 <Card
@@ -81,13 +85,25 @@ function ConfigurationList() {
             </div>
           </div>
         </div>
-        <div className="p-4">
+        <div className="p-4 bg-gray-50 dark:bg-gray-800">
           <div className="flex items-end justify-between gap-10 mt lg:justify-end mt-5 mr-5">
-            <AddButton onClick={() => addLogo.onOpen()} />
+            {personalization.length === 0 && (
+              <AddButton onClick={() => addLogo.onOpen()} />
+            )}
+            {personalization.length > 0 &&
+              personalization.map((item) => (
+                <AddButton
+                  key={item.id}
+                  onClick={() => {
+                    UpdateImgModal.onOpen();
+                    setLogoId(item.id || 0);
+                  }}
+                />
+              ))}
           </div>
 
-          <div className="flex justify-center w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
-            <div className="flex flex-wrap justify-center">
+          <div className="flex justify-center p-5 bg-gray-50 dark:bg-gray-800">
+            <div className="flex flex-wrap justify-center bg-gray-50 dark:bg-gray-800">
               {personalization.length === 0 ? (
                 <Card className="hover:shadow-xl hover:border border border-gray-400 hover:border-blue-400 w-72 h-56 m-4">
                   <CardHeader className="flex gap-3">
@@ -111,20 +127,24 @@ function ConfigurationList() {
                     key={item.id}
                     className="hover:shadow-xl hover:border border border-gray-400 hover:border-blue-400 w-72 h-56 m-4"
                   >
-                    <CardHeader className="flex gap-3">
-                      <div className="flex items-center justify-center w-full">
-                        <Image
-                          src={item.logo}
-                          className="w-36 h-36 text-large"
-                        />
-                      </div>
-                    </CardHeader>
-                    <Divider />
-                    <CardFooter className="flex justify-between">
-                      <div className="w-full text-center">
-                        <p>{item.name}</p>
-                      </div>
-                    </CardFooter>
+                    <div style={{ overflowY: "auto", maxHeight: "250px" }}>
+                      <CardHeader className="flex gap-3">
+                        <div className="flex items-center justify-center w-full">
+                          <Image
+                            src={item.logo}
+                            preview
+                            width="250"
+                            className=" text-large"
+                          />
+                        </div>
+                      </CardHeader>
+                      <Divider />
+                      <CardFooter className="flex justify-center">
+                        <div className="">
+                          <p>{item.name}</p>
+                        </div>
+                      </CardFooter>
+                    </div>
                   </Card>
                 ))
               )}
@@ -149,6 +169,15 @@ function ConfigurationList() {
         size="w-full lg:w-[600px]"
       >
         <CreateConfiguration />
+      </ModalGlobal>
+
+      <ModalGlobal
+        isOpen={UpdateImgModal.isOpen}
+        onClose={UpdateImgModal.onClose}
+        title="Actualizar logo"
+        size="w-full lg:w-[600px]"
+      >
+        <UpdateFile perzonalitationId={logoId} />
       </ModalGlobal>
     </>
   );
