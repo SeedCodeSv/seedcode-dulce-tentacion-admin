@@ -20,6 +20,7 @@ import {
   List,
   CreditCard,
   Table as ITable,
+  Filter,
 } from "lucide-react";
 import AddButton from "../global/AddButton";
 import { Paginator } from "primereact/paginator";
@@ -34,18 +35,21 @@ import { ButtonGroup } from "@nextui-org/react";
 import { paginator_styles } from "../../styles/paginator.styles";
 import { CategoryProduct } from "../../types/categories.types";
 import MobileView from "./MobileView";
-import {formatCurrency} from "../../utils/dte"
+import { formatCurrency } from "../../utils/dte";
 import { filterActions } from "../../utils/filters";
 import { ActionsContext } from "../../hooks/useActions";
+import { Drawer } from "vaul";
+import { global_styles } from "../../styles/global.styles";
+import classNames from "classnames";
 
 function ListProducts() {
-  const { theme } = useContext(ThemeContext);
+  const { theme, context } = useContext(ThemeContext);
   const style = {
     backgroundColor: theme.colors.dark,
     color: theme.colors.primary,
   };
   const { getPaginatedProducts, paginated_products } = useProductsStore();
-
+  const [openVaul, setOpenVaul] = useState(false);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
   const [limit, setLimit] = useState(5);
@@ -75,22 +79,22 @@ function ListProducts() {
     undefined
   );
 
-  const {roleActions} = useContext(ActionsContext);
+  const { roleActions } = useContext(ActionsContext);
 
   const actions_role_view = useMemo(() => {
     if (roleActions) {
       return filterActions("Productos", roleActions)?.actions.map(
         (re) => re.name
-      )
+      );
     }
     return undefined;
-  }, [roleActions])
+  }, [roleActions]);
 
   return (
     <>
       <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
         <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
-          <div className="w-full">
+          <div className="w-full hidden gap-5 md:flex">
             <div className="flex w-full justify-between items-end gap-3">
               <Input
                 startContent={<SearchIcon />}
@@ -198,6 +202,114 @@ function ListProducts() {
                   <List />
                 </Button>
               </ButtonGroup>
+              <div className="flex items-center gap-5">
+                <div className="block md:hidden">
+                  <Drawer.Root
+                    shouldScaleBackground
+                    open={openVaul}
+                    onClose={() => setOpenVaul(false)}
+                  >
+                    <Drawer.Trigger asChild>
+                      <Button
+                        style={global_styles().thirdStyle}
+                        size="lg"
+                        isIconOnly
+                        onClick={() => setOpenVaul(true)}
+                        type="button"
+                      >
+                        <Filter />
+                      </Button>
+                    </Drawer.Trigger>
+                    <Drawer.Portal>
+                      <Drawer.Overlay
+                        className="fixed inset-0 bg-black/40 z-[60]"
+                        onClick={() => setOpenVaul(false)}
+                      />
+                      <Drawer.Content
+                        className={classNames(
+                          "bg-gray-100 z-[60] flex flex-col rounded-t-[10px] h-auto mt-24 max-h-[80%] fixed bottom-0 left-0 right-0",
+                          context === "dark" ? "dark" : ""
+                        )}
+                      >
+                        <div className="p-4 bg-white dark:bg-gray-800 rounded-t-[10px] flex-1">
+                          <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-gray-300 dark:bg-gray-400 mb-8" />
+                          <Drawer.Title className="mb-4 dark:text-white font-medium">
+                            Filtros disponibles
+                          </Drawer.Title>
+
+                          <div className="flex flex-col gap-3">
+                            <Input
+                              startContent={<SearchIcon />}
+                              className="w-full dark:text-white"
+                              variant="bordered"
+                              labelPlacement="outside"
+                              label="Nombre"
+                              classNames={{
+                                label: "font-semibold text-gray-700",
+                                inputWrapper: "pr-0",
+                              }}
+                              value={search}
+                              onChange={(e) => setSearch(e.target.value)}
+                              size="lg"
+                              placeholder="Escribe para buscar..."
+                              isClearable
+                              onClear={() => {
+                                setSearch("");
+                              }}
+                            />
+                            <Autocomplete
+                               onSelectionChange={(key) => {
+                                if (key) {
+                                  const branchSelected = JSON.parse(key as string) as CategoryProduct;
+                                  setCategory(branchSelected.name); // Actualizar el estado con el nombre seleccionado
+                                }
+                              }}
+                              className="w-full dark:text-white"
+                              label="Categoría producto"
+                              labelPlacement="outside"
+                              placeholder="Selecciona la categoría"
+                              variant="bordered"
+                              classNames={{
+                                base: "font-semibold text-gray-500 text-sm",
+                              }}
+                              size="lg"
+                              value={category}
+                              clearButtonProps={{
+                                onClick: () => setCategory(""),
+                              }}
+                            >
+                              {list_categories.map((bra) => (
+                                <AutocompleteItem
+                                  value={bra.name}
+                                  key={JSON.stringify(bra)}
+                                >
+                                  {bra.name}
+                                </AutocompleteItem>
+                              ))}
+                            </Autocomplete>
+
+                            <Button
+                              style={{
+                                backgroundColor: theme.colors.secondary,
+                                color: theme.colors.primary,
+                              }}
+                              className="font-semibold"
+                              color="primary"
+                              size="lg"
+                              onClick={() => {
+                                handleSearch(undefined);
+                                setOpenVaul(false);
+                              }}
+                            >
+                              Aplicar
+                            </Button>
+                          </div>
+                        </div>
+                      </Drawer.Content>
+                    </Drawer.Portal>
+                  </Drawer.Root>
+                </div>
+              </div>
               <div className="flex justify-end w-full">
                 {actions_role_view && actions_role_view.includes("Agregar") && (
                   <AddButton
@@ -206,7 +318,7 @@ function ListProducts() {
                       setSelectedProduct(undefined);
                     }}
                   />
-                  )}
+                )}
               </div>
             </div>
           </div>
@@ -281,27 +393,29 @@ function ListProducts() {
                 header="Acciones"
                 body={(item) => (
                   <div className="flex w-full gap-5">
-                    {actions_role_view && actions_role_view?.includes("Editar") && (
-                      <Button
-                        onClick={() => {
-                          setSelectedProduct(item);
-                          modalAdd.onOpen();
-                        }}
-                        isIconOnly
-                        style={{
-                          backgroundColor: theme.colors.secondary,
-                        }}
-                        size="lg"
-                      >
-                        <EditIcon
-                          style={{ color: theme.colors.primary }}
-                          size={20}
-                        />
-                      </Button>
-                    )}
-                    {actions_role_view && actions_role_view?.includes("Eliminar") && (
-                      <DeletePopover product={item} />
-                    )}
+                    {actions_role_view &&
+                      actions_role_view?.includes("Editar") && (
+                        <Button
+                          onClick={() => {
+                            setSelectedProduct(item);
+                            modalAdd.onOpen();
+                          }}
+                          isIconOnly
+                          style={{
+                            backgroundColor: theme.colors.secondary,
+                          }}
+                          size="lg"
+                        >
+                          <EditIcon
+                            style={{ color: theme.colors.primary }}
+                            size={20}
+                          />
+                        </Button>
+                      )}
+                    {actions_role_view &&
+                      actions_role_view?.includes("Eliminar") && (
+                        <DeletePopover product={item} />
+                      )}
                   </div>
                 )}
               />
