@@ -36,12 +36,12 @@ function ConfigurationList() {
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-0">
-        <div className="p-4">
+      <div className="grid grid-cols-2 gap-0 bg-gray-50 dark:bg-gray-800 h-full w-full">
+        <div className="p-4 ">
           <div className="flex items-end justify-between gap-10 mt lg:justify-end mt-5 mr-5">
             <AddButton onClick={() => modalAdd.onOpen()} />
           </div>
-          <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
+          <div className="p-5 bg-gray-50 dark:bg-gray-800">
             <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {themes.map((themeS, index) => (
                 <Card
@@ -85,7 +85,7 @@ function ConfigurationList() {
             </div>
           </div>
         </div>
-        <div className="p-4">
+        <div className="p-4 bg-gray-50 dark:bg-gray-800">
           <div className="flex items-end justify-between gap-10 mt lg:justify-end mt-5 mr-5">
             {personalization.length === 0 && (
               <AddButton onClick={() => addLogo.onOpen()} />
@@ -102,8 +102,8 @@ function ConfigurationList() {
               ))}
           </div>
 
-          <div className="flex justify-center w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
-            <div className="flex flex-wrap justify-center">
+          <div className="flex justify-center p-5 bg-gray-50 dark:bg-gray-800">
+            <div className="flex flex-wrap justify-center bg-gray-50 dark:bg-gray-800">
               {personalization.length === 0 ? (
                 <Card className="hover:shadow-xl hover:border border border-gray-400 hover:border-blue-400 w-72 h-56 m-4">
                   <CardHeader className="flex gap-3">
