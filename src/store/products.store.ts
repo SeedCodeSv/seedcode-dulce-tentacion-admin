@@ -9,8 +9,10 @@ import {
 import { IProductsStore } from "./types/products.store";
 import { toast } from "sonner";
 import { messages } from '../utils/constants';
+import { cat_011_tipo_de_item } from "../services/facturation/cat-011-tipo-de-item.service";
 
 export const useProductsStore = create<IProductsStore>((set, get) => ({
+  cat_011_tipo_de_item: [],
   paginated_products: {
     products: [],
     total: 0,
@@ -44,6 +46,22 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
             ok: false,
           },
         });
+      });
+  },
+
+  getCat011TipoDeItem() {
+    cat_011_tipo_de_item()
+      .then(({ data }) => {
+        set((state) => ({
+          ...state,
+          cat_011_tipo_de_item: data.object,
+        }));
+      })
+      .catch(() => {
+        set((state) => ({
+          ...state,
+          cat_011_tipo_de_item: [],
+        }));
       });
   },
   postProducts(payload) {

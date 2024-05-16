@@ -6,13 +6,15 @@ import {
   AutocompleteItem,
 } from "@nextui-org/react";
 import { Formik } from "formik";
-import { useContext, useEffect, useMemo } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import * as yup from "yup";
 import { useCategoriesStore } from "../../store/categories.store";
 import { Product, ProductPayload } from "../../types/products.types";
 import { useProductsStore } from "../../store/products.store";
 import { CategoryProduct } from "../../types/categories.types";
 import { ThemeContext } from "../../hooks/useTheme";
+import { TipoDeItem } from "../../types/billing/cat-011-tipo-de-item.types";
+import { normalize } from "../../utils/filters";
 interface Props {
   product?: Product;
   onCloseModal: () => void;
@@ -37,6 +39,7 @@ function AddProducts(props: Props) {
     name: props.product?.name ?? "",
     description: props.product?.description ?? "N/A",
     price: Number(props.product?.price) ?? 0,
+    typeOfItem: props.product?.type ?? "",
     code: props.product?.code ?? "N/A",
     categoryProductId: props.product?.categoryProductId ?? 0,
   };
@@ -47,7 +50,19 @@ function AddProducts(props: Props) {
     getListCategories();
   }, []);
 
-  const { postProducts, patchProducts } = useProductsStore();
+  const {
+    postProducts,
+    patchProducts,
+    cat_011_tipo_de_item,
+    getCat011TipoDeItem,
+  } = useProductsStore();
+
+  useEffect(() => {
+    getCat011TipoDeItem();
+  });
+
+  const [typeItem, setTypeItem] = useState<TipoDeItem>();
+
   const { theme } = useContext(ThemeContext);
 
   const handleSave = (values: ProductPayload) => {
@@ -69,6 +84,27 @@ function AddProducts(props: Props) {
     }
   }, [props, props.product, list_categories]);
 
+  const [codigo, setCodigo] = useState("");
+
+  const generarCodigo = () => {
+    const makeid = (length: number) => {
+      let result = "";
+      const characters = "0123456789";
+      const charactersLength = characters.length;
+      let counter = 0;
+      while (counter < length) {
+        result += characters.charAt(
+          Math.floor(Math.random() * charactersLength)
+        );
+        counter += 1;
+      }
+      return result;
+    };
+
+    const codigoGenerado = makeid(8); // Puedes cambiar la longitud según tus necesidades
+    setCodigo(codigoGenerado);
+  };
+
   return (
     <div className="mb-32 sm:mb-0 w-full pt-5">
       <Formik
@@ -85,134 +121,213 @@ function AddProducts(props: Props) {
           handleChange,
         }) => (
           <>
-            <div>
-              <Input
-                label="Nombre"
-                labelPlacement="outside"
-                name="name"
-                value={values.name}
-                onChange={handleChange("name")}
-                onBlur={handleBlur("name")}
-                placeholder="Ingresa el nombre"
-                classNames={{
-                  label:
-                    "font-semibold text-gray-500 dark:text-gray-200 text-sm",
-                }}
-                variant="bordered"
-                size="lg"
-              />
-              {errors.name && touched.name && (
-                <span className="text-sm font-semibold text-red-500">
-                  {errors.name}
-                </span>
-              )}
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <div className="mt-4">
+                  <Input
+                    label="Nombre"
+                    labelPlacement="outside"
+                    name="name"
+                    value={values.name}
+                    onChange={handleChange("name")}
+                    onBlur={handleBlur("name")}
+                    placeholder="Ingresa el nombre"
+                    classNames={{
+                      label:
+                        "font-semibold text-gray-500 dark:text-gray-200 text-sm",
+                    }}
+                    variant="bordered"
+                    size="lg"
+                  />
+                  {errors.name && touched.name && (
+                    <span className="text-sm font-semibold text-red-500">
+                      {errors.name}
+                    </span>
+                  )}
+                </div>
+                <div className="mt-2">
+                  <Textarea
+                    label="Descripción"
+                    labelPlacement="outside"
+                    name="description"
+                    value={values.description}
+                    onChange={handleChange("description")}
+                    onBlur={handleBlur("description")}
+                    placeholder="Ingresa la descripción"
+                    classNames={{
+                      label: "font-semibold text-gray-500 text-sm",
+                    }}
+                    variant="bordered"
+                    size="lg"
+                  />
+                  {errors.description && touched.description && (
+                    <span className="text-sm font-semibold text-red-500">
+                      {errors.description}
+                    </span>
+                  )}
+                </div>
+                <div className="mt-2">
+                  <Input
+                    label="Precio"
+                    labelPlacement="outside"
+                    name="price"
+                    value={values.price.toString()}
+                    onChange={handleChange("price")}
+                    onBlur={handleBlur("price")}
+                    placeholder="00.00"
+                    classNames={{
+                      label: "font-semibold text-gray-500 text-sm",
+                    }}
+                    variant="bordered"
+                    type="number"
+                    startContent="$"
+                    size="lg"
+                  />
+                  {errors.price && touched.price && (
+                    <span className="text-sm font-semibold text-red-500">
+                      {errors.price}
+                    </span>
+                  )}
+                </div>
+              </div>
+              <div>
+                <div className="mt-2">
+                  <Autocomplete
+                    onSelectionChange={(key) => {
+                      if (key) {
+                        const branchSelected = JSON.parse(
+                          key as string
+                        ) as CategoryProduct;
+                        handleChange("categoryProductId")(
+                          branchSelected.id.toString()
+                        );
+                      }
+                    }}
+                    onBlur={handleBlur("categoryProductId")}
+                    label="Categoría producto"
+                    labelPlacement="outside"
+                    placeholder={
+                      props.product?.categoryProduct.name ??
+                      props.product?.categoryProduct.name ??
+                      "Selecciona la categoría"
+                    }
+                    variant="bordered"
+                    classNames={{
+                      base: "font-semibold text-gray-500 text-sm",
+                    }}
+                    // selectedKey={selectedKeyCategory}
+                    defaultSelectedKey={selectedKeyCategory}
+                    value={selectedKeyCategory}
+                    size="lg"
+                  >
+                    {list_categories.map((bra) => (
+                      <AutocompleteItem
+                        value={bra.name}
+                        key={JSON.stringify(bra)}
+                      >
+                        {bra.name}
+                      </AutocompleteItem>
+                    ))}
+                  </Autocomplete>
+                  {errors.categoryProductId && touched.categoryProductId && (
+                    <span className="text-sm font-semibold text-red-500">
+                      {errors.categoryProductId}
+                    </span>
+                  )}
+                </div>
+                <div className="mt-2">
+                  <Autocomplete
+                    onSelectionChange={(key) => {
+                      if (key) {
+                        const tipePaymentSelected = JSON.parse(
+                          key as string
+                        ) as TipoDeItem;
+                        setTypeItem(tipePaymentSelected);
+                      }
+                    }}
+                    className="pt-5"
+                    variant="bordered"
+                    label="Tipo de item"
+                    labelPlacement="outside"
+                    placeholder="Seleccione el tipo de item"
+                    size="lg"
+                  >
+                    {cat_011_tipo_de_item.map((item) => (
+                      <AutocompleteItem
+                        key={JSON.stringify(item)}
+                        value={item.codigo}
+                      >
+                        {item.valores}
+                      </AutocompleteItem>
+                    ))}
+                  </Autocomplete>
+                </div>
+                <div className="mt-2">
+                  <Input
+                    label="Código"
+                    labelPlacement="outside"
+                    name="price"
+                    value={values.code}
+                    onChange={handleChange("code")}
+                    onBlur={handleBlur("code")}
+                    placeholder="Ingresa el código"
+                    classNames={{
+                      label: "font-semibold text-sm",
+                    }}
+                    variant="bordered"
+                    size="lg"
+                  />
+                  {errors.code && touched.code && (
+                    <span className="text-sm font-semibold text-red-500">
+                      {errors.code}
+                    </span>
+                  )}
+                </div>
+              </div>
             </div>
-            <div className="mt-2">
-              <Textarea
-                label="Descripción"
-                labelPlacement="outside"
-                name="description"
-                value={values.description}
-                onChange={handleChange("description")}
-                onBlur={handleBlur("description")}
-                placeholder="Ingresa la descripción"
-                classNames={{
-                  label: "font-semibold text-gray-500 text-sm",
-                }}
-                variant="bordered"
-                size="lg"
-              />
-              {errors.description && touched.description && (
-                <span className="text-sm font-semibold text-red-500">
-                  {errors.description}
-                </span>
-              )}
+            <div className="flex gap-2 mt-4 w-full">
+              <div>
+                <Input
+                  label="Código"
+                  labelPlacement="outside"
+                  value={codigo}
+                  onChange={handleChange("code")}
+                  onBlur={handleBlur("code")}
+                  placeholder="Genera el código"
+                  classNames={{
+                    label: "font-semibold text-sm",
+                  }}
+                  readOnly
+                  variant="bordered"
+                  size="lg"
+                />
+              </div>
+              <div>
+                <Button
+                  className="w-full mt-8 text-sm font-semibold"
+                  style={{
+                    backgroundColor: theme.colors.third,
+                    color: theme.colors.primary,
+                  }}
+                  onClick={generarCodigo}
+                >
+                  Generar Código
+                </Button>
+              </div>
+              <div>
+                <Button
+                  className="w-full mt-8 text-sm font-semibold"
+                  style={{
+                    backgroundColor: theme.colors.third,
+                    color: theme.colors.primary,
+                  }}
+                  onClick={generarCodigo}
+                >
+                  Verificar Código
+                </Button>
+              </div>
             </div>
-            <div className="pt-2">
-              <Input
-                label="Precio"
-                labelPlacement="outside"
-                name="price"
-                value={values.price.toString()}
-                onChange={handleChange("price")}
-                onBlur={handleBlur("price")}
-                placeholder="00.00"
-                classNames={{
-                  label: "font-semibold text-gray-500 text-sm",
-                }}
-                variant="bordered"
-                type="number"
-                startContent="$"
-                size="lg"
-              />
-              {errors.price && touched.price && (
-                <span className="text-sm font-semibold text-red-500">
-                  {errors.price}
-                </span>
-              )}
-            </div>
-            <div className="mt-4">
-              <Autocomplete
-                onSelectionChange={(key) => {
-                  if (key) {
-                    const branchSelected = JSON.parse(
-                      key as string
-                    ) as CategoryProduct;
-                    handleChange("categoryProductId")(
-                      branchSelected.id.toString()
-                    );
-                  }
-                }}
-                onBlur={handleBlur("categoryProductId")}
-                label="Categoría producto"
-                labelPlacement="outside"
-                placeholder={
-                  props.product?.categoryProduct.name ??
-                  props.product?.categoryProduct.name ??
-                  "Selecciona la categoría"
-                }
-                variant="bordered"
-                classNames={{
-                  base: "font-semibold text-gray-500 text-sm",
-                }}
-                // selectedKey={selectedKeyCategory}
-                defaultSelectedKey={selectedKeyCategory}
-                value={selectedKeyCategory}
-                size="lg"
-              >
-                {list_categories.map((bra) => (
-                  <AutocompleteItem value={bra.name} key={JSON.stringify(bra)}>
-                    {bra.name}
-                  </AutocompleteItem>
-                ))}
-              </Autocomplete>
-              {errors.categoryProductId && touched.categoryProductId && (
-                <span className="text-sm font-semibold text-red-500">
-                  {errors.categoryProductId}
-                </span>
-              )}
-            </div>
-            <div className="mt-8">
-              <Input
-                label="Código"
-                labelPlacement="outside"
-                name="price"
-                value={values.code}
-                onChange={handleChange("code")}
-                onBlur={handleBlur("code")}
-                placeholder="Ingresa el código"
-                classNames={{
-                  label: "font-semibold text-sm",
-                }}
-                variant="bordered"
-                size="lg"
-              />
-              {errors.code && touched.code && (
-                <span className="text-sm font-semibold text-red-500">
-                  {errors.code}
-                </span>
-              )}
-            </div>
+
             <Button
               size="lg"
               onClick={() => handleSubmit()}
