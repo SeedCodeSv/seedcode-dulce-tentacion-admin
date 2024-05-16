@@ -72,6 +72,8 @@ function CreateConfiguration() {
 
     try {
       await OnCreateConfiguration(values);
+      toast.success("Personalización guardada");
+      location.reload();
     } catch (error) {
       toast.error("Ocurrió un error al guardar");
     }

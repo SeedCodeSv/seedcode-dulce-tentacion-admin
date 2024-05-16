@@ -29,9 +29,7 @@ export const useConfigurationStore = create<IConfigurationStore>(
           toast.error("No se encontró información de personalización");
         }
       } catch (error) {
-        toast.error(
-          "Ocurrió un error al obtener la información de personalización"
-        );
+        console.log(error + "Ocurrió un error al obtener los datos de personalización")
       }
     }
     

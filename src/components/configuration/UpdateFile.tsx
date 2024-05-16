@@ -59,6 +59,7 @@ function UpdateFile(props: Props) {
           }
         );
         toast.success("Imagen actualizada con exito");
+        location.reload();
       } catch (error) {
         toast.error("Error al actualizar la imagen: ");
       }
