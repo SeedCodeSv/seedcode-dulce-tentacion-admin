@@ -53,43 +53,43 @@ export const router = () => {
     },
     {
       path: "/categories",
-      element: views && views.includes("Categoria") && <ProductsCategories />,
+      element: views && views.includes("Categorias") && <ProductsCategories />,
     },
     {
       path: "/users",
-      element: views && views.includes("Usuario") && <Users /> 
+      element: views && views.includes("Usuarios") && <Users /> 
     },
     {
       path: "/employees",
-      element: <Employees />,
+      element: views && views.includes("Empleados") && <Employees />,
     },
     {
       path: "/clients",
-      element: <Customers />,
+      element: views && views.includes("Clientes") && <Customers />,
     },
     {
       path: "/branches",
-      element: <Branch />,
+      element: views && views.includes("Sucursales") && <Branch />,
     },
     {
       path: "/products",
-      element: <Product />,
+      element: views && views.includes("Productos") && <Product />,
     },
     {
       path: "/expensesCategories",
-      element: <ExpensesCategories />,
+      element: views && views.includes("Categoria de gastos") && <ExpensesCategories />,
     },
     {
       path: "/expenses",
-      element: <Expenses />,
+      element: views && views.includes("Gastos") && <Expenses />,
     },
     {
       path: "/actionRol",
-      element: <ActionRol />,
+      element: views && views.includes("Permisos") && <ActionRol />,
     },
     {
       path: "/newSales",
-      element: <NewSales />,
+      element: views && views.includes("Ventas") && <NewSales />,
     },
     {
       path: "/configuration",
@@ -105,7 +105,7 @@ export const router = () => {
     },
     {
       path: "sales-reports",
-      element: <SalesReportContigencePage />,
+      element: views && views.includes("Reporte de ventas") && <SalesReportContigencePage />,
     },
   ]);
 };

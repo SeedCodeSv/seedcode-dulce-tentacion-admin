@@ -1,3 +1,4 @@
+import { redirect } from 'react-router';
 import { create } from "zustand";
 import { IAuthStore } from "./types/auth_store.types";
 import {
@@ -39,6 +40,7 @@ export const useAuthStore = create<IAuthStore>((set, get) => ({
               return;
             });
           toast.success("Bienvenido");
+          window.location.href = ("/")
         } else {
           toast.error("Datos incorrectos");
         }

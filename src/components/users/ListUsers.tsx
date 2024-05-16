@@ -158,17 +158,8 @@ function ListUsers() {
                   <List />
                 </Button>
               </ButtonGroup>
-              {actions_role_view && actions_role_view?.includes("Agregar") ? (
+              {actions_role_view && actions_role_view?.includes("Agregar") && (
                 <AddButton onClick={() => modalAdd.onOpen()} />
-              ) : (
-                <Button
-                  style={style}
-                  className="hidden font-semibold md:flex cursor-not-allowed"
-                  size="lg"
-                  type="button"
-                >
-                  Sin Permiso
-                </Button>
               )}
             </div>
           </div>
@@ -246,22 +237,24 @@ function ListUsers() {
                 header="Acciones"
                 body={(item) => (
                   <div className="flex w-full gap-5">
-                    <Button
-                      onClick={() => {
-                        setUser(item);
-                        modalUpdate.onOpen();
-                      }}
-                      isIconOnly
-                      style={{
-                        backgroundColor: theme.colors.secondary,
-                      }}
-                      size="lg"
-                    >
-                      <EditIcon
-                        style={{ color: theme.colors.primary }}
-                        size={20}
-                      />
-                    </Button>
+                    {actions_role_view && actions_role_view?.includes("Editar") && (
+                      <Button
+                        onClick={() => {
+                          setUser(item);
+                          modalUpdate.onOpen();
+                        }}
+                        isIconOnly
+                        style={{
+                          backgroundColor: theme.colors.secondary,
+                        }}
+                        size="lg"
+                      >
+                        <EditIcon
+                          style={{ color: theme.colors.primary }}
+                          size={20}
+                        />
+                      </Button>
+                    )}
                     <Button
                       size="lg"
                       onClick={() => {
@@ -275,7 +268,9 @@ function ListUsers() {
                     >
                       <Key color={theme.colors.primary} size={20} />
                     </Button>
-                    <DeletePopUp user={item} />
+                    {actions_role_view && actions_role_view?.includes("Eliminar") && (
+                      <DeletePopUp user={item} />
+                    )}
                   </div>
                 )}
               />

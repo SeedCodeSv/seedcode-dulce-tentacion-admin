@@ -148,7 +148,7 @@ export const LayoutItems = () => {
               <p className="ml-2 text-base">Sucursales</p>
             </NavLink>
           )}
-          {views.includes("Usuario") && (
+          {views.includes("Usuarios") && (
             <NavLink
               to={"/users"}
               className={({ isActive }) => {

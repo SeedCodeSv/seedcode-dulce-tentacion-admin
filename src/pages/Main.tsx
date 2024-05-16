@@ -10,11 +10,8 @@ import { ActionsContext } from "../hooks/useActions";
 function Main() {
   const { isAuth } = useContext(SessionContext);
   const {user} = useAuthStore();
-
-  const [loading, setLoading] = useState(true);
-
-    const {OnGetActionsByRoleReturn} = useActionsRolStore();
-    const {setRoleActions} = useContext(ActionsContext);
+  const {OnGetActionsByRoleReturn} = useActionsRolStore();
+  const {setRoleActions} = useContext(ActionsContext);
     useEffect(() => {
         if (user) {
             OnGetActionsByRoleReturn(user.roleId).then((data) => {

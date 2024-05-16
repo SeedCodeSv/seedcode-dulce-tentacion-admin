@@ -182,7 +182,7 @@ const ListActionRol = () => {
                 body={(rowData) => (
                   <div>
                     {rowData.action.map((action: any, index: number) => (
-                      <div key={index} className="text-slate-950">
+                      <div key={index}>
                         • {action}
                       </div>
                     ))}
