@@ -1,11 +1,11 @@
 import { create } from "zustand";
 import { IConfigurationStore } from "./types/perzonalitation.types.store";
-import { IConfiguration, IGetConfiguration } from "../types/configuration.types";
+import { IGetConfiguration } from "../types/configuration.types";
 import { create_configuration, get_by_transmitter } from "../services/configuration.service";
 import { toast } from "sonner";
 
 export const useConfigurationStore = create<IConfigurationStore>(
-  (set, get) => ({
+  (set) => ({
     personalization: [],
     OnCreateConfiguration: (payload: IGetConfiguration) => {
       create_configuration(payload)
@@ -22,8 +22,9 @@ export const useConfigurationStore = create<IConfigurationStore>(
       try {
         const { data } = await get_by_transmitter(id);
         if (data.personalization) {
+          const personalizationArray = Array.isArray(data.personalization) ? data.personalization : [data.personalization];
           set({
-            personalization: [data.personalization],
+            personalization: personalizationArray,
           });
         } else {
           toast.error("No se encontró información de personalización");
@@ -32,6 +33,7 @@ export const useConfigurationStore = create<IConfigurationStore>(
         console.log(error + "Ocurrió un error al obtener los datos de personalización")
       }
     }
+    
     
   })
     

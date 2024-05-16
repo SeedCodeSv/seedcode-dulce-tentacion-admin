@@ -2,10 +2,9 @@ import axios from "axios";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { API_URL } from "../../utils/constants";
 import { toast } from "sonner";
-import { Button, Image as NextImage } from "@nextui-org/react";
+import { Button } from "@nextui-org/react";
 import DefaultImage from "../../assets/react.svg";
 import { useConfigurationStore } from "../../store/perzonalitation.store";
-import { useThemeStore } from "../../store/theme.store";
 import { useAuthStore } from "../../store/auth.store";
 import { ThemeContext } from "../../hooks/useTheme";
 
@@ -96,6 +95,10 @@ function UpdateFile(props: Props) {
             <Button
               className="text-white font-semibold px-5"
               onClick={handleButtonClick}
+              style={{
+                backgroundColor: theme.colors.dark,
+                color: theme.colors.primary,
+              }}
             >
               Selecciona un archivo
             </Button>
