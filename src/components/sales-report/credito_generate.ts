@@ -1,141 +1,148 @@
-// import { CreditSaleContingenciaI } from "../../plugins/dexie/store/types/contingencia_credito_store.types";
-// import { DteJson as IFactura } from "../../types/DTE/DTE.types";
-// import { Sale } from "../../types/report_contigence";
-// import { ITransmitter } from "../../types/transmitter.types";
-// import { ambiente } from "../../utils/constants";
-import React from 'react'
+import { CreditSaleContingenciaI } from "../../plugins/dexie/store/types/contingencia_credito_store.types";
+import {
+  CreditSale,
+} from "../../types/DTE/sub_interface/credito_contingencia";
+// import { ISendMHFiscal as ICredito } from "../../types/DTE/DTE.types";
+import { ITransmitter } from "../../types/transmitter.types";
+import { ambiente } from "../../utils/constants";
+import { ISendMHFiscal } from "../../types/DTE/credito_fiscal.types";
 
-function credito_generate() {
- 
-}
-
-export default credito_generate
-// export const generateFactura = (info: CreditSaleContingenciaI, transmitter: ITransmitter, sale: Sale): IFactura => {
-//     return {
-//         nit: transmitter.nit,
-//         activo: true,
-//         passwordPri: transmitter.clavePublica,
-//         dteJson: {
-//             identificacion: {
-//                 version: 1,
-//                 codigoGeneracion: sale.codigoGeneracion,
-//                 ambiente: ambiente,
-//                 tipoDte: "01",
-//                 numeroControl: sale.numeroControl,
-//                 tipoModelo: 1,
-//                 tipoOperacion: 1,
-//                 tipoContingencia: null,
-//                 motivoContin: null,
-//                 tipoMoneda: "USD",
-//                 fecEmi: sale.fecEmi.toString(),
-//                 horEmi: sale.horEmi.toString(),
-//             },
-//             documentoRelacionado: null,
-//             emisor: {
-//                 nit: transmitter.nit,
-//                 nrc: transmitter.nrc,
-//                 nombre: transmitter.nombre,
-//                 nombreComercial: transmitter.nombreComercial,
-//                 codActividad: transmitter.codActividad,
-//                 descActividad: transmitter.descActividad,
-//                 tipoEstablecimiento: transmitter.tipoEstablecimiento,
-//                 direccion: {
-//                     departamento: transmitter.direccion.departamento,
-//                     municipio: transmitter.direccion.municipio,
-//                     complemento: transmitter.direccion.complemento,
-//                 },
-//                 telefono: transmitter.telefono,
-//                 correo: transmitter.correo,
-//                 codEstable: transmitter.codEstable,
-//                 codEstableMH: transmitter.codEstableMH === "0" ? null : transmitter.codEstableMH,
-//                 codPuntoVenta: transmitter.codPuntoVenta,
-//                 codPuntoVentaMH:
-//                     transmitter.codPuntoVentaMH === "0" ? null : transmitter.codPuntoVentaMH,
-//             },
-//             receptor: {
-//                 tipoDocumento:
-//                     info.receptor!.tipoDocumento === "0" || info.receptor.tipoDocumento === "N/A"
-//                         ? null
-//                         : info.receptor!.tipoDocumento,
-//                 numDocumento:
-//                     info.receptor!.numDocumento === "0" || info.receptor.numDocumento === "N/A"
-//                         ? null
-//                         : info.receptor!.numDocumento,
-//                 nrc: Number(info.receptor!.nrc) === 0 ? null : info.receptor!.nrc,
-//                 nombre: info.receptor!.nombre,
-//                 codActividad:
-//                     Number(info.receptor!.codActividad) === 0 ? null : info.receptor!.codActividad,
-//                 descActividad:
-//                     Number(info.receptor!.descActividad) === 0 ? null : info.receptor!.descActividad,
-//                 direccion: {
-//                     departamento: "03",
-//                     municipio: info.direccion_receptor.municipio,
-//                     complemento: info.direccion_receptor.complemento,
-//                 },
-//                 telefono: info.receptor!.telefono,
-//                 correo: info.receptor!.correo,
-//             },
-//             otrosDocumentos: null,
-//             ventaTercero: null,
-//             cuerpoDocumento: info.cuerpo_documento.map((cuerpo) => {
-//                 return {
-//                     numItem: cuerpo.numItem,
-//                     tipoItem: 1,
-//                     uniMedida: Number(26),
-//                     numeroDocumento: null,
-//                     cantidad: cuerpo.cantidad,
-//                     codigo: null,
-//                     codTributo: null,
-//                     descripcion: cuerpo.descripcion,
-//                     precioUni: cuerpo.precioUni,
-//                     montoDescu: cuerpo.montoDescu,
-//                     ventaNoSuj: 0,
-//                     ventaExenta: 0,
-//                     ventaGravada: cuerpo.ventaGravada,
-//                     ivaItem: cuerpo.ivaItem,
-//                     tributos: null,
-//                     psv: 0,
-//                     noGravado: 0,
-//                 }
-//             }),
-//             resumen: {
-//                 totalNoSuj: 0,
-//                 totalExenta: 0,
-//                 totalGravada: info.resumen.totalGravada,
-//                 subTotalVentas: info.resumen.subTotalVentas,
-//                 descuNoSuj: 0,
-//                 descuExenta: 0,
-//                 descuGravada: 0,
-//                 porcentajeDescuento: info.resumen.porcentajeDescuento,
-//                 totalDescu: info.resumen.totalDescu,
-//                 tributos: null,
-//                 subTotal: info.resumen.subTotal,
-//                 ivaRete1: 0,
-//                 reteRenta: 0,
-//                 totalIva: info.resumen.totalIva,
-//                 montoTotalOperacion: info.resumen.montoTotalOperacion,
-//                 totalNoGravado: 0,
-//                 totalPagar: info.resumen.totalPagar,
-//                 totalLetras: info.resumen.totalLetras,
-//                 saldoFavor: 0,
-//                 condicionOperacion: 1,
-//                 pagos: [
-//                     {
-//                         codigo: info.pagos.codigo,
-//                         montoPago: info.pagos.montoPago,
-//                         referencia: "",
-//                         plazo: null,
-//                         periodo: null,
-//                     }
-//                 ],
-//                 numPagoElectronico: null,
-//             },
-//             extension: null,
-//             apendice: null,
-//         }
-//     }
-// }
-
-// // export const generateCreditoFiscl = (): DteJson => {
-
-// // }
+export const generateCredit = (
+  info: CreditSaleContingenciaI,
+  emisor: ITransmitter,
+  sale: CreditSale
+): ISendMHFiscal => {
+  return {
+    nit: emisor.nit,
+    activo: true,
+    passwordPri: emisor.clavePublica,
+    dteJson: {
+      identificacion: {
+        version: 1,
+        codigoGeneracion: sale.codigoGeneracion,
+        ambiente: ambiente,
+        tipoDte: sale.tipoDte,
+        numeroControl: sale.numeroControl,
+        tipoModelo: 1,
+        tipoOperacion: 1,
+        tipoContingencia: null,
+        motivoContin: null,
+        tipoMoneda: "USD",
+        fecEmi: sale.fecEmi.toString(),
+        horEmi: sale.horEmi.toString(),
+      },
+      documentoRelacionado: null,
+      emisor: {
+        nit: emisor.nit,
+        nrc: emisor.nrc,
+        nombre: emisor.nombre,
+        nombreComercial: emisor.nombreComercial,
+        codActividad: emisor.codActividad,
+        descActividad: emisor.descActividad,
+        tipoEstablecimiento: emisor.tipoEstablecimiento,
+        direccion: {
+          departamento: emisor.direccion.departamento,
+          municipio: emisor.direccion.municipio,
+          complemento: emisor.direccion.complemento,
+        },
+        telefono: emisor.telefono,
+        correo: emisor.correo,
+        codEstable: emisor.codEstable,
+        codEstableMH: emisor.codEstableMH === "0" ? null : emisor.codEstableMH,
+        codPuntoVenta: emisor.codPuntoVenta,
+        codPuntoVentaMH: emisor.codPuntoVentaMH === "0"
+          ? null
+          : emisor.codPuntoVentaMH,
+      },
+      receptor: {
+        tipoDocumento: info.credito_receptor!.tipoDocumento === "0" ||
+          info.credito_receptor.tipoDocumento === "N/A"
+          ? null
+          : info.credito_receptor!.tipoDocumento,
+        numDocumento: info.credito_receptor!.numDocumento === "0" ||
+          info.credito_receptor.numDocumento === "N/A"
+          ? null
+          : info.credito_receptor!.numDocumento,
+        nit: info.credito_receptor!.nit === "0" || info.credito_receptor.nit === "N/A" ? null : info.credito_receptor!.nit,
+        nrc: info.credito_receptor!.nrc,
+        nombre: info.credito_receptor!.nombre,
+        codActividad: Number(info.credito_receptor!.codActividad) === 0
+          ? null
+          : info.credito_receptor!.codActividad,
+        descActividad: Number(info.credito_receptor!.descActividad) === 0
+          ? null
+          : info.credito_receptor!.descActividad,
+        direccion: {
+          departamento: "03",
+          municipio: info.credito_address!.municipio,
+          complemento: info.credito_address.complemento,
+        },
+        telefono: info.credito_receptor!.telefono,
+        correo: info.credito_receptor!.correo,
+      },
+      otrosDocumentos: null,
+      ventaTercero: null,
+      cuerpoDocumento: info.credito_cuerpo_documento.map((cuerpo) => {
+        return {
+          numItem: cuerpo.numItem,
+          tipoItem: 1,
+          uniMedida: Number(26),
+          numeroDocumento: null,
+          cantidad: cuerpo.cantidad,
+          codigo: null,
+          codTributo: null,
+          descripcion: cuerpo.descripcion,
+          precioUni: cuerpo.precioUni,
+          montoDescu: cuerpo.montoDescu,
+          ventaNoSuj: 0,
+          ventaExenta: 0,
+          ventaGravada: cuerpo.ventaGravada,
+          ivaItem: cuerpo.ivaItem,
+          tributos: ["20"],
+          psv: 0,
+          noGravado: 0,
+        };
+      }),
+      resumen: {
+        totalNoSuj: 0,
+        totalExenta: 0,
+        totalGravada: info.credito_resumen.totalGravada,
+        subTotalVentas: info.credito_resumen.subTotalVentas,
+        descuNoSuj: 0,
+        descuExenta: 0,
+        descuGravada: 0,
+        porcentajeDescuento: info.credito_resumen.porcentajeDescuento,
+        totalDescu: info.credito_resumen.totalDescu,
+        tributos: [
+          {
+            codigo: "20",
+            descripcion: "Impuesto al Valor Agregado 13%",
+            valor: Number(info.credito_resumen.totalIva),
+          },
+        ],
+        subTotal: info.credito_resumen.subTotal,
+        ivaRete1: 0,
+        reteRenta: 0,
+        totalIva: info.credito_resumen.totalIva,
+        montoTotalOperacion: info.credito_resumen.montoTotalOperacion,
+        totalNoGravado: 0,
+        totalPagar: info.credito_resumen.totalPagar,
+        totalLetras: info.credito_resumen.totalLetras,
+        saldoFavor: 0,
+        condicionOperacion: 1,
+        pagos: [
+          {
+            codigo: info.credito_pagos.codigo,
+            montoPago: info.credito_pagos.montoPago,
+            referencia: "",
+            plazo: null,
+            periodo: null,
+          },
+        ],
+        numPagoElectronico: null,
+      },
+      extension: null,
+      apendice: null,
+    }
+  } as unknown as ISendMHFiscal
+};

@@ -4,15 +4,7 @@ export interface ISendMHFiscal {
   passwordPri: string;
   dteJson: DteJson;
 }
-
 export interface DteJson {
-  nit: string;
-  activo: boolean;
-  passwordPri: string;
-  dteJson: JSONSend;
-}
-
-export interface JSONSend {
   identificacion: Identificacion;
   documentoRelacionado?: any;
   emisor: Emisor;
@@ -24,22 +16,6 @@ export interface JSONSend {
   extension: any;
   apendice: any;
 }
-
-export interface RootDTE {
-  identificacion: Identificacion;
-  documentoRelacionado: null | string;
-  emisor: Emisor;
-  receptor: Receptor;
-  otrosDocumentos: null | string;
-  ventaTercero: null | string;
-  cuerpoDocumento: ICuerpoDocumento[];
-  resumen: Resumen;
-  extension: Extension;
-  apendice: null | string;
-  firmaElectronica: string;
-  selloRecibido: string;
-}
-
 export interface Identificacion {
   version: number;
   ambiente: string;
@@ -54,7 +30,6 @@ export interface Identificacion {
   horEmi: string;
   tipoMoneda: string;
 }
-
 export interface Emisor {
   nit: string;
   nrc: string;
@@ -71,51 +46,24 @@ export interface Emisor {
   codPuntoVentaMH: string | null;
   codPuntoVenta: string | null;
 }
-
 export interface Direccion {
   departamento: string;
   municipio: string;
   complemento: string;
 }
-
 export interface Receptor {
   tipoDocumento: null | string;
   numDocumento: null | string;
-  nrc: null | string;
   nit: string | null;
+  nrc: null | string;
   nombre: null | string;
   codActividad: null | string;
   descActividad: null | string;
   direccion: Direccion;
   telefono: null | string;
   correo: string;
-  bienTitulo?: string | null,
+  bienTitulo?: string | null;
 }
-
-export interface FiscalReceptor {
-  nit: string
-  nrc: string
-  nombre: string
-  codActividad: string
-  descActividad: string
-  nombreComercial: string
-  direccion: {
-    departamento: string
-    municipio: string
-    complemento: string
-  },
-  telefono: string
-  correo: string
-}
-
-export interface IProductVista {
-  cantidad: number;
-  codigo: string;
-  descripcion: string;
-  precioUni: number;
-  numItem: number;
-}
-
 export interface ICuerpoDocumento {
   numItem: number;
   tipoItem: number;
@@ -135,7 +83,6 @@ export interface ICuerpoDocumento {
   noGravado: number | string;
   ivaItem: number | string;
 }
-
 export interface Resumen {
   totalNoSuj: number | string;
   totalExenta: number | string;
@@ -166,7 +113,6 @@ export interface Resumen {
   pagos: Pago[];
   numPagoElectronico: string | null;
 }
-
 export interface Pago {
   codigo: string;
   montoPago: number;
@@ -174,47 +120,35 @@ export interface Pago {
   plazo?: null | string;
   periodo?: null | string;
 }
-
-export interface Extension {
-  nombEntrega: null | string;
-  docuEntrega: null | string;
-  nombRecibe: null | string;
-  docuRecibe: null | string;
-  observaciones: null | string;
-  placaVehiculo: null | string;
-}
-
-export interface PayloadMH {
-  ambiente: string;
-  idEnvio: number;
-  version: number;
-  tipoDte: string;
-  documento: string;
-}
-
-export interface DTEToPDF {
-  version: number;
-  ambiente: string;
-  versionApp: number;
-  estado: string;
-  codigoGeneracion: string;
-  selloRecibido: string;
-  fhProcesamiento: string;
-  clasificaMsg: string;
-  codigoMsg: string;
-  descripcionMsg: string;
-  observaciones: string[];
-  emisor: Emisor;
-  receptor: Receptor;
-  resumen: Resumen;
+export interface CreditSale {
+  id: number;
   numeroControl: string;
-  cuerpoDocumento: ICuerpoDocumento[];
-}
-
-
-export interface IMHToken {
-	sub: string;
-	authorities: string[];
-	iat: number;
-	exp: number;
+  codigoGeneracion: string;
+  tipoDte: string;
+  fecEmi: string;
+  horEmi: string;
+  selloRecibido: string;
+  sello: boolean;
+  codeEmployee: string;
+  totalNoSuj: string;
+  totalExenta: string;
+  totalGravada: string;
+  subTotalVentas: string;
+  descuNoSuj: string;
+  descuExenta: string;
+  descuGravada: string;
+  porcentajeDescuento: string;
+  totalDescu: string;
+  subTotal: string;
+  totalIva: string;
+  montoTotalOperacion: string;
+  totalPagar: string;
+  totalLetras: string;
+  pathPdf: string;
+  pathJson: string;
+  isActivated: boolean;
+  boxId: number;
+  customerId: any;
+  employeeId: number;
+  paymentTypeId: any;
 }

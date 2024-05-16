@@ -47,6 +47,7 @@ import {
   check_dte,
   firmarDocumentoContingencia,
   firmarDocumentoFactura,
+  firmarDocumentoFiscal,
   send_to_mh,
   send_to_mh_contingencia,
 } from "../../services/DTE.service";
@@ -55,21 +56,26 @@ import axios, { AxiosError } from "axios";
 import { ICheckResponse } from "../../types/DTE/check.types";
 import { useBillingStore } from "../../store/facturation/billing.store";
 import { useContingenciaStore } from "../../plugins/dexie/store/contigencia.store";
+import { useContingenciaCreditoStore } from "../../plugins/dexie/store/contingencia_credito.store";
 import { generate_uuid } from "../../utils/random/random";
 import { IContingencia } from "../../types/DTE/contingencia.types";
 import { ambiente, API_URL, MH_QUERY } from "../../utils/constants";
 import { generate_contingencia } from "../../utils/DTE/contigencia";
 import { generateFactura } from "./generate";
+import { generateCredit } from "./credito_generate";
 import { PayloadMH } from "../../types/DTE/DTE.types";
 import { SendMHFailed } from "../../types/transmitter.types";
 import { save_logs } from "../../services/logs.service";
 import { pdf } from "@react-pdf/renderer";
 import { Invoice } from "../../pages/Invoice";
+import { CreditoInvoice } from "../../pages/CreditInvoice";
 import { PutObjectCommand, PutObjectCommandInput } from "@aws-sdk/client-s3";
 import { s3Client } from "../../plugins/s3";
 import SalesUpdate from "./SalesUpdate";
+import { delete_credito_venta } from "../../plugins/dexie/services/credito_venta.service";
 import { delete_venta } from "../../plugins/dexie/services/venta.service";
 import UpdateCustomerSales from "./UpdateCustomerSale";
+import { ISendMHFiscal } from "../../types/DTE/credito_fiscal.types";
 
 function SalesReportContigence() {
   const [branchId, setBranchId] = useState(0);
@@ -188,10 +194,8 @@ function SalesReportContigence() {
   const [loading, setLoading] = useState(false);
 
   const { gettransmitter, transmitter } = useTransmitterStore();
-  const {
-    cat_005_tipo_de_contingencia,
-    getCat005TipoDeContingencia,
-  } = useBillingStore();
+  const { cat_005_tipo_de_contingencia, getCat005TipoDeContingencia } =
+    useBillingStore();
   useEffect(() => {
     gettransmitter();
     getCat005TipoDeContingencia();
@@ -234,8 +238,9 @@ function SalesReportContigence() {
 
           if (error.response?.data) {
             const newLd = (
-              <TerminalOutput>{`Respuesta: ${error.response?.data.descripcionMsg ?? "RECHAZADO"
-                }`}</TerminalOutput>
+              <TerminalOutput>{`Respuesta: ${
+                error.response?.data.descripcionMsg ?? "RECHAZADO"
+              }`}</TerminalOutput>
             );
 
             setTerminalLineData((prev) => [...prev, newLd]);
@@ -284,9 +289,10 @@ function SalesReportContigence() {
         }
 
         toast.error("ERROR", {
-          description: `Error: ${error.response?.data.descripcionMsg ??
+          description: `Error: ${
+            error.response?.data.descripcionMsg ??
             "DTE no encontrado en hacienda"
-            }`,
+          }`,
         });
         modalLoading.onClose();
         setLoading(false);
@@ -294,45 +300,49 @@ function SalesReportContigence() {
   };
 
   const { getVentaByCodigo } = useContingenciaStore();
-
+  const { getCreditoVentaByCodigo } = useContingenciaCreditoStore();
   const [contingencia, setContingencia] = useState("2");
   const [motivoContigencia, setMotivoContigencia] = useState("");
 
   const handleSendToContingencia = async (sale: Sale) => {
     const result_generation = await getVentaByCodigo(sale.codigoGeneracion);
-    if (result_generation) {
-      const token_mh = return_mh_token();
+    const result_credito_generate = await getCreditoVentaByCodigo(
+      sale.codigoGeneracion
+    );
+    const token_mh = return_mh_token();
 
-      const correlatives = [
-        {
-          noItem: 1,
-          codigoGeneracion: generate_uuid().toUpperCase(),
-          tipoDoc: sale.tipoDte,
-        },
-      ];
+    const correlatives = [
+      {
+        noItem: 1,
+        codigoGeneracion: generate_uuid().toUpperCase(),
+        tipoDoc: sale.tipoDte,
+      },
+    ];
 
-      const contingencia_send: IContingencia = generate_contingencia(
-        transmitter,
-        correlatives,
-        contingencia,
-        motivoContigencia
-      );
+    const contingencia_send: IContingencia = generate_contingencia(
+      transmitter,
+      correlatives,
+      contingencia,
+      motivoContigencia
+    );
 
-      setLoadingContingencia(true);
-      modalLoading.onOpen();
+    setLoadingContingencia(true);
+    modalLoading.onOpen();
 
-      firmarDocumentoContingencia(contingencia_send)
-        .then((result) => {
-          const send = {
-            nit: transmitter.nit,
-            documento: result.data.body,
-          };
+    firmarDocumentoContingencia(contingencia_send)
+      .then((result) => {
+        const send = {
+          nit: transmitter.nit,
+          documento: result.data.body,
+        };
 
-          send_to_mh_contingencia(send, token_mh ?? "")
-            .then((contingencia) => {
-              if (contingencia.data.estado === "RECIBIDO") {
-                toast.success("Contingencia exitosa");
-                if (sale.tipoDte === "01") {
+        send_to_mh_contingencia(send, token_mh ?? "")
+          .then((contingencia) => {
+            if (contingencia.data.estado === "RECIBIDO") {
+              toast.success("Contingencia exitosa");
+              console.log(sale.tipoDte);
+              if (sale.tipoDte === "01") {
+                if (result_generation) {
                   const data = generateFactura(
                     result_generation,
                     transmitter,
@@ -362,12 +372,16 @@ function SalesReportContigence() {
                           description: "Estamos guardando tus datos",
                         });
 
-                        const json_url = `CLIENTES/${transmitter.nombre
-                          }/${new Date().getFullYear()}/VENTAS/FACTURAS/${formatDate()}/${data.dteJson.identificacion.codigoGeneracion
-                          }/${data.dteJson.identificacion.codigoGeneracion}.json`;
-                        const pdf_url = `CLIENTES/${transmitter.nombre
-                          }/${new Date().getFullYear()}/VENTAS/FACTURAS/${formatDate()}/${data.dteJson.identificacion.codigoGeneracion
-                          }/${data.dteJson.identificacion.codigoGeneracion}.pdf`;
+                        const json_url = `CLIENTES/${
+                          transmitter.nombre
+                        }/${new Date().getFullYear()}/VENTAS/FACTURAS/${formatDate()}/${
+                          data.dteJson.identificacion.codigoGeneracion
+                        }/${data.dteJson.identificacion.codigoGeneracion}.json`;
+                        const pdf_url = `CLIENTES/${
+                          transmitter.nombre
+                        }/${new Date().getFullYear()}/VENTAS/FACTURAS/${formatDate()}/${
+                          data.dteJson.identificacion.codigoGeneracion
+                        }/${data.dteJson.identificacion.codigoGeneracion}.pdf`;
 
                         const JSON_DTE = JSON.stringify(
                           {
@@ -419,7 +433,7 @@ function SalesReportContigence() {
                                       axios
                                         .put(
                                           API_URL +
-                                          "/sales/sale-update-transaction",
+                                            "/sales/sale-update-transaction",
                                           {
                                             pdf: pdf_url,
                                             dte: json_url,
@@ -482,12 +496,14 @@ function SalesReportContigence() {
                           await save_logs({
                             title:
                               "Contingencia: " +
-                              error.response.data.descripcionMsg ??
+                                error.response.data.descripcionMsg ??
                               "Error al procesar venta",
                             message:
                               error.response.data.observaciones &&
-                                error.response.data.observaciones.length > 0
-                                ? error.response?.data.observaciones.join("\n\n")
+                              error.response.data.observaciones.length > 0
+                                ? error.response?.data.observaciones.join(
+                                    "\n\n"
+                                  )
                                 : "",
                             generationCode:
                               data.dteJson.identificacion.codigoGeneracion,
@@ -500,33 +516,179 @@ function SalesReportContigence() {
                           );
                           setTitle(
                             error.response.data.descripcionMsg ??
-                            "Error al procesar venta"
+                              "Error al procesar venta"
                           );
                           modalErrorContingencia.onOpen();
                           setLoading(false);
                         }
                       });
                   });
-                } else {
+                }
+              } else {
+                if (result_credito_generate) {
+                  const data = generateCredit(
+                    result_credito_generate,
+                    transmitter,
+                    sale
+                  );
+                  firmarDocumentoFiscal(data)
+                    .then((firmador) => {
+                      const data_send: PayloadMH = {
+                        ambiente: ambiente,
+                        idEnvio: 1,
+                        version: 1,
+                        tipoDte: "03",
+                        documento: firmador.data.body,
+                      };
+                      toast.info(
+                        "Se ah enviado a hacienda, esperando respuesta"
+                      );
 
+                      const source = axios.CancelToken.source();
+
+                      const timeout = setTimeout(() => {
+                        source.cancel("El tiempo de espera ha expirado");
+                      }, 25000);
+                      send_to_mh(data_send, token_mh ?? "", source).then(
+                        async (respuestaMH) => {
+                          clearTimeout(timeout);
+                          toast.success("Hacienda respondió correctamente", {
+                            description: "Estamos guardando tus datos",
+                          });
+
+                          const json_url = `CLIENTES/${
+                            transmitter.nombre
+                          }/${new Date().getFullYear()}/VENTAS/CRÉDITO_FISCAL/${formatDate()}/${
+                            data.dteJson.identificacion.codigoGeneracion
+                          }/${
+                            data.dteJson.identificacion.codigoGeneracion
+                          }.json`;
+                          const pdf_url = `CLIENTES/${
+                            transmitter.nombre
+                          }/${new Date().getFullYear()}/VENTAS/CRÉDITO_FISCAL/${formatDate()}/${
+                            data.dteJson.identificacion.codigoGeneracion
+                          }/${
+                            data.dteJson.identificacion.codigoGeneracion
+                          }.pdf`;
+
+                          const JSON_DTE = JSON.stringify(
+                            {
+                              ...data.dteJson,
+                              respuestaMH: respuestaMH.data,
+                              firma: firmador.data.body,
+                            },
+                            null,
+                            2
+                          );
+                          const json_blob = new Blob([JSON_DTE], {
+                            type: "application/json",
+                          });
+
+                          const blob = await pdf(
+                            <CreditoInvoice
+                              MHUrl={generateURLMH(
+                                ambiente,
+                                data.dteJson.identificacion.codigoGeneracion,
+                                data.dteJson.identificacion.fecEmi
+                              )}
+                              DTE={data}
+                              sello={respuestaMH.data.selloRecibido}
+                            />
+                          ).toBlob();
+                          if (json_blob && blob) {
+                            const uploadParams: PutObjectCommandInput = {
+                              Bucket: "seedcode-facturacion",
+                              Key: json_url,
+                              Body: json_blob,
+                            };
+                            const uploadParamsPDF: PutObjectCommandInput = {
+                              Bucket: "seedcode-facturacion",
+                              Key: pdf_url,
+                              Body: blob,
+                            };
+                            s3Client
+                              .send(new PutObjectCommand(uploadParamsPDF))
+                              .then((response) => {
+                                if (response.$metadata) {
+                                  s3Client
+                                    .send(new PutObjectCommand(uploadParams))
+                                    .then((response) => {
+                                      if (response.$metadata) {
+                                        const token = get_token() ?? "";
+
+                                        axios
+                                          .put(
+                                            API_URL +
+                                              "/sales/sale-fiscal-transaction",
+                                            {
+                                              pdf: pdf_url,
+                                              dte: json_url,
+                                              cajaId: Number(
+                                                localStorage.getItem("box")
+                                              ),
+                                              codigoEmpleado: 1,
+                                              sello: true,
+                                            },
+                                            {
+                                              headers: {
+                                                Authorization: `Bearer ${token}`,
+                                              },
+                                            }
+                                          )
+                                          .then(() => {
+                                            toast.success(
+                                              "Se completo con éxito la venta"
+                                            );
+                                            delete_credito_venta(
+                                              data.dteJson.identificacion
+                                                .codigoGeneracion
+                                            );
+                                            modalLoading.onClose();
+                                            OnGetSalesNotContigence(
+                                              branchId,
+                                              1,
+                                              5,
+                                              dateInitial,
+                                              dateEnd
+                                            );
+                                            setLoading(false);
+                                          })
+                                          .catch(() => {
+                                            toast.error(
+                                              "Error al guardar la venta"
+                                            );
+                                            setLoading(false);
+                                            modalLoading.onClose();
+                                          });
+                                      }
+                                    });
+                                }
+                              });
+                          }
+                        }
+                      );
+                    })
+                    .catch((error: AxiosError) => {
+                      console.log(error.response?.data);
+                    });
                 }
               }
-            })
-            .catch(() => {
-              modalLoading.onClose();
-              toast.error("Error al enviar el documento de contingencia");
-              modalErrorContingencia.onOpen();
-              setTitle("Error al enviar el documento de contingencia");
-              setErrorMessage("Error al enviar el documento de contingencia");
-            });
-        })
-        .catch(() => {
-          modalLoading.onClose();
-          toast.error("Error al firmar el documento de contingencia");
-          setTitle("Error al firmar el documento de contingencia");
-          setErrorMessage("Error al firmar el documento de contingencia");
-        });
-    }
+            }
+          })
+          .catch(() => {
+            modalLoading.onClose();
+            toast.error("Error al enviar el documento de contingencia");
+            modalErrorContingencia.onOpen();
+            setTitle("Error al enviar el documento de contingencia");
+            setErrorMessage("Error al enviar el documento de contingencia");
+          });
+      })
+      .catch(() => {
+        modalLoading.onClose();
+        toast.error("Error al firmar el documento de contingencia");
+        setTitle("Error al firmar el documento de contingencia");
+        setErrorMessage("Error al firmar el documento de contingencia");
+      });
   };
 
   const modalEdit = useDisclosure();
@@ -539,7 +701,7 @@ function SalesReportContigence() {
     return `${MH_QUERY}?ambiente=${ambiente}&codGen=${codegen}&fechaEmi=${fechaEmi}`;
   };
 
-  const [codigoGeneracion, setCodigoGeneracion] = useState('');
+  const [codigoGeneracion, setCodigoGeneracion] = useState("");
   const [dataCustomer, setDataCustomer] = useState<Customer>();
   return (
     <>
@@ -748,7 +910,7 @@ function SalesReportContigence() {
                             ...prev,
                             ...rowData.customer,
                           }));
-                          setCodigoGeneracion(rowData.codigoGeneracion)
+                          setCodigoGeneracion(rowData.codigoGeneracion);
                           setSelectedSale(rowData.id);
                           modalEdit.onOpen();
                         }}
@@ -870,16 +1032,17 @@ function SalesReportContigence() {
         </div>
       </ModalGlobal>
 
-
       <ModalGlobal
         title="cccccccccc"
         onClose={modalEdit.onClose}
         size="w-full  md:w-[900px]"
         isOpen={modalEdit.isOpen}
       >
-        <UpdateCustomerSales onClose={modalEdit.onClose} codigoGeneracion={codigoGeneracion} customer={dataCustomer}>
-
-        </UpdateCustomerSales>
+        <UpdateCustomerSales
+          onClose={modalEdit.onClose}
+          codigoGeneracion={codigoGeneracion}
+          customer={dataCustomer}
+        ></UpdateCustomerSales>
       </ModalGlobal>
     </>
   );

@@ -178,7 +178,7 @@ export const useContingenciaCreditoStore = create<IContingenciaCreditoStore>(
         }
       }
     },
-    async getVentaByCodigo(codigo) {
+    async getCreditoVentaByCodigo(codigo) {
       const credito_venta = await get_credito_venta_by_codigo_generacion(
         codigo
       );
