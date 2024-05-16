@@ -7,6 +7,7 @@ import { PayloadCustomer } from "../../types/customers.types"
 import { ThemeContext } from "../../hooks/useTheme"
 
 interface Props {
+    onClose: () => void
     codigoGeneracion: string,
     customer?: Customer
 }
@@ -24,9 +25,10 @@ const UpdateCustomerSales = (props: Props) => {
     const UpdateCustomer = () => {
         if (dataUpdateCustomer) {
             patchCustomer(dataUpdateCustomer, props.customer?.id || 0);
+            props.onClose()
         }
     };
-
+                                               
     return (
         <>
             <div>
@@ -40,9 +42,9 @@ const UpdateCustomerSales = (props: Props) => {
                         label="Nombre de cliente"
                         labelPlacement="outside"
                         size="lg"
-
+                        onChange={(e) => setDataUpdateCustomer({ ...dataUpdateCustomer, nombre: e.target.value })}
                         defaultValue={props.customer?.nombre}
-                        value={props.customer?.nombre}
+
                         placeholder="Ingresa el nombre de cliente"
                         classNames={{
                             label: "text-gray-500 text-base",

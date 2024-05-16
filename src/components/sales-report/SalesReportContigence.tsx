@@ -42,7 +42,7 @@ import Pagination from "../global/Pagination";
 import { Paginator } from "primereact/paginator";
 import { useLogsStore } from "../../store/logs.store";
 import { useTransmitterStore } from "../../store/transmitter.store";
-import { Sale } from "../../types/report_contigence";
+import { Customer, Sale } from "../../types/report_contigence";
 import {
   check_dte,
   firmarDocumentoContingencia,
@@ -69,6 +69,7 @@ import { PutObjectCommand, PutObjectCommandInput } from "@aws-sdk/client-s3";
 import { s3Client } from "../../plugins/s3";
 import SalesUpdate from "./SalesUpdate";
 import { delete_venta } from "../../plugins/dexie/services/venta.service";
+import UpdateCustomerSales from "./UpdateCustomerSale";
 
 function SalesReportContigence() {
   const [branchId, setBranchId] = useState(0);
@@ -538,6 +539,8 @@ function SalesReportContigence() {
     return `${MH_QUERY}?ambiente=${ambiente}&codGen=${codegen}&fechaEmi=${fechaEmi}`;
   };
 
+  const [codigoGeneracion, setCodigoGeneracion] = useState('');
+  const [dataCustomer, setDataCustomer] = useState<Customer>();
   return (
     <>
       <div className="w-full h-full p-5 bg-gray-100 dark:bg-gray-800">
@@ -741,11 +744,11 @@ function SalesReportContigence() {
                         size="lg"
                         isIconOnly
                         onClick={() => {
-                          // setDataCustomer((prev) => ({
-                          //   ...prev,
-                          //   ...rowData.customer,
-                          // }));
-                          // setCodigoGeneracion(rowData.codigoGeneracion)
+                          setDataCustomer((prev) => ({
+                            ...prev,
+                            ...rowData.customer,
+                          }));
+                          setCodigoGeneracion(rowData.codigoGeneracion)
                           setSelectedSale(rowData.id);
                           modalEdit.onOpen();
                         }}
@@ -868,16 +871,16 @@ function SalesReportContigence() {
       </ModalGlobal>
 
 
-      {/* <ModalGlobal
+      <ModalGlobal
         title="cccccccccc"
         onClose={modalEdit.onClose}
         size="w-full  md:w-[900px]"
         isOpen={modalEdit.isOpen}
       >
-        <UpdateCustomerSales codigoGeneracion={codigoGeneracion} customer={dataCustomer}>
+        <UpdateCustomerSales onClose={modalEdit.onClose} codigoGeneracion={codigoGeneracion} customer={dataCustomer}>
 
         </UpdateCustomerSales>
-      </ModalGlobal> */}
+      </ModalGlobal>
     </>
   );
 }
