@@ -18,7 +18,7 @@ export const useConfigurationStore = create<IConfigurationStore>(
         });
     },
 
-    async GetConfigurationByTransmitter(id: number) {
+    async GetConfigurationByTransmitter(id: number): Promise<void> {
       try {
         const { data } = await get_by_transmitter(id);
         if (data.personalization) {
@@ -34,6 +34,7 @@ export const useConfigurationStore = create<IConfigurationStore>(
         );
       }
     }
+    
   })
     
 

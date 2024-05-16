@@ -139,8 +139,8 @@ function ConfigurationList() {
                         </div>
                       </CardHeader>
                       <Divider />
-                      <CardFooter className="flex justify-between">
-                        <div className="w-full text-center">
+                      <CardFooter className="flex justify-center">
+                        <div className="">
                           <p>{item.name}</p>
                         </div>
                       </CardFooter>
