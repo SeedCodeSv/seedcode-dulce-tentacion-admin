@@ -10,7 +10,7 @@ import {
   Autocomplete,
   AutocompleteItem,
 } from "@nextui-org/react";
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useMemo } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import {
@@ -35,6 +35,8 @@ import { paginator_styles } from "../../styles/paginator.styles";
 import { CategoryProduct } from "../../types/categories.types";
 import MobileView from "./MobileView";
 import {formatCurrency} from "../../utils/dte"
+import { filterActions } from "../../utils/filters";
+import { ActionsContext } from "../../hooks/useActions";
 
 function ListProducts() {
   const { theme } = useContext(ThemeContext);
@@ -72,6 +74,18 @@ function ListProducts() {
   const [selectedProduct, setSelectedProduct] = useState<Product | undefined>(
     undefined
   );
+
+  const {roleActions} = useContext(ActionsContext);
+
+  const actions_role_view = useMemo(() => {
+    if (roleActions) {
+      return filterActions("Productos", roleActions)?.actions.map(
+        (re) => re.name
+      )
+    }
+    return undefined;
+  }, [roleActions])
+
   return (
     <>
       <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
@@ -185,12 +199,14 @@ function ListProducts() {
                 </Button>
               </ButtonGroup>
               <div className="flex justify-end w-full">
-                <AddButton
-                  onClick={() => {
-                    modalAdd.onOpen();
-                    setSelectedProduct(undefined);
-                  }}
-                />
+                {actions_role_view && actions_role_view.includes("Agregar") && (
+                  <AddButton
+                    onClick={() => {
+                      modalAdd.onOpen();
+                      setSelectedProduct(undefined);
+                    }}
+                  />
+                  )}
               </div>
             </div>
           </div>
@@ -265,23 +281,27 @@ function ListProducts() {
                 header="Acciones"
                 body={(item) => (
                   <div className="flex w-full gap-5">
-                    <Button
-                      onClick={() => {
-                        setSelectedProduct(item);
-                        modalAdd.onOpen();
-                      }}
-                      isIconOnly
-                      style={{
-                        backgroundColor: theme.colors.secondary,
-                      }}
-                      size="lg"
-                    >
-                      <EditIcon
-                        style={{ color: theme.colors.primary }}
-                        size={20}
-                      />
-                    </Button>
-                    <DeletePopover product={item} />
+                    {actions_role_view && actions_role_view?.includes("Editar") && (
+                      <Button
+                        onClick={() => {
+                          setSelectedProduct(item);
+                          modalAdd.onOpen();
+                        }}
+                        isIconOnly
+                        style={{
+                          backgroundColor: theme.colors.secondary,
+                        }}
+                        size="lg"
+                      >
+                        <EditIcon
+                          style={{ color: theme.colors.primary }}
+                          size={20}
+                        />
+                      </Button>
+                    )}
+                    {actions_role_view && actions_role_view?.includes("Eliminar") && (
+                      <DeletePopover product={item} />
+                    )}
                   </div>
                 )}
               />

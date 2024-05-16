@@ -1,3 +1,4 @@
+import { Role } from "./roles.types";
 import { IView } from "./view.types";
 export interface IAction {
   id: number;
@@ -13,4 +14,17 @@ export interface IActionPayload {
 export interface IGetActionRol {
   ok: boolean;
   actionsId: IAction[];
+}
+
+export interface RoleAction {
+  id: number;
+  isActive: boolean;
+  action: IAction;
+  role: Role;
+}
+
+export interface GroupedAction {
+  role: string;
+  view: string;
+  action: string[];
 }
