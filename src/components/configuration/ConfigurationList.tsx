@@ -86,15 +86,19 @@ function ConfigurationList() {
         </div>
         <div className="p-4">
           <div className="flex items-end justify-between gap-10 mt lg:justify-end mt-5 mr-5">
-            <AddButton onClick={() => addLogo.onOpen()} />
-            {personalization.map((item) => (
-              <AddButton
-                onClick={() => {
-                  UpdateImgModal.onOpen();
-                  setLogoId(item.id || 0);
-                }}
-              />
-            ))}
+            {personalization.length === 0 && (
+              <AddButton onClick={() => addLogo.onOpen()} />
+            )}
+            {personalization.length > 0 &&
+              personalization.map((item) => (
+                <AddButton
+                  key={item.id}
+                  onClick={() => {
+                    UpdateImgModal.onOpen();
+                    setLogoId(item.id || 0);
+                  }}
+                />
+              ))}
           </div>
 
           <div className="flex justify-center w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
