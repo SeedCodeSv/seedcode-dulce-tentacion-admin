@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Card, useDisclosure, Image } from "@nextui-org/react";
+import { Card, useDisclosure } from "@nextui-org/react";
 import { useThemeStore } from "../../store/theme.store";
 import { Theme, ThemeContext } from "../../hooks/useTheme";
 import { Check } from "lucide-react";
@@ -13,6 +13,7 @@ import { CardHeader, CardFooter, Divider } from "@nextui-org/react";
 import DefaultImage from "../../assets/react.svg";
 import { useAuthStore } from "../../store/auth.store";
 import UpdateFile from "./UpdateFile";
+import { Image } from "primereact/image";
 
 function ConfigurationList() {
   const { getPaginatedThemes, themes } = useThemeStore();
@@ -126,20 +127,24 @@ function ConfigurationList() {
                     key={item.id}
                     className="hover:shadow-xl hover:border border border-gray-400 hover:border-blue-400 w-72 h-56 m-4"
                   >
-                    <CardHeader className="flex gap-3">
-                      <div className="flex items-center justify-center w-full">
-                        <Image
-                          src={item.logo}
-                          className="w-36 h-36 text-large"
-                        />
-                      </div>
-                    </CardHeader>
-                    <Divider />
-                    <CardFooter className="flex justify-between">
-                      <div className="w-full text-center">
-                        <p>{item.name}</p>
-                      </div>
-                    </CardFooter>
+                    <div style={{ overflowY: "auto", maxHeight: "250px" }}>
+                      <CardHeader className="flex gap-3">
+                        <div className="flex items-center justify-center w-full">
+                          <Image
+                            src={item.logo}
+                            preview
+                            width="250"
+                            className=" text-large"
+                          />
+                        </div>
+                      </CardHeader>
+                      <Divider />
+                      <CardFooter className="flex justify-between">
+                        <div className="w-full text-center">
+                          <p>{item.name}</p>
+                        </div>
+                      </CardFooter>
+                    </div>
                   </Card>
                 ))
               )}
