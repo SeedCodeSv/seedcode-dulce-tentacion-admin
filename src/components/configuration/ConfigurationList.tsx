@@ -1,4 +1,4 @@
-import { useContext, useEffect, } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Card, useDisclosure, Image } from "@nextui-org/react";
 import { useThemeStore } from "../../store/theme.store";
 import { Theme, ThemeContext } from "../../hooks/useTheme";
@@ -12,10 +12,12 @@ import { Avatar } from "@nextui-org/react";
 import { CardHeader, CardFooter, Divider } from "@nextui-org/react";
 import DefaultImage from "../../assets/react.svg";
 import { useAuthStore } from "../../store/auth.store";
+import UpdateFile from "./UpdateFile";
 
 function ConfigurationList() {
   const { getPaginatedThemes, themes } = useThemeStore();
   const { theme, toggleTheme } = useContext(ThemeContext);
+  const [logoId, setLogoId] = useState(0);
 
   const { personalization, GetConfigurationByTransmitter } =
     useConfigurationStore();
@@ -29,6 +31,7 @@ function ConfigurationList() {
 
   const modalAdd = useDisclosure();
   const addLogo = useDisclosure();
+  const UpdateImgModal = useDisclosure();
 
   return (
     <>
@@ -84,6 +87,14 @@ function ConfigurationList() {
         <div className="p-4">
           <div className="flex items-end justify-between gap-10 mt lg:justify-end mt-5 mr-5">
             <AddButton onClick={() => addLogo.onOpen()} />
+            {personalization.map((item) => (
+              <AddButton
+                onClick={() => {
+                  UpdateImgModal.onOpen();
+                  setLogoId(item.id || 0);
+                }}
+              />
+            ))}
           </div>
 
           <div className="flex justify-center w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
@@ -149,6 +160,15 @@ function ConfigurationList() {
         size="w-full lg:w-[600px]"
       >
         <CreateConfiguration />
+      </ModalGlobal>
+
+      <ModalGlobal
+        isOpen={UpdateImgModal.isOpen}
+        onClose={UpdateImgModal.onClose}
+        title="Actualizar logo"
+        size="w-full lg:w-[600px]"
+      >
+        <UpdateFile perzonalitationId={logoId} />
       </ModalGlobal>
     </>
   );
