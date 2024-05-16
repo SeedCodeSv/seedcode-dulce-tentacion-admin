@@ -1,4 +1,12 @@
-import { Button, Image, Switch } from "@nextui-org/react";
+import {
+  Button,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+  Image,
+  Switch,
+} from "@nextui-org/react";
 import { NavLink } from "react-router-dom";
 import LOGO from "../assets/react.svg";
 import {
@@ -16,24 +24,35 @@ import {
   ShoppingCart,
   DollarSign,
   Contact,
+  BoxIcon,
+  ScanBarcode,
 } from "lucide-react";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { ThemeContext } from "../hooks/useTheme";
 import { useAuthStore } from "../store/auth.store";
 import { delete_seller_mode, save_seller_mode } from "../storage/localStorage";
-import { redirect } from "react-router";
+import { redirect, useLocation } from "react-router";
 import { SessionContext } from "../hooks/useSession";
 import { return_seller_mode } from "../storage/localStorage";
 import { useConfigurationStore } from "../store/perzonalitation.store";
+import useWindowSize from "../hooks/useWindowSize";
+import { classNames } from "primereact/utils";
 export const LayoutItems = () => {
   const { theme, toggleContext, context } = useContext(ThemeContext);
   const { makeLogout } = useAuthStore();
   // const [mode, setMode] = useState("");
   const { setIsAuth, setToken, mode, setMode } = useContext(SessionContext);
 
+  useEffect(() => {
+    if (context === "dark") {
+      document.getElementsByTagName("body")[0].classList.add("dark");
+    } else {
+      document.getElementsByTagName("body")[0].classList.remove("dark");
+    }
+  }, [context]);
 
   const handleSeller = () => {
-    setMode("vendedor")
+    setMode("vendedor");
     save_seller_mode("vendedor");
     makeLogout();
     setIsAuth(false);
@@ -41,7 +60,7 @@ export const LayoutItems = () => {
     redirect("/");
   };
   const handleAdmin = () => {
-    setMode("")
+    setMode("");
     makeLogout();
     delete_seller_mode();
     setIsAuth(false);
@@ -52,10 +71,25 @@ export const LayoutItems = () => {
     const mode = return_seller_mode();
     // setMode(String(mode));
   }, []);
-  console.log("Modo layout", mode);
 
   const { user } = useAuthStore();
   const transmitter = user?.employee?.branch?.transmitterId;
+
+  const { windowSize } = useWindowSize();
+
+  const iconSize = useMemo(() => {
+    if (windowSize.width < 768) {
+      return 14;
+    } else if (windowSize.width < 1024) {
+      return 16;
+    } else if (windowSize.width < 1280) {
+      return 18;
+    } else if (windowSize.width < 1536) {
+      return 20;
+    } else {
+      return 22;
+    }
+  }, [windowSize.width]);
 
   const {
     personalization,
@@ -66,20 +100,28 @@ export const LayoutItems = () => {
     GetConfigurationByTransmitter(transmitter || 0);
   }, []);
 
+  const location = useLocation();
+
+  const dropdownStyle = useMemo(() => {
+    if (
+      location.pathname === "/users" ||
+      location.pathname === "/clients" ||
+      location.pathname === "/employees" ||
+      location.pathname === "/branches"
+    ) {
+      return {
+        borderLeftColor: theme.colors.dark,
+        borderLeftWidth: 5,
+      };
+    } else {
+      return {
+        borderLeftColor: "transparent",
+      };
+    }
+  }, [location.pathname]);
+
   return (
     <>
-      {/* <div
-        className="flex items-center justify-center w-full border-b shadow h-14"
-        style={{
-          backgroundColor: theme.colors.dark,
-          color: theme.colors.primary,
-        }}
-      >
-        <Image src={LOGO} className="w-[50px]" />
-        <p className="ml-3 font-sans text-sm font-bold text-coffee-brown">
-          SeedCodeERP
-        </p>
-      </div> */}
       {personalization.length === 0 ? (
         <div
           className="flex items-center pl-5 w-full border-b shadow h-[70px]"
@@ -89,13 +131,10 @@ export const LayoutItems = () => {
           }}
         >
           <Image src={LOGO} className="max-h-14 w-full max-w-32" />
-          <p className="ml-3 font-sans text-sm font-bold text-coffee-brown">
-            SeedCodeERP
-          </p>
         </div>
       ) : (
         <>
-        {mode}
+          {mode}
           {personalization.map((item) => (
             <div
               key={item.id}
@@ -106,9 +145,6 @@ export const LayoutItems = () => {
               }}
             >
               <Image src={item.logo} className="max-h-14 w-full max-w-32" />
-              <p className="ml-3 font-sans text-sm font-bold text-coffee-brown">
-                {item.name}
-              </p>
             </div>
           ))}
         </>
@@ -144,7 +180,7 @@ export const LayoutItems = () => {
                 (isActive
                   ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
                   : "text-coffee-brown font-semibold border-white") +
-                " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
+                " flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
               );
             }}
             style={({ isActive }) => {
@@ -154,8 +190,8 @@ export const LayoutItems = () => {
               };
             }}
           >
-            <Home size={20} />
-            <p className="ml-2 text-base">Inicio</p>
+            <Home size={iconSize} />
+            <p className="ml-2 text-sm 2xl:text-base">Inicio</p>
           </NavLink>
           <NavLink
             to={"/products"}
@@ -164,7 +200,7 @@ export const LayoutItems = () => {
                 (isActive
                   ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
                   : "text-coffee-brown font-semibold border-white") +
-                " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
+                " flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
               );
             }}
             style={({ isActive }) => {
@@ -174,8 +210,8 @@ export const LayoutItems = () => {
               };
             }}
           >
-            <Coffee size={20} />
-            <p className="ml-2 text-base">Productos</p>
+            <ScanBarcode size={iconSize} />
+            <p className="ml-2 text-sm 2xl:text-base">Productos</p>
           </NavLink>
           <NavLink
             to={"/categories"}
@@ -184,7 +220,7 @@ export const LayoutItems = () => {
                 (isActive
                   ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
                   : "text-coffee-brown font-semibold border-white") +
-                " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
+                " flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
               );
             }}
             style={({ isActive }) => {
@@ -194,89 +230,91 @@ export const LayoutItems = () => {
               };
             }}
           >
-            <Box size={20} />
-            <p className="ml-2 text-base">Categorías</p>
+            <Box size={iconSize} />
+            <p className="ml-2 text-sm 2xl:text-base">Categorías</p>
           </NavLink>
-          <NavLink
-            to={"/branches"}
-            className={({ isActive }) => {
-              return (
-                (isActive
-                  ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
-                  : "text-coffee-brown font-semibold border-white") +
-                " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
-              );
-            }}
-            style={({ isActive }) => {
-              return {
-                borderLeftColor: isActive ? theme.colors.dark : "transparent",
-                borderLeftWidth: 5,
-              };
-            }}
-          >
-            <Store size={20} />
-            <p className="ml-2 text-base">Sucursales</p>
-          </NavLink>
-          <NavLink
-            to={"/users"}
-            className={({ isActive }) => {
-              return (
-                (isActive
-                  ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
-                  : "text-coffee-brown font-semibold border-white") +
-                " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
-              );
-            }}
-            style={({ isActive }) => {
-              return {
-                borderLeftColor: isActive ? theme.colors.dark : "transparent",
-                borderLeftWidth: 5,
-              };
-            }}
-          >
-            <User size={20} />
-            <p className="ml-2 text-base">Usuarios</p>
-          </NavLink>
-          <NavLink
-            to={"/employees"}
-            className={({ isActive }) => {
-              return (
-                (isActive
-                  ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
-                  : "text-coffee-brown font-semibold border-white") +
-                " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
-              );
-            }}
-            style={({ isActive }) => {
-              return {
-                borderLeftColor: isActive ? theme.colors.dark : "transparent",
-                borderLeftWidth: 5,
-              };
-            }}
-          >
-            <Users size={20} />
-            <p className="ml-2 text-base">Empleados</p>
-          </NavLink>
-          <NavLink
-            to={"/clients"}
-            className={({ isActive }) => {
-              return (
-                (isActive
-                  ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
-                  : "text-coffee-brown font-semibold border-white") +
-                " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
-              );
-            }}
-            style={({ isActive }) => {
-              return {
-                borderLeftColor: isActive ? theme.colors.dark : "transparent",
-                borderLeftWidth: 5,
-              };
-            }}
-          >
-            <BookUser size={20} />
-            <p className="ml-2 text-base">Clientes</p>
-          </NavLink>
+          <div>
+            <Dropdown>
+              <DropdownTrigger>
+                <p
+                  style={dropdownStyle}
+                  className="text-coffee-brown font-semibold border-white flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600"
+                >
+                  <Store size={iconSize} />
+                  <span className="ml-2 text-sm 2xl:text-base">Sucursales</span>
+                </p>
+              </DropdownTrigger>
+              <DropdownMenu
+                aria-label="Example with disabled actions"
+                className="w-64"
+              >
+                <DropdownItem key="users" textValue="users">
+                  <NavLink
+                    to={"/users"}
+                    className={({ isActive }) => {
+                      return (
+                        (isActive
+                          ? "font-semibold bg-gray-300 dark:bg-gray-700"
+                          : "text-coffee-brown font-semibold border-white") +
+                        " flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white"
+                      );
+                    }}
+                  >
+                    <User size={iconSize} />
+                    <p className="ml-2 text-sm 2xl:text-base">Usuarios</p>
+                  </NavLink>
+                </DropdownItem>
+                <DropdownItem key="employees" textValue="employees">
+                  <NavLink
+                    to={"/employees"}
+                    className={({ isActive }) => {
+                      return (
+                        (isActive
+                          ? "font-semibold bg-gray-300 dark:bg-gray-700"
+                          : "text-coffee-brown font-semibold border-white") +
+                        " flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white"
+                      );
+                    }}
+                  >
+                    <Users size={iconSize} />
+                    <p className="ml-2 text-sm 2xl:text-base">Empleados</p>
+                  </NavLink>
+                </DropdownItem>
+                <DropdownItem key="clients" textValue="clients">
+                  <NavLink
+                    to={"/clients"}
+                    className={({ isActive }) => {
+                      return (
+                        (isActive
+                          ? "font-semibold bg-gray-300 dark:bg-gray-700"
+                          : "text-coffee-brown font-semibold border-white") +
+                        " flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white"
+                      );
+                    }}
+                  >
+                    <BookUser size={iconSize} />
+                    <p className="ml-2 text-sm 2xl:text-base">Clientes</p>
+                  </NavLink>
+                </DropdownItem>
+                <DropdownItem key="delete">
+                  <NavLink
+                    to={"/branches"}
+                    className={({ isActive }) => {
+                      return (
+                        (isActive
+                          ? "font-semibold bg-gray-300 dark:bg-gray-700"
+                          : "text-coffee-brown font-semibold border-white") +
+                        " flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white"
+                      );
+                    }}
+                  >
+                    <BookUser size={iconSize} />
+                    <p className="ml-2 text-base">Sucursales</p>
+                  </NavLink>
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          </div>
           <NavLink
             to={"/reports"}
             className={({ isActive }) => {
@@ -284,7 +322,7 @@ export const LayoutItems = () => {
                 (isActive
                   ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
                   : "text-coffee-brown font-semibold border-white") +
-                " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
+                " flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
               );
             }}
             style={({ isActive }) => {
@@ -294,8 +332,8 @@ export const LayoutItems = () => {
               };
             }}
           >
-            <Book size={20} />
-            <p className="ml-2 text-base">Reportes</p>
+            <Book size={iconSize} />
+            <p className="ml-2 text-sm 2xl:text-base">Reportes</p>
           </NavLink>
           <NavLink
             to={"/expensesCategories"}
@@ -304,7 +342,7 @@ export const LayoutItems = () => {
                 (isActive
                   ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
                   : "text-coffee-brown font-semibold border-white") +
-                " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
+                " flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
               );
             }}
             style={({ isActive }) => {
@@ -314,19 +352,19 @@ export const LayoutItems = () => {
               };
             }}
           >
-            <Grid2X2Icon size={20} />
-            <p className="ml-2 text-base">Categoria de gastos</p>
+            <Grid2X2Icon size={iconSize} />
+            <p className="ml-2 text-sm 2xl:text-base">Categoría de gastos</p>
           </NavLink>
         </>
       )}
-      <NavLink
+      {/* <NavLink
         to={"/expenses"}
         className={({ isActive }) => {
           return (
             (isActive
               ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
               : "text-coffee-brown font-semibold border-white") +
-            " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
+            " flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
           );
         }}
         style={({ isActive }) => {
@@ -336,17 +374,17 @@ export const LayoutItems = () => {
           };
         }}
       >
-        <CalculatorIcon size={20} />
-        <p className="ml-2 text-base">Gastos</p>
-      </NavLink>
-      <NavLink
+        <CalculatorIcon size={iconSize} />
+        <p className="ml-2 text-sm 2xl:text-base">Gastos</p>
+      </NavLink> */}
+      {/* <NavLink
         to={"/newSales"}
         className={({ isActive }) => {
           return (
             (isActive
               ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
               : "text-coffee-brown font-semibold border-white") +
-            " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
+            " flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
           );
         }}
         style={({ isActive }) => {
@@ -356,9 +394,9 @@ export const LayoutItems = () => {
           };
         }}
       >
-        <ShoppingCart size={20} />
-        <p className="ml-2 text-base">Nueva venta</p>
-      </NavLink>
+        <ShoppingCart size={iconSize} />
+        <p className="ml-2 text-sm 2xl:text-base">Nueva venta</p>
+      </NavLink> */}
 
       <NavLink
         to={"/sales-reports"}
@@ -367,7 +405,7 @@ export const LayoutItems = () => {
             (isActive
               ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
               : "text-coffee-brown font-semibold border-white") +
-            " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
+            " flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
           );
         }}
         style={({ isActive }) => {
@@ -377,8 +415,8 @@ export const LayoutItems = () => {
           };
         }}
       >
-        <DollarSign size={20} />
-        <p className="ml-2 text-base">Ventas</p>
+        <DollarSign size={iconSize} />
+        <p className="ml-2 text-sm 2xl:text-base">Ventas</p>
       </NavLink>
       {mode !== "vendedor" && (
         <NavLink
@@ -388,7 +426,7 @@ export const LayoutItems = () => {
               (isActive
                 ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
                 : "text-coffee-brown font-semibold border-white") +
-              " flex w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
+              " flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
             );
           }}
           style={({ isActive }) => {
@@ -398,8 +436,8 @@ export const LayoutItems = () => {
             };
           }}
         >
-          <ShieldHalf size={20} />
-          <p className="ml-2 text-base">Permisos</p>
+          <ShieldHalf size={iconSize} />
+          <p className="ml-2 text-sm 2xl:text-base">Permisos</p>
         </NavLink>
       )}
       <div
@@ -410,8 +448,9 @@ export const LayoutItems = () => {
         <Switch
           onValueChange={(isDark) => toggleContext(isDark ? "dark" : "light")}
           isSelected={context === "dark"}
+          size={windowSize.width > 768 ? undefined : "sm"}
         >
-          {context === "dark" ? "Modo claro" : "Modo oscuro"}
+          <p className="text-sm lg:text-base">{context === "dark" ? "Modo claro" : "Modo oscuro"}</p>
         </Switch>
       </div>
     </>
