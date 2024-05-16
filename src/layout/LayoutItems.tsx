@@ -88,7 +88,7 @@ export const LayoutItems = () => {
             color: theme.colors.primary,
           }}
         >
-          <Image src={LOGO} className="max-h-14 w-full max-w-32" />
+          <img src={LOGO} className="max-h-14 w-full max-w-32" />
           <p className="ml-3 font-sans text-sm font-bold text-coffee-brown">
             SeedCodeERP
           </p>
@@ -105,7 +105,7 @@ export const LayoutItems = () => {
                 color: theme.colors.primary,
               }}
             >
-              <Image src={item.logo} className="max-h-14 w-full max-w-32" />
+              <img src={item.logo} className="max-h-14 w-full max-w-32" />
               <p className="ml-3 font-sans text-sm font-bold text-coffee-brown">
                 {item.name}
               </p>
