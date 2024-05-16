@@ -2,6 +2,10 @@ import {
   Button,
   ButtonGroup,
   Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalHeader,
   Select,
   SelectItem,
   Tooltip,
@@ -32,15 +36,19 @@ import FormMakeSale from "./FormMakeSale";
 import useEventListener from "../../hooks/useEventListeners";
 import { useAuthStore } from "../../store/auth.store";
 import { toast } from "sonner";
+import AddButton from "../global/AddButton";
+import MobileView_NewSale from "./MobileView_NewSale";
 
 const MainView = () => {
   const { theme } = useContext(ThemeContext);
   const [view, setView] = useState<"table" | "grid" | "list">("table");
+  const [viewMovil, setViewMovil] = useState<"grid" | "list">("grid")
 
   const [name, setName] = useState<string>("");
   const [code, setCode] = useState<string>("");
   const [limit, setLimit] = useState<number>(5);
   const modalAdd = useDisclosure();
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const {
     branch_products,
@@ -131,11 +139,13 @@ const MainView = () => {
     }, 0);
     return formatCurrency(total);
   }, [cart_products]);
-
   return (
     <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
       <div className="w-full h-full grid grid-cols-1 lg:grid-cols-2">
         <div className="w-full h-full overflow-y-auto p-4 flex flex-col">
+          <div className="flex justify-end lg:hidden">
+            <AddButton onClick={onOpen} />
+          </div>
           <div className="w-full h-[75%] pb-5">
             <CartProducts />
           </div>
@@ -167,7 +177,7 @@ const MainView = () => {
             </div>
           </div>
         </div>
-        <div className="w-full h-full overflow-y-auto p-4">
+        <div className="w-full h-full overflow-y-auto p-4 hidden lg:block">
           <Input
             variant="bordered"
             placeholder="Escribe para buscar..."
@@ -282,12 +292,19 @@ const MainView = () => {
                 </SelectItem>
               ))}
             </Select>
+            
           </div>
           <div className="w-full mt-5 p-5 bg-gray-100 dark:bg-gray-900 overflow-y-auto rounded">
             <h1 className="text-lg font-semibold dark:text-white">
               Lista de productos
             </h1>
-            <DataTable
+            {(view === "grid" || view === "list") && (
+              <MobileView_NewSale
+                layout={view as "grid" | "list"}
+              />
+            )}
+            {view === "table" && (
+              <DataTable
               className="w-full shadow mt-5"
               emptyMessage="No se encontraron resultados"
               value={branch_products}
@@ -339,6 +356,7 @@ const MainView = () => {
                 )}
               />
             </DataTable>
+            )}
             {pagination_branch_products.totalPag > 1 && (
               <div className="w-full mt-5">
                 <Pagination
@@ -374,6 +392,157 @@ const MainView = () => {
           }}
         />
       </ModalGlobal>
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        title="Agregar"
+        size="full"
+      >
+        <ModalContent>
+          <>
+            <ModalHeader>Agregar</ModalHeader>
+            <ModalBody>
+              <div className="w-full h-full overflow-y-auto p-4">
+                <Input
+                  variant="bordered"
+                  placeholder="Escribe para buscar..."
+                  label="Buscar por nombre"
+                  labelPlacement="outside"
+                  className="dark:text-white"
+                  classNames={{
+                    label: "text-sm font-semibold",
+                    inputWrapper: "pr-0",
+                  }}
+                  onChange={(e) => setName(e.target.value)}
+                  size="lg"
+                  startContent={<Search size={20} />}
+                  endContent={
+                    <Button
+                      onClick={handleSearch}
+                      size="lg"
+                      style={{
+                        backgroundColor: theme.colors.secondary,
+                        color: theme.colors.primary,
+                      }}
+                    >
+                      Buscar
+                    </Button>
+                  }
+                />
+                <Input
+                  variant="bordered"
+                  placeholder="Escribe para buscar..."
+                  label="Buscar por código"
+                  labelPlacement="outside"
+                  className="dark:text-white pt-4"
+                  classNames={{
+                    label: "text-sm font-semibold",
+                    inputWrapper: "pr-0",
+                  }}
+                  size="lg"
+                  startContent={<Barcode size={20} />}
+                  onChange={(e) => setCode(e.target.value)}
+                  endContent={
+                    <Button
+                      onClick={handleSearch}
+                      size="lg"
+                      style={{
+                        backgroundColor: theme.colors.secondary,
+                        color: theme.colors.primary,
+                      }}
+                    >
+                      Buscar
+                    </Button>
+                  }
+                />
+                <div className="w-full mt-5 flex justify-between">
+                  <ButtonGroup>
+                    <Button
+                      size="lg"
+                      isIconOnly
+                      color="default"
+                      style={{
+                        backgroundColor:
+                          viewMovil === "grid" ? theme.colors.third : "#e5e5e6",
+                        color:
+                          viewMovil === "grid" ? theme.colors.primary : "#3e3e3e",
+                      }}
+                      onClick={() => setViewMovil("grid")}
+                    >
+                      <CreditCard />
+                    </Button>
+                    <Button
+                      size="lg"
+                      isIconOnly
+                      color="default"
+                      style={{
+                        backgroundColor:
+                          viewMovil === "list" ? theme.colors.third : "#e5e5e5",
+                        color:
+                          viewMovil === "list" ? theme.colors.primary : "#3e3e3e",
+                      }}
+                      onClick={() => setViewMovil("list")}
+                    >
+                      <List />
+                    </Button>
+                  </ButtonGroup>
+                  <Select
+                    className="w-44 dark:text-white"
+                    variant="bordered"
+                    size="lg"
+                    label="Mostrar"
+                    labelPlacement="outside"
+                    classNames={{
+                      label: "font-semibold",
+                    }}
+                    value={limit}
+                    onChange={(e) => {
+                      setLimit(
+                        Number(e.target.value !== "" ? e.target.value : "5")
+                      );
+                    }}
+                  >
+                    {limit_options.map((option) => (
+                      <SelectItem key={option} value={option}>
+                        {option}
+                      </SelectItem>
+                    ))}
+                  </Select>
+                </div>
+                <div className="w-full mt-5 p-5 bg-gray-100 dark:bg-gray-900 overflow-y-auto rounded">
+                  <h1 className="text-lg font-semibold dark:text-white">
+                    Lista de productos
+                  </h1>
+                  {(viewMovil === "grid" || viewMovil === "list") && (
+                    <MobileView_NewSale
+                      layout={viewMovil as "grid" | "list"}
+                    />
+                  )}
+                  {pagination_branch_products.totalPag > 1 && (
+                    <div className="w-full mt-5">
+                      <Pagination
+                        totalPages={pagination_branch_products.totalPag}
+                        currentPage={pagination_branch_products.currentPag}
+                        previousPage={pagination_branch_products.prevPag}
+                        nextPage={pagination_branch_products.nextPag}
+                        onPageChange={(page) => {
+                          getPaginatedBranchProducts(
+                            Number(return_branch_id()),
+                            page,
+                            limit,
+                            name,
+                            code
+                          );
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+            </ModalBody>
+          </>
+        </ModalContent>
+      </Modal>
     </div>
   );
 };

@@ -29,3 +29,20 @@ export const defaultTheme = {
         dark: "#1d3557"
     }
 }
+
+export const views_enabled = [
+    "Usuarios",
+    "Inicio",
+    "Productos",
+    "Permisos",
+    "Categorias",
+    "Sucursales",
+    "Empleados",
+    "Clientes",
+    "Reportes",
+    "Categoria de gastos",
+    "Gastos",
+    "Ventas",
+    "Reporte de ventas",
+
+]

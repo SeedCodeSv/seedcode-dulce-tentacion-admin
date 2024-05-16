@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { useUsersStore } from "../../store/users.store";
 import {
   Button,
@@ -33,6 +33,8 @@ import { Paginator } from "primereact/paginator";
 import { paginator_styles } from "../../styles/paginator.styles";
 import Pagination from "../global/Pagination";
 import { User } from "../../types/users.types";
+import { ActionsContext } from "../../hooks/useActions";
+import { filterActions } from "../../utils/filters";
 
 function ListUsers() {
   const { theme } = useContext(ThemeContext);
@@ -61,6 +63,19 @@ function ListUsers() {
   const handleSearch = (searchParam: string | undefined) => {
     getUsersPaginated(1, limit, searchParam ?? userName);
   };
+
+  const { roleActions } = useContext(ActionsContext);
+
+  const actions_role_view = useMemo(() => {
+    if (roleActions) {
+      return filterActions("Usuario", roleActions)?.actions.map(
+        (re) => re.name
+      )
+    }
+    return undefined;
+  }, [roleActions]);
+
+  console.log("ACTIONS", roleActions)
 
   return (
     <>
@@ -143,7 +158,9 @@ function ListUsers() {
                   <List />
                 </Button>
               </ButtonGroup>
-              <AddButton onClick={() => modalAdd.onOpen()} />
+              {actions_role_view && actions_role_view?.includes("Agregar") && (
+                <AddButton onClick={() => modalAdd.onOpen()} />
+              )}
             </div>
           </div>
           <div className="flex justify-end w-full mb-1">
@@ -220,22 +237,24 @@ function ListUsers() {
                 header="Acciones"
                 body={(item) => (
                   <div className="flex w-full gap-5">
-                    <Button
-                      onClick={() => {
-                        setUser(item);
-                        modalUpdate.onOpen();
-                      }}
-                      isIconOnly
-                      style={{
-                        backgroundColor: theme.colors.secondary,
-                      }}
-                      size="lg"
-                    >
-                      <EditIcon
-                        style={{ color: theme.colors.primary }}
-                        size={20}
-                      />
-                    </Button>
+                    {actions_role_view && actions_role_view?.includes("Editar") && (
+                      <Button
+                        onClick={() => {
+                          setUser(item);
+                          modalUpdate.onOpen();
+                        }}
+                        isIconOnly
+                        style={{
+                          backgroundColor: theme.colors.secondary,
+                        }}
+                        size="lg"
+                      >
+                        <EditIcon
+                          style={{ color: theme.colors.primary }}
+                          size={20}
+                        />
+                      </Button>
+                    )}
                     <Button
                       size="lg"
                       onClick={() => {
@@ -249,7 +268,9 @@ function ListUsers() {
                     >
                       <Key color={theme.colors.primary} size={20} />
                     </Button>
-                    <DeletePopUp user={item} />
+                    {actions_role_view && actions_role_view?.includes("Eliminar") && (
+                      <DeletePopUp user={item} />
+                    )}
                   </div>
                 )}
               />

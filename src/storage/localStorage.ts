@@ -89,3 +89,7 @@ export const return_seller_mode = () => {
 export const delete_seller_mode = () => {
   return localStorage.removeItem("seller_mode")
 }
+
+export  const get_personalization= () =>{
+  return JSON.parse(localStorage.getItem("personalization") || "{}") as { name: string; logo: string }
+}
