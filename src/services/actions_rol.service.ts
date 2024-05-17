@@ -24,6 +24,7 @@ export const save_action_rol = (actionRol: IAddActionRol) => {
 };
 
 export const get_actions_role = () => {
+  const token = get_token() ?? "";
   return axios.get<IGetActionRolList>(API_URL + "/role-actions", {
     headers: {
       Authorization: `Bearer ${token}`,
