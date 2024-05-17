@@ -32,6 +32,10 @@ function AddProducts(props: Props) {
       .number()
       .required("**El precio es requerido**")
       .typeError("**El precio es requerido**"),
+      constUnitario: yup
+      .number()
+      .required("**El precio es requerido**")
+      .typeError("**El precio es requerido**"),
     code: yup
       .string()
       .required("**El Código es requerido**")
@@ -46,6 +50,7 @@ function AddProducts(props: Props) {
     name: props.product?.name ?? "",
     description: props.product?.description ?? "N/A",
     price: Number(props.product?.price) ?? 0,
+    costoUnitario: Number(props.product?.costoUnitario) ?? 0,
     code: props.product?.code ?? "N/A",
     categoryProductId: props.product?.categoryProductId ?? 0,
     tipoDeItem: props.product?.tipoDeItem ?? "",
@@ -201,10 +206,10 @@ function AddProducts(props: Props) {
                   <Input
                     label="Costo unitario"
                     labelPlacement="outside"
-                    name="price"
+                    name="costoUnitario"
                     value={values.price.toString()}
-                    onChange={handleChange("costounitario")}
-                    onBlur={handleBlur("costounitario")}
+                    onChange={handleChange("costoUnitario")}
+                    onBlur={handleBlur("costoUnitario")}
                     placeholder="00.00"
                     classNames={{
                       label: "font-semibold text-gray-500 text-sm",
@@ -214,9 +219,9 @@ function AddProducts(props: Props) {
                     startContent="$"
                     size="lg"
                   />
-                  {errors.price && touched.price && (
+                  {errors.costoUnitario && touched.costoUnitario && (
                     <span className="text-sm font-semibold text-red-500">
-                      {errors.price}
+                      {errors.costoUnitario}
                     </span>
                   )}
                 </div>
@@ -309,7 +314,7 @@ function AddProducts(props: Props) {
                     }}
                     className="pt-5"
                     variant="bordered"
-                    label="Tipo de item"
+                    label="Unidad de medida"
                     labelPlacement="outside"
                     onChange={handleChange("unidaDeMedida")}
                     placeholder={
