@@ -1,5 +1,10 @@
 import { useContext, useEffect, useState } from "react";
-import { Card, useDisclosure } from "@nextui-org/react";
+import {
+  Card,
+  useDisclosure,
+  Accordion,
+  AccordionItem,
+} from "@nextui-org/react";
 import { useThemeStore } from "../../store/theme.store";
 import { Theme, ThemeContext } from "../../hooks/useTheme";
 import { Check } from "lucide-react";
@@ -14,6 +19,7 @@ import DefaultImage from "../../assets/react.svg";
 import { useAuthStore } from "../../store/auth.store";
 import UpdateFile from "./UpdateFile";
 import { Image } from "primereact/image";
+import UpdateConfigurationName from "./UpdateConfigurationName";
 
 function ConfigurationList() {
   const { getPaginatedThemes, themes } = useThemeStore();
@@ -29,6 +35,10 @@ function ConfigurationList() {
     GetConfigurationByTransmitter(tramsiter || 0);
     getPaginatedThemes(1);
   }, []);
+
+  const reloadData = () => {
+    GetConfigurationByTransmitter(tramsiter || 0);
+  }
 
   const modalAdd = useDisclosure();
   const addLogo = useDisclosure();
@@ -140,9 +150,18 @@ function ConfigurationList() {
                       </CardHeader>
                       <Divider />
                       <CardFooter className="flex justify-center">
-                        <div className="">
-                          <p>{item.name}</p>
-                        </div>
+                        <Accordion>
+                          <AccordionItem
+                            key="1"
+                            aria-label={item.name}
+                            title={item.name}
+                          >
+                            <UpdateConfigurationName
+                             id={item.id || 0} 
+                             reloadData={reloadData}
+                             />
+                          </AccordionItem>
+                        </Accordion>
                       </CardFooter>
                     </div>
                   </Card>

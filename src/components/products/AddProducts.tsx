@@ -28,7 +28,10 @@ function AddProducts(props: Props) {
       .number()
       .required("**El precio es requerido**")
       .typeError("**El precio es requerido**"),
-    code: yup.string().required("**El Código es requerido**"),
+    code: yup
+      .string()
+      .required("**El Código es requerido**")
+      .length(12, "**El código debe tener exactamente 12 dígitos**"),
     categoryProductId: yup
       .number()
       .required("**Debes seleccionar la categoría**")
@@ -59,7 +62,7 @@ function AddProducts(props: Props) {
 
   useEffect(() => {
     getCat011TipoDeItem();
-  });
+  }, []);
 
   const [typeItem, setTypeItem] = useState<TipoDeItem>();
 
@@ -101,7 +104,7 @@ function AddProducts(props: Props) {
       return result;
     };
 
-    const codigoGenerado = makeid(8); // Puedes cambiar la longitud según tus necesidades
+    const codigoGenerado = makeid(12); // Puedes cambiar la longitud según tus necesidades
     setCodigo(codigoGenerado);
   };
 
@@ -174,6 +177,29 @@ function AddProducts(props: Props) {
                     value={values.price.toString()}
                     onChange={handleChange("price")}
                     onBlur={handleBlur("price")}
+                    placeholder="00.00"
+                    classNames={{
+                      label: "font-semibold text-gray-500 text-sm",
+                    }}
+                    variant="bordered"
+                    type="number"
+                    startContent="$"
+                    size="lg"
+                  />
+                  {errors.price && touched.price && (
+                    <span className="text-sm font-semibold text-red-500">
+                      {errors.price}
+                    </span>
+                  )}
+                </div>
+                <div className="mt-2">
+                  <Input
+                    label="Costo unitario"
+                    labelPlacement="outside"
+                    name="price"
+                    value={values.price.toString()}
+                    onChange={handleChange("costounitario")}
+                    onBlur={handleBlur("costounitario")}
                     placeholder="00.00"
                     classNames={{
                       label: "font-semibold text-gray-500 text-sm",
@@ -262,30 +288,50 @@ function AddProducts(props: Props) {
                     ))}
                   </Autocomplete>
                 </div>
-                <div className="mt-2">
-                  <Input
-                    label="Código"
-                    labelPlacement="outside"
-                    name="price"
-                    value={values.code}
-                    onChange={handleChange("code")}
-                    onBlur={handleBlur("code")}
-                    placeholder="Ingresa el código"
-                    classNames={{
-                      label: "font-semibold text-sm",
-                    }}
-                    variant="bordered"
-                    size="lg"
-                  />
-                  {errors.code && touched.code && (
-                    <span className="text-sm font-semibold text-red-500">
-                      {errors.code}
-                    </span>
-                  )}
+                <div className="flex mt-2 gap-2">
+                  <div className="mt-2 w-full">
+                    <Input
+                      label="Código"
+                      labelPlacement="outside"
+                      name="code"
+                      value={codigo || values.code} // Si se ha generado un código, úsalo; si no, usa el valor del formulario
+                      onChange={(e) => {
+                        handleChange("code")(e); // Actualiza el valor del formulario
+                        setCodigo(e.target.value); // Actualiza el estado del código generado
+                      }}
+                      onBlur={handleBlur("code")}
+                      placeholder="Ingresa o genera el código"
+                      classNames={{
+                        label: "font-semibold text-sm",
+                      }}
+                      variant="bordered"
+                      size="lg"
+                    />
+                    {errors.code && touched.code && (
+                      <span className="text-sm font-semibold text-red-500">
+                        {errors.code}
+                      </span>
+                    )}
+                  </div>
+                  <div className="mt-10 w-full">
+                    <Button
+                      className="w-full text-sm font-semibold"
+                      style={{
+                        backgroundColor: theme.colors.third,
+                        color: theme.colors.primary,
+                      }}
+                      onClick={() => {
+                        generarCodigo();
+                        handleChange("code")(codigo); // Actualiza el valor del formulario con el código generado
+                      }}
+                    >
+                      Generar Código
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
-            <div className="flex gap-2 mt-4 w-full">
+            {/* <div className="flex gap-2 mt-4 w-full">
               <div>
                 <Input
                   label="Código"
@@ -314,19 +360,7 @@ function AddProducts(props: Props) {
                   Generar Código
                 </Button>
               </div>
-              <div>
-                <Button
-                  className="w-full mt-8 text-sm font-semibold"
-                  style={{
-                    backgroundColor: theme.colors.third,
-                    color: theme.colors.primary,
-                  }}
-                  onClick={generarCodigo}
-                >
-                  Verificar Código
-                </Button>
-              </div>
-            </div>
+            </div> */}
 
             <Button
               size="lg"

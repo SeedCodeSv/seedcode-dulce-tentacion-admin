@@ -20,6 +20,10 @@ export interface IGetConfiguration extends ICreacteConfiguaration {
   file?: File | Blob | null | undefined;
 }
 
+export interface pachConfigurationName {
+  name: string;
+}
+
 export interface ICreacteConfiguaration {
   name: string;
   themeId: number;

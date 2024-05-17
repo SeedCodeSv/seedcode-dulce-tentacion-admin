@@ -1,8 +1,9 @@
 import { create } from "zustand";
 import { IConfigurationStore } from "./types/perzonalitation.types.store";
 import { IGetConfiguration } from "../types/configuration.types";
-import { create_configuration, get_by_transmitter } from "../services/configuration.service";
+import { create_configuration, get_by_transmitter, update_configuration_name } from "../services/configuration.service";
 import { toast } from "sonner";
+import { messages } from "../utils/constants";
 
 export const useConfigurationStore = create<IConfigurationStore>(
   (set) => ({
@@ -32,9 +33,18 @@ export const useConfigurationStore = create<IConfigurationStore>(
       } catch (error) {
         console.log(error + "Ocurrió un error al obtener los datos de personalización")
       }
-    }
-    
-    
+    },
+    UpdateConfigurationName(payload, id) {
+      return update_configuration_name(payload, id)
+        .then((res) => {
+          toast.success(messages.success);
+          return res.data.ok;
+        })
+        .catch(() => {
+          toast.warning(messages.error);
+          return false;
+        });
+    },
   })
     
 
