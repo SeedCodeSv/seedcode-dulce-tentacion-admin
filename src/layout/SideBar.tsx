@@ -96,12 +96,17 @@ export const SideBar = (props: Props) => {
                     alt: "No image",
                   }}
                   classNames={{
-                    description: "text-gray-400",
+                    description: "text-gray-400 lg:block hidden",
                   }}
                   className="transition-transform"
-                  description={user?.userName}
-                  name={user?.employee.fullName}
-                />
+                  description={
+                    <span className="hidden lg:block text-gray-400">{user?.userName}</span>
+                  }
+                  name={
+                    <span className="hidden lg:block">{user?.employee.fullName}</span>
+                  }
+                >
+                </User>
               </DropdownTrigger>
               <DropdownMenu aria-label="User Actions" variant="flat">
                 <DropdownItem key="profile" className="h-14 gap-2">
