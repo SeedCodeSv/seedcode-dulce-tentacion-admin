@@ -15,7 +15,6 @@ import NewSales from "../pages/NewSales";
 import Configuration from "../pages/Configuration";
 import CreateConfiguration from "../components/configuration/CreateConfiguration";
 import SalesReportContigencePage from "../pages/SalesReportContigencePage";
-import SalesUpdate from "../components/sales-report/SalesUpdate";
 import { useActionsRolStore } from "../store/actions_rol.store";
 import { useEffect, useState } from "react";
 export const router = () => {

@@ -7,18 +7,20 @@ import Auth from "./Auth";
 import { useAuthStore } from "../store/auth.store";
 import { useActionsRolStore } from "../store/actions_rol.store";
 import { ActionsContext } from "../hooks/useActions";
+import { get_user } from "../storage/localStorage";
 function Main() {
-  const { isAuth, mode } = useContext(SessionContext);
-  const {user} = useAuthStore();
-  const {OnGetActionsByRoleReturn} = useActionsRolStore();
-  const {setRoleActions} = useContext(ActionsContext);
-    useEffect(() => {
-        if (user) {
-            OnGetActionsByRoleReturn(user.roleId).then((data) => {
-                setRoleActions(data)
-            })
-        }
-    }, []);
+  const { isAuth, mode, rolId } = useContext(SessionContext);
+  // const { user } = useAuthStore();
+  // const { OnGetActionsByRoleReturn } = useActionsRolStore();
+  // const { setRoleActions } = useContext(ActionsContext);
+  // console.log(rolId)
+  // useEffect(() => {
+  //   if (rolId) {
+  //     OnGetActionsByRoleReturn(rolId).then((data) => {
+  //       setRoleActions(data);
+  //     });
+  //   }
+  // }, [rolId]);
   return (
     <>
       {isAuth ? (
