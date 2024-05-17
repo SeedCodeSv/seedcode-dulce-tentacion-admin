@@ -10,6 +10,7 @@ import { ISendMHFiscal } from "../types/DTE/credito_fiscal.types";
 import { IContingencia, ISendMHContingencia } from "../types/DTE/contingencia.types";
 import { DteJson as FDteJSON } from "../types/DTE/DTE.types"
 import { ICheckPayload, ICheckResponse } from "../types/DTE/check.types";
+import { IInvalidationToMH, IResponseInvalidation, ISignInvalidationData } from "../types/DTE/invalidation.types";
 
 export const get_ambiente_destino = () => {
   return axios<IGetAmbienteDestino>(
@@ -34,6 +35,13 @@ export const send_to_mh_contingencia = async (payload: ISendMHContingencia, toke
   });
 };
 
+export const send_to_mh_invalidation = async (payload: IInvalidationToMH, token: string) => {
+  return axios.post<IResponseInvalidation>(`${MH_URL}recepcion/invalidar`, payload, {
+    headers: {
+      Authorization: token,
+    },
+  });
+};
 
 export const get_metodos_de_pago = () => {
   return axios.get<IGetFormasDePago>(FACTURACION_API + "/cat-017-forma-de-pago");
@@ -58,6 +66,10 @@ export const firmarDocumentoFactura = (payload: FDteJSON) => {
 };
 
 export const firmarDocumentoContingencia = (payload: IContingencia) => {
+  return axios.post<{ body: string }>(API_FIRMADOR, payload);
+};
+
+export const firmarDocumentoInvalidacion = (payload: ISignInvalidationData) => {
   return axios.post<{ body: string }>(API_FIRMADOR, payload);
 };
 

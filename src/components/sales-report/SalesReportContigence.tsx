@@ -70,6 +70,7 @@ import { s3Client } from "../../plugins/s3";
 import SalesUpdate from "./SalesUpdate";
 import { delete_venta } from "../../plugins/dexie/services/venta.service";
 import UpdateCustomerSales from "./UpdateCustomerSale";
+import { SaleInvalidation } from "./SaleInvalidation";
 
 function SalesReportContigence() {
   const [branchId, setBranchId] = useState(0);
@@ -138,6 +139,7 @@ function SalesReportContigence() {
 
   const modalContingencia = useDisclosure();
   const modalLoading = useDisclosure();
+  const modalAnulation = useDisclosure();
 
   const baseData = [
     <TerminalOutput>Bienvenido a la terminar de contingencia</TerminalOutput>,
@@ -188,10 +190,8 @@ function SalesReportContigence() {
   const [loading, setLoading] = useState(false);
 
   const { gettransmitter, transmitter } = useTransmitterStore();
-  const {
-    cat_005_tipo_de_contingencia,
-    getCat005TipoDeContingencia,
-  } = useBillingStore();
+  const { cat_005_tipo_de_contingencia, getCat005TipoDeContingencia } =
+    useBillingStore();
   useEffect(() => {
     gettransmitter();
     getCat005TipoDeContingencia();
@@ -234,8 +234,9 @@ function SalesReportContigence() {
 
           if (error.response?.data) {
             const newLd = (
-              <TerminalOutput>{`Respuesta: ${error.response?.data.descripcionMsg ?? "RECHAZADO"
-                }`}</TerminalOutput>
+              <TerminalOutput>{`Respuesta: ${
+                error.response?.data.descripcionMsg ?? "RECHAZADO"
+              }`}</TerminalOutput>
             );
 
             setTerminalLineData((prev) => [...prev, newLd]);
@@ -284,9 +285,10 @@ function SalesReportContigence() {
         }
 
         toast.error("ERROR", {
-          description: `Error: ${error.response?.data.descripcionMsg ??
+          description: `Error: ${
+            error.response?.data.descripcionMsg ??
             "DTE no encontrado en hacienda"
-            }`,
+          }`,
         });
         modalLoading.onClose();
         setLoading(false);
@@ -298,6 +300,7 @@ function SalesReportContigence() {
   const [contingencia, setContingencia] = useState("2");
   const [motivoContigencia, setMotivoContigencia] = useState("");
 
+  const handleInvalidate = () => {};
   const handleSendToContingencia = async (sale: Sale) => {
     const result_generation = await getVentaByCodigo(sale.codigoGeneracion);
     if (result_generation) {
@@ -362,12 +365,16 @@ function SalesReportContigence() {
                           description: "Estamos guardando tus datos",
                         });
 
-                        const json_url = `CLIENTES/${transmitter.nombre
-                          }/${new Date().getFullYear()}/VENTAS/FACTURAS/${formatDate()}/${data.dteJson.identificacion.codigoGeneracion
-                          }/${data.dteJson.identificacion.codigoGeneracion}.json`;
-                        const pdf_url = `CLIENTES/${transmitter.nombre
-                          }/${new Date().getFullYear()}/VENTAS/FACTURAS/${formatDate()}/${data.dteJson.identificacion.codigoGeneracion
-                          }/${data.dteJson.identificacion.codigoGeneracion}.pdf`;
+                        const json_url = `CLIENTES/${
+                          transmitter.nombre
+                        }/${new Date().getFullYear()}/VENTAS/FACTURAS/${formatDate()}/${
+                          data.dteJson.identificacion.codigoGeneracion
+                        }/${data.dteJson.identificacion.codigoGeneracion}.json`;
+                        const pdf_url = `CLIENTES/${
+                          transmitter.nombre
+                        }/${new Date().getFullYear()}/VENTAS/FACTURAS/${formatDate()}/${
+                          data.dteJson.identificacion.codigoGeneracion
+                        }/${data.dteJson.identificacion.codigoGeneracion}.pdf`;
 
                         const JSON_DTE = JSON.stringify(
                           {
@@ -419,7 +426,7 @@ function SalesReportContigence() {
                                       axios
                                         .put(
                                           API_URL +
-                                          "/sales/sale-update-transaction",
+                                            "/sales/sale-update-transaction",
                                           {
                                             pdf: pdf_url,
                                             dte: json_url,
@@ -482,12 +489,14 @@ function SalesReportContigence() {
                           await save_logs({
                             title:
                               "Contingencia: " +
-                              error.response.data.descripcionMsg ??
+                                error.response.data.descripcionMsg ??
                               "Error al procesar venta",
                             message:
                               error.response.data.observaciones &&
-                                error.response.data.observaciones.length > 0
-                                ? error.response?.data.observaciones.join("\n\n")
+                              error.response.data.observaciones.length > 0
+                                ? error.response?.data.observaciones.join(
+                                    "\n\n"
+                                  )
                                 : "",
                             generationCode:
                               data.dteJson.identificacion.codigoGeneracion,
@@ -500,7 +509,7 @@ function SalesReportContigence() {
                           );
                           setTitle(
                             error.response.data.descripcionMsg ??
-                            "Error al procesar venta"
+                              "Error al procesar venta"
                           );
                           modalErrorContingencia.onOpen();
                           setLoading(false);
@@ -508,7 +517,6 @@ function SalesReportContigence() {
                       });
                   });
                 } else {
-
                 }
               }
             })
@@ -539,7 +547,7 @@ function SalesReportContigence() {
     return `${MH_QUERY}?ambiente=${ambiente}&codGen=${codegen}&fechaEmi=${fechaEmi}`;
   };
 
-  const [codigoGeneracion, setCodigoGeneracion] = useState('');
+  const [codigoGeneracion, setCodigoGeneracion] = useState("");
   const [dataCustomer, setDataCustomer] = useState<Customer>();
   return (
     <>
@@ -626,6 +634,23 @@ function SalesReportContigence() {
                   headerStyle={style}
                   header="Total IVA"
                   body={(rowData) => formatCurrency(Number(rowData.totalIva))}
+                />
+                <Column
+                  headerClassName="text-sm font-semibold"
+                  headerStyle={style}
+                  header="Acciones"
+                  body={(rowData) => (
+                    <Button
+                      style={global_styles().secondaryStyle}
+                      size="lg"
+                      isIconOnly
+                      onClick={() => {
+                        setSelectedSale(rowData), modalAnulation.onOpen();
+                      }}
+                    >
+                      <EditIcon size={20} />
+                    </Button>
+                  )}
                 />
               </DataTable>
               {pagination_saless.totalPag > 1 && (
@@ -748,7 +773,7 @@ function SalesReportContigence() {
                             ...prev,
                             ...rowData.customer,
                           }));
-                          setCodigoGeneracion(rowData.codigoGeneracion)
+                          setCodigoGeneracion(rowData.codigoGeneracion);
                           setSelectedSale(rowData.id);
                           modalEdit.onOpen();
                         }}
@@ -840,6 +865,17 @@ function SalesReportContigence() {
         </div>
       </ModalGlobal>
       <ModalGlobal
+        title="Invalidar venta"
+        isOpen={modalAnulation.isOpen}
+        size="w-sm"
+        onClose={() => {
+          modalAnulation.onClose();
+        }}
+      >
+        <SaleInvalidation sale={selectedSale as Sale} />
+      </ModalGlobal>
+
+      <ModalGlobal
         title=""
         isOpen={modalContingencia.isOpen}
         size="w-full lg:w-[700px] xl:w-[800px] 2xl:w-[900px]"
@@ -870,16 +906,17 @@ function SalesReportContigence() {
         </div>
       </ModalGlobal>
 
-
       <ModalGlobal
         title="cccccccccc"
         onClose={modalEdit.onClose}
         size="w-full  md:w-[900px]"
         isOpen={modalEdit.isOpen}
       >
-        <UpdateCustomerSales onClose={modalEdit.onClose} codigoGeneracion={codigoGeneracion} customer={dataCustomer}>
-
-        </UpdateCustomerSales>
+        <UpdateCustomerSales
+          onClose={modalEdit.onClose}
+          codigoGeneracion={codigoGeneracion}
+          customer={dataCustomer}
+        ></UpdateCustomerSales>
       </ModalGlobal>
     </>
   );

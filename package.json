@@ -44,6 +44,8 @@
     "zustand": "^4.5.2"
   },
   "devDependencies": {
+    "@swc/cli": "^0.3.12",
+    "@swc/core": "^1.5.7",
     "@types/node": "^20.12.11",
     "@types/qs": "^6.9.15",
     "@types/react": "^18.2.64",
