@@ -454,7 +454,7 @@ function ListProducts() {
         <ModalGlobal
           title={selectedProduct ? "Editar producto" : "Nuevo producto"}
           onClose={modalAdd.onClose}
-          size="w-full md:w-[500px]"
+          size="w-full md:w-[900px]"
           isOpen={modalAdd.isOpen}
         >
           <AddProducts

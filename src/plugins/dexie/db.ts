@@ -21,7 +21,7 @@ export class SeedCodeSvDB extends Dexie {
   resumen!: Table<Resumen>;
   //----------------------------------------------------------
   credito_venta!: Table<CreditoVenta>;
-  credito_cuerpo_documento!: Table<CreditoCuerpoDocumento>;
+  credito_cuerpo_documento!: Table<CreditoCuerpoDocumento>;a
   credito_pagos!: Table<CreditoPagos>;
   credito_receptor!: Table<CreditoReceptor>;
   credito_address!: Table<AddressCredito>;

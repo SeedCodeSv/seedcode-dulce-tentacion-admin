@@ -356,6 +356,8 @@ function FormMakeSale(props: Props) {
         });
     }
   };
+
+  
   const propsCredito = {
     Customer: Customer,
     tipePayment: tipePayment,
