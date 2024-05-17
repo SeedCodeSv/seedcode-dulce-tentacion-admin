@@ -397,8 +397,7 @@ function ListProducts() {
                 header="Acciones"
                 body={(item) => (
                   <div className="flex w-full gap-5">
-                    {actions_role_view &&
-                      actions_role_view?.includes("Editar") && (
+                   
                         <Button
                           onClick={() => {
                             setSelectedProduct(item);
@@ -416,7 +415,7 @@ function ListProducts() {
                             size={20}
                           />
                         </Button>
-                      )}
+                     
                     {actions_role_view &&
                       actions_role_view?.includes("Eliminar") && (
                         <DeletePopover product={item} />
