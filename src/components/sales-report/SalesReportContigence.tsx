@@ -76,11 +76,8 @@ import SalesUpdate from "./SalesUpdate";
 import { delete_credito_venta } from "../../plugins/dexie/services/credito_venta.service";
 import { delete_venta } from "../../plugins/dexie/services/venta.service";
 import UpdateCustomerSales from "./UpdateCustomerSale";
-<<<<<<< HEAD
 import { ISendMHFiscal } from "../../types/DTE/credito_fiscal.types";
-=======
 import { SaleInvalidation } from "./SaleInvalidation";
->>>>>>> 992634dad80ae293a9e034f50ce329dcb9d82c1d
 
 function SalesReportContigence() {
   const [branchId, setBranchId] = useState(0);
@@ -530,7 +527,6 @@ function SalesReportContigence() {
                         }
                       });
                   });
-<<<<<<< HEAD
                 }
               } else {
                 if (result_credito_generate) {
@@ -733,9 +729,7 @@ function SalesReportContigence() {
                         setLoading(false);
                       }
                     });
-=======
                 } else {
->>>>>>> 992634dad80ae293a9e034f50ce329dcb9d82c1d
                 }
               }
             }
@@ -1126,19 +1120,18 @@ function SalesReportContigence() {
         </div>
       </ModalGlobal>
 
-      <ModalGlobal
+      {/* <ModalGlobal
         title="Editar"
         onClose={modalEdit.onClose}
         size="w-full  md:w-[900px]"
         isOpen={modalEdit.isOpen}
-      >
-        <UpdateCustomerSales
+      > */}
+        {/* <UpdateCustomerSales
           onClose={modalEdit.onClose}
           codigoGeneracion={codigoGeneracion}
           customer={dataCustomer}
-<<<<<<< HEAD
-        ></UpdateCustomerSales>
-      </ModalGlobal>
+        ></UpdateCustomerSales> */}
+      {/* </ModalGlobal> */}
       <ModalGlobal
         title={title}
         size="w-full md:w-[600px] lg:w-[700px]"
@@ -1156,11 +1149,7 @@ function SalesReportContigence() {
         ) : (
           <div className="grid grid-cols-3 gap-5 mt-5"></div>
         )}
-=======
-          handleVerify={handleVerify}
-        >
-        </UpdateCustomerSales>
->>>>>>> 992634dad80ae293a9e034f50ce329dcb9d82c1d
+          {/* handleVerify={handleVerify} */}
       </ModalGlobal>
     </>
   );
