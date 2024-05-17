@@ -32,7 +32,7 @@ function AddProducts(props: Props) {
       .number()
       .required("**El precio es requerido**")
       .typeError("**El precio es requerido**"),
-      constUnitario: yup
+    costoUnitario: yup
       .number()
       .required("**El precio es requerido**")
       .typeError("**El precio es requerido**"),
@@ -67,14 +67,14 @@ function AddProducts(props: Props) {
     cat_011_tipo_de_item,
     getCat011TipoDeItem,
   } = useProductsStore();
-  const { cat_014_unidad_de_medida, getCat014UnidadDeMedida } =
+  const { getCat014UnidadDeMedida } =
     useBillingStore();
   useEffect(() => {
     getCat011TipoDeItem();
     getCat014UnidadDeMedida();
   }, []);
 
-  const [typeItem, setTypeItem] = useState<TipoDeItem>();
+  const [setTypeItem] = useState<TipoDeItem>();
 
   const { theme } = useContext(ThemeContext);
 
@@ -377,36 +377,6 @@ function AddProducts(props: Props) {
                 </div>
               </div>
             </div>
-            {/* <div className="flex gap-2 mt-4 w-full">
-              <div>
-                <Input
-                  label="Código"
-                  labelPlacement="outside"
-                  value={codigo}
-                  onChange={handleChange("code")}
-                  onBlur={handleBlur("code")}
-                  placeholder="Genera el código"
-                  classNames={{
-                    label: "font-semibold text-sm",
-                  }}
-                  readOnly
-                  variant="bordered"
-                  size="lg"
-                />
-              </div>
-              <div>
-                <Button
-                  className="w-full mt-8 text-sm font-semibold"
-                  style={{
-                    backgroundColor: theme.colors.third,
-                    color: theme.colors.primary,
-                  }}
-                  onClick={generarCodigo}
-                >
-                  Generar Código
-                </Button>
-              </div>
-            </div> */}
 
             <Button
               size="lg"
