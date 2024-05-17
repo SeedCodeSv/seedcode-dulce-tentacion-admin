@@ -1,8 +1,11 @@
 import { ISignInvalidationData } from "../../../../types/DTE/invalidation.types";
+import { Sale } from "../../../../types/report_contigence";
 
 export interface IInvalidationStore {
   isLoading: boolean,
   isError: boolean,
   errorMessage: string,
-  OnCreateInvalidation: (invalidationData: ISignInvalidationData) => Promise<void>,
+  sales: Sale[],
+  OnCreateInvalidation: ( id: number,invalidationData: ISignInvalidationData) => Promise<void>,
+  OnGetRecentSales: (id: number) => Promise<void>
 }

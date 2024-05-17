@@ -45,7 +45,7 @@ function AddProducts(props: Props) {
       .required("**Debes seleccionar la categoría**")
       .min(1, "**Debes seleccionar la categoría**"),
   });
-
+  const [unidadDeMedida, setUnidadDeMedida] = useState("");
   const initialValues = {
     name: props.product?.name ?? "",
     description: props.product?.description ?? "N/A",
@@ -54,7 +54,7 @@ function AddProducts(props: Props) {
     code: props.product?.code ?? "N/A",
     categoryProductId: props.product?.categoryProductId ?? 0,
     tipoDeItem: props.product?.tipoDeItem ?? "",
-    unidaDeMedida: props.product?.unidaDeMedida ?? "",
+    unidaDeMedida: props.product?.unidaDeMedida ?? unidadDeMedida,
   };
   const { list_categories, getListCategories } = useCategoriesStore();
   useEffect(() => {
@@ -67,8 +67,7 @@ function AddProducts(props: Props) {
     cat_011_tipo_de_item,
     getCat011TipoDeItem,
   } = useProductsStore();
-  const { getCat014UnidadDeMedida } =
-    useBillingStore();
+  const { getCat014UnidadDeMedida } = useBillingStore();
   useEffect(() => {
     getCat011TipoDeItem();
     getCat014UnidadDeMedida();
@@ -273,14 +272,6 @@ function AddProducts(props: Props) {
                 </div>
                 <div className="mt-2">
                   <Autocomplete
-                    onSelectionChange={(key) => {
-                      if (key) {
-                        const tipePaymentSelected = JSON.parse(
-                          key as string
-                        ) as TipoDeItem;
-                        setTypeItem(tipePaymentSelected);
-                      }
-                    }}
                     className="pt-5"
                     variant="bordered"
                     label="Tipo de item"
@@ -304,19 +295,20 @@ function AddProducts(props: Props) {
                 </div>
                 <div className="mt-2">
                   <Autocomplete
-                    onSelectionChange={(key) => {
-                      if (key) {
-                        const tipePaymentSelected = JSON.parse(
-                          key as string
-                        ) as TipoDeItem;
-                        setTypeItem(tipePaymentSelected);
+                    className="pt-5"
+                    onSelectionChange={() => {
+                      {
+                        unidadDeMedidaList.map((item) => {
+                          if (item.valores) {
+                            setUnidadDeMedida(item.valores);
+                          }
+                        });
                       }
                     }}
-                    className="pt-5"
                     variant="bordered"
+                    name="unidaDeMedida"
                     label="Unidad de medida"
                     labelPlacement="outside"
-                    onChange={handleChange("unidaDeMedida")}
                     placeholder={
                       props.product?.tipoDeItem ??
                       props.product?.tipoDeItem ??
@@ -327,12 +319,20 @@ function AddProducts(props: Props) {
                     {unidadDeMedidaList.map((item) => (
                       <AutocompleteItem
                         key={JSON.stringify(item)}
-                        value={item.codigo}
+                        value={item.valores}
+                        onChange={() => {
+                          setUnidadDeMedida(item.valores);
+                        }}
                       >
                         {item.valores}
                       </AutocompleteItem>
                     ))}
                   </Autocomplete>
+                  {errors.uniMedida && touched.uniMedida && (
+                    <span className="text-sm font-semibold text-red-500">
+                      {errors.uniMedida}
+                    </span>
+                  )}
                 </div>
                 <div className="flex mt-2 gap-2">
                   <div className="mt-2 w-full">
@@ -377,7 +377,6 @@ function AddProducts(props: Props) {
                 </div>
               </div>
             </div>
-
             <Button
               size="lg"
               onClick={() => handleSubmit()}

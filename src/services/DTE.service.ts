@@ -10,7 +10,7 @@ import { ISendMHFiscal } from "../types/DTE/credito_fiscal.types";
 import { IContingencia, ISendMHContingencia } from "../types/DTE/contingencia.types";
 import { DteJson as FDteJSON } from "../types/DTE/DTE.types"
 import { ICheckPayload, ICheckResponse } from "../types/DTE/check.types";
-import { IInvalidationToMH, IResponseInvalidation, ISignInvalidationData } from "../types/DTE/invalidation.types";
+import { IInvalidationToMH, IResponseInvalidationMH, ISignInvalidationData } from "../types/DTE/invalidation.types";
 
 export const get_ambiente_destino = () => {
   return axios<IGetAmbienteDestino>(
@@ -36,7 +36,7 @@ export const send_to_mh_contingencia = async (payload: ISendMHContingencia, toke
 };
 
 export const send_to_mh_invalidation = async (payload: IInvalidationToMH) => {
-  return axios.post<IResponseInvalidation>(`${MH_URL}anulardte`, payload, {
+  return axios.post<IResponseInvalidationMH>(`${MH_URL}anulardte`, payload, {
     headers: {
       Authorization: localStorage.getItem("mh_token"),
     },
