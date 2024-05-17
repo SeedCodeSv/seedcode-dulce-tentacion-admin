@@ -14,6 +14,10 @@ export interface Product {
   isActive: boolean;
   categoryProduct: CategoryProduct;
   categoryProductId: number;
+  tipoDeItem: string;
+  tipoItem: string;
+  uniMedida: string;
+  unidaDeMedida: string;
 }
 
 export interface IGetProductsPaginated {

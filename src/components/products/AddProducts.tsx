@@ -14,13 +14,16 @@ import { useProductsStore } from "../../store/products.store";
 import { CategoryProduct } from "../../types/categories.types";
 import { ThemeContext } from "../../hooks/useTheme";
 import { TipoDeItem } from "../../types/billing/cat-011-tipo-de-item.types";
-import { normalize } from "../../utils/filters";
+import { useBillingStore } from "../../store/facturation/billing.store";
+import { SeedcodeCatalogosMhService } from "seedcode-catalogos-mh";
+
 interface Props {
   product?: Product;
   onCloseModal: () => void;
 }
-
 function AddProducts(props: Props) {
+  const unidadDeMedidaList = new SeedcodeCatalogosMhService().get014UnidadDeMedida();
+  
   const validationSchema = yup.object().shape({
     name: yup.string().required("**El nombre es requerido**"),
     description: yup.string().required("**La descripción es requerida**"),
@@ -42,13 +45,12 @@ function AddProducts(props: Props) {
     name: props.product?.name ?? "",
     description: props.product?.description ?? "N/A",
     price: Number(props.product?.price) ?? 0,
-    typeOfItem: props.product?.type ?? "",
     code: props.product?.code ?? "N/A",
     categoryProductId: props.product?.categoryProductId ?? 0,
+    tipoDeItem: props.product?.tipoDeItem ?? "",
+    unidaDeMedida : props.product?.unidaDeMedida ?? "",
   };
-
   const { list_categories, getListCategories } = useCategoriesStore();
-
   useEffect(() => {
     getListCategories();
   }, []);
@@ -59,9 +61,10 @@ function AddProducts(props: Props) {
     cat_011_tipo_de_item,
     getCat011TipoDeItem,
   } = useProductsStore();
-
+ const {cat_014_unidad_de_medida ,getCat014UnidadDeMedida} = useBillingStore()
   useEffect(() => {
     getCat011TipoDeItem();
+    getCat014UnidadDeMedida()
   }, []);
 
   const [typeItem, setTypeItem] = useState<TipoDeItem>();
@@ -104,7 +107,7 @@ function AddProducts(props: Props) {
       return result;
     };
 
-    const codigoGenerado = makeid(12); // Puedes cambiar la longitud según tus necesidades
+    const codigoGenerado = makeid(12);
     setCodigo(codigoGenerado);
   };
 
@@ -275,10 +278,46 @@ function AddProducts(props: Props) {
                     variant="bordered"
                     label="Tipo de item"
                     labelPlacement="outside"
-                    placeholder="Seleccione el tipo de item"
+                    placeholder={
+                      props.product?.tipoDeItem ??
+                      props.product?.tipoDeItem ??
+                      "Selecciona el item"
+                    }
                     size="lg"
                   >
                     {cat_011_tipo_de_item.map((item) => (
+                      <AutocompleteItem
+                        key={JSON.stringify(item)}
+                        value={item.codigo}
+                      >
+                        {item.valores}
+                      </AutocompleteItem>
+                    ))}
+                  </Autocomplete>
+                </div>
+                <div className="mt-2">
+                  <Autocomplete
+                    onSelectionChange={(key) => {
+                      if (key) {
+                        const tipePaymentSelected = JSON.parse(
+                          key as string
+                        ) as TipoDeItem;
+                        setTypeItem(tipePaymentSelected);
+                      }
+                    }}
+                    className="pt-5"
+                    variant="bordered"
+                    label="Tipo de item"
+                    labelPlacement="outside"
+                    onChange={handleChange("unidaDeMedida")}
+                    placeholder={
+                      props.product?.tipoDeItem ??
+                      props.product?.tipoDeItem ??
+                      "Selecciona unidad de medida"
+                    }
+                    size="lg"
+                  >
+                    {unidadDeMedidaList.map((item) => (
                       <AutocompleteItem
                         key={JSON.stringify(item)}
                         value={item.codigo}
