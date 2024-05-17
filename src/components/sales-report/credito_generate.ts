@@ -5,20 +5,21 @@ import {
 // import { ISendMHFiscal as ICredito } from "../../types/DTE/DTE.types";
 import { ITransmitter } from "../../types/transmitter.types";
 import { ambiente } from "../../utils/constants";
-import { ISendMHFiscal } from "../../types/DTE/credito_fiscal.types";
+// import { ISendMHFiscal } from "../../types/DTE/credito_fiscal.types";
+import { ISendMHFiscal as ICredito } from "../../types/DTE/credito_fiscal.types";
 
 export const generateCredit = (
   info: CreditSaleContingenciaI,
   emisor: ITransmitter,
   sale: CreditSale
-): ISendMHFiscal => {
+): ICredito => {
   return {
     nit: emisor.nit,
     activo: true,
     passwordPri: emisor.clavePublica,
     dteJson: {
       identificacion: {
-        version: 1,
+        version: 3,
         codigoGeneracion: sale.codigoGeneracion,
         ambiente: ambiente,
         tipoDte: sale.tipoDte,
@@ -55,6 +56,7 @@ export const generateCredit = (
           : emisor.codPuntoVentaMH,
       },
       receptor: {
+        nombreComercial: info.credito_receptor!.nombreComercial,
         tipoDocumento: info.credito_receptor!.tipoDocumento === "0" ||
           info.credito_receptor.tipoDocumento === "N/A"
           ? null
@@ -144,5 +146,5 @@ export const generateCredit = (
       extension: null,
       apendice: null,
     }
-  } as unknown as ISendMHFiscal
+  } as unknown as ICredito
 };

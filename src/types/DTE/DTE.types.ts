@@ -82,7 +82,7 @@ export interface Receptor {
   tipoDocumento: null | string;
   numDocumento: null | string;
   nrc: null | string;
-  nit: string | null;
+  nit?: string | null;
   nombre: null | string;
   codActividad: null | string;
   descActividad: null | string;

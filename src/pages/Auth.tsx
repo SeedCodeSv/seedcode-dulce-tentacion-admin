@@ -33,7 +33,7 @@ function Auth() {
       if (response?.ok) {
         setIsAuth(true);
         setToken(response.token);
-        redirect("/")
+        redirect("/branches")
       } else {
         setIsAuth(false);
         setToken("");

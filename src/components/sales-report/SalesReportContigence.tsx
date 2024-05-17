@@ -23,6 +23,7 @@ import {
   LoaderCircle,
   ScanEye,
   Send,
+  ShieldAlert,
   SquareChevronRight,
 } from "lucide-react";
 import { global_styles } from "../../styles/global.styles";
@@ -141,7 +142,7 @@ function SalesReportContigence() {
     getLogs(code);
     modalContingencia.onOpen();
   };
-
+  const modalError = useDisclosure();
   const modalContingencia = useDisclosure();
   const modalLoading = useDisclosure();
 
@@ -531,26 +532,26 @@ function SalesReportContigence() {
                     transmitter,
                     sale
                   );
+                  const source = axios.CancelToken.source();
+
+                  const timeout = setTimeout(() => {
+                    source.cancel("El tiempo de espera ha expirado");
+                  }, 25000);
                   firmarDocumentoFiscal(data)
                     .then((firmador) => {
                       const data_send: PayloadMH = {
                         ambiente: ambiente,
                         idEnvio: 1,
-                        version: 1,
+                        version: 3,
                         tipoDte: "03",
                         documento: firmador.data.body,
                       };
                       toast.info(
                         "Se ah enviado a hacienda, esperando respuesta"
                       );
-
-                      const source = axios.CancelToken.source();
-
-                      const timeout = setTimeout(() => {
-                        source.cancel("El tiempo de espera ha expirado");
-                      }, 25000);
-                      send_to_mh(data_send, token_mh ?? "", source).then(
-                        async (respuestaMH) => {
+                      console.log("1");
+                      send_to_mh(data_send, token_mh ?? "", source)
+                        .then(async (respuestaMH) => {
                           clearTimeout(timeout);
                           toast.success("Hacienda respondió correctamente", {
                             description: "Estamos guardando tus datos",
@@ -665,11 +666,65 @@ function SalesReportContigence() {
                                 }
                               });
                           }
-                        }
-                      );
+                        })
+                        .catch((error: AxiosError<SendMHFailed>) => {
+                          if (error.response?.data) {
+                            setErrorMessage(
+                              error.response.data.observaciones &&
+                                error.response.data.observaciones.length > 0
+                                ? error.response?.data.observaciones.join(
+                                    "\n\n"
+                                  )
+                                : ""
+                            );
+                            setTitle(
+                              error.response.data.descripcionMsg ??
+                                "Error al procesar venta"
+                            );
+                            modalError.onOpen();
+                            setLoading(false);
+                          }
+                        });
                     })
-                    .catch((error: AxiosError) => {
-                      console.log(error.response?.data);
+                    .catch(async (error: AxiosError<SendMHFailed>) => {
+                      clearTimeout(timeout);
+                      modalLoading.onClose();
+                      if (axios.isCancel(error)) {
+                        setTitle("Tiempo de espera agotado");
+                        setErrorMessage(
+                          "El tiempo limite de espera ha expirado"
+                        );
+                        modalErrorContingencia.onOpen();
+                        setLoading(false);
+                      }
+
+                      if (error.response?.data) {
+                        await save_logs({
+                          title:
+                            "Contingencia: " +
+                              error.response.data.descripcionMsg ??
+                            "Error al procesar venta",
+                          message:
+                            error.response.data.observaciones &&
+                            error.response.data.observaciones.length > 0
+                              ? error.response?.data.observaciones.join("\n\n")
+                              : "",
+                          generationCode:
+                            data.dteJson.identificacion.codigoGeneracion,
+                        });
+                        setErrorMessage(
+                          error.response.data.observaciones &&
+                            error.response.data.observaciones.length > 0
+                            ? error.response?.data.observaciones.join("\n\n")
+                            : ""
+                        );
+                        setTitle(
+                          error.response.data.descripcionMsg ??
+                            "Error al procesar venta"
+                        );
+                        modalErrorContingencia.onOpen();
+                        setLoading(false);
+                      }
                     });
                 }
               }
@@ -1044,6 +1099,24 @@ function SalesReportContigence() {
           codigoGeneracion={codigoGeneracion}
           customer={dataCustomer}
         ></UpdateCustomerSales>
+      </ModalGlobal>
+      <ModalGlobal
+        title={title}
+        size="w-full md:w-[600px] lg:w-[700px]"
+        isOpen={modalError.isOpen}
+        onClose={modalError.onClose}
+      >
+        <div className="flex flex-col justify-center items-center">
+          <ShieldAlert size={75} color="red" />
+          <p className="text-lg font-semibold">{errorMessage}</p>
+        </div>
+        {loading ? (
+          <div className="flex justify-center w-full mt-5">
+            <LoaderCircle size={50} className=" animate-spin " />
+          </div>
+        ) : (
+          <div className="grid grid-cols-3 gap-5 mt-5"></div>
+        )}
       </ModalGlobal>
     </>
   );
