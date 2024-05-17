@@ -10,6 +10,7 @@ export interface Product {
   description: string;
   price: string;
   code: string;
+  costoUnitario: number;
   type: string;
   isActive: boolean;
   categoryProduct: CategoryProduct;
@@ -35,6 +36,7 @@ export interface ProductPayload {
   name: string;
   description: string;
   price: number;
+  costoUnitario: number;
   code: string;
   categoryProductId: number;
   tipoDeItem?: string;

@@ -22,12 +22,17 @@ interface Props {
   onCloseModal: () => void;
 }
 function AddProducts(props: Props) {
-  const unidadDeMedidaList = new SeedcodeCatalogosMhService().get014UnidadDeMedida();
-  
+  const unidadDeMedidaList =
+    new SeedcodeCatalogosMhService().get014UnidadDeMedida();
+
   const validationSchema = yup.object().shape({
     name: yup.string().required("**El nombre es requerido**"),
     description: yup.string().required("**La descripción es requerida**"),
     price: yup
+      .number()
+      .required("**El precio es requerido**")
+      .typeError("**El precio es requerido**"),
+      constUnitario: yup
       .number()
       .required("**El precio es requerido**")
       .typeError("**El precio es requerido**"),
@@ -45,10 +50,11 @@ function AddProducts(props: Props) {
     name: props.product?.name ?? "",
     description: props.product?.description ?? "N/A",
     price: Number(props.product?.price) ?? 0,
+    costoUnitario: Number(props.product?.costoUnitario) ?? 0,
     code: props.product?.code ?? "N/A",
     categoryProductId: props.product?.categoryProductId ?? 0,
     tipoDeItem: props.product?.tipoDeItem ?? "",
-    unidaDeMedida : props.product?.unidaDeMedida ?? "",
+    unidaDeMedida: props.product?.unidaDeMedida ?? "",
   };
   const { list_categories, getListCategories } = useCategoriesStore();
   useEffect(() => {
@@ -61,10 +67,11 @@ function AddProducts(props: Props) {
     cat_011_tipo_de_item,
     getCat011TipoDeItem,
   } = useProductsStore();
- const {cat_014_unidad_de_medida ,getCat014UnidadDeMedida} = useBillingStore()
+  const { cat_014_unidad_de_medida, getCat014UnidadDeMedida } =
+    useBillingStore();
   useEffect(() => {
     getCat011TipoDeItem();
-    getCat014UnidadDeMedida()
+    getCat014UnidadDeMedida();
   }, []);
 
   const [typeItem, setTypeItem] = useState<TipoDeItem>();
@@ -199,10 +206,10 @@ function AddProducts(props: Props) {
                   <Input
                     label="Costo unitario"
                     labelPlacement="outside"
-                    name="price"
+                    name="costoUnitario"
                     value={values.price.toString()}
-                    onChange={handleChange("costounitario")}
-                    onBlur={handleBlur("costounitario")}
+                    onChange={handleChange("costoUnitario")}
+                    onBlur={handleBlur("costoUnitario")}
                     placeholder="00.00"
                     classNames={{
                       label: "font-semibold text-gray-500 text-sm",
@@ -212,9 +219,9 @@ function AddProducts(props: Props) {
                     startContent="$"
                     size="lg"
                   />
-                  {errors.price && touched.price && (
+                  {errors.costoUnitario && touched.costoUnitario && (
                     <span className="text-sm font-semibold text-red-500">
-                      {errors.price}
+                      {errors.costoUnitario}
                     </span>
                   )}
                 </div>
@@ -307,7 +314,7 @@ function AddProducts(props: Props) {
                     }}
                     className="pt-5"
                     variant="bordered"
-                    label="Tipo de item"
+                    label="Unidad de medida"
                     labelPlacement="outside"
                     onChange={handleChange("unidaDeMedida")}
                     placeholder={
