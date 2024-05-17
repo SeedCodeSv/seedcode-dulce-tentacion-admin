@@ -22,8 +22,9 @@ interface Props {
   onCloseModal: () => void;
 }
 function AddProducts(props: Props) {
-  const unidadDeMedidaList = new SeedcodeCatalogosMhService().get014UnidadDeMedida();
-  
+  const unidadDeMedidaList =
+    new SeedcodeCatalogosMhService().get014UnidadDeMedida();
+
   const validationSchema = yup.object().shape({
     name: yup.string().required("**El nombre es requerido**"),
     description: yup.string().required("**La descripción es requerida**"),
@@ -48,7 +49,7 @@ function AddProducts(props: Props) {
     code: props.product?.code ?? "N/A",
     categoryProductId: props.product?.categoryProductId ?? 0,
     tipoDeItem: props.product?.tipoDeItem ?? "",
-    unidaDeMedida : props.product?.unidaDeMedida ?? "",
+    unidaDeMedida: props.product?.unidaDeMedida ?? "",
   };
   const { list_categories, getListCategories } = useCategoriesStore();
   useEffect(() => {
@@ -61,10 +62,11 @@ function AddProducts(props: Props) {
     cat_011_tipo_de_item,
     getCat011TipoDeItem,
   } = useProductsStore();
- const {cat_014_unidad_de_medida ,getCat014UnidadDeMedida} = useBillingStore()
+  const { cat_014_unidad_de_medida, getCat014UnidadDeMedida } =
+    useBillingStore();
   useEffect(() => {
     getCat011TipoDeItem();
-    getCat014UnidadDeMedida()
+    getCat014UnidadDeMedida();
   }, []);
 
   const [typeItem, setTypeItem] = useState<TipoDeItem>();
@@ -370,37 +372,6 @@ function AddProducts(props: Props) {
                 </div>
               </div>
             </div>
-            {/* <div className="flex gap-2 mt-4 w-full">
-              <div>
-                <Input
-                  label="Código"
-                  labelPlacement="outside"
-                  value={codigo}
-                  onChange={handleChange("code")}
-                  onBlur={handleBlur("code")}
-                  placeholder="Genera el código"
-                  classNames={{
-                    label: "font-semibold text-sm",
-                  }}
-                  readOnly
-                  variant="bordered"
-                  size="lg"
-                />
-              </div>
-              <div>
-                <Button
-                  className="w-full mt-8 text-sm font-semibold"
-                  style={{
-                    backgroundColor: theme.colors.third,
-                    color: theme.colors.primary,
-                  }}
-                  onClick={generarCodigo}
-                >
-                  Generar Código
-                </Button>
-              </div>
-            </div> */}
-
             <Button
               size="lg"
               onClick={() => handleSubmit()}
