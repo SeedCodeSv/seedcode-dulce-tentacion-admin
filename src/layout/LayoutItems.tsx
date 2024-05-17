@@ -334,7 +334,7 @@ export const LayoutItems = () => {
                           )}
                         </Menu.Item>
 
-                        {/* <Menu.Item>
+                        <Menu.Item >
                           {views.includes("Usuarios") && (
                             <NavLink
                               to={"/users"}
@@ -353,7 +353,7 @@ export const LayoutItems = () => {
                               </p>
                             </NavLink>
                           )}
-                        </Menu.Item> */}
+                        </Menu.Item> 
 
                         <Menu.Item>
                           {views.includes("Sucursales") && (
