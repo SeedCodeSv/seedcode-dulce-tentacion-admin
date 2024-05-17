@@ -45,7 +45,6 @@ function AddProducts(props: Props) {
       .required("**Debes seleccionar la categoría**")
       .min(1, "**Debes seleccionar la categoría**"),
   });
-
   const initialValues = {
     name: props.product?.name ?? "",
     description: props.product?.description ?? "N/A",
@@ -303,17 +302,10 @@ function AddProducts(props: Props) {
                   </Autocomplete>
                 </div>
                 <div className="mt-2">
-                  <Autocomplete
-                    onSelectionChange={(key) => {
-                      if (key) {
-                        const tipePaymentSelected = JSON.parse(
-                          key as string
-                        ) as TipoDeItem;
-                        setTypeItem(tipePaymentSelected);
-                      }
-                    }}
+                  <Autocomplete                  
                     className="pt-5"
                     variant="bordered"
+                    name="unidaDeMedida"
                     label="Unidad de medida"
                     labelPlacement="outside"
                     onChange={handleChange("unidaDeMedida")}
