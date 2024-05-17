@@ -122,7 +122,13 @@ export const useContingenciaCreditoStore = create<IContingenciaCreditoStore>(
                   DteJson.dteJson.resumen.porcentajeDescuento
                 ),
                 totalDescu: Number(DteJson.dteJson.resumen.totalDescu),
-                tributos: "0",
+                tributos: [
+                  {
+                    codigo: DteJson.dteJson.resumen.tributos[0].codigo,
+                    descripcion: DteJson.dteJson.resumen.tributos[0].descripcion,
+                    valor: Number(DteJson.dteJson.resumen.tributos[0].valor),
+                  }
+                ],
                 subTotal: Number(DteJson.dteJson.resumen.subTotal),
                 ivaRete1: Number(DteJson.dteJson.resumen.ivaRete1),
                 reteRenta: Number(DteJson.dteJson.resumen.reteRenta),

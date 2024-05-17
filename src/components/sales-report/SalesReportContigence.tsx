@@ -666,6 +666,7 @@ function SalesReportContigence() {
                           }
                         })
                         .catch((error: AxiosError<SendMHFailed>) => {
+                          modalLoading.onClose();
                           if (error.response?.data) {
                             setErrorMessage(
                               error.response.data.observaciones &&
@@ -1053,6 +1054,7 @@ function SalesReportContigence() {
         size="w-full lg:w-[600px]"
         onClose={() => {
           modalContingencia.onClose();
+          
           setTerminalLineData(baseData);
         }}
       >
