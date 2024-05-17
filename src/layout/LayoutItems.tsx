@@ -68,6 +68,14 @@ export const LayoutItems = () => {
   };
 
   const { user } = useAuthStore();
+  const transmitter = user?.employee?.branch?.transmitterId;
+
+  const { personalization, GetConfigurationByTransmitter } =
+  useConfigurationStore();
+
+useEffect(() => {
+  GetConfigurationByTransmitter(transmitter || 0);
+}, []);
 
   const { windowSize } = useWindowSize();
 
@@ -85,7 +93,7 @@ export const LayoutItems = () => {
     }
   }, [windowSize.width]);
 
-  const { logo_name } = useConfigurationStore();
+  // const { logo_name } = useConfigurationStore();
 
   const location = useLocation();
 
@@ -125,7 +133,7 @@ export const LayoutItems = () => {
     role_view_action.view.map((view) => view.name);
   return (
     <>
-      {!logo_name.logo ? (
+      {personalization.length === 0 ? (
         <div
           className="flex items-center pl-5 w-full border-b shadow h-[70px]"
           style={{
@@ -133,21 +141,26 @@ export const LayoutItems = () => {
             color: theme.colors.primary,
           }}
         >
-          <img src={LOGO} className="max-h-12" />
+          <img src={LOGO} className="max-h-14 w-full max-w-32" />
+          <p className="ml-3 font-sans text-sm font-bold text-coffee-brown">
+            SeedCodeERP
+          </p>
         </div>
       ) : (
         <>
-          {logo_name.logo && (
+          {mode}
+          {personalization.map((item) => (
             <div
+              key={item.id}
               className="flex items-center pl-5 w-full border-b shadow h-[70px]"
               style={{
                 backgroundColor: theme.colors.dark,
                 color: theme.colors.primary,
               }}
             >
-              <img src={logo_name.logo} className="max-h-12" />
+              <img src={item.logo} className="max-h-14 w-full max-w-32" />
             </div>
-          )}
+          ))}
         </>
       )}
       {mode !== "vendedor" ? (
