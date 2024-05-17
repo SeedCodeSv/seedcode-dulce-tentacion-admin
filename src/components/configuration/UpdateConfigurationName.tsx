@@ -24,6 +24,7 @@ function UpdateConfigurationName(props: Props) {
 
   const handleSave = async ({ name }: { name: string }) => {
     await UpdateConfigurationName({ name }, props.id);
+    props.reloadData();
   };
 
   return (
