@@ -10,6 +10,7 @@ import {
   get_tipos_de_tributo,
 } from "../../services/DTE.service";
 import { get_tipos_de_contingencia } from "../../services/facturation/cat-005-tipos-de-contigencia.service";
+import { get_units_of_measurement } from "../../services/facturation/cat-014-unidad-de-medida.service";
 export const useBillingStore = create<IGlobalBillingStore>((set) => ({
   cat_012_departamento: [],
   cat_013_municipios: [],
@@ -17,6 +18,7 @@ export const useBillingStore = create<IGlobalBillingStore>((set) => ({
   ambiente_destino: [],
   metodos_de_pago: [],
   tipos_de_documento: [],
+  cat_014_unidad_de_medida: [],
   tipos_tributo: [],
   cat_005_tipo_de_contingencia: [],
   getCat005TipoDeContingencia() {
@@ -91,5 +93,13 @@ export const useBillingStore = create<IGlobalBillingStore>((set) => ({
       set((state) => ({ ...state, tipos_de_standard: [] }));
     })
   },
-
+ getCat014UnidadDeMedida() {
+   get_units_of_measurement()
+     .then(({ data }) => {
+       set((state) => ({ ...state, cat_014_unidad_de_medida: data.object }));
+     })
+     .catch(() => {
+       set((state) => ({ ...state, cat_014_unidad_de_medida: [] }));
+     });
+ }
 }));

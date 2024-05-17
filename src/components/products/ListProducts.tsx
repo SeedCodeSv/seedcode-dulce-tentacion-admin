@@ -261,7 +261,7 @@ function ListProducts() {
                                onSelectionChange={(key) => {
                                 if (key) {
                                   const branchSelected = JSON.parse(key as string) as CategoryProduct;
-                                  setCategory(branchSelected.name); // Actualizar el estado con el nombre seleccionado
+                                  setCategory(branchSelected.name);
                                 }
                               }}
                               className="w-full dark:text-white"
@@ -270,7 +270,7 @@ function ListProducts() {
                               placeholder="Selecciona la categoría"
                               variant="bordered"
                               classNames={{
-                                base: "font-semibold text-gray-500 text-sm",
+                                base: "font-semibold  text-gray-500 text-sm",
                               }}
                               size="lg"
                               value={category}

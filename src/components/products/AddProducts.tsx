@@ -14,13 +14,17 @@ import { useProductsStore } from "../../store/products.store";
 import { CategoryProduct } from "../../types/categories.types";
 import { ThemeContext } from "../../hooks/useTheme";
 import { TipoDeItem } from "../../types/billing/cat-011-tipo-de-item.types";
-import { normalize } from "../../utils/filters";
+import { useBillingStore } from "../../store/facturation/billing.store";
+import { SeedcodeCatalogosMhService } from "seedcode-catalogos-mh";
+
 interface Props {
   product?: Product;
   onCloseModal: () => void;
 }
-
 function AddProducts(props: Props) {
+  const unidadDeMedidaList =
+    new SeedcodeCatalogosMhService().get014UnidadDeMedida();
+
   const validationSchema = yup.object().shape({
     name: yup.string().required("**El nombre es requerido**"),
     description: yup.string().required("**La descripción es requerida**"),
@@ -28,7 +32,14 @@ function AddProducts(props: Props) {
       .number()
       .required("**El precio es requerido**")
       .typeError("**El precio es requerido**"),
-    code: yup.string().required("**El Código es requerido**"),
+    costoUnitario: yup
+      .number()
+      .required("**El precio es requerido**")
+      .typeError("**El precio es requerido**"),
+    code: yup
+      .string()
+      .required("**El Código es requerido**")
+      .length(12, "**El código debe tener exactamente 12 dígitos**"),
     categoryProductId: yup
       .number()
       .required("**Debes seleccionar la categoría**")
@@ -39,13 +50,13 @@ function AddProducts(props: Props) {
     name: props.product?.name ?? "",
     description: props.product?.description ?? "N/A",
     price: Number(props.product?.price) ?? 0,
-    typeOfItem: props.product?.type ?? "",
+    costoUnitario: Number(props.product?.costoUnitario) ?? 0,
     code: props.product?.code ?? "N/A",
     categoryProductId: props.product?.categoryProductId ?? 0,
+    tipoDeItem: props.product?.tipoDeItem ?? "",
+    unidaDeMedida: props.product?.unidaDeMedida ?? "",
   };
-
   const { list_categories, getListCategories } = useCategoriesStore();
-
   useEffect(() => {
     getListCategories();
   }, []);
@@ -56,12 +67,14 @@ function AddProducts(props: Props) {
     cat_011_tipo_de_item,
     getCat011TipoDeItem,
   } = useProductsStore();
-
+  const { getCat014UnidadDeMedida } =
+    useBillingStore();
   useEffect(() => {
     getCat011TipoDeItem();
-  });
+    getCat014UnidadDeMedida();
+  }, []);
 
-  const [typeItem, setTypeItem] = useState<TipoDeItem>();
+  const [setTypeItem] = useState<TipoDeItem>();
 
   const { theme } = useContext(ThemeContext);
 
@@ -101,7 +114,7 @@ function AddProducts(props: Props) {
       return result;
     };
 
-    const codigoGenerado = makeid(8); // Puedes cambiar la longitud según tus necesidades
+    const codigoGenerado = makeid(12);
     setCodigo(codigoGenerado);
   };
 
@@ -189,6 +202,29 @@ function AddProducts(props: Props) {
                     </span>
                   )}
                 </div>
+                <div className="mt-2">
+                  <Input
+                    label="Costo unitario"
+                    labelPlacement="outside"
+                    name="costoUnitario"
+                    value={values.costoUnitario.toString()}
+                    onChange={handleChange("costoUnitario")}
+                    onBlur={handleBlur("costoUnitario")}
+                    placeholder="00.00"
+                    classNames={{
+                      label: "font-semibold text-gray-500 text-sm",
+                    }}
+                    variant="bordered"
+                    type="number"
+                    startContent="$"
+                    size="lg"
+                  />
+                  {errors.costoUnitario && touched.costoUnitario && (
+                    <span className="text-sm font-semibold text-red-500">
+                      {errors.costoUnitario}
+                    </span>
+                  )}
+                </div>
               </div>
               <div>
                 <div className="mt-2">
@@ -249,7 +285,11 @@ function AddProducts(props: Props) {
                     variant="bordered"
                     label="Tipo de item"
                     labelPlacement="outside"
-                    placeholder="Seleccione el tipo de item"
+                    placeholder={
+                      props.product?.tipoDeItem ??
+                      props.product?.tipoDeItem ??
+                      "Selecciona el item"
+                    }
                     size="lg"
                   >
                     {cat_011_tipo_de_item.map((item) => (
@@ -263,68 +303,78 @@ function AddProducts(props: Props) {
                   </Autocomplete>
                 </div>
                 <div className="mt-2">
-                  <Input
-                    label="Código"
-                    labelPlacement="outside"
-                    name="price"
-                    value={values.code}
-                    onChange={handleChange("code")}
-                    onBlur={handleBlur("code")}
-                    placeholder="Ingresa el código"
-                    classNames={{
-                      label: "font-semibold text-sm",
+                  <Autocomplete
+                    onSelectionChange={(key) => {
+                      if (key) {
+                        const tipePaymentSelected = JSON.parse(
+                          key as string
+                        ) as TipoDeItem;
+                        setTypeItem(tipePaymentSelected);
+                      }
                     }}
+                    className="pt-5"
                     variant="bordered"
+                    label="Unidad de medida"
+                    labelPlacement="outside"
+                    onChange={handleChange("unidaDeMedida")}
+                    placeholder={
+                      props.product?.tipoDeItem ??
+                      props.product?.tipoDeItem ??
+                      "Selecciona unidad de medida"
+                    }
                     size="lg"
-                  />
-                  {errors.code && touched.code && (
-                    <span className="text-sm font-semibold text-red-500">
-                      {errors.code}
-                    </span>
-                  )}
+                  >
+                    {unidadDeMedidaList.map((item) => (
+                      <AutocompleteItem
+                        key={JSON.stringify(item)}
+                        value={item.codigo}
+                      >
+                        {item.valores}
+                      </AutocompleteItem>
+                    ))}
+                  </Autocomplete>
                 </div>
-              </div>
-            </div>
-            <div className="flex gap-2 mt-4 w-full">
-              <div>
-                <Input
-                  label="Código"
-                  labelPlacement="outside"
-                  value={codigo}
-                  onChange={handleChange("code")}
-                  onBlur={handleBlur("code")}
-                  placeholder="Genera el código"
-                  classNames={{
-                    label: "font-semibold text-sm",
-                  }}
-                  readOnly
-                  variant="bordered"
-                  size="lg"
-                />
-              </div>
-              <div>
-                <Button
-                  className="w-full mt-8 text-sm font-semibold"
-                  style={{
-                    backgroundColor: theme.colors.third,
-                    color: theme.colors.primary,
-                  }}
-                  onClick={generarCodigo}
-                >
-                  Generar Código
-                </Button>
-              </div>
-              <div>
-                <Button
-                  className="w-full mt-8 text-sm font-semibold"
-                  style={{
-                    backgroundColor: theme.colors.third,
-                    color: theme.colors.primary,
-                  }}
-                  onClick={generarCodigo}
-                >
-                  Verificar Código
-                </Button>
+                <div className="flex mt-2 gap-2">
+                  <div className="mt-2 w-full">
+                    <Input
+                      label="Código"
+                      labelPlacement="outside"
+                      name="code"
+                      value={codigo || values.code} // Si se ha generado un código, úsalo; si no, usa el valor del formulario
+                      onChange={(e) => {
+                        handleChange("code")(e); // Actualiza el valor del formulario
+                        setCodigo(e.target.value); // Actualiza el estado del código generado
+                      }}
+                      onBlur={handleBlur("code")}
+                      placeholder="Ingresa o genera el código"
+                      classNames={{
+                        label: "font-semibold text-sm",
+                      }}
+                      variant="bordered"
+                      size="lg"
+                    />
+                    {errors.code && touched.code && (
+                      <span className="text-sm font-semibold text-red-500">
+                        {errors.code}
+                      </span>
+                    )}
+                  </div>
+                  <div className="mt-10 w-full">
+                    <Button
+                      className="w-full text-sm font-semibold"
+                      style={{
+                        backgroundColor: theme.colors.third,
+                        color: theme.colors.primary,
+                      }}
+                      onClick={() => {
+                        generarCodigo();
+                        handleChange("code")(codigo); // Actualiza el valor del formulario con el código generado
+                      }}
+                    >
+                      Generar Código
+                    </Button>
+                  </div>
+                </div>
               </div>
             </div>
 
