@@ -37,6 +37,10 @@ export interface ProductPayload {
   price: number;
   code: string;
   categoryProductId: number;
+  tipoDeItem?: string;
+  tipoItem?: string;
+  uniMedida?: string;
+  unidaDeMedida?: string;
 }
 export interface IProductCart extends IUnidadProducto {
   quantity: number;
