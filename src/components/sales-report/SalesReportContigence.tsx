@@ -300,6 +300,45 @@ function SalesReportContigence() {
       });
   };
 
+  const handleVerifyEdit = (sale: Sale) => {
+    setLoading(true);
+    modalLoading.onOpen();
+    const payload = {
+      nitEmisor: transmitter.nit,
+      tdte: sale.tipoDte,
+      codigoGeneracion: sale.codigoGeneracion,
+    };
+    const token_mh = return_mh_token();
+    check_dte(payload, token_mh ?? "")
+      .then((response) => {
+        toast.success(response.data.estado, {
+          description: `Sello recibido: ${response.data.selloRecibido}`,
+        });
+        setLoading(false);
+        modalLoading.onClose();
+      })
+      .catch((error: AxiosError<ICheckResponse>) => {
+        if (error.status === 500) {
+          toast.error("NO ENCONTRADO", {
+            description: "DTE no encontrado en hacienda",
+          });
+          setLoading(false);
+          modalLoading.onClose();
+          return;
+        }
+
+        toast.error("ERROR", {
+          description: `Error: ${
+            error.response?.data.descripcionMsg ??
+            "DTE no encontrado en hacienda"
+          }`,
+        });
+        modalLoading.onClose();
+        setLoading(false);
+        modalEdit.onOpen()
+      });
+  };
+
   const { getVentaByCodigo } = useContingenciaStore();
   const { getCreditoVentaByCodigo } = useContingenciaCreditoStore();
   const [contingencia, setContingencia] = useState("2");
@@ -1112,8 +1151,8 @@ function SalesReportContigence() {
                           }));
                           setCodigoGeneracion(rowData.codigoGeneracion);
                           setSelectedSale(rowData.id);
-                          handleVerify(rowData);
-                          modalEdit.onOpen();
+                          handleVerifyEdit(rowData);
+                          modalLoading.onOpen();
                         }}
                       >
                         <EditIcon size={20} />
