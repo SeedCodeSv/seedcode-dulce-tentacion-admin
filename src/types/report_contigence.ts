@@ -54,6 +54,7 @@ export interface Sale {
   direccion: Direccion;
   employeeId: number;
   paymentTypeId: any;
+  selloInvalidation: string;
 }  
 export interface Direccion {
   id: number

@@ -35,10 +35,10 @@ export const send_to_mh_contingencia = async (payload: ISendMHContingencia, toke
   });
 };
 
-export const send_to_mh_invalidation = async (payload: IInvalidationToMH, token: string) => {
-  return axios.post<IResponseInvalidation>(`${MH_URL}recepcion/invalidar`, payload, {
+export const send_to_mh_invalidation = async (payload: IInvalidationToMH) => {
+  return axios.post<IResponseInvalidation>(`${MH_URL}anulardte`, payload, {
     headers: {
-      Authorization: token,
+      Authorization: localStorage.getItem("mh_token"),
     },
   });
 };

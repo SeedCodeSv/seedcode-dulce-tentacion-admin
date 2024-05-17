@@ -17,12 +17,14 @@ export const useInvalidationStore = create<IInvalidationStore>((set) => ({
       firmarDocumentoInvalidacion(invalidationData)
         .then((res) => {
           if (res.status === 200) {
-            send_to_mh_invalidation({ ambiente: ambiente, version: 2, idEnvio: 1, documento: res.data.body }, String(return_mh_token())).then(() => {
+              send_to_mh_invalidation({ ambiente: ambiente, version: 2, idEnvio: 1, documento: res.data.body })
+
               set({ isLoading: false, isError: false });
               toast.success("Enviado a hacienda");
-            })
+         
           } else {
             set({ isLoading: false, isError: true });
+            console.log(`Error ${res.status}`);
             toast.error(`Error al enviar el documento a hacienda`);
           }
         })

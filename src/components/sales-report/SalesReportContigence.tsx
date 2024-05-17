@@ -8,7 +8,6 @@ import {
   SelectItem,
   Switch,
   Textarea,
-  modal,
   useDisclosure,
 } from "@nextui-org/react";
 import { ThemeContext } from "../../hooks/useTheme";
@@ -21,10 +20,12 @@ import {
 import {
   EditIcon,
   LoaderCircle,
+  RefreshCwOff,
   ScanEye,
   Send,
   ShieldAlert,
   SquareChevronRight,
+  Trash2Icon,
 } from "lucide-react";
 import { global_styles } from "../../styles/global.styles";
 import ModalGlobal from "../global/ModalGlobal";
@@ -36,8 +37,6 @@ import Terminal, {
 import {
   fechaActualString,
   formatDate,
-  getElSalvadorDateTime,
-  getElSalvadorDateTimeParam,
 } from "../../utils/dates";
 import Pagination from "../global/Pagination";
 import { Paginator } from "primereact/paginator";
@@ -72,11 +71,8 @@ import { Invoice } from "../../pages/Invoice";
 import { CreditoInvoice } from "../../pages/CreditInvoice";
 import { PutObjectCommand, PutObjectCommandInput } from "@aws-sdk/client-s3";
 import { s3Client } from "../../plugins/s3";
-import SalesUpdate from "./SalesUpdate";
 import { delete_credito_venta } from "../../plugins/dexie/services/credito_venta.service";
 import { delete_venta } from "../../plugins/dexie/services/venta.service";
-import UpdateCustomerSales from "./UpdateCustomerSale";
-import { ISendMHFiscal } from "../../types/DTE/credito_fiscal.types";
 import { SaleInvalidation } from "./SaleInvalidation";
 
 function SalesReportContigence() {
@@ -307,7 +303,6 @@ function SalesReportContigence() {
   const [contingencia, setContingencia] = useState("2");
   const [motivoContigencia, setMotivoContigencia] = useState("");
 
-  const handleInvalidate = () => {};
   const handleSendToContingencia = async (sale: Sale) => {
     const result_generation = await getVentaByCodigo(sale.codigoGeneracion);
     const result_credito_generate = await getCreditoVentaByCodigo(
@@ -853,16 +848,34 @@ function SalesReportContigence() {
                   headerStyle={style}
                   header="Acciones"
                   body={(rowData) => (
-                    <Button
-                      style={global_styles().secondaryStyle}
-                      size="lg"
-                      isIconOnly
-                      onClick={() => {
-                        setSelectedSale(rowData), modalAnulation.onOpen();
-                      }}
-                    >
-                      <EditIcon size={20} />
-                    </Button>
+                    <>
+                      {rowData.selloInvalidacion === 'null' ? (
+                        <Button
+                          style={global_styles().dangerStyles}
+                          size="lg"
+                          isIconOnly
+                          onClick={() => {
+                            setSelectedSale(rowData), modalAnulation.onOpen();
+                          }}
+                        >
+                          <RefreshCwOff size={20} />
+                        </Button>
+                      ) : (
+                        <Button
+                          style={{
+                            ...global_styles().thirdStyle,
+                            pointerEvents: "none",
+                          }}
+                          size="lg"
+                          isIconOnly
+                          onClick={() => {
+                            setSelectedSale(rowData), modalAnulation.onOpen();
+                          }}
+                        >
+                          <RefreshCwOff size={20} />
+                        </Button>
+                      )}
+                    </>
                   )}
                 />
               </DataTable>
@@ -1126,7 +1139,7 @@ function SalesReportContigence() {
         size="w-full  md:w-[900px]"
         isOpen={modalEdit.isOpen}
       > */}
-        {/* <UpdateCustomerSales
+      {/* <UpdateCustomerSales
           onClose={modalEdit.onClose}
           codigoGeneracion={codigoGeneracion}
           customer={dataCustomer}
@@ -1149,7 +1162,7 @@ function SalesReportContigence() {
         ) : (
           <div className="grid grid-cols-3 gap-5 mt-5"></div>
         )}
-          {/* handleVerify={handleVerify} */}
+        {/* handleVerify={handleVerify} */}
       </ModalGlobal>
     </>
   );

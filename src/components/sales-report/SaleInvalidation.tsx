@@ -1,30 +1,29 @@
-import { useContext } from "react";
+import { useEffect, useState } from "react";
 import { Formik } from "formik";
 import * as yup from "yup";
-import ModalGlobal from "../global/ModalGlobal";
-import { Button, useDisclosure } from "@nextui-org/react";
-import { ThemeContext } from "../../hooks/useTheme";
+import { Button } from "@nextui-org/react";
 import { global_styles } from "../../styles/global.styles";
 import { toast } from "sonner";
 import { Sale } from "../../types/report_contigence";
 import { useInvalidationStore } from "../../plugins/dexie/store/invalidation.store";
 import { IInvalidationBody } from "../../types/DTE/invalidation.types";
-import { formatDate, getElSalvadorDateTime } from "../../utils/dates";
+import { getElSalvadorDateTime } from "../../utils/dates";
 import { useTransmitterStore } from "../../store/transmitter.store";
+import { useBillingStore } from "../../store/facturation/billing.store";
+import { documentsTypeReceipt } from "../../utils/dte";
+import { Select, SelectItem } from "@nextui-org/react";
 
 interface Props {
   sale: Sale;
 }
 export const SaleInvalidation = (props: Props) => {
+  useEffect(() => {
+    gettransmitter();
+  }, []);
   const { isLoading, isError, errorMessage, OnCreateInvalidation } =
     useInvalidationStore();
+  const {} = useBillingStore();
   const { transmitter, gettransmitter } = useTransmitterStore();
-
-  const { theme } = useContext(ThemeContext);
-  const style = {
-    backgroundColor: theme.colors.dark,
-    color: theme.colors.primary,
-  };
 
   const data: IInvalidationBody = {
     identificacion: {
@@ -59,16 +58,14 @@ export const SaleInvalidation = (props: Props) => {
     motivo: {
       tipoAnulacion: 2,
       motivoAnulacion: "Rescindir de la operación realizada",
-      nombreResponsable: "",
-      tipDocResponsable: "",
-      numDocResponsable: "",
-      nombreSolicita: "",
-      tipDocSolicita: "",
-      numDocSolicita: "",
+      nombreResponsable: '',
+      tipDocResponsable: '',
+      numDocResponsable: '',
+      nombreSolicita: '',
+      tipDocSolicita: '',
+      numDocSolicita: '',
     },
   };
-
-  const modalForm = useDisclosure();
 
   const validationSchema = yup.object().shape({
     nameResponsible: yup.string().required("**El nombre es requerido**"),
@@ -78,26 +75,38 @@ export const SaleInvalidation = (props: Props) => {
       .required("**El documento es requerido**"),
     docNumberApplicant: yup.string().required("**El documento es requerido**"),
     typeDocResponsible: yup
-      .number()
+      .string()
       .required("**El tipo de documento es requerido**"),
     typeDocApplicant: yup
-      .number()
+      .string()
       .required("**El tipo de documento es requerido**"),
   });
 
-  const initialValues = {
-    nameResponsible: "",
-    nameApplicant: "",
-    docNumberResponsible: "",
-    docNumberApplicant: "",
-    typeDocResponsible: 0,
-    typeDocApplicant: 0,
-    
-  };
+  const onSubmit = async (values: any) => {
+    isLoading === true && toast.loading("Cargando...");
 
-  const handleSubmit = () => {};
-  const handleInvalidate = () => {
-    OnCreateInvalidation({ nit: "", passwordPri: "", dteJson: data });
+    OnCreateInvalidation({
+      nit: transmitter.nit,
+      passwordPri: transmitter.clavePublica,
+      dteJson: {
+        identificacion: data.identificacion,
+        emisor: data.emisor,
+        documento: data.documento,
+        motivo: {
+          tipoAnulacion: 2,
+          motivoAnulacion: "Rescindir de la operación realizada",
+          nombreResponsable: values.nameResponsible,
+          tipDocResponsable: values.typeDocResponsible,
+          numDocResponsable: values.docNumberResponsible,
+          nombreSolicita: values.nameApplicant,
+          tipDocSolicita: values.typeDocApplicant,
+          numDocSolicita: values.docNumberApplicant,
+        },
+      },
+    });
+    console.log(values);
+    console.log(data);
+    isError === true && toast.error(errorMessage);
   };
 
   const handleReplace = () => {
@@ -113,11 +122,11 @@ export const SaleInvalidation = (props: Props) => {
             nameApplicant: "",
             docNumberResponsible: "",
             docNumberApplicant: "",
-            typeDocResponsible: 0,
-            typeDocApplicant: 0,
+            typeDocResponsible: "",
+            typeDocApplicant: "",
           }}
           validationSchema={validationSchema}
-          onSubmit={handleSubmit}
+          onSubmit={(values) => onSubmit(values)}
         >
           {({
             values,
@@ -131,7 +140,7 @@ export const SaleInvalidation = (props: Props) => {
               <div className="flex flex-col justify-center items-center">
                 <label
                   htmlFor="nameResponsible"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  className="block mb-2 text-md font-medium text-gray-900 dark:text-white"
                 >
                   Nombre de Responsable
                 </label>
@@ -144,17 +153,36 @@ export const SaleInvalidation = (props: Props) => {
                   onChange={handleChange("nameResponsible")}
                   onBlur={handleBlur("nameResponsible")}
                 ></input>
+                {errors.nameResponsible && touched.nameResponsible && (
+                  <span className="text-sm font-semibold text-red-500">
+                    {errors.nameResponsible}
+                  </span>
+                )}
                 <div className="flex flex-row justify-center gap-2 items-center p-2">
-                  <select
-                    className="border border-gray-300 rounded-md p-1"
-                    id="typeDocResponsible"
-                    name="typeDocResponsible"
+                  <Select
+                    className="w-44"
+                    variant="bordered"
+                    size="lg"
+                    label="Mostrar"
+                    labelPlacement="outside"
+                    classNames={{
+                      label: "font-semibold",
+                    }}
                     value={values.typeDocResponsible}
                     onChange={handleChange("typeDocResponsible")}
-                    onBlur={handleBlur("typeDocResponsible")}
                   >
-                    <option value="DUi">DUI</option>
-                  </select>
+                    {documentsTypeReceipt.map((doc) => (
+                      <SelectItem key={doc.codigo} value={doc.codigo}>
+                        {doc.valores}
+                      </SelectItem>
+                    ))}
+                  </Select>
+
+                  {errors.typeDocResponsible && touched.typeDocResponsible && (
+                    <span className="text-sm font-semibold text-red-500">
+                      {errors.typeDocResponsible}
+                    </span>
+                  )}
                   <div>
                     <input
                       placeholder="Numero de Documento"
@@ -162,16 +190,21 @@ export const SaleInvalidation = (props: Props) => {
                       type="text"
                       id="documentResponsible"
                       name="documentResponsible"
-                      value={values.docNumberResponsible}
                       onChange={handleChange("docNumberResponsible")}
                       onBlur={handleBlur("docNumberResponsible")}
                     ></input>
+                    {errors.docNumberResponsible &&
+                      touched.docNumberResponsible && (
+                        <span className="text-sm font-semibold text-red-500">
+                          {errors.docNumberResponsible}
+                        </span>
+                      )}
                   </div>
                 </div>
 
                 <label
                   htmlFor="nameApplicant"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  className="block mb-2 text-md font-medium text-gray-900 dark:text-white"
                 >
                   Nombre de Solicitante
                 </label>
@@ -184,17 +217,35 @@ export const SaleInvalidation = (props: Props) => {
                   onChange={handleChange("nameApplicant")}
                   onBlur={handleBlur("nameApplicant")}
                 ></input>
+                {errors.nameApplicant && touched.nameApplicant && (
+                  <span className="text-sm font-semibold text-red-500">
+                    {errors.nameApplicant}
+                  </span>
+                )}
                 <div className="flex flex-row justify-center gap-2 items-center p-2">
-                  <select
-                    className="border border-gray-300 rounded-md p-1"
-                    id="typeDocApplicant"
-                    name="typeDocApplicant"
+                  <Select
+                    className="w-44"
+                    variant="bordered"
+                    size="lg"
+                    label="Mostrar"
+                    labelPlacement="outside"
+                    classNames={{
+                      label: "font-semibold",
+                    }}
                     value={values.typeDocApplicant}
                     onChange={handleChange("typeDocApplicant")}
-                    onBlur={handleBlur("typeDocApplicant")}
                   >
-                    <option value="DUi">DUI</option>
-                  </select>
+                    {documentsTypeReceipt.map((doc) => (
+                      <SelectItem key={doc.codigo} value={doc.codigo}>
+                        {doc.valores}
+                      </SelectItem>
+                    ))}
+                  </Select>
+                  {errors.typeDocApplicant && touched.typeDocApplicant && (
+                    <span className="text-sm font-semibold text-red-500">
+                      {errors.typeDocApplicant}
+                    </span>
+                  )}
                   <input
                     className="border border-gray-300 rounded-md p-1"
                     placeholder="Numero de Documento"
@@ -205,27 +256,32 @@ export const SaleInvalidation = (props: Props) => {
                     onChange={handleChange("docNumberApplicant")}
                     onBlur={handleBlur("docNumberApplicant")}
                   ></input>
+                  {errors.docNumberApplicant && touched.docNumberApplicant && (
+                    <span className="text-sm font-semibold text-red-500">
+                      {errors.docNumberApplicant}
+                    </span>
+                  )}
                 </div>
+              </div>
+              <div className="flex justify-between gap-2 items-center mt-2 p-2">
+                <Button
+                  style={global_styles().secondaryStyle}
+                  size="md"
+                  onClick={handleReplace}
+                >
+                  Reemplazar
+                </Button>
+                <Button
+                  style={global_styles().warningStyles}
+                  size="md"
+                  onClick={() => handleSubmit()}
+                >
+                  Invalidar
+                </Button>
               </div>
             </form>
           )}
         </Formik>
-        <div className="flex justify-between gap-2 items-center mt-2 p-2">
-          <Button
-            style={global_styles().secondaryStyle}
-            size="md"
-            onClick={handleReplace}
-          >
-            Reemplazar
-          </Button>
-          <Button
-            style={global_styles().warningStyles}
-            size="md"
-            onClick={handleInvalidate}
-          >
-            Invalidar
-          </Button>
-        </div>
       </div>
     </>
   );
