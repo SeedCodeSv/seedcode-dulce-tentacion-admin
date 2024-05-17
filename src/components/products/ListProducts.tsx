@@ -258,9 +258,11 @@ function ListProducts() {
                               }}
                             />
                             <Autocomplete
-                               onSelectionChange={(key) => {
+                              onSelectionChange={(key) => {
                                 if (key) {
-                                  const branchSelected = JSON.parse(key as string) as CategoryProduct;
+                                  const branchSelected = JSON.parse(
+                                    key as string
+                                  ) as CategoryProduct;
                                   setCategory(branchSelected.name);
                                 }
                               }}
@@ -311,14 +313,21 @@ function ListProducts() {
                 </div>
               </div>
               <div className="flex justify-end w-full">
-                {actions_role_view && actions_role_view.includes("Agregar") && (
+                {/* {actions_role_view && actions_role_view.includes("Agregar") && (
                   <AddButton
                     onClick={() => {
                       modalAdd.onOpen();
                       setSelectedProduct(undefined);
                     }}
                   />
-                )}
+                )} */}
+
+                <AddButton
+                  onClick={() => {
+                    modalAdd.onOpen();
+                    setSelectedProduct(undefined);
+                  }}
+                />
               </div>
             </div>
           </div>
