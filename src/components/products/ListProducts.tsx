@@ -315,14 +315,21 @@ function ListProducts() {
                 </div>
               </div>
               <div className="flex justify-end w-full">
-                {actions_role_view && actions_role_view.includes("Agregar") && (
+                {/* {actions_role_view && actions_role_view.includes("Agregar") && (
                   <AddButton
                     onClick={() => {
                       modalAdd.onOpen();
                       setSelectedProduct(undefined);
                     }}
                   />
-                )}
+                )} */}
+
+                <AddButton
+                  onClick={() => {
+                    modalAdd.onOpen();
+                    setSelectedProduct(undefined);
+                  }}
+                />
               </div>
             </div>
           </div>
