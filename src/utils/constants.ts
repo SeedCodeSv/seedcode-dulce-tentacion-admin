@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 export const API_URL = "http://localhost:8080/api";
-=======
-export const API_URL = "http://192.168.0.12:8080/api";
->>>>>>> 992634dad80ae293a9e034f50ce329dcb9d82c1d
 export const FACTURACION_API = "https://cats-facturacion-43ay7.ondigitalocean.app/api";
 export const MH_QUERY = "https://admin.factura.gob.sv/consultaPublica";
 export const ambiente = "00";
