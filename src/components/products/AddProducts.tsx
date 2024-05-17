@@ -62,7 +62,7 @@ function AddProducts(props: Props) {
 
   useEffect(() => {
     getCat011TipoDeItem();
-  });
+  }, []);
 
   const [typeItem, setTypeItem] = useState<TipoDeItem>();
 
