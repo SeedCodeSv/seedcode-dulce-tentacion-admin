@@ -133,7 +133,7 @@ export const LayoutItems = () => {
         OnGetActionsByRole(user.roleId);
       }
     }
-  }, [OnGetActionsByRole]);
+  }, []);
 
   const views =
     role_view_action &&
