@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Formik } from "formik";
 import * as yup from "yup";
-import { Button } from "@nextui-org/react";
+import { Button, Input, Switch, useDisclosure } from "@nextui-org/react";
 import { global_styles } from "../../styles/global.styles";
 import { toast } from "sonner";
 import { Sale } from "../../types/report_contigence";
@@ -9,9 +9,10 @@ import { useInvalidationStore } from "../../plugins/dexie/store/invalidation.sto
 import { IInvalidationBody } from "../../types/DTE/invalidation.types";
 import { getElSalvadorDateTime } from "../../utils/dates";
 import { useTransmitterStore } from "../../store/transmitter.store";
-import { useBillingStore } from "../../store/facturation/billing.store";
 import { documentsTypeReceipt } from "../../utils/dte";
 import { Select, SelectItem } from "@nextui-org/react";
+import ModalGlobal from "../global/ModalGlobal";
+import { invalidationTypes } from "../../types/DTE/invalidation.types";
 
 interface Props {
   sale: Sale;
@@ -19,10 +20,22 @@ interface Props {
 export const SaleInvalidation = (props: Props) => {
   useEffect(() => {
     gettransmitter();
+    OnGetRecentSales(props.sale.id);
   }, []);
-  const { isLoading, isError, errorMessage, OnCreateInvalidation } =
-    useInvalidationStore();
-  const {} = useBillingStore();
+
+  const [generationCodeR, setGenerationCodeR] = useState("");
+  const [motivo, setMotivo] = useState(0);
+  const [showMoreFields, setShowMoreFields] = useState(false);
+  const [message, setMessage] = useState("");
+  const {
+    isLoading,
+    isError,
+    errorMessage,
+    OnCreateInvalidation,
+    sales,
+    OnGetRecentSales,
+  } = useInvalidationStore();
+
   const { transmitter, gettransmitter } = useTransmitterStore();
 
   const data: IInvalidationBody = {
@@ -46,24 +59,24 @@ export const SaleInvalidation = (props: Props) => {
     documento: {
       tipoDte: props.sale.tipoDte,
       codigoGeneracion: props.sale.codigoGeneracion,
-      codigoGeneracionR: null,
+      codigoGeneracionR: showMoreFields === true ? generationCodeR : null,
       selloRecibido: props.sale.selloRecibido,
       numeroControl: props.sale.numeroControl,
       fecEmi: props.sale.fecEmi,
       montoIva: Number(props.sale.totalIva),
-      tipoDocumento: "13",
+      tipoDocumento: props.sale.customer.tipoDocumento,
       numDocumento: props.sale.customer.numDocumento,
       nombre: props.sale.customer.nombre,
     },
     motivo: {
       tipoAnulacion: 2,
       motivoAnulacion: "Rescindir de la operación realizada",
-      nombreResponsable: '',
-      tipDocResponsable: '',
-      numDocResponsable: '',
-      nombreSolicita: '',
-      tipDocSolicita: '',
-      numDocSolicita: '',
+      nombreResponsable: "",
+      tipDocResponsable: "",
+      numDocResponsable: "",
+      nombreSolicita: "",
+      tipDocSolicita: "",
+      numDocSolicita: "",
     },
   };
 
@@ -83,9 +96,8 @@ export const SaleInvalidation = (props: Props) => {
   });
 
   const onSubmit = async (values: any) => {
-    isLoading === true && toast.loading("Cargando...");
 
-    OnCreateInvalidation({
+    OnCreateInvalidation(props.sale.id, {
       nit: transmitter.nit,
       passwordPri: transmitter.clavePublica,
       dteJson: {
@@ -109,13 +121,13 @@ export const SaleInvalidation = (props: Props) => {
     isError === true && toast.error(errorMessage);
   };
 
-  const handleReplace = () => {
-    toast(`Reemplazando venta ${props.sale.id}`);
+  const changeToggle = () => {
+    setShowMoreFields(!showMoreFields);
   };
 
   return (
     <>
-      <div className="flex flex-col justify-center items-center">
+      <div className="flex flex-col justify-center items-center bg-slate-50">
         <Formik
           initialValues={{
             nameResponsible: "",
@@ -137,33 +149,33 @@ export const SaleInvalidation = (props: Props) => {
             handleSubmit,
           }) => (
             <form onSubmit={handleSubmit}>
-              <div className="flex flex-col justify-center items-center">
+              <div className="flex flex-col justify-center items-center ">
                 <label
                   htmlFor="nameResponsible"
                   className="block mb-2 text-md font-medium text-gray-900 dark:text-white"
                 >
                   Nombre de Responsable
                 </label>
-                <input
-                  className="border border-gray-300 rounded-md p-1 w-full"
+                <Input
+                  className="border border-gray-200 rounded-md w-full"
                   type="text"
                   id="nameResponsible"
                   name="nameResponsible"
                   value={values.nameResponsible}
                   onChange={handleChange("nameResponsible")}
                   onBlur={handleBlur("nameResponsible")}
-                ></input>
+                ></Input>
                 {errors.nameResponsible && touched.nameResponsible && (
                   <span className="text-sm font-semibold text-red-500">
                     {errors.nameResponsible}
                   </span>
                 )}
-                <div className="flex flex-row justify-center gap-2 items-center p-2">
+                <div className="flex flex-row justify-center gap-2 items-center w-full">
                   <Select
-                    className="w-44"
+                    className="w-44 mb-5"
                     variant="bordered"
-                    size="lg"
-                    label="Mostrar"
+                    size="md"
+                    label="Seleccionar"
                     labelPlacement="outside"
                     classNames={{
                       label: "font-semibold",
@@ -177,29 +189,27 @@ export const SaleInvalidation = (props: Props) => {
                       </SelectItem>
                     ))}
                   </Select>
-
                   {errors.typeDocResponsible && touched.typeDocResponsible && (
                     <span className="text-sm font-semibold text-red-500">
                       {errors.typeDocResponsible}
                     </span>
                   )}
-                  <div>
-                    <input
-                      placeholder="Numero de Documento"
-                      className="border border-gray-300 rounded-md p-1 w-full"
-                      type="text"
-                      id="documentResponsible"
-                      name="documentResponsible"
-                      onChange={handleChange("docNumberResponsible")}
-                      onBlur={handleBlur("docNumberResponsible")}
-                    ></input>
-                    {errors.docNumberResponsible &&
-                      touched.docNumberResponsible && (
-                        <span className="text-sm font-semibold text-red-500">
-                          {errors.docNumberResponsible}
-                        </span>
-                      )}
-                  </div>
+                  <Input
+                    className="border border-gray-200 rounded-md "
+                    placeholder="Numero de Documento"
+                    type="text"
+                    id="docNumberResponsible"
+                    name="docNumberResponsible"
+                    value={values.docNumberResponsible}
+                    onChange={handleChange("docNumberResponsible")}
+                    onBlur={handleBlur("docNumberResponsible")}
+                  ></Input>
+                  {errors.docNumberResponsible &&
+                    touched.docNumberResponsible && (
+                      <span className="text-sm font-semibold text-red-500">
+                        {errors.docNumberResponsible}
+                      </span>
+                    )}
                 </div>
 
                 <label
@@ -208,26 +218,26 @@ export const SaleInvalidation = (props: Props) => {
                 >
                   Nombre de Solicitante
                 </label>
-                <input
-                  className="border border-gray-300 rounded-md p-1 w-full"
+                <Input
+                  className="border border-gray-200 rounded-md w-full"
                   type="text"
                   id="nameApplicant"
                   name="nameApplicant"
                   value={values.nameApplicant}
                   onChange={handleChange("nameApplicant")}
                   onBlur={handleBlur("nameApplicant")}
-                ></input>
+                ></Input>
                 {errors.nameApplicant && touched.nameApplicant && (
                   <span className="text-sm font-semibold text-red-500">
                     {errors.nameApplicant}
                   </span>
                 )}
-                <div className="flex flex-row justify-center gap-2 items-center p-2">
+                <div className="flex flex-row justify-center gap-2 items-center w-full">
                   <Select
-                    className="w-44"
+                    className="w-44 mb-5"
                     variant="bordered"
-                    size="lg"
-                    label="Mostrar"
+                    size="md"
+                    label="Seleccionar"
                     labelPlacement="outside"
                     classNames={{
                       label: "font-semibold",
@@ -246,8 +256,8 @@ export const SaleInvalidation = (props: Props) => {
                       {errors.typeDocApplicant}
                     </span>
                   )}
-                  <input
-                    className="border border-gray-300 rounded-md p-1"
+                  <Input
+                    className="border border-gray-200 rounded-md "
                     placeholder="Numero de Documento"
                     type="text"
                     id="documentApplicant"
@@ -255,29 +265,86 @@ export const SaleInvalidation = (props: Props) => {
                     value={values.docNumberApplicant}
                     onChange={handleChange("docNumberApplicant")}
                     onBlur={handleBlur("docNumberApplicant")}
-                  ></input>
+                  ></Input>
                   {errors.docNumberApplicant && touched.docNumberApplicant && (
                     <span className="text-sm font-semibold text-red-500">
                       {errors.docNumberApplicant}
                     </span>
                   )}
                 </div>
+                {showMoreFields === true && (
+                  <>
+                    <Select
+                      className="my-3"
+                      size="lg"
+                      variant="bordered"
+                      placeholder="Selecciona el motivo"
+                      value={motivo}
+                      aria-label="Select a reason"
+                      onChange={(e) => setMotivo(Number(e.target.value))}
+                    >
+                      {invalidationTypes.map((type) => (
+                        <SelectItem key={type.id} value={type.id}>
+                          {type.valores}
+                        </SelectItem>
+                      ))}
+                    </Select>
+                    <Select
+                      className="my-3"
+                      size="lg"
+                      variant="bordered"
+                      placeholder="Selecciona una venta"
+                      value={generationCodeR}
+                      aria-label="Select a sale"
+                      onChange={(e) => setGenerationCodeR(e.target.value)}
+                    >
+                      {sales.map((sale) => (
+                        <SelectItem
+                          key={sale.codigoGeneracion}
+                          value={sale.codigoGeneracion}
+                        >
+                          {sale.id +
+                            " - " +
+                            sale.fecEmi +
+                            "-" +
+                            sale.horEmi +
+                            " - $" +
+                            sale.montoTotalOperacion}
+                        </SelectItem>
+                      ))}
+                    </Select>
+                  </>
+                )}
+
+                <div className="flex flex-row justify-center gap-2 items-center p-2">
+                  <p>Desea reemplazar la venta?</p>
+                  <Switch
+                    size="lg"
+                    checked={showMoreFields}
+                    onChange={() => changeToggle()}
+                  />
+                </div>
               </div>
-              <div className="flex justify-between gap-2 items-center mt-2 p-2">
-                <Button
-                  style={global_styles().secondaryStyle}
-                  size="md"
-                  onClick={handleReplace}
-                >
-                  Reemplazar
-                </Button>
-                <Button
-                  style={global_styles().warningStyles}
-                  size="md"
-                  onClick={() => handleSubmit()}
-                >
-                  Invalidar
-                </Button>
+              <div className="flex justify-center gap-2 items-center mt-2 p-2">
+                {showMoreFields === true ? (
+                  <Button
+                    className=" w-1/2"
+                    style={global_styles().secondaryStyle}
+                    size="md"
+                    onClick={() => handleSubmit()}
+                  >
+                    Reemplazar
+                  </Button>
+                ) : (
+                  <Button
+                    className="flex w-1/2"
+                    style={global_styles().warningStyles}
+                    size="md"
+                    onClick={() => handleSubmit()}
+                  >
+                    Invalidar
+                  </Button>
+                )}
               </div>
             </form>
           )}

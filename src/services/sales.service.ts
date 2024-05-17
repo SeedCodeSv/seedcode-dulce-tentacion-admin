@@ -1,6 +1,7 @@
 import axios from "axios";
 import { API_URL } from "../utils/constants";
 import { get_token } from "../storage/localStorage";
+import { IInvalidationResponse } from "../types/DTE/invalidation.types";
 
 export const post_sales = (
   pdf: string,
@@ -20,3 +21,14 @@ export const post_sales = (
     }
   );
 };
+
+export const invalidate_sale = (id: number, selloInvalidacion: string) => {
+  const token = get_token()
+  return axios.patch<IInvalidationResponse>(API_URL + `/sales/invalidate/${id}`, { selloInvalidacion },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+}
