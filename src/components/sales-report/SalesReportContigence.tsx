@@ -19,6 +19,7 @@ import {
 } from "../../storage/localStorage";
 import {
   EditIcon,
+  Filter,
   LoaderCircle,
   RefreshCwOff,
   ScanEye,
@@ -34,10 +35,7 @@ import Terminal, {
   TerminalInput,
   TerminalOutput,
 } from "react-terminal-ui";
-import {
-  fechaActualString,
-  formatDate,
-} from "../../utils/dates";
+import { fechaActualString, formatDate } from "../../utils/dates";
 import Pagination from "../global/Pagination";
 import { Paginator } from "primereact/paginator";
 import { useLogsStore } from "../../store/logs.store";
@@ -75,8 +73,11 @@ import { delete_credito_venta } from "../../plugins/dexie/services/credito_venta
 import { delete_venta } from "../../plugins/dexie/services/venta.service";
 import { SaleInvalidation } from "./SaleInvalidation";
 import UpdateCustomerSales from "./UpdateCustomerSale";
+import { Drawer } from "vaul";
+import classNames from "classnames";
 
 function SalesReportContigence() {
+  const [openVaul, setOpenVaul] = useState(false);
   const [branchId, setBranchId] = useState(0);
   const {
     sales,
@@ -120,7 +121,7 @@ function SalesReportContigence() {
     searchSalesContigence();
     OnGetSalesNotContigence(branchId, 1, 5, dateInitial, dateEnd);
   };
-  const { theme } = useContext(ThemeContext);
+  const { theme, context } = useContext(ThemeContext);
   const style = {
     backgroundColor: theme.colors.dark,
     color: theme.colors.primary,
@@ -238,8 +239,9 @@ function SalesReportContigence() {
 
           if (error.response?.data) {
             const newLd = (
-              <TerminalOutput>{`Respuesta: ${error.response?.data.descripcionMsg ?? "RECHAZADO"
-                }`}</TerminalOutput>
+              <TerminalOutput>{`Respuesta: ${
+                error.response?.data.descripcionMsg ?? "RECHAZADO"
+              }`}</TerminalOutput>
             );
 
             setTerminalLineData((prev) => [...prev, newLd]);
@@ -288,9 +290,10 @@ function SalesReportContigence() {
         }
 
         toast.error("ERROR", {
-          description: `Error: ${error.response?.data.descripcionMsg ??
+          description: `Error: ${
+            error.response?.data.descripcionMsg ??
             "DTE no encontrado en hacienda"
-            }`,
+          }`,
         });
         modalLoading.onClose();
         setLoading(false);
@@ -370,12 +373,16 @@ function SalesReportContigence() {
                           description: "Estamos guardando tus datos",
                         });
 
-                        const json_url = `CLIENTES/${transmitter.nombre
-                          }/${new Date().getFullYear()}/VENTAS/FACTURAS/${formatDate()}/${data.dteJson.identificacion.codigoGeneracion
-                          }/${data.dteJson.identificacion.codigoGeneracion}.json`;
-                        const pdf_url = `CLIENTES/${transmitter.nombre
-                          }/${new Date().getFullYear()}/VENTAS/FACTURAS/${formatDate()}/${data.dteJson.identificacion.codigoGeneracion
-                          }/${data.dteJson.identificacion.codigoGeneracion}.pdf`;
+                        const json_url = `CLIENTES/${
+                          transmitter.nombre
+                        }/${new Date().getFullYear()}/VENTAS/FACTURAS/${formatDate()}/${
+                          data.dteJson.identificacion.codigoGeneracion
+                        }/${data.dteJson.identificacion.codigoGeneracion}.json`;
+                        const pdf_url = `CLIENTES/${
+                          transmitter.nombre
+                        }/${new Date().getFullYear()}/VENTAS/FACTURAS/${formatDate()}/${
+                          data.dteJson.identificacion.codigoGeneracion
+                        }/${data.dteJson.identificacion.codigoGeneracion}.pdf`;
 
                         const JSON_DTE = JSON.stringify(
                           {
@@ -427,7 +434,7 @@ function SalesReportContigence() {
                                       axios
                                         .put(
                                           API_URL +
-                                          "/sales/sale-update-transaction",
+                                            "/sales/sale-update-transaction",
                                           {
                                             pdf: pdf_url,
                                             dte: json_url,
@@ -490,14 +497,14 @@ function SalesReportContigence() {
                           await save_logs({
                             title:
                               "Contingencia: " +
-                              error.response.data.descripcionMsg ??
+                                error.response.data.descripcionMsg ??
                               "Error al procesar venta",
                             message:
                               error.response.data.observaciones &&
-                                error.response.data.observaciones.length > 0
+                              error.response.data.observaciones.length > 0
                                 ? error.response?.data.observaciones.join(
-                                  "\n\n"
-                                )
+                                    "\n\n"
+                                  )
                                 : "",
                             generationCode:
                               data.dteJson.identificacion.codigoGeneracion,
@@ -510,7 +517,7 @@ function SalesReportContigence() {
                           );
                           setTitle(
                             error.response.data.descripcionMsg ??
-                            "Error al procesar venta"
+                              "Error al procesar venta"
                           );
                           modalErrorContingencia.onOpen();
                           setLoading(false);
@@ -542,7 +549,6 @@ function SalesReportContigence() {
                       toast.info(
                         "Se ah enviado a hacienda, esperando respuesta"
                       );
-                      console.log("1");
                       send_to_mh(data_send, token_mh ?? "", source)
                         .then(async (respuestaMH) => {
                           clearTimeout(timeout);
@@ -550,14 +556,20 @@ function SalesReportContigence() {
                             description: "Estamos guardando tus datos",
                           });
 
-                          const json_url = `CLIENTES/${transmitter.nombre
-                            }/${new Date().getFullYear()}/VENTAS/CRÉDITO_FISCAL/${formatDate()}/${data.dteJson.identificacion.codigoGeneracion
-                            }/${data.dteJson.identificacion.codigoGeneracion
-                            }.json`;
-                          const pdf_url = `CLIENTES/${transmitter.nombre
-                            }/${new Date().getFullYear()}/VENTAS/CRÉDITO_FISCAL/${formatDate()}/${data.dteJson.identificacion.codigoGeneracion
-                            }/${data.dteJson.identificacion.codigoGeneracion
-                            }.pdf`;
+                          const json_url = `CLIENTES/${
+                            transmitter.nombre
+                          }/${new Date().getFullYear()}/VENTAS/CRÉDITO_FISCAL/${formatDate()}/${
+                            data.dteJson.identificacion.codigoGeneracion
+                          }/${
+                            data.dteJson.identificacion.codigoGeneracion
+                          }.json`;
+                          const pdf_url = `CLIENTES/${
+                            transmitter.nombre
+                          }/${new Date().getFullYear()}/VENTAS/CRÉDITO_FISCAL/${formatDate()}/${
+                            data.dteJson.identificacion.codigoGeneracion
+                          }/${
+                            data.dteJson.identificacion.codigoGeneracion
+                          }.pdf`;
 
                           const JSON_DTE = JSON.stringify(
                             {
@@ -607,7 +619,7 @@ function SalesReportContigence() {
                                         axios
                                           .put(
                                             API_URL +
-                                            "/sales/sale-fiscal-transaction",
+                                              "/sales/sale-fiscal-transaction",
                                             {
                                               pdf: pdf_url,
                                               dte: json_url,
@@ -654,20 +666,35 @@ function SalesReportContigence() {
                               });
                           }
                         })
-                        .catch((error: AxiosError<SendMHFailed>) => {
+                        .catch(async (error: AxiosError<SendMHFailed>) => {
                           modalLoading.onClose();
                           if (error.response?.data) {
+                            await save_logs({
+                              title:
+                                "Contingencia: " +
+                                  error.response.data.descripcionMsg ??
+                                "Error al procesar venta",
+                              message:
+                                error.response.data.observaciones &&
+                                error.response.data.observaciones.length > 0
+                                  ? error.response?.data.observaciones.join(
+                                      "\n\n"
+                                    )
+                                  : "",
+                              generationCode:
+                                data.dteJson.identificacion.codigoGeneracion,
+                            });
                             setErrorMessage(
                               error.response.data.observaciones &&
                                 error.response.data.observaciones.length > 0
                                 ? error.response?.data.observaciones.join(
-                                  "\n\n"
-                                )
+                                    "\n\n"
+                                  )
                                 : ""
                             );
                             setTitle(
                               error.response.data.descripcionMsg ??
-                              "Error al procesar venta"
+                                "Error al procesar venta"
                             );
                             modalError.onOpen();
                             setLoading(false);
@@ -690,11 +717,11 @@ function SalesReportContigence() {
                         await save_logs({
                           title:
                             "Contingencia: " +
-                            error.response.data.descripcionMsg ??
+                              error.response.data.descripcionMsg ??
                             "Error al procesar venta",
                           message:
                             error.response.data.observaciones &&
-                              error.response.data.observaciones.length > 0
+                            error.response.data.observaciones.length > 0
                               ? error.response?.data.observaciones.join("\n\n")
                               : "",
                           generationCode:
@@ -708,7 +735,7 @@ function SalesReportContigence() {
                         );
                         setTitle(
                           error.response.data.descripcionMsg ??
-                          "Error al procesar venta"
+                            "Error al procesar venta"
                         );
                         modalErrorContingencia.onOpen();
                         setLoading(false);
@@ -751,7 +778,7 @@ function SalesReportContigence() {
     <>
       <div className="w-full h-full p-5 bg-gray-100 dark:bg-gray-800">
         <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
-          <div className="w-full grid grid-cols-3 gap-5 mb-5">
+          <div className="hidden md:grid w-full grid-cols-3 gap-5 mb-5">
             <Input
               onChange={(e) => setDateInitial(e.target.value)}
               value={dateInitial}
@@ -783,13 +810,107 @@ function SalesReportContigence() {
             />
             <Button
               onClick={searchSalesNotContigence}
-              className="bg-gray-900 text-white mt-7 dark:bg-gray-700 dark:text-gray-200"
+              style={{
+                backgroundColor: theme.colors.secondary,
+                color: theme.colors.primary
+              }}
+              color="primary"
+              size="lg"
+              className="font-semibold mt-6"
             >
               Buscar
             </Button>
           </div>
+          <div className="flex items-center gap-5 md:mb-0 -mb-8">
+            <div className="block md:hidden">
+              <Drawer.Root
+                shouldScaleBackground
+                open={openVaul}
+                onClose={() => setOpenVaul(false)}
+              >
+                <Drawer.Trigger asChild>
+                  <Button
+                    style={global_styles().thirdStyle}
+                    size="lg"
+                    isIconOnly
+                    onClick={() => setOpenVaul(true)}
+                    type="button"
+                  >
+                    <Filter />
+                  </Button>
+                </Drawer.Trigger>
+                <Drawer.Portal>
+                  <Drawer.Overlay
+                    className="fixed inset-0 bg-black/40 z-[60]"
+                    onClick={() => setOpenVaul(false)}
+                  />
+                  <Drawer.Content
+                    className={classNames(
+                      "bg-gray-100 z-[60] flex flex-col rounded-t-[10px] h-auto mt-24 max-h-[80%] fixed bottom-0 left-0 right-0",
+                      context === "dark" ? "dark" : ""
+                    )}
+                  >
+                    <div className="p-4 bg-white dark:bg-gray-800 rounded-t-[10px] flex-1">
+                      <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-gray-300 dark:bg-gray-400 mb-8" />
+                      <Drawer.Title className="mb-4 dark:text-white font-medium">
+                        Filtros disponibles
+                      </Drawer.Title>
 
-          <div className="flex overflow-hidden justify-end  mb-2 mr-3">
+                      <div className="flex flex-col gap-3">
+                        <div className="w-full">
+                          <Input
+                            onChange={(e) => setDateInitial(e.target.value)}
+                            value={dateInitial}
+                            defaultValue={formatDate()}
+                            placeholder="Buscar por nombre..."
+                            size="lg"
+                            type="date"
+                            variant="bordered"
+                            label="Fecha inicial"
+                            labelPlacement="outside"
+                            classNames={{
+                              input: "dark:text-white dark:border-gray-600",
+                              label: "text-sm font-semibold dark:text-white",
+                            }}
+                          />
+                          <Input
+                            onChange={(e) => setDateEnd(e.target.value)}
+                            value={dateEnd}
+                            placeholder="Buscar por nombre..."
+                            size="lg"
+                            variant="bordered"
+                            label="Fecha final"
+                            type="date"
+                            labelPlacement="outside"
+                            className="mt-6"
+                            classNames={{
+                              input: "dark:text-white dark:border-gray-600",
+                              label: "text-sm font-semibold dark:text-white",
+                            }}
+                          />
+                        </div>
+                        <Button
+                          onClick={() => {
+                            searchSalesNotContigence();
+                            setOpenVaul(false);
+                          }}
+                          style={{
+                            backgroundColor: theme.colors.secondary,
+                            color: theme.colors.primary,
+                          }}
+                          className="w-full mb-10 font-semibold"
+                          size="lg"
+                        >
+                          Aplicar
+                        </Button>
+                      </div>
+                    </div>
+                  </Drawer.Content>
+                </Drawer.Portal>
+              </Drawer.Root>
+            </div>
+          </div>
+          <div className="md:flex md:mb-2  mb-4 grid overflow-hidden justify-end mr-3">
             <Switch onChange={() => setIsActive(!isActive)} defaultSelected>
               {isActive ? "No Contigencia" : "Contigencia"}
             </Switch>
@@ -839,7 +960,7 @@ function SalesReportContigence() {
                   header="Acciones"
                   body={(rowData) => (
                     <>
-                      {rowData.selloInvalidacion === 'null' ? (
+                      {rowData.selloInvalidacion === "null" ? (
                         <Button
                           style={global_styles().dangerStyles}
                           size="lg"
@@ -1043,7 +1164,7 @@ function SalesReportContigence() {
         size="w-full lg:w-[600px]"
         onClose={() => {
           modalContingencia.onClose();
-          
+
           setTerminalLineData(baseData);
         }}
       >
