@@ -878,8 +878,12 @@ function SalesReportContigence() {
         size="w-full  md:w-[900px]"
         isOpen={modalEdit.isOpen}
       >
-        <UpdateCustomerSales onClose={modalEdit.onClose} codigoGeneracion={codigoGeneracion} customer={dataCustomer}>
-
+        <UpdateCustomerSales
+          onClose={modalEdit.onClose}
+          codigoGeneracion={codigoGeneracion}
+          customer={dataCustomer}
+          handleVerify={handleVerify}
+        >
         </UpdateCustomerSales>
       </ModalGlobal>
     </>

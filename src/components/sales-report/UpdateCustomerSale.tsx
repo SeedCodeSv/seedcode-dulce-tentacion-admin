@@ -3,7 +3,7 @@ import {
     AutocompleteItem,
     Button,
     Input,
-    useDisclosure,
+
 } from "@nextui-org/react";
 import { Customer, Sale } from "../../types/report_contigence";
 import { useContext, useEffect, useState } from "react";
@@ -13,16 +13,12 @@ import { PayloadCustomer } from "../../types/customers.types";
 import { ThemeContext } from "../../hooks/useTheme";
 import { Municipio } from "../../types/billing/cat-013-municipio.types";
 import { useBillingStore } from "../../store/facturation/billing.store";
-import { return_mh_token } from "../../storage/localStorage";
-import { check_dte } from "../../services/DTE.service";
-import { toast } from "sonner";
-import { AxiosError } from "axios";
-import { ICheckResponse } from "../../types/DTE/check.types";
-import { useTransmitterStore } from "../../store/transmitter.store";
+
 interface Props {
     onClose: () => void;
     codigoGeneracion: string;
     customer?: Customer;
+    handleVerify: (sale: Sale) => void;
 }
 const UpdateCustomerSales = (props: Props) => {
     const { theme } = useContext(ThemeContext);
@@ -36,6 +32,7 @@ const UpdateCustomerSales = (props: Props) => {
     const [dataUpdateCustomer, setDataUpdateCustomer] =
         useState<PayloadCustomer>();
     const UpdateCustomer = () => {
+
         if (dataUpdateCustomer) {
             patchCustomer(dataUpdateCustomer, props.customer?.id || 0);
             props.onClose();
@@ -48,46 +45,7 @@ const UpdateCustomerSales = (props: Props) => {
         getCat013Municipios();
     }, []);
 
-    // const { gettransmitter, transmitter } = useTransmitterStore();
-    // const [loading, setLoading] = useState(false);
-    // const modalLoading = useDisclosure();
 
-    // const handleVerify = (sale: Sale) => {
-    //     setLoading(true);
-    //     modalLoading.onOpen();
-    //     const payload = {
-    //         nitEmisor: transmitter.nit,
-    //         tdte: sale.tipoDte,
-    //         codigoGeneracion: sale.codigoGeneracion,
-    //     };
-    //     const token_mh = return_mh_token();
-    //     check_dte(payload, token_mh ?? "")
-    //         .then((response) => {
-    //             toast.success(response.data.estado, {
-    //                 description: `Sello recibido: ${response.data.selloRecibido}`,
-    //             });
-    //             setLoading(false);
-    //             modalLoading.onClose();
-    //         })
-    //         .catch((error: AxiosError<ICheckResponse>) => {
-    //             if (error.status === 500) {
-    //                 toast.error("NO ENCONTRADO", {
-    //                     description: "DTE no encontrado en hacienda",
-    //                 });
-    //                 setLoading(false);
-    //                 modalLoading.onClose();
-    //                 return;
-    //             }
-
-    //             toast.error("ERROR", {
-    //                 description: `Error: ${error.response?.data.descripcionMsg ??
-    //                     "DTE no encontrado en hacienda"
-    //                     }`,
-    //             });
-    //             modalLoading.onClose();
-    //             setLoading(false);
-    //         });
-    // };
 
 
     return (
@@ -220,48 +178,6 @@ const UpdateCustomerSales = (props: Props) => {
                         variant="bordered"
                     />
                 </div>
-                {/* <div className="pt-2">
-                    <Input
-                        label="Telefono"
-                        defaultValue={props.customer?.telefono}
-                        labelPlacement="outside"
-                        size="lg"
-                        placeholder="Ingresa el telefono"
-                        type="text"
-                        classNames={{
-                            label: "text-gray-500 text-base",
-                        }}
-                        variant="bordered"
-                    />
-                </div>
-                <div className="pt-2">
-                    <Input
-                        label="Telefono"
-                        defaultValue={props.customer?.telefono}
-                        labelPlacement="outside"
-                        size="lg"
-                        placeholder="Ingresa el telefono"
-                        type="text"
-                        classNames={{
-                            label: "text-gray-500 text-base",
-                        }}
-                        variant="bordered"
-                    />
-                </div>
-                <div className="pt-2">
-                    <Input
-                        label="Telefono"
-                        defaultValue={props.customer?.telefono}
-                        labelPlacement="outside"
-                        size="lg"
-                        placeholder="Ingresa el telefono"
-                        type="text"
-                        classNames={{
-                            label: "text-gray-500 text-base",
-                        }}
-                        variant="bordered"
-                    />
-                </div> */}
             </div>
 
             <Button
