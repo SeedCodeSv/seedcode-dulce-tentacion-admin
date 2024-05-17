@@ -7,4 +7,5 @@ export interface IView {
 export interface IGetViews {
   views: IView[];
   ok: boolean;
+  status: number
 }

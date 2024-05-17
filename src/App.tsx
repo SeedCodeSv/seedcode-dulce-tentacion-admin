@@ -7,15 +7,18 @@ import Main from "./pages/Main";
 import Tailwind from "primereact/passthrough/tailwind";
 
 import { PrimeReactProvider } from "primereact/api";
+import ActionsProvider from "./hooks/useActions";
 
 function App() {
   return (
-    <PrimeReactProvider value={{ unstyled: true, pt: Tailwind }}>
+     <PrimeReactProvider value={{ unstyled: true, pt: Tailwind }}>
       <SessionProvider>
         <ThemeProvider>
           <Toaster richColors />
           <NextUIProvider>
-            <Main />
+            <ActionsProvider>
+              <Main/>   
+            </ActionsProvider> 
           </NextUIProvider>
         </ThemeProvider>
       </SessionProvider>
