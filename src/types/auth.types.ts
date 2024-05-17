@@ -1,3 +1,5 @@
+import { Box } from "./box.types";
+
 export interface IAuthPayload {
     userName: string
     password: string
@@ -42,6 +44,7 @@ export interface UserLogin {
 export interface IAuthResponse {
 	ok: boolean;
 	token: string;
+	box: Box;
 	user: UserLogin;
 	status: number;
 }

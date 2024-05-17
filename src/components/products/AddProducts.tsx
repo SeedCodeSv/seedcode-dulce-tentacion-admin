@@ -206,7 +206,7 @@ function AddProducts(props: Props) {
                     label="Costo unitario"
                     labelPlacement="outside"
                     name="costoUnitario"
-                    value={values.price.toString()}
+                    value={values.costoUnitario.toString()}
                     onChange={handleChange("costoUnitario")}
                     onBlur={handleBlur("costoUnitario")}
                     placeholder="00.00"
