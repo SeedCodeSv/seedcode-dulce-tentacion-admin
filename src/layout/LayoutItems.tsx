@@ -260,10 +260,7 @@ useEffect(() => {
                   <p className="ml-2 text-sm 2xl:text-base">Categorías</p>
                 </NavLink>
               )}
-              {views.includes("Sucursales") ||
-                views.includes("Usuarios") ||
-                views.includes("Empleados") ||
-                (views.includes("Clientes") && (
+              {views && (
                   <div>
                     <Dropdown>
                       <DropdownTrigger>
@@ -370,7 +367,7 @@ useEffect(() => {
                       </DropdownMenu>
                     </Dropdown>
                   </div>
-                ))}
+                )}
               {views.includes("Reportes") && (
                 <NavLink
                   to={"/reports"}
