@@ -17,6 +17,7 @@ import {
   Table as ITable,
   CreditCard,
   List,
+  Filter,
 } from "lucide-react";
 import { useCategoriesStore } from "../../store/categories.store";
 import { ThemeContext } from "../../hooks/useTheme";
@@ -30,10 +31,13 @@ import Pagination from "../global/Pagination";
 import { Paginator } from "primereact/paginator";
 import { paginator_styles } from "../../styles/paginator.styles";
 import { CategoryProduct } from "../../types/categories.types";
+import { Drawer } from "vaul";
+import { global_styles } from "../../styles/global.styles";
+import classNames from "classnames";
 
 function ListCategories() {
-  const { theme } = useContext(ThemeContext);
-
+  const { theme, context } = useContext(ThemeContext);
+  const [openVaul, setOpenVaul] = useState(false);
   const { paginated_categories, getPaginatedCategories } = useCategoriesStore();
 
   const [selectedCategory, setSelectedCategory] = useState<
@@ -73,7 +77,7 @@ function ListCategories() {
       <div className="flex flex-col w-full p-5 rounded">
         <div className="flex flex-col justify-between w-full gap-5 mb-5 lg:mb-10 lg:flex-row lg:gap-0">
           <div className="flex items-end gap-3">
-            <div className="flex items-end gap-3">
+            <div className="hidden w-full md:flex gap-3">
               <Input
                 startContent={<User />}
                 className="w-full xl:w-96 dark:text-white"
@@ -99,7 +103,7 @@ function ListCategories() {
                   backgroundColor: theme.colors.secondary,
                   color: theme.colors.primary,
                 }}
-                className="font-semibold"
+                className="mt-6 font-semibold"
                 color="primary"
                 size="lg"
                 onClick={() => handleSearch(undefined)}
@@ -150,6 +154,84 @@ function ListCategories() {
                 <List />
               </Button>
             </ButtonGroup>
+            <div className="flex items-center gap-5">
+              <div className="block md:hidden">
+                <Drawer.Root
+                  shouldScaleBackground
+                  open={openVaul}
+                  onClose={() => setOpenVaul(false)}
+                >
+                  <Drawer.Trigger asChild>
+                    <Button
+                      style={global_styles().thirdStyle}
+                      size="lg"
+                      isIconOnly
+                      onClick={() => setOpenVaul(true)}
+                      type="button"
+                    >
+                      <Filter />
+                    </Button>
+                  </Drawer.Trigger>
+                  <Drawer.Portal>
+                    <Drawer.Overlay
+                      className="fixed inset-0 bg-black/40 z-[60]"
+                      onClick={() => setOpenVaul(false)}
+                    />
+                    <Drawer.Content
+                      className={classNames(
+                        "bg-gray-100 z-[60] flex flex-col rounded-t-[10px] h-auto mt-24 max-h-[80%] fixed bottom-0 left-0 right-0",
+                        context === "dark" ? "dark" : ""
+                      )}
+                    >
+                      <div className="p-4 bg-white dark:bg-gray-800 rounded-t-[10px] flex-1">
+                        <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-gray-300 dark:bg-gray-400 mb-8" />
+                        <Drawer.Title className="mb-4 dark:text-white font-medium">
+                          Filtros disponibles
+                        </Drawer.Title>
+
+                        <div className="flex flex-col gap-3">
+                          <Input
+                            startContent={<User />}
+                            className="w-full xl:w-96 dark:text-white"
+                            variant="bordered"
+                            labelPlacement="outside"
+                            label="Nombre"
+                            classNames={{
+                              label: "font-semibold text-gray-700",
+                              inputWrapper: "pr-0",
+                            }}
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            size="lg"
+                            placeholder="Escribe para buscar..."
+                            isClearable
+                            onClear={() => {
+                              setSearch("");
+                              handleSearch("");
+                            }}
+                          />
+                          <Button
+                            style={{
+                              backgroundColor: theme.colors.secondary,
+                              color: theme.colors.primary,
+                            }}
+                            className="mt-6 font-semibold"
+                            color="primary"
+                            size="lg"
+                            onClick={() => {
+                              handleSearch(undefined);
+                              setOpenVaul(false);
+                            }}
+                          >
+                            Buscar
+                          </Button>
+                        </div>
+                      </div>
+                    </Drawer.Content>
+                  </Drawer.Portal>
+                </Drawer.Root>
+              </div>
+            </div>
             <AddButton
               onClick={() => {
                 setSelectedCategory(undefined);

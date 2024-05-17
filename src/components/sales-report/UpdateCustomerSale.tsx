@@ -31,6 +31,9 @@ const UpdateCustomerSales = (props: Props) => {
     }, [props.customer]);
     const [dataUpdateCustomer, setDataUpdateCustomer] =
         useState<PayloadCustomer>();
+
+
+
     const UpdateCustomer = () => {
 
         if (dataUpdateCustomer) {
@@ -44,9 +47,6 @@ const UpdateCustomerSales = (props: Props) => {
         getCat012Departamento();
         getCat013Municipios();
     }, []);
-
-
-
 
     return (
         <>
@@ -179,7 +179,6 @@ const UpdateCustomerSales = (props: Props) => {
                     />
                 </div>
             </div>
-
             <Button
                 size="lg"
                 onClick={UpdateCustomer}
