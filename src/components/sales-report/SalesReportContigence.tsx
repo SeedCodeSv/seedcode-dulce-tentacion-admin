@@ -76,7 +76,11 @@ import SalesUpdate from "./SalesUpdate";
 import { delete_credito_venta } from "../../plugins/dexie/services/credito_venta.service";
 import { delete_venta } from "../../plugins/dexie/services/venta.service";
 import UpdateCustomerSales from "./UpdateCustomerSale";
+<<<<<<< HEAD
 import { ISendMHFiscal } from "../../types/DTE/credito_fiscal.types";
+=======
+import { SaleInvalidation } from "./SaleInvalidation";
+>>>>>>> 992634dad80ae293a9e034f50ce329dcb9d82c1d
 
 function SalesReportContigence() {
   const [branchId, setBranchId] = useState(0);
@@ -145,6 +149,7 @@ function SalesReportContigence() {
   const modalError = useDisclosure();
   const modalContingencia = useDisclosure();
   const modalLoading = useDisclosure();
+  const modalAnulation = useDisclosure();
 
   const baseData = [
     <TerminalOutput>Bienvenido a la terminar de contingencia</TerminalOutput>,
@@ -305,6 +310,7 @@ function SalesReportContigence() {
   const [contingencia, setContingencia] = useState("2");
   const [motivoContigencia, setMotivoContigencia] = useState("");
 
+  const handleInvalidate = () => {};
   const handleSendToContingencia = async (sale: Sale) => {
     const result_generation = await getVentaByCodigo(sale.codigoGeneracion);
     const result_credito_generate = await getCreditoVentaByCodigo(
@@ -524,6 +530,7 @@ function SalesReportContigence() {
                         }
                       });
                   });
+<<<<<<< HEAD
                 }
               } else {
                 if (result_credito_generate) {
@@ -726,6 +733,9 @@ function SalesReportContigence() {
                         setLoading(false);
                       }
                     });
+=======
+                } else {
+>>>>>>> 992634dad80ae293a9e034f50ce329dcb9d82c1d
                 }
               }
             }
@@ -843,6 +853,23 @@ function SalesReportContigence() {
                   headerStyle={style}
                   header="Total IVA"
                   body={(rowData) => formatCurrency(Number(rowData.totalIva))}
+                />
+                <Column
+                  headerClassName="text-sm font-semibold"
+                  headerStyle={style}
+                  header="Acciones"
+                  body={(rowData) => (
+                    <Button
+                      style={global_styles().secondaryStyle}
+                      size="lg"
+                      isIconOnly
+                      onClick={() => {
+                        setSelectedSale(rowData), modalAnulation.onOpen();
+                      }}
+                    >
+                      <EditIcon size={20} />
+                    </Button>
+                  )}
                 />
               </DataTable>
               {pagination_saless.totalPag > 1 && (
@@ -1058,6 +1085,17 @@ function SalesReportContigence() {
         </div>
       </ModalGlobal>
       <ModalGlobal
+        title="Invalidar venta"
+        isOpen={modalAnulation.isOpen}
+        size="w-sm"
+        onClose={() => {
+          modalAnulation.onClose();
+        }}
+      >
+        <SaleInvalidation sale={selectedSale as Sale} />
+      </ModalGlobal>
+
+      <ModalGlobal
         title=""
         isOpen={modalContingencia.isOpen}
         size="w-full lg:w-[700px] xl:w-[800px] 2xl:w-[900px]"
@@ -1098,6 +1136,7 @@ function SalesReportContigence() {
           onClose={modalEdit.onClose}
           codigoGeneracion={codigoGeneracion}
           customer={dataCustomer}
+<<<<<<< HEAD
         ></UpdateCustomerSales>
       </ModalGlobal>
       <ModalGlobal
@@ -1117,6 +1156,11 @@ function SalesReportContigence() {
         ) : (
           <div className="grid grid-cols-3 gap-5 mt-5"></div>
         )}
+=======
+          handleVerify={handleVerify}
+        >
+        </UpdateCustomerSales>
+>>>>>>> 992634dad80ae293a9e034f50ce329dcb9d82c1d
       </ModalGlobal>
     </>
   );

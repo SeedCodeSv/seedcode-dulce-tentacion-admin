@@ -46,7 +46,7 @@ export const router = () => {
   return createBrowserRouter([
     {
       path: "/",
-      element: views && views.includes("Inicio") &&  <Home /> 
+      element: <Home /> 
     },
     {
       path: "/tables",
