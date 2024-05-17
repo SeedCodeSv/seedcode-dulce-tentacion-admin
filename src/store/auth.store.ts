@@ -28,19 +28,23 @@ export const useAuthStore = create<IAuthStore>((set, get) => ({
   postLogin: async (payload) => {
     return await post_login(payload)
       .then(async ({ data }) => {
+        console.log("sassasasasasasasasasas",data)
         if (data.ok) {
           set_token(data.token);
           save_user(data.user);
+          console.log("para el token",data.user.employee.branch.transmitterId, data.token)
           if (is_admin(data.user.role.name)) {
             await save_branch_id(String(data.user.employee.branch.id))
           }
+          console.log("para el token",data.user.employee.branch.transmitterId, data.token)
           await get()
             .OnLoginMH(data.user.employee.branch.transmitterId, data.token)
-            .catch(() => {
+            .catch((error) => {
+              console.log(error)
               return;
             });
           toast.success("Bienvenido");
-          window.location.href = ("/")
+          // window.location.href = ("/")
         } else {
           toast.error("Datos incorrectos");
         }
