@@ -273,11 +273,11 @@ export const LayoutItems = () => {
               {/* inline-block  */}
                 <Menu
                   as="div"
-                  className="relative text-center px-3"
+                  className="relative text-center px-3 z-50"
                 >
                   <div>
                     <Menu.Button className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-                      Opción
+                      Menú
                     </Menu.Button>
                   </div>
 
@@ -591,12 +591,12 @@ export const LayoutItems = () => {
           " flex w-full py-4 pl-5 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
         }
       >
-        <Switch
+        <Switch className="relative"
           onValueChange={(isDark) => toggleContext(isDark ? "dark" : "light")}
           isSelected={context === "dark"}
           size={windowSize.width > 768 ? undefined : "sm"}
         >
-          <p className="text-sm lg:text-base">
+          <p className="text-sm lg:text-base relative">
             {context === "dark" ? "Modo claro" : "Modo oscuro"}
           </p>
         </Switch>
