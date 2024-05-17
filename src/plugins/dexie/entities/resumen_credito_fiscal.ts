@@ -1,3 +1,5 @@
+import { Tributo } from "../../../types/DTE/credito_fiscal.types";
+
 export interface CreditoResumen {
     id?: number
     totalNoSuj: number | string;
@@ -9,7 +11,7 @@ export interface CreditoResumen {
     descuGravada: number | string;
     porcentajeDescuento: number | string;
     totalDescu: number | string;
-    tributos: string;
+    tributos: Tributo[];
     subTotal: number | string;
     ivaRete1: number | string;
     reteRenta: number | string;

@@ -12,6 +12,7 @@ import { save_action } from "../services/actions.service";
 import { formatActionsRole } from "../utils";
 import { RoleViewAction } from "../types/actions_rol.types";
 import { get_views } from "../services/views.service";
+import {get_rolId} from "../storage/localStorage";
 export const useActionsRolStore = create<IActionsRolStore>((set, get) => ({
   actions_by_view_and_rol: [],
   actions_view: [],
@@ -28,7 +29,7 @@ export const useActionsRolStore = create<IActionsRolStore>((set, get) => ({
         set((state) => ({ ...state, actions_by_view_and_rol: [] }));
       });
   },
-  
+
   async OnCreateActionsRol(payload, roleId) {
     const verified = payload.names
       .filter((action) => {
@@ -49,14 +50,6 @@ export const useActionsRolStore = create<IActionsRolStore>((set, get) => ({
           name: val.name,
         };
       });
-
-    // if (verified.length > 0) {
-    //   const ids = get()
-    //     .actions_view.filter((ac) => verified.includes(ac.name))
-    //     .map((dt) => {
-    //       return { id: dt.id };
-    //     });
-    // }
     if (not_exit.length > 0) {
       try {
         const data = await save_action({ ...payload, names: not_exit });
@@ -67,6 +60,8 @@ export const useActionsRolStore = create<IActionsRolStore>((set, get) => ({
         };
         const res = await save_action_rol(roles_action);
         if (res.data.ok) {
+          const roleId = get_rolId() ?? 0;
+          get().OnGetActionsByRole(roleId)
           toast.success(messages.success);
           return true;
         } else {
@@ -82,32 +77,31 @@ export const useActionsRolStore = create<IActionsRolStore>((set, get) => ({
 
   async OnGetActionsRoleList() {
     get_actions_role()
-    .then(async ({data}) => {
-      if (data.ok) {
-        set((state) => {
-          return {
-            ...state,
-          actions_roles_grouped: formatActionsRole(data.roleActions)
-          };
-        });
-      } else {
+      .then(async ({ data }) => {
+        if (data.ok) {
+          set((state) => {
+            return {
+              ...state,
+              actions_roles_grouped: formatActionsRole(data.roleActions),
+            };
+          });
+        } else {
+          set((state) => {
+            return {
+              ...state,
+              actions_roles_grouped: [],
+            };
+          });
+        }
+      })
+      .catch(() => {
         set((state) => {
           return {
             ...state,
             actions_roles_grouped: [],
-          }
-        })
-      }
-      
-    })
-    .catch(() => {
-      set((state) => {
-        return {
-          ...state,
-          actions_roles_grouped: [],
-        }
-      })
-    })
+          };
+        });
+      });
   },
 
   async OnGetActionsByRole(rol_id) {
@@ -117,104 +111,98 @@ export const useActionsRolStore = create<IActionsRolStore>((set, get) => ({
           set((state) => {
             return {
               ...state,
-              actions_roles_grouped: formatActionsRole(data.roleActions)
+              actions_roles_grouped: formatActionsRole(data.roleActions),
             };
           });
 
           const views = await get_views();
-          console.log("views")
+          console.log("views");
 
           const role = data.roleActions[0].role.name;
 
-          console.log("Role", role)
-
+          console.log("Role", role);
 
           const views_exist = views.data.views
             .map((dt) => {
               const actions = data.roleActions
                 .filter((rl) => rl.action.actionId === dt.id)
                 .map((dr) => {
-                  return {name: dr.action.name}
+                  return { name: dr.action.name };
                 });
-                return {
-                  name: dt.name,
-                  actions: actions,
-                };
+              return {
+                name: dt.name,
+                actions: actions,
+              };
             })
             .filter((ac) => ac.actions.length > 0);
 
-            
+          if (views_exist !== undefined) {
+            const new_eval: RoleViewAction = {
+              name: role,
+              roleId: rol_id,
+              view: views_exist,
+            };
 
-            if (views_exist !== undefined) {
-              const new_eval: RoleViewAction = {
-                name: role,
-                roleId: rol_id,
-                view: views_exist,
+            set((state) => {
+              return {
+                ...state,
+                role_view_action: new_eval,
               };
+            });
+          }
 
-              set((state) => {
-                return {
-                  ...state,
-                  role_view_action: new_eval,
-                };
-              });
-            }
+          console.log("VIEWSEXITS", views_exist);
 
-            console.log("VIEWSEXITS", views_exist)
+          set({
+            roleActions: data.roleActions,
+          });
 
-            set({
-              roleActions: data.roleActions
-            })
-
-            console.log("found", get().roleActions)
+          console.log("found", get().roleActions);
         } else {
           set({
             roleActions: [],
-          })
+          });
         }
       })
       .catch(() => {
         set({
           roleActions: [],
-        })
+        });
       });
   },
 
   async OnGetActionsByRoleReturn(rol_id) {
-    return get_actions_by_role(rol_id)
-    .then(async ({ data }) => {
+    return get_actions_by_role(rol_id).then(async ({ data }) => {
       const views = await get_views();
       const role = data.roleActions[0].role.name;
 
       const views_exist = views.data.views
-      .map((dt) => {
+        .map((dt) => {
+          const actions = data.roleActions
+            .filter((rl) => rl.action.view.id === dt.id)
+            .map((dr) => {
+              return { name: dr.action.name };
+            });
 
-        const actions = data.roleActions
-        .filter((rl) => rl.action.view.id === dt.id)
-        .map((dr) => {
-          return {name: dr.action.name}
+          console.log("JJJJ", actions);
+
+          return {
+            name: dt.name,
+            actions: actions,
+          };
         })
-
-        console.log("JJJJ", actions)
-
-        return {
-          name: dt.name,
-          actions: actions,
-        }
-      })
-      .filter((ac) => ac.actions.length > 0);
+        .filter((ac) => ac.actions.length > 0);
 
       if (views_exist !== undefined) {
         const new_eval: RoleViewAction = {
           name: role,
           roleId: rol_id,
           view: views_exist,
-        }
+        };
 
-        return new_eval
-        
+        return new_eval;
       }
-      return undefined
+      return undefined;
     });
-  }
+  },
 }));

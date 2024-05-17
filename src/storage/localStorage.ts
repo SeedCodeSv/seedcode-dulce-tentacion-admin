@@ -44,7 +44,13 @@ export const get_user = () => {
 
   return undefined;
 };
-
+export const get_rolId = () => {
+  const user = localStorage.getItem("user");
+  if(user) {
+    const data = JSON.parse(user) as UserLogin
+    return data.roleId
+  }
+}
 export const delete_token = () => {
   localStorage.removeItem("token");
 };

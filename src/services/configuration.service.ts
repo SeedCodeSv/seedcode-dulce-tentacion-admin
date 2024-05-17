@@ -1,4 +1,4 @@
-import { GetByTransmitter, IGetConfiguration } from "./../types/configuration.types";
+import { GetByTransmitter, IGetConfiguration, pachConfigurationName } from "./../types/configuration.types";
 import axios from "axios";
 import { API_URL } from "../utils/constants";
 import { get_token } from "../storage/localStorage";
@@ -33,3 +33,12 @@ export const get_by_transmitter = (id: number) => {
       },
   });
 }
+
+export const update_configuration_name = (payload: pachConfigurationName, id: number) => {
+  const token = get_token() ?? "";
+  return axios.patch<{ ok: boolean }>(API_URL + "/personalization/" + id, payload, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
