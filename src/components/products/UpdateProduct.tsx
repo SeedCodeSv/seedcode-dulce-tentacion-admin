@@ -22,6 +22,7 @@ interface Props {
 function UpdateProduct({ product, onCloseModal }: Props) {
   const unidadDeMedidaList =
     new SeedcodeCatalogosMhService().get014UnidadDeMedida();
+
   const { list_categories, getListCategories } = useCategoriesStore();
   const { patchProducts, cat_011_tipo_de_item, getCat011TipoDeItem } =
     useProductsStore();
@@ -37,11 +38,13 @@ function UpdateProduct({ product, onCloseModal }: Props) {
   const initialProductState: ProductPayload = {
     name: product?.name || "",
     description: product?.description || "",
-    price: product?.price || 0,
-    costoUnitario: product?.costoUnitario || 0,
+    price: product?.price || "",
+    costoUnitario: product?.costoUnitario || "",
     categoryProductId: product?.categoryProductId || 0,
     tipoDeItem: product?.tipoDeItem || "",
-    unidadDeMedida: product?.unidaDeMedida || "",
+    unidaDeMedida: product?.unidaDeMedida || "",
+    tipoItem: product?.tipoItem || "",
+    uniMedida: product?.uniMedida || "",
     code: product?.code || "",
   };
 
@@ -198,17 +201,6 @@ function UpdateProduct({ product, onCloseModal }: Props) {
           </div>
           <div className="mt-2">
             <Autocomplete
-              onSelectionChange={(key) => {
-                const selectedItem = cat_011_tipo_de_item.find(
-                  (item) => item.codigo === key
-                );
-                if (selectedItem) {
-                  setDataUpdateProduct((prev) => ({
-                    ...prev,
-                    tipoDeItem: selectedItem.valores,
-                  }));
-                }
-              }}
               className="pt-5"
               variant="bordered"
               label="Tipo de item"
@@ -220,6 +212,16 @@ function UpdateProduct({ product, onCloseModal }: Props) {
                 <AutocompleteItem
                   key={JSON.stringify(item)}
                   value={item.codigo}
+                  onClick={() => {
+                    setDataUpdateProduct((prev) => ({
+                      ...prev,
+                      tipoDeItem: item.valores,
+                    }));
+                    setDataUpdateProduct((prev) => ({
+                      ...prev,
+                      tipoItem: item.codigo,
+                    }))
+                  }}
                 >
                   {item.valores}
                 </AutocompleteItem>
@@ -229,43 +231,44 @@ function UpdateProduct({ product, onCloseModal }: Props) {
           <div className="mt-2">
             <Autocomplete
               className="pt-5"
-              onSelectionChange={(key) => {
-                const selectedItem = unidadDeMedidaList.find(
-                  (item) => item.valores === key
-                );
-                if (selectedItem) {
-                  setDataUpdateProduct((prev) => ({
-                    ...prev,
-                    unidadDeMedida: selectedItem.valores,
-                  }));
-                }
-              }}
               variant="bordered"
               name="unidadDeMedida"
               label="Unidad de medida"
               labelPlacement="outside"
               placeholder={
-                product?.unidadDeMedida || "Selecciona unidad de medida"
+                product?.unidaDeMedida || "Selecciona unidad de medida"
               }
               size="lg"
             >
               {unidadDeMedidaList.map((item) => (
                 <AutocompleteItem
-                  key={JSON.stringify(item)}
+                  key={item.id}
                   value={item.valores}
+                  onClick={() => {
+                    setDataUpdateProduct((prev) => ({
+                      ...prev,
+                      unidaDeMedida: item.valores,
+                    }));
+                    setDataUpdateProduct((prev) => ({
+                      ...prev,
+                      uniMedida: item.codigo,
+                    }))
+                  }}
                 >
                   {item.valores}
                 </AutocompleteItem>
               ))}
             </Autocomplete>
           </div>
+
           <div className="flex mt-2 gap-2">
             <div className="mt-2 w-full">
               <Input
                 label="Código"
                 labelPlacement="outside"
                 name="code"
-                defaultValue={codigo}
+                defaultValue={product?.code}
+                value={codigo}
                 placeholder="Ingresa o genera el código"
                 classNames={{ label: "font-semibold text-sm" }}
                 variant="bordered"
@@ -279,7 +282,9 @@ function UpdateProduct({ product, onCloseModal }: Props) {
                   backgroundColor: theme.colors.third,
                   color: theme.colors.primary,
                 }}
-                onClick={generarCodigo}
+                onClick={() => {
+                  generarCodigo();
+                }}
               >
                 Generar Código
               </Button>

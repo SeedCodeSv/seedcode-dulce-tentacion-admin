@@ -30,9 +30,9 @@ function CreateConfiguration() {
       img.onload = () => {
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
-        canvas.width = img.width;
-        canvas.height = img.height;
-        ctx?.drawImage(img, 0, 0);
+        canvas.width = 250; // Establecer el ancho deseado
+        canvas.height = 250; // Establecer la altura deseada
+        ctx?.drawImage(img, 0, 0, 200, 200); // Redimensionar la imagen al lienzo 200x200
         canvas.toBlob((blob) => {
           const convertedFile = new File(
             [blob!],

@@ -17,6 +17,7 @@ import CreateConfiguration from "../components/configuration/CreateConfiguration
 import SalesReportContigencePage from "../pages/SalesReportContigencePage";
 import { useActionsRolStore } from "../store/actions_rol.store";
 import { useEffect, useState } from "react";
+import Views from "../pages/Views";
 export const router = () => {
   const { role_view_action, OnGetActionsByRole } = useActionsRolStore();
   const [userRoleId, setUserRoleId] = useState(null);
@@ -86,6 +87,10 @@ export const router = () => {
     {
       path: "/actionRol",
       element: views && views.includes("Permisos") && <ActionRol />,
+    },
+    {
+      path: "/modules",
+      element: views && views.includes("Modulos") && <Views />,
     },
     {
       path: "/newSales",
