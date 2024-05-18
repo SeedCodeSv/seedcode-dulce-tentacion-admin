@@ -196,7 +196,28 @@ export const LayoutItems = () => {
           </Button>
         </div>
       )}
-
+      {views && views.includes("Ventas") && mode === "vendedor" && (
+        <NavLink
+          to={"/newSales"}
+          className={({ isActive }) => {
+            return (
+              (isActive
+                ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
+                : "text-coffee-brown font-semibold border-white") +
+              " flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
+            );
+          }}
+          style={({ isActive }) => {
+            return {
+              borderLeftColor: isActive ? theme.colors.dark : "transparent",
+              borderLeftWidth: 5,
+            };
+          }}
+        >
+          <Box size={iconSize} />
+          <p className="ml-2 text-sm 2xl:text-base">Nueva venta</p>
+        </NavLink>
+      )}
       {mode !== "vendedor" && (
         <>
           {views && (
@@ -272,41 +293,18 @@ export const LayoutItems = () => {
                   <p className="ml-2 text-sm 2xl:text-base">Categorías</p>
                 </NavLink>
               )}
-              {views.includes("Ventas") && mode === "vendedor" && (
-                <NavLink
-                  to={"/newSales"}
-                  className={({ isActive }) => {
-                    return (
-                      (isActive
-                        ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
-                        : "text-coffee-brown font-semibold border-white") +
-                      " flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
-                    );
-                  }}
-                  style={({ isActive }) => {
-                    return {
-                      borderLeftColor: isActive
-                        ? theme.colors.dark
-                        : "transparent",
-                      borderLeftWidth: 5,
-                    };
-                  }}
-                >
-                  <Box size={iconSize} />
-                  <p className="ml-2 text-sm 2xl:text-base">Nueva venta</p>
-                </NavLink>
-              )}
+
               <>
                 {/* inline-block  */}
-                <Menu
-                  as="div"
-                  className="relative px-4 z-50 w-full"
-                >
+                <Menu as="div" className="relative px-4 z-50 w-full">
                   <div>
                     <Menu.Button className="inline-flex w-full font-semibold py-2  gap-x-1.5 ml-2 text-sm 2xl:text-base">
                       <AlignJustify size={iconSize} />
                       Menú
-                      <ChevronDown className="justify-end items-end  ml-20" size={iconSize} />
+                      <ChevronDown
+                        className="justify-end items-end  ml-20"
+                        size={iconSize}
+                      />
                     </Menu.Button>
                   </div>
 
