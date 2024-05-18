@@ -217,6 +217,10 @@ function UpdateProduct({ product, onCloseModal }: Props) {
                       ...prev,
                       tipoDeItem: item.valores,
                     }));
+                    setDataUpdateProduct((prev) => ({
+                      ...prev,
+                      tipoItem: item.codigo,
+                    }))
                   }}
                 >
                   {item.valores}
@@ -245,6 +249,10 @@ function UpdateProduct({ product, onCloseModal }: Props) {
                       ...prev,
                       unidaDeMedida: item.valores,
                     }));
+                    setDataUpdateProduct((prev) => ({
+                      ...prev,
+                      uniMedida: item.codigo,
+                    }))
                   }}
                 >
                   {item.valores}
