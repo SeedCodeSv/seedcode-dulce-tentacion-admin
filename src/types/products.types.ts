@@ -35,8 +35,8 @@ export interface IGetProductsPaginated {
 export interface ProductPayload {
   name: string;
   description: string;
-  price: number;
-  costoUnitario: number;
+  price: string;
+  costoUnitario: string;
   code: string;
   categoryProductId: number;
   tipoDeItem: string;
