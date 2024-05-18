@@ -13,10 +13,8 @@ import { Product, ProductPayload } from "../../types/products.types";
 import { useProductsStore } from "../../store/products.store";
 import { CategoryProduct } from "../../types/categories.types";
 import { ThemeContext } from "../../hooks/useTheme";
-import { TipoDeItem } from "../../types/billing/cat-011-tipo-de-item.types";
 import { useBillingStore } from "../../store/facturation/billing.store";
 import { SeedcodeCatalogosMhService } from "seedcode-catalogos-mh";
-
 interface Props {
   product?: Product;
   onCloseModal: () => void;
@@ -24,6 +22,7 @@ interface Props {
 function AddProducts(props: Props) {
   const unidadDeMedidaList =
     new SeedcodeCatalogosMhService().get014UnidadDeMedida();
+  const tipoItem = new SeedcodeCatalogosMhService().get011TipoDeItem();
 
   const validationSchema = yup.object().shape({
     name: yup.string().required("**El nombre es requerido**"),
@@ -45,16 +44,18 @@ function AddProducts(props: Props) {
       .required("**Debes seleccionar la categoría**")
       .min(1, "**Debes seleccionar la categoría**"),
   });
-  const [unidadDeMedida, setUnidadDeMedida] = useState("");
+
   const initialValues = {
     name: props.product?.name ?? "",
     description: props.product?.description ?? "N/A",
-    price: Number(props.product?.price) ?? 0,
-    costoUnitario: Number(props.product?.costoUnitario) ?? 0,
+    price: props.product?.price ?? "",
+    costoUnitario: props.product?.costoUnitario ?? "",
     code: props.product?.code ?? "N/A",
     categoryProductId: props.product?.categoryProductId ?? 0,
-    tipoDeItem: props.product?.tipoDeItem ?? "",
-    unidaDeMedida: props.product?.unidaDeMedida ?? unidadDeMedida,
+    tipoDeItem: props.product?.tipoDeItem ?? "N/A",
+    unidaDeMedida: props.product?.unidaDeMedida ?? "N/A",
+    tipoItem: props.product?.tipoItem ?? "",
+    uniMedida: props.product?.uniMedida ?? "",
   };
   const { list_categories, getListCategories } = useCategoriesStore();
   useEffect(() => {
@@ -72,11 +73,7 @@ function AddProducts(props: Props) {
     getCat011TipoDeItem();
     getCat014UnidadDeMedida();
   }, []);
-
-  const [setTypeItem] = useState<TipoDeItem>();
-
   const { theme } = useContext(ThemeContext);
-
   const handleSave = (values: ProductPayload) => {
     if (props.product) {
       patchProducts(values, props.product.id);
@@ -287,24 +284,19 @@ function AddProducts(props: Props) {
                       <AutocompleteItem
                         key={JSON.stringify(item)}
                         value={item.codigo}
+                        onClick={() => {
+                          handleChange("tipoDeItem")(item.valores.toString());
+                        }}
                       >
                         {item.valores}
                       </AutocompleteItem>
                     ))}
                   </Autocomplete>
                 </div>
+                
                 <div className="mt-2">
                   <Autocomplete
                     className="pt-5"
-                    onSelectionChange={() => {
-                      {
-                        unidadDeMedidaList.map((item) => {
-                          if (item.valores) {
-                            setUnidadDeMedida(item.valores);
-                          }
-                        });
-                      }
-                    }}
                     variant="bordered"
                     name="unidaDeMedida"
                     label="Unidad de medida"
@@ -320,8 +312,10 @@ function AddProducts(props: Props) {
                       <AutocompleteItem
                         key={JSON.stringify(item)}
                         value={item.valores}
-                        onChange={() => {
-                          setUnidadDeMedida(item.valores);
+                        onClick={() => {
+                          handleChange("unidaDeMedida")(
+                            item.valores.toString()
+                          );
                         }}
                       >
                         {item.valores}
@@ -340,10 +334,10 @@ function AddProducts(props: Props) {
                       label="Código"
                       labelPlacement="outside"
                       name="code"
-                      value={codigo || values.code} // Si se ha generado un código, úsalo; si no, usa el valor del formulario
+                      value={codigo || values.code}
                       onChange={(e) => {
-                        handleChange("code")(e); // Actualiza el valor del formulario
-                        setCodigo(e.target.value); // Actualiza el estado del código generado
+                        handleChange("code")(e);
+                        setCodigo(e.target.value);
                       }}
                       onBlur={handleBlur("code")}
                       placeholder="Ingresa o genera el código"
