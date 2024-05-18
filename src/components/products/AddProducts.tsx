@@ -54,6 +54,7 @@ function AddProducts(props: Props) {
     categoryProductId: props.product?.categoryProductId ?? 0,
     tipoDeItem: props.product?.tipoDeItem ?? "N/A",
     unidaDeMedida: props.product?.unidaDeMedida ?? "N/A",
+
     tipoItem: props.product?.tipoItem ?? "",
     uniMedida: props.product?.uniMedida ?? "",
   };
@@ -112,6 +113,8 @@ function AddProducts(props: Props) {
 
     const codigoGenerado = makeid(12);
     setCodigo(codigoGenerado);
+
+    return codigoGenerado;
   };
 
   return (
@@ -286,6 +289,7 @@ function AddProducts(props: Props) {
                         value={item.codigo}
                         onClick={() => {
                           handleChange("tipoDeItem")(item.valores.toString());
+                          handleChange("tipoItem")(item.codigo.toString());
                         }}
                       >
                         {item.valores}
@@ -293,7 +297,7 @@ function AddProducts(props: Props) {
                     ))}
                   </Autocomplete>
                 </div>
-                
+
                 <div className="mt-2">
                   <Autocomplete
                     className="pt-5"
@@ -316,6 +320,7 @@ function AddProducts(props: Props) {
                           handleChange("unidaDeMedida")(
                             item.valores.toString()
                           );
+                          handleChange("uniMedida")(item.codigo.toString());
                         }}
                       >
                         {item.valores}
@@ -361,8 +366,8 @@ function AddProducts(props: Props) {
                         color: theme.colors.primary,
                       }}
                       onClick={() => {
-                        generarCodigo();
-                        handleChange("code")(codigo); // Actualiza el valor del formulario con el código generado
+                        const code = generarCodigo();
+                        handleChange("code")(code); // Actualiza el valor del formulario con el código generado
                       }}
                     >
                       Generar Código
