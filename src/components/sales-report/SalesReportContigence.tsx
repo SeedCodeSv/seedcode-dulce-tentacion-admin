@@ -164,7 +164,6 @@ function SalesReportContigence() {
   const [terminalLineData, setTerminalLineData] = useState(baseData);
 
   const [selectedSale, setSelectedSale] = useState<Sale>();
-
   async function onInput(input: string) {
     let ld = [...terminalLineData];
     ld.push(<TerminalInput>{input}</TerminalInput>);
@@ -345,6 +344,7 @@ function SalesReportContigence() {
   const [motivoContigencia, setMotivoContigencia] = useState("");
 
   const handleSendToContingencia = async (sale: Sale) => {
+    console.log("Sales ya en el metodo",sale)
     const result_generation = await getVentaByCodigo(sale.codigoGeneracion);
     const result_credito_generate = await getCreditoVentaByCodigo(
       sale.codigoGeneracion
@@ -1150,7 +1150,7 @@ function SalesReportContigence() {
                             ...rowData.customer,
                           }));
                           setCodigoGeneracion(rowData.codigoGeneracion);
-                          setSelectedSale(rowData.id);
+                          setSelectedSale(rowData);
                           handleVerifyEdit(rowData);
                           modalLoading.onOpen();
                         }}
@@ -1294,8 +1294,9 @@ function SalesReportContigence() {
           onClose={modalEdit.onClose}
           codigoGeneracion={codigoGeneracion}
           customer={dataCustomer}
-          handleVerify={handleVerify}
-        ></UpdateCustomerSales>
+          handleSendToContingencia={handleSendToContingencia}
+          selectedSale={selectedSale}
+        />
       </ModalGlobal>
       <ModalGlobal
         title={title}
