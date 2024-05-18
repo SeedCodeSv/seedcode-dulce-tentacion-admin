@@ -1,3 +1,5 @@
+import { Sale } from "../report_contigence";
+
 export interface IInvalidationToMH {
   ambiente: string;
   version: number;
@@ -62,7 +64,7 @@ interface Motivo {
 }
 
 
-export interface IResponseInvalidation {
+export interface IResponseInvalidationMH {
   version: number;
   ambiente: string;
   versionApp: number;
@@ -75,3 +77,29 @@ export interface IResponseInvalidation {
   descripcionMsg: string;
   observaciones: string[];
 }
+
+export interface IGetRecentSales {
+  ok: boolean;
+  status: number;
+  sales: Sale[];
+}
+
+export interface IInvalidationResponse {
+  ok: boolean;
+  status: number;
+  message: string;
+}
+
+export const invalidationTypes = [
+  {
+    id: 1,
+    codigo: "1",
+    valores: "Error en la Información del Documento Tributario Electrónico a invalidar.",
+  },
+  {
+    id: 3,
+    codigo: "3",
+    valores: "Otro",
+  }
+]
+        

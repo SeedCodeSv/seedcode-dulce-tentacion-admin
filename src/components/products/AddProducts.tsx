@@ -13,18 +13,25 @@ import { Product, ProductPayload } from "../../types/products.types";
 import { useProductsStore } from "../../store/products.store";
 import { CategoryProduct } from "../../types/categories.types";
 import { ThemeContext } from "../../hooks/useTheme";
-import { TipoDeItem } from "../../types/billing/cat-011-tipo-de-item.types";
-import { normalize } from "../../utils/filters";
+import { useBillingStore } from "../../store/facturation/billing.store";
+import { SeedcodeCatalogosMhService } from "seedcode-catalogos-mh";
 interface Props {
   product?: Product;
   onCloseModal: () => void;
 }
-
 function AddProducts(props: Props) {
+  const unidadDeMedidaList =
+    new SeedcodeCatalogosMhService().get014UnidadDeMedida();
+  const tipoItem = new SeedcodeCatalogosMhService().get011TipoDeItem();
+
   const validationSchema = yup.object().shape({
     name: yup.string().required("**El nombre es requerido**"),
     description: yup.string().required("**La descripción es requerida**"),
     price: yup
+      .number()
+      .required("**El precio es requerido**")
+      .typeError("**El precio es requerido**"),
+    costoUnitario: yup
       .number()
       .required("**El precio es requerido**")
       .typeError("**El precio es requerido**"),
@@ -36,19 +43,30 @@ function AddProducts(props: Props) {
       .number()
       .required("**Debes seleccionar la categoría**")
       .min(1, "**Debes seleccionar la categoría**"),
+    tipoItem: yup
+      .string()
+      .required("**Debes seleccionar el tipo de item**")
+      .min(1, "**Debes seleccionar el tipo de item**"),
+    uniMedida: yup
+      .string()
+      .required("**Debes seleccionar la unidad de medida**")
+      .min(1, "**Debes seleccionar la unidad de medida**"),
   });
 
   const initialValues = {
     name: props.product?.name ?? "",
     description: props.product?.description ?? "N/A",
-    price: Number(props.product?.price) ?? 0,
-    typeOfItem: props.product?.type ?? "",
+    price: props.product?.price ?? "",
+    costoUnitario: props.product?.costoUnitario ?? "",
     code: props.product?.code ?? "N/A",
     categoryProductId: props.product?.categoryProductId ?? 0,
+    tipoDeItem: props.product?.tipoDeItem ?? "N/A",
+    unidaDeMedida: props.product?.unidaDeMedida ?? "N/A",
+
+    tipoItem: props.product?.tipoItem ?? "",
+    uniMedida: props.product?.uniMedida ?? "",
   };
-
   const { list_categories, getListCategories } = useCategoriesStore();
-
   useEffect(() => {
     getListCategories();
   }, []);
@@ -59,15 +77,12 @@ function AddProducts(props: Props) {
     cat_011_tipo_de_item,
     getCat011TipoDeItem,
   } = useProductsStore();
-
+  const { getCat014UnidadDeMedida } = useBillingStore();
   useEffect(() => {
     getCat011TipoDeItem();
+    getCat014UnidadDeMedida();
   }, []);
-
-  const [typeItem, setTypeItem] = useState<TipoDeItem>();
-
   const { theme } = useContext(ThemeContext);
-
   const handleSave = (values: ProductPayload) => {
     if (props.product) {
       patchProducts(values, props.product.id);
@@ -104,8 +119,10 @@ function AddProducts(props: Props) {
       return result;
     };
 
-    const codigoGenerado = makeid(12); // Puedes cambiar la longitud según tus necesidades
+    const codigoGenerado = makeid(12);
     setCodigo(codigoGenerado);
+
+    return codigoGenerado;
   };
 
   return (
@@ -196,10 +213,10 @@ function AddProducts(props: Props) {
                   <Input
                     label="Costo unitario"
                     labelPlacement="outside"
-                    name="price"
-                    value={values.price.toString()}
-                    onChange={handleChange("costounitario")}
-                    onBlur={handleBlur("costounitario")}
+                    name="costoUnitario"
+                    value={values.costoUnitario.toString()}
+                    onChange={handleChange("costoUnitario")}
+                    onBlur={handleBlur("costoUnitario")}
                     placeholder="00.00"
                     classNames={{
                       label: "font-semibold text-gray-500 text-sm",
@@ -209,9 +226,9 @@ function AddProducts(props: Props) {
                     startContent="$"
                     size="lg"
                   />
-                  {errors.price && touched.price && (
+                  {errors.costoUnitario && touched.costoUnitario && (
                     <span className="text-sm font-semibold text-red-500">
-                      {errors.price}
+                      {errors.costoUnitario}
                     </span>
                   )}
                 </div>
@@ -263,30 +280,71 @@ function AddProducts(props: Props) {
                 </div>
                 <div className="mt-2">
                   <Autocomplete
-                    onSelectionChange={(key) => {
-                      if (key) {
-                        const tipePaymentSelected = JSON.parse(
-                          key as string
-                        ) as TipoDeItem;
-                        setTypeItem(tipePaymentSelected);
-                      }
-                    }}
                     className="pt-5"
                     variant="bordered"
                     label="Tipo de item"
                     labelPlacement="outside"
-                    placeholder="Seleccione el tipo de item"
+                    placeholder={
+                      props.product?.tipoDeItem ??
+                      props.product?.tipoDeItem ??
+                      "Selecciona el item"
+                    }
                     size="lg"
                   >
                     {cat_011_tipo_de_item.map((item) => (
                       <AutocompleteItem
                         key={JSON.stringify(item)}
                         value={item.codigo}
+                        onClick={() => {
+                          handleChange("tipoDeItem")(item.valores.toString());
+                          handleChange("tipoItem")(item.codigo.toString());
+                        }}
                       >
                         {item.valores}
                       </AutocompleteItem>
                     ))}
                   </Autocomplete>
+                  {errors.tipoItem && touched.tipoItem && (
+                    <span className="text-sm font-semibold text-red-500">
+                      {errors.tipoItem}
+                    </span>
+                  )}
+                </div>
+
+                <div className="mt-2">
+                  <Autocomplete
+                    className="pt-5"
+                    variant="bordered"
+                    name="unidaDeMedida"
+                    label="Unidad de medida"
+                    labelPlacement="outside"
+                    placeholder={
+                      props.product?.tipoDeItem ??
+                      props.product?.tipoDeItem ??
+                      "Selecciona unidad de medida"
+                    }
+                    size="lg"
+                  >
+                    {unidadDeMedidaList.map((item) => (
+                      <AutocompleteItem
+                        key={JSON.stringify(item)}
+                        value={item.valores}
+                        onClick={() => {
+                          handleChange("unidaDeMedida")(
+                            item.valores.toString()
+                          );
+                          handleChange("uniMedida")(item.codigo.toString());
+                        }}
+                      >
+                        {item.valores}
+                      </AutocompleteItem>
+                    ))}
+                  </Autocomplete>
+                  {errors.uniMedida && touched.uniMedida && (
+                    <span className="text-sm font-semibold text-red-500">
+                      {errors.uniMedida}
+                    </span>
+                  )}
                 </div>
                 <div className="flex mt-2 gap-2">
                   <div className="mt-2 w-full">
@@ -294,10 +352,10 @@ function AddProducts(props: Props) {
                       label="Código"
                       labelPlacement="outside"
                       name="code"
-                      value={codigo || values.code} // Si se ha generado un código, úsalo; si no, usa el valor del formulario
+                      value={codigo || values.code}
                       onChange={(e) => {
-                        handleChange("code")(e); // Actualiza el valor del formulario
-                        setCodigo(e.target.value); // Actualiza el estado del código generado
+                        handleChange("code")(e);
+                        setCodigo(e.target.value);
                       }}
                       onBlur={handleBlur("code")}
                       placeholder="Ingresa o genera el código"
@@ -321,8 +379,8 @@ function AddProducts(props: Props) {
                         color: theme.colors.primary,
                       }}
                       onClick={() => {
-                        generarCodigo();
-                        handleChange("code")(codigo); // Actualiza el valor del formulario con el código generado
+                        const code = generarCodigo();
+                        handleChange("code")(code); // Actualiza el valor del formulario con el código generado
                       }}
                     >
                       Generar Código
@@ -331,37 +389,6 @@ function AddProducts(props: Props) {
                 </div>
               </div>
             </div>
-            {/* <div className="flex gap-2 mt-4 w-full">
-              <div>
-                <Input
-                  label="Código"
-                  labelPlacement="outside"
-                  value={codigo}
-                  onChange={handleChange("code")}
-                  onBlur={handleBlur("code")}
-                  placeholder="Genera el código"
-                  classNames={{
-                    label: "font-semibold text-sm",
-                  }}
-                  readOnly
-                  variant="bordered"
-                  size="lg"
-                />
-              </div>
-              <div>
-                <Button
-                  className="w-full mt-8 text-sm font-semibold"
-                  style={{
-                    backgroundColor: theme.colors.third,
-                    color: theme.colors.primary,
-                  }}
-                  onClick={generarCodigo}
-                >
-                  Generar Código
-                </Button>
-              </div>
-            </div> */}
-
             <Button
               size="lg"
               onClick={() => handleSubmit()}

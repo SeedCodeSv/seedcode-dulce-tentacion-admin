@@ -41,6 +41,7 @@ import { ActionsContext } from "../../hooks/useActions";
 import { Drawer } from "vaul";
 import { global_styles } from "../../styles/global.styles";
 import classNames from "classnames";
+import UpdateProduct from "./UpdateProduct";
 
 function ListProducts() {
   const { theme, context } = useContext(ThemeContext);
@@ -48,6 +49,7 @@ function ListProducts() {
     backgroundColor: theme.colors.dark,
     color: theme.colors.primary,
   };
+  const [isOpenModalUpdate, setIsOpenModalUpdate] = useState(false);
   const { getPaginatedProducts, paginated_products } = useProductsStore();
   const [openVaul, setOpenVaul] = useState(false);
   const [search, setSearch] = useState("");
@@ -258,9 +260,11 @@ function ListProducts() {
                               }}
                             />
                             <Autocomplete
-                               onSelectionChange={(key) => {
+                              onSelectionChange={(key) => {
                                 if (key) {
-                                  const branchSelected = JSON.parse(key as string) as CategoryProduct;
+                                  const branchSelected = JSON.parse(
+                                    key as string
+                                  ) as CategoryProduct;
                                   setCategory(branchSelected.name);
                                 }
                               }}
@@ -311,14 +315,21 @@ function ListProducts() {
                 </div>
               </div>
               <div className="flex justify-end w-full">
-                {actions_role_view && actions_role_view.includes("Agregar") && (
+                {/* {actions_role_view && actions_role_view.includes("Agregar") && (
                   <AddButton
                     onClick={() => {
                       modalAdd.onOpen();
                       setSelectedProduct(undefined);
                     }}
                   />
-                )}
+                )} */}
+
+                <AddButton
+                  onClick={() => {
+                    modalAdd.onOpen();
+                    setSelectedProduct(undefined);
+                  }}
+                />
               </div>
             </div>
           </div>
@@ -393,12 +404,12 @@ function ListProducts() {
                 header="Acciones"
                 body={(item) => (
                   <div className="flex w-full gap-5">
-                    {actions_role_view &&
-                      actions_role_view?.includes("Editar") && (
+                   
                         <Button
                           onClick={() => {
                             setSelectedProduct(item);
-                            modalAdd.onOpen();
+                           
+                            setIsOpenModalUpdate(true);
                           }}
                           isIconOnly
                           style={{
@@ -411,7 +422,7 @@ function ListProducts() {
                             size={20}
                           />
                         </Button>
-                      )}
+                     
                     {actions_role_view &&
                       actions_role_view?.includes("Eliminar") && (
                         <DeletePopover product={item} />
@@ -459,6 +470,20 @@ function ListProducts() {
         >
           <AddProducts
             onCloseModal={modalAdd.onClose}
+            product={selectedProduct}
+          />
+        </ModalGlobal>
+
+        <ModalGlobal
+          title={"Editar producto"}
+          onClose={() => {
+            setIsOpenModalUpdate(false);
+          }}
+          size="w-full md:w-[900px]"
+          isOpen={isOpenModalUpdate}
+        >
+          <UpdateProduct
+            onCloseModal={() => setIsOpenModalUpdate(false)}
             product={selectedProduct}
           />
         </ModalGlobal>

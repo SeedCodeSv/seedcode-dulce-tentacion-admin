@@ -16,7 +16,7 @@ function Auth() {
   const { postLogin } = useAuthStore();
 
   const { theme } = useContext(ThemeContext);
-  const { setToken, setIsAuth, isAuth } = useContext(SessionContext);
+  const { setToken, setIsAuth, setRolId } = useContext(SessionContext);
 
   const initialValues = {
     userName: "",
@@ -31,9 +31,10 @@ function Auth() {
   const handleSubmit = (values: IAuthPayload) => {
     postLogin(values).then((response) => {
       if (response?.ok) {
+        setRolId(response?.user?.roleId)
         setIsAuth(true);
         setToken(response.token);
-        redirect("/branches")
+        redirect("/")
       } else {
         setIsAuth(false);
         setToken("");

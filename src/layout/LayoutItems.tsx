@@ -26,8 +26,18 @@ import {
   Contact,
   BoxIcon,
   ScanBarcode,
+  SquareMenu,
+  AlignJustify,
+  ChevronDown,
 } from "lucide-react";
-import { useContext, useEffect, useMemo, useState } from "react";
+import {
+  Fragment,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { ThemeContext } from "../hooks/useTheme";
 import { useAuthStore } from "../store/auth.store";
 import { delete_seller_mode, save_seller_mode } from "../storage/localStorage";
@@ -37,6 +47,8 @@ import { useConfigurationStore } from "../store/perzonalitation.store";
 import useWindowSize from "../hooks/useWindowSize";
 import { classNames } from "primereact/utils";
 import { useActionsRolStore } from "../store/actions_rol.store";
+import { Menu, Transition } from "@headlessui/react";
+
 export const LayoutItems = () => {
   const { theme, toggleContext, context } = useContext(ThemeContext);
   const { makeLogout } = useAuthStore();
@@ -71,11 +83,11 @@ export const LayoutItems = () => {
   const transmitter = user?.employee?.branch?.transmitterId;
 
   const { personalization, GetConfigurationByTransmitter } =
-  useConfigurationStore();
+    useConfigurationStore();
 
-useEffect(() => {
-  GetConfigurationByTransmitter(transmitter || 0);
-}, []);
+  useEffect(() => {
+    GetConfigurationByTransmitter(transmitter || 0);
+  }, []);
 
   const { windowSize } = useWindowSize();
 
@@ -124,7 +136,7 @@ useEffect(() => {
         OnGetActionsByRole(user.roleId);
       }
     }
-  }, [OnGetActionsByRole]);
+  }, []);
 
   const views =
     role_view_action &&
@@ -184,7 +196,28 @@ useEffect(() => {
           </Button>
         </div>
       )}
-
+      {views && views.includes("Ventas") && mode === "vendedor" && (
+        <NavLink
+          to={"/newSales"}
+          className={({ isActive }) => {
+            return (
+              (isActive
+                ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
+                : "text-coffee-brown font-semibold border-white") +
+              " flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
+            );
+          }}
+          style={({ isActive }) => {
+            return {
+              borderLeftColor: isActive ? theme.colors.dark : "transparent",
+              borderLeftWidth: 5,
+            };
+          }}
+        >
+          <Box size={iconSize} />
+          <p className="ml-2 text-sm 2xl:text-base">Nueva venta</p>
+        </NavLink>
+      )}
       {mode !== "vendedor" && (
         <>
           {views && (
@@ -260,48 +293,34 @@ useEffect(() => {
                   <p className="ml-2 text-sm 2xl:text-base">Categorías</p>
                 </NavLink>
               )}
-              {views && (
+
+              <>
+                {/* inline-block  */}
+                <Menu as="div" className="relative px-4 z-50 w-full">
                   <div>
-                    <Dropdown>
-                      <DropdownTrigger>
-                        <p
-                          style={dropdownStyle}
-                          className="text-coffee-brown font-semibold border-white flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600"
-                        >
-                          <Store size={iconSize} />
-                          <span className="ml-2 text-sm 2xl:text-base">
-                            Sucursales
-                          </span>
-                        </p>
-                      </DropdownTrigger>
-                      <DropdownMenu
-                        aria-label="Example with disabled actions"
-                        className="w-64"
-                      >
-                        {views.includes("Usuarios") ? (
-                          <DropdownItem key="users" textValue="users">
-                            <NavLink
-                              to={"/users"}
-                              className={({ isActive }) => {
-                                return (
-                                  (isActive
-                                    ? "font-semibold bg-gray-300 dark:bg-gray-700"
-                                    : "text-coffee-brown font-semibold border-white") +
-                                  " flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white"
-                                );
-                              }}
-                            >
-                              <User size={iconSize} />
-                              <p className="ml-2 text-sm 2xl:text-base">
-                                Usuarios
-                              </p>
-                            </NavLink>
-                          </DropdownItem>
-                        ) : (
-                          <></>
-                        )}
-                        {views.includes("Empleados") ? (
-                          <DropdownItem key="employees" textValue="employees">
+                    <Menu.Button className="inline-flex w-full font-semibold py-2  gap-x-1.5 ml-2 text-sm 2xl:text-base">
+                      <AlignJustify size={iconSize} />
+                      Menú
+                      <ChevronDown
+                        className="justify-end items-end  ml-20"
+                        size={iconSize}
+                      />
+                    </Menu.Button>
+                  </div>
+
+                  <Transition
+                    as={Fragment}
+                    enter="transition ease-out duration-100"
+                    enterFrom="transform opacity-0 scale-95"
+                    enterTo="transform opacity-100 scale-100"
+                    leave="transition ease-in duration-75"
+                    leaveFrom="transform opacity-100 scale-100"
+                    leaveTo="transform opacity-0 scale-95"
+                  >
+                    <Menu.Items className="absolute z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                      <div className="py-1">
+                        <Menu.Item>
+                          {views.includes("Empleados") && (
                             <NavLink
                               to={"/employees"}
                               className={({ isActive }) => {
@@ -318,12 +337,11 @@ useEffect(() => {
                                 Empleados
                               </p>
                             </NavLink>
-                          </DropdownItem>
-                        ) : (
-                          <></>
-                        )}
-                        {views.includes("Sucursales") ? (
-                          <DropdownItem key="clients" textValue="clients">
+                          )}
+                        </Menu.Item>
+
+                        <Menu.Item>
+                          {views.includes("Clientes") && (
                             <NavLink
                               to={"/clients"}
                               className={({ isActive }) => {
@@ -340,12 +358,32 @@ useEffect(() => {
                                 Clientes
                               </p>
                             </NavLink>
-                          </DropdownItem>
-                        ) : (
-                          <></>
-                        )}
-                        {views.includes("Sucursales") ? (
-                          <DropdownItem key="delete">
+                          )}
+                        </Menu.Item>
+
+                        <Menu.Item>
+                          {views.includes("Usuarios") && (
+                            <NavLink
+                              to={"/users"}
+                              className={({ isActive }) => {
+                                return (
+                                  (isActive
+                                    ? "font-semibold bg-gray-300 dark:bg-gray-700"
+                                    : "text-coffee-brown font-semibold border-white") +
+                                  " flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white"
+                                );
+                              }}
+                            >
+                              <User size={iconSize} />
+                              <p className="ml-2 text-sm 2xl:text-base">
+                                Usuarios
+                              </p>
+                            </NavLink>
+                          )}
+                        </Menu.Item>
+
+                        <Menu.Item>
+                          {views.includes("Sucursales") && (
                             <NavLink
                               to={"/branches"}
                               className={({ isActive }) => {
@@ -360,14 +398,146 @@ useEffect(() => {
                               <BookUser size={iconSize} />
                               <p className="ml-2 text-base">Sucursales</p>
                             </NavLink>
-                          </DropdownItem>
-                        ) : (
-                          <></>
-                        )}
-                      </DropdownMenu>
-                    </Dropdown>
-                  </div>
-                )}
+                          )}
+                        </Menu.Item>
+                      </div>
+                    </Menu.Items>
+                  </Transition>
+                </Menu>
+              </>
+
+              {/* <div>
+                <Dropdown
+                  onChange={() => {
+                    console.log(8888);
+                  }}
+                >
+                  <DropdownTrigger>
+                    <p
+                      style={dropdownStyle}
+                      className="text-coffee-brown font-semibold border-white flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600"
+                    >
+                      <Store size={iconSize} />
+                      <span className="ml-2 text-sm 2xl:text-base">
+                        Sucursales
+                      </span>
+                    </p>
+                  </DropdownTrigger>
+                  <DropdownMenu
+                    aria-label="Example with disabled actions"
+                    className="w-64"
+                  >
+                    {views.includes("Usuarios") ? (
+                      <DropdownItem key="users" textValue="users">
+                        <NavLink
+                          to={"/users"}
+                          className={({ isActive }) => {
+                            return (
+                              (isActive
+                                ? "font-semibold bg-gray-300 dark:bg-gray-700"
+                                : "text-coffee-brown font-semibold border-white") +
+                              " flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white"
+                            );
+                          }}
+                        >
+                          <User size={iconSize} />
+                          <p className="ml-2 text-sm 2xl:text-base">Usuarios</p>
+                        </NavLink>
+                      </DropdownItem>
+                    ) : (
+                      <></>
+                    )}
+                    {views.includes("Empleados") ? (
+                      <DropdownItem key="employees" textValue="employees">
+                        <NavLink
+                          to={"/employees"}
+                          className={({ isActive }) => {
+                            return (
+                              (isActive
+                                ? "font-semibold bg-gray-300 dark:bg-gray-700"
+                                : "text-coffee-brown font-semibold border-white") +
+                              " flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white"
+                            );
+                          }}
+                        >
+                          <User size={iconSize} />
+                          <p className="ml-2 text-sm 2xl:text-base">
+                            Empleados
+                          </p>
+                        </NavLink>
+                      </DropdownItem>
+                    ) : (
+                      <></>
+                    )}
+                    {views.includes("Sucursales") ? (
+                      <DropdownItem key="clients" textValue="clients">
+                        <NavLink
+                          to={"/clients"}
+                          className={({ isActive }) => {
+                            return (
+                              (isActive
+                                ? "font-semibold bg-gray-300 dark:bg-gray-700"
+                                : "text-coffee-brown font-semibold border-white") +
+                              " flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white"
+                            );
+                          }}
+                        >
+                          <BookUser size={iconSize} />
+                          <p className="ml-2 text-sm 2xl:text-base">Clientes</p>
+                        </NavLink>
+                      </DropdownItem>
+                    ) : (
+                      <></>
+                    )}
+                    {views.includes("Sucursales") ? (
+                      <DropdownItem key="delete">
+                        <NavLink
+                          to={"/branches"}
+                          className={({ isActive }) => {
+                            return (
+                              (isActive
+                                ? "font-semibold bg-gray-300 dark:bg-gray-700"
+                                : "text-coffee-brown font-semibold border-white") +
+                              " flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white"
+                            );
+                          }}
+                        >
+                          <BookUser size={iconSize} />
+                          <p className="ml-2 text-base">Sucursales</p>
+                        </NavLink>
+                      </DropdownItem>
+                    ) : (
+                      <></>
+                    )}
+                  </DropdownMenu>
+                </Dropdown>
+              </div> */}
+
+              {views.includes("Gastos") && (
+                <NavLink
+                  to={"/expenses"}
+                  className={({ isActive }) => {
+                    return (
+                      (isActive
+                        ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
+                        : "text-coffee-brown font-semibold border-white") +
+                      " flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
+                    );
+                  }}
+                  style={({ isActive }) => {
+                    return {
+                      borderLeftColor: isActive
+                        ? theme.colors.dark
+                        : "transparent",
+                      borderLeftWidth: 5,
+                    };
+                  }}
+                >
+                  <SquareMenu size={iconSize} />
+                  <p className="ml-2 text-sm 2xl:text-base">Gastos</p>
+                </NavLink>
+              )}
+
               {views.includes("Reportes") && (
                 <NavLink
                   to={"/reports"}
@@ -474,11 +644,12 @@ useEffect(() => {
         }
       >
         <Switch
+          className="relative"
           onValueChange={(isDark) => toggleContext(isDark ? "dark" : "light")}
           isSelected={context === "dark"}
           size={windowSize.width > 768 ? undefined : "sm"}
         >
-          <p className="text-sm lg:text-base">
+          <p className="text-sm lg:text-base relative">
             {context === "dark" ? "Modo claro" : "Modo oscuro"}
           </p>
         </Switch>
