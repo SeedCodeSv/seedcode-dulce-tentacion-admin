@@ -64,8 +64,8 @@ export const SaleInvalidation = (props: Props) => {
       numeroControl: props.sale.numeroControl,
       fecEmi: props.sale.fecEmi,
       montoIva: Number(props.sale.totalIva),
-      tipoDocumento: props.sale.customer.tipoDocumento,
-      numDocumento: props.sale.customer.numDocumento,
+      tipoDocumento: "36",
+      numDocumento: transmitter.nit,
       nombre: props.sale.customer.nombre,
     },
     motivo: {

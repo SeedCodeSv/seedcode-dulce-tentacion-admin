@@ -13,10 +13,8 @@ import { Product, ProductPayload } from "../../types/products.types";
 import { useProductsStore } from "../../store/products.store";
 import { CategoryProduct } from "../../types/categories.types";
 import { ThemeContext } from "../../hooks/useTheme";
-import { TipoDeItem } from "../../types/billing/cat-011-tipo-de-item.types";
 import { useBillingStore } from "../../store/facturation/billing.store";
 import { SeedcodeCatalogosMhService } from "seedcode-catalogos-mh";
-
 interface Props {
   product?: Product;
   onCloseModal: () => void;
@@ -24,6 +22,7 @@ interface Props {
 function AddProducts(props: Props) {
   const unidadDeMedidaList =
     new SeedcodeCatalogosMhService().get014UnidadDeMedida();
+  const tipoItem = new SeedcodeCatalogosMhService().get011TipoDeItem();
 
   const validationSchema = yup.object().shape({
     name: yup.string().required("**El nombre es requerido**"),
@@ -44,17 +43,27 @@ function AddProducts(props: Props) {
       .number()
       .required("**Debes seleccionar la categoría**")
       .min(1, "**Debes seleccionar la categoría**"),
+    tipoItem: yup
+      .string()
+      .required("**Debes seleccionar el tipo de item**")
+      .min(1, "**Debes seleccionar el tipo de item**"),
+    uniMedida: yup
+      .string()
+      .required("**Debes seleccionar la unidad de medida**")
+      .min(1, "**Debes seleccionar la unidad de medida**"),
   });
-  const [unidadDeMedida, setUnidadDeMedida] = useState("");
+
   const initialValues = {
     name: props.product?.name ?? "",
     description: props.product?.description ?? "N/A",
-    price: Number(props.product?.price) ?? 0,
-    costoUnitario: Number(props.product?.costoUnitario) ?? 0,
+    price: props.product?.price ?? "",
+    costoUnitario: props.product?.costoUnitario ?? "",
     code: props.product?.code ?? "N/A",
     categoryProductId: props.product?.categoryProductId ?? 0,
-    tipoDeItem: props.product?.tipoDeItem ?? "",
-    unidaDeMedida: props.product?.unidaDeMedida ?? unidadDeMedida,
+    tipoDeItem: props.product?.tipoDeItem ?? "N/A",
+    unidaDeMedida: props.product?.unidaDeMedida ?? "N/A",
+    tipoItem: props.product?.tipoItem ?? "",
+    uniMedida: props.product?.uniMedida ?? "",
   };
   const { list_categories, getListCategories } = useCategoriesStore();
   useEffect(() => {
@@ -72,11 +81,7 @@ function AddProducts(props: Props) {
     getCat011TipoDeItem();
     getCat014UnidadDeMedida();
   }, []);
-
-  const [setTypeItem] = useState<TipoDeItem>();
-
   const { theme } = useContext(ThemeContext);
-
   const handleSave = (values: ProductPayload) => {
     if (props.product) {
       patchProducts(values, props.product.id);
@@ -115,6 +120,8 @@ function AddProducts(props: Props) {
 
     const codigoGenerado = makeid(12);
     setCodigo(codigoGenerado);
+
+    return codigoGenerado;
   };
 
   return (
@@ -135,7 +142,7 @@ function AddProducts(props: Props) {
           <>
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <div className="mt-4">
+                <div className="mt-8">
                   <Input
                     label="Nombre"
                     labelPlacement="outside"
@@ -157,7 +164,7 @@ function AddProducts(props: Props) {
                     </span>
                   )}
                 </div>
-                <div className="mt-2">
+                <div className="mt-6 mb-10">
                   <Textarea
                     label="Descripción"
                     labelPlacement="outside"
@@ -167,7 +174,7 @@ function AddProducts(props: Props) {
                     onBlur={handleBlur("description")}
                     placeholder="Ingresa la descripción"
                     classNames={{
-                      label: "font-semibold text-gray-500 text-sm",
+                      label: "font-semibold text-gray-500 text-sm ",
                     }}
                     variant="bordered"
                     size="lg"
@@ -178,7 +185,8 @@ function AddProducts(props: Props) {
                     </span>
                   )}
                 </div>
-                <div className="mt-2">
+               
+                <div className="mt-6 mb-10">
                   <Input
                     label="Precio"
                     labelPlacement="outside"
@@ -201,7 +209,8 @@ function AddProducts(props: Props) {
                     </span>
                   )}
                 </div>
-                <div className="mt-2">
+              
+                <div className="mt-6 mb-10">
                   <Input
                     label="Costo unitario"
                     labelPlacement="outside"
@@ -287,24 +296,25 @@ function AddProducts(props: Props) {
                       <AutocompleteItem
                         key={JSON.stringify(item)}
                         value={item.codigo}
+                        onClick={() => {
+                          handleChange("tipoDeItem")(item.valores.toString());
+                          handleChange("tipoItem")(item.codigo.toString());
+                        }}
                       >
                         {item.valores}
                       </AutocompleteItem>
                     ))}
                   </Autocomplete>
+                  {errors.tipoItem && touched.tipoItem && (
+                    <span className="text-sm font-semibold text-red-500">
+                      {errors.tipoItem}
+                    </span>
+                  )}
                 </div>
-                <div className="mt-2">
+
+                <div className="mt-8">
                   <Autocomplete
                     className="pt-5"
-                    onSelectionChange={() => {
-                      {
-                        unidadDeMedidaList.map((item) => {
-                          if (item.valores) {
-                            setUnidadDeMedida(item.valores);
-                          }
-                        });
-                      }
-                    }}
                     variant="bordered"
                     name="unidaDeMedida"
                     label="Unidad de medida"
@@ -320,8 +330,11 @@ function AddProducts(props: Props) {
                       <AutocompleteItem
                         key={JSON.stringify(item)}
                         value={item.valores}
-                        onChange={() => {
-                          setUnidadDeMedida(item.valores);
+                        onClick={() => {
+                          handleChange("unidaDeMedida")(
+                            item.valores.toString()
+                          );
+                          handleChange("uniMedida")(item.codigo.toString());
                         }}
                       >
                         {item.valores}
@@ -335,15 +348,15 @@ function AddProducts(props: Props) {
                   )}
                 </div>
                 <div className="flex mt-2 gap-2">
-                  <div className="mt-2 w-full">
+                  <div className="mt-2 w-90">
                     <Input
                       label="Código"
                       labelPlacement="outside"
                       name="code"
-                      value={codigo || values.code} // Si se ha generado un código, úsalo; si no, usa el valor del formulario
+                      value={codigo || values.code}
                       onChange={(e) => {
-                        handleChange("code")(e); // Actualiza el valor del formulario
-                        setCodigo(e.target.value); // Actualiza el estado del código generado
+                        handleChange("code")(e);
+                        setCodigo(e.target.value);
                       }}
                       onBlur={handleBlur("code")}
                       placeholder="Ingresa o genera el código"
@@ -359,7 +372,7 @@ function AddProducts(props: Props) {
                       </span>
                     )}
                   </div>
-                  <div className="mt-10 w-full">
+                  <div className="mt-10 w-25">
                     <Button
                       className="w-full text-sm font-semibold"
                       style={{
@@ -367,8 +380,8 @@ function AddProducts(props: Props) {
                         color: theme.colors.primary,
                       }}
                       onClick={() => {
-                        generarCodigo();
-                        handleChange("code")(codigo); // Actualiza el valor del formulario con el código generado
+                        const code = generarCodigo();
+                        handleChange("code")(code); // Actualiza el valor del formulario con el código generado
                       }}
                     >
                       Generar Código
