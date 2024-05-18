@@ -43,6 +43,14 @@ function AddProducts(props: Props) {
       .number()
       .required("**Debes seleccionar la categoría**")
       .min(1, "**Debes seleccionar la categoría**"),
+    tipoItem: yup
+      .string()
+      .required("**Debes seleccionar el tipo de item**")
+      .min(1, "**Debes seleccionar el tipo de item**"),
+    uniMedida: yup
+      .string()
+      .required("**Debes seleccionar la unidad de medida**")
+      .min(1, "**Debes seleccionar la unidad de medida**"),
   });
 
   const initialValues = {
@@ -296,6 +304,11 @@ function AddProducts(props: Props) {
                       </AutocompleteItem>
                     ))}
                   </Autocomplete>
+                  {errors.tipoItem && touched.tipoItem && (
+                    <span className="text-sm font-semibold text-red-500">
+                      {errors.tipoItem}
+                    </span>
+                  )}
                 </div>
 
                 <div className="mt-2">
