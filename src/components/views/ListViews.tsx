@@ -5,11 +5,12 @@ import { Column } from "primereact/column";
 import { ThemeContext } from "../../hooks/useTheme";
 import { ActionsContext } from "../../hooks/useActions";
 import { filterActions } from "../../utils/filters";
-import { Button, ButtonGroup, useDisclosure } from "@nextui-org/react";
-import { Table as ITable, CreditCard, List } from "lucide-react";
+import { Button, ButtonGroup, Popover, PopoverContent, PopoverTrigger, useDisclosure } from "@nextui-org/react";
+import { Table as ITable, CreditCard, List, TrashIcon } from "lucide-react";
 import AddButton from "../global/AddButton";
 import ModalGlobal from "../global/ModalGlobal";
 import AddViews from "./AddViews";
+import { IView } from "../../types/view.types";
 
 function ListViews() {
   const { theme } = useContext(ThemeContext);
@@ -110,6 +111,16 @@ function ListViews() {
                 field="name"
                 header="Nombre"
               />
+              <Column
+                headerClassName="text-sm font-semibold"
+                headerStyle={style}
+                header="Nombre"
+                body={(item) => (
+                    <div className="flex w-full gap-5">
+                        <DeleteView views={item}/>
+                    </div>
+                )}
+              />
             </DataTable>
           )}
         </div>
@@ -127,3 +138,73 @@ function ListViews() {
 }
 
 export default ListViews;
+
+interface Props {
+    views: IView;
+}
+
+const DeleteView = ({views} : Props) => {
+    const {theme} = useContext(ThemeContext);
+    const {OnDeleteView, getViews} = useViewsStore();
+    const {isOpen, onOpen, onClose} = useDisclosure();
+
+    useEffect(() => {
+        getViews()
+    }, [getViews])
+
+    const handleDelete = () => {
+        OnDeleteView(views.id);
+        getViews()
+        onClose();
+    }
+
+    return (
+        <>
+            <Popover isOpen={isOpen} onClose={onClose} backdrop="blur" showArrow>
+                <PopoverTrigger>
+                    <Button
+                        onClick={onOpen}
+                        isIconOnly
+                        style={{
+                            backgroundColor: theme.colors.danger,
+                        }}
+                        size="lg"
+                    >
+                        <TrashIcon 
+                            style={{
+                                color: theme.colors.primary,
+                            }}
+                            size={20}
+                        />
+                    </Button>
+                </PopoverTrigger>
+                <PopoverContent>
+                    <div className="w-full p-5">
+                        <p className="font-semibold text-gray-600 w-72">
+                            Eliminar {views.name}
+                        </p>
+                        <p className="mt-3 text-center text-gray-600 w-72">
+                            ¿Estas seguro de eliminar este registro?
+                        </p>
+                        <div className="mt-4">
+                            <Button onClick={onClose}>No, cancelar</Button>
+                            <Button
+                                onClick={() => {
+                                    handleDelete();
+                                    getViews();
+                                }}
+                                className="ml-5"
+                                style={{
+                                    backgroundColor: theme.colors.danger,
+                                    color: theme.colors.primary,
+                                }}
+                            >
+                                Si, eliminar
+                            </Button>
+                        </div>
+                    </div>
+                </PopoverContent>
+            </Popover>
+        </>
+    )
+}

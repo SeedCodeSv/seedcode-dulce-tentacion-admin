@@ -6,7 +6,7 @@ import { AxiosError } from "axios";
 
 export const useViewsStore = create<ViewsStore>((set, get) => ({
   views_list: [],
-  found: [],
+  founds: [],
   getViews: async () => {
     get_views()
       .then(({ data }) => {
@@ -22,7 +22,7 @@ export const useViewsStore = create<ViewsStore>((set, get) => ({
     .catch(() => {
       set((state) => ({
         ...state,
-        views: [],
+        views_list: [],
       }))
     })
   },
