@@ -1,10 +1,5 @@
-import { useContext, useEffect, useState } from "react";
-import {
-  Card,
-  useDisclosure,
-  Accordion,
-  AccordionItem,
-} from "@nextui-org/react";
+import { useContext, useEffect, useRef, useState } from "react";
+import { Card, useDisclosure } from "@nextui-org/react";
 import { useThemeStore } from "../../store/theme.store";
 import { Theme, ThemeContext } from "../../hooks/useTheme";
 import { Check } from "lucide-react";
@@ -18,8 +13,10 @@ import { CardHeader, CardFooter, Divider } from "@nextui-org/react";
 import DefaultImage from "../../assets/react.svg";
 import { useAuthStore } from "../../store/auth.store";
 import UpdateFile from "./UpdateFile";
-import { Image } from "primereact/image";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
 import UpdateConfigurationName from "./UpdateConfigurationName";
+import { Button } from "@nextui-org/react";
 
 function ConfigurationList() {
   const { getPaginatedThemes, themes } = useThemeStore();
@@ -38,11 +35,12 @@ function ConfigurationList() {
 
   const reloadData = () => {
     GetConfigurationByTransmitter(tramsiter || 0);
-  }
+  };
 
   const modalAdd = useDisclosure();
   const addLogo = useDisclosure();
   const UpdateImgModal = useDisclosure();
+  const updateName = useDisclosure();
 
   return (
     <>
@@ -132,40 +130,42 @@ function ConfigurationList() {
                   </CardFooter>
                 </Card>
               ) : (
-                personalization.map((item) => (
-                  <Card
-                    key={item.id}
-                    className="hover:shadow-xl hover:border border border-gray-400 hover:border-blue-400 w-72 h-56 m-4"
-                  >
-                    <div style={{ overflowY: "auto", maxHeight: "250px" }}>
-                      <CardHeader className="flex gap-3">
-                        <div className="flex items-center justify-center w-full">
-                          <Image
-                            src={item.logo}
-                            preview
-                            width="250"
-                            className=" text-large"
+                <DataTable value={personalization}>
+                  <Column
+                    field="logo"
+                    header="Logo"
+                    body={(rowData) => (
+                      <img
+                        src={rowData.logo}
+                        alt={rowData.name}
+                        style={{ width: "100px" }}
+                      />
+                    )}
+                  />
+                  <Column field="name" header="Nombre" />
+                  <Column
+                    header="Actualizar Nombre"
+                    body={(rowData) => (
+                      <>
+                        <Button onClick={() => updateName.onOpen()}>
+                          Actualizar
+                        </Button>
+                        <ModalGlobal
+                          isOpen={updateName.isOpen}
+                          onClose={updateName.onClose}
+                          title="Actualizar nombre"
+                          size="w-full lg:w-[300px]"
+                        >
+                          <UpdateConfigurationName
+                            id={rowData.id || 0}
+                            reloadData={reloadData}
+                            onClose={updateName.onClose}
                           />
-                        </div>
-                      </CardHeader>
-                      <Divider />
-                      <CardFooter className="flex justify-center">
-                        <Accordion>
-                          <AccordionItem
-                            key="1"
-                            aria-label={item.name}
-                            title={item.name}
-                          >
-                            <UpdateConfigurationName
-                             id={item.id || 0} 
-                             reloadData={reloadData}
-                             />
-                          </AccordionItem>
-                        </Accordion>
-                      </CardFooter>
-                    </div>
-                  </Card>
-                ))
+                        </ModalGlobal>
+                      </>
+                    )}
+                  />
+                </DataTable>
               )}
             </div>
           </div>

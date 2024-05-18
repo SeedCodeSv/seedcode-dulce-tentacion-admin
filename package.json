@@ -31,6 +31,7 @@
     "primereact": "^10.6.3",
     "qs": "^6.12.1",
     "react": "^18.2.0",
+    "react-advanced-cropper": "^0.19.6",
     "react-dom": "^18.2.0",
     "react-perfect-scrollbar-z": "^1.2.3",
     "react-router": "^6.22.3",

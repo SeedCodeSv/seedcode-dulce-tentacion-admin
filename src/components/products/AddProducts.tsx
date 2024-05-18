@@ -62,7 +62,6 @@ function AddProducts(props: Props) {
     categoryProductId: props.product?.categoryProductId ?? 0,
     tipoDeItem: props.product?.tipoDeItem ?? "N/A",
     unidaDeMedida: props.product?.unidaDeMedida ?? "N/A",
-
     tipoItem: props.product?.tipoItem ?? "",
     uniMedida: props.product?.uniMedida ?? "",
   };
@@ -143,7 +142,7 @@ function AddProducts(props: Props) {
           <>
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <div className="mt-4">
+                <div className="mt-8">
                   <Input
                     label="Nombre"
                     labelPlacement="outside"
@@ -165,7 +164,7 @@ function AddProducts(props: Props) {
                     </span>
                   )}
                 </div>
-                <div className="mt-2">
+                <div className="mt-6 mb-10">
                   <Textarea
                     label="Descripción"
                     labelPlacement="outside"
@@ -175,7 +174,7 @@ function AddProducts(props: Props) {
                     onBlur={handleBlur("description")}
                     placeholder="Ingresa la descripción"
                     classNames={{
-                      label: "font-semibold text-gray-500 text-sm",
+                      label: "font-semibold text-gray-500 text-sm ",
                     }}
                     variant="bordered"
                     size="lg"
@@ -186,7 +185,8 @@ function AddProducts(props: Props) {
                     </span>
                   )}
                 </div>
-                <div className="mt-2">
+
+                <div className="mt-6 mb-10">
                   <Input
                     label="Precio"
                     labelPlacement="outside"
@@ -209,7 +209,8 @@ function AddProducts(props: Props) {
                     </span>
                   )}
                 </div>
-                <div className="mt-2">
+
+                <div className="mt-6 mb-10">
                   <Input
                     label="Costo unitario"
                     labelPlacement="outside"
@@ -311,7 +312,7 @@ function AddProducts(props: Props) {
                   )}
                 </div>
 
-                <div className="mt-2">
+                <div className="mt-8">
                   <Autocomplete
                     className="pt-5"
                     variant="bordered"
@@ -347,7 +348,7 @@ function AddProducts(props: Props) {
                   )}
                 </div>
                 <div className="flex mt-2 gap-2">
-                  <div className="mt-2 w-full">
+                  <div className="mt-2 w-90">
                     <Input
                       label="Código"
                       labelPlacement="outside"
@@ -371,7 +372,7 @@ function AddProducts(props: Props) {
                       </span>
                     )}
                   </div>
-                  <div className="mt-10 w-full">
+                  <div className="mt-10 w-25">
                     <Button
                       className="w-full text-sm font-semibold"
                       style={{
