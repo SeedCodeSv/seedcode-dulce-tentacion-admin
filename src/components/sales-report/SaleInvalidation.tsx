@@ -6,16 +6,28 @@ import { global_styles } from "../../styles/global.styles";
 import { toast } from "sonner";
 import { Sale } from "../../types/report_contigence";
 import { useInvalidationStore } from "../../plugins/dexie/store/invalidation.store";
-import { IInvalidationBody } from "../../types/DTE/invalidation.types";
+import {
+  IInvalidationBody,
+  IInvalidationToMH,
+} from "../../types/DTE/invalidation.types";
 import { getElSalvadorDateTime } from "../../utils/dates";
 import { useTransmitterStore } from "../../store/transmitter.store";
 import { documentsTypeReceipt } from "../../utils/dte";
 import { Select, SelectItem } from "@nextui-org/react";
 import ModalGlobal from "../global/ModalGlobal";
 import { invalidationTypes } from "../../types/DTE/invalidation.types";
+import {
+  firmarDocumentoInvalidacion,
+  send_to_mh_invalidation,
+} from "../../services/DTE.service";
+import { return_mh_token } from "../../storage/localStorage";
+import { ambiente, version } from "../../utils/constants";
+import axios from "axios";
+import { invalidate_sale } from "../../services/sales.service";
 
 interface Props {
   sale: Sale;
+  closeModal: () => void;
 }
 export const SaleInvalidation = (props: Props) => {
   useEffect(() => {
@@ -96,8 +108,8 @@ export const SaleInvalidation = (props: Props) => {
   });
 
   const onSubmit = async (values: any) => {
-
-    OnCreateInvalidation(props.sale.id, {
+    toast.info("Estamos firmado tu documento");
+    firmarDocumentoInvalidacion({
       nit: transmitter.nit,
       passwordPri: transmitter.clavePublica,
       dteJson: {
@@ -115,10 +127,49 @@ export const SaleInvalidation = (props: Props) => {
           numDocSolicita: values.docNumberApplicant,
         },
       },
-    });
-    console.log(values);
-    console.log(data);
-    isError === true && toast.error(errorMessage);
+    })
+      .then(async (firma) => {
+        const token_mh = return_mh_token();
+        if (firma.data.body) {
+          const dataMH: IInvalidationToMH = {
+            ambiente: ambiente,
+            version: version,
+            idEnvio: 1,
+            documento: firma.data.body,
+          };
+          toast.success("Firmado correctamente");
+
+          if (token_mh) {
+            const source = axios.CancelToken.source();
+
+            const timeout = setTimeout(() => {
+              source.cancel("El tiempo de espera ha expirado");
+            }, 25000);
+            toast.info("Enviando a hacienda");
+            send_to_mh_invalidation(dataMH)
+              .then(async ({ data }) => {
+                if (data.selloRecibido) {
+                  clearTimeout(timeout);
+                  toast.info("Estamos guardando tus datos");
+                  invalidate_sale(props.sale.id, data.selloRecibido)
+                    .then(() => {
+                      toast.success("Guardado correctamente");
+                      props.closeModal();
+                    })
+                    .catch((error) => {
+                      toast.error(error.message);
+                    });
+                }
+              })
+              .catch((error) => {
+                toast.error(error.message);
+              });
+          }
+        }
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
   };
 
   const changeToggle = () => {
@@ -127,7 +178,7 @@ export const SaleInvalidation = (props: Props) => {
 
   return (
     <>
-      <div className="flex flex-col justify-center items-center bg-slate-50">
+      <div className="flex flex-col justify-center items-center">
         <Formik
           initialValues={{
             nameResponsible: "",

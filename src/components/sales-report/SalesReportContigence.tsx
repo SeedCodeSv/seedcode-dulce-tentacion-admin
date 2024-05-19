@@ -817,7 +817,7 @@ function SalesReportContigence() {
     <>
       <div className="w-full h-full p-5 bg-gray-100 dark:bg-gray-800">
         <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
-          <div className="hidden md:grid w-full grid-cols-3 gap-5 mb-5">
+          <div className="hidden md:grid w-full grid-cols-4 gap-5 mb-5">
             <Input
               onChange={(e) => setDateInitial(e.target.value)}
               value={dateInitial}
@@ -859,6 +859,14 @@ function SalesReportContigence() {
             >
               Buscar
             </Button>
+            <Select
+              className="mt-6"
+              label="Sucursal"
+              size="sm"
+              placeholder="Sucursales"
+            >
+              <SelectItem key={0} value=""  />
+            </Select>
           </div>
           <div className="flex items-center gap-5 md:mb-0 -mb-8">
             <div className="block md:hidden">
@@ -1250,7 +1258,7 @@ function SalesReportContigence() {
           modalAnulation.onClose();
         }}
       >
-        <SaleInvalidation sale={selectedSale as Sale} />
+        <SaleInvalidation sale={selectedSale as Sale} closeModal={modalAnulation.onClose} />
       </ModalGlobal>
 
       <ModalGlobal
