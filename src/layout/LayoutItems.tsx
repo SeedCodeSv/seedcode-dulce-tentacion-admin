@@ -29,6 +29,7 @@ import {
   SquareMenu,
   AlignJustify,
   ChevronDown,
+  FolderOpen,
 } from "lucide-react";
 import {
   Fragment,
@@ -617,7 +618,8 @@ export const LayoutItems = () => {
         )}
       </>
       {mode !== "vendedor" && (
-        <NavLink
+        <>
+          <NavLink
           to={"/actionRol"}
           className={({ isActive }) => {
             return (
@@ -637,6 +639,27 @@ export const LayoutItems = () => {
           <ShieldHalf size={iconSize} />
           <p className="ml-2 text-sm 2xl:text-base">Permisos</p>
         </NavLink>
+        <NavLink
+            to={"/modules"}
+            className={({ isActive }) => {
+              return (
+                (isActive
+                  ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
+                  : "text-coffee-brown font-semibold border-white") +
+                " flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
+              );
+            }}
+            style={({ isActive }) => {
+              return {
+                borderLeftColor: isActive ? theme.colors.dark : "transparent",
+                borderLeftWidth: 5,
+              };
+            }}
+          >
+            <FolderOpen size={iconSize} />
+            <p className="ml-2 text-sm 2xl:text-base">Modulos</p>
+          </NavLink>
+        </>
       )}
       <div
         className={

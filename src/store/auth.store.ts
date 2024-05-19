@@ -15,6 +15,7 @@ import {
   delete_branch_id,
   post_box,
   return_seller_mode,
+  delete_seller_mode,
 } from "../storage/localStorage";
 import { post_login } from "../services/auth.service";
 import { toast } from "sonner";
@@ -39,6 +40,9 @@ export const useAuthStore = create<IAuthStore>((set, get) => ({
           }
           if (is_admin(data.user.role.name)) {
             await save_branch_id(String(data.user.employee.branch.id))
+          }
+          if (mode === "administrador") {
+            delete_seller_mode();
           }
           await get()
             .OnLoginMH(data.user.employee.branch.transmitterId, data.token)

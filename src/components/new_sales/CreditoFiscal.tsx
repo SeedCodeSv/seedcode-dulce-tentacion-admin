@@ -332,6 +332,7 @@ function CreditoFiscal(props: Props) {
                   cajaId: Number(localStorage.getItem("box")),
                   codigoEmpleado: 1,
                   sello: false,
+                  clienteId: props.Customer?.id 
                 },
                 {
                   headers: {
