@@ -286,6 +286,10 @@ export const LayoutItems = () => {
 
               <>
                 {/* inline-block  */}
+
+
+
+
                 <Menu as="div" className="relative px-4 z-50 w-full">
                   <div>
                     <Menu.Button className="inline-flex w-full font-semibold py-2  gap-x-1.5 ml-2 text-sm 2xl:text-base">
@@ -332,26 +336,28 @@ export const LayoutItems = () => {
                           </Menu.Item>
                         )}
 
-                        <Menu.Item>
-                          {views.includes("Clientes") && (
-                            <NavLink
-                              to={"/clients"}
-                              className={({ isActive }) => {
-                                return (
-                                  (isActive
-                                    ? "font-semibold bg-gray-300 dark:bg-gray-700"
-                                    : "text-coffee-brown font-semibold border-white") +
-                                  " flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white"
-                                );
-                              }}
-                            >
-                              <BookUser size={iconSize} />
-                              <p className="ml-2 text-sm 2xl:text-base">
-                                Clientes
-                              </p>
-                            </NavLink>
-                          )}
-                        </Menu.Item>
+                        {views.includes("Clientes") && (
+                          <Menu.Item>
+                            {views.includes("Clientes") && (
+                              <NavLink
+                                to={"/clients"}
+                                className={({ isActive }) => {
+                                  return (
+                                    (isActive
+                                      ? "font-semibold bg-gray-300 dark:bg-gray-700"
+                                      : "text-coffee-brown font-semibold border-white") +
+                                    " flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white"
+                                  );
+                                }}
+                              >
+                                <BookUser size={iconSize} />
+                                <p className="ml-2 text-sm 2xl:text-base">
+                                  Clientes
+                                </p>
+                              </NavLink>
+                            )}
+                          </Menu.Item>
+                        )}
 
                         {views.includes("Usuarios") && (
                           <Menu.Item>
@@ -509,50 +515,49 @@ export const LayoutItems = () => {
         <>
           {views && views.includes("Permisos") && (
             <NavLink
-            to={"/actionRol"}
-            className={({ isActive }) => {
-              return (
-                (isActive
-                  ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
-                  : "text-coffee-brown font-semibold border-white") +
-                " flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
-              );
-            }}
-            style={({ isActive }) => {
-              return {
-                borderLeftColor: isActive ? theme.colors.dark : "transparent",
-                borderLeftWidth: 5,
-              };
-            }}
-          >
-            <ShieldHalf size={iconSize} />
-            <p className="ml-2 text-sm 2xl:text-base">Permisos</p>
-          </NavLink>
+              to={"/actionRol"}
+              className={({ isActive }) => {
+                return (
+                  (isActive
+                    ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
+                    : "text-coffee-brown font-semibold border-white") +
+                  " flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
+                );
+              }}
+              style={({ isActive }) => {
+                return {
+                  borderLeftColor: isActive ? theme.colors.dark : "transparent",
+                  borderLeftWidth: 5,
+                };
+              }}
+            >
+              <ShieldHalf size={iconSize} />
+              <p className="ml-2 text-sm 2xl:text-base">Permisos</p>
+            </NavLink>
           )}
-       
 
-       {views && views.includes("Modulos") && (
+          {views && views.includes("Modulos") && (
             <NavLink
-            to={"/modules"}
-            className={({ isActive }) => {
-              return (
-                (isActive
-                  ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
-                  : "text-coffee-brown font-semibold border-white") +
-                " flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
-              );
-            }}
-            style={({ isActive }) => {
-              return {
-                borderLeftColor: isActive ? theme.colors.dark : "transparent",
-                borderLeftWidth: 5,
-              };
-            }}
-          >
-            <FolderOpen size={iconSize} />
-            <p className="ml-2 text-sm 2xl:text-base">Modulos</p>
-          </NavLink>
-       )}
+              to={"/modules"}
+              className={({ isActive }) => {
+                return (
+                  (isActive
+                    ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
+                    : "text-coffee-brown font-semibold border-white") +
+                  " flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
+                );
+              }}
+              style={({ isActive }) => {
+                return {
+                  borderLeftColor: isActive ? theme.colors.dark : "transparent",
+                  borderLeftWidth: 5,
+                };
+              }}
+            >
+              <FolderOpen size={iconSize} />
+              <p className="ml-2 text-sm 2xl:text-base">Modulos</p>
+            </NavLink>
+          )}
         </>
       )}
       <div
