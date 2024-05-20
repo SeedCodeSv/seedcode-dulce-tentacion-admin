@@ -17,6 +17,7 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import UpdateConfigurationName from "./UpdateConfigurationName";
 import { Button } from "@nextui-org/react";
+import { Image } from 'primereact/image';
 
 function ConfigurationList() {
   const { getPaginatedThemes, themes } = useThemeStore();
@@ -113,29 +114,31 @@ function ConfigurationList() {
           <div className="flex justify-center p-5 bg-gray-50 dark:bg-gray-800">
             <div className="flex flex-wrap justify-center bg-gray-50 dark:bg-gray-800">
               {personalization.length === 0 ? (
-                <Card className="hover:shadow-xl hover:border border border-gray-400 hover:border-blue-400 w-72 h-56 m-4">
-                  <CardHeader className="flex gap-3">
-                    <div className="flex items-center justify-center w-full">
-                      <Avatar
-                        src={DefaultImage}
-                        className="w-36 h-36 text-large"
-                      />
-                    </div>
-                  </CardHeader>
-                  <Divider />
-                  <CardFooter className="flex justify-between">
-                    <div className="w-full text-center">
-                      <p>Seed code ERP</p>
-                    </div>
-                  </CardFooter>
-                </Card>
+                <span>no ay logo ni nombre...</span>
+                // <Card className="hover:shadow-xl hover:border border border-gray-400 hover:border-blue-400 w-72 h-56 m-4">
+                //   <CardHeader className="flex gap-3">
+                //     <div className="flex items-center justify-center w-full">
+                //       <Avatar
+                //         src={DefaultImage}
+                //         className="w-36 h-36 text-large"
+                //       />
+                //     </div>
+                //   </CardHeader>
+                //   <Divider />
+                //   <CardFooter className="flex justify-between">
+                //     <div className="w-full text-center">
+                //       <p>Seed code ERP</p>
+                //     </div>
+                //   </CardFooter>
+                // </Card>
               ) : (
                 <DataTable value={personalization}>
                   <Column
                     field="logo"
                     header="Logo"
                     body={(rowData) => (
-                      <img
+                      <Image
+                        preview
                         src={rowData.logo}
                         alt={rowData.name}
                         style={{ width: "100px" }}

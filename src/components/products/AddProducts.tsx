@@ -185,7 +185,7 @@ function AddProducts(props: Props) {
                     </span>
                   )}
                 </div>
-               
+
                 <div className="mt-6 mb-10">
                   <Input
                     label="Precio"
@@ -209,7 +209,7 @@ function AddProducts(props: Props) {
                     </span>
                   )}
                 </div>
-              
+
                 <div className="mt-6 mb-10">
                   <Input
                     label="Costo unitario"

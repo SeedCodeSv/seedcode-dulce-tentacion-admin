@@ -75,6 +75,7 @@ import { SaleInvalidation } from "./SaleInvalidation";
 import UpdateCustomerSales from "./UpdateCustomerSale";
 import { Drawer } from "vaul";
 import classNames from "classnames";
+import { useSaleStatusStore } from "../../store/sale_status.store";
 
 function SalesReportContigence() {
   const [openVaul, setOpenVaul] = useState(false);
@@ -121,6 +122,8 @@ function SalesReportContigence() {
     searchSalesContigence();
     OnGetSalesNotContigence(branchId, 1, 5, dateInitial, dateEnd);
   };
+  const [status, setStatus] = useState("");
+  const { OnGetSaleStatusList, saleStatus } = useSaleStatusStore();
   const { theme, context } = useContext(ThemeContext);
   const style = {
     backgroundColor: theme.colors.dark,
@@ -164,7 +167,6 @@ function SalesReportContigence() {
   const [terminalLineData, setTerminalLineData] = useState(baseData);
 
   const [selectedSale, setSelectedSale] = useState<Sale>();
-
   async function onInput(input: string) {
     let ld = [...terminalLineData];
     ld.push(<TerminalInput>{input}</TerminalInput>);
@@ -200,6 +202,7 @@ function SalesReportContigence() {
   useEffect(() => {
     gettransmitter();
     getCat005TipoDeContingencia();
+    OnGetSaleStatusList();
   }, []);
 
   const handleVerifyConsole = () => {
@@ -300,6 +303,8 @@ function SalesReportContigence() {
       });
   };
 
+  const [selloCapt, setSelloCapt] = useState<string | null>(null);
+
   const handleVerifyEdit = (sale: Sale) => {
     setLoading(true);
     modalLoading.onOpen();
@@ -307,23 +312,42 @@ function SalesReportContigence() {
       nitEmisor: transmitter.nit,
       tdte: sale.tipoDte,
       codigoGeneracion: sale.codigoGeneracion,
+      selloRecibido: selloCapt,
     };
     const token_mh = return_mh_token();
     check_dte(payload, token_mh ?? "")
       .then((response) => {
-        toast.success(response.data.estado, {
-          description: `Sello recibido: ${response.data.selloRecibido}`,
-        });
-        setLoading(false);
-        modalLoading.onClose();
+        if (response.data.estado === "Sello recibido") {
+          const sello = response.data.selloRecibido ?? "";
+          setSelloCapt(sello);
+          console.log("Sello Capturado:", sello);
+
+          toast.success(response.data.estado, {
+            description: `Sello recibido: ${sello}`,
+          });
+
+          // Realiza otra funcionalidad aquí y cierra el modal de carga cuando se complete
+          handleSendToContingencia(sale).then(() => {
+            toast.success("Función ficticia completada");
+            setLoading(false);
+            modalLoading.onClose();
+          });
+        } else {
+          setLoading(false);
+          modalLoading.onClose();
+        }
       })
       .catch((error: AxiosError<ICheckResponse>) => {
-        if (error.status === 500) {
+        if (
+          error.response?.status === 500 ||
+          (error.response && error.response.data.estado === "NO ENCONTRADO")
+        ) {
           toast.error("NO ENCONTRADO", {
             description: "DTE no encontrado en hacienda",
           });
           setLoading(false);
           modalLoading.onClose();
+          modalEdit.onOpen();
           return;
         }
 
@@ -333,11 +357,20 @@ function SalesReportContigence() {
             "DTE no encontrado en hacienda"
           }`,
         });
-        modalLoading.onClose();
         setLoading(false);
-        modalEdit.onOpen()
+        modalLoading.onClose();
       });
   };
+
+  // Función ficticia para la funcionalidad adicional
+  // const performAdditionalFunctionality = async () => {
+
+  //   return new Promise<void>((resolve) => {
+  //     setTimeout(() => {
+  //       resolve();
+  //     }, 2000);
+  //   });
+  // };
 
   const { getVentaByCodigo } = useContingenciaStore();
   const { getCreditoVentaByCodigo } = useContingenciaCreditoStore();
@@ -345,6 +378,7 @@ function SalesReportContigence() {
   const [motivoContigencia, setMotivoContigencia] = useState("");
 
   const handleSendToContingencia = async (sale: Sale) => {
+    console.log("Sales ya en el metodo", sale);
     const result_generation = await getVentaByCodigo(sale.codigoGeneracion);
     const result_credito_generate = await getCreditoVentaByCodigo(
       sale.codigoGeneracion
@@ -851,7 +885,7 @@ function SalesReportContigence() {
               onClick={searchSalesNotContigence}
               style={{
                 backgroundColor: theme.colors.secondary,
-                color: theme.colors.primary
+                color: theme.colors.primary,
               }}
               color="primary"
               size="lg"
@@ -859,6 +893,26 @@ function SalesReportContigence() {
             >
               Buscar
             </Button>
+            {/* <Select
+              size="lg"
+              label="Estado de la venta"
+              labelPlacement="outside"
+              variant="bordered"
+              placeholder="Selecciona el estado"
+              defaultSelectedKeys={["2"]}
+              value={status}
+              onChange={(e) => {
+                if (e.target.value) {
+                  setStatus(e.target.value);
+                }
+              }}
+            >
+              {saleStatus.map((status) => (
+                <SelectItem key={status.id} value={status.name}>
+                  {status.name}
+                </SelectItem>
+              ))}
+            </Select> */}
           </div>
           <div className="flex items-center gap-5 md:mb-0 -mb-8">
             <div className="block md:hidden">
@@ -992,6 +1046,16 @@ function SalesReportContigence() {
                   headerStyle={style}
                   header="Total IVA"
                   body={(rowData) => formatCurrency(Number(rowData.totalIva))}
+                />
+                <Column
+                  headerClassName="text-sm font-semibold"
+                  headerStyle={style}
+                  header="Estado"
+                  body={(rowData) =>
+                    rowData.selloInvalidacion === "null"
+                      ? "Procesado"
+                      : "Anulado"
+                  }
                 />
                 <Column
                   headerClassName="text-sm font-semibold"
@@ -1150,7 +1214,7 @@ function SalesReportContigence() {
                             ...rowData.customer,
                           }));
                           setCodigoGeneracion(rowData.codigoGeneracion);
-                          setSelectedSale(rowData.id);
+                          setSelectedSale(rowData);
                           handleVerifyEdit(rowData);
                           modalLoading.onOpen();
                         }}
@@ -1250,7 +1314,13 @@ function SalesReportContigence() {
           modalAnulation.onClose();
         }}
       >
-        <SaleInvalidation sale={selectedSale as Sale} />
+        <SaleInvalidation
+          sale={selectedSale as Sale}
+          closeModal={modalAnulation.onClose}
+          reload={() =>
+            OnGetSalesNotContigence(branchId, 1, 5, dateInitial, dateEnd)
+          }
+        />
       </ModalGlobal>
 
       <ModalGlobal
@@ -1294,8 +1364,9 @@ function SalesReportContigence() {
           onClose={modalEdit.onClose}
           codigoGeneracion={codigoGeneracion}
           customer={dataCustomer}
-          handleVerify={handleVerify}
-        ></UpdateCustomerSales>
+          handleSendToContingencia={handleSendToContingencia}
+          selectedSale={selectedSale}
+        />
       </ModalGlobal>
       <ModalGlobal
         title={title}
