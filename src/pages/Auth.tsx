@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import BUSINESS from "../assets/bussines.jpg";
 import { Button, Input } from "@nextui-org/react";
 import { Eye, EyeOff } from "lucide-react";
@@ -14,7 +14,7 @@ import { redirect } from "react-router";
 function Auth() {
   const [showPassword, setShowPassword] = useState(false);
   const { postLogin } = useAuthStore();
-
+ 
   const { theme } = useContext(ThemeContext);
   const { setToken, setIsAuth, setRolId } = useContext(SessionContext);
 
@@ -41,6 +41,7 @@ function Auth() {
       }
     });
   };
+
 
   return (
     <div className="flex items-center justify-center w-screen h-screen bg-gray-50">

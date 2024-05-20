@@ -25,6 +25,7 @@ import {
   AlignJustify,
   ChevronDown,
   FolderOpen,
+  Store,
 } from "lucide-react";
 import { Fragment, useContext, useEffect, useMemo } from "react";
 import { ThemeContext } from "../hooks/useTheme";
@@ -389,7 +390,7 @@ export const LayoutItems = () => {
                                   );
                                 }}
                               >
-                                <BookUser size={iconSize} />
+                                <Store size={iconSize} />
                                 <p className="ml-2 text-base">Sucursales</p>
                               </NavLink>
                             )}
@@ -506,7 +507,8 @@ export const LayoutItems = () => {
       </>
       {mode !== "vendedor" && (
         <>
-          <NavLink
+          {views && views.includes("Permisos") && (
+            <NavLink
             to={"/actionRol"}
             className={({ isActive }) => {
               return (
@@ -526,7 +528,11 @@ export const LayoutItems = () => {
             <ShieldHalf size={iconSize} />
             <p className="ml-2 text-sm 2xl:text-base">Permisos</p>
           </NavLink>
-          <NavLink
+          )}
+       
+
+       {views && views.includes("Modulos") && (
+            <NavLink
             to={"/modules"}
             className={({ isActive }) => {
               return (
@@ -546,6 +552,7 @@ export const LayoutItems = () => {
             <FolderOpen size={iconSize} />
             <p className="ml-2 text-sm 2xl:text-base">Modulos</p>
           </NavLink>
+       )}
         </>
       )}
       <div

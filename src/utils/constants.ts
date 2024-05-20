@@ -45,5 +45,6 @@ export const views_enabled = [
     "Gastos",
     "Ventas",
     "Reporte de ventas",
+    "Modulos",
 
 ]
