@@ -64,7 +64,7 @@ export const LayoutItems = () => {
   const handleAdmin = () => {
     setMode("");
     makeLogout();
-    delete_seller_mode();
+    localStorage.removeItem("seller_mode");
     setIsAuth(false);
     setToken("");
     navigate("/");
@@ -114,7 +114,7 @@ export const LayoutItems = () => {
     if (storedUser) {
       const user = JSON.parse(storedUser);
       if (user && user.roleId) {
-        OnGetActionsByRole(user.roleId);
+        OnGetActionsByRole(user.roleId, 1, 5);
       }
     }
   }, []);
@@ -599,26 +599,26 @@ export const LayoutItems = () => {
       {mode !== "vendedor" && (
         <>
           <NavLink
-          to={"/actionRol"}
-          className={({ isActive }) => {
-            return (
-              (isActive
-                ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
-                : "text-coffee-brown font-semibold border-white") +
-              " flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
-            );
-          }}
-          style={({ isActive }) => {
-            return {
-              borderLeftColor: isActive ? theme.colors.dark : "transparent",
-              borderLeftWidth: 5,
-            };
-          }}
-        >
-          <ShieldHalf size={iconSize} />
-          <p className="ml-2 text-sm 2xl:text-base">Permisos</p>
-        </NavLink>
-        <NavLink
+            to={"/actionRol"}
+            className={({ isActive }) => {
+              return (
+                (isActive
+                  ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
+                  : "text-coffee-brown font-semibold border-white") +
+                " flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
+              );
+            }}
+            style={({ isActive }) => {
+              return {
+                borderLeftColor: isActive ? theme.colors.dark : "transparent",
+                borderLeftWidth: 5,
+              };
+            }}
+          >
+            <ShieldHalf size={iconSize} />
+            <p className="ml-2 text-sm 2xl:text-base">Permisos</p>
+          </NavLink>
+          <NavLink
             to={"/modules"}
             className={({ isActive }) => {
               return (

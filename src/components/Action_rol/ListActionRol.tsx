@@ -5,7 +5,15 @@ import {
   SelectItem,
   useDisclosure,
 } from "@nextui-org/react";
-import { Table as ITable, CreditCard, List } from "lucide-react";
+import {
+  Table as ITable,
+  CreditCard,
+  List,
+  CirclePlus,
+  Trash,
+  Pencil,
+  Eye,
+} from "lucide-react";
 import { useContext, useEffect, useState } from "react";
 import { ThemeContext } from "../../hooks/useTheme";
 import AddButton from "../global/AddButton";
@@ -34,42 +42,7 @@ const ListActionRol = () => {
       <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
         <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
           <div className="flex flex-col justify-between w-full gap-5 mb-5 lg:mb-10 lg:flex-row lg:gap-0">
-            <div className="flex items-end gap-3">
-              {/* <div className="flex items-end gap-3">
-              <Input
-                startContent={<Search />}
-                className="w-full xl:w-96"
-                variant="bordered"
-                labelPlacement="outside"
-                label="Buscar"
-                classNames={{
-                  label: "font-semibold text-gray-700",
-                  inputWrapper: "pr-0",
-                }}
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                size="lg"
-                placeholder="Escribe para buscar..."
-                isClearable
-                onClear={() => {
-                  setSearch("");
-                  handleSearch("");
-                }}
-              />
-              <Button
-                style={{
-                  backgroundColor: theme.colors.secondary,
-                  color: theme.colors.primary,
-                }}
-                className="font-semibold"
-                color="primary"
-                size="lg"
-                onClick={() => handleSearch(undefined)}
-              >
-                Buscar
-              </Button>
-            </div> */}
-            </div>
+            <div className="flex items-end gap-3"></div>
             <div className="flex items-end justify-between w-full gap-10 lg:justify-end">
               <ButtonGroup>
                 <Button
@@ -145,7 +118,7 @@ const ListActionRol = () => {
           </div>
           {view === "table" && (
             <DataTable
-              className="w-full shadow"
+              className="w-full shadow "
               emptyMessage="No se encontraron resultados"
               value={actions_roles_grouped}
               tableStyle={{ minWidth: "50rem" }}
@@ -154,6 +127,7 @@ const ListActionRol = () => {
                 headerClassName="text-sm font-semibold"
                 headerStyle={{ ...style, borderTopLeftRadius: "10px" }}
                 field="id"
+                className="text-center justify-center"
                 body={(rowData) => {
                   const actionId =
                     idCounter + actions_roles_grouped.indexOf(rowData);
@@ -176,36 +150,51 @@ const ListActionRol = () => {
               <Column
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
-                body={(rowData) => (
-                  <div>
-                    {rowData.action.map((action: any, index: number) => (
-                      <div key={index}>• {action}</div>
-                    ))}
-                  </div>
-                )}
+                body={(rowData) => {
+                  const actionOrder = [
+                    "Agregar",
+                    "Eliminar",
+                    "Editar",
+                    "Mostrar",
+                  ];
+                  const sortedActions = actionOrder.filter((action) =>
+                    rowData.action.includes(action)
+                  );
+
+                  return (
+                    <div className="flex gap-3">
+                      {sortedActions.map((action, index) => (
+                        <div
+                          key={index}
+                          style={{ display: "flex", alignItems: "center" }}
+                        >
+                          {action === "Agregar" && (
+                            <div className="flex justify-center items-center w-10 h-10 rounded-full bg-[#457b9d]">
+                              <CirclePlus className="text-white" size={20} />{" "}
+                            </div>
+                          )}
+                          {action === "Eliminar" && (
+                            <div className="flex justify-center items-center w-10 h-10 rounded-full bg-red-500">
+                              <Trash size={20} className="text-white" />
+                            </div>
+                          )}
+                          {action === "Editar" && (
+                            <div className="flex justify-center items-center w-10 h-10 rounded-full bg-green-400">
+                              <Pencil size={20} className="text-white" />
+                            </div>
+                          )}
+                          {action === "Mostrar" && (
+                            <div className="flex justify-center items-center w-10 h-10 rounded-full bg-blue-400">
+                              <Eye size={20} className="text-white" />
+                            </div>
+                          )}
+                          <span style={{ marginLeft: "0.5rem" }}>{action}</span>
+                        </div>
+                      ))}
+                    </div>
+                  );
+                }}
                 header="Permisos"
-              />
-              <Column
-                headerStyle={{ ...style, borderTopRightRadius: "10px" }}
-                header="Acciones"
-                // body={(item) => (
-                //   <div className="flex gap-6">
-                //     <Button
-                //       // onClick={() => handleEdit(item)}
-                //       isIconOnly
-                //       size="lg"
-                //       style={{
-                //         backgroundColor: theme.colors.secondary,
-                //       }}
-                //     >
-                //       <EditIcon
-                //         style={{ color: theme.colors.primary }}
-                //         size={20}
-                //       />
-                //     </Button>
-                //     {/* <DeletePopUp categoryExpenses={item} /> */}
-                //   </div>
-                // )}
               />
             </DataTable>
           )}
@@ -224,45 +213,3 @@ const ListActionRol = () => {
 };
 
 export default ListActionRol;
-
-//  <Column
-//    headerClassName="text-sm font-semibold"
-//    headerStyle={style}
-//    body={(rowData) => (
-//      <div>
-//        {rowData.action.map((action: any, index: number) => (
-//          <div key={index} style={{ display: "flex", alignItems: "center" }}>
-//            {action === "Agregar" && (
-//              <div className="flex justify-center items-center w-10 h-10 rounded-full bg-gray-200">
-//                <CirclePlus size={20} />{" "}
-//              </div>
-//            )}
-//            {action === "Eliminar" && (
-//              <div className="flex justify-center items-center w-10 h-10 rounded-full bg-red-500">
-//                <Trash size={20} className="text-white" />
-//              </div>
-//            )}
-//            {action === "Editar" && (
-//              <div className="flex justify-center items-center w-10 h-10 rounded-full bg-green-400">
-//                <Pencil size={20} className="text-white" />
-//              </div>
-//            )}
-//            {action === "Mostrar" && (
-//              <div className="flex justify-center items-center w-10 h-10 rounded-full bg-blue-400">
-//                <Eye size={20} className="text-white" />
-//              </div>
-//            )}
-//            <span
-//              style={{
-//                marginLeft:
-//                  action === "Agregar" || action === "Eliminar" ? "0.5rem" : "0",
-//              }}
-//            >
-//              {action}
-//            </span>
-//          </div>
-//        ))}
-//      </div>
-//    )}
-//    header="Permisos"
-//  />;
