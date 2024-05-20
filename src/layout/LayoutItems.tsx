@@ -146,13 +146,13 @@ export const LayoutItems = () => {
         </>
       )}
       {mode !== "vendedor" ? (
-        <div className=" justify-center items-center px-3">
+        <div className=" justify-center items-center px-2 mt-2">
           <Button
             onClick={() => handleSeller()}
             className="text-coffee-green font-semibold bg-gray-100  border-coffee-green justify-center items-center bg-transparent"
           >
-            <ShoppingCart size={20} />
-            <p className="ml-2 text-base">modo venta</p>
+            <ShoppingCart size={iconSize} />
+            <p className="ml-2 text-sm 2xl:text-base">Modo venta</p>
           </Button>
         </div>
       ) : (
@@ -161,8 +161,8 @@ export const LayoutItems = () => {
             onClick={() => handleAdmin()}
             className="text-coffee-green font-semibold bg-gray-100  border-coffee-green justify-center items-center bg-transparent"
           >
-            <Contact size={20} />
-            <p className="ml-2 text-base">Administración</p>
+            <Contact size={iconSize} />
+            <p className="ml-2 text-sm 2xl:text-base">Administración</p>
           </Button>
         </div>
       )}
