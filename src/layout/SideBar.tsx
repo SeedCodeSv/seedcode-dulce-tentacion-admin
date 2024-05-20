@@ -16,7 +16,7 @@ import { ThemeContext } from "../hooks/useTheme";
 import { useAuthStore } from "../store/auth.store";
 import { redirect, useNavigate } from "react-router";
 import { SessionContext } from "../hooks/useSession";
-import {delete_seller_mode} from "../storage/localStorage"
+import { delete_seller_mode } from "../storage/localStorage";
 interface Props {
   children: ReactNode;
   title: string;
@@ -29,6 +29,7 @@ export const SideBar = (props: Props) => {
 
   const { user, makeLogout } = useAuthStore();
   const { setIsAuth, setToken } = useContext(SessionContext);
+  useEffect(() => {}, [user]);
 
   const [windowSize, setWindowSize] = useState({
     width: window.innerWidth,
@@ -36,10 +37,11 @@ export const SideBar = (props: Props) => {
   });
   const close_login = () => {
     makeLogout();
-    delete_seller_mode()
+    delete_seller_mode();
     setIsAuth(false);
     setToken("");
     redirect("/");
+
   };
   useEffect(() => {
     const handleResize = () => {
@@ -100,13 +102,16 @@ export const SideBar = (props: Props) => {
                   }}
                   className="transition-transform"
                   description={
-                    <span className="hidden lg:block text-gray-400">{user?.userName}</span>
+                    <span className="hidden lg:block text-gray-400">
+                      {user?.userName}
+                    </span>
                   }
                   name={
-                    <span className="hidden lg:block">{user?.employee.fullName}</span>
+                    <span className="hidden lg:block">
+                      {user?.employee.fullName}
+                    </span>
                   }
-                >
-                </User>
+                ></User>
               </DropdownTrigger>
               <DropdownMenu aria-label="User Actions" variant="flat">
                 <DropdownItem key="profile" className="h-14 gap-2">

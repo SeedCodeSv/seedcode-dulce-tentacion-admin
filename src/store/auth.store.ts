@@ -35,19 +35,20 @@ export const useAuthStore = create<IAuthStore>((set, get) => ({
           set_token(data.token);
           save_user(data.user);
           if (mode === "vendedor") {
+            window.location.href = "/newSales";
             post_box(data.box.id.toString());
             save_branch_id(data.box.branchId.toString());
-          }
-          if (is_admin(data.user.role.name)) {
-            await save_branch_id(String(data.user.employee.branch.id))
-          }
-          if (mode === "administrador") {
+          }else {
             delete_seller_mode();
           }
+          if (is_admin(data.user.role.name)) {
+            await save_branch_id(String(data.user.employee.branch.id));
+          }
+          
           await get()
             .OnLoginMH(data.user.employee.branch.transmitterId, data.token)
             .catch((error) => {
-              console.log(error)
+              console.log(error);
               return;
             });
           toast.success("Bienvenido");
@@ -57,7 +58,7 @@ export const useAuthStore = create<IAuthStore>((set, get) => ({
         return data;
       })
       .catch((error) => {
-        console.log(error)
+        console.log(error);
         delete_token();
         delete_user();
         toast.error("Datos incorrectos");
@@ -93,7 +94,7 @@ export const useAuthStore = create<IAuthStore>((set, get) => ({
       token: "",
       isAuth: false,
     })),
-    await delete_mh_token();
+      await delete_mh_token();
     await delete_box();
     await delete_user();
     await delete_token();
