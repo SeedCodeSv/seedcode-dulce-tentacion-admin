@@ -242,9 +242,8 @@ function SalesReportContigence() {
 
           if (error.response?.data) {
             const newLd = (
-              <TerminalOutput>{`Respuesta: ${
-                error.response?.data.descripcionMsg ?? "RECHAZADO"
-              }`}</TerminalOutput>
+              <TerminalOutput>{`Respuesta: ${error.response?.data.descripcionMsg ?? "RECHAZADO"
+                }`}</TerminalOutput>
             );
 
             setTerminalLineData((prev) => [...prev, newLd]);
@@ -293,10 +292,9 @@ function SalesReportContigence() {
         }
 
         toast.error("ERROR", {
-          description: `Error: ${
-            error.response?.data.descripcionMsg ??
+          description: `Error: ${error.response?.data.descripcionMsg ??
             "DTE no encontrado en hacienda"
-          }`,
+            }`,
         });
         modalLoading.onClose();
         setLoading(false);
@@ -318,20 +316,13 @@ function SalesReportContigence() {
     check_dte(payload, token_mh ?? "")
       .then((response) => {
         if (response.data.estado === "Sello recibido") {
-          const sello = response.data.selloRecibido ?? "";
-          setSelloCapt(sello);
-          console.log("Sello Capturado:", sello);
-
           toast.success(response.data.estado, {
-            description: `Sello recibido: ${sello}`,
+            description: `Sello recibido: ${response.data.selloRecibido}`,
           });
+          setLoading(false);
+          modalLoading.onClose();
 
-          // Realiza otra funcionalidad aquí y cierra el modal de carga cuando se complete
-          handleSendToContingencia(sale).then(() => {
-            toast.success("Función ficticia completada");
-            setLoading(false);
-            modalLoading.onClose();
-          });
+
         } else {
           setLoading(false);
           modalLoading.onClose();
@@ -352,10 +343,9 @@ function SalesReportContigence() {
         }
 
         toast.error("ERROR", {
-          description: `Error: ${
-            error.response?.data.descripcionMsg ??
+          description: `Error: ${error.response?.data.descripcionMsg ??
             "DTE no encontrado en hacienda"
-          }`,
+            }`,
         });
         setLoading(false);
         modalLoading.onClose();
@@ -363,14 +353,14 @@ function SalesReportContigence() {
   };
 
   // Función ficticia para la funcionalidad adicional
-  // const performAdditionalFunctionality = async () => {
+  const performAdditionalFunctionality = async () => {
 
-  //   return new Promise<void>((resolve) => {
-  //     setTimeout(() => {
-  //       resolve();
-  //     }, 2000);
-  //   });
-  // };
+    return new Promise<void>((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, 2000);
+    });
+  };
 
   const { getVentaByCodigo } = useContingenciaStore();
   const { getCreditoVentaByCodigo } = useContingenciaCreditoStore();
@@ -446,16 +436,12 @@ function SalesReportContigence() {
                           description: "Estamos guardando tus datos",
                         });
 
-                        const json_url = `CLIENTES/${
-                          transmitter.nombre
-                        }/${new Date().getFullYear()}/VENTAS/FACTURAS/${formatDate()}/${
-                          data.dteJson.identificacion.codigoGeneracion
-                        }/${data.dteJson.identificacion.codigoGeneracion}.json`;
-                        const pdf_url = `CLIENTES/${
-                          transmitter.nombre
-                        }/${new Date().getFullYear()}/VENTAS/FACTURAS/${formatDate()}/${
-                          data.dteJson.identificacion.codigoGeneracion
-                        }/${data.dteJson.identificacion.codigoGeneracion}.pdf`;
+                        const json_url = `CLIENTES/${transmitter.nombre
+                          }/${new Date().getFullYear()}/VENTAS/FACTURAS/${formatDate()}/${data.dteJson.identificacion.codigoGeneracion
+                          }/${data.dteJson.identificacion.codigoGeneracion}.json`;
+                        const pdf_url = `CLIENTES/${transmitter.nombre
+                          }/${new Date().getFullYear()}/VENTAS/FACTURAS/${formatDate()}/${data.dteJson.identificacion.codigoGeneracion
+                          }/${data.dteJson.identificacion.codigoGeneracion}.pdf`;
 
                         const JSON_DTE = JSON.stringify(
                           {
@@ -507,7 +493,7 @@ function SalesReportContigence() {
                                       axios
                                         .put(
                                           API_URL +
-                                            "/sales/sale-update-transaction",
+                                          "/sales/sale-update-transaction",
                                           {
                                             pdf: pdf_url,
                                             dte: json_url,
@@ -570,14 +556,14 @@ function SalesReportContigence() {
                           await save_logs({
                             title:
                               "Contingencia: " +
-                                error.response.data.descripcionMsg ??
+                              error.response.data.descripcionMsg ??
                               "Error al procesar venta",
                             message:
                               error.response.data.observaciones &&
-                              error.response.data.observaciones.length > 0
+                                error.response.data.observaciones.length > 0
                                 ? error.response?.data.observaciones.join(
-                                    "\n\n"
-                                  )
+                                  "\n\n"
+                                )
                                 : "",
                             generationCode:
                               data.dteJson.identificacion.codigoGeneracion,
@@ -590,7 +576,7 @@ function SalesReportContigence() {
                           );
                           setTitle(
                             error.response.data.descripcionMsg ??
-                              "Error al procesar venta"
+                            "Error al procesar venta"
                           );
                           modalErrorContingencia.onOpen();
                           setLoading(false);
@@ -629,20 +615,14 @@ function SalesReportContigence() {
                             description: "Estamos guardando tus datos",
                           });
 
-                          const json_url = `CLIENTES/${
-                            transmitter.nombre
-                          }/${new Date().getFullYear()}/VENTAS/CRÉDITO_FISCAL/${formatDate()}/${
-                            data.dteJson.identificacion.codigoGeneracion
-                          }/${
-                            data.dteJson.identificacion.codigoGeneracion
-                          }.json`;
-                          const pdf_url = `CLIENTES/${
-                            transmitter.nombre
-                          }/${new Date().getFullYear()}/VENTAS/CRÉDITO_FISCAL/${formatDate()}/${
-                            data.dteJson.identificacion.codigoGeneracion
-                          }/${
-                            data.dteJson.identificacion.codigoGeneracion
-                          }.pdf`;
+                          const json_url = `CLIENTES/${transmitter.nombre
+                            }/${new Date().getFullYear()}/VENTAS/CRÉDITO_FISCAL/${formatDate()}/${data.dteJson.identificacion.codigoGeneracion
+                            }/${data.dteJson.identificacion.codigoGeneracion
+                            }.json`;
+                          const pdf_url = `CLIENTES/${transmitter.nombre
+                            }/${new Date().getFullYear()}/VENTAS/CRÉDITO_FISCAL/${formatDate()}/${data.dteJson.identificacion.codigoGeneracion
+                            }/${data.dteJson.identificacion.codigoGeneracion
+                            }.pdf`;
 
                           const JSON_DTE = JSON.stringify(
                             {
@@ -692,7 +672,7 @@ function SalesReportContigence() {
                                         axios
                                           .put(
                                             API_URL +
-                                              "/sales/sale-fiscal-transaction",
+                                            "/sales/sale-fiscal-transaction",
                                             {
                                               pdf: pdf_url,
                                               dte: json_url,
@@ -745,14 +725,14 @@ function SalesReportContigence() {
                             await save_logs({
                               title:
                                 "Contingencia: " +
-                                  error.response.data.descripcionMsg ??
+                                error.response.data.descripcionMsg ??
                                 "Error al procesar venta",
                               message:
                                 error.response.data.observaciones &&
-                                error.response.data.observaciones.length > 0
+                                  error.response.data.observaciones.length > 0
                                   ? error.response?.data.observaciones.join(
-                                      "\n\n"
-                                    )
+                                    "\n\n"
+                                  )
                                   : "",
                               generationCode:
                                 data.dteJson.identificacion.codigoGeneracion,
@@ -761,13 +741,13 @@ function SalesReportContigence() {
                               error.response.data.observaciones &&
                                 error.response.data.observaciones.length > 0
                                 ? error.response?.data.observaciones.join(
-                                    "\n\n"
-                                  )
+                                  "\n\n"
+                                )
                                 : ""
                             );
                             setTitle(
                               error.response.data.descripcionMsg ??
-                                "Error al procesar venta"
+                              "Error al procesar venta"
                             );
                             modalError.onOpen();
                             setLoading(false);
@@ -790,11 +770,11 @@ function SalesReportContigence() {
                         await save_logs({
                           title:
                             "Contingencia: " +
-                              error.response.data.descripcionMsg ??
+                            error.response.data.descripcionMsg ??
                             "Error al procesar venta",
                           message:
                             error.response.data.observaciones &&
-                            error.response.data.observaciones.length > 0
+                              error.response.data.observaciones.length > 0
                               ? error.response?.data.observaciones.join("\n\n")
                               : "",
                           generationCode:
@@ -808,7 +788,7 @@ function SalesReportContigence() {
                         );
                         setTitle(
                           error.response.data.descripcionMsg ??
-                            "Error al procesar venta"
+                          "Error al procesar venta"
                         );
                         modalErrorContingencia.onOpen();
                         setLoading(false);

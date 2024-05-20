@@ -36,6 +36,15 @@ export const invalidate_sale = (id: number, selloInvalidacion: string) => {
   );
 };
 
+export const getJson = (id: number) => {
+  const token = get_token();
+  return axios.get(API_URL + `/sales/get-json/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
 export const get_sales_by_status = (
   id: number,
   page: number,
@@ -46,6 +55,6 @@ export const get_sales_by_status = (
 ) => {
   return axios.get<IGetSales>(
     API_URL +
-      `/sales/get-contigencia/${id}?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}&status=${status}`
+    `/sales/get-contigencia/${id}?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}&status=${status}`
   );
 };
