@@ -851,7 +851,7 @@ function SalesReportContigence() {
     <>
       <div className="w-full h-full p-5 bg-gray-100 dark:bg-gray-800">
         <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
-          <div className="hidden md:grid w-full grid-cols-4 gap-5 mb-5">
+          <div className="hidden md:grid w-full grid-cols-3 gap-5 mb-5">
             <Input
               onChange={(e) => setDateInitial(e.target.value)}
               value={dateInitial}
@@ -893,7 +893,7 @@ function SalesReportContigence() {
             >
               Buscar
             </Button>
-            <Select
+            {/* <Select
               size="lg"
               label="Estado de la venta"
               labelPlacement="outside"
@@ -912,7 +912,7 @@ function SalesReportContigence() {
                   {status.name}
                 </SelectItem>
               ))}
-            </Select>
+            </Select> */}
           </div>
           <div className="flex items-center gap-5 md:mb-0 -mb-8">
             <div className="block md:hidden">
@@ -1046,6 +1046,16 @@ function SalesReportContigence() {
                   headerStyle={style}
                   header="Total IVA"
                   body={(rowData) => formatCurrency(Number(rowData.totalIva))}
+                />
+                <Column
+                  headerClassName="text-sm font-semibold"
+                  headerStyle={style}
+                  header="Estado"
+                  body={(rowData) =>
+                    rowData.selloInvalidacion === "null"
+                      ? "Procesado"
+                      : "Anulado"
+                  }
                 />
                 <Column
                   headerClassName="text-sm font-semibold"
@@ -1307,6 +1317,9 @@ function SalesReportContigence() {
         <SaleInvalidation
           sale={selectedSale as Sale}
           closeModal={modalAnulation.onClose}
+          reload={() =>
+            OnGetSalesNotContigence(branchId, 1, 5, dateInitial, dateEnd)
+          }
         />
       </ModalGlobal>
 

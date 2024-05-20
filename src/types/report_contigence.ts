@@ -111,6 +111,14 @@ export interface ISalesContigenceStore {
     startDate: string,
     endDate: string
   ) => void;
+  OnGetSalesByStatus: (
+    id: number,
+    page: number,
+    limit: number,
+    startDate: string,
+    endDate: string,
+    status: number
+  ) => void;
 }
 export interface ValidateContigence {
   nombre: string;
