@@ -22,8 +22,8 @@ import {
 import { Fragment, useContext, useEffect, useMemo } from "react";
 import { ThemeContext } from "../hooks/useTheme";
 import { useAuthStore } from "../store/auth.store";
-import { delete_seller_mode, save_seller_mode } from "../storage/localStorage";
-import { redirect, useLocation, useNavigate } from "react-router";
+import { save_seller_mode } from "../storage/localStorage";
+import { useLocation, useNavigate } from "react-router";
 import { SessionContext } from "../hooks/useSession";
 import { useConfigurationStore } from "../store/perzonalitation.store";
 import useWindowSize from "../hooks/useWindowSize";
@@ -112,6 +112,7 @@ export const LayoutItems = () => {
     role_view_action.view &&
     role_view_action.view.length > 0 &&
     role_view_action.view.map((view) => view.name);
+
   return (
     <>
       {personalization.length === 0 ? (
@@ -263,129 +264,129 @@ export const LayoutItems = () => {
                 </NavLink>
               )}
 
-              <>
-                {/* inline-block  */}
+              {views.includes("Empleados") ||
+              views.includes("Clientes") ||
+              views.includes("Usuarios") ||
+              views.includes("Sucursales") ? (
+                <>
+                  <Menu as="div" className="relative px-4 z-50 w-full">
+                    <div>
+                      <Menu.Button className="inline-flex w-full font-semibold py-2  gap-x-1.5 ml-2 text-sm 2xl:text-base">
+                        <AlignJustify size={iconSize} />
+                        Menú
+                        <ChevronDown
+                          className="justify-end items-end  ml-20"
+                          size={iconSize}
+                        />
+                      </Menu.Button>
+                    </div>
 
+                    <Transition
+                      as={Fragment}
+                      enter="transition ease-out duration-100"
+                      enterFrom="transform opacity-0 scale-95"
+                      enterTo="transform opacity-100 scale-100"
+                      leave="transition ease-in duration-75"
+                      leaveFrom="transform opacity-100 scale-100"
+                      leaveTo="transform opacity-0 scale-95"
+                    >
+                      <Menu.Items className="absolute z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                        <div className="py-1">
+                          {views.includes("Empleados") && (
+                            <Menu.Item>
+                              {views.includes("Empleados") && (
+                                <NavLink
+                                  to={"/employees"}
+                                  className={({ isActive }) => {
+                                    return (
+                                      (isActive
+                                        ? "font-semibold bg-gray-300 dark:bg-gray-700"
+                                        : "text-coffee-brown font-semibold border-white") +
+                                      " flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white"
+                                    );
+                                  }}
+                                >
+                                  <User size={iconSize} />
+                                  <p className="ml-2 text-sm 2xl:text-base">
+                                    Empleados
+                                  </p>
+                                </NavLink>
+                              )}
+                            </Menu.Item>
+                          )}
 
+                          {views.includes("Clientes") && (
+                            <Menu.Item>
+                              {views.includes("Clientes") && (
+                                <NavLink
+                                  to={"/clients"}
+                                  className={({ isActive }) => {
+                                    return (
+                                      (isActive
+                                        ? "font-semibold bg-gray-300 dark:bg-gray-700"
+                                        : "text-coffee-brown font-semibold border-white") +
+                                      " flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white"
+                                    );
+                                  }}
+                                >
+                                  <BookUser size={iconSize} />
+                                  <p className="ml-2 text-sm 2xl:text-base">
+                                    Clientes
+                                  </p>
+                                </NavLink>
+                              )}
+                            </Menu.Item>
+                          )}
 
+                          {views.includes("Usuarios") && (
+                            <Menu.Item>
+                              {views.includes("Usuarios") && (
+                                <NavLink
+                                  to={"/users"}
+                                  className={({ isActive }) => {
+                                    return (
+                                      (isActive
+                                        ? "font-semibold bg-gray-300 dark:bg-gray-700"
+                                        : "text-coffee-brown font-semibold border-white") +
+                                      " flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white"
+                                    );
+                                  }}
+                                >
+                                  <User size={iconSize} />
+                                  <p className="ml-2 text-sm 2xl:text-base">
+                                    Usuarios
+                                  </p>
+                                </NavLink>
+                              )}
+                            </Menu.Item>
+                          )}
 
-                <Menu as="div" className="relative px-4 z-50 w-full">
-                  <div>
-                    <Menu.Button className="inline-flex w-full font-semibold py-2  gap-x-1.5 ml-2 text-sm 2xl:text-base">
-                      <AlignJustify size={iconSize} />
-                      Menú
-                      <ChevronDown
-                        className="justify-end items-end  ml-20"
-                        size={iconSize}
-                      />
-                    </Menu.Button>
-                  </div>
-
-                  <Transition
-                    as={Fragment}
-                    enter="transition ease-out duration-100"
-                    enterFrom="transform opacity-0 scale-95"
-                    enterTo="transform opacity-100 scale-100"
-                    leave="transition ease-in duration-75"
-                    leaveFrom="transform opacity-100 scale-100"
-                    leaveTo="transform opacity-0 scale-95"
-                  >
-                    <Menu.Items className="absolute z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                      <div className="py-1">
-                        {views.includes("Empleados") && (
-                          <Menu.Item>
-                            {views.includes("Empleados") && (
-                              <NavLink
-                                to={"/employees"}
-                                className={({ isActive }) => {
-                                  return (
-                                    (isActive
-                                      ? "font-semibold bg-gray-300 dark:bg-gray-700"
-                                      : "text-coffee-brown font-semibold border-white") +
-                                    " flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white"
-                                  );
-                                }}
-                              >
-                                <User size={iconSize} />
-                                <p className="ml-2 text-sm 2xl:text-base">
-                                  Empleados
-                                </p>
-                              </NavLink>
-                            )}
-                          </Menu.Item>
-                        )}
-
-                        {views.includes("Clientes") && (
-                          <Menu.Item>
-                            {views.includes("Clientes") && (
-                              <NavLink
-                                to={"/clients"}
-                                className={({ isActive }) => {
-                                  return (
-                                    (isActive
-                                      ? "font-semibold bg-gray-300 dark:bg-gray-700"
-                                      : "text-coffee-brown font-semibold border-white") +
-                                    " flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white"
-                                  );
-                                }}
-                              >
-                                <BookUser size={iconSize} />
-                                <p className="ml-2 text-sm 2xl:text-base">
-                                  Clientes
-                                </p>
-                              </NavLink>
-                            )}
-                          </Menu.Item>
-                        )}
-
-                        {views.includes("Usuarios") && (
-                          <Menu.Item>
-                            {views.includes("Usuarios") && (
-                              <NavLink
-                                to={"/users"}
-                                className={({ isActive }) => {
-                                  return (
-                                    (isActive
-                                      ? "font-semibold bg-gray-300 dark:bg-gray-700"
-                                      : "text-coffee-brown font-semibold border-white") +
-                                    " flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white"
-                                  );
-                                }}
-                              >
-                                <User size={iconSize} />
-                                <p className="ml-2 text-sm 2xl:text-base">
-                                  Usuarios
-                                </p>
-                              </NavLink>
-                            )}
-                          </Menu.Item>
-                        )}
-
-                        {views.includes("Sucursales") && (
-                          <Menu.Item>
-                            {views.includes("Sucursales") && (
-                              <NavLink
-                                to={"/branches"}
-                                className={({ isActive }) => {
-                                  return (
-                                    (isActive
-                                      ? "font-semibold bg-gray-300 dark:bg-gray-700"
-                                      : "text-coffee-brown font-semibold border-white") +
-                                    " flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white"
-                                  );
-                                }}
-                              >
-                                <Store size={iconSize} />
-                                <p className="ml-2 text-base">Sucursales</p>
-                              </NavLink>
-                            )}
-                          </Menu.Item>
-                        )}
-                      </div>
-                    </Menu.Items>
-                  </Transition>
-                </Menu>
-              </>
+                          {views.includes("Sucursales") && (
+                            <Menu.Item>
+                              {views.includes("Sucursales") && (
+                                <NavLink
+                                  to={"/branches"}
+                                  className={({ isActive }) => {
+                                    return (
+                                      (isActive
+                                        ? "font-semibold bg-gray-300 dark:bg-gray-700"
+                                        : "text-coffee-brown font-semibold border-white") +
+                                      " flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white"
+                                    );
+                                  }}
+                                >
+                                  <Store size={iconSize} />
+                                  <p className="ml-2 text-base">Sucursales</p>
+                                </NavLink>
+                              )}
+                            </Menu.Item>
+                          )}
+                        </div>
+                      </Menu.Items>
+                    </Transition>
+                  </Menu>
+                </>
+              ) : null}
 
               {views.includes("Gastos") && (
                 <NavLink
