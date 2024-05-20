@@ -141,6 +141,7 @@ function UpdateFile(props: Props) {
                   ? selectedImage || personalizationLogo
                   : DefaultImage
               }
+              maxWidth={200}
               aspectRatio={() => 1}
             />
           </div>
