@@ -17,6 +17,7 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import UpdateConfigurationName from "./UpdateConfigurationName";
 import { Button } from "@nextui-org/react";
+import { Image } from 'primereact/image';
 
 function ConfigurationList() {
   const { getPaginatedThemes, themes } = useThemeStore();
@@ -135,7 +136,8 @@ function ConfigurationList() {
                     field="logo"
                     header="Logo"
                     body={(rowData) => (
-                      <img
+                      <Image
+                        preview
                         src={rowData.logo}
                         alt={rowData.name}
                         style={{ width: "100px" }}
