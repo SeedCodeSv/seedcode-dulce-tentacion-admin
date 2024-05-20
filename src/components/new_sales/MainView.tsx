@@ -53,10 +53,9 @@ const MainView = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const {
-    branch_products,
     pagination_branch_products,
     getPaginatedBranchProducts,
-    addProductCart,
+
     getProductByCode,
     cart_products,
     emptyCart,
