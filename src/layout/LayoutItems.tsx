@@ -103,7 +103,7 @@ export const LayoutItems = () => {
     if (storedUser) {
       const user = JSON.parse(storedUser);
       if (user && user.roleId) {
-        OnGetActionsByRole(user.roleId, 1, 5);
+        OnGetActionsByRole(user.roleId);
       }
     }
   }, []);
@@ -146,23 +146,23 @@ export const LayoutItems = () => {
         </>
       )}
       {mode !== "vendedor" ? (
-        <div className=" justify-center items-center px-3">
+        <div className=" justify-center items-center px-2 mt-2">
           <Button
             onClick={() => handleSeller()}
             className="text-coffee-green font-semibold bg-gray-100  border-coffee-green justify-center items-center bg-transparent"
           >
-            <ShoppingCart size={20} />
-            <p className="ml-2 text-base">modo venta</p>
+            <ShoppingCart size={iconSize} />
+            <p className="ml-2 text-sm 2xl:text-base">Modo venta</p>
           </Button>
         </div>
       ) : (
-        <div className=" justify-center items-center px-3">
+        <div className=" justify-center items-center px-2 mt-2">
           <Button
             onClick={() => handleAdmin()}
             className="text-coffee-green font-semibold bg-gray-100  border-coffee-green justify-center items-center bg-transparent"
           >
-            <Contact size={20} />
-            <p className="ml-2 text-base">Administración</p>
+            <Contact size={iconSize} />
+            <p className="ml-2 text-sm 2xl:text-base">Administración</p>
           </Button>
         </div>
       )}
@@ -265,7 +265,7 @@ export const LayoutItems = () => {
               )}
 
               {views.includes("Empleados") ||
-              views.includes("Clientes") ||
+              (views && views.includes("Clientes")) ||
               views.includes("Usuarios") ||
               views.includes("Sucursales") ? (
                 <>
@@ -315,7 +315,7 @@ export const LayoutItems = () => {
                             </Menu.Item>
                           )}
 
-                          {views.includes("Clientes") && (
+                          {views && views.includes("Clientes") && (
                             <Menu.Item>
                               {views.includes("Clientes") && (
                                 <NavLink
@@ -387,31 +387,6 @@ export const LayoutItems = () => {
                   </Menu>
                 </>
               ) : null}
-
-              {views.includes("Gastos") && (
-                <NavLink
-                  to={"/expenses"}
-                  className={({ isActive }) => {
-                    return (
-                      (isActive
-                        ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
-                        : "text-coffee-brown font-semibold border-white") +
-                      " flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
-                    );
-                  }}
-                  style={({ isActive }) => {
-                    return {
-                      borderLeftColor: isActive
-                        ? theme.colors.dark
-                        : "transparent",
-                      borderLeftWidth: 5,
-                    };
-                  }}
-                >
-                  <SquareMenu size={iconSize} />
-                  <p className="ml-2 text-sm 2xl:text-base">Gastos</p>
-                </NavLink>
-              )}
 
               {views.includes("Reportes") && (
                 <NavLink
@@ -487,7 +462,31 @@ export const LayoutItems = () => {
             }}
           >
             <DollarSign size={iconSize} />
-            <p className="ml-2 text-sm 2xl:text-base">Ventas</p>
+            <p className="ml-2 text-sm 2xl:text-base">Reporte de Ventas</p>
+          </NavLink>
+        )}
+      </>
+      <>
+        {views && views.includes("Gastos") && (
+          <NavLink
+            to={"/expenses"}
+            className={({ isActive }) => {
+              return (
+                (isActive
+                  ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
+                  : "text-coffee-brown font-semibold border-white") +
+                " flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
+              );
+            }}
+            style={({ isActive }) => {
+              return {
+                borderLeftColor: isActive ? theme.colors.dark : "transparent",
+                borderLeftWidth: 5,
+              };
+            }}
+          >
+            <SquareMenu size={iconSize} />
+            <p className="ml-2 text-sm 2xl:text-base">Gastos</p>
           </NavLink>
         )}
       </>

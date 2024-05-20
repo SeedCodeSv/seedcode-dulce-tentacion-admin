@@ -23,7 +23,6 @@ import {
   EditIcon,
   User,
   Phone,
-  Truck,
   Filter,
 } from "lucide-react";
 import { Employee } from "../../types/employees.types";

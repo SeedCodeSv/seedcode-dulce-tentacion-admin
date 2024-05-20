@@ -367,8 +367,8 @@ function SalesReportContigence() {
   const [contingencia, setContingencia] = useState("2");
   const [motivoContigencia, setMotivoContigencia] = useState("");
 
-  const handleSendToContingencia = async (sale: Sale) => {
-    console.log("Sales ya en el metodo", sale);
+  const handleSendToContingencia = async (sale: Sale, salesCustomer?: Sale) => {
+    console.log("Sales ya en el metodo", salesCustomer);
     const result_generation = await getVentaByCodigo(sale.codigoGeneracion);
     const result_credito_generate = await getCreditoVentaByCodigo(
       sale.codigoGeneracion
@@ -410,7 +410,8 @@ function SalesReportContigence() {
                   const data = generateFactura(
                     result_generation,
                     transmitter,
-                    sale
+                    sale,
+                    salesCustomer
                   );
                   firmarDocumentoFactura(data).then((firmador) => {
                     const data_send: PayloadMH = {
@@ -489,7 +490,6 @@ function SalesReportContigence() {
                                   .then((response) => {
                                     if (response.$metadata) {
                                       const token = get_token() ?? "";
-
                                       axios
                                         .put(
                                           API_URL +
@@ -589,7 +589,8 @@ function SalesReportContigence() {
                   const data = generateCredit(
                     result_credito_generate,
                     transmitter,
-                    sale
+                    sale,
+                    salesCustomer,
                   );
                   const source = axios.CancelToken.source();
 

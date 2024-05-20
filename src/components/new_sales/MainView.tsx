@@ -38,11 +38,13 @@ import { useAuthStore } from "../../store/auth.store";
 import { toast } from "sonner";
 import AddButton from "../global/AddButton";
 import MobileView_NewSale from "./MobileView_NewSale";
+import CardView from "./Products/CardiView";
+import { formatCurrency } from "../../utils/dte";
 
 const MainView = () => {
   const { theme } = useContext(ThemeContext);
   const [view, setView] = useState<"table" | "grid" | "list">("table");
-  const [viewMovil, setViewMovil] = useState<"grid" | "list">("grid")
+  const [viewMovil, setViewMovil] = useState<"grid" | "list">("grid");
 
   const [name, setName] = useState<string>("");
   const [code, setCode] = useState<string>("");
@@ -51,10 +53,9 @@ const MainView = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const {
-    branch_products,
     pagination_branch_products,
     getPaginatedBranchProducts,
-    addProductCart,
+
     getProductByCode,
     cart_products,
     emptyCart,
@@ -177,7 +178,13 @@ const MainView = () => {
             </div>
           </div>
         </div>
+
+        <div className="w-full h-[80vh] 2xl:h-[94vh]  min-h-full overflow-y-auto p-4 hidden lg:flex flex-col">
+          <ListProduct />
+        </div>
+        {/* 
         <div className="w-full h-full overflow-y-auto p-4 hidden lg:block">
+          
           <Input
             variant="bordered"
             placeholder="Escribe para buscar..."
@@ -377,8 +384,9 @@ const MainView = () => {
               </div>
             )}
           </div>
-        </div>
+        </div> */}
       </div>
+
       <ModalGlobal
         isOpen={modalAdd.isOpen}
         onClose={modalAdd.onClose}
@@ -465,7 +473,9 @@ const MainView = () => {
                         backgroundColor:
                           viewMovil === "grid" ? theme.colors.third : "#e5e5e6",
                         color:
-                          viewMovil === "grid" ? theme.colors.primary : "#3e3e3e",
+                          viewMovil === "grid"
+                            ? theme.colors.primary
+                            : "#3e3e3e",
                       }}
                       onClick={() => setViewMovil("grid")}
                     >
@@ -479,7 +489,9 @@ const MainView = () => {
                         backgroundColor:
                           viewMovil === "list" ? theme.colors.third : "#e5e5e5",
                         color:
-                          viewMovil === "list" ? theme.colors.primary : "#3e3e3e",
+                          viewMovil === "list"
+                            ? theme.colors.primary
+                            : "#3e3e3e",
                       }}
                       onClick={() => setViewMovil("list")}
                     >
@@ -514,9 +526,7 @@ const MainView = () => {
                     Lista de productos
                   </h1>
                   {(viewMovil === "grid" || viewMovil === "list") && (
-                    <MobileView_NewSale
-                      layout={viewMovil as "grid" | "list"}
-                    />
+                    <MobileView_NewSale layout={viewMovil as "grid" | "list"} />
                   )}
                   {pagination_branch_products.totalPag > 1 && (
                     <div className="w-full mt-5">
@@ -548,3 +558,277 @@ const MainView = () => {
 };
 
 export default MainView;
+
+const ListProduct = () => {
+  const [view, setView] = useState<"table" | "grid" | "list">("table");
+  const { theme } = useContext(ThemeContext);
+
+  const { user } = useAuthStore();
+
+  const [name, setName] = useState<string>("");
+  const [code, setCode] = useState<string>("");
+  const [limit, setLimit] = useState<number>(5);
+
+  const {
+    branch_products,
+    pagination_branch_products,
+    getPaginatedBranchProducts,
+    addProductCart,
+    getProductByCode,
+  } = useBranchProductStore();
+
+  let barcode = "";
+  let interval: NodeJS.Timeout | undefined;
+
+  const handler = (evt: KeyboardEvent) => {
+    if (interval) clearInterval(interval);
+    if (evt.code === "Enter") {
+      if (barcode)
+        getProductByCode(user?.employee.branch.transmitterId ?? 0, barcode);
+      barcode = "";
+      return;
+    }
+    if (evt.key !== "Shift") barcode += evt.key;
+    interval = setInterval(() => (barcode = ""), 200000);
+  };
+
+  useEventListener("keydown", handler as any);
+
+  useEffect(() => {
+    getPaginatedBranchProducts(
+      Number(return_branch_id()),
+      1,
+      limit,
+      code,
+      name
+    );
+  }, [limit]);
+
+  const style = {
+    backgroundColor: theme.colors.dark,
+    color: theme.colors.primary,
+  };
+  const priceBodyTemplate = (product: BranchProduct) => {
+    return formatCurrency(Number(product.price));
+  };
+
+  const nameBodyTemplate = (product: BranchProduct) => {
+    const name =
+      product.product.name.length > 20
+        ? `${product.product.name.substring(0, 20)}...`
+        : product.product.name;
+    return (
+      <>
+        {product.product.name.length > 20 ? (
+          <Tooltip content={product.product.name} showArrow>
+            <span>{name}</span>
+          </Tooltip>
+        ) : (
+          <span>{name}</span>
+        )}
+      </>
+    );
+  };
+
+  const handleSearch = () => {
+    getPaginatedBranchProducts(
+      Number(return_branch_id()),
+      1,
+      limit,
+      name,
+      code
+    );
+  };
+
+  return (
+    <div className="w-full h-full overflow-y-auto p-4 mt-5">
+      <Input
+        variant="bordered"
+        placeholder="Escribe para buscar..."
+        label="Buscar por nombre"
+        labelPlacement="outside"
+        className="dark:text-white"
+        classNames={{
+          label: "text-sm font-semibold z-[5]",
+          inputWrapper: "pr-0",
+        }}
+        onChange={(e) => setName(e.target.value)}
+        startContent={<Search size={20} />}
+        endContent={
+          <Button
+            onClick={handleSearch}
+            style={{
+              backgroundColor: theme.colors.secondary,
+              color: theme.colors.primary,
+            }}
+          >
+            Buscar
+          </Button>
+        }
+      />
+      <Input
+        variant="bordered"
+        placeholder="Escribe para buscar..."
+        label="Buscar por código"
+        labelPlacement="outside"
+        className="dark:text-white pt-4"
+        classNames={{
+          label: "text-sm font-semibold z-[5]",
+          inputWrapper: "pr-0",
+        }}
+        startContent={<Barcode size={20} />}
+        onChange={(e) => setCode(e.target.value)}
+        endContent={
+          <Button
+            onClick={handleSearch}
+            style={{
+              backgroundColor: theme.colors.secondary,
+              color: theme.colors.primary,
+            }}
+          >
+            Buscar
+          </Button>
+        }
+      />
+      <div className="w-full mt-5 flex justify-between">
+        <ButtonGroup>
+          <Button
+            isIconOnly
+            color="secondary"
+            style={{
+              backgroundColor:
+                view === "table" ? theme.colors.third : "#e5e5e5",
+              color: view === "table" ? theme.colors.primary : "#3e3e3e",
+            }}
+            onClick={() => setView("table")}
+          >
+            <ITable />
+          </Button>
+          <Button
+            isIconOnly
+            color="default"
+            style={{
+              backgroundColor: view === "grid" ? theme.colors.third : "#e5e5e5",
+              color: view === "grid" ? theme.colors.primary : "#3e3e3e",
+            }}
+            onClick={() => setView("grid")}
+          >
+            <CreditCard />
+          </Button>
+          <Button
+            isIconOnly
+            color="default"
+            style={{
+              backgroundColor: view === "list" ? theme.colors.third : "#e5e5e5",
+              color: view === "list" ? theme.colors.primary : "#3e3e3e",
+            }}
+            onClick={() => setView("list")}
+          >
+            <List />
+          </Button>
+        </ButtonGroup>
+        <Select
+          className="w-44 dark:text-white z-[5]"
+          variant="bordered"
+          label="Mostrar"
+          labelPlacement="outside"
+          classNames={{
+            label: "font-semibold z-[5]",
+          }}
+          value={limit}
+          onChange={(e) => {
+            setLimit(Number(e.target.value !== "" ? e.target.value : "5"));
+          }}
+        >
+          {limit_options.map((option) => (
+            <SelectItem key={option} value={option}>
+              {option}
+            </SelectItem>
+          ))}
+        </Select>
+      </div>
+      <div className="w-full mt-5 p-5 bg-white shadow dark:bg-gray-900 overflow-y-auto rounded">
+        <h1 className="text-base font-semibold dark:text-white">
+          Lista de productos
+        </h1>
+        {(view === "grid" || view === "list") && (
+          <CardView layout={view as "grid" | "list"} />
+        )}
+        {view === "table" && (
+          <DataTable
+            className="w-full shadow mt-5"
+            emptyMessage="No se encontraron resultados"
+            value={branch_products}
+            tableStyle={{ minWidth: "50rem" }}
+            size="small"
+            scrollable
+          >
+            <Column
+              headerClassName="text-sm font-semibold"
+              headerStyle={{ ...style }}
+              bodyClassName={"bg-white"}
+              field="product.name"
+              body={nameBodyTemplate}
+              header="Nombre"
+            />
+            <Column
+              headerClassName="text-sm font-semibold"
+              headerStyle={style}
+              bodyClassName={"bg-white"}
+              field="price"
+              body={priceBodyTemplate}
+              header="Precio"
+            />
+            <Column
+              headerClassName="text-sm font-semibold"
+              headerStyle={style}
+              bodyClassName={"bg-white"}
+              field="product.categoryProduct.name"
+              header="Categoría"
+            />
+            <Column
+              headerStyle={{ ...style }}
+              header="Acciones"
+              frozen={true}
+              bodyClassName={"bg-white"}
+              alignFrozen="right"
+              body={(item) => (
+                <div className="flex gap-6">
+                  <Button
+                    style={global_styles().secondaryStyle}
+                    isIconOnly
+                    onClick={() => {
+                      addProductCart(item);
+                      toast.success("Producto agregado al carrito");
+                    }}
+                  >
+                    <Plus />
+                  </Button>
+                </div>
+              )}
+            />
+          </DataTable>
+        )}
+        {pagination_branch_products.totalPag > 1 && (
+          <div className="w-full mt-5">
+            <Pagination
+              totalPages={pagination_branch_products.totalPag}
+              currentPage={pagination_branch_products.currentPag}
+              previousPage={pagination_branch_products.prevPag}
+              nextPage={pagination_branch_products.nextPag}
+              onPageChange={(page) => {
+                getPaginatedBranchProducts(
+                  Number(return_branch_id()),
+                  page,
+                  limit,
+                  name,
+                  code
+                );
+              }}
+            />
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};

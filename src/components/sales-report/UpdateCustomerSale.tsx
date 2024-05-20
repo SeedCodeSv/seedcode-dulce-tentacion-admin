@@ -9,22 +9,25 @@ import {
   Sale,
   ValidateContigence,
 } from "../../types/report_contigence";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useLogsStore } from "../../store/logs.store";
 import { ThemeContext } from "../../hooks/useTheme";
 import { Municipio } from "../../types/billing/cat-013-municipio.types";
-import { useBillingStore } from "../../store/facturation/billing.store";
+// import { useBillingStore } from "../../store/facturation/billing.store";
 import { Departamento } from "../../types/billing/cat-012-departamento.types";
 import { CodigoActividadEconomica } from "../../types/billing/cat-019-codigo-de-actividad-economica.types";
-import { useProductsStore } from "../../store/products.store";
+// import { useProductsStore } from "../../store/products.store";
 import { SeedcodeCatalogosMhService } from "seedcode-catalogos-mh";
 import { Formik } from "formik";
 import * as yup from "yup";
+import { IUnitOfMeasurement } from "../../types/billing/cat-014-tipos-de-medida.types";
+import { TipoDeItem } from "../../types/billing/cat-011-tipo-de-item.types";
+import { ITipoDocumento } from "../../types/DTE/tipo_documento.types";
 interface Props {
   onClose: () => void;
   codigoGeneracion: string;
   customer?: Customer;
-  handleSendToContingencia: (sale: Sale) => void;
+  handleSendToContingencia: (sale: Sale, salesCustomer: Sale) => void;
   selectedSale?: Sale;
 }
 const UpdateCustomerSales = (props: Props) => {
@@ -34,17 +37,27 @@ const UpdateCustomerSales = (props: Props) => {
   const [selectedMunicipio, setSeletedMunicipio] = useState<Municipio>();
   const [selectedDep, setSeletedDep] = useState<Departamento>();
   const [codActividad, setCodActividad] = useState<CodigoActividadEconomica>();
+  const [tipoDocument, setTipoDocument] = useState<ITipoDocumento>();
+  //-------------------------------------------------------------------
+  const [selectedTipeItem, setSelectedTipeItem] = useState<TipoDeItem>();
+  const [selectedUnidadMedi, setSelectedUnidadMedi] =
+    useState<IUnitOfMeasurement>();
+  // en progreso
+  //-------------------------------------------------------------------
   const validationSchema = yup.object().shape({
     nombre: yup.string().required("**El nombre es requerido**"),
-    nombreComercial: yup.string().required("**El campo es requerida**"),
-    nrc: yup.string().required("**El precio es requerido**"),
-    nit: yup.string().required("**El precio es requerido**"),
-    nombreDepartamento: yup.string().required("**El Código es requerido**"),
-    nombreMunicipio: yup
+    nombreComercial: yup.string().required("El campo es requerida"),
+    nrc: yup.string().required("El nrc es requerido"),
+    nit: yup.string().required("El nit es requerido"),
+    nombreDepartamento: yup
       .string()
-      .required("**Debes seleccionar la categoría**"),
-    descActividad: yup.string().required("**La descripción es requerida**"),
-    numDocumento: yup.string().required("**La descripción es requerida**"),
+      .required("Debes seleccionar el departamento"),
+    nombreMunicipio: yup.string().required("Debes seleccionar el municipio"),
+    descActividad: yup.string().required("La actividad es requerida"),
+    numDocumento: yup.string().required("El numero documento es requerido"),
+    tipoItem: yup.string().required("El tipo item es requerido"),
+    uniMedida: yup.string().required("La unidad de medida es requerida"),
+    tipoDocument: yup.string().required("El tipo de documento es requerido"),
   });
   const initialValues = {
     nombre: props.selectedSale?.customer?.nombre ?? "",
@@ -57,39 +70,32 @@ const UpdateCustomerSales = (props: Props) => {
       props.selectedSale?.customer.direccion.nombreMunicipio ?? "N/A",
     descActividad: props.selectedSale?.customer.descActividad ?? "N/A",
     numDocumento: props.selectedSale?.customer.numDocumento ?? "N/A",
-    // tipoDeItem: 1,
-    // uniMedida: 26,
+    tipoDocument: props.selectedSale?.customer.tipoDocumento ?? "N/A",
+    tipoItem: 1,
+    uniMedida: 26,
   };
   useEffect(() => {
     if (props.codigoGeneracion) {
       getLogs(props.codigoGeneracion);
     }
   }, [props.customer]);
-  const {
-    getCat012Departamento,
-    cat_012_departamento,
-    getCat013Municipios,
-    cat_013_municipios,
-    getCat019CodigoActividadEconomica,
-    cat_019_codigo_de_actividad_economica,
-  } = useBillingStore();
-  const { cat_011_tipo_de_item, getCat011TipoDeItem } = useProductsStore();
-  useEffect(() => {
-    getCat012Departamento();
-    getCat013Municipios();
-    getCat011TipoDeItem();
-    getCat019CodigoActividadEconomica();
-  }, []);
+
+  const cat_012_departamento =
+    new SeedcodeCatalogosMhService().get012Departamento();
+  const cat_013_municipios = new SeedcodeCatalogosMhService().get013Municipio(
+    selectedCodeDep
+  );
+  const cat_019_codigo_de_actividad_economica =
+    new SeedcodeCatalogosMhService().get019CodigoDeActividaEcono();
+  const cay_002_tipo_de_documento =
+    new SeedcodeCatalogosMhService().get022TipoDeDocumentoDeIde();
+  const cat_011_tipo_de_item =
+    new SeedcodeCatalogosMhService().get011TipoDeItem();
   const unidadDeMedidaList =
     new SeedcodeCatalogosMhService().get014UnidadDeMedida();
-  const filteredMunicipios = useMemo(() => {
-    if (selectedCodeDep === "0") {
-      return cat_013_municipios;
-    }
-    return cat_013_municipios.filter(
-      (municipio) => municipio.departamento === selectedCodeDep
-    );
-  }, [cat_013_municipios, selectedCodeDep]);
+  const object = cay_002_tipo_de_documento.find(
+    (obj) => obj.codigo === props.customer?.tipoDocumento
+  );
   const handleSave = (values: ValidateContigence) => {
     const sale: Sale = {
       ...props!.selectedSale!,
@@ -110,20 +116,49 @@ const UpdateCustomerSales = (props: Props) => {
             ? codActividad.valores
             : props.selectedSale?.customer.descActividad
         ),
+        tipoDocumento: tipoDocument?.codigo
+          ? tipoDocument.codigo
+          : String(props.selectedSale?.customer.tipoDocumento),
         direccion: {
-            id: Number(props.selectedSale?.customer.direccion.id),
-            departamento: String(selectedDep?.codigo ? selectedDep.codigo : props.selectedSale?.customer.direccion.departamento),
-            nombreDepartamento: String(selectedDep?.valores ? selectedDep.valores : props.selectedSale?.customer.direccion.nombreDepartamento),
-            municipio: String(selectedMunicipio?.codigo ? selectedMunicipio?.codigo : props.selectedSale?.customer.direccion.municipio),
-            nombreMunicipio: String(selectedMunicipio?.codigo ? selectedMunicipio?.codigo : props.selectedSale?.customer.direccion.nombreMunicipio),
-            complemento: String(props.selectedSale?.customer.direccion.complemento),
-            active: Boolean(props.selectedSale?.customer.direccion.active)
-        }
+          id: Number(props.selectedSale?.customer.direccion.id),
+          departamento: String(
+            selectedDep?.codigo
+              ? selectedDep.codigo
+              : props.selectedSale?.customer.direccion.departamento
+          ),
+          nombreDepartamento: String(
+            selectedDep?.valores
+              ? selectedDep.valores
+              : props.selectedSale?.customer.direccion.nombreDepartamento
+          ),
+          municipio: String(
+            selectedMunicipio?.codigo
+              ? selectedMunicipio?.codigo
+              : props.selectedSale?.customer.direccion.municipio
+          ),
+          nombreMunicipio: String(
+            selectedMunicipio?.codigo
+              ? selectedMunicipio?.codigo
+              : props.selectedSale?.customer.direccion.nombreMunicipio
+          ),
+          complemento: String(
+            props.selectedSale?.customer.direccion.complemento
+          ),
+          active: Boolean(props.selectedSale?.customer.direccion.active),
+        },
       },
+      //---------------------------------------
+      tipoItem: Number(selectedTipeItem?.codigo ? selectedTipeItem.codigo : 1),
+      uniMedida: Number(
+        selectedUnidadMedi?.codigo ? selectedUnidadMedi.codigo : 26
+      ),
+      //faltan algunos cambios
+      //---------------------------------------
     };
-    props.handleSendToContingencia(sale)
+    // console.log("sales", sale)
+    props.handleSendToContingencia(sale, sale);
+    props.onClose();
   };
-
   return (
     <>
       <div>
@@ -275,28 +310,73 @@ const UpdateCustomerSales = (props: Props) => {
                   </span>
                 )}
               </div>
-              <div className="pt-2">
-                <Input
-                  label="Numero de documento"
-                  defaultValue={props.customer?.numDocumento}
-                  onChange={handleChange("numDocumento")}
-                  onBlur={handleBlur("numDocumento")}
-                  value={values.numDocumento}
-                  labelPlacement="outside"
-                  size="lg"
-                  placeholder="Ingresa el numero de documento"
-                  type="text"
-                  classNames={{
-                    label: "text-gray-500 text-base",
-                  }}
-                  variant="bordered"
-                />
-                {errors.numDocumento && touched.numDocumento && (
-                  <span className="text-sm font-semibold text-red-500">
-                    {errors.numDocumento}
-                  </span>
-                )}
-              </div>
+              {props.selectedSale?.tipoDte === "01" && (
+                <>
+                  <div className="pt-2">
+                    <Autocomplete
+                      onSelectionChange={(key) => {
+                        if (key) {
+                          const depSelected = JSON.parse(
+                            key as string
+                          ) as ITipoDocumento;
+                          setTipoDocument(depSelected);
+                        }
+                      }}
+                      onBlur={handleBlur("tipoDocument")}
+                      label="Tipo documento"
+                      labelPlacement="outside"
+                      placeholder={
+                        object?.valores
+                          ? object?.valores
+                          : "Selecciona el tipo documento"
+                      }
+                      value={values.tipoDocument}
+                      variant="bordered"
+                      classNames={{
+                        base: "font-semibold text-gray-500 text-sm",
+                      }}
+                      size="lg"
+                    >
+                      {cay_002_tipo_de_documento.map((dep) => (
+                        <AutocompleteItem
+                          value={dep.codigo}
+                          key={JSON.stringify(dep)}
+                        >
+                          {dep.valores}
+                        </AutocompleteItem>
+                      ))}
+                    </Autocomplete>
+                    {errors.tipoDocument && touched.tipoDocument && (
+                      <span className="text-sm font-semibold text-red-500">
+                        {errors.tipoDocument}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="pt-2">
+                    <Input
+                      label="Numero de documento"
+                      defaultValue={props.customer?.numDocumento}
+                      onChange={handleChange("numDocumento")}
+                      onBlur={handleBlur("numDocumento")}
+                      value={values.numDocumento}
+                      labelPlacement="outside"
+                      size="lg"
+                      placeholder="Ingresa el numero de documento"
+                      type="text"
+                      classNames={{
+                        label: "text-gray-500 text-base",
+                      }}
+                      variant="bordered"
+                    />
+                    {errors.numDocumento && touched.numDocumento && (
+                      <span className="text-sm font-semibold text-red-500">
+                        {errors.numDocumento}
+                      </span>
+                    )}
+                  </div>
+                </>
+              )}
               <div className="pt-2">
                 <div>
                   <Autocomplete
@@ -309,8 +389,8 @@ const UpdateCustomerSales = (props: Props) => {
                         setSeletedDep(depSelected);
                       }
                     }}
-                    onChange={handleChange("nombre")}
-                    onBlur={handleBlur("nombre")}
+                    onChange={handleChange("nombreDepartamento")}
+                    onBlur={handleBlur("nombreDepartamento")}
                     label="Departamento"
                     labelPlacement="outside"
                     placeholder={
@@ -369,7 +449,7 @@ const UpdateCustomerSales = (props: Props) => {
                       size="lg"
                       value={values.nombreMunicipio}
                     >
-                      {filteredMunicipios.map((dep) => (
+                      {cat_013_municipios!.map((dep) => (
                         <AutocompleteItem
                           value={dep.codigo}
                           key={JSON.stringify(dep)}
@@ -411,7 +491,7 @@ const UpdateCustomerSales = (props: Props) => {
                       size="lg"
                       value={values.nombreMunicipio}
                     >
-                      {filteredMunicipios.map((dep) => (
+                      {cat_013_municipios!.map((dep) => (
                         <AutocompleteItem
                           value={dep.codigo}
                           key={JSON.stringify(dep)}
@@ -425,26 +505,25 @@ const UpdateCustomerSales = (props: Props) => {
               </div>
             </div>
             <div className="text-grey-500 font-semibold">Producto</div>
-            {/* <div className="grid grid-cols-2 gap-3 p-3  border  ">
+            <div className="grid grid-cols-2 gap-3 p-3  border  ">
               <div className="mt-2">
                 <Autocomplete
                   onSelectionChange={(key) => {
                     if (key) {
                       const depSelected = JSON.parse(
                         key as string
-                      ) as Municipio;
-                      setSelectedCodeMun(depSelected.codigo);
+                      ) as TipoDeItem;
+                      setSelectedTipeItem(depSelected);
                     }
                   }}
+                  onChange={handleChange("tipoItem")}
+                  onBlur={handleBlur("tipoItem")}
                   variant="bordered"
                   label="Tipo de item"
                   labelPlacement="outside"
-                  placeholder={
-                    //   props.product?.tipoDeItem ??
-                    //   props.product?.tipoDeItem ??
-                    "Selecciona el item"
-                  }
+                  placeholder={"Bienes"}
                   size="lg"
+                  value={values.tipoItem}
                 >
                   {cat_011_tipo_de_item.map((item) => (
                     <AutocompleteItem
@@ -455,9 +534,9 @@ const UpdateCustomerSales = (props: Props) => {
                     </AutocompleteItem>
                   ))}
                 </Autocomplete>
-                {errors. && touched.nombre && (
+                {errors.tipoItem && touched.tipoItem && (
                   <span className="text-sm font-semibold text-red-500">
-                    {errors.nombre}
+                    {errors.tipoItem}
                   </span>
                 )}
               </div>
@@ -468,19 +547,18 @@ const UpdateCustomerSales = (props: Props) => {
                       const depSelected = JSON.parse(
                         key as string
                       ) as IUnitOfMeasurement;
-                      setSelectedCodeMun(depSelected.codigo);
+                      setSelectedUnidadMedi(depSelected);
                     }
                   }}
+                  onChange={handleChange("uniMedida")}
+                  onBlur={handleBlur("uniMedida")}
                   variant="bordered"
                   name="unidaDeMedida"
                   label="Unidad de medida"
                   labelPlacement="outside"
-                  placeholder={
-                    //   props.product?.tipoDeItem ??
-                    //   props.product?.tipoDeItem ??
-                    "Selecciona unidad de medida"
-                  }
+                  placeholder={"Mililitro"}
                   size="lg"
+                  value={values.uniMedida}
                 >
                   {unidadDeMedidaList.map((item) => (
                     <AutocompleteItem
@@ -491,8 +569,13 @@ const UpdateCustomerSales = (props: Props) => {
                     </AutocompleteItem>
                   ))}
                 </Autocomplete>
-              </div> */}
-            {/* </div> */}
+                {errors.uniMedida && touched.uniMedida && (
+                  <span className="text-sm font-semibold text-red-500">
+                    {errors.uniMedida}
+                  </span>
+                )}
+              </div>
+            </div>
             <Button
               size="lg"
               onClick={() => handleSubmit()}
