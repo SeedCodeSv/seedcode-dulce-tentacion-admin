@@ -5,11 +5,7 @@ import {
   SelectItem,
   useDisclosure,
 } from "@nextui-org/react";
-import {
-  Table as ITable,
-  CreditCard,
-  List,
-} from "lucide-react";
+import { Table as ITable, CreditCard, List } from "lucide-react";
 import { useContext, useEffect, useState } from "react";
 import { ThemeContext } from "../../hooks/useTheme";
 import AddButton from "../global/AddButton";
@@ -24,10 +20,10 @@ const ListActionRol = () => {
   const [limit, setLimit] = useState(8);
   const modalAdd = useDisclosure();
   const [idCounter] = useState(1);
-  const {OnGetActionsRoleList, actions_roles_grouped} = useActionsRolStore()
+  const { OnGetActionsRoleList, actions_roles_grouped } = useActionsRolStore();
   useEffect(() => {
-    OnGetActionsRoleList()
-  }, [])
+    OnGetActionsRoleList();
+  }, []);
 
   const style = {
     backgroundColor: theme.colors.dark,
@@ -159,7 +155,8 @@ const ListActionRol = () => {
                 headerStyle={{ ...style, borderTopLeftRadius: "10px" }}
                 field="id"
                 body={(rowData) => {
-                  const actionId = idCounter + actions_roles_grouped.indexOf(rowData)
+                  const actionId =
+                    idCounter + actions_roles_grouped.indexOf(rowData);
                   return actionId;
                 }}
                 header="No."
@@ -182,9 +179,7 @@ const ListActionRol = () => {
                 body={(rowData) => (
                   <div>
                     {rowData.action.map((action: any, index: number) => (
-                      <div key={index}>
-                        • {action}
-                      </div>
+                      <div key={index}>• {action}</div>
                     ))}
                   </div>
                 )}
@@ -229,3 +224,45 @@ const ListActionRol = () => {
 };
 
 export default ListActionRol;
+
+//  <Column
+//    headerClassName="text-sm font-semibold"
+//    headerStyle={style}
+//    body={(rowData) => (
+//      <div>
+//        {rowData.action.map((action: any, index: number) => (
+//          <div key={index} style={{ display: "flex", alignItems: "center" }}>
+//            {action === "Agregar" && (
+//              <div className="flex justify-center items-center w-10 h-10 rounded-full bg-gray-200">
+//                <CirclePlus size={20} />{" "}
+//              </div>
+//            )}
+//            {action === "Eliminar" && (
+//              <div className="flex justify-center items-center w-10 h-10 rounded-full bg-red-500">
+//                <Trash size={20} className="text-white" />
+//              </div>
+//            )}
+//            {action === "Editar" && (
+//              <div className="flex justify-center items-center w-10 h-10 rounded-full bg-green-400">
+//                <Pencil size={20} className="text-white" />
+//              </div>
+//            )}
+//            {action === "Mostrar" && (
+//              <div className="flex justify-center items-center w-10 h-10 rounded-full bg-blue-400">
+//                <Eye size={20} className="text-white" />
+//              </div>
+//            )}
+//            <span
+//              style={{
+//                marginLeft:
+//                  action === "Agregar" || action === "Eliminar" ? "0.5rem" : "0",
+//              }}
+//            >
+//              {action}
+//            </span>
+//          </div>
+//        ))}
+//      </div>
+//    )}
+//    header="Permisos"
+//  />;

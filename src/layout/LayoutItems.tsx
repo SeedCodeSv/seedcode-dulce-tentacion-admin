@@ -1,12 +1,4 @@
-import {
-  Button,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
-  Image,
-  Switch,
-} from "@nextui-org/react";
+import { Button, Switch } from "@nextui-org/react";
 import { NavLink } from "react-router-dom";
 import LOGO from "../assets/react.svg";
 import {
@@ -41,19 +33,17 @@ import {
 import { ThemeContext } from "../hooks/useTheme";
 import { useAuthStore } from "../store/auth.store";
 import { delete_seller_mode, save_seller_mode } from "../storage/localStorage";
-import { redirect, useLocation } from "react-router";
+import { redirect, useLocation, useNavigate } from "react-router";
 import { SessionContext } from "../hooks/useSession";
 import { useConfigurationStore } from "../store/perzonalitation.store";
 import useWindowSize from "../hooks/useWindowSize";
 import { classNames } from "primereact/utils";
 import { useActionsRolStore } from "../store/actions_rol.store";
 import { Menu, Transition } from "@headlessui/react";
-
 export const LayoutItems = () => {
   const { theme, toggleContext, context } = useContext(ThemeContext);
   const { makeLogout } = useAuthStore();
   const { setIsAuth, setToken, mode, setMode } = useContext(SessionContext);
-
   useEffect(() => {
     if (context === "dark") {
       document.getElementsByTagName("body")[0].classList.add("dark");
@@ -61,14 +51,14 @@ export const LayoutItems = () => {
       document.getElementsByTagName("body")[0].classList.remove("dark");
     }
   }, [context]);
-
+  const navigate = useNavigate();
   const handleSeller = () => {
     setMode("vendedor");
     save_seller_mode("vendedor");
     makeLogout();
     setIsAuth(false);
     setToken("");
-    redirect("/");
+    navigate("/");
   };
   const handleAdmin = () => {
     setMode("");
@@ -76,21 +66,16 @@ export const LayoutItems = () => {
     delete_seller_mode();
     setIsAuth(false);
     setToken("");
-    redirect("/");
+    navigate("/");
   };
-
   const { user } = useAuthStore();
   const transmitter = user?.employee?.branch?.transmitterId;
-
   const { personalization, GetConfigurationByTransmitter } =
     useConfigurationStore();
-
   useEffect(() => {
     GetConfigurationByTransmitter(transmitter || 0);
   }, []);
-
   const { windowSize } = useWindowSize();
-
   const iconSize = useMemo(() => {
     if (windowSize.width < 768) {
       return 14;
@@ -104,11 +89,7 @@ export const LayoutItems = () => {
       return 22;
     }
   }, [windowSize.width]);
-
-  // const { logo_name } = useConfigurationStore();
-
   const location = useLocation();
-
   const dropdownStyle = useMemo(() => {
     if (
       location.pathname === "/users" ||
@@ -127,7 +108,6 @@ export const LayoutItems = () => {
     }
   }, [location.pathname]);
   const { role_view_action, OnGetActionsByRole } = useActionsRolStore();
-
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -137,7 +117,6 @@ export const LayoutItems = () => {
       }
     }
   }, []);
-
   const views =
     role_view_action &&
     role_view_action.view &&
