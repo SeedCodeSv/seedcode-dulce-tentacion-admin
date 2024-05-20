@@ -10,35 +10,23 @@ import {
 import { NavLink } from "react-router-dom";
 import LOGO from "../assets/react.svg";
 import {
-  Coffee,
   Home,
   Box,
-  Store,
   User,
   BookUser,
-  Users,
   Book,
   ShieldHalf,
-  CalculatorIcon,
   Grid2X2Icon,
   ShoppingCart,
   DollarSign,
   Contact,
-  BoxIcon,
   ScanBarcode,
   SquareMenu,
   AlignJustify,
   ChevronDown,
   FolderOpen,
 } from "lucide-react";
-import {
-  Fragment,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { Fragment, useContext, useEffect, useMemo } from "react";
 import { ThemeContext } from "../hooks/useTheme";
 import { useAuthStore } from "../store/auth.store";
 import { delete_seller_mode, save_seller_mode } from "../storage/localStorage";
@@ -320,26 +308,28 @@ export const LayoutItems = () => {
                   >
                     <Menu.Items className="absolute z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                       <div className="py-1">
-                        <Menu.Item>
-                          {views.includes("Empleados") && (
-                            <NavLink
-                              to={"/employees"}
-                              className={({ isActive }) => {
-                                return (
-                                  (isActive
-                                    ? "font-semibold bg-gray-300 dark:bg-gray-700"
-                                    : "text-coffee-brown font-semibold border-white") +
-                                  " flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white"
-                                );
-                              }}
-                            >
-                              <User size={iconSize} />
-                              <p className="ml-2 text-sm 2xl:text-base">
-                                Empleados
-                              </p>
-                            </NavLink>
-                          )}
-                        </Menu.Item>
+                        {views.includes("Empleados") && (
+                          <Menu.Item>
+                            {views.includes("Empleados") && (
+                              <NavLink
+                                to={"/employees"}
+                                className={({ isActive }) => {
+                                  return (
+                                    (isActive
+                                      ? "font-semibold bg-gray-300 dark:bg-gray-700"
+                                      : "text-coffee-brown font-semibold border-white") +
+                                    " flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white"
+                                  );
+                                }}
+                              >
+                                <User size={iconSize} />
+                                <p className="ml-2 text-sm 2xl:text-base">
+                                  Empleados
+                                </p>
+                              </NavLink>
+                            )}
+                          </Menu.Item>
+                        )}
 
                         <Menu.Item>
                           {views.includes("Clientes") && (
@@ -362,157 +352,54 @@ export const LayoutItems = () => {
                           )}
                         </Menu.Item>
 
-                        <Menu.Item>
-                          {views.includes("Usuarios") && (
-                            <NavLink
-                              to={"/users"}
-                              className={({ isActive }) => {
-                                return (
-                                  (isActive
-                                    ? "font-semibold bg-gray-300 dark:bg-gray-700"
-                                    : "text-coffee-brown font-semibold border-white") +
-                                  " flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white"
-                                );
-                              }}
-                            >
-                              <User size={iconSize} />
-                              <p className="ml-2 text-sm 2xl:text-base">
-                                Usuarios
-                              </p>
-                            </NavLink>
-                          )}
-                        </Menu.Item>
+                        {views.includes("Usuarios") && (
+                          <Menu.Item>
+                            {views.includes("Usuarios") && (
+                              <NavLink
+                                to={"/users"}
+                                className={({ isActive }) => {
+                                  return (
+                                    (isActive
+                                      ? "font-semibold bg-gray-300 dark:bg-gray-700"
+                                      : "text-coffee-brown font-semibold border-white") +
+                                    " flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white"
+                                  );
+                                }}
+                              >
+                                <User size={iconSize} />
+                                <p className="ml-2 text-sm 2xl:text-base">
+                                  Usuarios
+                                </p>
+                              </NavLink>
+                            )}
+                          </Menu.Item>
+                        )}
 
-                        <Menu.Item>
-                          {views.includes("Sucursales") && (
-                            <NavLink
-                              to={"/branches"}
-                              className={({ isActive }) => {
-                                return (
-                                  (isActive
-                                    ? "font-semibold bg-gray-300 dark:bg-gray-700"
-                                    : "text-coffee-brown font-semibold border-white") +
-                                  " flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white"
-                                );
-                              }}
-                            >
-                              <BookUser size={iconSize} />
-                              <p className="ml-2 text-base">Sucursales</p>
-                            </NavLink>
-                          )}
-                        </Menu.Item>
+                        {views.includes("Sucursales") && (
+                          <Menu.Item>
+                            {views.includes("Sucursales") && (
+                              <NavLink
+                                to={"/branches"}
+                                className={({ isActive }) => {
+                                  return (
+                                    (isActive
+                                      ? "font-semibold bg-gray-300 dark:bg-gray-700"
+                                      : "text-coffee-brown font-semibold border-white") +
+                                    " flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white"
+                                  );
+                                }}
+                              >
+                                <BookUser size={iconSize} />
+                                <p className="ml-2 text-base">Sucursales</p>
+                              </NavLink>
+                            )}
+                          </Menu.Item>
+                        )}
                       </div>
                     </Menu.Items>
                   </Transition>
                 </Menu>
               </>
-
-              {/* <div>
-                <Dropdown
-                  onChange={() => {
-                    console.log(8888);
-                  }}
-                >
-                  <DropdownTrigger>
-                    <p
-                      style={dropdownStyle}
-                      className="text-coffee-brown font-semibold border-white flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600"
-                    >
-                      <Store size={iconSize} />
-                      <span className="ml-2 text-sm 2xl:text-base">
-                        Sucursales
-                      </span>
-                    </p>
-                  </DropdownTrigger>
-                  <DropdownMenu
-                    aria-label="Example with disabled actions"
-                    className="w-64"
-                  >
-                    {views.includes("Usuarios") ? (
-                      <DropdownItem key="users" textValue="users">
-                        <NavLink
-                          to={"/users"}
-                          className={({ isActive }) => {
-                            return (
-                              (isActive
-                                ? "font-semibold bg-gray-300 dark:bg-gray-700"
-                                : "text-coffee-brown font-semibold border-white") +
-                              " flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white"
-                            );
-                          }}
-                        >
-                          <User size={iconSize} />
-                          <p className="ml-2 text-sm 2xl:text-base">Usuarios</p>
-                        </NavLink>
-                      </DropdownItem>
-                    ) : (
-                      <></>
-                    )}
-                    {views.includes("Empleados") ? (
-                      <DropdownItem key="employees" textValue="employees">
-                        <NavLink
-                          to={"/employees"}
-                          className={({ isActive }) => {
-                            return (
-                              (isActive
-                                ? "font-semibold bg-gray-300 dark:bg-gray-700"
-                                : "text-coffee-brown font-semibold border-white") +
-                              " flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white"
-                            );
-                          }}
-                        >
-                          <User size={iconSize} />
-                          <p className="ml-2 text-sm 2xl:text-base">
-                            Empleados
-                          </p>
-                        </NavLink>
-                      </DropdownItem>
-                    ) : (
-                      <></>
-                    )}
-                    {views.includes("Sucursales") ? (
-                      <DropdownItem key="clients" textValue="clients">
-                        <NavLink
-                          to={"/clients"}
-                          className={({ isActive }) => {
-                            return (
-                              (isActive
-                                ? "font-semibold bg-gray-300 dark:bg-gray-700"
-                                : "text-coffee-brown font-semibold border-white") +
-                              " flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white"
-                            );
-                          }}
-                        >
-                          <BookUser size={iconSize} />
-                          <p className="ml-2 text-sm 2xl:text-base">Clientes</p>
-                        </NavLink>
-                      </DropdownItem>
-                    ) : (
-                      <></>
-                    )}
-                    {views.includes("Sucursales") ? (
-                      <DropdownItem key="delete">
-                        <NavLink
-                          to={"/branches"}
-                          className={({ isActive }) => {
-                            return (
-                              (isActive
-                                ? "font-semibold bg-gray-300 dark:bg-gray-700"
-                                : "text-coffee-brown font-semibold border-white") +
-                              " flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white"
-                            );
-                          }}
-                        >
-                          <BookUser size={iconSize} />
-                          <p className="ml-2 text-base">Sucursales</p>
-                        </NavLink>
-                      </DropdownItem>
-                    ) : (
-                      <></>
-                    )}
-                  </DropdownMenu>
-                </Dropdown>
-              </div> */}
 
               {views.includes("Gastos") && (
                 <NavLink
@@ -620,26 +507,26 @@ export const LayoutItems = () => {
       {mode !== "vendedor" && (
         <>
           <NavLink
-          to={"/actionRol"}
-          className={({ isActive }) => {
-            return (
-              (isActive
-                ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
-                : "text-coffee-brown font-semibold border-white") +
-              " flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
-            );
-          }}
-          style={({ isActive }) => {
-            return {
-              borderLeftColor: isActive ? theme.colors.dark : "transparent",
-              borderLeftWidth: 5,
-            };
-          }}
-        >
-          <ShieldHalf size={iconSize} />
-          <p className="ml-2 text-sm 2xl:text-base">Permisos</p>
-        </NavLink>
-        <NavLink
+            to={"/actionRol"}
+            className={({ isActive }) => {
+              return (
+                (isActive
+                  ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
+                  : "text-coffee-brown font-semibold border-white") +
+                " flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
+              );
+            }}
+            style={({ isActive }) => {
+              return {
+                borderLeftColor: isActive ? theme.colors.dark : "transparent",
+                borderLeftWidth: 5,
+              };
+            }}
+          >
+            <ShieldHalf size={iconSize} />
+            <p className="ml-2 text-sm 2xl:text-base">Permisos</p>
+          </NavLink>
+          <NavLink
             to={"/modules"}
             className={({ isActive }) => {
               return (
