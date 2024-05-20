@@ -36,14 +36,27 @@ export const invalidate_sale = (id: number, selloInvalidacion: string) => {
   );
 };
 
-export const getJson = (id: number) => {
+export const get_json_sale = (id: number) => {
   const token = get_token();
-  return axios.get(API_URL + `/sales/get-json/${id}`, {
+  return axios.get<{ ok: boolean, json: string, status: number }>(API_URL + `/sales/get-json/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
 };
+
+export const update_seal_sale = (pdf: string, dte: string, sello: string) => {
+  const token = get_token();
+  return axios.put(
+    API_URL + "/sales/sale-update-transaction",
+    { pdf, dte, sello },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+}
 
 export const get_sales_by_status = (
   id: number,

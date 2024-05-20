@@ -382,7 +382,7 @@ function SalesReportContigence() {
         tipoDoc: sale.tipoDte,
       },
     ];
-
+ 
     const contingencia_send: IContingencia = generate_contingencia(
       transmitter,
       correlatives,
