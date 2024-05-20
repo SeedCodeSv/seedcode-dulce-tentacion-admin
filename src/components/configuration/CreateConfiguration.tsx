@@ -42,10 +42,10 @@ function CreateConfiguration() {
 
   const cropperRef = useRef<CropperRef>(null);
   const [fileSelected, setFileSelected] = useState<File>(
-    new File([DefaultImage], "carousel-1.png", { type: "image/png" })
+    new File([DefaultImage], "logo.png", { type: "image/png" })
   );
 
-  const onCrop = () => {
+  const onCrop = async () => {
     const cropper = cropperRef.current;
     if (cropper) {
       const canvas = cropper.getCanvas();
@@ -60,41 +60,39 @@ function CreateConfiguration() {
 
         img.onload = () => {
           ctx?.drawImage(img, 0, 0, 200, 200);
-          const resizedImageUrl = resizedCanvas.toDataURL("image/jpeg");
+          const resizedImageUrl = resizedCanvas.toDataURL("image/png");
           setSelectedImage(resizedImageUrl);
+
+          // Convert the resized canvas to a Blob
           resizedCanvas.toBlob((blob) => {
             if (blob) {
-              const file = new File([blob], "cropped_image.jpg", {
+              const croppedFile = new File([blob], "cropped_image.png", {
                 type: "image/jpeg",
               });
-              setFileSelected(file);
+              setFileSelected(croppedFile);
             } else {
-              console.error("No se pudo convertir la imagen recortada en un objeto Blob.");
+              console.error(
+                "No se pudo convertir la imagen recortada en un objeto Blob."
+              );
             }
-          }, "image/jpeg");
+          }, "image/png");
         };
       } else {
         console.error("El objeto canvas es nulo.");
       }
+    } else {
+      console.error("El objeto cropper es nulo.");
     }
   };
 
   const handleSave = async (values: ICreacteConfiguaration) => {
-    if (!formData.file) {
-      const defaultImageFile = await fetch(DefaultImage)
-        .then((res) => res.blob())
-        .then((blob) => new File([blob], "default.png", { type: "image/png" }));
-
-      setFormData((prevData) => ({
-        ...prevData,
-        file: defaultImageFile,
-      }));
-
-      setSelectedImage(DefaultImage);
+    if (!fileSelected) {
+      console.error("No image selected for cropping.");
+      return;
     }
 
     try {
-      await OnCreateConfiguration(values);
+      await OnCreateConfiguration({ ...values, file: fileSelected });
       toast.success("Personalización guardada");
       location.reload();
     } catch (error) {
