@@ -10,10 +10,15 @@ export interface Product {
   description: string;
   price: string;
   code: string;
+  costoUnitario: string;
   type: string;
   isActive: boolean;
   categoryProduct: CategoryProduct;
   categoryProductId: number;
+  tipoDeItem: string;
+  tipoItem: string;
+  uniMedida: string;
+  unidaDeMedida: string;
 }
 
 export interface IGetProductsPaginated {
@@ -30,9 +35,14 @@ export interface IGetProductsPaginated {
 export interface ProductPayload {
   name: string;
   description: string;
-  price: number;
+  price: string;
+  costoUnitario: string;
   code: string;
   categoryProductId: number;
+  tipoDeItem: string;
+  tipoItem: string;
+  uniMedida: string;
+  unidaDeMedida: string;
 }
 export interface IProductCart extends IUnidadProducto {
   quantity: number;

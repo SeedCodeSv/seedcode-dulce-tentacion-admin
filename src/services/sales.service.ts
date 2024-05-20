@@ -1,6 +1,8 @@
 import axios from "axios";
 import { API_URL } from "../utils/constants";
 import { get_token } from "../storage/localStorage";
+import { IInvalidationResponse } from "../types/DTE/invalidation.types";
+import { IGetSales } from "../types/sales.types";
 
 export const post_sales = (
   pdf: string,
@@ -18,5 +20,41 @@ export const post_sales = (
         Authorization: `Bearer ${token}`,
       },
     }
+  );
+};
+
+export const invalidate_sale = (id: number, selloInvalidacion: string) => {
+  const token = get_token();
+  return axios.patch<IInvalidationResponse>(
+    API_URL + `/sales/invalidate/${id}`,
+    { selloInvalidacion },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};
+
+export const getJson = (id: number) => {
+  const token = get_token();
+  return axios.get(API_URL + `/sales/get-json/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+export const get_sales_by_status = (
+  id: number,
+  page: number,
+  limit: number,
+  startDate: string,
+  endDate: string,
+  status: number
+) => {
+  return axios.get<IGetSales>(
+    API_URL +
+    `/sales/get-contigencia/${id}?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}&status=${status}`
   );
 };

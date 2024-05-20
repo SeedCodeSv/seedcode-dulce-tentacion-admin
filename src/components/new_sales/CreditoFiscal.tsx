@@ -29,6 +29,8 @@ import { global_styles } from "../../styles/global.styles";
 import { ICheckResponse } from "../../types/DTE/check.types";
 import { useContingenciaCreditoStore } from "../../plugins/dexie/store/contingencia_credito.store";
 import { ISendMHFiscal } from "../../types/DTE/credito_fiscal.types";
+import { formatDate } from "../../utils/dates";
+import { save_logs } from "../../services/logs.service";
 
 interface Props {
   clear: () => void;
@@ -151,8 +153,16 @@ function CreditoFiscal(props: Props) {
                   toast.success("Hacienda respondió correctamente", {
                     description: "Estamos guardando tus datos",
                   });
-                  const json_url = `CLIENTES/${transmitter.nombre}/VENTAS/CRÉDITO_FISCAL/${generate.dteJson.identificacion.codigoGeneracion}.json`;
-                  const pdf_url = `CLIENTES/${transmitter.nombre}/VENTAS/CRÉDITO_FISCAL/${generate.dteJson.identificacion.codigoGeneracion}.pdf`;
+                  const json_url = `CLIENTES/${
+                    transmitter.nombre
+                  }/${new Date().getFullYear()}/VENTAS/CRÉDITO_FISCAL/${formatDate()}/${
+                    generate.dteJson.identificacion.codigoGeneracion
+                  }/${generate.dteJson.identificacion.codigoGeneracion}.json`;
+                  const pdf_url = `CLIENTES/${
+                    transmitter.nombre
+                  }/${new Date().getFullYear()}/VENTAS/CRÉDITO_FISCAL/${formatDate()}/${
+                    generate.dteJson.identificacion.codigoGeneracion
+                  }/${generate.dteJson.identificacion.codigoGeneracion}.pdf`;
 
                   const JSON_DTE = JSON.stringify(
                     {
@@ -236,8 +246,20 @@ function CreditoFiscal(props: Props) {
                   }
                 }
               })
-              .catch((error: AxiosError<SendMHFailed>) => {
+              .catch(async (error: AxiosError<SendMHFailed>) => {
                 if (error.response?.data) {
+                  await save_logs({
+                    title:
+                      error.response.data.descripcionMsg ??
+                      "Error al procesar venta",
+                    message:
+                      error.response.data.observaciones &&
+                      error.response.data.observaciones.length > 0
+                        ? error.response?.data.observaciones.join("\n\n")
+                        : "",
+                    generationCode:
+                      generate.dteJson.identificacion.codigoGeneracion,
+                  });
                   setErrorMessage(
                     error.response.data.observaciones &&
                       error.response.data.observaciones.length > 0
@@ -280,7 +302,11 @@ function CreditoFiscal(props: Props) {
     if (currentDTE) {
       console.log(currentDTE);
       createContingenciaCredito(currentDTE);
-      const json_url = `CLIENTES/${transmitter.nombre}/VENTAS/FACTURAS/${currentDTE.dteJson.identificacion.codigoGeneracion}.json`;
+      const json_url = `CLIENTES/${
+        transmitter.nombre
+      }/${new Date().getFullYear()}/VENTAS/CRÉDITO_FISCAL/${formatDate()}/${
+        currentDTE.dteJson.identificacion.codigoGeneracion
+      }/${currentDTE.dteJson.identificacion.codigoGeneracion}.json`;
 
       const JSON_DTE = JSON.stringify(currentDTE.dteJson, null, 2);
       const json_blob = new Blob([JSON_DTE], {
@@ -306,6 +332,7 @@ function CreditoFiscal(props: Props) {
                   cajaId: Number(localStorage.getItem("box")),
                   codigoEmpleado: 1,
                   sello: false,
+                  clienteId: props.Customer?.id 
                 },
                 {
                   headers: {

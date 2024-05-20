@@ -16,5 +16,5 @@ export interface CreditSaleContingenciaI{
 }
 export interface IContingenciaCreditoStore{
     createContingenciaCredito: (ISendMHFiscal: ISendMHFiscal) => Promise<void>
-    getVentaByCodigo: (codigo: string) => Promise<CreditSaleContingenciaI | undefined>
+    getCreditoVentaByCodigo: (codigo: string) => Promise<CreditSaleContingenciaI | undefined>
 }

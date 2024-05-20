@@ -1,4 +1,3 @@
-import { redirect } from 'react-router';
 import { create } from "zustand";
 import { IAuthStore } from "./types/auth_store.types";
 import {
@@ -14,6 +13,9 @@ import {
   delete_mh_token,
   save_branch_id,
   delete_branch_id,
+  post_box,
+  return_seller_mode,
+  delete_seller_mode,
 } from "../storage/localStorage";
 import { post_login } from "../services/auth.service";
 import { toast } from "sonner";
@@ -28,19 +30,27 @@ export const useAuthStore = create<IAuthStore>((set, get) => ({
   postLogin: async (payload) => {
     return await post_login(payload)
       .then(async ({ data }) => {
+        const mode = return_seller_mode() ?? null;
         if (data.ok) {
           set_token(data.token);
           save_user(data.user);
+          if (mode === "vendedor") {
+            post_box(data.box.id.toString());
+            save_branch_id(data.box.branchId.toString());
+          }
           if (is_admin(data.user.role.name)) {
             await save_branch_id(String(data.user.employee.branch.id))
           }
+          if (mode === "administrador") {
+            delete_seller_mode();
+          }
           await get()
             .OnLoginMH(data.user.employee.branch.transmitterId, data.token)
-            .catch(() => {
+            .catch((error) => {
+              console.log(error)
               return;
             });
           toast.success("Bienvenido");
-          window.location.href = ("/")
         } else {
           toast.error("Datos incorrectos");
         }

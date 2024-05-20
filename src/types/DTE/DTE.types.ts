@@ -1,3 +1,10 @@
+export interface ISendMHFiscal {
+  nit: string;
+  activo: boolean;
+  passwordPri: string;
+  dteJson: DteJson;
+}
+
 export interface DteJson {
   nit: string;
   activo: boolean;
@@ -75,6 +82,7 @@ export interface Receptor {
   tipoDocumento: null | string;
   numDocumento: null | string;
   nrc: null | string;
+  nit?: string | null;
   nombre: null | string;
   codActividad: null | string;
   descActividad: null | string;
