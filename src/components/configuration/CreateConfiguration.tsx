@@ -27,8 +27,11 @@ function CreateConfiguration() {
       try {
         console.log('Original file:', file);
         const compressedImage = await compressImage(file, {
-          maxSizeMB: 1, 
+          maxSizeMB: 0.5, // Reducir tamaño máximo en MB
+          maxWidthOrHeight: 800, // Ajustar las dimensiones máximas
           useWebWorker: true, 
+          maxIteration: 10, // Aumentar las iteraciones para mejorar la compresión
+          initialQuality: 0.7 // Fijar la calidad inicial (de 0 a 1)
         });
         const convertedFile = new File([compressedImage], file.name, {
           type: compressedImage.type,
