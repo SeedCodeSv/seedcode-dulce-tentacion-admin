@@ -1,17 +1,17 @@
 import { CreditSaleContingenciaI } from "../../plugins/dexie/store/types/contingencia_credito_store.types";
-import {
-  CreditSale,
-} from "../../types/DTE/sub_interface/credito_contingencia";
+import { CreditSale } from "../../types/DTE/sub_interface/credito_contingencia";
 // import { ISendMHFiscal as ICredito } from "../../types/DTE/DTE.types";
 import { ITransmitter } from "../../types/transmitter.types";
 import { ambiente } from "../../utils/constants";
 // import { ISendMHFiscal } from "../../types/DTE/credito_fiscal.types";
 import { ISendMHFiscal as ICredito } from "../../types/DTE/credito_fiscal.types";
+import { Sale } from "../../types/report_contigence";
 
 export const generateCredit = (
   info: CreditSaleContingenciaI,
   emisor: ITransmitter,
-  sale: CreditSale
+  sale: CreditSale,
+  saleCustomer?: Sale
 ): ICredito => {
   return {
     nit: emisor.nit,
@@ -51,32 +51,53 @@ export const generateCredit = (
         codEstable: emisor.codEstable,
         codEstableMH: emisor.codEstableMH === "0" ? null : emisor.codEstableMH,
         codPuntoVenta: emisor.codPuntoVenta,
-        codPuntoVentaMH: emisor.codPuntoVentaMH === "0"
-          ? null
-          : emisor.codPuntoVentaMH,
+        codPuntoVentaMH:
+          emisor.codPuntoVentaMH === "0" ? null : emisor.codPuntoVentaMH,
       },
       receptor: {
-        nombreComercial: info.credito_receptor!.nombreComercial,
-        tipoDocumento: info.credito_receptor!.tipoDocumento === "0" ||
+        nombreComercial: saleCustomer
+          ? saleCustomer.customer.nombreComercial
+          : info.credito_receptor!.nombreComercial,
+        tipoDocumento:
+          info.credito_receptor!.tipoDocumento === "0" ||
           info.credito_receptor.tipoDocumento === "N/A"
+            ? null
+            : info.credito_receptor!.tipoDocumento,
+        // numDocumento: saleCustomer
+        //   ? saleCustomer.customer.numDocumento
+        //   : info.credito_receptor!.numDocumento === "0" ||
+        //     info.credito_receptor.numDocumento === "N/A"
+        //   ? null
+        //   : info.credito_receptor!.numDocumento,
+        nit: saleCustomer
+          ? saleCustomer.customer.nit
+          : info.credito_receptor!.nit === "0" ||
+            info.credito_receptor.nit === "N/A"
           ? null
-          : info.credito_receptor!.tipoDocumento,
-        numDocumento: info.credito_receptor!.numDocumento === "0" ||
-          info.credito_receptor.numDocumento === "N/A"
-          ? null
-          : info.credito_receptor!.numDocumento,
-        nit: info.credito_receptor!.nit === "0" || info.credito_receptor.nit === "N/A" ? null : info.credito_receptor!.nit,
-        nrc: info.credito_receptor!.nrc,
-        nombre: info.credito_receptor!.nombre,
-        codActividad: Number(info.credito_receptor!.codActividad) === 0
+          : info.credito_receptor!.nit,
+        nrc: saleCustomer
+          ? saleCustomer.customer.nrc
+          : info.credito_receptor!.nrc,
+        nombre: saleCustomer
+          ? saleCustomer.customer.nombre
+          : info.credito_receptor!.nombre,
+        codActividad: saleCustomer
+          ? saleCustomer.customer.codActividad
+          : Number(info.credito_receptor!.codActividad) === 0
           ? null
           : info.credito_receptor!.codActividad,
-        descActividad: Number(info.credito_receptor!.descActividad) === 0
+        descActividad: saleCustomer
+          ? saleCustomer.customer.descActividad
+          : Number(info.credito_receptor!.descActividad) === 0
           ? null
           : info.credito_receptor!.descActividad,
         direccion: {
-          departamento: "03",
-          municipio: info.credito_address!.municipio,
+          departamento: saleCustomer?.customer.direccion.departamento
+            ? saleCustomer.customer.direccion.departamento
+            : info.credito_address.departamento,
+          municipio: saleCustomer?.customer.direccion.municipio
+            ? saleCustomer.customer.direccion.municipio
+            : info.credito_address!.municipio,
           complemento: info.credito_address.complemento,
         },
         telefono: info.credito_receptor!.telefono,
@@ -87,8 +108,12 @@ export const generateCredit = (
       cuerpoDocumento: info.credito_cuerpo_documento.map((cuerpo) => {
         return {
           numItem: cuerpo.numItem,
-          tipoItem: 1,
-          uniMedida: Number(26),
+          //-------------------
+          tipoItem:
+            saleCustomer?.tipoItem ? saleCustomer?.tipoItem : 1,
+          uniMedida: saleCustomer?.uniMedida ? saleCustomer?.uniMedida : Number(26),
+          // en proceso
+          //-------------------
           numeroDocumento: null,
           cantidad: cuerpo.cantidad,
           codigo: null,
@@ -146,6 +171,6 @@ export const generateCredit = (
       },
       extension: null,
       apendice: null,
-    }
-  } as unknown as ICredito
+    },
+  } as unknown as ICredito;
 };

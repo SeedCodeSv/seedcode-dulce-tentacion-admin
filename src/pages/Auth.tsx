@@ -31,10 +31,10 @@ function Auth() {
   const handleSubmit = (values: IAuthPayload) => {
     postLogin(values).then((response) => {
       if (response?.ok) {
-        setRolId(response?.user?.roleId)
+        setRolId(response?.user?.roleId);
         setIsAuth(true);
         setToken(response.token);
-        redirect("/")
+        redirect("/");
       } else {
         setIsAuth(false);
         setToken("");
@@ -82,7 +82,9 @@ function Auth() {
                     placeholder="Ingresa tu usuario"
                   />
                   {errors.userName && touched.userName && (
-                    <p className="text-red-500 text-sm font-semibold">{errors.userName}</p>
+                    <p className="text-red-500 text-sm font-semibold">
+                      {errors.userName}
+                    </p>
                   )}
                 </div>
                 <div className="flex flex-col mt-10">
@@ -112,7 +114,9 @@ function Auth() {
                     }
                   />
                   {errors.password && touched.password && (
-                    <p className="text-red-500 text-sm font-semibold">{errors.password}</p>
+                    <p className="text-red-500 text-sm font-semibold">
+                      {errors.password}
+                    </p>
                   )}
                 </div>
 
@@ -131,7 +135,7 @@ function Auth() {
             )}
           </Formik>
 
-          <p className="mt-5 text-sm">¿Olvidaste tu contraseña?</p>
+          {/* <p className="mt-5 text-sm">¿Olvidaste tu contraseña?</p> */}
         </div>
       </div>
     </div>

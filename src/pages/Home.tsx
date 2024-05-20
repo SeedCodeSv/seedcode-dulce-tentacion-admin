@@ -1,20 +1,25 @@
+import { useEffect } from "react";
 import Layout from "../layout/Layout";
-import { db } from "../plugins/dexie/db";
+import { salesReportStore } from "../store/reports/sales_report.store";
+import { useAuthStore } from "../store/auth.store";
 function Home() {
-  const handleAdd = async () => {
-    const direecion = await db.direccion.add({
-      departamento: "03",
-      municipio: "01",
-      complemento: "casa",
-    });
+  const { getSalesByBranchAndMonth, sales_branch_month } = salesReportStore();
 
-    console.log(direecion);
-  };
+  const {user} = useAuthStore()
+
+  useEffect(() => {
+    getSalesByBranchAndMonth(user?.employee.branch.transmitterId ?? 0);
+  }, []);
+
 
   return (
     <Layout title="Home">
-      <div className="flex w-full h-full justify-center items-center">
-        <p>Bienvenido</p>
+      <div className="w-full h-full">
+        <div className="w-full grid grid-cols-3">
+          <div>
+            
+          </div>
+        </div>
       </div>
     </Layout>
   );
