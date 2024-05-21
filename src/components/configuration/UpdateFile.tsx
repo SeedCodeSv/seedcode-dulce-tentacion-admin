@@ -30,6 +30,12 @@ function UpdateFile(props: Props) {
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files && files.length > 0) {
+      
+      if (files[0].type !== "image/png") {
+        toast.error("Solo se permiten imágenes en formato .png");
+        return;
+      }
+
       setLoading(true); 
       try {
         const file = files[0];
