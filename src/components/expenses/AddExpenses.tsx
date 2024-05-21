@@ -104,7 +104,7 @@ const AddExpenses = (props: Props) => {
                 }}
               >
                 {list_categories_expenses.map((dep) => (
-                  <AutocompleteItem value={dep.id} key={JSON.stringify(dep)}>
+                  <AutocompleteItem value={dep.id} key={JSON.stringify(dep)} className="dark:text-white">
                     {dep.name}
                   </AutocompleteItem>
                 ))}
@@ -115,40 +115,6 @@ const AddExpenses = (props: Props) => {
                 </span>
               )}
             </div>
-            {/* <div className="pt-2">
-              <Autocomplete
-                onSelectionChange={(key) => {
-                  if (key) {
-                    const depSelected = JSON.parse(
-                      key as string
-                    ) as CategoryExpense;
-                    handleChange("categoryExpenseId")(
-                      depSelected.id.toString()
-                    );
-                  }
-                }}
-                size="lg"
-                onBlur={handleBlur("categoryExpenseId")}
-                label="Rol"
-                labelPlacement="outside"
-                placeholder="Selecciona la categoría"
-                variant="bordered"
-                classNames={{
-                  base: "font-semibold text-gray-500 text-sm",
-                }}
-              >
-                {box_list.map((dep) => (
-                  <AutocompleteItem value={dep.id} key={JSON.stringify(dep)}>
-                    {dep.}
-                  </AutocompleteItem>
-                ))}
-              </Autocomplete>
-              {errors.categoryExpenseId && touched.categoryExpenseId && (
-                <span className="text-sm font-semibold text-red-500">
-                  {errors.categoryExpenseId}
-                </span>
-              )}
-            </div> */}
             <div className="mt-10">
               <Input
                 label="Total"

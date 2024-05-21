@@ -113,6 +113,8 @@ export const LayoutItems = () => {
     role_view_action.view.length > 0 &&
     role_view_action.view.map((view) => view.name);
 
+    console.log(views)
+
   return (
     <>
       {personalization.length === 0 ? (
@@ -123,14 +125,13 @@ export const LayoutItems = () => {
             color: theme.colors.primary,
           }}
         >
-          <img src={LOGO} className="max-h-14 w-full max-w-32" />
+          <img src={LOGO} className="max-h-14" />
           <p className="ml-3 font-sans text-sm font-bold text-coffee-brown">
             SeedCodeERP
           </p>
         </div>
       ) : (
         <>
-          {mode}
           {personalization.map((item) => (
             <div
               key={item.id}
@@ -140,7 +141,7 @@ export const LayoutItems = () => {
                 color: theme.colors.primary,
               }}
             >
-              <img src={item.logo} className="max-h-14 w-full max-w-32" />
+              <img src={item.logo} className="max-h-14" />
             </div>
           ))}
         </>
@@ -166,7 +167,7 @@ export const LayoutItems = () => {
           </Button>
         </div>
       )}
-      {views && views.includes("Ventas") && mode === "vendedor" && (
+      {views && (views.includes("Ventas") && mode === "vendedor") && (
         <NavLink
           to={"/newSales"}
           className={({ isActive }) => {

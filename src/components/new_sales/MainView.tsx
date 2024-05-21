@@ -766,7 +766,7 @@ const ListProduct = () => {
             <Column
               headerClassName="text-sm font-semibold"
               headerStyle={{ ...style }}
-              bodyClassName={"bg-white"}
+              bodyClassName={"bg-white dark:bg-gray-900"}
               field="product.name"
               body={nameBodyTemplate}
               header="Nombre"
@@ -774,7 +774,7 @@ const ListProduct = () => {
             <Column
               headerClassName="text-sm font-semibold"
               headerStyle={style}
-              bodyClassName={"bg-white"}
+              bodyClassName={"bg-white dark:bg-gray-900"}
               field="price"
               body={priceBodyTemplate}
               header="Precio"
@@ -782,7 +782,7 @@ const ListProduct = () => {
             <Column
               headerClassName="text-sm font-semibold"
               headerStyle={style}
-              bodyClassName={"bg-white"}
+              bodyClassName={"bg-white dark:bg-gray-900"}
               field="product.categoryProduct.name"
               header="Categoría"
             />
@@ -790,7 +790,7 @@ const ListProduct = () => {
               headerStyle={{ ...style }}
               header="Acciones"
               frozen={true}
-              bodyClassName={"bg-white"}
+              bodyClassName={"bg-white dark:bg-gray-900"}
               alignFrozen="right"
               body={(item) => (
                 <div className="flex gap-6">
@@ -810,23 +810,58 @@ const ListProduct = () => {
           </DataTable>
         )}
         {pagination_branch_products.totalPag > 1 && (
-          <div className="w-full mt-5">
-            <Pagination
-              totalPages={pagination_branch_products.totalPag}
-              currentPage={pagination_branch_products.currentPag}
-              previousPage={pagination_branch_products.prevPag}
-              nextPage={pagination_branch_products.nextPag}
-              onPageChange={(page) => {
-                getPaginatedBranchProducts(
-                  Number(return_branch_id()),
-                  page,
-                  limit,
-                  name,
-                  code
-                );
-              }}
-            />
-          </div>
+          <>
+            <div className="w-full block lg:hidden mt-5 2xl:block">
+              <Pagination
+                totalItems={3}
+                totalPages={pagination_branch_products.totalPag}
+                currentPage={pagination_branch_products.currentPag}
+                previousPage={pagination_branch_products.prevPag}
+                nextPage={pagination_branch_products.nextPag}
+                onPageChange={(page) => {
+                  getPaginatedBranchProducts(
+                    Number(return_branch_id()),
+                    page,
+                    limit,
+                    name,
+                    code
+                  );
+                }}
+              />
+            </div>
+            <div className="w-full flex mt-5 justify-between 2xl:hidden">
+              <Button
+                onClick={() => {
+                  getPaginatedBranchProducts(
+                    Number(return_branch_id()),
+                    pagination_branch_products.prevPag,
+                    limit,
+                    name,
+                    code
+                  );
+                }}
+                className="px-10"
+                style={global_styles().thirdStyle}
+              >
+                Anterior
+              </Button>
+              <Button
+                onClick={() => {
+                  getPaginatedBranchProducts(
+                    Number(return_branch_id()),
+                    pagination_branch_products.nextPag,
+                    limit,
+                    name,
+                    code
+                  );
+                }}
+                className="px-10"
+                style={global_styles().thirdStyle}
+              >
+                Siguiente
+              </Button>
+            </div>
+          </>
         )}
       </div>
     </div>
