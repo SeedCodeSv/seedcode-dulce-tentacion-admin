@@ -42,11 +42,6 @@ export const useAuthStore = create<IAuthStore>((set, get) => ({
           set_token(data.token);
           save_user(data.user);
           if (mode === "vendedor") {
-<<<<<<< HEAD
-=======
-            window.location.href = "/";
-
->>>>>>> 50d0bf7da37c26dfc44ff92039d021c7f22f56ba
             post_box(data.box.id.toString());
             save_branch_id(data.box.branchId.toString());
           } else {
@@ -55,10 +50,7 @@ export const useAuthStore = create<IAuthStore>((set, get) => ({
           if (is_admin(data.user.role.name)) {
             await save_branch_id(String(data.user.employee.branch.id));
           }
-<<<<<<< HEAD
-=======
 
->>>>>>> 50d0bf7da37c26dfc44ff92039d021c7f22f56ba
           await get()
             .OnLoginMH(data.user.employee.branch.transmitterId, data.token)
             .catch((error) => {
