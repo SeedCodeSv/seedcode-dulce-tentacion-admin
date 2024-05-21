@@ -40,6 +40,21 @@ export interface RootDTE {
   selloRecibido: string;
 }
 
+export interface IDTE {
+  identificacion: Identificacion;
+  documentoRelacionado: null | string;
+  emisor: Emisor;
+  receptor: Receptor;
+  otrosDocumentos: null | string;
+  ventaTercero: null | string;
+  cuerpoDocumento: ICuerpoDocumento[];
+  resumen: Resumen;
+  extension: Extension;
+  apendice: null | string;
+  respuestaMH: RespuestaMH;
+  firma: string;
+}
+
 export interface Identificacion {
   version: number;
   ambiente: string;
@@ -147,12 +162,12 @@ export interface Resumen {
   porcentajeDescuento: number | string;
   totalDescu: number | string;
   tributos:
-    | null
-    | {
-        codigo: string;
-        descripcion: string;
-        valor: number;
-      }[];
+  | null
+  | {
+    codigo: string;
+    descripcion: string;
+    valor: number;
+  }[];
   subTotal: number | string;
   ivaRete1: number | string;
   reteRenta: number | string;
@@ -213,8 +228,22 @@ export interface DTEToPDF {
 
 
 export interface IMHToken {
-	sub: string;
-	authorities: string[];
-	iat: number;
-	exp: number;
+  sub: string;
+  authorities: string[];
+  iat: number;
+  exp: number;
+}
+
+export interface RespuestaMH {
+  version: number;
+  ambiente: string;
+  versionApp: number;
+  estado: string;
+  codigoGeneracion: string;
+  selloRecibido: string;
+  fhProcesamiento: string;
+  clasificaMsg: string;
+  codigoMsg: string;
+  descripcionMsg: string;
+  observaciones: any[];
 }
