@@ -35,6 +35,11 @@ function ConfigurationList() {
     GetConfigurationByTransmitter(tramsiter || 0);
   };
 
+  const style = {
+    backgroundColor: theme.colors.dark,
+    color: theme.colors.primary,
+  };
+
   const modalAdd = useDisclosure();
   const addLogo = useDisclosure();
   const UpdateImgModal = useDisclosure();
@@ -64,10 +69,15 @@ function ConfigurationList() {
             {personalization.length === 0 ? (
               <span>no ay datos de logo ni nombre...</span>
             ) : (
-              <DataTable value={personalization}>
+              <DataTable
+                value={personalization}
+                className="shadow"
+                tableStyle={{ minWidth: "50rem" }}
+              >
                 <Column
                   field="logo"
                   header="Logo"
+                  headerStyle={style}
                   body={(rowData) => (
                     <Image
                       preview
@@ -77,8 +87,9 @@ function ConfigurationList() {
                     />
                   )}
                 />
-                <Column field="name" header="Nombre" />
+                <Column field="name" header="Nombre" headerStyle={style} />
                 <Column
+                  headerStyle={style}
                   header="Actualizar Nombre"
                   body={(rowData) => (
                     <>
