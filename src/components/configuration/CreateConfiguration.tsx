@@ -25,7 +25,7 @@ function CreateConfiguration() {
   const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      
+
       if (file.type !== "image/png") {
         toast.error("Solo se permiten imágenes en formato .png");
         return;

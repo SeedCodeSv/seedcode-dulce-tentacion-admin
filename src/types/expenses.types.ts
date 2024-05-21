@@ -17,6 +17,18 @@ export interface IExpensePayload {
   boxId?: number;
   categoryExpenseId: number;
 }
+
+export interface ICreacteExpense {
+  description: string;
+  total: number;
+  boxId?: number;
+  categoryExpenseId: number;
+  file?: File | Blob | null;
+}
+export interface IExpensePayloads extends ICreacteExpense {
+  file?: File | Blob | null | undefined;
+}
+
 export interface IExpensesPaginated {
   expenses: IExpense[];
   ok: boolean;
