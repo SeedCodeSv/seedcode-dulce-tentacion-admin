@@ -34,13 +34,13 @@ export default function TableFooterCredito({ DTE }: Props) {
           Suma de ventas:
         </TD>
         <TD weighting={0.1} style={styles.td_with_border}>
-          ${formatCurrency(Number(DTE.dteJson.resumen.totalNoSuj))}
+          {formatCurrency(Number(DTE.dteJson.resumen.totalNoSuj))}
         </TD>
         <TD weighting={0.1} style={styles.td_with_border}>
-          ${formatCurrency(Number(DTE.dteJson.resumen.totalExenta))}
+          {formatCurrency(Number(DTE.dteJson.resumen.totalExenta))}
         </TD>
         <TD weighting={0.1} style={styles.td_with_border}>
-          ${formatCurrency(Number(DTE.dteJson.resumen.totalGravada))}
+          {formatCurrency(Number(DTE.dteJson.resumen.totalGravada))}
         </TD>
       </TR>
       <TR>
@@ -55,7 +55,7 @@ export default function TableFooterCredito({ DTE }: Props) {
           Sumatoria de ventas:
         </TD>
         <TD weighting={0.1} style={styles.td_with_border}>
-          ${formatCurrency(Number(DTE.dteJson.resumen.subTotalVentas))}
+          {formatCurrency(Number(DTE.dteJson.resumen.subTotalVentas))}
         </TD>
       </TR>
       <TR>
@@ -70,7 +70,7 @@ export default function TableFooterCredito({ DTE }: Props) {
           Monto global Desc., Rebajas y otros a ventas no sujetas:
         </TD>
         <TD weighting={0.1} style={styles.td_with_border}>
-          ${formatCurrency(Number(DTE.dteJson.resumen.descuNoSuj))}
+          {formatCurrency(Number(DTE.dteJson.resumen.descuNoSuj))}
         </TD>
       </TR>
       <TR>
@@ -85,7 +85,7 @@ export default function TableFooterCredito({ DTE }: Props) {
           Monto global Desc., Rebajas y otros a ventas Exentas:
         </TD>
         <TD weighting={0.1} style={styles.td_with_border}>
-          ${formatCurrency(Number(DTE.dteJson.resumen.descuExenta))}
+          {formatCurrency(Number(DTE.dteJson.resumen.descuExenta))}
         </TD>
       </TR>
       <TR>
@@ -100,7 +100,7 @@ export default function TableFooterCredito({ DTE }: Props) {
           Monto global Desc., Rebajas y otros a ventas gravadas:
         </TD>
         <TD weighting={0.1} style={styles.td_with_border}>
-          ${formatCurrency(Number(DTE.dteJson.resumen.descuGravada))}
+          {formatCurrency(Number(DTE.dteJson.resumen.descuGravada))}
         </TD>
       </TR>
       <TR>
@@ -115,7 +115,7 @@ export default function TableFooterCredito({ DTE }: Props) {
           Sub-Total:
         </TD>
         <TD weighting={0.1} style={styles.td_with_border}>
-          ${formatCurrency(Number(DTE.dteJson.resumen.subTotal))}
+          {formatCurrency(Number(DTE.dteJson.resumen.subTotal))}
         </TD>
       </TR>
       <TR>
@@ -145,7 +145,7 @@ export default function TableFooterCredito({ DTE }: Props) {
           IVA Retenido:
         </TD>
         <TD weighting={0.1} style={styles.td_with_border}>
-          ${formatCurrency(Number(DTE.dteJson.resumen.ivaRete1))}
+          {formatCurrency(Number(DTE.dteJson.resumen.ivaRete1))}
         </TD>
       </TR>
       <TR>
@@ -160,7 +160,7 @@ export default function TableFooterCredito({ DTE }: Props) {
           Retención Renta:
         </TD>
         <TD weighting={0.1} style={styles.td_with_border}>
-          ${formatCurrency(Number(DTE.dteJson.resumen.reteRenta))}
+          {formatCurrency(Number(DTE.dteJson.resumen.reteRenta))}
         </TD>
       </TR>
       <TR>
@@ -175,7 +175,7 @@ export default function TableFooterCredito({ DTE }: Props) {
           Monto Total de la Operación:
         </TD>
         <TD weighting={0.1} style={styles.td_with_border}>
-          ${formatCurrency(Number(DTE.dteJson.resumen.montoTotalOperacion))}
+          {formatCurrency(Number(DTE.dteJson.resumen.montoTotalOperacion))}
         </TD>
       </TR>
       <TR>
@@ -190,7 +190,7 @@ export default function TableFooterCredito({ DTE }: Props) {
           Total Otros Montos No Afectos:
         </TD>
         <TD weighting={0.1} style={styles.td_with_border}>
-          ${formatCurrency(Number(DTE.dteJson.resumen.totalNoGravado))}
+          {formatCurrency(Number(DTE.dteJson.resumen.totalNoGravado))}
         </TD>
       </TR>
       <TR>
@@ -205,7 +205,7 @@ export default function TableFooterCredito({ DTE }: Props) {
           Total a Pagar:
         </TD>
         <TD weighting={0.1} style={styles.td_with_border}>
-          ${formatCurrency(Number(DTE.dteJson.resumen.totalPagar))}
+          {formatCurrency(Number(DTE.dteJson.resumen.totalPagar))}
         </TD>
       </TR>
     </>

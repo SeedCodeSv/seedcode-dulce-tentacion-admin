@@ -247,7 +247,27 @@ function CreditoFiscal(props: Props) {
                 }
               })
               .catch(async (error: AxiosError<SendMHFailed>) => {
+                clearTimeout(timeout);
+                if (axios.isCancel(error)) {
+                  setTitle("Tiempo de espera agotado");
+                  setErrorMessage("El tiempo limite de espera ha expirado");
+                  modalError.onOpen();
+                  setLoading(false);
+                }
+                modalError.onOpen();
+                setLoading(false);
+
                 if (error.response?.data) {
+                  setErrorMessage(
+                    error.response.data.observaciones &&
+                      error.response.data.observaciones.length > 0
+                      ? error.response?.data.observaciones.join("\n\n")
+                      : ""
+                  );
+                  setTitle(
+                    error.response?.data.descripcionMsg ??
+                      "Error al procesar venta"
+                  );
                   await save_logs({
                     title:
                       error.response.data.descripcionMsg ??
@@ -256,43 +276,31 @@ function CreditoFiscal(props: Props) {
                       error.response.data.observaciones &&
                       error.response.data.observaciones.length > 0
                         ? error.response?.data.observaciones.join("\n\n")
-                        : "",
+                        : error.response.data.descripcionMsg,
                     generationCode:
                       generate.dteJson.identificacion.codigoGeneracion,
                   });
-                  setErrorMessage(
-                    error.response.data.observaciones &&
-                      error.response.data.observaciones.length > 0
-                      ? error.response?.data.observaciones.join("\n\n")
-                      : ""
-                  );
-                  setTitle(
-                    error.response.data.descripcionMsg ??
-                      "Error al procesar venta"
-                  );
-                  modalError.onOpen();
-                  setLoading(false);
                 }
               });
           } else {
-            setErrorMessage("No se ha podido obtener el token de hacienda");
             modalError.onOpen();
             setLoading(false);
+            setErrorMessage("No se ha podido obtener el token de hacienda");
             return;
           }
         } else {
-          setTitle("Error en el firmador");
-          setErrorMessage("Error al firmar el documento");
           modalError.onOpen();
           setLoading(false);
+          setTitle("Error en el firmador");
+          setErrorMessage("Error al firmar el documento");
           return;
         }
       })
       .catch(() => {
-        setTitle("Error en el firmador");
-        setErrorMessage("Error al firmar el documento");
         modalError.onOpen();
         setLoading(false);
+        setTitle("Error en el firmador");
+        setErrorMessage("Error al firmar el documento");
       });
   };
   const { createContingenciaCredito } = useContingenciaCreditoStore();
@@ -300,7 +308,6 @@ function CreditoFiscal(props: Props) {
     setLoading(true);
     modalError.onClose();
     if (currentDTE) {
-      console.log(currentDTE);
       createContingenciaCredito(currentDTE);
       const json_url = `CLIENTES/${
         transmitter.nombre
@@ -332,7 +339,7 @@ function CreditoFiscal(props: Props) {
                   cajaId: Number(localStorage.getItem("box")),
                   codigoEmpleado: 1,
                   sello: false,
-                  clienteId: props.Customer?.id 
+                  clienteId: props.Customer?.id,
                 },
                 {
                   headers: {
