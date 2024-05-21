@@ -90,3 +90,13 @@ const monthString = month < 10 ? `0${month}` : `${month}`;
 const dayString = day < 10 ? `0${day}` : `${day}`;
 export const
   fechaActualString = `${year}-${monthString}-${dayString}`;
+
+
+export function shortMonth(numero: number): string {
+  const meses: string[] = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+  if (numero >= 1 && numero <= 12) {
+    return meses[numero - 1];
+  } else {
+    return "Número inválido";
+  }
+}
