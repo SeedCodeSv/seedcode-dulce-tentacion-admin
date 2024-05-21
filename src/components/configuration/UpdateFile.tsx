@@ -7,6 +7,7 @@ import DefaultImage from "../../assets/react.svg";
 import { useConfigurationStore } from "../../store/perzonalitation.store";
 import { useAuthStore } from "../../store/auth.store";
 import { ThemeContext } from "../../hooks/useTheme";
+import compressImage from "browser-image-compression";
 
 interface Props {
   perzonalitationId: number;
@@ -15,8 +16,8 @@ interface Props {
 function UpdateFile(props: Props) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const { personalization, GetConfigurationByTransmitter } =
-    useConfigurationStore();
+  const [loading, setLoading] = useState(false); 
+  const { personalization, GetConfigurationByTransmitter } = useConfigurationStore();
   const { user } = useAuthStore();
   const tramsiter = user?.employee?.branch?.transmitterId;
 
@@ -26,20 +27,44 @@ function UpdateFile(props: Props) {
 
   const { theme } = useContext(ThemeContext);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files && files.length > 0) {
-      setSelectedFile(files[0]);
-      const reader = new FileReader();
-      reader.onload = () => {
-        if (reader.readyState === 2) {
-          setSelectedImage(reader.result as string); // Establecer la imagen seleccionada
-        }
-      };
-      reader.readAsDataURL(files[0]);
+      
+      if (files[0].type !== "image/png") {
+        toast.error("Solo se permiten imágenes en formato .png");
+        return;
+      }
+
+      setLoading(true); 
+      try {
+        const file = files[0];
+        const compressedImage = await compressImage(file, {
+          maxSizeMB: 0.5,
+          maxWidthOrHeight: 500,
+          useWebWorker: true,
+          maxIteration: 10,
+          initialQuality: 0.7,
+        });
+
+        const convertedFile = new File([compressedImage], file.name, {
+          type: compressedImage.type,
+          lastModified: Date.now(),
+        });
+
+        const compressedImageUrl = URL.createObjectURL(convertedFile);
+        setSelectedImage(compressedImageUrl);
+        setSelectedFile(convertedFile);
+
+      } catch (error) {
+        console.error("Error compressing image:", error);
+        toast.error("Error al comprimir la imagen");
+      } finally {
+        setLoading(false); 
+      }
     } else {
       setSelectedFile(null);
-      setSelectedImage(null); // Limpiar la imagen selecciona
+      setSelectedImage(null); 
     }
   };
 
@@ -57,13 +82,13 @@ function UpdateFile(props: Props) {
             },
           }
         );
-        toast.success("Imagen actualizada con exito");
+        toast.success("Imagen actualizada con éxito");
         location.reload();
       } catch (error) {
-        toast.error("Error al actualizar la imagen: ");
+        toast.error("Error al actualizar la imagen");
       }
     } else {
-      toast.error("No se selecciono un archivo: ");
+      toast.error("No se seleccionó un archivo");
     }
   };
 
@@ -89,7 +114,7 @@ function UpdateFile(props: Props) {
           }
           alt="Cargando..."
           className="h-720 w-72 rounded-lg object-cover"
-        ></img>
+        />
         <div className="mt-2">
           <label htmlFor="fileInput">
             <Button
@@ -99,8 +124,9 @@ function UpdateFile(props: Props) {
                 backgroundColor: theme.colors.dark,
                 color: theme.colors.primary,
               }}
+              disabled={loading}
             >
-              Selecciona un archivo
+              {loading ? "Cargando..." : "Selecciona un archivo"}
             </Button>
           </label>
           <input
@@ -123,8 +149,9 @@ function UpdateFile(props: Props) {
             color: theme.colors.primary,
           }}
           onClick={handleUpload}
+          disabled={loading} 
         >
-          Guardar
+          {loading ? "Guardando..." : "Guardar"}
         </Button>
       </div>
     </>

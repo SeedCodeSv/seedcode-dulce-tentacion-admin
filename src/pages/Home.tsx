@@ -39,6 +39,7 @@ function Home() {
   } = useBranchProductReportStore();
 
   const { user } = useAuthStore();
+  
 
   useEffect(() => {
     getSalesByBranchAndMonth(user?.employee.branch.transmitterId ?? 0);

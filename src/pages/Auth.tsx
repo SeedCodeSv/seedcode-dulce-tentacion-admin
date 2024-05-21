@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import BUSINESS from "../assets/bussines.jpg";
 import { Button, Input } from "@nextui-org/react";
 import { Eye, EyeOff } from "lucide-react";
@@ -10,6 +10,7 @@ import { Formik } from "formik";
 import { useAuthStore } from "../store/auth.store";
 import { SessionContext } from "../hooks/useSession";
 import { redirect } from "react-router";
+import { delete_seller_mode } from "../storage/localStorage";
 
 function Auth() {
   const [showPassword, setShowPassword] = useState(false);
@@ -34,9 +35,11 @@ function Auth() {
         setRolId(response?.user?.roleId);
         setIsAuth(true);
         setToken(response.token);
-        redirect("/");
+        //redirect("/");
+        window.location.reload();
       } else {
         setIsAuth(false);
+        delete_seller_mode();
         setToken("");
       }
     });

@@ -46,6 +46,7 @@ export const LayoutItems = () => {
     setMode("vendedor");
     save_seller_mode("vendedor");
     makeLogout();
+  
     setIsAuth(false);
     setToken("");
     navigate("/");
@@ -135,7 +136,7 @@ export const LayoutItems = () => {
           {personalization.map((item) => (
             <div
               key={item.id}
-              className="flex items-center pl-5 w-full border-b shadow h-[70px]"
+              className="flex items-center justify-center w-full border-b shadow h-[70px]"
               style={{
                 backgroundColor: theme.colors.dark,
                 color: theme.colors.primary,
@@ -189,6 +190,31 @@ export const LayoutItems = () => {
           <p className="ml-2 text-sm 2xl:text-base">Nueva venta</p>
         </NavLink>
       )}
+
+      <>
+        {views && views.includes("Gastos") && mode === "vendedor" && (
+          <NavLink
+            to={"/expenses"}
+            className={({ isActive }) => {
+              return (
+                (isActive
+                  ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
+                  : "text-coffee-brown font-semibold border-white") +
+                " flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
+              );
+            }}
+            style={({ isActive }) => {
+              return {
+                borderLeftColor: isActive ? theme.colors.dark : "transparent",
+                borderLeftWidth: 5,
+              };
+            }}
+          >
+            <SquareMenu size={iconSize} />
+            <p className="ml-2 text-sm 2xl:text-base">Gastos</p>
+          </NavLink>
+        )}
+      </>
       {mode !== "vendedor" && (
         <>
           {views && (
@@ -467,30 +493,7 @@ export const LayoutItems = () => {
           </NavLink>
         )}
       </>
-      <>
-        {views && views.includes("Gastos") && (
-          <NavLink
-            to={"/expenses"}
-            className={({ isActive }) => {
-              return (
-                (isActive
-                  ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
-                  : "text-coffee-brown font-semibold border-white") +
-                " flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
-              );
-            }}
-            style={({ isActive }) => {
-              return {
-                borderLeftColor: isActive ? theme.colors.dark : "transparent",
-                borderLeftWidth: 5,
-              };
-            }}
-          >
-            <SquareMenu size={iconSize} />
-            <p className="ml-2 text-sm 2xl:text-base">Gastos</p>
-          </NavLink>
-        )}
-      </>
+
       {mode !== "vendedor" && (
         <>
           {views && views.includes("Permisos") && (

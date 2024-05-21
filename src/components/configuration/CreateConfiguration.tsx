@@ -6,13 +6,14 @@ import { ICreacteConfiguaration } from "../../types/configuration.types";
 import DefaultImage from "../../assets/react.svg";
 import { ThemeContext } from "../../hooks/useTheme";
 import { useAuthStore } from "../../store/auth.store";
-import compressImage from 'browser-image-compression';
+import compressImage from "browser-image-compression";
 
 function CreateConfiguration() {
   const { OnCreateConfiguration } = useConfigurationStore();
   const [selectedImage, setSelectedImage] = useState(DefaultImage);
   const { theme } = useContext(ThemeContext);
   const { user } = useAuthStore();
+  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState<ICreacteConfiguaration>({
     name: "",
@@ -24,34 +25,38 @@ function CreateConfiguration() {
   const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      
+      if (file.type !== "image/png") {
+        toast.error("Solo se permiten imágenes en formato .png");
+        return;
+      }
+
+      setLoading(true);
       try {
-        console.log('Original file:', file);
         const compressedImage = await compressImage(file, {
-          maxSizeMB: 0.5, // Reducir tamaño máximo en MB
-          maxWidthOrHeight: 800, // Ajustar las dimensiones máximas
-          useWebWorker: true, 
-          maxIteration: 10, // Aumentar las iteraciones para mejorar la compresión
-          initialQuality: 0.7 // Fijar la calidad inicial (de 0 a 1)
+          maxSizeMB: 0.5,
+          maxWidthOrHeight: 500,
+          useWebWorker: true,
+          maxIteration: 10,
+          initialQuality: 0.7,
         });
         const convertedFile = new File([compressedImage], file.name, {
           type: compressedImage.type,
           lastModified: Date.now(),
         });
 
-        console.log('Compressed image:', compressedImage);
         const compressedImageUrl = URL.createObjectURL(convertedFile);
-        console.log('Compressed image URL:', compressedImageUrl);
-        setSelectedImage(compressedImageUrl); 
+        setSelectedImage(compressedImageUrl);
 
         setFormData((prevData) => ({
           ...prevData,
-          file: convertedFile, 
+          file: convertedFile,
         }));
-        console.log('Updated formData:', formData);
-
       } catch (error) {
         console.error("Error compressing image:", error);
         toast.error("Error al comprimir la imagen");
+      } finally {
+        setLoading(false);
       }
     } else {
       setSelectedImage(DefaultImage);
@@ -59,10 +64,10 @@ function CreateConfiguration() {
         ...prevData,
         file: null,
       }));
-    } 
+    }
   };
 
-  const handleSave = async (values: ICreacteConfiguaration) => {
+  const handleSave = async () => {
     if (!formData.file) {
       const defaultImageFile = await fetch(DefaultImage)
         .then((res) => res.blob())
@@ -75,11 +80,11 @@ function CreateConfiguration() {
 
       setSelectedImage(DefaultImage);
     }
-    await new Promise(resolve => setTimeout(resolve, 0));
+
+    await new Promise((resolve) => setTimeout(resolve, 0));
 
     try {
-      console.log('Saving formData:', formData);
-      await OnCreateConfiguration(values);
+      await OnCreateConfiguration(formData);
       toast.success("Personalización guardada");
       location.reload();
     } catch (error) {
@@ -111,8 +116,9 @@ function CreateConfiguration() {
               backgroundColor: theme.colors.dark,
               color: theme.colors.primary,
             }}
+            disabled={loading}
           >
-            Selecciona un archivo
+            {loading ? "Cargando..." : "Selecciona un archivo"}
           </Button>
         </label>
         <input
@@ -142,13 +148,14 @@ function CreateConfiguration() {
         size="lg"
         color="primary"
         className="font-semibold w-full mt-4 text-sm text-white shadow-lg"
-        onClick={() => handleSave(formData)}
+        onClick={handleSave}
         style={{
           backgroundColor: theme.colors.third,
           color: theme.colors.primary,
         }}
+        disabled={loading}
       >
-        Guardar
+        {loading ? "Guardando..." : "Guardar"}
       </Button>
     </div>
   );
