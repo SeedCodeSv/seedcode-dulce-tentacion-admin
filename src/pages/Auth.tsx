@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import BUSINESS from "../assets/bussines.jpg";
 import { Button, Input } from "@nextui-org/react";
 import { Eye, EyeOff } from "lucide-react";
@@ -10,6 +10,7 @@ import { Formik } from "formik";
 import { useAuthStore } from "../store/auth.store";
 import { SessionContext } from "../hooks/useSession";
 import { redirect } from "react-router";
+import { delete_seller_mode } from "../storage/localStorage";
 
 function Auth() {
   const [showPassword, setShowPassword] = useState(false);
@@ -34,25 +35,27 @@ function Auth() {
         setRolId(response?.user?.roleId);
         setIsAuth(true);
         setToken(response.token);
-        redirect("/");
+        //redirect("/");
+        window.location.reload();
       } else {
         setIsAuth(false);
+        delete_seller_mode();
         setToken("");
       }
     });
   };
 
   return (
-    <div className="flex items-center justify-center w-screen h-screen bg-gray-50">
-      <div className="text-3xl flex w-[80vw] h-[90vh] border shadow bg-white p-5 rounded-2xl">
+    <div className="flex items-center justify-center w-screen h-screen bg-gray-50 dark:bg-gray-700">
+      <div className="text-3xl flex w-[80vw] h-[90vh] border shadow bg-white dark:bg-gray-800 p-5 rounded-2xl dark:border-gray-700">
         <div
           className="hidden md:flex md:w-[50%] xl:w-[60%] h-full bg-cover bg-center rounded-2xl shadow"
           style={{ backgroundImage: `url(${BUSINESS})` }}
         ></div>
-        <div className="w-[100%] md:w-[50%] xl:w-[40%] px-10 h-full flex flex-col justify-center bg-white">
+        <div className="w-[100%] md:w-[50%] xl:w-[40%] px-10 h-full flex flex-col justify-center bg-white dark:bg-gray-800">
           <img src={LOGO} alt="" className="w-80" />
-          <p className="text-xl lg:text-2xl xl:text-3xl">Bienvenido</p>
-          <p className="text-xl lg:text-2xl xl:text-3xl">
+          <p className="text-lg lg:text-lg xl:text-xl 2xl:text-2xl dark:text-white">Bienvenido</p>
+          <p className="text-lg lg:text-lg xl:text-xl 2xl:text-2xl dark:text-white">
             Inicia sesión con tus credenciales
           </p>
           <Formik
@@ -69,7 +72,7 @@ function Auth() {
               handleSubmit,
             }) => (
               <>
-                <div className="flex flex-col mt-16">
+                <div className="flex flex-col mt-5 md:mt-10 xl:mt1-16">
                   <Input
                     classNames={{ label: "text-sm font-semibold" }}
                     variant="bordered"
@@ -80,6 +83,7 @@ function Auth() {
                     onBlur={handleBlur("userName")}
                     labelPlacement="outside"
                     placeholder="Ingresa tu usuario"
+                    className="dark:text-white"
                   />
                   {errors.userName && touched.userName && (
                     <p className="text-red-500 text-sm font-semibold">
@@ -98,6 +102,7 @@ function Auth() {
                     label="Contraseña"
                     labelPlacement="outside"
                     placeholder="Ingresa tu contraseña"
+                    className="dark:text-white"
                     type={showPassword ? "text" : "password"}
                     endContent={
                       showPassword ? (

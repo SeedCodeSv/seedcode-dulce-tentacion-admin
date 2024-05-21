@@ -38,7 +38,11 @@ function Layout(props: Props) {
       )}
       {navbar === "sidebar" && (
         <>
-          <SideBar title={props.title}>{props.children}</SideBar>
+          <SideBar title={props.title}>
+            <div className="w-full h-full overflow-y-auto bg-gray-50 dark:bg-gray-800">
+            {props.children}
+            </div>
+          </SideBar>
         </>
       )}
     </div>

@@ -31,22 +31,22 @@ export const useAuthStore = create<IAuthStore>((set, get) => ({
     return await post_login(payload)
       .then(async ({ data }) => {
         const mode = return_seller_mode() ?? null;
-        console.log(data)
+        console.log(data);
         if (data.ok) {
           set_token(data.token);
           save_user(data.user);
           if (mode === "vendedor") {
-            console.log(data.box.id)
-            window.location.href = "/newSales";
+            window.location.href = "/";
+
             post_box(data.box.id.toString());
             save_branch_id(data.box.branchId.toString());
-          }else {
+          } else {
             delete_seller_mode();
           }
           if (is_admin(data.user.role.name)) {
             await save_branch_id(String(data.user.employee.branch.id));
           }
-          
+
           await get()
             .OnLoginMH(data.user.employee.branch.transmitterId, data.token)
             .catch((error) => {

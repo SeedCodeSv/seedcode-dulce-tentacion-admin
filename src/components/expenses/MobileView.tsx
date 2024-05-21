@@ -24,7 +24,7 @@ function MobileView({ layout, deletePopover, handleEdit }: Props) {
         pt={{
           grid: () => ({
             className:
-              "grid dark:bg-slate-800 pb-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid-nogutter gap-5 mt-5",
+              "grid dark:bg-slate-800 pb-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 grid-nogutter gap-5 mt-5",
           }),
         }}
         color="surface"
@@ -56,15 +56,15 @@ const gridItem = (
           key={expenses.id}
         >
           <div className="flex w-full gap-2">
-            <ScrollIcon color={"#274c77"} size={35} />
+            <ScrollIcon className="text-[#274c77] dark:text-gray-400" size={35} />
             {expenses.categoryExpense.name}
           </div>
           <div className="flex w-full gap-2">
-            <DollarSign color={"#274c77"} size={32} />
+            <DollarSign className="text-[#274c77] dark:text-gray-400" size={35} />
             {expenses.total}
           </div>
           <div className="flex w-full gap-2">
-            <ClipboardPenLine color={"#274c77"} size={32} />
+            <ClipboardPenLine className="text-[#274c77] dark:text-gray-400" size={35} />
             {expenses.description}
           </div>
           <div className="flex justify-between mt-5 w-ful">
@@ -107,15 +107,15 @@ const ListItem = ({
       <div className="flex w-full col-span-1 p-5 border-b shadow md:col-span-2 lg:col-span-3 xl:col-span-4">
         <div className="w-full">
           <div className="flex items-center w-full gap-2">
-            <ScrollIcon color={"#274c77"} size={35} />
+            <ScrollIcon className="text-[#274c77] dark:text-gray-400" size={35} />
             {expenses.categoryExpense.name}
           </div>
           <div className="flex items-center w-full gap-2">
-            <DollarSign color={"#274c77"} size={32} />
+            <DollarSign className="text-[#274c77] dark:text-gray-400" size={35} />
             {expenses.total}
           </div>
           <div className="flex items-center w-full gap-2">
-            <ClipboardPenLine color={"#274c77"} size={32} />
+            <ClipboardPenLine className="text-[#274c77] dark:text-gray-400" size={35} />
             {expenses.description}
           </div>
         </div>
