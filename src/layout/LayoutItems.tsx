@@ -135,13 +135,15 @@ export const LayoutItems = () => {
           {personalization.map((item) => (
             <div
               key={item.id}
-              className="flex items-center pl-5 w-full border-b shadow h-[70px]"
+              className="flex items-center justify-center w-full border-b shadow h-[70px]"
               style={{
                 backgroundColor: theme.colors.dark,
                 color: theme.colors.primary,
               }}
             >
-              <img src={item.logo} className="max-h-14 w-full max-w-32" />
+              <div className="">
+                <img src={item.logo} className="max-h-14 w-full max-w-32" />
+              </div>
             </div>
           ))}
         </>

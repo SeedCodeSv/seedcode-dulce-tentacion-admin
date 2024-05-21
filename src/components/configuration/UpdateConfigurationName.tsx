@@ -50,7 +50,7 @@ function UpdateConfigurationName(props: Props) {
                 label="Nombre un nombre"
                 labelPlacement="outside"
                 size="lg"
-                name="userName"
+                name="name"
                 value={values.name}
                 onChange={handleChange("name")}
                 onBlur={handleBlur("name")}
