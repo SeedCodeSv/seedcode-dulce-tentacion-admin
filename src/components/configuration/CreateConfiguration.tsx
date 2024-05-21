@@ -1,14 +1,12 @@
 import { ChangeEvent, useContext, useRef, useState } from "react";
 import { toast } from "sonner";
-import { Button, Input } from "@nextui-org/react";
+import { Image as NextImage, Button, Input } from "@nextui-org/react";
 import { useConfigurationStore } from "../../store/perzonalitation.store";
 import { ICreacteConfiguaration } from "../../types/configuration.types";
 import DefaultImage from "../../assets/react.svg";
 import { ThemeContext } from "../../hooks/useTheme";
 import { useAuthStore } from "../../store/auth.store";
-import { Cropper, CropperRef } from "react-advanced-cropper";
-import "react-advanced-cropper/dist/style.css";
-import "./style.scss";
+import compressImage from 'browser-image-compression';
 
 function CreateConfiguration() {
   const { OnCreateConfiguration } = useConfigurationStore();
@@ -20,79 +18,68 @@ function CreateConfiguration() {
     name: "",
     themeId: 1,
     transmitterId: user?.employee?.branch?.transmitterId || 0,
+    file: null,
   });
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setSelectedImage(imageUrl);
-      setFormData((prevData) => ({
-        ...prevData,
-        file,
-      }));
+      try {
+        console.log('Original file:', file);
+        const compressedImage = await compressImage(file, {
+          maxSizeMB: 0.5, // Reducir tamaño máximo en MB
+          maxWidthOrHeight: 800, // Ajustar las dimensiones máximas
+          useWebWorker: true, 
+          maxIteration: 10, // Aumentar las iteraciones para mejorar la compresión
+          initialQuality: 0.7 // Fijar la calidad inicial (de 0 a 1)
+        });
+        const convertedFile = new File([compressedImage], file.name, {
+          type: compressedImage.type,
+          lastModified: Date.now(),
+        });
+
+        console.log('Compressed image:', compressedImage);
+        const compressedImageUrl = URL.createObjectURL(convertedFile);
+        console.log('Compressed image URL:', compressedImageUrl);
+        setSelectedImage(compressedImageUrl); 
+
+        setFormData((prevData) => ({
+          ...prevData,
+          file: convertedFile, 
+        }));
+        console.log('Updated formData:', formData);
+
+      } catch (error) {
+        console.error("Error compressing image:", error);
+        toast.error("Error al comprimir la imagen");
+      }
     } else {
       setSelectedImage(DefaultImage);
       setFormData((prevData) => ({
         ...prevData,
         file: null,
       }));
-    }
-  };
-
-  const cropperRef = useRef<CropperRef>(null);
-  const [fileSelected, setFileSelected] = useState<File>(
-    new File([DefaultImage], "logo.png", { type: "image/png" })
-  );
-
-  const onCrop = async () => {
-    const cropper = cropperRef.current;
-    if (cropper) {
-      const canvas = cropper.getCanvas();
-      if (canvas) {
-        const resizedCanvas = document.createElement("canvas");
-        const ctx = resizedCanvas.getContext("2d");
-        resizedCanvas.width = 200;
-        resizedCanvas.height = 200;
-
-        const img = new Image();
-        img.src = canvas.toDataURL();
-
-        img.onload = () => {
-          ctx?.drawImage(img, 0, 0, 200, 200);
-          const resizedImageUrl = resizedCanvas.toDataURL("image/png");
-          setSelectedImage(resizedImageUrl);
-
-          // Convert the resized canvas to a Blob
-          resizedCanvas.toBlob((blob) => {
-            if (blob) {
-              const croppedFile = new File([blob], "cropped_image.png", {
-                type: "image/jpeg",
-              });
-              setFileSelected(croppedFile);
-            } else {
-              console.error(
-                "No se pudo convertir la imagen recortada en un objeto Blob."
-              );
-            }
-          }, "image/png");
-        };
-      } else {
-        console.error("El objeto canvas es nulo.");
-      }
-    } else {
-      console.error("El objeto cropper es nulo.");
-    }
+    } 
   };
 
   const handleSave = async (values: ICreacteConfiguaration) => {
-    if (!fileSelected) {
-      console.error("No image selected for cropping.");
-      return;
+    if (!formData.file) {
+      const defaultImageFile = await fetch(DefaultImage)
+        .then((res) => res.blob())
+        .then((blob) => new File([blob], "default.png", { type: "image/png" }));
+
+      setFormData((prevData) => ({
+        ...prevData,
+        file: defaultImageFile,
+      }));
+
+      setSelectedImage(DefaultImage);
     }
+    await new Promise(resolve => setTimeout(resolve, 0));
 
     try {
-      await OnCreateConfiguration({ ...values, file: fileSelected });
+      console.log('Saving formData:', formData);
+      await OnCreateConfiguration(values);
       toast.success("Personalización guardada");
       location.reload();
     } catch (error) {
@@ -109,24 +96,12 @@ function CreateConfiguration() {
 
   return (
     <div className="flex flex-col items-center justify-center m-4 2xl:mt-10">
-      <div className="example">
-        <div className="example__cropper-wrapper">
-          <Cropper
-            ref={cropperRef}
-            className="example__cropper"
-            backgroundClassName="example__cropper-background"
-            src={selectedImage}
-            aspectRatio={() => 1} // Usar una función que devuelva el ratio
-          />
-        </div>
-        <div className="example__buttons-wrapper">
-          {selectedImage && (
-            <button className="example__button" onClick={onCrop}>
-              Recortar
-            </button>
-          )}
-        </div>
-      </div>
+      <NextImage
+        src={selectedImage}
+        alt="Cargando..."
+        fallbackSrc={DefaultImage}
+        className="h-720 w-72 rounded-lg object-cover"
+      />
       <div className="mt-2">
         <label htmlFor="fileInput">
           <Button
@@ -156,7 +131,7 @@ function CreateConfiguration() {
           name="name"
           variant="bordered"
           placeholder="Nombre"
-          defaultValue={formData.name}
+          value={formData.name}
           onChange={(event) =>
             setFormData({ ...formData, name: event.target.value })
           }
@@ -167,9 +142,7 @@ function CreateConfiguration() {
         size="lg"
         color="primary"
         className="font-semibold w-full mt-4 text-sm text-white shadow-lg"
-        onClick={() => {
-          handleSave(formData);
-        }}
+        onClick={() => handleSave(formData)}
         style={{
           backgroundColor: theme.colors.third,
           color: theme.colors.primary,
