@@ -5,6 +5,7 @@ import SalesReportContigencePage from "../pages/SalesReportContigencePage";
 import Expenses from "../pages/Expenses";
 import { useEffect, useState } from "react";
 import { useActionsRolStore } from "../store/actions_rol.store";
+import HomeSeller from "../pages/Seller/HomeSeller";
 
 export const router_seller = () => {
   const { role_view_action, OnGetActionsByRole } = useActionsRolStore();
@@ -32,8 +33,12 @@ export const router_seller = () => {
     role_view_action.view.map((view) => view.name);
   return createBrowserRouter([
     {
+      path: "/",
+      element: <HomeSeller />,
+    },
+    {
       path: "/expenses",
-      element: views && views.includes("Expenses") && <Expenses />,
+      element: views && views.includes("Gastos") && <Expenses />,
     },
     {
       path: "/newSales",
