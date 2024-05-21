@@ -29,7 +29,7 @@ function CreateConfiguration() {
       try {
         const compressedImage = await compressImage(file, {
           maxSizeMB: 0.5,
-          maxWidthOrHeight: 400,
+          maxWidthOrHeight: 500,
           useWebWorker: true,
           maxIteration: 10,
           initialQuality: 0.7,
