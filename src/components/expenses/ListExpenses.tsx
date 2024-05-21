@@ -31,6 +31,7 @@ import ModalGlobal from "../global/ModalGlobal";
 import AddExpenses from "./AddExpenses";
 import MobileView from "./MobileView";
 import {formatCurrency} from "../../utils/dte"
+import { limit_options } from "../../utils/constants";
 const ListExpenses = () => {
   const { theme } = useContext(ThemeContext);
 
@@ -168,13 +169,9 @@ const ListExpenses = () => {
               setLimit(Number(e.target.value !== "" ? e.target.value : "5"));
             }}
           >
-            <SelectItem key={"5"}>5</SelectItem>
-            <SelectItem key={"10"}>10</SelectItem>
-            <SelectItem key={"20"}>20</SelectItem>
-            <SelectItem key={"30"}>30</SelectItem>
-            <SelectItem key={"40"}>40</SelectItem>
-            <SelectItem key={"50"}>50</SelectItem>
-            <SelectItem key={"100"}>100</SelectItem>
+            {limit_options.map((option)=>(
+              <SelectItem key={option} className="dark:text-white">{option}</SelectItem>
+            ))}
           </Select>
         </div>
         {(view === "grid" || view === "list") && (
@@ -326,8 +323,8 @@ const DeletePopUp = ({ expenses }: Props) => {
         </PopoverTrigger>
         <PopoverContent>
           <div className="w-full p-5">
-            <p className="font-semibold text-gray-600">Eliminar</p>
-            <p className="mt-3 text-center text-gray-600 w-72">
+            <p className="font-semibold text-gray-600 dark:text-white">Eliminar</p>
+            <p className="mt-3 text-center text-gray-600 dark:text-white w-72">
               ¿Estas seguro de eliminar este registro?
             </p>
             <div className="mt-4">

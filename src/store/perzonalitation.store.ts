@@ -26,6 +26,7 @@ export const useConfigurationStore = create<IConfigurationStore>((set) => ({
       });
   },
 
+<<<<<<< HEAD
   async GetConfigurationByTransmitter(id: number): Promise<void> {
     try {
       const { data } = await get_by_transmitter(id);
@@ -38,6 +39,21 @@ export const useConfigurationStore = create<IConfigurationStore>((set) => ({
         });
       } else {
         toast.error("No se encontró información de personalización");
+=======
+    async GetConfigurationByTransmitter(id: number): Promise<void> {
+      try {
+        const { data } = await get_by_transmitter(id);
+        if (data.personalization) {
+          const personalizationArray = Array.isArray(data.personalization) ? data.personalization : [data.personalization];
+          set({
+            personalization: personalizationArray,
+          });
+        } else {
+          console.log("No se encontró información de personalización");
+        }
+      } catch (error) {
+        console.log(error + "Ocurrió un error al obtener los datos de personalización")
+>>>>>>> 50d0bf7da37c26dfc44ff92039d021c7f22f56ba
       }
     } catch (error) {
       console.log(

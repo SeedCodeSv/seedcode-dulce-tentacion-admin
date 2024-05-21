@@ -46,6 +46,7 @@ export const LayoutItems = () => {
     setMode("vendedor");
     save_seller_mode("vendedor");
     makeLogout();
+  
     setIsAuth(false);
     setToken("");
     navigate("/");
@@ -123,7 +124,7 @@ export const LayoutItems = () => {
             color: theme.colors.primary,
           }}
         >
-          <img src={LOGO} className="max-h-14 w-full max-w-32" />
+          <img src={LOGO} className="max-h-14" />
           <p className="ml-3 font-sans text-sm font-bold text-coffee-brown">
             SeedCodeERP
           </p>
@@ -133,13 +134,13 @@ export const LayoutItems = () => {
           {personalization.map((item) => (
             <div
               key={item.id}
-              className="flex items-center pl-5 w-full border-b shadow h-[70px]"
+              className="flex items-center justify-center w-full border-b shadow h-[70px]"
               style={{
                 backgroundColor: theme.colors.dark,
                 color: theme.colors.primary,
               }}
             >
-              <img src={item.logo} className="max-h-14 w-full max-w-32" />
+              <img src={item.logo} className="max-h-14" />
             </div>
           ))}
         </>
@@ -165,7 +166,7 @@ export const LayoutItems = () => {
           </Button>
         </div>
       )}
-      {views && views.includes("Ventas") && mode === "vendedor" && (
+      {views && (views.includes("Ventas") && mode === "vendedor") && (
         <NavLink
           to={"/newSales"}
           className={({ isActive }) => {
@@ -188,7 +189,7 @@ export const LayoutItems = () => {
         </NavLink>
       )}
 
-<>
+      <>
         {views && views.includes("Gastos") && mode === "vendedor" && (
           <NavLink
             to={"/expenses"}
@@ -314,7 +315,7 @@ export const LayoutItems = () => {
                       leaveFrom="transform opacity-100 scale-100"
                       leaveTo="transform opacity-0 scale-95"
                     >
-                      <Menu.Items className="absolute z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                      <Menu.Items className="absolute z-10 mt-2 w-56 origin-top-right rounded-md bg-white dark:bg-gray-950 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                         <div className="py-1">
                           {views.includes("Empleados") && (
                             <Menu.Item>

@@ -259,39 +259,25 @@ function ListProducts() {
                                 setSearch("");
                               }}
                             />
-                            <Autocomplete
-                              onSelectionChange={(key) => {
-                                if (key) {
-                                  const branchSelected = JSON.parse(
-                                    key as string
-                                  ) as CategoryProduct;
-                                  setCategory(branchSelected.name);
-                                }
-                              }}
+                            <Input
+                              startContent={<SearchIcon />}
                               className="w-full dark:text-white"
-                              label="Categoría producto"
-                              labelPlacement="outside"
-                              placeholder="Selecciona la categoría"
                               variant="bordered"
+                              labelPlacement="outside"
+                              label="Categoria"
                               classNames={{
-                                base: "font-semibold  text-gray-500 text-sm",
+                                label: "font-semibold text-gray-700",
+                                inputWrapper: "pr-0",
                               }}
-                              size="lg"
                               value={category}
-                              clearButtonProps={{
-                                onClick: () => setCategory(""),
+                              onChange={(e) => setCategory(e.target.value)}
+                              size="lg"
+                              placeholder="Escribe para buscar..."
+                              isClearable
+                              onClear={() => {
+                                setCategory("");
                               }}
-                            >
-                              {list_categories.map((bra) => (
-                                <AutocompleteItem
-                                  value={bra.name}
-                                  key={JSON.stringify(bra)}
-                                >
-                                  {bra.name}
-                                </AutocompleteItem>
-                              ))}
-                            </Autocomplete>
-
+                            />
                             <Button
                               style={{
                                 backgroundColor: theme.colors.secondary,

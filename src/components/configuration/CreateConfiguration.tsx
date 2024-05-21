@@ -25,11 +25,17 @@ function CreateConfiguration() {
   const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+
+      if (file.type !== "image/png") {
+        toast.error("Solo se permiten imágenes en formato .png");
+        return;
+      }
+
       setLoading(true);
       try {
         const compressedImage = await compressImage(file, {
           maxSizeMB: 0.5,
-          maxWidthOrHeight: 400,
+          maxWidthOrHeight: 500,
           useWebWorker: true,
           maxIteration: 10,
           initialQuality: 0.7,
@@ -78,7 +84,7 @@ function CreateConfiguration() {
     await new Promise((resolve) => setTimeout(resolve, 0));
 
     try {
-      await OnCreateConfiguration(formData); 
+      await OnCreateConfiguration(formData);
       toast.success("Personalización guardada");
       location.reload();
     } catch (error) {
@@ -110,7 +116,7 @@ function CreateConfiguration() {
               backgroundColor: theme.colors.dark,
               color: theme.colors.primary,
             }}
-            disabled={loading} 
+            disabled={loading}
           >
             {loading ? "Cargando..." : "Selecciona un archivo"}
           </Button>
@@ -147,7 +153,7 @@ function CreateConfiguration() {
           backgroundColor: theme.colors.third,
           color: theme.colors.primary,
         }}
-        disabled={loading} 
+        disabled={loading}
       >
         {loading ? "Guardando..." : "Guardar"}
       </Button>
