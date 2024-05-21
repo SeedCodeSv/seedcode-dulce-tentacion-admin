@@ -35,7 +35,7 @@ export const useAuthStore = create<IAuthStore>((set, get) => ({
           set_token(data.token);
           save_user(data.user);
           if (mode === "vendedor") {
-            window.location.href = "/newSales";
+            window.location.href = "/";
             post_box(data.box.id.toString());
             save_branch_id(data.box.branchId.toString());
           }else {

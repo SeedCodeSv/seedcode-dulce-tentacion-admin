@@ -35,13 +35,13 @@ export const SideBar = (props: Props) => {
     width: window.innerWidth,
     height: window.innerHeight,
   });
+  const navigation = useNavigate();
   const close_login = () => {
     makeLogout();
     delete_seller_mode();
     setIsAuth(false);
     setToken("");
-    redirect("/");
-
+    navigation("/");
   };
   useEffect(() => {
     const handleResize = () => {

@@ -46,6 +46,7 @@ export const LayoutItems = () => {
     setMode("vendedor");
     save_seller_mode("vendedor");
     makeLogout();
+  
     setIsAuth(false);
     setToken("");
     navigate("/");
@@ -189,7 +190,7 @@ export const LayoutItems = () => {
         </NavLink>
       )}
 
-<>
+      <>
         {views && views.includes("Gastos") && mode === "vendedor" && (
           <NavLink
             to={"/expenses"}
