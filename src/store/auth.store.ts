@@ -31,10 +31,12 @@ export const useAuthStore = create<IAuthStore>((set, get) => ({
     return await post_login(payload)
       .then(async ({ data }) => {
         const mode = return_seller_mode() ?? null;
+        console.log(data)
         if (data.ok) {
           set_token(data.token);
           save_user(data.user);
           if (mode === "vendedor") {
+            console.log(data.box.id)
             window.location.href = "/newSales";
             post_box(data.box.id.toString());
             save_branch_id(data.box.branchId.toString());
