@@ -19,9 +19,7 @@ import axios, { AxiosError } from "axios";
 import { PutObjectCommand, PutObjectCommandInput } from "@aws-sdk/client-s3";
 import { s3Client } from "../../plugins/s3";
 import { SendMHFailed } from "../../types/transmitter.types";
-import { CreditoInvoice } from "../../pages/CreditInvoice";
-import { pdf } from "@react-pdf/renderer";
-import { API_URL, MH_QUERY, ambiente } from "../../utils/constants";
+import { API_URL, MH_QUERY } from "../../utils/constants";
 import { useCorrelativesDteStore } from "../../store/correlatives_dte.store";
 import ModalGlobal from "../global/ModalGlobal";
 import { LoaderCircle, ShieldAlert } from "lucide-react";
@@ -31,7 +29,11 @@ import { useContingenciaCreditoStore } from "../../plugins/dexie/store/contingen
 import { ISendMHFiscal } from "../../types/DTE/credito_fiscal.types";
 import { formatDate } from "../../utils/dates";
 import { save_logs } from "../../services/logs.service";
-
+import { jsPDF } from "jspdf";
+import Handlebars from "handlebars";
+import { CreditoInVoiceHTML } from "../credito_invoice/credito";
+import { formatCurrency } from "../../utils/dte";
+import {useConfigurationStore} from "../../store/perzonalitation.store"
 interface Props {
   clear: () => void;
   Customer?: Customer;
@@ -49,7 +51,7 @@ function CreditoFiscal(props: Props) {
 
   const modalError = useDisclosure();
   const { getCorrelativesByDte } = useCorrelativesDteStore();
-
+  const {GetConfiguration, config} = useConfigurationStore()
   const { gettransmitter, transmitter } = useTransmitterStore();
   const generateURLMH = (
     ambiente: string,
@@ -63,7 +65,7 @@ function CreditoFiscal(props: Props) {
   }, []);
 
   const generateFactura = async () => {
-    // setLoading(true); // Mostrar mensaje de espera
+    GetConfiguration(transmitter.id)
     if (!props.tipePayment) {
       toast.info("Debes seleccionar el método de pago");
 
@@ -127,7 +129,6 @@ function CreditoFiscal(props: Props) {
     setCurrentDTE(generate);
     setLoading(true);
     toast.info("Estamos firmado tu documento");
-
     firmarDocumentoFiscal(generate)
       .then(async (firmador) => {
         const token_mh = await return_mh_token();
@@ -153,6 +154,11 @@ function CreditoFiscal(props: Props) {
                   toast.success("Hacienda respondió correctamente", {
                     description: "Estamos guardando tus datos",
                   });
+                  const DTE_FORMED = {
+                    ...generate.dteJson,
+                    respuestaMH: data,
+                    firma: firmador.data.body,
+                  };
                   const json_url = `CLIENTES/${
                     transmitter.nombre
                   }/${new Date().getFullYear()}/VENTAS/CRÉDITO_FISCAL/${formatDate()}/${
@@ -166,9 +172,7 @@ function CreditoFiscal(props: Props) {
 
                   const JSON_DTE = JSON.stringify(
                     {
-                      ...generate.dteJson,
-                      respuestaMH: data,
-                      firma: firmador.data.body,
+                      ...DTE_FORMED,
                     },
                     null,
                     2
@@ -176,74 +180,154 @@ function CreditoFiscal(props: Props) {
                   const json_blob = new Blob([JSON_DTE], {
                     type: "application/json",
                   });
+                  console.log(config.logo)
+                  const doc = new jsPDF("p", "pt", "a4");
+                  const compile_html = Handlebars.compile(
+                    CreditoInVoiceHTML(
+                      generateURLMH(
+                        DTE_FORMED.identificacion.ambiente,
+                        DTE_FORMED.identificacion.codigoGeneracion,
+                        DTE_FORMED.identificacion.fecEmi
+                      ),
+                      config.logo
+                    )
+                  );
+                  const template = compile_html({
+                    dte: {
+                      ...DTE_FORMED,
+                      cuerpoDocumento: DTE_FORMED.cuerpoDocumento.map((d) => ({
+                        ...d,
+                        precioUni: formatCurrency(Number(d.precioUni)),
+                        montoDescu: formatCurrency(Number(d.montoDescu)),
+                        ventaNoSuj: formatCurrency(Number(d.ventaNoSuj)),
+                        ventaExenta: formatCurrency(Number(d.ventaExenta)),
+                        ventaGravada: formatCurrency(Number(d.ventaGravada)),
+                        ivaItem: formatCurrency(Number(d.ivaItem)),
+                        noGravado: formatCurrency(Number(d.noGravado)),
+                      })),
+                      resumen: {
+                        ...DTE_FORMED.resumen,
+                        totalNoSuj: formatCurrency(
+                          Number(DTE_FORMED.resumen.totalNoSuj)
+                        ),
+                        totalExenta: formatCurrency(
+                          Number(DTE_FORMED.resumen.totalExenta)
+                        ),
+                        totalGravada: formatCurrency(
+                          Number(DTE_FORMED.resumen.totalGravada)
+                        ),
+                        subTotalVentas: formatCurrency(
+                          Number(DTE_FORMED.resumen.subTotalVentas)
+                        ),
+                        descuNoSuj: formatCurrency(
+                          Number(DTE_FORMED.resumen.descuNoSuj)
+                        ),
+                        descuExenta: formatCurrency(
+                          Number(DTE_FORMED.resumen.descuExenta)
+                        ),
+                        descuGravada: formatCurrency(
+                          Number(DTE_FORMED.resumen.descuGravada)
+                        ),
+                        totalDescu: formatCurrency(
+                          Number(DTE_FORMED.resumen.totalDescu)
+                        ),
+                        subTotal: formatCurrency(
+                          Number(DTE_FORMED.resumen.subTotal)
+                        ),
+                        ivaRete1: formatCurrency(
+                          Number(DTE_FORMED.resumen.ivaRete1)
+                        ),
+                        reteRenta: formatCurrency(
+                          Number(DTE_FORMED.resumen.reteRenta)
+                        ),
+                        totalIva: formatCurrency(
+                          Number(DTE_FORMED.resumen.totalIva)
+                        ),
+                        montoTotalOperacion: formatCurrency(
+                          Number(DTE_FORMED.resumen.montoTotalOperacion)
+                        ),
+                        totalNoGravado: formatCurrency(
+                          Number(DTE_FORMED.resumen.totalNoGravado)
+                        ),
+                        totalPagar: formatCurrency(
+                          Number(DTE_FORMED.resumen.totalPagar)
+                        ),
+                      },
+                    },
+                  });
+                  // const blob = await pdf(
+                  //   <CreditoInvoice
+                  //     MHUrl={generateURLMH(
+                  //       ambiente,
+                  //       generate.dteJson.identificacion.codigoGeneracion,
+                  //       generate.dteJson.identificacion.fecEmi
+                  //     )}
+                  //     DTE={generate}
+                  //     sello={data.selloRecibido}
+                  //   />
+                  // ).toBlob();
+                  doc.html(template, {
+                    callback: function (doc) {
+                      const blob = doc.output("blob");
+                      if (json_blob && blob) {
+                        const uploadParams: PutObjectCommandInput = {
+                          Bucket: "seedcode-facturacion",
+                          Key: json_url,
+                          Body: json_blob,
+                        };
+                        const uploadParamsPDF: PutObjectCommandInput = {
+                          Bucket: "seedcode-facturacion",
+                          Key: pdf_url,
+                          Body: blob,
+                        };
 
-                  const blob = await pdf(
-                    <CreditoInvoice
-                      MHUrl={generateURLMH(
-                        ambiente,
-                        generate.dteJson.identificacion.codigoGeneracion,
-                        generate.dteJson.identificacion.fecEmi
-                      )}
-                      DTE={generate}
-                      sello={data.selloRecibido}
-                    />
-                  ).toBlob();
-
-                  if (json_blob && blob) {
-                    const uploadParams: PutObjectCommandInput = {
-                      Bucket: "seedcode-facturacion",
-                      Key: json_url,
-                      Body: json_blob,
-                    };
-                    const uploadParamsPDF: PutObjectCommandInput = {
-                      Bucket: "seedcode-facturacion",
-                      Key: pdf_url,
-                      Body: blob,
-                    };
-
-                    s3Client
-                      .send(new PutObjectCommand(uploadParamsPDF))
-                      .then((response) => {
-                        if (response.$metadata) {
-                          s3Client
-                            .send(new PutObjectCommand(uploadParams))
-                            .then((response) => {
-                              if (response.$metadata) {
-                                const token = get_token() ?? "";
-                                axios
-                                  .post(
-                                    API_URL + "/sales/credit-transaction",
-                                    {
-                                      pdf: pdf_url,
-                                      dte: json_url,
-                                      cajaId: Number(
-                                        localStorage.getItem("box")
-                                      ),
-                                      codigoEmpleado: 1,
-                                      sello: true,
-                                    },
-                                    {
-                                      headers: {
-                                        Authorization: `Bearer ${token}`,
-                                      },
-                                    }
-                                  )
-                                  .then(() => {
-                                    toast.success(
-                                      "Se completo con éxito la venta"
-                                    );
-                                    props.clear();
-                                    setLoading(false);
-                                  })
-                                  .catch(() => {
-                                    toast.error("Error al guardar la venta");
-                                    setLoading(false);
-                                  });
-                              }
-                            });
-                        }
-                      });
-                  }
+                        s3Client
+                          .send(new PutObjectCommand(uploadParamsPDF))
+                          .then((response) => {
+                            if (response.$metadata) {
+                              s3Client
+                                .send(new PutObjectCommand(uploadParams))
+                                .then((response) => {
+                                  if (response.$metadata) {
+                                    const token = get_token() ?? "";
+                                    axios
+                                      .post(
+                                        API_URL + "/sales/credit-transaction",
+                                        {
+                                          pdf: pdf_url,
+                                          dte: json_url,
+                                          cajaId: Number(
+                                            localStorage.getItem("box")
+                                          ),
+                                          codigoEmpleado: 1,
+                                          sello: true,
+                                        },
+                                        {
+                                          headers: {
+                                            Authorization: `Bearer ${token}`,
+                                          },
+                                        }
+                                      )
+                                      .then(() => {
+                                        toast.success(
+                                          "Se completo con éxito la venta"
+                                        );
+                                        props.clear();
+                                        setLoading(false);
+                                      })
+                                      .catch(() => {
+                                        toast.error(
+                                          "Error al guardar la venta"
+                                        );
+                                        setLoading(false);
+                                      });
+                                  }
+                                });
+                            }
+                          });
+                      }
+                    },
+                  });
                 }
               })
               .catch(async (error: AxiosError<SendMHFailed>) => {

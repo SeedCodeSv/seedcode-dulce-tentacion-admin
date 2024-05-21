@@ -130,7 +130,6 @@ export const LayoutItems = () => {
         </div>
       ) : (
         <>
-          {mode}
           {personalization.map((item) => (
             <div
               key={item.id}
