@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { IEmployeeStore } from "./types/employee.store";
 import {
+  activate_employee,
   delete_employee,
   get_employee_list,
   get_employees_paginated,
@@ -22,14 +23,17 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
     ok: false,
   },
   employee_list: [],
+  loading_employees: false,
   saveEmployeesPaginated(employee_paginated) {
     set({ employee_paginated });
   },
-  getEmployeesPaginated(page, limit, fullName, branch, phone) {
-    get_employees_paginated(page, limit, fullName, branch, phone)
-      .then(({ data }) => set({ employee_paginated: data }))
+  getEmployeesPaginated(page, limit, fullName, branch, phone, active = 1) {
+    set({ loading_employees: true });
+    get_employees_paginated(page, limit, fullName, branch, phone, active)
+      .then(({ data }) => set({ employee_paginated: data, loading_employees: false }))
       .catch(() => {
         set({
+          loading_employees: false,
           employee_paginated: {
             employees: [],
             total: 0,
@@ -86,6 +90,15 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
       })
       .catch(() => {
         set((state) => ({ ...state, employee_list: [] }));
+      });
+  },
+  async activateEmployee(id) {
+    return activate_employee(id)
+      .then(() => {
+        toast.success("Se activo el empleado");
+      })
+      .catch(() => {
+        toast.error("Error al activar el empleado");
       });
   },
 }));

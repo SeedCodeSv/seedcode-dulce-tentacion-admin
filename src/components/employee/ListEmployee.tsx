@@ -12,6 +12,7 @@ import {
   PopoverTrigger,
   Autocomplete,
   AutocompleteItem,
+  Switch,
 } from "@nextui-org/react";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
@@ -24,13 +25,12 @@ import {
   User,
   Phone,
   Filter,
+  RefreshCcw,
 } from "lucide-react";
 import { Employee } from "../../types/employees.types";
 import AddButton from "../global/AddButton";
 import Pagination from "../global/Pagination";
-import { Paginator } from "primereact/paginator";
 import { ThemeContext } from "../../hooks/useTheme";
-import { paginator_styles } from "../../styles/paginator.styles";
 import MobileView from "./MobileView";
 import ModalGlobal from "../global/ModalGlobal";
 import AddEmployee from "./AddEmployee";
@@ -39,10 +39,22 @@ import { global_styles } from "../../styles/global.styles";
 import classNames from "classnames";
 import { useBranchesStore } from "../../store/branches.store";
 import { Branches } from "../../types/branches.types";
-function ListEmployee() {
+import { limit_options } from "../../utils/constants";
+import SmPagination from "../global/SmPagination";
+
+interface Props {
+  actions: string[];
+}
+
+function ListEmployee({ actions }: Props) {
   const { theme, context } = useContext(ThemeContext);
 
-  const { getEmployeesPaginated, employee_paginated } = useEmployeeStore();
+  const {
+    getEmployeesPaginated,
+    employee_paginated,
+    activateEmployee,
+    loading_employees,
+  } = useEmployeeStore();
 
   const [fullName, setFullName] = useState("");
   const [branch, setBranch] = useState("");
@@ -50,23 +62,31 @@ function ListEmployee() {
   const [limit, setLimit] = useState(5);
   const [view, setView] = useState<"table" | "grid" | "list">("table");
   const [openVaul, setOpenVaul] = useState(false);
+  const [active, setActive] = useState(true);
+
   const { getBranchesList, branch_list } = useBranchesStore();
   const modalAdd = useDisclosure();
   const [selectedEmployee, setSelectedEmployee] = useState<Employee>();
 
   const changePage = () => {
-    getEmployeesPaginated(1, limit, fullName, branch, phone);
+    getEmployeesPaginated(1, limit, fullName, branch, phone, active ? 1 : 0);
   };
   const style = {
     backgroundColor: theme.colors.dark,
     color: theme.colors.primary,
   };
+
   useEffect(() => {
     getBranchesList();
-  }, []);
-  useEffect(() => {
-    getEmployeesPaginated(1, limit, fullName, branch, phone);
-  }, [limit]);
+    getEmployeesPaginated(1, limit, fullName, branch, phone, active ? 1 : 0);
+  }, [limit, active]);
+
+  const handleActivate = (id: number) => {
+    activateEmployee(id).then(() => {
+      getEmployeesPaginated(1, limit, "", "", "", active ? 1 : 0);
+    });
+  };
+
   const filters = useMemo(() => {
     return (
       <>
@@ -77,9 +97,8 @@ function ListEmployee() {
           }}
           labelPlacement="outside"
           label="Nombre"
-          className="w-full xl:w-96 dark:text-white"
+          className="w-full dark:text-white"
           placeholder="Buscar por nombre..."
-          size="lg"
           startContent={<User />}
           variant="bordered"
           name="searchName"
@@ -98,9 +117,8 @@ function ListEmployee() {
           labelPlacement="outside"
           label="Teléfono"
           placeholder="Buscar por teléfono..."
-          size="lg"
           startContent={<Phone size={20} />}
-          className="w-full xl:w-96 dark:text-white"
+          className="w-full dark:text-white"
           variant="bordered"
           name="searchPhone"
           value={phone}
@@ -112,9 +130,7 @@ function ListEmployee() {
         <Autocomplete
           onSelectionChange={(key) => {
             if (key) {
-              const branchSelected = JSON.parse(
-                key as string
-              ) as Branches;
+              const branchSelected = JSON.parse(key as string) as Branches;
               setBranch(branchSelected.name);
             }
           }}
@@ -126,26 +142,29 @@ function ListEmployee() {
           classNames={{
             base: "font-semibold text-gray-500 text-sm",
           }}
-          size="lg"
           clearButtonProps={{
             onClick: () => setBranch(""),
           }}
         >
           {branch_list.map((bra) => (
-            <AutocompleteItem value={bra.name} key={JSON.stringify(bra)}>
+            <AutocompleteItem
+              value={bra.name}
+              className="dark:text-white"
+              key={JSON.stringify(bra)}
+            >
               {bra.name}
             </AutocompleteItem>
           ))}
         </Autocomplete>
       </>
     );
-  }, [fullName, setFullName, phone, setPhone, branch, setBranch]);
+  }, [fullName, setFullName, phone, setPhone, branch, setBranch, branch_list]);
 
   return (
     <>
       <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
         <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
-          <div className="hidden w-full grid-cols-3 gap-5 mb-4 md:grid ">
+          <div className="hidden w-full md:grid grid-cols-3 gap-5 mb-4">
             {filters}
           </div>
           <div className="grid w-full grid-cols-1 gap-5 mb-4 md:grid-cols-2">
@@ -155,9 +174,8 @@ function ListEmployee() {
                   backgroundColor: theme.colors.secondary,
                   color: theme.colors.primary,
                 }}
-                className="w-full xl:w-72 "
+                className="px-10"
                 color="primary"
-                size="lg"
                 onClick={() => changePage()}
               >
                 Buscar
@@ -166,7 +184,6 @@ function ListEmployee() {
             <div className="flex items-end justify-between gap-10 mt lg:justify-end">
               <ButtonGroup>
                 <Button
-                  size="lg"
                   isIconOnly
                   color="secondary"
                   style={{
@@ -179,7 +196,6 @@ function ListEmployee() {
                   <ITable />
                 </Button>
                 <Button
-                  size="lg"
                   isIconOnly
                   color="default"
                   style={{
@@ -192,7 +208,6 @@ function ListEmployee() {
                   <CreditCard />
                 </Button>
                 <Button
-                  size="lg"
                   isIconOnly
                   color="default"
                   style={{
@@ -215,7 +230,6 @@ function ListEmployee() {
                     <Drawer.Trigger asChild>
                       <Button
                         style={global_styles().thirdStyle}
-                        size="lg"
                         isIconOnly
                         onClick={() => setOpenVaul(true)}
                       >
@@ -243,7 +257,6 @@ function ListEmployee() {
                             <Button
                               style={global_styles().secondaryStyle}
                               className="mb-10 font-semibold"
-                              size="lg"
                               onClick={() => {
                                 changePage();
                                 setOpenVaul(false);
@@ -257,20 +270,21 @@ function ListEmployee() {
                     </Drawer.Portal>
                   </Drawer.Root>
                 </div>
-                <AddButton
-                  onClick={() => {
-                    modalAdd.onOpen();
-                    setSelectedEmployee(undefined);
-                  }}
-                />
+                {actions.includes("Agregar") && (
+                  <AddButton
+                    onClick={() => {
+                      modalAdd.onOpen();
+                      setSelectedEmployee(undefined);
+                    }}
+                  />
+                )}
               </div>
             </div>
           </div>
-          <div className="flex justify-end w-full mb-5">
+          <div className="flex justify-end items-end w-full mb-5 gap-5">
             <Select
               className="w-44 dark:text-white"
               variant="bordered"
-              size="lg"
               label="Mostrar"
               labelPlacement="outside"
               classNames={{
@@ -281,14 +295,26 @@ function ListEmployee() {
                 setLimit(Number(e.target.value !== "" ? e.target.value : "5"));
               }}
             >
-              <SelectItem key={"5"}>5</SelectItem>
-              <SelectItem key={"10"}>10</SelectItem>
-              <SelectItem key={"20"}>20</SelectItem>
-              <SelectItem key={"30"}>30</SelectItem>
-              <SelectItem key={"40"}>40</SelectItem>
-              <SelectItem key={"50"}>50</SelectItem>
-              <SelectItem key={"100"}>100</SelectItem>
+              {limit_options.map((option) => (
+                <SelectItem
+                  key={option}
+                  value={option}
+                  className="dark:text-white"
+                >
+                  {option}
+                </SelectItem>
+              ))}
             </Select>
+            <div className="flex items-center">
+              <Switch
+                onValueChange={(active) => setActive(active)}
+                isSelected={active}
+              >
+                <span className="text-sm sm:text-base whitespace-nowrap">
+                  Mostrar {active ? "inactivos" : "activos"}
+                </span>
+              </Switch>
+            </div>
           </div>
           {(view === "grid" || view === "list") && (
             <MobileView
@@ -298,6 +324,8 @@ function ListEmployee() {
                 modalAdd.onOpen();
               }}
               layout={view as "grid" | "list"}
+              actions={actions}
+              handleActivate={handleActivate}
             />
           )}
           {view === "table" && (
@@ -306,6 +334,7 @@ function ListEmployee() {
               emptyMessage="No se encontraron resultados"
               value={employee_paginated.employees}
               tableStyle={{ minWidth: "50rem" }}
+              loading={loading_employees}
             >
               <Column
                 headerClassName="text-sm font-semibold"
@@ -336,23 +365,38 @@ function ListEmployee() {
                 header="Acciones"
                 body={(item) => (
                   <div className="flex w-full gap-5">
-                    <Button
-                      size="lg"
-                      onClick={() => {
-                        setSelectedEmployee(item);
-                        modalAdd.onOpen();
-                      }}
-                      isIconOnly
-                      style={{
-                        backgroundColor: theme.colors.secondary,
-                      }}
-                    >
-                      <EditIcon
-                        style={{ color: theme.colors.primary }}
-                        size={20}
-                      />
-                    </Button>
-                    <DeletePopover employee={item} />
+                    {actions.includes("Editar") && (
+                      <Button
+                        onClick={() => {
+                          setSelectedEmployee(item);
+                          modalAdd.onOpen();
+                        }}
+                        isIconOnly
+                        style={{
+                          backgroundColor: theme.colors.secondary,
+                        }}
+                      >
+                        <EditIcon
+                          style={{ color: theme.colors.primary }}
+                          size={20}
+                        />
+                      </Button>
+                    )}
+                    {actions.includes("Eliminar") && (
+                      <>
+                        {item.isActive ? (
+                          <DeletePopover employee={item} />
+                        ) : (
+                          <Button
+                            onClick={() => handleActivate(item.id)}
+                            isIconOnly
+                            style={global_styles().thirdStyle}
+                          >
+                            <RefreshCcw />
+                          </Button>
+                        )}
+                      </>
+                    )}
                   </div>
                 )}
               />
@@ -367,22 +411,44 @@ function ListEmployee() {
                   currentPage={employee_paginated.currentPag}
                   totalPages={employee_paginated.totalPag}
                   onPageChange={(page) => {
-                    getEmployeesPaginated(page, limit, fullName, branch, phone);
+                    getEmployeesPaginated(
+                      page,
+                      limit,
+                      fullName,
+                      branch,
+                      phone,
+                      active ? 1 : 0
+                    );
                   }}
                 />
               </div>
               <div className="flex w-full mt-5 md:hidden">
-                <Paginator
-                  pt={paginator_styles(1)}
-                  className="flex justify-between w-full"
-                  first={employee_paginated.currentPag}
-                  rows={limit}
-                  totalRecords={employee_paginated.total}
-                  template={{
-                    layout: "PrevPageLink CurrentPageReport NextPageLink",
-                  }}
-                  currentPageReportTemplate="{currentPage} de {totalPages}"
-                />
+                <div className="flex w-full mt-5 md:hidden">
+                  <SmPagination
+                    handleNext={() => {
+                      getEmployeesPaginated(
+                        employee_paginated.nextPag,
+                        limit,
+                        fullName,
+                        branch,
+                        phone,
+                        active ? 1 : 0
+                      );
+                    }}
+                    handlePrev={() => {
+                      getEmployeesPaginated(
+                        employee_paginated.prevPag,
+                        limit,
+                        fullName,
+                        branch,
+                        phone,
+                        active ? 1 : 0
+                      );
+                    }}
+                    currentPage={employee_paginated.currentPag}
+                    totalPages={employee_paginated.totalPag}
+                  />
+                </div>
               </div>
             </>
           )}
@@ -429,7 +495,6 @@ export const DeletePopover = ({ employee }: PopProps) => {
             style={{
               backgroundColor: theme.colors.danger,
             }}
-            size="lg"
           >
             <TrashIcon
               style={{
@@ -441,10 +506,10 @@ export const DeletePopover = ({ employee }: PopProps) => {
         </PopoverTrigger>
         <PopoverContent>
           <div className="w-full p-5">
-            <p className="font-semibold text-gray-600">
+            <p className="font-semibold text-gray-600 dark:text-white">
               Eliminar {employee.fullName}
             </p>
-            <p className="mt-3 text-center text-gray-600 w-72">
+            <p className="mt-3 text-center text-gray-600 dark:text-white w-72">
               ¿Estas seguro de eliminar este registro?
             </p>
             <div className="mt-4">

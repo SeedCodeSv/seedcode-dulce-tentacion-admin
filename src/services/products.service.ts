@@ -44,3 +44,12 @@ export const delete_products = (id: number) => {
     },
   });
 }
+
+export const activate_product = (id: number) => {
+  const token = get_token() ?? "";
+  return axios.patch<{ ok: boolean }>(API_URL + "/products/activate/" + id, {}, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}

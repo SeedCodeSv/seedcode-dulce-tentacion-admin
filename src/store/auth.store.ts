@@ -23,7 +23,6 @@ import { login_mh, get_transmitter } from "../services/transmitter.service";
 import { ILoginMHFailed } from "../types/transmitter.types";
 import { AxiosError } from "axios";
 import { is_admin } from "../utils/filters";
-import { useNavigate } from "react-router-dom";
 
 export const useAuthStore = create<IAuthStore>((set, get) => ({
   token: get_token() ?? "",

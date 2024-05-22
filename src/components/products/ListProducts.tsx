@@ -22,9 +22,9 @@ import {
   CreditCard,
   Table as ITable,
   Filter,
+  RefreshCcw,
 } from "lucide-react";
 import AddButton from "../global/AddButton";
-import { Paginator } from "primereact/paginator";
 import { useProductsStore } from "../../store/products.store";
 import Pagination from "../global/Pagination";
 import { Product } from "../../types/products.types";
@@ -33,7 +33,6 @@ import AddProducts from "./AddProducts";
 import { useCategoriesStore } from "../../store/categories.store";
 import { ThemeContext } from "../../hooks/useTheme";
 import { ButtonGroup } from "@nextui-org/react";
-import { paginator_styles } from "../../styles/paginator.styles";
 import { CategoryProduct } from "../../types/categories.types";
 import MobileView from "./MobileView";
 import { formatCurrency } from "../../utils/dte";
@@ -42,19 +41,25 @@ import { global_styles } from "../../styles/global.styles";
 import classNames from "classnames";
 import UpdateProduct from "./UpdateProduct";
 import { limit_options } from "../../utils/constants";
+import SmPagination from "../global/SmPagination";
 
-interface Props{
-  actions: string[]
+interface Props {
+  actions: string[];
 }
 
-function ListProducts({actions}:Props) {
+function ListProducts({ actions }: Props) {
   const { theme, context } = useContext(ThemeContext);
   const style = {
     backgroundColor: theme.colors.dark,
     color: theme.colors.primary,
   };
   const [isOpenModalUpdate, setIsOpenModalUpdate] = useState(false);
-  const { getPaginatedProducts, paginated_products } = useProductsStore();
+  const {
+    getPaginatedProducts,
+    paginated_products,
+    activateProduct,
+    loading_products,
+  } = useProductsStore();
   const [openVaul, setOpenVaul] = useState(false);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
@@ -77,7 +82,8 @@ function ListProducts({actions}:Props) {
       page,
       limit,
       searchParam ?? category,
-      searchParam ?? search
+      searchParam ?? search,
+      active ? 1 : 0
     );
   };
 
@@ -86,6 +92,12 @@ function ListProducts({actions}:Props) {
   const [selectedProduct, setSelectedProduct] = useState<Product | undefined>(
     undefined
   );
+
+  const handleActivate = (id: number) => {
+    activateProduct(id).then(() => {
+      getPaginatedProducts(1, limit, "", "", active ? 1 : 0);
+    });
+  };
 
   return (
     <>
@@ -105,7 +117,6 @@ function ListProducts({actions}:Props) {
                 }}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                size="lg"
                 placeholder="Escribe para buscar..."
                 isClearable
                 onClear={() => {
@@ -130,7 +141,6 @@ function ListProducts({actions}:Props) {
                 classNames={{
                   base: "font-semibold text-gray-500 text-sm",
                 }}
-                size="lg"
                 value={category}
                 clearButtonProps={{
                   onClick: () => setCategory(""),
@@ -153,7 +163,6 @@ function ListProducts({actions}:Props) {
                 }}
                 className="font-semibold"
                 color="primary"
-                size="lg"
                 onClick={() => handleSearch(undefined)}
               >
                 Buscar
@@ -164,7 +173,6 @@ function ListProducts({actions}:Props) {
             <div className="flex w-full items-end justify-between gap-10 mt lg:justify-end">
               <ButtonGroup>
                 <Button
-                  size="lg"
                   isIconOnly
                   color="secondary"
                   style={{
@@ -177,7 +185,6 @@ function ListProducts({actions}:Props) {
                   <ITable />
                 </Button>
                 <Button
-                  size="lg"
                   isIconOnly
                   color="default"
                   style={{
@@ -190,7 +197,6 @@ function ListProducts({actions}:Props) {
                   <CreditCard />
                 </Button>
                 <Button
-                  size="lg"
                   isIconOnly
                   color="default"
                   style={{
@@ -213,7 +219,6 @@ function ListProducts({actions}:Props) {
                     <Drawer.Trigger asChild>
                       <Button
                         style={global_styles().thirdStyle}
-                        size="lg"
                         isIconOnly
                         onClick={() => setOpenVaul(true)}
                         type="button"
@@ -251,7 +256,6 @@ function ListProducts({actions}:Props) {
                               }}
                               value={search}
                               onChange={(e) => setSearch(e.target.value)}
-                              size="lg"
                               placeholder="Escribe para buscar..."
                               isClearable
                               onClear={() => {
@@ -270,7 +274,6 @@ function ListProducts({actions}:Props) {
                               }}
                               value={category}
                               onChange={(e) => setCategory(e.target.value)}
-                              size="lg"
                               placeholder="Escribe para buscar..."
                               isClearable
                               onClear={() => {
@@ -284,7 +287,6 @@ function ListProducts({actions}:Props) {
                               }}
                               className="font-semibold"
                               color="primary"
-                              size="lg"
                               onClick={() => {
                                 handleSearch(undefined);
                                 setOpenVaul(false);
@@ -311,11 +313,10 @@ function ListProducts({actions}:Props) {
               </div>
             </div>
           </div>
-          <div className="flex justify-end gap-5 items-end w-full mb-5">
+          <div className="flex justify-end gap-5 items-end w-full mb-5 pt-4">
             <Select
-              className="w-44 dark:text-white"
+              className="max-w-44 dark:text-white"
               variant="bordered"
-              size="lg"
               label="Mostrar"
               labelPlacement="outside"
               defaultSelectedKeys={["5"]}
@@ -342,7 +343,9 @@ function ListProducts({actions}:Props) {
                 onValueChange={(active) => setActive(active)}
                 isSelected={active}
               >
-                Mostrar {active ? "inactivos" : "activos"}
+                <span className="text-sm sm:text-base whitespace-nowrap">
+                  Mostrar {active ? "inactivos" : "activos"}
+                </span>
               </Switch>
             </div>
           </div>
@@ -355,6 +358,7 @@ function ListProducts({actions}:Props) {
               }}
               layout={view as "grid" | "list"}
               actions={actions}
+              handleActivate={handleActivate}
             />
           )}
           {view === "table" && (
@@ -363,6 +367,7 @@ function ListProducts({actions}:Props) {
               emptyMessage="No se encontraron resultados"
               value={paginated_products.products}
               tableStyle={{ minWidth: "50rem" }}
+              loading={loading_products}
             >
               <Column
                 headerClassName="text-sm font-semibold"
@@ -395,27 +400,38 @@ function ListProducts({actions}:Props) {
                 body={(item) => (
                   <div className="flex w-full gap-5">
                     {actions.includes("Editar") && (
-                        <Button
-                          onClick={() => {
-                            setSelectedProduct(item);
+                      <Button
+                        onClick={() => {
+                          setSelectedProduct(item);
 
-                            setIsOpenModalUpdate(true);
-                          }}
-                          isIconOnly
-                          style={{
-                            backgroundColor: theme.colors.secondary,
-                          }}
-                          size="lg"
-                        >
-                          <EditIcon
-                            style={{ color: theme.colors.primary }}
-                            size={20}
-                          />
-                        </Button>
-                      )}
+                          setIsOpenModalUpdate(true);
+                        }}
+                        isIconOnly
+                        style={{
+                          backgroundColor: theme.colors.secondary,
+                        }}
+                      >
+                        <EditIcon
+                          style={{ color: theme.colors.primary }}
+                          size={20}
+                        />
+                      </Button>
+                    )}
                     {actions.includes("Eliminar") && (
-                        <DeletePopover product={item} />
-                      )}
+                      <>
+                        {item.isActive ? (
+                          <DeletePopover product={item} />
+                        ) : (
+                          <Button
+                            onClick={() => handleActivate(item.id)}
+                            isIconOnly
+                            style={global_styles().thirdStyle}
+                          >
+                            <RefreshCcw />
+                          </Button>
+                        )}
+                      </>
+                    )}
                   </div>
                 )}
               />
@@ -436,16 +452,27 @@ function ListProducts({actions}:Props) {
                 />
               </div>
               <div className="flex w-full mt-5 md:hidden">
-                <Paginator
-                  pt={paginator_styles(1)}
-                  className="flex justify-between w-full"
-                  first={paginated_products.currentPag}
-                  rows={limit}
-                  totalRecords={paginated_products.total}
-                  template={{
-                    layout: "PrevPageLink CurrentPageReport NextPageLink",
+                <SmPagination
+                  handleNext={() => {
+                    serPage(paginated_products.nextPag);
+                    getPaginatedProducts(
+                      paginated_products.nextPag,
+                      limit,
+                      category,
+                      search
+                    );
                   }}
-                  currentPageReportTemplate="{currentPage} de {totalPages}"
+                  handlePrev={() => {
+                    serPage(paginated_products.prevPag);
+                    getPaginatedProducts(
+                      paginated_products.prevPag,
+                      limit,
+                      category,
+                      search
+                    );
+                  }}
+                  currentPage={paginated_products.currentPag}
+                  totalPages={paginated_products.totalPag}
                 />
               </div>
             </>
@@ -507,7 +534,6 @@ export const DeletePopover = ({ product }: PopProps) => {
           style={{
             backgroundColor: theme.colors.danger,
           }}
-          size="lg"
         >
           <TrashIcon
             style={{

@@ -103,17 +103,12 @@ function AddClientContributor(props: Props) {
 
   useEffect(() => {
     getCat012Departamento();
-    getCat013Municipios();
     getCat019CodigoActividadEconomica();
   }, []);
-  const filteredMunicipios = useMemo(() => {
-    if (selectedCodeDep === "0") {
-      return cat_013_municipios;
-    }
-    return cat_013_municipios.filter(
-      (municipio) => municipio.departamento === selectedCodeDep
-    );
-  }, [cat_013_municipios, selectedCodeDep]);
+
+  useEffect(() => {
+    getCat013Municipios(selectedCodeDep);
+  }, [selectedCodeDep]);
 
   const itemsPerPage = 15;
 
@@ -198,6 +193,11 @@ function AddClientContributor(props: Props) {
     cat_019_codigo_de_actividad_economica,
     cat_019_codigo_de_actividad_economica.length,
   ]);
+
+  const handleFilter = (name = "") => {
+    getCat019CodigoActividadEconomica(name);
+  }
+
   return (
     <div>
       <Formik
@@ -229,7 +229,6 @@ function AddClientContributor(props: Props) {
                       label: "font-semibold text-gray-500 text-sm",
                     }}
                     variant="bordered"
-                    size="lg"
                   />
                   {errors.nombre && touched.nombre && (
                     <span className="text-sm font-semibold text-red-500">
@@ -250,7 +249,6 @@ function AddClientContributor(props: Props) {
                       label: "font-semibold text-gray-500 text-sm",
                     }}
                     variant="bordered"
-                    size="lg"
                   />
                   {errors.nombreComercial && touched.nombreComercial && (
                     <span className="text-sm font-semibold text-red-500">
@@ -271,7 +269,6 @@ function AddClientContributor(props: Props) {
                       label: "font-semibold text-gray-500 text-sm",
                     }}
                     variant="bordered"
-                    size="lg"
                   />
                   {errors.correo && touched.correo && (
                     <span className="text-sm font-semibold text-red-500">
@@ -293,7 +290,6 @@ function AddClientContributor(props: Props) {
                       label: "font-semibold text-gray-500 text-sm",
                     }}
                     variant="bordered"
-                    size="lg"
                   />
                   {errors.telefono && touched.telefono && (
                     <span className="text-sm font-semibold text-red-500">
@@ -315,7 +311,6 @@ function AddClientContributor(props: Props) {
                       label: "font-semibold text-gray-500 text-sm",
                     }}
                     variant="bordered"
-                    size="lg"
                   />
                   {errors.numDocumento && touched.numDocumento && (
                     <span className="text-sm font-semibold text-red-500">
@@ -346,17 +341,18 @@ function AddClientContributor(props: Props) {
                     classNames={{
                       base: "font-semibold text-gray-500 text-sm",
                     }}
-                    onInputChange={(text) => setSearch(text)}
+                    className="dark:text-white"
                     // selectedKey={selectedKeyCodActivity}
                     defaultSelectedKey={values.descActividad}
                     value={selectedKeyCodActivity}
-                    size="lg"
+                    onInputChange={e => handleFilter(e)}
                   >
                     {filterCodeActividad &&
                       filterCodeActividad.map((dep) => (
                         <AutocompleteItem
                           value={dep.codigo}
                           key={JSON.stringify(dep)}
+                          className="dark:text-white"
                         >
                           {dep.valores}
                         </AutocompleteItem>
@@ -394,15 +390,16 @@ function AddClientContributor(props: Props) {
                     classNames={{
                       base: "font-semibold text-gray-500 text-sm",
                     }}
+                    className="dark:text-white"
                     // selectedKey={selectedKeyDepartment}
                     defaultSelectedKey={selectedKeyDepartment}
                     value={selectedKeyDepartment}
-                    size="lg"
                   >
                     {cat_012_departamento.map((dep) => (
                       <AutocompleteItem
                         value={dep.codigo}
                         key={JSON.stringify(dep)}
+                        className="dark:text-white"
                       >
                         {dep.valores}
                       </AutocompleteItem>
@@ -437,17 +434,18 @@ function AddClientContributor(props: Props) {
                     classNames={{
                       base: "font-semibold text-gray-500 text-sm",
                     }}
+                    className="dark:text-white"
                     // selectedKey={selectedKeyCity}
                     defaultSelectedKey={
                       props.customer_direction?.nombreMunicipio
                     }
                     value={selectedKeyCity}
-                    size="lg"
                   >
-                    {filteredMunicipios.map((dep) => (
+                    {cat_013_municipios.map((dep) => (
                       <AutocompleteItem
                         value={dep.codigo}
                         key={JSON.stringify(dep)}
+                        className="dark:text-white"
                       >
                         {dep.valores}
                       </AutocompleteItem>
@@ -473,7 +471,6 @@ function AddClientContributor(props: Props) {
                     value={values.complemento}
                     onChange={handleChange("complemento")}
                     onBlur={handleBlur("complemento")}
-                    size="lg"
                   />
                   {errors.complemento && touched.complemento && (
                     <span className="text-sm font-semibold text-red-500">
@@ -495,7 +492,6 @@ function AddClientContributor(props: Props) {
                       label: "font-semibold text-gray-500 text-sm",
                     }}
                     variant="bordered"
-                    size="lg"
                   />
                   {errors.nit && touched.nit && (
                     <span className="text-sm font-semibold text-red-500">
@@ -517,7 +513,6 @@ function AddClientContributor(props: Props) {
                       label: "font-semibold text-gray-500 text-sm",
                     }}
                     variant="bordered"
-                    size="lg"
                   />
                   {errors.nrc && touched.nrc && (
                     <span className="text-sm font-semibold text-red-500">

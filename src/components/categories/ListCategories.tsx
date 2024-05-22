@@ -8,6 +8,7 @@ import {
   Popover,
   PopoverTrigger,
   PopoverContent,
+  Switch,
 } from "@nextui-org/react";
 import { useContext, useEffect, useState } from "react";
 import {
@@ -18,6 +19,7 @@ import {
   CreditCard,
   List,
   Filter,
+  RefreshCcw,
 } from "lucide-react";
 import { useCategoriesStore } from "../../store/categories.store";
 import { ThemeContext } from "../../hooks/useTheme";
@@ -28,12 +30,12 @@ import { Column } from "primereact/column";
 import AddButton from "../global/AddButton";
 import MobileView from "./MobileView";
 import Pagination from "../global/Pagination";
-import { Paginator } from "primereact/paginator";
-import { paginator_styles } from "../../styles/paginator.styles";
 import { CategoryProduct } from "../../types/categories.types";
 import { Drawer } from "vaul";
 import { global_styles } from "../../styles/global.styles";
 import classNames from "classnames";
+import { limit_options } from "../../utils/constants";
+import SmPagination from "../global/SmPagination";
 
 interface PProps {
   actions: string[];
@@ -42,18 +44,24 @@ interface PProps {
 function ListCategories({ actions }: PProps) {
   const { theme, context } = useContext(ThemeContext);
   const [openVaul, setOpenVaul] = useState(false);
-  const { paginated_categories, getPaginatedCategories } = useCategoriesStore();
+  const {
+    paginated_categories,
+    getPaginatedCategories,
+    activateCategory,
+    loading_categories
+  } = useCategoriesStore();
 
   const [selectedCategory, setSelectedCategory] = useState<
     { id: number; name: string } | undefined
   >();
 
   const [search, setSearch] = useState("");
-  const [limit, setLimit] = useState(8);
+  const [limit, setLimit] = useState(5);
+  const [active, setActive] = useState(true);
 
   useEffect(() => {
-    getPaginatedCategories(1, limit, search);
-  }, [limit]);
+    getPaginatedCategories(1, limit, search, active ? 1 : 0);
+  }, [limit, active]);
 
   const handleSearch = (name: string | undefined) => {
     getPaginatedCategories(1, limit, name ?? search);
@@ -76,6 +84,12 @@ function ListCategories({ actions }: PProps) {
     modalAdd.onOpen();
   };
 
+  const handleActivate = (id: number) => {
+    activateCategory(id).then(() => {
+      getPaginatedCategories(1, limit, search, active ? 1 : 0);
+    });
+  };
+
   return (
     <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
       <div className="flex flex-col w-full p-5 rounded">
@@ -94,7 +108,6 @@ function ListCategories({ actions }: PProps) {
                 }}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                size="lg"
                 placeholder="Escribe para buscar..."
                 isClearable
                 onClear={() => {
@@ -109,7 +122,6 @@ function ListCategories({ actions }: PProps) {
                 }}
                 className="mt-6 font-semibold"
                 color="primary"
-                size="lg"
                 onClick={() => handleSearch(undefined)}
               >
                 Buscar
@@ -119,7 +131,6 @@ function ListCategories({ actions }: PProps) {
           <div className="flex items-end justify-between w-full gap-10 lg:justify-end">
             <ButtonGroup>
               <Button
-                size="lg"
                 isIconOnly
                 color="secondary"
                 style={{
@@ -132,7 +143,6 @@ function ListCategories({ actions }: PProps) {
                 <ITable />
               </Button>
               <Button
-                size="lg"
                 isIconOnly
                 color="default"
                 style={{
@@ -145,7 +155,6 @@ function ListCategories({ actions }: PProps) {
                 <CreditCard />
               </Button>
               <Button
-                size="lg"
                 isIconOnly
                 color="default"
                 style={{
@@ -168,7 +177,6 @@ function ListCategories({ actions }: PProps) {
                   <Drawer.Trigger asChild>
                     <Button
                       style={global_styles().thirdStyle}
-                      size="lg"
                       isIconOnly
                       onClick={() => setOpenVaul(true)}
                       type="button"
@@ -206,7 +214,6 @@ function ListCategories({ actions }: PProps) {
                             }}
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            size="lg"
                             placeholder="Escribe para buscar..."
                             isClearable
                             onClear={() => {
@@ -221,7 +228,6 @@ function ListCategories({ actions }: PProps) {
                             }}
                             className="mt-6 font-semibold"
                             color="primary"
-                            size="lg"
                             onClick={() => {
                               handleSearch(undefined);
                               setOpenVaul(false);
@@ -236,19 +242,20 @@ function ListCategories({ actions }: PProps) {
                 </Drawer.Root>
               </div>
             </div>
-            <AddButton
-              onClick={() => {
-                setSelectedCategory(undefined);
-                modalAdd.onOpen();
-              }}
-            />
+            {actions.includes("Agregar") && (
+              <AddButton
+                onClick={() => {
+                  setSelectedCategory(undefined);
+                  modalAdd.onOpen();
+                }}
+              />
+            )}
           </div>
         </div>
-        <div className="flex justify-end w-full mb-5">
+        <div className="flex justify-end items-end w-full mb-5 gap-5">
           <Select
             className="w-44 dark:text-white"
             variant="bordered"
-            size="lg"
             label="Mostrar"
             labelPlacement="outside"
             classNames={{
@@ -259,17 +266,30 @@ function ListCategories({ actions }: PProps) {
               setLimit(Number(e.target.value !== "" ? e.target.value : "8"));
             }}
           >
-            <SelectItem key={"8"}>8</SelectItem>
-            <SelectItem key={"10"}>10</SelectItem>
-            <SelectItem key={"20"}>20</SelectItem>
-            <SelectItem key={"30"}>30</SelectItem>
-            <SelectItem key={"40"}>40</SelectItem>
-            <SelectItem key={"50"}>50</SelectItem>
-            <SelectItem key={"100"}>100</SelectItem>
+            {limit_options.map((option) => (
+              <SelectItem
+                key={option}
+                value={option}
+                className="dark:text-white"
+              >
+                {option}
+              </SelectItem>
+            ))}
           </Select>
+          <div className="flex items-center">
+            <Switch
+              onValueChange={(active) => setActive(active)}
+              isSelected={active}
+            >
+              <span className="text-sm sm:text-base whitespace-nowrap">
+                Mostrar {active ? "inactivos" : "activos"}
+              </span>
+            </Switch>
+          </div>
         </div>
         {(view === "grid" || view === "list") && (
           <MobileView
+            handleActive={handleActivate}
             deletePopover={DeletePopUp}
             layout={view as "grid" | "list"}
             handleEdit={handleEdit}
@@ -282,6 +302,7 @@ function ListCategories({ actions }: PProps) {
             emptyMessage="No se encontraron resultados"
             value={paginated_categories.categoryProducts}
             tableStyle={{ minWidth: "50rem" }}
+            loading={loading_categories}
           >
             <Column
               headerClassName="text-sm font-semibold"
@@ -304,7 +325,6 @@ function ListCategories({ actions }: PProps) {
                     <Button
                       onClick={() => handleEdit(item)}
                       isIconOnly
-                      size="lg"
                       style={{
                         backgroundColor: theme.colors.secondary,
                       }}
@@ -316,7 +336,19 @@ function ListCategories({ actions }: PProps) {
                     </Button>
                   )}
                   {actions.includes("Eliminar") && (
-                    <DeletePopUp category={item} />
+                    <>
+                      {item.isActive ? (
+                        <DeletePopUp category={item} />
+                      ) : (
+                        <Button
+                          onClick={() => handleActivate(item.id)}
+                          isIconOnly
+                          style={global_styles().thirdStyle}
+                        >
+                          <RefreshCcw />
+                        </Button>
+                      )}
+                    </>
                   )}
                 </div>
               )}
@@ -337,17 +369,18 @@ function ListCategories({ actions }: PProps) {
               />
             </div>
             <div className="flex w-full mt-5 md:hidden">
-              <Paginator
-                pt={paginator_styles(1)}
-                className="flex justify-between w-full"
-                first={paginated_categories.currentPag}
-                rows={limit}
-                totalRecords={paginated_categories.total}
-                template={{
-                  layout: "PrevPageLink CurrentPageReport NextPageLink",
-                }}
-                currentPageReportTemplate="{currentPage} de {totalPages}"
-              />
+              <div className="flex w-full mt-5 md:hidden">
+                <SmPagination
+                  handleNext={() => {
+                    getPaginatedCategories(paginated_categories.nextPag, limit, search);
+                  }}
+                  handlePrev={() => {
+                    getPaginatedCategories(paginated_categories.prevPag, limit, search);
+                  }}
+                  currentPage={paginated_categories.currentPag}
+                  totalPages={paginated_categories.totalPag}
+                />
+              </div>
             </div>
           </>
         )}
@@ -393,7 +426,6 @@ const DeletePopUp = ({ category }: Props) => {
             style={{
               backgroundColor: theme.colors.danger,
             }}
-            size="lg"
           >
             <TrashIcon
               style={{

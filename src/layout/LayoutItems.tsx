@@ -22,7 +22,7 @@ import {
 import { Fragment, useContext, useEffect, useMemo } from "react";
 import { ThemeContext } from "../hooks/useTheme";
 import { useAuthStore } from "../store/auth.store";
-import { save_seller_mode } from "../storage/localStorage";
+import { get_user, save_seller_mode } from "../storage/localStorage";
 import { useNavigate } from "react-router";
 import { SessionContext } from "../hooks/useSession";
 import { useConfigurationStore } from "../store/perzonalitation.store";
@@ -30,6 +30,7 @@ import useWindowSize from "../hooks/useWindowSize";
 import { useActionsRolStore } from "../store/actions_rol.store";
 import { Menu, Transition } from "@headlessui/react";
 import { ActionsContext } from "../hooks/useActions";
+import { decryptData, encryptData } from "../plugins/crypto";
 export const LayoutItems = () => {
   const { theme, toggleContext, context } = useContext(ThemeContext);
   const { makeLogout } = useAuthStore();
@@ -83,13 +84,12 @@ export const LayoutItems = () => {
   const {setRoleActions} = useContext(ActionsContext)
   const { role_view_action, OnGetActionsByRole } = useActionsRolStore();
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
+    const storedUser = get_user()
     if (storedUser) {
-      const user = JSON.parse(storedUser);
-      if (user && user.roleId) {
-        OnGetActionsByRole(user.roleId).then((data)=>{
+      if (storedUser && storedUser.roleId) {
+        OnGetActionsByRole(storedUser.roleId).then((data)=>{
           if(data){
-            localStorage.setItem("role_view_action", JSON.stringify(data));
+            localStorage.setItem("_RVA", encryptData(data));
             setRoleActions(data)
           }
         })

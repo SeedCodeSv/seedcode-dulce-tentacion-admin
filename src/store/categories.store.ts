@@ -6,6 +6,7 @@ import {
   get_products_categories,
   update_category,
   delete_category,
+  activate_category,
 } from "../services/categories.service";
 import { toast } from "sonner";
 import { messages } from "../utils/constants";
@@ -22,6 +23,7 @@ export const useCategoriesStore = create<ICategoriesStore>((set, get) => ({
     ok: false,
   },
   list_categories: [],
+  loading_categories: false,
   getListCategories() {
     get_categories()
       .then((categories) =>
@@ -31,11 +33,13 @@ export const useCategoriesStore = create<ICategoriesStore>((set, get) => ({
         set({ list_categories: [] });
       });
   },
-  getPaginatedCategories: (page: number, limit: number, name: string) => {
-    get_products_categories(page, limit, name)
-      .then((categories) => set({ paginated_categories: categories.data }))
+  getPaginatedCategories: (page: number, limit: number, name: string, active = 1) => {
+    set({ loading_categories: true });
+    get_products_categories(page, limit, name, active)
+      .then((categories) => set({ paginated_categories: categories.data, loading_categories: false }))
       .catch(() => {
         set({
+          loading_categories: false,
           paginated_categories: {
             categoryProducts: [],
             total: 0,
@@ -77,6 +81,13 @@ export const useCategoriesStore = create<ICategoriesStore>((set, get) => ({
     }).catch(() => {
       toast.warning(messages.error);
       return false
+    })
+  },
+  async activateCategory(id) {
+    return activate_category(id).then(() => {
+      toast.success("Se activo la categoría")
+    }).catch(() => {
+      toast.error("Error al activar la categoría")
     })
   },
 }));

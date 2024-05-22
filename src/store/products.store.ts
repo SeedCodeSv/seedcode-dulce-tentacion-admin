@@ -4,7 +4,8 @@ import {
   create_products,
   get_products,
   update_products,
-  delete_products
+  delete_products,
+  activate_product
 } from "../services/products.service";
 import { IProductsStore } from "./types/products.store";
 import { toast } from "sonner";
@@ -23,6 +24,7 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
     status: 404,
     ok: false,
   },
+  loading_products: false,
   savePaginatedProducts: (products: IGetProductsPaginated) =>
     set({ paginated_products: products }),
   getPaginatedProducts: (
@@ -32,10 +34,12 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
     name,
     active = 1
   ) => {
+    set({ loading_products: true });
     get_products(page, limit, category, name, active)
-      .then((products) => set({ paginated_products: products.data }))
+      .then((products) => set({ paginated_products: products.data, loading_products: false }))
       .catch(() => {
         set({
+          loading_products: false,
           paginated_products: {
             products: [],
             total: 0,
@@ -49,7 +53,6 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
         });
       });
   },
-
   getCat011TipoDeItem() {
     cat_011_tipo_de_item()
       .then(({ data }) => {
@@ -94,5 +97,12 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
       .catch(() => {
         toast.error(messages.error)
       })
+  },
+  async activateProduct(id) {
+    return activate_product(id).then(() => {
+      toast.success("Se activo el producto")
+    }).catch(() => {
+      toast.error("Error al actualizar")
+    })
   },
 }));

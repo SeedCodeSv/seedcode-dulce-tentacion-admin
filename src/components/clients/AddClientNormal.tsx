@@ -62,6 +62,8 @@ const AddClientNormal = (props: Props) => {
     complemento: yup.string().required("**El complemento es requerida**"),
   });
 
+  const [selectedCodeDep, setSelectedCodeDep] = useState("0");
+
   const {
     getCat012Departamento,
     cat_012_departamento,
@@ -71,10 +73,11 @@ const AddClientNormal = (props: Props) => {
 
   useEffect(() => {
     getCat012Departamento();
-    getCat013Municipios();
   }, []);
 
-  const [selectedCodeDep, setSelectedCodeDep] = useState("0");
+  useEffect(() => {
+    getCat013Municipios(selectedCodeDep);
+  }, [selectedCodeDep]);
 
   const { postCustomer, patchCustomer } = useCustomerStore();
   const user = get_user();
@@ -97,15 +100,6 @@ const AddClientNormal = (props: Props) => {
     }
     props.closeModal();
   };
-
-  const filteredMunicipios = useMemo(() => {
-    if (selectedCodeDep === "0") {
-      return cat_013_municipios;
-    }
-    return cat_013_municipios.filter(
-      (municipio) => municipio.departamento === selectedCodeDep
-    );
-  }, [cat_013_municipios, selectedCodeDep]);
 
   const selectedKeyDepartment = useMemo(() => {
     if (props.customer_direction) {
@@ -168,7 +162,6 @@ const AddClientNormal = (props: Props) => {
                   label: "font-semibold text-gray-500 text-sm",
                 }}
                 variant="bordered"
-                size="lg"
               />
               {errors.nombre && touched.nombre && (
                 <span className="text-sm font-semibold text-red-500">
@@ -189,7 +182,6 @@ const AddClientNormal = (props: Props) => {
                   label: "font-semibold text-gray-500 text-sm",
                 }}
                 variant="bordered"
-                size="lg"
               />
               {errors.correo && touched.correo && (
                 <span className="text-sm font-semibold text-red-500">
@@ -212,7 +204,6 @@ const AddClientNormal = (props: Props) => {
                     label: "font-semibold text-gray-500 text-sm",
                   }}
                   variant="bordered"
-                  size="lg"
                 />
                 {errors.telefono && touched.telefono && (
                   <span className="text-sm font-semibold text-red-500">
@@ -234,7 +225,6 @@ const AddClientNormal = (props: Props) => {
                     label: "font-semibold text-gray-500 text-sm",
                   }}
                   variant="bordered"
-                  size="lg"
                 />
                 {errors.numDocumento && touched.numDocumento && (
                   <span className="text-sm font-semibold text-red-500">
@@ -268,15 +258,16 @@ const AddClientNormal = (props: Props) => {
                   classNames={{
                     base: "font-semibold text-gray-500 text-sm",
                   }}
+                  className="dark:text-white"
                   // selectedKey={selectedKeyDepartment}
                   defaultSelectedKey={selectedKeyDepartment}
                   value={selectedKeyDepartment}
-                  size="lg"
                 >
                   {cat_012_departamento.map((dep) => (
                     <AutocompleteItem
                       value={dep.codigo}
                       key={JSON.stringify(dep)}
+                      className="dark:text-white"
                     >
                       {dep.valores}
                     </AutocompleteItem>
@@ -288,96 +279,50 @@ const AddClientNormal = (props: Props) => {
                   </span>
                 )}
               </div>
-              {selectedCodeDep ? (
-                <div>
-                  <Autocomplete
-                    onSelectionChange={(key) => {
-                      if (key) {
-                        const depSelected = JSON.parse(
-                          key as string
-                        ) as Departamento;
-                        handleChange("municipio")(depSelected.codigo);
-                        handleChange("nombreMunicipio")(depSelected.valores);
-                      }
-                    }}
-                    onBlur={handleBlur("municipio")}
-                    label="Municipio"
-                    labelPlacement="outside"
-                    placeholder={
-                      values.nombreMunicipio
-                        ? values.nombreMunicipio
-                        : "Selecciona el municipio"
+              <div>
+                <Autocomplete
+                  onSelectionChange={(key) => {
+                    if (key) {
+                      const depSelected = JSON.parse(
+                        key as string
+                      ) as Departamento;
+                      handleChange("municipio")(depSelected.codigo);
+                      handleChange("nombreMunicipio")(depSelected.valores);
                     }
-                    variant="bordered"
-                    classNames={{
-                      base: "font-semibold text-gray-500 text-sm",
-                    }}
-                    // selectedKey={selectedKeyCity}
-                    defaultSelectedKey={props.customer_direction?.municipio}
-                    value={selectedKeyCity}
-                    size="lg"
-                  >
-                    {filteredMunicipios.map((dep) => (
-                      <AutocompleteItem
-                        value={dep.codigo}
-                        key={JSON.stringify(dep)}
-                      >
-                        {dep.valores}
-                      </AutocompleteItem>
-                    ))}
-                  </Autocomplete>
-                  {errors.municipio && touched.municipio && (
-                    <span className="text-sm font-semibold text-red-500">
-                      {errors.municipio}
-                    </span>
-                  )}
-                </div>
-              ) : (
-                <div className="pt-2">
-                  <Autocomplete
-                    isDisabled
-                    onSelectionChange={(key) => {
-                      if (key) {
-                        const depSelected = JSON.parse(
-                          key as string
-                        ) as Departamento;
-                        handleChange("municipio")(depSelected.codigo);
-                        handleChange("nombreMunicipio")(depSelected.valores);
-                      }
-                    }}
-                    onBlur={handleBlur("municipio")}
-                    label="Municipio"
-                    labelPlacement="outside"
-                    placeholder={
-                      values.nombreMunicipio
-                        ? values.nombreMunicipio
-                        : "Selecciona el municipio"
-                    }
-                    variant="bordered"
-                    classNames={{
-                      base: "font-semibold text-gray-500 text-sm",
-                    }}
-                    // selectedKey={selectedKeyCity}
-                    defaultSelectedKey={selectedKeyCity}
-                    value={selectedKeyCity}
-                    size="lg"
-                  >
-                    {filteredMunicipios.map((dep) => (
-                      <AutocompleteItem
-                        value={dep.codigo}
-                        key={JSON.stringify(dep)}
-                      >
-                        {dep.valores}
-                      </AutocompleteItem>
-                    ))}
-                  </Autocomplete>
-                  {errors.municipio && touched.municipio && (
-                    <span className="text-sm font-semibold text-red-500">
-                      {errors.municipio}
-                    </span>
-                  )}
-                </div>
-              )}
+                  }}
+                  onBlur={handleBlur("municipio")}
+                  label="Municipio"
+                  labelPlacement="outside"
+                  className="dark:text-white"
+                  placeholder={
+                    values.nombreMunicipio
+                      ? values.nombreMunicipio
+                      : "Selecciona el municipio"
+                  }
+                  variant="bordered"
+                  classNames={{
+                    base: "font-semibold text-gray-500 text-sm",
+                  }}
+                  // selectedKey={selectedKeyCity}
+                  defaultSelectedKey={props.customer_direction?.municipio}
+                  value={selectedKeyCity}
+                >
+                  {cat_013_municipios.map((dep) => (
+                    <AutocompleteItem
+                      value={dep.codigo}
+                      key={JSON.stringify(dep)}
+                      className="dark:text-white"
+                    >
+                      {dep.valores}
+                    </AutocompleteItem>
+                  ))}
+                </Autocomplete>
+                {errors.municipio && touched.municipio && (
+                  <span className="text-sm font-semibold text-red-500">
+                    {errors.municipio}
+                  </span>
+                )}
+              </div>
             </div>
             <div className="pt-2">
               <Textarea
@@ -392,7 +337,6 @@ const AddClientNormal = (props: Props) => {
                 value={values.complemento}
                 onChange={handleChange("complemento")}
                 onBlur={handleBlur("complemento")}
-                size="lg"
               />
               {errors.complemento && touched.complemento && (
                 <span className="text-sm font-semibold text-red-500">

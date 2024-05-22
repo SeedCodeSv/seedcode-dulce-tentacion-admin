@@ -12,21 +12,24 @@ export const get_employees_paginated = (
   limit: number,
   fullName: string,
   branch: string,
-  phone: string
+  phone: string,
+  active: number = 1
 ) => {
   const token = get_token() ?? "";
   return axios.get<IGetEmployeesPaginated>(
     API_URL +
-      "/employees/list-paginated?page=" +
-      page +
-      "&limit=" +
-      limit +
-      "&fullName=" +
-      fullName +
-      "&branch=" +
-      branch +
-      "&phone=" +
-      phone,
+    "/employees/list-paginated?page=" +
+    page +
+    "&limit=" +
+    limit +
+    "&fullName=" +
+    fullName +
+    "&branch=" +
+    branch +
+    "&phone=" +
+    phone +
+    "&active=" +
+    active,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -70,3 +73,12 @@ export const get_employee_list = () => {
     },
   });
 };
+
+export const activate_employee = (id: number) => {
+  const token = get_token() ?? "";
+  return axios.patch<{ ok: boolean }>(API_URL + "/employees/activate/" + id, {}, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}

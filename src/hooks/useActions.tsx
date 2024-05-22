@@ -1,5 +1,6 @@
 import { ReactNode, createContext, useState } from "react";
 import { RoleViewAction } from "../types/actions_rol.types";
+import { get_return_action } from "../storage/localStorage";
 
 export interface IActionsContext {
   roleActions: RoleViewAction | undefined;
@@ -13,7 +14,7 @@ export const ActionsContext = createContext<IActionsContext>({
 
 export default function ActionsProvider({ children }: { children: ReactNode }) {
   const [roleActions, setRoleActions] = useState<RoleViewAction>(
-    JSON.parse(localStorage.getItem("role_view_action") || "{}") as RoleViewAction
+    get_return_action() as RoleViewAction
   );
 
   return (
