@@ -50,7 +50,8 @@ export const useExpenseStore = create<IExpenseStore>((set, get) => ({
         toast.error(messages.error);
         console.log("error", error);
       });
-  }, patchExpenses(id, payload) {
+  },
+  patchExpenses(id, payload) {
     return patch_expenses(id, payload)
       .then(({ data }) => {
         get().getExpensesPaginated(1, 1, 5, "");
