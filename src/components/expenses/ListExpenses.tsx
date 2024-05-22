@@ -20,6 +20,7 @@ import {
   Table as ITable,
   CreditCard,
   List,
+  Files,
 } from "lucide-react";
 import AddButton from "../global/AddButton";
 import { DataTable } from "primereact/datatable";
@@ -30,8 +31,9 @@ import { paginator_styles } from "../../styles/paginator.styles";
 import ModalGlobal from "../global/ModalGlobal";
 import AddExpenses from "./AddExpenses";
 import MobileView from "./MobileView";
-import {formatCurrency} from "../../utils/dte"
+import { formatCurrency } from "../../utils/dte"
 import { limit_options } from "../../utils/constants";
+import Anexo from "./Anexo";
 const ListExpenses = () => {
   const { theme } = useContext(ThemeContext);
 
@@ -51,6 +53,7 @@ const ListExpenses = () => {
   };
 
   const modalAdd = useDisclosure();
+  const showAnexo = useDisclosure();
 
   const style = {
     backgroundColor: theme.colors.dark,
@@ -169,7 +172,7 @@ const ListExpenses = () => {
               setLimit(Number(e.target.value !== "" ? e.target.value : "5"));
             }}
           >
-            {limit_options.map((option)=>(
+            {limit_options.map((option) => (
               <SelectItem key={option} className="dark:text-white">{option}</SelectItem>
             ))}
           </Select>
@@ -231,6 +234,19 @@ const ListExpenses = () => {
                       size={20}
                     />
                   </Button>
+                  <Button
+                    onClick={showAnexo.onOpen}
+                    isIconOnly
+                    size="lg"
+                    style={{
+                      backgroundColor: theme.colors.third,
+                    }}
+                  >
+                    <Files
+                      style={{ color: theme.colors.primary }}
+                      size={20}
+                    />
+                  </Button>
                   <DeletePopUp expenses={item} />
                 </div>
               )}
@@ -279,6 +295,17 @@ const ListExpenses = () => {
         <AddExpenses
           closeModal={modalAdd.onClose}
           expenses={selectedCategory}
+        />
+      </ModalGlobal>
+
+      <ModalGlobal
+        title="Anexo"
+        size="w-full sm:w-[500px]"
+        isOpen={showAnexo.isOpen}
+        onClose={showAnexo.onClose}
+      >
+        <Anexo
+        // closeModal={modalAdd.onClose}
         />
       </ModalGlobal>
     </div>
