@@ -23,16 +23,19 @@ export const get_expenses_paginated = (
 };
 export const save_expenses = (payload: IExpensePayloads) => {
   const formData = new FormData();
+  console.log("payload", payload.file)
   if (payload.file) {
     formData.append("file", payload.file);
   }
+
   formData.append("description", payload.description);
   formData.append("total", payload.total.toString());
   formData.append("boxId", payload.boxId?.toString() ?? "");
-  formData.append("categoryExpenseId", payload.categoryExpenseId.toString()
-  );
+  formData.append("categoryExpenseId", payload.categoryExpenseId.toString());
+
   const token = get_token() ?? "";
-  return axios.post<{ ok: boolean }>(API_URL + "/expenses", payload, {
+
+  return axios.post<{ ok: boolean, status: number }>(API_URL + "/expenses", formData, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

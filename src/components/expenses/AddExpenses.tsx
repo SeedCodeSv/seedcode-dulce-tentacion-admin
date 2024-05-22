@@ -9,7 +9,7 @@ import {
 import { global_styles } from "../../styles/global.styles";
 import * as yup from "yup";
 import { useExpenseStore } from "../../store/expenses.store.ts";
-import { ICreacteExpense, IExpense, IExpensePayload } from "../../types/expenses.types.ts";
+import { ICreacteExpense, IExpense } from "../../types/expenses.types.ts";
 import { Formik } from "formik";
 import { CategoryExpense } from "../../types/categories_expenses.types.ts";
 import { useCategoriesExpenses } from "../../store/categories_expenses.store.ts";
@@ -25,10 +25,6 @@ interface Props {
 const AddExpenses = (props: Props) => {
   const { theme } = useContext(ThemeContext);
   const [loading, setLoading] = useState(false);
-
-
-
-
 
   const initialValues = {
     description: props.expenses?.description ?? "",
@@ -51,50 +47,46 @@ const AddExpenses = (props: Props) => {
     get_box()
   }, []);
 
-  const boxe = get_box()
+  const boxe = get_box() || 0;
   const [formData, setFormData] = useState<ICreacteExpense>({
     description: '',
     total: 0,
-    boxId: Number(boxe),
+    boxId: Number(boxe) || 0,
     categoryExpenseId: 0,
     file: null,
   });
 
+  const [selectedFile, setSelectedFile] = useState({ url: DefaultImage, type: "image/png" });
+
+
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
+    const file = e.target.files?.[0];
     if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      const img = new Image();
-      img.src = imageUrl
-      img.onload = () => {
-        const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
-        canvas.width = img.width;
-        canvas.height = img.height;
-        ctx?.drawImage(img, 0, 0);
-        canvas.toBlob((blob) => {
-          const convertedFile = new File(
-            [blob!],
-            Date.now().toString() + ".png",
-            { type: "image/png" }
-          );
-          const convertedImageUrl = URL.createObjectURL(convertedFile);
-          setSelectedImage(convertedImageUrl);
-          setFormData((prevData) => ({
-            ...prevData,
-            file: convertedFile,
-          }));
-        }, "image/png");
+      const fileType = file.type;
+      if (fileType === "image/png" || fileType === "image/jpeg" || fileType === "application/pdf") {
+        const fileUrl = URL.createObjectURL(file);
+        setSelectedFile({ url: fileUrl, type: fileType });
+        setFormData((prevData) => ({
+          ...prevData,
+          file: file,
+        }));
+      } else {
+        toast.error("Solo se permiten archivos PNG, JPG o PDF");
+        setSelectedFile({ url: DefaultImage, type: "image/png" });
+        setFormData((prevData) => ({
+          ...prevData,
+          file: null,
+        }));
       }
     } else {
-      setSelectedImage(DefaultImage)
+      setSelectedFile({ url: DefaultImage, type: "image/png" });
       setFormData((prevData) => ({
         ...prevData,
-        file: null
-      }))
+        file: null,
+      }));
     }
-  }
-  const [selectedImage, setSelectedImage] = useState(DefaultImage);
+  };
+
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const handleButtonClick = () => {
     if (fileInputRef.current) {
@@ -103,47 +95,39 @@ const AddExpenses = (props: Props) => {
   };
 
   const handleSubmit = async (values: ICreacteExpense) => {
-    if (!formData.file) {
-      const defaultImageFile = await fetch(DefaultImage)
-        .then((res) => res.blob())
-        .then((blob) => new File([blob], "default.png", { type: "image/png" }));
-
-      setFormData((prevData) => ({
-        ...prevData,
-        file: defaultImageFile,
-      }));
-
-      setSelectedImage(DefaultImage);
-    }
-
+    const boxe = get_box();
+    const boxId = Number(boxe) || 0;
     try {
-      await postExpenses(values)
-      toast.success("Guardando la informacion")
-      props.closeModal()
+      if (props.expenses) {
+        await patchExpenses(props.expenses.id, { ...values });
+      } else {
+        if (!formData.file) {
+          const defaultImageFile = await fetch(DefaultImage)
+            .then((res) => res.blob())
+            .then((blob) => new File([blob], "default.png", { type: "image/png" }));
+
+          setFormData((prevData) => ({
+            ...prevData,
+            boxId: boxId,
+            file: defaultImageFile,
+          }));
+
+          setSelectedFile({ url: DefaultImage, type: "image/png" });
+        }
+        await postExpenses({ ...values, file: formData.file });
+      }
+      props.closeModal();
+      toast.success("Información guardada correctamente");
     } catch (error) {
       toast.error("Ocurrió un error al guardar la información");
     }
-
-
-
-    // const box = get_box()
-    // if (props.expenses) {
-    //   patchExpenses(props.expenses.id, values).then((res) => {
-    //     if (res) props.closeModal();
-    //   });
-    // } else {
-    //   if (box === null) {
-    //     toast.info("No tienes una caja activa")
-    //     return
-    //   }
-    // }
   };
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
       onSubmit={(values) => {
-        handleSubmit(values);
+        handleSubmit({ ...values, boxId: formData.boxId });
       }}
     >
       {({
@@ -158,39 +142,45 @@ const AddExpenses = (props: Props) => {
           <div className="">
 
             <div className="flex flex-col items-center justify-center m-4 2xl:mt-10">
-              <div >
-                <NextImage
-                  src={selectedImage}
-                  alt="Cargando..."
-                  fallbackSrc={DefaultImage}
-                  className="h-60 w-60 rounded-lg object-cover"
-                ></NextImage>
-              </div>
-
-
-              <div className="mt-2">
-                <label htmlFor="fileInput">
-                  <Button
-                    className="text-white font-semibold px-5"
-                    onClick={handleButtonClick}
-                    style={{
-                      backgroundColor: theme.colors.dark,
-                      color: theme.colors.primary,
-                    }}
-                    disabled={loading}
-                  >
-                    {loading ? "Cargando..." : "Selecciona un archivo"}
-                  </Button>
-                </label>
-                <input
-                  type="file"
-                  id="fileInput"
-                  accept="image/*"
-                  style={{ display: "none" }}
-                  onChange={handleFileChange}
-                  ref={fileInputRef}
-                />
-              </div>
+              {!props.expenses && (
+                <div className="flex flex-col items-center justify-center m-4 2xl:mt-10">
+                  <div>
+                    {selectedFile.type === "image/png" || selectedFile.type === "image/jpeg" ? (
+                      <NextImage
+                        src={selectedFile.url}
+                        alt="Cargando..."
+                        fallbackSrc={DefaultImage}
+                        className="h-60 w-60 rounded-lg object-cover"
+                      />
+                    ) : (
+                      <embed src={selectedFile.url} type="application/pdf" className="h-60 w-60 rounded-lg" />
+                    )}
+                  </div>
+                  <div className="mt-2">
+                    <label htmlFor="fileInput">
+                      <Button
+                        className="text-white font-semibold px-5"
+                        onClick={handleButtonClick}
+                        style={{
+                          backgroundColor: theme.colors.dark,
+                          color: theme.colors.primary,
+                        }}
+                        disabled={loading}
+                      >
+                        {loading ? "Cargando..." : "Selecciona un archivo"}
+                      </Button>
+                    </label>
+                    <input
+                      type="file"
+                      id="fileInput"
+                      accept="image/png,image/jpeg,application/pdf"
+                      style={{ display: "none" }}
+                      onChange={handleFileChange}
+                      ref={fileInputRef}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
             <div className="pt-2">
               <Autocomplete
