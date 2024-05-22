@@ -16,27 +16,18 @@ import Configuration from "../pages/Configuration";
 import CreateConfiguration from "../components/configuration/CreateConfiguration";
 import SalesReportContigencePage from "../pages/SalesReportContigencePage";
 import { useActionsRolStore } from "../store/actions_rol.store";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Views from "../pages/Views";
+import { useAuthStore } from "../store/auth.store";
 export const router = () => {
   const { role_view_action, OnGetActionsByRole } = useActionsRolStore();
-  const [userRoleId, setUserRoleId] = useState(null);
+  const { user } = useAuthStore();
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      const user = JSON.parse(storedUser);
-      if (user && user.roleId) {
-        setUserRoleId(user.roleId);
-      }
+    if (user) {
+      OnGetActionsByRole(user.roleId);
     }
-  }, []);
-
-  useEffect(() => {
-    if (userRoleId) {
-      OnGetActionsByRole(userRoleId);
-    }
-  }, [OnGetActionsByRole, userRoleId]);
+  }, [user]);
 
   const views =
     role_view_action &&
@@ -46,7 +37,7 @@ export const router = () => {
   return createBrowserRouter([
     {
       path: "/",
-      element: <Home /> 
+      element: <Home />,
     },
     {
       path: "/tables",
@@ -58,7 +49,7 @@ export const router = () => {
     },
     {
       path: "/users",
-      element: views && views.includes("Usuarios") && <Users /> 
+      element: views && views.includes("Usuarios") && <Users />,
     },
     {
       path: "/employees",
@@ -78,7 +69,9 @@ export const router = () => {
     },
     {
       path: "/expensesCategories",
-      element: views && views.includes("Categoria de gastos") && <ExpensesCategories />,
+      element: views && views.includes("Categoria de gastos") && (
+        <ExpensesCategories />
+      ),
     },
     {
       path: "/expenses",
@@ -110,7 +103,9 @@ export const router = () => {
     // },
     {
       path: "sales-reports",
-      element: views && views.includes("Reporte de ventas") && <SalesReportContigencePage />,
+      element: views && views.includes("Reporte de ventas") && (
+        <SalesReportContigencePage />
+      ),
     },
     {
       path: "*",

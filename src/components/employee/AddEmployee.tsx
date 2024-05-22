@@ -36,7 +36,10 @@ function AddEmployee(props: Props) {
 
   const validationSchema = yup.object().shape({
     fullName: yup.string().required("El nombre es requerido"),
-    phone: yup.string().required("El teléfono es requerido"),
+    phone: yup
+      .string()
+      .required("El teléfono es requerido")
+      .matches(/^(?:[267][0-9]{7}|[78][0-9]{6})$/, "El teléfono no es valido"),
     branchId: yup
       .number()
       .required("La sucursal es requerida")
@@ -143,6 +146,7 @@ function AddEmployee(props: Props) {
                     : "Selecciona la sucursal"
                 }
                 variant="bordered"
+                className="dark:text-white"
                 classNames={{
                   base: "font-semibold text-gray-500 text-sm",
                 }}
@@ -150,7 +154,7 @@ function AddEmployee(props: Props) {
                 value={selectedKeyBranch}
               >
                 {branch_list.map((bra) => (
-                  <AutocompleteItem value={bra.name} key={JSON.stringify(bra)}>
+                  <AutocompleteItem className="dark:text-white" value={bra.name} key={JSON.stringify(bra)}>
                     {bra.name}
                   </AutocompleteItem>
                 ))}

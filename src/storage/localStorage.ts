@@ -1,11 +1,13 @@
 import { jwtDecode } from "jwt-decode";
 import { UserLogin } from "../types/auth.types";
+import { RoleViewAction } from "../types/actions_rol.types";
+import { decryptData, encryptData } from "../plugins/crypto";
 export const set_token = (token: string) => {
-  localStorage.setItem("token", token);
+  localStorage.setItem("_NTE", token);
 };
 
 export const get_token = () => {
-  return localStorage.getItem("token");
+  return localStorage.getItem("_NTE");
 };
 
 export const is_expired_token = () => {
@@ -32,31 +34,34 @@ export const is_authenticate = () => {
 };
 
 export const save_user = (user: UserLogin) => {
-  return localStorage.setItem("user", JSON.stringify(user));
+  return localStorage.setItem("_RSU", encryptData(user));
 };
 
 export const get_user = () => {
-  const user = localStorage.getItem("user");
+  const user = localStorage.getItem("_RSU");
 
   if (user) {
-    return JSON.parse(user) as UserLogin;
+    const dec = decryptData(user)
+    return dec as UserLogin;
   }
 
   return undefined;
 };
 export const get_rolId = () => {
-  const user = localStorage.getItem("user");
-  if(user) {
-    const data = JSON.parse(user) as UserLogin
+  const user = localStorage.getItem("_RSU");
+  if (user) {
+    const dec = decryptData(user)
+    console.log(dec)
+    const data = dec as UserLogin
     return data.roleId
   }
 }
 export const delete_token = () => {
-  localStorage.removeItem("token");
+  localStorage.removeItem("_NTE");
 };
 
 export const delete_user = () => {
-  localStorage.removeItem("user");
+  localStorage.removeItem("_RSU");
 };
 export const post_box = (box: string) => {
   localStorage.setItem("box", box);
@@ -68,13 +73,13 @@ export const delete_box = () => {
   localStorage.removeItem("box");
 }
 export const save_mh_token = (token: string) => {
-  return localStorage.setItem("mh_token", token)
+  return localStorage.setItem("_MHT", token)
 }
 export const return_mh_token = () => {
-  return localStorage.getItem("mh_token")
+  return localStorage.getItem("_MHT")
 }
 export const delete_mh_token = () => {
-  return localStorage.removeItem("mh_token")
+  return localStorage.removeItem("_MHT")
 }
 
 export const save_branch_id = (branch_id: string) => {
@@ -96,6 +101,15 @@ export const delete_seller_mode = () => {
   return localStorage.removeItem("seller_mode")
 }
 
-export  const get_personalization= () =>{
+export const get_personalization = () => {
   return JSON.parse(localStorage.getItem("personalization") || "{}") as { name: string; logo: string }
+}
+
+export const get_return_action = (): RoleViewAction | undefined => {
+  const rva = localStorage.getItem("_RVA")
+
+  if (rva) {
+    return decryptData(rva) as RoleViewAction
+  }
+  return undefined
 }

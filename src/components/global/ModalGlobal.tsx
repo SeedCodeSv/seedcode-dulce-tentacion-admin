@@ -1,8 +1,6 @@
-// import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useContext } from "react";
+import { useContext } from "react";
 import classNames from "classnames";
 import { Dialog } from "primereact/dialog";
-import { useColorScheme } from "../../../../seedwaresv-erp-app/components/useColorScheme.web";
 import { ThemeContext } from "../../hooks/useTheme";
 
 interface Props {
@@ -17,7 +15,6 @@ interface Props {
 }
 
 function ModalGlobal({
-  isDismissable = true,
   children,
   isOpen,
   onClose,
@@ -34,7 +31,7 @@ function ModalGlobal({
         context === "light" ? "light" : "dark",
         isFull && "w-full h-full overflow-y-auto",
         size,
-        "dark:bg-gray-800"
+        "dark:bg-gray-800 overflow-y-auto"
       )}
       pt={{
         content: () => {

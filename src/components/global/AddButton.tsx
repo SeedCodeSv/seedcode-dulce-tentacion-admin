@@ -23,7 +23,6 @@ function AddButton(props: Props) {
         endContent={<Plus size={20} />}
         style={style}
         className="hidden font-semibold md:flex"
-        size="lg"
         type="button"
       >
         Agregar nuevo
@@ -33,7 +32,6 @@ function AddButton(props: Props) {
         onClick={props.onClick}
         style={style}
         className="flex font-semibold md:hidden"
-        size="lg"
         isIconOnly
       >
         <Plus />

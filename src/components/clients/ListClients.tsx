@@ -48,6 +48,7 @@ import { paginator_styles } from "../../styles/paginator.styles";
 import { ThemeContext } from "../../hooks/useTheme";
 import MobileView from "./MobileView";
 import Pagination from "../global/Pagination";
+import { global_styles } from "../../styles/global.styles";
 const ListClients = () => {
   const { theme } = useContext(ThemeContext);
 
@@ -59,23 +60,8 @@ const ListClients = () => {
     backgroundColor: theme.colors.dark,
     color: theme.colors.primary,
   };
-  // const [selectedCustomer, setSelectedCustomer] = useState<Customer>();
   const [typeClient, setTypeClient] = useState("normal");
-  // const handleSearch = (searchParam: string | undefined) => {
-  //   getCustomersPagination(
-  //     1,
-  //     limit,
-  //     searchParam ?? search,
-  //     searchParam ?? email
-  //   );
-  //   useEffect(() => {
-  //     if (search !== "") {
-  //       getCustomersPagination(1, limit, search, email);
-  //     } else {
-  //       getCustomersPagination(1, limit, "", email);
-  //     }
-  //   }, [search, limit, email]);
-  // }
+
   useEffect(() => {
     getCustomersPagination(1, limit, search, email);
   }, [limit]);
@@ -162,7 +148,7 @@ const ListClients = () => {
             <div className="hidden w-full gap-5 md:flex">
               <Input
                 startContent={<User />}
-                className="w-full xl:w-96 dark:text-white"
+                className="w-full dark:text-white"
                 variant="bordered"
                 labelPlacement="outside"
                 label="Nombre"
@@ -172,7 +158,6 @@ const ListClients = () => {
                 }}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                size="lg"
                 placeholder="Escribe para buscar..."
                 isClearable
                 onClear={() => {
@@ -182,7 +167,7 @@ const ListClients = () => {
               />
               <Input
                 startContent={<Mail />}
-                className="w-full xl:w-96 dark:text-white"
+                className="w-full dark:text-white"
                 variant="bordered"
                 labelPlacement="outside"
                 label="correo"
@@ -192,7 +177,6 @@ const ListClients = () => {
                 }}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                size="lg"
                 placeholder="Escribe para buscar..."
                 isClearable
                 onClear={() => {
@@ -201,75 +185,74 @@ const ListClients = () => {
                 }}
               />
               <div className="mt-6">
-              <Button
-                style={{
-                  backgroundColor: theme.colors.secondary,
-                  color: theme.colors.primary,
-                }}
-                className="font-semibold"
-                color="primary"
-                size="lg"
-                onClick={() => handleSearch(undefined)}
-              >
-                Buscar
-              </Button>
+                <Button
+                  style={{
+                    backgroundColor: theme.colors.secondary,
+                    color: theme.colors.primary,
+                  }}
+                  className="font-semibold"
+                  color="primary"
+                  onClick={() => handleSearch(undefined)}
+                >
+                  Buscar
+                </Button>
               </div>
             </div>
-            <div className="flex items-end justify-between gap-10 mt lg:justify-end">
-              <ButtonGroup>
-                <Button
-                  size="lg"
-                  isIconOnly
-                  color="secondary"
-                  style={{
-                    backgroundColor:
-                      view === "table" ? theme.colors.third : "#e5e5e5",
-                    color: view === "table" ? theme.colors.primary : "#3e3e3e",
-                  }}
-                  onClick={() => setView("table")}
-                >
-                  <ITable />
-                </Button>
-                <Button
-                  size="lg"
-                  isIconOnly
-                  color="default"
-                  style={{
-                    backgroundColor:
-                      view === "grid" ? theme.colors.third : "#e5e5e5",
-                    color: view === "grid" ? theme.colors.primary : "#3e3e3e",
-                  }}
-                  onClick={() => setView("grid")}
-                >
-                  <CreditCard />
-                </Button>
-                <Button
-                  size="lg"
-                  isIconOnly
-                  color="default"
-                  style={{
-                    backgroundColor:
-                      view === "list" ? theme.colors.third : "#e5e5e5",
-                    color: view === "list" ? theme.colors.primary : "#3e3e3e",
-                  }}
-                  onClick={() => setView("list")}
-                >
-                  <List />
-                </Button>
-              </ButtonGroup>
-              <div className="flex justify-end w-full">
-                <BottomAdd
-                  setTypeClient={setTypeClient}
-                  openModal={modalAdd.onOpen}
-                />
-              </div>
+          </div>
+          <div className="flex items-end justify-between gap-10 mt lg:justify-end">
+            <ButtonGroup>
+              <Button
+                isIconOnly
+                color="secondary"
+                style={{
+                  backgroundColor:
+                    view === "table" ? theme.colors.third : "#e5e5e5",
+                  color: view === "table" ? theme.colors.primary : "#3e3e3e",
+                }}
+                onClick={() => setView("table")}
+              >
+                <ITable />
+              </Button>
+              <Button
+                isIconOnly
+                color="default"
+                style={{
+                  backgroundColor:
+                    view === "grid" ? theme.colors.third : "#e5e5e5",
+                  color: view === "grid" ? theme.colors.primary : "#3e3e3e",
+                }}
+                onClick={() => setView("grid")}
+              >
+                <CreditCard />
+              </Button>
+              <Button
+                isIconOnly
+                color="default"
+                style={{
+                  backgroundColor:
+                    view === "list" ? theme.colors.third : "#e5e5e5",
+                  color: view === "list" ? theme.colors.primary : "#3e3e3e",
+                }}
+                onClick={() => setView("list")}
+              >
+                <List />
+              </Button>
+            </ButtonGroup>
+            <div className="flex justify-end w-full">
+              <BottomAdd
+                setTypeClient={setTypeClient}
+                openModal={modalAdd.onOpen}
+              />
+              <BottomSm
+                setTypeClient={setTypeClient}
+                openModal={modalAdd.onOpen}
+              />
             </div>
           </div>
           <div className="flex justify-end w-full">
             <Select
               className="w-44"
               variant="bordered"
-              size="lg"
               label="Mostrar"
               labelPlacement="outside"
               classNames={{
@@ -349,7 +332,6 @@ const ListClients = () => {
                       style={{
                         backgroundColor: theme.colors.secondary,
                       }}
-                      size="lg"
                     >
                       <EditIcon
                         style={{ color: theme.colors.primary }}
@@ -365,7 +347,6 @@ const ListClients = () => {
                       style={{
                         backgroundColor: theme.colors.third,
                       }}
-                      size="lg"
                     >
                       <Repeat
                         style={{ color: theme.colors.primary }}
@@ -475,7 +456,6 @@ export const DeletePopover = ({ customers }: PopProps) => {
           style={{
             backgroundColor: theme.colors.danger,
           }}
-          size="lg"
         >
           <TrashIcon
             style={{
@@ -581,16 +561,71 @@ export const BottomAdd = ({ setTypeClient, openModal }: PopoverAddProps) => {
     >
       <PopoverTrigger>
         <Button
-          className="h-12 max-w-72"
+          className="hidden lg:flex"
           style={{
             backgroundColor: theme.colors.third,
             color: theme.colors.primary,
           }}
           endContent={<PlusIcon />}
           onClick={() => (isOpen ? onClose() : onOpen())}
-          size="lg"
         >
           Agregar nuevo
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent aria-labelledby="popover-title">
+        <div className="flex flex-col gap-5 p-3 bg-white">
+          <Button
+            onClick={() => {
+              onClose();
+              openModal();
+              setTypeClient("normal");
+            }}
+            style={{
+              backgroundColor: theme.colors.secondary,
+              color: theme.colors.primary,
+            }}
+          >
+            Cliente normal
+          </Button>
+          <Button
+            onClick={() => {
+              onClose();
+              openModal();
+              setTypeClient("contribuyente");
+            }}
+            style={{
+              backgroundColor: theme.colors.third,
+              color: theme.colors.primary,
+            }}
+          >
+            Cliente contribuyente
+          </Button>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+};
+
+export const BottomSm = ({ setTypeClient, openModal }: PopoverAddProps) => {
+  const { theme } = useContext(ThemeContext);
+  const { isOpen, onClose, onOpen } = useDisclosure();
+  return (
+    <Popover
+      aria-labelledby="popover-title"
+      aria-describedby="popover-id"
+      showArrow
+      onClose={onClose}
+      isOpen={isOpen}
+      backdrop="blur"
+    >
+      <PopoverTrigger>
+        <Button
+          className="flex lg:hidden"
+          style={global_styles().thirdStyle}
+          onClick={() => (isOpen ? onClose() : onOpen())}
+          isIconOnly
+        >
+          <PlusIcon />
         </Button>
       </PopoverTrigger>
       <PopoverContent aria-labelledby="popover-title">

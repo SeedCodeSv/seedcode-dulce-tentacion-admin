@@ -6,12 +6,12 @@ import {
 import { API_URL } from "../utils/constants";
 import { get_token, get_user } from "../storage/localStorage";
 
-export const get_products_categories = (page = 1, limit = 8, name = "") => {
+export const get_products_categories = (page = 1, limit = 8, name = "", active = 1) => {
   const user = get_user();
   const token = get_token() ?? "";
   return axios.get<IGetCategoriesPaginated>(
     API_URL +
-      `/category-products/list-paginated/${user?.employee.branch.transmitterId}?page=${page}&limit=${limit}&name=${name}`,
+    `/category-products/list-paginated/${user?.employee.branch.transmitterId}?page=${page}&limit=${limit}&name=${name}&active=${active}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -64,6 +64,15 @@ export const get_categories = () => {
 export const delete_category = (id: number) => {
   const token = get_token() ?? "";
   return axios.delete<{ ok: boolean }>(API_URL + "/category-products/" + id, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+export const activate_category = (id: number) => {
+  const token = get_token() ?? "";
+  return axios.delete<{ ok: boolean }>(API_URL + "/category-products/activate/" + id, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

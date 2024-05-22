@@ -22,7 +22,6 @@ interface Props {
 function AddProducts(props: Props) {
   const unidadDeMedidaList =
     new SeedcodeCatalogosMhService().get014UnidadDeMedida();
-  const tipoItem = new SeedcodeCatalogosMhService().get011TipoDeItem();
 
   const validationSchema = yup.object().shape({
     name: yup.string().required("**El nombre es requerido**"),
@@ -125,7 +124,7 @@ function AddProducts(props: Props) {
   };
 
   return (
-    <div className="mb-32 sm:mb-0 w-full pt-5">
+    <div className="w-full pt-5">
       <Formik
         validationSchema={validationSchema}
         initialValues={initialValues}
@@ -140,7 +139,7 @@ function AddProducts(props: Props) {
           handleChange,
         }) => (
           <>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 ">
               <div>
                 <div className="mt-8">
                   <Input
@@ -156,7 +155,6 @@ function AddProducts(props: Props) {
                         "font-semibold text-gray-500 dark:text-gray-200 text-sm",
                     }}
                     variant="bordered"
-                    size="lg"
                   />
                   {errors.name && touched.name && (
                     <span className="text-sm font-semibold text-red-500">
@@ -177,7 +175,6 @@ function AddProducts(props: Props) {
                       label: "font-semibold text-gray-500 text-sm ",
                     }}
                     variant="bordered"
-                    size="lg"
                   />
                   {errors.description && touched.description && (
                     <span className="text-sm font-semibold text-red-500">
@@ -201,7 +198,6 @@ function AddProducts(props: Props) {
                     variant="bordered"
                     type="number"
                     startContent="$"
-                    size="lg"
                   />
                   {errors.price && touched.price && (
                     <span className="text-sm font-semibold text-red-500">
@@ -225,7 +221,6 @@ function AddProducts(props: Props) {
                     variant="bordered"
                     type="number"
                     startContent="$"
-                    size="lg"
                   />
                   {errors.costoUnitario && touched.costoUnitario && (
                     <span className="text-sm font-semibold text-red-500">
@@ -259,15 +254,15 @@ function AddProducts(props: Props) {
                     classNames={{
                       base: "font-semibold text-gray-500 text-sm",
                     }}
-                    // selectedKey={selectedKeyCategory}
+                    className="dark:text-white"
                     defaultSelectedKey={selectedKeyCategory}
                     value={selectedKeyCategory}
-                    size="lg"
                   >
                     {list_categories.map((bra) => (
                       <AutocompleteItem
                         value={bra.name}
                         key={JSON.stringify(bra)}
+                        className="dark:text-white"
                       >
                         {bra.name}
                       </AutocompleteItem>
@@ -281,16 +276,15 @@ function AddProducts(props: Props) {
                 </div>
                 <div className="mt-2">
                   <Autocomplete
-                    className="pt-5"
                     variant="bordered"
                     label="Tipo de item"
                     labelPlacement="outside"
+                    className="dark:text-white pt-5"
                     placeholder={
                       props.product?.tipoDeItem ??
                       props.product?.tipoDeItem ??
                       "Selecciona el item"
                     }
-                    size="lg"
                   >
                     {cat_011_tipo_de_item.map((item) => (
                       <AutocompleteItem
@@ -300,6 +294,7 @@ function AddProducts(props: Props) {
                           handleChange("tipoDeItem")(item.valores.toString());
                           handleChange("tipoItem")(item.codigo.toString());
                         }}
+                        className="dark:text-white"
                       >
                         {item.valores}
                       </AutocompleteItem>
@@ -314,7 +309,7 @@ function AddProducts(props: Props) {
 
                 <div className="mt-8">
                   <Autocomplete
-                    className="pt-5"
+                    className="pt-5 dark:text-white"
                     variant="bordered"
                     name="unidaDeMedida"
                     label="Unidad de medida"
@@ -324,7 +319,6 @@ function AddProducts(props: Props) {
                       props.product?.tipoDeItem ??
                       "Selecciona unidad de medida"
                     }
-                    size="lg"
                   >
                     {unidadDeMedidaList.map((item) => (
                       <AutocompleteItem
@@ -336,6 +330,7 @@ function AddProducts(props: Props) {
                           );
                           handleChange("uniMedida")(item.codigo.toString());
                         }}
+                        className="dark:text-white"
                       >
                         {item.valores}
                       </AutocompleteItem>
@@ -347,8 +342,8 @@ function AddProducts(props: Props) {
                     </span>
                   )}
                 </div>
-                <div className="flex mt-2 gap-2">
-                  <div className="mt-2 w-90">
+                <div className="flex items-end mt-2 gap-2">
+                  <div className="mt-2 w-full">
                     <Input
                       label="Código"
                       labelPlacement="outside"
@@ -364,7 +359,6 @@ function AddProducts(props: Props) {
                         label: "font-semibold text-sm",
                       }}
                       variant="bordered"
-                      size="lg"
                     />
                     {errors.code && touched.code && (
                       <span className="text-sm font-semibold text-red-500">
@@ -372,7 +366,7 @@ function AddProducts(props: Props) {
                       </span>
                     )}
                   </div>
-                  <div className="mt-10 w-25">
+                  <div className="w-25">
                     <Button
                       className="w-full text-sm font-semibold"
                       style={{

@@ -60,7 +60,7 @@ export const SideBar = (props: Props) => {
 
   return (
     <div className="flex w-screen h-screen">
-      {windowSize.width < 1024 ? (
+      {windowSize.width < 1280 ? (
         <SmLayout
           isOpen={isOpen}
           setIsOpen={setIsOpen}
@@ -69,15 +69,15 @@ export const SideBar = (props: Props) => {
       ) : (
         <LgLayout items={() => <LayoutItems />} />
       )}
-      <div className="flex flex-col w-full lg:ml-64">
+      <div className="flex flex-col w-full xl:ml-64">
         <div
-          className="fixed top-0 z-[30] w-screen left-0 lg:pl-72 shadow h-[70px] flex justify-between items-center lg:grid lg:grid-cols-2 px-6"
+          className="fixed top-0 z-[30] w-screen left-0 xl:pl-72 shadow h-[70px] flex justify-between items-center lg:grid lg:grid-cols-2 px-6"
           style={{
             backgroundColor: theme.colors.dark,
             color: theme.colors.primary,
           }}
         >
-          <div className="flex justify-end lg:hidden">
+          <div className="flex justify-end xl:hidden">
             <Button isIconOnly onClick={() => setIsOpen(!isOpen)}>
               <Menu />
             </Button>

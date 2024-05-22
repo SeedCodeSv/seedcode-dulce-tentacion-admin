@@ -6,6 +6,7 @@ import {
 
 export interface IProductsStore {
   cat_011_tipo_de_item: TipoDeItem[];
+  loading_products: boolean;
   paginated_products: IGetProductsPaginated;
   savePaginatedProducts: (products: IGetProductsPaginated) => void;
   getPaginatedProducts: (
@@ -19,4 +20,5 @@ export interface IProductsStore {
   postProducts: (payload: ProductPayload) => void;
   patchProducts: (payload: ProductPayload, id:number) => void
   deleteProducts: (id: number) => void;
+  activateProduct: (id:number) => Promise<void>
 }

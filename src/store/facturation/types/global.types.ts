@@ -16,9 +16,9 @@ export interface IGlobalBillingStore {
   cat_014_unidad_de_medida: IUnitOfMeasurement[];
   getCat005TipoDeContingencia: () => void;
   getCat012Departamento: () => void;
-  getCat013Municipios: () => void;
+  getCat013Municipios: (depCode:string) => void;
   getCat014UnidadDeMedida: () => void;
-  getCat019CodigoActividadEconomica: () => void;
+  getCat019CodigoActividadEconomica: (name?:string) => void;
   //-----------------------------------
   ambiente_destino: IAmbienteDestino[];
   metodos_de_pago: IFormasDePago[];
