@@ -23,30 +23,34 @@ import { login_mh, get_transmitter } from "../services/transmitter.service";
 import { ILoginMHFailed } from "../types/transmitter.types";
 import { AxiosError } from "axios";
 import { is_admin } from "../utils/filters";
+import { useNavigate } from "react-router-dom";
+
 export const useAuthStore = create<IAuthStore>((set, get) => ({
   token: get_token() ?? "",
   isAuth: is_authenticate(),
   user: get_user(),
+
   postLogin: async (payload) => {
     return await post_login(payload)
       .then(async ({ data }) => {
         const mode = return_seller_mode() ?? null;
-        console.log(data)
+<<<<<<< HEAD
+=======
+        console.log(data);
+>>>>>>> 50d0bf7da37c26dfc44ff92039d021c7f22f56ba
         if (data.ok) {
           set_token(data.token);
           save_user(data.user);
           if (mode === "vendedor") {
-            console.log(data.box.id)
-            window.location.href = "/newSales";
             post_box(data.box.id.toString());
             save_branch_id(data.box.branchId.toString());
-          }else {
+          } else {
             delete_seller_mode();
           }
           if (is_admin(data.user.role.name)) {
             await save_branch_id(String(data.user.employee.branch.id));
           }
-          
+
           await get()
             .OnLoginMH(data.user.employee.branch.transmitterId, data.token)
             .catch((error) => {

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { IExpensePayload, IExpensesPaginated } from "../types/expenses.types";
+import { IExpensePayload, IExpensePayloads, IExpensesPaginated } from "../types/expenses.types";
 import { API_URL } from "../utils/constants";
 import { get_token } from "../storage/localStorage";
 
@@ -13,7 +13,7 @@ export const get_expenses_paginated = (
   // const user = get_user();
   return axios.get<IExpensesPaginated>(
     API_URL +
-      `/expenses/list-paginated/${idBox}?page=${page}&limit=${limit}&category=${category}`,
+    `/expenses/list-paginated/${idBox}?page=${page}&limit=${limit}&category=${category}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -21,7 +21,16 @@ export const get_expenses_paginated = (
     }
   );
 };
-export const save_expenses = (payload: IExpensePayload) => {
+export const save_expenses = (payload: IExpensePayloads) => {
+  const formData = new FormData();
+  if (payload.file) {
+    formData.append("file", payload.file);
+  }
+  formData.append("description", payload.description);
+  formData.append("total", payload.total.toString());
+  formData.append("boxId", payload.boxId?.toString() ?? "");
+  formData.append("categoryExpenseId", payload.categoryExpenseId.toString()
+  );
   const token = get_token() ?? "";
   return axios.post<{ ok: boolean }>(API_URL + "/expenses", payload, {
     headers: {
@@ -29,6 +38,7 @@ export const save_expenses = (payload: IExpensePayload) => {
     },
   });
 };
+
 export const patch_expenses = (id: number, payload: IExpensePayload) => {
   const token = get_token() ?? "";
   return axios.patch<{ ok: boolean }>(API_URL + "/expenses/" + id, payload, {

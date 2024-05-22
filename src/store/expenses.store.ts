@@ -8,6 +8,7 @@ import {
 } from "../services/expenses.service";
 import { toast } from "sonner";
 import { messages } from "../utils/constants";
+import { IExpensePayloads } from "../types/expenses.types";
 
 export const useExpenseStore = create<IExpenseStore>((set, get) => ({
   expenses_paginated: {
@@ -39,19 +40,17 @@ export const useExpenseStore = create<IExpenseStore>((set, get) => ({
         });
       });
   },
-  postExpenses(payload) {
-    return save_expenses(payload)
-      .then(({ data }) => {
+  postExpenses: (payload: IExpensePayloads) => {
+    save_expenses(payload)
+      .then(() => {
         get().getExpensesPaginated(1, 1, 5, "");
         toast.success(messages.success);
-        return data.ok;
       })
-      .catch(() => {
+      .catch((error: any) => {
         toast.error(messages.error);
-        return false;
+        console.log("error", error);
       });
-  },
-  patchExpenses(id, payload) {
+  }, patchExpenses(id, payload) {
     return patch_expenses(id, payload)
       .then(({ data }) => {
         get().getExpensesPaginated(1, 1, 5, "");

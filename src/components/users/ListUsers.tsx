@@ -30,7 +30,7 @@ import { ThemeContext } from "../../hooks/useTheme";
 import { ButtonGroup } from "@nextui-org/react";
 import MobileView from "./MobileView";
 import AddButton from "../global/AddButton";
-import { Paginator } from "primereact/paginator";
+import { Paginator, PaginatorPageChangeEvent } from "primereact/paginator";
 import { paginator_styles } from "../../styles/paginator.styles";
 import Pagination from "../global/Pagination";
 import { User } from "../../types/users.types";
@@ -383,13 +383,16 @@ function ListUsers() {
                 <Paginator
                   pt={paginator_styles(1)}
                   className="flex justify-between w-full"
-                  first={users_paginated.currentPag}
+                  first={(users_paginated.currentPag - 1) * limit}
                   rows={limit}
                   totalRecords={users_paginated.total}
                   template={{
                     layout: "PrevPageLink CurrentPageReport NextPageLink",
                   }}
                   currentPageReportTemplate="{currentPage} de {totalPages}"
+                  onPageChange={(e) => {
+                    getUsersPaginated(e.page + 1, limit, userName);
+                  }}
                 />
               </div>
             </>

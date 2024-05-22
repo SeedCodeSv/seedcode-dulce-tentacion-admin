@@ -76,7 +76,7 @@ export default function TableProductsCredito({DTE}: Props) {
           <TD weighting={0.1} style={styles.td_content}>
             {cuerpo.uniMedida}
           </TD>
-          <TD weighting={0.3} style={styles.td_content}>
+          <TD weighting={0.3} style={{...styles.td_content}}>
             {cuerpo.descripcion}
           </TD>
           <TD weighting={0.1} style={styles.td_content}>

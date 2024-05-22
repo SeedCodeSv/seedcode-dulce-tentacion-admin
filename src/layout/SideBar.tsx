@@ -35,13 +35,13 @@ export const SideBar = (props: Props) => {
     width: window.innerWidth,
     height: window.innerHeight,
   });
+  const navigation = useNavigate();
   const close_login = () => {
     makeLogout();
     delete_seller_mode();
     setIsAuth(false);
     setToken("");
-    redirect("/");
-
+    navigation("/");
   };
   useEffect(() => {
     const handleResize = () => {
@@ -115,13 +115,14 @@ export const SideBar = (props: Props) => {
               </DropdownTrigger>
               <DropdownMenu aria-label="User Actions" variant="flat">
                 <DropdownItem key="profile" className="h-14 gap-2">
-                  <p className="font-bold">Sesión iniciada</p>
-                  <p className="font-bold">{user?.employee.fullName}</p>
+                  <p className="font-bold dark:text-white">Sesión iniciada</p>
+                  <p className="font-bold dark:text-white">{user?.employee.fullName}</p>
                 </DropdownItem>
                 <DropdownItem
                   key="logout"
                   color="primary"
                   onClick={() => navigate("/configuration")}
+                  className="dark:text-white"
                 >
                   Configuración
                 </DropdownItem>
@@ -129,6 +130,7 @@ export const SideBar = (props: Props) => {
                   key="logout"
                   color="danger"
                   onClick={() => close_login()}
+                  className="dark:text-white"
                 >
                   Cerrar sesión
                 </DropdownItem>
