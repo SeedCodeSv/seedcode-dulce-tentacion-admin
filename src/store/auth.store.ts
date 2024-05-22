@@ -34,10 +34,6 @@ export const useAuthStore = create<IAuthStore>((set, get) => ({
     return await post_login(payload)
       .then(async ({ data }) => {
         const mode = return_seller_mode() ?? null;
-<<<<<<< HEAD
-=======
-        console.log(data);
->>>>>>> 50d0bf7da37c26dfc44ff92039d021c7f22f56ba
         if (data.ok) {
           set_token(data.token);
           save_user(data.user);

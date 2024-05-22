@@ -9,8 +9,9 @@ import {
   SelectItem,
   Autocomplete,
   AutocompleteItem,
+  Switch,
 } from "@nextui-org/react";
-import { useEffect, useState, useContext, useMemo } from "react";
+import { useEffect, useState, useContext } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import {
@@ -36,14 +37,17 @@ import { paginator_styles } from "../../styles/paginator.styles";
 import { CategoryProduct } from "../../types/categories.types";
 import MobileView from "./MobileView";
 import { formatCurrency } from "../../utils/dte";
-import { filterActions } from "../../utils/filters";
-import { ActionsContext } from "../../hooks/useActions";
 import { Drawer } from "vaul";
 import { global_styles } from "../../styles/global.styles";
 import classNames from "classnames";
 import UpdateProduct from "./UpdateProduct";
+import { limit_options } from "../../utils/constants";
 
-function ListProducts() {
+interface Props{
+  actions: string[]
+}
+
+function ListProducts({actions}:Props) {
   const { theme, context } = useContext(ThemeContext);
   const style = {
     backgroundColor: theme.colors.dark,
@@ -57,9 +61,11 @@ function ListProducts() {
   const [limit, setLimit] = useState(5);
   const [view, setView] = useState<"table" | "grid" | "list">("table");
   const [page, serPage] = useState(1);
+  const [active, setActive] = useState(true);
+
   useEffect(() => {
-    getPaginatedProducts(1, limit, category, search);
-  }, [limit]);
+    getPaginatedProducts(1, limit, category, search, active ? 1 : 0);
+  }, [limit, active]);
 
   const { list_categories, getListCategories } = useCategoriesStore();
   useEffect(() => {
@@ -80,17 +86,6 @@ function ListProducts() {
   const [selectedProduct, setSelectedProduct] = useState<Product | undefined>(
     undefined
   );
-
-  const { roleActions } = useContext(ActionsContext);
-
-  const actions_role_view = useMemo(() => {
-    if (roleActions) {
-      return filterActions("Productos", roleActions)?.actions.map(
-        (re) => re.name
-      );
-    }
-    return undefined;
-  }, [roleActions]);
 
   return (
     <>
@@ -142,7 +137,11 @@ function ListProducts() {
                 }}
               >
                 {list_categories.map((bra) => (
-                  <AutocompleteItem value={bra.name} key={JSON.stringify(bra)}>
+                  <AutocompleteItem
+                    value={bra.name}
+                    key={JSON.stringify(bra)}
+                    className="dark:text-white"
+                  >
                     {bra.name}
                   </AutocompleteItem>
                 ))}
@@ -301,31 +300,25 @@ function ListProducts() {
                 </div>
               </div>
               <div className="flex justify-end w-full">
-                {/* {actions_role_view && actions_role_view.includes("Agregar") && (
+                {actions.includes("Agregar") && (
                   <AddButton
                     onClick={() => {
                       modalAdd.onOpen();
                       setSelectedProduct(undefined);
                     }}
                   />
-                )} */}
-
-                <AddButton
-                  onClick={() => {
-                    modalAdd.onOpen();
-                    setSelectedProduct(undefined);
-                  }}
-                />
+                )}
               </div>
             </div>
           </div>
-          <div className="flex justify-end w-full mb-5">
+          <div className="flex justify-end gap-5 items-end w-full mb-5">
             <Select
               className="w-44 dark:text-white"
               variant="bordered"
               size="lg"
               label="Mostrar"
               labelPlacement="outside"
+              defaultSelectedKeys={["5"]}
               classNames={{
                 label: "font-semibold",
               }}
@@ -334,14 +327,24 @@ function ListProducts() {
                 setLimit(Number(e.target.value !== "" ? e.target.value : "5"));
               }}
             >
-              <SelectItem key={"5"}>5</SelectItem>
-              <SelectItem key={"10"}>10</SelectItem>
-              <SelectItem key={"20"}>20</SelectItem>
-              <SelectItem key={"30"}>30</SelectItem>
-              <SelectItem key={"40"}>40</SelectItem>
-              <SelectItem key={"50"}>50</SelectItem>
-              <SelectItem key={"100"}>100</SelectItem>
+              {limit_options.map((limit) => (
+                <SelectItem
+                  key={limit}
+                  value={limit}
+                  className="dark:text-white"
+                >
+                  {limit}
+                </SelectItem>
+              ))}
             </Select>
+            <div className="flex items-center">
+              <Switch
+                onValueChange={(active) => setActive(active)}
+                isSelected={active}
+              >
+                Mostrar {active ? "inactivos" : "activos"}
+              </Switch>
+            </div>
           </div>
           {(view === "grid" || view === "list") && (
             <MobileView
@@ -351,6 +354,7 @@ function ListProducts() {
                 modalAdd.onOpen();
               }}
               layout={view as "grid" | "list"}
+              actions={actions}
             />
           )}
           {view === "table" && (
@@ -390,11 +394,11 @@ function ListProducts() {
                 header="Acciones"
                 body={(item) => (
                   <div className="flex w-full gap-5">
-                   
+                    {actions.includes("Editar") && (
                         <Button
                           onClick={() => {
                             setSelectedProduct(item);
-                           
+
                             setIsOpenModalUpdate(true);
                           }}
                           isIconOnly
@@ -408,9 +412,8 @@ function ListProducts() {
                             size={20}
                           />
                         </Button>
-                     
-                    {actions_role_view &&
-                      actions_role_view?.includes("Eliminar") && (
+                      )}
+                    {actions.includes("Eliminar") && (
                         <DeletePopover product={item} />
                       )}
                   </div>
@@ -516,8 +519,10 @@ export const DeletePopover = ({ product }: PopProps) => {
       </PopoverTrigger>
       <PopoverContent>
         <div className="w-full p-5">
-          <p className="font-semibold text-gray-600">Eliminar {product.name}</p>
-          <p className="mt-3 text-center text-gray-600 w-72">
+          <p className="font-semibold text-gray-600 dark:text-white">
+            Eliminar {product.name}
+          </p>
+          <p className="mt-3 text-center text-gray-600 dark:text-white w-72">
             ¿Estas seguro de eliminar este registro?
           </p>
           <div className="mt-4">

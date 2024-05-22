@@ -36,7 +36,7 @@ function Auth() {
         setIsAuth(true);
         setToken(response.token);
         //redirect("/");
-        window.location.reload();
+        // window.location.reload();
       } else {
         setIsAuth(false);
         delete_seller_mode();

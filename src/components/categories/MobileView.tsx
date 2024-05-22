@@ -2,10 +2,7 @@ import { useContext } from "react";
 import { Button } from "@nextui-org/react";
 import { DataView } from "primereact/dataview";
 import { classNames } from "primereact/utils";
-import {
-  EditIcon,
-  ScrollIcon,
-} from "lucide-react";
+import { EditIcon, ScrollIcon } from "lucide-react";
 import { ThemeContext } from "../../hooks/useTheme";
 import { useCategoriesStore } from "../../store/categories.store";
 import { CategoryProduct } from "../../types/categories.types";
@@ -14,9 +11,10 @@ interface Props {
   layout: "grid" | "list";
   deletePopover: ({ category }: { category: CategoryProduct }) => JSX.Element;
   handleEdit: (category: CategoryProduct) => void;
+  actions: string[];
 }
 
-function MobileView({ layout, deletePopover, handleEdit }: Props) {
+function MobileView({ layout, deletePopover, handleEdit, actions }: Props) {
   const { paginated_categories } = useCategoriesStore();
   return (
     <div className="w-full pb-10">
@@ -32,7 +30,13 @@ function MobileView({ layout, deletePopover, handleEdit }: Props) {
         }}
         color="surface"
         itemTemplate={(cat, layout) =>
-          gridItem(cat, layout as "grid" | "list", deletePopover, handleEdit)
+          gridItem(
+            cat,
+            layout as "grid" | "list",
+            deletePopover,
+            handleEdit,
+            actions
+          )
         }
         emptyMessage="No category found"
       />
@@ -46,7 +50,8 @@ const gridItem = (
   category: CategoryProduct,
   layout: "grid" | "list",
   deletePopover: ({ category }: { category: CategoryProduct }) => JSX.Element,
-  handleEdit: (category: CategoryProduct) => void
+  handleEdit: (category: CategoryProduct) => void,
+  actions: string[]
 ) => {
   const { theme } = useContext(ThemeContext);
   return (
@@ -63,21 +68,29 @@ const gridItem = (
             {category.name}
           </div>
           <div className="flex justify-between mt-5 w-ful">
-            <Button
-              onClick={() => handleEdit(category)}
-              isIconOnly
-              size="lg"
-              style={{
-                backgroundColor: theme.colors.secondary,
-              }}
-            >
-              <EditIcon style={{ color: theme.colors.primary }} size={20} />
-            </Button>
-            {deletePopover({ category: category })}
+            {actions.includes("Editar") && (
+              <Button
+                onClick={() => handleEdit(category)}
+                isIconOnly
+                size="lg"
+                style={{
+                  backgroundColor: theme.colors.secondary,
+                }}
+              >
+                <EditIcon style={{ color: theme.colors.primary }} size={20} />
+              </Button>
+            )}
+            {actions.includes("Eliminar") &&
+              deletePopover({ category: category })}
           </div>
         </div>
       ) : (
-        <ListItem category={category} deletePopover={deletePopover} handleEdit={handleEdit} />
+        <ListItem
+          category={category}
+          deletePopover={deletePopover}
+          handleEdit={handleEdit}
+          actions={actions}
+        />
       )}
     </>
   );
@@ -86,11 +99,13 @@ const gridItem = (
 const ListItem = ({
   category,
   deletePopover,
-  handleEdit
+  handleEdit,
+  actions,
 }: {
   category: CategoryProduct;
   deletePopover: ({ category }: { category: CategoryProduct }) => JSX.Element;
-  handleEdit: (category: CategoryProduct) => void
+  handleEdit: (category: CategoryProduct) => void;
+  actions: string[];
 }) => {
   const { theme } = useContext(ThemeContext);
   return (
@@ -103,17 +118,20 @@ const ListItem = ({
           </div>
         </div>
         <div className="flex flex-col items-end justify-between w-full gap-5">
-          <Button
-            onClick={() => handleEdit(category)}
-            isIconOnly
-            size="lg"
-            style={{
-              backgroundColor: theme.colors.secondary,
-            }}
-          >
-            <EditIcon style={{ color: theme.colors.primary }} size={20} />
-          </Button>
-          {deletePopover({ category: category })}
+          {actions.includes("Editar") && (
+            <Button
+              onClick={() => handleEdit(category)}
+              isIconOnly
+              size="lg"
+              style={{
+                backgroundColor: theme.colors.secondary,
+              }}
+            >
+              <EditIcon style={{ color: theme.colors.primary }} size={20} />
+            </Button>
+          )}
+          {actions.includes("Eliminar") &&
+            deletePopover({ category: category })}
         </div>
       </div>
     </>

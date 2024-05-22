@@ -35,7 +35,11 @@ import { Drawer } from "vaul";
 import { global_styles } from "../../styles/global.styles";
 import classNames from "classnames";
 
-function ListCategories() {
+interface PProps {
+  actions: string[];
+}
+
+function ListCategories({ actions }: PProps) {
   const { theme, context } = useContext(ThemeContext);
   const [openVaul, setOpenVaul] = useState(false);
   const { paginated_categories, getPaginatedCategories } = useCategoriesStore();
@@ -269,6 +273,7 @@ function ListCategories() {
             deletePopover={DeletePopUp}
             layout={view as "grid" | "list"}
             handleEdit={handleEdit}
+            actions={actions}
           />
         )}
         {view === "table" && (
@@ -295,20 +300,24 @@ function ListCategories() {
               header="Acciones"
               body={(item) => (
                 <div className="flex gap-6">
-                  <Button
-                    onClick={() => handleEdit(item)}
-                    isIconOnly
-                    size="lg"
-                    style={{
-                      backgroundColor: theme.colors.secondary,
-                    }}
-                  >
-                    <EditIcon
-                      style={{ color: theme.colors.primary }}
-                      size={20}
-                    />
-                  </Button>
-                  <DeletePopUp category={item} />
+                  {actions.includes("Editar") && (
+                    <Button
+                      onClick={() => handleEdit(item)}
+                      isIconOnly
+                      size="lg"
+                      style={{
+                        backgroundColor: theme.colors.secondary,
+                      }}
+                    >
+                      <EditIcon
+                        style={{ color: theme.colors.primary }}
+                        size={20}
+                      />
+                    </Button>
+                  )}
+                  {actions.includes("Eliminar") && (
+                    <DeletePopUp category={item} />
+                  )}
                 </div>
               )}
             />
@@ -396,10 +405,10 @@ const DeletePopUp = ({ category }: Props) => {
         </PopoverTrigger>
         <PopoverContent>
           <div className="w-full p-5">
-            <p className="font-semibold text-gray-600">
+            <p className="font-semibold text-gray-600 dark:text-white">
               Eliminar {category.name}
             </p>
-            <p className="mt-3 text-center text-gray-600 w-72">
+            <p className="mt-3 text-center text-gray-600 dark:text-white w-72">
               ¿Estas seguro de eliminar este registro?
             </p>
             <div className="mt-4">

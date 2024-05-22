@@ -26,12 +26,13 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
   savePaginatedProducts: (products: IGetProductsPaginated) =>
     set({ paginated_products: products }),
   getPaginatedProducts: (
-    page: number,
-    limit: number,
-    category: string,
-    name: string
+    page,
+    limit,
+    category,
+    name,
+    active = 1
   ) => {
-    get_products(page, limit, category, name)
+    get_products(page, limit, category, name, active)
       .then((products) => set({ paginated_products: products.data }))
       .catch(() => {
         set({

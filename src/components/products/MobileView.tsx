@@ -17,9 +17,10 @@ interface Props {
   layout: "grid" | "list";
   DeletePopover: ({ product }: { product: Product }) => JSX.Element;
   openEditModal: (product: Product) => void;
+  actions: string[]
 }
 
-function MobileView({ layout, openEditModal, DeletePopover }: Props) {
+function MobileView({ layout, openEditModal, DeletePopover, actions }: Props) {
   const { paginated_products } = useProductsStore();
 
   return (
@@ -36,7 +37,7 @@ function MobileView({ layout, openEditModal, DeletePopover }: Props) {
         }}
         color="surface"
         itemTemplate={(customer) =>
-          gridItem(customer, layout, openEditModal, DeletePopover)
+          gridItem(customer, layout, openEditModal,actions, DeletePopover)
         }
         emptyMessage="No customers found"
       />
@@ -48,6 +49,7 @@ const gridItem = (
   product: Product,
   layout: "grid" | "list",
   openEditModal: (product: Product) => void,
+  actions: string[],
   deletePopover: ({ product }: { product: Product }) => JSX.Element
 ) => {
   const { theme } = useContext(ThemeContext);
@@ -86,7 +88,7 @@ const gridItem = (
             {product.price}
           </div>
           <div className="flex justify-between mt-5 w-ful">
-            <Button
+           {actions.includes("Editar") &&  <Button
               onClick={() => openEditModal(product)}
               isIconOnly
               style={{
@@ -95,8 +97,8 @@ const gridItem = (
               size="lg"
             >
               <EditIcon style={{ color: theme.colors.primary }} size={20} />
-            </Button>
-            {deletePopover({ product: product })}
+            </Button>}
+            {actions.includes("Eliminar") && deletePopover({ product: product })}
           </div>
         </div>
       ) : (
@@ -104,6 +106,7 @@ const gridItem = (
           product={product}
           openEditModal={openEditModal}
           deletePopover={deletePopover}
+          actions={actions}
         />
       )}
     </>
@@ -114,9 +117,11 @@ const ListItem = ({
   product,
   openEditModal,
   deletePopover,
+  actions
 }: {
   product: Product;
   openEditModal: (product: Product) => void;
+  actions: string[],
   deletePopover: ({ product }: { product: Product }) => JSX.Element;
 }) => {
   const { theme } = useContext(ThemeContext);
@@ -151,17 +156,17 @@ const ListItem = ({
           </div>
         </div>
         <div className="flex flex-col items-end justify-between w-full">
-          <Button
-            onClick={() => openEditModal(product)}
-            isIconOnly
-            style={{
-              backgroundColor: theme.colors.secondary,
-            }}
-            size="lg"
-          >
-            <EditIcon style={{ color: theme.colors.primary }} size={20} />
-          </Button>
-          {deletePopover({ product: product })}
+        {actions.includes("Editar") &&  <Button
+              onClick={() => openEditModal(product)}
+              isIconOnly
+              style={{
+                backgroundColor: theme.colors.secondary,
+              }}
+              size="lg"
+            >
+              <EditIcon style={{ color: theme.colors.primary }} size={20} />
+            </Button>}
+            {actions.includes("Eliminar") && deletePopover({ product: product })}
         </div>
       </div>
     </>

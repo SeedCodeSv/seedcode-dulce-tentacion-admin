@@ -23,13 +23,13 @@ import { Fragment, useContext, useEffect, useMemo } from "react";
 import { ThemeContext } from "../hooks/useTheme";
 import { useAuthStore } from "../store/auth.store";
 import { save_seller_mode } from "../storage/localStorage";
-import { useLocation, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { SessionContext } from "../hooks/useSession";
 import { useConfigurationStore } from "../store/perzonalitation.store";
 import useWindowSize from "../hooks/useWindowSize";
-import { classNames } from "primereact/utils";
 import { useActionsRolStore } from "../store/actions_rol.store";
 import { Menu, Transition } from "@headlessui/react";
+import { ActionsContext } from "../hooks/useActions";
 export const LayoutItems = () => {
   const { theme, toggleContext, context } = useContext(ThemeContext);
   const { makeLogout } = useAuthStore();
@@ -80,31 +80,19 @@ export const LayoutItems = () => {
       return 22;
     }
   }, [windowSize.width]);
-  const location = useLocation();
-  const dropdownStyle = useMemo(() => {
-    if (
-      location.pathname === "/users" ||
-      location.pathname === "/clients" ||
-      location.pathname === "/employees" ||
-      location.pathname === "/branches"
-    ) {
-      return {
-        borderLeftColor: theme.colors.dark,
-        borderLeftWidth: 5,
-      };
-    } else {
-      return {
-        borderLeftColor: "transparent",
-      };
-    }
-  }, [location.pathname]);
+  const {setRoleActions} = useContext(ActionsContext)
   const { role_view_action, OnGetActionsByRole } = useActionsRolStore();
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       const user = JSON.parse(storedUser);
       if (user && user.roleId) {
-        OnGetActionsByRole(user.roleId);
+        OnGetActionsByRole(user.roleId).then((data)=>{
+          if(data){
+            localStorage.setItem("role_view_action", JSON.stringify(data));
+            setRoleActions(data)
+          }
+        })
       }
     }
   }, []);

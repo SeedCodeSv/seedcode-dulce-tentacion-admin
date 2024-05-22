@@ -9,6 +9,6 @@ export interface IActionsRolStore {
   getActionsByRolView: (idRol: number, idView: number) => void;
   OnCreateActionsRol: (payload: IActionPayload, roleId: number) => Promise<boolean>;
   OnGetActionsRoleList: () => void;
-  OnGetActionsByRole: (rol_id: number) => Promise<void>;
+  OnGetActionsByRole: (rol_id: number) => Promise<RoleViewAction | undefined>;
   OnGetActionsByRoleReturn: (rol_id: number) => Promise<RoleViewAction | undefined>;
 }

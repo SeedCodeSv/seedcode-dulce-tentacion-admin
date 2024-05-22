@@ -12,7 +12,7 @@ import { save_action } from "../services/actions.service";
 import { formatActionsRole } from "../utils";
 import { RoleViewAction } from "../types/actions_rol.types";
 import { get_views } from "../services/views.service";
-import {get_rolId} from "../storage/localStorage";
+import { get_rolId } from "../storage/localStorage";
 export const useActionsRolStore = create<IActionsRolStore>((set, get) => ({
   actions_by_view_and_rol: [],
   actions_view: [],
@@ -114,14 +114,8 @@ export const useActionsRolStore = create<IActionsRolStore>((set, get) => ({
               actions_roles_grouped: formatActionsRole(data.roleActions),
             };
           });
-
           const views = await get_views();
-          console.log("views");
-
           const role = data.roleActions[0].role.name;
-
-          console.log("Role", role);
-
           const views_exist = views.data.views
             .map((dt) => {
               const actions = data.roleActions
@@ -136,6 +130,10 @@ export const useActionsRolStore = create<IActionsRolStore>((set, get) => ({
             })
             .filter((ac) => ac.actions.length > 0);
 
+          set({
+            roleActions: data.roleActions,
+          });
+
           if (views_exist !== undefined) {
             const new_eval: RoleViewAction = {
               name: role,
@@ -149,25 +147,22 @@ export const useActionsRolStore = create<IActionsRolStore>((set, get) => ({
                 role_view_action: new_eval,
               };
             });
+
+            return new_eval
           }
-
-          console.log("VIEWSEXITS", views_exist);
-
-          set({
-            roleActions: data.roleActions,
-          });
-
-          console.log("found", get().roleActions);
+          return undefined
         } else {
           set({
             roleActions: [],
           });
+          return undefined
         }
       })
       .catch(() => {
         set({
           roleActions: [],
         });
+        return undefined
       });
   },
 
