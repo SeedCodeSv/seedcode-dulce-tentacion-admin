@@ -10,11 +10,18 @@ import {
   useDisclosure,
   Select,
   SelectItem,
-} from '@nextui-org/react';
-import { useCustomerStore } from '../../store/customers.store';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
-import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
+  Switch,
+} from "@nextui-org/react";
+import { useCustomerStore } from "../../store/customers.store";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
+import {
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import {
   EditIcon,
   User,
@@ -27,22 +34,27 @@ import {
   CreditCard,
   Table as ITable,
   Mail,
-} from 'lucide-react';
-import ModalGlobal from '../global/ModalGlobal';
-import AddClientNormal from './AddClientNormal';
-import AddClientContributor from './AddClientContributor';
-import { ButtonGroup } from '@nextui-org/react';
-import { Paginator } from 'primereact/paginator';
-import { Customer, CustomerDirection, PayloadCustomer } from '../../types/customers.types';
-import { paginator_styles } from '../../styles/paginator.styles';
-import { ThemeContext } from '../../hooks/useTheme';
-import MobileView from './MobileView';
-import Pagination from '../global/Pagination';
-import { global_styles } from '../../styles/global.styles';
+  BadgeCheck,
+} from "lucide-react";
+import ModalGlobal from "../global/ModalGlobal";
+import AddClientNormal from "./AddClientNormal";
+import AddClientContributor from "./AddClientContributor";
+import { ButtonGroup } from "@nextui-org/react";
+import { Paginator } from "primereact/paginator";
+import {
+  Customer,
+  CustomerDirection,
+  PayloadCustomer,
+} from "../../types/customers.types";
+import { paginator_styles } from "../../styles/paginator.styles";
+import { ThemeContext } from "../../hooks/useTheme";
+import MobileView from "./MobileView";
+import Pagination from "../global/Pagination";
+import { global_styles } from "../../styles/global.styles";
 const ListClients = () => {
   const { theme } = useContext(ThemeContext);
-
-  const { getCustomersPagination, customer_pagination } = useCustomerStore();
+  const { getCustomersPagination, customer_pagination, save_active_customer } =
+    useCustomerStore();
   const [limit, setLimit] = useState(5);
   const [search, setSearch] = useState('');
   const [email, setEmail] = useState('');
@@ -50,21 +62,35 @@ const ListClients = () => {
     backgroundColor: theme.colors.dark,
     color: theme.colors.primary,
   };
-  const [typeClient, setTypeClient] = useState('normal');
-
+  const [typeClient, setTypeClient] = useState("normal");
+  const [active, setActive] = useState(true);
+  const [tipeCustomer, setTypeCustomer] = useState(1);
   useEffect(() => {
-    getCustomersPagination(1, limit, search, email);
-  }, [limit]);
-  const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
+    getCustomersPagination(
+      1,
+      limit,
+      search,
+      email,
+      active ? 1 : 0,
+      tipeCustomer
+    );
+  }, [limit, active, tipeCustomer]);
 
+  const [view, setView] = useState<"table" | "grid" | "list">("table");
   const handleSearch = (searchParam: string | undefined) => {
-    getCustomersPagination(1, limit, searchParam ?? search, searchParam ?? email);
+    getCustomersPagination(
+      1,
+      limit,
+      searchParam ?? search,
+      searchParam ?? email,
+      active ? 1 : 0,
+      tipeCustomer
+    );
   };
-
   const modalAdd = useDisclosure();
-
   const [selectedCustomer, setSelectedCustomer] = useState<PayloadCustomer>();
-  const [selectedCustomerDirection, setSelectedCustomerDirection] = useState<CustomerDirection>();
+  const [selectedCustomerDirection, setSelectedCustomerDirection] =
+    useState<CustomerDirection>();
   const [selectedId, setSelectedId] = useState<number>(0);
   const [selectedTitle, setSelectedTitle] = useState('');
 
@@ -107,7 +133,6 @@ const ListClients = () => {
       modalAdd.onOpen();
       return;
     }
-
     if (customer.esContribuyente) {
       setTypeClient('normal');
     } else {
@@ -123,6 +148,11 @@ const ListClients = () => {
     setSelectedCustomer(undefined);
     setSelectedTitle('');
   };
+
+  const handleActivate = (id: number) => {
+    save_active_customer(id);
+  };
+
   return (
     <>
       <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
@@ -223,7 +253,38 @@ const ListClients = () => {
               <BottomSm setTypeClient={setTypeClient} openModal={modalAdd.onOpen} />
             </div>
           </div>
-          <div className="flex justify-end w-full">
+
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-center justify-between w-full mb-5">
+            <Switch
+              onValueChange={(active) => setActive(active)}
+              isSelected={active}
+            >
+              <span className="text-sm sm:text-base whitespace-nowrap">
+                Mostrar {active ? "inactivos" : "activos"}
+              </span>
+            </Switch>
+            <Select
+              className="w-44 ml-2"
+              variant="bordered"
+              label="Mostrar"
+              labelPlacement="outside"
+              classNames={{
+                label: "font-semibold",
+              }}
+              value={String(tipeCustomer)}
+              onChange={(e) => {
+                setTypeCustomer(
+                  e.target.value !== "" ? Number(e.target.value) : 0
+                );
+              }}
+            >
+              <SelectItem className="dark:text-white" key={"1"}>
+                Contribuyente
+              </SelectItem>
+              <SelectItem className="dark:text-white" key={"0"}>
+                No Contribuyente
+              </SelectItem>
+            </Select>
             <Select
               className="w-44"
               variant="bordered"
@@ -237,17 +298,33 @@ const ListClients = () => {
                 setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
               }}
             >
-              <SelectItem key={'5'}>5</SelectItem>
-              <SelectItem key={'10'}>10</SelectItem>
-              <SelectItem key={'20'}>20</SelectItem>
-              <SelectItem key={'30'}>30</SelectItem>
-              <SelectItem key={'40'}>40</SelectItem>
-              <SelectItem key={'50'}>50</SelectItem>
-              <SelectItem key={'100'}>100</SelectItem>
+              <SelectItem className="dark:text-white" key={"5"}>
+                5
+              </SelectItem>
+              <SelectItem className="dark:text-white" key={"10"}>
+                10
+              </SelectItem>
+              <SelectItem className="dark:text-white" key={"20"}>
+                20
+              </SelectItem>
+              <SelectItem className="dark:text-white" key={"30"}>
+                30
+              </SelectItem>
+              <SelectItem className="dark:text-white" key={"40"}>
+                40
+              </SelectItem>
+              <SelectItem className="dark:text-white" key={"50"}>
+                50
+              </SelectItem>
+              <SelectItem className="dark:text-white" key={"100"}>
+                100
+              </SelectItem>
             </Select>
           </div>
-          {(view === 'grid' || view === 'list') && (
+          <div className="flex items-center justify-center ml-2"></div>
+          {(view === "grid" || view === "list") && (
             <MobileView
+              handleActive={handleActivate}
               handleChangeCustomer={(customer, type) => {
                 handleChangeCustomer(customer, type);
               }}
@@ -321,6 +398,22 @@ const ListClients = () => {
                     >
                       <Repeat style={{ color: theme.colors.primary }} size={20} />
                     </Button>
+                    {item.isActive === false && (
+                      <Button
+                        onClick={() => {
+                          handleActivate(item.id);
+                        }}
+                        isIconOnly
+                        style={{
+                          backgroundColor: theme.colors.third,
+                        }}
+                      >
+                        <BadgeCheck
+                          style={{ color: theme.colors.primary }}
+                          size={20}
+                        />
+                      </Button>
+                    )}
                     <DeletePopover customers={item} />
                   </div>
                 )}
@@ -336,7 +429,14 @@ const ListClients = () => {
                   currentPage={customer_pagination.currentPag}
                   totalPages={customer_pagination.totalPag}
                   onPageChange={(page) => {
-                    getCustomersPagination(page, limit, search, email);
+                    getCustomersPagination(
+                      page,
+                      limit,
+                      search,
+                      email,
+                      active ? 1 : 0,
+                      1
+                    );
                   }}
                 />
               </div>

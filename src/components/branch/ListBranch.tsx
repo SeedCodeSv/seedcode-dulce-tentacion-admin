@@ -21,25 +21,26 @@ import {
   CreditCard,
   List,
   Filter,
-} from 'lucide-react';
-import { ThemeContext } from '../../hooks/useTheme';
-import { ConfirmPopup } from 'primereact/confirmpopup';
-import AddButton from '../global/AddButton';
-import { Drawer } from 'vaul';
-import Pagination from '../global/Pagination';
-import { Paginator } from 'primereact/paginator';
-import { paginator_styles } from '../../styles/paginator.styles';
-import ModalGlobal from '../global/ModalGlobal';
-import AddBranch from './AddBranch';
-import { global_styles } from '../../styles/global.styles';
-import { limit_options, messages } from '../../utils/constants';
-import TableBranch from './TableBranch';
-import MobileView from './MobileView';
-import { Branches } from '../../types/branches.types';
-import { toast } from 'sonner';
-import ListBranchProduct from './branch_product/ListBranchProduct';
-import BoxBranch from './BoxBranch';
-import classNames from 'classnames';
+  BadgeCheck,
+} from "lucide-react";
+import { ThemeContext } from "../../hooks/useTheme";
+import { ConfirmPopup } from "primereact/confirmpopup";
+import AddButton from "../global/AddButton";
+import { Drawer } from "vaul";
+import Pagination from "../global/Pagination";
+import { Paginator } from "primereact/paginator";
+import { paginator_styles } from "../../styles/paginator.styles";
+import ModalGlobal from "../global/ModalGlobal";
+import AddBranch from "./AddBranch";
+import { global_styles } from "../../styles/global.styles";
+import { limit_options, messages } from "../../utils/constants";
+import TableBranch from "./TableBranch";
+import MobileView from "./MobileView";
+import { Branches } from "../../types/branches.types";
+import { toast } from "sonner";
+import ListBranchProduct from "./branch_product/ListBranchProduct";
+import BoxBranch from "./BoxBranch";
+import classNames from "classnames";
 function ListBranch() {
   const { theme, context } = useContext(ThemeContext);
 
@@ -162,7 +163,6 @@ function ListBranch() {
   const clearClose = () => {
     setBranch(undefined);
   };
-
   return (
     <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
       <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
@@ -298,7 +298,11 @@ function ListBranch() {
             }}
           >
             {limit_options.map((option) => (
-              <SelectItem key={option} value={option}>
+              <SelectItem
+                className="w-full dark:text-white"
+                key={option}
+                value={option}
+              >
                 {option}
               </SelectItem>
             ))}
@@ -323,12 +327,24 @@ function ListBranch() {
                     </>
                   ) : (
                     <>
-                      <Switch
-                        onValueChange={() => handleInactive(item)}
-                        defaultSelected={item.isActive}
+                      <Button
+                        size="lg"
+                        onClick={() => {
+                          handleInactive(item);
+                        }}
+                        isIconOnly
+                        style={{
+                          backgroundColor: theme.colors.third,
+                        }}
                       >
-                        Activar
-                      </Switch>
+                        <BadgeCheck
+                          onClick={() => {
+                            handleInactive(item);
+                          }}
+                          style={{ color: theme.colors.primary }}
+                          size={20}
+                        />
+                      </Button>
                     </>
                   )}
                   <Button
@@ -351,6 +367,7 @@ function ListBranch() {
                   >
                     <ShoppingBag />
                   </Button>
+
                   <DeletePopUp branch={item} />
                 </div>
               </>
@@ -360,7 +377,10 @@ function ListBranch() {
         {(view === 'grid' || view === 'list') && (
           <>
             <MobileView
-              layout={view as 'grid' | 'list'}
+              handleActive={() => {
+                handleInactive;
+              }}
+              layout={view as "grid" | "list"}
               deletePopover={DeletePopUp}
               handleEdit={handleEdit}
               handleBranchProduct={handleBranchProduct}

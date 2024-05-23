@@ -1,12 +1,12 @@
-/* eslint-disable react-hooks/rules-of-hooks*/
-import { createBrowserRouter } from 'react-router-dom';
-import Error404 from '../pages/Error404';
-import NewSales from '../pages/NewSales';
-import SalesReportContigencePage from '../pages/SalesReportContigencePage';
-import Expenses from '../pages/Expenses';
-import { useEffect, useState } from 'react';
-import { useActionsRolStore } from '../store/actions_rol.store';
-import HomeSeller from '../pages/Seller/HomeSeller';
+import { createBrowserRouter } from "react-router-dom";
+import Error404 from "../pages/Error404";
+import NewSales from "../pages/NewSales";
+import SalesReportContigencePage from "../pages/SalesReportContigencePage";
+import Expenses from "../pages/Expenses";
+import { useEffect, useState } from "react";
+import { useActionsRolStore } from "../store/actions_rol.store";
+import HomeSeller from "../pages/Seller/HomeSeller";
+import Customers from "../pages/Customers";
 
 export const router_seller = () => {
   const { role_view_action, OnGetActionsByRole } = useActionsRolStore();
@@ -44,8 +44,14 @@ export const router_seller = () => {
       element: views && views.includes('Ventas') && <NewSales />,
     },
     {
-      path: 'sales-reports',
-      element: views && views.includes('Reporte de ventas') && <SalesReportContigencePage />,
+      path: "/clients",
+      element: views && views.includes("Clientes") && <Customers />,
+    },
+    {
+      path: "sales-reports",
+      element: views && views.includes("Reporte de ventas") && (
+        <SalesReportContigencePage />
+      ),
     },
     {
       path: '*',

@@ -8,9 +8,10 @@ import {
   get_branches_list,
   disable_branch,
   get_branch_products,
-} from '../services/branches.service';
-import { messages } from '../utils/constants';
-import { toast } from 'sonner';
+  save_active_branch,
+} from "../services/branches.service";
+import { messages } from "../utils/constants";
+import { toast } from "sonner";
 
 export const useBranchesStore = create<IBranchStore>((set, get) => ({
   branches_paginated: {
@@ -114,5 +115,15 @@ export const useBranchesStore = create<IBranchStore>((set, get) => ({
         set({ branch_products_list: [] });
         toast.error(messages.error);
       });
+  },
+  saveActiveBranch(id, state) {
+    save_active_branch(id, state).then(({ data }) => {
+      if (data.ok) {
+        get().getBranchesPaginated(1, get().limit, "", "", "", get().active);
+        toast.success(messages.success);
+      } else {
+        toast.error(messages.error);
+      }
+    });
   },
 }));

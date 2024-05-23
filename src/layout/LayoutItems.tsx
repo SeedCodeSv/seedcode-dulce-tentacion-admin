@@ -18,19 +18,19 @@ import {
   ChevronDown,
   FolderOpen,
   Store,
-} from 'lucide-react';
-import { Fragment, useContext, useEffect, useMemo } from 'react';
-import { ThemeContext } from '../hooks/useTheme';
-import { useAuthStore } from '../store/auth.store';
-import { get_user, save_seller_mode } from '../storage/localStorage';
-import { useNavigate } from 'react-router';
-import { SessionContext } from '../hooks/useSession';
-import { useConfigurationStore } from '../store/perzonalitation.store';
-import useWindowSize from '../hooks/useWindowSize';
-import { useActionsRolStore } from '../store/actions_rol.store';
-import { Menu, Transition } from '@headlessui/react';
-import { ActionsContext } from '../hooks/useActions';
-import { encryptData } from '../plugins/crypto';
+} from "lucide-react";
+import { Fragment, useContext, useEffect, useMemo } from "react";
+import { ThemeContext } from "../hooks/useTheme";
+import { useAuthStore } from "../store/auth.store";
+import { get_user, save_seller_mode } from "../storage/localStorage";
+import { useNavigate } from "react-router";
+import { SessionContext } from "../hooks/useSession";
+import { useConfigurationStore } from "../store/perzonalitation.store";
+import useWindowSize from "../hooks/useWindowSize";
+import { useActionsRolStore } from "../store/actions_rol.store";
+import { Menu, Transition } from "@headlessui/react";
+import { ActionsContext } from "../hooks/useActions";
+import { encryptData } from "../plugins/crypto";
 export const LayoutItems = () => {
   const { theme, toggleContext, context } = useContext(ThemeContext);
   const { makeLogout } = useAuthStore();
@@ -88,7 +88,7 @@ export const LayoutItems = () => {
       if (storedUser && storedUser.roleId) {
         OnGetActionsByRole(storedUser.roleId).then((data) => {
           if (data) {
-            localStorage.setItem('_RVA', encryptData(data));
+            localStorage.setItem("_RVA", encryptData(data));
             setRoleActions(data);
           }
         });
@@ -100,7 +100,6 @@ export const LayoutItems = () => {
     role_view_action.view &&
     role_view_action.view.length > 0 &&
     role_view_action.view.map((view) => view.name);
-
   return (
     <>
       {personalization.length === 0 ? (
@@ -151,7 +150,7 @@ export const LayoutItems = () => {
           </Button>
         </div>
       )}
-      {views && views.includes('Ventas') && mode === 'vendedor' && (
+      {views && views.includes("Ventas") && mode === "vendedor" && (
         <NavLink
           to={'/newSales'}
           className={({ isActive }) => {
@@ -171,6 +170,28 @@ export const LayoutItems = () => {
         >
           <Box size={iconSize} />
           <p className="ml-2 text-sm 2xl:text-base">Nueva venta</p>
+        </NavLink>
+      )}
+      {views && views.includes("Clientes") && mode === "vendedor" && (
+        <NavLink
+          to={"/clients"}
+          className={({ isActive }) => {
+            return (
+              (isActive
+                ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
+                : "text-coffee-brown font-semibold border-white") +
+              " flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
+            );
+          }}
+          style={({ isActive }) => {
+            return {
+              borderLeftColor: isActive ? theme.colors.dark : "transparent",
+              borderLeftWidth: 5,
+            };
+          }}
+        >
+          <BookUser size={iconSize} />
+          <p className="ml-2 text-sm 2xl:text-base">Clientes</p>
         </NavLink>
       )}
 

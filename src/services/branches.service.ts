@@ -105,3 +105,9 @@ export const get_branch_products = (id: number, name: string, category: string) 
     }
   );
 };
+
+export const save_active_branch = (id: number , state : boolean) => {
+  return axios.patch<{ ok: boolean }>(API_URL + "/branches/activate/" + id,
+    state = !state
+  )
+}

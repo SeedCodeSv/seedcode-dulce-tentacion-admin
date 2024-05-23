@@ -15,7 +15,7 @@ export const ActionsContext = createContext<IActionsContext>({
 
 export default function ActionsProvider({ children }: { children: ReactNode }) {
   const [roleActions, setRoleActions] = useState<RoleViewAction>(
-    get_return_action() as RoleViewAction
+    get_return_action() as RoleViewAction 
   );
 
   return (

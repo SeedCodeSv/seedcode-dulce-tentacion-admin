@@ -22,6 +22,7 @@ export interface IBranchStore {
     active?: 1 | 0
   ) => void;
   getBranchesList: () => Promise<void>;
+  saveActiveBranch: (id: number , state: boolean) => void;
   postBranch: (paylad: IBranchPayload) => Promise<boolean>;
   patchBranch: (paylad: IBranchPayload, id: number) => Promise<boolean>;
   deleteBranch: (id: number) => Promise<boolean>;

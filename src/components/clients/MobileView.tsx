@@ -12,19 +12,23 @@ import {
   EditIcon,
   Repeat,
   MapPin,
-} from 'lucide-react';
-import { ThemeContext } from '../../hooks/useTheme';
-import { Customer } from '../../types/customers.types';
+  RefreshCcw,
+  BadgeCheck,
+} from "lucide-react";
+import { ThemeContext } from "../../hooks/useTheme";
+import { Customer } from "../../types/customers.types";
+import { global_styles } from "../../styles/global.styles";
 
 /* eslint-disable no-unused-vars */
 interface Props {
   layout: 'grid' | 'list';
   deletePopover: ({ customers }: { customers: Customer }) => JSX.Element;
   handleChangeCustomer: (customer: Customer, type: string) => void;
+  handleActive: (id: number) => void;
 }
 /* eslint-enable no-unused-vars */
 
-function MobileView({ layout, handleChangeCustomer }: Props) {
+function MobileView({ layout, handleChangeCustomer, handleActive }: Props) {
   const { customer_pagination } = useCustomerStore();
 
   return (
@@ -40,7 +44,9 @@ function MobileView({ layout, handleChangeCustomer }: Props) {
           }),
         }}
         color="surface"
-        itemTemplate={(customer) => gridItem(customer, layout, handleChangeCustomer)}
+        itemTemplate={(customer) =>
+          gridItem(customer, layout, handleChangeCustomer, handleActive)
+        }
         emptyMessage="No customers found"
       />
     </div>
@@ -50,8 +56,9 @@ function MobileView({ layout, handleChangeCustomer }: Props) {
 /* eslint-disable no-unused-vars */
 const gridItem = (
   customers: Customer,
-  layout: 'grid' | 'list',
-  handleChangeCustomer: (customer: Customer, type: string) => void
+  layout: "grid" | "list",
+  handleChangeCustomer: (customer: Customer, type: string) => void,
+  handleActive: (id: number) => void
 ) => {
   /* eslint-enable no-unused-vars */
 
@@ -110,21 +117,40 @@ const gridItem = (
             >
               <Trash color={theme.colors.primary} size={20} />
             </Button>
+
+            {customers.isActive === false && (
+              <Button
+                onClick={() => {
+                  handleActive(customers.id);
+                }}
+                isIconOnly
+                style={{
+                  backgroundColor: theme.colors.third,
+                }}
+              >
+                <BadgeCheck style={{ color: theme.colors.primary }} size={20} />
+              </Button>
+            )}
           </div>
         </div>
       ) : (
-        <ListItem customers={customers} handleChangeCustomer={handleChangeCustomer} />
+        <ListItem
+          handleActive={handleActive}
+          customers={customers}
+          handleChangeCustomer={handleChangeCustomer}
+        />
       )}
     </>
   );
 };
-
 const ListItem = ({
   customers,
   handleChangeCustomer,
+  handleActive,
 }: {
   customers: Customer;
   handleChangeCustomer: (customer: Customer, type: string) => void;
+  handleActive: (id: number) => void;
 }) => {
   const { theme } = useContext(ThemeContext);
   return (
@@ -175,6 +201,19 @@ const ListItem = ({
           >
             <Trash color={theme.colors.primary} size={20} />
           </Button>
+          {customers.isActive === false && (
+            <Button
+              onClick={() => {
+                handleActive(customers.id);
+              }}
+              isIconOnly
+              style={{
+                backgroundColor: theme.colors.third,
+              }}
+            >
+              <BadgeCheck style={{ color: theme.colors.primary }} size={20} />
+            </Button>
+          )}
         </div>
       </div>
     </>

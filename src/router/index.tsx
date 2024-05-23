@@ -1,25 +1,25 @@
-/* eslint-disable react-hooks/rules-of-hooks*/
-import { createBrowserRouter } from 'react-router-dom';
-import Home from '../pages/Home';
-import Tables from '../pages/Tables';
-import ProductsCategories from '../pages/ProductsCategories';
-import Users from '../pages/Users';
-import Employees from '../pages/Employees';
-import Customers from '../pages/Customers';
-import Branch from '../pages/Branch';
-import Error404 from '../pages/Error404';
-import Product from '../pages/Product';
-import ExpensesCategories from '../pages/ExpensesCategories';
-import Expenses from '../pages/Expenses';
-import ActionRol from '../pages/ActionRol';
-import NewSales from '../pages/NewSales';
-import Configuration from '../pages/Configuration';
-import CreateConfiguration from '../components/configuration/CreateConfiguration';
-import SalesReportContigencePage from '../pages/SalesReportContigencePage';
-import { useActionsRolStore } from '../store/actions_rol.store';
-import { useEffect } from 'react';
-import Views from '../pages/Views';
-import { useAuthStore } from '../store/auth.store';
+import { createBrowserRouter } from "react-router-dom";
+import Home from "../pages/Home";
+import Tables from "../pages/Tables";
+import ProductsCategories from "../pages/ProductsCategories";
+import Users from "../pages/Users";
+import Employees from "../pages/Employees";
+import Customers from "../pages/Customers";
+import Branch from "../pages/Branch";
+import Error404 from "../pages/Error404";
+import Product from "../pages/Product";
+import ExpensesCategories from "../pages/ExpensesCategories";
+import Expenses from "../pages/Expenses";
+import ActionRol from "../pages/ActionRol";
+import NewSales from "../pages/NewSales";
+import Configuration from "../pages/Configuration";
+import CreateConfiguration from "../components/configuration/CreateConfiguration";
+import SalesReportContigencePage from "../pages/SalesReportContigencePage";
+import { useActionsRolStore } from "../store/actions_rol.store";
+import { useEffect } from "react";
+import Views from "../pages/Views";
+import { useAuthStore } from "../store/auth.store";
+import HomeSeller from "../pages/Seller/HomeSeller";
 export const router = () => {
   const { role_view_action, OnGetActionsByRole } = useActionsRolStore();
   const { user } = useAuthStore();
@@ -39,7 +39,11 @@ export const router = () => {
       element: <Home />,
     },
     {
-      path: '/tables',
+      path: "/homeSeller",
+      element: <HomeSeller />,
+    },
+    {
+      path: "/tables",
       element: <Tables />,
     },
     {

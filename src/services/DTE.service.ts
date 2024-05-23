@@ -1,20 +1,16 @@
-import axios, { CancelTokenSource } from 'axios';
-import { IGetAmbienteDestino } from '../types/DTE/ambiente_destino.types';
-import { API_FIRMADOR, CHECK_URL, FACTURACION_API, MH_DTE, MH_URL } from '../utils/constants';
-import { PayloadMH } from '../types/DTE/credito_fiscal.types';
-import { ResponseMHSuccess } from '../types/DTE/contingencia.types';
-import { IGetFormasDePago } from '../types/DTE/forma_de_pago.types';
-import { IGetTiposDocumento } from '../types/DTE/tipo_documento.types';
-import { IGetTipoTributos } from '../types/DTE/tipo_tributo.types';
-import { ISendMHFiscal } from '../types/DTE/credito_fiscal.types';
-import { IContingencia, ISendMHContingencia } from '../types/DTE/contingencia.types';
-import { DteJson as FDteJSON } from '../types/DTE/DTE.types';
-import { ICheckPayload, ICheckResponse } from '../types/DTE/check.types';
-import {
-  IInvalidationToMH,
-  IResponseInvalidationMH,
-  ISignInvalidationData,
-} from '../types/DTE/invalidation.types';
+import axios, { CancelTokenSource } from "axios";
+import { IGetAmbienteDestino } from "../types/DTE/ambiente_destino.types";
+import { API_FIRMADOR, CHECK_URL, FACTURACION_API, MH_DTE, MH_URL } from "../utils/constants";
+import { PayloadMH } from "../types/DTE/credito_fiscal.types";
+import { ResponseMHSuccess } from "../types/DTE/contingencia.types";
+import { IGetFormasDePago } from "../types/DTE/forma_de_pago.types";
+import { IGetTiposDocumento } from "../types/DTE/tipo_documento.types";
+import { IGetTipoTributos } from "../types/DTE/tipo_tributo.types";
+import { ISendMHFiscal } from "../types/DTE/credito_fiscal.types";
+import { IContingencia, ISendMHContingencia } from "../types/DTE/contingencia.types";
+import { DteJson as FDteJSON, IDTE } from "../types/DTE/DTE.types"
+import { ICheckPayload, ICheckResponse } from "../types/DTE/check.types";
+import { IInvalidationToMH, IResponseInvalidationMH, ISignInvalidationData } from "../types/DTE/invalidation.types";
 
 export const get_ambiente_destino = () => {
   return axios<IGetAmbienteDestino>(FACTURACION_API + '/cat-001-ambiente-de-destino');
@@ -76,6 +72,14 @@ export const firmarDocumentoContingencia = (payload: IContingencia) => {
 export const firmarDocumentoInvalidacion = (payload: ISignInvalidationData) => {
   return axios.post<{ body: string }>(API_FIRMADOR, payload);
 };
+
+export const get_json_from_space = (url: string) => {
+  return axios.get<IDTE>(url, {
+    headers: {
+      ContentType: 'application/json',
+    }
+  })
+}
 
 export const check_dte = (payload: ICheckPayload, token: string) => {
   return axios.post<ICheckResponse>(

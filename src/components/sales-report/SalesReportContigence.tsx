@@ -75,6 +75,7 @@ import UpdateCustomerSales from "./UpdateCustomerSale";
 import { Drawer } from "vaul";
 import classNames from "classnames";
 import { useSaleStatusStore } from "../../store/sale_status.store";
+import { AddSealMH } from "./AddSealMH";
 
 function SalesReportContigence() {
   const [openVaul, setOpenVaul] = useState(false);
@@ -121,7 +122,7 @@ function SalesReportContigence() {
     searchSalesContigence();
     OnGetSalesNotContigence(branchId, 1, 5, dateInitial, dateEnd);
   };
-  const { OnGetSaleStatusList } = useSaleStatusStore();
+  const { OnGetSaleStatusList, saleStatus } = useSaleStatusStore();
   const { theme, context } = useContext(ThemeContext);
   const style = {
     backgroundColor: theme.colors.dark,
@@ -265,44 +266,7 @@ function SalesReportContigence() {
   const [errorMessage, setErrorMessage] = useState("");
   const [title, setTitle] = useState<string>("");
   const modalErrorContingencia = useDisclosure();
-
-  const handleVerify = (sale: Sale) => {
-    setLoading(true);
-    modalLoading.onOpen();
-    const payload = {
-      nitEmisor: transmitter.nit,
-      tdte: sale.tipoDte,
-      codigoGeneracion: sale.codigoGeneracion,
-    };
-    const token_mh = return_mh_token();
-    check_dte(payload, token_mh ?? "")
-      .then((response) => {
-        toast.success(response.data.estado, {
-          description: `Sello recibido: ${response.data.selloRecibido}`,
-        });
-        setLoading(false);
-        modalLoading.onClose();
-      })
-      .catch((error: AxiosError<ICheckResponse>) => {
-        if (error.status === 500) {
-          toast.error("NO ENCONTRADO", {
-            description: "DTE no encontrado en hacienda",
-          });
-          setLoading(false);
-          modalLoading.onClose();
-          return;
-        }
-
-        toast.error("ERROR", {
-          description: `Error: ${
-            error.response?.data.descripcionMsg ??
-            "DTE no encontrado en hacienda"
-          }`,
-        });
-        modalLoading.onClose();
-        setLoading(false);
-      });
-  };
+  const [selloCapt, setSelloCapt] = useState<string | null>(null);
 
   const handleVerifyEdit = (sale: Sale) => {
     setLoading(true);
@@ -545,8 +509,8 @@ function SalesReportContigence() {
                           await save_logs({
                             title:
                               "Contingencia: " +
-                              (error.response.data?.descripcionMsg ??
-                                "Error al procesar venta"),
+                                error.response.data.descripcionMsg ??
+                              "Error al procesar venta",
                             message:
                               error.response.data.observaciones &&
                               error.response.data.observaciones.length > 0
@@ -721,8 +685,8 @@ function SalesReportContigence() {
                             await save_logs({
                               title:
                                 "Contingencia: " +
-                                (error.response.data.descripcionMsg ??
-                                  "Error al procesar venta"),
+                                  error.response.data.descripcionMsg ??
+                                "Error al procesar venta",
                               message:
                                 error.response.data.observaciones &&
                                 error.response.data.observaciones.length > 0
@@ -1153,7 +1117,9 @@ function SalesReportContigence() {
                         style={global_styles().warningStyles}
                         isIconOnly
                         onClick={() => {
-                          handleVerify(rowData);
+                          modalLoading.onOpen();
+                          setSelectedSale(rowData);
+                          // handleVerify(rowData);
                         }}
                       >
                         <ScanEye size={20} />
@@ -1303,15 +1269,18 @@ function SalesReportContigence() {
         </div>
       </ModalGlobal>
       <ModalGlobal
-        title={"Procesando"}
-        size="w-full md:w-[600px]"
+        title={"Verificar en Hacienda"}
+        size="w-md md:w-[400px]"
         isOpen={modalLoading.isOpen}
         onClose={modalLoading.onClose}
       >
-        <div className="flex flex-col justify-center items-center">
-          <LoaderCircle className=" animate-spin" size={75} color="red" />
-          <p className="text-lg font-semibold">Cargando por favor espere...</p>
-        </div>
+        <AddSealMH
+          sale={selectedSale as Sale}
+          onClose={modalLoading.onClose}
+          reload={() =>
+            OnGetSalesContigence(branchId, 1, 5, dateInitial, dateEnd)
+          }
+        />
       </ModalGlobal>
 
       <ModalGlobal
