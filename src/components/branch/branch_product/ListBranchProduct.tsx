@@ -53,7 +53,7 @@ function ListEmployee({ id }: Props) {
           }}
           className="w-full xl:w-96"
           placeholder="Buscar por nombre..."
-          size="lg"
+          
           startContent={<Search />}
           variant="bordered"
           name="searchName"
@@ -80,7 +80,7 @@ function ListEmployee({ id }: Props) {
           classNames={{
             base: "font-semibold text-gray-500 text-sm",
           }}
-          size="lg"
+          
           value={category}
           clearButtonProps={{
             onClick: () => setCategory(""),
@@ -112,7 +112,7 @@ function ListEmployee({ id }: Props) {
                 }}
                 className="w-full xl:w-72"
                 color="primary"
-                size="lg"
+                
                 onClick={() => changePage()}
               >
                 Buscar
@@ -121,7 +121,7 @@ function ListEmployee({ id }: Props) {
             <Select
                 className="w-full xl:w-80"
                 variant="bordered"
-                size="lg"
+                
                 // label="Mostrar"
                 placeholder="Mostrar"
                 labelPlacement="outside"
@@ -155,7 +155,7 @@ function ListEmployee({ id }: Props) {
                     <Drawer.Trigger asChild>
                       <Button
                         style={global_styles().thirdStyle}
-                        size="lg"
+                        
                         isIconOnly
                         onClick={() => setOpenVaul(true)}
                       >
@@ -178,7 +178,7 @@ function ListEmployee({ id }: Props) {
                             <Button
                               style={global_styles().secondaryStyle}
                               className="mb-10 font-semibold"
-                              size="lg"
+                              
                               onClick={() => {
                                 changePage();
                                 setOpenVaul(false);

@@ -55,7 +55,7 @@ function AddViews(props: Props) {
         <div className="w-full">
             {loading ? (
                 <div className="flex justify-center">
-                    <CircularProgress size="lg" aria-label="Cargando..." />
+                    <CircularProgress  aria-label="Cargando..." />
                 </div>
             ) : (
                 <>
@@ -63,7 +63,7 @@ function AddViews(props: Props) {
                         founds.map((view) => (
                             <div key={view} className="mb-2 grid-cols-2">
                                 <Checkbox
-                                    size="lg"
+                                    
                                     checked={selected.includes(view)}
                                     onChange={(e) => selectName(view, e.target.checked)}
                                 >

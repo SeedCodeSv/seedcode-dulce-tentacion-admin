@@ -85,7 +85,7 @@ const ListExpenses = () => {
                 }}
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                size="lg"
+                
                 placeholder="Escribe para buscar..."
                 isClearable
                 onClear={() => {
@@ -100,7 +100,7 @@ const ListExpenses = () => {
                 }}
                 className="font-semibold"
                 color="primary"
-                size="lg"
+                
                 onClick={() => handleSearch(undefined)}
               >
                 Buscar
@@ -110,7 +110,7 @@ const ListExpenses = () => {
           <div className="flex items-end justify-between w-full gap-10 lg:justify-end">
             <ButtonGroup>
               <Button
-                size="lg"
+                
                 isIconOnly
                 color="secondary"
                 style={{
@@ -123,7 +123,7 @@ const ListExpenses = () => {
                 <ITable />
               </Button>
               <Button
-                size="lg"
+                
                 isIconOnly
                 color="default"
                 style={{
@@ -136,7 +136,7 @@ const ListExpenses = () => {
                 <CreditCard />
               </Button>
               <Button
-                size="lg"
+                
                 isIconOnly
                 color="default"
                 style={{
@@ -161,7 +161,7 @@ const ListExpenses = () => {
           <Select
             className="w-44 dark:text-white"
             variant="bordered"
-            size="lg"
+            
             label="Mostrar"
             labelPlacement="outside"
             classNames={{
@@ -224,7 +224,7 @@ const ListExpenses = () => {
                   <Button
                     onClick={() => handleEdit(item)}
                     isIconOnly
-                    size="lg"
+                    
                     style={{
                       backgroundColor: theme.colors.secondary,
                     }}
@@ -237,7 +237,7 @@ const ListExpenses = () => {
                   <Button
                     onClick={showAnexo.onOpen}
                     isIconOnly
-                    size="lg"
+                    
                     style={{
                       backgroundColor: theme.colors.third,
                     }}
@@ -338,7 +338,7 @@ const DeletePopUp = ({ expenses }: Props) => {
             style={{
               backgroundColor: theme.colors.danger,
             }}
-            size="lg"
+            
           >
             <TrashIcon
               style={{

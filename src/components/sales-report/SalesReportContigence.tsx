@@ -838,7 +838,7 @@ function SalesReportContigence() {
               value={dateInitial}
               defaultValue={formatDate()}
               placeholder="Buscar por nombre..."
-              size="lg"
+              
               type="date"
               variant="bordered"
               label="Fecha inicial"
@@ -852,7 +852,7 @@ function SalesReportContigence() {
               onChange={(e) => setDateEnd(e.target.value)}
               value={dateEnd}
               placeholder="Buscar por nombre..."
-              size="lg"
+              
               variant="bordered"
               label="Fecha final"
               type="date"
@@ -869,13 +869,13 @@ function SalesReportContigence() {
                 color: theme.colors.primary,
               }}
               color="primary"
-              size="lg"
+              
               className="font-semibold mt-6"
             >
               Buscar
             </Button>
             {/* <Select
-              size="lg"
+              
               label="Estado de la venta"
               labelPlacement="outside"
               variant="bordered"
@@ -905,7 +905,7 @@ function SalesReportContigence() {
                 <Drawer.Trigger asChild>
                   <Button
                     style={global_styles().thirdStyle}
-                    size="lg"
+                    
                     isIconOnly
                     onClick={() => setOpenVaul(true)}
                     type="button"
@@ -937,7 +937,7 @@ function SalesReportContigence() {
                             value={dateInitial}
                             defaultValue={formatDate()}
                             placeholder="Buscar por nombre..."
-                            size="lg"
+                            
                             type="date"
                             variant="bordered"
                             label="Fecha inicial"
@@ -951,7 +951,7 @@ function SalesReportContigence() {
                             onChange={(e) => setDateEnd(e.target.value)}
                             value={dateEnd}
                             placeholder="Buscar por nombre..."
-                            size="lg"
+                            
                             variant="bordered"
                             label="Fecha final"
                             type="date"
@@ -973,7 +973,7 @@ function SalesReportContigence() {
                             color: theme.colors.primary,
                           }}
                           className="w-full mb-10 font-semibold"
-                          size="lg"
+                          
                         >
                           Aplicar
                         </Button>
@@ -1047,7 +1047,7 @@ function SalesReportContigence() {
                       {rowData.selloInvalidacion === "null" ? (
                         <Button
                           style={global_styles().dangerStyles}
-                          size="lg"
+                          
                           isIconOnly
                           onClick={() => {
                             setSelectedSale(rowData), modalAnulation.onOpen();
@@ -1061,7 +1061,7 @@ function SalesReportContigence() {
                             ...global_styles().thirdStyle,
                             pointerEvents: "none",
                           }}
-                          size="lg"
+                          
                           isIconOnly
                           onClick={() => {
                             setSelectedSale(rowData), modalAnulation.onOpen();
@@ -1156,7 +1156,7 @@ function SalesReportContigence() {
                     <div className="flex gap-5">
                       <Button
                         style={global_styles().dangerStyles}
-                        size="lg"
+                        
                         isIconOnly
                         onClick={() => {
                           setSelectedSale(rowData);
@@ -1167,7 +1167,7 @@ function SalesReportContigence() {
                       </Button>
                       <Button
                         style={global_styles().warningStyles}
-                        size="lg"
+                        
                         isIconOnly
                         onClick={() => {
                           handleVerify(rowData);
@@ -1177,7 +1177,7 @@ function SalesReportContigence() {
                       </Button>
                       <Button
                         style={global_styles().thirdStyle}
-                        size="lg"
+                        
                         isIconOnly
                         onClick={() => {
                           handleSendToContingencia(rowData);
@@ -1187,7 +1187,7 @@ function SalesReportContigence() {
                       </Button>
                       <Button
                         style={global_styles().secondaryStyle}
-                        size="lg"
+                        
                         isIconOnly
                         onClick={() => {
                           setDataCustomer((prev) => ({
@@ -1254,7 +1254,7 @@ function SalesReportContigence() {
       >
         <div>
           <Select
-            size="lg"
+            
             label="Motivo contingencia"
             labelPlacement="outside"
             variant="bordered"
@@ -1277,7 +1277,7 @@ function SalesReportContigence() {
           {contingencia === "5" && (
             <div className="mt-5">
               <Textarea
-                size="lg"
+                
                 label="Información adicional"
                 labelPlacement="outside"
                 variant="bordered"

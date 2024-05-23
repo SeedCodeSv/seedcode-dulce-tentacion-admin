@@ -385,7 +385,7 @@ function AddProducts(props: Props) {
               </div>
             </div>
             <Button
-              size="lg"
+              
               onClick={() => handleSubmit()}
               className="w-full mt-4 text-sm font-semibold"
               style={{

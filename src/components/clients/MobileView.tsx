@@ -103,7 +103,7 @@ const gridItem = (
             </Button>
             <Button
               isIconOnly
-              size="lg"
+              
               style={{
                 backgroundColor: theme.colors.danger,
               }}
@@ -172,7 +172,7 @@ const ListItem = ({
           </Button>
           <Button
             isIconOnly
-            size="lg"
+            
             style={{
               backgroundColor: theme.colors.danger,
             }}
