@@ -103,13 +103,13 @@ const gridItem = (
             <Button
               onClick={() => handleEdit(branch)}
               isIconOnly
-              size="lg"
+              
               style={global_styles().secondaryStyle}
             >
               <Edit />
             </Button>
             <Button
-              size="lg"
+              
               onClick={() => handleBox(branch)}
               isIconOnly
               style={global_styles().darkStyle}
@@ -117,7 +117,7 @@ const gridItem = (
               <BoxIcon />
             </Button>
             <Button
-              size="lg"
+              
               onClick={() => {
                 handleBranchProduct(branch.id);
               }}
@@ -204,13 +204,13 @@ const ListItem = ({
           <Button
             onClick={() => handleEdit(branch)}
             isIconOnly
-            size="lg"
+            
             style={global_styles().secondaryStyle}
           >
             <Edit />
           </Button>
           <Button
-            size="lg"
+            
             onClick={() => handleBox(branch)}
             isIconOnly
             style={global_styles().darkStyle}
@@ -218,7 +218,7 @@ const ListItem = ({
             <BoxIcon />
           </Button>
           <Button
-            size="lg"
+            
             onClick={() => {
               handleBranchProduct(branch.id);
             }}

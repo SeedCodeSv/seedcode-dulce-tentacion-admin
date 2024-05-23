@@ -66,7 +66,7 @@ const AddCategoryExpenses = (props: Props) => {
                 onChange={handleChange("name")}
                 onBlur={handleBlur("name")}
                 placeholder="Ingresa el nombre de la categoría"
-                size="lg"
+                
                 classNames={{ label: "font-semibold text-sm  text-gray-600" }}
                 variant="bordered"
                 label="Nombre"
@@ -81,7 +81,7 @@ const AddCategoryExpenses = (props: Props) => {
             </div>
             <Button
               onClick={() => handleSubmit()}
-              size="lg"
+              
               className="w-full mt-4 text-sm font-semibold"
               style={{
                 backgroundColor: theme.colors.third,

@@ -14,6 +14,7 @@ import { Role } from "../../types/roles.types";
 import { useUsersStore } from "../../store/users.store";
 import { UserPayload } from "../../types/users.types";
 import { ThemeContext } from "../../hooks/useTheme";
+import classNames from "classnames";
 
 interface Props {
   onClose: () => void;
@@ -78,7 +79,6 @@ function AddUsers(props: Props) {
               <Input
                 label="Nombre de usuario"
                 labelPlacement="outside"
-                size="lg"
                 name="userName"
                 value={values.userName}
                 onChange={handleChange("userName")}
@@ -99,7 +99,6 @@ function AddUsers(props: Props) {
               <Input
                 label="Contraseña"
                 labelPlacement="outside"
-                size="lg"
                 name="userName"
                 value={values.password}
                 onChange={handleChange("password")}
@@ -125,10 +124,10 @@ function AddUsers(props: Props) {
                     handleChange("employeeId")(depSelected.id.toString());
                   }
                 }}
-                size="lg"
                 onBlur={handleBlur("employeeId")}
                 label="Empleado"
                 labelPlacement="outside"
+                className="dark:text-white"
                 placeholder="Selecciona el empleado"
                 variant="bordered"
                 classNames={{
@@ -136,7 +135,11 @@ function AddUsers(props: Props) {
                 }}
               >
                 {employee_list.map((dep) => (
-                  <AutocompleteItem value={dep.id} key={JSON.stringify(dep)}>
+                  <AutocompleteItem
+                    className="dark:text-white"
+                    value={dep.id}
+                    key={JSON.stringify(dep)}
+                  >
                     {dep.fullName}
                   </AutocompleteItem>
                 ))}
@@ -155,18 +158,22 @@ function AddUsers(props: Props) {
                     handleChange("roleId")(depSelected.id.toString());
                   }
                 }}
-                size="lg"
                 onBlur={handleBlur("roleId")}
                 label="Rol"
                 labelPlacement="outside"
                 placeholder="Selecciona el rol"
                 variant="bordered"
+                className="dark:text-white"
                 classNames={{
                   base: "text-gray-500 text-sm",
                 }}
               >
                 {roles_list.map((dep) => (
-                  <AutocompleteItem value={dep.id} key={JSON.stringify(dep)}>
+                  <AutocompleteItem
+                    className="dark:text-white"
+                    value={dep.id}
+                    key={JSON.stringify(dep)}
+                  >
                     {dep.name}
                   </AutocompleteItem>
                 ))}
@@ -178,7 +185,6 @@ function AddUsers(props: Props) {
               )}
             </div>
             <Button
-              size="lg"
               onClick={() => handleSubmit()}
               className="w-full mt-4 text-sm font-semibold"
               style={{

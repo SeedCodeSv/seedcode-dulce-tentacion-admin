@@ -18,6 +18,7 @@ interface Props {
   deletePopover: ({ user }: { user: User }) => JSX.Element;
   openEditModal: (user: User) => void;
   openKeyModal: (user: User) => void;
+  actions: string[];
 }
 
 function MobileView({
@@ -86,14 +87,14 @@ const gridItem = (
               style={{
                 backgroundColor: theme.colors.secondary,
               }}
-              size="lg"
+              
             >
               <EditIcon style={{ color: theme.colors.primary }} size={20} />
             </Button>
             <Button
               onClick={() => openKeyModal(user)}
               isIconOnly
-              size="lg"
+              
               style={{
                 backgroundColor: theme.colors.warning,
               }}
@@ -147,7 +148,7 @@ const ListItem = ({
         <div className="flex flex-col items-end justify-between w-full gap-4">
           <Button
             isIconOnly
-            size="lg"
+            
             style={{
               backgroundColor: theme.colors.secondary,
             }}
@@ -160,7 +161,7 @@ const ListItem = ({
           <Button
             onClick={() => openKeyModal(user)}
             isIconOnly
-            size="lg"
+            
             style={{
               backgroundColor: theme.colors.warning,
             }}

@@ -2,12 +2,14 @@ import { IGetUserPaginated, User, UserPayload, UserUpdate } from "../../types/us
 
 export interface UsersStore {
   users: User[];
-  users_paginated: IGetUserPaginated
+  users_paginated: IGetUserPaginated,
+  active_filter: number,
+  loading_users: boolean,
   saveUsers: (users: User[]) => void;
   getUsers: () => void;
   postUser: (payload: UserPayload) => Promise<boolean>;
   patchUser: (payload: UserUpdate, id: number) => Promise<boolean>;
   deleteUser: (id: number) => Promise<boolean>;
   updatePassword: (id: number, password: string) => Promise<boolean>;
-  getUsersPaginated: (page: number, limit: number, userName: string) => Promise<void>;
+  getUsersPaginated: (page: number, limit: number, userName: string, active?: number) => Promise<void>;
 }

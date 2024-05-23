@@ -46,7 +46,7 @@ const ListActionRol = () => {
             <div className="flex items-end justify-between w-full gap-10 lg:justify-end">
               <ButtonGroup>
                 <Button
-                  size="lg"
+                  
                   isIconOnly
                   color="secondary"
                   style={{
@@ -59,7 +59,7 @@ const ListActionRol = () => {
                   <ITable />
                 </Button>
                 <Button
-                  size="lg"
+                  
                   isIconOnly
                   color="default"
                   style={{
@@ -72,7 +72,7 @@ const ListActionRol = () => {
                   <CreditCard />
                 </Button>
                 <Button
-                  size="lg"
+                  
                   isIconOnly
                   color="default"
                   style={{
@@ -96,7 +96,7 @@ const ListActionRol = () => {
             <Select
               className="w-44"
               variant="bordered"
-              size="lg"
+              
               label="Mostrar"
               labelPlacement="outside"
               classNames={{

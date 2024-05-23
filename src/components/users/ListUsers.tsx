@@ -8,6 +8,7 @@ import {
   PopoverTrigger,
   Select,
   SelectItem,
+  Switch,
   useDisclosure,
 } from "@nextui-org/react";
 import { DataTable } from "primereact/datatable";
@@ -30,7 +31,7 @@ import { ThemeContext } from "../../hooks/useTheme";
 import { ButtonGroup } from "@nextui-org/react";
 import MobileView from "./MobileView";
 import AddButton from "../global/AddButton";
-import { Paginator, PaginatorPageChangeEvent } from "primereact/paginator";
+import { Paginator } from "primereact/paginator";
 import { paginator_styles } from "../../styles/paginator.styles";
 import Pagination from "../global/Pagination";
 import { User } from "../../types/users.types";
@@ -39,15 +40,22 @@ import { filterActions } from "../../utils/filters";
 import { Drawer } from "vaul";
 import { global_styles } from "../../styles/global.styles";
 import classNames from "classnames";
+import { limit_options } from "../../utils/constants";
 
-function ListUsers() {
+interface Props {
+  actions: string[];
+}
+
+function ListUsers({ actions }: Props) {
   const { theme, context } = useContext(ThemeContext);
   const [limit, setLimit] = useState(5);
   const { users_paginated, getUsersPaginated } = useUsersStore();
   const [user, setUser] = useState<User | undefined>();
+  const [active, setActive] = useState(true);
+
   useEffect(() => {
-    getUsersPaginated(1, limit, "");
-  }, [limit]);
+    getUsersPaginated(1, limit, "", active ? 1 : 0);
+  }, [limit, active]);
 
   const modalAdd = useDisclosure();
   const modalUpdate = useDisclosure();
@@ -65,7 +73,7 @@ function ListUsers() {
   const [userName, setUserName] = useState("");
 
   const handleSearch = (searchParam: string | undefined) => {
-    getUsersPaginated(1, limit, searchParam ?? userName);
+    getUsersPaginated(1, limit, searchParam ?? userName, active ? 1 : 0);
   };
 
   const { roleActions } = useContext(ActionsContext);
@@ -85,7 +93,7 @@ function ListUsers() {
     <>
       <div className="w-full h-full p-5 bg-gray-100 dark:bg-gray-800">
         <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
-          <div className="flex flex-col justify-between w-full gap-5 mb-5 lg:mb-10 lg:flex-row lg:gap-0">
+          <div className="flex flex-col justify-between w-full gap-5 lg:flex-row lg:gap-0">
             <div className="hidden w-full gap-5 md:flex">
               <div className="w-1/2">
                 <Input
@@ -100,7 +108,6 @@ function ListUsers() {
                   }}
                   value={userName}
                   onChange={(e) => setUserName(e.target.value)}
-                  size="lg"
                   placeholder="Escribe para buscar..."
                   isClearable
                   onClear={() => {
@@ -117,7 +124,6 @@ function ListUsers() {
                   }}
                   className="font-semibold"
                   color="primary"
-                  size="lg"
                   onClick={() => handleSearch(undefined)}
                 >
                   Buscar
@@ -127,7 +133,6 @@ function ListUsers() {
             <div className="flex items-end justify-between gap-10 lg:justify-end">
               <ButtonGroup>
                 <Button
-                  size="lg"
                   isIconOnly
                   color="secondary"
                   style={{
@@ -140,7 +145,6 @@ function ListUsers() {
                   <ITable />
                 </Button>
                 <Button
-                  size="lg"
                   isIconOnly
                   color="default"
                   style={{
@@ -153,7 +157,6 @@ function ListUsers() {
                   <CreditCard />
                 </Button>
                 <Button
-                  size="lg"
                   isIconOnly
                   color="default"
                   style={{
@@ -176,7 +179,6 @@ function ListUsers() {
                     <Drawer.Trigger asChild>
                       <Button
                         style={global_styles().thirdStyle}
-                        size="lg"
                         isIconOnly
                         onClick={() => setOpenVaul(true)}
                         type="button"
@@ -215,7 +217,6 @@ function ListUsers() {
                                 }}
                                 value={userName}
                                 onChange={(e) => setUserName(e.target.value)}
-                                size="lg"
                                 placeholder="Escribe para buscar..."
                                 isClearable
                                 onClear={() => {
@@ -231,7 +232,6 @@ function ListUsers() {
                               }}
                               className="mb-10 font-semibold"
                               color="primary"
-                              size="lg"
                               onClick={() => {
                                 handleSearch(undefined);
                                 setOpenVaul(false);
@@ -246,16 +246,15 @@ function ListUsers() {
                   </Drawer.Root>
                 </div>
               </div>
-              {actions_role_view && actions_role_view?.includes("Agregar") && (
+              {actions.includes("Agregar") && (
                 <AddButton onClick={() => modalAdd.onOpen()} />
               )}
             </div>
           </div>
-          <div className="flex justify-end w-full mb-1">
+          <div className="flex justify-end items-end gap-5 w-full mb-3">
             <Select
-              className="w-44"
+              className="w-44 dark:text-white"
               variant="bordered"
-              size="lg"
               label="Mostrar"
               labelPlacement="outside"
               classNames={{
@@ -266,14 +265,26 @@ function ListUsers() {
                 setLimit(Number(e.target.value !== "" ? e.target.value : "5"));
               }}
             >
-              <SelectItem key={"5"}>5</SelectItem>
-              <SelectItem key={"10"}>10</SelectItem>
-              <SelectItem key={"20"}>20</SelectItem>
-              <SelectItem key={"30"}>30</SelectItem>
-              <SelectItem key={"40"}>40</SelectItem>
-              <SelectItem key={"50"}>50</SelectItem>
-              <SelectItem key={"100"}>100</SelectItem>
+              {limit_options.map((limit) => (
+                <SelectItem
+                  className="dark:text-white"
+                  key={limit}
+                  value={limit}
+                >
+                  {limit}
+                </SelectItem>
+              ))}
             </Select>
+            <div className="flex items-center">
+              <Switch
+                onValueChange={(active) => setActive(active)}
+                isSelected={active}
+              >
+                <span className="text-sm sm:text-base whitespace-nowrap">
+                  Mostrar {active ? "inactivos" : "activos"}
+                </span>
+              </Switch>
+            </div>
           </div>
           {(view === "grid" || view === "list") && (
             <MobileView
@@ -287,6 +298,7 @@ function ListUsers() {
                 modalChangePassword.onOpen();
               }}
               layout={view as "grid" | "list"}
+              actions={actions}
             />
           )}
           {view === "table" && (
@@ -325,8 +337,7 @@ function ListUsers() {
                 header="Acciones"
                 body={(item) => (
                   <div className="flex w-full gap-5">
-                    {actions_role_view &&
-                      actions_role_view?.includes("Editar") && (
+                    {actions.includes("Editar") && (
                         <Button
                           onClick={() => {
                             setUser(item);
@@ -336,7 +347,6 @@ function ListUsers() {
                           style={{
                             backgroundColor: theme.colors.secondary,
                           }}
-                          size="lg"
                         >
                           <EditIcon
                             style={{ color: theme.colors.primary }}
@@ -345,7 +355,6 @@ function ListUsers() {
                         </Button>
                       )}
                     <Button
-                      size="lg"
                       onClick={() => {
                         setSelectedId(item.id);
                         modalChangePassword.onOpen();
@@ -357,8 +366,7 @@ function ListUsers() {
                     >
                       <Key color={theme.colors.primary} size={20} />
                     </Button>
-                    {actions_role_view &&
-                      actions_role_view?.includes("Eliminar") && (
+                    {actions.includes("Eliminar") && (
                         <DeletePopUp user={item} />
                       )}
                   </div>
@@ -375,7 +383,7 @@ function ListUsers() {
                   currentPage={users_paginated.currentPag}
                   totalPages={users_paginated.totalPag}
                   onPageChange={(page) => {
-                    getUsersPaginated(page, limit, userName);
+                    getUsersPaginated(page, limit, userName, active ? 1 : 0);
                   }}
                 />
               </div>
@@ -391,7 +399,12 @@ function ListUsers() {
                   }}
                   currentPageReportTemplate="{currentPage} de {totalPages}"
                   onPageChange={(e) => {
-                    getUsersPaginated(e.page + 1, limit, userName);
+                    getUsersPaginated(
+                      e.page + 1,
+                      limit,
+                      userName,
+                      active ? 1 : 0
+                    );
                   }}
                 />
               </div>
@@ -432,11 +445,11 @@ function ListUsers() {
 
 export default ListUsers;
 
-interface Props {
+interface PopProps {
   user: User;
 }
 
-const DeletePopUp = ({ user }: Props) => {
+const DeletePopUp = ({ user }: PopProps) => {
   const { theme } = useContext(ThemeContext);
   const { deleteUser } = useUsersStore();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -456,7 +469,6 @@ const DeletePopUp = ({ user }: Props) => {
             style={{
               backgroundColor: theme.colors.danger,
             }}
-            size="lg"
           >
             <TrashIcon
               style={{
@@ -468,10 +480,10 @@ const DeletePopUp = ({ user }: Props) => {
         </PopoverTrigger>
         <PopoverContent>
           <div className="w-full p-5">
-            <p className="font-semibold text-gray-600">
+            <p className="font-semibold text-gray-600 dark:text-white">
               Eliminar {user.userName}
             </p>
-            <p className="mt-3 text-center text-gray-600 w-72">
+            <p className="mt-3 text-center text-gray-600 dark:text-white w-72">
               ¿Estas seguro de eliminar este registro?
             </p>
             <div className="mt-4">

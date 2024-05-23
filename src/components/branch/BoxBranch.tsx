@@ -129,7 +129,7 @@ function AddBranch(props: Props) {
                 </PopoverContent>
               </Popover>
               <Button
-                size="lg"
+                
                 className="font-semibold"
                 style={global_styles().darkStyle}
                 onClick={handleActivate}
@@ -160,7 +160,7 @@ function AddBranch(props: Props) {
                   <div className="">
                     <div className="w-full pt-3 mb-4">
                       <Input
-                        size="lg"
+                        
                         label="Monto inicial"
                         placeholder="Cantidad"
                         variant="bordered"
@@ -182,7 +182,7 @@ function AddBranch(props: Props) {
                         onClick={() => handleSubmit()}
                         style={global_styles().thirdStyle}
                         className="w-full font-semibold"
-                        size="lg"
+                        
                       >
                         Guardar
                       </Button>

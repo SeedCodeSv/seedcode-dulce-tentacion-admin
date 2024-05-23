@@ -52,7 +52,6 @@ function UpdatePassword(props: Props) {
                 label="Nombre"
                 labelPlacement="outside"
                 name="password"
-                size="lg"
                 value={values.password}
                 onChange={handleChange("password")}
                 onBlur={handleBlur("password")}

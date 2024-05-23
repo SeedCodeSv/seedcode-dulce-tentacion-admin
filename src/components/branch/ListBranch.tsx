@@ -44,11 +44,8 @@ import classNames from "classnames";
 function ListBranch() {
   const { theme, context } = useContext(ThemeContext);
 
-  const {
-    getBranchesPaginated,
-    branches_paginated,
-    disableBranch,
-  } = useBranchesStore();
+  const { getBranchesPaginated, branches_paginated, disableBranch } =
+    useBranchesStore();
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -76,7 +73,6 @@ function ListBranch() {
           <Input
             startContent={<User />}
             className="w-full dark:text-white"
-            size="lg"
             variant="bordered"
             labelPlacement="outside"
             label="Nombre"
@@ -101,7 +97,6 @@ function ListBranch() {
             placeholder="Escribe para buscar..."
             startContent={<PhoneIcon />}
             className="w-full dark:text-white"
-            size="lg"
             classNames={{
               label: "font-semibold text-gray-700",
               inputWrapper: "pr-0",
@@ -121,7 +116,6 @@ function ListBranch() {
             placeholder="Escribe para buscar..."
             startContent={<MapPinIcon />}
             className="w-full dark:text-white"
-            size="lg"
             variant="bordered"
             isClearable
             labelPlacement="outside"
@@ -181,7 +175,6 @@ function ListBranch() {
             <Button
               style={global_styles().secondaryStyle}
               className="px-12 font-semibold max-w-72"
-              size="lg"
               onClick={() => handleSearch()}
               type="button"
             >
@@ -191,7 +184,6 @@ function ListBranch() {
           <div className="flex items-end justify-between gap-10 mt lg:justify-end">
             <ButtonGroup>
               <Button
-                size="lg"
                 isIconOnly
                 color="secondary"
                 style={{
@@ -205,7 +197,6 @@ function ListBranch() {
                 <ITable />
               </Button>
               <Button
-                size="lg"
                 isIconOnly
                 color="default"
                 style={{
@@ -219,7 +210,6 @@ function ListBranch() {
                 <CreditCard />
               </Button>
               <Button
-                size="lg"
                 isIconOnly
                 color="default"
                 style={{
@@ -243,7 +233,6 @@ function ListBranch() {
                   <Drawer.Trigger asChild>
                     <Button
                       style={global_styles().thirdStyle}
-                      size="lg"
                       isIconOnly
                       onClick={() => setOpenVaul(true)}
                       type="button"
@@ -272,7 +261,6 @@ function ListBranch() {
                           <Button
                             style={global_styles().secondaryStyle}
                             className="mb-10 font-semibold"
-                            size="lg"
                             onClick={() => {
                               handleSearch();
                               setOpenVaul(false);
@@ -298,14 +286,12 @@ function ListBranch() {
               label: "font-semibold text-sm",
             }}
             onValueChange={(isSelected) => setActive(isSelected ? 1 : 0)}
-            size="lg"
           >
             {active === 1 ? "Mostrar inactivos" : "Mostrar activos"}
           </Switch>
           <Select
             className="w-44 dark:text-white"
             variant="bordered"
-            size="lg"
             label="Mostrar"
             labelPlacement="outside"
             classNames={{
@@ -332,7 +318,6 @@ function ListBranch() {
                   {item.isActive ? (
                     <>
                       <Button
-                        size="lg"
                         onClick={() => {
                           handleEdit(item);
                         }}
@@ -365,7 +350,6 @@ function ListBranch() {
                     </>
                   )}
                   <Button
-                    size="lg"
                     onClick={() => {
                       setBranch(item);
                       modalBoxBranch.onOpen();
@@ -376,7 +360,6 @@ function ListBranch() {
                     <BoxIcon />
                   </Button>
                   <Button
-                    size="lg"
                     onClick={() => {
                       setBranchId(item.id);
                       modalBranchProduct.onOpen();
@@ -396,7 +379,9 @@ function ListBranch() {
         {(view === "grid" || view === "list") && (
           <>
             <MobileView
-              handleActive={() => {handleInactive}}
+              handleActive={() => {
+                handleInactive;
+              }}
               layout={view as "grid" | "list"}
               deletePopover={DeletePopUp}
               handleEdit={handleEdit}
@@ -517,7 +502,6 @@ const DeletePopUp = ({ branch }: Props) => {
       <Button
         ref={buttonRef as any}
         style={global_styles().dangerStyles}
-        size="lg"
         isIconOnly
         onClick={() => setVisible(!visible)}
       >
@@ -535,18 +519,13 @@ const DeletePopUp = ({ branch }: Props) => {
               <div className="flex justify-between gap-5 mt-5">
                 <Button
                   ref={acceptBtnRef}
-                  size="lg"
                   className="font-semibold"
                   style={global_styles().thirdStyle}
                   onClick={handleDelete}
                 >
                   Eliminar
                 </Button>
-                <Button
-                  size="lg"
-                  ref={rejectBtnRef}
-                  onClick={() => setVisible(false)}
-                >
+                <Button ref={rejectBtnRef} onClick={() => setVisible(false)}>
                   Cancelar
                 </Button>
               </div>

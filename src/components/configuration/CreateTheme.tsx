@@ -230,7 +230,7 @@ function CreateTheme() {
         </div>
         <div className="mt-10">
           <NButton
-            size="lg"
+            
             className="w-full mt-4 text-sm font-semibold"
             onClick={handleSave}
             style={{

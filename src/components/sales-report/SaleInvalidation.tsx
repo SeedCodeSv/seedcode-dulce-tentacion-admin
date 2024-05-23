@@ -350,7 +350,7 @@ export const SaleInvalidation = (props: Props) => {
                     <>
                       <Select
                         className="my-3"
-                        size="lg"
+                        
                         variant="bordered"
                         placeholder="Selecciona el motivo"
                         value={motivo}
@@ -369,7 +369,7 @@ export const SaleInvalidation = (props: Props) => {
                       </Select>
                       <Select
                         className="my-3"
-                        size="lg"
+                        
                         variant="bordered"
                         placeholder="Selecciona una venta"
                         value={generationCodeR}
@@ -397,7 +397,7 @@ export const SaleInvalidation = (props: Props) => {
                   <div className="flex flex-row justify-center gap-2 items-center p-2">
                     <p>Desea reemplazar la venta?</p>
                     <Switch
-                      size="lg"
+                      
                       checked={showMoreFields}
                       onChange={() => changeToggle()}
                     />
