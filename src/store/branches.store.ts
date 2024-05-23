@@ -7,7 +7,8 @@ import {
   delete_branch,
   get_branches_list,
   disable_branch,
-  get_branch_products
+  get_branch_products,
+  save_active_branch,
 } from "../services/branches.service";
 import { messages } from "../utils/constants";
 import { toast } from "sonner";
@@ -47,7 +48,7 @@ export const useBranchesStore = create<IBranchStore>((set, get) => ({
       .catch(() => {
         toast.error(messages.error);
         return false;
-      })
+      });
   },
   saveBranchesPaginated: (data) => set({ branches_paginated: data }),
   getBranchesPaginated: (page, limit, name, phone, address, active = 1) => {
@@ -108,12 +109,23 @@ export const useBranchesStore = create<IBranchStore>((set, get) => ({
     }
   },
   async getBranchProducts(id, name, category) {
-      await get_branch_products(id, name, category)
+    await get_branch_products(id, name, category)
       .then(({ data }) => {
         set({ branch_products_list: data.branchProducts });
-      }).catch(() => {
+      })
+      .catch(() => {
         set({ branch_products_list: [] });
         toast.error(messages.error);
-      })
-  }
+      });
+  },
+  saveActiveBranch(id, state) {
+    save_active_branch(id, state).then(({ data }) => {
+      if (data.ok) {
+        get().getBranchesPaginated(1, get().limit, "", "", "", get().active);
+        toast.success(messages.success);
+      } else {
+        toast.error(messages.error);
+      }
+    });
+  },
 }));

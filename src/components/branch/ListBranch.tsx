@@ -21,6 +21,7 @@ import {
   CreditCard,
   List,
   Filter,
+  BadgeCheck,
 } from "lucide-react";
 import { ThemeContext } from "../../hooks/useTheme";
 import { ConfirmPopup } from "primereact/confirmpopup";
@@ -43,8 +44,11 @@ import classNames from "classnames";
 function ListBranch() {
   const { theme, context } = useContext(ThemeContext);
 
-  const { getBranchesPaginated, branches_paginated, disableBranch } =
-    useBranchesStore();
+  const {
+    getBranchesPaginated,
+    branches_paginated,
+    disableBranch,
+  } = useBranchesStore();
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -166,7 +170,6 @@ function ListBranch() {
   const clearClose = () => {
     setBranch(undefined);
   };
-
   return (
     <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
       <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
@@ -341,13 +344,24 @@ function ListBranch() {
                     </>
                   ) : (
                     <>
-                      <Switch
-                        onValueChange={() => handleInactive(item)}
-                        defaultSelected={item.isActive}
+                      <Button
                         size="lg"
+                        onClick={() => {
+                          handleInactive(item);
+                        }}
+                        isIconOnly
+                        style={{
+                          backgroundColor: theme.colors.third,
+                        }}
                       >
-                        Activar
-                      </Switch>
+                        <BadgeCheck
+                          onClick={() => {
+                            handleInactive(item);
+                          }}
+                          style={{ color: theme.colors.primary }}
+                          size={20}
+                        />
+                      </Button>
                     </>
                   )}
                   <Button
@@ -372,6 +386,7 @@ function ListBranch() {
                   >
                     <ShoppingBag />
                   </Button>
+
                   <DeletePopUp branch={item} />
                 </div>
               </>
@@ -381,6 +396,7 @@ function ListBranch() {
         {(view === "grid" || view === "list") && (
           <>
             <MobileView
+              handleActive={() => {handleInactive}}
               layout={view as "grid" | "list"}
               deletePopover={DeletePopUp}
               handleEdit={handleEdit}

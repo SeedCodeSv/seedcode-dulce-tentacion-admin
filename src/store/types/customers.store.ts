@@ -14,10 +14,13 @@ export interface IUseCustomersStore {
     page: number,
     limit: number,
     name: string,
-    email: string
+    email: string,
+    active: number,
+    isTransmitter: number
   ) => void;
   postCustomer: (payload: PayloadCustomer) => Promise<boolean>;
   patchCustomer: (payload: PayloadCustomer, id: number) => void;
   getCustomersList: () => void;
+  save_active_customer: (id: number) => void;
   deleteCustomer: (id: number) => Promise<boolean>;
 }
