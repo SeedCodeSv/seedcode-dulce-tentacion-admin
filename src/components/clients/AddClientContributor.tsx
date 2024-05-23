@@ -13,7 +13,6 @@ import { useBillingStore } from "../../store/facturation/billing.store";
 import { Departamento } from "../../types/billing/cat-012-departamento.types";
 import { Municipio } from "../../types/billing/cat-013-municipio.types";
 import { CodigoActividadEconomica } from "../../types/billing/cat-019-codigo-de-actividad-economica.types";
-import { normalize } from "../../utils/filters";
 import { useCustomerStore } from "../../store/customers.store";
 import {
   CustomerDirection,
@@ -99,7 +98,9 @@ function AddClientContributor(props: Props) {
     cat_019_codigo_de_actividad_economica,
   } = useBillingStore();
 
-  const [selectedCodeDep, setSelectedCodeDep] = useState("0");
+  const [selectedCodeDep, setSelectedCodeDep] = useState(
+    props.customer_direction?.departamento ?? "0"
+  );
 
   useEffect(() => {
     getCat012Departamento();
@@ -107,23 +108,13 @@ function AddClientContributor(props: Props) {
   }, []);
 
   useEffect(() => {
-    getCat013Municipios(selectedCodeDep);
-  }, [selectedCodeDep]);
-
-  const itemsPerPage = 15;
-
-  const [search, setSearch] = useState("");
-
-  const filterCodeActividad = useMemo(() => {
-    if (search === "") {
-      return cat_019_codigo_de_actividad_economica.slice(0, itemsPerPage);
+    if (selectedCodeDep !== "0") {
+      getCat013Municipios(
+        props.customer_direction?.departamento ?? selectedCodeDep
+      );
     }
-    return cat_019_codigo_de_actividad_economica
-      .filter((actividad) => {
-        return normalize(actividad.valores).includes(normalize(search));
-      })
-      .slice(0, itemsPerPage);
-  }, [search, cat_019_codigo_de_actividad_economica]);
+    getCat013Municipios(selectedCodeDep);
+  }, [selectedCodeDep, props.customer_direction]);
 
   const { postCustomer, patchCustomer } = useCustomerStore();
   const user = get_user();
@@ -196,7 +187,7 @@ function AddClientContributor(props: Props) {
 
   const handleFilter = (name = "") => {
     getCat019CodigoActividadEconomica(name);
-  }
+  };
 
   return (
     <div>
@@ -345,18 +336,17 @@ function AddClientContributor(props: Props) {
                     // selectedKey={selectedKeyCodActivity}
                     defaultSelectedKey={values.descActividad}
                     value={selectedKeyCodActivity}
-                    onInputChange={e => handleFilter(e)}
+                    onInputChange={(e) => handleFilter(e)}
                   >
-                    {filterCodeActividad &&
-                      filterCodeActividad.map((dep) => (
-                        <AutocompleteItem
-                          value={dep.codigo}
-                          key={JSON.stringify(dep)}
-                          className="dark:text-white"
-                        >
-                          {dep.valores}
-                        </AutocompleteItem>
-                      ))}
+                    {cat_019_codigo_de_actividad_economica.map((dep) => (
+                      <AutocompleteItem
+                        value={dep.codigo}
+                        key={JSON.stringify(dep)}
+                        className="dark:text-white"
+                      >
+                        {dep.valores}
+                      </AutocompleteItem>
+                    ))}
                   </Autocomplete>
                   {errors.codActividad && touched.codActividad && (
                     <span className="text-sm font-semibold text-red-500">
