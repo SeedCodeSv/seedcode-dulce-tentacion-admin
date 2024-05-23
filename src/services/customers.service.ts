@@ -6,12 +6,15 @@ import {
   PayloadCustomer,
 } from "../types/customers.types";
 import { get_token, get_user } from "../storage/localStorage";
+import { boolean } from "yup";
 
 export const get_customers_pagination = (
   page = 1,
   limit = 5,
   name = "",
-  email = ""
+  email = "",
+  active: number,
+  isTransmitter: number
 ) => {
   const user = get_user();
   const token = get_token() ?? "";
@@ -25,7 +28,11 @@ export const get_customers_pagination = (
       "&nombre=" +
       name +
       "&correo=" +
-      email,
+      email +
+      "&active=" +
+      active +
+      "&isTransmitter=" +
+      isTransmitter,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -63,9 +70,19 @@ export const delete_customer = (id: number) => {
 export const get_customer = () => {
   const user = get_user();
   const token = get_token() ?? "";
-  return axios.get<IGetCustomers>(API_URL + `/customers/list-by-transmitter/${user?.employee.branch.transmitterId}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
+  return axios.get<IGetCustomers>(
+    API_URL +
+      `/customers/list-by-transmitter/${user?.employee.branch.transmitterId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     }
-  });
-} 
+  );
+};
+
+
+export const activate_customer = (id: number) => {
+  return axios.patch<{ ok: boolean }>(API_URL + "/customers/activate/" + id);
+};
+

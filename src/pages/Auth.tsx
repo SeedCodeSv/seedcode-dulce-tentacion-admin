@@ -76,7 +76,7 @@ function Auth() {
                   <Input
                     classNames={{ label: "text-sm font-semibold" }}
                     variant="bordered"
-                    size="lg"
+                    
                     label="Usuario"
                     value={values.userName}
                     onChange={handleChange("userName")}
@@ -95,7 +95,7 @@ function Auth() {
                   <Input
                     classNames={{ label: "text-sm font-semibold" }}
                     variant="bordered"
-                    size="lg"
+                    
                     value={values.password}
                     onChange={handleChange("password")}
                     onBlur={handleBlur("password")}
@@ -131,7 +131,7 @@ function Auth() {
                     color: theme.colors.primary,
                   }}
                   className={" mt-10 w-full font-semibold"}
-                  size="lg"
+                  
                   onClick={() => handleSubmit()}
                 >
                   Iniciar Sesión

@@ -495,7 +495,7 @@ function CreditoFiscal(props: Props) {
             <Button
               style={global_styles().secondaryStyle}
               onClick={() => generateFactura()}
-              size="lg"
+              
               className="w-full"
             >
               Generar Crédito fiscal
@@ -525,21 +525,21 @@ function CreditoFiscal(props: Props) {
                 generateFactura();
               }}
               style={global_styles().secondaryStyle}
-              size="lg"
+              
             >
               Re-intentar
             </Button>
             <Button
               onClick={handleVerify}
               style={global_styles().warningStyles}
-              size="lg"
+              
             >
               Verificar
             </Button>
             <Button
               onClick={sendToContingencia}
               style={global_styles().dangerStyles}
-              size="lg"
+              
             >
               Enviar a contingencia
             </Button>

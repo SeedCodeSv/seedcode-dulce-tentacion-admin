@@ -2,6 +2,7 @@ import { useBranchesStore } from "../../store/branches.store";
 import { DataView } from "primereact/dataview";
 import { Branches } from "../../types/branches.types";
 import {
+  BadgeCheck,
   BoxIcon,
   Edit,
   MapPin,
@@ -12,6 +13,8 @@ import {
 import { Button } from "@nextui-org/react";
 import { classNames } from "primereact/utils";
 import { global_styles } from "../../styles/global.styles";
+import { useContext } from "react";
+import { ThemeContext } from "../../hooks/useTheme";
 
 interface Props {
   layout: "grid" | "list";
@@ -19,6 +22,7 @@ interface Props {
   handleEdit: (branch: Branches) => void;
   handleBranchProduct: (id: number) => void;
   handleBox: (branch: Branches) => void;
+  handleActive: (id: number) => void;
 }
 
 function MobileView({
@@ -27,8 +31,10 @@ function MobileView({
   handleEdit,
   handleBranchProduct,
   handleBox,
+  handleActive,
 }: Props) {
   const { branches_paginated } = useBranchesStore();
+
   return (
     <div className="w-full pb-10">
       <DataView
@@ -49,7 +55,8 @@ function MobileView({
             deletePopover,
             handleEdit,
             handleBranchProduct,
-            handleBox
+            handleBox,
+            handleActive
           )
         }
         emptyMessage="No users found"
@@ -66,8 +73,11 @@ const gridItem = (
   deletePopover: ({ branch }: { branch: Branches }) => JSX.Element,
   handleEdit: (branch: Branches) => void,
   handleBranchProduct: (id: number) => void,
-  handleBox: (branch: Branches) => void
+  handleBox: (branch: Branches) => void,
+  handleActive: (id: number) => void
 ) => {
+  const { theme } = useContext(ThemeContext);
+
   return (
     <>
       {layout === "grid" ? (
@@ -93,13 +103,13 @@ const gridItem = (
             <Button
               onClick={() => handleEdit(branch)}
               isIconOnly
-              size="lg"
+              
               style={global_styles().secondaryStyle}
             >
               <Edit />
             </Button>
             <Button
-              size="lg"
+              
               onClick={() => handleBox(branch)}
               isIconOnly
               style={global_styles().darkStyle}
@@ -107,7 +117,7 @@ const gridItem = (
               <BoxIcon />
             </Button>
             <Button
-              size="lg"
+              
               onClick={() => {
                 handleBranchProduct(branch.id);
               }}
@@ -116,11 +126,32 @@ const gridItem = (
             >
               <ShoppingBag />
             </Button>
+            {branch.isActive === false && (
+              <Button
+                size="lg"
+                onClick={() => {
+                  handleActive(branch.id);
+                }}
+                isIconOnly
+                style={{
+                  backgroundColor: theme.colors.third,
+                }}
+              >
+                <BadgeCheck
+                  onClick={() => {
+                    handleActive(branch.id);
+                  }}
+                  style={{ color: theme.colors.primary }}
+                  size={20}
+                />
+              </Button>
+            )}
             {deletePopover({ branch })}
           </div>
         </div>
       ) : (
         <ListItem
+          handleActive={handleActive}
           branch={branch}
           deletePopover={deletePopover}
           handleEdit={handleEdit}
@@ -138,6 +169,7 @@ interface ListProps {
   branch: Branches;
   handleBranchProduct: (id: number) => void;
   handleBox: (branch: Branches) => void;
+  handleActive: (id: number) => void;
 }
 
 const ListItem = ({
@@ -146,7 +178,9 @@ const ListItem = ({
   handleEdit,
   handleBranchProduct,
   handleBox,
+  handleActive,
 }: ListProps) => {
+  const { theme } = useContext(ThemeContext);
   return (
     <>
       <div className="flex w-full col-span-1 p-5 border-b shadow md:col-span-2 lg:col-span-3 xl:col-span-4">
@@ -170,13 +204,13 @@ const ListItem = ({
           <Button
             onClick={() => handleEdit(branch)}
             isIconOnly
-            size="lg"
+            
             style={global_styles().secondaryStyle}
           >
             <Edit />
           </Button>
           <Button
-            size="lg"
+            
             onClick={() => handleBox(branch)}
             isIconOnly
             style={global_styles().darkStyle}
@@ -184,7 +218,7 @@ const ListItem = ({
             <BoxIcon />
           </Button>
           <Button
-            size="lg"
+            
             onClick={() => {
               handleBranchProduct(branch.id);
             }}
@@ -193,6 +227,26 @@ const ListItem = ({
           >
             <ShoppingBag />
           </Button>
+          {branch.isActive === false && (
+            <Button
+              size="lg"
+              onClick={() => {
+                handleActive(branch.id);
+              }}
+              isIconOnly
+              style={{
+                backgroundColor: theme.colors.third,
+              }}
+            >
+              <BadgeCheck
+                onClick={() => {
+                  handleActive(branch.id);
+                }}
+                style={{ color: theme.colors.primary }}
+                size={20}
+              />
+            </Button>
+          )}
           {deletePopover({ branch })}
         </div>
       </div>

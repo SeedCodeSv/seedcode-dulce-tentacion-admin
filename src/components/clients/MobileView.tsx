@@ -11,17 +11,22 @@ import {
   Users2Icon,
   EditIcon,
   Repeat,
+  MapPin,
+  RefreshCcw,
+  BadgeCheck,
 } from "lucide-react";
 import { ThemeContext } from "../../hooks/useTheme";
 import { Customer } from "../../types/customers.types";
+import { global_styles } from "../../styles/global.styles";
 
 interface Props {
   layout: "grid" | "list";
   deletePopover: ({ customers }: { customers: Customer }) => JSX.Element;
   handleChangeCustomer: (customer: Customer, type: string) => void;
+  handleActive: (id: number) => void;
 }
 
-function MobileView({ layout, handleChangeCustomer }: Props) {
+function MobileView({ layout, handleChangeCustomer, handleActive }: Props) {
   const { customer_pagination } = useCustomerStore();
 
   return (
@@ -33,12 +38,12 @@ function MobileView({ layout, handleChangeCustomer }: Props) {
         pt={{
           grid: () => ({
             className:
-              "grid dark:bg-slate-800 pb-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid-nogutter gap-5 mt-5",
+              "grid dark:bg-slate-800 pb-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 grid-nogutter gap-5 mt-5",
           }),
         }}
         color="surface"
         itemTemplate={(customer) =>
-          gridItem(customer, layout, handleChangeCustomer)
+          gridItem(customer, layout, handleChangeCustomer, handleActive)
         }
         emptyMessage="No customers found"
       />
@@ -49,7 +54,8 @@ function MobileView({ layout, handleChangeCustomer }: Props) {
 const gridItem = (
   customers: Customer,
   layout: "grid" | "list",
-  handleChangeCustomer: (customer: Customer, type: string) => void
+  handleChangeCustomer: (customer: Customer, type: string) => void,
+  handleActive: (id: number) => void
 ) => {
   const { theme } = useContext(ThemeContext);
   return (
@@ -62,19 +68,23 @@ const gridItem = (
           key={customers.id}
         >
           <div className="flex w-full gap-2">
-            <IUser color={"#274c77"} size={35} />
+            <IUser className="text-[#274c77] dark:text-gray-400" size={35} />
             {customers.nombre}
           </div>
           <div className="flex w-full gap-2 mt-3">
-            <Phone color="#00bbf9" size={33} />
+            <Phone className="text-[#00bbf9] dark:text-gray-400" size={33} />
             {customers.telefono}
           </div>
           <div className="flex w-full gap-2 mt-3">
-            <Mail color={"#006d77"} size={35} />
-            {customers.correo}
+            <MapPin className="text-[#00bbf9] dark:text-gray-400" size={33} />
+            {customers.direccion.nombreDepartamento} ,
+            {customers.direccion.municipio} ,{customers.direccion.complemento}
           </div>
           <div className="flex w-full gap-2 mt-3">
-            <Users2Icon color={"#006d77"} size={35} />
+            <Users2Icon
+              className="text-[#006d77] dark:text-gray-400"
+              size={35}
+            />
             {customers.esContribuyente ? "Si" : "No"}
           </div>
           <div className="flex justify-between mt-5 w-ful">
@@ -98,17 +108,31 @@ const gridItem = (
             </Button>
             <Button
               isIconOnly
-              size="lg"
               style={{
                 backgroundColor: theme.colors.danger,
               }}
             >
               <Trash color={theme.colors.primary} size={20} />
             </Button>
+
+            {customers.isActive === false && (
+              <Button
+                onClick={() => {
+                  handleActive(customers.id);
+                }}
+                isIconOnly
+                style={{
+                  backgroundColor: theme.colors.third,
+                }}
+              >
+                <BadgeCheck style={{ color: theme.colors.primary }} size={20} />
+              </Button>
+            )}
           </div>
         </div>
       ) : (
         <ListItem
+          handleActive={handleActive}
           customers={customers}
           handleChangeCustomer={handleChangeCustomer}
         />
@@ -116,13 +140,14 @@ const gridItem = (
     </>
   );
 };
-
 const ListItem = ({
   customers,
   handleChangeCustomer,
+  handleActive,
 }: {
   customers: Customer;
   handleChangeCustomer: (customer: Customer, type: string) => void;
+  handleActive: (id: number) => void;
 }) => {
   const { theme } = useContext(ThemeContext);
   return (
@@ -147,33 +172,45 @@ const ListItem = ({
           </div>
         </div>
         <div className="flex flex-col items-end justify-between w-full">
-        <Button
-              onClick={() => handleChangeCustomer(customers, "edit")}
-              isIconOnly
-              style={{
-                backgroundColor: theme.colors.secondary,
-              }}
-            >
-              <EditIcon style={{ color: theme.colors.primary }} size={20} />
-            </Button>
-            <Button
-              onClick={() => handleChangeCustomer(customers, "change")}
-              isIconOnly
-              style={{
-                backgroundColor: theme.colors.third,
-              }}
-            >
-              <Repeat style={{ color: theme.colors.primary }} size={20} />
-            </Button>
+          <Button
+            onClick={() => handleChangeCustomer(customers, "edit")}
+            isIconOnly
+            style={{
+              backgroundColor: theme.colors.secondary,
+            }}
+          >
+            <EditIcon style={{ color: theme.colors.primary }} size={20} />
+          </Button>
+          <Button
+            onClick={() => handleChangeCustomer(customers, "change")}
+            isIconOnly
+            style={{
+              backgroundColor: theme.colors.third,
+            }}
+          >
+            <Repeat style={{ color: theme.colors.primary }} size={20} />
+          </Button>
           <Button
             isIconOnly
-            size="lg"
             style={{
               backgroundColor: theme.colors.danger,
             }}
           >
             <Trash color={theme.colors.primary} size={20} />
           </Button>
+          {customers.isActive === false && (
+            <Button
+              onClick={() => {
+                handleActive(customers.id);
+              }}
+              isIconOnly
+              style={{
+                backgroundColor: theme.colors.third,
+              }}
+            >
+              <BadgeCheck style={{ color: theme.colors.primary }} size={20} />
+            </Button>
+          )}
         </div>
       </div>
     </>

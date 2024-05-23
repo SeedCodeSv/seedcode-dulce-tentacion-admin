@@ -6,6 +6,7 @@ import Expenses from "../pages/Expenses";
 import { useEffect, useState } from "react";
 import { useActionsRolStore } from "../store/actions_rol.store";
 import HomeSeller from "../pages/Seller/HomeSeller";
+import Customers from "../pages/Customers";
 
 export const router_seller = () => {
   const { role_view_action, OnGetActionsByRole } = useActionsRolStore();
@@ -43,6 +44,10 @@ export const router_seller = () => {
     {
       path: "/newSales",
       element: views && views.includes("Ventas") && <NewSales />,
+    },
+    {
+      path: "/clients",
+      element: views && views.includes("Clientes") && <Customers />,
     },
     {
       path: "sales-reports",

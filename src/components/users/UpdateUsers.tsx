@@ -75,7 +75,6 @@ function AddUsers(props: Props) {
               <Input
                 label="Nombre de usuario"
                 labelPlacement="outside"
-                size="lg"
                 name="userName"
                 value={values.userName}
                 onChange={handleChange("userName")}
@@ -100,7 +99,6 @@ function AddUsers(props: Props) {
                     handleChange("employeeId")(depSelected.id.toString());
                   }
                 }}
-                size="lg"
                 onBlur={handleBlur("employeeId")}
                 label="Empleado"
                 labelPlacement="outside"
@@ -134,7 +132,6 @@ function AddUsers(props: Props) {
                     handleChange("roleId")(depSelected.id.toString());
                   }
                 }}
-                size="lg"
                 onBlur={handleBlur("roleId")}
                 label="Rol"
                 labelPlacement="outside"
@@ -161,7 +158,6 @@ function AddUsers(props: Props) {
               )}
             </div>
             <Button
-              size="lg"
               onClick={() => handleSubmit()}
               className="w-full mt-4 text-sm font-semibold"
               style={{

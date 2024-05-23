@@ -125,7 +125,7 @@ const AddActionRol = ({closeModal}: Props) => {
                 }}
               >
                 {roles_list.map((rol) => (
-                  <AutocompleteItem value={rol.name} key={JSON.stringify(rol)}>
+                  <AutocompleteItem  className="dark:text-white" value={rol.name} key={JSON.stringify(rol)}>
                     {rol.name}
                   </AutocompleteItem>
                 ))}
@@ -156,6 +156,7 @@ const AddActionRol = ({closeModal}: Props) => {
               >
                 {views_list.map((view) => (
                   <AutocompleteItem
+                  className="dark:text-white"
                     value={view.name}
                     key={JSON.stringify(view)}
                   >
@@ -172,19 +173,19 @@ const AddActionRol = ({closeModal}: Props) => {
             {showActions && (
               <div className="p-5 mt-5 border border-gray-200 rounded-lg">
                 <div className="flex flex-col justify-between w-full gap-1 mb-5 lg:mb-10 lg:flex-row lg:gap-0">
-                  <Checkbox defaultSelected lineThrough isSelected size="lg">
+                  <Checkbox defaultSelected lineThrough isSelected >
                     Mostrar
                   </Checkbox>
                   {/* </div>
               <div> */}
                   {actions_by_view_and_rol.includes("Agregar") ? (
-                    <Checkbox defaultSelected lineThrough size="lg" isSelected>
-                      Agregar1
+                    <Checkbox defaultSelected lineThrough  isSelected>
+                      Agregar
                     </Checkbox>
                   ) : (
                     <Checkbox
                       lineThrough
-                      size="lg"
+                      
                       checked={nombres.includes({ name: "Agregar" })}
                       onChange={(checked) =>
                         selectName("Agregar", checked.target.checked)
@@ -196,13 +197,13 @@ const AddActionRol = ({closeModal}: Props) => {
                 </div>
                 <div className="flex flex-col justify-between w-full gap-1 mb-5 lg:mb-10 lg:flex-row lg:gap-0">
                   {actions_by_view_and_rol.includes("Editar") ? (
-                    <Checkbox defaultSelected lineThrough size="lg" isSelected>
+                    <Checkbox defaultSelected lineThrough  isSelected>
                       Editar
                     </Checkbox>
                   ) : (
                     <Checkbox
                       lineThrough
-                      size="lg"
+                      
                       checked={nombres.includes({ name: "Editar" })}
                       onChange={(checked) =>
                         selectName("Editar", checked.target.checked)
@@ -214,13 +215,13 @@ const AddActionRol = ({closeModal}: Props) => {
                   {/* </div>
               <div> */}
                   {actions_by_view_and_rol.includes("Eliminar") ? (
-                    <Checkbox defaultSelected lineThrough size="lg" isSelected>
+                    <Checkbox defaultSelected lineThrough  isSelected>
                       Eliminar
                     </Checkbox>
                   ) : (
                     <Checkbox
                       lineThrough
-                      size="lg"
+                      
                       checked={nombres.includes({ name: "Eliminar" })}
                       onChange={(checked) =>
                         selectName("Eliminar", checked.target.checked)
@@ -233,7 +234,7 @@ const AddActionRol = ({closeModal}: Props) => {
               </div>
             )}
             <Button
-              size="lg"
+              
               onClick={() => handleSubmit()}
               className="w-full mt-4 text-sm font-semibold"
               style={{

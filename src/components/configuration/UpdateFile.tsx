@@ -143,7 +143,7 @@ function UpdateFile(props: Props) {
       <div className="mt-5">
         <Button
           className="font-semibold w-full mt-4 text-sm text-white shadow-lg"
-          size="lg"
+          
           style={{
             backgroundColor: theme.colors.third,
             color: theme.colors.primary,

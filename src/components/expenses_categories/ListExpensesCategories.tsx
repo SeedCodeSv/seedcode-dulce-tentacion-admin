@@ -86,7 +86,7 @@ const ListExpensesCategories = () => {
                 }}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                size="lg"
+                
                 placeholder="Escribe para buscar..."
                 isClearable
                 onClear={() => {
@@ -101,7 +101,7 @@ const ListExpensesCategories = () => {
                 }}
                 className="font-semibold"
                 color="primary"
-                size="lg"
+                
                 onClick={() => handleSearch(undefined)}
               >
                 Buscar
@@ -111,7 +111,7 @@ const ListExpensesCategories = () => {
           <div className="flex items-end justify-between w-full gap-10 lg:justify-end">
             <ButtonGroup>
               <Button
-                size="lg"
+                
                 isIconOnly
                 color="secondary"
                 style={{
@@ -124,7 +124,7 @@ const ListExpensesCategories = () => {
                 <ITable />
               </Button>
               <Button
-                size="lg"
+                
                 isIconOnly
                 color="default"
                 style={{
@@ -137,7 +137,7 @@ const ListExpensesCategories = () => {
                 <CreditCard />
               </Button>
               <Button
-                size="lg"
+                
                 isIconOnly
                 color="default"
                 style={{
@@ -162,7 +162,7 @@ const ListExpensesCategories = () => {
           <Select
             className="w-44 dark:text-white"
             variant="bordered"
-            size="lg"
+            
             label="Mostrar"
             labelPlacement="outside"
             classNames={{
@@ -216,7 +216,7 @@ const ListExpensesCategories = () => {
                   <Button
                     onClick={() => handleEdit(item)}
                     isIconOnly
-                    size="lg"
+                    
                     style={{
                       backgroundColor: theme.colors.secondary,
                     }}
@@ -306,7 +306,7 @@ const DeletePopUp = ({ categoryExpenses }: Props) => {
             style={{
               backgroundColor: theme.colors.danger,
             }}
-            size="lg"
+            
           >
             <TrashIcon
               style={{

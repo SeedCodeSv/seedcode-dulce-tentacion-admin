@@ -185,7 +185,7 @@ const UpdateCustomerSales = (props: Props) => {
                 <Input
                   label="Nombre de cliente"
                   labelPlacement="outside"
-                  size="lg"
+                  
                   onChange={handleChange("nombre")}
                   onBlur={handleBlur("nombre")}
                   defaultValue={props.selectedSale?.customer.nombre}
@@ -206,7 +206,7 @@ const UpdateCustomerSales = (props: Props) => {
                 <Input
                   label="Nombre Comercial"
                   labelPlacement="outside"
-                  size="lg"
+                  
                   onChange={handleChange("nombreComercial")}
                   onBlur={handleBlur("nombreComercial")}
                   defaultValue={props.customer?.nombreComercial}
@@ -231,7 +231,7 @@ const UpdateCustomerSales = (props: Props) => {
                       label="Nit"
                       defaultValue={props.selectedSale.customer.nit}
                       labelPlacement="outside"
-                      size="lg"
+                      
                       placeholder="Ingresa el numero de nit"
                       type="text"
                       classNames={{
@@ -252,7 +252,7 @@ const UpdateCustomerSales = (props: Props) => {
                       label="Nrc"
                       defaultValue={props.selectedSale.customer.nrc}
                       labelPlacement="outside"
-                      size="lg"
+                      
                       placeholder="Ingresa el numero de nrc"
                       type="text"
                       classNames={{
@@ -293,7 +293,7 @@ const UpdateCustomerSales = (props: Props) => {
                   classNames={{
                     base: "font-semibold text-gray-500 text-sm",
                   }}
-                  size="lg"
+                  
                 >
                   {cat_019_codigo_de_actividad_economica.map((dep) => (
                     <AutocompleteItem
@@ -335,7 +335,7 @@ const UpdateCustomerSales = (props: Props) => {
                       classNames={{
                         base: "font-semibold text-gray-500 text-sm",
                       }}
-                      size="lg"
+                      
                     >
                       {cay_002_tipo_de_documento.map((dep) => (
                         <AutocompleteItem
@@ -361,7 +361,7 @@ const UpdateCustomerSales = (props: Props) => {
                       onBlur={handleBlur("numDocumento")}
                       value={values.numDocumento}
                       labelPlacement="outside"
-                      size="lg"
+                      
                       placeholder="Ingresa el numero de documento"
                       type="text"
                       classNames={{
@@ -403,7 +403,7 @@ const UpdateCustomerSales = (props: Props) => {
                       base: "font-semibold text-gray-500 text-sm",
                     }}
                     value={values.nombreDepartamento}
-                    size="lg"
+                    
                   >
                     {cat_012_departamento.map((dep) => (
                       <AutocompleteItem
@@ -446,7 +446,7 @@ const UpdateCustomerSales = (props: Props) => {
                       classNames={{
                         base: "font-semibold text-gray-500 text-sm",
                       }}
-                      size="lg"
+                      
                       value={values.nombreMunicipio}
                     >
                       {cat_013_municipios!.map((dep) => (
@@ -488,7 +488,7 @@ const UpdateCustomerSales = (props: Props) => {
                       classNames={{
                         base: "font-semibold text-gray-500 text-sm",
                       }}
-                      size="lg"
+                      
                       value={values.nombreMunicipio}
                     >
                       {cat_013_municipios!.map((dep) => (
@@ -522,7 +522,7 @@ const UpdateCustomerSales = (props: Props) => {
                   label="Tipo de item"
                   labelPlacement="outside"
                   placeholder={"Bienes"}
-                  size="lg"
+                  
                   value={values.tipoItem}
                 >
                   {cat_011_tipo_de_item.map((item) => (
@@ -557,7 +557,7 @@ const UpdateCustomerSales = (props: Props) => {
                   label="Unidad de medida"
                   labelPlacement="outside"
                   placeholder={"Mililitro"}
-                  size="lg"
+                  
                   value={values.uniMedida}
                 >
                   {unidadDeMedidaList.map((item) => (
@@ -577,7 +577,7 @@ const UpdateCustomerSales = (props: Props) => {
               </div>
             </div>
             <Button
-              size="lg"
+              
               onClick={() => handleSubmit()}
               className="w-full mt-4 text-sm font-semibold"
               style={{

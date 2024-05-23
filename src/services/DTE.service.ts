@@ -8,7 +8,7 @@ import { IGetTiposDocumento } from "../types/DTE/tipo_documento.types";
 import { IGetTipoTributos } from "../types/DTE/tipo_tributo.types";
 import { ISendMHFiscal } from "../types/DTE/credito_fiscal.types";
 import { IContingencia, ISendMHContingencia } from "../types/DTE/contingencia.types";
-import { DteJson as FDteJSON } from "../types/DTE/DTE.types"
+import { DteJson as FDteJSON, IDTE } from "../types/DTE/DTE.types"
 import { ICheckPayload, ICheckResponse } from "../types/DTE/check.types";
 import { IInvalidationToMH, IResponseInvalidationMH, ISignInvalidationData } from "../types/DTE/invalidation.types";
 
@@ -72,6 +72,14 @@ export const firmarDocumentoContingencia = (payload: IContingencia) => {
 export const firmarDocumentoInvalidacion = (payload: ISignInvalidationData) => {
   return axios.post<{ body: string }>(API_FIRMADOR, payload);
 };
+
+export const get_json_from_space = (url: string) => {
+  return axios.get<IDTE>(url, {
+    headers: {
+      ContentType: 'application/json',
+    }
+  })
+}
 
 export const check_dte = (payload: ICheckPayload, token: string) => {
   return axios.post<ICheckResponse>(CHECK_URL, {

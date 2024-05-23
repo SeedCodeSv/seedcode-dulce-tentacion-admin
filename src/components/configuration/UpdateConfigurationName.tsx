@@ -49,7 +49,7 @@ function UpdateConfigurationName(props: Props) {
             <Input
                 label="Nombre un nombre"
                 labelPlacement="outside"
-                size="lg"
+                
                 name="name"
                 value={values.name}
                 onChange={handleChange("name")}

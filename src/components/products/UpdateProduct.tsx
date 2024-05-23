@@ -117,7 +117,7 @@ function UpdateProduct({ product, onCloseModal }: Props) {
                 label: "font-semibold text-gray-500 dark:text-gray-200 text-sm",
               }}
               variant="bordered"
-              size="lg"
+              
             />
           </div>
           <div className="mt-2">
@@ -130,7 +130,7 @@ function UpdateProduct({ product, onCloseModal }: Props) {
               placeholder="Ingresa la descripción"
               classNames={{ label: "font-semibold text-gray-500 text-sm" }}
               variant="bordered"
-              size="lg"
+              
             />
           </div>
           <div className="mt-2">
@@ -145,7 +145,7 @@ function UpdateProduct({ product, onCloseModal }: Props) {
               variant="bordered"
               type="number"
               startContent="$"
-              size="lg"
+              
             />
           </div>
           <div className="mt-2">
@@ -160,7 +160,7 @@ function UpdateProduct({ product, onCloseModal }: Props) {
               variant="bordered"
               type="number"
               startContent="$"
-              size="lg"
+              
             />
           </div>
         </div>
@@ -187,7 +187,7 @@ function UpdateProduct({ product, onCloseModal }: Props) {
               classNames={{ base: "font-semibold text-gray-500 text-sm" }}
               defaultSelectedKey={selectedKeyCategory}
               value={selectedKeyCategory}
-              size="lg"
+              
             >
               {list_categories.map((category) => (
                 <AutocompleteItem
@@ -206,7 +206,7 @@ function UpdateProduct({ product, onCloseModal }: Props) {
               label="Tipo de item"
               labelPlacement="outside"
               placeholder={product?.tipoDeItem || "Selecciona el item"}
-              size="lg"
+              
             >
               {cat_011_tipo_de_item.map((item) => (
                 <AutocompleteItem
@@ -238,7 +238,7 @@ function UpdateProduct({ product, onCloseModal }: Props) {
               placeholder={
                 product?.unidaDeMedida || "Selecciona unidad de medida"
               }
-              size="lg"
+              
             >
               {unidadDeMedidaList.map((item) => (
                 <AutocompleteItem
@@ -272,7 +272,7 @@ function UpdateProduct({ product, onCloseModal }: Props) {
                 placeholder="Ingresa o genera el código"
                 classNames={{ label: "font-semibold text-sm" }}
                 variant="bordered"
-                size="lg"
+                
               />
             </div>
             <div className="mt-10 w-full">
@@ -293,7 +293,7 @@ function UpdateProduct({ product, onCloseModal }: Props) {
         </div>
       </div>
       <Button
-        size="lg"
+        
         onClick={handleSave}
         className="w-full mt-4 text-sm font-semibold"
         style={{

@@ -112,7 +112,7 @@ const gridItem = (
                 style={{
                   backgroundColor: theme.colors.secondary,
                 }}
-                size="lg"
+                
               >
                 <EditIcon style={{ color: theme.colors.primary }} size={20} />
               </Button>

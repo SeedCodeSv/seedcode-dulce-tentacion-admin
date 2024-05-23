@@ -453,7 +453,7 @@ console.log( current_box, has_current_box, idBox)
                   <Popover backdrop="blur" isOpen={popover.isOpen}>
                     <PopoverTrigger>
                       <Button
-                        size="lg"
+                        
                         className="w-full text-white bg-coffee-brown"
                         onClick={() => popover.onOpen()}
                         style={{
@@ -494,7 +494,7 @@ console.log( current_box, has_current_box, idBox)
                 <Button
                   onPress={preview_box}
                   className="w-full text-white bg-coffee-brown"
-                  size="lg"
+                  
                   style={{
                     backgroundColor: theme.colors.third,
                   }}
