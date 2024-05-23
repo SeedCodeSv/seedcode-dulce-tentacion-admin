@@ -417,7 +417,7 @@ function FormMakeSale(props: Props) {
         label="Cliente"
         labelPlacement="outside"
         placeholder="Selecciona el cliente"
-        size="lg"
+        
       >
         {customer_list.map((item) => (
           <AutocompleteItem key={JSON.stringify(item)} value={item.nombre}>
@@ -439,7 +439,7 @@ function FormMakeSale(props: Props) {
         label="Método de pago"
         labelPlacement="outside"
         placeholder="Selecciona el método de pago"
-        size="lg"
+        
       >
         {metodos_de_pago.map((item) => (
           <AutocompleteItem key={JSON.stringify(item)} value={item.codigo}>
@@ -461,7 +461,7 @@ function FormMakeSale(props: Props) {
         label="Tipo de documento a emitir"
         labelPlacement="outside"
         placeholder="Selecciona el tipo de documento"
-        size="lg"
+        
       >
         {tipos_de_documento.map((item) => (
           <AutocompleteItem key={JSON.stringify(item)} value={item.codigo}>
@@ -484,7 +484,7 @@ function FormMakeSale(props: Props) {
           label="Tipo de tributo"
           labelPlacement="outside"
           placeholder="Selecciona el tipo de tributo"
-          size="lg"
+          
         >
           {tipos_tributo.map((item) => (
             <AutocompleteItem key={JSON.stringify(item)} value={item.codigo}>
@@ -502,7 +502,7 @@ function FormMakeSale(props: Props) {
               <Button
                 style={global_styles().secondaryStyle}
                 className="w-full"
-                size="lg"
+                
                 onClick={generateFactura}
               >
                 Generar Factura
@@ -535,21 +535,21 @@ function FormMakeSale(props: Props) {
                 generateFactura();
               }}
               style={global_styles().secondaryStyle}
-              size="lg"
+              
             >
               Re-intentar
             </Button>
             <Button
               onClick={handleVerify}
               style={global_styles().warningStyles}
-              size="lg"
+              
             >
               Verificar
             </Button>
             <Button
               onClick={sendToContingencia}
               style={global_styles().dangerStyles}
-              size="lg"
+              
             >
               Enviar a contingencia
             </Button>

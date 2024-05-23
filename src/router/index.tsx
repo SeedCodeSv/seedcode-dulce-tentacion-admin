@@ -19,6 +19,7 @@ import { useActionsRolStore } from "../store/actions_rol.store";
 import { useEffect } from "react";
 import Views from "../pages/Views";
 import { useAuthStore } from "../store/auth.store";
+import HomeSeller from "../pages/Seller/HomeSeller";
 export const router = () => {
   const { role_view_action, OnGetActionsByRole } = useActionsRolStore();
   const { user } = useAuthStore();
@@ -38,6 +39,10 @@ export const router = () => {
     {
       path: "/",
       element: <Home />,
+    },
+    {
+      path: "/homeSeller",
+      element: <HomeSeller />,
     },
     {
       path: "/tables",
