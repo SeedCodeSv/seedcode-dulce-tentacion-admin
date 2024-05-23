@@ -71,7 +71,7 @@ const gridItem = (
             <Button
               onClick={() => handleEdit(expenses)}
               isIconOnly
-              size="lg"
+              
               style={{
                 backgroundColor: theme.colors.secondary,
               }}
@@ -123,7 +123,7 @@ const ListItem = ({
           <Button
             onClick={() => handleEdit(expenses)}
             isIconOnly
-            size="lg"
+            
             style={{
               backgroundColor: theme.colors.secondary,
             }}

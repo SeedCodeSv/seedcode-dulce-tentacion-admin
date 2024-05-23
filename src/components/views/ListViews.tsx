@@ -47,7 +47,7 @@ function ListViews() {
           <div className="flex items-end justify-between gap-10 lg:justify-end">
             <ButtonGroup>
               <Button
-                size="lg"
+                
                 isIconOnly
                 color="secondary"
                 style={{
@@ -60,7 +60,7 @@ function ListViews() {
                 <ITable />
               </Button>
               <Button
-                size="lg"
+                
                 isIconOnly
                 color="default"
                 style={{
@@ -73,7 +73,7 @@ function ListViews() {
                 <CreditCard />
               </Button>
               <Button
-                size="lg"
+                
                 isIconOnly
                 color="default"
                 style={{
@@ -168,7 +168,7 @@ const DeleteView = ({views} : Props) => {
                         style={{
                             backgroundColor: theme.colors.danger,
                         }}
-                        size="lg"
+                        
                     >
                         <TrashIcon 
                             style={{

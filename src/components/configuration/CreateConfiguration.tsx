@@ -145,7 +145,7 @@ function CreateConfiguration() {
         />
       </div>
       <Button
-        size="lg"
+        
         color="primary"
         className="font-semibold w-full mt-4 text-sm text-white shadow-lg"
         onClick={handleSave}

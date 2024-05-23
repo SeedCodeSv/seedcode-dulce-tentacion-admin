@@ -90,7 +90,7 @@ function AddEmployee(props: Props) {
                 onChange={handleChange("fullName")}
                 onBlur={handleBlur("fullName")}
                 placeholder="Ingresa el nombre"
-                size="lg"
+                
                 classNames={{ label: "font-semibold text-sm  text-gray-600" }}
                 variant="bordered"
                 label="Nombre"
@@ -113,7 +113,7 @@ function AddEmployee(props: Props) {
                 onChange={handleChange("phone")}
                 onBlur={handleBlur("phone")}
                 placeholder="Ingresa el numero de teléfono"
-                size="lg"
+                
                 classNames={{ label: "font-semibold text-sm  text-gray-600" }}
                 variant="bordered"
                 label="Teléfono"

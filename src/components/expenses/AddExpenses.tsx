@@ -194,7 +194,7 @@ const AddExpenses = (props: Props) => {
                     );
                   }
                 }}
-                size="lg"
+                
                 onBlur={handleBlur("categoryExpenseId")}
                 label="Categoría de gastos"
                 labelPlacement="outside"
@@ -246,7 +246,7 @@ const AddExpenses = (props: Props) => {
               <Textarea
                 label="Descripción"
                 placeholder="Descripción"
-                size="lg"
+                
                 variant="bordered"
                 classNames={{ label: "font-semibold" }}
                 labelPlacement="outside"
@@ -266,7 +266,7 @@ const AddExpenses = (props: Props) => {
                 onClick={() => handleSubmit()}
                 style={global_styles().thirdStyle}
                 className="w-full font-semibold"
-                size="lg"
+                
               >
                 Guardar
               </Button>

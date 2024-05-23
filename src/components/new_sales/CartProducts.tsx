@@ -34,7 +34,7 @@ function CartProducts() {
           className="w-32"
           type="number"
           defaultValue={product_finded?.quantity.toString()}
-          size="lg"
+          
           onChange={(e) => onUpdateQuantity(product.id, Number(e.target.value))}
         />
       </div>

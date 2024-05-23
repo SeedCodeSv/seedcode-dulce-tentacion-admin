@@ -20,7 +20,8 @@ export const get_users_list = () => {
 export const get_user_paginated = (
   page = 1,
   limit = 5,
-  userName = ""
+  userName = "",
+  active: number = 1
 ) => {
   const token = get_token() ?? "";
   const user = get_user();
@@ -28,7 +29,7 @@ export const get_user_paginated = (
     API_URL +
       "/users/paginated/" +
       user?.employee.branch.transmitterId +
-      `?page=${page}&limit=${limit}&userName=${userName}`,
+      `?page=${page}&limit=${limit}&userName=${userName}&active=${active}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,

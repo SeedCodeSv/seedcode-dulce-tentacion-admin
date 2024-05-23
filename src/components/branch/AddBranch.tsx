@@ -62,7 +62,7 @@ function AddBranch(props: Props) {
           <div className="w-full">
             <div className="w-full pt-3">
               <Input
-                size="lg"
+                
                 label="Nombre"
                 placeholder="Nombre de la sucursal"
                 variant="bordered"
@@ -83,7 +83,7 @@ function AddBranch(props: Props) {
                 type="number"
                 label="Teléfono"
                 placeholder="Teléfono de la sucursal"
-                size="lg"
+                
                 variant="bordered"
                 classNames={{ label: "font-semibold text-sm" }}
                 labelPlacement="outside"
@@ -101,7 +101,7 @@ function AddBranch(props: Props) {
               <Textarea
                 label="Dirección"
                 placeholder="Dirección de la sucursal"
-                size="lg"
+                
                 variant="bordered"
                 classNames={{ label: "font-semibold text-sm" }}
                 labelPlacement="outside"
@@ -122,7 +122,7 @@ function AddBranch(props: Props) {
                 onClick={() => handleSubmit()}
                 style={global_styles().thirdStyle}
                 className="w-full font-semibold"
-                size="lg"
+                
               >
                 {props.branch ? "Guardar cambios" : "Crear sucursal"}
               </Button>

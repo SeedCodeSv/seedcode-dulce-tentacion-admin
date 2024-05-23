@@ -165,7 +165,7 @@ const MainView = () => {
                   style={global_styles().thirdStyle}
                   className="ml-5"
                   isIconOnly
-                  size="lg"
+                  
                   onClick={() => {
                     cart_products.length > 0
                       ? modalAdd.onOpen()
@@ -196,12 +196,12 @@ const MainView = () => {
               inputWrapper: "pr-0",
             }}
             onChange={(e) => setName(e.target.value)}
-            size="lg"
+            
             startContent={<Search size={20} />}
             endContent={
               <Button
                 onClick={handleSearch}
-                size="lg"
+                
                 style={{
                   backgroundColor: theme.colors.secondary,
                   color: theme.colors.primary,
@@ -221,13 +221,13 @@ const MainView = () => {
               label: "text-sm font-semibold",
               inputWrapper: "pr-0",
             }}
-            size="lg"
+            
             startContent={<Barcode size={20} />}
             onChange={(e) => setCode(e.target.value)}
             endContent={
               <Button
                 onClick={handleSearch}
-                size="lg"
+                
                 style={{
                   backgroundColor: theme.colors.secondary,
                   color: theme.colors.primary,
@@ -240,7 +240,7 @@ const MainView = () => {
           <div className="w-full mt-5 flex justify-between">
             <ButtonGroup>
               <Button
-                size="lg"
+                
                 isIconOnly
                 color="secondary"
                 style={{
@@ -253,7 +253,7 @@ const MainView = () => {
                 <ITable />
               </Button>
               <Button
-                size="lg"
+                
                 isIconOnly
                 color="default"
                 style={{
@@ -266,7 +266,7 @@ const MainView = () => {
                 <CreditCard />
               </Button>
               <Button
-                size="lg"
+                
                 isIconOnly
                 color="default"
                 style={{
@@ -282,7 +282,7 @@ const MainView = () => {
             <Select
               className="w-44 dark:text-white"
               variant="bordered"
-              size="lg"
+              
               label="Mostrar"
               labelPlacement="outside"
               classNames={{
@@ -351,7 +351,7 @@ const MainView = () => {
                       style={{
                         backgroundColor: theme.colors.secondary,
                       }}
-                      size="lg"
+                      
                       isIconOnly
                       onClick={() => {
                         addProductCart(item);
@@ -422,12 +422,12 @@ const MainView = () => {
                     inputWrapper: "pr-0",
                   }}
                   onChange={(e) => setName(e.target.value)}
-                  size="lg"
+                  
                   startContent={<Search size={20} />}
                   endContent={
                     <Button
                       onClick={handleSearch}
-                      size="lg"
+                      
                       style={{
                         backgroundColor: theme.colors.secondary,
                         color: theme.colors.primary,
@@ -447,13 +447,13 @@ const MainView = () => {
                     label: "text-sm font-semibold",
                     inputWrapper: "pr-0",
                   }}
-                  size="lg"
+                  
                   startContent={<Barcode size={20} />}
                   onChange={(e) => setCode(e.target.value)}
                   endContent={
                     <Button
                       onClick={handleSearch}
-                      size="lg"
+                      
                       style={{
                         backgroundColor: theme.colors.secondary,
                         color: theme.colors.primary,
@@ -466,7 +466,7 @@ const MainView = () => {
                 <div className="w-full mt-5 flex justify-between">
                   <ButtonGroup>
                     <Button
-                      size="lg"
+                      
                       isIconOnly
                       color="default"
                       style={{
@@ -482,7 +482,7 @@ const MainView = () => {
                       <CreditCard />
                     </Button>
                     <Button
-                      size="lg"
+                      
                       isIconOnly
                       color="default"
                       style={{
@@ -501,7 +501,7 @@ const MainView = () => {
                   <Select
                     className="w-44 dark:text-white"
                     variant="bordered"
-                    size="lg"
+                    
                     label="Mostrar"
                     labelPlacement="outside"
                     classNames={{
