@@ -5,12 +5,14 @@ import {
   save_expenses,
   patch_expenses,
   delete_expenses,
+  show_anexo,
 } from "../services/expenses.service";
 import { toast } from "sonner";
 import { messages } from "../utils/constants";
 import { IExpensePayloads } from "../types/expenses.types";
 
 export const useExpenseStore = create<IExpenseStore>((set, get) => ({
+  annexes: [],
   expenses_paginated: {
     expenses: [],
     total: 0,
@@ -75,4 +77,17 @@ export const useExpenseStore = create<IExpenseStore>((set, get) => ({
         return false;
       });
   },
+
+
+  OnGetAnnexe: async (id) => {
+    show_anexo(id).then(({ data }) => {
+      set((state) => ({
+        ...state,
+        expense: data.expense
+      }))
+    })
+      .catch((error: any) => {
+        console.log(error, "error en mostrar archivo")
+      });
+  }
 }));
