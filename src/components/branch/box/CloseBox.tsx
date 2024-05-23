@@ -8,36 +8,36 @@ import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-} from "@nextui-org/react";
+} from '@nextui-org/react';
 //   import Layout from "@renderer/components/global/Layout";
-import { useContext, useEffect, useState } from "react";
-import OneDollar from "../../../assets/dollars/1.jpg";
-import FiveDollar from "../../../assets/dollars/5.png";
-import ThenDollar from "../../../assets/dollars/10.png";
-import TwentyDollar from "../../../assets/dollars/20.jpg";
-import FiftyDollar from "../../../assets/dollars/50.png";
-import OneHundredDollar from "../../../assets/dollars/100.png";
+import { useContext, useEffect, useState } from 'react';
+import OneDollar from '../../../assets/dollars/1.jpg';
+import FiveDollar from '../../../assets/dollars/5.png';
+import ThenDollar from '../../../assets/dollars/10.png';
+import TwentyDollar from '../../../assets/dollars/20.jpg';
+import FiftyDollar from '../../../assets/dollars/50.png';
+import OneHundredDollar from '../../../assets/dollars/100.png';
 
-import OneCent from "../../../assets/cents/01.png";
-import FiveCent from "../../../assets/cents/5.png";
-import TenCent from "../../../assets/cents/10.png";
-import TwentyFiveCent from "../../../assets/cents/25.png";
-import OneHundredCent from "../../../assets/cents/1.png";
-import { ICloseBox } from "../../../types/box.types";
-import { useBoxStore } from "../../../store/Boxes.store";
-import { close_box } from "../../../services/Boxes.service";
-import { toast } from "sonner";
-import { IGetBox } from "../../../types/box.types";
-import { useNavigate } from "react-router";
-import { ThemeContext } from "../../../hooks/useTheme";
-import { get_box } from "../../../storage/localStorage";
+import OneCent from '../../../assets/cents/01.png';
+import FiveCent from '../../../assets/cents/5.png';
+import TenCent from '../../../assets/cents/10.png';
+import TwentyFiveCent from '../../../assets/cents/25.png';
+import OneHundredCent from '../../../assets/cents/1.png';
+import { ICloseBox } from '../../../types/box.types';
+import { useBoxStore } from '../../../store/Boxes.store';
+import { close_box } from '../../../services/Boxes.service';
+import { toast } from 'sonner';
+import { IGetBox } from '../../../types/box.types';
+import { useNavigate } from 'react-router';
+import { ThemeContext } from '../../../hooks/useTheme';
+import { get_box } from '../../../storage/localStorage';
 function Box() {
-const [idBox, setIdBox] = useState(0)
+  const [idBox, setIdBox] = useState(0);
   useEffect(() => {
-    const box = get_box()
-    setIdBox(Number(box))
-    console.log(box)
-  },[])
+    const box = get_box();
+    setIdBox(Number(box));
+    console.log(box);
+  }, []);
   const { theme } = useContext(ThemeContext);
 
   const [boxValues, setBoxValues] = useState<ICloseBox>({
@@ -54,14 +54,14 @@ const [idBox, setIdBox] = useState(0)
     twentyFiveCents: 0,
     fiftyCents: 0,
     oneDollarCents: 0,
-    state: "false",
+    state: 'false',
   });
 
   const { has_current_box, current_box, OnRemoveBox } = useBoxStore();
   const [boxPreview, setBoxpreview] = useState<IGetBox>();
 
   const popover = useDisclosure();
-console.log( current_box, has_current_box, idBox)
+  console.log(current_box, has_current_box, idBox);
   const preview_box = () => {
     close_box(boxValues, idBox)
       .then(({ data }) => {
@@ -69,12 +69,12 @@ console.log( current_box, has_current_box, idBox)
           setBoxpreview(data);
         } else {
           setBoxpreview(undefined);
-          toast.error("No se pudo cerrar la caja");
+          toast.error('No se pudo cerrar la caja');
         }
       })
       .catch(() => {
         setBoxpreview(undefined);
-        toast.error("No se pudo cerrar la caja");
+        toast.error('No se pudo cerrar la caja');
       });
   };
 
@@ -82,17 +82,17 @@ console.log( current_box, has_current_box, idBox)
 
   const completeBox = () => {
     popover.onClose();
-    close_box({ ...boxValues, state: "true" }, idBox)
+    close_box({ ...boxValues, state: 'true' }, idBox)
       .then(({ data }) => {
         if (data.ok) {
-          OnRemoveBox(), toast.success("Caja cerrada");
-          navigate("/");
+          OnRemoveBox(), toast.success('Caja cerrada');
+          navigate('/');
         } else {
-          toast.error("No se pudo cerrar la caja");
+          toast.error('No se pudo cerrar la caja');
         }
       })
       .catch(() => {
-        toast.error("No se pudo cerrar la caja");
+        toast.error('No se pudo cerrar la caja');
       });
   };
 
@@ -103,16 +103,12 @@ console.log( current_box, has_current_box, idBox)
           <div className="grid w-full h-auto grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5 2xl:grid-cols-6 place-items-center">
             <Card className="w-full py-4 max-h-64">
               <CardBody className="flex flex-col items-center justify-center py-2 overflow-visible">
-                <Image
-                  alt="Card background"
-                  className="object-cover"
-                  src={OneDollar}
-                />
+                <Image alt="Card background" className="object-cover" src={OneDollar} />
                 <Input
                   variant="bordered"
                   className="mt-2"
                   classNames={{
-                    label: "font-semibold",
+                    label: 'font-semibold',
                   }}
                   label="Billetes de 1"
                   placeholder="0"
@@ -129,16 +125,12 @@ console.log( current_box, has_current_box, idBox)
             </Card>
             <Card className="w-full py-4">
               <CardBody className="flex flex-col items-center justify-center py-2 overflow-visible">
-                <Image
-                  alt="Card background"
-                  className="object-cover w-full"
-                  src={FiveDollar}
-                />
+                <Image alt="Card background" className="object-cover w-full" src={FiveDollar} />
                 <Input
                   variant="bordered"
                   className="mt-2"
                   classNames={{
-                    label: "font-semibold",
+                    label: 'font-semibold',
                   }}
                   label="Billetes de $5"
                   placeholder="0"
@@ -155,16 +147,12 @@ console.log( current_box, has_current_box, idBox)
             </Card>
             <Card className="w-full py-4">
               <CardBody className="flex flex-col items-center justify-center py-2 overflow-visible">
-                <Image
-                  alt="Card background"
-                  className="object-cover w-full"
-                  src={ThenDollar}
-                />
+                <Image alt="Card background" className="object-cover w-full" src={ThenDollar} />
                 <Input
                   variant="bordered"
                   className="mt-2"
                   classNames={{
-                    label: "font-semibold",
+                    label: 'font-semibold',
                   }}
                   label="Billetes de $10"
                   placeholder="0"
@@ -181,16 +169,12 @@ console.log( current_box, has_current_box, idBox)
             </Card>
             <Card className="w-full py-4">
               <CardBody className="flex flex-col items-center justify-center py-2 overflow-visible">
-                <Image
-                  alt="Card background"
-                  className="object-cover w-full"
-                  src={TwentyDollar}
-                />
+                <Image alt="Card background" className="object-cover w-full" src={TwentyDollar} />
                 <Input
                   variant="bordered"
                   className="mt-2"
                   classNames={{
-                    label: "font-semibold",
+                    label: 'font-semibold',
                   }}
                   label="Billetes de $20"
                   placeholder="0"
@@ -207,16 +191,12 @@ console.log( current_box, has_current_box, idBox)
             </Card>
             <Card className="w-full py-4">
               <CardBody className="flex flex-col items-center justify-center py-2 overflow-visible">
-                <Image
-                  alt="Card background"
-                  className="object-cover w-full"
-                  src={FiftyDollar}
-                />
+                <Image alt="Card background" className="object-cover w-full" src={FiftyDollar} />
                 <Input
                   variant="bordered"
                   className="mt-2"
                   classNames={{
-                    label: "font-semibold",
+                    label: 'font-semibold',
                   }}
                   label="Billetes de $50"
                   placeholder="0"
@@ -242,7 +222,7 @@ console.log( current_box, has_current_box, idBox)
                   variant="bordered"
                   className="mt-2"
                   classNames={{
-                    label: "font-semibold",
+                    label: 'font-semibold',
                   }}
                   label="Billetes de $100"
                   placeholder="0"
@@ -268,7 +248,7 @@ console.log( current_box, has_current_box, idBox)
                   variant="bordered"
                   className="mt-2"
                   classNames={{
-                    label: "font-semibold",
+                    label: 'font-semibold',
                   }}
                   label="Monedas de $0.01"
                   placeholder="0"
@@ -294,7 +274,7 @@ console.log( current_box, has_current_box, idBox)
                   variant="bordered"
                   className="mt-2"
                   classNames={{
-                    label: "font-semibold",
+                    label: 'font-semibold',
                   }}
                   label="Monedas de $0.05"
                   placeholder="0"
@@ -320,7 +300,7 @@ console.log( current_box, has_current_box, idBox)
                   variant="bordered"
                   className="mt-2"
                   classNames={{
-                    label: "font-semibold",
+                    label: 'font-semibold',
                   }}
                   label="Monedas de $0.10"
                   placeholder="0"
@@ -346,7 +326,7 @@ console.log( current_box, has_current_box, idBox)
                   variant="bordered"
                   className="mt-2"
                   classNames={{
-                    label: "font-semibold",
+                    label: 'font-semibold',
                   }}
                   label="Monedas de $0.25"
                   placeholder="0"
@@ -372,7 +352,7 @@ console.log( current_box, has_current_box, idBox)
                   variant="bordered"
                   className="mt-2"
                   classNames={{
-                    label: "font-semibold",
+                    label: 'font-semibold',
                   }}
                   label="Monedas de $1"
                   placeholder="0"
@@ -392,9 +372,7 @@ console.log( current_box, has_current_box, idBox)
                 <Card className="w-full py-4 max-h-64">
                   <CardBody className="flex flex-col items-center justify-center py-2 overflow-visible">
                     <p className="text-center">Monto inicial de la caja</p>
-                    <p className="font-semibold text-coffee-green">
-                      ${boxPreview.boxStart}
-                    </p>
+                    <p className="font-semibold text-coffee-green">${boxPreview.boxStart}</p>
                   </CardBody>
                 </Card>
                 <Card className="w-full py-4 max-h-64">
@@ -415,14 +393,11 @@ console.log( current_box, has_current_box, idBox)
                 </Card>
                 <Card className="w-full py-4 max-h-64">
                   <CardBody className="flex flex-col items-center justify-center py-2 overflow-visible">
-                    <p className="text-center">
-                      {boxPreview.cost < 0 ? "Faltante" : "Excedente"}
-                    </p>
+                    <p className="text-center">{boxPreview.cost < 0 ? 'Faltante' : 'Excedente'}</p>
                     <p
                       className={
-                        (boxPreview.cost < 0
-                          ? "text-red-600"
-                          : "text-coffee-green") + " font-semibold"
+                        (boxPreview.cost < 0 ? 'text-red-600' : 'text-coffee-green') +
+                        ' font-semibold'
                       }
                     >
                       ${boxPreview.cost.toFixed(2)}
@@ -453,7 +428,6 @@ console.log( current_box, has_current_box, idBox)
                   <Popover backdrop="blur" isOpen={popover.isOpen}>
                     <PopoverTrigger>
                       <Button
-                        
                         className="w-full text-white bg-coffee-brown"
                         onClick={() => popover.onOpen()}
                         style={{
@@ -494,7 +468,6 @@ console.log( current_box, has_current_box, idBox)
                 <Button
                   onPress={preview_box}
                   className="w-full text-white bg-coffee-brown"
-                  
                   style={{
                     backgroundColor: theme.colors.third,
                   }}

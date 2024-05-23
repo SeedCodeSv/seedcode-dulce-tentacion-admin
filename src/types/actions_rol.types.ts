@@ -1,5 +1,5 @@
-import { Role } from "./roles.types";
-import { IAction } from "./actions.types";
+import { Role } from './roles.types';
+import { IAction } from './actions.types';
 export interface IActionRol {
   id: number;
   role: Role;
@@ -12,14 +12,14 @@ export interface IGetActionRolList {
   status: number;
 }
 export interface IAddActionRol {
-  roleId: number,
+  roleId: number;
   actionIds: {
-    id: number
+    id: number;
   }[];
 }
 
 export interface RoleViewAction {
   name: string;
   roleId: number;
-  view: {name: string; actions: {name: string}[] } [];
+  view: { name: string; actions: { name: string }[] }[];
 }

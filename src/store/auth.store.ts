@@ -1,5 +1,5 @@
-import { create } from "zustand";
-import { IAuthStore } from "./types/auth_store.types";
+import { create } from 'zustand';
+import { IAuthStore } from './types/auth_store.types';
 import {
   get_token,
   get_user,
@@ -16,16 +16,16 @@ import {
   post_box,
   return_seller_mode,
   delete_seller_mode,
-} from "../storage/localStorage";
-import { post_login } from "../services/auth.service";
-import { toast } from "sonner";
-import { login_mh, get_transmitter } from "../services/transmitter.service";
-import { ILoginMHFailed } from "../types/transmitter.types";
-import { AxiosError } from "axios";
-import { is_admin } from "../utils/filters";
+} from '../storage/localStorage';
+import { post_login } from '../services/auth.service';
+import { toast } from 'sonner';
+import { login_mh, get_transmitter } from '../services/transmitter.service';
+import { ILoginMHFailed } from '../types/transmitter.types';
+import { AxiosError } from 'axios';
+import { is_admin } from '../utils/filters';
 
 export const useAuthStore = create<IAuthStore>((set, get) => ({
-  token: get_token() ?? "",
+  token: get_token() ?? '',
   isAuth: is_authenticate(),
   user: get_user(),
 
@@ -36,7 +36,7 @@ export const useAuthStore = create<IAuthStore>((set, get) => ({
         if (data.ok) {
           set_token(data.token);
           save_user(data.user);
-          if (mode === "vendedor") {
+          if (mode === 'vendedor') {
             post_box(data.box.id.toString());
             save_branch_id(data.box.branchId.toString());
           } else {
@@ -48,21 +48,20 @@ export const useAuthStore = create<IAuthStore>((set, get) => ({
 
           await get()
             .OnLoginMH(data.user.employee.branch.transmitterId, data.token)
-            .catch((error) => {
-              console.log(error);
+            .catch(() => {
+              toast.error('Error al conectarse con el servidor');
               return;
             });
-          toast.success("Bienvenido");
+          toast.success('Bienvenido');
         } else {
-          toast.error("Datos incorrectos");
+          toast.error('Datos incorrectos');
         }
         return data;
       })
-      .catch((error) => {
-        console.log(error);
+      .catch(() => {
         delete_token();
         delete_user();
-        toast.error("Datos incorrectos");
+        toast.error('Datos incorrectos');
         return null;
       });
   },
@@ -71,7 +70,7 @@ export const useAuthStore = create<IAuthStore>((set, get) => ({
       .then(({ data }) => {
         login_mh(data.transmitter.nit, data.transmitter.clavePrivada)
           .then(async (login_mh) => {
-            if (login_mh.data.status === "OK") {
+            if (login_mh.data.status === 'OK') {
               await save_mh_token(login_mh.data.body.token);
             } else {
               const data = login_mh as unknown as ILoginMHFailed;
@@ -85,14 +84,14 @@ export const useAuthStore = create<IAuthStore>((set, get) => ({
           });
       })
       .catch(() => {
-        toast.error("Aun no tienes datos asignados");
+        toast.error('Aun no tienes datos asignados');
         return;
       });
   },
   makeLogout: async () => {
     set((state) => ({
       ...state,
-      token: "",
+      token: '',
       isAuth: false,
     })),
       await delete_mh_token();

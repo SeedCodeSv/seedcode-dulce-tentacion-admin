@@ -1,20 +1,15 @@
-import { Button, Input, Tooltip } from "@nextui-org/react";
-import { Column } from "primereact/column";
-import { DataTable } from "primereact/datatable";
-import { useContext } from "react";
-import { BranchProduct, ICartProduct } from "../../types/branch_products.types";
-import { useBranchProductStore } from "../../store/branch_product.store";
-import { Minus, Plus, Trash } from "lucide-react";
-import { ThemeContext } from "../../hooks/useTheme";
+import { Button, Input, Tooltip } from '@nextui-org/react';
+import { Column } from 'primereact/column';
+import { DataTable } from 'primereact/datatable';
+import { useContext } from 'react';
+import { BranchProduct, ICartProduct } from '../../types/branch_products.types';
+import { useBranchProductStore } from '../../store/branch_product.store';
+import { Minus, Plus, Trash } from 'lucide-react';
+import { ThemeContext } from '../../hooks/useTheme';
 
 function CartProducts() {
-  const {
-    cart_products,
-    onMinusQuantity,
-    onUpdateQuantity,
-    onPlusQuantity,
-    onRemoveProduct,
-  } = useBranchProductStore();
+  const { cart_products, onMinusQuantity, onUpdateQuantity, onPlusQuantity, onRemoveProduct } =
+    useBranchProductStore();
 
   const { theme } = useContext(ThemeContext);
 
@@ -34,7 +29,6 @@ function CartProducts() {
           className="w-32"
           type="number"
           defaultValue={product_finded?.quantity.toString()}
-          
           onChange={(e) => onUpdateQuantity(product.id, Number(e.target.value))}
         />
       </div>
@@ -42,9 +36,9 @@ function CartProducts() {
   };
 
   const formatCurrency = (value: number) => {
-    return value.toLocaleString("en-US", {
-      style: "currency",
-      currency: "USD",
+    return value.toLocaleString('en-US', {
+      style: 'currency',
+      currency: 'USD',
     });
   };
 
@@ -74,9 +68,7 @@ function CartProducts() {
     const product_finded = cart_products.find((p) => p.id === product.id);
 
     if (product_finded) {
-      return formatCurrency(
-        Number(product_finded.price) * product_finded.quantity
-      );
+      return formatCurrency(Number(product_finded.price) * product_finded.quantity);
     }
     return formatCurrency(0);
   };
@@ -86,7 +78,7 @@ function CartProducts() {
       className="w-full shadow mt-5"
       emptyMessage="No se encontraron resultados"
       value={cart_products}
-      tableStyle={{ minWidth: "50rem" }}
+      tableStyle={{ minWidth: '50rem' }}
       size="small"
       scrollable
       scrollHeight="flex"

@@ -1,6 +1,6 @@
-import { Button } from "@nextui-org/react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { global_styles } from "../../styles/global.styles";
+import { Button } from '@nextui-org/react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { global_styles } from '../../styles/global.styles';
 
 interface Props {
   handleNext: () => void;
@@ -9,12 +9,7 @@ interface Props {
   totalPages: number;
 }
 
-function SmPagination({
-  handleNext,
-  handlePrev,
-  currentPage,
-  totalPages,
-}: Props) {
+function SmPagination({ handleNext, handlePrev, currentPage, totalPages }: Props) {
   return (
     <div className="flex w-full justify-between items-center">
       <Button onClick={handlePrev} isIconOnly style={global_styles().darkStyle}>

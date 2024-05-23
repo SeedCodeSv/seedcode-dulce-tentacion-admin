@@ -1,13 +1,13 @@
-import { jwtDecode } from "jwt-decode";
-import { UserLogin } from "../types/auth.types";
-import { RoleViewAction } from "../types/actions_rol.types";
-import { decryptData, encryptData } from "../plugins/crypto";
+import { jwtDecode } from 'jwt-decode';
+import { UserLogin } from '../types/auth.types';
+import { RoleViewAction } from '../types/actions_rol.types';
+import { decryptData, encryptData } from '../plugins/crypto';
 export const set_token = (token: string) => {
-  localStorage.setItem("_NTE", token);
+  localStorage.setItem('_NTE', token);
 };
 
 export const get_token = () => {
-  return localStorage.getItem("_NTE");
+  return localStorage.getItem('_NTE');
 };
 
 export const is_expired_token = () => {
@@ -34,82 +34,84 @@ export const is_authenticate = () => {
 };
 
 export const save_user = (user: UserLogin) => {
-  return localStorage.setItem("_RSU", encryptData(user));
+  return localStorage.setItem('_RSU', encryptData(user));
 };
 
 export const get_user = () => {
-  const user = localStorage.getItem("_RSU");
+  const user = localStorage.getItem('_RSU');
 
   if (user) {
-    const dec = decryptData(user)
+    const dec = decryptData(user);
     return dec as UserLogin;
   }
 
   return undefined;
 };
 export const get_rolId = () => {
-  const user = localStorage.getItem("_RSU");
+  const user = localStorage.getItem('_RSU');
   if (user) {
-    const dec = decryptData(user)
-    console.log(dec)
-    const data = dec as UserLogin
-    return data.roleId
+    const dec = decryptData(user);
+    const data = dec as UserLogin;
+    return data.roleId;
   }
-}
+};
 export const delete_token = () => {
-  localStorage.removeItem("_NTE");
+  localStorage.removeItem('_NTE');
 };
 
 export const delete_user = () => {
-  localStorage.removeItem("_RSU");
+  localStorage.removeItem('_RSU');
 };
 export const post_box = (box: string) => {
-  localStorage.setItem("box", box);
+  localStorage.setItem('box', box);
 };
 export const get_box = () => {
-  return localStorage.getItem("box");
+  return localStorage.getItem('box');
 };
 export const delete_box = () => {
-  localStorage.removeItem("box");
-}
+  localStorage.removeItem('box');
+};
 export const save_mh_token = (token: string) => {
-  return localStorage.setItem("_MHT", token)
-}
+  return localStorage.setItem('_MHT', token);
+};
 export const return_mh_token = () => {
-  return localStorage.getItem("_MHT")
-}
+  return localStorage.getItem('_MHT');
+};
 export const delete_mh_token = () => {
-  return localStorage.removeItem("_MHT")
-}
+  return localStorage.removeItem('_MHT');
+};
 
 export const save_branch_id = (branch_id: string) => {
-  return localStorage.setItem("branch_id", branch_id)
-}
+  return localStorage.setItem('branch_id', branch_id);
+};
 export const return_branch_id = () => {
-  return localStorage.getItem("branch_id")
-}
+  return localStorage.getItem('branch_id');
+};
 export const delete_branch_id = () => {
-  return localStorage.removeItem("branch_id")
-}
+  return localStorage.removeItem('branch_id');
+};
 export const save_seller_mode = (mode: string) => {
-  localStorage.setItem("seller_mode", mode)
-}
+  localStorage.setItem('seller_mode', mode);
+};
 export const return_seller_mode = () => {
-  return localStorage.getItem("seller_mode")
-}
+  return localStorage.getItem('seller_mode');
+};
 export const delete_seller_mode = () => {
-  return localStorage.removeItem("seller_mode")
-}
+  return localStorage.removeItem('seller_mode');
+};
 
 export const get_personalization = () => {
-  return JSON.parse(localStorage.getItem("personalization") || "{}") as { name: string; logo: string }
-}
+  return JSON.parse(localStorage.getItem('personalization') || '{}') as {
+    name: string;
+    logo: string;
+  };
+};
 
 export const get_return_action = (): RoleViewAction | undefined => {
-  const rva = localStorage.getItem("_RVA")
+  const rva = localStorage.getItem('_RVA');
 
   if (rva) {
-    return decryptData(rva) as RoleViewAction
+    return decryptData(rva) as RoleViewAction;
   }
-  return undefined
-}
+  return undefined;
+};

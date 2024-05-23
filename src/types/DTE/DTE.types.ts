@@ -104,23 +104,23 @@ export interface Receptor {
   direccion: Direccion;
   telefono: null | string;
   correo: string;
-  bienTitulo?: string | null,
+  bienTitulo?: string | null;
 }
 
 export interface FiscalReceptor {
-  nit: string
-  nrc: string
-  nombre: string
-  codActividad: string
-  descActividad: string
-  nombreComercial: string
+  nit: string;
+  nrc: string;
+  nombre: string;
+  codActividad: string;
+  descActividad: string;
+  nombreComercial: string;
   direccion: {
-    departamento: string
-    municipio: string
-    complemento: string
-  },
-  telefono: string
-  correo: string
+    departamento: string;
+    municipio: string;
+    complemento: string;
+  };
+  telefono: string;
+  correo: string;
 }
 
 export interface IProductVista {
@@ -162,12 +162,12 @@ export interface Resumen {
   porcentajeDescuento: number | string;
   totalDescu: number | string;
   tributos:
-  | null
-  | {
-    codigo: string;
-    descripcion: string;
-    valor: number;
-  }[];
+    | null
+    | {
+        codigo: string;
+        descripcion: string;
+        valor: number;
+      }[];
   subTotal: number | string;
   ivaRete1: number | string;
   reteRenta: number | string;
@@ -225,7 +225,6 @@ export interface DTEToPDF {
   numeroControl: string;
   cuerpoDocumento: ICuerpoDocumento[];
 }
-
 
 export interface IMHToken {
   sub: string;

@@ -1,11 +1,7 @@
-import React from 'react'
+import React from 'react';
 
 function ExpensesBranch() {
-  return (
-    <div>
-      
-    </div>
-  )
+  return <div></div>;
 }
 
-export default ExpensesBranch
+export default ExpensesBranch;

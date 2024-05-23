@@ -1,6 +1,6 @@
-import React from "react";
-import SalesReportContigence from "../components/sales-report/SalesReportContigence";
-import Layout from "../layout/Layout";
+import React from 'react';
+import SalesReportContigence from '../components/sales-report/SalesReportContigence';
+import Layout from '../layout/Layout';
 
 function SalesReportContigencePage() {
   return (

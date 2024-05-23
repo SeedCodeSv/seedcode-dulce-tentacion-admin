@@ -1,10 +1,10 @@
 export interface CustomerDirection {
   id: number;
-  departamento:string
-  nombreDepartamento: string
-  municipio: string
-  nombreMunicipio: string
-  complemento: string
+  departamento: string;
+  nombreDepartamento: string;
+  municipio: string;
+  nombreMunicipio: string;
+  complemento: string;
   active: boolean;
 }
 

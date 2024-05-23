@@ -1,5 +1,5 @@
-import { useContext, useEffect, useMemo, useState } from "react";
-import { useEmployeeStore } from "../../store/employee.store";
+import { useContext, useEffect, useMemo, useState } from 'react';
+import { useEmployeeStore } from '../../store/employee.store';
 import {
   Button,
   Input,
@@ -13,9 +13,9 @@ import {
   Autocomplete,
   AutocompleteItem,
   Switch,
-} from "@nextui-org/react";
-import { Column } from "primereact/column";
-import { DataTable } from "primereact/datatable";
+} from '@nextui-org/react';
+import { Column } from 'primereact/column';
+import { DataTable } from 'primereact/datatable';
 import {
   TrashIcon,
   Table as ITable,
@@ -26,21 +26,21 @@ import {
   Phone,
   Filter,
   RefreshCcw,
-} from "lucide-react";
-import { Employee } from "../../types/employees.types";
-import AddButton from "../global/AddButton";
-import Pagination from "../global/Pagination";
-import { ThemeContext } from "../../hooks/useTheme";
-import MobileView from "./MobileView";
-import ModalGlobal from "../global/ModalGlobal";
-import AddEmployee from "./AddEmployee";
-import { Drawer } from "vaul";
-import { global_styles } from "../../styles/global.styles";
-import classNames from "classnames";
-import { useBranchesStore } from "../../store/branches.store";
-import { Branches } from "../../types/branches.types";
-import { limit_options } from "../../utils/constants";
-import SmPagination from "../global/SmPagination";
+} from 'lucide-react';
+import { Employee } from '../../types/employees.types';
+import AddButton from '../global/AddButton';
+import Pagination from '../global/Pagination';
+import { ThemeContext } from '../../hooks/useTheme';
+import MobileView from './MobileView';
+import ModalGlobal from '../global/ModalGlobal';
+import AddEmployee from './AddEmployee';
+import { Drawer } from 'vaul';
+import { global_styles } from '../../styles/global.styles';
+import classNames from 'classnames';
+import { useBranchesStore } from '../../store/branches.store';
+import { Branches } from '../../types/branches.types';
+import { limit_options } from '../../utils/constants';
+import SmPagination from '../global/SmPagination';
 
 interface Props {
   actions: string[];
@@ -49,18 +49,14 @@ interface Props {
 function ListEmployee({ actions }: Props) {
   const { theme, context } = useContext(ThemeContext);
 
-  const {
-    getEmployeesPaginated,
-    employee_paginated,
-    activateEmployee,
-    loading_employees,
-  } = useEmployeeStore();
+  const { getEmployeesPaginated, employee_paginated, activateEmployee, loading_employees } =
+    useEmployeeStore();
 
-  const [fullName, setFullName] = useState("");
-  const [branch, setBranch] = useState("");
-  const [phone, setPhone] = useState("");
+  const [fullName, setFullName] = useState('');
+  const [branch, setBranch] = useState('');
+  const [phone, setPhone] = useState('');
   const [limit, setLimit] = useState(5);
-  const [view, setView] = useState<"table" | "grid" | "list">("table");
+  const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
   const [openVaul, setOpenVaul] = useState(false);
   const [active, setActive] = useState(true);
 
@@ -83,7 +79,7 @@ function ListEmployee({ actions }: Props) {
 
   const handleActivate = (id: number) => {
     activateEmployee(id).then(() => {
-      getEmployeesPaginated(1, limit, "", "", "", active ? 1 : 0);
+      getEmployeesPaginated(1, limit, '', '', '', active ? 1 : 0);
     });
   };
 
@@ -92,8 +88,8 @@ function ListEmployee({ actions }: Props) {
       <>
         <Input
           classNames={{
-            label: "font-semibold text-gray-700",
-            inputWrapper: "pr-0",
+            label: 'font-semibold text-gray-700',
+            inputWrapper: 'pr-0',
           }}
           labelPlacement="outside"
           label="Nombre"
@@ -107,12 +103,12 @@ function ListEmployee({ actions }: Props) {
           autoComplete="search"
           onChange={(e) => setFullName(e.target.value)}
           isClearable
-          onClear={() => setFullName("")}
+          onClear={() => setFullName('')}
         />
         <Input
           classNames={{
-            label: "font-semibold text-gray-700",
-            inputWrapper: "pr-0",
+            label: 'font-semibold text-gray-700',
+            inputWrapper: 'pr-0',
           }}
           labelPlacement="outside"
           label="Teléfono"
@@ -125,7 +121,7 @@ function ListEmployee({ actions }: Props) {
           id="searchPhone"
           onChange={(e) => setPhone(e.target.value)}
           isClearable
-          onClear={() => setPhone("")}
+          onClear={() => setPhone('')}
         />
         <Autocomplete
           onSelectionChange={(key) => {
@@ -140,10 +136,10 @@ function ListEmployee({ actions }: Props) {
           placeholder="Selecciona una sucursal"
           variant="bordered"
           classNames={{
-            base: "font-semibold text-gray-500 text-sm",
+            base: 'font-semibold text-gray-500 text-sm',
           }}
           clearButtonProps={{
-            onClick: () => setBranch(""),
+            onClick: () => setBranch(''),
           }}
         >
           {branch_list.map((bra) => (
@@ -164,9 +160,7 @@ function ListEmployee({ actions }: Props) {
     <>
       <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
         <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
-          <div className="hidden w-full md:grid grid-cols-3 gap-5 mb-4">
-            {filters}
-          </div>
+          <div className="hidden w-full md:grid grid-cols-3 gap-5 mb-4">{filters}</div>
           <div className="grid w-full grid-cols-1 gap-5 mb-4 md:grid-cols-2">
             <div className="hidden md:flex">
               <Button
@@ -187,11 +181,10 @@ function ListEmployee({ actions }: Props) {
                   isIconOnly
                   color="secondary"
                   style={{
-                    backgroundColor:
-                      view === "table" ? theme.colors.third : "#e5e5e5",
-                    color: view === "table" ? theme.colors.primary : "#3e3e3e",
+                    backgroundColor: view === 'table' ? theme.colors.third : '#e5e5e5',
+                    color: view === 'table' ? theme.colors.primary : '#3e3e3e',
                   }}
-                  onClick={() => setView("table")}
+                  onClick={() => setView('table')}
                 >
                   <ITable />
                 </Button>
@@ -199,11 +192,10 @@ function ListEmployee({ actions }: Props) {
                   isIconOnly
                   color="default"
                   style={{
-                    backgroundColor:
-                      view === "grid" ? theme.colors.third : "#e5e5e5",
-                    color: view === "grid" ? theme.colors.primary : "#3e3e3e",
+                    backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
+                    color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
                   }}
-                  onClick={() => setView("grid")}
+                  onClick={() => setView('grid')}
                 >
                   <CreditCard />
                 </Button>
@@ -211,11 +203,10 @@ function ListEmployee({ actions }: Props) {
                   isIconOnly
                   color="default"
                   style={{
-                    backgroundColor:
-                      view === "list" ? theme.colors.third : "#e5e5e5",
-                    color: view === "list" ? theme.colors.primary : "#3e3e3e",
+                    backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
+                    color: view === 'list' ? theme.colors.primary : '#3e3e3e',
                   }}
-                  onClick={() => setView("list")}
+                  onClick={() => setView('list')}
                 >
                   <List />
                 </Button>
@@ -243,8 +234,8 @@ function ListEmployee({ actions }: Props) {
                       />
                       <Drawer.Content
                         className={classNames(
-                          "bg-gray-100 z-[60] flex flex-col rounded-t-[10px] h-auto mt-24 max-h-[80%] fixed bottom-0 left-0 right-0",
-                          context === "dark" ? "dark" : ""
+                          'bg-gray-100 z-[60] flex flex-col rounded-t-[10px] h-auto mt-24 max-h-[80%] fixed bottom-0 left-0 right-0',
+                          context === 'dark' ? 'dark' : ''
                         )}
                       >
                         <div className="p-4 bg-white dark:bg-gray-800 rounded-t-[10px] flex-1">
@@ -270,7 +261,7 @@ function ListEmployee({ actions }: Props) {
                     </Drawer.Portal>
                   </Drawer.Root>
                 </div>
-                {actions.includes("Agregar") && (
+                {actions.includes('Agregar') && (
                   <AddButton
                     onClick={() => {
                       modalAdd.onOpen();
@@ -288,57 +279,50 @@ function ListEmployee({ actions }: Props) {
               label="Mostrar"
               labelPlacement="outside"
               classNames={{
-                label: "font-semibold",
+                label: 'font-semibold',
               }}
               value={limit}
               onChange={(e) => {
-                setLimit(Number(e.target.value !== "" ? e.target.value : "5"));
+                setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
               }}
             >
               {limit_options.map((option) => (
-                <SelectItem
-                  key={option}
-                  value={option}
-                  className="dark:text-white"
-                >
+                <SelectItem key={option} value={option} className="dark:text-white">
                   {option}
                 </SelectItem>
               ))}
             </Select>
             <div className="flex items-center">
-              <Switch
-                onValueChange={(active) => setActive(active)}
-                isSelected={active}
-              >
+              <Switch onValueChange={(active) => setActive(active)} isSelected={active}>
                 <span className="text-sm sm:text-base whitespace-nowrap">
-                  Mostrar {active ? "inactivos" : "activos"}
+                  Mostrar {active ? 'inactivos' : 'activos'}
                 </span>
               </Switch>
             </div>
           </div>
-          {(view === "grid" || view === "list") && (
+          {(view === 'grid' || view === 'list') && (
             <MobileView
               deletePopover={DeletePopover}
               openEditModal={(employee) => {
                 setSelectedEmployee(employee);
                 modalAdd.onOpen();
               }}
-              layout={view as "grid" | "list"}
+              layout={view as 'grid' | 'list'}
               actions={actions}
               handleActivate={handleActivate}
             />
           )}
-          {view === "table" && (
+          {view === 'table' && (
             <DataTable
               className="shadow"
               emptyMessage="No se encontraron resultados"
               value={employee_paginated.employees}
-              tableStyle={{ minWidth: "50rem" }}
+              tableStyle={{ minWidth: '50rem' }}
               loading={loading_employees}
             >
               <Column
                 headerClassName="text-sm font-semibold"
-                headerStyle={{ ...style, borderTopLeftRadius: "10px" }}
+                headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
                 field="id"
                 header="No."
               />
@@ -361,11 +345,11 @@ function ListEmployee({ actions }: Props) {
                 header="Sucursal"
               />
               <Column
-                headerStyle={{ ...style, borderTopRightRadius: "10px" }}
+                headerStyle={{ ...style, borderTopRightRadius: '10px' }}
                 header="Acciones"
                 body={(item) => (
                   <div className="flex w-full gap-5">
-                    {actions.includes("Editar") && (
+                    {actions.includes('Editar') && (
                       <Button
                         onClick={() => {
                           setSelectedEmployee(item);
@@ -376,13 +360,10 @@ function ListEmployee({ actions }: Props) {
                           backgroundColor: theme.colors.secondary,
                         }}
                       >
-                        <EditIcon
-                          style={{ color: theme.colors.primary }}
-                          size={20}
-                        />
+                        <EditIcon style={{ color: theme.colors.primary }} size={20} />
                       </Button>
                     )}
-                    {actions.includes("Eliminar") && (
+                    {actions.includes('Eliminar') && (
                       <>
                         {item.isActive ? (
                           <DeletePopover employee={item} />
@@ -411,14 +392,7 @@ function ListEmployee({ actions }: Props) {
                   currentPage={employee_paginated.currentPag}
                   totalPages={employee_paginated.totalPag}
                   onPageChange={(page) => {
-                    getEmployeesPaginated(
-                      page,
-                      limit,
-                      fullName,
-                      branch,
-                      phone,
-                      active ? 1 : 0
-                    );
+                    getEmployeesPaginated(page, limit, fullName, branch, phone, active ? 1 : 0);
                   }}
                 />
               </div>
@@ -457,13 +431,10 @@ function ListEmployee({ actions }: Props) {
       <ModalGlobal
         isOpen={modalAdd.isOpen}
         onClose={modalAdd.onClose}
-        title={selectedEmployee ? "Editar Empleado" : "Agregar Empleado"}
+        title={selectedEmployee ? 'Editar Empleado' : 'Agregar Empleado'}
         size="w-full sm:w-[500px]"
       >
-        <AddEmployee
-          closeModal={modalAdd.onClose}
-          employee={selectedEmployee}
-        />
+        <AddEmployee closeModal={modalAdd.onClose} employee={selectedEmployee} />
       </ModalGlobal>
     </>
   );

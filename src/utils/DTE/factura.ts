@@ -1,21 +1,21 @@
-import { IFormasDePago } from "../../types/DTE/forma_de_pago.types";
-import { ITipoDocumento } from "../../types/DTE/tipo_documento.types";
-import { Customer } from "../../types/customers.types";
-import { ITransmitter } from "../../types/transmitter.types";
-import { getElSalvadorDateTime } from "../dates";
-import { generate_control } from "../dte";
+import { IFormasDePago } from '../../types/DTE/forma_de_pago.types';
+import { ITipoDocumento } from '../../types/DTE/tipo_documento.types';
+import { Customer } from '../../types/customers.types';
+import { ITransmitter } from '../../types/transmitter.types';
+import { getElSalvadorDateTime } from '../dates';
+import { generate_control } from '../dte';
 import {
   formatearNumero,
   generate_emisor,
   generate_receptor,
   make_cuerpo_documento,
-} from "../make-dte";
-import { convertCurrencyFormat } from "../money";
-import { generate_uuid } from "../random/random";
-import { ambiente } from "../../utils/constants.ts";
-import { ICartProduct } from "../../types/branch_products.types.ts";
-import { DteJson } from "../../types/DTE/DTE.types.ts";
-import moment from "moment";
+} from '../make-dte';
+import { convertCurrencyFormat } from '../money';
+import { generate_uuid } from '../random/random';
+import { ambiente } from '../../utils/constants.ts';
+import { ICartProduct } from '../../types/branch_products.types.ts';
+import { DteJson } from '../../types/DTE/DTE.types.ts';
+import moment from 'moment';
 
 export const generate_factura = (
   transmitter: ITransmitter,
@@ -34,7 +34,7 @@ export const generate_factura = (
         version: 1,
         codigoGeneracion: generate_uuid().toUpperCase(),
         ambiente: ambiente,
-        tipoDte: "01",
+        tipoDte: '01',
         numeroControl: generate_control(
           valueTipo!.codigo,
           transmitter.codEstable!,
@@ -45,12 +45,12 @@ export const generate_factura = (
         tipoOperacion: 1,
         tipoContingencia: null,
         motivoContin: null,
-        tipoMoneda: "USD",
+        tipoMoneda: 'USD',
         ...getElSalvadorDateTime(),
       },
       documentoRelacionado: null,
       emisor: { ...generate_emisor(transmitter) },
-      receptor: { ...generate_receptor(customer!, "01") },
+      receptor: { ...generate_receptor(customer!, '01') },
       otrosDocumentos: null,
       ventaTercero: null,
       cuerpoDocumento: make_cuerpo_documento(products_carts),
@@ -84,7 +84,7 @@ export const generate_factura = (
           {
             codigo: tipo_pago.codigo!,
             montoPago: Number(total(products_carts).toFixed(2)),
-            referencia: "",
+            referencia: '',
             plazo: null,
             periodo: null,
           },
@@ -96,17 +96,13 @@ export const generate_factura = (
     },
   } as DteJson;
 };
-function calcularPorcentajeDescuento(
-  totalSinDescuento: number,
-  totalDescuento: number
-): number {
+function calcularPorcentajeDescuento(totalSinDescuento: number, totalDescuento: number): number {
   return ((totalSinDescuento - totalDescuento) / totalSinDescuento) * 100;
 }
 const total_without_discount = (productsCarts: ICartProduct[]) => {
   const total = productsCarts
     .map((prd) => {
-      const price =
-        Number(prd.price) < prd.base_price ? prd.base_price : Number(prd.price);
+      const price = Number(prd.price) < prd.base_price ? prd.base_price : Number(prd.price);
       return price * prd.quantity;
     })
     .reduce((a, b) => a + b, 0);
@@ -138,32 +134,32 @@ const total_iva = (productsCarts: ICartProduct[]) => {
 
 export function verifyApplyAnulation(tipoDte: string, date: string) {
   return new Promise((resolve, reject) => {
-    const fechaDTEParseada = moment(date, "YYYY-MM-DD");
+    const fechaDTEParseada = moment(date, 'YYYY-MM-DD');
 
     if (!fechaDTEParseada.isValid()) {
-      reject(new Error("Formato de fecha DTE inválido"));
+      reject(new Error('Formato de fecha DTE inválido'));
       return;
     }
 
     const fechaActual = moment();
-    const daysDiference = fechaActual.diff(fechaDTEParseada, "days");
+    const daysDiference = fechaActual.diff(fechaDTEParseada, 'days');
 
-    if (tipoDte === "01") {
+    if (tipoDte === '01') {
       const daysLimit = 90;
 
       if (daysDiference > daysLimit) {
-        reject(new Error("DTE fuera del plazo de disponibilidad (3 meses)"));
+        reject(new Error('DTE fuera del plazo de disponibilidad (3 meses)'));
         return;
       }
-    } else if (tipoDte === "03") {
+    } else if (tipoDte === '03') {
       const daysLimit = 1;
 
       if (daysDiference > daysLimit) {
-        reject(new Error("DTE fuera del plazo de disponibilidad (1 día)"));
+        reject(new Error('DTE fuera del plazo de disponibilidad (1 día)'));
         return;
       }
     } else {
-      reject(new Error("Tipo de DTE inválido"));
+      reject(new Error('Tipo de DTE inválido'));
       return;
     }
 

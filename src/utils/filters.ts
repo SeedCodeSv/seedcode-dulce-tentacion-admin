@@ -1,5 +1,6 @@
-import { Color, Theme } from "../hooks/useTheme";
-import { RoleViewAction } from "../types/actions_rol.types";
+import { Color, Theme } from '../hooks/useTheme';
+import { Theme as ITheme } from '../types/themes.types';
+import { RoleViewAction } from '../types/actions_rol.types';
 
 export const is_admin = (rol: string) => {
   const patron = /administrador/i;
@@ -7,19 +8,18 @@ export const is_admin = (rol: string) => {
 };
 export const normalize = (text: string) =>
   text
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
     .toLowerCase();
 
-
-export function formatThemeData(themesData: any[]): Theme[] {
-  return themesData.map(theme => ({
+export function formatThemeData(themesData: ITheme[]): Theme[] {
+  return themesData.map((theme) => ({
     name: theme.name,
     context: theme.context,
-    colors: theme.colors.reduce((acc: any, color: any) => {
+    colors: theme.colors.reduce((acc, color) => {
       acc[color.name as keyof Color] = color.color;
       return acc;
-    }, {} as Color)
+    }, {} as Color),
   }));
 }
 
@@ -27,4 +27,4 @@ export const filterActions = (name: string, actions: RoleViewAction) => {
   const actions_return = actions.view.find((vi) => vi.name === name);
 
   return actions_return;
-}
+};

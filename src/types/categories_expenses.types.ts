@@ -1,4 +1,4 @@
-import { Transmitter } from "./categories.types";
+import { Transmitter } from './categories.types';
 export interface CategoryExpense {
   id: number;
   name: string;

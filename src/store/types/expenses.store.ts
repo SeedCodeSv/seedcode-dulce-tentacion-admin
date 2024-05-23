@@ -1,8 +1,4 @@
-import {
-  IExpensesPaginated,
-  IExpensePayload,
-  IExpensePayloads,
-} from "../../types/expenses.types";
+import { IExpensesPaginated, IExpensePayload, IExpensePayloads } from '../../types/expenses.types';
 
 export interface IExpenseStore {
   expenses_paginated: IExpensesPaginated;

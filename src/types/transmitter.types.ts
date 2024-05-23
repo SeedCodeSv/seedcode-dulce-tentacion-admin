@@ -1,4 +1,4 @@
-import { Role } from "./roles.types";
+import { Role } from './roles.types';
 
 export interface IAddress {
   id: number;
@@ -55,8 +55,8 @@ export interface ILoginFailed {
   codigoMsg: string;
   descripcionMsg: string;
   estado: string;
-  fhProcesamiento: any;
-  observaciones: any;
+  fhProcesamiento: string | null;
+  observaciones: string[] | string | null;
 }
 export interface SendMHFailed {
   version: number;
@@ -64,7 +64,7 @@ export interface SendMHFailed {
   versionApp: number;
   estado: string;
   codigoGeneracion: string;
-  selloRecibido: any;
+  selloRecibido: string | null;
   fhProcesamiento: string;
   clasificaMsg: string;
   codigoMsg: string;

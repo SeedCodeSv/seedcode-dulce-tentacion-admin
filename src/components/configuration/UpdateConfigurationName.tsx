@@ -1,9 +1,9 @@
-import { useContext } from "react";
-import { Button, Input } from "@nextui-org/react";
-import { useConfigurationStore } from "../../store/perzonalitation.store";
-import * as yup from "yup";
-import { Formik } from "formik";
-import { ThemeContext } from "../../hooks/useTheme";
+import { useContext } from 'react';
+import { Button, Input } from '@nextui-org/react';
+import { useConfigurationStore } from '../../store/perzonalitation.store';
+import * as yup from 'yup';
+import { Formik } from 'formik';
+import { ThemeContext } from '../../hooks/useTheme';
 
 interface Props {
   id: number;
@@ -14,13 +14,13 @@ interface Props {
 function UpdateConfigurationName(props: Props) {
   const { theme } = useContext(ThemeContext);
   const initialValues = {
-    name: "",
+    name: '',
   };
 
   const { UpdateConfigurationName } = useConfigurationStore();
 
   const validationSchema = yup.object().shape({
-    name: yup.string().required("Nombre es requerido"),
+    name: yup.string().required('Nombre es requerido'),
   });
 
   const handleSave = async ({ name }: { name: string }) => {
@@ -36,34 +36,24 @@ function UpdateConfigurationName(props: Props) {
         validationSchema={validationSchema}
         onSubmit={(values) => handleSave(values)}
       >
-        {({
-          values,
-          errors,
-          touched,
-          handleChange,
-          handleBlur,
-          handleSubmit,
-        }) => (
+        {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
           <>
             <div>
-            <Input
+              <Input
                 label="Nombre un nombre"
                 labelPlacement="outside"
-                
                 name="name"
                 value={values.name}
-                onChange={handleChange("name")}
-                onBlur={handleBlur("name")}
+                onChange={handleChange('name')}
+                onBlur={handleBlur('name')}
                 placeholder="Ingresa un nombre"
                 classNames={{
-                  label: "font-semibold text-gray-500 text-sm",
+                  label: 'font-semibold text-gray-500 text-sm',
                 }}
                 variant="bordered"
               />
               {errors.name && touched.name && (
-                <span className="text-sm font-semibold text-red-500">
-                  {errors.name}
-                </span>
+                <span className="text-sm font-semibold text-red-500">{errors.name}</span>
               )}
             </div>
             <Button

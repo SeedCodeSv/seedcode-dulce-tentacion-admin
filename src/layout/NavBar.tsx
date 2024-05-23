@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext } from 'react';
 import {
   Navbar,
   NavbarBrand,
@@ -13,32 +13,18 @@ import {
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
-} from "@nextui-org/react";
-import { ThemeContext } from "../hooks/useTheme";
-import { Box, ChevronDown, Home } from "lucide-react";
+} from '@nextui-org/react';
+import { ThemeContext } from '../hooks/useTheme';
+import { Box, ChevronDown, Home } from 'lucide-react';
 // import LOGO from "../assets/react.svg"
 
 export default function NavBar() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
   const { theme } = useContext(ThemeContext);
-
-  const menuItems = [
-    "Profile",
-    "Dashboard",
-    "Activity",
-    "Analytics",
-    "System",
-    "Deployments",
-    "My Settings",
-    "Team Settings",
-    "Help & Feedback",
-    "Log Out",
-  ];
-
   return (
     <Navbar
-      classNames={{ base: "w-screen", wrapper: "w-screen max-w-[100vw]" }}
+      classNames={{ base: 'w-screen', wrapper: 'w-screen max-w-[100vw]' }}
       onMenuOpenChange={setIsMenuOpen}
       shouldHideOnScroll
       isBordered
@@ -49,10 +35,7 @@ export default function NavBar() {
       }}
     >
       <NavbarContent>
-        <NavbarMenuToggle
-          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-          className=""
-        />
+        <NavbarMenuToggle aria-label={isMenuOpen ? 'Close menu' : 'Open menu'} className="" />
         <NavbarBrand>
           {/* < /> */}
           <p className="font-bold text-inherit">SeedCodeERP</p>
@@ -94,7 +77,7 @@ export default function NavBar() {
                   aria-label="ACME features"
                   className="w-[340px]"
                   itemClasses={{
-                    base: "gap-4",
+                    base: 'gap-4',
                   }}
                 >
                   <DropdownItem

@@ -1,12 +1,12 @@
-import { ChangeEvent, useContext, useRef, useState } from "react";
-import { toast } from "sonner";
-import { Image as NextImage, Button, Input } from "@nextui-org/react";
-import { useConfigurationStore } from "../../store/perzonalitation.store";
-import { ICreacteConfiguaration } from "../../types/configuration.types";
-import DefaultImage from "../../assets/react.svg";
-import { ThemeContext } from "../../hooks/useTheme";
-import { useAuthStore } from "../../store/auth.store";
-import compressImage from "browser-image-compression";
+import { ChangeEvent, useContext, useRef, useState } from 'react';
+import { toast } from 'sonner';
+import { Image as NextImage, Button, Input } from '@nextui-org/react';
+import { useConfigurationStore } from '../../store/perzonalitation.store';
+import { ICreacteConfiguaration } from '../../types/configuration.types';
+import DefaultImage from '../../assets/react.svg';
+import { ThemeContext } from '../../hooks/useTheme';
+import { useAuthStore } from '../../store/auth.store';
+import compressImage from 'browser-image-compression';
 
 function CreateConfiguration() {
   const { OnCreateConfiguration } = useConfigurationStore();
@@ -16,7 +16,7 @@ function CreateConfiguration() {
   const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState<ICreacteConfiguaration>({
-    name: "",
+    name: '',
     themeId: 1,
     transmitterId: user?.employee?.branch?.transmitterId || 0,
     file: null,
@@ -25,9 +25,8 @@ function CreateConfiguration() {
   const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-
-      if (file.type !== "image/png") {
-        toast.error("Solo se permiten imágenes en formato .png");
+      if (file.type !== 'image/png') {
+        toast.error('Solo se permiten imágenes en formato .png');
         return;
       }
 
@@ -52,9 +51,8 @@ function CreateConfiguration() {
           ...prevData,
           file: convertedFile,
         }));
-      } catch (error) {
-        console.error("Error compressing image:", error);
-        toast.error("Error al comprimir la imagen");
+      } catch{
+        toast.error('Error al comprimir la imagen');
       } finally {
         setLoading(false);
       }
@@ -71,7 +69,7 @@ function CreateConfiguration() {
     if (!formData.file) {
       const defaultImageFile = await fetch(DefaultImage)
         .then((res) => res.blob())
-        .then((blob) => new File([blob], "default.png", { type: "image/png" }));
+        .then((blob) => new File([blob], 'default.png', { type: 'image/png' }));
 
       setFormData((prevData) => ({
         ...prevData,
@@ -85,10 +83,10 @@ function CreateConfiguration() {
 
     try {
       await OnCreateConfiguration(formData);
-      toast.success("Personalización guardada");
+      toast.success('Personalización guardada');
       location.reload();
     } catch (error) {
-      toast.error("Ocurrió un error al guardar");
+      toast.error('Ocurrió un error al guardar');
     }
   };
 
@@ -118,14 +116,14 @@ function CreateConfiguration() {
             }}
             disabled={loading}
           >
-            {loading ? "Cargando..." : "Selecciona un archivo"}
+            {loading ? 'Cargando...' : 'Selecciona un archivo'}
           </Button>
         </label>
         <input
           type="file"
           id="fileInput"
           accept="image/*"
-          style={{ display: "none" }}
+          style={{ display: 'none' }}
           onChange={handleFileChange}
           ref={fileInputRef}
         />
@@ -138,14 +136,11 @@ function CreateConfiguration() {
           variant="bordered"
           placeholder="Nombre"
           value={formData.name}
-          onChange={(event) =>
-            setFormData({ ...formData, name: event.target.value })
-          }
+          onChange={(event) => setFormData({ ...formData, name: event.target.value })}
           label="Ingrese el nombre"
         />
       </div>
       <Button
-        
         color="primary"
         className="font-semibold w-full mt-4 text-sm text-white shadow-lg"
         onClick={handleSave}
@@ -155,7 +150,7 @@ function CreateConfiguration() {
         }}
         disabled={loading}
       >
-        {loading ? "Guardando..." : "Guardar"}
+        {loading ? 'Guardando...' : 'Guardar'}
       </Button>
     </div>
   );

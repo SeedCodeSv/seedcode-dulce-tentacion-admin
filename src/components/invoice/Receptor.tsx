@@ -1,5 +1,5 @@
-import { View, Text } from "@react-pdf/renderer";
-import { DteJson } from "../../types/DTE/DTE.types";
+import { View, Text } from '@react-pdf/renderer';
+import { DteJson } from '../../types/DTE/DTE.types';
 
 interface Props {
   DTE: DteJson;
@@ -7,44 +7,44 @@ interface Props {
 
 export default function Receptor(props: Props) {
   return (
-    <View style={{ width: "50%", display: "flex", height: "auto" }}>
+    <View style={{ width: '50%', display: 'flex', height: 'auto' }}>
       <Text
         style={{
-          textAlign: "center",
+          textAlign: 'center',
           fontSize: 8,
-          fontWeight: "semibold",
+          fontWeight: 'semibold',
         }}
       >
         Receptor
       </Text>
       <View
         style={{
-          border: "1px solid #000",
+          border: '1px solid #000',
           borderRadius: 10,
           padding: 10,
-          height: "auto",
+          height: 'auto',
         }}
       >
-        <View style={{ display: "flex", flexDirection: "row", gap: 2 }}>
+        <View style={{ display: 'flex', flexDirection: 'row', gap: 2 }}>
           <Text
             style={{
               margin: 0,
               padding: 0,
               fontSize: 7,
-              fontWeight: "semibold",
-              width: "35%",
+              fontWeight: 'semibold',
+              width: '35%',
             }}
           >
             Nombre o razón social:
           </Text>
-          <Text style={{ margin: 0, padding: 0, fontSize: 7, width: "65%" }}>
+          <Text style={{ margin: 0, padding: 0, fontSize: 7, width: '65%' }}>
             {props.DTE.dteJson.receptor.nombre}
           </Text>
         </View>
         <View
           style={{
-            display: "flex",
-            flexDirection: "row",
+            display: 'flex',
+            flexDirection: 'row',
             gap: 2,
             marginTop: 3,
           }}
@@ -54,21 +54,21 @@ export default function Receptor(props: Props) {
               margin: 0,
               padding: 0,
               fontSize: 7,
-              fontWeight: "semibold",
-              width: "35%",
+              fontWeight: 'semibold',
+              width: '35%',
             }}
           >
             Numero documento:
           </Text>
-          <Text style={{ margin: 0, padding: 0, fontSize: 7, width: "65%" }}>
+          <Text style={{ margin: 0, padding: 0, fontSize: 7, width: '65%' }}>
             {props.DTE.dteJson.receptor.numDocumento}
           </Text>
         </View>
-        {props.DTE.dteJson.receptor.nrc !== "N/A" && (
+        {props.DTE.dteJson.receptor.nrc !== 'N/A' && (
           <View
             style={{
-              display: "flex",
-              flexDirection: "row",
+              display: 'flex',
+              flexDirection: 'row',
               gap: 2,
               marginTop: 3,
             }}
@@ -78,22 +78,22 @@ export default function Receptor(props: Props) {
                 margin: 0,
                 padding: 0,
                 fontSize: 7,
-                fontWeight: "semibold",
-                width: "35%",
+                fontWeight: 'semibold',
+                width: '35%',
               }}
             >
               NRC:
             </Text>
-            <Text style={{ margin: 0, padding: 0, fontSize: 7, width: "65%" }}>
+            <Text style={{ margin: 0, padding: 0, fontSize: 7, width: '65%' }}>
               {props.DTE.dteJson.receptor.nrc}
             </Text>
           </View>
         )}
-        {props.DTE.dteJson.receptor.codActividad !== "N/A" && (
+        {props.DTE.dteJson.receptor.codActividad !== 'N/A' && (
           <View
             style={{
-              display: "flex",
-              flexDirection: "row",
+              display: 'flex',
+              flexDirection: 'row',
               gap: 2,
               marginTop: 3,
             }}
@@ -103,22 +103,22 @@ export default function Receptor(props: Props) {
                 margin: 0,
                 padding: 0,
                 fontSize: 7,
-                fontWeight: "semibold",
-                width: "35%",
+                fontWeight: 'semibold',
+                width: '35%',
               }}
             >
               Código actividad:
             </Text>
-            <Text style={{ margin: 0, padding: 0, fontSize: 7, width: "65%" }}>
+            <Text style={{ margin: 0, padding: 0, fontSize: 7, width: '65%' }}>
               {props.DTE.dteJson.receptor.codActividad}
             </Text>
           </View>
         )}
-        {props.DTE.dteJson.receptor.descActividad !== "N/A" && (
+        {props.DTE.dteJson.receptor.descActividad !== 'N/A' && (
           <View
             style={{
-              display: "flex",
-              flexDirection: "row",
+              display: 'flex',
+              flexDirection: 'row',
               gap: 2,
               marginTop: 3,
             }}
@@ -128,22 +128,22 @@ export default function Receptor(props: Props) {
                 margin: 0,
                 padding: 0,
                 fontSize: 7,
-                fontWeight: "semibold",
-                width: "35%",
+                fontWeight: 'semibold',
+                width: '35%',
               }}
             >
               Descripción de actividad económica:
             </Text>
-            <Text style={{ margin: 0, padding: 0, fontSize: 7, width: "65%" }}>
+            <Text style={{ margin: 0, padding: 0, fontSize: 7, width: '65%' }}>
               {props.DTE.dteJson.receptor.descActividad}
             </Text>
           </View>
         )}
-        {props.DTE.dteJson.receptor.nombreComercial !== "N/A" && (
+        {props.DTE.dteJson.receptor.nombreComercial !== 'N/A' && (
           <View
             style={{
-              display: "flex",
-              flexDirection: "row",
+              display: 'flex',
+              flexDirection: 'row',
               gap: 2,
               marginTop: 3,
             }}
@@ -153,21 +153,21 @@ export default function Receptor(props: Props) {
                 margin: 0,
                 padding: 0,
                 fontSize: 7,
-                fontWeight: "semibold",
-                width: "35%",
+                fontWeight: 'semibold',
+                width: '35%',
               }}
             >
               Nombre comercial:
             </Text>
-            <Text style={{ margin: 0, padding: 0, fontSize: 7, width: "65%" }}>
+            <Text style={{ margin: 0, padding: 0, fontSize: 7, width: '65%' }}>
               {props.DTE.dteJson.receptor.nombreComercial}
             </Text>
           </View>
         )}
         <View
           style={{
-            display: "flex",
-            flexDirection: "row",
+            display: 'flex',
+            flexDirection: 'row',
             gap: 2,
             marginTop: 3,
           }}
@@ -177,20 +177,20 @@ export default function Receptor(props: Props) {
               margin: 0,
               padding: 0,
               fontSize: 7,
-              fontWeight: "semibold",
-              width: "35%",
+              fontWeight: 'semibold',
+              width: '35%',
             }}
           >
             Correo electrónico:
           </Text>
-          <Text style={{ margin: 0, padding: 0, fontSize: 7, width: "65%" }}>
+          <Text style={{ margin: 0, padding: 0, fontSize: 7, width: '65%' }}>
             {props.DTE.dteJson.receptor.correo}
           </Text>
         </View>
         <View
           style={{
-            display: "flex",
-            flexDirection: "row",
+            display: 'flex',
+            flexDirection: 'row',
             gap: 2,
             marginTop: 3,
           }}
@@ -200,13 +200,13 @@ export default function Receptor(props: Props) {
               margin: 0,
               padding: 0,
               fontSize: 7,
-              fontWeight: "semibold",
-              width: "35%",
+              fontWeight: 'semibold',
+              width: '35%',
             }}
           >
             Número de teléfono:
           </Text>
-          <Text style={{ margin: 0, padding: 0, fontSize: 7, width: "65%" }}>
+          <Text style={{ margin: 0, padding: 0, fontSize: 7, width: '65%' }}>
             {props.DTE.dteJson.receptor.telefono}
           </Text>
         </View>

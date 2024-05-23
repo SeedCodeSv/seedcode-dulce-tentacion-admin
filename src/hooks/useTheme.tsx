@@ -1,5 +1,6 @@
-import React from "react";
-import { defaultTheme } from "../utils/constants";
+/* eslint-disable no-unused-vars */
+import React from 'react';
+import { defaultTheme } from '../utils/constants';
 
 interface Props {
   children: React.ReactNode;
@@ -15,7 +16,7 @@ export interface Color {
 
 export interface Theme {
   name: string;
-  context: "light" | "dark";
+  context: 'light' | 'dark';
   colors: Color;
 }
 interface ThemeContextType {
@@ -23,27 +24,27 @@ interface ThemeContextType {
   toggleTheme: (themeName: Theme) => void;
   navbar: string;
   toggleNavBar: (themeName: string) => void;
-  context: "light" | "dark";
-  toggleContext: (context: "light" | "dark") => void;
+  context: 'light' | 'dark';
+  toggleContext: (context: 'light' | 'dark') => void;
 }
 
 export const ThemeContext = React.createContext<ThemeContextType>({
   theme: {} as Theme,
   toggleTheme: () => {},
-  navbar: "",
+  navbar: '',
   toggleNavBar: () => {},
-  context: "light",
+  context: 'light',
   toggleContext: () => {},
 });
 
 function ThemeProvider(props: Props) {
-  const themeConfigured = localStorage.getItem("theme");
+  const themeConfigured = localStorage.getItem('theme');
 
   const [theme, setTheme] = React.useState(
-    themeConfigured ? JSON.parse(themeConfigured) : defaultTheme as Theme
+    themeConfigured ? JSON.parse(themeConfigured) : (defaultTheme as Theme)
   );
 
-  const [navbar, setNavbar] = React.useState("sidebar");
+  const [navbar, setNavbar] = React.useState('sidebar');
 
   const toggleNavBar = (barType: string) => {
     setNavbar(barType);
@@ -51,16 +52,16 @@ function ThemeProvider(props: Props) {
 
   const toggleTheme = (themeName: Theme) => {
     setTheme(themeName);
-    localStorage.setItem("theme", JSON.stringify(themeName));
+    localStorage.setItem('theme', JSON.stringify(themeName));
   };
 
-  const [context, setContext] = React.useState<"light" | "dark">(
-    localStorage.getItem("context") as "light" | "dark"
+  const [context, setContext] = React.useState<'light' | 'dark'>(
+    localStorage.getItem('context') as 'light' | 'dark'
   );
 
-  const toggleContext = (context: "light" | "dark") => {
+  const toggleContext = (context: 'light' | 'dark') => {
     setContext(context);
-    localStorage.setItem("context", context);
+    localStorage.setItem('context', context);
   };
 
   return (

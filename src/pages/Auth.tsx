@@ -1,16 +1,15 @@
-import { useContext, useEffect, useState } from "react";
-import BUSINESS from "../assets/bussines.jpg";
-import { Button, Input } from "@nextui-org/react";
-import { Eye, EyeOff } from "lucide-react";
-import { ThemeContext } from "../hooks/useTheme";
-import LOGO from "../assets/fac3.png";
-import * as yup from "yup";
-import { IAuthPayload } from "../types/auth.types";
-import { Formik } from "formik";
-import { useAuthStore } from "../store/auth.store";
-import { SessionContext } from "../hooks/useSession";
-import { redirect } from "react-router";
-import { delete_seller_mode } from "../storage/localStorage";
+import { useContext, useState } from 'react';
+import BUSINESS from '../assets/bussines.jpg';
+import { Button, Input } from '@nextui-org/react';
+import { Eye, EyeOff } from 'lucide-react';
+import { ThemeContext } from '../hooks/useTheme';
+import LOGO from '../assets/fac3.png';
+import * as yup from 'yup';
+import { IAuthPayload } from '../types/auth.types';
+import { Formik } from 'formik';
+import { useAuthStore } from '../store/auth.store';
+import { SessionContext } from '../hooks/useSession';
+import { delete_seller_mode } from '../storage/localStorage';
 
 function Auth() {
   const [showPassword, setShowPassword] = useState(false);
@@ -20,13 +19,13 @@ function Auth() {
   const { setToken, setIsAuth, setRolId } = useContext(SessionContext);
 
   const initialValues = {
-    userName: "",
-    password: "",
+    userName: '',
+    password: '',
   };
 
   const validationSchema = yup.object().shape({
-    userName: yup.string().required("El usuario es requerido"),
-    password: yup.string().required("La contraseña es requerida"),
+    userName: yup.string().required('El usuario es requerido'),
+    password: yup.string().required('La contraseña es requerida'),
   });
 
   const handleSubmit = (values: IAuthPayload) => {
@@ -40,7 +39,7 @@ function Auth() {
       } else {
         setIsAuth(false);
         delete_seller_mode();
-        setToken("");
+        setToken('');
       }
     });
   };
@@ -63,47 +62,36 @@ function Auth() {
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
           >
-            {({
-              values,
-              errors,
-              touched,
-              handleBlur,
-              handleChange,
-              handleSubmit,
-            }) => (
+            {({ values, errors, touched, handleBlur, handleChange, handleSubmit }) => (
               <>
                 <div className="flex flex-col mt-5 md:mt-10 xl:mt1-16">
                   <Input
-                    classNames={{ label: "text-sm font-semibold" }}
+                    classNames={{ label: 'text-sm font-semibold' }}
                     variant="bordered"
-                    
                     label="Usuario"
                     value={values.userName}
-                    onChange={handleChange("userName")}
-                    onBlur={handleBlur("userName")}
+                    onChange={handleChange('userName')}
+                    onBlur={handleBlur('userName')}
                     labelPlacement="outside"
                     placeholder="Ingresa tu usuario"
                     className="dark:text-white"
                   />
                   {errors.userName && touched.userName && (
-                    <p className="text-red-500 text-sm font-semibold">
-                      {errors.userName}
-                    </p>
+                    <p className="text-red-500 text-sm font-semibold">{errors.userName}</p>
                   )}
                 </div>
                 <div className="flex flex-col mt-10">
                   <Input
-                    classNames={{ label: "text-sm font-semibold" }}
+                    classNames={{ label: 'text-sm font-semibold' }}
                     variant="bordered"
-                    
                     value={values.password}
-                    onChange={handleChange("password")}
-                    onBlur={handleBlur("password")}
+                    onChange={handleChange('password')}
+                    onBlur={handleBlur('password')}
                     label="Contraseña"
                     labelPlacement="outside"
                     placeholder="Ingresa tu contraseña"
                     className="dark:text-white"
-                    type={showPassword ? "text" : "password"}
+                    type={showPassword ? 'text' : 'password'}
                     endContent={
                       showPassword ? (
                         <EyeOff
@@ -119,9 +107,7 @@ function Auth() {
                     }
                   />
                   {errors.password && touched.password && (
-                    <p className="text-red-500 text-sm font-semibold">
-                      {errors.password}
-                    </p>
+                    <p className="text-red-500 text-sm font-semibold">{errors.password}</p>
                   )}
                 </div>
 
@@ -130,8 +116,7 @@ function Auth() {
                     backgroundColor: theme.colors.dark,
                     color: theme.colors.primary,
                   }}
-                  className={" mt-10 w-full font-semibold"}
-                  
+                  className={' mt-10 w-full font-semibold'}
                   onClick={() => handleSubmit()}
                 >
                   Iniciar Sesión

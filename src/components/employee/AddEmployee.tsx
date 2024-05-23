@@ -1,17 +1,12 @@
-import {
-  Autocomplete,
-  AutocompleteItem,
-  Button,
-  Input,
-} from "@nextui-org/react";
-import { Formik } from "formik";
-import * as yup from "yup";
-import { useBranchesStore } from "../../store/branches.store";
-import { useContext, useEffect, useMemo } from "react";
-import { Branches } from "../../types/branches.types";
-import { Employee, EmployeePayload } from "../../types/employees.types";
-import { useEmployeeStore } from "../../store/employee.store";
-import { ThemeContext } from "../../hooks/useTheme";
+import { Autocomplete, AutocompleteItem, Button, Input } from '@nextui-org/react';
+import { Formik } from 'formik';
+import * as yup from 'yup';
+import { useBranchesStore } from '../../store/branches.store';
+import { useContext, useEffect, useMemo } from 'react';
+import { Branches } from '../../types/branches.types';
+import { Employee, EmployeePayload } from '../../types/employees.types';
+import { useEmployeeStore } from '../../store/employee.store';
+import { ThemeContext } from '../../hooks/useTheme';
 
 interface Props {
   closeModal: () => void;
@@ -22,8 +17,8 @@ function AddEmployee(props: Props) {
   const { theme } = useContext(ThemeContext);
 
   const initialValues = {
-    fullName: props.employee?.fullName ?? "",
-    phone: props.employee?.phone ?? "",
+    fullName: props.employee?.fullName ?? '',
+    phone: props.employee?.phone ?? '',
     branchId: props.employee?.branchId ?? 0,
   };
 
@@ -35,15 +30,15 @@ function AddEmployee(props: Props) {
   }, []);
 
   const validationSchema = yup.object().shape({
-    fullName: yup.string().required("El nombre es requerido"),
+    fullName: yup.string().required('El nombre es requerido'),
     phone: yup
       .string()
-      .required("El teléfono es requerido")
-      .matches(/^(?:[267][0-9]{7}|[78][0-9]{6})$/, "El teléfono no es valido"),
+      .required('El teléfono es requerido')
+      .matches(/^(?:[267][0-9]{7}|[78][0-9]{6})$/, 'El teléfono no es valido'),
     branchId: yup
       .number()
-      .required("La sucursal es requerida")
-      .typeError("La sucursal es requerida"),
+      .required('La sucursal es requerida')
+      .typeError('La sucursal es requerida'),
   });
 
   const handleSubmit = (values: EmployeePayload) => {
@@ -58,9 +53,7 @@ function AddEmployee(props: Props) {
 
   const selectedKeyBranch = useMemo(() => {
     if (props.employee) {
-      const branch = branch_list.find(
-        (branch) => branch.id === props.employee?.branchId
-      );
+      const branch = branch_list.find((branch) => branch.id === props.employee?.branchId);
 
       return JSON.stringify(branch);
     }
@@ -73,34 +66,24 @@ function AddEmployee(props: Props) {
         validationSchema={validationSchema}
         onSubmit={(values) => handleSubmit(values)}
       >
-        {({
-          values,
-          touched,
-          errors,
-          handleBlur,
-          handleChange,
-          handleSubmit,
-        }) => (
+        {({ values, touched, errors, handleBlur, handleChange, handleSubmit }) => (
           <>
             <div className="flex flex-col">
               <Input
                 name="name"
                 labelPlacement="outside"
                 value={values.fullName}
-                onChange={handleChange("fullName")}
-                onBlur={handleBlur("fullName")}
+                onChange={handleChange('fullName')}
+                onBlur={handleBlur('fullName')}
                 placeholder="Ingresa el nombre"
-                
-                classNames={{ label: "font-semibold text-sm  text-gray-600" }}
+                classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
                 variant="bordered"
                 label="Nombre"
                 autoComplete="off"
               />
               {errors.fullName && touched.fullName && (
                 <>
-                  <span className="text-sm font-semibold text-red-600">
-                    {errors.fullName}
-                  </span>
+                  <span className="text-sm font-semibold text-red-600">{errors.fullName}</span>
                 </>
               )}
             </div>
@@ -110,20 +93,17 @@ function AddEmployee(props: Props) {
                 name="name"
                 labelPlacement="outside"
                 value={values.phone}
-                onChange={handleChange("phone")}
-                onBlur={handleBlur("phone")}
+                onChange={handleChange('phone')}
+                onBlur={handleBlur('phone')}
                 placeholder="Ingresa el numero de teléfono"
-                
-                classNames={{ label: "font-semibold text-sm  text-gray-600" }}
+                classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
                 variant="bordered"
                 label="Teléfono"
                 autoComplete="off"
               />
               {errors.phone && touched.phone && (
                 <>
-                  <span className="text-sm font-semibold text-red-600">
-                    {errors.phone}
-                  </span>
+                  <span className="text-sm font-semibold text-red-600">{errors.phone}</span>
                 </>
               )}
             </div>
@@ -131,38 +111,38 @@ function AddEmployee(props: Props) {
               <Autocomplete
                 onSelectionChange={(key) => {
                   if (key) {
-                    const branchSelected = JSON.parse(
-                      key as string
-                    ) as Branches;
-                    handleChange("branchId")(branchSelected.id.toString());
+                    const branchSelected = JSON.parse(key as string) as Branches;
+                    handleChange('branchId')(branchSelected.id.toString());
                   }
                 }}
-                onBlur={handleBlur("branchId")}
+                onBlur={handleBlur('branchId')}
                 label="Sucursal"
                 labelPlacement="outside"
                 placeholder={
                   props.employee?.branch.name
                     ? props.employee?.branch.name
-                    : "Selecciona la sucursal"
+                    : 'Selecciona la sucursal'
                 }
                 variant="bordered"
                 className="dark:text-white"
                 classNames={{
-                  base: "font-semibold text-gray-500 text-sm",
+                  base: 'font-semibold text-gray-500 text-sm',
                 }}
                 defaultSelectedKey={selectedKeyBranch}
                 value={selectedKeyBranch}
               >
                 {branch_list.map((bra) => (
-                  <AutocompleteItem className="dark:text-white" value={bra.name} key={JSON.stringify(bra)}>
+                  <AutocompleteItem
+                    className="dark:text-white"
+                    value={bra.name}
+                    key={JSON.stringify(bra)}
+                  >
                     {bra.name}
                   </AutocompleteItem>
                 ))}
               </Autocomplete>
               {errors.branchId && touched.branchId && (
-                <span className="text-sm font-semibold text-red-500">
-                  {errors.branchId}
-                </span>
+                <span className="text-sm font-semibold text-red-500">{errors.branchId}</span>
               )}
             </div>
             <Button

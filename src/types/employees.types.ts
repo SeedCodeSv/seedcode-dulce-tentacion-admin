@@ -1,4 +1,4 @@
- import { Branches } from "./branches.types";
+import { Branches } from './branches.types';
 
 export interface Employee {
   id: number;
@@ -27,7 +27,7 @@ export interface EmployeePayload {
 }
 
 export interface GetEmployeeList {
-	ok: boolean;
-	message: string;
-	employees: Employee[];
+  ok: boolean;
+  message: string;
+  employees: Employee[];
 }

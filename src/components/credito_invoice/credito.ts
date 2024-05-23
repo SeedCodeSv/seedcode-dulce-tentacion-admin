@@ -1,11 +1,11 @@
 // import SEEDCODE from "../../assets/seedcodesv.png"
 
 export const MHQuery = (ambiente: string, codegen: string, fechaEmi: string) => {
-    return `https://admin.factura.gob.sv/consultaPublica?ambiente=${ambiente}&codGen=${codegen}&fechaEmi=${fechaEmi}`;
-}
+  return `https://admin.factura.gob.sv/consultaPublica?ambiente=${ambiente}&codGen=${codegen}&fechaEmi=${fechaEmi}`;
+};
 
-export const CreditoInVoiceHTML = (qrCode:string, logo: string) => {
-    return `
+export const CreditoInVoiceHTML = (qrCode: string, logo: string) => {
+  return `
     <!DOCTYPE html>
     <html lang="en">
     

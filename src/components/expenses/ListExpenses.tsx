@@ -1,6 +1,6 @@
-import { useContext, useEffect, useState } from "react";
-import { ThemeContext } from "../../hooks/useTheme";
-import { useExpenseStore } from "../../store/expenses.store";
+import { useContext, useEffect, useState } from 'react';
+import { ThemeContext } from '../../hooks/useTheme';
+import { useExpenseStore } from '../../store/expenses.store';
 import {
   Button,
   ButtonGroup,
@@ -11,29 +11,21 @@ import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-} from "@nextui-org/react";
-import { IExpense } from "../../types/expenses.types";
-import {
-  EditIcon,
-  User,
-  TrashIcon,
-  Table as ITable,
-  CreditCard,
-  List,
-  Files,
-} from "lucide-react";
-import AddButton from "../global/AddButton";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
-import Pagination from "../global/Pagination";
-import { Paginator } from "primereact/paginator";
-import { paginator_styles } from "../../styles/paginator.styles";
-import ModalGlobal from "../global/ModalGlobal";
-import AddExpenses from "./AddExpenses";
-import MobileView from "./MobileView";
-import { formatCurrency } from "../../utils/dte"
-import { limit_options } from "../../utils/constants";
-import Anexo from "./Anexo";
+} from '@nextui-org/react';
+import { IExpense } from '../../types/expenses.types';
+import { EditIcon, User, TrashIcon, Table as ITable, CreditCard, List, Files } from 'lucide-react';
+import AddButton from '../global/AddButton';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+import Pagination from '../global/Pagination';
+import { Paginator } from 'primereact/paginator';
+import { paginator_styles } from '../../styles/paginator.styles';
+import ModalGlobal from '../global/ModalGlobal';
+import AddExpenses from './AddExpenses';
+import MobileView from './MobileView';
+import { formatCurrency } from '../../utils/dte';
+import { limit_options } from '../../utils/constants';
+import Anexo from './Anexo';
 const ListExpenses = () => {
   const { theme } = useContext(ThemeContext);
 
@@ -41,7 +33,7 @@ const ListExpenses = () => {
 
   const [selectedCategory, setSelectedCategory] = useState<IExpense>();
 
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState('');
   const [limit, setLimit] = useState(8);
 
   useEffect(() => {
@@ -60,7 +52,7 @@ const ListExpenses = () => {
     color: theme.colors.primary,
   };
 
-  const [view, setView] = useState<"table" | "grid" | "list">("table");
+  const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
 
   const handleEdit = (item: IExpense) => {
     setSelectedCategory(item);
@@ -80,17 +72,16 @@ const ListExpenses = () => {
                 labelPlacement="outside"
                 label="Nombre"
                 classNames={{
-                  label: "font-semibold text-gray-700",
-                  inputWrapper: "pr-0",
+                  label: 'font-semibold text-gray-700',
+                  inputWrapper: 'pr-0',
                 }}
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                
                 placeholder="Escribe para buscar..."
                 isClearable
                 onClear={() => {
-                  setCategory("");
-                  handleSearch("");
+                  setCategory('');
+                  handleSearch('');
                 }}
               />
               <Button
@@ -100,7 +91,6 @@ const ListExpenses = () => {
                 }}
                 className="font-semibold"
                 color="primary"
-                
                 onClick={() => handleSearch(undefined)}
               >
                 Buscar
@@ -110,41 +100,35 @@ const ListExpenses = () => {
           <div className="flex items-end justify-between w-full gap-10 lg:justify-end">
             <ButtonGroup>
               <Button
-                
                 isIconOnly
                 color="secondary"
                 style={{
-                  backgroundColor:
-                    view === "table" ? theme.colors.third : "#e5e5e5",
-                  color: view === "table" ? theme.colors.primary : "#3e3e3e",
+                  backgroundColor: view === 'table' ? theme.colors.third : '#e5e5e5',
+                  color: view === 'table' ? theme.colors.primary : '#3e3e3e',
                 }}
-                onClick={() => setView("table")}
+                onClick={() => setView('table')}
               >
                 <ITable />
               </Button>
               <Button
-                
                 isIconOnly
                 color="default"
                 style={{
-                  backgroundColor:
-                    view === "grid" ? theme.colors.third : "#e5e5e5",
-                  color: view === "grid" ? theme.colors.primary : "#3e3e3e",
+                  backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
+                  color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
                 }}
-                onClick={() => setView("grid")}
+                onClick={() => setView('grid')}
               >
                 <CreditCard />
               </Button>
               <Button
-                
                 isIconOnly
                 color="default"
                 style={{
-                  backgroundColor:
-                    view === "list" ? theme.colors.third : "#e5e5e5",
-                  color: view === "list" ? theme.colors.primary : "#3e3e3e",
+                  backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
+                  color: view === 'list' ? theme.colors.primary : '#3e3e3e',
                 }}
-                onClick={() => setView("list")}
+                onClick={() => setView('list')}
               >
                 <List />
               </Button>
@@ -161,39 +145,40 @@ const ListExpenses = () => {
           <Select
             className="w-44 dark:text-white"
             variant="bordered"
-            
             label="Mostrar"
             labelPlacement="outside"
             classNames={{
-              label: "font-semibold",
+              label: 'font-semibold',
             }}
             value={limit}
             onChange={(e) => {
-              setLimit(Number(e.target.value !== "" ? e.target.value : "5"));
+              setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
             }}
           >
             {limit_options.map((option) => (
-              <SelectItem key={option} className="dark:text-white">{option}</SelectItem>
+              <SelectItem key={option} className="dark:text-white">
+                {option}
+              </SelectItem>
             ))}
           </Select>
         </div>
-        {(view === "grid" || view === "list") && (
+        {(view === 'grid' || view === 'list') && (
           <MobileView
             deletePopover={DeletePopUp}
-            layout={view as "grid" | "list"}
+            layout={view as 'grid' | 'list'}
             handleEdit={handleEdit}
           />
         )}
-        {view === "table" && (
+        {view === 'table' && (
           <DataTable
             className="w-full shadow"
             emptyMessage="No se encontraron resultados"
             value={expenses_paginated.expenses}
-            tableStyle={{ minWidth: "50rem" }}
+            tableStyle={{ minWidth: '50rem' }}
           >
             <Column
               headerClassName="text-sm font-semibold"
-              headerStyle={{ ...style, borderTopLeftRadius: "10px" }}
+              headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
               field="id"
               header="No."
             />
@@ -217,35 +202,27 @@ const ListExpenses = () => {
               header="Descripción"
             />
             <Column
-              headerStyle={{ ...style, borderTopRightRadius: "10px" }}
+              headerStyle={{ ...style, borderTopRightRadius: '10px' }}
               header="Acciones"
               body={(item) => (
                 <div className="flex gap-6">
                   <Button
                     onClick={() => handleEdit(item)}
                     isIconOnly
-                    
                     style={{
                       backgroundColor: theme.colors.secondary,
                     }}
                   >
-                    <EditIcon
-                      style={{ color: theme.colors.primary }}
-                      size={20}
-                    />
+                    <EditIcon style={{ color: theme.colors.primary }} size={20} />
                   </Button>
                   <Button
                     onClick={showAnexo.onOpen}
                     isIconOnly
-                    
                     style={{
                       backgroundColor: theme.colors.third,
                     }}
                   >
-                    <Files
-                      style={{ color: theme.colors.primary }}
-                      size={20}
-                    />
+                    <Files style={{ color: theme.colors.primary }} size={20} />
                   </Button>
                   <DeletePopUp expenses={item} />
                 </div>
@@ -274,7 +251,7 @@ const ListExpenses = () => {
                 rows={limit}
                 totalRecords={expenses_paginated.total}
                 template={{
-                  layout: "PrevPageLink CurrentPageReport NextPageLink",
+                  layout: 'PrevPageLink CurrentPageReport NextPageLink',
                 }}
                 currentPageReportTemplate="{currentPage} de {totalPages}"
               />
@@ -284,18 +261,11 @@ const ListExpenses = () => {
       </div>
       <ModalGlobal
         size="w-full sm:w-[500px]"
-        title={
-          selectedCategory
-            ? "Editar gastos"
-            : "Nueva gastos"
-        }
+        title={selectedCategory ? 'Editar gastos' : 'Nueva gastos'}
         isOpen={modalAdd.isOpen}
         onClose={modalAdd.onClose}
       >
-        <AddExpenses
-          closeModal={modalAdd.onClose}
-          expenses={selectedCategory}
-        />
+        <AddExpenses closeModal={modalAdd.onClose} expenses={selectedCategory} />
       </ModalGlobal>
 
       <ModalGlobal
@@ -338,7 +308,6 @@ const DeletePopUp = ({ expenses }: Props) => {
             style={{
               backgroundColor: theme.colors.danger,
             }}
-            
           >
             <TrashIcon
               style={{

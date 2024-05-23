@@ -1,11 +1,11 @@
-import { Input, Button } from "@nextui-org/react";
-import { Formik } from "formik";
-import * as yup from "yup";
-import { useCategoriesExpenses } from "../../store/categories_expenses.store";
-import { CategoryExpensePayload } from "../../types/categories_expenses.types.ts";
-import { ThemeContext } from "../../hooks/useTheme";
-import { useContext } from "react";
-import { get_user } from "../../storage/localStorage.ts";
+import { Input, Button } from '@nextui-org/react';
+import { Formik } from 'formik';
+import * as yup from 'yup';
+import { useCategoriesExpenses } from '../../store/categories_expenses.store';
+import { CategoryExpensePayload } from '../../types/categories_expenses.types.ts';
+import { ThemeContext } from '../../hooks/useTheme';
+import { useContext } from 'react';
+import { get_user } from '../../storage/localStorage.ts';
 
 interface Props {
   closeModal: () => void;
@@ -19,13 +19,10 @@ const AddCategoryExpenses = (props: Props) => {
   const { theme } = useContext(ThemeContext);
 
   const validationSchema = yup.object().shape({
-    name: yup
-      .string()
-      .required("**Debes especificar el nombre de la categoría**"),
+    name: yup.string().required('**Debes especificar el nombre de la categoría**'),
   });
 
-  const { postCategoriesExpenses, pathCategoriesExpenses } =
-    useCategoriesExpenses();
+  const { postCategoriesExpenses, pathCategoriesExpenses } = useCategoriesExpenses();
 
   const handleSave = ({ name }: { name: string }) => {
     const user = get_user();
@@ -46,42 +43,31 @@ const AddCategoryExpenses = (props: Props) => {
     <div className="">
       <Formik
         validationSchema={validationSchema}
-        initialValues={{ name: props.categoryExpenses?.name ?? "" }}
+        initialValues={{ name: props.categoryExpenses?.name ?? '' }}
         onSubmit={handleSave}
       >
-        {({
-          values,
-          errors,
-          touched,
-          handleBlur,
-          handleChange,
-          handleSubmit,
-        }) => (
+        {({ values, errors, touched, handleBlur, handleChange, handleSubmit }) => (
           <>
             <div className="flex flex-col">
               <Input
                 name="name"
                 labelPlacement="outside"
                 value={values.name}
-                onChange={handleChange("name")}
-                onBlur={handleBlur("name")}
+                onChange={handleChange('name')}
+                onBlur={handleBlur('name')}
                 placeholder="Ingresa el nombre de la categoría"
-                
-                classNames={{ label: "font-semibold text-sm  text-gray-600" }}
+                classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
                 variant="bordered"
                 label="Nombre"
               />
               {errors.name && touched.name && (
                 <>
-                  <span className="text-sm font-semibold text-red-600">
-                    {errors.name}
-                  </span>
+                  <span className="text-sm font-semibold text-red-600">{errors.name}</span>
                 </>
               )}
             </div>
             <Button
               onClick={() => handleSubmit()}
-              
               className="w-full mt-4 text-sm font-semibold"
               style={{
                 backgroundColor: theme.colors.third,

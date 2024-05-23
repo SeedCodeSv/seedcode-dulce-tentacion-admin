@@ -1,17 +1,15 @@
-import { useContext, useMemo } from "react";
-import Layout from "../layout/Layout";
-import ListCategories from "../components/categories/ListCategories";
-import { ActionsContext } from "../hooks/useActions";
-import { filterActions } from "../utils/filters";
+import { useContext, useMemo } from 'react';
+import Layout from '../layout/Layout';
+import ListCategories from '../components/categories/ListCategories';
+import { ActionsContext } from '../hooks/useActions';
+import { filterActions } from '../utils/filters';
 
 function ProductsCategories() {
   const { roleActions } = useContext(ActionsContext);
 
   const actions_role_view = useMemo(() => {
     if (roleActions) {
-      const actions = filterActions("Categorias", roleActions)?.actions.map(
-        (re) => re.name
-      );
+      const actions = filterActions('Categorias', roleActions)?.actions.map((re) => re.name);
       return actions;
     }
     return undefined;

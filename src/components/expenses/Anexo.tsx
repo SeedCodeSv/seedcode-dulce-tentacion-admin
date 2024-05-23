@@ -1,16 +1,11 @@
-
-
-
-
 const Anexo = () => {
+  return (
+    <>
+      <div>
+        <div>Anexos</div>
+      </div>
+    </>
+  );
+};
 
-    return (
-        <>
-            <div>
-                <div>Anexos</div>
-            </div>
-        </>
-    )
-}
-
-export default Anexo
+export default Anexo;

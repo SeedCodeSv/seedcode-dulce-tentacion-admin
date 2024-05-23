@@ -1,5 +1,5 @@
-import React, { useContext } from "react";
-import Layout from "../layout/Layout";
+import React, { useContext } from 'react';
+import Layout from '../layout/Layout';
 import {
   Button,
   Card,
@@ -10,9 +10,9 @@ import {
   TableHeader,
   TableRow,
   getKeyValue,
-} from "@nextui-org/react";
-import { ThemeContext } from "../hooks/useTheme";
-import { Edit, Trash } from "lucide-react";
+} from '@nextui-org/react';
+import { ThemeContext } from '../hooks/useTheme';
+import { Edit, Trash } from 'lucide-react';
 
 function Tables() {
   const { theme } = useContext(ThemeContext);
@@ -20,26 +20,26 @@ function Tables() {
   const users = [
     {
       id: 1,
-      name: "Juan Perez",
-      email: "juanperez@gmail.com",
+      name: 'Juan Perez',
+      email: 'juanperez@gmail.com',
     },
     {
       id: 2,
-      name: "Juan Perez",
-      email: "juanperez@gmail.com",
+      name: 'Juan Perez',
+      email: 'juanperez@gmail.com',
     },
     {
       id: 3,
-      name: "Juan Perez",
-      email: "juanperez@gmail.com",
+      name: 'Juan Perez',
+      email: 'juanperez@gmail.com',
     },
   ];
 
   const columns = [
-    { uuid: "id", name: "ID" },
-    { uuid: "name", name: "Name" },
-    { uuid: "email", name: "Email" },
-    { uuid: "actions", name: "Acciones" },
+    { uuid: 'id', name: 'ID' },
+    { uuid: 'name', name: 'Name' },
+    { uuid: 'email', name: 'Email' },
+    { uuid: 'actions', name: 'Acciones' },
   ];
 
   return (
@@ -66,7 +66,7 @@ function Tables() {
                 <TableRow key={item.id}>
                   {(columnKey) => (
                     <TableCell>
-                      {columnKey === "actions" ? (
+                      {columnKey === 'actions' ? (
                         <div className="flex gap-2">
                           <Button
                             color="primary"
@@ -106,11 +106,7 @@ function Tables() {
                 >
                   <Edit color={theme.colors.primary} />
                 </Button>
-                <Button
-                  color="primary"
-                  style={{ backgroundColor: theme.colors.danger }}
-                  isIconOnly
-                >
+                <Button color="primary" style={{ backgroundColor: theme.colors.danger }} isIconOnly>
                   <Trash color={theme.colors.primary} />
                 </Button>
               </div>

@@ -1,8 +1,8 @@
-import { SaleContingenciaI } from "../../plugins/dexie/store/types/contingencia_store.types";
-import { DteJson as IFactura } from "../../types/DTE/DTE.types";
-import { Sale } from "../../types/report_contigence";
-import { ITransmitter } from "../../types/transmitter.types";
-import { ambiente } from "../../utils/constants";
+import { SaleContingenciaI } from '../../plugins/dexie/store/types/contingencia_store.types';
+import { DteJson as IFactura } from '../../types/DTE/DTE.types';
+import { Sale } from '../../types/report_contigence';
+import { ITransmitter } from '../../types/transmitter.types';
+import { ambiente } from '../../utils/constants';
 
 export const generateFactura = (
   info: SaleContingenciaI,
@@ -25,7 +25,7 @@ export const generateFactura = (
         tipoOperacion: 1,
         tipoContingencia: null,
         motivoContin: null,
-        tipoMoneda: "USD",
+        tipoMoneda: 'USD',
         fecEmi: sale.fecEmi.toString(),
         horEmi: sale.horEmi.toString(),
       },
@@ -46,26 +46,21 @@ export const generateFactura = (
         telefono: transmitter.telefono,
         correo: transmitter.correo,
         codEstable: transmitter.codEstable,
-        codEstableMH:
-          transmitter.codEstableMH === "0" ? null : transmitter.codEstableMH,
+        codEstableMH: transmitter.codEstableMH === '0' ? null : transmitter.codEstableMH,
         codPuntoVenta: transmitter.codPuntoVenta,
-        codPuntoVentaMH:
-          transmitter.codPuntoVentaMH === "0"
-            ? null
-            : transmitter.codPuntoVentaMH,
+        codPuntoVentaMH: transmitter.codPuntoVentaMH === '0' ? null : transmitter.codPuntoVentaMH,
       },
       receptor: {
-        tipoDocumento: saleCustomer?.customer.tipoDocumento ? saleCustomer?.customer.tipoDocumento :
-          info.receptor!.tipoDocumento === "0" ||
-          info.receptor.tipoDocumento === "N/A"
+        tipoDocumento: saleCustomer?.customer.tipoDocumento
+          ? saleCustomer?.customer.tipoDocumento
+          : info.receptor!.tipoDocumento === '0' || info.receptor.tipoDocumento === 'N/A'
             ? null
             : info.receptor!.tipoDocumento,
         numDocumento: saleCustomer?.customer.numDocumento
           ? saleCustomer?.customer.numDocumento
-          : info.receptor!.numDocumento === "0" ||
-            info.receptor.numDocumento === "N/A"
-          ? null
-          : info.receptor!.numDocumento,
+          : info.receptor!.numDocumento === '0' || info.receptor.numDocumento === 'N/A'
+            ? null
+            : info.receptor!.numDocumento,
         nrc: Number(info.receptor!.nrc) === 0 ? null : info.receptor!.nrc,
         nombre: saleCustomer?.customer.nombre
           ? saleCustomer?.customer.nombre
@@ -73,13 +68,13 @@ export const generateFactura = (
         codActividad: saleCustomer?.customer.codActividad
           ? saleCustomer?.customer.codActividad
           : Number(info.receptor!.codActividad) === 0
-          ? null
-          : info.receptor!.codActividad,
+            ? null
+            : info.receptor!.codActividad,
         descActividad: saleCustomer?.customer.descActividad
           ? saleCustomer?.customer.descActividad
           : Number(info.receptor!.descActividad) === 0
-          ? null
-          : info.receptor!.descActividad,
+            ? null
+            : info.receptor!.descActividad,
         direccion: {
           departamento: saleCustomer?.customer.direccion.departamento
             ? saleCustomer?.customer.direccion.departamento
@@ -140,7 +135,7 @@ export const generateFactura = (
           {
             codigo: info.pagos.codigo,
             montoPago: info.pagos.montoPago,
-            referencia: "",
+            referencia: '',
             plazo: null,
             periodo: null,
           },

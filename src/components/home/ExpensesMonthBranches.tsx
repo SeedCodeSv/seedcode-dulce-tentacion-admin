@@ -1,5 +1,5 @@
-import ApexChart from "react-apexcharts";
-import { formatCurrency } from "../../utils/dte";
+import ApexChart from 'react-apexcharts';
+import { formatCurrency } from '../../utils/dte';
 
 interface Props {
   sales: {
@@ -32,7 +32,7 @@ function SalesMonthBranches({ sales }: Props) {
           type="line"
           series={sales.series}
           height={150}
-          width={"100%"}
+          width={'100%'}
           options={{
             labels: sales.labels,
             yaxis: {
@@ -41,22 +41,22 @@ function SalesMonthBranches({ sales }: Props) {
               },
             },
             xaxis: {
-              type: "category",
+              type: 'category',
               crosshairs: {
                 width: 1,
               },
             },
-            colors: ["#ffffff"],
+            colors: ['#ffffff'],
             chart: {
-              id: "expenses_month",
-              type: "area",
-              group: "expenses_month",
+              id: 'expenses_month',
+              type: 'area',
+              group: 'expenses_month',
               sparkline: {
                 enabled: true,
               },
             },
             stroke: {
-              curve: "smooth",
+              curve: 'smooth',
             },
             grid: {
               padding: {

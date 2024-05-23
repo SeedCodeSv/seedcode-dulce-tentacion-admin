@@ -1,5 +1,5 @@
-import { create } from "zustand";
-import { UsersStore } from "./types/users_store.types";
+import { create } from 'zustand';
+import { UsersStore } from './types/users_store.types';
 import {
   delete_user,
   get_user_paginated,
@@ -7,9 +7,9 @@ import {
   patch_password,
   patch_user,
   save_user,
-} from "../services/users.service";
-import { messages } from "../utils/constants";
-import { toast } from "sonner";
+} from '../services/users.service';
+import { messages } from '../utils/constants';
+import { toast } from 'sonner';
 
 export const useUsersStore = create<UsersStore>((set, get) => ({
   users: [],
@@ -27,25 +27,27 @@ export const useUsersStore = create<UsersStore>((set, get) => ({
   loading_users: false,
   async getUsersPaginated(page, limit, userName, active = 1) {
     set({ active_filter: active, loading_users: true });
-    get_user_paginated(page, limit, userName, active).then(({ data }) => {
-      set((state) => ({ ...state, users_paginated: data, loading_users: false }));
-    }).catch(() => {
-      set({
-        loading_users: false,
-        users_paginated: {
-          users: [],
-          total: 0,
-          totalPag: 0,
-          currentPag: 0,
-          nextPag: 0,
-          prevPag: 0,
-          status: 404,
-          ok: false,
-        },
+    get_user_paginated(page, limit, userName, active)
+      .then(({ data }) => {
+        set((state) => ({ ...state, users_paginated: data, loading_users: false }));
+      })
+      .catch(() => {
+        set({
+          loading_users: false,
+          users_paginated: {
+            users: [],
+            total: 0,
+            totalPag: 0,
+            currentPag: 0,
+            nextPag: 0,
+            prevPag: 0,
+            status: 404,
+            ok: false,
+          },
+        });
       });
-    });
   },
-  
+
   saveUsers(users) {
     set({ users });
   },
@@ -57,7 +59,7 @@ export const useUsersStore = create<UsersStore>((set, get) => ({
   postUser(payload) {
     return save_user(payload)
       .then(({ data }) => {
-        get().getUsersPaginated(1, 5, "", get().active_filter);
+        get().getUsersPaginated(1, 5, '', get().active_filter);
         toast.success(messages.success);
         return data.ok;
       })
@@ -69,7 +71,7 @@ export const useUsersStore = create<UsersStore>((set, get) => ({
   patchUser(payload, id) {
     return patch_user(payload, id)
       .then((res) => {
-        get().getUsersPaginated(1, 5, "",get().active_filter);
+        get().getUsersPaginated(1, 5, '', get().active_filter);
         toast.success(messages.success);
         return res.data.ok;
       })
@@ -81,7 +83,7 @@ export const useUsersStore = create<UsersStore>((set, get) => ({
   deleteUser(id) {
     return delete_user(id)
       .then(({ data }) => {
-        get().getUsersPaginated(1, 5, "", get().active_filter);
+        get().getUsersPaginated(1, 5, '', get().active_filter);
         toast.success(messages.success);
         return data.ok;
       })

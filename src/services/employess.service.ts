@@ -1,11 +1,7 @@
-import axios from "axios";
-import { API_URL } from "../utils/constants";
-import {
-  EmployeePayload,
-  GetEmployeeList,
-  IGetEmployeesPaginated,
-} from "../types/employees.types";
-import { get_token } from "../storage/localStorage";
+import axios from 'axios';
+import { API_URL } from '../utils/constants';
+import { EmployeePayload, GetEmployeeList, IGetEmployeesPaginated } from '../types/employees.types';
+import { get_token } from '../storage/localStorage';
 
 export const get_employees_paginated = (
   page: number,
@@ -15,21 +11,21 @@ export const get_employees_paginated = (
   phone: string,
   active: number = 1
 ) => {
-  const token = get_token() ?? "";
+  const token = get_token() ?? '';
   return axios.get<IGetEmployeesPaginated>(
     API_URL +
-    "/employees/list-paginated?page=" +
-    page +
-    "&limit=" +
-    limit +
-    "&fullName=" +
-    fullName +
-    "&branch=" +
-    branch +
-    "&phone=" +
-    phone +
-    "&active=" +
-    active,
+      '/employees/list-paginated?page=' +
+      page +
+      '&limit=' +
+      limit +
+      '&fullName=' +
+      fullName +
+      '&branch=' +
+      branch +
+      '&phone=' +
+      phone +
+      '&active=' +
+      active,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -39,8 +35,8 @@ export const get_employees_paginated = (
 };
 
 export const save_employee = (payload: EmployeePayload) => {
-  const token = get_token() ?? "";
-  return axios.post<{ ok: boolean }>(API_URL + "/employees", payload, {
+  const token = get_token() ?? '';
+  return axios.post<{ ok: boolean }>(API_URL + '/employees', payload, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -48,8 +44,8 @@ export const save_employee = (payload: EmployeePayload) => {
 };
 
 export const patch_employee = (payload: EmployeePayload, id: number) => {
-  const token = get_token() ?? "";
-  return axios.patch<{ ok: boolean }>(API_URL + "/employees/" + id, payload, {
+  const token = get_token() ?? '';
+  return axios.patch<{ ok: boolean }>(API_URL + '/employees/' + id, payload, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -57,8 +53,8 @@ export const patch_employee = (payload: EmployeePayload, id: number) => {
 };
 
 export const delete_employee = (id: number) => {
-  const token = get_token() ?? "";
-  return axios.delete<{ ok: boolean }>(API_URL + "/employees/" + id, {
+  const token = get_token() ?? '';
+  return axios.delete<{ ok: boolean }>(API_URL + '/employees/' + id, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -66,8 +62,8 @@ export const delete_employee = (id: number) => {
 };
 
 export const get_employee_list = () => {
-  const token = get_token() ?? "";
-  return axios.get<GetEmployeeList>(API_URL + "/employees", {
+  const token = get_token() ?? '';
+  return axios.get<GetEmployeeList>(API_URL + '/employees', {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -75,10 +71,14 @@ export const get_employee_list = () => {
 };
 
 export const activate_employee = (id: number) => {
-  const token = get_token() ?? "";
-  return axios.patch<{ ok: boolean }>(API_URL + "/employees/activate/" + id, {}, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-}
+  const token = get_token() ?? '';
+  return axios.patch<{ ok: boolean }>(
+    API_URL + '/employees/activate/' + id,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};

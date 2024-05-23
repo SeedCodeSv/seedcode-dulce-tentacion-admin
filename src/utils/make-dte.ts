@@ -1,12 +1,10 @@
-import { DteJson, ICuerpoDocumento } from "../types/DTE/credito_fiscal.types";
-import { ITransmitter } from "../types/transmitter.types";
-import { IProductCart } from "../types/products.types";
-import { convertCurrencyFormat } from "./money";
-import { Customer } from "../types/customers.types";
-import { ResponseMHSuccess } from "../types/DTE/contingencia.types";
-import { ISendMHFiscal } from "../types/DTE/credito_fiscal.types";
-import { ICartProduct } from "../types/branch_products.types";
-
+import { DteJson, ICuerpoDocumento } from '../types/DTE/credito_fiscal.types';
+import { ITransmitter } from '../types/transmitter.types';
+import { convertCurrencyFormat } from './money';
+import { Customer } from '../types/customers.types';
+import { ResponseMHSuccess } from '../types/DTE/contingencia.types';
+import { ISendMHFiscal } from '../types/DTE/credito_fiscal.types';
+import { ICartProduct } from '../types/branch_products.types';
 
 export const generate_emisor = (transmitter: ITransmitter) => {
   return {
@@ -25,16 +23,13 @@ export const generate_emisor = (transmitter: ITransmitter) => {
     telefono: transmitter.telefono,
     correo: transmitter.correo,
     codEstable: transmitter.codEstable,
-    codEstableMH: transmitter.codEstableMH === "0" ? null : transmitter.codEstableMH,
+    codEstableMH: transmitter.codEstableMH === '0' ? null : transmitter.codEstableMH,
     codPuntoVenta: transmitter.codPuntoVenta,
-    codPuntoVentaMH:
-    transmitter.codPuntoVentaMH === "0" ? null : transmitter.codPuntoVentaMH,
+    codPuntoVentaMH: transmitter.codPuntoVentaMH === '0' ? null : transmitter.codPuntoVentaMH,
   };
 };
 
-export const make_cuerpo_documento = (
-  products_cart: ICartProduct[]
-): ICuerpoDocumento[] => {
+export const make_cuerpo_documento = (products_cart: ICartProduct[]): ICuerpoDocumento[] => {
   return products_cart.map((cp, index) => {
     return {
       numItem: index + 1,
@@ -46,9 +41,7 @@ export const make_cuerpo_documento = (
       codTributo: null,
       descripcion: cp.product.name,
       precioUni:
-        Number(cp.price) < Number(cp.base_price)
-          ? Number(cp.base_price)
-          : Number(cp.price),
+        Number(cp.price) < Number(cp.base_price) ? Number(cp.base_price) : Number(cp.price),
       montoDescu: Number(cp.discount.toFixed(2)),
       ventaNoSuj: 0,
       ventaExenta: 0,
@@ -70,15 +63,11 @@ export const get_iva = (price: number, quantity: number) => {
 };
 
 export function formatearNumero(numero: number): string {
-  const numeroFormateado: string = numero.toString().padStart(15, "0");
+  const numeroFormateado: string = numero.toString().padStart(15, '0');
   return numeroFormateado;
 }
 
-export const make_to_pdf = (
-  DTE: DteJson,
-  total: number,
-  data: ResponseMHSuccess
-) => {
+export const make_to_pdf = (DTE: DteJson, total: number, data: ResponseMHSuccess) => {
   return {
     emisor: DTE.dteJson.emisor,
     receptor: DTE.dteJson.receptor,
@@ -91,18 +80,14 @@ export const make_to_pdf = (
       descuNoSuj: Number(DTE.dteJson.resumen.descuNoSuj).toFixed(2),
       descuExenta: Number(DTE.dteJson.resumen.descuExenta).toFixed(2),
       descuGravada: Number(DTE.dteJson.resumen.descuGravada).toFixed(2),
-      porcentajeDescuento: Number(
-        DTE.dteJson.resumen.porcentajeDescuento
-      ).toFixed(2),
+      porcentajeDescuento: Number(DTE.dteJson.resumen.porcentajeDescuento).toFixed(2),
       totalDescu: Number(DTE.dteJson.resumen.totalDescu).toFixed(2),
       tributos: null,
       subTotal: Number(DTE.dteJson.resumen.subTotal).toFixed(2),
       ivaRete1: Number(DTE.dteJson.resumen.ivaRete1).toFixed(2),
       reteRenta: Number(DTE.dteJson.resumen.reteRenta).toFixed(2),
       totalIva: Number(DTE.dteJson.resumen.totalIva).toFixed(2),
-      montoTotalOperacion: Number(
-        DTE.dteJson.resumen.montoTotalOperacion
-      ).toFixed(2),
+      montoTotalOperacion: Number(DTE.dteJson.resumen.montoTotalOperacion).toFixed(2),
       totalNoGravado: Number(DTE.dteJson.resumen.totalNoGravado).toFixed(2),
       totalPagar: Number(DTE.dteJson.resumen.totalPagar).toFixed(2),
       totalLetras: convertCurrencyFormat(String(total.toFixed(2))),
@@ -143,8 +128,8 @@ export const return_pdf_file = (uri: string, savedDTE: DteJson) => {
   return JSON.parse(
     JSON.stringify({
       uri: uri,
-      name: savedDTE.dteJson.identificacion.numeroControl + ".pdf",
-      type: "application/pdf",
+      name: savedDTE.dteJson.identificacion.numeroControl + '.pdf',
+      type: 'application/pdf',
     })
   );
 };
@@ -152,54 +137,41 @@ export const return_json_file = (uri: string, savedDTE: DteJson) => {
   return JSON.parse(
     JSON.stringify({
       uri: uri,
-      name: savedDTE.dteJson.identificacion.numeroControl + ".json",
-      type: "application/json",
+      name: savedDTE.dteJson.identificacion.numeroControl + '.json',
+      type: 'application/json',
     })
   );
 };
 
-export const return_pdf_file_fiscal = (
-  uri: string,
-  savedDTE: ISendMHFiscal
-) => {
+export const return_pdf_file_fiscal = (uri: string, savedDTE: ISendMHFiscal) => {
   return JSON.parse(
     JSON.stringify({
       uri: uri,
-      name: savedDTE.dteJson.identificacion.numeroControl + ".pdf",
-      type: "application/pdf",
+      name: savedDTE.dteJson.identificacion.numeroControl + '.pdf',
+      type: 'application/pdf',
     })
   );
 };
-export const return_json_file_fiscal = (
-  uri: string,
-  savedDTE: ISendMHFiscal
-) => {
+export const return_json_file_fiscal = (uri: string, savedDTE: ISendMHFiscal) => {
   return JSON.parse(
     JSON.stringify({
       uri: uri,
-      name: savedDTE.dteJson.identificacion.numeroControl + ".json",
-      type: "application/json",
+      name: savedDTE.dteJson.identificacion.numeroControl + '.json',
+      type: 'application/json',
     })
   );
 };
 
-export const generate_receptor = (value: Customer, type_document: string) => {
-
+export const generate_receptor = (value: Customer) => {
   return {
     tipoDocumento:
-      value!.tipoDocumento === "0" || value.tipoDocumento === "N/A"
-        ? null
-        : value!.tipoDocumento,
+      value!.tipoDocumento === '0' || value.tipoDocumento === 'N/A' ? null : value!.tipoDocumento,
     numDocumento:
-      value!.numDocumento === "0" || value.numDocumento === "N/A"
-        ? null
-        : value!.numDocumento,
+      value!.numDocumento === '0' || value.numDocumento === 'N/A' ? null : value!.numDocumento,
     nrc: Number(value!.nrc) === 0 ? null : value!.nrc,
     nombre: value!.nombre,
-    codActividad:
-      Number(value!.codActividad) === 0 ? null : value!.codActividad,
-    descActividad:
-      Number(value!.descActividad) === 0 ? null : value!.descActividad,
+    codActividad: Number(value!.codActividad) === 0 ? null : value!.codActividad,
+    descActividad: Number(value!.descActividad) === 0 ? null : value!.descActividad,
     direccion: {
       departamento: value!.direccion?.departamento,
       municipio: value!.direccion?.municipio,
@@ -211,5 +183,5 @@ export const generate_receptor = (value: Customer, type_document: string) => {
 };
 
 export const is_credito_fiscal = (code: string) => {
-  return code === "03";
+  return code === '03';
 };

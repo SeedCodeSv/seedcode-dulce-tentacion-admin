@@ -1,14 +1,10 @@
-import { Button } from "@nextui-org/react";
-import React, { useContext, useState } from "react";
-import classNames from "classnames";
-import {
-  ChevronLeft,
-  ChevronRight,
-  ChevronsLeft,
-  ChevronsRight,
-} from "lucide-react";
-import { ThemeContext } from "../../hooks/useTheme";
+import { Button } from '@nextui-org/react';
+import React, { useContext, useState } from 'react';
+import classNames from 'classnames';
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
+import { ThemeContext } from '../../hooks/useTheme';
 
+/* eslint-disable no-unused-vars */
 interface PaginationProps {
   totalPages: number;
   onPageChange: (pageNumber: number) => void;
@@ -17,12 +13,9 @@ interface PaginationProps {
   currentPage: number;
   totalItems?: number;
 }
+/* eslint-enable no-unused-vars */
 
-const Pagination: React.FC<PaginationProps> = ({
-  totalPages,
-  onPageChange,
-  totalItems = 5,
-}) => {
+const Pagination: React.FC<PaginationProps> = ({ totalPages, onPageChange, totalItems = 5 }) => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const { theme } = useContext(ThemeContext);
@@ -44,7 +37,7 @@ const Pagination: React.FC<PaginationProps> = ({
 
   const renderPageNumbers = () => {
     const pages = [];
-    const maxPages = totalItems
+    const maxPages = totalItems;
 
     if (totalPages <= maxPages) {
       for (let i = 1; i <= totalPages; i++) {
@@ -54,10 +47,7 @@ const Pagination: React.FC<PaginationProps> = ({
             style={currentPage === i ? activeStyle : inactiveStyle}
             onClick={() => handlePageChange(i)}
             isIconOnly
-            className={classNames(
-              currentPage === i ? "active" : "",
-              "px-2 font-semibold"
-            )}
+            className={classNames(currentPage === i ? 'active' : '', 'px-2 font-semibold')}
           >
             {i}
           </Button>
@@ -84,10 +74,7 @@ const Pagination: React.FC<PaginationProps> = ({
             style={currentPage === i ? activeStyle : inactiveStyle}
             onClick={() => handlePageChange(i)}
             isIconOnly
-            className={classNames(
-              currentPage === i ? "active" : "",
-              "px-2 font-semibold"
-            )}
+            className={classNames(currentPage === i ? 'active' : '', 'px-2 font-semibold')}
           >
             {i}
           </Button>

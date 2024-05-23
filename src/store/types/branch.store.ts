@@ -2,8 +2,8 @@ import {
   Branches,
   IBranchPayload,
   IGetBranchesPaginated,
-  IGetBranchProduct
-} from "../../types/branches.types";
+  IGetBranchProduct,
+} from '../../types/branches.types';
 
 export interface IBranchStore {
   branches_paginated: IGetBranchesPaginated;

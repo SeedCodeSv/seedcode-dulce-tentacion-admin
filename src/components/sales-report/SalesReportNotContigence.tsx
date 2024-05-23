@@ -1,22 +1,21 @@
-import { Column } from "primereact/column";
-import { DataTable } from "primereact/datatable";
-import { useContext, useEffect, useState } from "react";
-import { Switch } from "@nextui-org/react";
-import { ThemeContext } from "../../hooks/useTheme";
-import { useReportContigenceStore } from "../../store/report_contigence.store";
-import { get_user } from "../../storage/localStorage";
+import { Column } from 'primereact/column';
+import { DataTable } from 'primereact/datatable';
+import { useContext, useEffect, useState } from 'react';
+import { Switch } from '@nextui-org/react';
+import { ThemeContext } from '../../hooks/useTheme';
+import { useReportContigenceStore } from '../../store/report_contigence.store';
+import { get_user } from '../../storage/localStorage';
 function SalesReportNotContigence() {
   const [branchId, setBranchId] = useState(0);
 
-  const {  saless, OnGetSalesNotContigence } =
-    useReportContigenceStore();
+  const { saless, OnGetSalesNotContigence } = useReportContigenceStore();
   useEffect(() => {
     const getSalesContigence = async () => {
       const data = get_user();
       setBranchId(data?.employee.branch.id || 0);
     };
     getSalesContigence();
-    
+
     OnGetSalesNotContigence(branchId, 1, 5);
   }, [branchId]);
   const { theme } = useContext(ThemeContext);
@@ -35,11 +34,11 @@ function SalesReportNotContigence() {
             className="shadow"
             emptyMessage="No se encontraron resultados"
             value={saless}
-            tableStyle={{ minWidth: "50rem" }}
+            tableStyle={{ minWidth: '50rem' }}
           >
             <Column
               headerClassName="text-sm font-semibold"
-              headerStyle={{ ...style, borderTopLeftRadius: "10px" }}
+              headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
               field="id"
               header="No."
             />

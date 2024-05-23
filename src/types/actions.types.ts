@@ -1,5 +1,5 @@
-import { Role } from "./roles.types";
-import { IView } from "./view.types";
+import { Role } from './roles.types';
+import { IView } from './view.types';
 export interface IAction {
   id: number;
   name: string;
@@ -8,8 +8,8 @@ export interface IAction {
   actionId: number;
 }
 export interface IActionPayload {
-  names: {name: string}[]
-  viewId: number
+  names: { name: string }[];
+  viewId: number;
 }
 export interface IGetActionRol {
   ok: boolean;

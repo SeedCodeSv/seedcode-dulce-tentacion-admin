@@ -1,10 +1,6 @@
-import { Layout } from "lucide-react";
-interface Props {
-  onCloseModal: () => void;
-}
+import { Layout } from 'lucide-react';
 
-function SalesEdit(props: Props) {
-  console.log(props);
+function SalesEdit() {
   return (
     <>
       <div>

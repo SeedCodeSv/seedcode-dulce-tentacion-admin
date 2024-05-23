@@ -1,5 +1,5 @@
-import { create } from "zustand";
-import { IEmployeeStore } from "./types/employee.store";
+import { create } from 'zustand';
+import { IEmployeeStore } from './types/employee.store';
 import {
   activate_employee,
   delete_employee,
@@ -7,9 +7,9 @@ import {
   get_employees_paginated,
   patch_employee,
   save_employee,
-} from "../services/employess.service";
-import { toast } from "sonner";
-import { messages } from "../utils/constants";
+} from '../services/employess.service';
+import { toast } from 'sonner';
+import { messages } from '../utils/constants';
 
 export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
   employee_paginated: {
@@ -50,7 +50,7 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
   postEmployee(payload) {
     return save_employee(payload)
       .then(({ data }) => {
-        get().getEmployeesPaginated(1, 5, "", "", "");
+        get().getEmployeesPaginated(1, 5, '', '', '');
         toast.success(messages.success);
         return data.ok;
       })
@@ -62,7 +62,7 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
   patchEmployee(payload, id) {
     return patch_employee(payload, id)
       .then(({ data }) => {
-        get().getEmployeesPaginated(1, 5, "", "", "");
+        get().getEmployeesPaginated(1, 5, '', '', '');
         toast.success(messages.success);
         return data.ok;
       })
@@ -74,7 +74,7 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
   deleteEmployee(id) {
     return delete_employee(id)
       .then(({ data }) => {
-        get().getEmployeesPaginated(1, 5, "", "", "");
+        get().getEmployeesPaginated(1, 5, '', '', '');
         toast.success(messages.success);
         return data.ok;
       })
@@ -95,10 +95,10 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
   async activateEmployee(id) {
     return activate_employee(id)
       .then(() => {
-        toast.success("Se activo el empleado");
+        toast.success('Se activo el empleado');
       })
       .catch(() => {
-        toast.error("Error al activar el empleado");
+        toast.error('Error al activar el empleado');
       });
   },
 }));

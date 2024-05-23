@@ -1,5 +1,5 @@
-import { Menu } from "lucide-react";
-import { ReactNode, useContext, useEffect, useState } from "react";
+import { Menu } from 'lucide-react';
+import { ReactNode, useContext, useEffect, useState } from 'react';
 import {
   Button,
   Dropdown,
@@ -7,16 +7,16 @@ import {
   DropdownMenu,
   DropdownTrigger,
   User,
-} from "@nextui-org/react";
-import { SmLayout } from "./SmLayout";
-import { LayoutItems } from "./LayoutItems";
-import { LgLayout } from "./LgLayout";
-import USER from "../assets/user.png";
-import { ThemeContext } from "../hooks/useTheme";
-import { useAuthStore } from "../store/auth.store";
-import { redirect, useNavigate } from "react-router";
-import { SessionContext } from "../hooks/useSession";
-import { delete_seller_mode } from "../storage/localStorage";
+} from '@nextui-org/react';
+import { SmLayout } from './SmLayout';
+import { LayoutItems } from './LayoutItems';
+import { LgLayout } from './LgLayout';
+import USER from '../assets/user.png';
+import { ThemeContext } from '../hooks/useTheme';
+import { useAuthStore } from '../store/auth.store';
+import { useNavigate } from 'react-router';
+import { SessionContext } from '../hooks/useSession';
+import { delete_seller_mode } from '../storage/localStorage';
 interface Props {
   children: ReactNode;
   title: string;
@@ -40,8 +40,8 @@ export const SideBar = (props: Props) => {
     makeLogout();
     delete_seller_mode();
     setIsAuth(false);
-    setToken("");
-    navigation("/");
+    setToken('');
+    navigation('/');
   };
   useEffect(() => {
     const handleResize = () => {
@@ -51,21 +51,17 @@ export const SideBar = (props: Props) => {
       });
     };
 
-    window.addEventListener("resize", handleResize);
+    window.addEventListener('resize', handleResize);
 
     return () => {
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
 
   return (
     <div className="flex w-screen h-screen">
       {windowSize.width < 1280 ? (
-        <SmLayout
-          isOpen={isOpen}
-          setIsOpen={setIsOpen}
-          items={() => <LayoutItems />}
-        />
+        <SmLayout isOpen={isOpen} setIsOpen={setIsOpen} items={() => <LayoutItems />} />
       ) : (
         <LgLayout items={() => <LayoutItems />} />
       )}
@@ -83,9 +79,7 @@ export const SideBar = (props: Props) => {
             </Button>
           </div>
           <div className="ml-3 lg:ml-0">
-            <p className="text-sm uppercase font-bold whitespace-nowrap">
-              {props.title}
-            </p>
+            <p className="text-sm uppercase font-bold whitespace-nowrap">{props.title}</p>
           </div>
           <div className="flex justify-end w-full">
             <Dropdown placement="bottom-start" showArrow>
@@ -95,22 +89,16 @@ export const SideBar = (props: Props) => {
                   avatarProps={{
                     isBordered: true,
                     src: USER,
-                    alt: "No image",
+                    alt: 'No image',
                   }}
                   classNames={{
-                    description: "text-gray-400 lg:block hidden",
+                    description: 'text-gray-400 lg:block hidden',
                   }}
                   className="transition-transform"
                   description={
-                    <span className="hidden lg:block text-gray-400">
-                      {user?.userName}
-                    </span>
+                    <span className="hidden lg:block text-gray-400">{user?.userName}</span>
                   }
-                  name={
-                    <span className="hidden lg:block">
-                      {user?.employee.fullName}
-                    </span>
-                  }
+                  name={<span className="hidden lg:block">{user?.employee.fullName}</span>}
                 ></User>
               </DropdownTrigger>
               <DropdownMenu aria-label="User Actions" variant="flat">
@@ -121,7 +109,7 @@ export const SideBar = (props: Props) => {
                 <DropdownItem
                   key="logout"
                   color="primary"
-                  onClick={() => navigate("/configuration")}
+                  onClick={() => navigate('/configuration')}
                   className="dark:text-white"
                 >
                   Configuración
@@ -138,9 +126,7 @@ export const SideBar = (props: Props) => {
             </Dropdown>
           </div>
         </div>
-        <div className="w-full h-full overflow-y-auto bg-gray-50 mt-14 lg">
-          {props.children}
-        </div>
+        <div className="w-full h-full overflow-y-auto bg-gray-50 mt-14 lg">{props.children}</div>
       </div>
     </div>
   );

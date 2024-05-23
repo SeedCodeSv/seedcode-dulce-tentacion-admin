@@ -1,4 +1,4 @@
-import { IPagination } from "./global.types";
+import { IPagination } from './global.types';
 
 export interface IResponseContigence {
   ok: boolean;
@@ -48,7 +48,7 @@ export interface Sale {
   pathJson: string;
   isActivated: boolean;
   boxId: number;
-  customerId: any;
+  customerId: number;
   customer: Customer;
   employee: Employee;
   direccion: Direccion;
@@ -95,33 +95,44 @@ export interface Employee {
   isActive: boolean;
   branchId: number;
 }
-export interface ISalesContigenceStore {
-  sales: Sale[];
-  saless: Sale[];
-  pagination_sales: IPagination;
-  pagination_saless: IPagination;
-  OnGetSalesContigence: (
+
+export interface OnGetSalesContigence {
+  (id: number,
+    page: number,
+    limit: number,
+    startDate: string,
+    endDate: string): void
+}
+
+export interface OnGetSalesNotContigence {
+  (
     id: number,
     page: number,
     limit: number,
     startDate: string,
     endDate: string
-  ) => void;
-  OnGetSalesNotContigence: (
-    id: number,
-    page: number,
-    limit: number,
-    startDate: string,
-    endDate: string
-  ) => void;
-  OnGetSalesByStatus: (
+  ): void;
+}
+
+export interface OnGetSalesByStatus {
+  (
     id: number,
     page: number,
     limit: number,
     startDate: string,
     endDate: string,
     status: number
-  ) => void;
+  ): void;
+}
+
+export type ISalesContigenceStore = {
+  sales: Sale[];
+  saless: Sale[];
+  pagination_sales: IPagination;
+  pagination_saless: IPagination;
+  OnGetSalesContigence: OnGetSalesContigence
+  OnGetSalesNotContigence: OnGetSalesNotContigence
+  OnGetSalesByStatus: OnGetSalesByStatus
 }
 export interface ValidateContigence {
   nombre: string;

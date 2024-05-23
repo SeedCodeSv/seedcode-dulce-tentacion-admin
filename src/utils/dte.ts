@@ -8,40 +8,40 @@ export const generate_control = (
 };
 
 export function reemplazarNumero(str: string, numero: number) {
-  const nuevoNumero = numero.toString().padStart(14, "0");
+  const nuevoNumero = numero.toString().padStart(14, '0');
   return str.replace(/\d{14}$/, nuevoNumero);
 }
 export const formatCurrency = (value: number) => {
-  return value.toLocaleString("en-US", {
-    style: "currency",
-    currency: "USD",
+  return value.toLocaleString('en-US', {
+    style: 'currency',
+    currency: 'USD',
   });
 };
 
 export const documentsTypeReceipt = [
   {
     id: 2,
-    codigo: "13",
-    valores: "DUI",
+    codigo: '13',
+    valores: 'DUI',
   },
   {
     id: 1,
-    codigo: "36",
-    valores: "NIT",
+    codigo: '36',
+    valores: 'NIT',
   },
   {
     id: 3,
-    codigo: "37",
-    valores: "Otro",
+    codigo: '37',
+    valores: 'Otro',
   },
   {
     id: 4,
-    codigo: "03",
-    valores: "Pasaporte",
+    codigo: '03',
+    valores: 'Pasaporte',
   },
   {
     id: 5,
-    codigo: "02",
-    valores: "Carnet de Residente",
+    codigo: '02',
+    valores: 'Carnet de Residente',
   },
 ];

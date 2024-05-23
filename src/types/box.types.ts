@@ -1,4 +1,4 @@
-import { Branches } from "../types/branches.types";
+import { Branches } from '../types/branches.types';
 export interface Box {
   id: number;
   start: number;
@@ -57,18 +57,18 @@ export interface DetailBox {
   twentyFiveCents: number;
   fiftyCents: number;
   oneDollarCents: number;
-  box: Box
-  boxId: number
-  isActive?: boolean
+  box: Box;
+  boxId: number;
+  isActive?: boolean;
 }
 export interface IGetBox {
   ok: boolean;
-	detailBox: DetailBox;
-	totalExpenses: number;
-	totalSales: number;
-	boxStart: string;
-	totalBox: number;
-	totalMoney: number;
-	cost: number;
-	boxEnd: number;
+  detailBox: DetailBox;
+  totalExpenses: number;
+  totalSales: number;
+  boxStart: string;
+  totalBox: number;
+  totalMoney: number;
+  cost: number;
+  boxEnd: number;
 }

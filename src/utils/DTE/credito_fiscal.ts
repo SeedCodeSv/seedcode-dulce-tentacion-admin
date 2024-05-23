@@ -1,23 +1,19 @@
-import { FiscalReceptor } from "../../types/DTE/credito_fiscal.types";
-import { ResponseMHSuccess } from "../../types/DTE/contingencia.types";
-import { ISendMHFiscal } from "../../types/DTE/credito_fiscal.types";
-import { IFormasDePago } from "../../types/DTE/forma_de_pago.types";
-import { ITipoDocumento } from "../../types/DTE/tipo_documento.types";
-import { TipoTributo } from "../../types/DTE/tipo_tributo.types";
-import { ITransmitter } from "../../types/transmitter.types";
-import { getElSalvadorDateTime } from "../dates";
-import { generate_control } from "../dte";
-import { formatearNumero, generate_emisor } from "../make-dte";
-import { convertCurrencyFormat } from "../money";
-import { ambiente } from "../constants";
-import { generate_uuid } from "../random/random";
-import { ICartProduct } from "../../types/branch_products.types";
+import { FiscalReceptor } from '../../types/DTE/credito_fiscal.types';
+import { ResponseMHSuccess } from '../../types/DTE/contingencia.types';
+import { ISendMHFiscal } from '../../types/DTE/credito_fiscal.types';
+import { IFormasDePago } from '../../types/DTE/forma_de_pago.types';
+import { ITipoDocumento } from '../../types/DTE/tipo_documento.types';
+import { TipoTributo } from '../../types/DTE/tipo_tributo.types';
+import { ITransmitter } from '../../types/transmitter.types';
+import { getElSalvadorDateTime } from '../dates';
+import { generate_control } from '../dte';
+import { formatearNumero, generate_emisor } from '../make-dte';
+import { convertCurrencyFormat } from '../money';
+import { ambiente } from '../constants';
+import { generate_uuid } from '../random/random';
+import { ICartProduct } from '../../types/branch_products.types';
 
-export const make_to_pdf_fiscal = (
-  DTE: ISendMHFiscal,
-  total: number,
-  data: ResponseMHSuccess
-) => {
+export const make_to_pdf_fiscal = (DTE: ISendMHFiscal, total: number, data: ResponseMHSuccess) => {
   return {
     emisor: DTE.dteJson.emisor,
     receptor: DTE.dteJson.receptor,
@@ -30,17 +26,13 @@ export const make_to_pdf_fiscal = (
       descuNoSuj: Number(DTE.dteJson.resumen.descuNoSuj).toFixed(2),
       descuExenta: Number(DTE.dteJson.resumen.descuExenta).toFixed(2),
       descuGravada: Number(DTE.dteJson.resumen.descuGravada).toFixed(2),
-      porcentajeDescuento: Number(
-        DTE.dteJson.resumen.porcentajeDescuento
-      ).toFixed(2),
+      porcentajeDescuento: Number(DTE.dteJson.resumen.porcentajeDescuento).toFixed(2),
       totalDescu: Number(DTE.dteJson.resumen.totalDescu).toFixed(2),
       tributos: DTE.dteJson.resumen.tributos,
       subTotal: Number(DTE.dteJson.resumen.subTotal).toFixed(2),
       ivaRete1: Number(DTE.dteJson.resumen.ivaRete1).toFixed(2),
       reteRenta: Number(DTE.dteJson.resumen.reteRenta).toFixed(2),
-      montoTotalOperacion: Number(
-        DTE.dteJson.resumen.montoTotalOperacion
-      ).toFixed(2),
+      montoTotalOperacion: Number(DTE.dteJson.resumen.montoTotalOperacion).toFixed(2),
       totalNoGravado: Number(DTE.dteJson.resumen.totalNoGravado).toFixed(2),
       totalPagar: Number(DTE.dteJson.resumen.totalPagar).toFixed(2),
       totalLetras: convertCurrencyFormat(String(total.toFixed(2))),
@@ -105,10 +97,7 @@ const total_iva = (cart_products: ICartProduct[]) => {
     })
     .reduce((a, b) => a + b, 0);
 };
-function calcularPorcentajeDescuento(
-  totalSinDescuento: number,
-  totalDescuento: number
-): number {
+function calcularPorcentajeDescuento(totalSinDescuento: number, totalDescuento: number): number {
   return ((totalSinDescuento - totalDescuento) / totalSinDescuento) * 100;
 }
 // const calDiscount = (cart_products: ICartProduct[]) => {
@@ -117,13 +106,12 @@ function calcularPorcentajeDescuento(
 //     .reduce((a, b) => a + b, 0);
 // };
 const calDiscount = (cart_products: ICartProduct[]) => {
-return cart_products.map((pr) => pr.discount).reduce((a, b) => a + b, 0);
-}
+  return cart_products.map((pr) => pr.discount).reduce((a, b) => a + b, 0);
+};
 const total_with_discount = (cart_products: ICartProduct[]) => {
   return cart_products
     .map((prd) => {
-      const price =
-        Number(prd.price) < prd.base_price ? prd.base_price : Number(prd.price);
+      const price = Number(prd.price) < prd.base_price ? prd.base_price : Number(prd.price);
       return price * prd.quantity;
     })
     .reduce((a, b) => a + b, 0);
@@ -143,7 +131,7 @@ export const generate_credito_fiscal = (
     passwordPri: emisor.clavePublica,
     dteJson: {
       identificacion: {
-        version: valueTipo.codigo === "03" ? 3 : 1,
+        version: valueTipo.codigo === '03' ? 3 : 1,
         codigoGeneracion: generate_uuid().toUpperCase(),
         ambiente: ambiente,
         tipoDte: valueTipo!.codigo,
@@ -157,7 +145,7 @@ export const generate_credito_fiscal = (
         tipoOperacion: 1,
         tipoContingencia: null,
         motivoContin: null,
-        tipoMoneda: "USD",
+        tipoMoneda: 'USD',
         ...getElSalvadorDateTime(),
       },
       documentoRelacionado: null,
@@ -192,13 +180,9 @@ export const generate_credito_fiscal = (
         ivaRete1: 0,
         reteRenta: 0,
         ivaPerci1: 0,
-        montoTotalOperacion: Number(
-          (total(products_carts) + total_iva(products_carts)).toFixed(2)
-        ),
+        montoTotalOperacion: Number((total(products_carts) + total_iva(products_carts)).toFixed(2)),
         totalNoGravado: 0,
-        totalPagar: Number(
-          (total(products_carts) + total_iva(products_carts)).toFixed(2)
-        ),
+        totalPagar: Number((total(products_carts) + total_iva(products_carts)).toFixed(2)),
         totalLetras: convertCurrencyFormat(
           (total(products_carts) + total_iva(products_carts)).toFixed(2)
         ),
@@ -207,10 +191,8 @@ export const generate_credito_fiscal = (
         pagos: [
           {
             codigo: tipo_pago?.codigo,
-            montoPago: Number(
-              (total(products_carts) + total_iva(products_carts)).toFixed(2)
-            ),
-            referencia: "",
+            montoPago: Number((total(products_carts) + total_iva(products_carts)).toFixed(2)),
+            referencia: '',
             plazo: null,
             periodo: null,
           },
@@ -234,14 +216,12 @@ export const make_cuerpo_documento_fiscal = (products_cart: ICartProduct[]) => {
       codTributo: null,
       descripcion: cp.product.name,
       precioUni:
-        Number(cp.price) < Number(cp.base_price)
-          ? Number(cp.base_price)
-          : Number(cp.price),
+        Number(cp.price) < Number(cp.base_price) ? Number(cp.base_price) : Number(cp.price),
       montoDescu: Number(cp.discount!.toFixed(2)),
       ventaNoSuj: 0,
       ventaExenta: 0,
       ventaGravada: Number((Number(cp.price!) * cp.quantity).toFixed(2)),
-      tributos: ["20"],
+      tributos: ['20'],
       psv: 0,
       noGravado: 0,
     };

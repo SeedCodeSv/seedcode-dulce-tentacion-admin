@@ -1,5 +1,5 @@
-import { CategoryExpense } from "../types/categories_expenses.types";
-import { Box } from "../types/box.types";
+import { CategoryExpense } from '../types/categories_expenses.types';
+import { Box } from '../types/box.types';
 export interface IExpense {
   id: number;
   description: string;

@@ -1,10 +1,10 @@
-import { useContext, useEffect } from "react";
-import { ThemeContext } from "../hooks/useTheme";
-import NavBar from "./NavBar";
-import { SideBar } from "./SideBar";
-import classNames from "classnames";
-import { useConfigurationStore } from "../store/perzonalitation.store";
-import { useAuthStore } from "../store/auth.store";
+import { useContext, useEffect } from 'react';
+import { ThemeContext } from '../hooks/useTheme';
+import NavBar from './NavBar';
+import { SideBar } from './SideBar';
+import classNames from 'classnames';
+import { useConfigurationStore } from '../store/perzonalitation.store';
+import { useAuthStore } from '../store/auth.store';
 
 interface Props {
   children: JSX.Element;
@@ -23,10 +23,8 @@ function Layout(props: Props) {
   }, [user]);
 
   return (
-    <div
-      className={classNames("w-full h-full", context === "dark" ? "dark" : "")}
-    >
-      {navbar === "topbar" && (
+    <div className={classNames('w-full h-full', context === 'dark' ? 'dark' : '')}>
+      {navbar === 'topbar' && (
         <>
           <div className="flex flex-col w-screen h-screen">
             <NavBar />
@@ -36,11 +34,11 @@ function Layout(props: Props) {
           </div>
         </>
       )}
-      {navbar === "sidebar" && (
+      {navbar === 'sidebar' && (
         <>
           <SideBar title={props.title}>
             <div className="w-full h-full overflow-y-auto bg-gray-50 dark:bg-gray-800">
-            {props.children}
+              {props.children}
             </div>
           </SideBar>
         </>

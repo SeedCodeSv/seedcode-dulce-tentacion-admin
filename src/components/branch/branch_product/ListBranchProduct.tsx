@@ -1,5 +1,5 @@
-import { useContext, useEffect, useMemo, useState } from "react";
-import { useBranchesStore } from "../../../store/branches.store";
+import { useContext, useEffect, useMemo, useState } from 'react';
+import { useBranchesStore } from '../../../store/branches.store';
 import {
   Button,
   Input,
@@ -7,14 +7,14 @@ import {
   SelectItem,
   Autocomplete,
   AutocompleteItem,
-} from "@nextui-org/react";
-import { Search, Filter } from "lucide-react";
-import { ThemeContext } from "../../../hooks/useTheme";
-import MobileView from "./MobileView";
-import { Drawer } from "vaul";
-import { global_styles } from "../../../styles/global.styles";
-import { CategoryProduct } from "../../../types/categories.types";
-import { useCategoriesStore } from "../../../store/categories.store";
+} from '@nextui-org/react';
+import { Search, Filter } from 'lucide-react';
+import { ThemeContext } from '../../../hooks/useTheme';
+import MobileView from './MobileView';
+import { Drawer } from 'vaul';
+import { global_styles } from '../../../styles/global.styles';
+import { CategoryProduct } from '../../../types/categories.types';
+import { useCategoriesStore } from '../../../store/categories.store';
 interface Props {
   id: number;
 }
@@ -24,11 +24,10 @@ function ListEmployee({ id }: Props) {
   const { getBranchProducts } = useBranchesStore();
   const { list_categories, getListCategories } = useCategoriesStore();
 
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState('');
 
-  const [name, setName] = useState("");
+  const [name, setName] = useState('');
   const [limit, setLimit] = useState(8);
-  const [view, setView] = useState("grid");
   const [openVaul, setOpenVaul] = useState(false);
 
   //   const modalAdd = useDisclosure();
@@ -48,12 +47,11 @@ function ListEmployee({ id }: Props) {
       <>
         <Input
           classNames={{
-            label: "font-semibold text-gray-700",
-            inputWrapper: "pr-0",
+            label: 'font-semibold text-gray-700',
+            inputWrapper: 'pr-0',
           }}
           className="w-full xl:w-96"
           placeholder="Buscar por nombre..."
-          
           startContent={<Search />}
           variant="bordered"
           name="searchName"
@@ -62,14 +60,12 @@ function ListEmployee({ id }: Props) {
           autoComplete="search"
           onChange={(e) => setName(e.target.value)}
           isClearable
-          onClear={() => setName("")}
+          onClear={() => setName('')}
         />
         <Autocomplete
           onSelectionChange={(key) => {
             if (key) {
-              const branchSelected = JSON.parse(
-                key as string
-              ) as CategoryProduct;
+              const branchSelected = JSON.parse(key as string) as CategoryProduct;
               setCategory(branchSelected.name);
             }
           }}
@@ -78,12 +74,11 @@ function ListEmployee({ id }: Props) {
           placeholder="Selecciona la categoría"
           variant="bordered"
           classNames={{
-            base: "font-semibold text-gray-500 text-sm",
+            base: 'font-semibold text-gray-500 text-sm',
           }}
-          
           value={category}
           clearButtonProps={{
-            onClick: () => setCategory(""),
+            onClick: () => setCategory(''),
           }}
         >
           {list_categories.map((bra) => (
@@ -100,9 +95,7 @@ function ListEmployee({ id }: Props) {
     <>
       <div className="w-full max-h-full p-6 py-10 pt-1 flex flex-row bg-gray-50 dark:bg-gray-800">
         <div className="w-full h-auto p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
-          <div className="hidden w-full grid-cols-2 gap-5 mb-4 md:grid ">
-            {filters}
-          </div>
+          <div className="hidden w-full grid-cols-2 gap-5 mb-4 md:grid ">{filters}</div>
           <div className="grid w-full grid-cols-1 gap-5  md:grid-cols-2">
             <div className="hidden md:flex">
               <Button
@@ -112,39 +105,34 @@ function ListEmployee({ id }: Props) {
                 }}
                 className="w-full xl:w-72"
                 color="primary"
-                
                 onClick={() => changePage()}
               >
                 Buscar
               </Button>
             </div>
             <Select
-                className="w-full xl:w-80"
-                variant="bordered"
-                
-                // label="Mostrar"
-                placeholder="Mostrar"
-                labelPlacement="outside"
-                classNames={{
-                  label: "font-semibold",
-                }}
-                value={limit}
-                onChange={(e) => {
-                  setLimit(
-                    Number(e.target.value !== "" ? e.target.value : "5")
-                  );
-                }}
-              >
-                <SelectItem key={"5"}>5</SelectItem>
-                <SelectItem key={"10"}>10</SelectItem>
-                <SelectItem key={"20"}>20</SelectItem>
-                <SelectItem key={"30"}>30</SelectItem>
-                <SelectItem key={"40"}>40</SelectItem>
-                <SelectItem key={"50"}>50</SelectItem>
-                <SelectItem key={"100"}>100</SelectItem>
-              </Select>
+              className="w-full xl:w-80"
+              variant="bordered"
+              // label="Mostrar"
+              placeholder="Mostrar"
+              labelPlacement="outside"
+              classNames={{
+                label: 'font-semibold',
+              }}
+              value={limit}
+              onChange={(e) => {
+                setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
+              }}
+            >
+              <SelectItem key={'5'}>5</SelectItem>
+              <SelectItem key={'10'}>10</SelectItem>
+              <SelectItem key={'20'}>20</SelectItem>
+              <SelectItem key={'30'}>30</SelectItem>
+              <SelectItem key={'40'}>40</SelectItem>
+              <SelectItem key={'50'}>50</SelectItem>
+              <SelectItem key={'100'}>100</SelectItem>
+            </Select>
             <div className="flex items-end justify-between gap-10 mt lg:justify-end">
-             
               <div className="flex items-center gap-5">
                 <div className="block md:hidden">
                   <Drawer.Root
@@ -155,7 +143,6 @@ function ListEmployee({ id }: Props) {
                     <Drawer.Trigger asChild>
                       <Button
                         style={global_styles().thirdStyle}
-                        
                         isIconOnly
                         onClick={() => setOpenVaul(true)}
                       >
@@ -178,7 +165,6 @@ function ListEmployee({ id }: Props) {
                             <Button
                               style={global_styles().secondaryStyle}
                               className="mb-10 font-semibold"
-                              
                               onClick={() => {
                                 changePage();
                                 setOpenVaul(false);
@@ -195,9 +181,7 @@ function ListEmployee({ id }: Props) {
               </div>
             </div>
           </div>
-          {(view === "grid" || view === "list") && (
-            <MobileView layout={view as "grid" | "list"} />
-          )}
+          <MobileView layout={"grid"} />
         </div>
       </div>
     </>

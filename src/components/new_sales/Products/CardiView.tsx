@@ -41,7 +41,9 @@ function CardView(props: Props) {
 export default CardView;
 
 const gridItem = (product: BranchProduct, layout: "grid" | "list") => {
+  /* eslint-disable react-hooks/rules-of-hooks */
   const { addProductCart } = useBranchProductStore();
+  /* eslint-enable react-hooks/rules-of-hooks */
   return (
     <>
       {layout === "grid" ? (

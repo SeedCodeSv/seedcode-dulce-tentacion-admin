@@ -9,14 +9,14 @@ export type Size =
   | '4xl'
   | '5xl'
   | 'full'
-  | undefined
+  | undefined;
 
 export interface IPagination {
-  total: number
-  totalPag: number
-  currentPag: number
-  nextPag: number
-  prevPag: number
-  status: number
-  ok:boolean
+  total: number;
+  totalPag: number;
+  currentPag: number;
+  nextPag: number;
+  prevPag: number;
+  status: number;
+  ok: boolean;
 }

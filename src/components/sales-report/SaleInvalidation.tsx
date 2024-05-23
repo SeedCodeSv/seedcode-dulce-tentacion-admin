@@ -1,30 +1,24 @@
-import { useEffect, useState } from "react";
-import { Formik } from "formik";
-import * as yup from "yup";
-import { Button, Input, Switch } from "@nextui-org/react";
-import { global_styles } from "../../styles/global.styles";
-import { toast } from "sonner";
-import { Sale } from "../../types/report_contigence";
-import { useInvalidationStore } from "../../plugins/dexie/store/invalidation.store";
-import {
-  IInvalidationBody,
-  IInvalidationToMH,
-} from "../../types/DTE/invalidation.types";
-import { getElSalvadorDateTime } from "../../utils/dates";
-import { useTransmitterStore } from "../../store/transmitter.store";
-import { documentsTypeReceipt } from "../../utils/dte";
-import { Select, SelectItem } from "@nextui-org/react";
-import { invalidationTypes } from "../../types/DTE/invalidation.types";
-import {
-  firmarDocumentoInvalidacion,
-  send_to_mh_invalidation,
-} from "../../services/DTE.service";
-import { return_mh_token } from "../../storage/localStorage";
-import { ambiente, version } from "../../utils/constants";
-import axios from "axios";
-import { invalidate_sale } from "../../services/sales.service";
-import { verifyApplyAnulation } from "../../utils/DTE/factura";
-import { FileClock } from "lucide-react";
+import { useEffect, useState } from 'react';
+import { Formik } from 'formik';
+import * as yup from 'yup';
+import { Button, Input, Switch } from '@nextui-org/react';
+import { global_styles } from '../../styles/global.styles';
+import { toast } from 'sonner';
+import { Sale } from '../../types/report_contigence';
+import { useInvalidationStore } from '../../plugins/dexie/store/invalidation.store';
+import { IInvalidationBody, IInvalidationToMH } from '../../types/DTE/invalidation.types';
+import { getElSalvadorDateTime } from '../../utils/dates';
+import { useTransmitterStore } from '../../store/transmitter.store';
+import { documentsTypeReceipt } from '../../utils/dte';
+import { Select, SelectItem } from '@nextui-org/react';
+import { invalidationTypes } from '../../types/DTE/invalidation.types';
+import { firmarDocumentoInvalidacion, send_to_mh_invalidation } from '../../services/DTE.service';
+import { return_mh_token } from '../../storage/localStorage';
+import { ambiente, version } from '../../utils/constants';
+import axios from 'axios';
+import { invalidate_sale } from '../../services/sales.service';
+import { verifyApplyAnulation } from '../../utils/DTE/factura';
+import { FileClock } from 'lucide-react';
 
 interface Props {
   sale: Sale;
@@ -49,7 +43,7 @@ export const SaleInvalidation = (props: Props) => {
       });
   }, []);
 
-  const [generationCodeR, setGenerationCodeR] = useState("");
+  const [generationCodeR, setGenerationCodeR] = useState('');
   const [motivo, setMotivo] = useState(0);
   const [validDte, setValidDte] = useState(false);
   const [showMoreFields, setShowMoreFields] = useState(false);
@@ -60,7 +54,7 @@ export const SaleInvalidation = (props: Props) => {
   const data: IInvalidationBody = {
     identificacion: {
       version: 2,
-      ambiente: "00",
+      ambiente: '00',
       codigoGeneracion: props.sale.codigoGeneracion,
       fecAnula: getElSalvadorDateTime().fecEmi,
       horAnula: getElSalvadorDateTime().horEmi,
@@ -83,41 +77,42 @@ export const SaleInvalidation = (props: Props) => {
       numeroControl: props.sale.numeroControl,
       fecEmi: props.sale.fecEmi,
       montoIva: Number(props.sale.totalIva),
-      tipoDocumento: "36",
+      tipoDocumento: '36',
       numDocumento: props.sale.customer.numDocumento,
       nombre: props.sale.customer.nombre,
     },
     motivo: {
       tipoAnulacion: motivo,
-      motivoAnulacion: String(
-        invalidationTypes.find((item) => item.id === motivo)?.valores
-      ),
-      nombreResponsable: "",
-      tipDocResponsable: "",
-      numDocResponsable: "",
-      nombreSolicita: "",
-      tipDocSolicita: "",
-      numDocSolicita: "",
+      motivoAnulacion: String(invalidationTypes.find((item) => item.id === motivo)?.valores),
+      nombreResponsable: '',
+      tipDocResponsable: '',
+      numDocResponsable: '',
+      nombreSolicita: '',
+      tipDocSolicita: '',
+      numDocSolicita: '',
     },
   };
 
   const validationSchema = yup.object().shape({
-    nameResponsible: yup.string().required("**El nombre es requerido**"),
-    nameApplicant: yup.string().required("**El nombre es requerido**"),
-    docNumberResponsible: yup
-      .string()
-      .required("**El documento es requerido**"),
-    docNumberApplicant: yup.string().required("**El documento es requerido**"),
-    typeDocResponsible: yup
-      .string()
-      .required("**El tipo de documento es requerido**"),
-    typeDocApplicant: yup
-      .string()
-      .required("**El tipo de documento es requerido**"),
+    nameResponsible: yup.string().required('**El nombre es requerido**'),
+    nameApplicant: yup.string().required('**El nombre es requerido**'),
+    docNumberResponsible: yup.string().required('**El documento es requerido**'),
+    docNumberApplicant: yup.string().required('**El documento es requerido**'),
+    typeDocResponsible: yup.string().required('**El tipo de documento es requerido**'),
+    typeDocApplicant: yup.string().required('**El tipo de documento es requerido**'),
   });
 
-  const onSubmit = async (values: any) => {
-    toast.info("Estamos firmado tu documento");
+  interface Values {
+    nameResponsible: string;
+    nameApplicant: string;
+    docNumberResponsible: string;
+    docNumberApplicant: string;
+    typeDocResponsible: string;
+    typeDocApplicant: string;
+}
+
+  const onSubmit = async (values: Values) => {
+    toast.info('Estamos firmado tu documento');
     firmarDocumentoInvalidacion({
       nit: transmitter.nit,
       passwordPri: transmitter.clavePublica,
@@ -146,23 +141,23 @@ export const SaleInvalidation = (props: Props) => {
             idEnvio: 1,
             documento: firma.data.body,
           };
-          toast.success("Firmado correctamente");
+          toast.success('Firmado correctamente');
 
           if (token_mh) {
             const source = axios.CancelToken.source();
 
             const timeout = setTimeout(() => {
-              source.cancel("El tiempo de espera ha expirado");
+              source.cancel('El tiempo de espera ha expirado');
             }, 25000);
-            toast.info("Enviando a hacienda");
+            toast.info('Enviando a hacienda');
             send_to_mh_invalidation(dataMH)
               .then(async ({ data }) => {
                 if (data.selloRecibido) {
                   clearTimeout(timeout);
-                  toast.info("Estamos guardando tus datos");
+                  toast.info('Estamos guardando tus datos');
                   invalidate_sale(props.sale.id, data.selloRecibido)
                     .then(() => {
-                      toast.success("Guardado correctamente");
+                      toast.success('Guardado correctamente');
                       props.closeModal();
                       props.reload();
                     })
@@ -190,10 +185,7 @@ export const SaleInvalidation = (props: Props) => {
     <>
       {validDte === false ? (
         <div className="flex flex-row gap-2 justify-center items-center">
-          <FileClock
-            size={28}
-            color={global_styles().dangerStyles.backgroundColor}
-          />
+          <FileClock size={28} color={global_styles().dangerStyles.backgroundColor} />
           <p className="text-lg font-semibold">
             Este DTE excede el tiempo de validez para invalidarlo
           </p>
@@ -202,24 +194,17 @@ export const SaleInvalidation = (props: Props) => {
         <div className="flex flex-col justify-center items-center">
           <Formik
             initialValues={{
-              nameResponsible: "",
-              nameApplicant: "",
-              docNumberResponsible: "",
-              docNumberApplicant: "",
-              typeDocResponsible: "",
-              typeDocApplicant: "",
+              nameResponsible: '',
+              nameApplicant: '',
+              docNumberResponsible: '',
+              docNumberApplicant: '',
+              typeDocResponsible: '',
+              typeDocApplicant: '',
             }}
             validationSchema={validationSchema}
             onSubmit={(values) => onSubmit(values)}
           >
-            {({
-              values,
-              errors,
-              touched,
-              handleBlur,
-              handleChange,
-              handleSubmit,
-            }) => (
+            {({ values, errors, touched, handleBlur, handleChange, handleSubmit }) => (
               <form onSubmit={handleSubmit}>
                 <div className="flex flex-col justify-center items-center ">
                   <label
@@ -234,8 +219,8 @@ export const SaleInvalidation = (props: Props) => {
                     id="nameResponsible"
                     name="nameResponsible"
                     value={values.nameResponsible}
-                    onChange={handleChange("nameResponsible")}
-                    onBlur={handleBlur("nameResponsible")}
+                    onChange={handleChange('nameResponsible')}
+                    onBlur={handleBlur('nameResponsible')}
                   ></Input>
                   {errors.nameResponsible && touched.nameResponsible && (
                     <span className="text-sm font-semibold text-red-500">
@@ -250,10 +235,10 @@ export const SaleInvalidation = (props: Props) => {
                       label="Seleccionar"
                       labelPlacement="outside"
                       classNames={{
-                        label: "font-semibold",
+                        label: 'font-semibold',
                       }}
                       value={values.typeDocResponsible}
-                      onChange={handleChange("typeDocResponsible")}
+                      onChange={handleChange('typeDocResponsible')}
                     >
                       {documentsTypeReceipt.map((doc) => (
                         <SelectItem key={doc.codigo} value={doc.codigo}>
@@ -261,12 +246,11 @@ export const SaleInvalidation = (props: Props) => {
                         </SelectItem>
                       ))}
                     </Select>
-                    {errors.typeDocResponsible &&
-                      touched.typeDocResponsible && (
-                        <span className="text-sm font-semibold text-red-500">
-                          {errors.typeDocResponsible}
-                        </span>
-                      )}
+                    {errors.typeDocResponsible && touched.typeDocResponsible && (
+                      <span className="text-sm font-semibold text-red-500">
+                        {errors.typeDocResponsible}
+                      </span>
+                    )}
                     <Input
                       className="border border-gray-200 rounded-md "
                       placeholder="Numero de Documento"
@@ -274,15 +258,14 @@ export const SaleInvalidation = (props: Props) => {
                       id="docNumberResponsible"
                       name="docNumberResponsible"
                       value={values.docNumberResponsible}
-                      onChange={handleChange("docNumberResponsible")}
-                      onBlur={handleBlur("docNumberResponsible")}
+                      onChange={handleChange('docNumberResponsible')}
+                      onBlur={handleBlur('docNumberResponsible')}
                     ></Input>
-                    {errors.docNumberResponsible &&
-                      touched.docNumberResponsible && (
-                        <span className="text-sm font-semibold text-red-500">
-                          {errors.docNumberResponsible}
-                        </span>
-                      )}
+                    {errors.docNumberResponsible && touched.docNumberResponsible && (
+                      <span className="text-sm font-semibold text-red-500">
+                        {errors.docNumberResponsible}
+                      </span>
+                    )}
                   </div>
 
                   <label
@@ -297,8 +280,8 @@ export const SaleInvalidation = (props: Props) => {
                     id="nameApplicant"
                     name="nameApplicant"
                     value={values.nameApplicant}
-                    onChange={handleChange("nameApplicant")}
-                    onBlur={handleBlur("nameApplicant")}
+                    onChange={handleChange('nameApplicant')}
+                    onBlur={handleBlur('nameApplicant')}
                   ></Input>
                   {errors.nameApplicant && touched.nameApplicant && (
                     <span className="text-sm font-semibold text-red-500">
@@ -313,10 +296,10 @@ export const SaleInvalidation = (props: Props) => {
                       label="Seleccionar"
                       labelPlacement="outside"
                       classNames={{
-                        label: "font-semibold",
+                        label: 'font-semibold',
                       }}
                       value={values.typeDocApplicant}
-                      onChange={handleChange("typeDocApplicant")}
+                      onChange={handleChange('typeDocApplicant')}
                     >
                       {documentsTypeReceipt.map((doc) => (
                         <SelectItem key={doc.codigo} value={doc.codigo}>
@@ -336,29 +319,25 @@ export const SaleInvalidation = (props: Props) => {
                       id="documentApplicant"
                       name="documentApplicant"
                       value={values.docNumberApplicant}
-                      onChange={handleChange("docNumberApplicant")}
-                      onBlur={handleBlur("docNumberApplicant")}
+                      onChange={handleChange('docNumberApplicant')}
+                      onBlur={handleBlur('docNumberApplicant')}
                     ></Input>
-                    {errors.docNumberApplicant &&
-                      touched.docNumberApplicant && (
-                        <span className="text-sm font-semibold text-red-500">
-                          {errors.docNumberApplicant}
-                        </span>
-                      )}
+                    {errors.docNumberApplicant && touched.docNumberApplicant && (
+                      <span className="text-sm font-semibold text-red-500">
+                        {errors.docNumberApplicant}
+                      </span>
+                    )}
                   </div>
                   {showMoreFields === true && (
                     <>
                       <Select
                         className="my-3"
-                        
                         variant="bordered"
                         placeholder="Selecciona el motivo"
                         value={motivo}
                         aria-label="Select a reason"
                         onChange={(e) => {
-                          setMotivo(Number(e.target.value)),
-                            console.log("motivo", motivo),
-                            console.log("value", e.target.value);
+                          setMotivo(Number(e.target.value))
                         }}
                       >
                         {invalidationTypes.map((type) => (
@@ -369,7 +348,6 @@ export const SaleInvalidation = (props: Props) => {
                       </Select>
                       <Select
                         className="my-3"
-                        
                         variant="bordered"
                         placeholder="Selecciona una venta"
                         value={generationCodeR}
@@ -377,16 +355,13 @@ export const SaleInvalidation = (props: Props) => {
                         onChange={(e) => setGenerationCodeR(e.target.value)}
                       >
                         {sales.map((sale) => (
-                          <SelectItem
-                            key={sale.codigoGeneracion}
-                            value={sale.codigoGeneracion}
-                          >
+                          <SelectItem key={sale.codigoGeneracion} value={sale.codigoGeneracion}>
                             {sale.id +
-                              " - " +
+                              ' - ' +
                               sale.fecEmi +
-                              "-" +
+                              '-' +
                               sale.horEmi +
-                              " - $" +
+                              ' - $' +
                               sale.montoTotalOperacion}
                           </SelectItem>
                         ))}
@@ -396,11 +371,7 @@ export const SaleInvalidation = (props: Props) => {
 
                   <div className="flex flex-row justify-center gap-2 items-center p-2">
                     <p>Desea reemplazar la venta?</p>
-                    <Switch
-                      
-                      checked={showMoreFields}
-                      onChange={() => changeToggle()}
-                    />
+                    <Switch checked={showMoreFields} onChange={() => changeToggle()} />
                   </div>
                 </div>
                 <div className="flex justify-center gap-2 items-center mt-2 p-2">

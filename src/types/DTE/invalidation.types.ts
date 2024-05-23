@@ -1,4 +1,4 @@
-import { Sale } from "../report_contigence";
+import { Sale } from '../report_contigence';
 
 export interface IInvalidationToMH {
   ambiente: string;
@@ -63,7 +63,6 @@ interface Motivo {
   numDocSolicita: string;
 }
 
-
 export interface IResponseInvalidationMH {
   version: number;
   ambiente: string;
@@ -93,13 +92,12 @@ export interface IInvalidationResponse {
 export const invalidationTypes = [
   {
     id: 1,
-    codigo: "1",
-    valores: "Error en la Información del Documento Tributario Electrónico a invalidar.",
+    codigo: '1',
+    valores: 'Error en la Información del Documento Tributario Electrónico a invalidar.',
   },
   {
     id: 3,
-    codigo: "3",
-    valores: "Otro",
-  }
-]
-        
+    codigo: '3',
+    valores: 'Otro',
+  },
+];

@@ -1,4 +1,4 @@
-import { IPagination } from "./global.types";
+import { IPagination } from './global.types';
 
 export interface IView {
   id: number;
@@ -9,11 +9,11 @@ export interface IView {
 export interface IGetViews {
   views: IView[];
   ok: boolean;
-  status: number
+  status: number;
 }
 
 export interface IViewPayload {
-  name: string
+  name: string;
 }
 
 export interface IGetViewPaginated extends IPagination {

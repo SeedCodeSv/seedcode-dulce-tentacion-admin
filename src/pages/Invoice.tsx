@@ -1,21 +1,14 @@
-import {
-  Document,
-  Page,
-  Text,
-  View,
-  StyleSheet,
-  Image,
-} from "@react-pdf/renderer";
-import { Table, TR, TH, TD } from "@ag-media/react-pdf-table";
-import Emisor from "../components/invoice/Emisor";
-import Receptor from "../components/invoice/Receptor";
-import TableProducts from "../components/invoice/TableProducts";
-import { DteJson } from "../types/DTE/DTE.types";
+import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
+import { Table, TR, TH, TD } from '@ag-media/react-pdf-table';
+import Emisor from '../components/invoice/Emisor';
+import Receptor from '../components/invoice/Receptor';
+import TableProducts from '../components/invoice/TableProducts';
+import { DteJson } from '../types/DTE/DTE.types';
 // Create styles
 const styles = StyleSheet.create({
   page: {
-    flexDirection: "column",
-    backgroundColor: "#fff",
+    flexDirection: 'column',
+    backgroundColor: '#fff',
     padding: 20,
   },
   section: {
@@ -28,7 +21,7 @@ const styles = StyleSheet.create({
 interface Props {
   DTE: DteJson;
   sello: string;
-  MHUrl: string
+  MHUrl: string;
 }
 
 // Create Document Component
@@ -37,44 +30,47 @@ export const Invoice = (props: Props) => (
     <Page size="A4" style={styles.page}>
       <View
         style={{
-          display: "flex",
-          flexDirection: "row",
-          width: "100%",
-          alignItems: "center",
+          display: 'flex',
+          flexDirection: 'row',
+          width: '100%',
+          alignItems: 'center',
         }}
       >
-        <View style={{ width: "50%" }}>
-          <Text style={{ fontSize: 10 }}>
-            DOCUMENTO DE CONSULTA PORTAL OPERATIVO
-          </Text>
+        <View style={{ width: '50%' }}>
+          <Text style={{ fontSize: 10 }}>DOCUMENTO DE CONSULTA PORTAL OPERATIVO</Text>
           <Text style={{ fontSize: 10 }}>DOCUMENTO TRIBUTARIO ELECTRÓNICO</Text>
         </View>
         <View
           style={{
-            width: "50%",
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "flex-end",
+            width: '50%',
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'flex-end',
             gap: 10,
           }}
         >
-          <Image src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${props.MHUrl}`} style={{ width: 75, height: 75 }} />
-          <Image src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://wwww.seedcodesv.com`} style={{ width: 75, height: 75 }} />
+          <Image
+            src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${props.MHUrl}`}
+            style={{ width: 75, height: 75 }}
+          />
+          <Image
+            src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://wwww.seedcodesv.com`}
+            style={{ width: 75, height: 75 }}
+          />
         </View>
       </View>
       <View
         style={{
-          display: "flex",
-          flexDirection: "row",
-          width: "100%",
-          alignItems: "center",
+          display: 'flex',
+          flexDirection: 'row',
+          width: '100%',
+          alignItems: 'center',
           marginTop: 10,
         }}
       >
-        <View style={{ width: "50%" }}>
+        <View style={{ width: '50%' }}>
           <Text style={{ fontSize: 8 }}>
-            Código de Generación:{" "}
-            {props.DTE.dteJson.identificacion.codigoGeneracion}
+            Código de Generación: {props.DTE.dteJson.identificacion.codigoGeneracion}
           </Text>
           <Text style={{ fontSize: 8 }}>
             Número de Control: {props.DTE.dteJson.identificacion.numeroControl}
@@ -83,32 +79,27 @@ export const Invoice = (props: Props) => (
         </View>
         <View
           style={{
-            width: "50%",
-            display: "flex",
-            justifyContent: "flex-end",
+            width: '50%',
+            display: 'flex',
+            justifyContent: 'flex-end',
           }}
         >
-          <Text style={{ fontSize: 8, textAlign: "right" }}>
-            Modelo de Facturación: Previo
-          </Text>
-          <Text style={{ fontSize: 8, textAlign: "right" }}>
-            Tipo de Transmisión: Normal
-          </Text>
-          <Text style={{ fontSize: 8, textAlign: "right" }}>
-            Fecha y Hora de Generación:{" "}
-            {props.DTE.dteJson.identificacion.fecEmi}{" "}
+          <Text style={{ fontSize: 8, textAlign: 'right' }}>Modelo de Facturación: Previo</Text>
+          <Text style={{ fontSize: 8, textAlign: 'right' }}>Tipo de Transmisión: Normal</Text>
+          <Text style={{ fontSize: 8, textAlign: 'right' }}>
+            Fecha y Hora de Generación: {props.DTE.dteJson.identificacion.fecEmi}{' '}
             {props.DTE.dteJson.identificacion.horEmi}
           </Text>
         </View>
       </View>
       <View
         style={{
-          display: "flex",
-          flexDirection: "row",
-          width: "100%",
+          display: 'flex',
+          flexDirection: 'row',
+          width: '100%',
           marginTop: 15,
           gap: 10,
-          height: "auto",
+          height: 'auto',
         }}
       >
         <Emisor DTE={props.DTE} />
@@ -116,52 +107,52 @@ export const Invoice = (props: Props) => (
       </View>
       <View
         style={{
-          display: "flex",
-          flexDirection: "column",
-          width: "100%",
+          display: 'flex',
+          flexDirection: 'column',
+          width: '100%',
           marginTop: 15,
           gap: 10,
-          height: "auto",
-          alignItems: "center",
+          height: 'auto',
+          alignItems: 'center',
         }}
       >
         <Text
           style={{
-            textAlign: "center",
+            textAlign: 'center',
             fontSize: 8,
-            fontWeight: "semibold",
+            fontWeight: 'semibold',
           }}
         >
           VENTA A CUENTA DE TERCEROS
         </Text>
         <View
           style={{
-            width: "100%",
-            border: "1px solid #000",
+            width: '100%',
+            border: '1px solid #000',
             borderRadius: 10,
             padding: 10,
-            display: "flex",
-            flexDirection: "row",
+            display: 'flex',
+            flexDirection: 'row',
             gap: 20,
           }}
         >
-          <View style={{ width: "50%" }}>
+          <View style={{ width: '50%' }}>
             <Text
               style={{
-                textAlign: "left",
+                textAlign: 'left',
                 fontSize: 7,
-                fontWeight: "semibold",
+                fontWeight: 'semibold',
               }}
             >
               NIT:
             </Text>
           </View>
-          <View style={{ width: "50%" }}>
+          <View style={{ width: '50%' }}>
             <Text
               style={{
-                textAlign: "left",
+                textAlign: 'left',
                 fontSize: 7,
-                fontWeight: "semibold",
+                fontWeight: 'semibold',
                 width: 100,
               }}
             >
@@ -172,29 +163,29 @@ export const Invoice = (props: Props) => (
       </View>
       <Text
         style={{
-          textAlign: "center",
+          textAlign: 'center',
           fontSize: 8,
-          fontWeight: "semibold",
+          fontWeight: 'semibold',
           marginTop: 5,
         }}
       >
         OTROS DOCUMENTOS ASOCIADOS
       </Text>
 
-      <Table style={{ width: "100%", marginTop: 5 }}>
+      <Table style={{ width: '100%', marginTop: 5 }}>
         <TH
           style={{
-            backgroundColor: "#fff",
-            color: "#000",
-            textAlign: "center",
+            backgroundColor: '#fff',
+            color: '#000',
+            textAlign: 'center',
           }}
         >
           <TD
             style={{
-              textAlign: "center",
+              textAlign: 'center',
               fontSize: 8,
-              fontWeight: "semibold",
-              justifyContent: "center",
+              fontWeight: 'semibold',
+              justifyContent: 'center',
               paddingVertical: 3,
             }}
           >
@@ -202,10 +193,10 @@ export const Invoice = (props: Props) => (
           </TD>
           <TD
             style={{
-              textAlign: "center",
+              textAlign: 'center',
               fontSize: 8,
-              fontWeight: "semibold",
-              justifyContent: "center",
+              fontWeight: 'semibold',
+              justifyContent: 'center',
               paddingVertical: 3,
             }}
           >
@@ -213,10 +204,10 @@ export const Invoice = (props: Props) => (
           </TD>
           <TD
             style={{
-              textAlign: "center",
+              textAlign: 'center',
               fontSize: 8,
-              fontWeight: "semibold",
-              justifyContent: "center",
+              fontWeight: 'semibold',
+              justifyContent: 'center',
               paddingVertical: 3,
             }}
           >
@@ -226,10 +217,10 @@ export const Invoice = (props: Props) => (
         <TR>
           <TD
             style={{
-              textAlign: "center",
+              textAlign: 'center',
               fontSize: 8,
-              fontWeight: "semibold",
-              justifyContent: "center",
+              fontWeight: 'semibold',
+              justifyContent: 'center',
               paddingVertical: 3,
             }}
           >
@@ -237,10 +228,10 @@ export const Invoice = (props: Props) => (
           </TD>
           <TD
             style={{
-              textAlign: "center",
+              textAlign: 'center',
               fontSize: 8,
-              fontWeight: "semibold",
-              justifyContent: "center",
+              fontWeight: 'semibold',
+              justifyContent: 'center',
               paddingVertical: 3,
             }}
           >
@@ -248,10 +239,10 @@ export const Invoice = (props: Props) => (
           </TD>
           <TD
             style={{
-              textAlign: "center",
+              textAlign: 'center',
               fontSize: 8,
-              fontWeight: "semibold",
-              justifyContent: "center",
+              fontWeight: 'semibold',
+              justifyContent: 'center',
               paddingVertical: 3,
             }}
           >
@@ -259,7 +250,7 @@ export const Invoice = (props: Props) => (
           </TD>
         </TR>
       </Table>
-      <View style={{ width: "100%", marginTop: 5 }}>
+      <View style={{ width: '100%', marginTop: 5 }}>
         <TableProducts DTE={props.DTE} />
       </View>
     </Page>

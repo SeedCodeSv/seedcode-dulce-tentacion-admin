@@ -1,15 +1,14 @@
-import { create } from "zustand";
-import { IUseCustomersStore } from "./types/customers.store";
+import { create } from 'zustand';
+import { IUseCustomersStore } from './types/customers.store';
 import {
   delete_customer,
   get_customers_pagination,
   save_customers,
   update_customers,
-  get_customer
-} from "../services/customers.service";
-import { toast } from "sonner";
-import { messages } from "../utils/constants";
-import { AxiosError } from "axios";
+  get_customer,
+} from '../services/customers.service';
+import { toast } from 'sonner';
+import { messages } from '../utils/constants';
 
 export const useCustomerStore = create<IUseCustomersStore>((set, get) => ({
   customer_pagination: {
@@ -24,8 +23,7 @@ export const useCustomerStore = create<IUseCustomersStore>((set, get) => ({
   },
   customer_list: [],
 
-  saveCustomersPagination: (customer_pagination) =>
-    set({ customer_pagination }),
+  saveCustomersPagination: (customer_pagination) => set({ customer_pagination }),
   getCustomersPagination: (page, limit, name, email) => {
     get_customers_pagination(page, limit, name, email)
       .then((customers) => set({ customer_pagination: customers.data }))
@@ -48,7 +46,7 @@ export const useCustomerStore = create<IUseCustomersStore>((set, get) => ({
     return save_customers(payload)
       .then(({ data }) => {
         if (data) {
-          get().getCustomersPagination(1, 5, "", "");
+          get().getCustomersPagination(1, 5, '', '');
           toast.success(messages.success);
           return true;
         } else {
@@ -56,8 +54,7 @@ export const useCustomerStore = create<IUseCustomersStore>((set, get) => ({
           return false;
         }
       })
-      .catch((error: AxiosError) => {
-        console.log(error);
+      .catch(() => {
         toast.warning(messages.error);
         return false;
       });
@@ -66,7 +63,7 @@ export const useCustomerStore = create<IUseCustomersStore>((set, get) => ({
     update_customers(payload, id)
       .then(({ data }) => {
         if (data) {
-          get().getCustomersPagination(1, 5, "", "");
+          get().getCustomersPagination(1, 5, '', '');
           toast.success(messages.success);
         } else {
           toast.warning(messages.error);
@@ -78,20 +75,23 @@ export const useCustomerStore = create<IUseCustomersStore>((set, get) => ({
   },
   getCustomersList() {
     get_customer()
-    .then(({data}) => {
-      set((state) => ({ ...state, customer_list: data.customers }))
-    }).catch(() => {
-      set((state) => ({ ...state, customer_list: [] }))
-    })
+      .then(({ data }) => {
+        set((state) => ({ ...state, customer_list: data.customers }));
+      })
+      .catch(() => {
+        set((state) => ({ ...state, customer_list: [] }));
+      });
   },
   deleteCustomer: async (id) => {
-    return await delete_customer(id).then(({ data }) => {
-      get().getCustomersPagination(1, 5, "", "");
-      toast.success(messages.success);
-      return data.ok;
-    }).catch(()=>{
-      toast.warning(messages.error);
-      return false
-    })
+    return await delete_customer(id)
+      .then(({ data }) => {
+        get().getCustomersPagination(1, 5, '', '');
+        toast.success(messages.success);
+        return data.ok;
+      })
+      .catch(() => {
+        toast.warning(messages.error);
+        return false;
+      });
   },
 }));

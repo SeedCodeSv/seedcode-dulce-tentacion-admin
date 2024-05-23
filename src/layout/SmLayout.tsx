@@ -1,5 +1,5 @@
-import { AnimatePresence, motion } from "framer-motion";
-import { Dispatch, SetStateAction } from "react";
+import { AnimatePresence, motion } from 'framer-motion';
+import { Dispatch, SetStateAction } from 'react';
 
 interface Props {
   isOpen: boolean;

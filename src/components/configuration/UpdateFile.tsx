@@ -1,13 +1,13 @@
-import axios from "axios";
-import React, { useContext, useEffect, useRef, useState } from "react";
-import { API_URL } from "../../utils/constants";
-import { toast } from "sonner";
-import { Button } from "@nextui-org/react";
-import DefaultImage from "../../assets/react.svg";
-import { useConfigurationStore } from "../../store/perzonalitation.store";
-import { useAuthStore } from "../../store/auth.store";
-import { ThemeContext } from "../../hooks/useTheme";
-import compressImage from "browser-image-compression";
+import axios from 'axios';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import { API_URL } from '../../utils/constants';
+import { toast } from 'sonner';
+import { Button } from '@nextui-org/react';
+import DefaultImage from '../../assets/react.svg';
+import { useConfigurationStore } from '../../store/perzonalitation.store';
+import { useAuthStore } from '../../store/auth.store';
+import { ThemeContext } from '../../hooks/useTheme';
+import compressImage from 'browser-image-compression';
 
 interface Props {
   perzonalitationId: number;
@@ -16,7 +16,7 @@ interface Props {
 function UpdateFile(props: Props) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(false);
   const { personalization, GetConfigurationByTransmitter } = useConfigurationStore();
   const { user } = useAuthStore();
   const tramsiter = user?.employee?.branch?.transmitterId;
@@ -30,13 +30,12 @@ function UpdateFile(props: Props) {
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files && files.length > 0) {
-      
-      if (files[0].type !== "image/png") {
-        toast.error("Solo se permiten imágenes en formato .png");
+      if (files[0].type !== 'image/png') {
+        toast.error('Solo se permiten imágenes en formato .png');
         return;
       }
 
-      setLoading(true); 
+      setLoading(true);
       try {
         const file = files[0];
         const compressedImage = await compressImage(file, {
@@ -55,16 +54,14 @@ function UpdateFile(props: Props) {
         const compressedImageUrl = URL.createObjectURL(convertedFile);
         setSelectedImage(compressedImageUrl);
         setSelectedFile(convertedFile);
-
-      } catch (error) {
-        console.error("Error compressing image:", error);
-        toast.error("Error al comprimir la imagen");
+      } catch {
+        toast.error('Error al comprimir la imagen');
       } finally {
-        setLoading(false); 
+        setLoading(false);
       }
     } else {
       setSelectedFile(null);
-      setSelectedImage(null); 
+      setSelectedImage(null);
     }
   };
 
@@ -72,23 +69,23 @@ function UpdateFile(props: Props) {
     if (selectedFile) {
       try {
         const formData = new FormData();
-        formData.append("file", selectedFile);
+        formData.append('file', selectedFile);
         await axios.patch(
           `${API_URL}/personalization/change-image/${props.perzonalitationId}`,
           formData,
           {
             headers: {
-              "Content-Type": "multipart/form-data",
+              'Content-Type': 'multipart/form-data',
             },
           }
         );
-        toast.success("Imagen actualizada con éxito");
+        toast.success('Imagen actualizada con éxito');
         location.reload();
       } catch (error) {
-        toast.error("Error al actualizar la imagen");
+        toast.error('Error al actualizar la imagen');
       }
     } else {
-      toast.error("No se seleccionó un archivo");
+      toast.error('No se seleccionó un archivo');
     }
   };
 
@@ -99,9 +96,7 @@ function UpdateFile(props: Props) {
     }
   };
 
-  const personalizationLogo = personalization?.find(
-    (config) => config.logo
-  )?.logo;
+  const personalizationLogo = personalization?.find((config) => config.logo)?.logo;
 
   return (
     <>
@@ -126,14 +121,14 @@ function UpdateFile(props: Props) {
               }}
               disabled={loading}
             >
-              {loading ? "Cargando..." : "Selecciona un archivo"}
+              {loading ? 'Cargando...' : 'Selecciona un archivo'}
             </Button>
           </label>
           <input
             type="file"
             id="fileInput"
             accept="image/*"
-            style={{ display: "none" }}
+            style={{ display: 'none' }}
             onChange={handleFileChange}
             ref={fileInputRef}
           />
@@ -143,15 +138,14 @@ function UpdateFile(props: Props) {
       <div className="mt-5">
         <Button
           className="font-semibold w-full mt-4 text-sm text-white shadow-lg"
-          
           style={{
             backgroundColor: theme.colors.third,
             color: theme.colors.primary,
           }}
           onClick={handleUpload}
-          disabled={loading} 
+          disabled={loading}
         >
-          {loading ? "Guardando..." : "Guardar"}
+          {loading ? 'Guardando...' : 'Guardar'}
         </Button>
       </div>
     </>

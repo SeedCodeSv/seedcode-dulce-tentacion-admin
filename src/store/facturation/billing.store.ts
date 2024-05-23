@@ -1,6 +1,6 @@
-import { create } from "zustand";
-import { IGlobalBillingStore } from "./types/global.types";
-import { SeedcodeCatalogosMhService } from "seedcode-catalogos-mh";
+import { create } from 'zustand';
+import { IGlobalBillingStore } from './types/global.types';
+import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
 
 const service = new SeedcodeCatalogosMhService();
 
@@ -29,11 +29,13 @@ export const useBillingStore = create<IGlobalBillingStore>((set) => ({
     });
   },
   getCat013Municipios(depCode) {
-    const municipios = service.get013Municipio(depCode)
+    const municipios = service.get013Municipio(depCode);
     if (municipios) {
       set({
-        cat_013_municipios: municipios
-          .map((item) => ({ ...item, isActivated: item.isActivated === 1 })),
+        cat_013_municipios: municipios.map((item) => ({
+          ...item,
+          isActivated: item.isActivated === 1,
+        })),
       });
     }
   },

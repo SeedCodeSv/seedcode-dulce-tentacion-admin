@@ -1,13 +1,9 @@
-import { create } from "zustand";
-import { IBoxStore } from "./types/Boxes.store.types";
-import { messages } from "../utils/constants";
-import { toast } from "sonner";
-import {
-  get_boxes_List,
-  save_box,
-  close_box_by_id,
-} from "../services/Boxes.service";
-import { post_box, get_box, delete_box } from "../storage/localStorage";
+import { create } from 'zustand';
+import { IBoxStore } from './types/Boxes.store.types';
+import { messages } from '../utils/constants';
+import { toast } from 'sonner';
+import { get_boxes_List, save_box, close_box_by_id } from '../services/Boxes.service';
+import { post_box, get_box, delete_box } from '../storage/localStorage';
 export const useBoxStore = create<IBoxStore>((set) => ({
   box_list: [],
   current_box: Number(get_box() ?? 0),
@@ -42,7 +38,7 @@ export const useBoxStore = create<IBoxStore>((set) => ({
       .then(() => {
         delete_box();
         set({ current_box: 0, has_current_box: false });
-        toast.success("Caja cerrada correctamente");
+        toast.success('Caja cerrada correctamente');
       })
       .catch(() => {
         toast.error(messages.error);

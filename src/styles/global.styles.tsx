@@ -1,5 +1,7 @@
-import { useContext } from "react";
-import { ThemeContext } from "../hooks/useTheme";
+/* eslint-disable react-hooks/rules-of-hooks*/
+
+import { useContext } from 'react';
+import { ThemeContext } from '../hooks/useTheme';
 
 export const global_styles = () => {
   const { theme } = useContext(ThemeContext);
@@ -21,9 +23,9 @@ export const global_styles = () => {
       backgroundColor: theme.colors.danger,
       color: theme.colors.primary,
     },
-    warningStyles:{
+    warningStyles: {
       backgroundColor: theme.colors.warning,
       color: theme.colors.primary,
-    }
+    },
   };
 };

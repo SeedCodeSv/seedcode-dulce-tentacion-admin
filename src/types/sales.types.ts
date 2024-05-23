@@ -1,5 +1,5 @@
-import { Employee } from "./employees.types";
-import { Customer, Direccion } from "./report_contigence";
+import { Employee } from './employees.types';
+import { Customer, Direccion } from './report_contigence';
 
 export interface IGetSales {
   ok: boolean;
@@ -40,12 +40,11 @@ interface Sale {
   pathJson: string;
   isActivated: boolean;
   boxId: number;
-  customerId: any;
+  customerId: number;
   customer: Customer;
   employee: Employee;
   direccion: Direccion;
   employeeId: number;
-  paymentTypeId: any;
   selloInvalidation: string;
   salesStatusId: number;
   salesStatus: SaleStatus;

@@ -1,13 +1,11 @@
-import ConfigurationList from "../components/configuration/ConfigurationList";
-import Layout from "../layout/Layout";
+import ConfigurationList from '../components/configuration/ConfigurationList';
+import Layout from '../layout/Layout';
 
 function Configuration() {
-
-
   return (
     <>
       <Layout title="Configuración">
-        <ConfigurationList/>
+        <ConfigurationList />
       </Layout>
     </>
   );

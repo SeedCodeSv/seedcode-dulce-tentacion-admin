@@ -3,7 +3,7 @@ import { get_json_sale } from "../../services/sales.service";
 import { IDTE } from "../../types/DTE/DTE.types";
 import { generate_factura } from "../../utils/DTE/factura";
 import { useTransmitterStore } from "../../store/transmitter.store";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useBillingStore } from "../../store/facturation/billing.store";
 import { ITipoDocumento } from "../../types/DTE/tipo_documento.types";
 import { pdf } from "@react-pdf/renderer";
@@ -15,6 +15,7 @@ import { get_token } from "../../storage/localStorage";
 import { toast } from "sonner";
 import { Sale } from "../../types/report_contigence";
 import { IFormasDePago } from "../../types/DTE/forma_de_pago.types";
+import { ICartProduct } from "../../types/branch_products.types";
 
 interface Props {
   sale: Sale;
@@ -34,7 +35,6 @@ export const AddSealMH = (props: Props) => {
     getCat017FormasDePago,
     metodos_de_pago,
   } = useBillingStore();
-  const [loading, setLoading] = useState(false);
   const generateURLMH = (
     ambiente: string,
     codegen: string,
@@ -42,13 +42,20 @@ export const AddSealMH = (props: Props) => {
   ) => {
     return `${MH_QUERY}?ambiente=${ambiente}&codGen=${codegen}&fechaEmi=${fechaEmi}`;
   };
+  interface Data {
+    quantity: number;
+    discount: string | number;
+    percentage: string;
+    total: number;
+    base_price: string | number;
+  }
 
   get_json_sale(props.sale.id).then((data) => {
     axios
       .get(data.data.json)
       .then(async (response) => {
         const jsonData: IDTE = JSON.parse(response.data);
-        const data: any[] = [];
+        const data: Data[] = [];
         for (const item of jsonData.cuerpoDocumento) {
           data.push({
             quantity: item.cantidad,
@@ -75,7 +82,7 @@ export const AddSealMH = (props: Props) => {
           Number(correlativo),
           tipoDte,
           props.sale.customer,
-          data,
+          data as unknown as ICartProduct[],
           formaPago as IFormasDePago
         );
 
@@ -144,23 +151,21 @@ export const AddSealMH = (props: Props) => {
                           )
                           .then(() => {
                             toast.success("Se completo con éxito la venta");
-                            setLoading(false);
                           })
                           .catch(() => {
                             toast.error("Error al guardar la venta");
-                            setLoading(false);
                           });
                       }
                     });
                 }
               });
-          } catch (error) {
-            console.error("Error al analizar el archivo JSON:", error);
+          } catch {
+            toast.error("Error en el archivo");
           }
         }
       })
-      .catch((error) => {
-        console.error("Error al obtener el archivo JSON:", error);
+      .catch(() => {
+        toast.error("Error en el archivo");
       });
   });
 

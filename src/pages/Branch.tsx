@@ -1,12 +1,12 @@
-import Layout from '../layout/Layout'
-import ListBranch from '../components/branch/ListBranch'
+import Layout from '../layout/Layout';
+import ListBranch from '../components/branch/ListBranch';
 
 function Branch() {
   return (
-    <Layout title='Sucursales'>
+    <Layout title="Sucursales">
       <ListBranch />
     </Layout>
-  )
+  );
 }
 
-export default Branch
+export default Branch;

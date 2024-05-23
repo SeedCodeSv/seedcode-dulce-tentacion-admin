@@ -1,7 +1,7 @@
-import { ITransmitter } from "../transmitter.types";
-import { Resumen } from "./factura.types";
-import { Pago } from "./sub_interface/payment.types";
-import { Receptor } from "./sub_interface/receiver.types";
+import { ITransmitter } from '../transmitter.types';
+import { Resumen } from './factura.types';
+import { Pago } from './sub_interface/payment.types';
+import { Receptor } from './sub_interface/receiver.types';
 export interface Identificacion {
   version: number;
   codigoGeneracion: string;
@@ -23,18 +23,18 @@ export interface CuerpoDocumento {
   uniMedida: number;
   numeroDocumento: any;
   cantidad: number;
-  codigo: string ;
+  codigo: string;
   codTributo: any;
   descripcion: string;
-  precioUni: number ;
-  montoDescu: number ;
-  ventaNoSuj: number ;
-  ventaExenta: number ;
-  ventaGravada: number 
+  precioUni: number;
+  montoDescu: number;
+  ventaNoSuj: number;
+  ventaExenta: number;
+  ventaGravada: number;
   tributos: string[] | null;
-  psv: number ;
-  noGravado: number 
-  ivaItem: number 
+  psv: number;
+  noGravado: number;
+  ivaItem: number;
 }
 
 export interface ICuerpoDocumento {
@@ -152,7 +152,7 @@ export interface FiscalReceptor {
   nombreComercial: string | null;
   direccion: {
     departamento: string | null;
-    municipio: string | null
+    municipio: string | null;
     complemento: string | null;
   };
   telefono: string | null;

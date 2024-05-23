@@ -1,4 +1,4 @@
-import ApexChart from "react-apexcharts";
+import ApexChart from 'react-apexcharts';
 
 interface Props {
   sales: {
@@ -31,7 +31,7 @@ function SalesMonthBranches({ sales }: Props) {
           type="line"
           series={sales.series}
           height={150}
-          width={"100%"}
+          width={'100%'}
           options={{
             labels: sales.labels,
             yaxis: {
@@ -40,22 +40,22 @@ function SalesMonthBranches({ sales }: Props) {
               },
             },
             xaxis: {
-              type: "category",
+              type: 'category',
               crosshairs: {
                 width: 1,
               },
             },
-            colors: ["#ffffff"],
+            colors: ['#ffffff'],
             chart: {
-              id: "product_most_selled",
-              type: "area",
-              group: "product_most_selled",
+              id: 'product_most_selled',
+              type: 'area',
+              group: 'product_most_selled',
               sparkline: {
                 enabled: true,
               },
             },
             stroke: {
-              curve: "smooth",
+              curve: 'smooth',
             },
             grid: {
               padding: {

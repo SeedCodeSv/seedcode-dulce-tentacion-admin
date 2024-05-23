@@ -1,11 +1,6 @@
-import { Dispatch, SetStateAction } from "react";
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  Button,
-} from "@nextui-org/react";
-import { PlusIcon } from "lucide-react";
+import { Dispatch, SetStateAction } from 'react';
+import { Popover, PopoverTrigger, PopoverContent, Button } from '@nextui-org/react';
+import { PlusIcon } from 'lucide-react';
 
 interface Props {
   isOpen: boolean;
@@ -14,11 +9,7 @@ interface Props {
 
 export default function App(props: Props) {
   return (
-    <Popover
-      isOpen={props.isOpen}
-      onOpenChange={(open) => props.setIsOpen(open)}
-      backdrop="blur"
-    >
+    <Popover isOpen={props.isOpen} onOpenChange={(open) => props.setIsOpen(open)} backdrop="blur">
       <PopoverTrigger>
         <Button
           className="h-10 max-w-72 bg-coffee-green text-background"

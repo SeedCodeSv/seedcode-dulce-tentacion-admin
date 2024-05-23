@@ -9,8 +9,8 @@ import {
   PopoverTrigger,
   PopoverContent,
   Switch,
-} from "@nextui-org/react";
-import { useContext, useEffect, useState } from "react";
+} from '@nextui-org/react';
+import { useContext, useEffect, useState } from 'react';
 import {
   EditIcon,
   User,
@@ -20,22 +20,22 @@ import {
   List,
   Filter,
   RefreshCcw,
-} from "lucide-react";
-import { useCategoriesStore } from "../../store/categories.store";
-import { ThemeContext } from "../../hooks/useTheme";
-import AddCategory from "./AddCategory";
-import ModalGlobal from "../global/ModalGlobal";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
-import AddButton from "../global/AddButton";
-import MobileView from "./MobileView";
-import Pagination from "../global/Pagination";
-import { CategoryProduct } from "../../types/categories.types";
-import { Drawer } from "vaul";
-import { global_styles } from "../../styles/global.styles";
-import classNames from "classnames";
-import { limit_options } from "../../utils/constants";
-import SmPagination from "../global/SmPagination";
+} from 'lucide-react';
+import { useCategoriesStore } from '../../store/categories.store';
+import { ThemeContext } from '../../hooks/useTheme';
+import AddCategory from './AddCategory';
+import ModalGlobal from '../global/ModalGlobal';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+import AddButton from '../global/AddButton';
+import MobileView from './MobileView';
+import Pagination from '../global/Pagination';
+import { CategoryProduct } from '../../types/categories.types';
+import { Drawer } from 'vaul';
+import { global_styles } from '../../styles/global.styles';
+import classNames from 'classnames';
+import { limit_options } from '../../utils/constants';
+import SmPagination from '../global/SmPagination';
 
 interface PProps {
   actions: string[];
@@ -44,18 +44,14 @@ interface PProps {
 function ListCategories({ actions }: PProps) {
   const { theme, context } = useContext(ThemeContext);
   const [openVaul, setOpenVaul] = useState(false);
-  const {
-    paginated_categories,
-    getPaginatedCategories,
-    activateCategory,
-    loading_categories
-  } = useCategoriesStore();
+  const { paginated_categories, getPaginatedCategories, activateCategory, loading_categories } =
+    useCategoriesStore();
 
   const [selectedCategory, setSelectedCategory] = useState<
     { id: number; name: string } | undefined
   >();
 
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
   const [limit, setLimit] = useState(5);
   const [active, setActive] = useState(true);
 
@@ -74,7 +70,7 @@ function ListCategories({ actions }: PProps) {
     color: theme.colors.primary,
   };
 
-  const [view, setView] = useState<"table" | "grid" | "list">("table");
+  const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
 
   const handleEdit = (item: CategoryProduct) => {
     setSelectedCategory({
@@ -103,16 +99,16 @@ function ListCategories({ actions }: PProps) {
                 labelPlacement="outside"
                 label="Nombre"
                 classNames={{
-                  label: "font-semibold text-gray-700",
-                  inputWrapper: "pr-0",
+                  label: 'font-semibold text-gray-700',
+                  inputWrapper: 'pr-0',
                 }}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Escribe para buscar..."
                 isClearable
                 onClear={() => {
-                  setSearch("");
-                  handleSearch("");
+                  setSearch('');
+                  handleSearch('');
                 }}
               />
               <Button
@@ -134,11 +130,10 @@ function ListCategories({ actions }: PProps) {
                 isIconOnly
                 color="secondary"
                 style={{
-                  backgroundColor:
-                    view === "table" ? theme.colors.third : "#e5e5e5",
-                  color: view === "table" ? theme.colors.primary : "#3e3e3e",
+                  backgroundColor: view === 'table' ? theme.colors.third : '#e5e5e5',
+                  color: view === 'table' ? theme.colors.primary : '#3e3e3e',
                 }}
-                onClick={() => setView("table")}
+                onClick={() => setView('table')}
               >
                 <ITable />
               </Button>
@@ -146,11 +141,10 @@ function ListCategories({ actions }: PProps) {
                 isIconOnly
                 color="default"
                 style={{
-                  backgroundColor:
-                    view === "grid" ? theme.colors.third : "#e5e5e5",
-                  color: view === "grid" ? theme.colors.primary : "#3e3e3e",
+                  backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
+                  color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
                 }}
-                onClick={() => setView("grid")}
+                onClick={() => setView('grid')}
               >
                 <CreditCard />
               </Button>
@@ -158,11 +152,10 @@ function ListCategories({ actions }: PProps) {
                 isIconOnly
                 color="default"
                 style={{
-                  backgroundColor:
-                    view === "list" ? theme.colors.third : "#e5e5e5",
-                  color: view === "list" ? theme.colors.primary : "#3e3e3e",
+                  backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
+                  color: view === 'list' ? theme.colors.primary : '#3e3e3e',
                 }}
-                onClick={() => setView("list")}
+                onClick={() => setView('list')}
               >
                 <List />
               </Button>
@@ -191,8 +184,8 @@ function ListCategories({ actions }: PProps) {
                     />
                     <Drawer.Content
                       className={classNames(
-                        "bg-gray-100 z-[60] flex flex-col rounded-t-[10px] h-auto mt-24 max-h-[80%] fixed bottom-0 left-0 right-0",
-                        context === "dark" ? "dark" : ""
+                        'bg-gray-100 z-[60] flex flex-col rounded-t-[10px] h-auto mt-24 max-h-[80%] fixed bottom-0 left-0 right-0',
+                        context === 'dark' ? 'dark' : ''
                       )}
                     >
                       <div className="p-4 bg-white dark:bg-gray-800 rounded-t-[10px] flex-1">
@@ -209,16 +202,16 @@ function ListCategories({ actions }: PProps) {
                             labelPlacement="outside"
                             label="Nombre"
                             classNames={{
-                              label: "font-semibold text-gray-700",
-                              inputWrapper: "pr-0",
+                              label: 'font-semibold text-gray-700',
+                              inputWrapper: 'pr-0',
                             }}
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                             placeholder="Escribe para buscar..."
                             isClearable
                             onClear={() => {
-                              setSearch("");
-                              handleSearch("");
+                              setSearch('');
+                              handleSearch('');
                             }}
                           />
                           <Button
@@ -242,7 +235,7 @@ function ListCategories({ actions }: PProps) {
                 </Drawer.Root>
               </div>
             </div>
-            {actions.includes("Agregar") && (
+            {actions.includes('Agregar') && (
               <AddButton
                 onClick={() => {
                   setSelectedCategory(undefined);
@@ -259,54 +252,47 @@ function ListCategories({ actions }: PProps) {
             label="Mostrar"
             labelPlacement="outside"
             classNames={{
-              label: "font-semibold",
+              label: 'font-semibold',
             }}
             value={limit}
             onChange={(e) => {
-              setLimit(Number(e.target.value !== "" ? e.target.value : "8"));
+              setLimit(Number(e.target.value !== '' ? e.target.value : '8'));
             }}
           >
             {limit_options.map((option) => (
-              <SelectItem
-                key={option}
-                value={option}
-                className="dark:text-white"
-              >
+              <SelectItem key={option} value={option} className="dark:text-white">
                 {option}
               </SelectItem>
             ))}
           </Select>
           <div className="flex items-center">
-            <Switch
-              onValueChange={(active) => setActive(active)}
-              isSelected={active}
-            >
+            <Switch onValueChange={(active) => setActive(active)} isSelected={active}>
               <span className="text-sm sm:text-base whitespace-nowrap">
-                Mostrar {active ? "inactivos" : "activos"}
+                Mostrar {active ? 'inactivos' : 'activos'}
               </span>
             </Switch>
           </div>
         </div>
-        {(view === "grid" || view === "list") && (
+        {(view === 'grid' || view === 'list') && (
           <MobileView
             handleActive={handleActivate}
             deletePopover={DeletePopUp}
-            layout={view as "grid" | "list"}
+            layout={view as 'grid' | 'list'}
             handleEdit={handleEdit}
             actions={actions}
           />
         )}
-        {view === "table" && (
+        {view === 'table' && (
           <DataTable
             className="w-full shadow"
             emptyMessage="No se encontraron resultados"
             value={paginated_categories.categoryProducts}
-            tableStyle={{ minWidth: "50rem" }}
+            tableStyle={{ minWidth: '50rem' }}
             loading={loading_categories}
           >
             <Column
               headerClassName="text-sm font-semibold"
-              headerStyle={{ ...style, borderTopLeftRadius: "10px" }}
+              headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
               field="id"
               header="No."
             />
@@ -317,11 +303,11 @@ function ListCategories({ actions }: PProps) {
               header="Nombre"
             />
             <Column
-              headerStyle={{ ...style, borderTopRightRadius: "10px" }}
+              headerStyle={{ ...style, borderTopRightRadius: '10px' }}
               header="Acciones"
               body={(item) => (
                 <div className="flex gap-6">
-                  {actions.includes("Editar") && (
+                  {actions.includes('Editar') && (
                     <Button
                       onClick={() => handleEdit(item)}
                       isIconOnly
@@ -329,13 +315,10 @@ function ListCategories({ actions }: PProps) {
                         backgroundColor: theme.colors.secondary,
                       }}
                     >
-                      <EditIcon
-                        style={{ color: theme.colors.primary }}
-                        size={20}
-                      />
+                      <EditIcon style={{ color: theme.colors.primary }} size={20} />
                     </Button>
                   )}
-                  {actions.includes("Eliminar") && (
+                  {actions.includes('Eliminar') && (
                     <>
                       {item.isActive ? (
                         <DeletePopUp category={item} />
@@ -387,14 +370,11 @@ function ListCategories({ actions }: PProps) {
       </div>
       <ModalGlobal
         size="w-full md:w-[500px]"
-        title={selectedCategory ? "Editar categoría" : "Nueva categoría"}
+        title={selectedCategory ? 'Editar categoría' : 'Nueva categoría'}
         isOpen={modalAdd.isOpen}
         onClose={modalAdd.onClose}
       >
-        <AddCategory
-          closeModal={modalAdd.onClose}
-          category={selectedCategory}
-        />
+        <AddCategory closeModal={modalAdd.onClose} category={selectedCategory} />
       </ModalGlobal>
     </div>
   );
@@ -437,9 +417,7 @@ const DeletePopUp = ({ category }: Props) => {
         </PopoverTrigger>
         <PopoverContent>
           <div className="w-full p-5">
-            <p className="font-semibold text-gray-600 dark:text-white">
-              Eliminar {category.name}
-            </p>
+            <p className="font-semibold text-gray-600 dark:text-white">Eliminar {category.name}</p>
             <p className="mt-3 text-center text-gray-600 dark:text-white w-72">
               ¿Estas seguro de eliminar este registro?
             </p>

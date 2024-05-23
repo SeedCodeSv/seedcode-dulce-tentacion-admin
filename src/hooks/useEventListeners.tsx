@@ -1,13 +1,14 @@
-import { useEffect, useRef } from "react";
+/* eslint-disable no-unused-vars */
+import { useEffect, useRef } from 'react';
 
-type EventHandler = (event: Event) => void;
+export type TEventHandler = (event: Event) => void;
 
 export default function useEventListener(
   eventName: string,
-  handler: EventHandler,
+  handler: TEventHandler,
   element: HTMLElement | Window = window
 ): void {
-  const savedHandler = useRef<EventHandler>();
+  const savedHandler = useRef<TEventHandler>();
 
   useEffect(() => {
     savedHandler.current = handler;

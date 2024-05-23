@@ -5,20 +5,20 @@ import {
   PopoverContent,
   PopoverTrigger,
   useDisclosure,
-} from "@nextui-org/react";
-import { global_styles } from "../../styles/global.styles";
-import * as yup from "yup";
-import { Formik } from "formik";
-import { Branches } from "../../types/branches.types";
-import { useBoxStore } from "../../store/Boxes.store";
-import { IBoxPayload } from "../../types/box.types";
-import { useContext, useEffect, useState } from "react";
-import { verify_box } from "../../services/Boxes.service";
-import { BoxIcon } from "lucide-react";
-import { post_box, save_branch_id } from "../../storage/localStorage";
-import ModalGlobal from "../global/ModalGlobal";
-import CloseBox from "./box/CloseBox";
-import { ThemeContext } from "../../hooks/useTheme";
+} from '@nextui-org/react';
+import { global_styles } from '../../styles/global.styles';
+import * as yup from 'yup';
+import { Formik } from 'formik';
+import { Branches } from '../../types/branches.types';
+import { useBoxStore } from '../../store/Boxes.store';
+import { IBoxPayload } from '../../types/box.types';
+import { useContext, useEffect, useState } from 'react';
+import { verify_box } from '../../services/Boxes.service';
+import { BoxIcon } from 'lucide-react';
+import { post_box, save_branch_id } from '../../storage/localStorage';
+import ModalGlobal from '../global/ModalGlobal';
+import CloseBox from './box/CloseBox';
+import { ThemeContext } from '../../hooks/useTheme';
 interface Props {
   closeModal: () => void;
   branch?: Branches | undefined;
@@ -31,7 +31,7 @@ function AddBranch(props: Props) {
   const modalCloseBox = useDisclosure();
 
   const validationSchema = yup.object().shape({
-    start: yup.string().required("El monto inicial es requerido"),
+    start: yup.string().required('El monto inicial es requerido'),
   });
 
   const { postBox, closeBox } = useBoxStore();
@@ -56,22 +56,22 @@ function AddBranch(props: Props) {
     save_branch_id(props.branch?.id.toString()!);
   };
   const handleCloseBoxId = () => {
-    closeBox(idBox)
+    closeBox(idBox);
     props.closeModal();
     props.setBranch(undefined);
-  }
+  };
   useEffect(() => {
     (async () => {
-     if(props.branch){
-      verify_box(Number(props.branch?.id)).then(({ data }) => {
-        if (data.box) {
-          setVisible(true);
-          setIdBox(data.box.id);
-        } else {
-          setVisible(false);
-        }
-      });
-     }
+      if (props.branch) {
+        verify_box(Number(props.branch?.id)).then(({ data }) => {
+          if (data.box) {
+            setVisible(true);
+            setIdBox(data.box.id);
+          } else {
+            setVisible(false);
+          }
+        });
+      }
     })();
   }, [props.branch]);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -86,20 +86,14 @@ function AddBranch(props: Props) {
                 Esta sucursal cuenta con una caja activa
               </div>
               <div className=" text-center text-sm">
-                Puedes cerrar la caja y activar una nueva o puedes usar usar la
-                caja activa
+                Puedes cerrar la caja y activar una nueva o puedes usar usar la caja activa
               </div>
               <div className="w-full flex justify-center py-5">
-              <BoxIcon size={60} className=" justify-center items-center" />
+                <BoxIcon size={60} className=" justify-center items-center" />
               </div>
             </div>
             <div className="flex justify-between gap-5 mt-5">
-              <Popover
-                isOpen={isOpen}
-                onClose={onClose}
-                backdrop="blur"
-                showArrow
-              >
+              <Popover isOpen={isOpen} onClose={onClose} backdrop="blur" showArrow>
                 <PopoverTrigger>
                   <Button
                     onClick={onOpen}
@@ -111,12 +105,19 @@ function AddBranch(props: Props) {
                 </PopoverTrigger>
                 <PopoverContent>
                   <div className="w-full p-5">
-                    <p className="font-semibold text-gray-600 text-center text-base">Cierres de cajas</p>
+                    <p className="font-semibold text-gray-600 text-center text-base">
+                      Cierres de cajas
+                    </p>
                     <p className="mt-3 text-center text-gray-600 w-72">
                       ¿Como quieres cerrar la caja?
                     </p>
                     <div className="mt-4">
-                      <Button  style={global_styles().dangerStyles} onClick={() => modalCloseBox.onOpen()}>Cierre contabilizado</Button>
+                      <Button
+                        style={global_styles().dangerStyles}
+                        onClick={() => modalCloseBox.onOpen()}
+                      >
+                        Cierre contabilizado
+                      </Button>
                       <Button
                         onClick={() => handleCloseBoxId()}
                         className="ml-5"
@@ -129,7 +130,6 @@ function AddBranch(props: Props) {
                 </PopoverContent>
               </Popover>
               <Button
-                
                 className="font-semibold"
                 style={global_styles().darkStyle}
                 onClick={handleActivate}
@@ -148,32 +148,22 @@ function AddBranch(props: Props) {
               validationSchema={validationSchema}
               onSubmit={handleSubmit}
             >
-              {({
-                values,
-                errors,
-                touched,
-                handleBlur,
-                handleChange,
-                handleSubmit,
-              }) => (
+              {({ values, errors, touched, handleBlur, handleChange, handleSubmit }) => (
                 <>
                   <div className="">
                     <div className="w-full pt-3 mb-4">
                       <Input
-                        
                         label="Monto inicial"
                         placeholder="Cantidad"
                         variant="bordered"
-                        onChange={handleChange("start")}
-                        onBlur={handleBlur("start")}
+                        onChange={handleChange('start')}
+                        onBlur={handleBlur('start')}
                         value={values.start.toString()}
-                        classNames={{ label: "font-semibold" }}
+                        classNames={{ label: 'font-semibold' }}
                         labelPlacement="outside"
                       />
                       {errors.start && touched.start && (
-                        <span className="text-sm font-semibold text-red-500">
-                          {errors.start}
-                        </span>
+                        <span className="text-sm font-semibold text-red-500">{errors.start}</span>
                       )}
                     </div>
                     <div>
@@ -182,7 +172,6 @@ function AddBranch(props: Props) {
                         onClick={() => handleSubmit()}
                         style={global_styles().thirdStyle}
                         className="w-full font-semibold"
-                        
                       >
                         Guardar
                       </Button>

@@ -1,19 +1,14 @@
-import {
-  Autocomplete,
-  AutocompleteItem,
-  Button,
-  Input,
-} from "@nextui-org/react";
-import { Formik } from "formik";
-import { useContext, useEffect } from "react";
-import * as yup from "yup";
-import { useRolesStore } from "../../store/roles.store";
-import { useEmployeeStore } from "../../store/employee.store";
-import { Employee } from "../../types/employees.types";
-import { Role } from "../../types/roles.types";
-import { useUsersStore } from "../../store/users.store";
-import { User, UserUpdate } from "../../types/users.types";
-import { ThemeContext } from "../../hooks/useTheme";
+import { Autocomplete, AutocompleteItem, Button, Input } from '@nextui-org/react';
+import { Formik } from 'formik';
+import { useContext, useEffect } from 'react';
+import * as yup from 'yup';
+import { useRolesStore } from '../../store/roles.store';
+import { useEmployeeStore } from '../../store/employee.store';
+import { Employee } from '../../types/employees.types';
+import { Role } from '../../types/roles.types';
+import { useUsersStore } from '../../store/users.store';
+import { User, UserUpdate } from '../../types/users.types';
+import { ThemeContext } from '../../hooks/useTheme';
 
 interface Props {
   onClose: () => void;
@@ -24,21 +19,15 @@ function AddUsers(props: Props) {
   const { theme } = useContext(ThemeContext);
 
   const initialValues = {
-    userName: props.user?.userName ?? "",
+    userName: props.user?.userName ?? '',
     roleId: props.user?.roleId ?? 0,
     employeeId: props.user?.employeeId ?? 0,
   };
 
   const validationSchema = yup.object().shape({
-    userName: yup.string().required("El usuario es requerido"),
-    roleId: yup
-      .number()
-      .required("El rol es requerido")
-      .min(1, "El rol es requerido"),
-    employeeId: yup
-      .number()
-      .required("El usuario es requerido")
-      .min(1, "El usuario es requerido"),
+    userName: yup.string().required('El usuario es requerido'),
+    roleId: yup.number().required('El rol es requerido').min(1, 'El rol es requerido'),
+    employeeId: yup.number().required('El usuario es requerido').min(1, 'El usuario es requerido'),
   });
 
   const { roles_list, getRolesList } = useRolesStore();
@@ -62,14 +51,7 @@ function AddUsers(props: Props) {
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        {({
-          values,
-          touched,
-          errors,
-          handleBlur,
-          handleChange,
-          handleSubmit,
-        }) => (
+        {({ values, touched, errors, handleBlur, handleChange, handleSubmit }) => (
           <>
             <div>
               <Input
@@ -77,18 +59,16 @@ function AddUsers(props: Props) {
                 labelPlacement="outside"
                 name="userName"
                 value={values.userName}
-                onChange={handleChange("userName")}
-                onBlur={handleBlur("userName")}
+                onChange={handleChange('userName')}
+                onBlur={handleBlur('userName')}
                 placeholder="Ingresa el nombre de usuario"
                 classNames={{
-                  label: "font-semibold text-gray-500 text-sm",
+                  label: 'font-semibold text-gray-500 text-sm',
                 }}
                 variant="bordered"
               />
               {errors.userName && touched.userName && (
-                <span className="text-sm font-semibold text-red-500">
-                  {errors.userName}
-                </span>
+                <span className="text-sm font-semibold text-red-500">{errors.userName}</span>
               )}
             </div>
             <div className="pt-2">
@@ -96,20 +76,20 @@ function AddUsers(props: Props) {
                 onSelectionChange={(key) => {
                   if (key) {
                     const depSelected = JSON.parse(key as string) as Employee;
-                    handleChange("employeeId")(depSelected.id.toString());
+                    handleChange('employeeId')(depSelected.id.toString());
                   }
                 }}
-                onBlur={handleBlur("employeeId")}
+                onBlur={handleBlur('employeeId')}
                 label="Empleado"
                 labelPlacement="outside"
                 placeholder={
                   props.user?.employee.fullName
                     ? props.user?.employee.fullName
-                    : "Selecciona el empleado"
+                    : 'Selecciona el empleado'
                 }
                 variant="bordered"
                 classNames={{
-                  base: "font-semibold text-gray-500 text-sm",
+                  base: 'font-semibold text-gray-500 text-sm',
                 }}
               >
                 {employee_list.map((dep) => (
@@ -119,9 +99,7 @@ function AddUsers(props: Props) {
                 ))}
               </Autocomplete>
               {errors.employeeId && touched.employeeId && (
-                <span className="text-sm font-semibold text-red-500">
-                  {errors.employeeId}
-                </span>
+                <span className="text-sm font-semibold text-red-500">{errors.employeeId}</span>
               )}
             </div>
             <div className="pt-2">
@@ -129,20 +107,16 @@ function AddUsers(props: Props) {
                 onSelectionChange={(key) => {
                   if (key) {
                     const depSelected = JSON.parse(key as string) as Role;
-                    handleChange("roleId")(depSelected.id.toString());
+                    handleChange('roleId')(depSelected.id.toString());
                   }
                 }}
-                onBlur={handleBlur("roleId")}
+                onBlur={handleBlur('roleId')}
                 label="Rol"
                 labelPlacement="outside"
-                placeholder={
-                  props.user?.role.name
-                    ? props.user?.role.name
-                    : "Selecciona el rol"
-                }
+                placeholder={props.user?.role.name ? props.user?.role.name : 'Selecciona el rol'}
                 variant="bordered"
                 classNames={{
-                  base: "font-semibold text-gray-500 text-sm",
+                  base: 'font-semibold text-gray-500 text-sm',
                 }}
               >
                 {roles_list.map((dep) => (
@@ -152,9 +126,7 @@ function AddUsers(props: Props) {
                 ))}
               </Autocomplete>
               {errors.roleId && touched.roleId && (
-                <span className="text-sm font-semibold text-red-500">
-                  {errors.roleId}
-                </span>
+                <span className="text-sm font-semibold text-red-500">{errors.roleId}</span>
               )}
             </div>
             <Button

@@ -1,5 +1,5 @@
-import { useContext, useEffect, useMemo, useState } from "react";
-import { useUsersStore } from "../../store/users.store";
+import { useContext, useEffect, useState } from 'react';
+import { useUsersStore } from '../../store/users.store';
 import {
   Button,
   Input,
@@ -10,12 +10,12 @@ import {
   SelectItem,
   Switch,
   useDisclosure,
-} from "@nextui-org/react";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
-import ModalGlobal from "../global/ModalGlobal";
-import AddUsers from "./AddUsers";
-import UpdateUsers from "./UpdateUsers";
+} from '@nextui-org/react';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+import ModalGlobal from '../global/ModalGlobal';
+import AddUsers from './AddUsers';
+import UpdateUsers from './UpdateUsers';
 import {
   Key,
   User2,
@@ -25,22 +25,20 @@ import {
   List,
   EditIcon,
   Filter,
-} from "lucide-react";
-import UpdatePassword from "./UpdatePassword";
-import { ThemeContext } from "../../hooks/useTheme";
-import { ButtonGroup } from "@nextui-org/react";
-import MobileView from "./MobileView";
-import AddButton from "../global/AddButton";
-import { Paginator } from "primereact/paginator";
-import { paginator_styles } from "../../styles/paginator.styles";
-import Pagination from "../global/Pagination";
-import { User } from "../../types/users.types";
-import { ActionsContext } from "../../hooks/useActions";
-import { filterActions } from "../../utils/filters";
-import { Drawer } from "vaul";
-import { global_styles } from "../../styles/global.styles";
-import classNames from "classnames";
-import { limit_options } from "../../utils/constants";
+} from 'lucide-react';
+import UpdatePassword from './UpdatePassword';
+import { ThemeContext } from '../../hooks/useTheme';
+import { ButtonGroup } from '@nextui-org/react';
+import MobileView from './MobileView';
+import AddButton from '../global/AddButton';
+import { Paginator } from 'primereact/paginator';
+import { paginator_styles } from '../../styles/paginator.styles';
+import Pagination from '../global/Pagination';
+import { User } from '../../types/users.types';
+import { Drawer } from 'vaul';
+import { global_styles } from '../../styles/global.styles';
+import classNames from 'classnames';
+import { limit_options } from '../../utils/constants';
 
 interface Props {
   actions: string[];
@@ -54,7 +52,7 @@ function ListUsers({ actions }: Props) {
   const [active, setActive] = useState(true);
 
   useEffect(() => {
-    getUsersPaginated(1, limit, "", active ? 1 : 0);
+    getUsersPaginated(1, limit, '', active ? 1 : 0);
   }, [limit, active]);
 
   const modalAdd = useDisclosure();
@@ -68,24 +66,13 @@ function ListUsers({ actions }: Props) {
     color: theme.colors.primary,
   };
 
-  const [view, setView] = useState<"table" | "grid" | "list">("table");
+  const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
 
-  const [userName, setUserName] = useState("");
+  const [userName, setUserName] = useState('');
 
   const handleSearch = (searchParam: string | undefined) => {
     getUsersPaginated(1, limit, searchParam ?? userName, active ? 1 : 0);
   };
-
-  const { roleActions } = useContext(ActionsContext);
-
-  const actions_role_view = useMemo(() => {
-    if (roleActions) {
-      return filterActions("Usuarios", roleActions)?.actions.map(
-        (re) => re.name
-      );
-    }
-    return undefined;
-  }, [roleActions]);
 
   const [openVaul, setOpenVaul] = useState(false);
 
@@ -103,16 +90,16 @@ function ListUsers({ actions }: Props) {
                   labelPlacement="outside"
                   label="Nombre"
                   classNames={{
-                    label: "font-semibold text-gray-700",
-                    inputWrapper: "pr-0",
+                    label: 'font-semibold text-gray-700',
+                    inputWrapper: 'pr-0',
                   }}
                   value={userName}
                   onChange={(e) => setUserName(e.target.value)}
                   placeholder="Escribe para buscar..."
                   isClearable
                   onClear={() => {
-                    setUserName("");
-                    handleSearch("");
+                    setUserName('');
+                    handleSearch('');
                   }}
                 />
               </div>
@@ -136,11 +123,10 @@ function ListUsers({ actions }: Props) {
                   isIconOnly
                   color="secondary"
                   style={{
-                    backgroundColor:
-                      view === "table" ? theme.colors.third : "#e5e5e5",
-                    color: view === "table" ? theme.colors.primary : "#3e3e3e",
+                    backgroundColor: view === 'table' ? theme.colors.third : '#e5e5e5',
+                    color: view === 'table' ? theme.colors.primary : '#3e3e3e',
                   }}
-                  onClick={() => setView("table")}
+                  onClick={() => setView('table')}
                 >
                   <ITable />
                 </Button>
@@ -148,11 +134,10 @@ function ListUsers({ actions }: Props) {
                   isIconOnly
                   color="default"
                   style={{
-                    backgroundColor:
-                      view === "grid" ? theme.colors.third : "#e5e5e5",
-                    color: view === "grid" ? theme.colors.primary : "#3e3e3e",
+                    backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
+                    color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
                   }}
-                  onClick={() => setView("grid")}
+                  onClick={() => setView('grid')}
                 >
                   <CreditCard />
                 </Button>
@@ -160,11 +145,10 @@ function ListUsers({ actions }: Props) {
                   isIconOnly
                   color="default"
                   style={{
-                    backgroundColor:
-                      view === "list" ? theme.colors.third : "#e5e5e5",
-                    color: view === "list" ? theme.colors.primary : "#3e3e3e",
+                    backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
+                    color: view === 'list' ? theme.colors.primary : '#3e3e3e',
                   }}
-                  onClick={() => setView("list")}
+                  onClick={() => setView('list')}
                 >
                   <List />
                 </Button>
@@ -193,8 +177,8 @@ function ListUsers({ actions }: Props) {
                       />
                       <Drawer.Content
                         className={classNames(
-                          "bg-gray-100 z-[60] flex flex-col rounded-t-[10px] h-auto mt-24 max-h-[80%] fixed bottom-0 left-0 right-0",
-                          context === "dark" ? "dark" : ""
+                          'bg-gray-100 z-[60] flex flex-col rounded-t-[10px] h-auto mt-24 max-h-[80%] fixed bottom-0 left-0 right-0',
+                          context === 'dark' ? 'dark' : ''
                         )}
                       >
                         <div className="p-4 bg-white dark:bg-gray-800 rounded-t-[10px] flex-1">
@@ -212,16 +196,16 @@ function ListUsers({ actions }: Props) {
                                 labelPlacement="outside"
                                 label="Nombre"
                                 classNames={{
-                                  label: "font-semibold text-gray-700",
-                                  inputWrapper: "pr-0",
+                                  label: 'font-semibold text-gray-700',
+                                  inputWrapper: 'pr-0',
                                 }}
                                 value={userName}
                                 onChange={(e) => setUserName(e.target.value)}
                                 placeholder="Escribe para buscar..."
                                 isClearable
                                 onClear={() => {
-                                  setUserName("");
-                                  handleSearch("");
+                                  setUserName('');
+                                  handleSearch('');
                                 }}
                               />
                             </div>
@@ -246,9 +230,7 @@ function ListUsers({ actions }: Props) {
                   </Drawer.Root>
                 </div>
               </div>
-              {actions.includes("Agregar") && (
-                <AddButton onClick={() => modalAdd.onOpen()} />
-              )}
+              {actions.includes('Agregar') && <AddButton onClick={() => modalAdd.onOpen()} />}
             </div>
           </div>
           <div className="flex justify-end items-end gap-5 w-full mb-3">
@@ -258,35 +240,28 @@ function ListUsers({ actions }: Props) {
               label="Mostrar"
               labelPlacement="outside"
               classNames={{
-                label: "font-semibold",
+                label: 'font-semibold',
               }}
               value={limit}
               onChange={(e) => {
-                setLimit(Number(e.target.value !== "" ? e.target.value : "5"));
+                setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
               }}
             >
               {limit_options.map((limit) => (
-                <SelectItem
-                  className="dark:text-white"
-                  key={limit}
-                  value={limit}
-                >
+                <SelectItem className="dark:text-white" key={limit} value={limit}>
                   {limit}
                 </SelectItem>
               ))}
             </Select>
             <div className="flex items-center">
-              <Switch
-                onValueChange={(active) => setActive(active)}
-                isSelected={active}
-              >
+              <Switch onValueChange={(active) => setActive(active)} isSelected={active}>
                 <span className="text-sm sm:text-base whitespace-nowrap">
-                  Mostrar {active ? "inactivos" : "activos"}
+                  Mostrar {active ? 'inactivos' : 'activos'}
                 </span>
               </Switch>
             </div>
           </div>
-          {(view === "grid" || view === "list") && (
+          {(view === 'grid' || view === 'list') && (
             <MobileView
               deletePopover={DeletePopUp}
               openEditModal={(user) => {
@@ -297,20 +272,20 @@ function ListUsers({ actions }: Props) {
                 setSelectedId(user.id);
                 modalChangePassword.onOpen();
               }}
-              layout={view as "grid" | "list"}
+              layout={view as 'grid' | 'list'}
               actions={actions}
             />
           )}
-          {view === "table" && (
+          {view === 'table' && (
             <DataTable
               className="shadow"
               emptyMessage="No se encontraron resultados"
               value={users_paginated.users}
-              tableStyle={{ minWidth: "50rem" }}
+              tableStyle={{ minWidth: '50rem' }}
             >
               <Column
                 headerClassName="text-sm font-semibold"
-                headerStyle={{ ...style, borderTopLeftRadius: "10px" }}
+                headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
                 field="id"
                 header="No."
               />
@@ -333,27 +308,24 @@ function ListUsers({ actions }: Props) {
                 header="Rol"
               />
               <Column
-                headerStyle={{ ...style, borderTopRightRadius: "10px" }}
+                headerStyle={{ ...style, borderTopRightRadius: '10px' }}
                 header="Acciones"
                 body={(item) => (
                   <div className="flex w-full gap-5">
-                    {actions.includes("Editar") && (
-                        <Button
-                          onClick={() => {
-                            setUser(item);
-                            modalUpdate.onOpen();
-                          }}
-                          isIconOnly
-                          style={{
-                            backgroundColor: theme.colors.secondary,
-                          }}
-                        >
-                          <EditIcon
-                            style={{ color: theme.colors.primary }}
-                            size={20}
-                          />
-                        </Button>
-                      )}
+                    {actions.includes('Editar') && (
+                      <Button
+                        onClick={() => {
+                          setUser(item);
+                          modalUpdate.onOpen();
+                        }}
+                        isIconOnly
+                        style={{
+                          backgroundColor: theme.colors.secondary,
+                        }}
+                      >
+                        <EditIcon style={{ color: theme.colors.primary }} size={20} />
+                      </Button>
+                    )}
                     <Button
                       onClick={() => {
                         setSelectedId(item.id);
@@ -366,9 +338,7 @@ function ListUsers({ actions }: Props) {
                     >
                       <Key color={theme.colors.primary} size={20} />
                     </Button>
-                    {actions.includes("Eliminar") && (
-                        <DeletePopUp user={item} />
-                      )}
+                    {actions.includes('Eliminar') && <DeletePopUp user={item} />}
                   </div>
                 )}
               />
@@ -395,16 +365,11 @@ function ListUsers({ actions }: Props) {
                   rows={limit}
                   totalRecords={users_paginated.total}
                   template={{
-                    layout: "PrevPageLink CurrentPageReport NextPageLink",
+                    layout: 'PrevPageLink CurrentPageReport NextPageLink',
                   }}
                   currentPageReportTemplate="{currentPage} de {totalPages}"
                   onPageChange={(e) => {
-                    getUsersPaginated(
-                      e.page + 1,
-                      limit,
-                      userName,
-                      active ? 1 : 0
-                    );
+                    getUsersPaginated(e.page + 1, limit, userName, active ? 1 : 0);
                   }}
                 />
               </div>
@@ -425,10 +390,7 @@ function ListUsers({ actions }: Props) {
           title="Actualizar contraseña"
           size="w-full sm:w-[500px]"
         >
-          <UpdatePassword
-            id={selectId}
-            closeModal={modalChangePassword.onClose}
-          />
+          <UpdatePassword id={selectId} closeModal={modalChangePassword.onClose} />
         </ModalGlobal>
         <ModalGlobal
           isOpen={modalUpdate.isOpen}
@@ -480,9 +442,7 @@ const DeletePopUp = ({ user }: PopProps) => {
         </PopoverTrigger>
         <PopoverContent>
           <div className="w-full p-5">
-            <p className="font-semibold text-gray-600 dark:text-white">
-              Eliminar {user.userName}
-            </p>
+            <p className="font-semibold text-gray-600 dark:text-white">Eliminar {user.userName}</p>
             <p className="mt-3 text-center text-gray-600 dark:text-white w-72">
               ¿Estas seguro de eliminar este registro?
             </p>

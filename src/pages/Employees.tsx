@@ -1,17 +1,15 @@
-import Layout from "../layout/Layout";
-import ListEmployee from "../components/employee/ListEmployee";
-import { useContext, useMemo } from "react";
-import { ActionsContext } from "../hooks/useActions";
-import { filterActions } from "../utils/filters";
+import Layout from '../layout/Layout';
+import ListEmployee from '../components/employee/ListEmployee';
+import { useContext, useMemo } from 'react';
+import { ActionsContext } from '../hooks/useActions';
+import { filterActions } from '../utils/filters';
 
 function Employees() {
   const { roleActions } = useContext(ActionsContext);
 
   const actions_role_view = useMemo(() => {
     if (roleActions) {
-      const actions = filterActions("Productos", roleActions)?.actions.map(
-        (re) => re.name
-      );
+      const actions = filterActions('Productos', roleActions)?.actions.map((re) => re.name);
       return actions;
     }
     return undefined;

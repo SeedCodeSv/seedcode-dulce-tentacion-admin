@@ -1,4 +1,4 @@
-import {Product} from "./products.types"
+import { Product } from './products.types';
 export interface Branches {
   id: number;
   name: string;

@@ -1,7 +1,7 @@
-import { Table, TR, TH, TD } from "@ag-media/react-pdf-table";
-import TableFooter from "./TableFooter";
-import { StyleSheet } from "@react-pdf/renderer";
-import { DteJson } from "../../types/DTE/DTE.types";
+import { Table, TR, TH, TD } from '@ag-media/react-pdf-table';
+import TableFooter from './TableFooter';
+import { StyleSheet } from '@react-pdf/renderer';
+import { DteJson } from '../../types/DTE/DTE.types';
 
 interface Props {
   DTE: DteJson;
@@ -11,23 +11,23 @@ export default function TableProducts(props: Props) {
   const styles = StyleSheet.create({
     th_content: {
       fontSize: 7,
-      fontWeight: "semibold",
-      justifyContent: "center",
-      textAlign: "center",
+      fontWeight: 'semibold',
+      justifyContent: 'center',
+      textAlign: 'center',
       padding: 3,
     },
     td_content: {
       fontSize: 7,
       padding: 3,
-      textAlign: "center",
-      justifyContent: "center",
+      textAlign: 'center',
+      justifyContent: 'center',
     },
   });
 
   const formatCurrency = (value: number) => {
-    return value.toLocaleString("en-US", {
-      style: "currency",
-      currency: "USD",
+    return value.toLocaleString('en-US', {
+      style: 'currency',
+      currency: 'USD',
     });
   };
 

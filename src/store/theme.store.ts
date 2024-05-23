@@ -1,7 +1,7 @@
-import { create } from "zustand";
-import { ThemeStore } from "./types/theme_store.types";
-import { get_themes_paginated } from "../services/theme.service";
-import { formatThemeData } from "../utils/filters";
+import { create } from 'zustand';
+import { ThemeStore } from './types/theme_store.types';
+import { get_themes_paginated } from '../services/theme.service';
+import { formatThemeData } from '../utils/filters';
 
 export const useThemeStore = create<ThemeStore>((set) => ({
   themes: [],

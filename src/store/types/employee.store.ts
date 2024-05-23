@@ -1,8 +1,4 @@
-import {
-  Employee,
-  EmployeePayload,
-  IGetEmployeesPaginated,
-} from "../../types/employees.types";
+import { Employee, EmployeePayload, IGetEmployeesPaginated } from '../../types/employees.types';
 
 export interface IEmployeeStore {
   employee_paginated: IGetEmployeesPaginated;

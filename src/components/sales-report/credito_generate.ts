@@ -1,11 +1,11 @@
-import { CreditSaleContingenciaI } from "../../plugins/dexie/store/types/contingencia_credito_store.types";
-import { CreditSale } from "../../types/DTE/sub_interface/credito_contingencia";
+import { CreditSaleContingenciaI } from '../../plugins/dexie/store/types/contingencia_credito_store.types';
+import { CreditSale } from '../../types/DTE/sub_interface/credito_contingencia';
 // import { ISendMHFiscal as ICredito } from "../../types/DTE/DTE.types";
-import { ITransmitter } from "../../types/transmitter.types";
-import { ambiente } from "../../utils/constants";
+import { ITransmitter } from '../../types/transmitter.types';
+import { ambiente } from '../../utils/constants';
 // import { ISendMHFiscal } from "../../types/DTE/credito_fiscal.types";
-import { ISendMHFiscal as ICredito } from "../../types/DTE/credito_fiscal.types";
-import { Sale } from "../../types/report_contigence";
+import { ISendMHFiscal as ICredito } from '../../types/DTE/credito_fiscal.types';
+import { Sale } from '../../types/report_contigence';
 
 export const generateCredit = (
   info: CreditSaleContingenciaI,
@@ -28,7 +28,7 @@ export const generateCredit = (
         tipoOperacion: 1,
         tipoContingencia: null,
         motivoContin: null,
-        tipoMoneda: "USD",
+        tipoMoneda: 'USD',
         fecEmi: sale.fecEmi.toString(),
         horEmi: sale.horEmi.toString(),
       },
@@ -49,18 +49,17 @@ export const generateCredit = (
         telefono: emisor.telefono,
         correo: emisor.correo,
         codEstable: emisor.codEstable,
-        codEstableMH: emisor.codEstableMH === "0" ? null : emisor.codEstableMH,
+        codEstableMH: emisor.codEstableMH === '0' ? null : emisor.codEstableMH,
         codPuntoVenta: emisor.codPuntoVenta,
-        codPuntoVentaMH:
-          emisor.codPuntoVentaMH === "0" ? null : emisor.codPuntoVentaMH,
+        codPuntoVentaMH: emisor.codPuntoVentaMH === '0' ? null : emisor.codPuntoVentaMH,
       },
       receptor: {
         nombreComercial: saleCustomer
           ? saleCustomer.customer.nombreComercial
           : info.credito_receptor!.nombreComercial,
         tipoDocumento:
-          info.credito_receptor!.tipoDocumento === "0" ||
-          info.credito_receptor.tipoDocumento === "N/A"
+          info.credito_receptor!.tipoDocumento === '0' ||
+          info.credito_receptor.tipoDocumento === 'N/A'
             ? null
             : info.credito_receptor!.tipoDocumento,
         // numDocumento: saleCustomer
@@ -71,26 +70,21 @@ export const generateCredit = (
         //   : info.credito_receptor!.numDocumento,
         nit: saleCustomer
           ? saleCustomer.customer.nit
-          : info.credito_receptor!.nit === "0" ||
-            info.credito_receptor.nit === "N/A"
-          ? null
-          : info.credito_receptor!.nit,
-        nrc: saleCustomer
-          ? saleCustomer.customer.nrc
-          : info.credito_receptor!.nrc,
-        nombre: saleCustomer
-          ? saleCustomer.customer.nombre
-          : info.credito_receptor!.nombre,
+          : info.credito_receptor!.nit === '0' || info.credito_receptor.nit === 'N/A'
+            ? null
+            : info.credito_receptor!.nit,
+        nrc: saleCustomer ? saleCustomer.customer.nrc : info.credito_receptor!.nrc,
+        nombre: saleCustomer ? saleCustomer.customer.nombre : info.credito_receptor!.nombre,
         codActividad: saleCustomer
           ? saleCustomer.customer.codActividad
           : Number(info.credito_receptor!.codActividad) === 0
-          ? null
-          : info.credito_receptor!.codActividad,
+            ? null
+            : info.credito_receptor!.codActividad,
         descActividad: saleCustomer
           ? saleCustomer.customer.descActividad
           : Number(info.credito_receptor!.descActividad) === 0
-          ? null
-          : info.credito_receptor!.descActividad,
+            ? null
+            : info.credito_receptor!.descActividad,
         direccion: {
           departamento: saleCustomer?.customer.direccion.departamento
             ? saleCustomer.customer.direccion.departamento
@@ -109,8 +103,7 @@ export const generateCredit = (
         return {
           numItem: cuerpo.numItem,
           //-------------------
-          tipoItem:
-            saleCustomer?.tipoItem ? saleCustomer?.tipoItem : 1,
+          tipoItem: saleCustomer?.tipoItem ? saleCustomer?.tipoItem : 1,
           uniMedida: saleCustomer?.uniMedida ? saleCustomer?.uniMedida : Number(26),
           // en proceso
           //-------------------
@@ -125,7 +118,7 @@ export const generateCredit = (
           ventaExenta: 0,
           ventaGravada: cuerpo.ventaGravada,
           // ivaItem: cuerpo.ivaItem,
-          tributos: ["20"],
+          tributos: ['20'],
           psv: 0,
           noGravado: 0,
         };
@@ -162,7 +155,7 @@ export const generateCredit = (
           {
             codigo: info.credito_pagos.codigo,
             montoPago: info.credito_pagos.montoPago,
-            referencia: "",
+            referencia: '',
             plazo: null,
             periodo: null,
           },

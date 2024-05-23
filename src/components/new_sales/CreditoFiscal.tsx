@@ -1,39 +1,35 @@
-import { Button, useDisclosure } from "@nextui-org/react";
-import { useEffect, useState } from "react";
-import { Customer } from "../../types/customers.types";
-import { toast } from "sonner";
-import { ITipoDocumento } from "../../types/DTE/tipo_documento.types";
-import { IFormasDePago } from "../../types/DTE/forma_de_pago.types";
-import { generate_credito_fiscal } from "../../utils/DTE/credito_fiscal";
-import { useTransmitterStore } from "../../store/transmitter.store";
-import { useBranchProductStore } from "../../store/branch_product.store";
-import {
-  check_dte,
-  firmarDocumentoFiscal,
-  send_to_mh,
-} from "../../services/DTE.service";
-import { TipoTributo } from "../../types/DTE/tipo_tributo.types";
-import { get_token, return_mh_token } from "../../storage/localStorage";
-import { PayloadMH } from "../../types/DTE/credito_fiscal.types";
-import axios, { AxiosError } from "axios";
-import { PutObjectCommand, PutObjectCommandInput } from "@aws-sdk/client-s3";
-import { s3Client } from "../../plugins/s3";
-import { SendMHFailed } from "../../types/transmitter.types";
-import { API_URL, MH_QUERY } from "../../utils/constants";
-import { useCorrelativesDteStore } from "../../store/correlatives_dte.store";
-import ModalGlobal from "../global/ModalGlobal";
-import { LoaderCircle, ShieldAlert } from "lucide-react";
-import { global_styles } from "../../styles/global.styles";
-import { ICheckResponse } from "../../types/DTE/check.types";
-import { useContingenciaCreditoStore } from "../../plugins/dexie/store/contingencia_credito.store";
-import { ISendMHFiscal } from "../../types/DTE/credito_fiscal.types";
-import { formatDate } from "../../utils/dates";
-import { save_logs } from "../../services/logs.service";
-import { jsPDF } from "jspdf";
-import Handlebars from "handlebars";
-import { CreditoInVoiceHTML } from "../credito_invoice/credito";
-import { formatCurrency } from "../../utils/dte";
-import {useConfigurationStore} from "../../store/perzonalitation.store"
+import { Button, useDisclosure } from '@nextui-org/react';
+import { useEffect, useState } from 'react';
+import { Customer } from '../../types/customers.types';
+import { toast } from 'sonner';
+import { ITipoDocumento } from '../../types/DTE/tipo_documento.types';
+import { IFormasDePago } from '../../types/DTE/forma_de_pago.types';
+import { generate_credito_fiscal } from '../../utils/DTE/credito_fiscal';
+import { useTransmitterStore } from '../../store/transmitter.store';
+import { useBranchProductStore } from '../../store/branch_product.store';
+import { check_dte, firmarDocumentoFiscal, send_to_mh } from '../../services/DTE.service';
+import { TipoTributo } from '../../types/DTE/tipo_tributo.types';
+import { get_token, return_mh_token } from '../../storage/localStorage';
+import { PayloadMH } from '../../types/DTE/credito_fiscal.types';
+import axios, { AxiosError } from 'axios';
+import { PutObjectCommand, PutObjectCommandInput } from '@aws-sdk/client-s3';
+import { s3Client } from '../../plugins/s3';
+import { SendMHFailed } from '../../types/transmitter.types';
+import { API_URL, MH_QUERY } from '../../utils/constants';
+import { useCorrelativesDteStore } from '../../store/correlatives_dte.store';
+import ModalGlobal from '../global/ModalGlobal';
+import { LoaderCircle, ShieldAlert } from 'lucide-react';
+import { global_styles } from '../../styles/global.styles';
+import { ICheckResponse } from '../../types/DTE/check.types';
+import { useContingenciaCreditoStore } from '../../plugins/dexie/store/contingencia_credito.store';
+import { ISendMHFiscal } from '../../types/DTE/credito_fiscal.types';
+import { formatDate } from '../../utils/dates';
+import { save_logs } from '../../services/logs.service';
+import { jsPDF } from 'jspdf';
+import Handlebars from 'handlebars';
+import { CreditoInVoiceHTML } from '../credito_invoice/credito';
+import { formatCurrency } from '../../utils/dte';
+import { useConfigurationStore } from '../../store/perzonalitation.store';
 interface Props {
   clear: () => void;
   Customer?: Customer;
@@ -44,20 +40,16 @@ interface Props {
 
 function CreditoFiscal(props: Props) {
   const { cart_products } = useBranchProductStore();
-  const [errorMessage, setErrorMessage] = useState("");
-  const [title, setTitle] = useState<string>("");
+  const [errorMessage, setErrorMessage] = useState('');
+  const [title, setTitle] = useState<string>('');
   const [currentDTE, setCurrentDTE] = useState<ISendMHFiscal>();
   const [loading, setLoading] = useState(false);
 
   const modalError = useDisclosure();
   const { getCorrelativesByDte } = useCorrelativesDteStore();
-  const {GetConfiguration, config} = useConfigurationStore()
+  const { GetConfiguration, config } = useConfigurationStore();
   const { gettransmitter, transmitter } = useTransmitterStore();
-  const generateURLMH = (
-    ambiente: string,
-    codegen: string,
-    fechaEmi: string
-  ) => {
+  const generateURLMH = (ambiente: string, codegen: string, fechaEmi: string) => {
     return `${MH_QUERY}?ambiente=${ambiente}&codGen=${codegen}&fechaEmi=${fechaEmi}`;
   };
   useEffect(() => {
@@ -65,36 +57,36 @@ function CreditoFiscal(props: Props) {
   }, []);
 
   const generateFactura = async () => {
-    GetConfiguration(transmitter.id)
+    GetConfiguration(transmitter.id);
     if (!props.tipePayment) {
-      toast.info("Debes seleccionar el método de pago");
+      toast.info('Debes seleccionar el método de pago');
 
       return;
     }
     if (!props.tipeDocument) {
-      toast.info("Debes seleccionar el tipo de documento");
+      toast.info('Debes seleccionar el tipo de documento');
 
       return;
     }
     if (!props.Customer) {
-      toast.info("Debes seleccionar el cliente");
+      toast.info('Debes seleccionar el cliente');
       return;
     }
     if (!props.tipeTribute) {
-      toast.info("Debes seleccionar el tipo de tributo");
+      toast.info('Debes seleccionar el tipo de tributo');
       return;
     }
-    const correlatives = await getCorrelativesByDte(transmitter.id, "03");
+    const correlatives = await getCorrelativesByDte(transmitter.id, '03');
     if (!correlatives) {
-      toast.error("No se encontraron correlativos");
+      toast.error('No se encontraron correlativos');
       return;
     }
     if (
-      props.Customer.nit === "N/A" ||
-      props.Customer.nrc === "N/A" ||
-      props.Customer.codActividad === "N/A" ||
-      props.Customer.descActividad === "N/A" ||
-      props.Customer.correo === "N/A"
+      props.Customer.nit === 'N/A' ||
+      props.Customer.nrc === 'N/A' ||
+      props.Customer.codActividad === 'N/A' ||
+      props.Customer.descActividad === 'N/A' ||
+      props.Customer.correo === 'N/A'
     ) {
       return;
     }
@@ -105,16 +97,13 @@ function CreditoFiscal(props: Props) {
       codActividad: props.Customer!.codActividad,
       descActividad: props.Customer!.descActividad,
       nombreComercial:
-        props.Customer!.nombreComercial === "N/A"
-          ? null
-          : props.Customer!.nombreComercial,
+        props.Customer!.nombreComercial === 'N/A' ? null : props.Customer!.nombreComercial,
       direccion: {
-        departamento: props.Customer?.direccion?.departamento!,
-        municipio: props.Customer?.direccion?.municipio!,
-        complemento: props.Customer?.direccion?.complemento!,
+        departamento: props.Customer.direccion.departamento!,
+        municipio: props.Customer.direccion.municipio!,
+        complemento: props.Customer.direccion.complemento!,
       },
-      telefono:
-        props.Customer!.telefono === "N/A" ? null : props.Customer!.telefono,
+      telefono: props.Customer!.telefono === 'N/A' ? null : props.Customer!.telefono,
       correo: props.Customer!.correo,
     };
     const generate = generate_credito_fiscal(
@@ -128,31 +117,31 @@ function CreditoFiscal(props: Props) {
     );
     setCurrentDTE(generate);
     setLoading(true);
-    toast.info("Estamos firmado tu documento");
+    toast.info('Estamos firmado tu documento');
     firmarDocumentoFiscal(generate)
       .then(async (firmador) => {
         const token_mh = await return_mh_token();
         if (firmador.data.body) {
           const data_send: PayloadMH = {
-            ambiente: "00",
+            ambiente: '00',
             idEnvio: 1,
             version: 3,
-            tipoDte: "03",
+            tipoDte: '03',
             documento: firmador.data.body,
           };
 
-          toast.info("Se ah enviado a hacienda, esperando respuesta");
+          toast.info('Se ah enviado a hacienda, esperando respuesta');
           if (token_mh) {
             const source = axios.CancelToken.source();
             const timeout = setTimeout(() => {
-              source.cancel("El tiempo de espera ha expirado");
+              source.cancel('El tiempo de espera ha expirado');
             }, 25000);
             send_to_mh(data_send, token_mh!, source)
               .then(async ({ data }) => {
                 if (data.selloRecibido) {
                   clearTimeout(timeout);
-                  toast.success("Hacienda respondió correctamente", {
-                    description: "Estamos guardando tus datos",
+                  toast.success('Hacienda respondió correctamente', {
+                    description: 'Estamos guardando tus datos',
                   });
                   const DTE_FORMED = {
                     ...generate.dteJson,
@@ -178,10 +167,9 @@ function CreditoFiscal(props: Props) {
                     2
                   );
                   const json_blob = new Blob([JSON_DTE], {
-                    type: "application/json",
+                    type: 'application/json',
                   });
-                  console.log(config.logo)
-                  const doc = new jsPDF("p", "pt", "a4");
+                  const doc = new jsPDF('p', 'pt', 'a4');
                   const compile_html = Handlebars.compile(
                     CreditoInVoiceHTML(
                       generateURLMH(
@@ -207,51 +195,23 @@ function CreditoFiscal(props: Props) {
                       })),
                       resumen: {
                         ...DTE_FORMED.resumen,
-                        totalNoSuj: formatCurrency(
-                          Number(DTE_FORMED.resumen.totalNoSuj)
-                        ),
-                        totalExenta: formatCurrency(
-                          Number(DTE_FORMED.resumen.totalExenta)
-                        ),
-                        totalGravada: formatCurrency(
-                          Number(DTE_FORMED.resumen.totalGravada)
-                        ),
-                        subTotalVentas: formatCurrency(
-                          Number(DTE_FORMED.resumen.subTotalVentas)
-                        ),
-                        descuNoSuj: formatCurrency(
-                          Number(DTE_FORMED.resumen.descuNoSuj)
-                        ),
-                        descuExenta: formatCurrency(
-                          Number(DTE_FORMED.resumen.descuExenta)
-                        ),
-                        descuGravada: formatCurrency(
-                          Number(DTE_FORMED.resumen.descuGravada)
-                        ),
-                        totalDescu: formatCurrency(
-                          Number(DTE_FORMED.resumen.totalDescu)
-                        ),
-                        subTotal: formatCurrency(
-                          Number(DTE_FORMED.resumen.subTotal)
-                        ),
-                        ivaRete1: formatCurrency(
-                          Number(DTE_FORMED.resumen.ivaRete1)
-                        ),
-                        reteRenta: formatCurrency(
-                          Number(DTE_FORMED.resumen.reteRenta)
-                        ),
-                        totalIva: formatCurrency(
-                          Number(DTE_FORMED.resumen.totalIva)
-                        ),
+                        totalNoSuj: formatCurrency(Number(DTE_FORMED.resumen.totalNoSuj)),
+                        totalExenta: formatCurrency(Number(DTE_FORMED.resumen.totalExenta)),
+                        totalGravada: formatCurrency(Number(DTE_FORMED.resumen.totalGravada)),
+                        subTotalVentas: formatCurrency(Number(DTE_FORMED.resumen.subTotalVentas)),
+                        descuNoSuj: formatCurrency(Number(DTE_FORMED.resumen.descuNoSuj)),
+                        descuExenta: formatCurrency(Number(DTE_FORMED.resumen.descuExenta)),
+                        descuGravada: formatCurrency(Number(DTE_FORMED.resumen.descuGravada)),
+                        totalDescu: formatCurrency(Number(DTE_FORMED.resumen.totalDescu)),
+                        subTotal: formatCurrency(Number(DTE_FORMED.resumen.subTotal)),
+                        ivaRete1: formatCurrency(Number(DTE_FORMED.resumen.ivaRete1)),
+                        reteRenta: formatCurrency(Number(DTE_FORMED.resumen.reteRenta)),
+                        totalIva: formatCurrency(Number(DTE_FORMED.resumen.totalIva)),
                         montoTotalOperacion: formatCurrency(
                           Number(DTE_FORMED.resumen.montoTotalOperacion)
                         ),
-                        totalNoGravado: formatCurrency(
-                          Number(DTE_FORMED.resumen.totalNoGravado)
-                        ),
-                        totalPagar: formatCurrency(
-                          Number(DTE_FORMED.resumen.totalPagar)
-                        ),
+                        totalNoGravado: formatCurrency(Number(DTE_FORMED.resumen.totalNoGravado)),
+                        totalPagar: formatCurrency(Number(DTE_FORMED.resumen.totalPagar)),
                       },
                     },
                   });
@@ -268,63 +228,53 @@ function CreditoFiscal(props: Props) {
                   // ).toBlob();
                   doc.html(template, {
                     callback: function (doc) {
-                      const blob = doc.output("blob");
+                      const blob = doc.output('blob');
                       if (json_blob && blob) {
                         const uploadParams: PutObjectCommandInput = {
-                          Bucket: "seedcode-facturacion",
+                          Bucket: 'seedcode-facturacion',
                           Key: json_url,
                           Body: json_blob,
                         };
                         const uploadParamsPDF: PutObjectCommandInput = {
-                          Bucket: "seedcode-facturacion",
+                          Bucket: 'seedcode-facturacion',
                           Key: pdf_url,
                           Body: blob,
                         };
 
-                        s3Client
-                          .send(new PutObjectCommand(uploadParamsPDF))
-                          .then((response) => {
-                            if (response.$metadata) {
-                              s3Client
-                                .send(new PutObjectCommand(uploadParams))
-                                .then((response) => {
-                                  if (response.$metadata) {
-                                    const token = get_token() ?? "";
-                                    axios
-                                      .post(
-                                        API_URL + "/sales/credit-transaction",
-                                        {
-                                          pdf: pdf_url,
-                                          dte: json_url,
-                                          cajaId: Number(
-                                            localStorage.getItem("box")
-                                          ),
-                                          codigoEmpleado: 1,
-                                          sello: true,
-                                        },
-                                        {
-                                          headers: {
-                                            Authorization: `Bearer ${token}`,
-                                          },
-                                        }
-                                      )
-                                      .then(() => {
-                                        toast.success(
-                                          "Se completo con éxito la venta"
-                                        );
-                                        props.clear();
-                                        setLoading(false);
-                                      })
-                                      .catch(() => {
-                                        toast.error(
-                                          "Error al guardar la venta"
-                                        );
-                                        setLoading(false);
-                                      });
-                                  }
-                                });
-                            }
-                          });
+                        s3Client.send(new PutObjectCommand(uploadParamsPDF)).then((response) => {
+                          if (response.$metadata) {
+                            s3Client.send(new PutObjectCommand(uploadParams)).then((response) => {
+                              if (response.$metadata) {
+                                const token = get_token() ?? '';
+                                axios
+                                  .post(
+                                    API_URL + '/sales/credit-transaction',
+                                    {
+                                      pdf: pdf_url,
+                                      dte: json_url,
+                                      cajaId: Number(localStorage.getItem('box')),
+                                      codigoEmpleado: 1,
+                                      sello: true,
+                                    },
+                                    {
+                                      headers: {
+                                        Authorization: `Bearer ${token}`,
+                                      },
+                                    }
+                                  )
+                                  .then(() => {
+                                    toast.success('Se completo con éxito la venta');
+                                    props.clear();
+                                    setLoading(false);
+                                  })
+                                  .catch(() => {
+                                    toast.error('Error al guardar la venta');
+                                    setLoading(false);
+                                  });
+                              }
+                            });
+                          }
+                        });
                       }
                     },
                   });
@@ -333,8 +283,8 @@ function CreditoFiscal(props: Props) {
               .catch(async (error: AxiosError<SendMHFailed>) => {
                 clearTimeout(timeout);
                 if (axios.isCancel(error)) {
-                  setTitle("Tiempo de espera agotado");
-                  setErrorMessage("El tiempo limite de espera ha expirado");
+                  setTitle('Tiempo de espera agotado');
+                  setErrorMessage('El tiempo limite de espera ha expirado');
                   modalError.onOpen();
                   setLoading(false);
                 }
@@ -345,46 +295,40 @@ function CreditoFiscal(props: Props) {
                   setErrorMessage(
                     error.response.data.observaciones &&
                       error.response.data.observaciones.length > 0
-                      ? error.response?.data.observaciones.join("\n\n")
-                      : ""
+                      ? error.response?.data.observaciones.join('\n\n')
+                      : ''
                   );
-                  setTitle(
-                    error.response?.data.descripcionMsg ??
-                      "Error al procesar venta"
-                  );
+                  setTitle(error.response?.data.descripcionMsg ?? 'Error al procesar venta');
                   await save_logs({
-                    title:
-                      error.response.data.descripcionMsg ??
-                      "Error al procesar venta",
+                    title: error.response.data.descripcionMsg ?? 'Error al procesar venta',
                     message:
                       error.response.data.observaciones &&
                       error.response.data.observaciones.length > 0
-                        ? error.response?.data.observaciones.join("\n\n")
+                        ? error.response?.data.observaciones.join('\n\n')
                         : error.response.data.descripcionMsg,
-                    generationCode:
-                      generate.dteJson.identificacion.codigoGeneracion,
+                    generationCode: generate.dteJson.identificacion.codigoGeneracion,
                   });
                 }
               });
           } else {
             modalError.onOpen();
             setLoading(false);
-            setErrorMessage("No se ha podido obtener el token de hacienda");
+            setErrorMessage('No se ha podido obtener el token de hacienda');
             return;
           }
         } else {
           modalError.onOpen();
           setLoading(false);
-          setTitle("Error en el firmador");
-          setErrorMessage("Error al firmar el documento");
+          setTitle('Error en el firmador');
+          setErrorMessage('Error al firmar el documento');
           return;
         }
       })
       .catch(() => {
         modalError.onOpen();
         setLoading(false);
-        setTitle("Error en el firmador");
-        setErrorMessage("Error al firmar el documento");
+        setTitle('Error en el firmador');
+        setErrorMessage('Error al firmar el documento');
       });
   };
   const { createContingenciaCredito } = useContingenciaCreditoStore();
@@ -401,11 +345,11 @@ function CreditoFiscal(props: Props) {
 
       const JSON_DTE = JSON.stringify(currentDTE.dteJson, null, 2);
       const json_blob = new Blob([JSON_DTE], {
-        type: "application/json",
+        type: 'application/json',
       });
 
       const uploadParams: PutObjectCommandInput = {
-        Bucket: "seedcode-facturacion",
+        Bucket: 'seedcode-facturacion',
         Key: json_url,
         Body: json_blob,
       };
@@ -414,13 +358,13 @@ function CreditoFiscal(props: Props) {
         .send(new PutObjectCommand(uploadParams))
         .then((response) => {
           if (response.$metadata) {
-            const token = get_token() ?? "";
+            const token = get_token() ?? '';
             axios
               .post(
-                API_URL + "/sales/credit-transaction",
+                API_URL + '/sales/credit-transaction',
                 {
                   dte: json_url,
-                  cajaId: Number(localStorage.getItem("box")),
+                  cajaId: Number(localStorage.getItem('box')),
                   codigoEmpleado: 1,
                   sello: false,
                   clienteId: props.Customer?.id,
@@ -432,18 +376,18 @@ function CreditoFiscal(props: Props) {
                 }
               )
               .then(() => {
-                toast.success("Se envió el credito fiscal a contingencia");
+                toast.success('Se envió el credito fiscal a contingencia');
                 props.clear();
                 setLoading(false);
               })
               .catch(() => {
-                toast.error("Error al guardar tu credito fiscal");
+                toast.error('Error al guardar tu credito fiscal');
                 setLoading(false);
               });
           }
         })
         .catch(() => {
-          toast.error("Error al subir el credito fiscal a contingencia");
+          toast.error('Error al subir el credito fiscal a contingencia');
           setLoading(false);
         });
     }
@@ -453,14 +397,13 @@ function CreditoFiscal(props: Props) {
 
     const payload = {
       nitEmisor: transmitter.nit,
-      tdte: currentDTE?.dteJson.identificacion.tipoDte ?? "03",
-      codigoGeneracion:
-        currentDTE?.dteJson.identificacion.codigoGeneracion ?? "",
+      tdte: currentDTE?.dteJson.identificacion.tipoDte ?? '03',
+      codigoGeneracion: currentDTE?.dteJson.identificacion.codigoGeneracion ?? '',
     };
 
     const token_mh = return_mh_token();
 
-    check_dte(payload, token_mh ?? "")
+    check_dte(payload, token_mh ?? '')
       .then((response) => {
         toast.success(response.data.estado, {
           description: `Sello recibido: ${response.data.selloRecibido}`,
@@ -469,17 +412,16 @@ function CreditoFiscal(props: Props) {
       })
       .catch((error: AxiosError<ICheckResponse>) => {
         if (error.status === 500) {
-          toast.error("NO ENCONTRADO", {
-            description: "DTE no encontrado en hacienda",
+          toast.error('NO ENCONTRADO', {
+            description: 'DTE no encontrado en hacienda',
           });
           setLoading(false);
           return;
         }
 
-        toast.error("ERROR", {
+        toast.error('ERROR', {
           description: `Error: ${
-            error.response?.data.descripcionMsg ??
-            "DTE no encontrado en hacienda"
+            error.response?.data.descripcionMsg ?? 'DTE no encontrado en hacienda'
           }`,
         });
         setLoading(false);
@@ -495,7 +437,6 @@ function CreditoFiscal(props: Props) {
             <Button
               style={global_styles().secondaryStyle}
               onClick={() => generateFactura()}
-              
               className="w-full"
             >
               Generar Crédito fiscal
@@ -525,22 +466,13 @@ function CreditoFiscal(props: Props) {
                 generateFactura();
               }}
               style={global_styles().secondaryStyle}
-              
             >
               Re-intentar
             </Button>
-            <Button
-              onClick={handleVerify}
-              style={global_styles().warningStyles}
-              
-            >
+            <Button onClick={handleVerify} style={global_styles().warningStyles}>
               Verificar
             </Button>
-            <Button
-              onClick={sendToContingencia}
-              style={global_styles().dangerStyles}
-              
-            >
+            <Button onClick={sendToContingencia} style={global_styles().dangerStyles}>
               Enviar a contingencia
             </Button>
           </div>

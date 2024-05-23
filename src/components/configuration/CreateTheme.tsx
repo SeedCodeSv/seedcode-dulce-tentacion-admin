@@ -1,18 +1,13 @@
-import {
-  Select,
-  SelectItem,
-  Button as NButton,
-  Input,
-} from "@nextui-org/react";
-import { ColorPicker } from "primereact/colorpicker";
-import { useContext, useEffect, useState } from "react";
-import { useThemeStore } from "../../store/theme.store";
-import { ThemePayload } from "../../types/themes.types";
-import { save_theme } from "../../services/theme.service";
-import { toast } from "sonner";
-import { defaultTheme } from "../../utils/constants";
-import { Theme, ThemeContext } from "../../hooks/useTheme";
-import Button from "../Button";
+import { Select, SelectItem, Button as NButton, Input } from '@nextui-org/react';
+import { ColorPicker } from 'primereact/colorpicker';
+import { useContext, useEffect, useState } from 'react';
+import { useThemeStore } from '../../store/theme.store';
+import { ThemePayload } from '../../types/themes.types';
+import { save_theme } from '../../services/theme.service';
+import { toast } from 'sonner';
+import { defaultTheme } from '../../utils/constants';
+import { Theme, ThemeContext } from '../../hooks/useTheme';
+import Button from '../Button';
 
 function CreateTheme() {
   const [color, setColor] = useState(defaultTheme);
@@ -27,30 +22,30 @@ function CreateTheme() {
     if (color.context) {
       const payload: ThemePayload = {
         name: color.name,
-        context: color.context as "light" | "dark",
+        context: color.context as 'light' | 'dark',
         colors: [
           {
-            name: "danger",
+            name: 'danger',
             color: color.colors.danger,
           },
           {
-            name: "dark",
+            name: 'dark',
             color: color.colors.dark,
           },
           {
-            name: "primary",
+            name: 'primary',
             color: color.colors.primary,
           },
           {
-            name: "secondary",
+            name: 'secondary',
             color: color.colors.secondary,
           },
           {
-            name: "third",
+            name: 'third',
             color: color.colors.third,
           },
           {
-            name: "warning",
+            name: 'warning',
             color: color.colors.warning,
           },
         ],
@@ -58,11 +53,11 @@ function CreateTheme() {
 
       save_theme(payload)
         .then(() => {
-          toast.success("Se guardo el tema");
+          toast.success('Se guardo el tema');
           location.reload();
         })
         .catch(() => {
-          toast.error("Error al guardar el tema");
+          toast.error('Error al guardar el tema');
         });
     }
   };
@@ -76,7 +71,7 @@ function CreateTheme() {
             pt={{
               input: () => {
                 return {
-                  className: "!h-44 !w-12",
+                  className: '!h-44 !w-12',
                 };
               },
             }}
@@ -86,7 +81,7 @@ function CreateTheme() {
                 ...color,
                 colors: {
                   ...color.colors,
-                  danger: ("#" + e.value) as string,
+                  danger: ('#' + e.value) as string,
                 },
               });
             }}
@@ -96,7 +91,7 @@ function CreateTheme() {
             pt={{
               input: () => {
                 return {
-                  className: "!h-44 !w-12",
+                  className: '!h-44 !w-12',
                 };
               },
             }}
@@ -106,7 +101,7 @@ function CreateTheme() {
                 ...color,
                 colors: {
                   ...color.colors,
-                  dark: ("#" + e.value) as string,
+                  dark: ('#' + e.value) as string,
                 },
               });
             }}
@@ -116,7 +111,7 @@ function CreateTheme() {
             pt={{
               input: () => {
                 return {
-                  className: "!h-44 !w-12",
+                  className: '!h-44 !w-12',
                 };
               },
             }}
@@ -126,7 +121,7 @@ function CreateTheme() {
                 ...color,
                 colors: {
                   ...color.colors,
-                  primary: ("#" + e.value) as string,
+                  primary: ('#' + e.value) as string,
                 },
               });
             }}
@@ -136,7 +131,7 @@ function CreateTheme() {
             pt={{
               input: () => {
                 return {
-                  className: "!h-44 !w-12",
+                  className: '!h-44 !w-12',
                 };
               },
             }}
@@ -146,7 +141,7 @@ function CreateTheme() {
                 ...color,
                 colors: {
                   ...color.colors,
-                  secondary: ("#" + e.value) as string,
+                  secondary: ('#' + e.value) as string,
                 },
               });
             }}
@@ -156,7 +151,7 @@ function CreateTheme() {
             pt={{
               input: () => {
                 return {
-                  className: "!h-44 !w-12",
+                  className: '!h-44 !w-12',
                 };
               },
             }}
@@ -166,7 +161,7 @@ function CreateTheme() {
                 ...color,
                 colors: {
                   ...color.colors,
-                  third: ("#" + e.value) as string,
+                  third: ('#' + e.value) as string,
                 },
               });
             }}
@@ -176,7 +171,7 @@ function CreateTheme() {
             pt={{
               input: () => {
                 return {
-                  className: "!h-44 !w-12",
+                  className: '!h-44 !w-12',
                 };
               },
             }}
@@ -186,7 +181,7 @@ function CreateTheme() {
                 ...color,
                 colors: {
                   ...color.colors,
-                  warning: ("#" + e.value) as string,
+                  warning: ('#' + e.value) as string,
                 },
               });
             }}
@@ -217,10 +212,10 @@ function CreateTheme() {
               setColor({ ...color, context: e.target.value });
             }}
           >
-            <SelectItem value={"light"} key={"light"}>
+            <SelectItem value={'light'} key={'light'}>
               Claro
             </SelectItem>
-            <SelectItem value={"dark"} key={"dark"}>
+            <SelectItem value={'dark'} key={'dark'}>
               Oscuro
             </SelectItem>
           </Select>
@@ -230,7 +225,6 @@ function CreateTheme() {
         </div>
         <div className="mt-10">
           <NButton
-            
             className="w-full mt-4 text-sm font-semibold"
             onClick={handleSave}
             style={{

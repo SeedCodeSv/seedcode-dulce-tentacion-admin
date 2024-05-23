@@ -1,33 +1,20 @@
-import { useBranchesStore } from "../../store/branches.store";
-import { DataView } from "primereact/dataview";
-import { Branches } from "../../types/branches.types";
-import {
-  BoxIcon,
-  Edit,
-  MapPin,
-  Phone,
-  Scroll,
-  ShoppingBag,
-} from "lucide-react";
-import { Button } from "@nextui-org/react";
-import { classNames } from "primereact/utils";
-import { global_styles } from "../../styles/global.styles";
+import { useBranchesStore } from '../../store/branches.store';
+import { DataView } from 'primereact/dataview';
+import { Branches } from '../../types/branches.types';
+import { BoxIcon, Edit, MapPin, Phone, Scroll, ShoppingBag } from 'lucide-react';
+import { Button } from '@nextui-org/react';
+import { classNames } from 'primereact/utils';
+import { global_styles } from '../../styles/global.styles';
 
 interface Props {
-  layout: "grid" | "list";
+  layout: 'grid' | 'list';
   deletePopover: ({ branch }: { branch: Branches }) => JSX.Element;
   handleEdit: (branch: Branches) => void;
   handleBranchProduct: (id: number) => void;
   handleBox: (branch: Branches) => void;
 }
 
-function MobileView({
-  layout,
-  deletePopover,
-  handleEdit,
-  handleBranchProduct,
-  handleBox,
-}: Props) {
+function MobileView({ layout, deletePopover, handleEdit, handleBranchProduct, handleBox }: Props) {
   const { branches_paginated } = useBranchesStore();
   return (
     <div className="w-full pb-10">
@@ -38,14 +25,14 @@ function MobileView({
         pt={{
           grid: () => ({
             className:
-              "grid dark:bg-slate-800 pb-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid-nogutter gap-5 mt-5",
+              'grid dark:bg-slate-800 pb-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid-nogutter gap-5 mt-5',
           }),
         }}
         color="surface"
         itemTemplate={(item, layout) =>
           gridItem(
             item,
-            layout as "grid" | "list",
+            layout as 'grid' | 'list',
             deletePopover,
             handleEdit,
             handleBranchProduct,
@@ -62,7 +49,7 @@ export default MobileView;
 
 const gridItem = (
   branch: Branches,
-  layout: "grid" | "list",
+  layout: 'grid' | 'list',
   deletePopover: ({ branch }: { branch: Branches }) => JSX.Element,
   handleEdit: (branch: Branches) => void,
   handleBranchProduct: (id: number) => void,
@@ -70,15 +57,15 @@ const gridItem = (
 ) => {
   return (
     <>
-      {layout === "grid" ? (
+      {layout === 'grid' ? (
         <div
           className={classNames(
-            "w-full shadow-sm hover:shadow-lg p-8 dark:border dark:border-gray-600 rounded-2xl"
+            'w-full shadow-sm hover:shadow-lg p-8 dark:border dark:border-gray-600 rounded-2xl'
           )}
           key={branch.id}
         >
           <div className="flex w-full gap-2">
-            <Scroll color={"#274c77"} size={35} />
+            <Scroll color={'#274c77'} size={35} />
             {branch.name}
           </div>
           <div className="flex w-full gap-2 mt-3">
@@ -86,28 +73,21 @@ const gridItem = (
             {branch.address}
           </div>
           <div className="flex w-full gap-2 mt-3">
-            <Phone color={"#006d77"} size={35} />
+            <Phone color={'#006d77'} size={35} />
             {branch.phone}
           </div>
           <div className="flex justify-between mt-5 w-ful">
             <Button
               onClick={() => handleEdit(branch)}
               isIconOnly
-              
               style={global_styles().secondaryStyle}
             >
               <Edit />
             </Button>
-            <Button
-              
-              onClick={() => handleBox(branch)}
-              isIconOnly
-              style={global_styles().darkStyle}
-            >
+            <Button onClick={() => handleBox(branch)} isIconOnly style={global_styles().darkStyle}>
               <BoxIcon />
             </Button>
             <Button
-              
               onClick={() => {
                 handleBranchProduct(branch.id);
               }}
@@ -152,7 +132,7 @@ const ListItem = ({
       <div className="flex w-full col-span-1 p-5 border-b shadow md:col-span-2 lg:col-span-3 xl:col-span-4">
         <div className="w-full">
           <div className="flex items-center w-full gap-2">
-            <Scroll color={"#274c77"} size={35} />
+            <Scroll color={'#274c77'} size={35} />
             {branch.name}
           </div>
           <div className="flex items-center w-full gap-2 mt-3">
@@ -162,7 +142,7 @@ const ListItem = ({
             </div>
           </div>
           <div className="flex items-center w-full gap-2 mt-3">
-            <Phone color={"#006d77"} size={35} />
+            <Phone color={'#006d77'} size={35} />
             {branch.phone}
           </div>
         </div>
@@ -170,21 +150,14 @@ const ListItem = ({
           <Button
             onClick={() => handleEdit(branch)}
             isIconOnly
-            
             style={global_styles().secondaryStyle}
           >
             <Edit />
           </Button>
-          <Button
-            
-            onClick={() => handleBox(branch)}
-            isIconOnly
-            style={global_styles().darkStyle}
-          >
+          <Button onClick={() => handleBox(branch)} isIconOnly style={global_styles().darkStyle}>
             <BoxIcon />
           </Button>
           <Button
-            
             onClick={() => {
               handleBranchProduct(branch.id);
             }}

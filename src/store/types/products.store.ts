@@ -1,8 +1,5 @@
-import { TipoDeItem } from "../../types/billing/cat-011-tipo-de-item.types";
-import {
-  IGetProductsPaginated,
-  ProductPayload,
-} from "../../types/products.types";
+import { TipoDeItem } from '../../types/billing/cat-011-tipo-de-item.types';
+import { IGetProductsPaginated, ProductPayload } from '../../types/products.types';
 
 export interface IProductsStore {
   cat_011_tipo_de_item: TipoDeItem[];
@@ -16,9 +13,9 @@ export interface IProductsStore {
     name: string,
     active?: number
   ) => void;
-  getCat011TipoDeItem: () => void
+  getCat011TipoDeItem: () => void;
   postProducts: (payload: ProductPayload) => void;
-  patchProducts: (payload: ProductPayload, id:number) => void
+  patchProducts: (payload: ProductPayload, id: number) => void;
   deleteProducts: (id: number) => void;
-  activateProduct: (id:number) => Promise<void>
+  activateProduct: (id: number) => Promise<void>;
 }

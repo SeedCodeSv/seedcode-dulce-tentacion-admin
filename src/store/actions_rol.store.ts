@@ -1,18 +1,18 @@
-import { create } from "zustand";
-import { IActionsRolStore } from "./types/actions_rol.store.types";
+import { create } from 'zustand';
+import { IActionsRolStore } from './types/actions_rol.store.types';
 import {
   get_actions_by_rol_and_view,
   get_actions_by_role,
   get_actions_role,
   save_action_rol,
-} from "../services/actions_rol.service";
-import { messages } from "../utils/constants";
-import { toast } from "sonner";
-import { save_action } from "../services/actions.service";
-import { formatActionsRole } from "../utils";
-import { RoleViewAction } from "../types/actions_rol.types";
-import { get_views } from "../services/views.service";
-import { get_rolId } from "../storage/localStorage";
+} from '../services/actions_rol.service';
+import { messages } from '../utils/constants';
+import { toast } from 'sonner';
+import { save_action } from '../services/actions.service';
+import { formatActionsRole } from '../utils';
+import { RoleViewAction } from '../types/actions_rol.types';
+import { get_views } from '../services/views.service';
+import { get_rolId } from '../storage/localStorage';
 export const useActionsRolStore = create<IActionsRolStore>((set, get) => ({
   actions_by_view_and_rol: [],
   actions_view: [],
@@ -33,9 +33,7 @@ export const useActionsRolStore = create<IActionsRolStore>((set, get) => ({
   async OnCreateActionsRol(payload, roleId) {
     const verified = payload.names
       .filter((action) => {
-        const actions = get().actions_view.find(
-          (ac) => ac.name === action.name
-        );
+        const actions = get().actions_view.find((ac) => ac.name === action.name);
         return actions;
       })
       .map((action) => action.name);
@@ -61,7 +59,7 @@ export const useActionsRolStore = create<IActionsRolStore>((set, get) => ({
         const res = await save_action_rol(roles_action);
         if (res.data.ok) {
           const roleId = get_rolId() ?? 0;
-          get().OnGetActionsByRole(roleId)
+          get().OnGetActionsByRole(roleId);
           toast.success(messages.success);
           return true;
         } else {
@@ -148,21 +146,21 @@ export const useActionsRolStore = create<IActionsRolStore>((set, get) => ({
               };
             });
 
-            return new_eval
+            return new_eval;
           }
-          return undefined
+          return undefined;
         } else {
           set({
             roleActions: [],
           });
-          return undefined
+          return undefined;
         }
       })
       .catch(() => {
         set({
           roleActions: [],
         });
-        return undefined
+        return undefined;
       });
   },
 
@@ -178,8 +176,6 @@ export const useActionsRolStore = create<IActionsRolStore>((set, get) => ({
             .map((dr) => {
               return { name: dr.action.name };
             });
-
-          console.log("JJJJ", actions);
 
           return {
             name: dt.name,

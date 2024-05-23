@@ -10,17 +10,11 @@ import {
   useDisclosure,
   Select,
   SelectItem,
-} from "@nextui-org/react";
-import { useCustomerStore } from "../../store/customers.store";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
-import {
-  Dispatch,
-  SetStateAction,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+} from '@nextui-org/react';
+import { useCustomerStore } from '../../store/customers.store';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
 import {
   EditIcon,
   User,
@@ -33,59 +27,48 @@ import {
   CreditCard,
   Table as ITable,
   Mail,
-} from "lucide-react";
-import ModalGlobal from "../global/ModalGlobal";
-import AddClientNormal from "./AddClientNormal";
-import AddClientContributor from "./AddClientContributor";
-import { ButtonGroup } from "@nextui-org/react";
-import { Paginator } from "primereact/paginator";
-import {
-  Customer,
-  CustomerDirection,
-  PayloadCustomer,
-} from "../../types/customers.types";
-import { paginator_styles } from "../../styles/paginator.styles";
-import { ThemeContext } from "../../hooks/useTheme";
-import MobileView from "./MobileView";
-import Pagination from "../global/Pagination";
-import { global_styles } from "../../styles/global.styles";
+} from 'lucide-react';
+import ModalGlobal from '../global/ModalGlobal';
+import AddClientNormal from './AddClientNormal';
+import AddClientContributor from './AddClientContributor';
+import { ButtonGroup } from '@nextui-org/react';
+import { Paginator } from 'primereact/paginator';
+import { Customer, CustomerDirection, PayloadCustomer } from '../../types/customers.types';
+import { paginator_styles } from '../../styles/paginator.styles';
+import { ThemeContext } from '../../hooks/useTheme';
+import MobileView from './MobileView';
+import Pagination from '../global/Pagination';
+import { global_styles } from '../../styles/global.styles';
 const ListClients = () => {
   const { theme } = useContext(ThemeContext);
 
   const { getCustomersPagination, customer_pagination } = useCustomerStore();
   const [limit, setLimit] = useState(5);
-  const [search, setSearch] = useState("");
-  const [email, setEmail] = useState("");
+  const [search, setSearch] = useState('');
+  const [email, setEmail] = useState('');
   const style = {
     backgroundColor: theme.colors.dark,
     color: theme.colors.primary,
   };
-  const [typeClient, setTypeClient] = useState("normal");
+  const [typeClient, setTypeClient] = useState('normal');
 
   useEffect(() => {
     getCustomersPagination(1, limit, search, email);
   }, [limit]);
-  const [view, setView] = useState<"table" | "grid" | "list">("table");
+  const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
 
   const handleSearch = (searchParam: string | undefined) => {
-    getCustomersPagination(
-      1,
-      limit,
-      searchParam ?? search,
-      searchParam ?? email
-    );
+    getCustomersPagination(1, limit, searchParam ?? search, searchParam ?? email);
   };
 
   const modalAdd = useDisclosure();
 
   const [selectedCustomer, setSelectedCustomer] = useState<PayloadCustomer>();
-  const [selectedCustomerDirection, setSelectedCustomerDirection] = useState<
-    CustomerDirection
-  >();
+  const [selectedCustomerDirection, setSelectedCustomerDirection] = useState<CustomerDirection>();
   const [selectedId, setSelectedId] = useState<number>(0);
-  const [selectedTitle, setSelectedTitle] = useState("");
+  const [selectedTitle, setSelectedTitle] = useState('');
 
-  const handleChangeCustomer = (customer: Customer, type = "edit") => {
+  const handleChangeCustomer = (customer: Customer, type = 'edit') => {
     const payload_customer: PayloadCustomer = {
       nombre: customer.nombre,
       correo: customer.correo,
@@ -94,8 +77,8 @@ const ListClients = () => {
       nombreComercial: customer.nombreComercial,
       nrc: customer.nrc,
       nit: customer.nit,
-      tipoDocumento: "13",
-      bienTitulo: "05",
+      tipoDocumento: '13',
+      bienTitulo: '05',
       codActividad: customer.codActividad,
       descActividad: customer.descActividad,
       esContribuyente: customer.esContribuyente ? 1 : 0,
@@ -103,11 +86,11 @@ const ListClients = () => {
 
     const payload_direction: CustomerDirection = {
       id: customer.direccion?.id ?? 0,
-      municipio: customer.direccion?.municipio ?? "",
-      nombreMunicipio: customer.direccion?.nombreMunicipio ?? "",
-      departamento: customer.direccion?.departamento ?? "",
-      nombreDepartamento: customer.direccion?.nombreDepartamento ?? "",
-      complemento: customer.direccion?.complemento ?? "",
+      municipio: customer.direccion?.municipio ?? '',
+      nombreMunicipio: customer.direccion?.nombreMunicipio ?? '',
+      departamento: customer.direccion?.departamento ?? '',
+      nombreDepartamento: customer.direccion?.nombreDepartamento ?? '',
+      complemento: customer.direccion?.complemento ?? '',
       active: customer.direccion?.active ?? false,
     };
 
@@ -115,30 +98,30 @@ const ListClients = () => {
     setSelectedCustomerDirection(payload_direction);
     setSelectedId(customer.id);
 
-    if (type === "edit") {
+    if (type === 'edit') {
       if (customer.esContribuyente) {
-        setTypeClient("contribuyente");
+        setTypeClient('contribuyente');
       } else {
-        setTypeClient("normal");
+        setTypeClient('normal');
       }
       modalAdd.onOpen();
       return;
     }
 
     if (customer.esContribuyente) {
-      setTypeClient("normal");
+      setTypeClient('normal');
     } else {
-      setTypeClient("contribuyente");
+      setTypeClient('contribuyente');
     }
     modalAdd.onOpen();
   };
   const clearClose = () => {
     modalAdd.onClose();
-    handleChangeCustomer({} as Customer, "");
-    setTypeClient("normal");
+    handleChangeCustomer({} as Customer, '');
+    setTypeClient('normal');
     setSelectedId(0);
     setSelectedCustomer(undefined);
-    setSelectedTitle("");
+    setSelectedTitle('');
   };
   return (
     <>
@@ -153,8 +136,8 @@ const ListClients = () => {
                 labelPlacement="outside"
                 label="Nombre"
                 classNames={{
-                  label: "font-semibold text-gray-700",
-                  inputWrapper: "pr-0",
+                  label: 'font-semibold text-gray-700',
+                  inputWrapper: 'pr-0',
                 }}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
@@ -162,7 +145,7 @@ const ListClients = () => {
                 isClearable
                 onClear={() => {
                   // handleSearch("");
-                  setSearch("");
+                  setSearch('');
                 }}
               />
               <Input
@@ -172,8 +155,8 @@ const ListClients = () => {
                 labelPlacement="outside"
                 label="correo"
                 classNames={{
-                  label: "font-semibold text-gray-700",
-                  inputWrapper: "pr-0",
+                  label: 'font-semibold text-gray-700',
+                  inputWrapper: 'pr-0',
                 }}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -181,7 +164,7 @@ const ListClients = () => {
                 isClearable
                 onClear={() => {
                   // handleSearch("");
-                  setEmail("");
+                  setEmail('');
                 }}
               />
               <div className="mt-6">
@@ -205,11 +188,10 @@ const ListClients = () => {
                 isIconOnly
                 color="secondary"
                 style={{
-                  backgroundColor:
-                    view === "table" ? theme.colors.third : "#e5e5e5",
-                  color: view === "table" ? theme.colors.primary : "#3e3e3e",
+                  backgroundColor: view === 'table' ? theme.colors.third : '#e5e5e5',
+                  color: view === 'table' ? theme.colors.primary : '#3e3e3e',
                 }}
-                onClick={() => setView("table")}
+                onClick={() => setView('table')}
               >
                 <ITable />
               </Button>
@@ -217,11 +199,10 @@ const ListClients = () => {
                 isIconOnly
                 color="default"
                 style={{
-                  backgroundColor:
-                    view === "grid" ? theme.colors.third : "#e5e5e5",
-                  color: view === "grid" ? theme.colors.primary : "#3e3e3e",
+                  backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
+                  color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
                 }}
-                onClick={() => setView("grid")}
+                onClick={() => setView('grid')}
               >
                 <CreditCard />
               </Button>
@@ -229,24 +210,17 @@ const ListClients = () => {
                 isIconOnly
                 color="default"
                 style={{
-                  backgroundColor:
-                    view === "list" ? theme.colors.third : "#e5e5e5",
-                  color: view === "list" ? theme.colors.primary : "#3e3e3e",
+                  backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
+                  color: view === 'list' ? theme.colors.primary : '#3e3e3e',
                 }}
-                onClick={() => setView("list")}
+                onClick={() => setView('list')}
               >
                 <List />
               </Button>
             </ButtonGroup>
             <div className="flex justify-end w-full">
-              <BottomAdd
-                setTypeClient={setTypeClient}
-                openModal={modalAdd.onOpen}
-              />
-              <BottomSm
-                setTypeClient={setTypeClient}
-                openModal={modalAdd.onOpen}
-              />
+              <BottomAdd setTypeClient={setTypeClient} openModal={modalAdd.onOpen} />
+              <BottomSm setTypeClient={setTypeClient} openModal={modalAdd.onOpen} />
             </div>
           </div>
           <div className="flex justify-end w-full">
@@ -256,43 +230,43 @@ const ListClients = () => {
               label="Mostrar"
               labelPlacement="outside"
               classNames={{
-                label: "font-semibold",
+                label: 'font-semibold',
               }}
               value={limit}
               onChange={(e) => {
-                setLimit(Number(e.target.value !== "" ? e.target.value : "5"));
+                setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
               }}
             >
-              <SelectItem key={"5"}>5</SelectItem>
-              <SelectItem key={"10"}>10</SelectItem>
-              <SelectItem key={"20"}>20</SelectItem>
-              <SelectItem key={"30"}>30</SelectItem>
-              <SelectItem key={"40"}>40</SelectItem>
-              <SelectItem key={"50"}>50</SelectItem>
-              <SelectItem key={"100"}>100</SelectItem>
+              <SelectItem key={'5'}>5</SelectItem>
+              <SelectItem key={'10'}>10</SelectItem>
+              <SelectItem key={'20'}>20</SelectItem>
+              <SelectItem key={'30'}>30</SelectItem>
+              <SelectItem key={'40'}>40</SelectItem>
+              <SelectItem key={'50'}>50</SelectItem>
+              <SelectItem key={'100'}>100</SelectItem>
             </Select>
           </div>
-          {(view === "grid" || view === "list") && (
+          {(view === 'grid' || view === 'list') && (
             <MobileView
               handleChangeCustomer={(customer, type) => {
                 handleChangeCustomer(customer, type);
               }}
               deletePopover={DeletePopover}
-              layout={view as "grid" | "list"}
+              layout={view as 'grid' | 'list'}
             />
           )}
           <div className="flex justify-end w-full py-3 bg-first-300"></div>
 
-          {view === "table" && (
+          {view === 'table' && (
             <DataTable
               className="shadow"
               emptyMessage="No se encontraron resultados"
               value={customer_pagination.customers}
-              tableStyle={{ minWidth: "50rem" }}
+              tableStyle={{ minWidth: '50rem' }}
             >
               <Column
                 headerClassName="text-sm font-semibold"
-                headerStyle={{ ...style, borderTopLeftRadius: "10px" }}
+                headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
                 field="id"
                 header="No."
               />
@@ -318,40 +292,34 @@ const ListClients = () => {
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
                 // field="esContribuyente"
-                body={(item) => (item.esContribuyente ? "Si" : "No")}
+                body={(item) => (item.esContribuyente ? 'Si' : 'No')}
                 header="Contribuyente"
               />
               <Column
-                headerStyle={{ ...style, borderTopRightRadius: "10px" }}
+                headerStyle={{ ...style, borderTopRightRadius: '10px' }}
                 header="Acciones"
                 body={(item) => (
                   <div className="flex w-full gap-5">
                     <Button
-                      onClick={() => handleChangeCustomer(item, "edit")}
+                      onClick={() => handleChangeCustomer(item, 'edit')}
                       isIconOnly
                       style={{
                         backgroundColor: theme.colors.secondary,
                       }}
                     >
-                      <EditIcon
-                        style={{ color: theme.colors.primary }}
-                        size={20}
-                      />
+                      <EditIcon style={{ color: theme.colors.primary }} size={20} />
                     </Button>
                     <Button
                       onClick={() => {
-                        setSelectedTitle("Cambiar el tipo de cliente");
-                        handleChangeCustomer(item, "change");
+                        setSelectedTitle('Cambiar el tipo de cliente');
+                        handleChangeCustomer(item, 'change');
                       }}
                       isIconOnly
                       style={{
                         backgroundColor: theme.colors.third,
                       }}
                     >
-                      <Repeat
-                        style={{ color: theme.colors.primary }}
-                        size={20}
-                      />
+                      <Repeat style={{ color: theme.colors.primary }} size={20} />
                     </Button>
                     <DeletePopover customers={item} />
                   </div>
@@ -380,7 +348,7 @@ const ListClients = () => {
                   rows={limit}
                   totalRecords={customer_pagination.total}
                   template={{
-                    layout: "PrevPageLink CurrentPageReport NextPageLink",
+                    layout: 'PrevPageLink CurrentPageReport NextPageLink',
                   }}
                   currentPageReportTemplate="{currentPage} de {totalPages}"
                 />
@@ -396,19 +364,19 @@ const ListClients = () => {
           }}
           title={
             selectedCustomer
-              ? selectedTitle !== ""
+              ? selectedTitle !== ''
                 ? selectedTitle
-                : "Editar cliente"
-              : "Nuevo cliente"
+                : 'Editar cliente'
+              : 'Nuevo cliente'
           }
           size={
-            typeClient === "contribuyente"
-              ? "w-full md:w-[600px] lg:w-[800px] xl:w-[1000px]"
-              : "w-full md:w-[500px] lg:w-[700px] xl:w-[800px]"
+            typeClient === 'contribuyente'
+              ? 'w-full md:w-[600px] lg:w-[800px] xl:w-[1000px]'
+              : 'w-full md:w-[500px] lg:w-[700px] xl:w-[800px]'
           }
         >
           <>
-            {typeClient === "normal" && (
+            {typeClient === 'normal' && (
               <AddClientNormal
                 closeModal={modalAdd.onClose}
                 customer={selectedCustomer}
@@ -416,7 +384,7 @@ const ListClients = () => {
                 id={selectedId}
               />
             )}
-            {typeClient === "contribuyente" && (
+            {typeClient === 'contribuyente' && (
               <AddClientContributor
                 closeModal={modalAdd.onClose}
                 customer={selectedCustomer}
@@ -467,9 +435,7 @@ export const DeletePopover = ({ customers }: PopProps) => {
       </PopoverTrigger>
       <PopoverContent>
         <div className="w-full p-5">
-          <p className="font-semibold text-gray-600">
-            Eliminar {customers.nombre}
-          </p>
+          <p className="font-semibold text-gray-600">Eliminar {customers.nombre}</p>
           <p className="mt-3 text-center text-gray-600 w-72">
             ¿Estas seguro de eliminar este registro?
           </p>
@@ -503,9 +469,7 @@ export const CardItem = ({ customer, handleChange }: CardProps) => {
       <CardHeader>
         <div className="flex">
           <div className="flex flex-col">
-            <p className="ml-3 text-sm font-semibold text-gray-600">
-              {customer.nombre}
-            </p>
+            <p className="ml-3 text-sm font-semibold text-gray-600">{customer.nombre}</p>
           </div>
         </div>
       </CardHeader>
@@ -522,14 +486,14 @@ export const CardItem = ({ customer, handleChange }: CardProps) => {
       <CardHeader>
         <div className="flex gap-3">
           <Button
-            onClick={() => handleChange(customer, "edit")}
+            onClick={() => handleChange(customer, 'edit')}
             isIconOnly
             className="bg-coffee-green"
           >
             <EditIcon className="text-white" size={20} />
           </Button>
           <Button
-            onClick={() => handleChange(customer, "change")}
+            onClick={() => handleChange(customer, 'change')}
             isIconOnly
             className="bg-[#E8751A]"
           >
@@ -578,7 +542,7 @@ export const BottomAdd = ({ setTypeClient, openModal }: PopoverAddProps) => {
             onClick={() => {
               onClose();
               openModal();
-              setTypeClient("normal");
+              setTypeClient('normal');
             }}
             style={{
               backgroundColor: theme.colors.secondary,
@@ -591,7 +555,7 @@ export const BottomAdd = ({ setTypeClient, openModal }: PopoverAddProps) => {
             onClick={() => {
               onClose();
               openModal();
-              setTypeClient("contribuyente");
+              setTypeClient('contribuyente');
             }}
             style={{
               backgroundColor: theme.colors.third,
@@ -634,7 +598,7 @@ export const BottomSm = ({ setTypeClient, openModal }: PopoverAddProps) => {
             onClick={() => {
               onClose();
               openModal();
-              setTypeClient("normal");
+              setTypeClient('normal');
             }}
             style={{
               backgroundColor: theme.colors.secondary,
@@ -647,7 +611,7 @@ export const BottomSm = ({ setTypeClient, openModal }: PopoverAddProps) => {
             onClick={() => {
               onClose();
               openModal();
-              setTypeClient("contribuyente");
+              setTypeClient('contribuyente');
             }}
             style={{
               backgroundColor: theme.colors.third,

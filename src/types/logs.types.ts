@@ -5,17 +5,17 @@ export interface Logs {
 }
 
 export interface Log {
-	id: number;
-	title: string;
-	message: string;
-	date: string;
-	time: string;
-	generationCode: string;
-	isActive: boolean;
+  id: number;
+  title: string;
+  message: string;
+  date: string;
+  time: string;
+  generationCode: string;
+  isActive: boolean;
 }
 
 export interface IGetLogByNumber {
-	ok: boolean;
-	logs: Log[];
-	status: number;
+  ok: boolean;
+  logs: Log[];
+  status: number;
 }

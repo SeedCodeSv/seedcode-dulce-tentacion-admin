@@ -1,16 +1,16 @@
-import { DataView } from "primereact/dataview";
-import { classNames } from "primereact/utils";
-import {Truck, ShoppingBag, Barcode, FileSpreadsheet, DollarSign} from "lucide-react";
-import { useBranchesStore } from "../../../store/branches.store";
-import { IGetBranchProduct } from "../../../types/branches.types";
+import { DataView } from 'primereact/dataview';
+import { classNames } from 'primereact/utils';
+import { Truck, ShoppingBag, Barcode, FileSpreadsheet, DollarSign } from 'lucide-react';
+import { useBranchesStore } from '../../../store/branches.store';
+import { IGetBranchProduct } from '../../../types/branches.types';
 
 interface Props {
-  layout: "grid" | "list";
+  layout: 'grid' | 'list';
 }
 
 function MobileView({ layout }: Props) {
-    const {branch_products_list } = useBranchesStore();
-  
+  const { branch_products_list } = useBranchesStore();
+
   return (
     <div className="w-full pb-10">
       <DataView
@@ -20,7 +20,7 @@ function MobileView({ layout }: Props) {
         pt={{
           grid: () => ({
             className:
-              "grid dark:bg-slate-800 pb-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid-nogutter gap-5 mt-5",
+              'grid dark:bg-slate-800 pb-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid-nogutter gap-5 mt-5',
           }),
         }}
         color="surface"
@@ -31,18 +31,16 @@ function MobileView({ layout }: Props) {
   );
 }
 
-const gridItem = (branchProduct: IGetBranchProduct, layout: "grid" | "list") => {
+const gridItem = (branchProduct: IGetBranchProduct, layout: 'grid' | 'list') => {
   return (
     <>
-      {layout === "grid" ? (
+      {layout === 'grid' ? (
         <div
-          className={classNames(
-            "w-full shadow-sm hover:shadow-lg p-8 rounded-2xl"
-          )}
+          className={classNames('w-full shadow-sm hover:shadow-lg p-8 rounded-2xl')}
           key={branchProduct.id}
         >
           <div className="flex w-full gap-2">
-            <Truck color={"#274c77"} size={35} />
+            <Truck color={'#274c77'} size={35} />
             {branchProduct.branch.name}
           </div>
           <div className="flex w-full gap-2 mt-3">
@@ -50,32 +48,32 @@ const gridItem = (branchProduct: IGetBranchProduct, layout: "grid" | "list") => 
             {branchProduct.product.name}
           </div>
           <div className="flex w-full gap-2 mt-3">
-            <Barcode color={"#221"} size={35} />
+            <Barcode color={'#221'} size={35} />
             {branchProduct.product.code}
           </div>
           <div className="flex w-full gap-2 mt-3">
-            <FileSpreadsheet color={"#006d77"} size={35} />
+            <FileSpreadsheet color={'#006d77'} size={35} />
             {branchProduct.product.description}
           </div>
           <div className="flex w-full gap-2 mt-3">
-            <DollarSign color={"#050"} size={35} />
+            <DollarSign color={'#050'} size={35} />
             {branchProduct.product.price}
           </div>
         </div>
       ) : (
-        <ListItem branchProduct={branchProduct}/>
+        <ListItem branchProduct={branchProduct} />
       )}
     </>
   );
 };
 
-const ListItem = ({ branchProduct }: { branchProduct: IGetBranchProduct}) => {
+const ListItem = ({ branchProduct }: { branchProduct: IGetBranchProduct }) => {
   return (
     <>
       <div className="flex w-full col-span-1 p-5 border-b shadow md:col-span-2 lg:col-span-3 xl:col-span-4">
         <div className="w-full">
           <div className="flex items-center w-full gap-2">
-            <Truck color={"#274c77"} size={35} />
+            <Truck color={'#274c77'} size={35} />
             {branchProduct.branch.name}
           </div>
           <div className="flex items-center w-full gap-2 mt-3">
@@ -83,7 +81,7 @@ const ListItem = ({ branchProduct }: { branchProduct: IGetBranchProduct}) => {
             {branchProduct.product.name}
           </div>
           <div className="flex items-center w-full gap-2 mt-3">
-            <Truck color={"#006d77"} size={35} />
+            <Truck color={'#006d77'} size={35} />
             {branchProduct.branch.name}
           </div>
         </div>

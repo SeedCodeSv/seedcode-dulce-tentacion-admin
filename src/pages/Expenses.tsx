@@ -1,12 +1,12 @@
-import Layout from '../layout/Layout'
-import ListExpenses from '../components/expenses/ListExpenses'
+import Layout from '../layout/Layout';
+import ListExpenses from '../components/expenses/ListExpenses';
 
 function Expenses() {
   return (
     <Layout title="Gastos">
       <ListExpenses />
     </Layout>
-  )
+  );
 }
 
-export default Expenses
+export default Expenses;

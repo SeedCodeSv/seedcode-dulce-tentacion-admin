@@ -1,28 +1,27 @@
-import { useContext, useEffect, useState } from "react";
-import { Card, useDisclosure } from "@nextui-org/react";
-import { useThemeStore } from "../../store/theme.store";
-import { Theme, ThemeContext } from "../../hooks/useTheme";
-import { Check } from "lucide-react";
-import AddButton from "../global/AddButton";
-import ModalGlobal from "../global/ModalGlobal";
-import CreateConfiguration from "./CreateConfiguration";
-import CreateTheme from "./CreateTheme";
-import { useConfigurationStore } from "../../store/perzonalitation.store";
-import { useAuthStore } from "../../store/auth.store";
-import UpdateFile from "./UpdateFile";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
-import UpdateConfigurationName from "./UpdateConfigurationName";
-import { Button } from "@nextui-org/react";
-import { Image } from "primereact/image";
+import { useContext, useEffect, useState } from 'react';
+import { Card, useDisclosure } from '@nextui-org/react';
+import { useThemeStore } from '../../store/theme.store';
+import { Theme, ThemeContext } from '../../hooks/useTheme';
+import { Check } from 'lucide-react';
+import AddButton from '../global/AddButton';
+import ModalGlobal from '../global/ModalGlobal';
+import CreateConfiguration from './CreateConfiguration';
+import CreateTheme from './CreateTheme';
+import { useConfigurationStore } from '../../store/perzonalitation.store';
+import { useAuthStore } from '../../store/auth.store';
+import UpdateFile from './UpdateFile';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+import UpdateConfigurationName from './UpdateConfigurationName';
+import { Button } from '@nextui-org/react';
+import { Image } from 'primereact/image';
 
 function ConfigurationList() {
   const { getPaginatedThemes, themes } = useThemeStore();
   const { theme, toggleTheme } = useContext(ThemeContext);
   const [logoId, setLogoId] = useState(0);
 
-  const { personalization, GetConfigurationByTransmitter } =
-    useConfigurationStore();
+  const { personalization, GetConfigurationByTransmitter } = useConfigurationStore();
   const { user } = useAuthStore();
   const tramsiter = user?.employee?.branch?.transmitterId;
 
@@ -49,9 +48,7 @@ function ConfigurationList() {
     <>
       <div className="p-4 dark:bg-gray-800">
         <div className="flex items-end justify-between gap-10 mt lg:justify-end mt-5 mr-5">
-          {personalization.length === 0 && (
-            <AddButton onClick={() => addLogo.onOpen()} />
-          )}
+          {personalization.length === 0 && <AddButton onClick={() => addLogo.onOpen()} />}
           {personalization.length > 0 &&
             personalization.map((item) => (
               <AddButton
@@ -72,7 +69,7 @@ function ConfigurationList() {
               <DataTable
                 value={personalization}
                 className="shadow"
-                tableStyle={{ minWidth: "50rem" }}
+                tableStyle={{ minWidth: '50rem' }}
               >
                 <Column
                   field="logo"
@@ -83,7 +80,7 @@ function ConfigurationList() {
                       preview
                       src={rowData.logo}
                       alt={rowData.name}
-                      style={{ width: "100px" }}
+                      style={{ width: '100px' }}
                     />
                   )}
                 />
@@ -93,9 +90,7 @@ function ConfigurationList() {
                   header="Actualizar Nombre"
                   body={(rowData) => (
                     <>
-                      <Button onClick={() => updateName.onOpen()}>
-                        Actualizar
-                      </Button>
+                      <Button onClick={() => updateName.onOpen()}>Actualizar</Button>
                       <ModalGlobal
                         isOpen={updateName.isOpen}
                         onClose={updateName.onClose}
@@ -133,9 +128,7 @@ function ConfigurationList() {
                 >
                   {/* <h1>{themeS.name}</h1> */}
                   <div className="absolute top-5 right-5">
-                    {themeS.name === theme.name && (
-                      <Check size={30} color="#fff" />
-                    )}
+                    {themeS.name === theme.name && <Check size={30} color="#fff" />}
                   </div>
                   <span
                     className="w-full h-44"

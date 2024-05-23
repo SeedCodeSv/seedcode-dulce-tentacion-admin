@@ -1,12 +1,12 @@
-import Layout from '../layout/Layout'
-import ListClients from '../components/clients/ListClients'
+import Layout from '../layout/Layout';
+import ListClients from '../components/clients/ListClients';
 
 function Customers() {
   return (
-    <Layout title='CLIENTES'>
+    <Layout title="CLIENTES">
       <ListClients />
     </Layout>
-  )
+  );
 }
 
-export default Customers
+export default Customers;

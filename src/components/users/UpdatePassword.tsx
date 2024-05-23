@@ -1,9 +1,9 @@
-import { Button, Input } from "@nextui-org/react";
-import { Formik } from "formik";
-import * as yup from "yup";
-import { useUsersStore } from "../../store/users.store";
-import { useContext } from "react";
-import { ThemeContext } from "../../hooks/useTheme";
+import { Button, Input } from '@nextui-org/react';
+import { Formik } from 'formik';
+import * as yup from 'yup';
+import { useUsersStore } from '../../store/users.store';
+import { useContext } from 'react';
+import { ThemeContext } from '../../hooks/useTheme';
 
 interface Props {
   id: number;
@@ -14,13 +14,13 @@ function UpdatePassword(props: Props) {
   const { theme } = useContext(ThemeContext);
 
   const initialValues = {
-    password: "",
+    password: '',
   };
 
   const { updatePassword } = useUsersStore();
 
   const validationSchema = yup.object().shape({
-    password: yup.string().required("La contraseña es requerida"),
+    password: yup.string().required('La contraseña es requerida'),
   });
 
   const handleSave = async ({ password }: { password: string }) => {
@@ -38,14 +38,7 @@ function UpdatePassword(props: Props) {
         validationSchema={validationSchema}
         onSubmit={(values) => handleSave(values)}
       >
-        {({
-          values,
-          errors,
-          touched,
-          handleChange,
-          handleBlur,
-          handleSubmit,
-        }) => (
+        {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
           <>
             <div>
               <Input
@@ -53,18 +46,16 @@ function UpdatePassword(props: Props) {
                 labelPlacement="outside"
                 name="password"
                 value={values.password}
-                onChange={handleChange("password")}
-                onBlur={handleBlur("password")}
+                onChange={handleChange('password')}
+                onBlur={handleBlur('password')}
                 placeholder="Ingresa la contraseña"
                 classNames={{
-                  label: "font-semibold text-gray-500 text-sm",
+                  label: 'font-semibold text-gray-500 text-sm',
                 }}
                 variant="bordered"
               />
               {errors.password && touched.password && (
-                <span className="text-sm font-semibold text-red-500">
-                  {errors.password}
-                </span>
+                <span className="text-sm font-semibold text-red-500">{errors.password}</span>
               )}
             </div>
             <Button

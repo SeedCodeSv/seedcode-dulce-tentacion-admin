@@ -1,10 +1,6 @@
-import React, { useState } from "react";
-import {
-  get_token,
-  is_authenticate,
-  return_seller_mode,
-  get_rolId,
-} from "../storage/localStorage";
+/* eslint-disable no-unused-vars */
+import React, { useState } from 'react';
+import { get_token, is_authenticate, return_seller_mode, get_rolId } from '../storage/localStorage';
 
 interface SessionContextI {
   token: string;
@@ -21,8 +17,8 @@ interface Props {
 }
 
 export const SessionContext = React.createContext<SessionContextI>({
-  token: get_token() ?? "",
-  mode: return_seller_mode() ?? "",
+  token: get_token() ?? '',
+  mode: return_seller_mode() ?? '',
   isAuth: is_authenticate(),
   rolId: get_rolId() ?? 0,
   setMode() {},
@@ -32,9 +28,9 @@ export const SessionContext = React.createContext<SessionContextI>({
 });
 
 export default function SessionProvider({ children }: Props) {
-  const [token, setToken] = useState(get_token() ?? "");
+  const [token, setToken] = useState(get_token() ?? '');
   const [isAuth, setIsAuth] = useState(is_authenticate());
-  const [mode, setMode] = useState(return_seller_mode() ?? "");
+  const [mode, setMode] = useState(return_seller_mode() ?? '');
   const [rolId, setRolId] = useState(get_rolId() ?? 0);
   return (
     <SessionContext.Provider

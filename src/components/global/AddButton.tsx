@@ -1,7 +1,7 @@
-import { Button } from "@nextui-org/react";
-import { Plus } from "lucide-react";
-import { useContext } from "react";
-import { ThemeContext } from "../../hooks/useTheme";
+import { Button } from '@nextui-org/react';
+import { Plus } from 'lucide-react';
+import { useContext } from 'react';
+import { ThemeContext } from '../../hooks/useTheme';
 
 interface Props {
   onClick: () => void;

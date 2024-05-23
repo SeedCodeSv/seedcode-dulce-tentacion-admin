@@ -1,17 +1,19 @@
-import { useContext } from "react";
-import { Button } from "@nextui-org/react";
-import { DataView } from "primereact/dataview";
-import { classNames } from "primereact/utils";
-import { EditIcon, ScrollIcon, DollarSign, ClipboardPenLine } from "lucide-react";
-import { ThemeContext } from "../../hooks/useTheme";
-import { useExpenseStore } from "../../store/expenses.store";
-import { IExpense } from "../../types/expenses.types";
+import { useContext } from 'react';
+import { Button } from '@nextui-org/react';
+import { DataView } from 'primereact/dataview';
+import { classNames } from 'primereact/utils';
+import { EditIcon, ScrollIcon, DollarSign, ClipboardPenLine } from 'lucide-react';
+import { ThemeContext } from '../../hooks/useTheme';
+import { useExpenseStore } from '../../store/expenses.store';
+import { IExpense } from '../../types/expenses.types';
 
+ /* eslint-disable no-unused-vars */
 interface Props {
-  layout: "grid" | "list";
+  layout: 'grid' | 'list';
   deletePopover: ({ expenses }: { expenses: IExpense }) => JSX.Element;
   handleEdit: (expenses: IExpense) => void;
 }
+/* eslint-enable no-unused-vars */
 
 function MobileView({ layout, deletePopover, handleEdit }: Props) {
   const { expenses_paginated } = useExpenseStore();
@@ -24,12 +26,12 @@ function MobileView({ layout, deletePopover, handleEdit }: Props) {
         pt={{
           grid: () => ({
             className:
-              "grid dark:bg-slate-800 pb-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 grid-nogutter gap-5 mt-5",
+              'grid dark:bg-slate-800 pb-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 grid-nogutter gap-5 mt-5',
           }),
         }}
         color="surface"
         itemTemplate={(cat, layout) =>
-          gridItem(cat, layout as "grid" | "list", deletePopover, handleEdit)
+          gridItem(cat, layout as 'grid' | 'list', deletePopover, handleEdit)
         }
         emptyMessage="No se encontraron gastos"
       />
@@ -39,19 +41,24 @@ function MobileView({ layout, deletePopover, handleEdit }: Props) {
 
 export default MobileView;
 
+/* eslint-disable no-unused-vars */
 const gridItem = (
   expenses: IExpense,
-  layout: "grid" | "list",
+  layout: 'grid' | 'list',
   deletePopover: ({ expenses }: { expenses: IExpense }) => JSX.Element,
   handleEdit: (expenses: IExpense) => void
 ) => {
+  /* eslint-enable no-unused-vars */
+
+  /* eslint-disable react-hooks/rules-of-hooks */
   const { theme } = useContext(ThemeContext);
+  /* eslint-enable react-hooks/rules-of-hooks */
   return (
     <>
-      {layout === "grid" ? (
+      {layout === 'grid' ? (
         <div
           className={classNames(
-            "w-full shadow-sm hover:shadow-lg dark:border dark:border-gray-600 p-8 rounded-2xl"
+            'w-full shadow-sm hover:shadow-lg dark:border dark:border-gray-600 p-8 rounded-2xl'
           )}
           key={expenses.id}
         >
@@ -71,7 +78,6 @@ const gridItem = (
             <Button
               onClick={() => handleEdit(expenses)}
               isIconOnly
-              
               style={{
                 backgroundColor: theme.colors.secondary,
               }}
@@ -82,16 +88,13 @@ const gridItem = (
           </div>
         </div>
       ) : (
-        <ListItem
-          expenses={expenses}
-          deletePopover={deletePopover}
-          handleEdit={handleEdit}
-        />
+        <ListItem expenses={expenses} deletePopover={deletePopover} handleEdit={handleEdit} />
       )}
     </>
   );
 };
 
+/* eslint-disable no-unused-vars */
 const ListItem = ({
   expenses,
   deletePopover,
@@ -101,6 +104,7 @@ const ListItem = ({
   deletePopover: ({ expenses }: { expenses: IExpense }) => JSX.Element;
   handleEdit: (expenses: IExpense) => void;
 }) => {
+  /* eslint-enable no-unused-vars */
   const { theme } = useContext(ThemeContext);
   return (
     <>
@@ -123,7 +127,6 @@ const ListItem = ({
           <Button
             onClick={() => handleEdit(expenses)}
             isIconOnly
-            
             style={{
               backgroundColor: theme.colors.secondary,
             }}
