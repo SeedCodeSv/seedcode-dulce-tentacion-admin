@@ -125,7 +125,7 @@ const AddActionRol = ({closeModal}: Props) => {
                 }}
               >
                 {roles_list.map((rol) => (
-                  <AutocompleteItem value={rol.name} key={JSON.stringify(rol)}>
+                  <AutocompleteItem  className="dark:text-white" value={rol.name} key={JSON.stringify(rol)}>
                     {rol.name}
                   </AutocompleteItem>
                 ))}
@@ -156,6 +156,7 @@ const AddActionRol = ({closeModal}: Props) => {
               >
                 {views_list.map((view) => (
                   <AutocompleteItem
+                  className="dark:text-white"
                     value={view.name}
                     key={JSON.stringify(view)}
                   >
@@ -179,7 +180,7 @@ const AddActionRol = ({closeModal}: Props) => {
               <div> */}
                   {actions_by_view_and_rol.includes("Agregar") ? (
                     <Checkbox defaultSelected lineThrough  isSelected>
-                      Agregar1
+                      Agregar
                     </Checkbox>
                   ) : (
                     <Checkbox

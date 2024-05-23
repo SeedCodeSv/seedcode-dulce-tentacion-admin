@@ -30,7 +30,7 @@ import useWindowSize from "../hooks/useWindowSize";
 import { useActionsRolStore } from "../store/actions_rol.store";
 import { Menu, Transition } from "@headlessui/react";
 import { ActionsContext } from "../hooks/useActions";
-import { decryptData, encryptData } from "../plugins/crypto";
+import { encryptData } from "../plugins/crypto";
 export const LayoutItems = () => {
   const { theme, toggleContext, context } = useContext(ThemeContext);
   const { makeLogout } = useAuthStore();
@@ -47,7 +47,7 @@ export const LayoutItems = () => {
     setMode("vendedor");
     save_seller_mode("vendedor");
     makeLogout();
-  
+
     setIsAuth(false);
     setToken("");
     navigate("/");
@@ -81,18 +81,18 @@ export const LayoutItems = () => {
       return 22;
     }
   }, [windowSize.width]);
-  const {setRoleActions} = useContext(ActionsContext)
+  const { setRoleActions } = useContext(ActionsContext);
   const { role_view_action, OnGetActionsByRole } = useActionsRolStore();
   useEffect(() => {
-    const storedUser = get_user()
+    const storedUser = get_user();
     if (storedUser) {
       if (storedUser && storedUser.roleId) {
-        OnGetActionsByRole(storedUser.roleId).then((data)=>{
-          if(data){
+        OnGetActionsByRole(storedUser.roleId).then((data) => {
+          if (data) {
             localStorage.setItem("_RVA", encryptData(data));
-            setRoleActions(data)
+            setRoleActions(data);
           }
-        })
+        });
       }
     }
   }, []);
@@ -101,7 +101,6 @@ export const LayoutItems = () => {
     role_view_action.view &&
     role_view_action.view.length > 0 &&
     role_view_action.view.map((view) => view.name);
-
   return (
     <>
       {personalization.length === 0 ? (
