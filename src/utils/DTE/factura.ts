@@ -50,7 +50,7 @@ export const generate_factura = (
       },
       documentoRelacionado: null,
       emisor: { ...generate_emisor(transmitter) },
-      receptor: { ...generate_receptor(customer!, '01') },
+      receptor: { ...generate_receptor(customer!) },
       otrosDocumentos: null,
       ventaTercero: null,
       cuerpoDocumento: make_cuerpo_documento(products_carts),

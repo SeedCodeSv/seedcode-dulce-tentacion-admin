@@ -68,6 +68,7 @@ import { Drawer } from 'vaul';
 import classNames from 'classnames';
 import { useSaleStatusStore } from '../../store/sale_status.store';
 import { AddSealMH } from './AddSealMH';
+import { CreditSale } from '../../types/DTE/sub_interface/credito_contingencia';
 
 function SalesReportContigence() {
   const [openVaul, setOpenVaul] = useState(false);
@@ -469,7 +470,7 @@ function SalesReportContigence() {
                   const data = generateCredit(
                     result_credito_generate,
                     transmitter,
-                    sale,
+                    sale as unknown as CreditSale,
                     salesCustomer
                   );
                   const source = axios.CancelToken.source();

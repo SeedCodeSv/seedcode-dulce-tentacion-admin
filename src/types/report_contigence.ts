@@ -53,7 +53,6 @@ export interface Sale {
   employee: Employee;
   direccion: Direccion;
   employeeId: number;
-  paymentTypeId: any;
   selloInvalidation: string;
   tipoItem?: number;
   uniMedida?: number;

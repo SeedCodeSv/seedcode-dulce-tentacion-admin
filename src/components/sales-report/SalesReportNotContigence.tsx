@@ -5,6 +5,7 @@ import { Switch } from '@nextui-org/react';
 import { ThemeContext } from '../../hooks/useTheme';
 import { useReportContigenceStore } from '../../store/report_contigence.store';
 import { get_user } from '../../storage/localStorage';
+import { formatDate } from '../../utils/dates';
 function SalesReportNotContigence() {
   const [branchId, setBranchId] = useState(0);
 
@@ -16,7 +17,7 @@ function SalesReportNotContigence() {
     };
     getSalesContigence();
 
-    OnGetSalesNotContigence(branchId, 1, 5);
+    OnGetSalesNotContigence(branchId, 1, 5, formatDate(), formatDate());
   }, [branchId]);
   const { theme } = useContext(ThemeContext);
   const style = {

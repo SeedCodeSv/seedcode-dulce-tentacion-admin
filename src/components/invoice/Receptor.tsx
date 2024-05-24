@@ -139,7 +139,7 @@ export default function Receptor(props: Props) {
             </Text>
           </View>
         )}
-        {props.DTE.dteJson.receptor.nombreComercial !== 'N/A' && (
+        {/* {props.DTE.dteJson.receptor.nombreComercial !== 'N/A' && (
           <View
             style={{
               display: 'flex',
@@ -163,7 +163,7 @@ export default function Receptor(props: Props) {
               {props.DTE.dteJson.receptor.nombreComercial}
             </Text>
           </View>
-        )}
+        )} */}
         <View
           style={{
             display: 'flex',

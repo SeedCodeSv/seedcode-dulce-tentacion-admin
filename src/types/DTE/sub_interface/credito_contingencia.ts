@@ -150,5 +150,4 @@ export interface CreditSale {
   boxId: number;
   customerId: any;
   employeeId: number;
-  paymentTypeId: any;
 }
