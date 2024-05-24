@@ -5,13 +5,14 @@ import {
   save_expenses,
   patch_expenses,
   delete_expenses,
-  show_anexo,
+  get_expense_attachment,
 } from '../services/expenses.service';
 import { toast } from 'sonner';
 import { messages } from '../utils/constants';
 import { IExpensePayloads } from '../types/expenses.types';
 
 export const useExpenseStore = create<IExpenseStore>((set, get) => ({
+  expense_attachments: [],
   annexes: [],
   expenses_paginated: {
     expenses: [],
@@ -77,16 +78,16 @@ export const useExpenseStore = create<IExpenseStore>((set, get) => ({
       });
   },
 
-  OnGetAnnexe: async (id) => {
-    show_anexo(id)
+  get_expenses_attachment: (id: number): void => {
+    get_expense_attachment(id)
       .then(({ data }) => {
-        set((state) => ({
-          ...state,
-          expense: data.expense,
-        }));
+        set({
+          expense_attachments: data.data
+        })
+
       })
       .catch(() => {
-        toast.error("Error al obtener anexos")
-      });
-  },
+        toast.error(messages.error);
+      })
+  }
 }));

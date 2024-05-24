@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { IExpensePayload, IExpensePayloads, IExpensesPaginated } from '../types/expenses.types';
+import { IExpensePayload, IExpensePayloads, IExpensesPaginated, IGetExpenseAttachment } from '../types/expenses.types';
 import { API_URL } from '../utils/constants';
 import { get_token } from '../storage/localStorage';
 
@@ -35,8 +35,13 @@ export const save_expenses = (payload: IExpensePayloads) => {
   });
 };
 
-export const show_anexo = (id: number) => {
-  return axios.get<{ ok: boolean; expense: { expense: string }[] }>(API_URL + `/expenses/${id}`);
+export const get_expense_attachment = async (id: number) => {
+  const token = get_token() ?? '';
+  return await axios.get<IGetExpenseAttachment>(`${API_URL}/expense-attachments/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 };
 
 export const patch_expenses = (id: number, payload: IExpensePayload) => {

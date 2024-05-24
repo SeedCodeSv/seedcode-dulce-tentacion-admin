@@ -4,7 +4,7 @@ export interface IExpense {
   id: number;
   description: string;
   total: number;
-  box: Box;
+  box: Box
   boxId: number;
   categoryExpense: CategoryExpense;
   categoryExpenseId: number;
@@ -24,9 +24,54 @@ export interface ICreacteExpense {
   boxId?: number;
   categoryExpenseId: number;
   file?: File | Blob | null;
+
 }
 export interface IExpensePayloads extends ICreacteExpense {
   file?: File | Blob | null | undefined;
+}
+
+export interface IGetExpense {
+  id: number;
+  description: string;
+  total: number;
+  isActive: boolean;
+  boxId: number;
+  box: Box
+  categoryExpenseId: number
+  categoryExpense: ICategoryExpense
+  file?: File | Blob | null
+  expenseAttachment: {
+
+    path: string
+
+  }
+}
+export interface IGetExpenseAttachment {
+  ok: boolean
+  data: IGetData[]
+  status: number
+}
+export interface IGetData {
+  id: number
+  description: string
+  total: string
+  isActive: boolean
+  boxId: number
+  categoryExpenseId: number
+  expenseAttachment: IExpenseAttachment
+}
+export interface IExpenseAttachment {
+  id: number
+  path: string
+  ext: string
+  isActive: boolean
+  expenseId: number
+}
+
+export interface ICategoryExpense {
+  id: number
+  name: string
+  isActive: boolean
 }
 
 export interface IExpensesPaginated {

@@ -12,7 +12,10 @@ import {
   PopoverTrigger,
   PopoverContent,
 } from "@nextui-org/react";
-import { IExpense /*IExpensePayloads*/ } from "../../types/expenses.types";
+import {
+  IExpense, /*IExpensePayloads*/
+  IGetExpense
+} from "../../types/expenses.types";
 import {
   EditIcon,
   User,
@@ -34,15 +37,12 @@ import AddExpenses from "./AddExpenses";
 import MobileView from "./MobileView";
 import { formatCurrency } from "../../utils/dte";
 import { limit_options } from "../../utils/constants";
+import Anexo from "./Anexo";
 // import { Document, Page } from 'react-pdf';
 const ListExpenses = () => {
   const { theme } = useContext(ThemeContext);
-  // const [files, setFiles] = useState<IExpensePayloads>();
   const { getExpensesPaginated, expenses_paginated } = useExpenseStore();
-
   const [selectedCategory, setSelectedCategory] = useState<IExpense>();
-
-  // const [expenseID, setExpenseID] = useState(0);
   const [category, setCategory] = useState("");
   const [limit, setLimit] = useState(8);
 
@@ -69,30 +69,11 @@ const ListExpenses = () => {
     modalAdd.onOpen();
   };
 
-  //showImg and pdf
-
-  // const [selectedExpenseDetails, setSelectedExpenseDetails] = useState<
-  //   string[]
-  // >([]);
-  // const [numPages, setNumPages] = useState<number>(0);
-  // const [pageNumber, setPageNumber] = useState(1);
-  // function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
-  //   setNumPages(numPages);
-  //   setPageNumber(1);
-  // }
-  // function changePage(offset: number) {
-  //   setPageNumber((prevPageNumber) => prevPageNumber + offset);
-  // }
-  // function previousPage() {
-  //   changePage(-1);
-  // }
-
-  // function nextPage() {
-  //   changePage(1);
-  // }
-  // const [imageViewerOpen, setImageViewerOpen] = useState(false);
-  const [pdfViewerOpen, setPdfViewerOpen] = useState(false);
-
+  const [selectedExpense, setSelectedExpense] = useState<IGetExpense>()
+  const openAnexoModal = (expense: IGetExpense): void => {
+    setSelectedExpense(expense)
+    showAnexo.onOpen()
+  }
   return (
     <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
       <div className="flex flex-col w-full p-5 rounded">
@@ -255,52 +236,18 @@ const ListExpenses = () => {
                       size={20}
                     />
                   </Button>
-                  {item.path && item.ext === "pdf" ? (
-                    <Button
-                      isIconOnly
-                      color="danger"
-                      className="error"
-                      aria-label="Abrir PDF"
-                      onClick={() => {
-                        setSelectedCategory(item);
-                        setPdfViewerOpen(true);
-                      }}
-                    >
-                      pdf
-                      <Files
-                        style={{ color: theme.colors.primary }}
-                        size={20}
-                      />
-                    </Button>
-                  ) : (
-                    <>
-                      <Button
-                        isIconOnly
-                        color="secondary"
-                        className="error"
-                        aria-label="Abrir Imagen"
-                        onClick={() => {
-                          setSelectedCategory(item);
-                        }}
-                      >
-                        img
-                        <Files
-                          style={{ color: theme.colors.primary }}
-                          size={20}
-                        />
-                      </Button>
-                    </>
-                  )}
                   <Button
-                    onClick={() => {
-                      showAnexo.onOpen();
-                    }}
                     isIconOnly
+                    aria-label="Abrir PDF"
                     style={{
-                      backgroundColor: theme.colors.third,
+                      backgroundColor: theme.colors.secondary,
                     }}
+                    onClick={() => openAnexoModal(item)}
                   >
-                    <Files style={{ color: theme.colors.primary }} size={20} />
+                    <Files
+                      style={{ color: theme.colors.primary }}
+                      size={20}
+                    />
                   </Button>
                   <DeletePopUp expenses={item} />
                 </div>
@@ -348,57 +295,22 @@ const ListExpenses = () => {
           expenses={selectedCategory}
         />
       </ModalGlobal>
-
-      {pdfViewerOpen && (
-        <div className="fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-80 flex items-center justify-center z-50">
-          <div className="relative max-w-[80vw] w-auto h-full">
-            <div className=" top-0 left-0 w-full h-full bg-white">
-              <div className="max-w-[80vw] max-h-[90vh] overflow-y-auto">
-                {/* <Document file={files?.file ?? ''} onLoadSuccess={onDocumentLoadSuccess}>
-                  <Page pageNumber={pageNumber} />
-                </Document> */}
-              </div>
-              {/* <div className="p-4 flex justify-between">
-                <button
-                  className="text-white bg-blue-500 px-4 py-2 rounded text-sm hover:text-gray-300"
-                  onClick={() => previousPage()}
-                  disabled={pageNumber <= 1}
-                >
-                  Página Anterior
-                </button>
-                <button
-                  className="text-white bg-blue-500 px-4 py-2 rounded text-sm hover:text-gray-300"
-                  onClick={() => nextPage()}
-                  disabled={pageNumber >= numPages}
-                >
-                  Página Siguiente
-                </button>
-                <button
-                  className="text-white bg-red-500 px-4 py-2 rounded text-sm hover:text-gray-300"
-                  onClick={() => setPdfViewerOpen(false)}
-                >
-                  Cerrar
-                </button>
-              </div> */}
-            </div>
-          </div>
-        </div>
-      )}
-
       <ModalGlobal
         title="Anexo"
         size="w-full sm:w-[500px]"
         isOpen={showAnexo.isOpen}
         onClose={showAnexo.onClose}
       >
-        <></>
-        {/* <div className="w-full h-full flex justify-center items-center">
-          <img alt="Anex Image" src={typeof files?.file === 'string' ? files?.file : ''} />
-        </div> */}
+        {selectedExpense && (
+          <Anexo
+            expenses={selectedExpense}
+            clear={() => {
+              showAnexo.onClose()
+              setSelectedExpense(undefined)
+            }}
+          />
+        )}
       </ModalGlobal>
-      {showAnexo.isOpen && (
-        <div className="absolute bg-white top-0 left-0 w-full h-full"></div>
-      )}
     </div>
   );
 };
