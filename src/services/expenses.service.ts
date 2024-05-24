@@ -1,15 +1,8 @@
-<<<<<<< HEAD
 import axios from 'axios';
 import { IExpensePayload, IExpensePayloads, IExpensesPaginated } from '../types/expenses.types';
 import { API_URL } from '../utils/constants';
 import { get_token } from '../storage/localStorage';
-=======
-import axios from "axios";
-import { IExpensePayload, IExpensePayloads, IExpensesPaginated } from "../types/expenses.types";
-import { API_URL } from "../utils/constants";
-import { get_token } from "../storage/localStorage";
-import { boolean } from "yup";
->>>>>>> 3e9ce23de2f64f12d5138358f0466f6d7548609e
+
 
 export const get_expenses_paginated = (idBox = 0, page = 1, limit = 5, category = '') => {
   const token = get_token() ?? '';
