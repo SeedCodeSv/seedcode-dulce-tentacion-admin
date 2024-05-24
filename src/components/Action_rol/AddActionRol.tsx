@@ -19,7 +19,6 @@ const AddActionRol = ({ closeModal }: Props) => {
 
   const { theme } = useContext(ThemeContext);
   const [nombres, setNombres] = useState<{ name: string }[]>([{ name: 'Mostrar' }]);
-  console.log(selectedRol, selectedView);
   const { getRolesList, roles_list } = useRolesStore();
   const { getViews, views_list } = useViewsStore();
   const { getActionsByRolView, actions_by_view_and_rol, OnCreateActionsRol } = useActionsRolStore();
@@ -45,7 +44,6 @@ const AddActionRol = ({ closeModal }: Props) => {
       setNombres(nombres.filter((n) => n.name !== name));
     }
   };
-  console.log('actions', actions_by_view_and_rol);
   const save_actions = async () => {
     // setShowModal(true);
     const actions_filter = nombres.filter((names) => {
@@ -113,7 +111,11 @@ const AddActionRol = ({ closeModal }: Props) => {
                 }}
               >
                 {roles_list.map((rol) => (
-                  <AutocompleteItem  className="dark:text-white" value={rol.name} key={JSON.stringify(rol)}>
+                  <AutocompleteItem
+                    className="dark:text-white"
+                    value={rol.name}
+                    key={JSON.stringify(rol)}
+                  >
                     {rol.name}
                   </AutocompleteItem>
                 ))}
@@ -142,7 +144,7 @@ const AddActionRol = ({ closeModal }: Props) => {
               >
                 {views_list.map((view) => (
                   <AutocompleteItem
-                  className="dark:text-white"
+                    className="dark:text-white"
                     value={view.name}
                     key={JSON.stringify(view)}
                   >
@@ -162,8 +164,8 @@ const AddActionRol = ({ closeModal }: Props) => {
                   </Checkbox>
                   {/* </div>
               <div> */}
-                  {actions_by_view_and_rol.includes("Agregar") ? (
-                    <Checkbox defaultSelected lineThrough  isSelected>
+                  {actions_by_view_and_rol.includes('Agregar') ? (
+                    <Checkbox defaultSelected lineThrough isSelected>
                       Agregar
                     </Checkbox>
                   ) : (

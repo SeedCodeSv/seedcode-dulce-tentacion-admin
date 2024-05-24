@@ -51,7 +51,7 @@ function CreateConfiguration() {
           ...prevData,
           file: convertedFile,
         }));
-      } catch{
+      } catch {
         toast.error('Error al comprimir la imagen');
       } finally {
         setLoading(false);

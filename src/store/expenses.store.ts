@@ -6,10 +6,10 @@ import {
   patch_expenses,
   delete_expenses,
   show_anexo,
-} from "../services/expenses.service";
-import { toast } from "sonner";
-import { messages } from "../utils/constants";
-import { IExpensePayloads } from "../types/expenses.types";
+} from '../services/expenses.service';
+import { toast } from 'sonner';
+import { messages } from '../utils/constants';
+import { IExpensePayloads } from '../types/expenses.types';
 
 export const useExpenseStore = create<IExpenseStore>((set, get) => ({
   annexes: [],
@@ -77,16 +77,16 @@ export const useExpenseStore = create<IExpenseStore>((set, get) => ({
       });
   },
 
-
   OnGetAnnexe: async (id) => {
-    show_anexo(id).then(({ data }) => {
-      set((state) => ({
-        ...state,
-        expense: data.expense
-      }))
-    })
-      .catch((error: any) => {
-        console.log(error, "error en mostrar archivo")
+    show_anexo(id)
+      .then(({ data }) => {
+        set((state) => ({
+          ...state,
+          expense: data.expense,
+        }));
+      })
+      .catch(() => {
+        toast.error("Error al obtener anexos")
       });
-  }
+  },
 }));

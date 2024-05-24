@@ -3,9 +3,7 @@ import { IGetCustomerPagination, PayloadCustomer, Customer } from '../../types/c
 export interface IUseCustomersStore {
   customer_pagination: IGetCustomerPagination;
   customer_list: Customer[];
-  saveCustomersPagination: (
-    customer_pagination: IGetCustomerPagination
-  ) => void;
+  saveCustomersPagination: (customer_pagination: IGetCustomerPagination) => void;
   getCustomersPagination: (
     page: number,
     limit: number,

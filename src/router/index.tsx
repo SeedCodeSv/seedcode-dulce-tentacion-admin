@@ -20,6 +20,8 @@ import { useEffect } from "react";
 import Views from "../pages/Views";
 import { useAuthStore } from "../store/auth.store";
 import HomeSeller from "../pages/Seller/HomeSeller";
+
+/* eslint-disable react-hooks/rules-of-hooks */
 export const router = () => {
   const { role_view_action, OnGetActionsByRole } = useActionsRolStore();
   const { user } = useAuthStore();
@@ -29,13 +31,16 @@ export const router = () => {
       OnGetActionsByRole(user.roleId);
     }
   }, [user]);
+  /* eslint-enable react-hooks/rules-of-hooks */
 
   const views =
-    role_view_action && role_view_action.view && role_view_action.view.map((view) => view.name);
+    role_view_action &&
+    role_view_action.view &&
+    role_view_action.view.map((view) => view.name);
 
   return createBrowserRouter([
     {
-      path: '/',
+      path: "/",
       element: <Home />,
     },
     {
@@ -47,55 +52,57 @@ export const router = () => {
       element: <Tables />,
     },
     {
-      path: '/categories',
-      element: views && views.includes('Categorias') && <ProductsCategories />,
+      path: "/categories",
+      element: views && views.includes("Categorias") && <ProductsCategories />,
     },
     {
-      path: '/users',
-      element: views && views.includes('Usuarios') && <Users />,
+      path: "/users",
+      element: views && views.includes("Usuarios") && <Users />,
     },
     {
-      path: '/employees',
-      element: views && views.includes('Empleados') && <Employees />,
+      path: "/employees",
+      element: views && views.includes("Empleados") && <Employees />,
     },
     {
-      path: '/clients',
-      element: views && views.includes('Clientes') && <Customers />,
+      path: "/clients",
+      element: views && views.includes("Clientes") && <Customers />,
     },
     {
-      path: '/branches',
-      element: views && views.includes('Sucursales') && <Branch />,
+      path: "/branches",
+      element: views && views.includes("Sucursales") && <Branch />,
     },
     {
-      path: '/products',
-      element: views && views.includes('Productos') && <Product />,
+      path: "/products",
+      element: views && views.includes("Productos") && <Product />,
     },
     {
-      path: '/expensesCategories',
-      element: views && views.includes('Categoria de gastos') && <ExpensesCategories />,
+      path: "/expensesCategories",
+      element: views && views.includes("Categoria de gastos") && (
+        <ExpensesCategories />
+      ),
     },
     {
-      path: '/expenses',
-      element: views && views.includes('Gastos') && <Expenses />,
+      path: "/expenses",
+      element: views && views.includes("Gastos") && <Expenses />,
     },
     {
-      path: '/actionRol',
-      element: views && views.includes('Permisos') && <ActionRol />,
+      path: "/actionRol",
+      element: views && views.includes("Permisos") && <ActionRol />,
     },
     {
-      path: '/modules',
-      element: views && views.includes('Modulos') && <Views />,
+      path: "/modules",
+      element: views && views.includes("Modulos") && <Views />,
     },
     {
-      path: '/newSales',
-      element: views && views.includes('Ventas') && <NewSales />,
+      path: "/newSales",
+      element: views && views.includes("Ventas") && <NewSales />,
     },
     {
-      path: '/configuration',
+      path: "/configuration",
       element: <Configuration />,
     },
     {
-      path: '/create-configuration',
+      path: "/create-configuration",
       element: <CreateConfiguration />,
     },
     // {
@@ -103,11 +110,13 @@ export const router = () => {
     //   element: <SalesUpdate />,
     // },
     {
-      path: 'sales-reports',
-      element: views && views.includes('Reporte de ventas') && <SalesReportContigencePage />,
+      path: "sales-reports",
+      element: views && views.includes("Reporte de ventas") && (
+        <SalesReportContigencePage />
+      ),
     },
     {
-      path: '*',
+      path: "*",
       element: <Error404 />,
     },
   ]);

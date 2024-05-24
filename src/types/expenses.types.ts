@@ -4,7 +4,7 @@ export interface IExpense {
   id: number;
   description: string;
   total: number;
-  box: Box
+  box: Box;
   boxId: number;
   categoryExpense: CategoryExpense;
   categoryExpenseId: number;

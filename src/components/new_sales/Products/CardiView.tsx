@@ -1,15 +1,15 @@
-import { useBranchProductStore } from "../../../store/branch_product.store";
-import { BranchProduct } from "../../../types/branch_products.types";
-import classNames from "classnames";
-import { DataView } from "primereact/dataview";
-import { formatCurrency } from "../../../utils/dte";
-import { Button } from "@nextui-org/react";
-import { Plus } from "lucide-react";
-import { global_styles } from "../../../styles/global.styles";
-import { toast } from "sonner";
+import { useBranchProductStore } from '../../../store/branch_product.store';
+import { BranchProduct } from '../../../types/branch_products.types';
+import classNames from 'classnames';
+import { DataView } from 'primereact/dataview';
+import { formatCurrency } from '../../../utils/dte';
+import { Button } from '@nextui-org/react';
+import { Plus } from 'lucide-react';
+import { global_styles } from '../../../styles/global.styles';
+import { toast } from 'sonner';
 
 interface Props {
-  layout: "grid" | "list";
+  layout: 'grid' | 'list';
 }
 
 function CardView(props: Props) {
@@ -23,11 +23,11 @@ function CardView(props: Props) {
         layout={props.layout}
         pt={{
           content: () => ({
-            className: "p-3",
+            className: 'p-3',
           }),
           grid: () => ({
             className:
-              "grid bg-transparent pb-10 grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-5 mt-5",
+              'grid bg-transparent pb-10 grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-5 mt-5',
           }),
         }}
         color="surface"
@@ -40,22 +40,22 @@ function CardView(props: Props) {
 
 export default CardView;
 
-const gridItem = (product: BranchProduct, layout: "grid" | "list") => {
+const gridItem = (product: BranchProduct, layout: 'grid' | 'list') => {
   /* eslint-disable react-hooks/rules-of-hooks */
   const { addProductCart } = useBranchProductStore();
   /* eslint-enable react-hooks/rules-of-hooks */
   return (
     <>
-      {layout === "grid" ? (
+      {layout === 'grid' ? (
         <div
           className={classNames(
-            "w-full shadow-sm hover:shadow-lg border dark:border-gray-600 p-4 rounded"
+            'w-full shadow-sm hover:shadow-lg border dark:border-gray-600 p-4 rounded'
           )}
           key={product.id}
         >
           <p className="font-semibold">{product.product.name}</p>
           <p className="text-sm mt-2 text-green-700 font-semibold">
-            Precio: {formatCurrency(Number(product.price))}{" "}
+            Precio: {formatCurrency(Number(product.price))}{' '}
           </p>
           <p className="text-sm mt-2 text-blue-800 font-semibold">
             Categoría:{product.product.categoryProduct.name}
@@ -66,7 +66,7 @@ const gridItem = (product: BranchProduct, layout: "grid" | "list") => {
               isIconOnly
               onClick={() => {
                 addProductCart(product);
-                toast.success("Producto agregado al carrito");
+                toast.success('Producto agregado al carrito');
               }}
             >
               <Plus />
@@ -88,7 +88,7 @@ const ListItem = ({ product }: { product: BranchProduct }) => {
         <div className="flex flex-col justify-center">
           <p className="font-semibold">{product.product.name}</p>
           <p className="text-sm mt-2 text-green-700 font-semibold">
-            Precio: {formatCurrency(Number(product.price))}{" "}
+            Precio: {formatCurrency(Number(product.price))}{' '}
           </p>
           <p className="text-sm mt-2 text-blue-800 font-semibold">
             Categoría:{product.product.categoryProduct.name}
@@ -100,7 +100,7 @@ const ListItem = ({ product }: { product: BranchProduct }) => {
             isIconOnly
             onClick={() => {
               addProductCart(product);
-              toast.success("Producto agregado al carrito");
+              toast.success('Producto agregado al carrito');
             }}
           >
             <Plus />

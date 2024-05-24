@@ -7,7 +7,7 @@ import { ThemeContext } from '../../hooks/useTheme';
 import { useExpenseStore } from '../../store/expenses.store';
 import { IExpense } from '../../types/expenses.types';
 
- /* eslint-disable no-unused-vars */
+/* eslint-disable no-unused-vars */
 interface Props {
   layout: 'grid' | 'list';
   deletePopover: ({ expenses }: { expenses: IExpense }) => JSX.Element;

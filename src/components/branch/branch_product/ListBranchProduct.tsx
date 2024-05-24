@@ -181,7 +181,7 @@ function ListEmployee({ id }: Props) {
               </div>
             </div>
           </div>
-          <MobileView layout={"grid"} />
+          <MobileView layout={'grid'} />
         </div>
       </div>
     </>

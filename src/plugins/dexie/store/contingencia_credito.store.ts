@@ -151,8 +151,7 @@ export const useContingenciaCreditoStore = create<IContingenciaCreditoStore>(() 
                     ventaId: result.id!,
                   };
                 });
-              add_credito_cuerpo(credito_cuerpo_documento).then(() => {
-              });
+              add_credito_cuerpo(credito_cuerpo_documento).then(() => {});
             }
           }
         }

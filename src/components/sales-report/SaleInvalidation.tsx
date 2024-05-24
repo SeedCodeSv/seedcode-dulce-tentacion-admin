@@ -109,7 +109,7 @@ export const SaleInvalidation = (props: Props) => {
     docNumberApplicant: string;
     typeDocResponsible: string;
     typeDocApplicant: string;
-}
+  }
 
   const onSubmit = async (values: Values) => {
     toast.info('Estamos firmado tu documento');
@@ -337,7 +337,7 @@ export const SaleInvalidation = (props: Props) => {
                         value={motivo}
                         aria-label="Select a reason"
                         onChange={(e) => {
-                          setMotivo(Number(e.target.value))
+                          setMotivo(Number(e.target.value));
                         }}
                       >
                         {invalidationTypes.map((type) => (

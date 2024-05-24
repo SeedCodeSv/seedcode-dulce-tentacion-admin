@@ -1,11 +1,10 @@
-import { useContext } from 'react';
 import { Button } from '@nextui-org/react';
 import { DataView } from 'primereact/dataview';
 import { useUsersStore } from '../../store/users.store';
 import { User } from '../../types/users.types';
 import { classNames } from 'primereact/utils';
 import { EditIcon, User as IUser, Key, ShieldCheck, SquareUserRound } from 'lucide-react';
-import { ThemeContext } from '../../hooks/useTheme';
+import { global_styles } from '../../styles/global.styles';
 
 /* eslint-disable no-unused-vars */
 interface Props {
@@ -15,7 +14,6 @@ interface Props {
   openKeyModal: (user: User) => void;
   actions: string[];
 }
-
 /* eslint-enable no-unused-vars */
 
 function MobileView({ layout, deletePopover, openEditModal, openKeyModal }: Props) {
@@ -30,7 +28,7 @@ function MobileView({ layout, deletePopover, openEditModal, openKeyModal }: Prop
         pt={{
           grid: () => ({
             className:
-              'grid dark:bg-slate-800 pb-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid-nogutter gap-5 mt-5',
+              'grid dark:bg-slate-800 pb-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 grid-nogutter gap-5 mt-5',
           }),
         }}
         color="surface"
@@ -50,9 +48,7 @@ const gridItem = (
   openKeyModal: (user: User) => void
 ) => {
   /* eslint-enable no-unused-vars */
-  /* eslint-disable react-hooks/rules-of-hooks */
-  const { theme } = useContext(ThemeContext);
-  /* eslint-enable react-hooks/rules-of-hooks */  
+
   return (
     <>
       {layout === 'grid' ? (
@@ -63,35 +59,31 @@ const gridItem = (
           key={user.id}
         >
           <div className="flex w-full gap-2">
-            <IUser color={'#274c77'} size={35} />
+            <IUser className="text-[#274c77] dark:text-gray-400" size={35} />
             {user.userName}
           </div>
           <div className="flex w-full gap-2 mt-3">
-            <SquareUserRound color="#00bbf9" size={35} />
+            <SquareUserRound className="text-[#00bbf9] dark:text-gray-400" size={35} />
             {user.employee.fullName}
           </div>
           <div className="flex w-full gap-2 mt-3">
-            <ShieldCheck color={'#006d77'} size={35} />
+            <ShieldCheck className="text-[#006d77] dark:text-gray-400" size={35} />
             {user.role.name}
           </div>
           <div className="flex justify-between mt-5 w-ful">
             <Button
               onClick={() => openEditModal(user)}
               isIconOnly
-              style={{
-                backgroundColor: theme.colors.secondary,
-              }}
+              style={global_styles().secondaryStyle}
             >
-              <EditIcon style={{ color: theme.colors.primary }} size={20} />
+              <EditIcon size={20} />
             </Button>
             <Button
               onClick={() => openKeyModal(user)}
               isIconOnly
-              style={{
-                backgroundColor: theme.colors.warning,
-              }}
+              style={global_styles().warningStyles}
             >
-              <Key color={theme.colors.primary} size={20} />
+              <Key size={20} />
             </Button>
             {deletePopover({ user: user })}
           </div>
@@ -121,7 +113,6 @@ const ListItem = ({
   openKeyModal: (user: User) => void;
 }) => {
   /* eslint-enable no-unused-vars */
-  const { theme } = useContext(ThemeContext);
   return (
     <>
       <div className="flex w-full col-span-1 p-5 border-b shadow md:col-span-2 lg:col-span-3 xl:col-span-4">
@@ -142,23 +133,19 @@ const ListItem = ({
         <div className="flex flex-col items-end justify-between w-full gap-4">
           <Button
             isIconOnly
-            style={{
-              backgroundColor: theme.colors.secondary,
-            }}
+            style={global_styles().secondaryStyle}
             onClick={() => {
               openEditModal(user);
             }}
           >
-            <EditIcon color={theme.colors.primary} size={20} />
+            <EditIcon size={20} />
           </Button>
           <Button
             onClick={() => openKeyModal(user)}
             isIconOnly
-            style={{
-              backgroundColor: theme.colors.warning,
-            }}
+            style={global_styles().warningStyles}
           >
-            <Key color={theme.colors.primary} size={20} />
+            <Key size={20} />
           </Button>
           {deletePopover({ user: user })}
         </div>

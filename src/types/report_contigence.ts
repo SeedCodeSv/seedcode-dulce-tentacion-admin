@@ -97,21 +97,11 @@ export interface Employee {
 }
 
 export interface OnGetSalesContigence {
-  (id: number,
-    page: number,
-    limit: number,
-    startDate: string,
-    endDate: string): void
+  (id: number, page: number, limit: number, startDate: string, endDate: string): void;
 }
 
 export interface OnGetSalesNotContigence {
-  (
-    id: number,
-    page: number,
-    limit: number,
-    startDate: string,
-    endDate: string
-  ): void;
+  (id: number, page: number, limit: number, startDate: string, endDate: string): void;
 }
 
 export interface OnGetSalesByStatus {
@@ -130,10 +120,10 @@ export type ISalesContigenceStore = {
   saless: Sale[];
   pagination_sales: IPagination;
   pagination_saless: IPagination;
-  OnGetSalesContigence: OnGetSalesContigence
-  OnGetSalesNotContigence: OnGetSalesNotContigence
-  OnGetSalesByStatus: OnGetSalesByStatus
-}
+  OnGetSalesContigence: OnGetSalesContigence;
+  OnGetSalesNotContigence: OnGetSalesNotContigence;
+  OnGetSalesByStatus: OnGetSalesByStatus;
+};
 export interface ValidateContigence {
   nombre: string;
   nombreComercial: string;

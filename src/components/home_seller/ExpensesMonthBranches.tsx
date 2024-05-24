@@ -1,9 +1,7 @@
-
-import { useEffect } from "react";
-import ApexChart from "react-apexcharts";
-import { salesReportStore } from "../../store/reports_seller/sales_report_seller.store";
-import { useAuthStore } from "../../store/auth.store";
-
+import { useEffect } from 'react';
+import ApexChart from 'react-apexcharts';
+import { salesReportStore } from '../../store/reports_seller/sales_report_seller.store';
+import { useAuthStore } from '../../store/auth.store';
 
 function SalesMonthBranches() {
   const { user } = useAuthStore();
@@ -14,24 +12,11 @@ function SalesMonthBranches() {
   const sales = {
     series: [
       {
-        name: "Ventas",
+        name: 'Ventas',
         data: sales_by_day.map((item) => item.total),
       },
     ],
-    labels: [
-      "Ene",
-      "Feb",
-      "Mar",
-      "Abr",
-      "May",
-      "Jun",
-      "Jul",
-      "Ago",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dic",
-    ],
+    labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
   };
   return (
     <>
@@ -50,7 +35,7 @@ function SalesMonthBranches() {
           type="line"
           series={sales.series}
           height={150}
-          width={"100%"}
+          width={'100%'}
           options={{
             yaxis: {
               labels: {
@@ -58,22 +43,22 @@ function SalesMonthBranches() {
               },
             },
             xaxis: {
-              type: "category",
+              type: 'category',
               crosshairs: {
                 width: 1,
               },
             },
-            colors: ["#ffffff"],
+            colors: ['#ffffff'],
             chart: {
-              id: "expenses_month",
-              type: "area",
-              group: "expenses_month",
+              id: 'expenses_month',
+              type: 'area',
+              group: 'expenses_month',
               sparkline: {
                 enabled: true,
               },
             },
             stroke: {
-              curve: "smooth",
+              curve: 'smooth',
             },
             grid: {
               padding: {

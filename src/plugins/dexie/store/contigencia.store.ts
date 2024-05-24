@@ -129,8 +129,7 @@ export const useContingenciaStore = create<IContingenciaStore>(() => ({
                   };
                 }
               );
-              add_cuerpo(cuerpo_documento).then(() => {
-              });
+              add_cuerpo(cuerpo_documento).then(() => {});
             }
           }
         }

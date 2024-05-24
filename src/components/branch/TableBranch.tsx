@@ -1,4 +1,3 @@
-import React from 'react';
 import { useBranchesStore } from '../../store/branches.store';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
@@ -6,9 +5,11 @@ import { global_styles } from '../../styles/global.styles';
 import { Branches } from '../../types/branches.types';
 import useWindowSize from '../../hooks/useWindowSize';
 
+/* eslint-disable no-unused-vars */
 interface Props {
   actionsElement: (item: Branches) => JSX.Element;
 }
+/* eslint-enable no-unused-vars */
 
 function TableBranch(props: Props) {
   const { branches_paginated } = useBranchesStore();

@@ -1,6 +1,12 @@
-import { create } from "zustand";
-import { ISalesReportStore } from "./types_seller/sales_reports_seller.store.types";
-import { compare_sales_current, get_sales_by_Product, get_sales_by_category, get_sales_by_day_table, get_sales_by_year } from "../../services/reports_seller/sales_reports_seller.service";
+import { create } from 'zustand';
+import { ISalesReportStore } from './types/sales_reports_seller.store.types';
+import {
+  compare_sales_current,
+  get_sales_by_Product,
+  get_sales_by_category,
+  get_sales_by_day_table,
+  get_sales_by_year,
+} from '../../services/reports_seller/sales_reports_seller.service';
 
 export const salesReportStore = create<ISalesReportStore>((set) => ({
   sales_by_category: [],

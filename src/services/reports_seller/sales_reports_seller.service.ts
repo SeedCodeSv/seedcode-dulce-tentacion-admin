@@ -1,17 +1,15 @@
-import axios from "axios";
-import { API_URL } from "../../utils/constants";
+import axios from 'axios';
+import { API_URL } from '../../utils/constants';
 import {
   IGetReportSalesByDay,
   IGetReportSalesByProduct,
   IGetSalesByCategory,
   IGetSalesByDayTable,
   IGetSalesByYear,
-} from "../../types/reports_seller/sales_reports_seller.types";
+} from '../../types/reports_seller/sales_reports_seller.types';
 
 export const get_sales_by_category = (id: number) => {
-  return axios.get<IGetSalesByCategory>(
-    API_URL + `/reports/most-category-selled/${id}`
-  );
+  return axios.get<IGetSalesByCategory>(API_URL + `/reports/most-category-selled/${id}`);
 };
 
 export const get_sales_by_year = (id: number) => {
@@ -33,9 +31,7 @@ export const get_sales_by_day = (id: number) => {
 };
 
 export const compare_sales_current = (id: number) => {
-  return axios.get<IGetReportSalesByDay>(
-    API_URL + `/reports/compare-sales-current-week/${id}`
-  );
+  return axios.get<IGetReportSalesByDay>(API_URL + `/reports/compare-sales-current-week/${id}`);
 };
 
 export const get_sales_by_day_table = (id: number) => {

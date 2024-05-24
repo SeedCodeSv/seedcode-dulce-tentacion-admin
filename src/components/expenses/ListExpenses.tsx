@@ -1,6 +1,6 @@
-import { useContext, useEffect, useState } from 'react';
-import { ThemeContext } from '../../hooks/useTheme';
-import { useExpenseStore } from '../../store/expenses.store';
+import { useContext, useEffect, useState } from "react";
+import { ThemeContext } from "../../hooks/useTheme";
+import { useExpenseStore } from "../../store/expenses.store";
 import {
   Button,
   ButtonGroup,
@@ -12,7 +12,7 @@ import {
   PopoverTrigger,
   PopoverContent,
 } from "@nextui-org/react";
-import { IExpense, IExpensePayloads } from "../../types/expenses.types";
+import { IExpense /*IExpensePayloads*/ } from "../../types/expenses.types";
 import {
   EditIcon,
   User,
@@ -32,19 +32,17 @@ import { paginator_styles } from "../../styles/paginator.styles";
 import ModalGlobal from "../global/ModalGlobal";
 import AddExpenses from "./AddExpenses";
 import MobileView from "./MobileView";
-import { formatCurrency } from "../../utils/dte"
+import { formatCurrency } from "../../utils/dte";
 import { limit_options } from "../../utils/constants";
-import Anexo from "./Anexo";
-import { Document, Page } from "react-pdf";
-import { show_anexo } from "../../services/expenses.service";
+// import { Document, Page } from 'react-pdf';
 const ListExpenses = () => {
   const { theme } = useContext(ThemeContext);
-  const [files, setFiles] = useState<IExpensePayloads>();
+  // const [files, setFiles] = useState<IExpensePayloads>();
   const { getExpensesPaginated, expenses_paginated } = useExpenseStore();
 
   const [selectedCategory, setSelectedCategory] = useState<IExpense>();
 
-  const [expenseID, setExpenseID] = useState(0)
+  // const [expenseID, setExpenseID] = useState(0);
   const [category, setCategory] = useState("");
   const [limit, setLimit] = useState(8);
 
@@ -64,38 +62,36 @@ const ListExpenses = () => {
     color: theme.colors.primary,
   };
 
-  const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
+  const [view, setView] = useState<"table" | "grid" | "list">("table");
 
   const handleEdit = (item: IExpense) => {
     setSelectedCategory(item);
     modalAdd.onOpen();
   };
 
-
   //showImg and pdf
 
+  // const [selectedExpenseDetails, setSelectedExpenseDetails] = useState<
+  //   string[]
+  // >([]);
+  // const [numPages, setNumPages] = useState<number>(0);
+  // const [pageNumber, setPageNumber] = useState(1);
+  // function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
+  //   setNumPages(numPages);
+  //   setPageNumber(1);
+  // }
+  // function changePage(offset: number) {
+  //   setPageNumber((prevPageNumber) => prevPageNumber + offset);
+  // }
+  // function previousPage() {
+  //   changePage(-1);
+  // }
 
-  const [selectedExpenseDetails, setSelectedExpenseDetails] = useState<string[]>([]);
-  const [numPages, setNumPages] = useState<number>(0);
-  const [pageNumber, setPageNumber] = useState(1);
-  function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
-    setNumPages(numPages);
-    setPageNumber(1);
-  }
-  function changePage(offset: number) {
-    setPageNumber((prevPageNumber) => prevPageNumber + offset);
-  }
-  function previousPage() {
-    changePage(-1);
-  }
-
-  function nextPage() {
-    changePage(1);
-  }
-  const [imageViewerOpen, setImageViewerOpen] = useState(false);
+  // function nextPage() {
+  //   changePage(1);
+  // }
+  // const [imageViewerOpen, setImageViewerOpen] = useState(false);
   const [pdfViewerOpen, setPdfViewerOpen] = useState(false);
-
-
 
   return (
     <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
@@ -110,16 +106,16 @@ const ListExpenses = () => {
                 labelPlacement="outside"
                 label="Nombre"
                 classNames={{
-                  label: 'font-semibold text-gray-700',
-                  inputWrapper: 'pr-0',
+                  label: "font-semibold text-gray-700",
+                  inputWrapper: "pr-0",
                 }}
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
                 placeholder="Escribe para buscar..."
                 isClearable
                 onClear={() => {
-                  setCategory('');
-                  handleSearch('');
+                  setCategory("");
+                  handleSearch("");
                 }}
               />
               <Button
@@ -141,10 +137,11 @@ const ListExpenses = () => {
                 isIconOnly
                 color="secondary"
                 style={{
-                  backgroundColor: view === 'table' ? theme.colors.third : '#e5e5e5',
-                  color: view === 'table' ? theme.colors.primary : '#3e3e3e',
+                  backgroundColor:
+                    view === "table" ? theme.colors.third : "#e5e5e5",
+                  color: view === "table" ? theme.colors.primary : "#3e3e3e",
                 }}
-                onClick={() => setView('table')}
+                onClick={() => setView("table")}
               >
                 <ITable />
               </Button>
@@ -152,10 +149,11 @@ const ListExpenses = () => {
                 isIconOnly
                 color="default"
                 style={{
-                  backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
-                  color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
+                  backgroundColor:
+                    view === "grid" ? theme.colors.third : "#e5e5e5",
+                  color: view === "grid" ? theme.colors.primary : "#3e3e3e",
                 }}
-                onClick={() => setView('grid')}
+                onClick={() => setView("grid")}
               >
                 <CreditCard />
               </Button>
@@ -163,10 +161,11 @@ const ListExpenses = () => {
                 isIconOnly
                 color="default"
                 style={{
-                  backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
-                  color: view === 'list' ? theme.colors.primary : '#3e3e3e',
+                  backgroundColor:
+                    view === "list" ? theme.colors.third : "#e5e5e5",
+                  color: view === "list" ? theme.colors.primary : "#3e3e3e",
                 }}
-                onClick={() => setView('list')}
+                onClick={() => setView("list")}
               >
                 <List />
               </Button>
@@ -186,11 +185,11 @@ const ListExpenses = () => {
             label="Mostrar"
             labelPlacement="outside"
             classNames={{
-              label: 'font-semibold',
+              label: "font-semibold",
             }}
             value={limit}
             onChange={(e) => {
-              setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
+              setLimit(Number(e.target.value !== "" ? e.target.value : "5"));
             }}
           >
             {limit_options.map((option) => (
@@ -200,23 +199,23 @@ const ListExpenses = () => {
             ))}
           </Select>
         </div>
-        {(view === 'grid' || view === 'list') && (
+        {(view === "grid" || view === "list") && (
           <MobileView
             deletePopover={DeletePopUp}
-            layout={view as 'grid' | 'list'}
+            layout={view as "grid" | "list"}
             handleEdit={handleEdit}
           />
         )}
-        {view === 'table' && (
+        {view === "table" && (
           <DataTable
             className="w-full shadow"
             emptyMessage="No se encontraron resultados"
             value={expenses_paginated.expenses}
-            tableStyle={{ minWidth: '50rem' }}
+            tableStyle={{ minWidth: "50rem" }}
           >
             <Column
               headerClassName="text-sm font-semibold"
-              headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
+              headerStyle={{ ...style, borderTopLeftRadius: "10px" }}
               field="id"
               header="No."
             />
@@ -240,7 +239,7 @@ const ListExpenses = () => {
               header="Descripción"
             />
             <Column
-              headerStyle={{ ...style, borderTopRightRadius: '10px' }}
+              headerStyle={{ ...style, borderTopRightRadius: "10px" }}
               header="Acciones"
               body={(item) => (
                 <div className="flex gap-6">
@@ -251,7 +250,10 @@ const ListExpenses = () => {
                       backgroundColor: theme.colors.secondary,
                     }}
                   >
-                    <EditIcon style={{ color: theme.colors.primary }} size={20} />
+                    <EditIcon
+                      style={{ color: theme.colors.primary }}
+                      size={20}
+                    />
                   </Button>
                   {item.path && item.ext === "pdf" ? (
                     <Button
@@ -279,7 +281,6 @@ const ListExpenses = () => {
                         aria-label="Abrir Imagen"
                         onClick={() => {
                           setSelectedCategory(item);
-                          setImageViewerOpen(true);
                         }}
                       >
                         img
@@ -292,7 +293,6 @@ const ListExpenses = () => {
                   )}
                   <Button
                     onClick={() => {
-                      setExpenseID(item.id);
                       showAnexo.onOpen();
                     }}
                     isIconOnly
@@ -329,7 +329,7 @@ const ListExpenses = () => {
                 rows={limit}
                 totalRecords={expenses_paginated.total}
                 template={{
-                  layout: 'PrevPageLink CurrentPageReport NextPageLink',
+                  layout: "PrevPageLink CurrentPageReport NextPageLink",
                 }}
                 currentPageReportTemplate="{currentPage} de {totalPages}"
               />
@@ -339,11 +339,14 @@ const ListExpenses = () => {
       </div>
       <ModalGlobal
         size="w-full sm:w-[500px]"
-        title={selectedCategory ? 'Editar gastos' : 'Nueva gastos'}
+        title={selectedCategory ? "Editar gastos" : "Nueva gastos"}
         isOpen={modalAdd.isOpen}
         onClose={modalAdd.onClose}
       >
-        <AddExpenses closeModal={modalAdd.onClose} expenses={selectedCategory} />
+        <AddExpenses
+          closeModal={modalAdd.onClose}
+          expenses={selectedCategory}
+        />
       </ModalGlobal>
 
       {pdfViewerOpen && (
@@ -351,14 +354,11 @@ const ListExpenses = () => {
           <div className="relative max-w-[80vw] w-auto h-full">
             <div className=" top-0 left-0 w-full h-full bg-white">
               <div className="max-w-[80vw] max-h-[90vh] overflow-y-auto">
-                <Document
-                  file={files?.file ?? ""}
-                  onLoadSuccess={onDocumentLoadSuccess}
-                >
+                {/* <Document file={files?.file ?? ''} onLoadSuccess={onDocumentLoadSuccess}>
                   <Page pageNumber={pageNumber} />
-                </Document>
+                </Document> */}
               </div>
-              <div className="p-4 flex justify-between">
+              {/* <div className="p-4 flex justify-between">
                 <button
                   className="text-white bg-blue-500 px-4 py-2 rounded text-sm hover:text-gray-300"
                   onClick={() => previousPage()}
@@ -379,7 +379,7 @@ const ListExpenses = () => {
                 >
                   Cerrar
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
@@ -391,11 +391,10 @@ const ListExpenses = () => {
         isOpen={showAnexo.isOpen}
         onClose={showAnexo.onClose}
       >
-        <div className="w-full h-full flex justify-center items-center">
-
+        <></>
+        {/* <div className="w-full h-full flex justify-center items-center">
           <img alt="Anex Image" src={typeof files?.file === 'string' ? files?.file : ''} />
-
-        </div>
+        </div> */}
       </ModalGlobal>
       {showAnexo.isOpen && (
         <div className="absolute bg-white top-0 left-0 w-full h-full"></div>
@@ -441,7 +440,9 @@ const DeletePopUp = ({ expenses }: Props) => {
         </PopoverTrigger>
         <PopoverContent>
           <div className="w-full p-5">
-            <p className="font-semibold text-gray-600 dark:text-white">Eliminar</p>
+            <p className="font-semibold text-gray-600 dark:text-white">
+              Eliminar
+            </p>
             <p className="mt-3 text-center text-gray-600 dark:text-white w-72">
               ¿Estas seguro de eliminar este registro?
             </p>

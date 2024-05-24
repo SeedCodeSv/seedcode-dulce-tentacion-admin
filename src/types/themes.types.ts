@@ -20,7 +20,7 @@ export interface ColorTheme {
 export interface Theme {
   id: number;
   name: string;
-  context: "dark" | "light";
+  context: 'dark' | 'light';
   isActive: boolean;
   colors: ColorTheme[];
 }

@@ -12,13 +12,12 @@ import { Formik } from 'formik';
 import { Branches } from '../../types/branches.types';
 import { useBoxStore } from '../../store/Boxes.store';
 import { IBoxPayload } from '../../types/box.types';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { verify_box } from '../../services/Boxes.service';
 import { BoxIcon } from 'lucide-react';
 import { post_box, save_branch_id } from '../../storage/localStorage';
 import ModalGlobal from '../global/ModalGlobal';
 import CloseBox from './box/CloseBox';
-import { ThemeContext } from '../../hooks/useTheme';
 interface Props {
   closeModal: () => void;
   branch?: Branches | undefined;
@@ -26,7 +25,6 @@ interface Props {
 }
 
 function AddBranch(props: Props) {
-  const { theme } = useContext(ThemeContext);
 
   const modalCloseBox = useDisclosure();
 
@@ -46,14 +44,14 @@ function AddBranch(props: Props) {
     }
     props.closeModal();
     props.setBranch(undefined);
-    save_branch_id(props.branch?.id.toString()!);
+    save_branch_id(props.branch!.id.toString()!);
   };
   const [visible, setVisible] = useState(false);
   const [idBox, setIdBox] = useState(0);
   const handleActivate = () => {
     post_box(idBox.toString());
     props.closeModal();
-    save_branch_id(props.branch?.id.toString()!);
+    save_branch_id(props.branch!.id.toString()!);
   };
   const handleCloseBoxId = () => {
     closeBox(idBox);

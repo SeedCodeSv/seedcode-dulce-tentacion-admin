@@ -36,7 +36,6 @@ function Box() {
   useEffect(() => {
     const box = get_box();
     setIdBox(Number(box));
-    console.log(box);
   }, []);
   const { theme } = useContext(ThemeContext);
 
@@ -57,11 +56,10 @@ function Box() {
     state: 'false',
   });
 
-  const { has_current_box, current_box, OnRemoveBox } = useBoxStore();
+  const { OnRemoveBox } = useBoxStore();
   const [boxPreview, setBoxpreview] = useState<IGetBox>();
 
   const popover = useDisclosure();
-  console.log(current_box, has_current_box, idBox);
   const preview_box = () => {
     close_box(boxValues, idBox)
       .then(({ data }) => {

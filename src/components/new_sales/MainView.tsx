@@ -10,43 +10,35 @@ import {
   SelectItem,
   Tooltip,
   useDisclosure,
-} from "@nextui-org/react";
-import {
-  Barcode,
-  CreditCard,
-  List,
-  Search,
-  Table as ITable,
-  Plus,
-  Send,
-} from "lucide-react";
-import { useContext, useEffect, useMemo, useState } from "react";
-import { ThemeContext } from "../../hooks/useTheme";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
-import { useBranchProductStore } from "../../store/branch_product.store";
-import { return_branch_id } from "../../storage/localStorage";
-import { BranchProduct } from "../../types/branch_products.types";
-import Pagination from "../global/Pagination";
-import { limit_options } from "../../utils/constants";
-import { global_styles } from "../../styles/global.styles";
-import CartProducts from "./CartProducts";
-import ModalGlobal from "../global/ModalGlobal";
-import FormMakeSale from "./FormMakeSale";
-import useEventListener, { TEventHandler } from "../../hooks/useEventListeners";
-import { useAuthStore } from "../../store/auth.store";
-import { toast } from "sonner";
-import AddButton from "../global/AddButton";
-import MobileView_NewSale from "./MobileView_NewSale";
-import CardView from "./Products/CardiView";
-import { formatCurrency } from "../../utils/dte";
+} from '@nextui-org/react';
+import { Barcode, CreditCard, List, Search, Table as ITable, Plus, Send } from 'lucide-react';
+import { useContext, useEffect, useMemo, useState } from 'react';
+import { ThemeContext } from '../../hooks/useTheme';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+import { useBranchProductStore } from '../../store/branch_product.store';
+import { return_branch_id } from '../../storage/localStorage';
+import { BranchProduct } from '../../types/branch_products.types';
+import Pagination from '../global/Pagination';
+import { limit_options } from '../../utils/constants';
+import { global_styles } from '../../styles/global.styles';
+import CartProducts from './CartProducts';
+import ModalGlobal from '../global/ModalGlobal';
+import FormMakeSale from './FormMakeSale';
+import useEventListener, { TEventHandler } from '../../hooks/useEventListeners';
+import { useAuthStore } from '../../store/auth.store';
+import { toast } from 'sonner';
+import AddButton from '../global/AddButton';
+import MobileView_NewSale from './MobileView_NewSale';
+import CardView from './Products/CardiView';
+import { formatCurrency } from '../../utils/dte';
 
 const MainView = () => {
   const { theme } = useContext(ThemeContext);
-  const [viewMovil, setViewMovil] = useState<"grid" | "list">("grid");
+  const [viewMovil, setViewMovil] = useState<'grid' | 'list'>('grid');
 
-  const [name, setName] = useState<string>("");
-  const [code, setCode] = useState<string>("");
+  const [name, setName] = useState<string>('');
+  const [code, setCode] = useState<string>('');
   const [limit, setLimit] = useState<number>(5);
   const modalAdd = useDisclosure();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -61,50 +53,37 @@ const MainView = () => {
   } = useBranchProductStore();
 
   useEffect(() => {
-    getPaginatedBranchProducts(
-      Number(return_branch_id()),
-      1,
-      limit,
-      code,
-      name
-    );
+    getPaginatedBranchProducts(Number(return_branch_id()), 1, limit, code, name);
   }, [limit]);
 
   const formatCurrency = (value: number) => {
-    return value.toLocaleString("en-US", {
-      style: "currency",
-      currency: "USD",
+    return value.toLocaleString('en-US', {
+      style: 'currency',
+      currency: 'USD',
     });
   };
 
   const handleSearch = () => {
-    getPaginatedBranchProducts(
-      Number(return_branch_id()),
-      1,
-      limit,
-      name,
-      code
-    );
+    getPaginatedBranchProducts(Number(return_branch_id()), 1, limit, name, code);
   };
 
   const { user } = useAuthStore();
 
-  let barcode = "";
+  let barcode = '';
   let interval: NodeJS.Timeout | undefined;
 
   const handler = (evt: KeyboardEvent) => {
     if (interval) clearInterval(interval);
-    if (evt.code === "Enter") {
-      if (barcode)
-        getProductByCode(user?.employee.branch.transmitterId ?? 0, barcode);
-      barcode = "";
+    if (evt.code === 'Enter') {
+      if (barcode) getProductByCode(user?.employee.branch.transmitterId ?? 0, barcode);
+      barcode = '';
       return;
     }
-    if (evt.key !== "Shift") barcode += evt.key;
-    interval = setInterval(() => (barcode = ""), 200000);
+    if (evt.key !== 'Shift') barcode += evt.key;
+    interval = setInterval(() => (barcode = ''), 200000);
   };
 
-  useEventListener("keydown", handler as TEventHandler);
+  useEventListener('keydown', handler as TEventHandler);
 
   const total = useMemo(() => {
     const total = cart_products.reduce((acc, product) => {
@@ -140,7 +119,7 @@ const MainView = () => {
                   onClick={() => {
                     cart_products.length > 0
                       ? modalAdd.onOpen()
-                      : toast.error("No tienes productos agregados");
+                      : toast.error('No tienes productos agregados');
                   }}
                 >
                   <Send />
@@ -168,12 +147,7 @@ const MainView = () => {
           }}
         />
       </ModalGlobal>
-      <Modal
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
-        title="Agregar"
-        size="full"
-      >
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} title="Agregar" size="full">
         <ModalContent>
           <>
             <ModalHeader>Agregar</ModalHeader>
@@ -186,8 +160,8 @@ const MainView = () => {
                   labelPlacement="outside"
                   className="dark:text-white"
                   classNames={{
-                    label: "text-sm font-semibold",
-                    inputWrapper: "pr-0",
+                    label: 'text-sm font-semibold',
+                    inputWrapper: 'pr-0',
                   }}
                   onChange={(e) => setName(e.target.value)}
                   startContent={<Search size={20} />}
@@ -210,8 +184,8 @@ const MainView = () => {
                   labelPlacement="outside"
                   className="dark:text-white pt-4"
                   classNames={{
-                    label: "text-sm font-semibold",
-                    inputWrapper: "pr-0",
+                    label: 'text-sm font-semibold',
+                    inputWrapper: 'pr-0',
                   }}
                   startContent={<Barcode size={20} />}
                   onChange={(e) => setCode(e.target.value)}
@@ -233,14 +207,10 @@ const MainView = () => {
                       isIconOnly
                       color="default"
                       style={{
-                        backgroundColor:
-                          viewMovil === "grid" ? theme.colors.third : "#e5e5e6",
-                        color:
-                          viewMovil === "grid"
-                            ? theme.colors.primary
-                            : "#3e3e3e",
+                        backgroundColor: viewMovil === 'grid' ? theme.colors.third : '#e5e5e6',
+                        color: viewMovil === 'grid' ? theme.colors.primary : '#3e3e3e',
                       }}
-                      onClick={() => setViewMovil("grid")}
+                      onClick={() => setViewMovil('grid')}
                     >
                       <CreditCard />
                     </Button>
@@ -248,14 +218,10 @@ const MainView = () => {
                       isIconOnly
                       color="default"
                       style={{
-                        backgroundColor:
-                          viewMovil === "list" ? theme.colors.third : "#e5e5e5",
-                        color:
-                          viewMovil === "list"
-                            ? theme.colors.primary
-                            : "#3e3e3e",
+                        backgroundColor: viewMovil === 'list' ? theme.colors.third : '#e5e5e5',
+                        color: viewMovil === 'list' ? theme.colors.primary : '#3e3e3e',
                       }}
-                      onClick={() => setViewMovil("list")}
+                      onClick={() => setViewMovil('list')}
                     >
                       <List />
                     </Button>
@@ -266,13 +232,11 @@ const MainView = () => {
                     label="Mostrar"
                     labelPlacement="outside"
                     classNames={{
-                      label: "font-semibold",
+                      label: 'font-semibold',
                     }}
                     value={limit}
                     onChange={(e) => {
-                      setLimit(
-                        Number(e.target.value !== "" ? e.target.value : "5")
-                      );
+                      setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
                     }}
                   >
                     {limit_options.map((option) => (
@@ -283,11 +247,9 @@ const MainView = () => {
                   </Select>
                 </div>
                 <div className="w-full mt-5 p-5 bg-gray-100 dark:bg-gray-900 overflow-y-auto rounded">
-                  <h1 className="text-lg font-semibold dark:text-white">
-                    Lista de productos
-                  </h1>
-                  {(viewMovil === "grid" || viewMovil === "list") && (
-                    <MobileView_NewSale layout={viewMovil as "grid" | "list"} />
+                  <h1 className="text-lg font-semibold dark:text-white">Lista de productos</h1>
+                  {(viewMovil === 'grid' || viewMovil === 'list') && (
+                    <MobileView_NewSale layout={viewMovil as 'grid' | 'list'} />
                   )}
                   {pagination_branch_products.totalPag > 1 && (
                     <div className="w-full mt-5">
@@ -321,13 +283,13 @@ const MainView = () => {
 export default MainView;
 
 const ListProduct = () => {
-  const [view, setView] = useState<"table" | "grid" | "list">("table");
+  const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
   const { theme } = useContext(ThemeContext);
 
   const { user } = useAuthStore();
 
-  const [name, setName] = useState<string>("");
-  const [code, setCode] = useState<string>("");
+  const [name, setName] = useState<string>('');
+  const [code, setCode] = useState<string>('');
   const [limit, setLimit] = useState<number>(5);
 
   const {
@@ -338,31 +300,24 @@ const ListProduct = () => {
     getProductByCode,
   } = useBranchProductStore();
 
-  let barcode = "";
+  let barcode = '';
   let interval: NodeJS.Timeout | undefined;
 
   const handler = (evt: KeyboardEvent) => {
     if (interval) clearInterval(interval);
-    if (evt.code === "Enter") {
-      if (barcode)
-        getProductByCode(user?.employee.branch.transmitterId ?? 0, barcode);
-      barcode = "";
+    if (evt.code === 'Enter') {
+      if (barcode) getProductByCode(user?.employee.branch.transmitterId ?? 0, barcode);
+      barcode = '';
       return;
     }
-    if (evt.key !== "Shift") barcode += evt.key;
-    interval = setInterval(() => (barcode = ""), 200000);
+    if (evt.key !== 'Shift') barcode += evt.key;
+    interval = setInterval(() => (barcode = ''), 200000);
   };
 
-  useEventListener("keydown", handler as TEventHandler);
+  useEventListener('keydown', handler as TEventHandler);
 
   useEffect(() => {
-    getPaginatedBranchProducts(
-      Number(return_branch_id()),
-      1,
-      limit,
-      code,
-      name
-    );
+    getPaginatedBranchProducts(Number(return_branch_id()), 1, limit, code, name);
   }, [limit]);
 
   const style = {
@@ -392,13 +347,7 @@ const ListProduct = () => {
   };
 
   const handleSearch = () => {
-    getPaginatedBranchProducts(
-      Number(return_branch_id()),
-      1,
-      limit,
-      name,
-      code
-    );
+    getPaginatedBranchProducts(Number(return_branch_id()), 1, limit, name, code);
   };
 
   return (
@@ -410,8 +359,8 @@ const ListProduct = () => {
         labelPlacement="outside"
         className="dark:text-white"
         classNames={{
-          label: "text-sm font-semibold z-[5]",
-          inputWrapper: "pr-0",
+          label: 'text-sm font-semibold z-[5]',
+          inputWrapper: 'pr-0',
         }}
         onChange={(e) => setName(e.target.value)}
         startContent={<Search size={20} />}
@@ -434,8 +383,8 @@ const ListProduct = () => {
         labelPlacement="outside"
         className="dark:text-white pt-4"
         classNames={{
-          label: "text-sm font-semibold z-[5]",
-          inputWrapper: "pr-0",
+          label: 'text-sm font-semibold z-[5]',
+          inputWrapper: 'pr-0',
         }}
         startContent={<Barcode size={20} />}
         onChange={(e) => setCode(e.target.value)}
@@ -457,11 +406,10 @@ const ListProduct = () => {
             isIconOnly
             color="secondary"
             style={{
-              backgroundColor:
-                view === "table" ? theme.colors.third : "#e5e5e5",
-              color: view === "table" ? theme.colors.primary : "#3e3e3e",
+              backgroundColor: view === 'table' ? theme.colors.third : '#e5e5e5',
+              color: view === 'table' ? theme.colors.primary : '#3e3e3e',
             }}
-            onClick={() => setView("table")}
+            onClick={() => setView('table')}
           >
             <ITable />
           </Button>
@@ -469,10 +417,10 @@ const ListProduct = () => {
             isIconOnly
             color="default"
             style={{
-              backgroundColor: view === "grid" ? theme.colors.third : "#e5e5e5",
-              color: view === "grid" ? theme.colors.primary : "#3e3e3e",
+              backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
+              color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
             }}
-            onClick={() => setView("grid")}
+            onClick={() => setView('grid')}
           >
             <CreditCard />
           </Button>
@@ -480,10 +428,10 @@ const ListProduct = () => {
             isIconOnly
             color="default"
             style={{
-              backgroundColor: view === "list" ? theme.colors.third : "#e5e5e5",
-              color: view === "list" ? theme.colors.primary : "#3e3e3e",
+              backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
+              color: view === 'list' ? theme.colors.primary : '#3e3e3e',
             }}
-            onClick={() => setView("list")}
+            onClick={() => setView('list')}
           >
             <List />
           </Button>
@@ -494,11 +442,11 @@ const ListProduct = () => {
           label="Mostrar"
           labelPlacement="outside"
           classNames={{
-            label: "font-semibold z-[5]",
+            label: 'font-semibold z-[5]',
           }}
           value={limit}
           onChange={(e) => {
-            setLimit(Number(e.target.value !== "" ? e.target.value : "5"));
+            setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
           }}
         >
           {limit_options.map((option) => (
@@ -509,25 +457,21 @@ const ListProduct = () => {
         </Select>
       </div>
       <div className="w-full mt-5 p-5 bg-white shadow dark:bg-gray-900 overflow-y-auto rounded">
-        <h1 className="text-base font-semibold dark:text-white">
-          Lista de productos
-        </h1>
-        {(view === "grid" || view === "list") && (
-          <CardView layout={view as "grid" | "list"} />
-        )}
-        {view === "table" && (
+        <h1 className="text-base font-semibold dark:text-white">Lista de productos</h1>
+        {(view === 'grid' || view === 'list') && <CardView layout={view as 'grid' | 'list'} />}
+        {view === 'table' && (
           <DataTable
             className="w-full shadow mt-5"
             emptyMessage="No se encontraron resultados"
             value={branch_products}
-            tableStyle={{ minWidth: "50rem" }}
+            tableStyle={{ minWidth: '50rem' }}
             size="small"
             scrollable
           >
             <Column
               headerClassName="text-sm font-semibold"
               headerStyle={{ ...style }}
-              bodyClassName={"bg-white dark:bg-gray-900"}
+              bodyClassName={'bg-white dark:bg-gray-900'}
               field="product.name"
               body={nameBodyTemplate}
               header="Nombre"
@@ -535,7 +479,7 @@ const ListProduct = () => {
             <Column
               headerClassName="text-sm font-semibold"
               headerStyle={style}
-              bodyClassName={"bg-white dark:bg-gray-900"}
+              bodyClassName={'bg-white dark:bg-gray-900'}
               field="price"
               body={priceBodyTemplate}
               header="Precio"
@@ -543,7 +487,7 @@ const ListProduct = () => {
             <Column
               headerClassName="text-sm font-semibold"
               headerStyle={style}
-              bodyClassName={"bg-white dark:bg-gray-900"}
+              bodyClassName={'bg-white dark:bg-gray-900'}
               field="product.categoryProduct.name"
               header="Categoría"
             />
@@ -551,7 +495,7 @@ const ListProduct = () => {
               headerStyle={{ ...style }}
               header="Acciones"
               frozen={true}
-              bodyClassName={"bg-white dark:bg-gray-900"}
+              bodyClassName={'bg-white dark:bg-gray-900'}
               alignFrozen="right"
               body={(item) => (
                 <div className="flex gap-6">
@@ -560,7 +504,7 @@ const ListProduct = () => {
                     isIconOnly
                     onClick={() => {
                       addProductCart(item);
-                      toast.success("Producto agregado al carrito");
+                      toast.success('Producto agregado al carrito');
                     }}
                   >
                     <Plus />
@@ -580,13 +524,7 @@ const ListProduct = () => {
                 previousPage={pagination_branch_products.prevPag}
                 nextPage={pagination_branch_products.nextPag}
                 onPageChange={(page) => {
-                  getPaginatedBranchProducts(
-                    Number(return_branch_id()),
-                    page,
-                    limit,
-                    name,
-                    code
-                  );
+                  getPaginatedBranchProducts(Number(return_branch_id()), page, limit, name, code);
                 }}
               />
             </div>

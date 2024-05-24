@@ -159,7 +159,7 @@ const AddExpenses = (props: Props) => {
                           color: theme.colors.primary,
                         }}
                       >
-                       Selecciona un archivo
+                        Selecciona un archivo
                       </Button>
                     </label>
                     <input

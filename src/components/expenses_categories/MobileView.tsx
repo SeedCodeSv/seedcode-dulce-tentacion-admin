@@ -99,7 +99,7 @@ const ListItem = ({
   deletePopover: ({ categoryExpenses }: { categoryExpenses: CategoryExpense }) => JSX.Element;
   handleEdit: (categoryExpenses: CategoryExpense) => void;
 }) => {
-   /* eslint-enable no-unused-vars */
+  /* eslint-enable no-unused-vars */
   const { theme } = useContext(ThemeContext);
   return (
     <>
