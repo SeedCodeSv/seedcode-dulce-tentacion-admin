@@ -1,22 +1,19 @@
-import { Button } from '@nextui-org/react';
-import { DataView } from 'primereact/dataview';
-import { classNames } from 'primereact/utils';
-import { User as IUser, Truck, Phone, Edit, RefreshCcw } from 'lucide-react';
-import { Employee } from '../../types/employees.types';
-import { useEmployeeStore } from '../../store/employee.store';
-import { global_styles } from '../../styles/global.styles';
+import { Button } from "@nextui-org/react";
+import { DataView } from "primereact/dataview";
+import { classNames } from "primereact/utils";
+import { User as IUser, Truck, Phone, Edit, RefreshCcw } from "lucide-react";
+import { useEmployeeStore } from "../../store/employee.store";
+import { global_styles } from "../../styles/global.styles";
+import { GridProps, IMobileView } from "./types/mobile-view.types";
 
-/* eslint-disable no-unused-vars */
-interface Props {
-  layout: 'grid' | 'list';
-  deletePopover: ({ employee }: { employee: Employee }) => JSX.Element;
-  openEditModal: (employee: Employee) => void;
-  actions: string[];
-  handleActivate: (id: number) => void;
-}
-/* eslint-enable no-unused-vars */
-
-function MobileView({ layout, openEditModal, deletePopover, actions, handleActivate }: Props) {
+function MobileView(props: IMobileView) {
+  const {
+    layout,
+    openEditModal,
+    deletePopover,
+    actions,
+    handleActivate,
+  } = props;
   const { employee_paginated, loading_employees } = useEmployeeStore();
 
   return (
@@ -29,35 +26,41 @@ function MobileView({ layout, openEditModal, deletePopover, actions, handleActiv
         pt={{
           grid: () => ({
             className:
-              'grid dark:bg-slate-800 pb-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid-nogutter gap-5 mt-5',
+              "grid dark:bg-slate-800 pb-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid-nogutter gap-5 mt-5",
           }),
         }}
         color="surface"
-        itemTemplate={(employee) =>
-          gridItem(employee, layout, openEditModal, deletePopover, actions, handleActivate)
-        }
+        itemTemplate={(employee) => (
+          <GridItem
+            employee={employee}
+            layout={layout}
+            openEditModal={openEditModal}
+            deletePopover={deletePopover}
+            actions={actions}
+            handleActivate={handleActivate}
+          />
+        )}
         emptyMessage="No se encontraron empleados"
       />
     </div>
   );
 }
 
-/* eslint-disable no-unused-vars */
-const gridItem = (
-  employee: Employee,
-  layout: 'grid' | 'list',
-  openEditModal: (employee: Employee) => void,
-  deletePopover: ({ employee }: { employee: Employee }) => JSX.Element,
-  actions: string[],
-  handleActivate: (id: number) => void
-) => {
-  /* eslint-enable no-unused-vars */
+const GridItem = (props: GridProps) => {
+  const {
+    employee,
+    layout,
+    openEditModal,
+    deletePopover,
+    actions,
+    handleActivate,
+  } = props;
   return (
     <>
-      {layout === 'grid' ? (
+      {layout === "grid" ? (
         <div
           className={classNames(
-            'w-full shadow-sm hover:shadow-lg border dark:border-gray-600 p-8 rounded-2xl'
+            "w-full shadow-sm hover:shadow-lg border dark:border-gray-600 p-8 rounded-2xl"
           )}
           key={employee.id}
         >
@@ -74,7 +77,7 @@ const gridItem = (
             {employee.branch.name}
           </div>
           <div className="flex justify-between mt-5 w-ful">
-            {actions.includes('Editar') && (
+            {actions.includes("Editar") && (
               <Button
                 onClick={() => openEditModal(employee)}
                 isIconOnly
@@ -83,7 +86,7 @@ const gridItem = (
                 <Edit size={15} />
               </Button>
             )}
-            {actions.includes('Eliminar') && (
+            {actions.includes("Eliminar") && (
               <>
                 {employee.isActive ? (
                   deletePopover({ employee })
@@ -103,6 +106,7 @@ const gridItem = (
       ) : (
         <ListItem
           actions={actions}
+          layout="list"
           employee={employee}
           openEditModal={openEditModal}
           deletePopover={deletePopover}
@@ -113,21 +117,14 @@ const gridItem = (
   );
 };
 
-/* eslint-disable no-unused-vars */
-const ListItem = ({
-  employee,
-  openEditModal,
-  deletePopover,
-  actions,
-  handleActivate,
-}: {
-  employee: Employee;
-  openEditModal: (employee: Employee) => void;
-  deletePopover: ({ employee }: { employee: Employee }) => JSX.Element;
-  actions: string[];
-  handleActivate: (id: number) => void;
-}) => {
-  /* eslint-enable no-unused-vars */
+const ListItem = (props: GridProps) => {
+  const {
+    employee,
+    actions,
+    openEditModal,
+    deletePopover,
+    handleActivate,
+  } = props;
   return (
     <>
       <div className="flex w-full col-span-1 p-5 border-b shadow md:col-span-2 lg:col-span-3 xl:col-span-4">
@@ -146,7 +143,7 @@ const ListItem = ({
           </div>
         </div>
         <div className="flex flex-col items-end justify-between w-full">
-          {actions.includes('Editar') && (
+          {actions.includes("Editar") && (
             <Button
               onClick={() => openEditModal(employee)}
               isIconOnly
@@ -155,7 +152,7 @@ const ListItem = ({
               <Edit size={15} />
             </Button>
           )}
-          {actions.includes('Eliminar') && (
+          {actions.includes("Eliminar") && (
             <>
               {employee.isActive ? (
                 deletePopover({ employee })
