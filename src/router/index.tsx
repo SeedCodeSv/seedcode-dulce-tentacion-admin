@@ -41,62 +41,60 @@ export const router = () => {
 
   return createBrowserRouter([
     {
-      path: "/",
+      path: '/',
       element: <Home />,
     },
     {
-      path: "/homeSeller",
+      path: '/homeSeller',
       element: <HomeSeller />,
     },
     {
-      path: "/tables",
+      path: '/tables',
       element: <Tables />,
     },
     {
-      path: "/categories",
-      element: views && views.includes("Categorias") && <ProductsCategories />,
+      path: '/categories',
+      element: views && views.includes('Categorias') && <ProductsCategories />,
     },
     {
-      path: "/users",
-      element: views && views.includes("Usuarios") && <Users />,
+      path: '/users',
+      element: views && views.includes('Usuarios') && <Users />,
     },
     {
-      path: "/employees",
-      element: views && views.includes("Empleados") && <Employees />,
+      path: '/employees',
+      element: views && views.includes('Empleados') && <Employees />,
     },
     {
-      path: "/clients",
-      element: views && views.includes("Clientes") && <Customers />,
+      path: '/clients',
+      element: views && views.includes('Clientes') && <Customers />,
     },
     {
-      path: "/branches",
-      element: views && views.includes("Sucursales") && <Branch />,
+      path: '/branches',
+      element: views && views.includes('Sucursales') && <Branch />,
     },
     {
-      path: "/products",
-      element: views && views.includes("Productos") && <Product />,
+      path: '/products',
+      element: views && views.includes('Productos') && <Product />,
     },
     {
-      path: "/expensesCategories",
-      element: views && views.includes("Categoria de gastos") && (
-        <ExpensesCategories />
-      ),
+      path: '/expensesCategories',
+      element: views && views.includes('Categoria de gastos') && <ExpensesCategories />,
     },
     {
-      path: "/expenses",
-      element: views && views.includes("Gastos") && <Expenses />,
+      path: '/expenses',
+      element: views && views.includes('Gastos') && <Expenses />,
     },
     {
-      path: "/actionRol",
-      element: views && views.includes("Permisos") && <ActionRol />,
+      path: '/actionRol',
+      element: views && views.includes('Permisos') && <ActionRol />,
     },
     {
-      path: "/modules",
-      element: views && views.includes("Modulos") && <Views />,
+      path: '/modules',
+      element: views && views.includes('Modulos') && <Views />,
     },
     {
-      path: "/newSales",
-      element: views && views.includes("Ventas") && <NewSales />,
+      path: '/newSales',
+      element: views && views.includes('Ventas') && <NewSales />,
     },
     {
       path: "/reporters",
@@ -107,7 +105,7 @@ export const router = () => {
       element: <Configuration />,
     },
     {
-      path: "/create-configuration",
+      path: '/create-configuration',
       element: <CreateConfiguration />,
     },
     // {
@@ -115,13 +113,11 @@ export const router = () => {
     //   element: <SalesUpdate />,
     // },
     {
-      path: "sales-reports",
-      element: views && views.includes("Reporte de ventas") && (
-        <SalesReportContigencePage />
-      ),
+      path: 'sales-reports',
+      element: views && views.includes('Reporte de ventas') && <SalesReportContigencePage />,
     },
     {
-      path: "*",
+      path: '*',
       element: <Error404 />,
     },
   ]);
