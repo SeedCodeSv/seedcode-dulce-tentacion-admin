@@ -295,12 +295,7 @@ const ListExpenses = () => {
           expenses={selectedCategory}
         />
       </ModalGlobal>
-      <ModalGlobal
-        title="Anexo"
-        size="w-full sm:w-[500px]"
-        isOpen={showAnexo.isOpen}
-        onClose={showAnexo.onClose}
-      >
+      
         {selectedExpense && (
           <Anexo
             expenses={selectedExpense}
@@ -310,7 +305,7 @@ const ListExpenses = () => {
             }}
           />
         )}
-      </ModalGlobal>
+    
     </div>
   );
 };
