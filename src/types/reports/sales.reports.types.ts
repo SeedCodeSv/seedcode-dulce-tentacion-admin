@@ -1,3 +1,5 @@
+import { Product } from "../products.types";
+
 export interface SaleBranchMonth {
   branch: string;
   total: number;
@@ -13,6 +15,23 @@ export interface SaleMonthYear {
   total: number;
 }
 
+export interface ProductoMostSelledTable {
+  branchProduct: BranchProduct,
+  quantity: number
+  total: number
+}
+
+export interface BranchProduct {
+  id: number;
+  stock: number;
+  price: number;
+  branch: Branch;
+  branchId?: number;
+  product: Product;
+  productId?: number;
+  isActive: boolean;
+}
+
 export interface IGetSalesByMonthAndYear {
   ok: boolean;
   sales: SaleMonthYear[];
@@ -21,6 +40,10 @@ export interface IGetSalesByMonthAndYear {
 export interface IGetSalesByDay {
   ok: boolean;
   sales: number;
+}
+export interface IGetMostProductSelled {
+  ok: boolean;
+  products: ProductoMostSelledTable[];
 }
 
 export interface Branch {

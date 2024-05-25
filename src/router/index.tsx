@@ -20,6 +20,7 @@ import { useEffect } from "react";
 import Views from "../pages/Views";
 import { useAuthStore } from "../store/auth.store";
 import HomeSeller from "../pages/Seller/HomeSeller";
+import Reporters from "../pages/ReportersPage";
 
 /* eslint-disable react-hooks/rules-of-hooks */
 export const router = () => {
@@ -96,6 +97,10 @@ export const router = () => {
     {
       path: "/newSales",
       element: views && views.includes("Ventas") && <NewSales />,
+    },
+    {
+      path: "/reporters",
+      element: views && views.includes("Reportes") && <Reporters />,
     },
     {
       path: "/configuration",
