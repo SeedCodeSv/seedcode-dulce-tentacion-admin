@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { ISalesReportStore } from './types/sale_report.store.types';
 import {
+  get_products_most_selled_by_transmitter_table,
   get_sales_by_branch_and_current_month,
   get_sales_by_day,
   get_sales_by_day_table,
@@ -12,6 +13,7 @@ export const salesReportStore = create<ISalesReportStore>((set) => ({
   sales_month_year: [],
   sales_by_day: 0,
   sales_table_day: [],
+  products_most_selled: [],
   getSalesTableDay: (id) => {
     get_sales_by_day_table(id)
       .then(({ data }) => {
@@ -28,6 +30,15 @@ export const salesReportStore = create<ISalesReportStore>((set) => ({
       })
       .catch(() => {
         set({ sales_by_day: 0 });
+      });
+  },
+  getProductMostSelledTable: (id, startDate: string, endDate: string) => {
+    get_products_most_selled_by_transmitter_table(id, startDate, endDate)
+      .then(({ data }) => {
+        set({ products_most_selled: data.products });
+      })
+      .catch(() => {
+        set({ products_most_selled: [] });
       });
   },
   getSalesByYearAndMonth(id) {
