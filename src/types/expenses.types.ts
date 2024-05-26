@@ -9,6 +9,14 @@ export interface IExpense {
   categoryExpense: CategoryExpense;
   categoryExpenseId: number;
   isActive: boolean;
+  attachments: Attachment[]
+}
+export interface Attachment {
+  id: number
+  path: string
+  ext: string
+  isActive: boolean
+  expenseId: number
 }
 
 export interface IExpensePayload {
@@ -41,7 +49,7 @@ export interface IGetExpense {
   categoryExpense: ICategoryExpense
   file?: File | Blob | null
   expenseAttachment: {
-
+    ext: string
     path: string
 
   }
@@ -57,8 +65,13 @@ export interface IGetData {
   total: string
   isActive: boolean
   boxId: number
+  
   categoryExpenseId: number
-  expenseAttachment: IExpenseAttachment
+  expenseAttachment: {
+    ext: string
+    path: string
+
+  }
 }
 export interface IExpenseAttachment {
   id: number

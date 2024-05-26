@@ -13,11 +13,11 @@ import { global_styles } from "../../styles/global.styles";
 
 function MobileView(props: IMobileView) {
   const { layout, deletePopover, handleEdit } = props;
-  const { expenses_paginated } = useExpenseStore();
+  const {  expenses } = useExpenseStore();
   return (
     <div className="w-full pb-10">
       <DataView
-        value={expenses_paginated.expenses}
+        value={expenses}
         gutter
         layout={layout}
         pt={{

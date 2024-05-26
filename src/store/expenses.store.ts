@@ -13,9 +13,10 @@ import { IExpensePayloads } from '../types/expenses.types';
 
 export const useExpenseStore = create<IExpenseStore>((set, get) => ({
   expense_attachments: [],
+  expenses: [],
   annexes: [],
   expenses_paginated: {
-    expenses: [],
+    
     total: 0,
     totalPag: 0,
     currentPag: 0,
@@ -27,11 +28,23 @@ export const useExpenseStore = create<IExpenseStore>((set, get) => ({
 
   getExpensesPaginated(idBox, page, limit, category) {
     get_expenses_paginated(idBox, page, limit, category)
-      .then(({ data }) => set({ expenses_paginated: data }))
+      .then(({ data }) => set({
+        expenses: data.expenses,
+        expenses_paginated: {
+          total: data.total,
+          totalPag: data.totalPag,
+          currentPag: data.currentPag,
+          nextPag: data.nextPag,
+          prevPag: data.prevPag,
+          status: data.status,
+          ok: data.ok,
+        }
+
+      }))
       .catch(() => {
         set({
           expenses_paginated: {
-            expenses: [],
+           
             total: 0,
             totalPag: 0,
             currentPag: 0,

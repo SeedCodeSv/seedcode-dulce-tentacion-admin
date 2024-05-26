@@ -13,8 +13,8 @@ import {
   PopoverContent,
 } from "@nextui-org/react";
 import {
+  Attachment,
   IExpense, /*IExpensePayloads*/
-  IGetExpense
 } from "../../types/expenses.types";
 import {
   EditIcon,
@@ -24,6 +24,7 @@ import {
   CreditCard,
   List,
   Files,
+  Image
 } from "lucide-react";
 // import Zoom from "react-medium-image-zoom";
 import AddButton from "../global/AddButton";
@@ -38,10 +39,11 @@ import MobileView from "./MobileView";
 import { formatCurrency } from "../../utils/dte";
 import { limit_options } from "../../utils/constants";
 import Anexo from "./Anexo";
+import AnexoImg from "./AnexoImage";
 // import { Document, Page } from 'react-pdf';
 const ListExpenses = () => {
   const { theme } = useContext(ThemeContext);
-  const { getExpensesPaginated, expenses_paginated } = useExpenseStore();
+  const { getExpensesPaginated, expenses_paginated, expenses } = useExpenseStore();
   const [selectedCategory, setSelectedCategory] = useState<IExpense>();
   const [category, setCategory] = useState("");
   const [limit, setLimit] = useState(8);
@@ -56,6 +58,7 @@ const ListExpenses = () => {
 
   const modalAdd = useDisclosure();
   const showAnexo = useDisclosure();
+  const showAnexoimg = useDisclosure();
 
   const style = {
     backgroundColor: theme.colors.dark,
@@ -69,11 +72,9 @@ const ListExpenses = () => {
     modalAdd.onOpen();
   };
 
-  const [selectedExpense, setSelectedExpense] = useState<IGetExpense>()
-  const openAnexoModal = (expense: IGetExpense): void => {
-    setSelectedExpense(expense)
-    showAnexo.onOpen()
-  }
+
+
+  const [pathSelected, setPathSelected] = useState(0)
   return (
     <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
       <div className="flex flex-col w-full p-5 rounded">
@@ -191,7 +192,7 @@ const ListExpenses = () => {
           <DataTable
             className="w-full shadow"
             emptyMessage="No se encontraron resultados"
-            value={expenses_paginated.expenses}
+            value={expenses}
             tableStyle={{ minWidth: "50rem" }}
           >
             <Column
@@ -236,19 +237,39 @@ const ListExpenses = () => {
                       size={20}
                     />
                   </Button>
-                  <Button
-                    isIconOnly
-                    aria-label="Abrir PDF"
-                    style={{
-                      backgroundColor: theme.colors.secondary,
-                    }}
-                    onClick={() => openAnexoModal(item)}
-                  >
-                    <Files
-                      style={{ color: theme.colors.primary }}
-                      size={20}
-                    />
-                  </Button>
+                  {item.attachments.map((attachment: Attachment) => attachment.ext).includes("pdf") && (
+                    <Button
+                      isIconOnly
+                      aria-label="Abrir PDF"
+                      style={{
+                        backgroundColor: theme.colors.secondary,
+                      }}
+                      onClick={() => { setPathSelected(item.id); showAnexo.onOpen(); }}
+                    >
+                      <Files
+                        style={{ color: theme.colors.primary }}
+                        size={20}
+                      />
+                    </Button>
+                  )}
+                  {item.attachments.some((attachment: Attachment) =>
+                    ["jpg", "png", "jpeg", "webp", "svg"].includes(attachment.ext)
+                  ) && (
+                      <Button
+                        isIconOnly
+                        aria-label="Abrir imagen"
+                        style={{
+                          backgroundColor: theme.colors.secondary,
+                        }}
+                        onClick={() => { setPathSelected(item.id); showAnexoimg.onOpen(); }}
+                      >
+                        <Image
+                          style={{ color: theme.colors.primary }}
+                          size={20}
+                        />
+                      </Button>
+                    )}
+
                   <DeletePopUp expenses={item} />
                 </div>
               )}
@@ -295,23 +316,25 @@ const ListExpenses = () => {
           expenses={selectedCategory}
         />
       </ModalGlobal>
-      
-        {selectedExpense && (
-          <Anexo
-            expenses={selectedExpense}
-            clear={() => {
-              showAnexo.onClose()
-              setSelectedExpense(undefined)
-            }}
-          />
-        )}
-    
+
+      {pathSelected > 0 ? (
+        <Anexo
+          pdfViewerOpen={showAnexo.isOpen}
+          onClose={() => { showAnexo.onClose(); setPathSelected(0) }}
+          id={pathSelected}
+        />
+      ) : null}
+      {pathSelected > 0 ? (
+        <AnexoImg
+          pdfViewerOpen={showAnexoimg.isOpen}
+          onClose={() => { showAnexoimg.onClose(); setPathSelected(0) }}
+          id={pathSelected}
+        />
+      ) : null}
     </div>
   );
 };
-
 export default ListExpenses;
-
 interface Props {
   expenses: IExpense;
 }
