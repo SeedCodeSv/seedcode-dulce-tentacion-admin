@@ -13,7 +13,7 @@ export interface ISalesReportStore {
   sales_table_day: SaleTableDay[];
   getSalesTableDay: (id: number) => void;
   getSalesByDay: (id: number) => void;
-  getProductMostSelledTable: (id: number) => void;
+  getProductMostSelledTable: (id: number, startDate: string, endDate: string) => void;
   getSalesByYearAndMonth: (id: number) => void;
   getSalesByBranchAndMonth: (id: number) => void;
 }
