@@ -17,9 +17,6 @@ const MostProductTransmitterSelled = () => {
     useEffect(() => {
         getProductMostSelledTable(user?.employee.branch.transmitterId ?? 0, fechaInicio, fechaFin)
     }, [fechaInicio, fechaFin])
-
-
-
     const style = {
         backgroundColor: theme.colors.dark,
         color: theme.colors.primary,
