@@ -16,6 +16,7 @@ import { Departamento } from "../../types/billing/cat-012-departamento.types";
 import { global_styles } from "../../styles/global.styles";
 import { Municipio } from "../../types/billing/cat-013-municipio.types";
 import { useSupplierStore } from "../../store/supplier.store";
+import { toast } from "sonner";
 
 interface Props {
   closeModal: () => void;
@@ -112,6 +113,7 @@ function AddNormalSupplier(props: Props) {
 
   const onSubmit = (payload: PayloadSupplier) => {
     if (props.id) {
+      toast.error("No se puede editar un proveedor normal");
     } else {
       const values = {
         ...payload,

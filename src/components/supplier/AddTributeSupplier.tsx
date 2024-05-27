@@ -9,6 +9,7 @@ import { CodigoActividadEconomica } from "../../types/billing/cat-019-codigo-de-
 import { Municipio } from "../../types/billing/cat-013-municipio.types";
 import { Departamento } from "../../types/billing/cat-012-departamento.types";
 import { global_styles } from "../../styles/global.styles";
+import { toast } from "sonner";
 
 interface Props {
   closeModal: () => void;
@@ -154,8 +155,10 @@ function AddTributeSupplier(props: Props) {
     getCat019CodigoActividadEconomica(name);
   };
 
-  const onSubmit = (values: any) => {
-    console.log(values)
+  const onSubmit = (values: PayloadSupplier) => {
+    if(values){
+      toast.info("Estamos firmando tu documento");
+    }
   };
 
   return (

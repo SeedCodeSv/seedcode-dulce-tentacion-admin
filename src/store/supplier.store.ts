@@ -4,7 +4,7 @@ import { add_supplier } from "../services/supplier.service";
 import { toast } from "sonner";
 import { messages } from "../utils/constants";
 
-export const useSupplierStore = create<ISupplierStore>((set) => ({
+export const useSupplierStore = create<ISupplierStore>(() => ({
     onPostSupplier(payload) {
         add_supplier(payload).then(({data})=>{
             if(data.ok){

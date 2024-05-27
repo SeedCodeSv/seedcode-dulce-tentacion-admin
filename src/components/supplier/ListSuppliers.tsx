@@ -1,7 +1,7 @@
 import ModalGlobal from "../global/ModalGlobal";
 import AddNormalSupplier from "./AddNormalSupplier";
 import AddTributeSupplier from "./AddTributeSupplier";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Supplier } from "../../types/supplier.types";
 import { useDisclosure } from "@nextui-org/react";
 
@@ -11,6 +11,13 @@ function ListSuppliers() {
   const [selectedSupplier, setSelectedSupplier] = useState<Supplier>();
   
   const modalSupplier = useDisclosure()
+  
+  /*borren este codigo */
+  useEffect(()=>{
+    setTypeClient("normal")
+    setSelectedTitle("")
+    setSelectedSupplier(undefined)
+  })
 
   return (
     <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
