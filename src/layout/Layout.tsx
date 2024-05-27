@@ -1,10 +1,11 @@
-import { useContext, useEffect } from 'react';
-import { ThemeContext } from '../hooks/useTheme';
-import NavBar from './NavBar';
-import { SideBar } from './SideBar';
-import classNames from 'classnames';
-import { useConfigurationStore } from '../store/perzonalitation.store';
-import { useAuthStore } from '../store/auth.store';
+import { useContext, useEffect } from "react";
+import { ThemeContext } from "../hooks/useTheme";
+import NavBar from "./NavBar";
+import { SideBar } from "./SideBar";
+import classNames from "classnames";
+import { useConfigurationStore } from "../store/perzonalitation.store";
+import { useAuthStore } from "../store/auth.store";
+import { Helmet } from "react-helmet-async";
 
 interface Props {
   children: JSX.Element;
@@ -23,27 +24,38 @@ function Layout(props: Props) {
   }, [user]);
 
   return (
-    <div className={classNames('w-full h-full', context === 'dark' ? 'dark' : '')}>
-      {navbar === 'topbar' && (
-        <>
-          <div className="flex flex-col w-screen h-screen">
-            <NavBar />
-            <div className="w-full h-full overflow-y-auto bg-gray-50 dark:bg-gray-800">
-              {props.children}
+    <>
+      <Helmet>
+        <title>{props.title}</title>
+      </Helmet>
+
+      <div
+        className={classNames(
+          "w-full h-full",
+          context === "dark" ? "dark" : ""
+        )}
+      >
+        {navbar === "topbar" && (
+          <>
+            <div className="flex flex-col w-screen h-screen">
+              <NavBar />
+              <div className="w-full h-full overflow-y-auto bg-gray-50 dark:bg-gray-800">
+                {props.children}
+              </div>
             </div>
-          </div>
-        </>
-      )}
-      {navbar === 'sidebar' && (
-        <>
-          <SideBar title={props.title}>
-            <div className="w-full h-full overflow-y-auto bg-gray-50 dark:bg-gray-800">
-              {props.children}
-            </div>
-          </SideBar>
-        </>
-      )}
-    </div>
+          </>
+        )}
+        {navbar === "sidebar" && (
+          <>
+            <SideBar title={props.title}>
+              <div className="w-full h-full overflow-y-auto bg-gray-50 dark:bg-gray-800">
+                {props.children}
+              </div>
+            </SideBar>
+          </>
+        )}
+      </div>
+    </>
   );
 }
 
