@@ -1,16 +1,22 @@
-import { isValidDUI } from '@avalontechsv/idsv';
-import { PayloadSupplier, SupplierDirection } from '../../types/supplier.types';
-import * as yup from 'yup';
-import { useEffect, useMemo, useState } from 'react';
-import { useBillingStore } from '../../store/facturation/billing.store';
-import { get_user } from '../../storage/localStorage';
-import { Formik } from 'formik';
-import { Autocomplete, AutocompleteItem, Button, Input, Textarea } from '@nextui-org/react';
-import { Departamento } from '../../types/billing/cat-012-departamento.types';
-import { global_styles } from '../../styles/global.styles';
-import { Municipio } from '../../types/billing/cat-013-municipio.types';
-import { useSupplierStore } from '../../store/supplier.store';
-import { toast } from 'sonner';
+import { isValidDUI } from "@avalontechsv/idsv";
+import { PayloadSupplier, SupplierDirection } from "../../types/supplier.types";
+import * as yup from "yup";
+import { useEffect, useMemo, useState } from "react";
+import { useBillingStore } from "../../store/facturation/billing.store";
+import { get_user } from "../../storage/localStorage";
+import { Formik } from "formik";
+import {
+  Autocomplete,
+  AutocompleteItem,
+  Button,
+  Input,
+  Textarea,
+} from "@nextui-org/react";
+import { Departamento } from "../../types/billing/cat-012-departamento.types";
+import { global_styles } from "../../styles/global.styles";
+import { Municipio } from "../../types/billing/cat-013-municipio.types";
+import { useSupplierStore } from "../../store/supplier.store";
+import { toast } from "sonner";
 
 interface Props {
   closeModal: () => void;
@@ -87,7 +93,7 @@ function AddNormalSupplier(props: Props) {
 
   const onSubmit = (payload: PayloadSupplier) => {
     if (props.id) {
-      toast.error('No se puede editar un proveedor normal');
+      toast.error("No se puede editar un proveedor normal");
     } else {
       const values = {
         ...payload,

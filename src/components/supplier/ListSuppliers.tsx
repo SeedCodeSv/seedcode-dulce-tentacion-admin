@@ -1,16 +1,23 @@
-import ModalGlobal from "../global/ModalGlobal";
-import AddNormalSupplier from "./AddNormalSupplier";
-import AddTributeSupplier from "./AddTributeSupplier";
-import { useState } from "react";
-import { Supplier } from "../../types/supplier.types";
-import { useDisclosure } from "@nextui-org/react";
+import ModalGlobal from '../global/ModalGlobal';
+import AddNormalSupplier from './AddNormalSupplier';
+import AddTributeSupplier from './AddTributeSupplier';
+import { useState } from 'react';
+import { Supplier } from '../../types/supplier.types';
+import { useDisclosure } from '@nextui-org/react';
 
 function ListSuppliers() {
-  const [typeClient] = useState("normal");
-  const [selectedTitle] = useState("");
+  const [typeClient] = useState('normal');
+  const [selectedTitle] = useState('');
   const [selectedSupplier] = useState<Supplier>();
-  
-  const modalSupplier = useDisclosure()
+
+  const modalSupplier = useDisclosure();
+
+  /*borren este codigo */
+  // useEffect(()=>{
+  //   setTypeClient("normal")
+  //   setSelectedTitle("")
+  //   setSelectedSupplier(undefined)
+  // })
 
   return (
     <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
@@ -18,20 +25,20 @@ function ListSuppliers() {
       <ModalGlobal
         title={
           selectedSupplier
-            ? selectedTitle !== ""
+            ? selectedTitle !== ''
               ? selectedTitle
-              : "Editar proveedor"
-            : "Nuevo proveedor"
+              : 'Editar proveedor'
+            : 'Nuevo proveedor'
         }
         onClose={modalSupplier.onClose}
         isOpen={modalSupplier.isOpen}
         size={
-          typeClient === "contribuyente"
-            ? "w-full md:w-[600px] lg:w-[800px] xl:w-[1000px]"
-            : "w-full md:w-[500px] lg:w-[700px] xl:w-[800px]"
+          typeClient === 'contribuyente'
+            ? 'w-full md:w-[600px] lg:w-[800px] xl:w-[1000px]'
+            : 'w-full md:w-[500px] lg:w-[700px] xl:w-[800px]'
         }
       >
-        {typeClient === "normal" ? (
+        {typeClient === 'normal' ? (
           <AddNormalSupplier closeModal={() => {}} />
         ) : (
           <AddTributeSupplier closeModal={() => {}} />
