@@ -290,9 +290,9 @@ export const LayoutItems = () => {
               )}
 
               {views.includes('Empleados') ||
-                (views && views.includes('Clientes')) ||
-                views.includes('Usuarios') ||
-                views.includes('Sucursales') ? (
+              (views && views.includes('Clientes')) ||
+              views.includes('Usuarios') ||
+              views.includes('Sucursales') ? (
                 <>
                   <Menu as="div" className="relative px-4 z-50 w-full">
                     <div>
