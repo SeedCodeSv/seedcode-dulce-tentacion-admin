@@ -48,4 +48,5 @@ export const views_enabled = [
   'Ventas',
   'Reporte de ventas',
   'Modulos',
+  "Proveedores"
 ];
