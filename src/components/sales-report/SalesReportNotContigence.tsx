@@ -11,7 +11,7 @@ function SalesReportNotContigence() {
 
   const { saless, OnGetSalesNotContigence } = useReportContigenceStore();
   useEffect(() => {
-    const getSalesContigence = async () => {
+    const getSalesContigence = () => {
       const data = get_user();
       setBranchId(data?.employee.branch.id || 0);
     };

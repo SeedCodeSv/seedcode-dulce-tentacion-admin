@@ -66,7 +66,7 @@ export const useAuthStore = create<IAuthStore>((set, get) => ({
       });
   },
   async OnLoginMH(id, token) {
-    get_transmitter(id, token)
+    await get_transmitter(id, token)
       .then(({ data }) => {
         login_mh(data.transmitter.nit, data.transmitter.clavePrivada)
           .then(async (login_mh) => {

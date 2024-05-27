@@ -7,7 +7,7 @@ export const useSaleStatusStore = create<ISaleStatusStore>((set) => ({
   saleStatus: [],
 
   OnGetSaleStatusList: async () => {
-    get_sales_status()
+    await get_sales_status()
       .then((res) => {
         set({ saleStatus: res.data.saleStatus });
       })

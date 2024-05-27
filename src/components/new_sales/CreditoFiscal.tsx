@@ -137,7 +137,7 @@ function CreditoFiscal(props: Props) {
               source.cancel('El tiempo de espera ha expirado');
             }, 25000);
             send_to_mh(data_send, token_mh!, source)
-              .then(async ({ data }) => {
+              .then(({ data }) => {
                 if (data.selloRecibido) {
                   clearTimeout(timeout);
                   toast.success('Hacienda respondió correctamente', {

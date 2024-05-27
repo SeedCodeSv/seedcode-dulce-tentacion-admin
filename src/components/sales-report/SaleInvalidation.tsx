@@ -111,7 +111,7 @@ export const SaleInvalidation = (props: Props) => {
     typeDocApplicant: string;
   }
 
-  const onSubmit = async (values: Values) => {
+  const onSubmit = (values: Values) => {
     toast.info('Estamos firmado tu documento');
     firmarDocumentoInvalidacion({
       nit: transmitter.nit,
@@ -132,7 +132,7 @@ export const SaleInvalidation = (props: Props) => {
         },
       },
     })
-      .then(async (firma) => {
+      .then((firma) => {
         const token_mh = return_mh_token();
         if (firma.data.body) {
           const dataMH: IInvalidationToMH = {
@@ -151,7 +151,7 @@ export const SaleInvalidation = (props: Props) => {
             }, 25000);
             toast.info('Enviando a hacienda');
             send_to_mh_invalidation(dataMH)
-              .then(async ({ data }) => {
+              .then(({ data }) => {
                 if (data.selloRecibido) {
                   clearTimeout(timeout);
                   toast.info('Estamos guardando tus datos');

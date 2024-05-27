@@ -42,7 +42,7 @@ export const useCustomerStore = create<IUseCustomersStore>((set, get) => ({
         });
       });
   },
-  postCustomer: async (payload) => {
+  postCustomer: (payload) => {
     return save_customers(payload)
       .then(({ data }) => {
         if (data) {

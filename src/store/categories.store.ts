@@ -85,7 +85,7 @@ export const useCategoriesStore = create<ICategoriesStore>((set, get) => ({
         return false;
       });
   },
-  async activateCategory(id) {
+  activateCategory(id) {
     return activate_category(id)
       .then(() => {
         toast.success('Se activo la categoría');
