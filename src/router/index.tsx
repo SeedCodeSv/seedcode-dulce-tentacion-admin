@@ -23,6 +23,7 @@ import HomeSeller from "../pages/Seller/HomeSeller";
 import Reporters from "../pages/ReportersPage";
 import SalesByTransmitterPage from "../pages/SalesByTransmitterPage";
 import ExpenseByDatesTransmitter from "../pages/ExpenseByDatesTransmitter";
+import Supplier from "../pages/Supplier";
 
 /* eslint-disable react-hooks/rules-of-hooks */
 export const router = () => {
@@ -118,13 +119,13 @@ export const router = () => {
       path: '/create-configuration',
       element: <CreateConfiguration />,
     },
-    // {
-    //   path: "/UpdateSales",
-    //   element: <SalesUpdate />,
-    // },
     {
       path: 'sales-reports',
       element: views && views.includes('Reporte de ventas') && <SalesReportContigencePage />,
+    },
+    {
+      path:"/suppliers",
+      element: views && views.includes("Proveedores") && <Supplier />
     },
     {
       path: '*',
