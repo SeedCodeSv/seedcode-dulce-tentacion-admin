@@ -90,6 +90,11 @@ export const return_branch_id = () => {
 export const delete_branch_id = () => {
   return localStorage.removeItem('branch_id');
 };
+
+export const  delete_RVA = () => {
+  return localStorage.removeItem('_RVA');
+};
+
 export const save_seller_mode = (mode: string) => {
   localStorage.setItem('seller_mode', mode);
 };
