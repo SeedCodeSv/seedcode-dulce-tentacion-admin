@@ -3,7 +3,7 @@ interface Props {
   sales: {
     title: string;
     labels: string[];
-    total: number;
+    total: string[];
     series: {
       name: string;
       data: number[];
@@ -23,7 +23,7 @@ function SalesMonthBranches({ sales }: Props) {
           {sales.title}
         </p>
         <p className="text-sm tracking-wide px-[10px] font-bold text-white uppercase">
-          {sales.total}
+        {sales.total}
         </p>
         <ApexChart
           type="line"

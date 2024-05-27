@@ -21,6 +21,8 @@ import Views from "../pages/Views";
 import { useAuthStore } from "../store/auth.store";
 import HomeSeller from "../pages/Seller/HomeSeller";
 import Reporters from "../pages/ReportersPage";
+import SalesByTransmitterPage from "../pages/SalesByTransmitterPage";
+import ExpenseByDatesTransmitter from "../pages/ExpenseByDatesTransmitter";
 import Supplier from "../pages/Supplier";
 
 /* eslint-disable react-hooks/rules-of-hooks */
@@ -98,11 +100,19 @@ export const router = () => {
       element: views && views.includes('Ventas') && <NewSales />,
     },
     {
-      path: "/reporters",
-      element: views && views.includes("Reportes") && <Reporters />,
+      path: '/reporters',
+      element: views && views.includes('Reportes') && <Reporters />,
     },
     {
-      path: "/configuration",
+      path: '/sales-by-transmitter',
+      element: views && views.includes('Reportes') && <SalesByTransmitterPage />,
+    },
+    {
+      path: '/expenses-by-dates-transmitter',
+      element: views && views.includes('Reportes') && <ExpenseByDatesTransmitter />,
+    },
+    {
+      path: '/configuration',
       element: <Configuration />,
     },
     {
