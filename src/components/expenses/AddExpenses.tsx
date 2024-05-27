@@ -21,6 +21,7 @@ import { ThemeContext } from '../../hooks/useTheme';
 interface Props {
   closeModal: () => void;
   expenses?: IExpense | undefined;
+  reload: () => void
 }
 const AddExpenses = (props: Props) => {
   const { theme } = useContext(ThemeContext);
@@ -97,6 +98,7 @@ const AddExpenses = (props: Props) => {
     try {
       if (props.expenses) {
         await patchExpenses(props.expenses.id, { ...values });
+        props.reload()
       } else {
         if (!formData.file) {
           const defaultImageFile = await fetch(DefaultImage)
@@ -112,9 +114,9 @@ const AddExpenses = (props: Props) => {
           setSelectedFile({ url: DefaultImage, type: 'image/png' });
         }
         await postExpenses({ ...values, file: formData.file });
+        props.reload()
       }
       props.closeModal();
-      toast.success('Información guardada correctamente');
     } catch (error) {
       toast.error('Ocurrió un error al guardar la información');
     }
