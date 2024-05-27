@@ -1,26 +1,18 @@
-import { Customer } from '../customers.types';
-import { Employee } from '../users.types';
+import { Customer } from '../../customers.types';
+import { Employee } from '../../users.types';
 
-export interface BranchProduct {
-  name: string;
-  code: string;
-  price: string;
+export interface IResponseExpenseData {
   id: number;
+  description: string;
+  total: number;
+  boxId: number;
+  categoryExpenseId: number;
+  isActive: boolean;
 }
-
-export interface ProductMostSelled {
-  branchProduct: BranchProduct;
-  quantity: string;
-  total: string;
-  branch: string;
+export interface IExpensesData {
+  expenses: IResponseExpenseData[];
 }
-
-export interface IGetProductMostSelled {
-  ok: boolean;
-  products: ProductMostSelled[];
-}
-
-export interface ISalesData {
+export interface IResponseByBranchSales {
   id: number;
   boxId: number;
   customer: Customer;
@@ -56,23 +48,13 @@ export interface ISalesData {
   pathJson: string;
   isActivated: boolean;
 }
-export interface ISalesByTransmitter {
-  ok: boolean;
-  sales: ISalesData[];
+export interface ISalesByBranchData {
+  sales: IResponseByBranchSales[];
 }
 
-export interface IDataExpense {
-  id: number;
-  description: string;
-  total: number;
-  boxId: number;
-  categoryExpenseId: number;
-  isActive: boolean;
+export interface IReportBranchStore {
+  expenses: IResponseExpenseData[];
+  sales: IResponseByBranchSales[];
+  OnGetReportExpenseByBranch: () => void;
+  OnGetReportByBranchSales: () => void;
 }
-
-export interface IResponseDataExpenses {
-  ok: boolean;
-  expenses: IDataExpense[];
-}
-
-

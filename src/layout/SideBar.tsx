@@ -16,7 +16,7 @@ import { ThemeContext } from '../hooks/useTheme';
 import { useAuthStore } from '../store/auth.store';
 import { useNavigate } from 'react-router';
 import { SessionContext } from '../hooks/useSession';
-import { delete_seller_mode } from '../storage/localStorage';
+import { delete_RVA, delete_seller_mode } from '../storage/localStorage';
 interface Props {
   children: ReactNode;
   title: string;
@@ -39,9 +39,13 @@ export const SideBar = (props: Props) => {
   const close_login = () => {
     makeLogout();
     delete_seller_mode();
+    
     setIsAuth(false);
     setToken('');
     navigation('/');
+    delete_RVA();
+
+   
   };
   useEffect(() => {
     const handleResize = () => {
