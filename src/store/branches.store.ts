@@ -29,7 +29,7 @@ export const useBranchesStore = create<IBranchStore>((set, get) => ({
   loading: false,
   active: 1 as 1 | 0,
   branch_products_list: [],
-  async getBranchesList() {
+  getBranchesList() {
     return get_branches_list()
       .then(({ data }) => {
         set((state) => ({ ...state, branch_list: data.branches }));
@@ -38,7 +38,7 @@ export const useBranchesStore = create<IBranchStore>((set, get) => ({
         set((state) => ({ ...state, branch_list: [] }));
       });
   },
-  async disableBranch(id, state) {
+  disableBranch(id, state) {
     return disable_branch(id, state)
       .then(({ data }) => {
         get().getBranchesPaginated(1, get().limit, '', '', '', get().active);
@@ -71,7 +71,7 @@ export const useBranchesStore = create<IBranchStore>((set, get) => ({
         });
       });
   },
-  async postBranch(payload) {
+  postBranch(payload) {
     return save_branch(payload)
       .then((result) => {
         get().getBranchesPaginated(1, get().limit, '', '', '', get().active);
@@ -83,7 +83,7 @@ export const useBranchesStore = create<IBranchStore>((set, get) => ({
         return false;
       });
   },
-  async patchBranch(payload, id) {
+  patchBranch(payload, id) {
     return patch_branch(payload, id)
       .then(({ data }) => {
         get().getBranchesPaginated(1, get().limit, '', '', '', get().active);

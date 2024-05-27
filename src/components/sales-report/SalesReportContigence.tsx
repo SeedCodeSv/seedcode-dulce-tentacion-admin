@@ -82,7 +82,7 @@ function SalesReportContigence() {
     OnGetSalesNotContigence,
   } = useReportContigenceStore();
   useEffect(() => {
-    const getSalesContigence = async () => {
+    const getSalesContigence = () => {
       const data = get_user();
       setBranchId(data?.employee.branch.id || 0);
     };
@@ -143,7 +143,7 @@ function SalesReportContigence() {
   const [terminalLineData, setTerminalLineData] = useState(baseData);
 
   const [selectedSale, setSelectedSale] = useState<Sale>();
-  async function onInput(input: string) {
+  function onInput(input: string) {
     let ld = [...terminalLineData];
     ld.push(<TerminalInput>{input}</TerminalInput>);
     if (input.toLocaleLowerCase().trim() === '1') {

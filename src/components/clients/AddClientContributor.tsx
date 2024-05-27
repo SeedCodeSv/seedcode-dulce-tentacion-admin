@@ -113,7 +113,7 @@ function AddClientContributor(props: Props) {
         esContribuyente: 1,
         transmitterId: Number(user?.employee.branch.transmitterId),
       };
-      postCustomer(values);
+      await postCustomer(values);
     }
     props.closeModal();
   };

@@ -5,7 +5,7 @@ import { get_logs } from '../services/logs.service';
 export const useLogsStore = create<LogsStore>((set) => ({
   logs: [],
   async getLogs(code) {
-    get_logs(code)
+    await get_logs(code)
       .then((res) => {
         set((state) => ({
           ...state,

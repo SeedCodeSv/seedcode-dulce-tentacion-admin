@@ -92,7 +92,7 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
         set((state) => ({ ...state, employee_list: [] }));
       });
   },
-  async activateEmployee(id) {
+  activateEmployee(id) {
     return activate_employee(id)
       .then(() => {
         toast.success('Se activo el empleado');

@@ -61,7 +61,7 @@ function AddBranch(props: Props) {
   useEffect(() => {
     (async () => {
       if (props.branch) {
-        verify_box(Number(props.branch?.id)).then(({ data }) => {
+        await verify_box(Number(props.branch?.id)).then(({ data }) => {
           if (data.box) {
             setVisible(true);
             setIdBox(data.box.id);

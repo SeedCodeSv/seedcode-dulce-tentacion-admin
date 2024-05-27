@@ -24,7 +24,7 @@ export const get_transmitterId = () => {
     }
   );
 };
-export const login_mh = async (user: string, password: string) => {
+export const login_mh = (user: string, password: string) => {
   return axios.post<ILoginMH>(AUTH_MH, qs.stringify({ user, pwd: password }), {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
