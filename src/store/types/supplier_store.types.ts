@@ -1,5 +1,19 @@
-import { PayloadSupplier } from "../../types/supplier.types";
+import { IGetSupplierPagination, PayloadSupplier, Supplier } from '../../types/supplier.types';
 
-export interface ISupplierStore{
-    onPostSupplier: (payload:PayloadSupplier) => void
+export interface ISupplierStore {
+  supplier_pagination: IGetSupplierPagination;
+  supplier_list: Supplier[];
+  saveSupplierPagination: (supplier_pagination: IGetSupplierPagination) => void;
+  getSupplierPagination: (
+    page: number,
+    limit: number,
+    nombre: string,
+    correo: string,
+    active: number,
+    isTransmitter: number
+  ) => void;
+  onPostSupplier: (payload: PayloadSupplier) => Promise<boolean>;
+  patchSupplier: (payload: PayloadSupplier, id: number) => void;
+  getSupplierList: () => void;
+  deleteSupplier: (id: number) => Promise<boolean>;
 }
