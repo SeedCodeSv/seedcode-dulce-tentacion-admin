@@ -1,6 +1,6 @@
-import { Button, Switch } from '@nextui-org/react';
-import { NavLink } from 'react-router-dom';
-import LOGO from '../assets/react.svg';
+import { Button, Switch } from "@nextui-org/react";
+import { NavLink } from "react-router-dom";
+import LOGO from "../assets/react.svg";
 import {
   Home,
   Box,
@@ -18,51 +18,55 @@ import {
   FolderOpen,
   Store,
   Truck,
-} from 'lucide-react';
-import { Fragment, useContext, useEffect, useMemo } from 'react';
-import { ThemeContext } from '../hooks/useTheme';
-import { useAuthStore } from '../store/auth.store';
-import { get_user, save_seller_mode } from '../storage/localStorage';
-import { useNavigate } from 'react-router';
-import { SessionContext } from '../hooks/useSession';
-import { useConfigurationStore } from '../store/perzonalitation.store';
-import useWindowSize from '../hooks/useWindowSize';
-import { useActionsRolStore } from '../store/actions_rol.store';
-import { Menu, Transition } from '@headlessui/react';
-import { ActionsContext } from '../hooks/useActions';
-import { encryptData } from '../plugins/crypto';
+  ShoppingBag,
+} from "lucide-react";
+import { Fragment, useContext, useEffect, useMemo } from "react";
+import { ThemeContext } from "../hooks/useTheme";
+import { useAuthStore } from "../store/auth.store";
+import { get_user, save_seller_mode } from "../storage/localStorage";
+import { useNavigate } from "react-router";
+import { SessionContext } from "../hooks/useSession";
+import { useConfigurationStore } from "../store/perzonalitation.store";
+import useWindowSize from "../hooks/useWindowSize";
+import { useActionsRolStore } from "../store/actions_rol.store";
+import { Menu, Transition } from "@headlessui/react";
+import { ActionsContext } from "../hooks/useActions";
+import { encryptData } from "../plugins/crypto";
 export const LayoutItems = () => {
   const { theme, toggleContext, context } = useContext(ThemeContext);
   const { makeLogout } = useAuthStore();
   const { setIsAuth, setToken, mode, setMode } = useContext(SessionContext);
   useEffect(() => {
-    if (context === 'dark') {
-      document.getElementsByTagName('body')[0].classList.add('dark');
+    if (context === "dark") {
+      document.getElementsByTagName("body")[0].classList.add("dark");
     } else {
-      document.getElementsByTagName('body')[0].classList.remove('dark');
+      document.getElementsByTagName("body")[0].classList.remove("dark");
     }
   }, [context]);
   const navigate = useNavigate();
   const handleSeller = () => {
-    setMode('vendedor');
-    save_seller_mode('vendedor');
+    setMode("vendedor");
+    save_seller_mode("vendedor");
     makeLogout();
 
     setIsAuth(false);
-    setToken('');
-    navigate('/');
+    setToken("");
+    navigate("/");
   };
   const handleAdmin = () => {
-    setMode('');
+    setMode("");
     makeLogout();
-    localStorage.removeItem('seller_mode');
+    localStorage.removeItem("seller_mode");
     setIsAuth(false);
-    setToken('');
-    navigate('/');
+    setToken("");
+    navigate("/");
   };
   const { user } = useAuthStore();
   const transmitter = user?.employee?.branch?.transmitterId;
-  const { personalization, GetConfigurationByTransmitter } = useConfigurationStore();
+  const {
+    personalization,
+    GetConfigurationByTransmitter,
+  } = useConfigurationStore();
   useEffect(() => {
     GetConfigurationByTransmitter(transmitter || 0);
   }, []);
@@ -88,7 +92,7 @@ export const LayoutItems = () => {
       if (storedUser && storedUser.roleId) {
         OnGetActionsByRole(storedUser.roleId).then((data) => {
           if (data) {
-            localStorage.setItem('_RVA', encryptData(data));
+            localStorage.setItem("_RVA", encryptData(data));
             setRoleActions(data);
           }
         });
@@ -111,7 +115,9 @@ export const LayoutItems = () => {
           }}
         >
           <img src={LOGO} className="max-h-14" />
-          <p className="ml-3 font-sans text-sm font-bold text-coffee-brown">SeedCodeERP</p>
+          <p className="ml-3 font-sans text-sm font-bold text-coffee-brown">
+            SeedCodeERP
+          </p>
         </div>
       ) : (
         <>
@@ -129,7 +135,7 @@ export const LayoutItems = () => {
           ))}
         </>
       )}
-      {mode !== 'vendedor' ? (
+      {mode !== "vendedor" ? (
         <div className=" justify-center items-center px-2 mt-2">
           <Button
             onClick={() => handleSeller()}
@@ -152,20 +158,20 @@ export const LayoutItems = () => {
       )}
 
       <>
-        {views && views.includes('Inicio de ventas') && mode === 'vendedor' && (
+        {views && views.includes("Inicio de ventas") && mode === "vendedor" && (
           <NavLink
-            to={'/homeSeller'}
+            to={"/homeSeller"}
             className={({ isActive }) => {
               return (
                 (isActive
-                  ? 'text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green'
-                  : 'text-coffee-brown font-semibold border-white') +
-                ' flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
+                  ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
+                  : "text-coffee-brown font-semibold border-white") +
+                " flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
               );
             }}
             style={({ isActive }) => {
               return {
-                borderLeftColor: isActive ? theme.colors.dark : 'transparent',
+                borderLeftColor: isActive ? theme.colors.dark : "transparent",
                 borderLeftWidth: 5,
               };
             }}
@@ -176,20 +182,20 @@ export const LayoutItems = () => {
         )}
       </>
 
-      {views && views.includes('Ventas') && mode === 'vendedor' && (
+      {views && views.includes("Ventas") && mode === "vendedor" && (
         <NavLink
-          to={'/newSales'}
+          to={"/newSales"}
           className={({ isActive }) => {
             return (
               (isActive
-                ? 'text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green'
-                : 'text-coffee-brown font-semibold border-white') +
-              ' flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
+                ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
+                : "text-coffee-brown font-semibold border-white") +
+              " flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
             );
           }}
           style={({ isActive }) => {
             return {
-              borderLeftColor: isActive ? theme.colors.dark : 'transparent',
+              borderLeftColor: isActive ? theme.colors.dark : "transparent",
               borderLeftWidth: 5,
             };
           }}
@@ -198,20 +204,20 @@ export const LayoutItems = () => {
           <p className="ml-2 text-sm 2xl:text-base">Nueva venta</p>
         </NavLink>
       )}
-      {views && views.includes('Clientes') && mode === 'vendedor' && (
+      {views && views.includes("Clientes") && mode === "vendedor" && (
         <NavLink
-          to={'/clients'}
+          to={"/clients"}
           className={({ isActive }) => {
             return (
               (isActive
-                ? 'text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green'
-                : 'text-coffee-brown font-semibold border-white') +
-              ' flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
+                ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
+                : "text-coffee-brown font-semibold border-white") +
+              " flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
             );
           }}
           style={({ isActive }) => {
             return {
-              borderLeftColor: isActive ? theme.colors.dark : 'transparent',
+              borderLeftColor: isActive ? theme.colors.dark : "transparent",
               borderLeftWidth: 5,
             };
           }}
@@ -222,20 +228,20 @@ export const LayoutItems = () => {
       )}
 
       <>
-        {views && views.includes('Gastos') && mode === 'vendedor' && (
+        {views && views.includes("Gastos") && mode === "vendedor" && (
           <NavLink
-            to={'/expenses'}
+            to={"/expenses"}
             className={({ isActive }) => {
               return (
                 (isActive
-                  ? 'text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green'
-                  : 'text-coffee-brown font-semibold border-white') +
-                ' flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
+                  ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
+                  : "text-coffee-brown font-semibold border-white") +
+                " flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
               );
             }}
             style={({ isActive }) => {
               return {
-                borderLeftColor: isActive ? theme.colors.dark : 'transparent',
+                borderLeftColor: isActive ? theme.colors.dark : "transparent",
                 borderLeftWidth: 5,
               };
             }}
@@ -245,23 +251,25 @@ export const LayoutItems = () => {
           </NavLink>
         )}
       </>
-      {mode !== 'vendedor' && (
+      {mode !== "vendedor" && (
         <>
           {views && (
             <>
               <NavLink
-                to={'/'}
+                to={"/"}
                 className={({ isActive }) => {
                   return (
                     (isActive
-                      ? 'text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green'
-                      : 'text-coffee-brown font-semibold border-white') +
-                    ' flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
+                      ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
+                      : "text-coffee-brown font-semibold border-white") +
+                    " flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
                   );
                 }}
                 style={({ isActive }) => {
                   return {
-                    borderLeftColor: isActive ? theme.colors.dark : 'transparent',
+                    borderLeftColor: isActive
+                      ? theme.colors.dark
+                      : "transparent",
                     borderLeftWidth: 5,
                   };
                 }}
@@ -270,20 +278,22 @@ export const LayoutItems = () => {
                 <p className="ml-2 text-sm 2xl:text-base">Inicio</p>
               </NavLink>
 
-              {views.includes('Productos') && (
+              {views.includes("Productos") && (
                 <NavLink
-                  to={'/products'}
+                  to={"/products"}
                   className={({ isActive }) => {
                     return (
                       (isActive
-                        ? 'text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green'
-                        : 'text-coffee-brown font-semibold border-white') +
-                      ' flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
+                        ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
+                        : "text-coffee-brown font-semibold border-white") +
+                      " flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
                     );
                   }}
                   style={({ isActive }) => {
                     return {
-                      borderLeftColor: isActive ? theme.colors.dark : 'transparent',
+                      borderLeftColor: isActive
+                        ? theme.colors.dark
+                        : "transparent",
                       borderLeftWidth: 5,
                     };
                   }}
@@ -292,20 +302,22 @@ export const LayoutItems = () => {
                   <p className="ml-2 text-sm 2xl:text-base">Productos</p>
                 </NavLink>
               )}
-              {views.includes('Categorias') && (
+              {views.includes("Categorias") && (
                 <NavLink
-                  to={'/categories'}
+                  to={"/categories"}
                   className={({ isActive }) => {
                     return (
                       (isActive
-                        ? 'text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green'
-                        : 'text-coffee-brown font-semibold border-white') +
-                      ' flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
+                        ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
+                        : "text-coffee-brown font-semibold border-white") +
+                      " flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
                     );
                   }}
                   style={({ isActive }) => {
                     return {
-                      borderLeftColor: isActive ? theme.colors.dark : 'transparent',
+                      borderLeftColor: isActive
+                        ? theme.colors.dark
+                        : "transparent",
                       borderLeftWidth: 5,
                     };
                   }}
@@ -315,14 +327,17 @@ export const LayoutItems = () => {
                 </NavLink>
               )}
 
-              {views.includes('Reportes') && (
+              {views.includes("Reportes") && (
                 <>
                   <Menu as="div" className="relative px-4 z-50 w-full">
                     <div>
                       <Menu.Button className="inline-flex w-full font-semibold py-2  gap-x-1.5 ml-2 text-sm 2xl:text-base">
                         <AlignJustify size={iconSize} />
                         Reportes
-                        <ChevronDown className="justify-end items-end  ml-16" size={iconSize} />
+                        <ChevronDown
+                          className="justify-end items-end  ml-16"
+                          size={iconSize}
+                        />
                       </Menu.Button>
                     </div>
 
@@ -339,64 +354,70 @@ export const LayoutItems = () => {
                         <div className="py-1">
                           <Menu.Item>
                             <NavLink
-                              to={'/sales-by-branch'}
+                              to={"/sales-by-branch"}
                               className={({ isActive }) => {
                                 return (
                                   (isActive
-                                    ? 'font-semibold bg-gray-300 dark:bg-gray-700'
-                                    : 'text-coffee-brown font-semibold border-white') +
-                                  ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
+                                    ? "font-semibold bg-gray-300 dark:bg-gray-700"
+                                    : "text-coffee-brown font-semibold border-white") +
+                                  " flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white"
                                 );
                               }}
                             >
                               <User size={iconSize} />
-                              <p className="ml-2 text-sm 2xl:text-base">Ventas Sucursal</p>
+                              <p className="ml-2 text-sm 2xl:text-base">
+                                Ventas Sucursal
+                              </p>
                             </NavLink>
                           </Menu.Item>
 
                           <Menu.Item>
                             <NavLink
-                              to={'/expenses-by-branch'}
+                              to={"/expenses-by-branch"}
                               className={({ isActive }) => {
                                 return (
                                   (isActive
-                                    ? 'font-semibold bg-gray-300 dark:bg-gray-700'
-                                    : 'text-coffee-brown font-semibold border-white') +
-                                  ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
+                                    ? "font-semibold bg-gray-300 dark:bg-gray-700"
+                                    : "text-coffee-brown font-semibold border-white") +
+                                  " flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white"
                                 );
                               }}
                             >
                               <BookUser size={iconSize} />
-                              <p className="ml-2 text-sm 2xl:text-base">Gatos Sucursal</p>
+                              <p className="ml-2 text-sm 2xl:text-base">
+                                Gatos Sucursal
+                              </p>
                             </NavLink>
                           </Menu.Item>
 
                           <Menu.Item>
                             <NavLink
-                              to={'/sales-by-transmitter'}
+                              to={"/sales-by-transmitter"}
                               className={({ isActive }) => {
                                 return (
                                   (isActive
-                                    ? 'font-semibold bg-gray-300 dark:bg-gray-700'
-                                    : 'text-coffee-brown font-semibold border-white') +
-                                  ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
+                                    ? "font-semibold bg-gray-300 dark:bg-gray-700"
+                                    : "text-coffee-brown font-semibold border-white") +
+                                  " flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white"
                                 );
                               }}
                             >
                               <User size={iconSize} />
-                              <p className="ml-2 text-sm 2xl:text-base">Ventas Generales</p>
+                              <p className="ml-2 text-sm 2xl:text-base">
+                                Ventas Generales
+                              </p>
                             </NavLink>
                           </Menu.Item>
 
                           <Menu.Item>
                             <NavLink
-                              to={'/expenses-by-dates-transmitter'}
+                              to={"/expenses-by-dates-transmitter"}
                               className={({ isActive }) => {
                                 return (
                                   (isActive
-                                    ? 'font-semibold bg-gray-300 dark:bg-gray-700'
-                                    : 'text-coffee-brown font-semibold border-white') +
-                                  ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
+                                    ? "font-semibold bg-gray-300 dark:bg-gray-700"
+                                    : "text-coffee-brown font-semibold border-white") +
+                                  " flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white"
                                 );
                               }}
                             >
@@ -410,17 +431,20 @@ export const LayoutItems = () => {
                   </Menu>
                 </>
               )}
-              {views.includes('Empleados') ||
-              (views && views.includes('Clientes')) ||
-              views.includes('Usuarios') ||
-              views.includes('Sucursales') ? (
+              {views.includes("Empleados") ||
+              (views && views.includes("Clientes")) ||
+              views.includes("Usuarios") ||
+              views.includes("Sucursales") ? (
                 <>
                   <Menu as="div" className="relative px-4 z-20  w-full">
                     <div>
                       <Menu.Button className="inline-flex w-full font-semibold py-2  gap-x-1.5 ml-2 text-sm 2xl:text-base">
                         <AlignJustify size={iconSize} />
                         Menú
-                        <ChevronDown className="justify-end items-end  ml-20" size={iconSize} />
+                        <ChevronDown
+                          className="justify-end items-end  ml-20"
+                          size={iconSize}
+                        />
                       </Menu.Button>
                     </div>
                     <Transition
@@ -434,77 +458,83 @@ export const LayoutItems = () => {
                     >
                       <Menu.Items className="absolute z-10 mt-2 w-56 origin-top-right rounded-md bg-white dark:bg-gray-950 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                         <div className="py-1">
-                          {views.includes('Empleados') && (
+                          {views.includes("Empleados") && (
                             <Menu.Item>
-                              {views.includes('Empleados') && (
+                              {views.includes("Empleados") && (
                                 <NavLink
-                                  to={'/employees'}
+                                  to={"/employees"}
                                   className={({ isActive }) => {
                                     return (
                                       (isActive
-                                        ? 'font-semibold bg-gray-300 dark:bg-gray-700'
-                                        : 'text-coffee-brown font-semibold border-white') +
-                                      ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
+                                        ? "font-semibold bg-gray-300 dark:bg-gray-700"
+                                        : "text-coffee-brown font-semibold border-white") +
+                                      " flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white"
                                     );
                                   }}
                                 >
                                   <User size={iconSize} />
-                                  <p className="ml-2 text-sm 2xl:text-base">Empleados</p>
+                                  <p className="ml-2 text-sm 2xl:text-base">
+                                    Empleados
+                                  </p>
                                 </NavLink>
                               )}
                             </Menu.Item>
                           )}
-                          {views && views.includes('Clientes') && (
+                          {views && views.includes("Clientes") && (
                             <Menu.Item>
-                              {views.includes('Clientes') && (
+                              {views.includes("Clientes") && (
                                 <NavLink
-                                  to={'/clients'}
+                                  to={"/clients"}
                                   className={({ isActive }) => {
                                     return (
                                       (isActive
-                                        ? 'font-semibold bg-gray-300 dark:bg-gray-700'
-                                        : 'text-coffee-brown font-semibold border-white') +
-                                      ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
+                                        ? "font-semibold bg-gray-300 dark:bg-gray-700"
+                                        : "text-coffee-brown font-semibold border-white") +
+                                      " flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white"
                                     );
                                   }}
                                 >
                                   <BookUser size={iconSize} />
-                                  <p className="ml-2 text-sm 2xl:text-base">Clientes</p>
+                                  <p className="ml-2 text-sm 2xl:text-base">
+                                    Clientes
+                                  </p>
                                 </NavLink>
                               )}
                             </Menu.Item>
                           )}
 
-                          {views.includes('Usuarios') && (
+                          {views.includes("Usuarios") && (
                             <Menu.Item>
-                              {views.includes('Usuarios') && (
+                              {views.includes("Usuarios") && (
                                 <NavLink
-                                  to={'/users'}
+                                  to={"/users"}
                                   className={({ isActive }) => {
                                     return (
                                       (isActive
-                                        ? 'font-semibold bg-gray-300 dark:bg-gray-700'
-                                        : 'text-coffee-brown font-semibold border-white') +
-                                      ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
+                                        ? "font-semibold bg-gray-300 dark:bg-gray-700"
+                                        : "text-coffee-brown font-semibold border-white") +
+                                      " flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white"
                                     );
                                   }}
                                 >
                                   <User size={iconSize} />
-                                  <p className="ml-2 text-sm 2xl:text-base">Usuarios</p>
+                                  <p className="ml-2 text-sm 2xl:text-base">
+                                    Usuarios
+                                  </p>
                                 </NavLink>
                               )}
                             </Menu.Item>
                           )}
-                          {views.includes('Proveedores') && (
+                          {views.includes("Proveedores") && (
                             <Menu.Item>
                               <NavLink
-                                to={'/suppliers'}
+                                to={"/suppliers"}
                                 className={({ isActive }) => {
                                   return (
                                     (isActive
-                                      ? 'font-semibold bg-gray-300 dark:bg-gray-700'
-                                      : 'text-coffee-brown font-semibold border-white') +
-                                    ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
+                                      ? "font-semibold bg-gray-300 dark:bg-gray-700"
+                                      : "text-coffee-brown font-semibold border-white") +
+                                    " flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white"
                                   );
                                 }}
                               >
@@ -513,17 +543,17 @@ export const LayoutItems = () => {
                               </NavLink>
                             </Menu.Item>
                           )}
-                          {views.includes('Sucursales') && (
+                          {views.includes("Sucursales") && (
                             <Menu.Item>
-                              {views.includes('Sucursales') && (
+                              {views.includes("Sucursales") && (
                                 <NavLink
-                                  to={'/branches'}
+                                  to={"/branches"}
                                   className={({ isActive }) => {
                                     return (
                                       (isActive
-                                        ? 'font-semibold bg-gray-300 dark:bg-gray-700'
-                                        : 'text-coffee-brown font-semibold border-white') +
-                                      ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
+                                        ? "font-semibold bg-gray-300 dark:bg-gray-700"
+                                        : "text-coffee-brown font-semibold border-white") +
+                                      " flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white"
                                     );
                                   }}
                                 >
@@ -539,26 +569,30 @@ export const LayoutItems = () => {
                   </Menu>
                 </>
               ) : null}
-              {views.includes('Categoría de gastos') && (
+              {views.includes("Categoría de gastos") && (
                 <NavLink
-                  to={'/expensesCategories'}
+                  to={"/expensesCategories"}
                   className={({ isActive }) => {
                     return (
                       (isActive
-                        ? 'text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green'
-                        : 'text-coffee-brown font-semibold border-white') +
-                      ' flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
+                        ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
+                        : "text-coffee-brown font-semibold border-white") +
+                      " flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
                     );
                   }}
                   style={({ isActive }) => {
                     return {
-                      borderLeftColor: isActive ? theme.colors.dark : 'transparent',
+                      borderLeftColor: isActive
+                        ? theme.colors.dark
+                        : "transparent",
                       borderLeftWidth: 5,
                     };
                   }}
                 >
                   <Grid2X2Icon size={iconSize} />
-                  <p className="ml-2 text-sm 2xl:text-base">Categoría de gastos</p>
+                  <p className="ml-2 text-sm 2xl:text-base">
+                    Categoría de gastos
+                  </p>
                 </NavLink>
               )}
             </>
@@ -566,20 +600,20 @@ export const LayoutItems = () => {
         </>
       )}
       <>
-        {views && views.includes('Reporte de ventas') && (
+        {views && views.includes("Reporte de ventas") && (
           <NavLink
-            to={'/sales-reports'}
+            to={"/sales-reports"}
             className={({ isActive }) => {
               return (
                 (isActive
-                  ? 'text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green'
-                  : 'text-coffee-brown font-semibold border-white') +
-                ' flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
+                  ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
+                  : "text-coffee-brown font-semibold border-white") +
+                " flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
               );
             }}
             style={({ isActive }) => {
               return {
-                borderLeftColor: isActive ? theme.colors.dark : 'transparent',
+                borderLeftColor: isActive ? theme.colors.dark : "transparent",
                 borderLeftWidth: 5,
               };
             }}
@@ -590,22 +624,22 @@ export const LayoutItems = () => {
         )}
       </>
 
-      {mode !== 'vendedor' && (
+      {mode !== "vendedor" && (
         <>
-          {views && views.includes('Permisos') && (
+          {views && views.includes("Permisos") && (
             <NavLink
-              to={'/actionRol'}
+              to={"/actionRol"}
               className={({ isActive }) => {
                 return (
                   (isActive
-                    ? 'text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green'
-                    : 'text-coffee-brown font-semibold border-white') +
-                  ' flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
+                    ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
+                    : "text-coffee-brown font-semibold border-white") +
+                  " flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
                 );
               }}
               style={({ isActive }) => {
                 return {
-                  borderLeftColor: isActive ? theme.colors.dark : 'transparent',
+                  borderLeftColor: isActive ? theme.colors.dark : "transparent",
                   borderLeftWidth: 5,
                 };
               }}
@@ -615,20 +649,20 @@ export const LayoutItems = () => {
             </NavLink>
           )}
 
-          {views && views.includes('Modulos') && (
+          {views && views.includes("Modulos") && (
             <NavLink
-              to={'/modules'}
+              to={"/modules"}
               className={({ isActive }) => {
                 return (
                   (isActive
-                    ? 'text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green'
-                    : 'text-coffee-brown font-semibold border-white') +
-                  ' flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
+                    ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
+                    : "text-coffee-brown font-semibold border-white") +
+                  " flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
                 );
               }}
               style={({ isActive }) => {
                 return {
-                  borderLeftColor: isActive ? theme.colors.dark : 'transparent',
+                  borderLeftColor: isActive ? theme.colors.dark : "transparent",
                   borderLeftWidth: 5,
                 };
               }}
@@ -637,21 +671,43 @@ export const LayoutItems = () => {
               <p className="ml-2 text-sm 2xl:text-base">Modulos</p>
             </NavLink>
           )}
+          {views && views.includes("Ordenes de compra") && (
+            <NavLink
+              to={"/purchase-orders"}
+              className={({ isActive }) => {
+                return (
+                  (isActive
+                    ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
+                    : "text-coffee-brown font-semibold border-white") +
+                  " flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
+                );
+              }}
+              style={({ isActive }) => {
+                return {
+                  borderLeftColor: isActive ? theme.colors.dark : "transparent",
+                  borderLeftWidth: 5,
+                };
+              }}
+            >
+              <ShoppingBag size={iconSize} />
+              <p className="ml-2 text-sm 2xl:text-base">Ordenes de compra</p>
+            </NavLink>
+          )}
         </>
       )}
       <div
         className={
-          ' flex w-full py-4 pl-5 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
+          " flex w-full py-4 pl-5 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
         }
       >
         <Switch
           className="relative"
-          onValueChange={(isDark) => toggleContext(isDark ? 'dark' : 'light')}
-          isSelected={context === 'dark'}
-          size={windowSize.width > 768 ? undefined : 'sm'}
+          onValueChange={(isDark) => toggleContext(isDark ? "dark" : "light")}
+          isSelected={context === "dark"}
+          size={windowSize.width > 768 ? undefined : "sm"}
         >
           <p className="text-sm lg:text-base relative">
-            {context === 'dark' ? 'Modo claro' : 'Modo oscuro'}
+            {context === "dark" ? "Modo claro" : "Modo oscuro"}
           </p>
         </Switch>
       </div>

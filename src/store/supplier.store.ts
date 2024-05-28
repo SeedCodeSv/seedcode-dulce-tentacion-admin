@@ -79,7 +79,7 @@ export const useSupplierStore = create<ISupplierStore>((set, get) => ({
   getSupplierList() {
     get_supplier()
       .then(({ data }) => {
-        set((state) => ({ ...state, supplier_list: data.Suppliers }));
+        set((state) => ({ ...state, supplier_list: data.suppliers }));
       })
       .catch(() => {
         set((state) => ({ ...state, supplier_list: [] }));

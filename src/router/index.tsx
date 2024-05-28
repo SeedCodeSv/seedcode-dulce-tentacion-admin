@@ -26,6 +26,7 @@ import ExpenseByDatesTransmitter from '../pages/ExpenseByDatesTransmitter';
 import Supplier from '../pages/Supplier';
 import ReportByBranchSalesByBranch from '../pages/ReportByBranchSalesByBranch';
 import ReportExpensesByBranchPage from '../pages/ReportExpenseByBranchPage';
+import PurchaseOrders from '../pages/PurchaseOrders';
 
 /* eslint-disable react-hooks/rules-of-hooks */
 export const router = () => {
@@ -131,6 +132,10 @@ export const router = () => {
     {
       path: '/suppliers',
       element: views && views.includes('Proveedores') && <Supplier />,
+    },
+    {
+      path: '/purchase-orders',
+      element: views && views.includes('Ordenes de compra') && <PurchaseOrders />,
     },
     {
       path: '*',

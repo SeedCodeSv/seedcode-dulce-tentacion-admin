@@ -4,7 +4,6 @@ import {
   Button,
   Autocomplete,
   AutocompleteItem,
-  // Checkbox,
   Select,
   SelectItem,
 } from "@nextui-org/react";
@@ -12,15 +11,15 @@ import { Formik } from "formik";
 import { useContext, useEffect, useMemo, useState } from "react";
 import * as yup from "yup";
 import { useCategoriesStore } from "../../store/categories.store";
-import { Product, ProductPayload } from "../../types/products.types";
+import { Product, ProductPayloadFormik } from "../../types/products.types";
 import { useProductsStore } from "../../store/products.store";
 import { CategoryProduct } from "../../types/categories.types";
 import { ThemeContext } from "../../hooks/useTheme";
 import { useBillingStore } from "../../store/facturation/billing.store";
 import { SeedcodeCatalogosMhService } from "seedcode-catalogos-mh";
-// import { MultiSelect } from "primereact/multiselect";
-// import { Check, Search, X } from "lucide-react";
 import { useBranchesStore } from "../../store/branches.store";
+import { useSupplierStore } from "../../store/supplier.store";
+import { Supplier } from "../../types/supplier.types";
 interface Props {
   product?: Product;
   onCloseModal: () => void;
@@ -29,6 +28,7 @@ function AddProducts(props: Props) {
   const [selectedBranches, setSelectedBranches] = useState<string[]>([]);
 
   const { getBranchesList, branch_list } = useBranchesStore();
+  const { getSupplierList, supplier_list } = useSupplierStore();
 
   const unidadDeMedidaList = new SeedcodeCatalogosMhService().get014UnidadDeMedida();
 
@@ -39,6 +39,9 @@ function AddProducts(props: Props) {
       .number()
       .required("**El precio es requerido**")
       .typeError("**El precio es requerido**"),
+    priceA: yup.number().typeError("**El precio es requerido**"),
+    priceB: yup.number().typeError("**El precio es requerido**"),
+    priceC: yup.number().typeError("**El precio es requerido**"),
     costoUnitario: yup
       .number()
       .required("**El precio es requerido**")
@@ -70,12 +73,19 @@ function AddProducts(props: Props) {
           return value && value.length > 0;
         }
       ),
+    supplierId: yup
+      .number()
+      .required("**Debes seleccionar el proveedor**")
+      .min(1, "**Debes seleccionar el proveedor**"),
   });
 
   const initialValues = {
     name: props.product?.name ?? "",
     description: props.product?.description ?? "N/A",
     price: props.product?.price ?? "",
+    priceA: props.product?.price ?? "",
+    priceB: props.product?.price ?? "",
+    priceC: props.product?.price ?? "",
     costoUnitario: props.product?.costoUnitario ?? "",
     code: props.product?.code ?? "N/A",
     categoryProductId: props.product?.categoryProductId ?? 0,
@@ -84,10 +94,12 @@ function AddProducts(props: Props) {
     tipoItem: props.product?.tipoItem ?? "",
     uniMedida: props.product?.uniMedida ?? "",
     branch: [],
+    supplierId: 0,
   };
   const { list_categories, getListCategories } = useCategoriesStore();
   useEffect(() => {
     getListCategories();
+    getSupplierList();
   }, []);
 
   const {
@@ -103,11 +115,20 @@ function AddProducts(props: Props) {
     getBranchesList();
   }, []);
   const { theme } = useContext(ThemeContext);
-  const handleSave = (values: ProductPayload) => {
+  const handleSave = (values: ProductPayloadFormik) => {
     if (props.product) {
-      patchProducts(values, props.product.id);
+      patchProducts(
+        {
+          ...values,
+          branch: values.branch.map((branch) => ({ id: Number(branch) })),
+        },
+        props.product.id
+      );
     } else {
-      postProducts(values);
+      postProducts({
+        ...values,
+        branch: values.branch.map((branch) => ({ id: Number(branch) })),
+      });
     }
 
     // props.onCloseModal();
@@ -393,10 +414,10 @@ function AddProducts(props: Props) {
                     <Input
                       label="Precio A"
                       labelPlacement="outside"
-                      name="price"
-                      value={values.price.toString()}
-                      onChange={handleChange("price")}
-                      onBlur={handleBlur("price")}
+                      name="priceA"
+                      value={values.priceA.toString()}
+                      onChange={handleChange("priceA")}
+                      onBlur={handleBlur("priceA")}
                       placeholder="00.00"
                       classNames={{
                         label: "font-semibold text-gray-500 text-sm",
@@ -405,9 +426,9 @@ function AddProducts(props: Props) {
                       type="number"
                       startContent="$"
                     />
-                    {errors.price && touched.price && (
+                    {errors.priceA && touched.priceA && (
                       <span className="text-sm font-semibold text-red-500">
-                        {errors.price}
+                        {errors.priceA}
                       </span>
                     )}
                   </div>
@@ -416,10 +437,10 @@ function AddProducts(props: Props) {
                       <Input
                         label="Precio B"
                         labelPlacement="outside"
-                        name="price"
-                        value={values.price.toString()}
-                        onChange={handleChange("price")}
-                        onBlur={handleBlur("price")}
+                        name="priceB"
+                        value={values.priceB.toString()}
+                        onChange={handleChange("priceB")}
+                        onBlur={handleBlur("priceB")}
                         placeholder="00.00"
                         classNames={{
                           label: "font-semibold text-gray-500 text-sm",
@@ -428,9 +449,9 @@ function AddProducts(props: Props) {
                         type="number"
                         startContent="$"
                       />
-                      {errors.price && touched.price && (
+                      {errors.priceB && touched.priceB && (
                         <span className="text-sm font-semibold text-red-500">
-                          {errors.price}
+                          {errors.priceB}
                         </span>
                       )}
                     </div>
@@ -440,10 +461,10 @@ function AddProducts(props: Props) {
                       <Input
                         label="Precio C"
                         labelPlacement="outside"
-                        name="price"
-                        value={values.price.toString()}
-                        onChange={handleChange("price")}
-                        onBlur={handleBlur("price")}
+                        name="priceC"
+                        value={values.priceC.toString()}
+                        onChange={handleChange("priceC")}
+                        onBlur={handleBlur("priceC")}
                         placeholder="00.00"
                         classNames={{
                           label: "font-semibold text-gray-500 text-sm",
@@ -452,9 +473,9 @@ function AddProducts(props: Props) {
                         type="number"
                         startContent="$"
                       />
-                      {errors.price && touched.price && (
+                      {errors.priceC && touched.priceC && (
                         <span className="text-sm font-semibold text-red-500">
-                          {errors.price}
+                          {errors.priceC}
                         </span>
                       )}
                     </div>
@@ -490,6 +511,9 @@ function AddProducts(props: Props) {
                     selectedKeys={selectedBranches}
                     label="Sucursales"
                     onBlur={handleBlur("branch")}
+                    classNames={{
+                      label: "font-semibold text-gray-500 text-sm",
+                    }}
                     name="branch"
                     labelPlacement="outside"
                     onSelectionChange={(keys) => {
@@ -525,18 +549,61 @@ function AddProducts(props: Props) {
                     </span>
                   )}
                 </div>
+                <div>
+                  <Autocomplete
+                    onSelectionChange={(key) => {
+                      if (key) {
+                        const branchSelected = JSON.parse(
+                          key as string
+                        ) as Supplier;
+                        handleChange("supplierId")(
+                          branchSelected.id.toString()
+                        );
+                      }
+                    }}
+                    onBlur={handleBlur("supplierId")}
+                    label="Proveedor"
+                    labelPlacement="outside"
+                    placeholder={"Selecciona el proveedor"}
+                    variant="bordered"
+                    classNames={{
+                      base: "font-semibold text-gray-500 text-sm",
+                    }}
+                    className="dark:text-white"
+                    defaultSelectedKey={selectedKeyCategory}
+                    value={values.supplierId}
+                  >
+                    {supplier_list.map((bra) => (
+                      <AutocompleteItem
+                        value={bra.nombre}
+                        key={JSON.stringify(bra)}
+                        className="dark:text-white"
+                      >
+                        {bra.nombre}
+                      </AutocompleteItem>
+                    ))}
+                  </Autocomplete>
+                  {errors.categoryProductId && touched.categoryProductId && (
+                    <span className="text-sm font-semibold text-red-500">
+                      {errors.categoryProductId}
+                    </span>
+                  )}
+                </div>
+              </div>
+              <div className="w-full gap-5 grid grid-cols-2 mt-5">
+                <div></div>
+                <Button
+                  onClick={() => handleSubmit()}
+                  className="w-full mt-4 text-sm font-semibold"
+                  style={{
+                    backgroundColor: theme.colors.third,
+                    color: theme.colors.primary,
+                  }}
+                >
+                  Guardar
+                </Button>
               </div>
             </div>
-            <Button
-              onClick={() => handleSubmit()}
-              className="w-full mt-4 text-sm font-semibold"
-              style={{
-                backgroundColor: theme.colors.third,
-                color: theme.colors.primary,
-              }}
-            >
-              Guardar
-            </Button>
           </>
         )}
       </Formik>
