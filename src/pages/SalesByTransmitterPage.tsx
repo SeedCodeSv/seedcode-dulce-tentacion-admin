@@ -5,7 +5,7 @@ import Layout from '../layout/Layout';
 function SalesByTransmitterPage() {
   return (
     <div>
-      <Layout title="Reportes">
+      <Layout title="Ventas Generales">
         <SalesByTransmitter></SalesByTransmitter>
       </Layout>
     </div>

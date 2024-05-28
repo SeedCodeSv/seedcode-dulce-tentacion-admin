@@ -55,6 +55,6 @@ export interface ISalesByBranchData {
 export interface IReportBranchStore {
   expenses: IResponseExpenseData[];
   sales: IResponseByBranchSales[];
-  OnGetReportExpenseByBranch: () => void;
-  OnGetReportByBranchSales: () => void;
+  OnGetReportExpenseByBranch: (id : number , startDate : string , endDate : string ) => void;
+  OnGetReportByBranchSales: (id : number , startDate : string , endDate : string ) => void;
 }

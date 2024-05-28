@@ -36,8 +36,8 @@ export const salesReportStore = create<ISalesReportStore>((set) => ({
         set({ sales_by_day: 0 });
       });
   },
-  getProductMostSelledTable: (id, startDate: string, endDate: string) => {
-    get_products_most_selled_by_transmitter_table(id, startDate, endDate)
+  getProductMostSelledTable: (id, startDate: string, endDate: string, branchId: number) => {
+    get_products_most_selled_by_transmitter_table(id, startDate, endDate, branchId)
       .then(({ data }) => {
         set({ products_most_selled: data.products });
       })

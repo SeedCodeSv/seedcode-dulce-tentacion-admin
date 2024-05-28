@@ -2,7 +2,7 @@ import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
 import { useContext, useEffect, useState } from 'react';
 import { ThemeContext } from '../../hooks/useTheme';
-import { Autocomplete, AutocompleteItem, Input } from '@nextui-org/react';
+import { Autocomplete, AutocompleteItem, Button, Input } from '@nextui-org/react';
 import { salesReportStore } from '../../store/reports/sales_report.store';
 import { fechaActualString } from '../../utils/dates';
 import { useBranchesStore } from '../../store/branches.store';
@@ -19,15 +19,24 @@ function ExpensesByDatesTransmitter() {
   };
   const { branch_list, getBranchesList } = useBranchesStore();
   const { sales, getSalesByTransmitter } = salesReportStore();
-  const [branchId, ] = useState(0);
+  
   useEffect(() => {
     getBranchesList();
-    getSalesByTransmitter(user?.transmitterId || 0, fechaActualString, fechaActualString);
-  }, [startDate, endDate, branchId]);
+    getSalesByTransmitter(
+      user?.employee.branch.transmitterId || 0,
+      fechaActualString,
+      fechaActualString,
+      
+    );
+  }, []);
+
+  const search = () => {
+    getSalesByTransmitter(user?.employee.branch.transmitterId || 0, startDate, endDate);
+  };
   return (
     <>
       <div className="col-span-3 bg-gray-100 p-5 dark:bg-gray-900 rounded-lg">
-        <p className="pb-4 text-lg font-semibold dark:text-white">Ventas del dia</p>
+        <p className="pb-4 text-lg font-semibold dark:text-white">Ventas </p>
         <div className="grid grid-cols-2 gap-2 py-2">
           <label className="text-sm font-semibold dark:text-white">Fecha inicial</label>
           <label className="text-sm font-semibold dark:text-white">Fecha final</label>
@@ -47,12 +56,28 @@ function ExpensesByDatesTransmitter() {
           <div className="">
             <Autocomplete placeholder="Selecciona la sucursal">
               {branch_list.map((branch) => (
-                <AutocompleteItem className="dark:text-white" key={branch.id} value={branch.id}>
+                <AutocompleteItem
+                  
+                  className="dark:text-white"
+                  key={branch.id}
+                  value={branch.id}
+                >
                   {branch.name}
                 </AutocompleteItem>
               ))}
             </Autocomplete>
           </div>
+          <Button
+            style={{
+              backgroundColor: theme.colors.secondary,
+              color: theme.colors.primary,
+            }}
+            className="font-semibold"
+            color="primary"
+            onClick={() => search()}
+          >
+            Buscar
+          </Button>
         </div>
         <DataTable
           className="w-full shadow"

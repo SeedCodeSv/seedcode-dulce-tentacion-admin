@@ -3,31 +3,39 @@ import { DataTable } from 'primereact/datatable';
 import { useContext, useEffect, useState } from 'react';
 import { ThemeContext } from '../../hooks/useTheme';
 import { Autocomplete, AutocompleteItem, Button, Input } from '@nextui-org/react';
-import { salesReportStore } from '../../store/reports/sales_report.store';
 import { fechaActualString } from '../../utils/dates';
 import { useBranchesStore } from '../../store/branches.store';
-import { useAuthStore } from '../../store/auth.store';
 
-function SalesByTransmitter() {
+import { useReportsByBranch } from '../../store/reports/report_store';
+
+function ReportSalesByBranch() {
   const { theme } = useContext(ThemeContext);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const { user } = useAuthStore();
+ 
   const style = {
     backgroundColor: theme.colors.dark,
     color: theme.colors.primary,
   };
   const { branch_list, getBranchesList } = useBranchesStore();
-  const { sales, getSalesByTransmitter } = salesReportStore();
-  
+  const { sales, OnGetReportByBranchSales } = useReportsByBranch();
+  const [branchId,setBranchId] = useState(0);
   useEffect(() => {
     getBranchesList();
-    getSalesByTransmitter(user?.transmitterId || 0, fechaActualString, fechaActualString);
+    OnGetReportByBranchSales(
+     branchId,
+      fechaActualString,
+      fechaActualString,
+     
+    );
   }, []);
-
-   const search = () => {
-    getSalesByTransmitter(user?.transmitterId || 0, startDate, endDate);
-   };
+  const search =() => {
+     OnGetReportByBranchSales(
+       branchId,
+       startDate,
+       endDate,
+     );
+  }
   return (
     <>
       <div className="col-span-3 bg-gray-100 p-5 dark:bg-gray-900 rounded-lg">
@@ -38,7 +46,7 @@ function SalesByTransmitter() {
           <Input
             onChange={(e) => setStartDate(e.target.value)}
             defaultValue={fechaActualString}
-            className="w-full"
+            className="w-full "
             type="date"
           ></Input>
           <Input
@@ -47,12 +55,11 @@ function SalesByTransmitter() {
             className="w-full "
             type="date"
           ></Input>
-
           <div className="">
             <Autocomplete placeholder="Selecciona la sucursal">
               {branch_list.map((branch) => (
                 <AutocompleteItem
-             
+                  onClick={() => setBranchId(branch.id)}
                   className="dark:text-white"
                   key={branch.id}
                   value={branch.id}
@@ -112,4 +119,4 @@ function SalesByTransmitter() {
   );
 }
 
-export default SalesByTransmitter;
+export default ReportSalesByBranch;
