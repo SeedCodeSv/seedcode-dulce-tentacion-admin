@@ -72,7 +72,7 @@ export const salesReportStore = create<ISalesReportStore>((set) => ({
         set({ sales: [] });
       });
   },
-  
+
   getSalesExpenseByDate: (id, startDate: string, endDate: string) => {
     get_expenses_by_day(id, startDate, endDate)
       .then((res) => {
@@ -81,5 +81,5 @@ export const salesReportStore = create<ISalesReportStore>((set) => ({
       .catch(() => {
         set({ expenses: [] });
       });
-  }
+  },
 }));
