@@ -38,6 +38,8 @@ function UpdateProduct({ product, onCloseModal }: Props) {
     tipoItem: product?.tipoItem || '',
     uniMedida: product?.uniMedida || '',
     code: product?.code || '',
+    branch: [],
+    supplierId: 0
   };
 
   const [dataUpdateProduct, setDataUpdateProduct] = useState<ProductPayload>(initialProductState);

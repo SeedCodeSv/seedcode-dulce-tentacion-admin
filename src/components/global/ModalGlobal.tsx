@@ -12,17 +12,19 @@ interface Props {
   size: string;
   isFull?: boolean;
   isDismissable?: boolean;
+  isMaximizable?: boolean;
 }
 
-function ModalGlobal({ children, isOpen, onClose, title, size, isFull }: Props) {
+function ModalGlobal({ children, isOpen, onClose, title, size, isFull, isMaximizable = false }: Props) {
   const { context } = useContext(ThemeContext);
 
   return (
     <Dialog
       visible={isOpen}
+      maximizable={isMaximizable}
       className={classNames(
         context === 'light' ? 'light' : 'dark',
-        isFull && 'w-full h-full overflow-y-auto',
+        isFull && 'w-full overflow-y-auto',
         size,
         'dark:bg-gray-800 overflow-y-auto'
       )}
