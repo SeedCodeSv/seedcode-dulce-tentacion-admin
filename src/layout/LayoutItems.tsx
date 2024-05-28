@@ -18,6 +18,7 @@ import {
   FolderOpen,
   Store,
   Truck,
+  Book,
 } from 'lucide-react';
 import { Fragment, useContext, useEffect, useMemo } from 'react';
 import { ThemeContext } from '../hooks/useTheme';
@@ -557,6 +558,28 @@ export const LayoutItems = () => {
                     };
                   }}
                 >
+                  <Book size={iconSize} />
+                  <p className="ml-2 text-sm 2xl:text-base">Reportes</p>
+                </NavLink>
+              )}
+              {views.includes('Categoría de gastos') && (
+                <NavLink
+                  to={'/expensesCategories'}
+                  className={({ isActive }) => {
+                    return (
+                      (isActive
+                        ? 'text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green'
+                        : 'text-coffee-brown font-semibold border-white') +
+                      ' flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
+                    );
+                  }}
+                  style={({ isActive }) => {
+                    return {
+                      borderLeftColor: isActive ? theme.colors.dark : 'transparent',
+                      borderLeftWidth: 5,
+                    };
+                  }}
+                >
                   <Grid2X2Icon size={iconSize} />
                   <p className="ml-2 text-sm 2xl:text-base">Categoría de gastos</p>
                 </NavLink>
@@ -589,7 +612,6 @@ export const LayoutItems = () => {
           </NavLink>
         )}
       </>
-
       {mode !== 'vendedor' && (
         <>
           {views && views.includes('Permisos') && (
