@@ -33,13 +33,16 @@ function HomeSeller() {
   const { user } = useAuthStore();
 
   useEffect(() => {
-    getSalesByYear(user?.employee.branchId ?? 0);
-    getSalesByDays(user?.employee.branchId ?? 0);
-    getSalesByCategory(user?.employee.branchId ?? 0);
-    getProductSelledByBranch(user?.employee.branchId ?? 0);
-    getMostProductMostSelled(user?.employee.branchId ?? 0);
-    getSalesTableDay(user?.employee.branchId ?? 0);
-  }, []);
+    const branchId = user?.employee.branchId ?? 0;
+    if (user) {
+      getSalesByYear(branchId);
+      getSalesByDays(branchId);
+      getSalesByCategory(branchId);
+      getProductSelledByBranch(branchId);
+      getMostProductMostSelled(branchId);
+      getSalesTableDay(branchId);
+    }
+  }, [user, theme]);
 
   const mostProductSelled = useMemo(() => {
     if (most_product_selled.length > 0) {
