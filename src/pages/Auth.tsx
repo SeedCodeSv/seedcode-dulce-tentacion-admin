@@ -34,8 +34,6 @@ function Auth() {
         setRolId(response?.user?.roleId);
         setIsAuth(true);
         setToken(response.token);
-        
-
       } else {
         setIsAuth(false);
         delete_seller_mode();

@@ -32,7 +32,7 @@ export interface SupplierDirection {
   }
   export interface IGetSupplierPagination {
     ok: boolean;
-    Suppliers: Supplier[];
+    suppliers: Supplier[];
     total: number;
     totalPag: number;
     currentPag: number;

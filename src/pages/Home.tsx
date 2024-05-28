@@ -16,6 +16,7 @@ import { ThemeContext } from '../hooks/useTheme';
 function Home() {
   const { theme } = useContext(ThemeContext);
 
+
   const {
     getSalesByBranchAndMonth,
     sales_branch_month,
@@ -26,6 +27,7 @@ function Home() {
     getSalesTableDay,
     sales_table_day,
   } = salesReportStore();
+
   const { getExpensesBranchMonth, expenses_branch_month, expenses_by_day, getExpensesByDay } =
     useReportExpensesStore();
 
@@ -34,14 +36,17 @@ function Home() {
   const { user } = useAuthStore();
 
   useEffect(() => {
-    getSalesByBranchAndMonth(user?.employee.branch.transmitterId ?? 0);
-    getExpensesBranchMonth(user?.employee.branch.transmitterId ?? 0);
-    getMostProductMostSelled(user?.employee.branch.transmitterId ?? 0);
-    getSalesByYearAndMonth(user?.employee.branch.transmitterId ?? 0);
-    getSalesByDay(user?.employee.branch.transmitterId ?? 0);
-    getExpensesByDay(user?.employee.branch.transmitterId ?? 0);
-    getSalesTableDay(user?.employee.branch.transmitterId ?? 0);
-  }, []);
+    if (user) {
+      const branchId = user.employee.branch.transmitterId;
+      getSalesByBranchAndMonth(branchId);
+      getExpensesBranchMonth(branchId);
+      getMostProductMostSelled(branchId);
+      getSalesByYearAndMonth(branchId);
+      getSalesByDay(branchId);
+      getExpensesByDay(branchId);
+      getSalesTableDay(branchId);
+    }
+  }, [user, theme]);
 
   const total = useMemo(() => {
     return sales_branch_month.map((sale) => Number(sale.total)).reduce((a, b) => a + b, 0);
@@ -92,6 +97,7 @@ function Home() {
               }}
             />
           </div>
+
           <div>
             <ExpensesMonthBranches
               sales={{
@@ -107,6 +113,7 @@ function Home() {
               }}
             />
           </div>
+
           <div>
             <MostProductSelled
               sales={{
@@ -122,6 +129,7 @@ function Home() {
               }}
             />
           </div>
+
           <div>
             <SalesMonthYear
               sales={{

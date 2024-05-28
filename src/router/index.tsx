@@ -1,47 +1,44 @@
-import { createBrowserRouter } from "react-router-dom";
-import Home from "../pages/Home";
-import Tables from "../pages/Tables";
-import ProductsCategories from "../pages/ProductsCategories";
-import Users from "../pages/Users";
-import Employees from "../pages/Employees";
-import Customers from "../pages/Customers";
-import Branch from "../pages/Branch";
-import Error404 from "../pages/Error404";
-import Product from "../pages/Product";
-import ExpensesCategories from "../pages/ExpensesCategories";
-import Expenses from "../pages/Expenses";
-import ActionRol from "../pages/ActionRol";
-import NewSales from "../pages/NewSales";
-import Configuration from "../pages/Configuration";
-import CreateConfiguration from "../components/configuration/CreateConfiguration";
-import SalesReportContigencePage from "../pages/SalesReportContigencePage";
-import { useActionsRolStore } from "../store/actions_rol.store";
-import { useEffect } from "react";
-import Views from "../pages/Views";
-import { useAuthStore } from "../store/auth.store";
-import HomeSeller from "../pages/Seller/HomeSeller";
-import Reporters from "../pages/ReportersPage";
-import SalesByTransmitterPage from "../pages/SalesByTransmitterPage";
-import ExpenseByDatesTransmitter from "../pages/ExpenseByDatesTransmitter";
-import Supplier from "../pages/Supplier";
+import { createBrowserRouter } from 'react-router-dom';
+import Home from '../pages/Home';
+import Tables from '../pages/Tables';
+import ProductsCategories from '../pages/ProductsCategories';
+import Users from '../pages/Users';
+import Employees from '../pages/Employees';
+import Customers from '../pages/Customers';
+import Branch from '../pages/Branch';
+import Error404 from '../pages/Error404';
+import Product from '../pages/Product';
+import ExpensesCategories from '../pages/ExpensesCategories';
+import Expenses from '../pages/Expenses';
+import ActionRol from '../pages/ActionRol';
+import NewSales from '../pages/NewSales';
+import Configuration from '../pages/Configuration';
+import CreateConfiguration from '../components/configuration/CreateConfiguration';
+import SalesReportContigencePage from '../pages/SalesReportContigencePage';
+import { useActionsRolStore } from '../store/actions_rol.store';
+import { useEffect } from 'react';
+import Views from '../pages/Views';
+import { useAuthStore } from '../store/auth.store';
+import HomeSeller from '../pages/Seller/HomeSeller';
+import Reporters from '../pages/ReportersPage';
+import SalesByTransmitterPage from '../pages/SalesByTransmitterPage';
+import ExpenseByDatesTransmitter from '../pages/ExpenseByDatesTransmitter';
+import Supplier from '../pages/Supplier';
+import ReportByBranchSalesByBranch from '../pages/ReportByBranchSalesByBranch';
+import ReportExpensesByBranchPage from '../pages/ReportExpenseByBranchPage';
 
 /* eslint-disable react-hooks/rules-of-hooks */
 export const router = () => {
   const { role_view_action, OnGetActionsByRole } = useActionsRolStore();
   const { user } = useAuthStore();
-
   useEffect(() => {
     if (user) {
       OnGetActionsByRole(user.roleId);
     }
   }, [user]);
   /* eslint-enable react-hooks/rules-of-hooks */
-
   const views =
-    role_view_action &&
-    role_view_action.view &&
-    role_view_action.view.map((view) => view.name);
-
+    role_view_action && role_view_action.view && role_view_action.view.map((view) => view.name);
   return createBrowserRouter([
     {
       path: '/',
@@ -49,7 +46,7 @@ export const router = () => {
     },
     {
       path: '/homeSeller',
-      element: <HomeSeller />,
+      element: views && views.includes('Inicio de ventas') && <HomeSeller />,
     },
     {
       path: '/tables',
@@ -112,6 +109,14 @@ export const router = () => {
       element: views && views.includes('Reportes') && <ExpenseByDatesTransmitter />,
     },
     {
+      path: '/sales-by-branch',
+      element: views && views.includes('Reportes') && <ReportByBranchSalesByBranch />,
+    },
+    {
+      path: '/expenses-by-branch',
+      element: views && views.includes('Reportes') && <ReportExpensesByBranchPage />,
+    },
+    {
       path: '/configuration',
       element: <Configuration />,
     },
@@ -124,8 +129,8 @@ export const router = () => {
       element: views && views.includes('Reporte de ventas') && <SalesReportContigencePage />,
     },
     {
-      path:"/suppliers",
-      element: views && views.includes("Proveedores") && <Supplier />
+      path: '/suppliers',
+      element: views && views.includes('Proveedores') && <Supplier />,
     },
     {
       path: '*',

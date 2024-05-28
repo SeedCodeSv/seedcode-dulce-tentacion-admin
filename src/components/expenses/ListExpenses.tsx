@@ -40,20 +40,22 @@ import { formatCurrency } from "../../utils/dte";
 import { limit_options } from "../../utils/constants";
 import Anexo from "./Anexo";
 import AnexoImg from "./AnexoImage";
-// import { Document, Page } from 'react-pdf';
+import { get_box } from '../../storage/localStorage.ts';
+
 const ListExpenses = () => {
   const { theme } = useContext(ThemeContext);
   const { getExpensesPaginated, expenses_paginated, expenses } = useExpenseStore();
   const [selectedCategory, setSelectedCategory] = useState<IExpense>();
   const [category, setCategory] = useState("");
   const [limit, setLimit] = useState(8);
-
+  const currentBox = Number(get_box())
   useEffect(() => {
-    getExpensesPaginated(1, 1, limit, category);
+    get_box()
+    getExpensesPaginated(currentBox, 1, limit, category);
   }, []);
 
   const handleSearch = (name: string | undefined) => {
-    getExpensesPaginated(1, 1, limit, name ?? category);
+    getExpensesPaginated(currentBox, 1, limit, name ?? category);
   };
 
   const modalAdd = useDisclosure();
@@ -242,7 +244,7 @@ const ListExpenses = () => {
                       isIconOnly
                       aria-label="Abrir PDF"
                       style={{
-                        backgroundColor: theme.colors.secondary,
+                        backgroundColor: theme.colors.third,
                       }}
                       onClick={() => { setPathSelected(item.id); showAnexo.onOpen(); }}
                     >
@@ -312,6 +314,7 @@ const ListExpenses = () => {
         onClose={modalAdd.onClose}
       >
         <AddExpenses
+          reload={() => getExpensesPaginated(currentBox, 1, limit, category)}
           closeModal={modalAdd.onClose}
           expenses={selectedCategory}
         />

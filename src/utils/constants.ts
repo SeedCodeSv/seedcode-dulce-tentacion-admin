@@ -36,6 +36,7 @@ export const CRP = 'YzJhxGPKCwc7dxyhsgst ';
 export const views_enabled = [
   'Usuarios',
   'Inicio',
+  'Inicio de ventas',
   'Productos',
   'Permisos',
   'Categorias',
