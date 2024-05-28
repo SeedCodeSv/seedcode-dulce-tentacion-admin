@@ -29,8 +29,8 @@ export const SideBar = (props: Props) => {
 
   const { user, makeLogout } = useAuthStore();
   const { setIsAuth, setToken } = useContext(SessionContext);
-  useEffect(() => {}, [user]);
 
+  useEffect(() => {}, [user, theme]);
   const [windowSize, setWindowSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight,
@@ -39,13 +39,10 @@ export const SideBar = (props: Props) => {
   const close_login = () => {
     makeLogout();
     delete_seller_mode();
-    
     setIsAuth(false);
     setToken('');
-    navigation('/');
     delete_RVA();
-
-   
+    navigation('/');
   };
   useEffect(() => {
     const handleResize = () => {
@@ -71,21 +68,21 @@ export const SideBar = (props: Props) => {
       )}
       <div className="flex flex-col w-full xl:ml-64">
         <div
-          className="fixed top-0 z-[30] w-screen left-0 xl:pl-72 shadow h-[70px] flex justify-between items-center lg:grid lg:grid-cols-2 px-6"
+          className="fixed top-0 z-[30] w-screen left-0 xl:pl-72 shadow h-[70px] flex justify-between items-center lg:grid lg:grid-cols-2 sm:grid-cols-1 md:grid-cols-1 sm:px-1 mb:px-1 px-6"
           style={{
             backgroundColor: theme.colors.dark,
             color: theme.colors.primary,
           }}
         >
-          <div className="flex justify-end xl:hidden">
+          <div className="flex start xl:hidden ">
             <Button isIconOnly onClick={() => setIsOpen(!isOpen)}>
               <Menu />
             </Button>
           </div>
           <div className="ml-3 lg:ml-0">
-            <p className="text-sm uppercase font-bold whitespace-nowrap">{props.title}</p>
+            <p className="text-sm uppercase font-bold whitespace-nowrap start">{props.title}</p>
           </div>
-          <div className="flex justify-end w-full">
+          <div className="flex justify-end items-end w-full ">
             <Dropdown placement="bottom-start" showArrow>
               <DropdownTrigger>
                 <User
