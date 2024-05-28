@@ -6,7 +6,6 @@ import {
   Box,
   User,
   BookUser,
-  Book,
   ShieldHalf,
   Grid2X2Icon,
   ShoppingCart,
@@ -246,7 +245,6 @@ export const LayoutItems = () => {
           </NavLink>
         )}
       </>
-
       {mode !== 'vendedor' && (
         <>
           {views && (
@@ -317,12 +315,107 @@ export const LayoutItems = () => {
                 </NavLink>
               )}
 
+              {views.includes('Reportes') && (
+                <>
+                  <Menu as="div" className="relative px-4 z-50 w-full">
+                    <div>
+                      <Menu.Button className="inline-flex w-full font-semibold py-2  gap-x-1.5 ml-2 text-sm 2xl:text-base">
+                        <AlignJustify size={iconSize} />
+                        Reportes
+                        <ChevronDown className="justify-end items-end  ml-16" size={iconSize} />
+                      </Menu.Button>
+                    </div>
+
+                    <Transition
+                      as={Fragment}
+                      enter="transition ease-out duration-100"
+                      enterFrom="transform opacity-0 scale-95"
+                      enterTo="transform opacity-100 scale-100"
+                      leave="transition ease-in duration-75"
+                      leaveFrom="transform opacity-100 scale-100"
+                      leaveTo="transform opacity-0 scale-95"
+                    >
+                      <Menu.Items className="absolute z-20 mt-2 w-56 origin-top-right rounded-md bg-white dark:bg-black shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                        <div className="py-1">
+                          <Menu.Item>
+                            <NavLink
+                              to={'/sales-by-branch'}
+                              className={({ isActive }) => {
+                                return (
+                                  (isActive
+                                    ? 'font-semibold bg-gray-300 dark:bg-gray-700'
+                                    : 'text-coffee-brown font-semibold border-white') +
+                                  ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
+                                );
+                              }}
+                            >
+                              <User size={iconSize} />
+                              <p className="ml-2 text-sm 2xl:text-base">Ventas Sucursal</p>
+                            </NavLink>
+                          </Menu.Item>
+
+                          <Menu.Item>
+                            <NavLink
+                              to={'/expenses-by-branch'}
+                              className={({ isActive }) => {
+                                return (
+                                  (isActive
+                                    ? 'font-semibold bg-gray-300 dark:bg-gray-700'
+                                    : 'text-coffee-brown font-semibold border-white') +
+                                  ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
+                                );
+                              }}
+                            >
+                              <BookUser size={iconSize} />
+                              <p className="ml-2 text-sm 2xl:text-base">Gatos Sucursal</p>
+                            </NavLink>
+                          </Menu.Item>
+
+                          <Menu.Item>
+                            <NavLink
+                              to={'/sales-by-transmitter'}
+                              className={({ isActive }) => {
+                                return (
+                                  (isActive
+                                    ? 'font-semibold bg-gray-300 dark:bg-gray-700'
+                                    : 'text-coffee-brown font-semibold border-white') +
+                                  ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
+                                );
+                              }}
+                            >
+                              <User size={iconSize} />
+                              <p className="ml-2 text-sm 2xl:text-base">Ventas Generales</p>
+                            </NavLink>
+                          </Menu.Item>
+
+                          <Menu.Item>
+                            <NavLink
+                              to={'/expenses-by-dates-transmitter'}
+                              className={({ isActive }) => {
+                                return (
+                                  (isActive
+                                    ? 'font-semibold bg-gray-300 dark:bg-gray-700'
+                                    : 'text-coffee-brown font-semibold border-white') +
+                                  ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
+                                );
+                              }}
+                            >
+                              <Truck size={iconSize} />
+                              <p className="ml-2 text-base">Gastos Generales</p>
+                            </NavLink>
+                          </Menu.Item>
+                        </div>
+                      </Menu.Items>
+                    </Transition>
+                  </Menu>
+                </>
+              )}
               {views.includes('Empleados') ||
               (views && views.includes('Clientes')) ||
               views.includes('Usuarios') ||
               views.includes('Sucursales') ? (
                 <>
-                  <Menu as="div" className="relative px-4 z-50 w-full">
+                  <Menu as="div" className="relative px-4 z-20  w-full">
                     <div>
                       <Menu.Button className="inline-flex w-full font-semibold py-2  gap-x-1.5 ml-2 text-sm 2xl:text-base">
                         <AlignJustify size={iconSize} />
@@ -330,7 +423,6 @@ export const LayoutItems = () => {
                         <ChevronDown className="justify-end items-end  ml-20" size={iconSize} />
                       </Menu.Button>
                     </div>
-
                     <Transition
                       as={Fragment}
                       enter="transition ease-out duration-100"
@@ -362,7 +454,6 @@ export const LayoutItems = () => {
                               )}
                             </Menu.Item>
                           )}
-
                           {views && views.includes('Clientes') && (
                             <Menu.Item>
                               {views.includes('Clientes') && (
@@ -448,29 +539,6 @@ export const LayoutItems = () => {
                   </Menu>
                 </>
               ) : null}
-
-              {views.includes('Reportes') && (
-                <NavLink
-                  to={'/reporters'}
-                  className={({ isActive }) => {
-                    return (
-                      (isActive
-                        ? 'text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green'
-                        : 'text-coffee-brown font-semibold border-white') +
-                      ' flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
-                    );
-                  }}
-                  style={({ isActive }) => {
-                    return {
-                      borderLeftColor: isActive ? theme.colors.dark : 'transparent',
-                      borderLeftWidth: 5,
-                    };
-                  }}
-                >
-                  <Book size={iconSize} />
-                  <p className="ml-2 text-sm 2xl:text-base">Reportes</p>
-                </NavLink>
-              )}
               {views.includes('Categoría de gastos') && (
                 <NavLink
                   to={'/expensesCategories'}

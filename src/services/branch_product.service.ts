@@ -17,7 +17,6 @@ export const get_branch_product = (id: number, page = 1, limit = 5, name = '', c
     }
   );
 };
-
 export const get_product_by_code = (transmitter_id: number, code: string) => {
   const token = get_token() ?? '';
   return axios.get<IGetBranchProductByCode>(

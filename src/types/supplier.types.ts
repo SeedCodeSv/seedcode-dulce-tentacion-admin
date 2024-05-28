@@ -28,11 +28,11 @@ export interface SupplierDirection {
   }
   export interface IGetSuppliers {
     ok: boolean;
-    Suppliers: Supplier[];
+    suppliers: Supplier[];
   }
   export interface IGetSupplierPagination {
     ok: boolean;
-    Suppliers: Supplier[];
+    suppliers: Supplier[];
     total: number;
     totalPag: number;
     currentPag: number;
