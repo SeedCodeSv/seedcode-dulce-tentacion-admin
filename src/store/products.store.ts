@@ -82,7 +82,7 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
       });
   },
   async deleteProducts(id) {
-    delete_products(id)
+    await delete_products(id)
       .then(() => {
         toast.success(messages.success);
         get().getPaginatedProducts(1, 5, '', '');
@@ -92,7 +92,7 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
       });
   },
   async activateProduct(id) {
-    return activate_product(id)
+    return await activate_product(id)
       .then(() => {
         toast.success('Se activo el producto');
       })

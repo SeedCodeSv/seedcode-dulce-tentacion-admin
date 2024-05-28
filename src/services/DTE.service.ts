@@ -20,7 +20,7 @@ export const get_ambiente_destino = () => {
   return axios<IGetAmbienteDestino>(FACTURACION_API + '/cat-001-ambiente-de-destino');
 };
 
-export const send_to_mh = async (
+export const send_to_mh = (
   payload: PayloadMH,
   token: string,
   cancelToken: CancelTokenSource
@@ -33,7 +33,7 @@ export const send_to_mh = async (
   });
 };
 
-export const send_to_mh_contingencia = async (payload: ISendMHContingencia, token: string) => {
+export const send_to_mh_contingencia = (payload: ISendMHContingencia, token: string) => {
   return axios.post<ResponseMHSuccess>(MH_URL + 'contingencia', payload, {
     headers: {
       Authorization: token,
@@ -41,7 +41,7 @@ export const send_to_mh_contingencia = async (payload: ISendMHContingencia, toke
   });
 };
 
-export const send_to_mh_invalidation = async (payload: IInvalidationToMH) => {
+export const send_to_mh_invalidation = (payload: IInvalidationToMH) => {
   return axios.post<IResponseInvalidationMH>(`${MH_URL}anulardte`, payload, {
     headers: {
       Authorization: localStorage.getItem('mh_token'),

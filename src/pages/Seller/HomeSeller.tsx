@@ -54,17 +54,6 @@ function HomeSeller() {
     }
   }, [most_product_selled]);
 
-  const mostByCaterogy = useMemo(() => {
-    if (sales_by_category.length > 0) {
-      const sorted = [...sales_by_category].sort((a, b) => Number(b.quantity) - Number(a.quantity));
-      return sorted[0].category.length > 40
-        ? sorted[0].category.slice(0, 40) + '...'
-        : sorted[0].category;
-    } else {
-      return '';
-    }
-  }, [sales_by_category]);
-
   const yearTotal = useMemo(() => {
     return sales_by_year.map((sm) => Number(sm.total)).reduce((a, b) => a + b, 0);
   }, [sales_by_year]);
@@ -81,8 +70,9 @@ function HomeSeller() {
             <SalesMonthBranches
               sales={{
                 title: 'Categoria mas vendida',
+                total: sales_by_category.map((sl) => sl.category),
                 labels: sales_by_category.map((sl) => sl.category),
-                total: Number(mostByCaterogy),
+
                 series: [
                   {
                     name: 'Total',

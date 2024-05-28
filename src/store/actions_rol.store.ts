@@ -73,9 +73,9 @@ export const useActionsRolStore = create<IActionsRolStore>((set, get) => ({
     return true;
   },
 
-  async OnGetActionsRoleList() {
+  OnGetActionsRoleList() {
     get_actions_role()
-      .then(async ({ data }) => {
+      .then(({ data }) => {
         if (data.ok) {
           set((state) => {
             return {
@@ -102,7 +102,7 @@ export const useActionsRolStore = create<IActionsRolStore>((set, get) => ({
       });
   },
 
-  async OnGetActionsByRole(rol_id) {
+  OnGetActionsByRole(rol_id) {
     return get_actions_by_role(rol_id)
       .then(async ({ data }) => {
         if (data.ok) {
@@ -164,7 +164,7 @@ export const useActionsRolStore = create<IActionsRolStore>((set, get) => ({
       });
   },
 
-  async OnGetActionsByRoleReturn(rol_id) {
+  OnGetActionsByRoleReturn(rol_id) {
     return get_actions_by_role(rol_id).then(async ({ data }) => {
       const views = await get_views();
       const role = data.roleActions[0].role.name;

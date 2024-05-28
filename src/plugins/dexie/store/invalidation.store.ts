@@ -19,7 +19,7 @@ export const useInvalidationStore = create<IInvalidationStore>((set) => ({
   OnCreateInvalidation: async (id: number, invalidationData: ISignInvalidationData) => {
     try {
       set({ isLoading: true, isError: false });
-      firmarDocumentoInvalidacion(invalidationData).then((res) => {
+      await firmarDocumentoInvalidacion(invalidationData).then((res) => {
         set({ isLoading: true, isError: false });
         if (res.status === 200) {
           send_to_mh_invalidation({
@@ -59,7 +59,7 @@ export const useInvalidationStore = create<IInvalidationStore>((set) => ({
   },
 
   OnGetRecentSales: async (id: number) => {
-    get_recent_sales(id)
+    await get_recent_sales(id)
       .then((res) => {
         if (res.status === 200) {
           set({ sales: res.data.sales });

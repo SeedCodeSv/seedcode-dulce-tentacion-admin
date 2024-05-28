@@ -44,7 +44,7 @@ export const useSupplierStore = create<ISupplierStore>((set, get) => ({
   },
 
   onPostSupplier: async (payload) => {
-    return add_supplier(payload)
+    return await add_supplier(payload)
       .then(({ data }) => {
         if (data) {
           get().getSupplierPagination(1, 5, '', '', 1, 1);

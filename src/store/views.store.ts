@@ -8,7 +8,7 @@ export const useViewsStore = create<ViewsStore>((set, get) => ({
   views_list: [],
   founds: [],
   getViews: async () => {
-    get_views()
+    await get_views()
       .then(({ data }) => {
         const enabled = views_enabled.filter((route) => {
           return !data.views.map((route) => route.name).includes(route);
@@ -27,7 +27,7 @@ export const useViewsStore = create<ViewsStore>((set, get) => ({
       });
   },
 
-  async OnCreateView(views) {
+  OnCreateView(views) {
     const promises = views.map((value) => {
       create_view(value)
         .then(() => {

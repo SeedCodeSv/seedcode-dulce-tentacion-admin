@@ -16,5 +16,11 @@ module.exports = {
     'no-console': 'error',
     'no-unused-vars': 'error',
     '@typescript-eslint/no-unused-vars': 'error',
+    'require-await': 'error',
+    'no-var': 'error',
+    'no-empty': 'error',
   },
 };
+
+
+

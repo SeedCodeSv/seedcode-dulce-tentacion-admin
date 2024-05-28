@@ -27,7 +27,7 @@ export const useUsersStore = create<UsersStore>((set, get) => ({
   loading_users: false,
   async getUsersPaginated(page, limit, userName, active = 1) {
     set({ active_filter: active, loading_users: true });
-    get_user_paginated(page, limit, userName, active)
+    await get_user_paginated(page, limit, userName, active)
       .then(({ data }) => {
         set((state) => ({ ...state, users_paginated: data, loading_users: false }));
       })
