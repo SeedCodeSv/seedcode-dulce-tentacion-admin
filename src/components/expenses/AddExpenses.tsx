@@ -40,7 +40,7 @@ const AddExpenses = (props: Props) => {
       .min(1, 'La categoría es requerida'),
   });
   const { getListCategoriesExpenses, list_categories_expenses } = useCategoriesExpenses();
-  const { postExpenses, patchExpenses } = useExpenseStore();
+  const { postExpenses } = useExpenseStore();
   useEffect(() => {
     getListCategoriesExpenses();
     get_box();
@@ -96,26 +96,22 @@ const AddExpenses = (props: Props) => {
     const boxe = get_box();
     const boxId = Number(boxe) || 0;
     try {
-      if (props.expenses) {
-        await patchExpenses(props.expenses.id, { ...values });
-        props.reload()
-      } else {
-        if (!formData.file) {
-          const defaultImageFile = await fetch(DefaultImage)
-            .then((res) => res.blob())
-            .then((blob) => new File([blob], 'default.png', { type: 'image/png' }));
 
-          setFormData((prevData) => ({
-            ...prevData,
-            boxId: boxId,
-            file: defaultImageFile,
-          }));
+      if (!formData.file) {
+        const defaultImageFile = await fetch(DefaultImage)
+          .then((res) => res.blob())
+          .then((blob) => new File([blob], 'default.png', { type: 'image/png' }));
 
-          setSelectedFile({ url: DefaultImage, type: 'image/png' });
-        }
-        await postExpenses({ ...values, file: formData.file });
-        props.reload()
+        setFormData((prevData) => ({
+          ...prevData,
+          boxId: boxId,
+          file: defaultImageFile,
+        }));
+
+        setSelectedFile({ url: DefaultImage, type: 'image/png' });
       }
+      await postExpenses({ ...values, file: formData.file });
+      props.reload()
       props.closeModal();
     } catch (error) {
       toast.error('Ocurrió un error al guardar la información');
@@ -133,50 +129,49 @@ const AddExpenses = (props: Props) => {
         <>
           <div className="">
             <div className="flex flex-col items-center justify-center m-4 2xl:mt-10">
-              {!props.expenses && (
-                <div className="flex flex-col items-center justify-center m-4 2xl:mt-10">
-                  <div>
-                    {selectedFile.type === 'image/png' || selectedFile.type === 'image/jpeg' ? (
-                      <NextImage
-                        src={selectedFile.url}
-                        alt="Cargando..."
-                        fallbackSrc={DefaultImage}
-                        className="h-60 w-60 rounded-lg object-cover"
-                      />
-                    ) : (
-                      <embed
-                        src={selectedFile.url}
-                        type="application/pdf"
-                        className="h-60 w-60 rounded-lg"
-                      />
-                    )}
-                  </div>
-                  <div className="mt-2">
-                    <label htmlFor="fileInput">
-                      <Button
-                        className="text-white font-semibold px-5"
-                        onClick={handleButtonClick}
-                        style={{
-                          backgroundColor: theme.colors.dark,
-                          color: theme.colors.primary,
-                        }}
-                      >
-                        Selecciona un archivo
-                      </Button>
-                    </label>
-                    <input
-                      type="file"
-                      id="fileInput"
-                      accept="image/png,image/jpeg,application/pdf"
-                      style={{ display: 'none' }}
-                      onChange={handleFileChange}
-                      ref={fileInputRef}
+              <div className="flex flex-col items-center justify-center m-4 2xl:mt-10">
+                <div>
+                  {selectedFile.type === 'image/png' || selectedFile.type === 'image/jpeg' ? (
+                    <NextImage
+                      src={selectedFile.url}
+                      alt="Cargando..."
+                      fallbackSrc={DefaultImage}
+                      className="h-60 w-60 rounded-lg object-cover"
                     />
-                  </div>
+                  ) : (
+                    <embed
+                      src={selectedFile.url}
+                      type="application/pdf"
+                      className="h-60 w-60 rounded-lg"
+                    />
+                  )}
                 </div>
-              )}
+                <div className="mt-2">
+                  <label htmlFor="fileInput">
+                    <Button
+                      className="text-white font-semibold px-5"
+                      onClick={handleButtonClick}
+                      style={{
+                        backgroundColor: theme.colors.dark,
+                        color: theme.colors.primary,
+                      }}
+                    >
+                      Selecciona un archivo
+                    </Button>
+                  </label>
+                  <input
+                    type="file"
+                    id="fileInput"
+                    accept="image/png,image/jpeg,application/pdf"
+                    style={{ display: 'none' }}
+                    onChange={handleFileChange}
+                    ref={fileInputRef}
+                  />
+                </div>
+              </div>
+
             </div>
-            <div className="pt-2">
+            <div className="flex flex-col-2 gap-2 sm:flex sm:flex-1">
               <Autocomplete
                 onSelectionChange={(key) => {
                   if (key) {
@@ -212,8 +207,10 @@ const AddExpenses = (props: Props) => {
                   {errors.categoryExpenseId}
                 </span>
               )}
-            </div>
-            <div className="mt-10">
+
+
+
+              {/* <div className="mt-10"> */}
               <Input
                 label="Total"
                 labelPlacement="outside"
@@ -232,7 +229,9 @@ const AddExpenses = (props: Props) => {
               {errors.total && touched.total && (
                 <span className="text-sm font-semibold text-red-500">{errors.total}</span>
               )}
+              {/* </div> */}
             </div>
+
             <div className="w-full pt-3 mb-8">
               <Textarea
                 label="Descripción"

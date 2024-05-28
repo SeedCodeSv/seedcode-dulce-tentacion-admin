@@ -35,7 +35,6 @@ import { ThemeContext } from "../../hooks/useTheme";
 import { ButtonGroup } from "@nextui-org/react";
 import { CategoryProduct } from "../../types/categories.types";
 import MobileView from "./MobileView";
-import { formatCurrency } from "../../utils/dte";
 import { Drawer } from "vaul";
 import { global_styles } from "../../styles/global.styles";
 import classNames from "classnames";
@@ -387,13 +386,13 @@ function ListProducts({ actions }: Props) {
                 field="code"
                 header="Código"
               />
-              <Column
+              {/* <Column
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
                 // field="price"
                 header="Precio"
                 body={(rowData) => formatCurrency(Number(rowData.price))}
-              />
+              /> */}
               <Column
                 headerStyle={{ ...style, borderTopRightRadius: "10px" }}
                 header="Acciones"

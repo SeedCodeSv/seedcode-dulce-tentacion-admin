@@ -17,14 +17,14 @@ import {
   IExpense, /*IExpensePayloads*/
 } from "../../types/expenses.types";
 import {
-  EditIcon,
   User,
   TrashIcon,
   Table as ITable,
   CreditCard,
   List,
   Files,
-  Image
+  Image,
+  NotepadText
 } from "lucide-react";
 // import Zoom from "react-medium-image-zoom";
 import AddButton from "../global/AddButton";
@@ -41,6 +41,7 @@ import { limit_options } from "../../utils/constants";
 import Anexo from "./Anexo";
 import AnexoImg from "./AnexoImage";
 import { get_box } from '../../storage/localStorage.ts';
+import Description from "./Description.tsx";
 
 const ListExpenses = () => {
   const { theme } = useContext(ThemeContext);
@@ -52,7 +53,7 @@ const ListExpenses = () => {
   useEffect(() => {
     get_box()
     getExpensesPaginated(currentBox, 1, limit, category);
-  }, []);
+  }, [currentBox]);
 
   const handleSearch = (name: string | undefined) => {
     getExpensesPaginated(currentBox, 1, limit, name ?? category);
@@ -61,6 +62,7 @@ const ListExpenses = () => {
   const modalAdd = useDisclosure();
   const showAnexo = useDisclosure();
   const showAnexoimg = useDisclosure();
+  const showDescription = useDisclosure();
 
   const style = {
     backgroundColor: theme.colors.dark,
@@ -69,14 +71,11 @@ const ListExpenses = () => {
 
   const [view, setView] = useState<"table" | "grid" | "list">("table");
 
-  const handleEdit = (item: IExpense) => {
-    setSelectedCategory(item);
-    modalAdd.onOpen();
-  };
-
-
-
   const [pathSelected, setPathSelected] = useState(0)
+  const handleDescription = (expense: IExpense) => {
+    setSelectedCategory(expense)
+    showDescription.onOpen()
+  };
   return (
     <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
       <div className="flex flex-col w-full p-5 rounded">
@@ -187,7 +186,7 @@ const ListExpenses = () => {
           <MobileView
             deletePopover={DeletePopUp}
             layout={view as "grid" | "list"}
-            handleEdit={handleEdit}
+            handleDescription={handleDescription}
           />
         )}
         {view === "table" && (
@@ -219,26 +218,27 @@ const ListExpenses = () => {
             <Column
               headerClassName="text-sm font-semibold"
               headerStyle={style}
-              field="description"
               header="Descripción"
+              body={(item) => (
+                <Button
+                  onClick={() => handleDescription(item)}
+                  isIconOnly
+                  style={{
+                    backgroundColor: theme.colors.third,
+                  }}
+                >
+                  <NotepadText
+                    style={{ color: theme.colors.primary }}
+                    size={20}
+                  />
+                </Button>
+              )}
             />
             <Column
               headerStyle={{ ...style, borderTopRightRadius: "10px" }}
               header="Acciones"
               body={(item) => (
                 <div className="flex gap-6">
-                  <Button
-                    onClick={() => handleEdit(item)}
-                    isIconOnly
-                    style={{
-                      backgroundColor: theme.colors.secondary,
-                    }}
-                  >
-                    <EditIcon
-                      style={{ color: theme.colors.primary }}
-                      size={20}
-                    />
-                  </Button>
                   {item.attachments.map((attachment: Attachment) => attachment.ext).includes("pdf") && (
                     <Button
                       isIconOnly
@@ -287,7 +287,7 @@ const ListExpenses = () => {
                 currentPage={expenses_paginated.currentPag}
                 totalPages={expenses_paginated.totalPag}
                 onPageChange={(page) => {
-                  getExpensesPaginated(1, page, limit, category);
+                  getExpensesPaginated(currentBox, page, limit, category);
                 }}
               />
             </div>
@@ -309,7 +309,15 @@ const ListExpenses = () => {
       </div>
       <ModalGlobal
         size="w-full sm:w-[500px]"
-        title={selectedCategory ? "Editar gastos" : "Nueva gastos"}
+        title="Descripción"
+        isOpen={showDescription.isOpen}
+        onClose={showDescription.onClose}
+      >
+        {selectedCategory && <Description expense={selectedCategory} />}
+      </ModalGlobal>
+      <ModalGlobal
+        size="w-full sm:w-[500px]"
+        title="Nuevo gasto"
         isOpen={modalAdd.isOpen}
         onClose={modalAdd.onClose}
       >
@@ -343,7 +351,6 @@ interface Props {
 }
 const DeletePopUp = ({ expenses }: Props) => {
   const { theme } = useContext(ThemeContext);
-
   const { deleteExpenses } = useExpenseStore();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -351,7 +358,6 @@ const DeletePopUp = ({ expenses }: Props) => {
     await deleteExpenses(expenses.id);
     onClose();
   };
-
   return (
     <>
       <Popover isOpen={isOpen} onClose={onClose} backdrop="blur" showArrow>

@@ -48,7 +48,6 @@ export const LayoutItems = () => {
     setMode("vendedor");
     save_seller_mode("vendedor");
     makeLogout();
-
     setIsAuth(false);
     setToken("");
     navigate("/");
