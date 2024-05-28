@@ -4,7 +4,6 @@ import { IReportBranchStore } from '../../types/reports/reportByBrachTypes/repor
 export const useReportsByBranch = create<IReportBranchStore>(() => ({
   expenses: [],
   sales: [],
-  OnGetReportByBranchSales: () => 
-    {},
-  OnGetReportExpenseByBranch: () => {},
+  OnGetReportByBranchSales: () => { },
+  OnGetReportExpenseByBranch: () => { },
 }));
