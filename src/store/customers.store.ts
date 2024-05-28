@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import { IUseCustomersStore } from './types/customers.store';
 import {
-  delete_customer,
   get_customers_pagination,
   save_customers,
   update_customers,
@@ -10,6 +9,7 @@ import {
 } from '../services/customers.service';
 import { toast } from 'sonner';
 import { messages } from '../utils/constants';
+import { delete_supplier } from '../services/supplier.service';
 
 export const useCustomerStore = create<IUseCustomersStore>((set, get) => ({
   customer_pagination: {
@@ -83,7 +83,7 @@ export const useCustomerStore = create<IUseCustomersStore>((set, get) => ({
       });
   },
   deleteCustomer: async (id) => {
-    return await delete_customer(id)
+    return await delete_supplier(id)
       .then(({ data }) => {
         get().getCustomersPagination(1, 5, '', '', 1, 1);
         toast.success(messages.success);

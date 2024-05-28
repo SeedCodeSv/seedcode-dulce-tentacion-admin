@@ -19,14 +19,14 @@ function SalesByTransmitter() {
   };
   const { branch_list, getBranchesList } = useBranchesStore();
   const { sales, getSalesByTransmitter } = salesReportStore();
-  const [branchId, setBranchId ] = useState(0);
+  
   useEffect(() => {
     getBranchesList();
-    getSalesByTransmitter(user?.transmitterId || 0, fechaActualString, fechaActualString,branchId);
+    getSalesByTransmitter(user?.transmitterId || 0, fechaActualString, fechaActualString);
   }, []);
 
    const search = () => {
-    getSalesByTransmitter(user?.transmitterId || 0, startDate, endDate, branchId);
+    getSalesByTransmitter(user?.transmitterId || 0, startDate, endDate);
    };
   return (
     <>
@@ -52,7 +52,7 @@ function SalesByTransmitter() {
             <Autocomplete placeholder="Selecciona la sucursal">
               {branch_list.map((branch) => (
                 <AutocompleteItem
-                  onClick={() => setBranchId(branch.id)}
+             
                   className="dark:text-white"
                   key={branch.id}
                   value={branch.id}

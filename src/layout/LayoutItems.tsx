@@ -1,6 +1,6 @@
-import { Button, Switch } from "@nextui-org/react";
-import { NavLink } from "react-router-dom";
-import LOGO from "../assets/react.svg";
+import { Button, Switch } from '@nextui-org/react';
+import { NavLink } from 'react-router-dom';
+import LOGO from '../assets/react.svg';
 import {
   Home,
   Box,
@@ -18,54 +18,51 @@ import {
   FolderOpen,
   Store,
   Truck,
-} from "lucide-react";
-import { Fragment, useContext, useEffect, useMemo } from "react";
-import { ThemeContext } from "../hooks/useTheme";
-import { useAuthStore } from "../store/auth.store";
-import { get_user, save_seller_mode } from "../storage/localStorage";
-import { useNavigate } from "react-router";
-import { SessionContext } from "../hooks/useSession";
-import { useConfigurationStore } from "../store/perzonalitation.store";
-import useWindowSize from "../hooks/useWindowSize";
-import { useActionsRolStore } from "../store/actions_rol.store";
-import { Menu, Transition } from "@headlessui/react";
-import { ActionsContext } from "../hooks/useActions";
-import { encryptData } from "../plugins/crypto";
+} from 'lucide-react';
+import { Fragment, useContext, useEffect, useMemo } from 'react';
+import { ThemeContext } from '../hooks/useTheme';
+import { useAuthStore } from '../store/auth.store';
+import { get_user, save_seller_mode } from '../storage/localStorage';
+import { useNavigate } from 'react-router';
+import { SessionContext } from '../hooks/useSession';
+import { useConfigurationStore } from '../store/perzonalitation.store';
+import useWindowSize from '../hooks/useWindowSize';
+import { useActionsRolStore } from '../store/actions_rol.store';
+import { Menu, Transition } from '@headlessui/react';
+import { ActionsContext } from '../hooks/useActions';
+import { encryptData } from '../plugins/crypto';
 export const LayoutItems = () => {
   const { theme, toggleContext, context } = useContext(ThemeContext);
   const { makeLogout } = useAuthStore();
   const { setIsAuth, setToken, mode, setMode } = useContext(SessionContext);
   useEffect(() => {
-    if (context === "dark") {
-      document.getElementsByTagName("body")[0].classList.add("dark");
+    if (context === 'dark') {
+      document.getElementsByTagName('body')[0].classList.add('dark');
     } else {
-      document.getElementsByTagName("body")[0].classList.remove("dark");
+      document.getElementsByTagName('body')[0].classList.remove('dark');
     }
   }, [context]);
   const navigate = useNavigate();
   const handleSeller = () => {
-    setMode("vendedor");
-    save_seller_mode("vendedor");
+    setMode('vendedor');
+    save_seller_mode('vendedor');
     makeLogout();
 
     setIsAuth(false);
-    setToken("");
-    navigate("/");
+    setToken('');
+    navigate('/');
   };
   const handleAdmin = () => {
-    setMode("");
+    setMode('');
     makeLogout();
-    localStorage.removeItem("seller_mode");
+    localStorage.removeItem('seller_mode');
     setIsAuth(false);
-    setToken("");
-    navigate("/");
+    setToken('');
+    navigate('/');
   };
   const { user } = useAuthStore();
   const transmitter = user?.employee?.branch?.transmitterId;
-  const {
-    personalization,
-    GetConfigurationByTransmitter,
-  } = useConfigurationStore();
+  const { personalization, GetConfigurationByTransmitter } = useConfigurationStore();
   useEffect(() => {
     GetConfigurationByTransmitter(transmitter || 0);
   }, []);
@@ -91,7 +88,7 @@ export const LayoutItems = () => {
       if (storedUser && storedUser.roleId) {
         OnGetActionsByRole(storedUser.roleId).then((data) => {
           if (data) {
-            localStorage.setItem("_RVA", encryptData(data));
+            localStorage.setItem('_RVA', encryptData(data));
             setRoleActions(data);
           }
         });
@@ -153,6 +150,32 @@ export const LayoutItems = () => {
           </Button>
         </div>
       )}
+
+      <>
+        {views && views.includes('Inicio de ventas') && mode === 'vendedor' && (
+          <NavLink
+            to={'/homeSeller'}
+            className={({ isActive }) => {
+              return (
+                (isActive
+                  ? 'text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green'
+                  : 'text-coffee-brown font-semibold border-white') +
+                ' flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
+              );
+            }}
+            style={({ isActive }) => {
+              return {
+                borderLeftColor: isActive ? theme.colors.dark : 'transparent',
+                borderLeftWidth: 5,
+              };
+            }}
+          >
+            <Home size={iconSize} />
+            <p className="ml-2 text-sm 2xl:text-base">Inicio</p>
+          </NavLink>
+        )}
+      </>
+
       {views && views.includes('Ventas') && mode === 'vendedor' && (
         <NavLink
           to={'/newSales'}

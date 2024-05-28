@@ -46,7 +46,7 @@ export const router = () => {
     },
     {
       path: '/homeSeller',
-      element: <HomeSeller />,
+      element: views && views.includes('Inicio de ventas') && <HomeSeller />,
     },
     {
       path: '/tables',

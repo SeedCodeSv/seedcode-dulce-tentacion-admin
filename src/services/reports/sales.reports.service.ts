@@ -22,8 +22,8 @@ export const get_sales_by_month_and_year = (id: number) => {
 export const get_sales_by_day = (id: number) => {
   return axios.get<IGetSalesByDay>(API_URL + `/reports/sales-by-day/${id}`);
 };
-export const get_products_most_selled_by_transmitter_table = (id: number, startDate: string, endDate: string) => {
-  return axios.get<IGetMostProductSelled>(API_URL + `/reports/most-product-transmitter-selled-table/${id}?startDate=${startDate}&endDate=${endDate}`);
+export const get_products_most_selled_by_transmitter_table = (id: number, startDate: string, endDate: string, branchId: number) => {
+  return axios.get<IGetMostProductSelled>(API_URL + `/reports/most-product-transmitter-selled-table/${id}?startDate=${startDate}&endDate=${endDate}&branchId=${branchId}`);
 };
 
 export const get_sales_by_day_table = (id: number) => {
