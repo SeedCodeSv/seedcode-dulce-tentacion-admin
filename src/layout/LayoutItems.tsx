@@ -370,7 +370,22 @@ export const LayoutItems = () => {
                               <p className="ml-2 text-sm 2xl:text-base">Gatos Sucursal</p>
                             </NavLink>
                           </Menu.Item>
-
+                          <Menu.Item>
+                            <NavLink
+                              to={'/most-product-transmitter-selled'}
+                              className={({ isActive }) => {
+                                return (
+                                  (isActive
+                                    ? 'font-semibold bg-gray-300 dark:bg-gray-700'
+                                    : 'text-coffee-brown font-semibold border-white') +
+                                  ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
+                                );
+                              }}
+                            >
+                              <BookUser size={iconSize} />
+                              <p className="ml-2 text-sm 2xl:text-base">Producto mas vendido</p>
+                            </NavLink>
+                          </Menu.Item>
                           <Menu.Item>
                             <NavLink
                               to={'/sales-by-transmitter'}
@@ -411,9 +426,9 @@ export const LayoutItems = () => {
                 </>
               )}
               {views.includes('Empleados') ||
-              (views && views.includes('Clientes')) ||
-              views.includes('Usuarios') ||
-              views.includes('Sucursales') ? (
+                (views && views.includes('Clientes')) ||
+                views.includes('Usuarios') ||
+                views.includes('Sucursales') ? (
                 <>
                   <Menu as="div" className="relative px-4 z-20  w-full">
                     <div>

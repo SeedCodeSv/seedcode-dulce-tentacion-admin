@@ -1,12 +1,12 @@
 import MostProductTransmitterSelled from '../components/reporters/Most-Product-Transmitter-Selled-Report';
 import Layout from '../layout/Layout';
 
-function ReportersPage() {
+function MostProductTransmitterSelledPage() {
     return (
-        <Layout title="Reportes">
+        <Layout title="Reporte Producto mas vendido">
             <MostProductTransmitterSelled></MostProductTransmitterSelled>
         </Layout>
     )
 }
 
-export default ReportersPage
+export default MostProductTransmitterSelledPage

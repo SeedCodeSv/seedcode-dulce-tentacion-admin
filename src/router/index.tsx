@@ -20,7 +20,7 @@ import { useEffect } from 'react';
 import Views from '../pages/Views';
 import { useAuthStore } from '../store/auth.store';
 import HomeSeller from '../pages/Seller/HomeSeller';
-import Reporters from '../pages/ReportersPage';
+import MostProductTransmitterSelledPage from '../pages/MostProductTransmitterSelledPage';
 import SalesByTransmitterPage from '../pages/SalesByTransmitterPage';
 import ExpenseByDatesTransmitter from '../pages/ExpenseByDatesTransmitter';
 import Supplier from '../pages/Supplier';
@@ -96,9 +96,13 @@ export const router = () => {
       path: '/newSales',
       element: views && views.includes('Ventas') && <NewSales />,
     },
+    // {
+    //   path: '/reporters',
+    //   element: views && views.includes('Reportes') && <Reporters />,
+    // },
     {
-      path: '/reporters',
-      element: views && views.includes('Reportes') && <Reporters />,
+      path: '/most-product-transmitter-selled',
+      element: views && views.includes('Reportes') && <MostProductTransmitterSelledPage />,
     },
     {
       path: '/sales-by-transmitter',
