@@ -65,13 +65,8 @@ export interface IGetData {
   total: string
   isActive: boolean
   boxId: number
-  
   categoryExpenseId: number
-  expenseAttachment: {
-    ext: string
-    path: string
-
-  }
+  attachments: IExpenseAttachment[]
 }
 export interface IExpenseAttachment {
   id: number
