@@ -43,6 +43,23 @@ export interface ProductPayload {
   tipoItem: string;
   uniMedida: string;
   unidaDeMedida: string;
+  branch: { id: number }[],
+  supplierId: number
+}
+
+export interface ProductPayloadFormik {
+  name: string;
+  description: string;
+  price: string;
+  costoUnitario: string;
+  code: string;
+  categoryProductId: number;
+  tipoDeItem: string;
+  tipoItem: string;
+  uniMedida: string;
+  unidaDeMedida: string;
+  branch: string[],
+  supplierId: number,
 }
 export interface IProductCart extends IUnidadProducto {
   quantity: number;

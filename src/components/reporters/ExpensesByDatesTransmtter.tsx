@@ -6,32 +6,32 @@ import { Autocomplete, AutocompleteItem, Button, Input } from '@nextui-org/react
 import { salesReportStore } from '../../store/reports/sales_report.store';
 import { fechaActualString } from '../../utils/dates';
 import { useBranchesStore } from '../../store/branches.store';
-import { useAuthStore } from '../../store/auth.store';
+
 
 function ExpensesByDatesTransmitter() {
   const { theme } = useContext(ThemeContext);
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const { user } = useAuthStore();
+  const [, setStartDate] = useState('');
+  const [, setEndDate] = useState('');
+  
   const style = {
     backgroundColor: theme.colors.dark,
     color: theme.colors.primary,
   };
   const { branch_list, getBranchesList } = useBranchesStore();
-  const { sales, getSalesByTransmitter } = salesReportStore();
+  const { sales } = salesReportStore();
   
   useEffect(() => {
     getBranchesList();
-    getSalesByTransmitter(
-      user?.employee.branch.transmitterId || 0,
-      fechaActualString,
-      fechaActualString,
+    // getSalesByTransmitter(
+    //   user?.employee.branch.transmitterId || 0,
+    //   fechaActualString,
+    //   fechaActualString,
       
-    );
+    // );
   }, []);
 
   const search = () => {
-    getSalesByTransmitter(user?.employee.branch.transmitterId || 0, startDate, endDate);
+    // getSalesByTransmitter(user?.employee.branch.transmitterId || 0, startDate, endDate);
   };
   return (
     <>

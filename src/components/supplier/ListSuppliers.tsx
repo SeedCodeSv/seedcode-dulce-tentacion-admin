@@ -62,10 +62,9 @@ function ListSuppliers() {
     color: theme.colors.primary,
   };
   const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
-
   useEffect(() => {
     getSupplierPagination(1, limit, search, email, active ? 1 : 0, tipeSupplier);
-  }, [1, limit, search, email, active ? 1 : 0, tipeSupplier]);
+  }, [limit, active, tipeSupplier]);
 
   const handleSearch = (searchParam: string | undefined) => {
     getSupplierPagination(

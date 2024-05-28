@@ -8,9 +8,9 @@ interface Props {
 }
 function AnexoImg(props: Props) {
     const { get_expenses_attachment, expense_attachments } = useExpenseStore();
-    const expenseAttachment =
-        expense_attachments && expense_attachments.find((attachment) => attachment.id === props.id);
-    const attachmentPath = expenseAttachment?.expenseAttachment.path;
+    const expenseAttachment = expense_attachments && expense_attachments.find((attachment) => attachment.id === props.id);
+    const attachmentPath = expenseAttachment?.attachments[0]?.path
+
     useEffect(() => {
         if (props.id > 0) {
             get_expenses_attachment(props.id);

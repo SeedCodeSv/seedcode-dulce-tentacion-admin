@@ -1,5 +1,3 @@
-import { Customer } from '../customers.types';
-import { Employee } from '../users.types';
 
 export interface BranchProduct {
   name: string;
@@ -20,45 +18,20 @@ export interface IGetProductMostSelled {
   products: ProductMostSelled[];
 }
 
-export interface ISalesData {
-  id: number;
-  boxId: number;
-  customer: Customer;
-  customerId: number;
-  employee: Employee;
-  employeeId: number;
-  paymentType: string;
-  salesStatusId: number;
-  numeroControl: string;
-  codigoGeneracion: string;
-  tipoDte: string;
-  fecEmi: string;
-  horEmi: string;
-  selloRecibido: string;
-  selloInvalidacion: string;
-  sello: boolean;
-  codeEmployee: string;
-  totalNoSuj: number;
-  totalExenta: number;
-  totalGravada: number;
-  subTotalVentas: number;
-  descuNoSuj: number;
-  descuExenta: number;
-  descuGravada: number;
-  porcentajeDescuento: number;
-  totalDescu: number;
-  subTotal: number;
-  totalIva: number;
-  montoTotalOperacion: number;
-  totalPagar: number;
-  totalLetras: string;
-  pathPdf: string;
-  pathJson: string;
-  isActivated: boolean;
-}
-export interface ISalesByTransmitter {
+export interface IResponseData {
   ok: boolean;
+  status: number;
+  data: IDataSalesResponse[];
+}
+
+export interface IDataSalesResponse {
+  date: string;
   sales: ISalesData[];
+}
+
+export interface ISalesData {
+  branch: string;
+  total: number;
 }
 
 export interface IDataExpense {

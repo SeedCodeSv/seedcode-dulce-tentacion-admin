@@ -16,7 +16,6 @@ import { ThemeContext } from '../hooks/useTheme';
 function Home() {
   const { theme } = useContext(ThemeContext);
 
-
   const {
     getSalesByBranchAndMonth,
     sales_branch_month,
