@@ -81,5 +81,5 @@ export const salesReportStore = create<ISalesReportStore>((set) => ({
       .catch(() => {
         set({ expenses: [] });
       });
-  }
+  },
 }));

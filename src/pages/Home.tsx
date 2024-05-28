@@ -26,6 +26,8 @@ function Home() {
     getSalesTableDay,
     sales_table_day,
   } = salesReportStore();
+
+
   const { getExpensesBranchMonth, expenses_branch_month, expenses_by_day, getExpensesByDay } =
     useReportExpensesStore();
 
@@ -163,10 +165,12 @@ function Home() {
               className="w-full shadow"
               emptyMessage="No se encontraron resultados"
               value={sales_table_day}
+              
               tableStyle={{ minWidth: '50rem' }}
               scrollable
               scrollHeight="30rem"
             >
+             
               <Column
                 headerClassName="text-sm font-semibold"
                 headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
