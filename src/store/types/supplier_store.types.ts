@@ -7,8 +7,8 @@ export interface ISupplierStore {
   getSupplierPagination: (
     page: number,
     limit: number,
-    nombre: string,
-    correo: string,
+    name: string,
+    email: string,
     active: number,
     isTransmitter: number
   ) => void;

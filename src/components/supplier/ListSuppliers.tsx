@@ -316,7 +316,7 @@ function ListSuppliers() {
             <DataTable
               className="shadow"
               emptyMessage="No se encontraron resultados"
-              value={supplier_pagination.Suppliers}
+              value={supplier_pagination.suppliers}
               tableStyle={{ minWidth: '50rem' }}
             >
               <Column

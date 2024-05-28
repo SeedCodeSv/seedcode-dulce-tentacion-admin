@@ -12,7 +12,7 @@ import { messages } from '../utils/constants';
 
 export const useSupplierStore = create<ISupplierStore>((set, get) => ({
   supplier_pagination: {
-    Suppliers: [],
+    suppliers: [],
     total: 0,
     totalPag: 0,
     currentPag: 0,
@@ -30,7 +30,7 @@ export const useSupplierStore = create<ISupplierStore>((set, get) => ({
       .catch(() => {
         set({
           supplier_pagination: {
-            Suppliers: [],
+            suppliers: [],
             total: 0,
             totalPag: 0,
             currentPag: 0,
