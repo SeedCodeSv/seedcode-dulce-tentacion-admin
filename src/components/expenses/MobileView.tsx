@@ -2,18 +2,17 @@ import { Button } from "@nextui-org/react";
 import { DataView } from "primereact/dataview";
 import { classNames } from "primereact/utils";
 import {
-  EditIcon,
   ScrollIcon,
   DollarSign,
-  ClipboardPenLine,
+  NotepadText,
 } from "lucide-react";
 import { useExpenseStore } from "../../store/expenses.store";
 import { GridProps, IMobileView } from "./types/mobile-view.types";
 import { global_styles } from "../../styles/global.styles";
 
 function MobileView(props: IMobileView) {
-  const { layout, deletePopover, handleEdit } = props;
-  const {  expenses } = useExpenseStore();
+  const { layout, deletePopover, handleDescription } = props;
+  const { expenses } = useExpenseStore();
   return (
     <div className="w-full pb-10">
       <DataView
@@ -32,7 +31,7 @@ function MobileView(props: IMobileView) {
             expenses={cat}
             layout={layout}
             deletePopover={deletePopover}
-            handleEdit={handleEdit}
+            handleDescription={handleDescription}
           />
         )}
         emptyMessage="No se encontraron gastos"
@@ -44,7 +43,7 @@ function MobileView(props: IMobileView) {
 export default MobileView;
 
 const GridItem = (props: GridProps) => {
-  const { layout, expenses, deletePopover, handleEdit } = props;
+  const { layout, expenses, deletePopover, handleDescription } = props;
   return (
     <>
       {layout === "grid" ? (
@@ -68,20 +67,13 @@ const GridItem = (props: GridProps) => {
             />
             {expenses.total}
           </div>
-          <div className="flex w-full gap-2">
-            <ClipboardPenLine
-              className="text-[#274c77] dark:text-gray-400"
-              size={35}
-            />
-            {expenses.description}
-          </div>
           <div className="flex justify-between mt-5 w-ful">
             <Button
-              onClick={() => handleEdit(expenses)}
+              onClick={() => handleDescription(expenses)}
               isIconOnly
               style={global_styles().secondaryStyle}
             >
-              <EditIcon size={20} />
+              <NotepadText size={20} />
             </Button>
             {deletePopover({ expenses: expenses })}
           </div>
@@ -91,7 +83,7 @@ const GridItem = (props: GridProps) => {
           layout="list"
           expenses={expenses}
           deletePopover={deletePopover}
-          handleEdit={handleEdit}
+          handleDescription={handleDescription}
         />
       )}
     </>
@@ -99,7 +91,7 @@ const GridItem = (props: GridProps) => {
 };
 
 const ListItem = (props: GridProps) => {
-  const { expenses, deletePopover, handleEdit } = props;
+  const { expenses, deletePopover, handleDescription } = props;
   return (
     <>
       <div className="flex w-full col-span-1 p-5 border-b shadow md:col-span-2 lg:col-span-3 xl:col-span-4">
@@ -118,21 +110,14 @@ const ListItem = (props: GridProps) => {
             />
             {expenses.total}
           </div>
-          <div className="flex items-center w-full gap-2">
-            <ClipboardPenLine
-              className="text-[#274c77] dark:text-gray-400"
-              size={35}
-            />
-            {expenses.description}
-          </div>
         </div>
         <div className="flex flex-col items-end justify-between w-full gap-5">
           <Button
-            onClick={() => handleEdit(expenses)}
+            onClick={() => handleDescription(expenses)}
             isIconOnly
             style={global_styles().secondaryStyle}
           >
-            <EditIcon size={20} />
+            <NotepadText size={20} />
           </Button>
           {deletePopover({ expenses: expenses })}
         </div>

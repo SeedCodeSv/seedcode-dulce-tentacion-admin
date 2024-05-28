@@ -16,7 +16,7 @@ function AnexoPdf(props: Props) {
   const { theme } = useContext(ThemeContext);
   const { get_expenses_attachment, expense_attachments } = useExpenseStore();
   const expenseAttachment = expense_attachments && expense_attachments.find((attachment) => attachment.id === props.id);
-  const attachmentPath = expenseAttachment?.expenseAttachment.path;
+  const attachmentPath = expenseAttachment?.attachments[0]?.path;
   const [urlPDF, setUrlPDF] = useState<string>('');
   useEffect(() => {
     if (props.id > 0) {

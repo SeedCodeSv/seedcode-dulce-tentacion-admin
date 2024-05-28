@@ -68,7 +68,7 @@ export const get_supplier = () => {
     const user = get_user();
     const token = get_token() ?? '';
     return axios.get<IGetSuppliers>(
-      API_URL + `/suppliers/list-by-transmitter/${user?.employee.branch.transmitterId}`,
+      API_URL + `/suppliers/${user?.employee.branch.transmitterId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
