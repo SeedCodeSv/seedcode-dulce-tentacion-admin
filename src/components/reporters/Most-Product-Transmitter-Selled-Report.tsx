@@ -21,7 +21,7 @@ const MostProductTransmitterSelled = () => {
     const { branch_list, getBranchesList } = useBranchesStore();
     useEffect(() => {
         getBranchesList();
-        getSalesByTransmitter(user?.transmitterId || 0, fechaActualString, fechaActualString)
+        getSalesByTransmitter(user?.employee.branch.transmitterId || 0, fechaActualString, fechaActualString)
         getProductMostSelledTable(user?.employee.branch.transmitterId ?? 0, fechaActualString, fechaActualString)
     }, [startDate, endDate, branchId])
     const style = {

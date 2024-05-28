@@ -3,40 +3,43 @@ import { DataTable } from 'primereact/datatable';
 import { useContext, useEffect, useState } from 'react';
 import { ThemeContext } from '../../hooks/useTheme';
 import { Autocomplete, AutocompleteItem, Button, Input } from '@nextui-org/react';
-import { salesReportStore } from '../../store/reports/sales_report.store';
 import { fechaActualString } from '../../utils/dates';
 import { useBranchesStore } from '../../store/branches.store';
-import { useAuthStore } from '../../store/auth.store';
 
-function ExpensesByDatesTransmitter() {
+import { useReportsByBranch } from '../../store/reports/report_store';
+
+function ReportSalesByBranch() {
   const { theme } = useContext(ThemeContext);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const { user } = useAuthStore();
+ 
   const style = {
     backgroundColor: theme.colors.dark,
     color: theme.colors.primary,
   };
   const { branch_list, getBranchesList } = useBranchesStore();
-  const { sales, getSalesByTransmitter } = salesReportStore();
-  
+  const { sales, OnGetReportByBranchSales } = useReportsByBranch();
+  const [branchId,setBranchId] = useState(0);
   useEffect(() => {
     getBranchesList();
-    getSalesByTransmitter(
-      user?.employee.branch.transmitterId || 0,
+    OnGetReportByBranchSales(
+     branchId,
       fechaActualString,
       fechaActualString,
-      
+     
     );
   }, []);
-
-  const search = () => {
-    getSalesByTransmitter(user?.employee.branch.transmitterId || 0, startDate, endDate);
-  };
+  const search =() => {
+     OnGetReportByBranchSales(
+       branchId,
+       startDate,
+       endDate,
+     );
+  }
   return (
     <>
       <div className="col-span-3 bg-gray-100 p-5 dark:bg-gray-900 rounded-lg">
-        <p className="pb-4 text-lg font-semibold dark:text-white">Ventas </p>
+        <p className="pb-4 text-lg font-semibold dark:text-white">Ventas</p>
         <div className="grid grid-cols-2 gap-2 py-2">
           <label className="text-sm font-semibold dark:text-white">Fecha inicial</label>
           <label className="text-sm font-semibold dark:text-white">Fecha final</label>
@@ -52,12 +55,11 @@ function ExpensesByDatesTransmitter() {
             className="w-full "
             type="date"
           ></Input>
-
           <div className="">
             <Autocomplete placeholder="Selecciona la sucursal">
               {branch_list.map((branch) => (
                 <AutocompleteItem
-                  
+                  onClick={() => setBranchId(branch.id)}
                   className="dark:text-white"
                   key={branch.id}
                   value={branch.id}
@@ -117,4 +119,4 @@ function ExpensesByDatesTransmitter() {
   );
 }
 
-export default ExpensesByDatesTransmitter;
+export default ReportSalesByBranch;
