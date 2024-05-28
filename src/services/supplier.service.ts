@@ -45,38 +45,6 @@ export const get_supplier_pagination = (
   );
 };
 
-// export const get_supplier_pagination = (
-//   page = 1,
-//   limit = 5,
-//   nombre = '',
-//   correo = '',
-//   active: number,
-//   isTransmitter: number
-// ) => {
-//   const user = get_user();
-//   const token = get_token() ?? '';
-//   return axios.get<IGetSupplierPagination>(
-//     API_URL +
-//       `/suppliers/list/${user?.employee.branch.transmitterId}` +
-//       '?page=' +
-//       page +
-//       '&limit=' +
-//       limit +
-//       '&nombre=' +
-//       nombre +
-//       '&correo=' +
-//       correo +
-//       '&active=' +
-//       active +
-//       '&isTransmitter=' +
-//       isTransmitter,
-//     {
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//       },
-//     }
-//   );
-// };
 
 export const update_supplier = (payload: PayloadSupplier, id: number) => {
   const token = get_token() ?? '';
