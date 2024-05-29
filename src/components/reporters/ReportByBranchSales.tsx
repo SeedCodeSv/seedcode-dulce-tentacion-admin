@@ -12,29 +12,29 @@ function ReportSalesByBranch() {
   const { theme } = useContext(ThemeContext);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
- 
+
   const style = {
     backgroundColor: theme.colors.dark,
     color: theme.colors.primary,
   };
   const { branch_list, getBranchesList } = useBranchesStore();
   const { sales, OnGetReportByBranchSales } = useReportsByBranch();
-  const [branchId,setBranchId] = useState(0);
+  const [branchId, setBranchId] = useState(0);
   useEffect(() => {
     getBranchesList();
     OnGetReportByBranchSales(
-     branchId,
+      branchId,
       fechaActualString,
       fechaActualString,
-     
+
     );
   }, []);
-  const search =() => {
-     OnGetReportByBranchSales(
-       branchId,
-       startDate,
-       endDate,
-     );
+  const search = () => {
+    OnGetReportByBranchSales(
+      branchId,
+      startDate,
+      endDate,
+    );
   }
   return (
     <>

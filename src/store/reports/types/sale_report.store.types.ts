@@ -20,6 +20,7 @@ export interface ISalesReportStore {
   getSalesExpenseByDate: (id: number, startDate: string, endDate: string) => void;
   // getSalesByTransmitter: (id: number, startDate: string, endDate: string) => void;
   getProductMostSelledTable: (id: number, startDate: string, endDate: string, branchId: number) => void;
+  getExpensesByDateTransmitter: (id: number, startDate: string, endDate: string) => void;
   getSalesByYearAndMonth: (id: number) => void;
   getSalesByBranchAndMonth: (id: number) => void;
 }
