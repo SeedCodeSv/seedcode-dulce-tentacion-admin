@@ -1,6 +1,6 @@
-import { useContext, useEffect, useState } from "react";
-import { ThemeContext } from "../../hooks/useTheme";
-import { useExpenseStore } from "../../store/expenses.store";
+import { useContext, useEffect, useState } from 'react';
+import { ThemeContext } from '../../hooks/useTheme';
+import { useExpenseStore } from '../../store/expenses.store';
 import {
   Button,
   ButtonGroup,
@@ -11,11 +11,8 @@ import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-} from "@nextui-org/react";
-import {
-  Attachment,
-  IExpense, /*IExpensePayloads*/
-} from "../../types/expenses.types";
+} from '@nextui-org/react';
+import { Attachment, IExpense /*IExpensePayloads*/ } from '../../types/expenses.types';
 import {
   User,
   TrashIcon,
@@ -24,34 +21,34 @@ import {
   List,
   Files,
   Image,
-  NotepadText
-} from "lucide-react";
+  NotepadText,
+} from 'lucide-react';
 // import Zoom from "react-medium-image-zoom";
-import AddButton from "../global/AddButton";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
-import Pagination from "../global/Pagination";
-import { Paginator } from "primereact/paginator";
-import { paginator_styles } from "../../styles/paginator.styles";
-import ModalGlobal from "../global/ModalGlobal";
-import AddExpenses from "./AddExpenses";
-import MobileView from "./MobileView";
-import { formatCurrency } from "../../utils/dte";
-import { limit_options } from "../../utils/constants";
-import Anexo from "./Anexo";
-import AnexoImg from "./AnexoImage";
+import AddButton from '../global/AddButton';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+import Pagination from '../global/Pagination';
+import { Paginator } from 'primereact/paginator';
+import { paginator_styles } from '../../styles/paginator.styles';
+import ModalGlobal from '../global/ModalGlobal';
+import AddExpenses from './AddExpenses';
+import MobileView from './MobileView';
+import { formatCurrency } from '../../utils/dte';
+import { limit_options } from '../../utils/constants';
+import Anexo from './Anexo';
+import AnexoImg from './AnexoImage';
 import { get_box } from '../../storage/localStorage.ts';
-import Description from "./Description.tsx";
+import Description from './Description.tsx';
 
 const ListExpenses = () => {
   const { theme } = useContext(ThemeContext);
   const { getExpensesPaginated, expenses_paginated, expenses } = useExpenseStore();
   const [selectedCategory, setSelectedCategory] = useState<IExpense>();
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState('');
   const [limit, setLimit] = useState(8);
-  const currentBox = Number(get_box())
+  const currentBox = Number(get_box());
   useEffect(() => {
-    get_box()
+    get_box();
     getExpensesPaginated(currentBox, 1, limit, category);
   }, [currentBox]);
 
@@ -69,13 +66,24 @@ const ListExpenses = () => {
     color: theme.colors.primary,
   };
 
-  const [view, setView] = useState<"table" | "grid" | "list">("table");
+  const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
 
-  const [pathSelected, setPathSelected] = useState(0)
+  const [pathSelected, setPathSelected] = useState(0);
   const handleDescription = (expense: IExpense) => {
-    setSelectedCategory(expense)
-    showDescription.onOpen()
+    setSelectedCategory(expense);
+    showDescription.onOpen();
   };
+
+  const handlePdf = (item: IExpense) => {
+    setPathSelected(item.id);
+    showAnexo.onOpen();
+  };
+
+  const handleImg = (item: IExpense) => {
+    setPathSelected(item.id);
+    showAnexoimg.onOpen();
+  };
+
   return (
     <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
       <div className="flex flex-col w-full p-5 rounded">
@@ -89,16 +97,16 @@ const ListExpenses = () => {
                 labelPlacement="outside"
                 label="Nombre"
                 classNames={{
-                  label: "font-semibold text-gray-700",
-                  inputWrapper: "pr-0",
+                  label: 'font-semibold text-gray-700',
+                  inputWrapper: 'pr-0',
                 }}
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
                 placeholder="Escribe para buscar..."
                 isClearable
                 onClear={() => {
-                  setCategory("");
-                  handleSearch("");
+                  setCategory('');
+                  handleSearch('');
                 }}
               />
               <Button
@@ -120,11 +128,10 @@ const ListExpenses = () => {
                 isIconOnly
                 color="secondary"
                 style={{
-                  backgroundColor:
-                    view === "table" ? theme.colors.third : "#e5e5e5",
-                  color: view === "table" ? theme.colors.primary : "#3e3e3e",
+                  backgroundColor: view === 'table' ? theme.colors.third : '#e5e5e5',
+                  color: view === 'table' ? theme.colors.primary : '#3e3e3e',
                 }}
-                onClick={() => setView("table")}
+                onClick={() => setView('table')}
               >
                 <ITable />
               </Button>
@@ -132,11 +139,10 @@ const ListExpenses = () => {
                 isIconOnly
                 color="default"
                 style={{
-                  backgroundColor:
-                    view === "grid" ? theme.colors.third : "#e5e5e5",
-                  color: view === "grid" ? theme.colors.primary : "#3e3e3e",
+                  backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
+                  color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
                 }}
-                onClick={() => setView("grid")}
+                onClick={() => setView('grid')}
               >
                 <CreditCard />
               </Button>
@@ -144,11 +150,10 @@ const ListExpenses = () => {
                 isIconOnly
                 color="default"
                 style={{
-                  backgroundColor:
-                    view === "list" ? theme.colors.third : "#e5e5e5",
-                  color: view === "list" ? theme.colors.primary : "#3e3e3e",
+                  backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
+                  color: view === 'list' ? theme.colors.primary : '#3e3e3e',
                 }}
-                onClick={() => setView("list")}
+                onClick={() => setView('list')}
               >
                 <List />
               </Button>
@@ -168,11 +173,11 @@ const ListExpenses = () => {
             label="Mostrar"
             labelPlacement="outside"
             classNames={{
-              label: "font-semibold",
+              label: 'font-semibold',
             }}
             value={limit}
             onChange={(e) => {
-              setLimit(Number(e.target.value !== "" ? e.target.value : "5"));
+              setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
             }}
           >
             {limit_options.map((option) => (
@@ -182,23 +187,25 @@ const ListExpenses = () => {
             ))}
           </Select>
         </div>
-        {(view === "grid" || view === "list") && (
+        {(view === 'grid' || view === 'list') && (
           <MobileView
             deletePopover={DeletePopUp}
-            layout={view as "grid" | "list"}
+            layout={view as 'grid' | 'list'}
             handleDescription={handleDescription}
+            handlePdf={handlePdf}
+            handleImg={handleImg}
           />
         )}
-        {view === "table" && (
+        {view === 'table' && (
           <DataTable
             className="w-full shadow"
             emptyMessage="No se encontraron resultados"
             value={expenses}
-            tableStyle={{ minWidth: "50rem" }}
+            tableStyle={{ minWidth: '50rem' }}
           >
             <Column
               headerClassName="text-sm font-semibold"
-              headerStyle={{ ...style, borderTopLeftRadius: "10px" }}
+              headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
               field="id"
               header="No."
             />
@@ -227,50 +234,49 @@ const ListExpenses = () => {
                     backgroundColor: theme.colors.third,
                   }}
                 >
-                  <NotepadText
-                    style={{ color: theme.colors.primary }}
-                    size={20}
-                  />
+                  <NotepadText style={{ color: theme.colors.primary }} size={20} />
                 </Button>
               )}
             />
             <Column
-              headerStyle={{ ...style, borderTopRightRadius: "10px" }}
+              headerStyle={{ ...style, borderTopRightRadius: '10px' }}
               header="Acciones"
               body={(item) => (
                 <div className="flex gap-6">
-                  {item.attachments.map((attachment: Attachment) => attachment.ext).includes("pdf") && (
+                  {item.attachments
+                    .map((attachment: Attachment) => attachment.ext)
+                    .includes('pdf') && (
                     <Button
                       isIconOnly
                       aria-label="Abrir PDF"
                       style={{
                         backgroundColor: theme.colors.third,
                       }}
-                      onClick={() => { setPathSelected(item.id); showAnexo.onOpen(); }}
+                      onClick={() => {
+                        setPathSelected(item.id);
+                        showAnexo.onOpen();
+                      }}
                     >
-                      <Files
-                        style={{ color: theme.colors.primary }}
-                        size={20}
-                      />
+                      <Files style={{ color: theme.colors.primary }} size={20} />
                     </Button>
                   )}
                   {item.attachments.some((attachment: Attachment) =>
-                    ["jpg", "png", "jpeg", "webp", "svg"].includes(attachment.ext)
+                    ['jpg', 'png', 'jpeg', 'webp', 'svg'].includes(attachment.ext)
                   ) && (
-                      <Button
-                        isIconOnly
-                        aria-label="Abrir imagen"
-                        style={{
-                          backgroundColor: theme.colors.secondary,
-                        }}
-                        onClick={() => { setPathSelected(item.id); showAnexoimg.onOpen(); }}
-                      >
-                        <Image
-                          style={{ color: theme.colors.primary }}
-                          size={20}
-                        />
-                      </Button>
-                    )}
+                    <Button
+                      isIconOnly
+                      aria-label="Abrir imagen"
+                      style={{
+                        backgroundColor: theme.colors.secondary,
+                      }}
+                      onClick={() => {
+                        setPathSelected(item.id);
+                        showAnexoimg.onOpen();
+                      }}
+                    >
+                      <Image style={{ color: theme.colors.primary }} size={20} />
+                    </Button>
+                  )}
 
                   <DeletePopUp expenses={item} />
                 </div>
@@ -299,7 +305,7 @@ const ListExpenses = () => {
                 rows={limit}
                 totalRecords={expenses_paginated.total}
                 template={{
-                  layout: "PrevPageLink CurrentPageReport NextPageLink",
+                  layout: 'PrevPageLink CurrentPageReport NextPageLink',
                 }}
                 currentPageReportTemplate="{currentPage} de {totalPages}"
               />
@@ -331,14 +337,20 @@ const ListExpenses = () => {
       {pathSelected > 0 ? (
         <Anexo
           pdfViewerOpen={showAnexo.isOpen}
-          onClose={() => { showAnexo.onClose(); setPathSelected(0) }}
+          onClose={() => {
+            showAnexo.onClose();
+            setPathSelected(0);
+          }}
           id={pathSelected}
         />
       ) : null}
       {pathSelected > 0 ? (
         <AnexoImg
           pdfViewerOpen={showAnexoimg.isOpen}
-          onClose={() => { showAnexoimg.onClose(); setPathSelected(0) }}
+          onClose={() => {
+            showAnexoimg.onClose();
+            setPathSelected(0);
+          }}
           id={pathSelected}
         />
       ) : null}
@@ -379,9 +391,7 @@ const DeletePopUp = ({ expenses }: Props) => {
         </PopoverTrigger>
         <PopoverContent>
           <div className="w-full p-5">
-            <p className="font-semibold text-gray-600 dark:text-white">
-              Eliminar
-            </p>
+            <p className="font-semibold text-gray-600 dark:text-white">Eliminar</p>
             <p className="mt-3 text-center text-gray-600 dark:text-white w-72">
               ¿Estas seguro de eliminar este registro?
             </p>
