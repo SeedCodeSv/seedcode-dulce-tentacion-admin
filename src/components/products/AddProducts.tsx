@@ -108,24 +108,39 @@ function AddProducts(props: Props) {
     getBranchesList();
   }, []);
   const { theme } = useContext(ThemeContext);
+
   const handleSave = (values: ProductPayloadFormik) => {
+    const payload = {
+      ...values,
+      branch: selectedBranches.map(branch => ({ id: Number(branch) })),
+    };
+
     if (props.product) {
-      patchProducts(
-        {
-          ...values,
-          branch: values.branch.map((branch) => ({ id: Number(branch) })),
-        },
-        props.product.id
-      );
+      patchProducts(payload, props.product.id);
     } else {
-      postProducts({
-        ...values,
-        branch: values.branch.map((branch) => ({ id: Number(branch) })),
-      });
+      postProducts(payload);
     }
 
     props.onCloseModal();
   };
+  // const handleSave = (values: ProductPayloadFormik) => {
+  //   if (props.product) {
+  //     patchProducts(
+  //       {
+  //         ...values,
+  //         branch: values.branch.map((branch) => ({ id: Number(branch) })),
+  //       },
+  //       props.product.id
+  //     );
+  //   } else {
+  //     postProducts({
+  //       ...values,
+  //       branch: values.branch.map((branch) => ({ id: Number(branch) })),
+  //     });
+  //   }
+
+  //   props.onCloseModal();
+  // };
   const selectedKeyCategory = useMemo(() => {
     if (props.product) {
       const category = list_categories.find(
