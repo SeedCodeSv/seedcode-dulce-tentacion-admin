@@ -13,11 +13,13 @@ interface Props {
 
 function UpdateConfigurationName(props: Props) {
   const { theme } = useContext(ThemeContext);
-  const initialValues = {
-    name: '',
-  };
+  const { UpdateConfigurationName, personalization } = useConfigurationStore();
 
-  const { UpdateConfigurationName } = useConfigurationStore();
+  const Namep = personalization?.find((config) => config.name)?.name || '';
+
+  const initialValues = {
+    name: Namep,
+  };
 
   const validationSchema = yup.object().shape({
     name: yup.string().required('Nombre es requerido'),
@@ -35,8 +37,9 @@ function UpdateConfigurationName(props: Props) {
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={(values) => handleSave(values)}
+        enableReinitialize
       >
-        {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
+        {({ errors, touched, handleChange, handleBlur, handleSubmit, values }) => (
           <>
             <div>
               <Input
