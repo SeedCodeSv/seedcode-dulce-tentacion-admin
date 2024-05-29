@@ -2,8 +2,10 @@ import { create } from 'zustand';
 import { ISalesReportStore } from './types/sale_report.store.types';
 import {
   get_expenses_by_day,
+  get_products_most_selled_by_transmitter_grafic,
   get_products_most_selled_by_transmitter_table,
   get_sales_by_branch_and_current_month,
+  get_sales_by_branch_and_current_month_table,
   // get_sales_by_branch_and_current_month_table,
   get_sales_by_day,
   get_sales_by_day_table,
@@ -16,7 +18,8 @@ export const salesReportStore = create<ISalesReportStore>((set) => ({
   sales_by_day: 0,
   expenses: [],
   sales_table_day: [],
-  sales: [],
+  data: [],
+  dataProduct: [],
   products_most_selled: [],
   getSalesTableDay: (id) => {
     get_sales_by_day_table(id)
@@ -63,15 +66,15 @@ export const salesReportStore = create<ISalesReportStore>((set) => ({
         set({ sales_branch_month: [] });
       });
   },
-  // getSalesByTransmitter: (id, startDate: string, endDate: string) => {
-  //   get_sales_by_branch_and_current_month_table(id, startDate, endDate)
-  //     .then((res) => {
-  //       set({ sales: res.data.sales });
-  //     })
-  //     .catch(() => {
-  //       set({ sales: [] });
-  //     });
-  // },
+  getSalesByTransmitter: (id, startDate: string, endDate: string) => {
+    get_sales_by_branch_and_current_month_table(id, startDate, endDate)
+      .then((res) => {
+        set({ data: res.data.data });
+      })
+      .catch(() => {
+        set({ data: [] });
+      });
+  },
 
   getSalesExpenseByDate: (id, startDate: string, endDate: string) => {
     get_expenses_by_day(id, startDate, endDate)
@@ -81,5 +84,10 @@ export const salesReportStore = create<ISalesReportStore>((set) => ({
       .catch(() => {
         set({ expenses: [] });
       });
+  },
+  getProductMostSelledGrafic: (id , startDate ,endDate) => {
+    get_products_most_selled_by_transmitter_grafic(id, startDate, endDate).then(({ data }) => { 
+      set({ dataProduct: data.dataProduct });
+    })
   },
 }));

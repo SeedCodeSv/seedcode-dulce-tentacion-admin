@@ -21,7 +21,6 @@ import Views from '../pages/Views';
 import { useAuthStore } from '../store/auth.store';
 import HomeSeller from '../pages/Seller/HomeSeller';
 import Reporters from '../pages/ReportersPage';
-import SalesByTransmitterPage from '../pages/SalesByTransmitterPage';
 import ExpenseByDatesTransmitter from '../pages/ExpenseByDatesTransmitter';
 import Supplier from '../pages/Supplier';
 import ReportByBranchSalesByBranch from '../pages/ReportByBranchSalesByBranch';
@@ -100,10 +99,6 @@ export const router = () => {
     {
       path: '/reporters',
       element: views && views.includes('Reportes') && <Reporters />,
-    },
-    {
-      path: '/sales-by-transmitter',
-      element: views && views.includes('Reportes') && <SalesByTransmitterPage />,
     },
     {
       path: '/expenses-by-dates-transmitter',

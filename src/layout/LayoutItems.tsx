@@ -19,6 +19,7 @@ import {
   Store,
   Truck,
   ShoppingBag,
+  Book,
 } from "lucide-react";
 import { Fragment, useContext, useEffect, useMemo } from "react";
 import { ThemeContext } from "../hooks/useTheme";

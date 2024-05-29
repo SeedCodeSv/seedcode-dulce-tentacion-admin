@@ -1,41 +1,62 @@
+import { useContext, useEffect, useState, useCallback } from 'react';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
-import { useContext, useEffect, useState } from 'react';
-import { ThemeContext } from '../../hooks/useTheme';
 import { Autocomplete, AutocompleteItem, Button, Input } from '@nextui-org/react';
+import Chart from 'react-apexcharts';
+import { ApexOptions } from 'apexcharts';
+import { ThemeContext } from '../../hooks/useTheme';
 import { fechaActualString } from '../../utils/dates';
 import { useBranchesStore } from '../../store/branches.store';
-
 import { useReportsByBranch } from '../../store/reports/report_store';
+import { useAuthStore } from '../../store/auth.store';
+import { salesReportStore } from '../../store/reports/sales_report.store';
 
 function ReportSalesByBranch() {
   const { theme } = useContext(ThemeContext);
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
- 
+  const [startDate, setStartDate] = useState(fechaActualString);
+  const [endDate, setEndDate] = useState(fechaActualString);
+  const { branch_list, getBranchesList } = useBranchesStore();
+  const { sales, OnGetReportByBranchSales } = useReportsByBranch();
+  const { data, getSalesByTransmitter } = salesReportStore();
+  const [branchId, setBranchId] = useState(0);
+  const { user } = useAuthStore();
+
+  const fetchInitialData = useCallback(() => {
+    getBranchesList();
+    OnGetReportByBranchSales(branchId, startDate, endDate);
+  }, [branchId, startDate, endDate, getBranchesList, OnGetReportByBranchSales]);
+
+  useEffect(() => {
+    fetchInitialData();
+  }, [fetchInitialData]);
+
+  const handleSearch = () => {
+    OnGetReportByBranchSales(branchId, startDate, endDate);
+    getSalesByTransmitter(user?.employee.branch.transmitterId || 0, startDate, endDate);
+  };
+
+  const series = [
+    {
+      name: 'Total',
+      data: data.map((d) => Number(d.total)),
+    },
+  ];
+
+  const chartOptions: ApexOptions = {
+    chart: {
+      type: 'bar',
+      height: 350,
+    },
+    xaxis: {
+      categories: data.map((d) => d.branch),
+    },
+  };
+
   const style = {
     backgroundColor: theme.colors.dark,
     color: theme.colors.primary,
   };
-  const { branch_list, getBranchesList } = useBranchesStore();
-  const { sales, OnGetReportByBranchSales } = useReportsByBranch();
-  const [branchId,setBranchId] = useState(0);
-  useEffect(() => {
-    getBranchesList();
-    OnGetReportByBranchSales(
-     branchId,
-      fechaActualString,
-      fechaActualString,
-     
-    );
-  }, []);
-  const search =() => {
-     OnGetReportByBranchSales(
-       branchId,
-       startDate,
-       endDate,
-     );
-  }
+
   return (
     <>
       <div className="col-span-3 bg-gray-100 p-5 dark:bg-gray-900 rounded-lg">
@@ -45,16 +66,16 @@ function ReportSalesByBranch() {
           <label className="text-sm font-semibold dark:text-white">Fecha final</label>
           <Input
             onChange={(e) => setStartDate(e.target.value)}
-            defaultValue={fechaActualString}
-            className="w-full "
+            defaultValue={startDate}
+            className="w-full"
             type="date"
-          ></Input>
+          />
           <Input
             onChange={(e) => setEndDate(e.target.value)}
-            defaultValue={fechaActualString}
-            className="w-full "
+            defaultValue={endDate}
+            className="w-full"
             type="date"
-          ></Input>
+          />
           <div className="">
             <Autocomplete placeholder="Selecciona la sucursal">
               {branch_list.map((branch) => (
@@ -76,7 +97,7 @@ function ReportSalesByBranch() {
             }}
             className="font-semibold"
             color="primary"
-            onClick={() => search()}
+            onClick={handleSearch}
           >
             Buscar
           </Button>
@@ -114,6 +135,10 @@ function ReportSalesByBranch() {
             header="Total"
           />
         </DataTable>
+        <div className="col-span-3 bg-gray-100 p-5 dark:bg-gray-900 rounded-lg">
+          <p className="pb-4 text-lg font-semibold dark:text-white">Ventas</p>
+          <Chart options={chartOptions} series={series} type="bar" height={350} />
+        </div>
       </div>
     </>
   );

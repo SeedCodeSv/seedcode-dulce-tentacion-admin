@@ -1,5 +1,6 @@
-import { IDataExpense, ISalesData } from '../../../types/reports/branch_product.reports';
+import { IDataExpense, IDataSalesGrafic } from '../../../types/reports/branch_product.reports';
 import {
+  IDataProductGrafic,
   ProductoMostSelledTable,
   SaleBranchMonth,
   SaleMonthYear,
@@ -13,13 +14,25 @@ export interface ISalesReportStore {
   sales_by_day: number;
   expenses: IDataExpense[];
   sales_table_day: SaleTableDay[];
-  sales: ISalesData[];
+  data: IDataSalesGrafic[];
+  dataProduct: IDataProductGrafic[];
   getSalesTableDay: (id: number) => void;
 
   getSalesByDay: (id: number) => void;
   getSalesExpenseByDate: (id: number, startDate: string, endDate: string) => void;
-  // getSalesByTransmitter: (id: number, startDate: string, endDate: string) => void;
-  getProductMostSelledTable: (id: number, startDate: string, endDate: string, branchId: number) => void;
+  getSalesByTransmitter: (id: number, startDate: string, endDate: string) => void;
+  getProductMostSelledTable: (
+    id: number,
+    startDate: string,
+    endDate: string,
+    branchId: number
+  ) => void;
+  getProductMostSelledGrafic: (
+    id: number,
+    startDate: string,
+    endDate: string,
+    
+  ) => void;
   getSalesByYearAndMonth: (id: number) => void;
   getSalesByBranchAndMonth: (id: number) => void;
 }
