@@ -46,7 +46,12 @@ function AddClientContributor(props: Props) {
     nombre: yup.string().required('**El nombre es requerido**'),
     nombreComercial: yup.string().required('**El nombre comercial es requerido**'),
     correo: yup.string().required('**El correo es requerido**').email('**El correo es invalido**'),
-    telefono: yup.string().required('**El teléfono es requerido**'),
+    telefono: yup
+      .string()
+      .required('El teléfono es un campo requerido')
+      .test('length', 'Debe ser de 8 dígitos', (value) => {
+        return value?.length === 8;
+      }),
     numDocumento: yup.string().test('isValidDUI', '**El DUI no es valido**', (value) => {
       if (value && value !== '') {
         return isValidDUI(value);
@@ -240,7 +245,7 @@ function AddClientContributor(props: Props) {
                     variant="bordered"
                   />
                   {errors.telefono && touched.telefono && (
-                    <span className="text-sm font-semibold text-red-500">{errors.telefono}</span>
+                    <span className="text-xs font-semibold text-red-500">{errors.telefono}</span>
                   )}
                 </div>
                 <div className="pt-2">
@@ -413,40 +418,40 @@ function AddClientContributor(props: Props) {
                 </div>
                 <div className="pt-2">
                   <Input
-                    isReadOnly
+                    type="number"
                     label="NIT"
                     labelPlacement="outside"
-                    name="name"
+                    name="nit"
                     value={values.nit}
                     onChange={handleChange('nit')}
                     onBlur={handleBlur('nit')}
-                    placeholder="Ingresa el NIT"
+                    placeholder="Ingresa el nit"
                     classNames={{
                       label: 'font-semibold text-gray-500 text-sm',
                     }}
                     variant="bordered"
                   />
                   {errors.nit && touched.nit && (
-                    <span className="text-sm font-semibold text-red-500">{errors.nit}</span>
+                    <span className="text-xs font-semibold text-red-500">{errors.nit}</span>
                   )}
                 </div>
                 <div className="pt-2">
                   <Input
-                    isReadOnly
+                    type="number"
                     label="NRC"
                     labelPlacement="outside"
-                    name="name"
+                    name="nrc"
                     value={values.nrc}
                     onChange={handleChange('nrc')}
                     onBlur={handleBlur('nrc')}
-                    placeholder="Ingresa el NRC"
+                    placeholder="Ingresa el nrc"
                     classNames={{
                       label: 'font-semibold text-gray-500 text-sm',
                     }}
                     variant="bordered"
                   />
                   {errors.nrc && touched.nrc && (
-                    <span className="text-sm font-semibold text-red-500">{errors.nrc}</span>
+                    <span className="text-xs font-semibold text-red-500">{errors.nrc}</span>
                   )}
                 </div>
               </div>
