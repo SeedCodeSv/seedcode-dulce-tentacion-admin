@@ -36,7 +36,12 @@ const AddClientNormal = (props: Props) => {
   const validationSchema = yup.object().shape({
     nombre: yup.string().required('El nombre es requerido'),
     correo: yup.string().required('El correo es requerido'),
-    telefono: yup.string().required('El teléfono es requerido'),
+    telefono: yup
+      .string()
+      .required('El teléfono es un campo requerido')
+      .test('length', 'Debe ser de 8 dígitos', (value) => {
+        return value?.length === 8;
+      }),
     numDocumento: yup.string().test('isValidDUI', 'El DUI no es valido', (value) => {
       if (value && value !== '') {
         return isValidDUI(value);
@@ -166,7 +171,7 @@ const AddClientNormal = (props: Props) => {
                   variant="bordered"
                 />
                 {errors.telefono && touched.telefono && (
-                  <span className="text-sm font-semibold text-red-500">{errors.telefono}</span>
+                  <span className="text-xs font-semibold text-red-500">{errors.telefono}</span>
                 )}
               </div>
               <div>

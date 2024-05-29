@@ -17,22 +17,16 @@ export interface IGetProductMostSelled {
   ok: boolean;
   products: ProductMostSelled[];
 }
-
-export interface IResponseData {
+export interface IResponseDataSalesGrafic {
   ok: boolean;
-  status: number;
-  data: IDataSalesResponse[];
+  data: IDataSalesGrafic[];
 }
 
-export interface IDataSalesResponse {
-  date: string;
-  sales: ISalesData[];
+export interface IDataSalesGrafic {
+  branch  : string;
+  total   : string;
 }
 
-export interface ISalesData {
-  branch: string;
-  total: number;
-}
 
 export interface IDataExpense {
   id: number;

@@ -3,7 +3,6 @@ import { DataTable } from 'primereact/datatable';
 import { useContext, useEffect, useState } from 'react';
 import { ThemeContext } from '../../hooks/useTheme';
 import { Autocomplete, AutocompleteItem, Button, Input } from '@nextui-org/react';
-import { salesReportStore } from '../../store/reports/sales_report.store';
 import { fechaActualString } from '../../utils/dates';
 import { useBranchesStore } from '../../store/branches.store';
 
@@ -18,7 +17,6 @@ function ExpensesByDatesTransmitter() {
     color: theme.colors.primary,
   };
   const { branch_list, getBranchesList } = useBranchesStore();
-  const { sales } = salesReportStore();
   
   useEffect(() => {
     getBranchesList();
@@ -84,7 +82,7 @@ function ExpensesByDatesTransmitter() {
           emptyMessage="No se encontraron resultados"
           tableStyle={{ minWidth: '50rem' }}
           scrollable
-          value={sales}
+          
           scrollHeight="30rem"
         >
           <Column

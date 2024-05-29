@@ -6,6 +6,9 @@ import classNames from "classnames";
 import { useConfigurationStore } from "../store/perzonalitation.store";
 import { useAuthStore } from "../store/auth.store";
 import { Helmet } from "react-helmet-async";
+import { ActionsContext } from "../hooks/useActions";
+import { useActionsRolStore } from "../store/actions_rol.store";
+import { encryptData } from "../plugins/crypto";
 
 interface Props {
   children: JSX.Element;
@@ -19,8 +22,19 @@ function Layout(props: Props) {
 
   const { GetConfigurationByTransmitter } = useConfigurationStore();
 
+  const { setRoleActions, roleActions } = useContext(ActionsContext);
+  const { OnGetActionsByRole } = useActionsRolStore();
+
   useEffect(() => {
     GetConfigurationByTransmitter(user?.employee.branch.transmitterId ?? 0);
+    if (!roleActions) {
+      OnGetActionsByRole(user?.roleId ?? 0).then((data) => {
+        if (data) {
+          localStorage.setItem("_RVA", encryptData(data));
+          setRoleActions(data);
+        }
+      });
+    }
   }, [user]);
 
   return (
@@ -29,32 +43,36 @@ function Layout(props: Props) {
         <title>{props.title}</title>
       </Helmet>
 
-      <div
-        className={classNames(
-          "w-full h-full",
-          context === "dark" ? "dark" : ""
-        )}
-      >
-        {navbar === "topbar" && (
-          <>
-            <div className="flex flex-col w-screen h-screen">
-              <NavBar />
-              <div className="w-full h-full overflow-y-auto bg-gray-50 dark:bg-gray-800">
-                {props.children}
+      {roleActions ? (
+        <div
+          className={classNames(
+            "w-full h-full",
+            context === "dark" ? "dark" : ""
+          )}
+        >
+          {navbar === "topbar" && (
+            <>
+              <div className="flex flex-col w-screen h-screen">
+                <NavBar />
+                <div className="w-full h-full overflow-y-auto bg-gray-50 dark:bg-gray-800">
+                  {props.children}
+                </div>
               </div>
-            </div>
-          </>
-        )}
-        {navbar === "sidebar" && (
-          <>
-            <SideBar title={props.title}>
-              <div className="w-full h-full overflow-y-auto bg-gray-50 dark:bg-gray-800">
-                {props.children}
-              </div>
-            </SideBar>
-          </>
-        )}
-      </div>
+            </>
+          )}
+          {navbar === "sidebar" && (
+            <>
+              <SideBar title={props.title}>
+                <div className="w-full h-full overflow-y-auto bg-gray-50 dark:bg-gray-800">
+                  {props.children}
+                </div>
+              </SideBar>
+            </>
+          )}
+        </div>
+      ) : (
+        <div>Loading</div>
+      )}
     </>
   );
 }

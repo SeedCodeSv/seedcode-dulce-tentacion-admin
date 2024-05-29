@@ -402,7 +402,7 @@ const ListClients = () => {
                   currentPage={customer_pagination.currentPag}
                   totalPages={customer_pagination.totalPag}
                   onPageChange={(page) => {
-                    getCustomersPagination(page, limit, search, email, active ? 1 : 0, 1);
+                    getCustomersPagination(page, limit, search, email, active ? 1 : 0, tipeCustomer);
                   }}
                 />
               </div>

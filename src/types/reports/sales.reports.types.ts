@@ -15,6 +15,10 @@ export interface SaleMonthYear {
   total: number;
 }
 
+export interface IDataExpenseReport {
+  branch: string,
+  total: number
+}
 export interface ProductoMostSelledTable {
   branchProduct: BranchProduct,
   quantity: number
@@ -107,4 +111,16 @@ export interface SaleTableDay {
 export interface IGetSalesByDayTable {
   ok: boolean;
   sales: SaleTableDay[];
+}
+
+
+export interface IResponseDataProductGrafic {
+  ok: boolean;
+  dataProduct: IDataProductGrafic[];
+}
+
+export interface IDataProductGrafic {
+  productName: string
+  quantity: string
+  total: string
 }

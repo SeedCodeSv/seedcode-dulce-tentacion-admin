@@ -11,6 +11,7 @@ import { useCustomerStore } from '../../store/customers.store';
 import { CustomerDirection, PayloadCustomer } from '../../types/customers.types';
 import { ThemeContext } from '../../hooks/useTheme';
 import { get_user } from '../../storage/localStorage';
+// import { ITipoDocumento } from '../../types/DTE/tipo_documento.types';
 
 interface Props {
   closeModal: () => void;
@@ -46,7 +47,12 @@ function AddClientContributor(props: Props) {
     nombre: yup.string().required('**El nombre es requerido**'),
     nombreComercial: yup.string().required('**El nombre comercial es requerido**'),
     correo: yup.string().required('**El correo es requerido**').email('**El correo es invalido**'),
-    telefono: yup.string().required('**El teléfono es requerido**'),
+    telefono: yup
+      .string()
+      .required('El teléfono es un campo requerido')
+      .test('length', 'Debe ser de 8 dígitos', (value) => {
+        return value?.length === 8;
+      }),
     numDocumento: yup.string().test('isValidDUI', '**El DUI no es valido**', (value) => {
       if (value && value !== '') {
         return isValidDUI(value);
@@ -78,6 +84,8 @@ function AddClientContributor(props: Props) {
     cat_013_municipios,
     getCat019CodigoActividadEconomica,
     cat_019_codigo_de_actividad_economica,
+    getCat022TipoDeDocumentoDeIde,
+    // cat_022_tipo_de_documentoDeIde,
   } = useBillingStore();
 
   const [selectedCodeDep, setSelectedCodeDep] = useState(
@@ -86,6 +94,7 @@ function AddClientContributor(props: Props) {
 
   useEffect(() => {
     getCat012Departamento();
+    getCat022TipoDeDocumentoDeIde();
     getCat019CodigoActividadEconomica();
   }, []);
 
@@ -240,9 +249,57 @@ function AddClientContributor(props: Props) {
                     variant="bordered"
                   />
                   {errors.telefono && touched.telefono && (
-                    <span className="text-sm font-semibold text-red-500">{errors.telefono}</span>
+                    <span className="text-xs font-semibold text-red-500">{errors.telefono}</span>
                   )}
                 </div>
+
+                {/* Tipo de documento */}
+                {/* <div className="pt-2">
+                  <Autocomplete
+                    onSelectionChange={(key) => {
+                      if (key) {
+                        const depSelected = JSON.parse(key as string) as ITipoDocumento;
+                        handleChange('codTipoDocumento')(depSelected.codigo);
+                        handleChange('descTipoDocumento')(depSelected.valores);
+                      }
+                    }}
+                    onBlur={handleBlur('codTipoDocumento')}
+                    label="Tipo de documento"
+                    labelPlacement="outside"
+                    placeholder={
+                      props.customer?.tipoDocumento
+                        ? props.customer?.tipoDocumento
+                        : 'Selecciona el tipo de documento'
+                    }
+                    variant="bordered"
+                    classNames={{
+                      base: 'font-semibold text-gray-500 text-sm',
+                    }}
+                    className="dark:text-white"
+                    defaultSelectedKey={values.tipoDocumento}
+                    value={selectedKeyCodActivity}
+                    onInputChange={(e) => handleFilter(e)}
+                  >
+                    {cat_022_tipo_de_documentoDeIde.map((dep) => (
+                      <AutocompleteItem
+                        value={dep.codigo}
+                        key={JSON.stringify(dep)}
+                        className="dark:text-white"
+                      >
+                        {dep.valores}
+                      </AutocompleteItem>
+                    ))}
+                  </Autocomplete>
+                  {errors.codActividad && touched.codActividad && (
+                    <span className="text-sm font-semibold text-red-500">
+                      {errors.codActividad}
+                    </span>
+                  )}
+                </div>*/}
+                
+
+                {/* Fin de tipio de documento */}
+
                 <div className="pt-2">
                   <Input
                     type="number"
@@ -413,40 +470,40 @@ function AddClientContributor(props: Props) {
                 </div>
                 <div className="pt-2">
                   <Input
-                    isReadOnly
+                    type="number"
                     label="NIT"
                     labelPlacement="outside"
-                    name="name"
+                    name="nit"
                     value={values.nit}
                     onChange={handleChange('nit')}
                     onBlur={handleBlur('nit')}
-                    placeholder="Ingresa el NIT"
+                    placeholder="Ingresa el nit"
                     classNames={{
                       label: 'font-semibold text-gray-500 text-sm',
                     }}
                     variant="bordered"
                   />
                   {errors.nit && touched.nit && (
-                    <span className="text-sm font-semibold text-red-500">{errors.nit}</span>
+                    <span className="text-xs font-semibold text-red-500">{errors.nit}</span>
                   )}
                 </div>
                 <div className="pt-2">
                   <Input
-                    isReadOnly
+                    type="number"
                     label="NRC"
                     labelPlacement="outside"
-                    name="name"
+                    name="nrc"
                     value={values.nrc}
                     onChange={handleChange('nrc')}
                     onBlur={handleBlur('nrc')}
-                    placeholder="Ingresa el NRC"
+                    placeholder="Ingresa el nrc"
                     classNames={{
                       label: 'font-semibold text-gray-500 text-sm',
                     }}
                     variant="bordered"
                   />
                   {errors.nrc && touched.nrc && (
-                    <span className="text-sm font-semibold text-red-500">{errors.nrc}</span>
+                    <span className="text-xs font-semibold text-red-500">{errors.nrc}</span>
                   )}
                 </div>
               </div>
