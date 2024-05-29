@@ -112,3 +112,15 @@ export interface IGetSalesByDayTable {
   ok: boolean;
   sales: SaleTableDay[];
 }
+
+
+export interface IResponseDataProductGrafic {
+  ok: boolean;
+  dataProduct: IDataProductGrafic[];
+}
+
+export interface IDataProductGrafic {
+  productName: string
+  quantity: string
+  total: string
+}

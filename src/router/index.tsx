@@ -20,13 +20,13 @@ import { useEffect } from 'react';
 import Views from '../pages/Views';
 import { useAuthStore } from '../store/auth.store';
 import HomeSeller from '../pages/Seller/HomeSeller';
-import MostProductTransmitterSelledPage from '../pages/MostProductTransmitterSelledPage';
-import SalesByTransmitterPage from '../pages/SalesByTransmitterPage';
+
 import ExpenseByDatesTransmitter from '../pages/ExpenseByDatesTransmitter';
 import Supplier from '../pages/Supplier';
 import ReportByBranchSalesByBranch from '../pages/ReportByBranchSalesByBranch';
 import ReportExpensesByBranchPage from '../pages/ReportExpenseByBranchPage';
 import PurchaseOrders from '../pages/PurchaseOrders';
+import MostProductTransmitterSelledPage from '../pages/MostProductTransmitterSelledPage';
 
 /* eslint-disable react-hooks/rules-of-hooks */
 export const router = () => {
@@ -104,10 +104,6 @@ export const router = () => {
     {
       path: '/most-product-transmitter-selled',
       element: views && views.includes('Reportes') && <MostProductTransmitterSelledPage />,
-    },
-    {
-      path: '/sales-by-transmitter',
-      element: views && views.includes('Reportes') && <SalesByTransmitterPage />,
     },
     {
       path: '/expenses-by-dates-transmitter',

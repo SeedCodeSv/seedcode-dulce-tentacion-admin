@@ -14,6 +14,7 @@ export const useBillingStore = create<IGlobalBillingStore>((set) => ({
   cat_014_unidad_de_medida: [],
   tipos_tributo: [],
   cat_005_tipo_de_contingencia: [],
+  cat_022_tipo_de_documentoDeIde: [],
   getCat005TipoDeContingencia() {
     set({
       cat_005_tipo_de_contingencia: service
@@ -43,6 +44,14 @@ export const useBillingStore = create<IGlobalBillingStore>((set) => ({
     set({
       cat_019_codigo_de_actividad_economica: service
         .get019CodigoDeActividaEcono(name)
+        .map((item) => ({ ...item, isActivated: item.isActivated === 1 })),
+    });
+  },
+
+  getCat022TipoDeDocumentoDeIde() {
+    set({
+      cat_022_tipo_de_documentoDeIde: service
+        .get022TipoDeDocumentoDeIde()
         .map((item) => ({ ...item, isActivated: item.isActivated === 1 })),
     });
   },

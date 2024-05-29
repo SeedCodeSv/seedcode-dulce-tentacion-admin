@@ -62,7 +62,7 @@ function ConfigurationList() {
         </div>
 
         <div className="flex justify-center p-5 bg-gray-50 dark:bg-gray-800">
-          <div className="bg-gray-50 w-full dark:bg-gray-800">
+          <div className="bg-gray-50 w-full dark:bg-gray-800 dark:text-white">
             {personalization.length === 0 ? (
               <span>no ay datos de logo ni nombre...</span>
             ) : (
@@ -90,12 +90,12 @@ function ConfigurationList() {
                   header="Actualizar Nombre"
                   body={(rowData) => (
                     <>
-                      <Button onClick={() => updateName.onOpen()}>Actualizar</Button>
+                      <Button onClick={() => updateName.onOpen()} style={style}>Actualizar</Button>
                       <ModalGlobal
                         isOpen={updateName.isOpen}
                         onClose={updateName.onClose}
                         title="Actualizar nombre"
-                        size="w-full lg:w-[300px]"
+                        size="w-full lg:w-[500px]"
                       >
                         <UpdateConfigurationName
                           id={rowData.id || 0}

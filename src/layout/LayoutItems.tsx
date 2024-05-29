@@ -12,7 +12,6 @@ import {
   DollarSign,
   Contact,
   ScanBarcode,
-  SquareMenu,
   AlignJustify,
   ChevronDown,
   FolderOpen,
@@ -24,15 +23,14 @@ import {
 import { Fragment, useContext, useEffect, useMemo } from "react";
 import { ThemeContext } from "../hooks/useTheme";
 import { useAuthStore } from "../store/auth.store";
-import { get_user, save_seller_mode } from "../storage/localStorage";
+import { save_seller_mode } from "../storage/localStorage";
 import { useNavigate } from "react-router";
 import { SessionContext } from "../hooks/useSession";
 import { useConfigurationStore } from "../store/perzonalitation.store";
 import useWindowSize from "../hooks/useWindowSize";
-import { useActionsRolStore } from "../store/actions_rol.store";
 import { Menu, Transition } from "@headlessui/react";
 import { ActionsContext } from "../hooks/useActions";
-import { encryptData } from "../plugins/crypto";
+import SalesMode from "./LayoutModes/SalesMode";
 export const LayoutItems = () => {
   const { theme, toggleContext, context } = useContext(ThemeContext);
   const { makeLogout } = useAuthStore();
@@ -61,15 +59,8 @@ export const LayoutItems = () => {
     setToken("");
     navigate("/");
   };
-  const { user } = useAuthStore();
-  const transmitter = user?.employee?.branch?.transmitterId;
-  const {
-    personalization,
-    GetConfigurationByTransmitter,
-  } = useConfigurationStore();
-  useEffect(() => {
-    GetConfigurationByTransmitter(transmitter || 0);
-  }, []);
+
+  const { personalization } = useConfigurationStore();
   const { windowSize } = useWindowSize();
   const iconSize = useMemo(() => {
     if (windowSize.width < 768) {
@@ -84,26 +75,12 @@ export const LayoutItems = () => {
       return 22;
     }
   }, [windowSize.width]);
-  const { setRoleActions } = useContext(ActionsContext);
-  const { role_view_action, OnGetActionsByRole } = useActionsRolStore();
-  useEffect(() => {
-    const storedUser = get_user();
-    if (storedUser) {
-      if (storedUser && storedUser.roleId) {
-        OnGetActionsByRole(storedUser.roleId).then((data) => {
-          if (data) {
-            localStorage.setItem("_RVA", encryptData(data));
-            setRoleActions(data);
-          }
-        });
-      }
-    }
-  }, []);
-  const views =
-    role_view_action &&
-    role_view_action.view &&
-    role_view_action.view.length > 0 &&
-    role_view_action.view.map((view) => view.name);
+  const { roleActions } = useContext(ActionsContext);
+
+  const views = useMemo(() => {
+    return roleActions?.view.map((vw) => vw.name);
+  }, [roleActions]);
+
   return (
     <>
       {personalization.length === 0 ? (
@@ -115,7 +92,7 @@ export const LayoutItems = () => {
           }}
         >
           <img src={LOGO} className="max-h-14" />
-          <p className="ml-3 font-sans text-sm font-bold text-coffee-brown">
+          <p className="ml-3 font-sans text-sm font-bold text-coffee-brown dark:text-white">
             SeedCodeERP
           </p>
         </div>
@@ -135,6 +112,9 @@ export const LayoutItems = () => {
           ))}
         </>
       )}
+
+      
+
       {mode !== "vendedor" ? (
         <div className=" justify-center items-center px-2 mt-2">
           <Button
@@ -156,101 +136,7 @@ export const LayoutItems = () => {
           </Button>
         </div>
       )}
-
-      <>
-        {views && views.includes("Inicio de ventas") && mode === "vendedor" && (
-          <NavLink
-            to={"/homeSeller"}
-            className={({ isActive }) => {
-              return (
-                (isActive
-                  ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
-                  : "text-coffee-brown font-semibold border-white") +
-                " flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
-              );
-            }}
-            style={({ isActive }) => {
-              return {
-                borderLeftColor: isActive ? theme.colors.dark : "transparent",
-                borderLeftWidth: 5,
-              };
-            }}
-          >
-            <Home size={iconSize} />
-            <p className="ml-2 text-sm 2xl:text-base">Inicio</p>
-          </NavLink>
-        )}
-      </>
-
-      {views && views.includes("Ventas") && mode === "vendedor" && (
-        <NavLink
-          to={"/newSales"}
-          className={({ isActive }) => {
-            return (
-              (isActive
-                ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
-                : "text-coffee-brown font-semibold border-white") +
-              " flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
-            );
-          }}
-          style={({ isActive }) => {
-            return {
-              borderLeftColor: isActive ? theme.colors.dark : "transparent",
-              borderLeftWidth: 5,
-            };
-          }}
-        >
-          <Box size={iconSize} />
-          <p className="ml-2 text-sm 2xl:text-base">Nueva venta</p>
-        </NavLink>
-      )}
-      {views && views.includes("Clientes") && mode === "vendedor" && (
-        <NavLink
-          to={"/clients"}
-          className={({ isActive }) => {
-            return (
-              (isActive
-                ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
-                : "text-coffee-brown font-semibold border-white") +
-              " flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
-            );
-          }}
-          style={({ isActive }) => {
-            return {
-              borderLeftColor: isActive ? theme.colors.dark : "transparent",
-              borderLeftWidth: 5,
-            };
-          }}
-        >
-          <BookUser size={iconSize} />
-          <p className="ml-2 text-sm 2xl:text-base">Clientes</p>
-        </NavLink>
-      )}
-
-      <>
-        {views && views.includes("Gastos") && mode === "vendedor" && (
-          <NavLink
-            to={"/expenses"}
-            className={({ isActive }) => {
-              return (
-                (isActive
-                  ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
-                  : "text-coffee-brown font-semibold border-white") +
-                " flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
-              );
-            }}
-            style={({ isActive }) => {
-              return {
-                borderLeftColor: isActive ? theme.colors.dark : "transparent",
-                borderLeftWidth: 5,
-              };
-            }}
-          >
-            <SquareMenu size={iconSize} />
-            <p className="ml-2 text-sm 2xl:text-base">Gastos</p>
-          </NavLink>
-        )}
-      </>
+      {mode === "vendedor" && <SalesMode />}
       {mode !== "vendedor" && (
         <>
           {views && (
@@ -391,18 +277,20 @@ export const LayoutItems = () => {
                           </Menu.Item>
                           <Menu.Item>
                             <NavLink
-                              to={'/most-product-transmitter-selled'}
+                              to={"/most-product-transmitter-selled"}
                               className={({ isActive }) => {
                                 return (
                                   (isActive
-                                    ? 'font-semibold bg-gray-300 dark:bg-gray-700'
-                                    : 'text-coffee-brown font-semibold border-white') +
-                                  ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
+                                    ? "font-semibold bg-gray-300 dark:bg-gray-700"
+                                    : "text-coffee-brown font-semibold border-white") +
+                                  " flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white"
                                 );
                               }}
                             >
                               <BookUser size={iconSize} />
-                              <p className="ml-2 text-sm 2xl:text-base">Producto mas vendido</p>
+                              <p className="ml-2 text-sm 2xl:text-base">
+                                Producto mas vendido
+                              </p>
                             </NavLink>
                           </Menu.Item>
                           <Menu.Item>
@@ -447,9 +335,9 @@ export const LayoutItems = () => {
                 </>
               )}
               {views.includes("Empleados") ||
-                (views && views.includes("Clientes")) ||
-                views.includes("Usuarios") ||
-                views.includes("Sucursales") ? (
+              (views && views.includes("Clientes")) ||
+              views.includes("Usuarios") ||
+              views.includes("Sucursales") ? (
                 <>
                   <Menu as="div" className="relative px-4 z-20  w-full">
                     <div>
@@ -608,20 +496,22 @@ export const LayoutItems = () => {
                   <p className="ml-2 text-sm 2xl:text-base">Reportes</p>
                 </NavLink>
               )}
-              {views.includes('Categoría de gastos') && (
+              {views.includes("Categoría de gastos") && (
                 <NavLink
-                  to={'/expensesCategories'}
+                  to={"/expensesCategories"}
                   className={({ isActive }) => {
                     return (
                       (isActive
-                        ? 'text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green'
-                        : 'text-coffee-brown font-semibold border-white') +
-                      ' flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
+                        ? "text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green"
+                        : "text-coffee-brown font-semibold border-white") +
+                      " flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green"
                     );
                   }}
                   style={({ isActive }) => {
                     return {
-                      borderLeftColor: isActive ? theme.colors.dark : 'transparent',
+                      borderLeftColor: isActive
+                        ? theme.colors.dark
+                        : "transparent",
                       borderLeftWidth: 5,
                     };
                   }}

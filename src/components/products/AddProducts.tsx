@@ -538,7 +538,7 @@ function AddProducts(props: Props) {
                     }}
                   >
                     {branch_list.map((val) => (
-                      <SelectItem key={val.id} value={val.id}>
+                      <SelectItem key={val.id} value={val.id} className="dark:text-white">
                         {val.name}
                       </SelectItem>
                     ))}

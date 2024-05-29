@@ -1,14 +1,18 @@
 import {
   BranchProduct,
+  IBranchProductOrder,
+  IBranchProductOrderQuantity,
   ICartProduct,
   IGetBranchProductPaginated,
 } from '../../types/branch_products.types';
-// import { IPagination } from "../../types/global.types";
 
 export interface IBranchProductStore {
   branch_products: BranchProduct[];
   pagination_branch_products: IGetBranchProductPaginated;
   cart_products: ICartProduct[];
+  branch_product_order: IBranchProductOrder[];
+  order_branch_products: IBranchProductOrderQuantity[];
+  getBranchProductOrders: (branch: string, supplier?: string, product?: string, code?: string) => void;
   getPaginatedBranchProducts: (
     branchId: number,
     page?: number,
@@ -16,6 +20,13 @@ export interface IBranchProductStore {
     name?: string,
     code?: string
   ) => void;
+  // & Orders
+  addProductOrder: (product: IBranchProductOrder) => void;
+  deleteProductOrder: (id: number) => void;
+  updateQuantityOrders: (id: number, quantity: number) => void;
+  clearProductOrders: () => void;
+
+  // ! Cart
   addProductCart: (product: BranchProduct) => void;
   deleteProductCart: (id: number) => void;
   emptyCart: () => void;
