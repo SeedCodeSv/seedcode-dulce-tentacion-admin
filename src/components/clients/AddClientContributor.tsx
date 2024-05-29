@@ -11,7 +11,7 @@ import { useCustomerStore } from '../../store/customers.store';
 import { CustomerDirection, PayloadCustomer } from '../../types/customers.types';
 import { ThemeContext } from '../../hooks/useTheme';
 import { get_user } from '../../storage/localStorage';
-import { ITipoDocumento } from '../../types/DTE/tipo_documento.types';
+// import { ITipoDocumento } from '../../types/DTE/tipo_documento.types';
 
 interface Props {
   closeModal: () => void;
@@ -80,7 +80,7 @@ function AddClientContributor(props: Props) {
     getCat019CodigoActividadEconomica,
     cat_019_codigo_de_actividad_economica,
     getCat022TipoDeDocumentoDeIde,
-    cat_022_tipo_de_documentoDeIde,
+    // cat_022_tipo_de_documentoDeIde,
   } = useBillingStore();
 
   const [selectedCodeDep, setSelectedCodeDep] = useState(
