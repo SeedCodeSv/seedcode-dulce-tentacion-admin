@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { IBranchProductStore } from './types/branch_product.types';
-import { get_branch_product, get_product_by_code } from '../services/branch_product.service';
+import { get_branch_product, get_branch_product_orders, get_product_by_code } from '../services/branch_product.service';
+import { toast } from 'sonner';
 
 export const useBranchProductStore = create<IBranchProductStore>((set, get) => ({
   branch_products: [],
@@ -15,6 +16,50 @@ export const useBranchProductStore = create<IBranchProductStore>((set, get) => (
     ok: true,
   },
   cart_products: [],
+  branch_product_order: [],
+  // ! purchase orders
+  order_branch_products: [],
+  addProductOrder(product) {
+    const products = get().order_branch_products;
+    const existProduct = products.find((cp) => cp.id === product.id);
+    if (existProduct) {
+      toast.warning('El producto ya existe en la orden');
+    } else {
+      set({
+        order_branch_products: [
+          ...products,
+          {
+            ...product,
+            quantity: 1
+          },
+        ],
+      });
+    }
+  },
+  deleteProductOrder(id) {
+    const find = get().order_branch_products.find((cp) => cp.id === id);
+    if (find) {
+      const products = get().order_branch_products.filter((cp) => cp.id !== id);
+      set({ order_branch_products: products });
+    }
+  },
+  updateQuantityOrders(id, quantity) {
+    set((state) => ({
+      order_branch_products: state.order_branch_products.map((cp) =>
+        cp.id === id ? { ...cp, quantity } : cp
+      ),
+    }));
+  },
+  clearProductOrders() {
+    set({ order_branch_products: [] });
+  },
+  getBranchProductOrders(branch, supplier, product, code) {
+    get_branch_product_orders(branch, supplier, product, code).then(({ data }) => {
+      set({ branch_product_order: data.branchProducts })
+    }).catch(() => {
+      set({ branch_product_order: [] });
+    });
+  },
   getPaginatedBranchProducts(branchId, page = 1, limit = 5, name, code) {
     get_branch_product(branchId, page, limit, name, code)
       .then(({ data }) => {
