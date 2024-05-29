@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { ISalesReportStore } from './types/sale_report.store.types';
 import {
+  get_expense_by_dates_transmitter,
   get_expenses_by_day,
   get_products_most_selled_by_transmitter_grafic,
   get_products_most_selled_by_transmitter_table,
@@ -48,6 +49,15 @@ export const salesReportStore = create<ISalesReportStore>((set) => ({
         set({ products_most_selled: [] });
       });
   },
+  getExpensesByDateTransmitter: (id : number, startDate: string, endDate: string) => {
+    get_expense_by_dates_transmitter(id, startDate, endDate)
+    //   .then(({ data }) => {
+    //   set({})
+    // }).catch(() => {
+
+    // })
+  },
+
   getSalesByYearAndMonth(id) {
     get_sales_by_month_and_year(id)
       .then(({ data }) => {

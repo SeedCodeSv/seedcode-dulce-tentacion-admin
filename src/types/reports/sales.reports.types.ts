@@ -15,6 +15,10 @@ export interface SaleMonthYear {
   total: number;
 }
 
+export interface IDataExpenseReport {
+  branch: string,
+  total: number
+}
 export interface ProductoMostSelledTable {
   branchProduct: BranchProduct,
   quantity: number

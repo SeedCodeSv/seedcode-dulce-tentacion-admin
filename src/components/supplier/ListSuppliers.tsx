@@ -403,7 +403,7 @@ function ListSuppliers() {
                   currentPage={supplier_pagination.currentPag}
                   totalPages={supplier_pagination.totalPag}
                   onPageChange={(page) => {
-                    getSupplierPagination(page, limit, search, email, active ? 1 : 0, 1);
+                    getSupplierPagination(page, limit, search, email, active ? 1 : 0, tipeSupplier);
                   }}
                 />
               </div>

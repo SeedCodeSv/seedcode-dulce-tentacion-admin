@@ -56,7 +56,6 @@ function ReportSalesByBranch() {
     backgroundColor: theme.colors.dark,
     color: theme.colors.primary,
   };
-
   return (
     <>
       <div className="col-span-3 bg-gray-100 p-5 dark:bg-gray-900 rounded-lg">
