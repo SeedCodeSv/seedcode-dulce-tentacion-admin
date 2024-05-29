@@ -54,7 +54,7 @@ export const SaleInvalidation = (props: Props) => {
   const data: IInvalidationBody = {
     identificacion: {
       version: 2,
-      ambiente: '00',
+      ambiente: ambiente,
       codigoGeneracion: props.sale.codigoGeneracion,
       fecAnula: getElSalvadorDateTime().fecEmi,
       horAnula: getElSalvadorDateTime().horEmi,
@@ -389,7 +389,9 @@ export const SaleInvalidation = (props: Props) => {
                       className="flex w-1/2"
                       style={global_styles().warningStyles}
                       size="md"
-                      onClick={() => handleSubmit()}
+                      onClick={() => {
+                        setMotivo(2), handleSubmit();
+                      }}
                     >
                       Invalidar
                     </Button>

@@ -96,6 +96,12 @@ export const invalidationTypes = [
     valores: 'Error en la Información del Documento Tributario Electrónico a invalidar.',
   },
   {
+    id: 2,
+    codigo: '2',
+    valores: "Rescindir de la operación realizada.",
+    isActivated: true
+  },
+  {
     id: 3,
     codigo: '3',
     valores: 'Otro',
