@@ -7,7 +7,6 @@ import {
   ShoppingBag,
   ClipboardList,
   Barcode,
-  DollarSign,
   RefreshCcw,
 } from "lucide-react";
 import { ThemeContext } from "../../hooks/useTheme";
@@ -33,7 +32,7 @@ function MobileView(props: IMobileView) {
         pt={{
           grid: () => ({
             className:
-              "grid dark:bg-slate-800 pb-10 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 xl:grid-cols-4 gap-5 mt-5",
+              "grid dark:bg-slate-800 pb-10 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5 mt-5",
           }),
         }}
         color="surface"
@@ -89,13 +88,6 @@ const GridItem = (props: GridProps) => {
           <div className="flex w-full gap-2 mt-3">
             <Barcode className="dark:text-gray-400 text-[#006d77]" size={33} />
             {product.code}
-          </div>
-          <div className="flex w-full gap-2 mt-3">
-            <DollarSign
-              className="dark:text-gray-400 text-[#006d77]"
-              size={33}
-            />
-            {product.price}
           </div>
           <div className="flex justify-between mt-5 w-ful">
             {actions.includes("Editar") && (
@@ -168,13 +160,6 @@ const ListItem = (props: GridProps) => {
           <div className="flex items-center w-full gap-2 mt-3">
             <Barcode className="dark:text-gray-400 text-[#006d77]" size={33} />
             {product.code}
-          </div>
-          <div className="flex items-center w-full gap-2 mt-3">
-            <DollarSign
-              className="dark:text-gray-400 text-[#006d77]"
-              size={33}
-            />
-            {product.price}
           </div>
         </div>
         <div className="flex flex-col items-end justify-between w-full">
