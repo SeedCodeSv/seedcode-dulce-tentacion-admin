@@ -162,12 +162,32 @@ export const return_json_file_fiscal = (uri: string, savedDTE: ISendMHFiscal) =>
   );
 };
 
+// export const generate_receptor = (value: Customer) => {
+//   return {
+//     tipoDocumento:
+//       value!.tipoDocumento === '0' || value.tipoDocumento === 'N/A' ? null : value!.tipoDocumento,
+//     numDocumento:
+//       value!.numDocumento === '0' || value.numDocumento === 'N/A' ? null : value!.numDocumento,
+//     nrc: Number(value!.nrc) === 0 ? null : value!.nrc,
+//     nombre: value!.nombre,
+//     codActividad: Number(value!.codActividad) === 0 ? null : value!.codActividad,
+//     descActividad: Number(value!.descActividad) === 0 ? null : value!.descActividad,
+//     direccion: {
+//       departamento: value!.direccion?.departamento,
+//       municipio: value!.direccion?.municipio,
+//       complemento: value!.direccion?.complemento,
+//     },
+//     telefono: value!.telefono,
+//     correo: value!.correo,
+//   };
+// };
+
 export const generate_receptor = (value: Customer) => {
   return {
     tipoDocumento:
-      value!.tipoDocumento === '0' || value.tipoDocumento === 'N/A' ? null : value!.tipoDocumento,
+      Number(value!.nrc) !== 0 && value!.nrc ? '36' : (value!.tipoDocumento === '0' || value.tipoDocumento === 'N/A' ? null : value!.tipoDocumento),
     numDocumento:
-      value!.numDocumento === '0' || value.numDocumento === 'N/A' ? null : value!.numDocumento,
+      Number(value!.nrc) !== 0 && value!.nrc ? value!.nit : (value!.numDocumento === '0' || value.numDocumento === 'N/A' ? null : value!.numDocumento),
     nrc: Number(value!.nrc) === 0 ? null : value!.nrc,
     nombre: value!.nombre,
     codActividad: Number(value!.codActividad) === 0 ? null : value!.codActividad,
@@ -181,6 +201,9 @@ export const generate_receptor = (value: Customer) => {
     correo: value!.correo,
   };
 };
+
+
+
 
 export const is_credito_fiscal = (code: string) => {
   return code === '03';
