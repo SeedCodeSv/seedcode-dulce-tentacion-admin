@@ -16,7 +16,6 @@ import { Departamento } from "../../types/billing/cat-012-departamento.types";
 import { global_styles } from "../../styles/global.styles";
 import { Municipio } from "../../types/billing/cat-013-municipio.types";
 import { useSupplierStore } from "../../store/supplier.store";
-import { toast } from "sonner";
 
 interface Props {
   closeModal: () => void;
@@ -67,7 +66,7 @@ function AddNormalSupplier(props: Props) {
     getCat013Municipios(selectedCodeDep);
   }, [selectedCodeDep]);
 
-  const { onPostSupplier } = useSupplierStore();
+  const { onPostSupplier, patchSupplier } = useSupplierStore();
 
   const user = get_user();
 
@@ -92,8 +91,13 @@ function AddNormalSupplier(props: Props) {
   }, [props, props.supplier_direction, cat_013_municipios, cat_013_municipios.length]);
 
   const onSubmit = (payload: PayloadSupplier) => {
-    if (props.id) {
-      toast.error("No se puede editar un proveedor normal");
+    if (props.id || props.id !== 0) {
+      const values = {
+        ...payload,
+        esContribuyente: 0,
+        transmitterId: Number(user?.employee.branch.transmitterId),
+      };
+      patchSupplier(values, props.id!);
     } else {
       const values = {
         ...payload,
