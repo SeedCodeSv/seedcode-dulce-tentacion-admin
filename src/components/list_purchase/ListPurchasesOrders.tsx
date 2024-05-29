@@ -5,7 +5,6 @@ import AddPurchaseOrders from "./AddPurchaseOrders";
 // interface Props {
 //   actions: string[];
 // }
-
 function ListPurchasesOrders() {
   return (
     <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">

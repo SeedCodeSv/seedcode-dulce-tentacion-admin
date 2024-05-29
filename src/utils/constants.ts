@@ -52,3 +52,11 @@ export const views_enabled = [
   "Proveedores",
   "Ordenes de compra"
 ];
+
+export const views_seller = [
+  "Inicio de ventas",
+  "Gastos",
+  "Ventas",
+  "Productos",
+  'Reporte de ventas',
+]

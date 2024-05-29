@@ -5,7 +5,7 @@ import { useContext, useEffect, useState } from "react"
 import { useAuthStore } from "../../store/auth.store"
 import { ThemeContext } from "../../hooks/useTheme"
 import { formatCurrency } from '../../utils/dte';
-import { Autocomplete, AutocompleteItem, Input } from "@nextui-org/react"
+import { Autocomplete, AutocompleteItem, Button, Input } from "@nextui-org/react"
 import { fechaActualString } from '../../utils/dates';
 import { useBranchesStore } from "../../store/branches.store"
 import { return_branch_id } from "../../storage/localStorage"
@@ -28,11 +28,20 @@ const MostProductTransmitterSelled = () => {
         return_branch_id()
         getBranchesList();
         getProductMostSelledTable(user?.employee.branch.transmitterId ?? 0, startDate, endDate, branchId)
-    }, [startDate, endDate, branchId])
+    }, [])
+
+    const search = () => {
+        getProductMostSelledTable(
+            user?.employee.branch.transmitterId ?? 0,
+            startDate,
+            endDate,
+            branchId
+        )
+    }
 
     return (
         <>
-            <div className="w-full h-full p-28 bg-gray-50 dark:bg-gray-800">
+            <div className="col-span-3 bg-gray-100 p-5 dark:bg-gray-900 rounded-lg">
                 <p className="pb-4 text-xl font-semibold dark:text-white">Producto mas vendido</p>
                 <div className="grid grid-cols-2 gap-2 py-2">
                     <label className="text-sm font-semibold dark:text-white">Fecha inicial</label>
@@ -52,12 +61,28 @@ const MostProductTransmitterSelled = () => {
                     <div className="">
                         <Autocomplete placeholder="Selecciona la sucursal">
                             {branch_list.map((branch) => (
-                                <AutocompleteItem onClick={() => setBranchId(branch.id)} className="dark:text-white" key={branch.id} value={branch.id}>
+                                <AutocompleteItem
+                                    onClick={() => setBranchId(branch.id)}
+                                    className="dark:text-white"
+                                    key={branch.id}
+                                    value={branch.id}
+                                >
                                     {branch.name}
                                 </AutocompleteItem>
                             ))}
                         </Autocomplete>
                     </div>
+                    <Button
+                        style={{
+                            backgroundColor: theme.colors.secondary,
+                            color: theme.colors.primary,
+                        }}
+                        className="font-semibold"
+                        color="primary"
+                        onClick={() => search()}
+                    >
+                        Buscar
+                    </Button>
                 </div>
                 <DataTable
                     className="w-full shadow"
@@ -72,12 +97,6 @@ const MostProductTransmitterSelled = () => {
                         headerStyle={style}
                         field="branchProduct.product.name"
                         header="Producto"
-                    />
-                    <Column
-                        headerClassName="text-sm font-semibold"
-                        headerStyle={style}
-                        field="branchProduct.product.price"
-                        header="Precio"
                     />
                     <Column
                         headerClassName="text-sm font-semibold"

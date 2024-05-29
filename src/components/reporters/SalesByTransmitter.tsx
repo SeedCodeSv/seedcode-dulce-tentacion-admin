@@ -9,20 +9,20 @@ function SalesByTransmitter() {
   const { theme } = useContext(ThemeContext);
   const [, setStartDate] = useState('');
   const [, setEndDate] = useState('');
- 
+
   // const style = {
   //   backgroundColor: theme.colors.dark,
   //   color: theme.colors.primary,
   // };
   const { branch_list, getBranchesList } = useBranchesStore();
-  
+
   useEffect(() => {
     getBranchesList();
     // getSalesByTransmitter(user?.transmitterId || 0, fechaActualString, fechaActualString);
   }, []);
-   const search = () => {
+  const search = () => {
     // getSalesByTransmitter(user?.transmitterId || 0, startDate, endDate);
-   };
+  };
 
   return (
     <>
@@ -48,7 +48,7 @@ function SalesByTransmitter() {
             <Autocomplete placeholder="Selecciona la sucursal">
               {branch_list.map((branch) => (
                 <AutocompleteItem
-             
+
                   className="dark:text-white"
                   key={branch.id}
                   value={branch.id}
@@ -70,7 +70,7 @@ function SalesByTransmitter() {
             Buscar
           </Button>
         </div>
-       
+
       </div>
     </>
   );
