@@ -38,17 +38,23 @@ const AddClientNormal = (props: Props) => {
     correo: yup.string().required('El correo es requerido'),
     telefono: yup
       .string()
-      .required('El teléfono es un campo requerido')
+      .required('Este campo solo permite números sin guiones')
       .test('length', 'Debe ser de 8 dígitos', (value) => {
         return value?.length === 8;
       }),
-    numDocumento: yup.string().test('isValidDUI', 'El DUI no es valido', (value) => {
-      if (value && value !== '') {
-        return isValidDUI(value);
-      } else {
-        return true;
-      }
-    }),
+      numDocumento: yup
+      .string()
+      .required('Este campo solo permite números sin guiones')
+      .test('no-dashes', 'El campo no permite guiones', (value) => {
+        return !value?.includes('-');
+      })
+      .test('isValidDUI', '**El DUI no es valido**', (value) => {
+        if (value && value !== '') {
+          return isValidDUI(value);
+        } else {
+          return true;
+        }
+      }),
     departamento: yup.string().required('**Debes seleccionar el departamento**'),
     municipio: yup.string().required('**Debes seleccionar el municipio**'),
     complemento: yup.string().required('**El complemento es requerida**'),
