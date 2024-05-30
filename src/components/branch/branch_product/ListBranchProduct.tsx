@@ -82,7 +82,11 @@ function ListEmployee({ id }: Props) {
           }}
         >
           {list_categories.map((bra) => (
-            <AutocompleteItem value={bra.name} key={JSON.stringify(bra)}>
+            <AutocompleteItem
+              value={bra.name}
+              key={JSON.stringify(bra)}
+              className="dark:text-white"
+            >
               {bra.name}
             </AutocompleteItem>
           ))}
@@ -124,13 +128,13 @@ function ListEmployee({ id }: Props) {
                 setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
               }}
             >
-              <SelectItem key={'5'}>5</SelectItem>
-              <SelectItem key={'10'}>10</SelectItem>
-              <SelectItem key={'20'}>20</SelectItem>
-              <SelectItem key={'30'}>30</SelectItem>
-              <SelectItem key={'40'}>40</SelectItem>
-              <SelectItem key={'50'}>50</SelectItem>
-              <SelectItem key={'100'}>100</SelectItem>
+              <SelectItem key={'5'} className='dark:text-white'>5</SelectItem>
+              <SelectItem key={'10'} className='dark:text-white'>10</SelectItem> 
+              <SelectItem key={'20'} className='dark:text-white'>20</SelectItem>
+              <SelectItem key={'30'} className='dark:text-white'>30</SelectItem>
+              <SelectItem key={'40'} className='dark:text-white'>40</SelectItem>
+              <SelectItem key={'50'} className='dark:text-white'>50</SelectItem>
+              <SelectItem key={'100'} className='dark:text-white'>100</SelectItem>
             </Select>
             <div className="flex items-end justify-between gap-10 mt lg:justify-end">
               <div className="flex items-center gap-5">

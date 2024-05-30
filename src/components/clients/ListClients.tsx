@@ -244,7 +244,7 @@ const ListClients = () => {
             <Select
               className="w-44 ml-2"
               variant="bordered"
-              label="Mostrar"
+              label="Tipo de cliente"
               labelPlacement="outside"
               classNames={{
                 label: 'font-semibold',

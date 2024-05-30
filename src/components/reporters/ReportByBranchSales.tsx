@@ -24,7 +24,7 @@ function ReportSalesByBranch() {
   const fetchInitialData = useCallback(() => {
     getBranchesList();
     OnGetReportByBranchSales(branchId, startDate, endDate);
-  }, [branchId, startDate, endDate, getBranchesList, OnGetReportByBranchSales]);
+  }, []);
 
   useEffect(() => {
     fetchInitialData();

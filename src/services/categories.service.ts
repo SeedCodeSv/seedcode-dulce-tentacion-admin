@@ -72,9 +72,13 @@ export const delete_category = (id: number) => {
 
 export const activate_category = (id: number) => {
   const token = get_token() ?? '';
-  return axios.patch<{ ok: boolean }>(API_URL + '/category-products/activate/' + id, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  return axios.patch<{ ok: boolean }>(
+    API_URL + '/category-products/activate/' + id,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 };
