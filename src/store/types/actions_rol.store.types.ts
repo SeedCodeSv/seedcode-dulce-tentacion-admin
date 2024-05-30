@@ -5,6 +5,7 @@ export interface IActionsRolStore {
   actions_view: IAction[];
   actions_roles_grouped: GroupedAction[];
   roleActions: RoleAction[];
+  loading_actions: boolean;
   role_view_action: RoleViewAction;
   getActionsByRolView: (idRol: number, idView: number) => void;
   OnCreateActionsRol: (payload: IActionPayload, roleId: number) => Promise<boolean>;

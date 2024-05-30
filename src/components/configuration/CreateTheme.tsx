@@ -64,8 +64,8 @@ function CreateTheme() {
 
   return (
     <>
-      <div className="ml-5">
-        <div className="ml-28">
+      <div className="ml-2">
+        <div className="lg:ml-28 md:ml-60">
           <ColorPicker
             format="hex"
             pt={{
@@ -212,20 +212,20 @@ function CreateTheme() {
               setColor({ ...color, context: e.target.value });
             }}
           >
-            <SelectItem value={'light'} key={'light'}>
+            <SelectItem value={'light'} key={'light'} className='dark:text-white'>
               Claro
             </SelectItem>
-            <SelectItem value={'dark'} key={'dark'}>
+            <SelectItem value={'dark'} key={'dark'} className='dark:text-white'>
               Oscuro
             </SelectItem>
           </Select>
         </div>
-        <div className="flex gap-5 mt-10">
+        <div className="flex gap-5 mt-5">
           <Button theme={color as Theme} />
         </div>
-        <div className="mt-10">
+        <div className="mt-5">
           <NButton
-            className="w-full mt-4 text-sm font-semibold"
+            className="w-full text-sm font-semibold"
             onClick={handleSave}
             style={{
               backgroundColor: theme.colors.third,

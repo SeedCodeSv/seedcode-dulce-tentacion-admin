@@ -145,7 +145,7 @@ function Home() {
             />
           </div>
         </div>
-        <div className="w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-10 pt-10">
+        <div className="w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 xl:gap-10 lg:gap-10 sm:gap-10 mb:gap-10 pt-10">
           <div className="w-full flex flex-col gap-10">
             <div className="dark:bg-gray-900 dark:border-gray-700 w-full border h-32 rounded-lg shadow flex flex-col justify-center items-center">
               <p className="text-2xl font-semibold dark:text-white">No. de ventas</p>
@@ -164,7 +164,7 @@ function Home() {
               </p>
             </div>
           </div>
-          <div className="col-span-3 bg-gray-100 p-5 dark:bg-gray-900 rounded-lg">
+          <div className="col-span-3 bg-gray-100 p-5 dark:bg-gray-900 rounded-lg mt-10 xl:mt-0 lg:mt-0 mb:mt-0 sm:mt-0">
             <p className="pb-4 text-lg font-semibold dark:text-white">Ventas del dia</p>
             <DataTable
               className="w-full shadow"
