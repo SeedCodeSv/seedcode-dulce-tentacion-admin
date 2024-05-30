@@ -1,40 +1,67 @@
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
-import { useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { ThemeContext } from '../../hooks/useTheme';
 import { Autocomplete, AutocompleteItem, Button, Input } from '@nextui-org/react';
 import { fechaActualString } from '../../utils/dates';
 import { useBranchesStore } from '../../store/branches.store';
+import { useReportExpensesStore } from '../../store/reports/expenses_report.store';
+import { useAuthStore } from '../../store/auth.store';
+import { ApexOptions } from 'apexcharts';
+import Chart from 'react-apexcharts';
+import { useReportsByBranch } from '../../store/reports/report_store';
+import { formatCurrency } from '../../utils/dte';
 
 
 function ExpensesByDatesTransmitter() {
   const { theme } = useContext(ThemeContext);
-  const [, setStartDate] = useState('');
-  const [, setEndDate] = useState('');
-  
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const { user } = useAuthStore();
   const style = {
     backgroundColor: theme.colors.dark,
     color: theme.colors.primary,
   };
+  const { expenses, OnGetReportExpenseByBranch } = useReportsByBranch()
   const { branch_list, getBranchesList } = useBranchesStore();
-  
-  useEffect(() => {
-    getBranchesList();
-    // getSalesByTransmitter(
-    //   user?.employee.branch.transmitterId || 0,
-    //   fechaActualString,
-    //   fechaActualString,
-      
-    // );
-  }, []);
+  const { data, getExpensesByTransmitter } = useReportExpensesStore()
+  const [branchId, setBranchId] = useState(0);
 
-  const search = () => {
-    // getSalesByTransmitter(user?.employee.branch.transmitterId || 0, startDate, endDate);
+  const fetchInitialData = useCallback(() => {
+    getBranchesList();
+    OnGetReportExpenseByBranch(branchId, startDate, endDate)
+    getExpensesByTransmitter(user?.employee.branch.transmitterId || 0, startDate, endDate);
+  }, [branchId, startDate, endDate, getBranchesList, getExpensesByTransmitter]);
+
+  useEffect(() => {
+    fetchInitialData();
+  }, [fetchInitialData]);
+
+  const handleSearch = () => {
+    OnGetReportExpenseByBranch(branchId, startDate, endDate)
+    getExpensesByTransmitter(user?.employee.branch.transmitterId || 0, startDate, endDate);
   };
+  const series = [
+    {
+      name: 'Total',
+      data: data.map((d) => Number(d.totalExpenses)),
+    },
+  ];
+
+  const chartOptions: ApexOptions = {
+    chart: {
+      type: 'bar',
+      height: 350,
+    },
+    xaxis: {
+      categories: data.map((d) => d.branch),
+    },
+  };
+
   return (
     <>
       <div className="col-span-3 bg-gray-100 p-5 dark:bg-gray-900 rounded-lg">
-        <p className="pb-4 text-lg font-semibold dark:text-white">Ventas </p>
+        <p className="pb-4 text-lg font-semibold dark:text-white">Gastos Por emisor </p>
         <div className="grid grid-cols-2 gap-2 py-2">
           <label className="text-sm font-semibold dark:text-white">Fecha inicial</label>
           <label className="text-sm font-semibold dark:text-white">Fecha final</label>
@@ -55,7 +82,7 @@ function ExpensesByDatesTransmitter() {
             <Autocomplete placeholder="Selecciona la sucursal">
               {branch_list.map((branch) => (
                 <AutocompleteItem
-                  
+                  onClick={() => setBranchId(branch.id)}
                   className="dark:text-white"
                   key={branch.id}
                   value={branch.id}
@@ -72,7 +99,7 @@ function ExpensesByDatesTransmitter() {
             }}
             className="font-semibold"
             color="primary"
-            onClick={() => search()}
+            onClick={handleSearch}
           >
             Buscar
           </Button>
@@ -82,15 +109,9 @@ function ExpensesByDatesTransmitter() {
           emptyMessage="No se encontraron resultados"
           tableStyle={{ minWidth: '50rem' }}
           scrollable
-          
+          value={expenses}
           scrollHeight="30rem"
         >
-          <Column
-            headerClassName="text-sm font-semibold"
-            headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
-            field="numeroControl"
-            header="Numero de control"
-          />
           <Column
             headerClassName="text-sm font-semibold"
             headerStyle={style}
@@ -98,18 +119,16 @@ function ExpensesByDatesTransmitter() {
             header="Sucursal"
           />
           <Column
-            headerClassName="text-sm font-semibold"
             headerStyle={style}
-            field="totalDescu"
-            header="Descuento"
-          />
-          <Column
-            headerClassName="text-sm font-semibold"
-            headerStyle={style}
-            field="montoTotalOperacion"
+            field="totalExpenses"
             header="Total"
+            body={(rowData) => formatCurrency(Number(rowData.totalExpenses))}
           />
         </DataTable>
+        <div className="col-span-3 bg-gray-100 p-5 dark:bg-gray-900 rounded-lg">
+          <p className="pb-4 text-lg font-semibold dark:text-white">Gastos</p>
+          <Chart options={chartOptions} series={series} type="bar" height={350} />
+        </div>
       </div>
     </>
   );
