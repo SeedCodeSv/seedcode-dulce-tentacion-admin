@@ -49,7 +49,7 @@ export const LayoutItems = () => {
     makeLogout();
     setIsAuth(false);
     setToken("");
-    navigate("/");
+    navigate("/"); 
   };
   const handleAdmin = () => {
     setMode("");

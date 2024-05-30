@@ -36,6 +36,7 @@ export const useBranchProductStore = create<IBranchProductStore>((set, get) => (
           },
         ],
       });
+      toast.success('Se agrego el producto a la orden');
     }
 
     set({ orders_by_supplier: groupBySupplier(get().order_branch_products) })

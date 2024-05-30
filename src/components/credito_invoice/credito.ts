@@ -1,6 +1,10 @@
 // import SEEDCODE from "../../assets/seedcodesv.png"
 
-export const MHQuery = (ambiente: string, codegen: string, fechaEmi: string) => {
+export const MHQuery = (
+  ambiente: string,
+  codegen: string,
+  fechaEmi: string
+) => {
   return `https://admin.factura.gob.sv/consultaPublica?ambiente=${ambiente}&codGen=${codegen}&fechaEmi=${fechaEmi}`;
 };
 
@@ -67,8 +71,12 @@ export const CreditoInVoiceHTML = (qrCode: string, logo: string) => {
                         </td>
                         <td
                             style="width: auto;font-family: Arial, Helvetica, sans-serif;display:flex; gap:10px; flex-direction:row; justify-content:center; align-items: end">
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent('https://wwww.seedcodesv.com')}" style="width:70px">
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrCode)}" style="width:70px;margin-left:10px">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(
+                              "https://wwww.seedcodesv.com"
+                            )}" style="width:70px">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(
+                              qrCode
+                            )}" style="width:70px;margin-left:10px">
                             <img src="${logo}" style="width:70px;margin-left:10px">
                         </td>
                     </tr>
@@ -390,4 +398,61 @@ export const CreditoInVoiceHTML = (qrCode: string, logo: string) => {
     </body>
     </html>
     `;
+};
+
+export const TestHTML = () => {
+  return `<!DOCTYPE html>
+  <html>
+  <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+    </head>
+    <body style="text-align: center;background-color: white">
+    <style>
+            #otros-documentos th {
+                border: 0.1px solid #8d99ae;
+                border-right:0;
+            }
+    
+            #otros-documentos td {
+                border: 0.1px solid #8d99ae;
+                border-right:0;
+                border-top: 0;
+            }
+            #otros-documentos td:last-child {
+                border-right: 1px solid #8d99ae;
+            }
+
+            #otros-documentos th:last-child {
+                border-right: 1px solid #8d99ae;
+            }
+
+            #otros-documentos {
+                width: 560px;
+                margin-top: 8px;
+            }
+    
+            .text-normal {
+                text-align: left;
+                font-size: 7px;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+    
+            .flex-center {
+                display: flex;
+                align-items: start;
+                justify-content: center;
+                padding: 3px
+            }
+        </style>
+      <p style="font-size:8px; font-family: Arial, Helvetica, sans-serif;">
+                                DOCUMENTO DE CONSULTA PORTAL OPERATIVO
+                            </p>
+                            <p style="font-size:8px; font-family: Arial, Helvetica, sans-serif;">
+                                DOCUMENTO TRIBUTARIO ELECTRÓNICO
+                            </p>
+    </body>
+  </html>
+  `;
 };
