@@ -6,7 +6,6 @@ export default {
     './src/**/*.{js,ts,jsx,tsx}',
     './node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}',
     './node_modules/primereact/**/*.{js,ts,jsx,tsx}',
-    require.resolve('react-widgets/styles.css'),
   ],
   darkMode: 'class',
   theme: {

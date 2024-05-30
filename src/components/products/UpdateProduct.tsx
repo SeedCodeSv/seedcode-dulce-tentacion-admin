@@ -209,6 +209,7 @@ function UpdateProduct({ product, onCloseModal }: Props) {
             >
               {cat_011_tipo_de_item.map((item) => (
                 <AutocompleteItem
+                  className="dark:text-white"
                   key={JSON.stringify(item)}
                   value={item.codigo}
                   onClick={() => {
@@ -240,6 +241,7 @@ function UpdateProduct({ product, onCloseModal }: Props) {
             >
               {unidadDeMedidaList.map((item) => (
                 <AutocompleteItem
+                  className="dark:text-white"
                   key={item.id}
                   value={item.valores}
                   onClick={() => {

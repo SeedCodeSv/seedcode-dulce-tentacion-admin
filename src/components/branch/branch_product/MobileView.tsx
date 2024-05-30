@@ -1,6 +1,6 @@
 import { DataView } from 'primereact/dataview';
 import { classNames } from 'primereact/utils';
-import { Truck, ShoppingBag, Barcode, FileSpreadsheet, DollarSign } from 'lucide-react';
+import { Truck, ShoppingBag, Barcode, FileSpreadsheet } from 'lucide-react';
 import { useBranchesStore } from '../../../store/branches.store';
 import { IGetBranchProduct } from '../../../types/branches.types';
 
@@ -36,28 +36,24 @@ const gridItem = (branchProduct: IGetBranchProduct, layout: 'grid' | 'list') => 
     <>
       {layout === 'grid' ? (
         <div
-          className={classNames('w-full shadow-sm hover:shadow-lg p-8 rounded-2xl')}
+          className={classNames('w-full shadow-sm hover:shadow-lg dark:border dar:border-gray-600 p-6 rounded-2xl')}
           key={branchProduct.id}
         >
           <div className="flex w-full gap-2">
-            <Truck color={'#274c77'} size={35} />
+            <Truck className='text-[#274c77] dark:text-gray-400' size={35} />
             {branchProduct.branch.name}
           </div>
           <div className="flex w-full gap-2 mt-3">
-            <ShoppingBag color="#00bbf9" size={35} className="" />
+            <ShoppingBag className="text-[#00bbf9] dark:text-gray-400" size={35} />
             {branchProduct.product.name}
           </div>
           <div className="flex w-full gap-2 mt-3">
-            <Barcode color={'#221'} size={35} />
+            <Barcode className='text-[#221] dark:text-gray-400' size={35} />
             {branchProduct.product.code}
           </div>
           <div className="flex w-full gap-2 mt-3">
-            <FileSpreadsheet color={'#006d77'} size={35} />
+            <FileSpreadsheet className='text-[#006d77] dark:text-gray-400' size={35} />
             {branchProduct.product.description}
-          </div>
-          <div className="flex w-full gap-2 mt-3">
-            <DollarSign color={'#050'} size={35} />
-            {branchProduct.product.price}
           </div>
         </div>
       ) : (
