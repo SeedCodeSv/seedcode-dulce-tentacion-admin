@@ -10,13 +10,15 @@ import {
 import { toast } from 'sonner';
 import { messages } from '../utils/constants';
 import { IExpensePayloads } from '../types/expenses.types';
+import { get_box } from '../storage/localStorage';
 
 export const useExpenseStore = create<IExpenseStore>((set, get) => ({
+
   expense_attachments: [],
   expenses: [],
   annexes: [],
   expenses_paginated: {
-    
+
     total: 0,
     totalPag: 0,
     currentPag: 0,
@@ -25,7 +27,6 @@ export const useExpenseStore = create<IExpenseStore>((set, get) => ({
     status: 404,
     ok: false,
   },
-
   getExpensesPaginated(idBox, page, limit, category) {
     get_expenses_paginated(idBox, page, limit, category)
       .then(({ data }) => set({
@@ -44,7 +45,7 @@ export const useExpenseStore = create<IExpenseStore>((set, get) => ({
       .catch(() => {
         set({
           expenses_paginated: {
-           
+
             total: 0,
             totalPag: 0,
             currentPag: 0,
@@ -57,9 +58,10 @@ export const useExpenseStore = create<IExpenseStore>((set, get) => ({
       });
   },
   postExpenses: (payload: IExpensePayloads) => {
+    const currentBox = Number(get_box());
     save_expenses(payload)
       .then(() => {
-        get().getExpensesPaginated(1, 1, 5, '');
+        get().getExpensesPaginated(currentBox, 1, 5, '');
         toast.success(messages.success);
       })
       .catch(() => {
@@ -67,9 +69,10 @@ export const useExpenseStore = create<IExpenseStore>((set, get) => ({
       });
   },
   patchExpenses(id, payload) {
+    const currentBox = Number(get_box());
     return patch_expenses(id, payload)
       .then(({ data }) => {
-        get().getExpensesPaginated(1, 1, 5, '');
+        get().getExpensesPaginated(currentBox, 1, 5, '');
         toast.success(messages.success);
         return data.ok;
       })
@@ -79,9 +82,10 @@ export const useExpenseStore = create<IExpenseStore>((set, get) => ({
       });
   },
   deleteExpenses(id) {
+    const currentBox = Number(get_box());
     return delete_expenses(id)
       .then(({ data }) => {
-        get().getExpensesPaginated(1, 1, 5, '');
+        get().getExpensesPaginated(currentBox, 1, 5, '');
         toast.success(messages.success);
         return data.ok;
       })

@@ -45,12 +45,12 @@ const ListExpenses = () => {
   const { getExpensesPaginated, expenses_paginated, expenses } = useExpenseStore();
   const [selectedCategory, setSelectedCategory] = useState<IExpense>();
   const [category, setCategory] = useState('');
-  const [limit, setLimit] = useState(8);
+  const [limit, setLimit] = useState(5);
   const currentBox = Number(get_box());
   useEffect(() => {
     get_box();
     getExpensesPaginated(currentBox, 1, limit, category);
-  }, [currentBox]);
+  }, [limit, currentBox]);
 
   const handleSearch = (name: string | undefined) => {
     getExpensesPaginated(currentBox, 1, limit, name ?? category);
@@ -246,37 +246,37 @@ const ListExpenses = () => {
                   {item.attachments
                     .map((attachment: Attachment) => attachment.ext)
                     .includes('pdf') && (
-                    <Button
-                      isIconOnly
-                      aria-label="Abrir PDF"
-                      style={{
-                        backgroundColor: theme.colors.third,
-                      }}
-                      onClick={() => {
-                        setPathSelected(item.id);
-                        showAnexo.onOpen();
-                      }}
-                    >
-                      <Files style={{ color: theme.colors.primary }} size={20} />
-                    </Button>
-                  )}
+                      <Button
+                        isIconOnly
+                        aria-label="Abrir PDF"
+                        style={{
+                          backgroundColor: theme.colors.third,
+                        }}
+                        onClick={() => {
+                          setPathSelected(item.id);
+                          showAnexo.onOpen();
+                        }}
+                      >
+                        <Files style={{ color: theme.colors.primary }} size={20} />
+                      </Button>
+                    )}
                   {item.attachments.some((attachment: Attachment) =>
                     ['jpg', 'png', 'jpeg', 'webp', 'svg'].includes(attachment.ext)
                   ) && (
-                    <Button
-                      isIconOnly
-                      aria-label="Abrir imagen"
-                      style={{
-                        backgroundColor: theme.colors.secondary,
-                      }}
-                      onClick={() => {
-                        setPathSelected(item.id);
-                        showAnexoimg.onOpen();
-                      }}
-                    >
-                      <Image style={{ color: theme.colors.primary }} size={20} />
-                    </Button>
-                  )}
+                      <Button
+                        isIconOnly
+                        aria-label="Abrir imagen"
+                        style={{
+                          backgroundColor: theme.colors.secondary,
+                        }}
+                        onClick={() => {
+                          setPathSelected(item.id);
+                          showAnexoimg.onOpen();
+                        }}
+                      >
+                        <Image style={{ color: theme.colors.primary }} size={20} />
+                      </Button>
+                    )}
 
                   <DeletePopUp expenses={item} />
                 </div>
