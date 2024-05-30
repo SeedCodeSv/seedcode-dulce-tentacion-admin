@@ -46,6 +46,10 @@ function AddProducts(props: Props) {
       .number()
       .required('**El precio es requerido**')
       .typeError('**El precio es requerido**'),
+    minimumStock: yup
+      .number()
+      .required('**La cantidad es requerido**')
+      .typeError('**La cantidad es requerido**'),
     code: yup
       .string()
       .required('**El Código es requerido**')
@@ -83,7 +87,7 @@ function AddProducts(props: Props) {
     priceB: props.product?.price ?? '',
     priceC: props.product?.price ?? '',
     costoUnitario: props.product?.costoUnitario ?? '',
-    minimumStock: props.product?.minimumStock ?? 0,
+    minimumStock: props.product?.minimumStock ?? '',
     code: props.product?.code ?? 'N/A',
     categoryProductId: props.product?.categoryProductId ?? 0,
     tipoDeItem: props.product?.tipoDeItem ?? 'N/A',
@@ -112,7 +116,7 @@ function AddProducts(props: Props) {
   const handleSave = (values: ProductPayloadFormik) => {
     const payload = {
       ...values,
-      branch: selectedBranches.map(branch => ({ id: Number(branch) })),
+      branch: selectedBranches.map((branch) => ({ id: Number(branch) })),
     };
 
     if (props.product) {
@@ -575,11 +579,10 @@ function AddProducts(props: Props) {
                   )}
                 </div>
               </div>
-              <div className="w-full gap-5 grid grid-cols-2 mt-5">
-                <div></div>
+              <div className="w-full flex justify-center items-center gap-5 mt-5">
                 <Button
                   onClick={() => handleSubmit()}
-                  className="w-full mt-4 text-sm font-semibold"
+                  className="w-40 mt-4 text-sm font-semibold"
                   style={{
                     backgroundColor: theme.colors.third,
                     color: theme.colors.primary,
