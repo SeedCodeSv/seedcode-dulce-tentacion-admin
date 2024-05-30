@@ -33,7 +33,7 @@ const AddExpenses = (props: Props) => {
   };
   const validationSchema = yup.object().shape({
     description: yup.string().required('La descripción es requerido'),
-    total: yup.number().required('El total es requerida'),
+    total: yup.number().required('El total es requerido').min(1, 'El total no puede ser cero o negativo'),
     categoryExpenseId: yup
       .number()
       .required('La categoría es requerido')
@@ -95,23 +95,24 @@ const AddExpenses = (props: Props) => {
   const handleSubmit = async (values: ICreacteExpense) => {
     const boxe = get_box();
     const boxId = Number(boxe) || 0;
-    try {
 
-      if (!formData.file) {
+    try {
+      let fileToUpload = formData.file;
+      if (!fileToUpload) {
         const defaultImageFile = await fetch(DefaultImage)
           .then((res) => res.blob())
           .then((blob) => new File([blob], 'default.png', { type: 'image/png' }));
 
-        setFormData((prevData) => ({
-          ...prevData,
-          boxId: boxId,
-          file: defaultImageFile,
-        }));
-
-        setSelectedFile({ url: DefaultImage, type: 'image/png' });
+        fileToUpload = defaultImageFile;
       }
-      await postExpenses({ ...values, file: formData.file });
-      props.reload()
+      const updatedFormData = {
+        ...formData,
+        file: fileToUpload,
+        boxId: boxId,
+      };
+
+      await postExpenses({ ...values, file: updatedFormData.file });
+      props.reload();
       props.closeModal();
     } catch (error) {
       toast.error('Ocurrió un error al guardar la información');
@@ -125,7 +126,7 @@ const AddExpenses = (props: Props) => {
         handleSubmit({ ...values, boxId: formData.boxId });
       }}
     >
-      {({ values, errors, touched, handleBlur, handleChange, handleSubmit }) => (
+      {({ values, errors, touched, handleBlur, handleChange, handleSubmit, isSubmitting }) => (
         <>
           <div className="">
             <div className="flex flex-col items-center justify-center m-4 2xl:mt-10">
@@ -171,7 +172,29 @@ const AddExpenses = (props: Props) => {
               </div>
 
             </div>
-            <div className="flex flex-col-2 gap-2 sm:flex sm:flex-1">
+            <div className="w-full pt-3 mb-8">
+              <Input
+                label="Total"
+                labelPlacement="outside"
+                name="total"
+                value={values.total.toString()}
+                onChange={handleChange('total')}
+                onBlur={handleBlur('total')}
+                placeholder="00.00"
+                classNames={{
+                  label: 'font-semibold text-gray-500 text-sm',
+                }}
+                variant="bordered"
+                type="number"
+                startContent="$"
+              />
+              {errors.total && touched.total && (
+                <span className="text-sm font-semibold text-red-500">
+                  {errors.total}
+                </span>
+              )}
+            </div>
+            <div className="w-full mb-8">
               <Autocomplete
                 onSelectionChange={(key) => {
                   if (key) {
@@ -207,32 +230,11 @@ const AddExpenses = (props: Props) => {
                   {errors.categoryExpenseId}
                 </span>
               )}
-
-
-
-              {/* <div className="mt-10"> */}
-              <Input
-                label="Total"
-                labelPlacement="outside"
-                name="total"
-                value={values.total.toString()}
-                onChange={handleChange('total')}
-                onBlur={handleBlur('total')}
-                placeholder="00.00"
-                classNames={{
-                  label: 'font-semibold text-gray-500 text-sm',
-                }}
-                variant="bordered"
-                type="number"
-                startContent="$"
-              />
-              {errors.total && touched.total && (
-                <span className="text-sm font-semibold text-red-500">{errors.total}</span>
-              )}
-              {/* </div> */}
             </div>
 
-            <div className="w-full pt-3 mb-8">
+
+
+            <div className="w-full  mb-8">
               <Textarea
                 label="Descripción"
                 placeholder="Descripción"
@@ -250,6 +252,7 @@ const AddExpenses = (props: Props) => {
             <div>
               <Button
                 type="submit"
+                disabled={isSubmitting}
                 onClick={() => handleSubmit()}
                 style={global_styles().thirdStyle}
                 className="w-full font-semibold"

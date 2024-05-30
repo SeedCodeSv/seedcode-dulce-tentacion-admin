@@ -120,9 +120,9 @@ function ExpensesByDatesTransmitter() {
           />
           <Column
             headerStyle={style}
-            field="totalExpenses"
-            header="Total"
-            body={(rowData) => formatCurrency(Number(rowData.totalExpenses))}
+            field="Total"
+            header="total"
+            body={(rowData) => formatCurrency(Number(rowData.total))}
           />
         </DataTable>
         <div className="col-span-3 bg-gray-100 p-5 dark:bg-gray-900 rounded-lg">
