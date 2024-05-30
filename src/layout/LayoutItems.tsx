@@ -92,7 +92,9 @@ export const LayoutItems = () => {
           }}
         >
           <img src={LOGO} className="max-h-14" />
-          <p className="ml-3 font-sans text-sm font-bold text-coffee-brown">SeedCodeERP</p>
+          <p className="ml-3 font-sans text-sm font-bold text-coffee-brown dark:text-white">
+            SeedCodeERP
+          </p>
         </div>
       ) : (
         <>
@@ -255,7 +257,9 @@ export const LayoutItems = () => {
                               }}
                             >
                               <BookUser size={iconSize} />
-                              <p className="ml-2 text-sm 2xl:text-base">Gatos Sucursal</p>
+                              <p className="ml-2 text-sm 2xl:text-base">
+                                Gastos Sucursal
+                              </p>
                             </NavLink>
                           </Menu.Item>
                           <Menu.Item>
@@ -274,39 +278,10 @@ export const LayoutItems = () => {
                               <p className="ml-2 text-sm 2xl:text-base">Producto mas vendido</p>
                             </NavLink>
                           </Menu.Item>
-                          <Menu.Item>
-                            <NavLink
-                              to={'/sales-by-transmitter'}
-                              className={({ isActive }) => {
-                                return (
-                                  (isActive
-                                    ? 'font-semibold bg-gray-300 dark:bg-gray-700'
-                                    : 'text-coffee-brown font-semibold border-white') +
-                                  ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
-                                );
-                              }}
-                            >
-                              <User size={iconSize} />
-                              <p className="ml-2 text-sm 2xl:text-base">Ventas Generales</p>
-                            </NavLink>
-                          </Menu.Item>
+                          
 
-                          <Menu.Item>
-                            <NavLink
-                              to={'/expenses-by-dates-transmitter'}
-                              className={({ isActive }) => {
-                                return (
-                                  (isActive
-                                    ? 'font-semibold bg-gray-300 dark:bg-gray-700'
-                                    : 'text-coffee-brown font-semibold border-white') +
-                                  ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
-                                );
-                              }}
-                            >
-                              <Truck size={iconSize} />
-                              <p className="ml-2 text-base">Gastos Generales</p>
-                            </NavLink>
-                          </Menu.Item>
+
+                          
                         </div>
                       </Menu.Items>
                     </Transition>

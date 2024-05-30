@@ -12,6 +12,7 @@ export interface Product {
   code: string;
   costoUnitario: string;
   type: string;
+  minimumStock: number;
   isActive: boolean;
   categoryProduct: CategoryProduct;
   categoryProductId: number;
@@ -43,8 +44,8 @@ export interface ProductPayload {
   tipoItem: string;
   uniMedida: string;
   unidaDeMedida: string;
-  branch: { id: number }[],
-  supplierId: number
+  branch: { id: number }[];
+  supplierId: number;
 }
 
 export interface ProductPayloadFormik {
@@ -58,8 +59,8 @@ export interface ProductPayloadFormik {
   tipoItem: string;
   uniMedida: string;
   unidaDeMedida: string;
-  branch: string[],
-  supplierId: number,
+  branch: string[];
+  supplierId: number;
 }
 export interface IProductCart extends IUnidadProducto {
   quantity: number;

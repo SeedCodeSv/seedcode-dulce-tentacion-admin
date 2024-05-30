@@ -32,7 +32,7 @@ function MobileView({
         pt={{
           grid: () => ({
             className:
-              "grid dark:bg-slate-800 pb-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 grid-nogutter gap-5 mt-5",
+              "grid dark:bg-slate-800 pb-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4  gap-5 mt-5",
           }),
         }}
         color="surface"
@@ -59,7 +59,7 @@ const GridItem = (props: GridProps) => {
       {layout === "grid" ? (
         <div
           className={classNames(
-            "w-full shadow-sm hover:shadow-lg dark:border dark:border-gray-600 p-8 rounded-2xl"
+            "w-full shadow-sm hover:shadow-lg dark:border dark:border-gray-600 p-6 rounded-2xl"
           )}
           key={customers.id}
         >
@@ -72,9 +72,13 @@ const GridItem = (props: GridProps) => {
             {customers.telefono}
           </div>
           <div className="flex w-full gap-2 mt-3">
-            <MapPin className="text-[#00bbf9] dark:text-gray-400" size={33} />
+            <div>
+              <MapPin className="text-[#00bbf9] dark:text-gray-400 w-auto h-auto" size={35} />
+            </div>
+            <div className="w-full">
             {customers.direccion.nombreDepartamento} ,
             {customers.direccion.municipio} ,{customers.direccion.complemento}
+            </div>
           </div>
           <div className="flex w-full gap-2 mt-3">
             <Users2Icon

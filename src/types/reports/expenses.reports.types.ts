@@ -3,6 +3,16 @@ export interface ExpenseByBranch {
   total: number;
 }
 
+export interface IResponseDataExpensesGrafic {
+  ok: boolean;
+  data: IDataExpensesGrafic[];
+}
+
+export interface IDataExpensesGrafic {
+  branch: string;
+  totalExpenses: string;
+}
+
 export interface IGetExpensesByBranch {
   ok: boolean;
   expenses: ExpenseByBranch[];
