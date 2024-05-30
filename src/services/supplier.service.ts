@@ -17,7 +17,6 @@ export const get_supplier_pagination = (
   limit = 5,
   name = '',
   email = '',
-  active: number,
   isTransmitter: number
 ) => {
   const user = get_user();
@@ -33,8 +32,6 @@ export const get_supplier_pagination = (
       name +
       '&correo=' +
       email +
-      '&active=' +
-      active +
       '&isTransmitter=' +
       isTransmitter,
     {
