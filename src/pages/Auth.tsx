@@ -71,6 +71,7 @@ function Auth() {
                     onChange={handleChange('userName')}
                     onBlur={handleBlur('userName')}
                     labelPlacement="outside"
+                    type='text'
                     placeholder="Ingresa tu usuario"
                     className="dark:text-white"
                   />
