@@ -78,15 +78,17 @@ const GridItem = (props: GridProps) => {
           key={branch.id}
         >
           <div className="flex w-full gap-2">
-            <Scroll color={"#274c77"} size={35} />
+            <Scroll className="text-[#274c77] dark:text-gray-400" size={35} />
             {branch.name}
           </div>
           <div className="flex w-full gap-2 mt-3">
-            <MapPin color="#00bbf9" size={35} />
+            <div>
+              <MapPin className="text-[#00bbf9] dark:text-gray-400" size={35} />
+            </div>
             {branch.address}
           </div>
           <div className="flex w-full gap-2 mt-3">
-            <Phone color={"#006d77"} size={35} />
+            <Phone className="text-[#00bbf9] dark:text-gray-400" size={35} />
             {branch.phone}
           </div>
           <div className="flex justify-between mt-5 w-ful">
@@ -161,17 +163,17 @@ const ListItem = (props: GridProps) => {
       <div className="flex w-full col-span-1 p-5 border-b shadow md:col-span-2 lg:col-span-3 xl:col-span-4">
         <div className="w-full">
           <div className="flex items-center w-full gap-2">
-            <Scroll color={"#274c77"} size={35} />
+            <Scroll className="text-[#274c77] dark:text-gray-400" size={35} />
             {branch.name}
           </div>
           <div className="flex items-center w-full gap-2 mt-3">
-            <MapPin color="#00bbf9" size={35} />
+            <MapPin className="text-[#00bbf9] dark:text-gray-400" size={35} />
             <div className="w-full">
               <p>{branch.address}</p>
             </div>
           </div>
           <div className="flex items-center w-full gap-2 mt-3">
-            <Phone color={"#006d77"} size={35} />
+            <Phone className="text-[#00bbf9] dark:text-gray-400" size={35} />
             {branch.phone}
           </div>
         </div>

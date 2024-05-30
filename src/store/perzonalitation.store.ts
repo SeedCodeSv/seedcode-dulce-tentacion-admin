@@ -36,7 +36,7 @@ export const useConfigurationStore = create<IConfigurationStore>((set) => ({
         toast.error('No se encontró información de personalización');
       }
     } catch (error) {
-      toast.error('Ocurrió un error al obtener los datos de personalización');
+      set((state) => ({ ...state, config: {} as IConfiguration }));
     }
   },
   UpdateConfigurationName(payload, id) {

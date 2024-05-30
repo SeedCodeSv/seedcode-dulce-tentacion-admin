@@ -44,7 +44,7 @@ export const send_to_mh_contingencia = (payload: ISendMHContingencia, token: str
 export const send_to_mh_invalidation = (payload: IInvalidationToMH) => {
   return axios.post<IResponseInvalidationMH>(`${MH_URL}anulardte`, payload, {
     headers: {
-      Authorization: localStorage.getItem('mh_token'),
+      Authorization: localStorage.getItem('_MHT'),
     },
   });
 };
