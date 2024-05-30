@@ -10,6 +10,7 @@ import { Municipio } from '../../types/billing/cat-013-municipio.types';
 import { Departamento } from '../../types/billing/cat-012-departamento.types';
 import { ThemeContext } from '../../hooks/useTheme';
 import { get_user } from '../../storage/localStorage';
+import { ITipoDocumento } from '../../types/DTE/tipo_documento.types';
 
 interface Props {
   closeModal: () => void;
@@ -27,6 +28,7 @@ const AddClientNormal = (props: Props) => {
     telefono: props.customer?.telefono ?? '',
     numDocumento: props.customer?.numDocumento ?? '',
     municipio: props.customer_direction?.municipio ?? '',
+    tipoDocumento: props.customer?.tipoDocumento ?? '',
     nombreMunicipio: props.customer_direction?.nombreMunicipio ?? '',
     departamento: props.customer_direction?.departamento ?? '',
     nombreDepartamento: props.customer_direction?.nombreDepartamento ?? '',
@@ -62,8 +64,14 @@ const AddClientNormal = (props: Props) => {
 
   const [selectedCodeDep, setSelectedCodeDep] = useState('0');
 
-  const { getCat012Departamento, cat_012_departamento, getCat013Municipios, cat_013_municipios } =
-    useBillingStore();
+  const {
+    getCat012Departamento,
+    cat_012_departamento,
+    getCat013Municipios,
+    cat_013_municipios,
+    getCat022TipoDeDocumentoDeIde,
+    cat_022_tipo_de_documentoDeIde,
+  } = useBillingStore();
 
   useEffect(() => {
     getCat012Departamento();
@@ -71,13 +79,14 @@ const AddClientNormal = (props: Props) => {
 
   useEffect(() => {
     getCat013Municipios(selectedCodeDep);
+    getCat022TipoDeDocumentoDeIde()
   }, [selectedCodeDep]);
 
   const { postCustomer, patchCustomer } = useCustomerStore();
   const user = get_user();
 
   const onSubmit = (payload: PayloadCustomer) => {
-    if (props.id || props.id !== 0) {
+    if (props.id || props.id !== 0) {  
       const values = {
         ...payload,
         esContribuyente: 0,
@@ -104,17 +113,14 @@ const AddClientNormal = (props: Props) => {
       return JSON.stringify(department);
     }
   }, [props, props.customer_direction, cat_012_departamento, cat_012_departamento.length]);
-
   const selectedKeyCity = useMemo(() => {
     if (props.customer_direction) {
       const city = cat_013_municipios.find(
         (department) => department.codigo === props.customer_direction?.municipio
       );
-
       return JSON.stringify(city);
     }
   }, [props, props.customer_direction, cat_013_municipios, cat_013_municipios.length]);
-
   return (
     <div>
       <Formik
@@ -279,6 +285,41 @@ const AddClientNormal = (props: Props) => {
                 {errors.municipio && touched.municipio && (
                   <span className="text-sm font-semibold text-red-500">{errors.municipio}</span>
                 )}
+              </div>
+              <div className="pt-2">
+                <Autocomplete
+                  onSelectionChange={(key) => {
+                    if (key) {
+                      const depSelected = JSON.parse(key as string) as ITipoDocumento;
+                      handleChange('tipoDocumento')(depSelected.codigo);
+                      handleChange('tipoDocumento')(depSelected.valores);
+                    }
+                  }}
+                  onBlur={handleBlur('tipoDocumento')}
+                  label="Tipo de documento"
+                  labelPlacement="outside"
+                  placeholder={
+                    props.customer?.tipoDocumento
+                      ? props.customer?.tipoDocumento
+                      : 'Selecciona el tipo de documento'
+                  }
+                  variant="bordered"
+                  classNames={{
+                    base: 'font-semibold text-gray-500 text-sm',
+                  }}
+                  className="dark:text-white"
+                  defaultSelectedKey={values.tipoDocumento}
+                >
+                  {cat_022_tipo_de_documentoDeIde.map((dep) => (
+                    <AutocompleteItem
+                      value={dep.codigo}
+                      key={JSON.stringify(dep)}
+                      className="dark:text-white"
+                    >
+                      {dep.valores}
+                    </AutocompleteItem>
+                  ))}
+                </Autocomplete>
               </div>
             </div>
             <div className="pt-2">
