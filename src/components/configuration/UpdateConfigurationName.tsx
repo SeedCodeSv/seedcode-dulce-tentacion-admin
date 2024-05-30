@@ -32,7 +32,7 @@ function UpdateConfigurationName(props: Props) {
   };
 
   return (
-    <div className="mb-32 p t-5 sm:mb-0">
+    
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -41,9 +41,9 @@ function UpdateConfigurationName(props: Props) {
       >
         {({ errors, touched, handleChange, handleBlur, handleSubmit, values }) => (
           <>
-            <div>
+            <div className=''>
               <Input
-                label="Nombre un nombre"
+                label="Ingrese un nombre"
                 labelPlacement="outside"
                 name="name"
                 value={values.name}
@@ -72,7 +72,7 @@ function UpdateConfigurationName(props: Props) {
           </>
         )}
       </Formik>
-    </div>
+    
   );
 }
 
