@@ -66,7 +66,7 @@ export default function TableProducts(props: Props) {
         </TD>
       </TH>
       {props.DTE.dteJson.cuerpoDocumento.map((cuerpo, index) => (
-        <TR>
+        <TR key={index}>
           <TD weighting={0.1} style={styles.td_content}>
             {index + 1}
           </TD>

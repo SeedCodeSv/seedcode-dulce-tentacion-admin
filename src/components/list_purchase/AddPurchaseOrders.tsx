@@ -1,4 +1,3 @@
-// import React from 'react'
 import {
   Autocomplete,
   AutocompleteItem,
@@ -27,16 +26,22 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { ThemeContext } from "../../hooks/useTheme";
 import { formatCurrency } from "../../utils/dte";
-import {
-  IBranchProductOrderQuantity,
-  Supplier,
-} from "../../types/branch_products.types";
-import { getElSalvadorDateTime } from "../../utils/dates";
+import { IBranchProductOrderQuantity } from "../../types/branch_products.types";
 import HeadlessModal from "../global/HeadlessModal";
-import useEventListener, { TEventHandler } from "../../hooks/useEventListeners";
-import { toast } from "sonner";
+import {
+  IBranchProductOrder,
+  PurchaseOrderPayload,
+} from "../../types/purchase_orders.types";
+import { usePurchaseOrdersStore } from "../../store/purchase_orders.store";
+import PurchaseOrders from "../invoice/PurchaseOrders";
+import { pdf } from "@react-pdf/renderer";
+import print from "print-js";
 
-function AddPurchaseOrders() {
+interface Props {
+  closeModal: () => void;
+}
+
+function AddPurchaseOrders(props: Props) {
   const vaul = useDisclosure();
   const {
     getBranchProductOrders,
@@ -46,7 +51,7 @@ function AddPurchaseOrders() {
     deleteProductOrder,
     order_branch_products,
     orders_by_supplier,
-    getProductByCodeOrders,
+    clearProductOrders,
   } = useBranchProductStore();
 
   const { getSupplierList, supplier_list } = useSupplierStore();
@@ -71,179 +76,67 @@ function AddPurchaseOrders() {
     color: theme.colors.primary,
   };
 
-  interface SupplierProducts {
-    supplier: Supplier;
-    products: IBranchProductOrderQuantity[];
-  }
-
-  const handleSave = () => {
-    const groupBySupplier = (
-      items: IBranchProductOrderQuantity[]
-    ): SupplierProducts[] => {
-      const supplierMap = new Map<number, SupplierProducts>();
-
-      items.forEach((item) => {
-        if (!supplierMap.has(item.supplierId)) {
-          supplierMap.set(item.supplierId, {
-            supplier: item.supplier,
-            products: [],
-          });
-        }
-        supplierMap.get(item.supplierId)!.products.push(item);
-      });
-
-      return Array.from(supplierMap.values());
-    };
-
-    const groupedProducts = groupBySupplier(order_branch_products);
-
-    if(groupedProducts){
-      toast.success("Se guardaron los productos");
-    }
-  };
-
-  const handlePrint = (
+  const handlePrint = async (
     products: IBranchProductOrderQuantity[],
     supplierName: string
   ) => {
     const total = products
       .map((p) => Number(p.price) * p.quantity)
       .reduce((a, b) => a + b, 0);
+    const blob = await pdf(
+      <PurchaseOrders
+        supplier={supplierName}
+        total={total}
+        dark={theme.colors.dark}
+        primary={theme.colors.primary}
+        items={products.map((p) => ({
+          qty: p.quantity,
+          name: p.product.name,
+          price: Number(p.price),
+          total: Number(p.price) * p.quantity,
+        }))}
+      />
+    ).toBlob();
 
-    const iframe = document.createElement("iframe");
-    iframe.style.height = "0";
-    iframe.style.visibility = "hidden";
-    iframe.style.width = "0";
-    iframe.setAttribute("srcdoc", "<html><body></body></html>");
-    document.body.appendChild(iframe);
-    iframe.contentWindow?.addEventListener("afterprint", () => {
-      iframe.parentNode?.removeChild(iframe);
-    });
+    const URL_PDF = URL.createObjectURL(blob);
 
-    iframe.addEventListener("load", () => {
-      const body = iframe.contentDocument?.body;
-
-      if (!body) return;
-
-      body.style.textAlign = "center";
-      body.style.fontFamily = "Arial, sans-serif";
-
-      const customContent = `
-          <style>
-          body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        .container {
-            max-width: 800px;
-            margin: auto;
-            border: 1px solid #ddd;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .header h1 {
-            margin: 0;
-        }
-        .details {
-            margin-bottom: 20px;
-            width: 100%;
-            text-align: left;
-        }
-        .details div {
-            margin-bottom: 5px;
-        }
-        .details span {
-            font-weight: bold;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        table, th, td {
-            border: 1px solid #ddd;
-        }
-        th, td {
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        .total {
-            text-align: right;
-            font-size: 1.2em;
-            font-weight: bold;
-            margin-top: 20px;
-        }
-          </style>
-          <div class="container">
-        <div class="header">
-            <h1>Orden de Compra</h1>
-        </div>
-        <div class="details">
-            <div><span>Fecha:</span> ${getElSalvadorDateTime().fecEmi}</div>
-            <div><span>Hora:</span> ${getElSalvadorDateTime().horEmi}</div>
-            <div><span>Proveedor:</span> ${supplierName}</div>
-        </div>
-        <table>
-            <thead>
-                <tr>
-                    <th>Producto</th>
-                    <th>Cantidad</th>
-                    <th>Código</th>
-                    <th>Subtotal</th>
-                </tr>
-            </thead>
-            <tbody>
-            ${products
-              .map(
-                (product) => `
-                <tr>
-                    <td>${product.product.name}</td>
-                    <td>${product.quantity}</td>
-                    <td>${product.product.code}</td>
-                    <td>${formatCurrency(
-                      Number(product.price) * product.quantity
-                    )}</td>
-                </tr>
-                `
-              )
-              .join("")}
-            </tbody>
-        </table>
-        <div class="total">
-            Total: ${formatCurrency(total)}
-        </div>
-    </div>
-        `;
-      const div = document.createElement("div");
-      div.innerHTML = customContent;
-      body.appendChild(div);
-
-      iframe.contentWindow?.print();
+    print({
+      printable: URL_PDF,
+      type: "pdf",
+      showModal: false,
     });
   };
 
-  let barcode = "";
-  let interval: NodeJS.Timeout | undefined;
+  const { postPurchaseOrder } = usePurchaseOrdersStore();
 
-  const handler = (evt: KeyboardEvent) => {
-    if (interval) clearInterval(interval);
-    if (evt.code === "Enter") {
-      if (barcode) getProductByCodeOrders(branch, supplier, "", barcode);
-      barcode = "";
-      return;
+  const handleSaveOrder = async () => {
+    for (let i = 0; i < orders_by_supplier.length; i++) {
+      const products: IBranchProductOrder[] = orders_by_supplier[
+        i
+      ].products.map((prd) => ({
+        productId: prd.id,
+        quantity: prd.quantity,
+        unitPrice: Number(prd.price),
+      }));
+
+      const branchId = orders_by_supplier[i].products[0].branch.id;
+
+      const total = products
+        .map((p) => Number(p.unitPrice) * p.quantity)
+        .reduce((a, b) => a + b, 0);
+
+      const payload: PurchaseOrderPayload = {
+        supplierId: orders_by_supplier[i].supplier.id,
+        branchProducts: products,
+        branchId,
+        total,
+      };
+
+      await postPurchaseOrder(payload);
     }
-    if (evt.key !== "Shift") barcode += evt.key;
-    interval = setInterval(() => (barcode = ""), 200000);
+    clearProductOrders();
+    props.closeModal();
   };
-
-  useEventListener("keydown", handler as TEventHandler);
 
   const cellEditor = (product: IBranchProductOrderQuantity) => {
     const product_finded = order_branch_products.find(
@@ -281,6 +174,21 @@ function AddPurchaseOrders() {
             <Plus />
           </Button>
         </div>
+
+        {orders_by_supplier.length === 0 && (
+          <div className="w-full h-full flex flex-col items-center">
+            <div className="lds-ellipsis">
+              <div className="bg-gray-600 dark:bg-gray-200"></div>
+              <div className="bg-gray-600 dark:bg-gray-200"></div>
+              <div className="bg-gray-600 dark:bg-gray-200"></div>
+              <div className="bg-gray-600 dark:bg-gray-200"></div>
+            </div>
+            <p className="dark:text-white text-xl pb-10">
+              Aun no agregas productos
+            </p>
+          </div>
+        )}
+
         {orders_by_supplier.map((supplier, index) => (
           <div key={index} className="w-full">
             <p className="dark:text-white">
@@ -355,7 +263,7 @@ function AddPurchaseOrders() {
 
         <div className="w-full flex justify-end mt-4">
           <Button
-            onClick={handleSave}
+            onClick={handleSaveOrder}
             style={global_styles().secondaryStyle}
             className="px-16"
           >
@@ -367,9 +275,9 @@ function AddPurchaseOrders() {
         isOpen={vaul.isOpen}
         onClose={vaul.onClose}
         title="Nueva orden de compra"
-        size="w-screen h-screen md:h-auto md:w-[80vw]"
+        size="w-screen h-screen pb-20 md:pb-0 p-5 overflow-y-auto xl:w-[80vw]"
       >
-        <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
+        <div className="w-full bg-white dark:bg-gray-800">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             <div>
               <Select
@@ -440,7 +348,7 @@ function AddPurchaseOrders() {
               Aceptar
             </Button>
           </div>
-          <div className="w-full mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="w-full mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {branch_product_order.map((branch_product) => (
               <div
                 key={branch_product.id}

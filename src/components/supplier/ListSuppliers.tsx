@@ -15,7 +15,6 @@ import {
   PopoverTrigger,
   Select,
   SelectItem,
-  Switch,
   useDisclosure,
 } from '@nextui-org/react';
 import { useSupplierStore } from '../../store/supplier.store';
@@ -32,6 +31,7 @@ import {
   CreditCard,
   Table as ITable,
   Mail,
+  Filter,
 } from 'lucide-react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
@@ -39,13 +39,17 @@ import { Paginator } from 'primereact/paginator';
 import { paginator_styles } from '../../styles/paginator.styles';
 import { global_styles } from '../../styles/global.styles';
 import Pagination from '../global/Pagination';
+import MobileViewSupplier from './MobileViewSupplier';
+import { Drawer } from 'vaul';
+import classNames from 'classnames';
 
 function ListSuppliers() {
-  const { theme } = useContext(ThemeContext);
+  const { theme, context } = useContext(ThemeContext);
   const { getSupplierPagination, supplier_pagination } = useSupplierStore();
   const [limit, setLimit] = useState(5);
   const [search, setSearch] = useState('');
   const [email, setEmail] = useState('');
+  const [openVaul, setOpenVaul] = useState(false);
 
   const [typeProveedor, setTypeProveedor] = useState('normal');
   const [selectedTitle, setSelectedTitle] = useState('');
@@ -53,7 +57,7 @@ function ListSuppliers() {
   const [selectedSupplierDirection, setSelectedSupplierDirection] = useState<SupplierDirection>();
   const [selectedId, setSelectedId] = useState<number>(0);
 
-  const [active, setActive] = useState(true);
+  // const [active, setActive] = useState(true);
   const [tipeSupplier, setTypeSupplier] = useState(1);
 
   const style = {
@@ -62,18 +66,11 @@ function ListSuppliers() {
   };
   const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
   useEffect(() => {
-    getSupplierPagination(1, limit, search, email, active ? 1 : 0, tipeSupplier);
-  }, [limit, active, tipeSupplier]);
+    getSupplierPagination(1, limit, search, email, tipeSupplier);
+  }, [limit, tipeSupplier]);
 
   const handleSearch = (searchParam: string | undefined) => {
-    getSupplierPagination(
-      1,
-      limit,
-      searchParam ?? search,
-      searchParam ?? email,
-      active ? 1 : 0,
-      tipeSupplier
-    );
+    getSupplierPagination(1, limit, searchParam ?? search, searchParam ?? email, tipeSupplier);
   };
 
   const modalAdd = useDisclosure();
@@ -133,6 +130,10 @@ function ListSuppliers() {
     setSelectedSupplier(undefined);
     setSelectedTitle('');
   };
+
+  // const handeleActive = (id: number) => {
+  //   setActive(!active);
+  // };
 
   return (
     <>
@@ -229,22 +230,115 @@ function ListSuppliers() {
                 <List />
               </Button>
             </ButtonGroup>
+
+            <div className="flex items-center gap-5">
+              <div className="block md:hidden">
+                <Drawer.Root
+                  shouldScaleBackground
+                  open={openVaul}
+                  onClose={() => setOpenVaul(false)}
+                >
+                  <Drawer.Trigger asChild>
+                    <Button
+                      style={global_styles().thirdStyle}
+                      isIconOnly
+                      onClick={() => setOpenVaul(true)}
+                      type="button"
+                    >
+                      <Filter />
+                    </Button>
+                  </Drawer.Trigger>
+                  <Drawer.Portal>
+                    <Drawer.Overlay
+                      className="fixed inset-0 bg-black/40 z-[60]"
+                      onClick={() => setOpenVaul(false)}
+                    />
+                    <Drawer.Content
+                      className={classNames(
+                        'bg-gray-100 z-[60] flex flex-col rounded-t-[10px] h-auto mt-24 max-h-[80%] fixed bottom-0 left-0 right-0',
+                        context === 'dark' ? 'dark' : ''
+                      )}
+                    >
+                      <div className="p-4 bg-white dark:bg-gray-800 rounded-t-[10px] flex-1">
+                        <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-gray-300 dark:bg-gray-400 mb-8" />
+                        <Drawer.Title className="mb-4 dark:text-white font-medium">
+                          Filtros disponibles
+                        </Drawer.Title>
+
+                        <div className="flex flex-col gap-3">
+                          <Input
+                            startContent={<User />}
+                            className="w-full dark:text-white"
+                            variant="bordered"
+                            labelPlacement="outside"
+                            label="Nombre"
+                            classNames={{
+                              label: 'font-semibold text-gray-700',
+                              inputWrapper: 'pr-0',
+                            }}
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            placeholder="Escribe para buscar..."
+                            isClearable
+                            onClear={() => {
+                              // handleSearch("");
+                              setSearch('');
+                            }}
+                          />
+                          <Input
+                            startContent={<Mail />}
+                            className="w-full dark:text-white"
+                            variant="bordered"
+                            labelPlacement="outside"
+                            label="correo"
+                            classNames={{
+                              label: 'font-semibold text-gray-700',
+                              inputWrapper: 'pr-0',
+                            }}
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="Escribe para buscar..."
+                            isClearable
+                            onClear={() => {
+                              // handleSearch("");
+                              setEmail('');
+                            }}
+                          />
+                          <Button
+                            style={{
+                              backgroundColor: theme.colors.secondary,
+                              color: theme.colors.primary,
+                            }}
+                            className="font-semibold"
+                            color="primary"
+                            onClick={() => {
+                              handleSearch(undefined);
+                              setOpenVaul(false);
+                            }}
+                          >
+                            Aplicar
+                          </Button>
+                        </div>
+                      </div>
+                    </Drawer.Content>
+                  </Drawer.Portal>
+                </Drawer.Root>
+              </div>
+            </div>
+
             <div className="flex justify-end w-full">
               <BottomAdd setTypeSupplier={setTypeProveedor} openModal={modalAdd.onOpen} />
               <BottomSm setTypeSupplier={setTypeProveedor} openModal={modalAdd.onOpen} />
             </div>
           </div>
 
-          <div className="flex flex-col gap-5 sm:flex-row sm:items-center justify-between w-full mb-5">
-            <Switch onValueChange={(active) => setActive(active)} isSelected={active}>
-              <span className="text-sm sm:text-base whitespace-nowrap">
-                Mostrar {active ? 'inactivos' : 'activos'}
-              </span>
-            </Switch>
+          
+
+          <div className="flex flex-row gap-5 items-center justify-between w-full mb-5 mt-3">
             <Select
-              className="w-44 ml-2"
+              className="w-72 sm:w-44 ml-2"
               variant="bordered"
-              label="Mostrar"
+              label="Tipo de proveedor"
               labelPlacement="outside"
               classNames={{
                 label: 'font-semibold',
@@ -297,18 +391,19 @@ function ListSuppliers() {
               </SelectItem>
             </Select>
           </div>
+
           <div className="flex items-center justify-center ml-2"></div>
-          {/* {(view === 'grid' || view === 'list') && (
+          {(view === 'grid' || view === 'list') && (
             <MobileViewSupplier
-              handleActive={handleActivate}
-              handleChangeCustomer={(supplier, type) => {
+              // handleActive={handleActivate}
+              handleChangeSupplier={(supplier, type) => {
                 handleChangeSupplier(supplier, type);
               }}
               deletePopover={DeletePopover}
               layout={view as 'grid' | 'list'}
             />
           )}
-          <div className="flex justify-end w-full py-3 bg-first-300"></div> */}
+          <div className="flex justify-end w-full py-3 bg-first-300"></div>
 
           {view === 'table' && (
             <DataTable
@@ -387,7 +482,7 @@ function ListSuppliers() {
                         <BadgeCheck style={{ color: theme.colors.primary }} size={20} />
                       </Button>
                     )} */}
-                    <DeletePopover suppliers={item} />
+                    <DeletePopover supplier={item} />
                   </div>
                 )}
               />
@@ -402,7 +497,7 @@ function ListSuppliers() {
                   currentPage={supplier_pagination.currentPag}
                   totalPages={supplier_pagination.totalPag}
                   onPageChange={(page) => {
-                    getSupplierPagination(page, limit, search, email, active ? 1 : 0, tipeSupplier);
+                    getSupplierPagination(page, limit, search, email, tipeSupplier);
                   }}
                 />
               </div>
@@ -468,10 +563,10 @@ function ListSuppliers() {
 export default ListSuppliers;
 
 interface PopProps {
-  suppliers: Supplier;
+  supplier: Supplier;
 }
 
-export const DeletePopover = ({ suppliers }: PopProps) => {
+export const DeletePopover = ({ supplier }: PopProps) => {
   const { theme } = useContext(ThemeContext);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -502,14 +597,14 @@ export const DeletePopover = ({ suppliers }: PopProps) => {
       </PopoverTrigger>
       <PopoverContent>
         <div className="w-full p-5">
-          <p className="font-semibold text-gray-600">Eliminar {suppliers.nombre}</p>
+          <p className="font-semibold text-gray-600">Eliminar {supplier.nombre}</p>
           <p className="mt-3 text-center text-gray-600 w-72">
             ¿Estas seguro de eliminar este registro?
           </p>
           <div className="mt-4">
             <Button onClick={onClose}>No, cancelar</Button>
             <Button
-              onClick={() => handleDelete(suppliers.id)}
+              onClick={() => handleDelete(supplier.id)}
               className="ml-5"
               style={{
                 backgroundColor: theme.colors.danger,
@@ -568,7 +663,7 @@ export const CardItem = ({ suppliers, handleChange }: CardProps) => {
           >
             <Repeat className="text-white" size={20} />
           </Button>
-          <DeletePopover suppliers={suppliers} />
+          <DeletePopover supplier={suppliers} />
         </div>
       </CardHeader>
     </Card>
