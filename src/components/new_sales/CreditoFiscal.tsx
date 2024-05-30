@@ -252,6 +252,7 @@ function CreditoFiscal(props: Props) {
                                     {
                                       pdf: pdf_url,
                                       dte: json_url,
+                                      clienteId: Number(props.Customer?.id),
                                       cajaId: Number(localStorage.getItem('box')),
                                       codigoEmpleado: 1,
                                       sello: true,

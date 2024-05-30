@@ -4,6 +4,7 @@ import {
   IBranchProductOrderQuantity,
   ICartProduct,
   IGetBranchProductPaginated,
+  SupplierProducts,
 } from '../../types/branch_products.types';
 
 export interface IBranchProductStore {
@@ -12,6 +13,7 @@ export interface IBranchProductStore {
   cart_products: ICartProduct[];
   branch_product_order: IBranchProductOrder[];
   order_branch_products: IBranchProductOrderQuantity[];
+  orders_by_supplier: SupplierProducts[],
   getBranchProductOrders: (branch: string, supplier?: string, product?: string, code?: string) => void;
   getPaginatedBranchProducts: (
     branchId: number,
@@ -25,7 +27,7 @@ export interface IBranchProductStore {
   deleteProductOrder: (id: number) => void;
   updateQuantityOrders: (id: number, quantity: number) => void;
   clearProductOrders: () => void;
-
+  getProductByCodeOrders: (branch: string, supplier?: string, product?: string, code?: string) => void
   // ! Cart
   addProductCart: (product: BranchProduct) => void;
   deleteProductCart: (id: number) => void;

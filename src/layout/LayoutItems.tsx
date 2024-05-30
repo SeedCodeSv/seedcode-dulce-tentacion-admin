@@ -92,7 +92,7 @@ export const LayoutItems = () => {
           }}
         >
           <img src={LOGO} className="max-h-14" />
-          <p className="ml-3 font-sans text-sm font-bold text-coffee-brown">
+          <p className="ml-3 font-sans text-sm font-bold text-coffee-brown dark:text-white">
             SeedCodeERP
           </p>
         </div>
