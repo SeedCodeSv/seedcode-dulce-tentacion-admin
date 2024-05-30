@@ -1,6 +1,6 @@
-import { Button, Switch } from "@nextui-org/react";
-import { NavLink } from "react-router-dom";
-import LOGO from "../assets/react.svg";
+import { Button, Switch } from '@nextui-org/react';
+import { NavLink } from 'react-router-dom';
+import LOGO from '../assets/react.svg';
 import {
   Home,
   Box,
@@ -19,50 +19,50 @@ import {
   Truck,
   ShoppingBag,
   Book,
-} from "lucide-react";
-import { Fragment, useContext, useEffect, useMemo } from "react";
-import { ThemeContext } from "../hooks/useTheme";
-import { useAuthStore } from "../store/auth.store";
-import { save_seller_mode } from "../storage/localStorage";
-import { useNavigate } from "react-router";
-import { SessionContext } from "../hooks/useSession";
-import { useConfigurationStore } from "../store/perzonalitation.store";
-import useWindowSize from "../hooks/useWindowSize";
-import { Menu, Transition } from "@headlessui/react";
-import { ActionsContext } from "../hooks/useActions";
-import SalesMode from "./LayoutModes/SalesMode";
+} from 'lucide-react';
+import { Fragment, useContext, useEffect, useMemo } from 'react';
+import { ThemeContext } from '../hooks/useTheme';
+import { useAuthStore } from '../store/auth.store';
+import { save_seller_mode } from '../storage/localStorage';
+import { useNavigate } from 'react-router';
+import { SessionContext } from '../hooks/useSession';
+import { useConfigurationStore } from '../store/perzonalitation.store';
+import useWindowSize from '../hooks/useWindowSize';
+import { Menu, Transition } from '@headlessui/react';
+import { ActionsContext } from '../hooks/useActions';
+import SalesMode from './LayoutModes/SalesMode';
 export const LayoutItems = () => {
   const { theme, toggleContext, context } = useContext(ThemeContext);
   const { makeLogout } = useAuthStore();
   const { setIsAuth, setToken, mode, setMode } = useContext(SessionContext);
   useEffect(() => {
-    if (context === "dark") {
-      document.getElementsByTagName("body")[0].classList.add("dark");
+    if (context === 'dark') {
+      document.getElementsByTagName('body')[0].classList.add('dark');
     } else {
-      document.getElementsByTagName("body")[0].classList.remove("dark");
+      document.getElementsByTagName('body')[0].classList.remove('dark');
     }
   }, [context]);
   const navigate = useNavigate();
   const handleSeller = () => {
-    setMode("vendedor");
-    save_seller_mode("vendedor");
+    setMode('vendedor');
+    save_seller_mode('vendedor');
     makeLogout();
     setIsAuth(false);
-    setToken("");
-    navigate("/");
+    setToken('');
+    navigate('/');
   };
   const handleAdmin = () => {
-    setMode("");
+    setMode('');
     makeLogout();
-    localStorage.removeItem("seller_mode");
+    localStorage.removeItem('seller_mode');
     setIsAuth(false);
-    setToken("");
-    navigate("/");
+    setToken('');
+    navigate('/');
   };
 
   const { personalization } = useConfigurationStore();
   const { windowSize } = useWindowSize();
-  const iconSize = useMemo(() => {
+  const  iconSize = useMemo(() => {
     if (windowSize.width < 768) {
       return 14;
     } else if (windowSize.width < 1024) {
@@ -204,7 +204,6 @@ export const LayoutItems = () => {
                   <p className="ml-2 text-sm 2xl:text-base">Categorías</p>
                 </NavLink>
               )}
-              
               {views.includes('Reportes') && (
                 <>
                   <Menu as="div" className=" px-4 w-full">
