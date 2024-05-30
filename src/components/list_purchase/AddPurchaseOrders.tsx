@@ -39,6 +39,7 @@ import print from "print-js";
 
 interface Props {
   closeModal: () => void;
+  reload: () => void;
 }
 
 function AddPurchaseOrders(props: Props) {
@@ -135,6 +136,7 @@ function AddPurchaseOrders(props: Props) {
       await postPurchaseOrder(payload);
     }
     clearProductOrders();
+    props.reload()
     props.closeModal();
   };
 
