@@ -40,6 +40,7 @@ import AnexoImg from './AnexoImage';
 import { get_box } from '../../storage/localStorage.ts';
 import Description from './Description.tsx';
 
+
 const ListExpenses = () => {
   const { theme } = useContext(ThemeContext);
   const { getExpensesPaginated, expenses_paginated, expenses } = useExpenseStore();
@@ -301,13 +302,16 @@ const ListExpenses = () => {
               <Paginator
                 pt={paginator_styles(1)}
                 className="flex justify-between w-full"
-                first={expenses_paginated.currentPag}
+                first={(expenses_paginated.currentPag - 1) * limit}
                 rows={limit}
                 totalRecords={expenses_paginated.total}
                 template={{
                   layout: 'PrevPageLink CurrentPageReport NextPageLink',
                 }}
                 currentPageReportTemplate="{currentPage} de {totalPages}"
+                onPageChange={(e) => {
+                  getExpensesPaginated(currentBox, e.page + 1, limit, category);
+                }}
               />
             </div>
           </>
