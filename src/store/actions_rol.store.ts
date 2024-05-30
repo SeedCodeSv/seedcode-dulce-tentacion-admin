@@ -19,6 +19,7 @@ export const useActionsRolStore = create<IActionsRolStore>((set, get) => ({
   actions_roles_grouped: [],
   role_view_action: {} as RoleViewAction,
   roleActions: [],
+  loading_actions: false,
   getActionsByRolView(idRol, idView) {
     get_actions_by_rol_and_view(idRol, idView)
       .then(({ data }) => {
@@ -74,6 +75,7 @@ export const useActionsRolStore = create<IActionsRolStore>((set, get) => ({
   },
 
   OnGetActionsRoleList() {
+    set({ loading_actions: true });
     get_actions_role()
       .then(({ data }) => {
         if (data.ok) {

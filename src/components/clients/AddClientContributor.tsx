@@ -67,8 +67,8 @@ function AddClientContributor(props: Props) {
       }),
     nit: yup
       .string()
-      .required('**El NIT es requerido**')
-      .matches(/^([0-9]{14}|[0-9]{9})$/, '**El NIT no es valido**'),
+      .required('**El NIT es requerido **')
+      .matches(/^([0-9]{14}|[0-9]{9})$/, '**El NIT no es valido, 9 caracteres sin giones**'),
     nrc: yup
       .string()
       .required('**El NRC es requerido**')
@@ -284,9 +284,9 @@ function AddClientContributor(props: Props) {
                       </AutocompleteItem>
                     ))}
                   </Autocomplete>
-                  {errors.codActividad && touched.codActividad && (
+                  {errors.tipoDocumento && touched.tipoDocumento && (
                     <span className="text-sm font-semibold text-red-500">
-                      {errors.codActividad}
+                      {errors.tipoDocumento}
                     </span>
                   )}
                 </div>
@@ -295,7 +295,7 @@ function AddClientContributor(props: Props) {
 
                 <div className="pt-2">
                   <Input
-                    type="number"
+                    type="text"
                     label="Numero documento"
                     labelPlacement="outside"
                     name="numDocumento"
@@ -351,11 +351,11 @@ function AddClientContributor(props: Props) {
                       </AutocompleteItem>
                     ))}
                   </Autocomplete>
-                  {errors.codActividad && touched.codActividad && (
+                  {/* {errors.codActividad && touched.codActividad && (
                     <span className="text-sm font-semibold text-red-500">
                       {errors.codActividad}
                     </span>
-                  )}
+                  )} */}
                 </div>
               </div>
               <div>

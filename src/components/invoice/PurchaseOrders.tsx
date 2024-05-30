@@ -6,9 +6,8 @@ import {
   StyleSheet
 } from "@react-pdf/renderer";
 import { Table, TR, TH, TD } from "@ag-media/react-pdf-table";
-import { getElSalvadorDateTime } from "../../utils/dates";
-import { formatCurrency } from "../../../../../seedcodesv-erp-pos/src/renderer/src/utils/dte";
-
+import { getElSalvadorDateTime } from "../../utils/dates"
+import { formatCurrency } from "../../utils/dte";
 interface Items {
   name: string;
   qty: number;

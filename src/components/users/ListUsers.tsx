@@ -213,6 +213,7 @@ function ListUsers({ actions }: Props) {
                               style={{
                                 backgroundColor: theme.colors.secondary,
                                 color: theme.colors.primary,
+                                fontSize: '16px', 
                               }}
                               className="mb-10 font-semibold"
                               color="primary"

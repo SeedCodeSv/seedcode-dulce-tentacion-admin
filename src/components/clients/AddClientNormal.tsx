@@ -44,7 +44,7 @@ const AddClientNormal = (props: Props) => {
       .test('length', 'Debe ser de 8 dígitos', (value) => {
         return value?.length === 8;
       }),
-      numDocumento: yup
+    numDocumento: yup
       .string()
       .required('Este campo solo permite números sin guiones')
       .test('no-dashes', 'El campo no permite guiones', (value) => {
@@ -86,7 +86,7 @@ const AddClientNormal = (props: Props) => {
   const user = get_user();
 
   const onSubmit = (payload: PayloadCustomer) => {
-    if (props.id || props.id !== 0) {  
+    if (props.id || props.id !== 0) {
       const values = {
         ...payload,
         esContribuyente: 0,
@@ -166,29 +166,47 @@ const AddClientNormal = (props: Props) => {
                 <span className="text-sm font-semibold text-red-500">{errors.correo}</span>
               )}
             </div>
+
+
             <div className="grid grid-cols-2 gap-5 pt-3">
-              <div>
-                <Input
-                  type="number"
-                  label="Teléfono"
-                  labelPlacement="outside"
-                  name="telefono"
-                  value={values.telefono}
-                  onChange={handleChange('telefono')}
-                  onBlur={handleBlur('telefono')}
-                  placeholder="Ingresa el telefono"
-                  classNames={{
-                    label: 'font-semibold text-gray-500 text-sm',
+              <div className="pt-2">
+                <Autocomplete
+                  onSelectionChange={(key) => {
+                    if (key) {
+                      const depSelected = JSON.parse(key as string) as ITipoDocumento;
+                      handleChange('tipoDocumento')(depSelected.codigo);
+                      handleChange('tipoDocumento')(depSelected.valores);
+                    }
                   }}
+                  onBlur={handleBlur('tipoDocumento')}
+                  label="Tipo de documento"
+                  labelPlacement="outside"
+                  placeholder={
+                    props.customer?.tipoDocumento
+                      ? props.customer?.tipoDocumento
+                      : 'Selecciona el tipo de documento'
+                  }
                   variant="bordered"
-                />
-                {errors.telefono && touched.telefono && (
-                  <span className="text-xs font-semibold text-red-500">{errors.telefono}</span>
-                )}
+                  classNames={{
+                    base: 'font-semibold text-gray-500 text-sm',
+                  }}
+                  className="dark:text-white"
+                  defaultSelectedKey={values.tipoDocumento}
+                >
+                  {cat_022_tipo_de_documentoDeIde.map((dep) => (
+                    <AutocompleteItem
+                      value={dep.codigo}
+                      key={JSON.stringify(dep)}
+                      className="dark:text-white"
+                    >
+                      {dep.valores}
+                    </AutocompleteItem>
+                  ))}
+                </Autocomplete>
               </div>
               <div>
                 <Input
-                  type="number"
+                  type="text"
                   label="Numero documento"
                   labelPlacement="outside"
                   name="numDocumento"
@@ -286,42 +304,27 @@ const AddClientNormal = (props: Props) => {
                   <span className="text-sm font-semibold text-red-500">{errors.municipio}</span>
                 )}
               </div>
-              <div className="pt-2">
-                <Autocomplete
-                  onSelectionChange={(key) => {
-                    if (key) {
-                      const depSelected = JSON.parse(key as string) as ITipoDocumento;
-                      handleChange('tipoDocumento')(depSelected.codigo);
-                      handleChange('tipoDocumento')(depSelected.valores);
-                    }
-                  }}
-                  onBlur={handleBlur('tipoDocumento')}
-                  label="Tipo de documento"
+              <div>
+                <Input
+                  type="number"
+                  label="Teléfono"
                   labelPlacement="outside"
-                  placeholder={
-                    props.customer?.tipoDocumento
-                      ? props.customer?.tipoDocumento
-                      : 'Selecciona el tipo de documento'
-                  }
-                  variant="bordered"
+                  name="telefono"
+                  value={values.telefono}
+                  onChange={handleChange('telefono')}
+                  onBlur={handleBlur('telefono')}
+                  placeholder="Ingresa el telefono"
                   classNames={{
-                    base: 'font-semibold text-gray-500 text-sm',
+                    label: 'font-semibold text-gray-500 text-sm',
                   }}
-                  className="dark:text-white"
-                  defaultSelectedKey={values.tipoDocumento}
-                >
-                  {cat_022_tipo_de_documentoDeIde.map((dep) => (
-                    <AutocompleteItem
-                      value={dep.codigo}
-                      key={JSON.stringify(dep)}
-                      className="dark:text-white"
-                    >
-                      {dep.valores}
-                    </AutocompleteItem>
-                  ))}
-                </Autocomplete>
+                  variant="bordered"
+                />
+                {errors.telefono && touched.telefono && (
+                  <span className="text-xs font-semibold text-red-500">{errors.telefono}</span>
+                )}
               </div>
             </div>
+
             <div className="pt-2">
               <Textarea
                 label="Complemento de dirección"
