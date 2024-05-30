@@ -37,7 +37,6 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Paginator } from 'primereact/paginator';
 import { paginator_styles } from '../../styles/paginator.styles';
-import { useCustomerStore } from '../../store/customers.store';
 import { global_styles } from '../../styles/global.styles';
 import Pagination from '../global/Pagination';
 
@@ -476,10 +475,10 @@ export const DeletePopover = ({ suppliers }: PopProps) => {
   const { theme } = useContext(ThemeContext);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const { deleteCustomer } = useCustomerStore();
+  const { deleteSupplier } = useSupplierStore();
 
   const handleDelete = async (id: number) => {
-    await deleteCustomer(id);
+    await deleteSupplier(id);
     onClose();
   };
 
