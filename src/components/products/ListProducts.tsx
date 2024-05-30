@@ -41,11 +41,9 @@ import classNames from "classnames";
 import UpdateProduct from "./UpdateProduct";
 import { limit_options } from "../../utils/constants";
 import SmPagination from "../global/SmPagination";
-
 interface Props {
   actions: string[];
 }
-
 function ListProducts({ actions }: Props) {
   const { theme, context } = useContext(ThemeContext);
   const style = {
@@ -91,13 +89,11 @@ function ListProducts({ actions }: Props) {
   const [selectedProduct, setSelectedProduct] = useState<Product | undefined>(
     undefined
   );
-
   const handleActivate = (id: number) => {
     activateProduct(id).then(() => {
       getPaginatedProducts(1, limit, "", "", active ? 1 : 0);
     });
   };
-
   return (
     <>
       <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
