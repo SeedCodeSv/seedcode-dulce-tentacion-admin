@@ -9,7 +9,6 @@ export interface ISupplierStore {
     limit: number,
     name: string,
     email: string,
-    active: number,
     isTransmitter: number
   ) => void;
   onPostSupplier: (payload: PayloadSupplier) => Promise<boolean>;

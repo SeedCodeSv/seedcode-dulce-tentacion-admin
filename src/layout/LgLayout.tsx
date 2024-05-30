@@ -9,3 +9,4 @@ export const LgLayout = ({ items }: Props) => {
     </div>
   );
 };
+

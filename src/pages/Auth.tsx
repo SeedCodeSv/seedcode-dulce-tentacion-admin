@@ -43,15 +43,15 @@ function Auth() {
   };
 
   return (
-    <div className="flex items-center justify-center w-screen h-screen bg-gray-50 dark:bg-gray-700">
-      <div className="text-3xl flex w-[80vw] h-[90vh] border shadow bg-white dark:bg-gray-800 p-5 rounded-2xl dark:border-gray-700">
+    <div className="flex items-center justify-center w-screen h-auto lg:h-screen xl:h-screen sm:h-screen mb:h-screen bg-gray-50 dark:bg-gray-700 py-10 lg:py-0 xl:py-0 sm:py-0 mb:py-0">
+      <div className="text-3xl flex w-[80vw] h-[80vh] xl:h-[90vh] lg:h-[90vh] mb:h-[90vh] sm:h-[90vh] border shadow bg-white dark:bg-gray-800 p-1 mb:p-5 sm:p-5 lg:p-5 xl:p-5 rounded-2xl dark:border-gray-700">
         <div
           className="hidden md:flex md:w-[50%] xl:w-[60%] h-full bg-cover bg-center rounded-2xl shadow"
           style={{ backgroundImage: `url(${BUSINESS})` }}
         ></div>
-        <div className="w-[100%] md:w-[50%] xl:w-[40%] px-10 h-full flex flex-col justify-center bg-white dark:bg-gray-800">
+        <div className="w-[100%] md:w-[50%] xl:w-[40%] px-5 mb:px-10 sm:px-10 xl:px-10 h-full flex flex-col justify-center bg-white dark:bg-gray-800">
           <img src={LOGO} alt="" className="w-80" />
-          <p className="text-lg lg:text-lg xl:text-xl 2xl:text-2xl dark:text-white">Bienvenido</p>
+          <p className="text-lg lg:text-lg xl:text-xl 2xl:text-2xl dark:text-white ">Bienvenido</p>
           <p className="text-lg lg:text-lg xl:text-xl 2xl:text-2xl dark:text-white">
             Inicia sesión con tus credenciales
           </p>
@@ -71,6 +71,7 @@ function Auth() {
                     onChange={handleChange('userName')}
                     onBlur={handleBlur('userName')}
                     labelPlacement="outside"
+                    type='text'
                     placeholder="Ingresa tu usuario"
                     className="dark:text-white"
                   />

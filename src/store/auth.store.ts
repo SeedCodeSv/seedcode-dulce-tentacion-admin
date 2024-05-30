@@ -36,6 +36,7 @@ export const useAuthStore = create<IAuthStore>((set, get) => ({
         if (data.ok) {
           set_token(data.token);
           save_user(data.user);
+          set({ user: data.user })
           if (mode === 'vendedor') {
             post_box(data.box.id.toString());
             save_branch_id(data.box.branchId.toString());

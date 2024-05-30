@@ -235,7 +235,7 @@ function AddProducts(props: Props) {
                 </div>
               </div>
               <div className="w-full gap-5 grid grid-cols-1 md:grid-cols-2 mt-5">
-                <div className="w-full grid grid-cols-3 gap-5">
+                <div className="w-full grid grid-cols-2 xl:grid-cols-3 lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-3 gap-5">
                   <div>
                     <Input
                       label="Costo unitario"
@@ -278,7 +278,7 @@ function AddProducts(props: Props) {
                       <span className="text-sm font-semibold text-red-500">{errors.price}</span>
                     )}
                   </div>
-                  <div>
+                  <div className='w-full'>
                     <Input
                       label="Cantidad Minima"
                       labelPlacement="outside"
@@ -288,7 +288,7 @@ function AddProducts(props: Props) {
                       onBlur={handleBlur('minimumStock')}
                       placeholder="0"
                       classNames={{
-                        label: 'font-semibold text-gray-500 text-sm',
+                        label: 'font-semibold text-gray-500 text-sm ',
                       }}
                       variant="bordered"
                       type="number"
