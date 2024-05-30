@@ -214,7 +214,7 @@ export const LayoutItems = () => {
                     className="focus:outline-none focus:text-blac text-left flex - items-center w-full py-3 space-x-3"
                   >
                     <FileText size={iconSize} />
-                    <p className=" text-sm text-black semibold 2xl:text-base">Reportes</p>
+                    <p className=" text-sm dark:text-white font-semibold semibold 2xl:text-base">Reportes</p>
 
                     <ChevronDown className="justify-end items-end " size={iconSize} />
                   </button>
@@ -275,7 +275,6 @@ export const LayoutItems = () => {
                   </div>
                 </div>
               )}
-
               {views.includes('Empleados') ||
               (views && views.includes('Clientes')) ||
               views.includes('Usuarios') ||
@@ -285,10 +284,10 @@ export const LayoutItems = () => {
                     onClick={toggleDropdownMenu}
                     className="focus:outline-none focus:text-blac text-left text-black flex  items-center w-full py-3 space-x-3"
                   >
-                    <User size={iconSize} />
-                    <p className=" text-sm 2xl:text-base">Menu</p>
+                    <User className='dark:text-white'  size={iconSize} />
+                    <p className=" text-sm dark:text-white font-semibold 2xl:text-base">Menu</p>
 
-                    <ChevronDown className="justify-end items-end " size={iconSize} />
+                    <ChevronDown className="justify-end items-end dark:text-white " size={iconSize} />
                   </button>
                   <div
                     id="menu1"

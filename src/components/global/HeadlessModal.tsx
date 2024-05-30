@@ -21,8 +21,8 @@ function HeadlessModal(props: Props) {
         className="relative z-[1141] focus:outline-none"
         onClose={onClose}
       >
-        <div className="fixed inset-0 z-[1151] w-screen h-screen overflow-y-auto overflow-x-hidden">
-          <div className="flex min-h-full items-center justify-center">
+        <div className="fixed inset-0 z-[1151] w-screen h-screen overflow-hidden">
+          <div className="flex w-screen h-screen overflow-hidden items-center justify-center">
             <Transition.Child
               enter="ease-out duration-300"
               enterFrom="opacity-0 transform-[scale(95%)]"
@@ -32,16 +32,24 @@ function HeadlessModal(props: Props) {
               leaveTo="opacity-0 transform-[scale(95%)]"
             >
               <Dialog.Overlay className="fixed inset-0 bg-gray-950/50" />
-              <Dialog.Panel className={classNames("bg-white rounded-xl dark:bg-gray-800 p-8 backdrop-blur-2xl", size)}>
-                <div className="w-full flex justify-between mb-5">
+              <Dialog.Panel
+                className={classNames(
+                  "bg-white rounded-xl dark:bg-gray-800 backdrop-blur-2xl",
+                  size
+                )}
+              >
+                <div className="w-full flex justify-between p-5">
                   <Dialog.Title
                     as="h3"
-                    className="text-base/7 font-medium text-white"
+                    className="text-base/7 font-medium dark:text-white"
                   >
                     {title}
                   </Dialog.Title>
-                  <button onClick={onClose} className="bg-transparent border-0 outline-none">
-                  <X className="dark:text-white" />
+                  <button
+                    onClick={onClose}
+                    className="bg-transparent border-0 outline-none"
+                  >
+                    <X className="dark:text-white" />
                   </button>
                 </div>
                 {children}
