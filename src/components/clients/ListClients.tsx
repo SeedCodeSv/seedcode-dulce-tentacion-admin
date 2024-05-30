@@ -15,6 +15,7 @@ import {
 import { useCustomerStore } from '../../store/customers.store';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
+import { Drawer } from 'vaul';
 import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
 import {
   EditIcon,
@@ -29,20 +30,21 @@ import {
   Table as ITable,
   Mail,
   BadgeCheck,
+  Filter,
 } from 'lucide-react';
 import ModalGlobal from '../global/ModalGlobal';
 import AddClientNormal from './AddClientNormal';
 import AddClientContributor from './AddClientContributor';
 import { ButtonGroup } from '@nextui-org/react';
-import { Paginator } from 'primereact/paginator';
 import { Customer, CustomerDirection, PayloadCustomer } from '../../types/customers.types';
-import { paginator_styles } from '../../styles/paginator.styles';
 import { ThemeContext } from '../../hooks/useTheme';
 import MobileView from './MobileView';
 import Pagination from '../global/Pagination';
 import { global_styles } from '../../styles/global.styles';
+import SmPagination from '../global/SmPagination';
+import classNames from 'classnames';
 const ListClients = () => {
-  const { theme } = useContext(ThemeContext);
+  const { theme, context } = useContext(ThemeContext);
   const { getCustomersPagination, customer_pagination, save_active_customer } = useCustomerStore();
   const [limit, setLimit] = useState(5);
   const [search, setSearch] = useState('');
@@ -59,9 +61,10 @@ const ListClients = () => {
   }, [limit, active, tipeCustomer]);
 
   const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
+  const [page, serPage] = useState(1);
   const handleSearch = (searchParam: string | undefined) => {
     getCustomersPagination(
-      1,
+      page,
       limit,
       searchParam ?? search,
       searchParam ?? email,
@@ -69,6 +72,8 @@ const ListClients = () => {
       tipeCustomer
     );
   };
+
+  const [openVaul, setOpenVaul] = useState(false);
   const modalAdd = useDisclosure();
   const [selectedCustomer, setSelectedCustomer] = useState<PayloadCustomer>();
   const [selectedCustomerDirection, setSelectedCustomerDirection] = useState<CustomerDirection>();
@@ -138,8 +143,8 @@ const ListClients = () => {
     <>
       <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
         <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
-          <div className="flex flex-col justify-between w-full gap-5 mb-5 lg:mb-10 lg:flex-row lg:gap-0">
-            <div className="hidden w-full gap-5 md:flex">
+          <div className="w-full hidden gap-5 md:flex">
+            <div className="flex w-full justify-between items-end gap-3">
               <Input
                 startContent={<User />}
                 className="w-full dark:text-white"
@@ -193,7 +198,7 @@ const ListClients = () => {
               </div>
             </div>
           </div>
-          <div className="flex items-end justify-between gap-10 mt lg:justify-end">
+          <div className="flex items-end justify-between gap-10  lg:justify-end">
             <ButtonGroup>
               <Button
                 isIconOnly
@@ -229,73 +234,193 @@ const ListClients = () => {
                 <List />
               </Button>
             </ButtonGroup>
+            <div className="flex-col gap-2 hidden sm:flex sm:flex-row sm:items-center justify-center items-center w-full">
+              <Select
+                className="w-44 ml-2 mt-5"
+                variant="bordered"
+                placeholder="-- Seleccione tipo de cliente --"
+                labelPlacement="outside"
+                classNames={{
+                  label: 'font-semibold',
+                }}
+                value={String(tipeCustomer)}
+                onChange={(e) => {
+                  setTypeCustomer(e.target.value !== '' ? Number(e.target.value) : 0);
+                }}
+              >
+                <SelectItem className="dark:text-white" key={'1'}>
+                  Contribuyente
+                </SelectItem>
+                <SelectItem className="dark:text-white" key={'0'}>
+                  No Contribuyente
+                </SelectItem>
+              </Select>
+              <Select
+                className="w-44 ml-2"
+                variant="bordered"
+                label="Mostrar"
+                labelPlacement="outside"
+                classNames={{
+                  label: 'font-semibold',
+                }}
+                value={limit}
+                onChange={(e) => {
+                  setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
+                }}
+              >
+                <SelectItem className="dark:text-white" key={'5'}>
+                  5
+                </SelectItem>
+                <SelectItem className="dark:text-white" key={'10'}>
+                  10
+                </SelectItem>
+                <SelectItem className="dark:text-white" key={'20'}>
+                  20
+                </SelectItem>
+                <SelectItem className="dark:text-white" key={'30'}>
+                  30
+                </SelectItem>
+                <SelectItem className="dark:text-white" key={'40'}>
+                  40
+                </SelectItem>
+                <SelectItem className="dark:text-white" key={'50'}>
+                  50
+                </SelectItem>
+                <SelectItem className="dark:text-white" key={'100'}>
+                  100
+                </SelectItem>
+              </Select>
+            </div>
+
+            <div className="flex items-center gap-5">
+              <div className="block md:hidden">
+                <Drawer.Root
+                  shouldScaleBackground
+                  open={openVaul}
+                  onClose={() => setOpenVaul(false)}
+                >
+                  <Drawer.Trigger asChild>
+                    <Button
+                      style={global_styles().thirdStyle}
+                      isIconOnly
+                      onClick={() => setOpenVaul(true)}
+                      type="button"
+                    >
+                      <Filter />
+                    </Button>
+                  </Drawer.Trigger>
+                  <Drawer.Portal>
+                    <Drawer.Overlay
+                      className="fixed inset-0 bg-black/40 z-[60]"
+                      onClick={() => setOpenVaul(false)}
+                    />
+                    <Drawer.Content
+                      className={classNames(
+                        'bg-gray-100 z-[60] flex flex-col rounded-t-[10px] h-auto mt-24 max-h-[80%] fixed bottom-0 left-0 right-0',
+                        context === 'dark' ? 'dark' : ''
+                      )}
+                    >
+                      <div className="p-4 bg-white dark:bg-gray-800 rounded-t-[10px] flex-1">
+                        <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-gray-300 dark:bg-gray-400 mb-8" />
+                        <Drawer.Title className="mb-4 dark:text-white font-medium">
+                          Filtros disponibles
+                        </Drawer.Title>
+
+                        <div className="flex flex-col gap-3">
+                          <Input
+                            startContent={<User />}
+                            className="w-full dark:text-white"
+                            variant="bordered"
+                            labelPlacement="outside"
+                            label="Nombre"
+                            classNames={{
+                              label: 'font-semibold text-gray-700',
+                              inputWrapper: 'pr-0',
+                            }}
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            placeholder="Escribe para buscar..."
+                            isClearable
+                            onClear={() => {
+                              // handleSearch("");
+                              setSearch('');
+                            }}
+                          />
+                          <Input
+                            startContent={<Mail />}
+                            className="w-full dark:text-white"
+                            variant="bordered"
+                            labelPlacement="outside"
+                            label="Correo"
+                            classNames={{
+                              label: 'font-semibold text-gray-700',
+                              inputWrapper: 'pr-0',
+                            }}
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="Escribe para buscar..."
+                            isClearable
+                            onClear={() => {
+                              // handleSearch("");
+                              setEmail('');
+                            }}
+                          />
+
+                          <Button
+                            style={{
+                              backgroundColor: theme.colors.secondary,
+                              color: theme.colors.primary,
+                            }}
+                            className="font-semibold"
+                            color="primary"
+                            onClick={() => {
+                              handleSearch(undefined);
+                              setOpenVaul(false);
+                            }}
+                          >
+                            Aplicar
+                          </Button>
+                        </div>
+                      </div>
+                    </Drawer.Content>
+                  </Drawer.Portal>
+                </Drawer.Root>
+              </div>
+            </div>
+
             <div className="flex justify-end w-full">
               <BottomAdd setTypeClient={setTypeClient} openModal={modalAdd.onOpen} />
               <BottomSm setTypeClient={setTypeClient} openModal={modalAdd.onOpen} />
             </div>
           </div>
-
-          <div className="flex flex-col gap-5 sm:flex-row sm:items-center justify-between w-full mb-5">
+          <div className="mt-5">
             <Switch onValueChange={(active) => setActive(active)} isSelected={active}>
               <span className="text-sm sm:text-base whitespace-nowrap">
                 Mostrar {active ? 'inactivos' : 'activos'}
               </span>
             </Switch>
-            <Select
-              className="w-44 ml-2"
-              variant="bordered"
-              label="Tipo de cliente"
-              labelPlacement="outside"
-              classNames={{
-                label: 'font-semibold',
-              }}
-              value={String(tipeCustomer)}
-              onChange={(e) => {
-                setTypeCustomer(e.target.value !== '' ? Number(e.target.value) : 0);
-              }}
-            >
-              <SelectItem className="dark:text-white" key={'1'}>
-                Contribuyente
-              </SelectItem>
-              <SelectItem className="dark:text-white" key={'0'}>
-                No Contribuyente
-              </SelectItem>
-            </Select>
-            <Select
-              className="w-44"
-              variant="bordered"
-              label="Mostrar"
-              labelPlacement="outside"
-              classNames={{
-                label: 'font-semibold',
-              }}
-              value={limit}
-              onChange={(e) => {
-                setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
-              }}
-            >
-              <SelectItem className="dark:text-white" key={'5'}>
-                5
-              </SelectItem>
-              <SelectItem className="dark:text-white" key={'10'}>
-                10
-              </SelectItem>
-              <SelectItem className="dark:text-white" key={'20'}>
-                20
-              </SelectItem>
-              <SelectItem className="dark:text-white" key={'30'}>
-                30
-              </SelectItem>
-              <SelectItem className="dark:text-white" key={'40'}>
-                40
-              </SelectItem>
-              <SelectItem className="dark:text-white" key={'50'}>
-                50
-              </SelectItem>
-              <SelectItem className="dark:text-white" key={'100'}>
-                100
-              </SelectItem>
-            </Select>
+            <div className="xl:hidden">
+              <Select
+                className="w-full mt-2"
+                variant="bordered"
+                placeholder="-- Seleccione el tipo --"
+                labelPlacement="outside"
+                classNames={{
+                  label: 'font-semibold',
+                }}
+                value={String(tipeCustomer)}
+                onChange={(e) => {
+                  setTypeCustomer(e.target.value !== '' ? Number(e.target.value) : 0);
+                }}
+              >
+                <SelectItem className="dark:text-white" key={'1'}>
+                  Contribuyente
+                </SelectItem>
+                <SelectItem className="dark:text-white" key={'0'}>
+                  No Contribuyente
+                </SelectItem>
+              </Select>
+            </div>
           </div>
           <div className="flex items-center justify-center ml-2"></div>
           {(view === 'grid' || view === 'list') && (
@@ -402,21 +527,45 @@ const ListClients = () => {
                   currentPage={customer_pagination.currentPag}
                   totalPages={customer_pagination.totalPag}
                   onPageChange={(page) => {
-                    getCustomersPagination(page, limit, search, email, active ? 1 : 0, tipeCustomer);
+                    serPage(page);
+                    getCustomersPagination(
+                      page,
+                      limit,
+                      search,
+                      email,
+                      active ? 1 : 0,
+                      tipeCustomer
+                    );
                   }}
                 />
               </div>
               <div className="flex w-full mt-5 md:hidden">
-                <Paginator
-                  pt={paginator_styles(1)}
-                  className="flex justify-between w-full"
-                  first={customer_pagination.currentPag}
-                  rows={limit}
-                  totalRecords={customer_pagination.total}
-                  template={{
-                    layout: 'PrevPageLink CurrentPageReport NextPageLink',
+                <SmPagination
+                  handleNext={() => {
+                    serPage(customer_pagination.nextPag);
+
+                    getCustomersPagination(
+                      customer_pagination.nextPag,
+                      limit,
+                      search,
+                      email,
+                      active ? 1 : 0,
+                      tipeCustomer
+                    );
                   }}
-                  currentPageReportTemplate="{currentPage} de {totalPages}"
+                  handlePrev={() => {
+                    serPage(customer_pagination.prevPag);
+                    getCustomersPagination(
+                      customer_pagination.prevPag,
+                      limit,
+                      search,
+                      email,
+                      active ? 1 : 0,
+                      tipeCustomer
+                    );
+                  }}
+                  currentPage={customer_pagination.currentPag}
+                  totalPages={customer_pagination.totalPag}
                 />
               </div>
             </>
