@@ -138,3 +138,8 @@ export interface IGetBranchProductOrder {
 	message: string;
 	branchProducts: IBranchProductOrder[];
 }
+
+export interface SupplierProducts {
+    supplier: Supplier;
+    products: IBranchProductOrderQuantity[];
+}

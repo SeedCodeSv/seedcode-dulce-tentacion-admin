@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { IBranchProductStore } from './types/branch_product.types';
 import { get_branch_product, get_branch_product_orders, get_product_by_code } from '../services/branch_product.service';
 import { toast } from 'sonner';
+import { groupBySupplier } from '../utils/filters';
 
 export const useBranchProductStore = create<IBranchProductStore>((set, get) => ({
   branch_products: [],
@@ -19,6 +20,7 @@ export const useBranchProductStore = create<IBranchProductStore>((set, get) => (
   branch_product_order: [],
   // ! purchase orders
   order_branch_products: [],
+  orders_by_supplier: [],
   addProductOrder(product) {
     const products = get().order_branch_products;
     const existProduct = products.find((cp) => cp.id === product.id);
@@ -35,6 +37,8 @@ export const useBranchProductStore = create<IBranchProductStore>((set, get) => (
         ],
       });
     }
+
+    set({ orders_by_supplier: groupBySupplier(get().order_branch_products) })
   },
   deleteProductOrder(id) {
     const find = get().order_branch_products.find((cp) => cp.id === id);
@@ -42,6 +46,7 @@ export const useBranchProductStore = create<IBranchProductStore>((set, get) => (
       const products = get().order_branch_products.filter((cp) => cp.id !== id);
       set({ order_branch_products: products });
     }
+    set({ orders_by_supplier: groupBySupplier(get().order_branch_products) })
   },
   updateQuantityOrders(id, quantity) {
     set((state) => ({
@@ -49,9 +54,21 @@ export const useBranchProductStore = create<IBranchProductStore>((set, get) => (
         cp.id === id ? { ...cp, quantity } : cp
       ),
     }));
+
+    set({ orders_by_supplier: groupBySupplier(get().order_branch_products) })
+  },
+  getProductByCodeOrders(branch, supplier, product, code) {
+    get_branch_product_orders(branch, supplier, product, code).then(({ data }) => {
+      if(data.branchProducts.length > 0) {
+        get().addProductOrder(data.branchProducts[0])
+      }
+    }).catch(() => {
+      set({ branch_product_order: [] });
+    });
   },
   clearProductOrders() {
     set({ order_branch_products: [] });
+    set({ orders_by_supplier: [] })
   },
   getBranchProductOrders(branch, supplier, product, code) {
     get_branch_product_orders(branch, supplier, product, code).then(({ data }) => {
