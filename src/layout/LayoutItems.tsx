@@ -20,7 +20,7 @@ import {
   Book,
   FileText,
 } from 'lucide-react';
-import {  useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { ThemeContext } from '../hooks/useTheme';
 import { useAuthStore } from '../store/auth.store';
 import { save_seller_mode } from '../storage/localStorage';
@@ -220,9 +220,8 @@ export const LayoutItems = () => {
                   </button>
                   <div
                     id="menu1"
-                    className={`flex flex-col w-full pb-1 overflow-hidden transition-all duration-500 ${
-                      isClientsOpen ? 'max-h-40' : 'max-h-0'
-                    }`}
+                    className={`flex flex-col w-full pb-1 overflow-hidden transition-all duration-500 ${isClientsOpen ? 'max-h-40' : 'max-h-0'
+                      }`}
                   >
                     <>
                       <div className="py-1">
@@ -242,7 +241,7 @@ export const LayoutItems = () => {
                         </NavLink>
 
                         <NavLink
-                          to={'/expenses-by-branch'}
+                          to={'/expenses-by-dates-transmitter'}
                           className={({ isActive }) => {
                             return (
                               (isActive
@@ -276,24 +275,23 @@ export const LayoutItems = () => {
                 </div>
               )}
               {views.includes('Empleados') ||
-              (views && views.includes('Clientes')) ||
-              views.includes('Usuarios') ||
-              views.includes('Sucursales') ? (
+                (views && views.includes('Clientes')) ||
+                views.includes('Usuarios') ||
+                views.includes('Sucursales') ? (
                 <div className="flex flex-col justify-start items-center px-6 w-full  ">
                   <button
                     onClick={toggleDropdownMenu}
                     className="focus:outline-none focus:text-blac text-left text-black flex  items-center w-full py-3 space-x-3"
                   >
-                    <User className='dark:text-white'  size={iconSize} />
+                    <User className='dark:text-white' size={iconSize} />
                     <p className=" text-sm dark:text-white font-semibold 2xl:text-base">Menu</p>
 
                     <ChevronDown className="justify-end items-end dark:text-white " size={iconSize} />
                   </button>
                   <div
                     id="menu1"
-                    className={`flex flex-col w-full pb-1 overflow-hidden transition-all duration-500 ${
-                      isMenuOpen ? 'max-h-40' : 'max-h-0'
-                    }`}
+                    className={`flex flex-col w-full pb-1 overflow-hidden transition-all duration-500 ${isMenuOpen ? 'max-h-40' : 'max-h-0'
+                      }`}
                   >
                     <>
                       <div className="py-1">

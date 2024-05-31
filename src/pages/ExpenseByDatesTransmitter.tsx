@@ -3,7 +3,7 @@ import Layout from '../layout/Layout';
 function ExpenseByDatesTransmitter() {
   return (
     <div>
-      <Layout title="Reporte de ventas ">
+      <Layout title="Reporte de gastos ">
         <ExpensesByDatesTransmitter></ExpensesByDatesTransmitter>
       </Layout>
     </div>
