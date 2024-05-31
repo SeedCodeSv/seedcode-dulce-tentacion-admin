@@ -41,11 +41,11 @@ const GridItem = (props: GridProps) => {
       {layout === 'grid' ? (
         <div
           className={classNames(
-            'w-full lg:ml-96 md:ml-48 xl:ml-96 flex bg-white flex-col border items-center shadow-sm hover:shadow-lg p-8 dark:border dark:border-gray-600 rounded-2xl'
+            'w-full lg:ml-96 md:ml-48 xl:ml-96 flex bg-white dark:bg-gray-800 flex-col border items-center shadow-sm hover:shadow-lg p-8 dark:border dark:border-gray-600 rounded-2xl'
           )}
           key={configuration.id}
         >
-          <div className="flex w-full gap-2 justify-center">
+          <div className="flex w-full gap-2 justify-center dark:text-white">
             {configuration.name}
           </div>
           <div className="flex justify-center mt-5 w-ful">
