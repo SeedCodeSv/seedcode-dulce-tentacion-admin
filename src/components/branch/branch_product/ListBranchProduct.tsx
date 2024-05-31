@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useBranchesStore } from '../../../store/branches.store';
 import {
   Button,
@@ -8,24 +8,28 @@ import {
   Autocomplete,
   AutocompleteItem,
 } from '@nextui-org/react';
-import { Search, Filter } from 'lucide-react';
+import { Search, Filter, ArrowLeft } from 'lucide-react';
 import { ThemeContext } from '../../../hooks/useTheme';
 import MobileView from './MobileView';
 import { Drawer } from 'vaul';
 import { global_styles } from '../../../styles/global.styles';
 import { CategoryProduct } from '../../../types/categories.types';
 import { useCategoriesStore } from '../../../store/categories.store';
+import Pagination from '../../global/Pagination';
+import SmPagination from '../../global/SmPagination';
 interface Props {
   id: number;
+  onclick: () => void;
 }
-function ListEmployee({ id }: Props) {
+function ListEmployee({ id , onclick }: Props) {
   const { theme } = useContext(ThemeContext);
 
-  const { getBranchProducts } = useBranchesStore();
+  const { getBranchProducts,branch_product_Paginated } = useBranchesStore();
   const { list_categories, getListCategories } = useCategoriesStore();
 
   const [category, setCategory] = useState('');
-
+  const [code , setCode] = useState('');
+const [page, serPage] = useState(1);
   const [name, setName] = useState('');
   const [limit, setLimit] = useState(8);
   const [openVaul, setOpenVaul] = useState(false);
@@ -33,73 +37,96 @@ function ListEmployee({ id }: Props) {
   //   const modalAdd = useDisclosure();
 
   const changePage = () => {
-    getBranchProducts(id, name, category);
+    getBranchProducts(id, page, 5, name, category, code);
   };
 
   useEffect(() => {
-    getBranchProducts(id, name, category);
+    getBranchProducts(id, page, 5, name, category, code);
   }, []);
   useEffect(() => {
     getListCategories();
   }, []);
-  const filters = useMemo(() => {
-    return (
-      <>
-        <Input
-          classNames={{
-            label: 'font-semibold text-gray-700',
-            inputWrapper: 'pr-0',
-          }}
-          className="w-full xl:w-96"
-          placeholder="Buscar por nombre..."
-          startContent={<Search />}
-          variant="bordered"
-          name="searchName"
-          id="searchName"
-          value={name}
-          autoComplete="search"
-          onChange={(e) => setName(e.target.value)}
-          isClearable
-          onClear={() => setName('')}
-        />
-        <Autocomplete
-          onSelectionChange={(key) => {
-            if (key) {
-              const branchSelected = JSON.parse(key as string) as CategoryProduct;
-              setCategory(branchSelected.name);
-            }
-          }}
-          className="w-full xl:w-80"
-          labelPlacement="outside"
-          placeholder="Selecciona la categoría"
-          variant="bordered"
-          classNames={{
-            base: 'font-semibold text-gray-500 text-sm',
-          }}
-          value={category}
-          clearButtonProps={{
-            onClick: () => setCategory(''),
-          }}
-        >
-          {list_categories.map((bra) => (
-            <AutocompleteItem
-              value={bra.name}
-              key={JSON.stringify(bra)}
-              className="dark:text-white"
-            >
-              {bra.name}
-            </AutocompleteItem>
-          ))}
-        </Autocomplete>
-      </>
-    );
-  }, [name, category]);
-
+  
+ 
   return (
     <>
-      <div className="w-full max-h-full p-6 py-10 pt-1 flex flex-row bg-gray-50 dark:bg-gray-800">
+      <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
         <div className="w-full h-auto p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
-          <div className="hidden w-full grid-cols-2 gap-5 mb-4 md:grid ">{filters}</div>
+          <div className="mb-4 ">
+            <Button onClick={onclick}>
+              <ArrowLeft />
+            </Button>
+          </div>
+          <div className="hidden w-full   gap-2 mb-4 md:grid">
+            <div className='flex gap-5 '>
+              <Input
+                classNames={{
+                  label: 'font-semibold text-gray-700',
+                  inputWrapper: 'pr-0',
+                }}
+                className="w-full  order-1"
+                placeholder="Buscar por nombre..."
+                startContent={<Search />}
+                variant="bordered"
+                name="searchName"
+                id="searchName"
+                value={name}
+                autoComplete="search"
+                onChange={(e) => setName(e.target.value)}
+                isClearable
+                onClear={() => setName('')}
+              />
+              <Input
+                classNames={{
+                  label: 'font-semibold text-gray-700',
+                  inputWrapper: 'pr-0',
+                }}
+                className="w-full  order-2"
+                placeholder="Buscar por codigo..."
+                startContent={<Search />}
+                variant="bordered"
+                name="searCode"
+                id="searCode"
+                value={code}
+                autoComplete="search"
+                onChange={(e) => setCode(e.target.value)}
+                isClearable
+                onClear={() => setCode('')}
+              />
+              
+              <Autocomplete
+                onSelectionChange={(key) => {
+                  if (key) {
+                    const branchSelected = JSON.parse(key as string) as CategoryProduct;
+                    setCategory(branchSelected.name);
+                  }
+                }}
+                className="w-full  order-3"
+                labelPlacement="outside"
+                placeholder="Selecciona la categoría"
+                variant="bordered"
+                classNames={{
+                  base: 'font-semibold text-gray-500 text-sm',
+                }}
+                value={category}
+                clearButtonProps={{
+                  onClick: () => setCategory(''),
+                }}
+              >
+                {list_categories.map((bra) => (
+                  <AutocompleteItem
+                    value={bra.name}
+                    key={JSON.stringify(bra)}
+                    className="dark:text-white"
+                  >
+                    {bra.name}
+                  </AutocompleteItem>
+                ))}
+              </Autocomplete>
+             
+            </div>
+          </div>
+
           <div className="grid w-full grid-cols-1 gap-5  md:grid-cols-2">
             <div className="hidden md:flex">
               <Button
@@ -114,28 +141,44 @@ function ListEmployee({ id }: Props) {
                 Buscar
               </Button>
             </div>
-            <Select
-              className="w-full xl:w-80"
-              variant="bordered"
-              // label="Mostrar"
-              placeholder="Mostrar"
-              labelPlacement="outside"
-              classNames={{
-                label: 'font-semibold',
-              }}
-              value={limit}
-              onChange={(e) => {
-                setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
-              }}
-            >
-              <SelectItem key={'5'} className='dark:text-white'>5</SelectItem>
-              <SelectItem key={'10'} className='dark:text-white'>10</SelectItem> 
-              <SelectItem key={'20'} className='dark:text-white'>20</SelectItem>
-              <SelectItem key={'30'} className='dark:text-white'>30</SelectItem>
-              <SelectItem key={'40'} className='dark:text-white'>40</SelectItem>
-              <SelectItem key={'50'} className='dark:text-white'>50</SelectItem>
-              <SelectItem key={'100'} className='dark:text-white'>100</SelectItem>
-            </Select>
+            <div className="xl:hidden md:flex">
+              <Select
+                className="w-full xl:w-80"
+                variant="bordered"
+                // label="Mostrar"
+                placeholder="Mostrar"
+                labelPlacement="outside"
+                classNames={{
+                  label: 'font-semibold',
+                }}
+                value={limit}
+                onChange={(e) => {
+                  setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
+                }}
+              >
+                <SelectItem key={'5'} className="dark:text-white">
+                  5
+                </SelectItem>
+                <SelectItem key={'10'} className="dark:text-white">
+                  10
+                </SelectItem>
+                <SelectItem key={'20'} className="dark:text-white">
+                  20
+                </SelectItem>
+                <SelectItem key={'30'} className="dark:text-white">
+                  30
+                </SelectItem>
+                <SelectItem key={'40'} className="dark:text-white">
+                  40
+                </SelectItem>
+                <SelectItem key={'50'} className="dark:text-white">
+                  50
+                </SelectItem>
+                <SelectItem key={'100'} className="dark:text-white">
+                  100
+                </SelectItem>
+              </Select>
+            </div>
             <div className="flex items-end justify-between gap-10 mt lg:justify-end">
               <div className="flex items-center gap-5">
                 <div className="block md:hidden">
@@ -165,7 +208,73 @@ function ListEmployee({ id }: Props) {
                             Filtros disponibles
                           </Drawer.Title>
                           <div className="flex flex-col gap-3">
-                            {filters}
+                            <>
+                              <Input
+                                classNames={{
+                                  label: 'font-semibold text-gray-700',
+                                  inputWrapper: 'pr-0',
+                                }}
+                                className="w-full xl:w-96"
+                                placeholder="Buscar por nombre..."
+                                startContent={<Search />}
+                                variant="bordered"
+                                name="searchName"
+                                id="searchName"
+                                value={name}
+                                autoComplete="search"
+                                onChange={(e) => setName(e.target.value)}
+                                isClearable
+                                onClear={() => setName('')}
+                              />
+                              <Input
+                                classNames={{
+                                  label: 'font-semibold text-gray-700',
+                                  inputWrapper: 'pr-0',
+                                }}
+                                className="w-full xl:w-96"
+                                placeholder="Buscar por codigo..."
+                                startContent={<Search />}
+                                variant="bordered"
+                                name="searCode"
+                                id="searCode"
+                                value={code}
+                                autoComplete="search"
+                                onChange={(e) => setCode(e.target.value)}
+                                isClearable
+                                onClear={() => setCode('')}
+                              />
+                              <Autocomplete
+                                onSelectionChange={(key) => {
+                                  if (key) {
+                                    const branchSelected = JSON.parse(
+                                      key as string
+                                    ) as CategoryProduct;
+                                    setCategory(branchSelected.name);
+                                  }
+                                }}
+                                className="w-full xl:w-80"
+                                labelPlacement="outside"
+                                placeholder="Selecciona la categoría"
+                                variant="bordered"
+                                classNames={{
+                                  base: 'font-semibold text-gray-500 text-sm',
+                                }}
+                                value={category}
+                                clearButtonProps={{
+                                  onClick: () => setCategory(''),
+                                }}
+                              >
+                                {list_categories.map((bra) => (
+                                  <AutocompleteItem
+                                    value={bra.name}
+                                    key={JSON.stringify(bra)}
+                                    className="dark:text-white"
+                                  >
+                                    {bra.name}
+                                  </AutocompleteItem>
+                                ))}
+                              </Autocomplete>
+                            </>
                             <Button
                               style={global_styles().secondaryStyle}
                               className="mb-10 font-semibold"
@@ -186,6 +295,51 @@ function ListEmployee({ id }: Props) {
             </div>
           </div>
           <MobileView layout={'grid'} />
+          {branch_product_Paginated.totalPag > 1 && (
+            <>
+              <div className="hidden w-full mt-5 md:flex">
+                <Pagination
+                  previousPage={branch_product_Paginated.prevPag}
+                  nextPage={branch_product_Paginated.nextPag}
+                  currentPage={branch_product_Paginated.currentPag}
+                  totalPages={branch_product_Paginated.totalPag}
+                  onPageChange={(page) => {
+                    serPage(page);
+                    getBranchProducts(id, page, limit, name, category, code);
+                  }}
+                />
+              </div>
+              <div className="flex w-full mt-5 md:hidden">
+                <SmPagination
+                  handleNext={() => {
+                    serPage(branch_product_Paginated.nextPag);
+
+                    getBranchProducts(
+                      id,
+                      branch_product_Paginated.nextPag,
+                      limit,
+                      name,
+                      category,
+                      code
+                    );
+                  }}
+                  handlePrev={() => {
+                    serPage(branch_product_Paginated.prevPag);
+                    getBranchProducts(
+                      id,
+                      branch_product_Paginated.prevPag,
+                      limit,
+                      name,
+                      category,
+                      code
+                    );
+                  }}
+                  currentPage={branch_product_Paginated.currentPag}
+                  totalPages={branch_product_Paginated.totalPag}
+                />
+              </div>
+            </>
+          )}
         </div>
       </div>
     </>

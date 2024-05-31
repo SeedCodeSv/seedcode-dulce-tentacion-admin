@@ -4,9 +4,10 @@ import { useConfigurationStore } from '../../store/perzonalitation.store';
 import * as yup from 'yup';
 import { Formik } from 'formik';
 import { ThemeContext } from '../../hooks/useTheme';
+import { IConfiguration } from '../../types/configuration.types';
 
 interface Props {
-  id: number;
+  id: IConfiguration | undefined;
   reloadData: () => void;
   onClose: () => void;
 }
@@ -26,7 +27,7 @@ function UpdateConfigurationName(props: Props) {
   });
 
   const handleSave = async ({ name }: { name: string }) => {
-    await UpdateConfigurationName({ name }, props.id);
+    await UpdateConfigurationName({ name }, props.id?.id || 0);
     props.reloadData();
     props.onClose();
   };

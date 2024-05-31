@@ -21,7 +21,11 @@
   --transition: .5s cubic-bezier(0, -0.02, 0.4, 1.25);
   --circle-transition: .3s cubic-bezier(0, -0.02, 0.35, 1.17);
 }
-
+input,
+textarea,
+select {
+  font-size: 16px;
+}
 .theme-switch, .theme-switch *, .theme-switch *::before, .theme-switch *::after {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;

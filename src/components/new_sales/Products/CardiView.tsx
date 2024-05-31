@@ -16,7 +16,7 @@ function CardView(props: Props) {
   const { branch_products } = useBranchProductStore();
 
   return (
-    <div className="w-full pb-10">
+    <div className="w-full">
       <DataView
         value={branch_products}
         gutter
@@ -27,7 +27,7 @@ function CardView(props: Props) {
           }),
           grid: () => ({
             className:
-              'grid bg-transparent pb-10 grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-5 mt-5',
+              'grid bg-transparent grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-5 h-52 md:h-full w-full overflow-y-auto',
           }),
         }}
         color="surface"
@@ -84,8 +84,9 @@ const ListItem = ({ product }: { product: BranchProduct }) => {
   const { addProductCart } = useBranchProductStore();
   return (
     <>
-      <div className="flex w-full col-span-1 p-5 border-b shadow md:col-span-2 lg:col-span-3 xl:col-span-4 gap-10">
-        <div className="flex flex-col justify-center">
+      <div className="flex w-screen sm:w-full col-span-1 p-5 border-b shadow md:col-span-2 lg:col-span-3 xl:col-span-4 gap-10">
+        <div className="flex flex-col 
+        justify-center">
           <p className="font-semibold">{product.product.name}</p>
           <p className="text-sm mt-2 text-green-700 font-semibold">
             Precio: {formatCurrency(Number(product.price))}{' '}
