@@ -94,10 +94,11 @@ export const delete_branch = (id: number) => {
     },
   });
 };
-export const get_branch_products = (id: number, name: string, category: string) => {
+export const get_branch_products = (id: number,page : number , limit : number, name: string, category: string,code : string) => {
   const token = get_token() ?? '';
   return axios.get<IGetBranchProductList>(
-    API_URL + `/branch-products/by-branch/${id}?name=${name}&category=${category}`,
+    API_URL +
+      `/branch-products/by-branch/${id}?page=${page}&limit=${limit}&name=${name}&category=${category}&code=${code}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
