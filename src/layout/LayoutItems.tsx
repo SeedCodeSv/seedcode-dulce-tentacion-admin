@@ -292,7 +292,7 @@ export const LayoutItems = () => {
                   <div
                     id="menu1"
                     className={`flex flex-col w-full pb-1 overflow-hidden transition-all duration-500 ${
-                      isMenuOpen ? 'max-h-40' : 'max-h-0'
+                      isMenuOpen ? 'max-h-50' : 'max-h-0'
                     }`}
                   >
                     <>

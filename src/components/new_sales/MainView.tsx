@@ -28,9 +28,12 @@ import useEventListener, { TEventHandler } from '../../hooks/useEventListeners';
 import { useAuthStore } from '../../store/auth.store';
 import { toast } from 'sonner';
 import AddButton from '../global/AddButton';
-import MobileView_NewSale from './MobileView_NewSale';
+// import MobileView_NewSale from './MobileView_NewSale';
 import CardView from './Products/CardiView';
 import { formatCurrency } from '../../utils/dte';
+// import { Paginator } from 'primereact/paginator';
+// import { paginator_styles } from '../../styles/paginator.styles';
+import MobileView_NewSale from './MobileView_NewSale';
 
 const MainView = () => {
   const { theme } = useContext(ThemeContext);
