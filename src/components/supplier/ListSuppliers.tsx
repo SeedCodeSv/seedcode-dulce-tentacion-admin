@@ -6,9 +6,6 @@ import { PayloadSupplier, Supplier, SupplierDirection } from '../../types/suppli
 import {
   Button,
   ButtonGroup,
-  Card,
-  CardBody,
-  CardHeader,
   Input,
   Popover,
   PopoverContent,
@@ -22,8 +19,6 @@ import { ThemeContext } from '../../hooks/useTheme';
 import {
   EditIcon,
   User,
-  MailIcon,
-  Phone,
   PlusIcon,
   Repeat,
   TrashIcon,
@@ -35,13 +30,12 @@ import {
 } from 'lucide-react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import { Paginator } from 'primereact/paginator';
-import { paginator_styles } from '../../styles/paginator.styles';
 import { global_styles } from '../../styles/global.styles';
 import Pagination from '../global/Pagination';
 import MobileViewSupplier from './MobileViewSupplier';
 import { Drawer } from 'vaul';
 import classNames from 'classnames';
+import SmPagination from '../global/SmPagination';
 
 function ListSuppliers() {
   const { theme, context } = useContext(ThemeContext);
@@ -50,6 +44,7 @@ function ListSuppliers() {
   const [search, setSearch] = useState('');
   const [email, setEmail] = useState('');
   const [openVaul, setOpenVaul] = useState(false);
+  const [page, serPage] = useState(1);
 
   const [typeProveedor, setTypeProveedor] = useState('normal');
   const [selectedTitle, setSelectedTitle] = useState('');
@@ -70,7 +65,7 @@ function ListSuppliers() {
   }, [limit, tipeSupplier]);
 
   const handleSearch = (searchParam: string | undefined) => {
-    getSupplierPagination(1, limit, searchParam ?? search, searchParam ?? email, tipeSupplier);
+    getSupplierPagination(page, limit, searchParam ?? search, searchParam ?? email, tipeSupplier);
   };
 
   const modalAdd = useDisclosure();
@@ -332,8 +327,6 @@ function ListSuppliers() {
             </div>
           </div>
 
-          
-
           <div className="flex flex-row gap-5 items-center justify-between w-full mb-5 mt-3">
             <Select
               className="w-72 sm:w-44 ml-2"
@@ -502,16 +495,29 @@ function ListSuppliers() {
                 />
               </div>
               <div className="flex w-full mt-5 md:hidden">
-                <Paginator
-                  pt={paginator_styles(1)}
-                  className="flex justify-between w-full"
-                  first={supplier_pagination.currentPag}
-                  rows={limit}
-                  totalRecords={supplier_pagination.total}
-                  template={{
-                    layout: 'PrevPageLink CurrentPageReport NextPageLink',
+                <SmPagination
+                  handleNext={() => {
+                    serPage(supplier_pagination.nextPag);
+                    getSupplierPagination(
+                      supplier_pagination.nextPag,
+                      limit,
+                      search,
+                      email,
+                      tipeSupplier
+                    );
                   }}
-                  currentPageReportTemplate="{currentPage} de {totalPages}"
+                  handlePrev={() => {
+                    serPage(supplier_pagination.prevPag);
+                    getSupplierPagination(
+                      supplier_pagination.prevPag,
+                      limit,
+                      search,
+                      email,
+                      tipeSupplier
+                    );
+                  }}
+                  currentPage={supplier_pagination.currentPag}
+                  totalPages={supplier_pagination.totalPag}
                 />
               </div>
             </>
@@ -617,56 +623,6 @@ export const DeletePopover = ({ supplier }: PopProps) => {
         </div>
       </PopoverContent>
     </Popover>
-  );
-};
-
-/* eslint-disable no-unused-vars */
-interface CardProps {
-  suppliers: Supplier;
-  handleChange: (item: Supplier, type: string) => void;
-}
-/* eslint-enable no-unused-vars */
-
-export const CardItem = ({ suppliers, handleChange }: CardProps) => {
-  return (
-    <Card isBlurred isPressable>
-      <CardHeader>
-        <div className="flex">
-          <div className="flex flex-col">
-            <p className="ml-3 text-sm font-semibold text-gray-600">{suppliers.nombre}</p>
-          </div>
-        </div>
-      </CardHeader>
-      <CardBody>
-        <p className="flex ml-3 text-sm font-semibold text-gray-700">
-          <MailIcon size={25} className="text-default-400" />
-          <p className="ml-3">{suppliers.correo}</p>
-        </p>
-        <p className="flex mt-3 ml-3 text-sm font-semibold text-gray-700">
-          <Phone size={25} className="text-default-400" />
-          <p className="ml-3">{suppliers.telefono}</p>
-        </p>
-      </CardBody>
-      <CardHeader>
-        <div className="flex gap-3">
-          <Button
-            onClick={() => handleChange(suppliers, 'edit')}
-            isIconOnly
-            className="bg-coffee-green"
-          >
-            <EditIcon className="text-white" size={20} />
-          </Button>
-          <Button
-            onClick={() => handleChange(suppliers, 'change')}
-            isIconOnly
-            className="bg-[#E8751A]"
-          >
-            <Repeat className="text-white" size={20} />
-          </Button>
-          <DeletePopover supplier={suppliers} />
-        </div>
-      </CardHeader>
-    </Card>
   );
 };
 
