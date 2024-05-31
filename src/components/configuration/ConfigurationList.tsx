@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import { Card, useDisclosure } from '@nextui-org/react';
+import { ButtonGroup, Card, useDisclosure } from '@nextui-org/react';
 import { useThemeStore } from '../../store/theme.store';
 import { Theme, ThemeContext } from '../../hooks/useTheme';
 import { Check } from 'lucide-react';
@@ -15,11 +15,17 @@ import { Column } from 'primereact/column';
 import UpdateConfigurationName from './UpdateConfigurationName';
 import { Button } from '@nextui-org/react';
 import { Image } from 'primereact/image';
+import { Table as ITable, CreditCard, List } from 'lucide-react';
+import MobileViewConfi from './MobileViewConfi';
+import { IConfiguration } from '../../types/configuration.types';
 
 function ConfigurationList() {
+  const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
   const { getPaginatedThemes, themes } = useThemeStore();
   const { theme, toggleTheme } = useContext(ThemeContext);
   const [logoId, setLogoId] = useState(0);
+
+  const [selectedConfiguration, setSelectedConfiguration] = useState<IConfiguration>();
 
   const { personalization, GetConfigurationByTransmitter } = useConfigurationStore();
   const { user } = useAuthStore();
@@ -48,6 +54,43 @@ function ConfigurationList() {
     <>
       <div className="p-4 dark:bg-gray-800">
         <div className="flex items-end justify-between gap-10 mt lg:justify-end mt-5 mr-5">
+
+        <ButtonGroup>
+          <Button
+            isIconOnly
+            color="secondary"
+            style={{
+              backgroundColor: view === 'table' ? theme.colors.third : '#e5e5e5',
+              color: view === 'table' ? theme.colors.primary : '#3e3e3e',
+            }}
+            onClick={() => setView('table')}
+          >
+            <ITable />
+          </Button>
+          <Button
+            isIconOnly
+            color="default"
+            style={{
+              backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
+              color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
+            }}
+            onClick={() => setView('grid')}
+          >
+            <CreditCard />
+          </Button>
+          <Button
+            isIconOnly
+            color="default"
+            style={{
+              backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
+              color: view === 'list' ? theme.colors.primary : '#3e3e3e',
+            }}
+            onClick={() => setView('list')}
+          >
+            <List />
+          </Button>
+        </ButtonGroup>
+
           {personalization.length === 0 && <AddButton onClick={() => addLogo.onOpen()} />}
           {personalization.length > 0 &&
             personalization.map((item) => (
@@ -63,50 +106,54 @@ function ConfigurationList() {
 
         <div className="flex justify-center p-5 bg-gray-50 dark:bg-gray-800">
           <div className="bg-gray-50 w-full dark:bg-gray-800 dark:text-white">
-            {personalization.length === 0 ? (
-              <span>no ay datos de logo ni nombre...</span>
-            ) : (
-              <DataTable
-                value={personalization}
-                className="shadow"
-                tableStyle={{ minWidth: '50rem' }}
-              >
-                <Column
-                  field="logo"
-                  header="Logo"
-                  headerStyle={style}
-                  body={(rowData) => (
-                    <Image
-                      preview
-                      src={rowData.logo}
-                      alt={rowData.name}
-                      style={{ width: '100px' }}
-                    />
-                  )}
-                />
-                <Column field="name" header="Nombre" headerStyle={style} />
-                <Column
-                  headerStyle={style}
-                  header="Actualizar Nombre"
-                  body={(rowData) => (
-                    <>
-                      <Button onClick={() => updateName.onOpen()} style={style}>Actualizar</Button>
-                      <ModalGlobal
-                        isOpen={updateName.isOpen}
-                        onClose={updateName.onClose}
-                        title="Actualizar nombre"
-                        size="w-full lg:w-[500px]"
-                      >
-                        <UpdateConfigurationName
-                          id={rowData.id || 0}
-                          reloadData={reloadData}
-                          onClose={updateName.onClose}
+            {(view === 'grid' || view === 'list') && (
+              <MobileViewConfi
+                layout={view as 'grid' | 'list'}
+                handleEdit={(config) => {
+                  setSelectedConfiguration(config);
+                  updateName.onOpen();
+                }}
+              />
+            )}
+
+            {view == 'table' && (
+              <>
+                {personalization.length === 0 ? (
+                  <span>no ay datos de logo ni nombre...</span>
+                ) : (
+                  <DataTable
+                    value={personalization}
+                    className="shadow"
+                    tableStyle={{ minWidth: '50rem' }}
+                  >
+                    <Column
+                      field="logo"
+                      header="Logo"
+                      headerStyle={style}
+                      body={(rowData) => (
+                        <Image
+                          preview
+                          src={rowData.logo}
+                          alt={rowData.name}
+                          style={{ width: '100px' }}
                         />
-                      </ModalGlobal>
-                    </>
-                  )}
-                />
-              </DataTable>
+                      )}
+                    />
+                    <Column field="name" header="Nombre" headerStyle={style} />
+                    <Column
+                      headerStyle={style}
+                      header="Actualizar Nombre"
+                      body={() => (
+                        <>
+                          <Button onClick={() => updateName.onOpen()} style={style}>
+                            Actualizar
+                          </Button>
+                        </>
+                      )}
+                    />
+                  </DataTable>
+                )}
+              </>
             )}
           </div>
         </div>
@@ -186,6 +233,19 @@ function ConfigurationList() {
         size="w-full lg:w-[600px]"
       >
         <UpdateFile perzonalitationId={logoId} />
+      </ModalGlobal>
+
+      <ModalGlobal
+        isOpen={updateName.isOpen}
+        onClose={updateName.onClose}
+        title="Actualizar nombre"
+        size="w-full lg:w-[500px]"
+      >
+        <UpdateConfigurationName
+          id={selectedConfiguration}
+          reloadData={reloadData}
+          onClose={updateName.onClose}
+        />
       </ModalGlobal>
     </>
   );
