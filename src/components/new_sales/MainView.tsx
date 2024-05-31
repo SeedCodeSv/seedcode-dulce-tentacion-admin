@@ -5,7 +5,6 @@ import {
   Modal,
   ModalBody,
   ModalContent,
-  ModalHeader,
   Select,
   SelectItem,
   Tooltip,
@@ -46,7 +45,6 @@ const MainView = () => {
   const {
     pagination_branch_products,
     getPaginatedBranchProducts,
-
     getProductByCode,
     cart_products,
     emptyCart,
@@ -91,6 +89,8 @@ const MainView = () => {
     }, 0);
     return formatCurrency(total);
   }, [cart_products]);
+
+ 
   return (
     <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
       <div className="w-full h-full grid grid-cols-1 lg:grid-cols-2">
@@ -138,7 +138,7 @@ const MainView = () => {
         isOpen={modalAdd.isOpen}
         onClose={modalAdd.onClose}
         title="Nueva venta"
-        size="w-full md:w-[500px] lg:w-[600px]"
+        size="w-full md:w-[600px] lg:w-[700px]"
       >
         <FormMakeSale
           clear={() => {
@@ -150,9 +150,9 @@ const MainView = () => {
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} title="Agregar" size="full">
         <ModalContent>
           <>
-            <ModalHeader>Agregar</ModalHeader>
-            <ModalBody>
-              <div className="w-full h-full overflow-y-auto p-4">
+            {/* <ModalHeader>Agregar</ModalHeader> */}
+            <ModalBody className="mt-4">
+              <div className=" overflow-y-auto h-auto mt-0 px-3">
                 <Input
                   variant="bordered"
                   placeholder="Escribe para buscar..."
@@ -201,31 +201,34 @@ const MainView = () => {
                     </Button>
                   }
                 />
-                <div className="w-full mt-5 flex justify-between">
-                  <ButtonGroup>
-                    <Button
-                      isIconOnly
-                      color="default"
-                      style={{
-                        backgroundColor: viewMovil === 'grid' ? theme.colors.third : '#e5e5e6',
-                        color: viewMovil === 'grid' ? theme.colors.primary : '#3e3e3e',
-                      }}
-                      onClick={() => setViewMovil('grid')}
-                    >
-                      <CreditCard />
-                    </Button>
-                    <Button
-                      isIconOnly
-                      color="default"
-                      style={{
-                        backgroundColor: viewMovil === 'list' ? theme.colors.third : '#e5e5e5',
-                        color: viewMovil === 'list' ? theme.colors.primary : '#3e3e3e',
-                      }}
-                      onClick={() => setViewMovil('list')}
-                    >
-                      <List />
-                    </Button>
-                  </ButtonGroup>
+                <div className="w-full mt-1 flex justify-between ">
+                  <div className="mt-6">
+                    <ButtonGroup>
+                      <Button
+                        isIconOnly
+                        color="default"
+                        style={{
+                          backgroundColor: viewMovil === 'grid' ? theme.colors.third : '#e5e5e6',
+                          color: viewMovil === 'grid' ? theme.colors.primary : '#3e3e3e',
+                        }}
+                        onClick={() => setViewMovil('grid')}
+                      >
+                        <CreditCard />
+                      </Button>
+                      <Button
+                        isIconOnly
+                        color="default"
+                        style={{
+                          backgroundColor: viewMovil === 'list' ? theme.colors.third : '#e5e5e5',
+                          color: viewMovil === 'list' ? theme.colors.primary : '#3e3e3e',
+                        }}
+                        onClick={() => setViewMovil('list')}
+                      >
+                        <List />
+                      </Button>
+                    </ButtonGroup>
+                  </div>
+
                   <Select
                     className="w-44 dark:text-white"
                     variant="bordered"
@@ -246,29 +249,51 @@ const MainView = () => {
                     ))}
                   </Select>
                 </div>
-                <div className="w-full mt-5 p-5 bg-gray-100 dark:bg-gray-900 overflow-y-auto rounded">
-                  <h1 className="text-lg font-semibold dark:text-white">Lista de productos</h1>
-                  {(viewMovil === 'grid' || viewMovil === 'list') && (
-                    <MobileView_NewSale layout={viewMovil as 'grid' | 'list'} />
-                  )}
+
+                <div className="">
+                  <div>
+                    <h1 className="text-lg font-semibold dark:text-white mt-3 ">
+                      Lista de productos
+                    </h1>
+                    {(viewMovil === 'grid' || viewMovil === 'list') && (
+                      <MobileView_NewSale layout={viewMovil as 'grid' | 'list'} />
+                    )}
+                  </div>
                   {pagination_branch_products.totalPag > 1 && (
-                    <div className="w-full mt-5">
-                      <Pagination
-                        totalPages={pagination_branch_products.totalPag}
-                        currentPage={pagination_branch_products.currentPag}
-                        previousPage={pagination_branch_products.prevPag}
-                        nextPage={pagination_branch_products.nextPag}
-                        onPageChange={(page) => {
-                          getPaginatedBranchProducts(
-                            Number(return_branch_id()),
-                            page,
-                            limit,
-                            name,
-                            code
-                          );
-                        }}
-                      />
-                    </div>
+                    <>
+                      <div className="w-full flex mt-0 justify-between 2xl:hidden ">
+                        <Button
+                          onClick={() => {
+                            getPaginatedBranchProducts(
+                              Number(return_branch_id()),
+                              pagination_branch_products.prevPag,
+                              limit,
+                              name,
+                              code
+                            );
+                          }}
+                          className="px-10"
+                          style={global_styles().thirdStyle}
+                        >
+                          Anterior
+                        </Button>
+                        <Button
+                          onClick={() => {
+                            getPaginatedBranchProducts(
+                              Number(return_branch_id()),
+                              pagination_branch_products.nextPag,
+                              limit,
+                              name,
+                              code
+                            );
+                          }}
+                          className="px-10"
+                          style={global_styles().thirdStyle}
+                        >
+                          Siguiente
+                        </Button>
+                      </div>
+                    </>
                   )}
                 </div>
               </div>

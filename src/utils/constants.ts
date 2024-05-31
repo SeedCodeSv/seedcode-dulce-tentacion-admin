@@ -1,4 +1,4 @@
-export const API_URL = 'http://192.168.0.14:8080/api';
+export const API_URL = 'http://192.168.0.27:8080/api';
 export const FACTURACION_API = 'https://cats-facturacion-43ay7.ondigitalocean.app/api';
 export const MH_QUERY = 'https://admin.factura.gob.sv/consultaPublica';
 export const ambiente = '00';
@@ -49,14 +49,14 @@ export const views_enabled = [
   'Ventas',
   'Reporte de ventas',
   'Modulos',
-  "Proveedores",
-  "Ordenes de compra"
+  'Proveedores',
+  'Ordenes de compra',
 ];
 
 export const views_seller = [
-  "Inicio de ventas",
-  "Gastos",
-  "Ventas",
-  "Productos",
+  'Inicio de ventas',
+  'Gastos',
+  'Ventas',
+  'Productos',
   'Reporte de ventas',
-]
+];
