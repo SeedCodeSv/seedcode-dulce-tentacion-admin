@@ -10,8 +10,8 @@ export interface Branches {
 }
 
 export interface IGetBranchesPaginated {
-  ok: boolean;
   branches: Branches[];
+  ok: boolean;
   total: number;
   totalPag: number;
   currentPag: number;
@@ -49,5 +49,10 @@ export interface IGetBranchProduct {
 export interface IGetBranchProductList {
   branchProducts: IGetBranchProduct[];
   ok: boolean;
-  message: string;
+  total: number;
+  totalPag: number;
+  currentPag: number;
+  nextPag: number;
+  prevPag: number;
+  status: number;
 }

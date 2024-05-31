@@ -23,7 +23,6 @@
   border-radius: 50px !important;
 }
 
-
 .lds-ellipsis,
 .lds-ellipsis div {
   box-sizing: border-box;
@@ -83,3 +82,8 @@
   }
 }
 
+input,
+textarea,
+select {
+  font-size: 16px;
+}

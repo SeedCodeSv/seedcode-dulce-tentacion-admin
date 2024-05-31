@@ -20,7 +20,7 @@ import {
   Book,
   FileText,
 } from 'lucide-react';
-import {  useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { ThemeContext } from '../hooks/useTheme';
 import { useAuthStore } from '../store/auth.store';
 import { save_seller_mode } from '../storage/localStorage';
@@ -81,8 +81,16 @@ export const LayoutItems = () => {
   }, [roleActions]);
   const [isClientsOpen, setIsClientsOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const toggleDropdownMenu = () => setIsMenuOpen(!isMenuOpen);
-  const toggleDropdownClient = () => setIsClientsOpen(!isClientsOpen);
+  const toggleDropdownMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+    setIsClientsOpen(false);
+  };
+
+  const toggleDropdownClient = () => {
+    setIsClientsOpen(!isClientsOpen);
+    setIsMenuOpen(false);
+  };
+
   return (
     <>
       {personalization.length === 0 ? (
@@ -214,7 +222,9 @@ export const LayoutItems = () => {
                     className="focus:outline-none focus:text-blac text-left flex - items-center w-full py-3 space-x-3"
                   >
                     <FileText size={iconSize} />
-                    <p className=" text-sm dark:text-white font-semibold semibold 2xl:text-base">Reportes</p>
+                    <p className=" text-sm dark:text-white font-semibold semibold 2xl:text-base">
+                      Reportes
+                    </p>
 
                     <ChevronDown className="justify-end items-end " size={iconSize} />
                   </button>
@@ -279,125 +289,96 @@ export const LayoutItems = () => {
               (views && views.includes('Clientes')) ||
               views.includes('Usuarios') ||
               views.includes('Sucursales') ? (
-                <div className="flex flex-col justify-start items-center px-6 w-full  ">
+                <div className="flex flex-col justify-start items-center px-6 w-full ">
                   <button
                     onClick={toggleDropdownMenu}
-                    className="focus:outline-none focus:text-blac text-left text-black flex  items-center w-full py-3 space-x-3"
+                    className="focus:outline-none focus:text-black text-left text-black flex items-center w-full py-3 space-x-3"
                   >
-                    <User className='dark:text-white'  size={iconSize} />
-                    <p className=" text-sm dark:text-white font-semibold 2xl:text-base">Menu</p>
-
-                    <ChevronDown className="justify-end items-end dark:text-white " size={iconSize} />
+                    <User className="dark:text-white" size={iconSize} />
+                    <p className="text-sm dark:text-white font-semibold 2xl:text-base">Menu</p>
+                    <ChevronDown
+                      className="justify-end items-end dark:text-white"
+                      size={iconSize}
+                    />
                   </button>
                   <div
                     id="menu1"
-                    className={`flex flex-col w-full pb-1 overflow-hidden transition-all duration-500 ${
-                      isMenuOpen ? 'max-h-40' : 'max-h-0'
+                    className={`flex flex-col w-full h-[900px] pb-1 overflow-hidden transition-all duration-500 ${
+                      isMenuOpen ? 'xl:max-h-52 max-h-44' : 'max-h-0'
                     }`}
                   >
-                    <>
-                      <div className="py-1">
-                        {views.includes('Empleados') && (
-                          <>
-                            {views.includes('Empleados') && (
-                              <NavLink
-                                to={'/employees'}
-                                className={({ isActive }) => {
-                                  return (
-                                    (isActive
-                                      ? 'font-semibold bg-gray-300 dark:bg-gray-700'
-                                      : 'text-coffee-brown font-semibold border-white') +
-                                    ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
-                                  );
-                                }}
-                              >
-                                <User size={iconSize} />
-                                <p className="ml-2 text-sm 2xl:text-base">Empleados</p>
-                              </NavLink>
-                            )}
-                          </>
-                        )}
-                        {views && views.includes('Clientes') && (
-                          <>
-                            {views.includes('Clientes') && (
-                              <NavLink
-                                to={'/clients'}
-                                className={({ isActive }) => {
-                                  return (
-                                    (isActive
-                                      ? 'font-semibold bg-gray-300 dark:bg-gray-700'
-                                      : 'text-coffee-brown font-semibold border-white') +
-                                    ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
-                                  );
-                                }}
-                              >
-                                <BookUser size={iconSize} />
-                                <p className="ml-2 text-sm 2xl:text-base">Clientes</p>
-                              </NavLink>
-                            )}
-                          </>
-                        )}
-
-                        {views.includes('Usuarios') && (
-                          <>
-                            {views.includes('Usuarios') && (
-                              <NavLink
-                                to={'/users'}
-                                className={({ isActive }) => {
-                                  return (
-                                    (isActive
-                                      ? 'font-semibold bg-gray-300 dark:bg-gray-700'
-                                      : 'text-coffee-brown font-semibold border-white') +
-                                    ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
-                                  );
-                                }}
-                              >
-                                <User size={iconSize} />
-                                <p className="ml-2 text-sm 2xl:text-base">Usuarios</p>
-                              </NavLink>
-                            )}
-                          </>
-                        )}
-                        {views.includes('Proveedores') && (
-                          <>
-                            <NavLink
-                              to={'/suppliers'}
-                              className={({ isActive }) => {
-                                return (
-                                  (isActive
-                                    ? 'font-semibold bg-gray-300 dark:bg-gray-700'
-                                    : 'text-coffee-brown font-semibold border-white') +
-                                  ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
-                                );
-                              }}
-                            >
-                              <Truck size={iconSize} />
-                              <p className="ml-2 text-base">Proveedores</p>
-                            </NavLink>
-                          </>
-                        )}
-                        {views.includes('Sucursales') && (
-                          <>
-                            {views.includes('Sucursales') && (
-                              <NavLink
-                                to={'/branches'}
-                                className={({ isActive }) => {
-                                  return (
-                                    (isActive
-                                      ? 'font-semibold bg-gray-300 dark:bg-gray-700'
-                                      : 'text-coffee-brown font-semibold border-white') +
-                                    ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white '
-                                  );
-                                }}
-                              >
-                                <Store size={iconSize} />
-                                <p className="ml-2  text-base ">Sucursales</p>
-                              </NavLink>
-                            )}
-                          </>
-                        )}
-                      </div>
-                    </>
+                    <div className="py-1">
+                      {views.includes('Empleados') && (
+                        <NavLink
+                          to={'/employees'}
+                          className={({ isActive }) =>
+                            (isActive
+                              ? 'font-semibold bg-gray-300 dark:bg-gray-700'
+                              : 'text-coffee-brown font-semibold border-white') +
+                            ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
+                          }
+                        >
+                          <User size={iconSize} />
+                          <p className="ml-2 text-sm 2xl:text-base">Empleados</p>
+                        </NavLink>
+                      )}
+                      {views.includes('Clientes') && (
+                        <NavLink
+                          to={'/clients'}
+                          className={({ isActive }) =>
+                            (isActive
+                              ? 'font-semibold bg-gray-300 dark:bg-gray-700'
+                              : 'text-coffee-brown font-semibold border-white') +
+                            ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
+                          }
+                        >
+                          <BookUser size={iconSize} />
+                          <p className="ml-2 text-sm 2xl:text-base">Clientes</p>
+                        </NavLink>
+                      )}
+                      {views.includes('Usuarios') && (
+                        <NavLink
+                          to={'/users'}
+                          className={({ isActive }) =>
+                            (isActive
+                              ? 'font-semibold bg-gray-300 dark:bg-gray-700'
+                              : 'text-coffee-brown font-semibold border-white') +
+                            ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
+                          }
+                        >
+                          <User size={iconSize} />
+                          <p className="ml-2 text-sm 2xl:text-base">Usuarios</p>
+                        </NavLink>
+                      )}
+                      {views.includes('Proveedores') && (
+                        <NavLink
+                          to={'/suppliers'}
+                          className={({ isActive }) =>
+                            (isActive
+                              ? 'font-semibold bg-gray-300 dark:bg-gray-700'
+                              : 'text-coffee-brown font-semibold border-white') +
+                            ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
+                          }
+                        >
+                          <Truck size={iconSize} />
+                          <p className="ml-2 text-sm 2xl:text-base">Proveedores</p>
+                        </NavLink>
+                      )}
+                      {views.includes('Sucursales') && (
+                        <NavLink
+                          to={'/branches'}
+                          className={({ isActive }) =>
+                            (isActive
+                              ? 'font-semibold bg-gray-300 dark:bg-gray-700'
+                              : 'text-coffee-brown font-semibold border-white') +
+                            ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
+                          }
+                        >
+                          <Store size={iconSize} />
+                          <p className="ml-2 text-sm 2xl:text-base">Sucursales</p>
+                        </NavLink>
+                      )}
+                    </div>
                   </div>
                 </div>
               ) : null}
