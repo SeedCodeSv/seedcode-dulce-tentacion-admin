@@ -29,9 +29,11 @@ import useEventListener, { TEventHandler } from '../../hooks/useEventListeners';
 import { useAuthStore } from '../../store/auth.store';
 import { toast } from 'sonner';
 import AddButton from '../global/AddButton';
-import MobileView_NewSale from './MobileView_NewSale';
+// import MobileView_NewSale from './MobileView_NewSale';
 import CardView from './Products/CardiView';
 import { formatCurrency } from '../../utils/dte';
+import { Paginator } from 'primereact/paginator';
+import { paginator_styles } from '../../styles/paginator.styles';
 
 const MainView = () => {
   const { theme } = useContext(ThemeContext);
@@ -249,24 +251,23 @@ const MainView = () => {
                 <div className="w-full mt-5 p-5 bg-gray-100 dark:bg-gray-900 overflow-y-auto rounded">
                   <h1 className="text-lg font-semibold dark:text-white">Lista de productos</h1>
                   {(viewMovil === 'grid' || viewMovil === 'list') && (
-                    <MobileView_NewSale layout={viewMovil as 'grid' | 'list'} />
+                    <CardView layout={viewMovil as 'grid' | 'list'} />
                   )}
                   {pagination_branch_products.totalPag > 1 && (
-                    <div className="w-full mt-5">
-                      <Pagination
-                        totalPages={pagination_branch_products.totalPag}
-                        currentPage={pagination_branch_products.currentPag}
-                        previousPage={pagination_branch_products.prevPag}
-                        nextPage={pagination_branch_products.nextPag}
-                        onPageChange={(page) => {
-                          getPaginatedBranchProducts(
-                            Number(return_branch_id()),
-                            page,
-                            limit,
-                            name,
-                            code
-                          );
-                        }}
+                    <div className="flex w-full mt-5">
+                      <Paginator
+                          pt={paginator_styles(1)}
+                          className='flex justify-between w-full'
+                          first={(pagination_branch_products.currentPag - 1) * limit}
+                          rows={limit}
+                          totalRecords={pagination_branch_products.total}
+                          template={{
+                            layout: 'PrevPageLink CurrentPageReport NextPageLink',
+                          }}
+                          currentPageReportTemplate='{currentPage} de {totalPages}'
+                          onPageChange={(e) => {
+                            getPaginatedBranchProducts(Number(return_branch_id()), e.page + 1, limit, name, code)
+                          }}
                       />
                     </div>
                   )}
