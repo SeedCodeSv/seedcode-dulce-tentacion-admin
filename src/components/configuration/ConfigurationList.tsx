@@ -112,7 +112,7 @@ function ConfigurationList() {
         </div>
       </div>
 
-      <div className="bg-gray-50 dark:bg-gray-800 h-full w-full">
+      <div className="bg-gray-50 dark:bg-gray-800 w-full">
         <div className="p-4 ">
           <div className="flex items-end justify-between gap-10 mt lg:justify-end mt-5 mr-5">
             <AddButton onClick={() => modalAdd.onOpen()} />

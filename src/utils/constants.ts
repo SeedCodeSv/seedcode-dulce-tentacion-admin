@@ -49,14 +49,14 @@ export const views_enabled = [
   'Ventas',
   'Reporte de ventas',
   'Modulos',
-  "Proveedores",
-  "Ordenes de compra"
+  'Proveedores',
+  'Ordenes de compra',
 ];
 
 export const views_seller = [
-  "Inicio de ventas",
-  "Gastos",
-  "Ventas",
-  "Productos",
+  'Inicio de ventas',
+  'Gastos',
+  'Ventas',
+  'Productos',
   'Reporte de ventas',
-]
+];
