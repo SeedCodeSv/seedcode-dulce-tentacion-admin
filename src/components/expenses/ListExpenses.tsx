@@ -198,92 +198,94 @@ const ListExpenses = () => {
           />
         )}
         {view === 'table' && (
-          <DataTable
-            className="w-full shadow"
-            emptyMessage="No se encontraron resultados"
-            value={expenses}
-            tableStyle={{ minWidth: '50rem' }}
-          >
-            <Column
-              headerClassName="text-sm font-semibold"
-              headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
-              field="id"
-              header="No."
-            />
-            <Column
-              headerClassName="text-sm font-semibold"
-              headerStyle={style}
-              field="categoryExpense.name"
-              header="Categoría"
-            />
-            <Column
-              headerClassName="text-sm font-semibold"
-              headerStyle={style}
-              field="total"
-              header="Total"
-              body={(rowData) => formatCurrency(Number(rowData.total))}
-            />
-            <Column
-              headerClassName="text-sm font-semibold"
-              headerStyle={style}
-              header="Descripción"
-              body={(item) => (
-                <Button
-                  onClick={() => handleDescription(item)}
-                  isIconOnly
-                  style={{
-                    backgroundColor: theme.colors.third,
-                  }}
-                >
-                  <NotepadText style={{ color: theme.colors.primary }} size={20} />
-                </Button>
-              )}
-            />
-            <Column
-              headerStyle={{ ...style, borderTopRightRadius: '10px' }}
-              header="Acciones"
-              body={(item) => (
-                <div className="flex gap-6">
-                  {item.attachments
-                    .map((attachment: Attachment) => attachment.ext)
-                    .includes('pdf') && (
-                      <Button
-                        isIconOnly
-                        aria-label="Abrir PDF"
-                        style={{
-                          backgroundColor: theme.colors.third,
-                        }}
-                        onClick={() => {
-                          setPathSelected(item.id);
-                          showAnexo.onOpen();
-                        }}
-                      >
-                        <Files style={{ color: theme.colors.primary }} size={20} />
-                      </Button>
-                    )}
-                  {item.attachments.some((attachment: Attachment) =>
-                    ['jpg', 'png', 'jpeg', 'webp', 'svg'].includes(attachment.ext)
-                  ) && (
-                      <Button
-                        isIconOnly
-                        aria-label="Abrir imagen"
-                        style={{
-                          backgroundColor: theme.colors.secondary,
-                        }}
-                        onClick={() => {
-                          setPathSelected(item.id);
-                          showAnexoimg.onOpen();
-                        }}
-                      >
-                        <Image style={{ color: theme.colors.primary }} size={20} />
-                      </Button>
-                    )}
+          <div className="w-full overflow-x-auto sm:overflow-x-scroll">
+            <DataTable
+              className="w-full shadow"
+              emptyMessage="No se encontraron resultados"
+              value={expenses}
+              tableStyle={{ minWidth: '50rem' }}
+            >
+              <Column
+                headerClassName="text-sm font-semibold"
+                headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
+                field="id"
+                header="No."
+              />
+              <Column
+                headerClassName="text-sm font-semibold"
+                headerStyle={style}
+                field="categoryExpense.name"
+                header="Categoría"
+              />
+              <Column
+                headerClassName="text-sm font-semibold"
+                headerStyle={style}
+                field="total"
+                header="Total"
+                body={(rowData) => formatCurrency(Number(rowData.total))}
+              />
+              <Column
+                headerClassName="text-sm font-semibold"
+                headerStyle={style}
+                header="Descripción"
+                body={(item) => (
+                  <Button
+                    onClick={() => handleDescription(item)}
+                    isIconOnly
+                    style={{
+                      backgroundColor: theme.colors.third,
+                    }}
+                  >
+                    <NotepadText style={{ color: theme.colors.primary }} size={20} />
+                  </Button>
+                )}
+              />
+              <Column
+                headerStyle={{ ...style, borderTopRightRadius: '10px' }}
+                header="Acciones"
+                body={(item) => (
+                  <div className="flex gap-6">
+                    {item.attachments
+                      .map((attachment: Attachment) => attachment.ext)
+                      .includes('pdf') && (
+                        <Button
+                          isIconOnly
+                          aria-label="Abrir PDF"
+                          style={{
+                            backgroundColor: theme.colors.third,
+                          }}
+                          onClick={() => {
+                            setPathSelected(item.id);
+                            showAnexo.onOpen();
+                          }}
+                        >
+                          <Files style={{ color: theme.colors.primary }} size={20} />
+                        </Button>
+                      )}
+                    {item.attachments.some((attachment: Attachment) =>
+                      ['jpg', 'png', 'jpeg', 'webp', 'svg'].includes(attachment.ext)
+                    ) && (
+                        <Button
+                          isIconOnly
+                          aria-label="Abrir imagen"
+                          style={{
+                            backgroundColor: theme.colors.secondary,
+                          }}
+                          onClick={() => {
+                            setPathSelected(item.id);
+                            showAnexoimg.onOpen();
+                          }}
+                        >
+                          <Image style={{ color: theme.colors.primary }} size={20} />
+                        </Button>
+                      )}
 
-                  <DeletePopUp expenses={item} />
-                </div>
-              )}
-            />
-          </DataTable>
+                    <DeletePopUp expenses={item} />
+                  </div>
+                )}
+              />
+            </DataTable>
+          </div>
         )}
         {expenses_paginated.totalPag > 1 && (
           <>

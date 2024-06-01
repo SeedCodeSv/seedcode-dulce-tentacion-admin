@@ -15,8 +15,8 @@ import { formatCurrency } from '../../utils/dte';
 
 function ExpensesByDatesTransmitter() {
   const { theme } = useContext(ThemeContext);
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const [startDate, setStartDate] = useState(fechaActualString);
+  const [endDate, setEndDate] = useState(fechaActualString);
   const { user } = useAuthStore();
   const style = {
     backgroundColor: theme.colors.dark,
@@ -31,7 +31,7 @@ function ExpensesByDatesTransmitter() {
     getBranchesList();
     OnGetReportExpenseByBranch(branchId, startDate, endDate)
     getExpensesByTransmitter(user?.employee.branch.transmitterId || 0, startDate, endDate);
-  }, [branchId, startDate, endDate, getBranchesList, getExpensesByTransmitter]);
+  }, []);
 
   useEffect(() => {
     fetchInitialData();
@@ -61,19 +61,19 @@ function ExpensesByDatesTransmitter() {
   return (
     <>
       <div className="col-span-3 bg-gray-100 p-5 dark:bg-gray-900 rounded-lg">
-        <p className="pb-4 text-lg font-semibold dark:text-white">Gastos Por emisor </p>
+        <p className="pb-4 text-lg font-semibold dark:text-white">Gastos por sucursal </p>
         <div className="grid grid-cols-2 gap-2 py-2">
           <label className="text-sm font-semibold dark:text-white">Fecha inicial</label>
           <label className="text-sm font-semibold dark:text-white">Fecha final</label>
           <Input
             onChange={(e) => setStartDate(e.target.value)}
-            defaultValue={fechaActualString}
+            defaultValue={startDate}
             className="w-full "
             type="date"
           ></Input>
           <Input
             onChange={(e) => setEndDate(e.target.value)}
-            defaultValue={fechaActualString}
+            defaultValue={endDate}
             className="w-full "
             type="date"
           ></Input>
@@ -104,27 +104,29 @@ function ExpensesByDatesTransmitter() {
             Buscar
           </Button>
         </div>
-        <DataTable
-          className="w-full shadow"
-          emptyMessage="No se encontraron resultados"
-          tableStyle={{ minWidth: '50rem' }}
-          scrollable
-          value={expenses}
-          scrollHeight="30rem"
-        >
-          <Column
-            headerClassName="text-sm font-semibold"
-            headerStyle={style}
-            field="box.branch.name"
-            header="Sucursal"
-          />
-          <Column
-            headerStyle={style}
-            field="Total"
-            header="total"
-            body={(rowData) => formatCurrency(Number(rowData.total))}
-          />
-        </DataTable>
+        <div className="w-full overflow-x-auto sm:overflow-x-scroll">
+          <DataTable
+            className="w-full shadow"
+            emptyMessage="No se encontraron resultados"
+            tableStyle={{ minWidth: '50rem' }}
+            scrollable
+            value={expenses}
+            scrollHeight="30rem"
+          >
+            <Column
+              headerClassName="text-sm font-semibold"
+              headerStyle={style}
+              field="box.branch.name"
+              header="Sucursal"
+            />
+            <Column
+              headerStyle={style}
+              field="Total"
+              header="total"
+              body={(rowData) => formatCurrency(Number(rowData.total))}
+            />
+          </DataTable>
+        </div>
         <div className="col-span-3 bg-gray-100 p-5 dark:bg-gray-900 rounded-lg">
           <p className="pb-4 text-lg font-semibold dark:text-white">Gastos</p>
           <Chart options={chartOptions} series={series} type="bar" height={350} />
