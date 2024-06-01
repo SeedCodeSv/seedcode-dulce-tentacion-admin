@@ -12,14 +12,14 @@ export const get_users_list = () => {
   });
 };
 
-export const get_user_paginated = (page = 1, limit = 5, userName = '', active: number = 1) => {
+export const get_user_paginated = (page = 1, limit = 5, userName = '', role = '', active: number = 1) => {
   const token = get_token() ?? '';
   const user = get_user();
   return axios.get<IGetUserPaginated>(
     API_URL +
       '/users/paginated/' +
       user?.employee.branch.transmitterId +
-      `?page=${page}&limit=${limit}&userName=${userName}&active=${active}`,
+      `?page=${page}&limit=${limit}&userName=${userName}&role=${role}&active=${active}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,

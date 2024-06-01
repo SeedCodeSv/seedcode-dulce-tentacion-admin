@@ -15,6 +15,7 @@ export interface UsersStore {
     page: number,
     limit: number,
     userName: string,
+    role: string,
     active?: number
   ) => Promise<void>;
 }

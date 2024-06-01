@@ -18,7 +18,6 @@ import AddUsers from './AddUsers';
 import UpdateUsers from './UpdateUsers';
 import {
   Key,
-  User2,
   Table as ITable,
   CreditCard,
   TrashIcon,
@@ -31,14 +30,14 @@ import { ThemeContext } from '../../hooks/useTheme';
 import { ButtonGroup } from '@nextui-org/react';
 import MobileView from './MobileView';
 import AddButton from '../global/AddButton';
-import { Paginator } from 'primereact/paginator';
-import { paginator_styles } from '../../styles/paginator.styles';
 import Pagination from '../global/Pagination';
 import { User } from '../../types/users.types';
 import { Drawer } from 'vaul';
 import { global_styles } from '../../styles/global.styles';
 import classNames from 'classnames';
 import { limit_options } from '../../utils/constants';
+import SmPagination from '../global/SmPagination';
+import { Search } from 'lucide-react';
 
 interface Props {
   actions: string[];
@@ -50,9 +49,10 @@ function ListUsers({ actions }: Props) {
   const { users_paginated, getUsersPaginated } = useUsersStore();
   const [user, setUser] = useState<User | undefined>();
   const [active, setActive] = useState(true);
+  const [page, serPage] = useState(1);
 
   useEffect(() => {
-    getUsersPaginated(1, limit, '', active ? 1 : 0);
+    getUsersPaginated(1, limit, '', '', active ? 1 : 0);
   }, [limit, active]);
 
   const modalAdd = useDisclosure();
@@ -69,9 +69,10 @@ function ListUsers({ actions }: Props) {
   const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
 
   const [userName, setUserName] = useState('');
+  const [rol, setRol] = useState('')
 
   const handleSearch = (searchParam: string | undefined) => {
-    getUsersPaginated(1, limit, searchParam ?? userName, active ? 1 : 0);
+    getUsersPaginated(page, limit, searchParam ?? userName, rol, active ? 1 : 0);
   };
 
   const [openVaul, setOpenVaul] = useState(false);
@@ -84,7 +85,7 @@ function ListUsers({ actions }: Props) {
             <div className="hidden w-full gap-5 md:flex">
               <div className="w-1/2">
                 <Input
-                  startContent={<User2 />}
+                  startContent={<Search />}
                   className=" dark:text-white"
                   variant="bordered"
                   labelPlacement="outside"
@@ -99,6 +100,27 @@ function ListUsers({ actions }: Props) {
                   isClearable
                   onClear={() => {
                     setUserName('');
+                    handleSearch('');
+                  }}
+                />
+              </div>
+              <div className="w-1/2">
+                <Input
+                  startContent={<Search />}
+                  className=" dark:text-white"
+                  variant="bordered"
+                  labelPlacement="outside"
+                  label="Rol"
+                  classNames={{
+                    label: 'font-semibold text-gray-700',
+                    inputWrapper: 'pr-0',
+                  }}
+                  value={rol}
+                  onChange={(e) => setRol(e.target.value)}
+                  placeholder="Escribe para buscar..."
+                  isClearable
+                  onClear={() => {
+                    setRol('');
                     handleSearch('');
                   }}
                 />
@@ -190,7 +212,7 @@ function ListUsers({ actions }: Props) {
                           <div className="flex flex-col gap-3">
                             <div className="w-full">
                               <Input
-                                startContent={<User2 />}
+                                startContent={<Search />}
                                 className=" dark:text-white"
                                 variant="bordered"
                                 labelPlacement="outside"
@@ -205,6 +227,27 @@ function ListUsers({ actions }: Props) {
                                 isClearable
                                 onClear={() => {
                                   setUserName('');
+                                  handleSearch('');
+                                }}
+                              />
+                            </div>
+                            <div className="w-full">
+                              <Input
+                                startContent={<Search />}
+                                className=" dark:text-white"
+                                variant="bordered"
+                                labelPlacement="outside"
+                                label="Rol"
+                                classNames={{
+                                  label: 'font-semibold text-gray-700',
+                                  inputWrapper: 'pr-0',
+                                }}
+                                value={rol}
+                                onChange={(e) => setRol(e.target.value)}
+                                placeholder="Escribe para buscar..."
+                                isClearable
+                                onClear={() => {
+                                  setRol('');
                                   handleSearch('');
                                 }}
                               />
@@ -354,24 +397,34 @@ function ListUsers({ actions }: Props) {
                   currentPage={users_paginated.currentPag}
                   totalPages={users_paginated.totalPag}
                   onPageChange={(page) => {
-                    getUsersPaginated(page, limit, userName, active ? 1 : 0);
+                    getUsersPaginated(page, limit, userName, rol, active ? 1 : 0);
                   }}
                 />
               </div>
               <div className="flex w-full mt-5 md:hidden">
-                <Paginator
-                  pt={paginator_styles(1)}
-                  className="flex justify-between w-full"
-                  first={(users_paginated.currentPag - 1) * limit}
-                  rows={limit}
-                  totalRecords={users_paginated.total}
-                  template={{
-                    layout: 'PrevPageLink CurrentPageReport NextPageLink',
+              <SmPagination
+                  handleNext={() => {
+                    serPage(users_paginated.nextPag);
+                    getUsersPaginated(
+                      users_paginated.nextPag,
+                      limit,
+                      userName,
+                      rol,
+                      active ? 1 : 0,
+                    );
                   }}
-                  currentPageReportTemplate="{currentPage} de {totalPages}"
-                  onPageChange={(e) => {
-                    getUsersPaginated(e.page + 1, limit, userName, active ? 1 : 0);
+                  handlePrev={() => {
+                    serPage(users_paginated.prevPag);
+                    getUsersPaginated(
+                      users_paginated.prevPag,
+                      limit,
+                      userName,
+                      rol,
+                      active ? 1 : 0,
+                    );
                   }}
+                  currentPage={users_paginated.currentPag}
+                  totalPages={users_paginated.totalPag}
                 />
               </div>
             </>
