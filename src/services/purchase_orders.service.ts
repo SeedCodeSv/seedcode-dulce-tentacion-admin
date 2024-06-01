@@ -21,11 +21,12 @@ export const get_order_purchase = (
     endDate: string,
     page = 1,
     limit = 5,
-    supplier = ""
+    supplier = "",
+    state = ""
 ) => {
     return axios.get<IGetPurchaseOrdersPagination>(
         API_URL +
-        `/purchase-order?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}&supplier=${supplier}`,
+        `/purchase-order?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}&supplier=${supplier}&state=${state}`,
         {
             headers: {
                 Authorization: "Bearer " + get_token(),

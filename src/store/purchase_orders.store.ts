@@ -51,8 +51,8 @@ export const usePurchaseOrdersStore = create<PurchaseOrderStore>(
           toast.error("Error al guardar la orden");
         });
     },
-    async getPurchaseOrders(startDate, endDate, page, limit, supplier) {
-      await get_order_purchase(startDate, endDate, page, limit, supplier)
+    async getPurchaseOrders(startDate, endDate, page, limit, supplier, state = "") {
+      await get_order_purchase(startDate, endDate, page, limit, supplier, state)
         .then((res) => {
           set({ purchase_orders: res.data.purchaseOrders });
           set({
