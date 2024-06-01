@@ -57,3 +57,81 @@ export interface PurchaseOrder {
 export interface IGetPurchaseOrdersPagination extends IPagination {
     purchaseOrders: PurchaseOrder[];
 }
+
+export interface PurchaseOrderDetail {
+    id: number;
+    date: string;
+    time: string;
+    total: string;
+    state: boolean;
+    isActive: boolean;
+    supplierId: number;
+    branchId: number;
+}
+
+export interface ProductDetail {
+    id: number;
+    name: string;
+    description: string;
+    tipoItem: string;
+    tipoDeItem: string;
+    uniMedida: string;
+    unidaDeMedida: string;
+    code: string;
+    isActive: boolean;
+    categoryProductId: number;
+}
+
+export interface BranchProductDetail {
+    id: number;
+    stock: number;
+    price: string;
+    priceA: string;
+    priceB: string;
+    priceC: string;
+    minimumStock: number;
+    costoUnitario: string;
+    isActive: boolean;
+    product: ProductDetail;
+    branchId: number;
+    productId: number;
+    supplierId: number;
+}
+
+export interface DetailPurchaseOrder {
+    id: number;
+    quantity: number;
+    cost: number;
+    isActive: boolean;
+    purchaseOrder: PurchaseOrderDetail;
+    branchProduct: BranchProductDetail;
+    branchProductId: number;
+    purchaseOrderId: number;
+}
+
+export interface IGetDetailsPurchaseOrder {
+    ok: boolean;
+    detailPurchaseOrders: DetailPurchaseOrder[];
+    status: number;
+}
+
+export interface DetailPurchaseOrderPrice extends DetailPurchaseOrder {
+    price: number;
+}
+
+export interface DetailOrderItems {
+    name: string,
+    price: number,
+    quantity: number,
+    orderId: number,
+    total: number,
+    isNew: boolean,
+    productId: number
+}
+
+export interface UpdatePurchaseItems {
+    productId: number;
+    quantity: number;
+    unitPrice: number;
+    isNew: boolean;
+}
