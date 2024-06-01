@@ -68,7 +68,7 @@ export const SideBar = (props: Props) => {
       )}
       <div className="flex flex-col w-full xl:ml-64">
         <div
-          className="fixed top-0 z-[30] w-screen left-0 xl:pl-72 shadow h-[70px] flex justify-between items-center lg:grid lg:grid-cols-2 sm:grid-cols-1 md:grid-cols-1 sm:px-1 mb:px-1 px-6"
+          className="fixed top-0 z-[70] w-screen left-0 xl:pl-72 shadow h-[70px] flex justify-between items-center lg:grid lg:grid-cols-2 sm:grid-cols-1 md:grid-cols-1 sm:px-1 mb:px-1 px-6"
           style={{
             backgroundColor: theme.colors.dark,
             color: theme.colors.primary,
