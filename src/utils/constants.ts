@@ -51,6 +51,7 @@ export const views_enabled = [
   'Modulos',
   'Proveedores',
   'Ordenes de compra',
+  'Descuentos',
 ];
 
 export const views_seller = [

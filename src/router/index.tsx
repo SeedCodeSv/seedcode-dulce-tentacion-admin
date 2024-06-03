@@ -27,6 +27,8 @@ import ReportByBranchSalesByBranch from '../pages/ReportByBranchSalesByBranch';
 import ReportExpensesByBranchPage from '../pages/ReportExpenseByBranchPage';
 import PurchaseOrders from '../pages/PurchaseOrders';
 import MostProductTransmitterSelledPage from '../pages/MostProductTransmitterSelledPage';
+import Discount from '../pages/Promotions';
+import AddPromotions from '../components/discounts/AddPromotions';
 
 /* eslint-disable react-hooks/rules-of-hooks */
 export const router = () => {
@@ -136,6 +138,14 @@ export const router = () => {
     {
       path: '/purchase-orders',
       element: views && views.includes('Ordenes de compra') && <PurchaseOrders />,
+    },
+    {
+      path: '/discounts',
+      element: views && views.includes('Descuentos') && <Discount />,
+    },
+    {
+      path: '/AddPromotions',
+      element: <AddPromotions />,
     },
     {
       path: '*',
