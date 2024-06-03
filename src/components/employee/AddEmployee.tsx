@@ -60,7 +60,7 @@ function AddEmployee(props: Props) {
   }, [props, props.employee, branch_list]);
 
   return (
-    <div className="mb-32 sm:mb-0">
+    <div className="">
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}

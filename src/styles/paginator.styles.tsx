@@ -9,7 +9,7 @@ export const paginator_styles = (currentPage: number): PaginatorPassThroughOptio
   return {
     pageButton: (item) => {
       return {
-        className: '!rounded-full font-semibold',
+        className: '!rounded-2xl font-semibold',
         style: {
           backgroundColor: currentPage === item?.props.first ? theme.colors.dark : '#fff',
           color: '#fff !important',
@@ -19,28 +19,28 @@ export const paginator_styles = (currentPage: number): PaginatorPassThroughOptio
       };
     },
     prevPageButton: () => ({
-      className: '!rounded-full font-semibold',
+      className: '!rounded-2xl font-semibold',
       style: {
         backgroundColor: theme.colors.dark,
         color: theme.colors.primary,
       },
     }),
     nextPageButton: () => ({
-      className: '!rounded-full font-semibold',
+      className: '!rounded-2xl font-semibold',
       style: {
         backgroundColor: theme.colors.dark,
         color: theme.colors.primary,
       },
     }),
     firstPageButton: () => ({
-      className: '!rounded-full font-semibold',
+      className: '!rounded-2xl font-semibold',
       style: {
         backgroundColor: theme.colors.dark,
         color: theme.colors.primary,
       },
     }),
     lastPageButton: () => ({
-      className: '!rounded-full font-semibold',
+      className: '!rounded-2xl font-semibold',
       style: {
         backgroundColor: theme.colors.dark,
         color: theme.colors.primary,

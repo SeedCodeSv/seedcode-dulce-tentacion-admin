@@ -266,18 +266,16 @@ const MainView = () => {
                   </Select>
                 </div>
 
-                <div className="">
-                  <div>
-                    <h1 className="text-lg font-semibold dark:text-white mt-3 ">
+                <div className="w-full max-h-96 overflow-y-auto">
+                    <h1 className="text-lg font-semibold dark:text-white mt-3">
                       Lista de productos
                     </h1>
                     {(viewMovil === 'grid' || viewMovil === 'list') && (
                       <MobileView_NewSale layout={viewMovil as 'grid' | 'list'} />
                     )}
-                  </div>
                   {pagination_branch_products.totalPag > 1 && (
                     <>
-                      <div className="w-full flex mt-0 justify-between 2xl:hidden ">
+                      <div className="w-full flex mt-2 justify-between 2xl:hidden ">
                         <Button
                           onClick={() => {
                             getPaginatedBranchProducts(
@@ -557,7 +555,7 @@ const ListProduct = () => {
         )}
         {pagination_branch_products.totalPag > 1 && (
           <>
-            <div className="w-full block lg:hidden mt-5 2xl:block">
+            <div className="hidden w-full mt-5 md:flex">
               <Pagination
                 totalItems={3}
                 totalPages={pagination_branch_products.totalPag}
@@ -569,7 +567,7 @@ const ListProduct = () => {
                 }}
               />
             </div>
-            <div className="w-full flex mt-5 justify-between 2xl:hidden">
+            <div className="w-full flex mt-5 justify-between sm:hidden bg-red-400">
               <Button
                 onClick={() => {
                   getPaginatedBranchProducts(
