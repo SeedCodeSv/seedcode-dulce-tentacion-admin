@@ -16,7 +16,7 @@ function MobileView_NewSale({ layout }: Props) {
   }, []);
 
   return (
-    <div className="w-full pb-10 max-h-96 overflow-y-auto">
+    <div className="w-full">
       <DataView
         value={branch_products}
         gutter
@@ -24,7 +24,7 @@ function MobileView_NewSale({ layout }: Props) {
         pt={{
           grid: () => ({
             className:
-              'grid dark:bg-slate-800 pb-10 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 xl:grid-cols-4 gap-5 mt-5',
+              'grid dark:bg-slate-800 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 xl:grid-cols-4 gap-5 mt-5',
           }),
         }}
         color="surface"
