@@ -11,10 +11,10 @@ function CartProductsMobile() {
 
   const { theme } = useContext(ThemeContext);
 
-  const style = {
-    backgroundColor: theme.colors.dark,
-    color: theme.colors.primary,
-  };
+  // const style = {
+  //   backgroundColor: theme.colors.dark,
+  //   color: theme.colors.primary,
+  // };
 
   const formatCurrency = (value: number) => {
     return value.toLocaleString('en-US', {
@@ -51,16 +51,15 @@ function CartProductsMobile() {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
+    <div className="grid  grid-cols-1 bg-gray-50 dark:bg-gray-800 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 h-[50vh] overflow-x-auto ">
       {cart_products.map((product) => (
         <div
           key={product.id}
-          className="p-4 shadow-lg rounded-lg flex flex-col justify-between"
-          style={style}
+          className="p-4 shadow-lg bg-gray-50 dark:bg-gray-700 rounded-lg flex flex-col justify-between h-auto"
         >
-          <div>
-            <div className="text-lg font-bold mb-2">{nameBodyTemplate(product)}</div>
-            <div className="text-sm mb-2">
+          <div className=" ">
+            <div className="text-lg font-bold mb-2 text-black dark:text-white">{nameBodyTemplate(product)}</div>
+            <div className="text-sm mb-2 text-black dark:text-white ">
               Cantidad:
               <Input
                 variant="bordered"
@@ -71,8 +70,12 @@ function CartProductsMobile() {
                 onChange={(e) => onUpdateQuantity(product.id, Number(e.target.value))}
               />
             </div>
-            <div className="text-sm mb-2">Precio: {formatCurrency(Number(product.price))}</div>
-            <div className="text-sm mb-2">Total: {totalBodyTemplate(product)}</div>
+            <div className="text-sm mb-2 text-black dark:text-white">
+              Precio: {formatCurrency(Number(product.price))}
+            </div>
+            <div className="text-sm mb-2 text-black dark:text-white">
+              Total: {totalBodyTemplate(product)}
+            </div>
           </div>
           <div className="flex gap-4 mt-4">
             <Button

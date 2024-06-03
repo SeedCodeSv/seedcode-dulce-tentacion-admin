@@ -9,7 +9,7 @@ export const ListItem = ({ product }: { product: BranchProduct }) => {
   const { addProductCart } = useBranchProductStore();
   return (
     <>
-      <div className="flex w-full col-span-1 p-5 border-b shadow md:col-span-2 lg:col-span-3 xl:col-span-4 bg-slate-50">
+      <div className="flex w-full col-span-1 p-5 border-b shadow md:col-span-2 lg:col-span-3 xl:col-span-4 bg-slate-50 dark:bg-gray-800">
         <div className="w-full">
           <div className="flex items-center w-full gap-2">
             <ShoppingBag className="dark:text-gray-400 text-[#274c77]" size={33} />

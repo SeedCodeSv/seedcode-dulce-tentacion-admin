@@ -95,7 +95,6 @@ const MainView = () => {
     return formatCurrency(total);
   }, [cart_products]);
 
-  
   useEffect(() => {
     const handleResize = () => {
       setWindowSize({
@@ -117,12 +116,7 @@ const MainView = () => {
           <div className="flex justify-end lg:hidden">
             <AddButton onClick={onOpen} />
           </div>
-
           {windowSize.width < 1280 ? <CartProductsMobile /> : <CartProducts />}
-
-          {/* <div className="w-full h-[75%] pb-5">
-            <CartProducts />
-          </div> */}
           <div className="w-full h-[25%]  pt-10">
             <div className="w-full h-full flex flex-col justify-center items-center bg-gray-100 dark:bg-gray-900 p-5">
               <div className="grid grid-cols-2 w-full">
