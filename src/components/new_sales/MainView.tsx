@@ -28,16 +28,18 @@ import useEventListener, { TEventHandler } from '../../hooks/useEventListeners';
 import { useAuthStore } from '../../store/auth.store';
 import { toast } from 'sonner';
 import AddButton from '../global/AddButton';
-// import MobileView_NewSale from './MobileView_NewSale';
 import CardView from './Products/CardiView';
 import { formatCurrency } from '../../utils/dte';
-// import { Paginator } from 'primereact/paginator';
-// import { paginator_styles } from '../../styles/paginator.styles';
 import MobileView_NewSale from './MobileView_NewSale';
+import CartProductsMobile from './MobileView/CartProductMovile';
 
 const MainView = () => {
   const { theme } = useContext(ThemeContext);
   const [viewMovil, setViewMovil] = useState<'grid' | 'list'>('grid');
+  const [windowSize, setWindowSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
 
   const [name, setName] = useState<string>('');
   const [code, setCode] = useState<string>('');
@@ -93,7 +95,21 @@ const MainView = () => {
     return formatCurrency(total);
   }, [cart_products]);
 
- 
+  
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
   return (
     <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
       <div className="w-full h-full grid grid-cols-1 lg:grid-cols-2">
@@ -101,9 +117,12 @@ const MainView = () => {
           <div className="flex justify-end lg:hidden">
             <AddButton onClick={onOpen} />
           </div>
-          <div className="w-full h-[75%] pb-5">
+
+          {windowSize.width < 1280 ? <CartProductsMobile /> : <CartProducts />}
+
+          {/* <div className="w-full h-[75%] pb-5">
             <CartProducts />
-          </div>
+          </div> */}
           <div className="w-full h-[25%]  pt-10">
             <div className="w-full h-full flex flex-col justify-center items-center bg-gray-100 dark:bg-gray-900 p-5">
               <div className="grid grid-cols-2 w-full">
