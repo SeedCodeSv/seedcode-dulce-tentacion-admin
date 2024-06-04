@@ -1,6 +1,5 @@
 import { IDataExpense, IDataSalesGrafic } from '../../../types/reports/branch_product.reports';
 import {
-  IDataProductGrafic,
   ProductoMostSelledTable,
   SaleBranchMonth,
   SaleMonthYear,
@@ -15,7 +14,6 @@ export interface ISalesReportStore {
   expenses: IDataExpense[];
   sales_table_day: SaleTableDay[];
   data: IDataSalesGrafic[];
-  dataProduct: IDataProductGrafic[];
   getSalesTableDay: (id: number) => void;
 
   getSalesByDay: (id: number) => void;
@@ -26,12 +24,6 @@ export interface ISalesReportStore {
     startDate: string,
     endDate: string,
     branchId: number
-  ) => void;
-  getProductMostSelledGrafic: (
-    id: number,
-    startDate: string,
-    endDate: string,
-    
   ) => void;
   getSalesByYearAndMonth: (id: number) => void;
   getSalesByBranchAndMonth: (id: number) => void;
