@@ -1,18 +1,18 @@
-import { useContext, useEffect, useMemo } from 'react';
-import Layout from '../layout/Layout';
-import { salesReportStore } from '../store/reports/sales_report.store';
-import { useAuthStore } from '../store/auth.store';
-import SalesMonthBranches from '../components/home/SalesMonthBranches';
-import { useReportExpensesStore } from '../store/reports/expenses_report.store';
-import ExpensesMonthBranches from '../components/home/ExpensesMonthBranches';
-import { useBranchProductReportStore } from '../store/reports/branch_product.store';
-import MostProductSelled from '../components/home/MostProductSelled';
-import SalesMonthYear from '../components/home/SalesMonthYear';
-import { shortMonth } from '../utils/dates';
-import { formatCurrency } from '../utils/dte';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
-import { ThemeContext } from '../hooks/useTheme';
+import { useContext, useEffect, useMemo } from "react";
+import Layout from "../layout/Layout";
+import { salesReportStore } from "../store/reports/sales_report.store";
+import { useAuthStore } from "../store/auth.store";
+import SalesMonthBranches from "../components/home/SalesMonthBranches";
+import { useReportExpensesStore } from "../store/reports/expenses_report.store";
+import ExpensesMonthBranches from "../components/home/ExpensesMonthBranches";
+import { useBranchProductReportStore } from "../store/reports/branch_product.store";
+import MostProductSelled from "../components/home/MostProductSelled";
+import SalesMonthYear from "../components/home/SalesMonthYear";
+import { shortMonth } from "../utils/dates";
+import { formatCurrency } from "../utils/dte";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
+import { ThemeContext } from "../hooks/useTheme";
 function Home() {
   const { theme } = useContext(ThemeContext);
 
@@ -27,10 +27,17 @@ function Home() {
     sales_table_day,
   } = salesReportStore();
 
-  const { getExpensesBranchMonth, expenses_branch_month, expenses_by_day, getExpensesByDay } =
-    useReportExpensesStore();
+  const {
+    getExpensesBranchMonth,
+    expenses_branch_month,
+    expenses_by_day,
+    getExpensesByDay,
+  } = useReportExpensesStore();
 
-  const { most_product_selled, getMostProductMostSelled } = useBranchProductReportStore();
+  const {
+    most_product_selled,
+    getMostProductMostSelled,
+  } = useBranchProductReportStore();
 
   const { user } = useAuthStore();
 
@@ -48,11 +55,15 @@ function Home() {
   }, [user, theme]);
 
   const total = useMemo(() => {
-    return sales_branch_month.map((sale) => Number(sale.total)).reduce((a, b) => a + b, 0);
+    return sales_branch_month
+      .map((sale) => Number(sale.total))
+      .reduce((a, b) => a + b, 0);
   }, [sales_branch_month]);
 
   const totalExpenses = useMemo(() => {
-    return expenses_branch_month.map((sale) => Number(sale.total)).reduce((a, b) => a + b, 0);
+    return expenses_branch_month
+      .map((sale) => Number(sale.total))
+      .reduce((a, b) => a + b, 0);
   }, [sales_branch_month]);
 
   const mostProductSelled = useMemo(() => {
@@ -60,16 +71,18 @@ function Home() {
       const sorted = [...most_product_selled].sort(
         (a, b) => Number(b.quantity) - Number(a.quantity)
       );
-      return sorted[0].branchProduct.name.length > 40
-        ? sorted[0].branchProduct.name.slice(0, 40) + '...'
+      return sorted[0].branchProduct.name.length > 35
+        ? sorted[0].branchProduct.name.slice(0, 35) + "..."
         : sorted[0].branchProduct.name;
     } else {
-      return '';
+      return "";
     }
   }, [most_product_selled]);
 
   const yearTotal = useMemo(() => {
-    return sales_month_year.map((sm) => Number(sm.total)).reduce((a, b) => a + b, 0);
+    return sales_month_year
+      .map((sm) => Number(sm.total))
+      .reduce((a, b) => a + b, 0);
   }, [sales_month_year]);
 
   const style = {
