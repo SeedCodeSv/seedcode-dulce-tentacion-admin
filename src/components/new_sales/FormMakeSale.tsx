@@ -410,7 +410,7 @@ function FormMakeSale(props: Props) {
         placeholder="Selecciona el cliente"
       >
         {customer_list.map((item) => (
-          <AutocompleteItem key={JSON.stringify(item)} value={item.nombre}>
+          <AutocompleteItem key={JSON.stringify(item)} value={item.nombre} className='dark:text-white'>
             {item.nombre}
           </AutocompleteItem>
         ))}
@@ -431,7 +431,7 @@ function FormMakeSale(props: Props) {
         placeholder="Selecciona el método de pago"
       >
         {metodos_de_pago.map((item) => (
-          <AutocompleteItem key={JSON.stringify(item)} value={item.codigo}>
+          <AutocompleteItem key={JSON.stringify(item)} value={item.codigo} className='dark:text-white'>
             {item.valores}
           </AutocompleteItem>
         ))}

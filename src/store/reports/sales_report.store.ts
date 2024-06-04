@@ -3,7 +3,6 @@ import { ISalesReportStore } from './types/sale_report.store.types';
 import {
   get_expense_by_dates_transmitter,
   get_expenses_by_day,
-  get_products_most_selled_by_transmitter_grafic,
   get_products_most_selled_by_transmitter_table,
   get_sales_by_branch_and_current_month,
   get_sales_by_branch_and_current_month_table,
@@ -20,7 +19,6 @@ export const salesReportStore = create<ISalesReportStore>((set) => ({
   expenses: [],
   sales_table_day: [],
   data: [],
-  dataProduct: [],
   products_most_selled: [],
   getSalesTableDay: (id) => {
     get_sales_by_day_table(id)
@@ -49,7 +47,7 @@ export const salesReportStore = create<ISalesReportStore>((set) => ({
         set({ products_most_selled: [] });
       });
   },
-  getExpensesByDateTransmitter: (id : number, startDate: string, endDate: string) => {
+  getExpensesByDateTransmitter: (id: number, startDate: string, endDate: string) => {
     get_expense_by_dates_transmitter(id, startDate, endDate)
     //   .then(({ data }) => {
     //   set({})
@@ -95,9 +93,5 @@ export const salesReportStore = create<ISalesReportStore>((set) => ({
         set({ expenses: [] });
       });
   },
-  getProductMostSelledGrafic: (id , startDate ,endDate) => {
-    get_products_most_selled_by_transmitter_grafic(id, startDate, endDate).then(({ data }) => { 
-      set({ dataProduct: data.dataProduct });
-    })
-  },
+
 }));

@@ -19,6 +19,7 @@ import {
   ShoppingBag,
   Book,
   FileText,
+  TicketPercent,
 } from 'lucide-react';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { ThemeContext } from '../hooks/useTheme';
@@ -230,8 +231,9 @@ export const LayoutItems = () => {
                   </button>
                   <div
                     id="menu1"
-                    className={`flex flex-col w-full pb-1 overflow-hidden transition-all duration-500 ${isClientsOpen ? 'max-h-40' : 'max-h-0'
-                      }`}
+                    className={`flex flex-col w-full pb-1 overflow-hidden transition-all duration-500 ${
+                      isClientsOpen ? 'max-h-40' : 'max-h-0'
+                    }`}
                   >
                     <>
                       <div className="py-1">
@@ -285,9 +287,9 @@ export const LayoutItems = () => {
                 </div>
               )}
               {views.includes('Empleados') ||
-                (views && views.includes('Clientes')) ||
-                views.includes('Usuarios') ||
-                views.includes('Sucursales') ? (
+              (views && views.includes('Clientes')) ||
+              views.includes('Usuarios') ||
+              views.includes('Sucursales') ? (
                 <div className="flex flex-col justify-start items-center px-6 w-full ">
                   <button
                     onClick={toggleDropdownMenu}
@@ -302,8 +304,9 @@ export const LayoutItems = () => {
                   </button>
                   <div
                     id="menu1"
-                    className={`flex flex-col w-full h-[900px] pb-1 overflow-hidden transition-all duration-500 ${isMenuOpen ? 'xl:max-h-52 max-h-44' : 'max-h-0'
-                      }`}
+                    className={`flex flex-col w-full h-[900px] pb-1 overflow-hidden transition-all duration-500 ${
+                      isMenuOpen ? 'xl:max-h-52 max-h-44' : 'max-h-0'
+                    }`}
                   >
                     <div className="py-1">
                       {views.includes('Empleados') && (
@@ -475,6 +478,30 @@ export const LayoutItems = () => {
             >
               <ShieldHalf size={iconSize} />
               <p className="ml-2 text-sm 2xl:text-base">Permisos</p>
+            </NavLink>
+          )}
+
+          {/* Descuentos */}
+          {views && views.includes('Descuentos') && (
+            <NavLink
+              to={'/discounts'}
+              className={({ isActive }) => {
+                return (
+                  (isActive
+                    ? 'text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green'
+                    : 'text-coffee-brown font-semibold border-white') +
+                  ' flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
+                );
+              }}
+              style={({ isActive }) => {
+                return {
+                  borderLeftColor: isActive ? theme.colors.dark : 'transparent',
+                  borderLeftWidth: 5,
+                };
+              }}
+            >
+              <TicketPercent size={iconSize} />
+              <p className="ml-2 text-sm 2xl:text-base">Descuentos</p>
             </NavLink>
           )}
 

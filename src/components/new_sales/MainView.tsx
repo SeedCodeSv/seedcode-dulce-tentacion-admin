@@ -28,16 +28,18 @@ import useEventListener, { TEventHandler } from '../../hooks/useEventListeners';
 import { useAuthStore } from '../../store/auth.store';
 import { toast } from 'sonner';
 import AddButton from '../global/AddButton';
-// import MobileView_NewSale from './MobileView_NewSale';
 import CardView from './Products/CardiView';
 import { formatCurrency } from '../../utils/dte';
-// import { Paginator } from 'primereact/paginator';
-// import { paginator_styles } from '../../styles/paginator.styles';
 import MobileView_NewSale from './MobileView_NewSale';
+import CartProductsMobile from './MobileView/CartProductMovile';
 
 const MainView = () => {
   const { theme } = useContext(ThemeContext);
   const [viewMovil, setViewMovil] = useState<'grid' | 'list'>('grid');
+  const [windowSize, setWindowSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
 
   const [name, setName] = useState<string>('');
   const [code, setCode] = useState<string>('');
@@ -93,7 +95,20 @@ const MainView = () => {
     return formatCurrency(total);
   }, [cart_products]);
 
- 
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
   return (
     <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
       <div className="w-full h-full grid grid-cols-1 lg:grid-cols-2">
@@ -101,9 +116,7 @@ const MainView = () => {
           <div className="flex justify-end lg:hidden">
             <AddButton onClick={onOpen} />
           </div>
-          <div className="w-full h-[75%] pb-5">
-            <CartProducts />
-          </div>
+          {windowSize.width < 1280 ? <CartProductsMobile /> : <CartProducts />}
           <div className="w-full h-[25%]  pt-10">
             <div className="w-full h-full flex flex-col justify-center items-center bg-gray-100 dark:bg-gray-900 p-5">
               <div className="grid grid-cols-2 w-full">
@@ -246,25 +259,23 @@ const MainView = () => {
                     }}
                   >
                     {limit_options.map((option) => (
-                      <SelectItem key={option} value={option}>
+                      <SelectItem key={option} value={option} className="dark:text-white">
                         {option}
                       </SelectItem>
                     ))}
                   </Select>
                 </div>
 
-                <div className="">
-                  <div>
-                    <h1 className="text-lg font-semibold dark:text-white mt-3 ">
-                      Lista de productos
-                    </h1>
-                    {(viewMovil === 'grid' || viewMovil === 'list') && (
-                      <MobileView_NewSale layout={viewMovil as 'grid' | 'list'} />
-                    )}
-                  </div>
+                <div className="w-full max-h-96 overflow-y-auto">
+                  <h1 className="text-lg font-semibold dark:text-white mt-3">
+                    Lista de productos 123
+                  </h1>
+                  {(viewMovil === 'grid' || viewMovil === 'list') && (
+                    <MobileView_NewSale layout={viewMovil as 'grid' | 'list'} />
+                  )}
                   {pagination_branch_products.totalPag > 1 && (
                     <>
-                      <div className="w-full flex mt-0 justify-between 2xl:hidden ">
+                      <div className="w-full flex mt-2 justify-between 2xl:hidden ">
                         <Button
                           onClick={() => {
                             getPaginatedBranchProducts(
@@ -478,7 +489,7 @@ const ListProduct = () => {
           }}
         >
           {limit_options.map((option) => (
-            <SelectItem key={option} value={option}>
+            <SelectItem key={option} value={option} className="dark:text-white">
               {option}
             </SelectItem>
           ))}
@@ -544,7 +555,7 @@ const ListProduct = () => {
         )}
         {pagination_branch_products.totalPag > 1 && (
           <>
-            <div className="w-full block lg:hidden mt-5 2xl:block">
+            <div className="hidden w-full mt-5 md:flex">
               <Pagination
                 totalItems={3}
                 totalPages={pagination_branch_products.totalPag}
@@ -556,7 +567,7 @@ const ListProduct = () => {
                 }}
               />
             </div>
-            <div className="w-full flex mt-5 justify-between 2xl:hidden">
+            <div className="w-full flex mt-5 justify-between sm:hidden bg-red-400">
               <Button
                 onClick={() => {
                   getPaginatedBranchProducts(
