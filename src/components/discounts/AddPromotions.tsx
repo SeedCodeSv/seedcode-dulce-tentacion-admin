@@ -2,7 +2,10 @@ import {
   Autocomplete,
   AutocompleteItem,
   Button,
+  Checkbox,
+  CheckboxGroup,
   Input,
+  
   Select,
   SelectItem,
   Textarea,
@@ -17,7 +20,7 @@ import { formatDate } from '../../utils/dates';
 import Layout from '../../layout/Layout';
 import { useNavigate } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
-import { Tipos_Promotions, operadores, priority } from '../../utils/constants';
+import { Tipos_Promotions, operadores } from '../../utils/constants';
 import { Promotion } from '../../types/promotions.types';
 import { useBranchProductStore } from '../../store/branch_product.store';
 import { usePromotionsStore } from '../../store/promotions/promotions.store';
@@ -31,12 +34,31 @@ function AddDiscount() {
   const [selectedPromotion, setSelectedPromotion] = useState('');
   const [selectedOperators, setSelectedOperators] = useState('');
   const [selectedOperatorPrice, setOperatorPrice] = useState('');
-  const [selectedPiority, setPiority] = useState('');
+  // const [selectedPiority, setPiority] = useState('');
   const [branchId, setBranchId] = useState(0);
   const [endDate, setEndDate] = useState(formatDate());
   const [startDate, setStartDate] = useState(formatDate());
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
   const { getBranchesList, branch_list } = useBranchesStore();
+
+  type Priority = 'LOW' | 'MEDIUM' | 'HIGH';
+  const priority: Priority[] = ['LOW', 'MEDIUM', 'HIGH'];
+
+  interface PriorityInfo {
+    label: string;
+    color: string;
+  }
+
+  const priorityMap: Record<Priority, PriorityInfo> = {
+    LOW: { label: 'Baja', color: 'green' },
+    MEDIUM: { label: 'Media', color: 'orange' },
+    HIGH: { label: 'Alta', color: 'red' },
+  };
+
+  const [selectedPriority, setPriority] = useState('');
+  const handlePriorityChange = (selectedValues: string[]) => {
+    setPriority(selectedValues[0]);
+  };
 
   const handleDaysSelected = (days: string[]) => {
     setSelectedDays(days);
@@ -67,7 +89,7 @@ function AddDiscount() {
       endDate: endDate,
       days: daysArrayString.toString(),
       typePromotion: selectedPromotion,
-      priority: selectedPiority,
+      priority: selectedPriority,
     };
     postPromotions(payload);
   };
@@ -90,9 +112,9 @@ function AddDiscount() {
   return (
     <Layout title="Nueva Promocion">
       <>
-        <div className="h-full m-8">
-          <div className="flex flex-col mt-2 w-full">
-            <div className="items-center">
+        <div className="h-full m-9">
+          <div className="flex flex-row ">
+            <div className="mt-2">
               <ArrowLeft
                 onClick={() => {
                   navigate('/discounts');
@@ -101,7 +123,7 @@ function AddDiscount() {
                 size={25}
               />
             </div>
-            <div className="items-center">
+            <div className="flex flex-col justify-center items-center">
               <Tabs
                 aria-label="Options"
                 selectedKey={selected}
@@ -131,10 +153,9 @@ function AddDiscount() {
                   >
                     {({ values, errors, touched, handleBlur, handleChange, handleSubmit }) => (
                       <>
-                        <div className="w-full overflow-x-auto">
-                          <div className="w-full  grid grid-cols-4 gap-5">
-                            {/* Nombre */}
-                            <div className="flex flex-col pt-2  mt-2">
+                        <div className="w-full ">
+                          <div className="w-full grid grid-cols-2 gap-5">
+                            <div className="flex flex-col pt-2 mt-2">
                               <Input
                                 name="name"
                                 labelPlacement="outside"
@@ -169,8 +190,10 @@ function AddDiscount() {
                                 ))}
                               </Autocomplete>
                             </div>
+                          </div>
 
-                            <div className="grid grid-cols-2 mt-4">
+                          <div className="grid grid-cols-2 mt-4 gap-5">
+                            <div className="grid grid-cols-2 gap-5">
                               <div>
                                 <Input
                                   label="Precio"
@@ -220,9 +243,31 @@ function AddDiscount() {
                                 </Select>
                               </div>
                             </div>
+                            <div>
+                              <Input
+                                label="Procentaje de descuento"
+                                labelPlacement="outside"
+                                name="percentage"
+                                value={values.percentage ? values.percentage.toString() : ''}
+                                onChange={handleChange('percentage')}
+                                onBlur={handleBlur('percentage')}
+                                placeholder="0"
+                                classNames={{
+                                  label: 'font-semibold text-gray-500 text-sm',
+                                }}
+                                variant="bordered"
+                                type="number"
+                                startContent="%"
+                              />
+                              {/* {errors.discount && touched.discount && (
+                      <span className="text-sm font-semibold text-red-500">
+                        {errors.discount}
+                      </span>
+                    )} */}
+                            </div>
                           </div>
 
-                          <div className="grid grid-cols-3 gap-5 w-full mt-8">
+                          <div className="grid grid-cols-2 gap-5 w-full mt-8">
                             <div className="grid grid-cols-3 gap-2 w-full">
                               <div>
                                 <Input
@@ -297,28 +342,7 @@ function AddDiscount() {
                                 </div>
                               </div>
                             </div>
-                            <div>
-                              <Input
-                                label="Procentaje de descuento"
-                                labelPlacement="outside"
-                                name="percentage"
-                                value={values.percentage ? values.percentage.toString() : ''}
-                                onChange={handleChange('percentage')}
-                                onBlur={handleBlur('percentage')}
-                                placeholder="0"
-                                classNames={{
-                                  label: 'font-semibold text-gray-500 text-sm',
-                                }}
-                                variant="bordered"
-                                type="number"
-                                startContent="%"
-                              />
-                              {/* {errors.discount && touched.discount && (
-                      <span className="text-sm font-semibold text-red-500">
-                        {errors.discount}
-                      </span>
-                    )} */}
-                            </div>
+
                             <div>
                               <Input
                                 label="Precio Fijo"
@@ -341,46 +365,87 @@ function AddDiscount() {
                             </div>
                           </div>
 
-                          <div className="w-full grid grid-cols-3 gap-5 mt-4">
-                            <div className="">
-                              <Input
-                                type="date"
-                                variant="bordered"
-                                label="Fecha inicial"
-                                labelPlacement="outside"
-                                className="dark:text-white"
-                                classNames={{
-                                  label: 'font-semibold',
-                                }}
-                                onChange={(e) => setStartDate(e.target.value)}
-                                value={startDate}
-                              />
+                          <div className="w-full grid grid-cols-2 gap-5 mt-4">
+                            <div className="grid grid-cols-2 gap-5">
+                              <div className="">
+                                <Input
+                                  type="date"
+                                  variant="bordered"
+                                  label="Fecha inicial"
+                                  labelPlacement="outside"
+                                  className="dark:text-white"
+                                  classNames={{
+                                    label: 'font-semibold',
+                                  }}
+                                  onChange={(e) => setStartDate(e.target.value)}
+                                  value={startDate}
+                                />
+                              </div>
+                              <div>
+                                <Input
+                                  type="date"
+                                  variant="bordered"
+                                  label="Fecha final"
+                                  labelPlacement="outside"
+                                  className="dark:text-white"
+                                  classNames={{
+                                    label: 'font-semibold',
+                                  }}
+                                  onChange={(e) => setEndDate(e.target.value)}
+                                  value={endDate}
+                                />
+                              </div>
                             </div>
                             <div>
-                              <Input
-                                type="date"
+                              {/* <Select
                                 variant="bordered"
-                                label="Fecha final"
+                                placeholder="Selecciona el prioridad"
+                                className="w-full dark:text-white"
+                                label="Prioridad"
                                 labelPlacement="outside"
-                                className="dark:text-white"
                                 classNames={{
-                                  label: 'font-semibold',
+                                  label: 'font-semibold text-gray-500 text-sm',
                                 }}
-                                onChange={(e) => setEndDate(e.target.value)}
-                                value={endDate}
-                              />
+                                value={values.priority.toString()}
+                                onChange={(e) => {
+                                  setPiority(e.target.value);
+                                }}
+                              >
+                                {priority.map((limit) => (
+                                  <SelectItem key={limit} value={limit} className="dark:text-white">
+                                    {limit}
+                                  </SelectItem>
+                                ))}
+                              </Select> */}
+                              <div>
+                                <CheckboxGroup
+                                  className="font-semibold text-gray-500 text-lg "
+                                  orientation="horizontal"
+                                  value={selectedPriority ? [selectedPriority] : []}
+                                  onChange={handlePriorityChange}
+                                  label="Prioridad"
+                                  size="lg"
+                                >
+                                  {priority.map((p) => (
+                                    <Checkbox key={p} value={p}>
+                                      <span style={{ color: priorityMap[p].color }}>
+                                        {priorityMap[p].label}
+                                      </span>
+                                    </Checkbox>
+                                  ))}
+                                </CheckboxGroup>
+                              </div>
                             </div>
                           </div>
 
-                          {/* Seleccionar dia */}
-                          <div className="mt-5 flex flex-col items-start w-full">
-                            <h1 className="text-sm mb-4 font-semibold ">
-                              Selecciona los días de la semana
-                            </h1>
-                            <WeekSelector onDaysSelected={handleDaysSelected} />
-                          </div>
-
-                          <div className="w-full  grid grid-cols-3 gap-5">
+                          <div className="w-full  grid grid-cols-2 gap-5">
+                            {/* Seleccionar dia */}
+                            <div className="mt-5 flex flex-col items-start w-full">
+                              <h1 className="text-sm mb-4 font-semibold ">
+                                Selecciona los días de la semana
+                              </h1>
+                              <WeekSelector onDaysSelected={handleDaysSelected} />
+                            </div>
                             {/* Descripción  */}
                             <div className="mt-4">
                               <Textarea
@@ -402,28 +467,7 @@ function AddDiscount() {
                                 </span>
                               )}
                             </div>
-                            <div className="">
-                              <Select
-                                variant="bordered"
-                                placeholder="Selecciona el prioridad"
-                                className="w-full dark:text-white"
-                                label="Prioridad"
-                                labelPlacement="outside"
-                                classNames={{
-                                  label: 'font-semibold text-gray-500 text-sm',
-                                }}
-                                value={values.priority.toString()}
-                                onChange={(e) => {
-                                  setPiority(e.target.value);
-                                }}
-                              >
-                                {priority.map((limit) => (
-                                  <SelectItem key={limit} value={limit} className="dark:text-white">
-                                    {limit}
-                                  </SelectItem>
-                                ))}
-                              </Select>
-                            </div>
+
                             {/* Seleccionar tipo */}
                             <div className="">
                               <Select
@@ -449,10 +493,10 @@ function AddDiscount() {
                             </div>
                           </div>
 
-                          <div className="flex flex-col w-full items-center mt-5">
+                          <div className="flex flex-col w-full items-center mt-7">
                             <Button
                               onClick={() => handleSubmit()}
-                              className="w-500 text-sm font-semibold"
+                              className="w-500 text-sm font-semibold px-10"
                               style={{
                                 backgroundColor: theme.colors.third,
                                 color: theme.colors.primary,
