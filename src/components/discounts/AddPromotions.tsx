@@ -8,405 +8,473 @@ import {
   Textarea,
 } from '@nextui-org/react';
 import { Formik } from 'formik';
-import { useContext, useEffect, useState } from 'react';
+import { Key, useContext, useEffect, useState } from 'react';
 import * as yup from 'yup';
 import { ThemeContext } from '../../hooks/useTheme';
 import WeekSelector from './WeekSelector';
 import { useBranchesStore } from '../../store/branches.store';
-import { useCategoriesStore } from '../../store/categories.store';
-import { CategoryProduct } from '../../types/products.types';
-import { fechaActualString } from '../../utils/dates';
+import { formatDate } from '../../utils/dates';
 import Layout from '../../layout/Layout';
 import { useNavigate } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
+import { Tipos_Promotions, operadores, priority } from '../../utils/constants';
+import { Promotion } from '../../types/promotions.types';
+import { useBranchProductStore } from '../../store/branch_product.store';
+import { usePromotionsStore } from '../../store/promotions/promotions.store';
+import { Tab, Tabs } from '@nextui-org/react';
+import React from 'react';
+import AddPromotionsByProducts from './AddPromotionsByProducts';
+import AddPromotionsByCategory from './AddPromotionsByCategory';
 
 function AddDiscount() {
-  const [selectedBranches, setSelectedBranches] = useState<string[]>([]);
-  // const [startDate, setStartDate] = useState('');
-  // const [endDate, setEndDate] = useState('');
-
-
+  const [selectedBranchId] = useState<number | null>(null);
+  const [selectedPromotion, setSelectedPromotion] = useState('');
+  const [selectedOperators, setSelectedOperators] = useState('');
+  const [selectedOperatorPrice, setOperatorPrice] = useState('');
+  const [selectedPiority, setPiority] = useState('');
+  const [branchId, setBranchId] = useState(0);
+  const [endDate, setEndDate] = useState(formatDate());
+  const [startDate, setStartDate] = useState(formatDate());
+  const [selectedDays, setSelectedDays] = useState<string[]>([]);
   const { getBranchesList, branch_list } = useBranchesStore();
-  const { list_categories, getListCategories } = useCategoriesStore(); //  Quitar esto solo para ver el selector de categorias
 
+  const handleDaysSelected = (days: string[]) => {
+    setSelectedDays(days);
+  };
   const { theme } = useContext(ThemeContext);
-  // const validationSchema = yup.object().shape({
-  //   name: yup.string().required('**El nombre es requerido**'),
-  //   description: yup.string().required('**La descripción es requerida**'),
-  //   branch: yup
-  //     .array()
-  //     .of(yup.string().required('**Debes seleccionar las sucursales**'))
-  //     .required('**Debes seleccionar las sucursales**')
-  //     .test('not-empty', '**Debes seleccionar al menos una sucursal**', (value) => {
-  //       return value && value.length > 0;
-  //     }),
-  //   startDate: yup.string().required('**La fecha de inicio es requerida**'),
-  //   endDate: yup.string().required('**La fecha de fin es requerida**'),
-  //   quantity: yup.number().required('**La cantidad es requerida**'),
-  //   discount: yup.number().required('**El descuento es requerido**'),
-  // });
-
   const validationSchema = yup.object().shape({
     name: yup.string().required('**El nombre es requerido**'),
-    description: yup.string().required('**La descripción es requerida**'),
-    branch: yup
-      .array()
-      .of(yup.string().required('**Debes seleccionar las sucursales**'))
-      .required('**Debes seleccionar las sucursales**')
-      .test('not-empty', '**Debes seleccionar al menos una sucursal**', (value) => {
-        return value && value.length > 0;
-      }),
-    startDate: yup.string().required('**La fecha de inicio es requerida**'),
-    endDate: yup.string().required('**La fecha de fin es requerida**'),
-    quantity: yup.number().required('**La cantidad es requerida**'),
-    discount: yup.number(),
-    price: yup.number(),
-  }).test('price-or-discount', '**Debe ingresar un valor en Precio o Promoción, no en ambos**', function (value) {
-    const { price, discount } = value;
-    if ((price && discount) || (!price && !discount)) {
-      return false;
-    }
-    return true;
   });
 
+  const { getPaginatedBranchProducts } = useBranchProductStore();
+  const { postPromotions } = usePromotionsStore();
+  useEffect(() => {
+    if (selectedBranchId) {
+      getPaginatedBranchProducts(Number(selectedBranchId));
+    }
+  }, [selectedBranchId]);
   useEffect(() => {
     getBranchesList();
-    getListCategories();
   }, []);
-
-  const handleSave = () => {
-
+  const handleSave = (values: Promotion) => {
+    const daysArrayString = JSON.stringify(selectedDays);
+    const payload = {
+      ...values,
+      branchId: branchId,
+      operator: selectedOperators,
+      operatorPrice: selectedOperatorPrice,
+      startDate: startDate,
+      endDate: endDate,
+      days: daysArrayString.toString(),
+      typePromotion: selectedPromotion,
+      priority: selectedPiority,
+    };
+    postPromotions(payload);
   };
   const navigate = useNavigate();
+  const [selected, setSelected] = React.useState<string>('sucursales');
+
+  const handleSelectionChange = (key: Key) => {
+    setSelected(key as string);
+  };
+  useEffect(() => {
+    if (selected === 'sucursales') {
+      setSelectedPromotion('sucursales');
+    } else if (selected === 'productos') {
+      setSelectedPromotion('productos');
+    } else if (selected === 'categoria') {
+      setSelectedPromotion('categoria');
+    }
+  }, [selected]);
 
   return (
     <Layout title="Nueva Promocion">
       <>
-        <div className="h-full m-7">
-          <Formik
-            validationSchema={validationSchema}
-            initialValues={{
-              name: '',
-              branch: [],
-              description: '',
-              startDate: '',
-              endDate: '',
-              quantity: 0,
-              discount: 0,
-            }}
-            onSubmit={handleSave}
-          >
-            {({
-              values,
-              errors,
-              touched,
-              handleBlur,
-              handleChange,
-              handleSubmit,
-              setFieldValue,
-            }) => (
-              <>
-                <div className="w-full overflow-x-auto">
-                  <div>
-                    <Button
-                      onClick={() => {
-                        navigate('/discounts');
-                      }}
-                    >
-                      <ArrowLeft size={20} />
-                      Regresar
-                    </Button>
-                  </div>
-                  <div className="w-full  grid grid-cols-3 gap-5">
-                    {/* Nombre */}
-                    <div className="flex flex-col pt-2  mt-2">
-                      <Input
-                        name="name"
-                        labelPlacement="outside"
-                        value={values.name}
-                        onChange={handleChange('name')}
-                        onBlur={handleBlur('name')}
-                        placeholder="Ingresa el nombre "
-                        classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
-                        variant="bordered"
-                        label="Nombre"
-                      />
-                      {errors.name && touched.name && (
-                        <>
-                          <span className="text-sm font-semibold text-red-600">{errors.name}</span>
-                        </>
-                      )}
-                    </div>
-                    {/* Selecionar sucursales */}
-                    <div className="w-full gap-5 grid grid-cols-1 mt-4">
-                      <div className="flex flex-col justify-content-center w-full">
-                        <Select
-                          multiple
-                          variant="bordered"
-                          placeholder="Selecciona la sucursal"
-                          selectedKeys={selectedBranches}
-                          label="Sucursales"
-                          onBlur={handleBlur('branch')}
-                          classNames={{
-                            label: 'font-semibold text-gray-500 text-sm',
-                          }}
-                          name="branch"
-                          labelPlacement="outside"
-                          onSelectionChange={(keys) => {
-                            const setkeys = new Set(keys as unknown as string[]);
-                            const keysArray = Array.from(setkeys);
-                            if (keysArray.length > 0) {
-                              const includes_key = selectedBranches.includes(keysArray[0]);
-                              if (!includes_key) {
-                                const news = [...selectedBranches, ...keysArray];
-                                setSelectedBranches(news);
-                                setFieldValue('branch', news);
-                              } else {
-                                setSelectedBranches(keysArray);
-                                setFieldValue('branch', keysArray);
-                              }
-                            } else {
-                              setSelectedBranches([]);
-                              setFieldValue('branch', []);
-                            }
-                          }}
-                        >
-                          {branch_list.map((val) => (
-                            <SelectItem key={val.id} value={val.id} className="dark:text-white">
-                              {val.name}
-                            </SelectItem>
-                          ))}
-                        </Select>
-                        {errors.branch && touched.branch && (
-                          <span className="text-sm font-semibold text-red-500">
-                            {errors.branch}
-                          </span>
-                        )}
-                      </div>
-                    </div>
+        <div className="h-full m-8">
+          <div className="flex flex-col mt-2 w-full">
+            <div className="items-center">
+              <ArrowLeft
+                onClick={() => {
+                  navigate('/discounts');
+                }}
+                className="cursor-pointer"
+                size={25}
+              />
+            </div>
+            <div className="items-center">
+              <Tabs
+                aria-label="Options"
+                selectedKey={selected}
+                onSelectionChange={handleSelectionChange}
+              >
+                <Tab key="sucursales" title="Sucursales">
+                  <Formik
+                    validationSchema={validationSchema}
+                    initialValues={{
+                      name: '',
+                      branchId: 0,
+                      days: '',
+                      description: '',
+                      startDate: formatDate(),
+                      endDate: formatDate(),
+                      quantity: 0,
+                      percentage: 0,
+                      operator: '',
+                      operatorPrice: '',
+                      fixedPrice: 0,
+                      typePromotion: '',
+                      maximum: 0,
+                      price: 0,
+                      priority: '',
+                    }}
+                    onSubmit={handleSave}
+                  >
+                    {({ values, errors, touched, handleBlur, handleChange, handleSubmit }) => (
+                      <>
+                        <div className="w-full overflow-x-auto">
+                          <div className="w-full  grid grid-cols-4 gap-5">
+                            {/* Nombre */}
+                            <div className="flex flex-col pt-2  mt-2">
+                              <Input
+                                name="name"
+                                labelPlacement="outside"
+                                value={values.name}
+                                onChange={handleChange('name')}
+                                onBlur={handleBlur('name')}
+                                placeholder="Ingresa el nombre "
+                                classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
+                                variant="bordered"
+                                label="Nombre"
+                              />
+                              {errors.name && touched.name && (
+                                <>
+                                  <span className="text-sm font-semibold text-red-600">
+                                    {errors.name}
+                                  </span>
+                                </>
+                              )}
+                            </div>
 
-                    {/* Selecionar sucursales */}
-                    <div className="w-full gap-5 grid grid-cols-1 mt-4">
-                      <div className="flex flex-col justify-content-center w-full">
-                        <Select
-                          multiple
-                          variant="bordered"
-                          placeholder="Selecciona la sucursal"
-                          selectedKeys={selectedBranches}
-                          label="Productos"
-                          onBlur={handleBlur('branch')}
-                          classNames={{
-                            label: 'font-semibold text-gray-500 text-sm',
-                          }}
-                          name="branch"
-                          labelPlacement="outside"
-                          onSelectionChange={(keys) => {
-                            const setkeys = new Set(keys as unknown as string[]);
-                            const keysArray = Array.from(setkeys);
-                            if (keysArray.length > 0) {
-                              const includes_key = selectedBranches.includes(keysArray[0]);
-                              if (!includes_key) {
-                                const news = [...selectedBranches, ...keysArray];
-                                setSelectedBranches(news);
-                                setFieldValue('branch', news);
-                              } else {
-                                setSelectedBranches(keysArray);
-                                setFieldValue('branch', keysArray);
-                              }
-                            } else {
-                              setSelectedBranches([]);
-                              setFieldValue('branch', []);
-                            }
-                          }}
-                        >
-                          {branch_list.map((val) => (
-                            <SelectItem key={val.id} value={val.id} className="dark:text-white">
-                              {val.name}
-                            </SelectItem>
-                          ))}
-                        </Select>
-                        {errors.branch && touched.branch && (
-                          <span className="text-sm font-semibold text-red-500">
-                            {errors.branch}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
+                            <div className="mt-10">
+                              <Autocomplete placeholder="Selecciona la sucursal">
+                                {branch_list.map((branch) => (
+                                  <AutocompleteItem
+                                    onClick={() => setBranchId(branch.id)}
+                                    className="dark:text-white"
+                                    key={branch.id}
+                                    value={branch.id}
+                                  >
+                                    {branch.name}
+                                  </AutocompleteItem>
+                                ))}
+                              </Autocomplete>
+                            </div>
 
-                  <div className="grid grid-cols-3 gap-5 w-full mt-4">
-                    <div>
-                      <Input
-                        label="Cantidad"
-                        labelPlacement="outside"
-                        name="price"
-                        value={values.quantity.toString()}
-                        onChange={handleChange('quantity')}
-                        onBlur={handleBlur('quantity')}
-                        placeholder="0"
-                        classNames={{
-                          label: 'font-semibold text-gray-500 text-sm',
-                        }}
-                        variant="bordered"
-                        type="number"
-                        startContent=""
-                      />
-                      {errors.quantity && touched.quantity && (
-                        <span className="text-sm font-semibold text-red-500">
-                          {errors.quantity}
-                        </span>
-                      )}
-                    </div>
-                    <div>
-                      <Input
-                        label="Descuento"
-                        labelPlacement="outside"
-                        name="discount"
-                        value={values.discount.toString()}
-                        onChange={handleChange('discount')}
-                        onBlur={handleBlur('discount')}
-                        placeholder="0"
-                        classNames={{
-                          label: 'font-semibold text-gray-500 text-sm',
-                        }}
-                        variant="bordered"
-                        type="number"
-                        startContent=""
-                      />
-                      {errors.discount && touched.discount && (
-                        <span className="text-sm font-semibold text-red-500">
-                          {errors.discount}
-                        </span>
-                      )}
-                    </div>
-                    <div>
-                      <Input
-                        label="V. Max"
-                        labelPlacement="outside"
-                        name="price"
-                        // value={values.price.toString()}
-                        onChange={handleChange('price')}
-                        onBlur={handleBlur('price')}
-                        placeholder="00.00"
-                        classNames={{
-                          label: 'font-semibold text-gray-500 text-sm',
-                        }}
-                        variant="bordered"
-                        type="number"
-                        startContent="$"
-                      />
-                      {/* {errors.price && touched.price && (
-                      <span className="text-sm font-semibold text-red-500">{errors.price}</span>
+                            <div className="grid grid-cols-2 mt-4">
+                              <div>
+                                <Input
+                                  label="Precio"
+                                  labelPlacement="outside"
+                                  name="price"
+                                  value={values.price.toString()}
+                                  onChange={handleChange('price')}
+                                  onBlur={handleBlur('price')}
+                                  placeholder="0"
+                                  classNames={{
+                                    label: 'font-semibold text-gray-500 text-sm',
+                                  }}
+                                  variant="bordered"
+                                  type="number"
+                                  startContent=""
+                                />
+                                {errors.price && touched.price && (
+                                  <span className="text-sm font-semibold text-red-500">
+                                    {errors.price}
+                                  </span>
+                                )}
+                              </div>
+                              <div className="">
+                                <Select
+                                  variant="bordered"
+                                  placeholder="Selecciona el operador"
+                                  className="w-full dark:text-white"
+                                  label="Operador"
+                                  labelPlacement="outside"
+                                  classNames={{
+                                    label: 'font-semibold text-gray-500 text-sm',
+                                  }}
+                                  value={values.operatorPrice?.toString()}
+                                  onChange={(e) => {
+                                    setOperatorPrice(e.target.value);
+                                  }}
+                                >
+                                  {operadores.map((limit) => (
+                                    <SelectItem
+                                      key={limit}
+                                      value={limit}
+                                      className="dark:text-white"
+                                    >
+                                      {limit}
+                                    </SelectItem>
+                                  ))}
+                                </Select>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-3 gap-5 w-full mt-8">
+                            <div className="grid grid-cols-3 gap-2 w-full">
+                              <div>
+                                <Input
+                                  label="Cantidad Minima"
+                                  labelPlacement="outside"
+                                  name="quantity"
+                                  value={values.quantity.toString()}
+                                  onChange={handleChange('quantity')}
+                                  onBlur={handleBlur('quantity')}
+                                  placeholder="0"
+                                  classNames={{
+                                    label: 'font-semibold text-gray-500 text-sm',
+                                  }}
+                                  variant="bordered"
+                                  type="number"
+                                  startContent=""
+                                />
+                                {errors.quantity && touched.quantity && (
+                                  <span className="text-sm font-semibold text-red-500">
+                                    {errors.quantity}
+                                  </span>
+                                )}
+                              </div>
+                              <div>
+                                <Input
+                                  label="Cantidad Maxima"
+                                  labelPlacement="outside"
+                                  name="maximum"
+                                  value={values.maximum?.toString()}
+                                  onChange={handleChange('maximum')}
+                                  onBlur={handleBlur('maximum')}
+                                  placeholder="0"
+                                  classNames={{
+                                    label: 'font-semibold text-gray-500 text-sm',
+                                  }}
+                                  variant="bordered"
+                                  type="number"
+                                  startContent=""
+                                />
+                                {errors.maximum && touched.maximum && (
+                                  <span className="text-sm font-semibold text-red-500">
+                                    {errors.maximum}
+                                  </span>
+                                )}
+                              </div>
+                              <div>
+                                <div className="">
+                                  <Select
+                                    variant="bordered"
+                                    placeholder="Selecciona el operador"
+                                    className="w-full dark:text-white"
+                                    label="Operador"
+                                    labelPlacement="outside"
+                                    classNames={{
+                                      label: 'font-semibold text-gray-500 text-sm',
+                                    }}
+                                    value={values.operator.toString()}
+                                    onChange={(e) => {
+                                      setSelectedOperators(e.target.value);
+                                    }}
+                                  >
+                                    {operadores.map((limit) => (
+                                      <SelectItem
+                                        key={limit}
+                                        value={limit}
+                                        className="dark:text-white"
+                                      >
+                                        {limit}
+                                      </SelectItem>
+                                    ))}
+                                  </Select>
+                                </div>
+                              </div>
+                            </div>
+                            <div>
+                              <Input
+                                label="Procentaje de descuento"
+                                labelPlacement="outside"
+                                name="percentage"
+                                value={values.percentage ? values.percentage.toString() : ''}
+                                onChange={handleChange('percentage')}
+                                onBlur={handleBlur('percentage')}
+                                placeholder="0"
+                                classNames={{
+                                  label: 'font-semibold text-gray-500 text-sm',
+                                }}
+                                variant="bordered"
+                                type="number"
+                                startContent="%"
+                              />
+                              {/* {errors.discount && touched.discount && (
+                      <span className="text-sm font-semibold text-red-500">
+                        {errors.discount}
+                      </span>
                     )} */}
-                    </div>
-                  </div>
-
-                  <div className="w-full grid grid-cols-3 gap-5 mt-4">
-                    <div className="">
-                      <label className="text-sm font-semibold dark:text-white">Fecha inicial</label>
-                      <Input
-                        // onChange={(e) => setStartDate(e.target.value)}
-                        defaultValue={fechaActualString}
-                        className="w-full "
-                        type="date"
-                      ></Input>
-                    </div>
-                    <div>
-                      <label className="text-sm font-semibold dark:text-white">Fecha final</label>
-                      <Input
-                        // onChange={(e) => setEndDate(e.target.value)}
-                        defaultValue={fechaActualString}
-                        className="w-full "
-                        type="date"
-                      ></Input>
-                    </div>
-                    {/* Seleccionar tipo */}
-                    <div className="">
-                      <Autocomplete
-                        onSelectionChange={(key) => {
-                          if (key) {
-                            const branchSelected = JSON.parse(key as string) as CategoryProduct;
-                            handleChange('categoryProductId')(branchSelected.id.toString());
-                          }
-                        }}
-                        onBlur={handleBlur('categoryProductId')}
-                        label="Tipo"
-                        labelPlacement="outside"
-                        placeholder={'Selecciona la tipo'}
-                        variant="bordered"
-                        classNames={{
-                          base: 'font-semibold text-gray-500 text-sm',
-                        }}
-                        className="dark:text-white"
-                        // defaultSelectedKey={selectedKeyCategory}
-                        // value={selectedKeyCategory}
-                      >
-                        {list_categories.map((bra) => (
-                          <AutocompleteItem
-                            value={bra.name}
-                            key={JSON.stringify(bra)}
-                            className="dark:text-white"
-                          >
-                            {bra.name}
-                          </AutocompleteItem>
-                        ))}
-                      </Autocomplete>
-                      {/* {errors.categoryProductId && touched.categoryProductId && (
-                    <span className="text-sm font-semibold text-red-500">
-                      {errors.categoryProductId}
-                    </span>
+                            </div>
+                            <div>
+                              <Input
+                                label="Precio Fijo"
+                                labelPlacement="outside"
+                                name=" fixedPrice"
+                                value={values.fixedPrice ? values.fixedPrice.toString() : ''}
+                                onChange={handleChange('fixedPrice')}
+                                onBlur={handleBlur('fixedPrice')}
+                                placeholder="0"
+                                classNames={{
+                                  label: 'font-semibold text-gray-500 text-sm',
+                                }}
+                                variant="bordered"
+                                type="number"
+                                startContent=""
+                              />
+                              {/* {errors.price && touched.price && (
+                    <span className="text-sm font-semibold text-red-500">{errors.price}</span>
                   )} */}
-                    </div>
-                  </div>
+                            </div>
+                          </div>
 
-                  {/* Seleccionar dia */}
-                  <div className="mt-5 flex flex-col items-start w-full">
-                    <h1 className="text-sm mb-4 font-semibold ">
-                      Selecciona los días de la semana
-                    </h1>
-                    <WeekSelector />
-                  </div>
+                          <div className="w-full grid grid-cols-3 gap-5 mt-4">
+                            <div className="">
+                              <Input
+                                type="date"
+                                variant="bordered"
+                                label="Fecha inicial"
+                                labelPlacement="outside"
+                                className="dark:text-white"
+                                classNames={{
+                                  label: 'font-semibold',
+                                }}
+                                onChange={(e) => setStartDate(e.target.value)}
+                                value={startDate}
+                              />
+                            </div>
+                            <div>
+                              <Input
+                                type="date"
+                                variant="bordered"
+                                label="Fecha final"
+                                labelPlacement="outside"
+                                className="dark:text-white"
+                                classNames={{
+                                  label: 'font-semibold',
+                                }}
+                                onChange={(e) => setEndDate(e.target.value)}
+                                value={endDate}
+                              />
+                            </div>
+                          </div>
 
-                  <div className="w-full  grid grid-cols-1 gap-5">
-                    {/* Descripción  */}
-                    <div className="mt-4">
-                      <Textarea
-                        label="Descripción"
-                        labelPlacement="outside"
-                        name="description"
-                        value={values.description}
-                        onChange={handleChange('description')}
-                        onBlur={handleBlur('description')}
-                        placeholder="Ingresa la descripción"
-                        classNames={{
-                          label: 'font-semibold text-gray-500 text-sm ',
-                        }}
-                        variant="bordered"
-                      />
-                      {errors.description && touched.description && (
-                        <span className="text-sm font-semibold text-red-500">
-                          {errors.description}
-                        </span>
-                      )}
-                    </div>
-                  </div>
+                          {/* Seleccionar dia */}
+                          <div className="mt-5 flex flex-col items-start w-full">
+                            <h1 className="text-sm mb-4 font-semibold ">
+                              Selecciona los días de la semana
+                            </h1>
+                            <WeekSelector onDaysSelected={handleDaysSelected} />
+                          </div>
 
-                  <div className="flex flex-col w-full items-center mt-5">
-                    <Button
-                      onClick={() => handleSubmit()}
-                      className="w-500 text-sm font-semibold"
-                      style={{
-                        backgroundColor: theme.colors.third,
-                        color: theme.colors.primary,
-                      }}
-                    >
-                      Guardar
-                    </Button>
-                  </div>
-                </div>
-              </>
-            )}
-          </Formik>
+                          <div className="w-full  grid grid-cols-3 gap-5">
+                            {/* Descripción  */}
+                            <div className="mt-4">
+                              <Textarea
+                                label="Descripción"
+                                labelPlacement="outside"
+                                name="description"
+                                value={values.description}
+                                onChange={handleChange('description')}
+                                onBlur={handleBlur('description')}
+                                placeholder="Ingresa la descripción"
+                                classNames={{
+                                  label: 'font-semibold text-gray-500 text-sm ',
+                                }}
+                                variant="bordered"
+                              />
+                              {errors.description && touched.description && (
+                                <span className="text-sm font-semibold text-red-500">
+                                  {errors.description}
+                                </span>
+                              )}
+                            </div>
+                            <div className="">
+                              <Select
+                                variant="bordered"
+                                placeholder="Selecciona el prioridad"
+                                className="w-full dark:text-white"
+                                label="Prioridad"
+                                labelPlacement="outside"
+                                classNames={{
+                                  label: 'font-semibold text-gray-500 text-sm',
+                                }}
+                                value={values.priority.toString()}
+                                onChange={(e) => {
+                                  setPiority(e.target.value);
+                                }}
+                              >
+                                {priority.map((limit) => (
+                                  <SelectItem key={limit} value={limit} className="dark:text-white">
+                                    {limit}
+                                  </SelectItem>
+                                ))}
+                              </Select>
+                            </div>
+                            {/* Seleccionar tipo */}
+                            <div className="">
+                              <Select
+                                variant="bordered"
+                                placeholder="Selecciona el tipo de promoción"
+                                className="w-full dark:text-white"
+                                label="Tipo de Promoción"
+                                labelPlacement="outside"
+                                classNames={{
+                                  label: 'font-semibold text-gray-500 text-sm',
+                                }}
+                                value={selectedPromotion}
+                                onChange={(e) => {
+                                  setSelectedPromotion(e.target.value);
+                                }}
+                              >
+                                {Tipos_Promotions.map((limit) => (
+                                  <SelectItem key={limit} value={limit} className="dark:text-white">
+                                    {limit}
+                                  </SelectItem>
+                                ))}
+                              </Select>
+                            </div>
+                          </div>
+
+                          <div className="flex flex-col w-full items-center mt-5">
+                            <Button
+                              onClick={() => handleSubmit()}
+                              className="w-500 text-sm font-semibold"
+                              style={{
+                                backgroundColor: theme.colors.third,
+                                color: theme.colors.primary,
+                              }}
+                            >
+                              Guardar
+                            </Button>
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </Formik>
+                </Tab>
+                <Tab key="productos" title="Productos">
+                  <AddPromotionsByProducts />
+                </Tab>
+                <Tab key="categoria" title="Categoria">
+                  <AddPromotionsByCategory />
+                </Tab>
+              </Tabs>
+            </div>
+          </div>
         </div>
       </>
     </Layout>

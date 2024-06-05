@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router';
 import AddButton from '../global/AddButton';
 
+
 function ListDiscount() {
   const navigate = useNavigate();
   return (
@@ -11,6 +12,7 @@ function ListDiscount() {
             <div className="flex items-start gap-3"></div>
             <div className="flex w-full">
               <div className="items-start justify-between w-full gap-10 lg:justify-start">
+             
                 <div className="flex justify-end w-full">
                   <AddButton
                     onClick={() => {
