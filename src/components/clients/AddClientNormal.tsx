@@ -122,7 +122,7 @@ const AddClientNormal = (props: Props) => {
     }
   }, [props, props.customer_direction, cat_013_municipios, cat_013_municipios.length]);
   return (
-    <div>
+    <div className='p-4'>
       <Formik
         initialValues={{ ...initialValues }}
         validationSchema={validationSchema}
@@ -130,7 +130,7 @@ const AddClientNormal = (props: Props) => {
       >
         {({ values, touched, errors, handleBlur, handleChange, handleSubmit }) => (
           <>
-            <div className="pt-3">
+            <div className="">
               <Input
                 label="Nombre"
                 labelPlacement="outside"

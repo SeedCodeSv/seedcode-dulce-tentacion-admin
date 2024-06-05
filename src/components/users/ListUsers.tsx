@@ -13,7 +13,6 @@ import {
 } from '@nextui-org/react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import ModalGlobal from '../global/ModalGlobal';
 import AddUsers from './AddUsers';
 import UpdateUsers from './UpdateUsers';
 import {
@@ -38,7 +37,7 @@ import classNames from 'classnames';
 import { limit_options } from '../../utils/constants';
 import SmPagination from '../global/SmPagination';
 import { Search } from 'lucide-react';
-
+import HeadlessModal from '../global/HeadlessModal';
 interface Props {
   actions: string[];
 }
@@ -430,30 +429,30 @@ function ListUsers({ actions }: Props) {
             </>
           )}
         </div>
-        <ModalGlobal
+        <HeadlessModal
           isOpen={modalAdd.isOpen}
           onClose={modalAdd.onClose}
           title="Agregar usuario"
-          size="w-full sm:w-[500px]"
+          size="w-[350px] md:w-[500px]"
         >
           <AddUsers onClose={modalAdd.onClose} />
-        </ModalGlobal>
-        <ModalGlobal
+        </HeadlessModal>
+        <HeadlessModal
           isOpen={modalChangePassword.isOpen}
           onClose={modalChangePassword.onClose}
           title="Actualizar contraseña"
-          size="w-full sm:w-[500px]"
+          size="w-[350px] md:w-[500px]"
         >
           <UpdatePassword id={selectId} closeModal={modalChangePassword.onClose} />
-        </ModalGlobal>
-        <ModalGlobal
+        </HeadlessModal>
+        <HeadlessModal
           isOpen={modalUpdate.isOpen}
           onClose={modalUpdate.onClose}
           title="Editar usuario"
-          size="w-full sm:w-[500px]"
+          size="w-[350px] md:w-[500px]"
         >
           <UpdateUsers onClose={modalUpdate.onClose} user={user} />
-        </ModalGlobal>
+        </HeadlessModal>
       </div>
     </>
   );

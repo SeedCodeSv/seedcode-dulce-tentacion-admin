@@ -32,7 +32,7 @@ function UpdatePassword(props: Props) {
   };
 
   return (
-    <div className="mb-32 p t-5 sm:mb-0">
+    <div className="p-4">
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}

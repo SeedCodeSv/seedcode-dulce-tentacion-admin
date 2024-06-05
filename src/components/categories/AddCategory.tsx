@@ -33,7 +33,7 @@ const AddCategory = (props: Props) => {
   };
 
   return (
-    <div className="h-full">
+    <div className="p-5 w-full">
       <Formik
         validationSchema={validationSchema}
         initialValues={{ name: props.category?.name ?? '' }}
@@ -41,7 +41,7 @@ const AddCategory = (props: Props) => {
       >
         {({ values, errors, touched, handleBlur, handleChange, handleSubmit }) => (
           <>
-            <div className="flex flex-col pt-2">
+            <div className="flex flex-col w-full">
               <Input
                 name="name"
                 labelPlacement="outside"

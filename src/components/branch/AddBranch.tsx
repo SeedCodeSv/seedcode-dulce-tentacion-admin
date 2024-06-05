@@ -41,7 +41,8 @@ function AddBranch(props: Props) {
   };
 
   return (
-    <Formik
+    <div className='p-4'>
+      <Formik
       initialValues={{
         name: props.branch?.name ?? '',
         address: props.branch?.address ?? '',
@@ -114,6 +115,7 @@ function AddBranch(props: Props) {
         </>
       )}
     </Formik>
+    </div>
   );
 }
 
