@@ -15,15 +15,11 @@ export interface FC_Identificacion {
     tipoMoneda: "USD"
 }
 
-export type FC_DocumentoRelacionadoItems = {
+export interface FC_DocumentoRelacionadoItems {
     tipoDocumento: string,
     tipoGeneracion: number,
-    numeroDocumento: string,
+    numeroDocumento: number,
     fechaEmision: string
-}
-
-export interface FC_DocumentoRelacionado {
-    items: FC_DocumentoRelacionadoItems[]
 }
 
 export interface FC_Emisor {
@@ -63,7 +59,7 @@ export interface FC_Receptor {
     correo: string | null
 }
 
-export type FC_OtrosDocumentosItems = {
+export interface FC_OtrosDocumentosItems {
     codDocAsociado: number,
     descDocumento: string,
     detalleDocumento: string,
@@ -74,21 +70,13 @@ export type FC_OtrosDocumentosItems = {
         tipoServicio: number
     } | null
 }
-
-export interface FC_OtrosDocumentos {
-    items: FC_OtrosDocumentosItems[]
-}
-
-export type FC_VentaTercerosItems = {
+export interface FC_VentaTercerosItems {
     nit: string,
     nombre: string
 }
 
-export interface FC_VentaTerceros {
-    items: FC_VentaTercerosItems[]
-}
 
-export type FC_CuerpoDocumentoItems = {
+export interface FC_CuerpoDocumentoItems{
     numItem: number,
     tipoItem: number,
     numeroDocumento: string | null,
@@ -112,13 +100,13 @@ export interface FC_CuerpoDocumento {
     items: FC_CuerpoDocumentoItems[]
 }
 
-export type FC_TributosItems = {
+export interface FC_TributosItems {
     codigo: string,
     tributo: string,
     valor: number
 }
 
-export type FC_PagosItems = {
+export interface FC_PagosItems{
     codigo: string,
     montoPago: number,
     referencia: string | null,
@@ -160,14 +148,10 @@ export interface FC_Extension {
     placaVehiculo: string | null
 }
 
-export type FC_ApendiceItems = {
+export interface FC_ApendiceItems {
     nombre: string,
     etiqueta: string,
     valor: string
-}
-
-export interface FC_Apendice {
-    items: FC_ApendiceItems[]
 }
 
 export interface SVFE_FC {
