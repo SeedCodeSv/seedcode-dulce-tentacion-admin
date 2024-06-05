@@ -16,8 +16,9 @@ import { useEffect, useState } from 'react';
 import { verify_box } from '../../services/Boxes.service';
 import { BoxIcon } from 'lucide-react';
 import { post_box, save_branch_id } from '../../storage/localStorage';
-import ModalGlobal from '../global/ModalGlobal';
 import CloseBox from './box/CloseBox';
+import HeadlessModal from '../global/HeadlessModal';
+
 interface Props {
   closeModal: () => void;
   branch?: Branches | undefined;
@@ -76,7 +77,7 @@ function AddBranch(props: Props) {
 
   return (
     <>
-      <div className="w-full">
+      <div className="w-full p-4">
         {visible ? (
           <>
             <div className=" justify-center items-center">
@@ -181,17 +182,17 @@ function AddBranch(props: Props) {
           </>
         )}
       </div>
-      <ModalGlobal
+      <HeadlessModal
         isOpen={modalCloseBox.isOpen}
         onClose={() => {
           modalCloseBox.onClose();
         }}
         title="Cierre de caja"
         size="w-full"
-        isFull
+        // isFull
       >
         <CloseBox />
-      </ModalGlobal>
+      </HeadlessModal>
     </>
   );
 }

@@ -32,7 +32,6 @@ import AddButton from '../global/AddButton';
 import Pagination from '../global/Pagination';
 import { ThemeContext } from '../../hooks/useTheme';
 import MobileView from './MobileView';
-import ModalGlobal from '../global/ModalGlobal';
 import AddEmployee from './AddEmployee';
 import { Drawer } from 'vaul';
 import { global_styles } from '../../styles/global.styles';
@@ -41,6 +40,7 @@ import { useBranchesStore } from '../../store/branches.store';
 import { Branches } from '../../types/branches.types';
 import { limit_options } from '../../utils/constants';
 import SmPagination from '../global/SmPagination';
+import HeadlessModal from '../global/HeadlessModal';
 
 interface Props {
   actions: string[];
@@ -428,14 +428,14 @@ function ListEmployee({ actions }: Props) {
           )}
         </div>
       </div>
-      <ModalGlobal
+      <HeadlessModal
         isOpen={modalAdd.isOpen}
         onClose={modalAdd.onClose}
         title={selectedEmployee ? 'Editar Empleado' : 'Agregar Empleado'}
-        size="w-full sm:w-[500px]"
+        size="w-[350px] md:w-[500px]"
       >
         <AddEmployee closeModal={modalAdd.onClose} employee={selectedEmployee} />
-      </ModalGlobal>
+      </HeadlessModal>
     </>
   );
 }

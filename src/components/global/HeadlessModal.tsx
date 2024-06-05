@@ -38,21 +38,21 @@ function HeadlessModal(props: Props) {
                   size
                 )}
               >
-                <div className="w-full flex justify-between p-5">
+                <div className="w-full flex justify-between p-1 mt-1">
                   <Dialog.Title
                     as="h3"
-                    className="text-base/7 font-medium dark:text-white"
+                    className=" font-medium dark:text-white ml-3"
                   >
                     {title}
                   </Dialog.Title>
                   <button
                     onClick={onClose}
-                    className="bg-transparent border-0 outline-none"
+                    className="bg-transparent border-0 mr-3 outline-none"
                   >
                     <X className="dark:text-white" />
                   </button>
                 </div>
-                {children}
+                <div className="w-full top-[-10]">{children}</div>
               </Dialog.Panel>
             </Transition.Child>
           </div>
