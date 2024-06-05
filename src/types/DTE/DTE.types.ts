@@ -148,7 +148,6 @@ export interface ICuerpoDocumento {
   tributos: null | string[];
   psv: number | string;
   noGravado: number | string;
-  ivaItem: number | string;
 }
 
 export interface Resumen {
@@ -175,7 +174,6 @@ export interface Resumen {
   totalNoGravado: number | string;
   totalPagar: number | string;
   totalLetras: string;
-  totalIva: number | string;
   saldoFavor: number | string;
   condicionOperacion: number;
   pagos: Pago[];

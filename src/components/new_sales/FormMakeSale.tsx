@@ -1,34 +1,44 @@
-import { Autocomplete, AutocompleteItem, Button, useDisclosure } from '@nextui-org/react';
-import { useBillingStore } from '../../store/facturation/billing.store';
-import { useEffect, useState } from 'react';
-import { useCustomerStore } from '../../store/customers.store';
-import { Customer } from '../../types/customers.types';
-import { toast } from 'sonner';
-import { ITipoDocumento } from '../../types/DTE/tipo_documento.types';
-import { IFormasDePago } from '../../types/DTE/forma_de_pago.types';
-import { generate_factura } from '../../utils/DTE/factura';
-import { useTransmitterStore } from '../../store/transmitter.store';
-import { useBranchProductStore } from '../../store/branch_product.store';
-import { PutObjectCommand, PutObjectCommandInput } from '@aws-sdk/client-s3';
-import { pdf } from '@react-pdf/renderer';
-import { s3Client } from '../../plugins/s3';
-import { useCorrelativesDteStore } from '../../store/correlatives_dte.store';
-import { check_dte, firmarDocumentoFactura, send_to_mh } from '../../services/DTE.service';
-import ModalGlobal from '../global/ModalGlobal';
-import { LoaderCircle, ShieldAlert } from 'lucide-react';
-import { global_styles } from '../../styles/global.styles';
-import { get_token, return_mh_token } from '../../storage/localStorage';
-import { DteJson, PayloadMH } from '../../types/DTE/DTE.types';
-import { ambiente, API_URL, MH_QUERY } from '../../utils/constants';
-import axios, { AxiosError } from 'axios';
-import { SendMHFailed } from '../../types/transmitter.types';
-import { Invoice } from '../../pages/Invoice';
-import { TipoTributo } from '../../types/DTE/tipo_tributo.types';
-import CreditoFiscal from './CreditoFiscal';
-import { ICheckResponse } from '../../types/DTE/check.types';
-import { useContingenciaStore } from '../../plugins/dexie/store/contigencia.store';
-import { save_logs } from '../../services/logs.service';
-import { formatDate } from '../../utils/dates';
+import {
+  Autocomplete,
+  AutocompleteItem,
+  Button,
+  useDisclosure,
+} from "@nextui-org/react";
+import { useBillingStore } from "../../store/facturation/billing.store";
+import { useEffect, useState } from "react";
+import { useCustomerStore } from "../../store/customers.store";
+import { Customer } from "../../types/customers.types";
+import { toast } from "sonner";
+import { ITipoDocumento } from "../../types/DTE/tipo_documento.types";
+import { IFormasDePago } from "../../types/DTE/forma_de_pago.types";
+import { generate_factura } from "../../utils/DTE/factura";
+import { useTransmitterStore } from "../../store/transmitter.store";
+import { useBranchProductStore } from "../../store/branch_product.store";
+import { PutObjectCommand, PutObjectCommandInput } from "@aws-sdk/client-s3";
+import { pdf } from "@react-pdf/renderer";
+import { s3Client } from "../../plugins/s3";
+import { useCorrelativesDteStore } from "../../store/correlatives_dte.store";
+import {
+  check_dte,
+  firmarDocumentoFactura,
+  send_to_mh,
+} from "../../services/DTE.service";
+import ModalGlobal from "../global/ModalGlobal";
+import { LoaderCircle, ShieldAlert } from "lucide-react";
+import { global_styles } from "../../styles/global.styles";
+import { get_token, return_mh_token } from "../../storage/localStorage";
+import { PayloadMH } from "../../types/DTE/DTE.types";
+import { ambiente, API_URL } from "../../utils/constants";
+import axios, { AxiosError } from "axios";
+import { SendMHFailed } from "../../types/transmitter.types";
+import { TipoTributo } from "../../types/DTE/tipo_tributo.types";
+import CreditoFiscal from "./CreditoFiscal";
+import { ICheckResponse } from "../../types/DTE/check.types";
+import { useContingenciaStore } from "../../plugins/dexie/store/contigencia.store";
+import { save_logs } from "../../services/logs.service";
+import { formatDate } from "../../utils/dates";
+import { SVFE_FC_SEND } from "../../types/svf_dte/fc.types";
+import Template1CFC from "../../pages/invoices/Template1CFC";
 
 interface Props {
   clear: () => void;
@@ -41,7 +51,7 @@ function FormMakeSale(props: Props) {
   const [tipePayment, setTipePayment] = useState<IFormasDePago>();
   const [tipeTribute, setTipeTribute] = useState<TipoTributo>();
 
-  const [currentDTE, setCurrentDTE] = useState<DteJson>();
+  const [currentDTE, setCurrentDTE] = useState<SVFE_FC_SEND>();
 
   const {
     metodos_de_pago,
@@ -63,37 +73,33 @@ function FormMakeSale(props: Props) {
   }, []);
 
   const modalError = useDisclosure();
-  const [errorMessage, setErrorMessage] = useState('');
-  const [title, setTitle] = useState<string>('');
+  const [errorMessage, setErrorMessage] = useState("");
+  const [title, setTitle] = useState<string>("");
   const [loading, setLoading] = useState(false);
 
   const { getCorrelativesByDte } = useCorrelativesDteStore();
 
-  const generateURLMH = (ambiente: string, codegen: string, fechaEmi: string) => {
-    return `${MH_QUERY}?ambiente=${ambiente}&codGen=${codegen}&fechaEmi=${fechaEmi}`;
-  };
-
   const generateFactura = async () => {
     // setLoading(true); // Mostrar mensaje de espera
     if (!tipePayment) {
-      toast.info('Debes seleccionar el método de pago');
+      toast.info("Debes seleccionar el método de pago");
 
       return;
     }
     if (!tipeDocument) {
-      toast.info('Debes seleccionar el tipo de documento');
+      toast.info("Debes seleccionar el tipo de documento");
 
       return;
     }
     if (!Customer) {
-      toast.info('Debes seleccionar el cliente');
+      toast.info("Debes seleccionar el cliente");
       return;
     }
 
-    const correlatives = await getCorrelativesByDte(transmitter.id, '01');
+    const correlatives = await getCorrelativesByDte(transmitter.id, "01");
 
     if (!correlatives) {
-      toast.error('No se encontraron correlativos');
+      toast.error("No se encontraron correlativos");
       return;
     }
 
@@ -109,7 +115,7 @@ function FormMakeSale(props: Props) {
     setCurrentDTE(generate);
     setLoading(true);
 
-    toast.info('Estamos firmado tu documento');
+    toast.info("Estamos firmado tu documento");
 
     firmarDocumentoFactura(generate)
       .then(async (firma) => {
@@ -119,24 +125,24 @@ function FormMakeSale(props: Props) {
             ambiente: ambiente,
             idEnvio: 1,
             version: 1,
-            tipoDte: '01',
+            tipoDte: "01",
             documento: firma.data.body,
           };
-          toast.info('Se ah enviado a hacienda, esperando respuesta');
+          toast.info("Se ah enviado a hacienda, esperando respuesta");
 
           if (token_mh) {
             const source = axios.CancelToken.source();
 
             const timeout = setTimeout(() => {
-              source.cancel('El tiempo de espera ha expirado');
+              source.cancel("El tiempo de espera ha expirado");
             }, 25000);
 
             send_to_mh(data_send, token_mh, source)
               .then(async ({ data }) => {
                 if (data.selloRecibido) {
                   clearTimeout(timeout);
-                  toast.success('Hacienda respondió correctamente', {
-                    description: 'Estamos guardando tus datos',
+                  toast.success("Hacienda respondió correctamente", {
+                    description: "Estamos guardando tus datos",
                   });
 
                   const json_url = `CLIENTES/${
@@ -160,69 +166,75 @@ function FormMakeSale(props: Props) {
                     2
                   );
                   const json_blob = new Blob([JSON_DTE], {
-                    type: 'application/json',
+                    type: "application/json",
                   });
 
                   const blob = await pdf(
-                    <Invoice
-                      MHUrl={generateURLMH(
-                        ambiente,
-                        generate.dteJson.identificacion.codigoGeneracion,
-                        generate.dteJson.identificacion.fecEmi
-                      )}
-                      DTE={generate}
-                      sello={data.selloRecibido}
+                    <Template1CFC
+                      dte={{
+                        ...generate.dteJson,
+                        respuestaMH: data,
+                        firma: firma.data.body,
+                      }}
                     />
                   ).toBlob();
 
                   if (json_blob && blob) {
                     const uploadParams: PutObjectCommandInput = {
-                      Bucket: 'seedcode-facturacion',
+                      Bucket: "seedcode-facturacion",
                       Key: json_url,
                       Body: json_blob,
                     };
                     const uploadParamsPDF: PutObjectCommandInput = {
-                      Bucket: 'seedcode-facturacion',
+                      Bucket: "seedcode-facturacion",
                       Key: pdf_url,
                       Body: blob,
                     };
 
-                    s3Client.send(new PutObjectCommand(uploadParamsPDF)).then((response) => {
-                      if (response.$metadata) {
-                        s3Client.send(new PutObjectCommand(uploadParams)).then((response) => {
-                          if (response.$metadata) {
-                            const token = get_token() ?? '';
+                    s3Client
+                      .send(new PutObjectCommand(uploadParamsPDF))
+                      .then((response) => {
+                        if (response.$metadata) {
+                          s3Client
+                            .send(new PutObjectCommand(uploadParams))
+                            .then((response) => {
+                              if (response.$metadata) {
+                                const token = get_token() ?? "";
 
-                            axios
-                              .post(
-                                API_URL + '/sales/factura-sale',
-                                {
-                                  pdf: pdf_url,
-                                  dte: json_url,
-                                  clienteId: Customer.id,
-                                  cajaId: Number(localStorage.getItem('box')),
-                                  codigoEmpleado: 1,
-                                  sello: true,
-                                },
-                                {
-                                  headers: {
-                                    Authorization: `Bearer ${token}`,
-                                  },
-                                }
-                              )
-                              .then(() => {
-                                toast.success('Se completo con éxito la venta');
-                                props.clear();
-                                setLoading(false);
-                              })
-                              .catch(() => {
-                                toast.error('Error al guardar la venta');
-                                setLoading(false);
-                              });
-                          }
-                        });
-                      }
-                    });
+                                axios
+                                  .post(
+                                    API_URL + "/sales/factura-sale",
+                                    {
+                                      pdf: pdf_url,
+                                      dte: json_url,
+                                      clienteId: Customer.id,
+                                      cajaId: Number(
+                                        localStorage.getItem("box")
+                                      ),
+                                      codigoEmpleado: 1,
+                                      sello: true,
+                                    },
+                                    {
+                                      headers: {
+                                        Authorization: `Bearer ${token}`,
+                                      },
+                                    }
+                                  )
+                                  .then(() => {
+                                    toast.success(
+                                      "Se completo con éxito la venta"
+                                    );
+                                    props.clear();
+                                    setLoading(false);
+                                  })
+                                  .catch(() => {
+                                    toast.error("Error al guardar la venta");
+                                    setLoading(false);
+                                  });
+                              }
+                            });
+                        }
+                      });
                   }
                 }
               })
@@ -230,8 +242,8 @@ function FormMakeSale(props: Props) {
                 clearTimeout(timeout);
 
                 if (axios.isCancel(error)) {
-                  setTitle('Tiempo de espera agotado');
-                  setErrorMessage('El tiempo limite de espera ha expirado');
+                  setTitle("Tiempo de espera agotado");
+                  setErrorMessage("El tiempo limite de espera ha expirado");
                   modalError.onOpen();
                   setLoading(false);
                 }
@@ -240,31 +252,34 @@ function FormMakeSale(props: Props) {
                   setErrorMessage(
                     error.response.data.observaciones &&
                       error.response.data.observaciones.length > 0
-                      ? error.response?.data.observaciones.join('\n\n')
-                      : ''
+                      ? error.response?.data.observaciones.join("\n\n")
+                      : ""
                   );
-                  setTitle(error.response.data.descripcionMsg ?? 'Error al procesar venta');
+                  setTitle(
+                    error.response.data.descripcionMsg ??
+                      "Error al procesar venta"
+                  );
                   modalError.onOpen();
                   setLoading(false);
                 }
               });
           } else {
-            setErrorMessage('No se ha podido obtener el token de hacienda');
+            setErrorMessage("No se ha podido obtener el token de hacienda");
             modalError.onOpen();
             setLoading(false);
             return;
           }
         } else {
-          setTitle('Error en el firmador');
-          setErrorMessage('Error al firmar el documento');
+          setTitle("Error en el firmador");
+          setErrorMessage("Error al firmar el documento");
           modalError.onOpen();
           setLoading(false);
           return;
         }
       })
       .catch(() => {
-        setTitle('Error en el firmador');
-        setErrorMessage('Error al firmar el documento');
+        setTitle("Error en el firmador");
+        setErrorMessage("Error al firmar el documento");
         modalError.onOpen();
         setLoading(false);
       });
@@ -281,11 +296,11 @@ function FormMakeSale(props: Props) {
 
       const JSON_DTE = JSON.stringify(currentDTE.dteJson, null, 2);
       const json_blob = new Blob([JSON_DTE], {
-        type: 'application/json',
+        type: "application/json",
       });
 
       const uploadParams: PutObjectCommandInput = {
-        Bucket: 'seedcode-facturacion',
+        Bucket: "seedcode-facturacion",
         Key: json_url,
         Body: json_blob,
       };
@@ -294,13 +309,13 @@ function FormMakeSale(props: Props) {
         .send(new PutObjectCommand(uploadParams))
         .then((response) => {
           if (response.$metadata) {
-            const token = get_token() ?? '';
+            const token = get_token() ?? "";
             axios
               .post(
-                API_URL + '/sales/factura-sale',
+                API_URL + "/sales/factura-sale",
                 {
                   dte: json_url,
-                  cajaId: Number(localStorage.getItem('box')),
+                  cajaId: Number(localStorage.getItem("box")),
                   codigoEmpleado: 1,
                   sello: false,
                 },
@@ -314,20 +329,21 @@ function FormMakeSale(props: Props) {
                 await save_logs({
                   title: title,
                   message: errorMessage,
-                  generationCode: currentDTE.dteJson.identificacion.codigoGeneracion,
+                  generationCode:
+                    currentDTE.dteJson.identificacion.codigoGeneracion,
                 });
-                toast.success('Se envió la factura a contingencia');
+                toast.success("Se envió la factura a contingencia");
                 props.clear();
                 setLoading(false);
               })
               .catch(() => {
-                toast.error('Error al guardar tu factura');
+                toast.error("Error al guardar tu factura");
                 setLoading(false);
               });
           }
         })
         .catch(() => {
-          toast.error('Error al subir la factura a contingencia');
+          toast.error("Error al subir la factura a contingencia");
           setLoading(false);
         });
     }
@@ -346,13 +362,14 @@ function FormMakeSale(props: Props) {
 
     const payload = {
       nitEmisor: transmitter.nit,
-      tdte: currentDTE?.dteJson.identificacion.tipoDte ?? '01',
-      codigoGeneracion: currentDTE?.dteJson.identificacion.codigoGeneracion ?? '',
+      tdte: currentDTE?.dteJson.identificacion.tipoDte ?? "01",
+      codigoGeneracion:
+        currentDTE?.dteJson.identificacion.codigoGeneracion ?? "",
     };
 
     const token_mh = return_mh_token();
 
-    check_dte(payload, token_mh ?? '')
+    check_dte(payload, token_mh ?? "")
       .then((response) => {
         toast.success(response.data.estado, {
           description: `Sello recibido: ${response.data.selloRecibido}`,
@@ -361,16 +378,17 @@ function FormMakeSale(props: Props) {
       })
       .catch((error: AxiosError<ICheckResponse>) => {
         if (error.status === 500) {
-          toast.error('NO ENCONTRADO', {
-            description: 'DTE no encontrado en hacienda',
+          toast.error("NO ENCONTRADO", {
+            description: "DTE no encontrado en hacienda",
           });
           setLoading(false);
           return;
         }
 
-        toast.error('ERROR', {
+        toast.error("ERROR", {
           description: `Error: ${
-            error.response?.data.descripcionMsg ?? 'DTE no encontrado en hacienda'
+            error.response?.data.descripcionMsg ??
+            "DTE no encontrado en hacienda"
           }`,
         });
         setLoading(false);
@@ -392,7 +410,7 @@ function FormMakeSale(props: Props) {
         placeholder="Selecciona el cliente"
       >
         {customer_list.map((item) => (
-          <AutocompleteItem key={JSON.stringify(item)} value={item.nombre}>
+          <AutocompleteItem key={JSON.stringify(item)} value={item.nombre} className='dark:text-white'>
             {item.nombre}
           </AutocompleteItem>
         ))}
@@ -400,7 +418,9 @@ function FormMakeSale(props: Props) {
       <Autocomplete
         onSelectionChange={(key) => {
           if (key) {
-            const tipePaymentSelected = JSON.parse(key as string) as IFormasDePago;
+            const tipePaymentSelected = JSON.parse(
+              key as string
+            ) as IFormasDePago;
             setTipePayment(tipePaymentSelected);
           }
         }}
@@ -411,7 +431,7 @@ function FormMakeSale(props: Props) {
         placeholder="Selecciona el método de pago"
       >
         {metodos_de_pago.map((item) => (
-          <AutocompleteItem key={JSON.stringify(item)} value={item.codigo}>
+          <AutocompleteItem key={JSON.stringify(item)} value={item.codigo} className='dark:text-white'>
             {item.valores}
           </AutocompleteItem>
         ))}
@@ -419,7 +439,9 @@ function FormMakeSale(props: Props) {
       <Autocomplete
         onSelectionChange={(key) => {
           if (key) {
-            const tipeDocumentSelected = JSON.parse(key as string) as ITipoDocumento;
+            const tipeDocumentSelected = JSON.parse(
+              key as string
+            ) as ITipoDocumento;
             setTipeDocument(tipeDocumentSelected);
           }
         }}
@@ -435,11 +457,13 @@ function FormMakeSale(props: Props) {
           </AutocompleteItem>
         ))}
       </Autocomplete>
-      {tipeDocument?.codigo === '03' && (
+      {tipeDocument?.codigo === "03" && (
         <Autocomplete
           onSelectionChange={(key) => {
             if (key) {
-              const tipeTributeSelected = JSON.parse(key as string) as TipoTributo;
+              const tipeTributeSelected = JSON.parse(
+                key as string
+              ) as TipoTributo;
               setTipeTribute(tipeTributeSelected);
             }
           }}
@@ -456,7 +480,7 @@ function FormMakeSale(props: Props) {
           ))}
         </Autocomplete>
       )}
-      {tipeDocument?.codigo === '01' || tipeDocument?.codigo === undefined ? (
+      {tipeDocument?.codigo === "01" || tipeDocument?.codigo === undefined ? (
         <div className="flex justify-center mt-4 mb-4 w-full">
           <div className="w-full flex  justify-center">
             {loading ? (
@@ -500,10 +524,16 @@ function FormMakeSale(props: Props) {
             >
               Re-intentar
             </Button>
-            <Button onClick={handleVerify} style={global_styles().warningStyles}>
+            <Button
+              onClick={handleVerify}
+              style={global_styles().warningStyles}
+            >
               Verificar
             </Button>
-            <Button onClick={sendToContingencia} style={global_styles().dangerStyles}>
+            <Button
+              onClick={sendToContingencia}
+              style={global_styles().dangerStyles}
+            >
               Enviar a contingencia
             </Button>
           </div>

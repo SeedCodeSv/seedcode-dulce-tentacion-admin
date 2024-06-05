@@ -14,8 +14,8 @@ import { convertCurrencyFormat } from '../money';
 import { generate_uuid } from '../random/random';
 import { ambiente } from '../../utils/constants.ts';
 import { ICartProduct } from '../../types/branch_products.types.ts';
-import { DteJson } from '../../types/DTE/DTE.types.ts';
 import moment from 'moment';
+import { SVFE_FC_SEND } from '../../types/svf_dte/fc.types.ts';
 
 export const generate_factura = (
   transmitter: ITransmitter,
@@ -24,7 +24,7 @@ export const generate_factura = (
   customer: Customer,
   products_carts: ICartProduct[],
   tipo_pago: IFormasDePago
-) => {
+) :SVFE_FC_SEND => {
   return {
     nit: transmitter.nit,
     activo: true,
@@ -94,7 +94,7 @@ export const generate_factura = (
       extension: null,
       apendice: null,
     },
-  } as DteJson;
+  };
 };
 function calcularPorcentajeDescuento(totalSinDescuento: number, totalDescuento: number): number {
   return ((totalSinDescuento - totalDescuento) / totalSinDescuento) * 100;

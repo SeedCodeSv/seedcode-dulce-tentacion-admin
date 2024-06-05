@@ -1,6 +1,6 @@
 import { Button, Input, Tooltip } from '@nextui-org/react';
 import { useContext } from 'react';
-import { Minus, Plus, Trash } from 'lucide-react';
+import { Minus, Plus, ShoppingCart, Trash } from 'lucide-react';
 import { ThemeContext } from '../../../hooks/useTheme';
 import { useBranchProductStore } from '../../../store/branch_product.store';
 import { BranchProduct } from '../../../types/branch_products.types';
@@ -48,7 +48,14 @@ function CartProductsMobile() {
   return (
     <div className="grid grid-cols-1 bg-gray-50 dark:bg-gray-800 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 h-[50vh] overflow-x-auto">
       {cart_products.length === 0 ? (
-        <div className="text-center text-black dark:text-white justify-center items-center content-center mt-4">No hay productos agregados al carrito de compra</div>
+        <>
+          <div className="flex items-center justify-center mt-5 flex-col">
+            <ShoppingCart size={96} color="red" className="animate-bounce" />
+            <span className="text-center text-black dark:text-white justify-center items-center mb-8">
+              No hay productos agregados al carrito de compra
+            </span>
+          </div>
+        </>
       ) : (
         cart_products.map((product) => (
           <div

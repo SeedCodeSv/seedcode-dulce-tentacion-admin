@@ -1,4 +1,5 @@
 import { ITransmitter } from '../transmitter.types';
+import { Emisor } from './DTE.types';
 import { Resumen } from './factura.types';
 import { Pago } from './sub_interface/payment.types';
 import { Receptor } from './sub_interface/receiver.types';
@@ -10,8 +11,8 @@ export interface Identificacion {
   numeroControl: string;
   tipoModelo: number;
   tipoOperacion: number;
-  tipoContingencia: any;
-  motivoContin: any;
+  tipoContingencia: string | null;
+  motivoContin: string | null;
   tipoMoneda: string;
   fecEmi: string;
   horEmi: string;
@@ -21,10 +22,10 @@ export interface CuerpoDocumento {
   numItem: number;
   tipoItem: number;
   uniMedida: number;
-  numeroDocumento: any;
+  numeroDocumento: string | null
   cantidad: number;
-  codigo: string;
-  codTributo: any;
+  codigo: string | null;
+  codTributo: string | null
   descripcion: string;
   precioUni: number;
   montoDescu: number;
@@ -33,8 +34,7 @@ export interface CuerpoDocumento {
   ventaGravada: number;
   tributos: string[] | null;
   psv: number;
-  noGravado: number;
-  ivaItem: number;
+  noGravado: number
 }
 
 export interface ICuerpoDocumento {
@@ -54,7 +54,6 @@ export interface ICuerpoDocumento {
   tributos: null | string[];
   psv: number | string;
   noGravado: number | string;
-  ivaItem: number | string;
 }
 export interface DteJson {
   nit: string;
@@ -64,15 +63,15 @@ export interface DteJson {
 }
 export interface JSONSend {
   identificacion: Identificacion;
-  documentoRelacionado: any;
+  documentoRelacionado: string | null ;
   emisor: ITransmitter;
   receptor: Receptor;
-  otrosDocumentos: any;
-  ventaTercero: any;
+  otrosDocumentos: string | null ;
+  ventaTercero: string | null ;
   cuerpoDocumento: ICuerpoDocumento[];
   resumen: Resumen;
-  extension: any;
-  apendice: any;
+  extension: string | null ;
+  apendice: string | null ;
 }
 export interface Tributo {
   codigo: string;
@@ -102,20 +101,19 @@ export interface IResumen {
   saldoFavor: number | string;
   condicionOperacion: number;
   pagos: Pago[];
-  numPagoElectronico: any;
-  totalIva: number | string;
+  numPagoElectronico: string | null;
 }
 export interface DteJson {
   identificacion: Identificacion;
-  documentoRelacionado?: any;
+  documentoRelacionado?: string | null;
   emisor: ITransmitter;
   receptor: Receptor;
-  otrosDocumentos: any;
-  ventaTercero: any;
+  otrosDocumentos: string | null;
+  ventaTercero: string | null;
   cuerpoDocumento: CuerpoDocumento[];
   resumen: IResumen;
-  extension: any;
-  apendice: any;
+  extension: string | null;
+  apendice: string | null;
 }
 
 export interface ISendMHFiscal {
@@ -164,4 +162,58 @@ export interface PayloadMH {
   version: number;
   tipoDte: string;
   documento: string;
+}
+
+export interface Tributo {
+  codigo: string;
+  descripcion: string;
+  valor: number;
+}
+
+export interface RespuestaMH {
+  version: number;
+  ambiente: string;
+  versionApp: number;
+  estado: string;
+  codigoGeneracion: string;
+  selloRecibido: string;
+  fhProcesamiento: string;
+  clasificaMsg: string;
+  codigoMsg: string;
+  descripcionMsg: string;
+  observaciones: string | null | string[][];
+}
+
+export interface Direccion {
+  departamento: string;
+  municipio: string;
+  complemento: string;
+}
+
+export interface ReceptorJSON {
+  nit: string;
+  nrc: string;
+  nombre: string;
+  codActividad: string;
+  descActividad: string;
+  nombreComercial: string;
+  direccion: Direccion;
+  telefono: string;
+  correo: string;
+}
+
+
+export interface CreditoFiscalJSON {
+  identificacion: Identificacion;
+  documentoRelacionado?: string | null;
+  emisor: Emisor;
+  receptor: ReceptorJSON;
+  otrosDocumentos?: string | null;
+  ventaTercero?: string | null;
+  cuerpoDocumento: CuerpoDocumento[];
+  resumen: IResumen;
+  extension?: string | null;
+  apendice?: string | null;
+  respuestaMH: RespuestaMH;
+  firma: string;
 }

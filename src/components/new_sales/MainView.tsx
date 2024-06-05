@@ -259,7 +259,7 @@ const MainView = () => {
                     }}
                   >
                     {limit_options.map((option) => (
-                      <SelectItem key={option} value={option}>
+                      <SelectItem key={option} value={option} className="dark:text-white">
                         {option}
                       </SelectItem>
                     ))}
@@ -267,12 +267,12 @@ const MainView = () => {
                 </div>
 
                 <div className="w-full max-h-96 overflow-y-auto">
-                    <h1 className="text-lg font-semibold dark:text-white mt-3">
-                      Lista de productos
-                    </h1>
-                    {(viewMovil === 'grid' || viewMovil === 'list') && (
-                      <MobileView_NewSale layout={viewMovil as 'grid' | 'list'} />
-                    )}
+                  <h1 className="text-lg font-semibold dark:text-white mt-3">
+                    Lista de productos 123
+                  </h1>
+                  {(viewMovil === 'grid' || viewMovil === 'list') && (
+                    <MobileView_NewSale layout={viewMovil as 'grid' | 'list'} />
+                  )}
                   {pagination_branch_products.totalPag > 1 && (
                     <>
                       <div className="w-full flex mt-2 justify-between 2xl:hidden ">
@@ -489,7 +489,7 @@ const ListProduct = () => {
           }}
         >
           {limit_options.map((option) => (
-            <SelectItem key={option} value={option}>
+            <SelectItem key={option} value={option} className="dark:text-white">
               {option}
             </SelectItem>
           ))}

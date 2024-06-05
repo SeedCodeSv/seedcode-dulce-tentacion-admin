@@ -8,13 +8,14 @@ import { IGetTiposDocumento } from '../types/DTE/tipo_documento.types';
 import { IGetTipoTributos } from '../types/DTE/tipo_tributo.types';
 import { ISendMHFiscal } from '../types/DTE/credito_fiscal.types';
 import { IContingencia, ISendMHContingencia } from '../types/DTE/contingencia.types';
-import { DteJson as FDteJSON, IDTE } from '../types/DTE/DTE.types';
+import { IDTE } from '../types/DTE/DTE.types';
 import { ICheckPayload, ICheckResponse } from '../types/DTE/check.types';
 import {
   IInvalidationToMH,
   IResponseInvalidationMH,
   ISignInvalidationData,
 } from '../types/DTE/invalidation.types';
+import { SVFE_FC_SEND } from '../types/svf_dte/fc.types';
 
 export const get_ambiente_destino = () => {
   return axios<IGetAmbienteDestino>(FACTURACION_API + '/cat-001-ambiente-de-destino');
@@ -65,7 +66,7 @@ export const firmarDocumentoFiscal = (payload: ISendMHFiscal) => {
   return axios.post<{ body: string }>(API_FIRMADOR, payload);
 };
 
-export const firmarDocumentoFactura = (payload: FDteJSON) => {
+export const firmarDocumentoFactura = (payload: SVFE_FC_SEND) => {
   return axios.post<{ body: string }>(API_FIRMADOR, payload);
 };
 

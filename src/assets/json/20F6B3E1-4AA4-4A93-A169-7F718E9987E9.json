@@ -1,0 +1,470 @@
+{
+  "identificacion": {
+    "version": 3,
+    "codigoGeneracion": "20F6B3E1-4AA4-4A93-A169-7F718E9987E9",
+    "ambiente": "00",
+    "tipoDte": "03",
+    "numeroControl": "DTE-03-M002P001-000000000005023",
+    "tipoModelo": 1,
+    "tipoOperacion": 1,
+    "tipoContingencia": null,
+    "motivoContin": null,
+    "tipoMoneda": "USD",
+    "fecEmi": "2024-06-04",
+    "horEmi": "13:52:43"
+  },
+  "documentoRelacionado": null,
+  "emisor": {
+    "nit": "03160902981010",
+    "nrc": "3165298",
+    "nombre": "HERNANDEZ MARQUEZ, JOSE MANUEL",
+    "nombreComercial": "SEEDCODE",
+    "codActividad": "62090",
+    "descActividad": "Otras actividades de tegnologia de informacion y servicios de computadora",
+    "tipoEstablecimiento": "01",
+    "direccion": {
+      "departamento": "03",
+      "municipio": "16",
+      "complemento": "Avenida santa lucia Block K casa #5"
+    },
+    "telefono": "70245680",
+    "correo": "seedcodesv@gmail.com",
+    "codEstable": "M002",
+    "codEstableMH": null,
+    "codPuntoVenta": "P001",
+    "codPuntoVentaMH": null
+  },
+  "receptor": {
+    "nit": "03152005761013",
+    "nrc": "2646308",
+    "nombre": "ALBERTO RODRIGUEZ, BILLY ALEXANDER",
+    "codActividad": "96030",
+    "descActividad": "Pompas fúnebres y actividades conexas",
+    "nombreComercial": "Funeraria El Lirio De Los Valles",
+    "direccion": {
+      "departamento": "03",
+      "municipio": "16",
+      "complemento": "Avenida santa lucia Block K casa #5"
+    },
+    "telefono": "70245680",
+    "correo": "marvinhcarbajal09@gmail.com"
+  },
+  "otrosDocumentos": null,
+  "ventaTercero": null,
+  "cuerpoDocumento": [
+    {
+      "numItem": 1,
+      "tipoItem": 1,
+      "uniMedida": 26,
+      "numeroDocumento": null,
+      "cantidad": 1,
+      "codigo": null,
+      "codTributo": null,
+      "descripcion": "Amazon Echo Show 10",
+      "precioUni": 34,
+      "montoDescu": 0,
+      "ventaNoSuj": 0,
+      "ventaExenta": 0,
+      "ventaGravada": 34,
+      "tributos": [
+        "20"
+      ],
+      "psv": 0,
+      "noGravado": 0
+    },
+    {
+      "numItem": 2,
+      "tipoItem": 1,
+      "uniMedida": 26,
+      "numeroDocumento": null,
+      "cantidad": 1,
+      "codigo": null,
+      "codTributo": null,
+      "descripcion": "Amazon Echo Show 10",
+      "precioUni": 249,
+      "montoDescu": 0,
+      "ventaNoSuj": 0,
+      "ventaExenta": 0,
+      "ventaGravada": 249,
+      "tributos": [
+        "20"
+      ],
+      "psv": 0,
+      "noGravado": 0
+    },
+    {
+      "numItem": 3,
+      "tipoItem": 1,
+      "uniMedida": 26,
+      "numeroDocumento": null,
+      "cantidad": 1,
+      "codigo": null,
+      "codTributo": null,
+      "descripcion": "Apple Watch Series 8",
+      "precioUni": 56,
+      "montoDescu": 0,
+      "ventaNoSuj": 0,
+      "ventaExenta": 0,
+      "ventaGravada": 56,
+      "tributos": [
+        "20"
+      ],
+      "psv": 0,
+      "noGravado": 0
+    },
+    {
+      "numItem": 4,
+      "tipoItem": 1,
+      "uniMedida": 26,
+      "numeroDocumento": null,
+      "cantidad": 1,
+      "codigo": null,
+      "codTributo": null,
+      "descripcion": "Apple Watch Series 8",
+      "precioUni": 399,
+      "montoDescu": 0,
+      "ventaNoSuj": 0,
+      "ventaExenta": 0,
+      "ventaGravada": 399,
+      "tributos": [
+        "20"
+      ],
+      "psv": 0,
+      "noGravado": 0
+    },
+    {
+      "numItem": 5,
+      "tipoItem": 1,
+      "uniMedida": 26,
+      "numeroDocumento": null,
+      "cantidad": 1,
+      "codigo": null,
+      "codTributo": null,
+      "descripcion": "ASUS ROG Phone 6",
+      "precioUni": 3,
+      "montoDescu": 0,
+      "ventaNoSuj": 0,
+      "ventaExenta": 0,
+      "ventaGravada": 3,
+      "tributos": [
+        "20"
+      ],
+      "psv": 0,
+      "noGravado": 0
+    },
+    {
+      "numItem": 6,
+      "tipoItem": 1,
+      "uniMedida": 26,
+      "numeroDocumento": null,
+      "cantidad": 1,
+      "codigo": null,
+      "codTributo": null,
+      "descripcion": "ASUS ROG Phone 6",
+      "precioUni": 999,
+      "montoDescu": 0,
+      "ventaNoSuj": 0,
+      "ventaExenta": 0,
+      "ventaGravada": 999,
+      "tributos": [
+        "20"
+      ],
+      "psv": 0,
+      "noGravado": 0
+    },
+    {
+      "numItem": 7,
+      "tipoItem": 1,
+      "uniMedida": 26,
+      "numeroDocumento": null,
+      "cantidad": 1,
+      "codigo": null,
+      "codTributo": null,
+      "descripcion": "Bose QuietComfort 45",
+      "precioUni": 59,
+      "montoDescu": 0,
+      "ventaNoSuj": 0,
+      "ventaExenta": 0,
+      "ventaGravada": 59,
+      "tributos": [
+        "20"
+      ],
+      "psv": 0,
+      "noGravado": 0
+    },
+    {
+      "numItem": 8,
+      "tipoItem": 1,
+      "uniMedida": 26,
+      "numeroDocumento": null,
+      "cantidad": 1,
+      "codigo": null,
+      "codTributo": null,
+      "descripcion": "Bose QuietComfort 45",
+      "precioUni": 329,
+      "montoDescu": 0,
+      "ventaNoSuj": 0,
+      "ventaExenta": 0,
+      "ventaGravada": 329,
+      "tributos": [
+        "20"
+      ],
+      "psv": 0,
+      "noGravado": 0
+    },
+    {
+      "numItem": 9,
+      "tipoItem": 1,
+      "uniMedida": 26,
+      "numeroDocumento": null,
+      "cantidad": 1,
+      "codigo": null,
+      "codTributo": null,
+      "descripcion": "Dell XPS 13 (2023)",
+      "precioUni": 76,
+      "montoDescu": 0,
+      "ventaNoSuj": 0,
+      "ventaExenta": 0,
+      "ventaGravada": 76,
+      "tributos": [
+        "20"
+      ],
+      "psv": 0,
+      "noGravado": 0
+    },
+    {
+      "numItem": 10,
+      "tipoItem": 1,
+      "uniMedida": 26,
+      "numeroDocumento": null,
+      "cantidad": 1,
+      "codigo": null,
+      "codTributo": null,
+      "descripcion": "Dell XPS 13 (2023)",
+      "precioUni": 999,
+      "montoDescu": 0,
+      "ventaNoSuj": 0,
+      "ventaExenta": 0,
+      "ventaGravada": 999,
+      "tributos": [
+        "20"
+      ],
+      "psv": 0,
+      "noGravado": 0
+    },
+    {
+      "numItem": 11,
+      "tipoItem": 1,
+      "uniMedida": 26,
+      "numeroDocumento": null,
+      "cantidad": 1,
+      "codigo": null,
+      "codTributo": null,
+      "descripcion": "DJI Mini 3 Pro",
+      "precioUni": 12,
+      "montoDescu": 0,
+      "ventaNoSuj": 0,
+      "ventaExenta": 0,
+      "ventaGravada": 12,
+      "tributos": [
+        "20"
+      ],
+      "psv": 0,
+      "noGravado": 0
+    },
+    {
+      "numItem": 12,
+      "tipoItem": 1,
+      "uniMedida": 26,
+      "numeroDocumento": null,
+      "cantidad": 1,
+      "codigo": null,
+      "codTributo": null,
+      "descripcion": "DJI Mini 3 Pro",
+      "precioUni": 759,
+      "montoDescu": 0,
+      "ventaNoSuj": 0,
+      "ventaExenta": 0,
+      "ventaGravada": 759,
+      "tributos": [
+        "20"
+      ],
+      "psv": 0,
+      "noGravado": 0
+    },
+    {
+      "numItem": 13,
+      "tipoItem": 1,
+      "uniMedida": 26,
+      "numeroDocumento": null,
+      "cantidad": 1,
+      "codigo": null,
+      "codTributo": null,
+      "descripcion": "Escritorio Gamer DXRacer",
+      "precioUni": 200,
+      "montoDescu": 0,
+      "ventaNoSuj": 0,
+      "ventaExenta": 0,
+      "ventaGravada": 200,
+      "tributos": [
+        "20"
+      ],
+      "psv": 0,
+      "noGravado": 0
+    },
+    {
+      "numItem": 14,
+      "tipoItem": 1,
+      "uniMedida": 26,
+      "numeroDocumento": null,
+      "cantidad": 1,
+      "codigo": null,
+      "codTributo": null,
+      "descripcion": "Fitbit Charge 5",
+      "precioUni": 2,
+      "montoDescu": 0,
+      "ventaNoSuj": 0,
+      "ventaExenta": 0,
+      "ventaGravada": 2,
+      "tributos": [
+        "20"
+      ],
+      "psv": 0,
+      "noGravado": 0
+    },
+    {
+      "numItem": 15,
+      "tipoItem": 1,
+      "uniMedida": 26,
+      "numeroDocumento": null,
+      "cantidad": 1,
+      "codigo": null,
+      "codTributo": null,
+      "descripcion": "Fitbit Charge 5",
+      "precioUni": 179,
+      "montoDescu": 0,
+      "ventaNoSuj": 0,
+      "ventaExenta": 0,
+      "ventaGravada": 179,
+      "tributos": [
+        "20"
+      ],
+      "psv": 0,
+      "noGravado": 0
+    },
+    {
+      "numItem": 16,
+      "tipoItem": 1,
+      "uniMedida": 26,
+      "numeroDocumento": null,
+      "cantidad": 1,
+      "codigo": null,
+      "codTributo": null,
+      "descripcion": "Google Pixel 7 Pro",
+      "precioUni": 23,
+      "montoDescu": 0,
+      "ventaNoSuj": 0,
+      "ventaExenta": 0,
+      "ventaGravada": 23,
+      "tributos": [
+        "20"
+      ],
+      "psv": 0,
+      "noGravado": 0
+    },
+    {
+      "numItem": 17,
+      "tipoItem": 1,
+      "uniMedida": 26,
+      "numeroDocumento": null,
+      "cantidad": 1,
+      "codigo": null,
+      "codTributo": null,
+      "descripcion": "Google Pixel 7 Pro",
+      "precioUni": 899,
+      "montoDescu": 0,
+      "ventaNoSuj": 0,
+      "ventaExenta": 0,
+      "ventaGravada": 899,
+      "tributos": [
+        "20"
+      ],
+      "psv": 0,
+      "noGravado": 0
+    },
+    {
+      "numItem": 18,
+      "tipoItem": 1,
+      "uniMedida": 26,
+      "numeroDocumento": null,
+      "cantidad": 1,
+      "codigo": null,
+      "codTributo": null,
+      "descripcion": "GoPro HERO11 Black",
+      "precioUni": 1,
+      "montoDescu": 0,
+      "ventaNoSuj": 0,
+      "ventaExenta": 0,
+      "ventaGravada": 1,
+      "tributos": [
+        "20"
+      ],
+      "psv": 0,
+      "noGravado": 0
+    }
+  ],
+  "resumen": {
+    "totalNoSuj": 0,
+    "totalExenta": 0,
+    "totalGravada": 5278,
+    "subTotalVentas": 5278,
+    "descuNoSuj": 0,
+    "descuExenta": 0,
+    "descuGravada": 0,
+    "porcentajeDescuento": 100,
+    "totalDescu": 0,
+    "tributos": [
+      {
+        "codigo": "20",
+        "descripcion": "Impuesto al Valor Agregado 13%",
+        "valor": 686.14
+      }
+    ],
+    "subTotal": 5278,
+    "ivaRete1": 0,
+    "reteRenta": 0,
+    "ivaPerci1": 0,
+    "montoTotalOperacion": 5964.14,
+    "totalNoGravado": 0,
+    "totalPagar": 5964.14,
+    "totalLetras": "CINCO MIL NOVECIENTOS SESENTA Y CUATRO 14/100 DOLARES AMERICANOS",
+    "saldoFavor": 0,
+    "condicionOperacion": 1,
+    "pagos": [
+      {
+        "codigo": "01",
+        "montoPago": 5964.14,
+        "referencia": "",
+        "plazo": null,
+        "periodo": null
+      }
+    ],
+    "numPagoElectronico": null
+  },
+  "extension": null,
+  "apendice": null,
+  "respuestaMH": {
+    "version": 2,
+    "ambiente": "00",
+    "versionApp": 2,
+    "estado": "PROCESADO",
+    "codigoGeneracion": "20F6B3E1-4AA4-4A93-A169-7F718E9987E9",
+    "selloRecibido": "202475D3B7E9A8C6492EBDB965CEA14E266CHGGU",
+    "fhProcesamiento": "04/06/2024 13:52:51",
+    "clasificaMsg": "10",
+    "codigoMsg": "001",
+    "descripcionMsg": "RECIBIDO",
+    "observaciones": []
+  },
+  "firma": "eyJhbGciOiJSUzUxMiJ9.ewogICJpZGVudGlmaWNhY2lvbiIgOiB7CiAgICAidmVyc2lvbiIgOiAzLAogICAgImNvZGlnb0dlbmVyYWNpb24iIDogIjIwRjZCM0UxLTRBQTQtNEE5My1BMTY5LTdGNzE4RTk5ODdFOSIsCiAgICAiYW1iaWVudGUiIDogIjAwIiwKICAgICJ0aXBvRHRlIiA6ICIwMyIsCiAgICAibnVtZXJvQ29udHJvbCIgOiAiRFRFLTAzLU0wMDJQMDAxLTAwMDAwMDAwMDAwNTAyMyIsCiAgICAidGlwb01vZGVsbyIgOiAxLAogICAgInRpcG9PcGVyYWNpb24iIDogMSwKICAgICJ0aXBvQ29udGluZ2VuY2lhIiA6IG51bGwsCiAgICAibW90aXZvQ29udGluIiA6IG51bGwsCiAgICAidGlwb01vbmVkYSIgOiAiVVNEIiwKICAgICJmZWNFbWkiIDogIjIwMjQtMDYtMDQiLAogICAgImhvckVtaSIgOiAiMTM6NTI6NDMiCiAgfSwKICAiZG9jdW1lbnRvUmVsYWNpb25hZG8iIDogbnVsbCwKICAiZW1pc29yIiA6IHsKICAgICJuaXQiIDogIjAzMTYwOTAyOTgxMDEwIiwKICAgICJucmMiIDogIjMxNjUyOTgiLAogICAgIm5vbWJyZSIgOiAiSEVSTkFOREVaIE1BUlFVRVosIEpPU0UgTUFOVUVMIiwKICAgICJub21icmVDb21lcmNpYWwiIDogIlNFRURDT0RFIiwKICAgICJjb2RBY3RpdmlkYWQiIDogIjYyMDkwIiwKICAgICJkZXNjQWN0aXZpZGFkIiA6ICJPdHJhcyBhY3RpdmlkYWRlcyBkZSB0ZWdub2xvZ2lhIGRlIGluZm9ybWFjaW9uIHkgc2VydmljaW9zIGRlIGNvbXB1dGFkb3JhIiwKICAgICJ0aXBvRXN0YWJsZWNpbWllbnRvIiA6ICIwMSIsCiAgICAiZGlyZWNjaW9uIiA6IHsKICAgICAgImRlcGFydGFtZW50byIgOiAiMDMiLAogICAgICAibXVuaWNpcGlvIiA6ICIxNiIsCiAgICAgICJjb21wbGVtZW50byIgOiAiQXZlbmlkYSBzYW50YSBsdWNpYSBCbG9jayBLIGNhc2EgIzUiCiAgICB9LAogICAgInRlbGVmb25vIiA6ICI3MDI0NTY4MCIsCiAgICAiY29ycmVvIiA6ICJzZWVkY29kZXN2QGdtYWlsLmNvbSIsCiAgICAiY29kRXN0YWJsZSIgOiAiTTAwMiIsCiAgICAiY29kRXN0YWJsZU1IIiA6IG51bGwsCiAgICAiY29kUHVudG9WZW50YSIgOiAiUDAwMSIsCiAgICAiY29kUHVudG9WZW50YU1IIiA6IG51bGwKICB9LAogICJyZWNlcHRvciIgOiB7CiAgICAibml0IiA6ICIwMzE1MjAwNTc2MTAxMyIsCiAgICAibnJjIiA6ICIyNjQ2MzA4IiwKICAgICJub21icmUiIDogIkFMQkVSVE8gUk9EUklHVUVaLCBCSUxMWSBBTEVYQU5ERVIiLAogICAgImNvZEFjdGl2aWRhZCIgOiAiOTYwMzAiLAogICAgImRlc2NBY3RpdmlkYWQiIDogIlBvbXBhcyBmw7puZWJyZXMgeSBhY3RpdmlkYWRlcyBjb25leGFzIiwKICAgICJub21icmVDb21lcmNpYWwiIDogIkZ1bmVyYXJpYSBFbCBMaXJpbyBEZSBMb3MgVmFsbGVzIiwKICAgICJkaXJlY2Npb24iIDogewogICAgICAiZGVwYXJ0YW1lbnRvIiA6ICIwMyIsCiAgICAgICJtdW5pY2lwaW8iIDogIjE2IiwKICAgICAgImNvbXBsZW1lbnRvIiA6ICJBdmVuaWRhIHNhbnRhIGx1Y2lhIEJsb2NrIEsgY2FzYSAjNSIKICAgIH0sCiAgICAidGVsZWZvbm8iIDogIjcwMjQ1NjgwIiwKICAgICJjb3JyZW8iIDogIm1hcnZpbmhjYXJiYWphbDA5QGdtYWlsLmNvbSIKICB9LAogICJvdHJvc0RvY3VtZW50b3MiIDogbnVsbCwKICAidmVudGFUZXJjZXJvIiA6IG51bGwsCiAgImN1ZXJwb0RvY3VtZW50byIgOiBbIHsKICAgICJudW1JdGVtIiA6IDEsCiAgICAidGlwb0l0ZW0iIDogMSwKICAgICJ1bmlNZWRpZGEiIDogMjYsCiAgICAibnVtZXJvRG9jdW1lbnRvIiA6IG51bGwsCiAgICAiY2FudGlkYWQiIDogMSwKICAgICJjb2RpZ28iIDogbnVsbCwKICAgICJjb2RUcmlidXRvIiA6IG51bGwsCiAgICAiZGVzY3JpcGNpb24iIDogIkFtYXpvbiBFY2hvIFNob3cgMTAiLAogICAgInByZWNpb1VuaSIgOiAzNCwKICAgICJtb250b0Rlc2N1IiA6IDAsCiAgICAidmVudGFOb1N1aiIgOiAwLAogICAgInZlbnRhRXhlbnRhIiA6IDAsCiAgICAidmVudGFHcmF2YWRhIiA6IDM0LAogICAgInRyaWJ1dG9zIiA6IFsgIjIwIiBdLAogICAgInBzdiIgOiAwLAogICAgIm5vR3JhdmFkbyIgOiAwCiAgfSwgewogICAgIm51bUl0ZW0iIDogMiwKICAgICJ0aXBvSXRlbSIgOiAxLAogICAgInVuaU1lZGlkYSIgOiAyNiwKICAgICJudW1lcm9Eb2N1bWVudG8iIDogbnVsbCwKICAgICJjYW50aWRhZCIgOiAxLAogICAgImNvZGlnbyIgOiBudWxsLAogICAgImNvZFRyaWJ1dG8iIDogbnVsbCwKICAgICJkZXNjcmlwY2lvbiIgOiAiQW1hem9uIEVjaG8gU2hvdyAxMCIsCiAgICAicHJlY2lvVW5pIiA6IDI0OSwKICAgICJtb250b0Rlc2N1IiA6IDAsCiAgICAidmVudGFOb1N1aiIgOiAwLAogICAgInZlbnRhRXhlbnRhIiA6IDAsCiAgICAidmVudGFHcmF2YWRhIiA6IDI0OSwKICAgICJ0cmlidXRvcyIgOiBbICIyMCIgXSwKICAgICJwc3YiIDogMCwKICAgICJub0dyYXZhZG8iIDogMAogIH0sIHsKICAgICJudW1JdGVtIiA6IDMsCiAgICAidGlwb0l0ZW0iIDogMSwKICAgICJ1bmlNZWRpZGEiIDogMjYsCiAgICAibnVtZXJvRG9jdW1lbnRvIiA6IG51bGwsCiAgICAiY2FudGlkYWQiIDogMSwKICAgICJjb2RpZ28iIDogbnVsbCwKICAgICJjb2RUcmlidXRvIiA6IG51bGwsCiAgICAiZGVzY3JpcGNpb24iIDogIkFwcGxlIFdhdGNoIFNlcmllcyA4IiwKICAgICJwcmVjaW9VbmkiIDogNTYsCiAgICAibW9udG9EZXNjdSIgOiAwLAogICAgInZlbnRhTm9TdWoiIDogMCwKICAgICJ2ZW50YUV4ZW50YSIgOiAwLAogICAgInZlbnRhR3JhdmFkYSIgOiA1NiwKICAgICJ0cmlidXRvcyIgOiBbICIyMCIgXSwKICAgICJwc3YiIDogMCwKICAgICJub0dyYXZhZG8iIDogMAogIH0sIHsKICAgICJudW1JdGVtIiA6IDQsCiAgICAidGlwb0l0ZW0iIDogMSwKICAgICJ1bmlNZWRpZGEiIDogMjYsCiAgICAibnVtZXJvRG9jdW1lbnRvIiA6IG51bGwsCiAgICAiY2FudGlkYWQiIDogMSwKICAgICJjb2RpZ28iIDogbnVsbCwKICAgICJjb2RUcmlidXRvIiA6IG51bGwsCiAgICAiZGVzY3JpcGNpb24iIDogIkFwcGxlIFdhdGNoIFNlcmllcyA4IiwKICAgICJwcmVjaW9VbmkiIDogMzk5LAogICAgIm1vbnRvRGVzY3UiIDogMCwKICAgICJ2ZW50YU5vU3VqIiA6IDAsCiAgICAidmVudGFFeGVudGEiIDogMCwKICAgICJ2ZW50YUdyYXZhZGEiIDogMzk5LAogICAgInRyaWJ1dG9zIiA6IFsgIjIwIiBdLAogICAgInBzdiIgOiAwLAogICAgIm5vR3JhdmFkbyIgOiAwCiAgfSwgewogICAgIm51bUl0ZW0iIDogNSwKICAgICJ0aXBvSXRlbSIgOiAxLAogICAgInVuaU1lZGlkYSIgOiAyNiwKICAgICJudW1lcm9Eb2N1bWVudG8iIDogbnVsbCwKICAgICJjYW50aWRhZCIgOiAxLAogICAgImNvZGlnbyIgOiBudWxsLAogICAgImNvZFRyaWJ1dG8iIDogbnVsbCwKICAgICJkZXNjcmlwY2lvbiIgOiAiQVNVUyBST0cgUGhvbmUgNiIsCiAgICAicHJlY2lvVW5pIiA6IDMsCiAgICAibW9udG9EZXNjdSIgOiAwLAogICAgInZlbnRhTm9TdWoiIDogMCwKICAgICJ2ZW50YUV4ZW50YSIgOiAwLAogICAgInZlbnRhR3JhdmFkYSIgOiAzLAogICAgInRyaWJ1dG9zIiA6IFsgIjIwIiBdLAogICAgInBzdiIgOiAwLAogICAgIm5vR3JhdmFkbyIgOiAwCiAgfSwgewogICAgIm51bUl0ZW0iIDogNiwKICAgICJ0aXBvSXRlbSIgOiAxLAogICAgInVuaU1lZGlkYSIgOiAyNiwKICAgICJudW1lcm9Eb2N1bWVudG8iIDogbnVsbCwKICAgICJjYW50aWRhZCIgOiAxLAogICAgImNvZGlnbyIgOiBudWxsLAogICAgImNvZFRyaWJ1dG8iIDogbnVsbCwKICAgICJkZXNjcmlwY2lvbiIgOiAiQVNVUyBST0cgUGhvbmUgNiIsCiAgICAicHJlY2lvVW5pIiA6IDk5OSwKICAgICJtb250b0Rlc2N1IiA6IDAsCiAgICAidmVudGFOb1N1aiIgOiAwLAogICAgInZlbnRhRXhlbnRhIiA6IDAsCiAgICAidmVudGFHcmF2YWRhIiA6IDk5OSwKICAgICJ0cmlidXRvcyIgOiBbICIyMCIgXSwKICAgICJwc3YiIDogMCwKICAgICJub0dyYXZhZG8iIDogMAogIH0sIHsKICAgICJudW1JdGVtIiA6IDcsCiAgICAidGlwb0l0ZW0iIDogMSwKICAgICJ1bmlNZWRpZGEiIDogMjYsCiAgICAibnVtZXJvRG9jdW1lbnRvIiA6IG51bGwsCiAgICAiY2FudGlkYWQiIDogMSwKICAgICJjb2RpZ28iIDogbnVsbCwKICAgICJjb2RUcmlidXRvIiA6IG51bGwsCiAgICAiZGVzY3JpcGNpb24iIDogIkJvc2UgUXVpZXRDb21mb3J0IDQ1IiwKICAgICJwcmVjaW9VbmkiIDogNTksCiAgICAibW9udG9EZXNjdSIgOiAwLAogICAgInZlbnRhTm9TdWoiIDogMCwKICAgICJ2ZW50YUV4ZW50YSIgOiAwLAogICAgInZlbnRhR3JhdmFkYSIgOiA1OSwKICAgICJ0cmlidXRvcyIgOiBbICIyMCIgXSwKICAgICJwc3YiIDogMCwKICAgICJub0dyYXZhZG8iIDogMAogIH0sIHsKICAgICJudW1JdGVtIiA6IDgsCiAgICAidGlwb0l0ZW0iIDogMSwKICAgICJ1bmlNZWRpZGEiIDogMjYsCiAgICAibnVtZXJvRG9jdW1lbnRvIiA6IG51bGwsCiAgICAiY2FudGlkYWQiIDogMSwKICAgICJjb2RpZ28iIDogbnVsbCwKICAgICJjb2RUcmlidXRvIiA6IG51bGwsCiAgICAiZGVzY3JpcGNpb24iIDogIkJvc2UgUXVpZXRDb21mb3J0IDQ1IiwKICAgICJwcmVjaW9VbmkiIDogMzI5LAogICAgIm1vbnRvRGVzY3UiIDogMCwKICAgICJ2ZW50YU5vU3VqIiA6IDAsCiAgICAidmVudGFFeGVudGEiIDogMCwKICAgICJ2ZW50YUdyYXZhZGEiIDogMzI5LAogICAgInRyaWJ1dG9zIiA6IFsgIjIwIiBdLAogICAgInBzdiIgOiAwLAogICAgIm5vR3JhdmFkbyIgOiAwCiAgfSwgewogICAgIm51bUl0ZW0iIDogOSwKICAgICJ0aXBvSXRlbSIgOiAxLAogICAgInVuaU1lZGlkYSIgOiAyNiwKICAgICJudW1lcm9Eb2N1bWVudG8iIDogbnVsbCwKICAgICJjYW50aWRhZCIgOiAxLAogICAgImNvZGlnbyIgOiBudWxsLAogICAgImNvZFRyaWJ1dG8iIDogbnVsbCwKICAgICJkZXNjcmlwY2lvbiIgOiAiRGVsbCBYUFMgMTMgKDIwMjMpIiwKICAgICJwcmVjaW9VbmkiIDogNzYsCiAgICAibW9udG9EZXNjdSIgOiAwLAogICAgInZlbnRhTm9TdWoiIDogMCwKICAgICJ2ZW50YUV4ZW50YSIgOiAwLAogICAgInZlbnRhR3JhdmFkYSIgOiA3NiwKICAgICJ0cmlidXRvcyIgOiBbICIyMCIgXSwKICAgICJwc3YiIDogMCwKICAgICJub0dyYXZhZG8iIDogMAogIH0sIHsKICAgICJudW1JdGVtIiA6IDEwLAogICAgInRpcG9JdGVtIiA6IDEsCiAgICAidW5pTWVkaWRhIiA6IDI2LAogICAgIm51bWVyb0RvY3VtZW50byIgOiBudWxsLAogICAgImNhbnRpZGFkIiA6IDEsCiAgICAiY29kaWdvIiA6IG51bGwsCiAgICAiY29kVHJpYnV0byIgOiBudWxsLAogICAgImRlc2NyaXBjaW9uIiA6ICJEZWxsIFhQUyAxMyAoMjAyMykiLAogICAgInByZWNpb1VuaSIgOiA5OTksCiAgICAibW9udG9EZXNjdSIgOiAwLAogICAgInZlbnRhTm9TdWoiIDogMCwKICAgICJ2ZW50YUV4ZW50YSIgOiAwLAogICAgInZlbnRhR3JhdmFkYSIgOiA5OTksCiAgICAidHJpYnV0b3MiIDogWyAiMjAiIF0sCiAgICAicHN2IiA6IDAsCiAgICAibm9HcmF2YWRvIiA6IDAKICB9LCB7CiAgICAibnVtSXRlbSIgOiAxMSwKICAgICJ0aXBvSXRlbSIgOiAxLAogICAgInVuaU1lZGlkYSIgOiAyNiwKICAgICJudW1lcm9Eb2N1bWVudG8iIDogbnVsbCwKICAgICJjYW50aWRhZCIgOiAxLAogICAgImNvZGlnbyIgOiBudWxsLAogICAgImNvZFRyaWJ1dG8iIDogbnVsbCwKICAgICJkZXNjcmlwY2lvbiIgOiAiREpJIE1pbmkgMyBQcm8iLAogICAgInByZWNpb1VuaSIgOiAxMiwKICAgICJtb250b0Rlc2N1IiA6IDAsCiAgICAidmVudGFOb1N1aiIgOiAwLAogICAgInZlbnRhRXhlbnRhIiA6IDAsCiAgICAidmVudGFHcmF2YWRhIiA6IDEyLAogICAgInRyaWJ1dG9zIiA6IFsgIjIwIiBdLAogICAgInBzdiIgOiAwLAogICAgIm5vR3JhdmFkbyIgOiAwCiAgfSwgewogICAgIm51bUl0ZW0iIDogMTIsCiAgICAidGlwb0l0ZW0iIDogMSwKICAgICJ1bmlNZWRpZGEiIDogMjYsCiAgICAibnVtZXJvRG9jdW1lbnRvIiA6IG51bGwsCiAgICAiY2FudGlkYWQiIDogMSwKICAgICJjb2RpZ28iIDogbnVsbCwKICAgICJjb2RUcmlidXRvIiA6IG51bGwsCiAgICAiZGVzY3JpcGNpb24iIDogIkRKSSBNaW5pIDMgUHJvIiwKICAgICJwcmVjaW9VbmkiIDogNzU5LAogICAgIm1vbnRvRGVzY3UiIDogMCwKICAgICJ2ZW50YU5vU3VqIiA6IDAsCiAgICAidmVudGFFeGVudGEiIDogMCwKICAgICJ2ZW50YUdyYXZhZGEiIDogNzU5LAogICAgInRyaWJ1dG9zIiA6IFsgIjIwIiBdLAogICAgInBzdiIgOiAwLAogICAgIm5vR3JhdmFkbyIgOiAwCiAgfSwgewogICAgIm51bUl0ZW0iIDogMTMsCiAgICAidGlwb0l0ZW0iIDogMSwKICAgICJ1bmlNZWRpZGEiIDogMjYsCiAgICAibnVtZXJvRG9jdW1lbnRvIiA6IG51bGwsCiAgICAiY2FudGlkYWQiIDogMSwKICAgICJjb2RpZ28iIDogbnVsbCwKICAgICJjb2RUcmlidXRvIiA6IG51bGwsCiAgICAiZGVzY3JpcGNpb24iIDogIkVzY3JpdG9yaW8gR2FtZXIgRFhSYWNlciIsCiAgICAicHJlY2lvVW5pIiA6IDIwMCwKICAgICJtb250b0Rlc2N1IiA6IDAsCiAgICAidmVudGFOb1N1aiIgOiAwLAogICAgInZlbnRhRXhlbnRhIiA6IDAsCiAgICAidmVudGFHcmF2YWRhIiA6IDIwMCwKICAgICJ0cmlidXRvcyIgOiBbICIyMCIgXSwKICAgICJwc3YiIDogMCwKICAgICJub0dyYXZhZG8iIDogMAogIH0sIHsKICAgICJudW1JdGVtIiA6IDE0LAogICAgInRpcG9JdGVtIiA6IDEsCiAgICAidW5pTWVkaWRhIiA6IDI2LAogICAgIm51bWVyb0RvY3VtZW50byIgOiBudWxsLAogICAgImNhbnRpZGFkIiA6IDEsCiAgICAiY29kaWdvIiA6IG51bGwsCiAgICAiY29kVHJpYnV0byIgOiBudWxsLAogICAgImRlc2NyaXBjaW9uIiA6ICJGaXRiaXQgQ2hhcmdlIDUiLAogICAgInByZWNpb1VuaSIgOiAyLAogICAgIm1vbnRvRGVzY3UiIDogMCwKICAgICJ2ZW50YU5vU3VqIiA6IDAsCiAgICAidmVudGFFeGVudGEiIDogMCwKICAgICJ2ZW50YUdyYXZhZGEiIDogMiwKICAgICJ0cmlidXRvcyIgOiBbICIyMCIgXSwKICAgICJwc3YiIDogMCwKICAgICJub0dyYXZhZG8iIDogMAogIH0sIHsKICAgICJudW1JdGVtIiA6IDE1LAogICAgInRpcG9JdGVtIiA6IDEsCiAgICAidW5pTWVkaWRhIiA6IDI2LAogICAgIm51bWVyb0RvY3VtZW50byIgOiBudWxsLAogICAgImNhbnRpZGFkIiA6IDEsCiAgICAiY29kaWdvIiA6IG51bGwsCiAgICAiY29kVHJpYnV0byIgOiBudWxsLAogICAgImRlc2NyaXBjaW9uIiA6ICJGaXRiaXQgQ2hhcmdlIDUiLAogICAgInByZWNpb1VuaSIgOiAxNzksCiAgICAibW9udG9EZXNjdSIgOiAwLAogICAgInZlbnRhTm9TdWoiIDogMCwKICAgICJ2ZW50YUV4ZW50YSIgOiAwLAogICAgInZlbnRhR3JhdmFkYSIgOiAxNzksCiAgICAidHJpYnV0b3MiIDogWyAiMjAiIF0sCiAgICAicHN2IiA6IDAsCiAgICAibm9HcmF2YWRvIiA6IDAKICB9LCB7CiAgICAibnVtSXRlbSIgOiAxNiwKICAgICJ0aXBvSXRlbSIgOiAxLAogICAgInVuaU1lZGlkYSIgOiAyNiwKICAgICJudW1lcm9Eb2N1bWVudG8iIDogbnVsbCwKICAgICJjYW50aWRhZCIgOiAxLAogICAgImNvZGlnbyIgOiBudWxsLAogICAgImNvZFRyaWJ1dG8iIDogbnVsbCwKICAgICJkZXNjcmlwY2lvbiIgOiAiR29vZ2xlIFBpeGVsIDcgUHJvIiwKICAgICJwcmVjaW9VbmkiIDogMjMsCiAgICAibW9udG9EZXNjdSIgOiAwLAogICAgInZlbnRhTm9TdWoiIDogMCwKICAgICJ2ZW50YUV4ZW50YSIgOiAwLAogICAgInZlbnRhR3JhdmFkYSIgOiAyMywKICAgICJ0cmlidXRvcyIgOiBbICIyMCIgXSwKICAgICJwc3YiIDogMCwKICAgICJub0dyYXZhZG8iIDogMAogIH0sIHsKICAgICJudW1JdGVtIiA6IDE3LAogICAgInRpcG9JdGVtIiA6IDEsCiAgICAidW5pTWVkaWRhIiA6IDI2LAogICAgIm51bWVyb0RvY3VtZW50byIgOiBudWxsLAogICAgImNhbnRpZGFkIiA6IDEsCiAgICAiY29kaWdvIiA6IG51bGwsCiAgICAiY29kVHJpYnV0byIgOiBudWxsLAogICAgImRlc2NyaXBjaW9uIiA6ICJHb29nbGUgUGl4ZWwgNyBQcm8iLAogICAgInByZWNpb1VuaSIgOiA4OTksCiAgICAibW9udG9EZXNjdSIgOiAwLAogICAgInZlbnRhTm9TdWoiIDogMCwKICAgICJ2ZW50YUV4ZW50YSIgOiAwLAogICAgInZlbnRhR3JhdmFkYSIgOiA4OTksCiAgICAidHJpYnV0b3MiIDogWyAiMjAiIF0sCiAgICAicHN2IiA6IDAsCiAgICAibm9HcmF2YWRvIiA6IDAKICB9LCB7CiAgICAibnVtSXRlbSIgOiAxOCwKICAgICJ0aXBvSXRlbSIgOiAxLAogICAgInVuaU1lZGlkYSIgOiAyNiwKICAgICJudW1lcm9Eb2N1bWVudG8iIDogbnVsbCwKICAgICJjYW50aWRhZCIgOiAxLAogICAgImNvZGlnbyIgOiBudWxsLAogICAgImNvZFRyaWJ1dG8iIDogbnVsbCwKICAgICJkZXNjcmlwY2lvbiIgOiAiR29Qcm8gSEVSTzExIEJsYWNrIiwKICAgICJwcmVjaW9VbmkiIDogMSwKICAgICJtb250b0Rlc2N1IiA6IDAsCiAgICAidmVudGFOb1N1aiIgOiAwLAogICAgInZlbnRhRXhlbnRhIiA6IDAsCiAgICAidmVudGFHcmF2YWRhIiA6IDEsCiAgICAidHJpYnV0b3MiIDogWyAiMjAiIF0sCiAgICAicHN2IiA6IDAsCiAgICAibm9HcmF2YWRvIiA6IDAKICB9IF0sCiAgInJlc3VtZW4iIDogewogICAgInRvdGFsTm9TdWoiIDogMCwKICAgICJ0b3RhbEV4ZW50YSIgOiAwLAogICAgInRvdGFsR3JhdmFkYSIgOiA1Mjc4LAogICAgInN1YlRvdGFsVmVudGFzIiA6IDUyNzgsCiAgICAiZGVzY3VOb1N1aiIgOiAwLAogICAgImRlc2N1RXhlbnRhIiA6IDAsCiAgICAiZGVzY3VHcmF2YWRhIiA6IDAsCiAgICAicG9yY2VudGFqZURlc2N1ZW50byIgOiAxMDAsCiAgICAidG90YWxEZXNjdSIgOiAwLAogICAgInRyaWJ1dG9zIiA6IFsgewogICAgICAiY29kaWdvIiA6ICIyMCIsCiAgICAgICJkZXNjcmlwY2lvbiIgOiAiSW1wdWVzdG8gYWwgVmFsb3IgQWdyZWdhZG8gMTMlIiwKICAgICAgInZhbG9yIiA6IDY4Ni4xNAogICAgfSBdLAogICAgInN1YlRvdGFsIiA6IDUyNzgsCiAgICAiaXZhUmV0ZTEiIDogMCwKICAgICJyZXRlUmVudGEiIDogMCwKICAgICJpdmFQZXJjaTEiIDogMCwKICAgICJtb250b1RvdGFsT3BlcmFjaW9uIiA6IDU5NjQuMTQsCiAgICAidG90YWxOb0dyYXZhZG8iIDogMCwKICAgICJ0b3RhbFBhZ2FyIiA6IDU5NjQuMTQsCiAgICAidG90YWxMZXRyYXMiIDogIkNJTkNPIE1JTCBOT1ZFQ0lFTlRPUyBTRVNFTlRBIFkgQ1VBVFJPIDE0LzEwMCBET0xBUkVTIEFNRVJJQ0FOT1MiLAogICAgInNhbGRvRmF2b3IiIDogMCwKICAgICJjb25kaWNpb25PcGVyYWNpb24iIDogMSwKICAgICJwYWdvcyIgOiBbIHsKICAgICAgImNvZGlnbyIgOiAiMDEiLAogICAgICAibW9udG9QYWdvIiA6IDU5NjQuMTQsCiAgICAgICJyZWZlcmVuY2lhIiA6ICIiLAogICAgICAicGxhem8iIDogbnVsbCwKICAgICAgInBlcmlvZG8iIDogbnVsbAogICAgfSBdLAogICAgIm51bVBhZ29FbGVjdHJvbmljbyIgOiBudWxsCiAgfSwKICAiZXh0ZW5zaW9uIiA6IG51bGwsCiAgImFwZW5kaWNlIiA6IG51bGwKfQ.eTMN-US2jUEgOMGImbG-Y8WwIAasp_5_NlHqUPhmmitoYVrTCQ2MQYXX4W0UFEmG3mpTGyuEkAEDadbXotQEEDF3k5oCCPWoAilDvsHilByfe9hKXD4pmKP4HsjAFd-UNZ3bf1cRQXQ0jQ5hHHjW834w04R3ligpyHA07e1e-XVW6NCm8mf5KuAnE4_WJCwAY23FJGPmOXiI07rxsQq7e9T9IBAFe6QJSd8LsyANrqvWQOCbU8mUxZcKNJGBwjHAnW2cidhI9BLUdYSKx9wmYZgx8wCzu7pDv3S8B0o24wwTyBzyFPfaKjKujvhogsDgMJDFEJw8rFkDDQ6UzILDyg"
+}

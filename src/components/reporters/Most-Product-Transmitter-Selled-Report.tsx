@@ -11,6 +11,7 @@ import { useBranchesStore } from '../../store/branches.store';
 import { return_branch_id } from '../../storage/localStorage';
 import { ApexOptions } from 'apexcharts';
 import Chart from 'react-apexcharts';
+import { useBranchProductReportStore } from '../../store/reports/branch_product.store';
 
 const MostProductTransmitterSelled = () => {
   const { theme } = useContext(ThemeContext);
@@ -22,10 +23,9 @@ const MostProductTransmitterSelled = () => {
   const [endDate, setEndDate] = useState('');
   const {
     getProductMostSelledTable,
-    dataProduct,
-    getProductMostSelledGrafic,
     products_most_selled,
   } = salesReportStore();
+  const { data, getProductMostSelledGrafic } = useBranchProductReportStore()
   const { user } = useAuthStore();
   const [branchId, setBranchId] = useState(0);
   const { branch_list, getBranchesList } = useBranchesStore();
@@ -52,13 +52,13 @@ const MostProductTransmitterSelled = () => {
       user?.employee.branch.transmitterId ?? 0,
       startDate,
       endDate,
-      
+
     );
   };
   const series = [
     {
       name: 'Total',
-      data: dataProduct.map((d) => Number(d.total)),
+      data: data.map((d) => Number(d.total)),
     },
   ];
 
@@ -68,7 +68,7 @@ const MostProductTransmitterSelled = () => {
       height: 350,
     },
     xaxis: {
-      categories: dataProduct.map((d) => d.productName),
+      categories: data.map((d) => d.productName),
     },
   };
 

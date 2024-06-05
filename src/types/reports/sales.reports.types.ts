@@ -116,7 +116,7 @@ export interface IGetSalesByDayTable {
 
 export interface IResponseDataProductGrafic {
   ok: boolean;
-  dataProduct: IDataProductGrafic[];
+  data: IDataProductGrafic[];
 }
 
 export interface IDataProductGrafic {

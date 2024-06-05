@@ -1,6 +1,6 @@
 import { SaleContingenciaI } from '../../plugins/dexie/store/types/contingencia_store.types';
-import { DteJson as IFactura } from '../../types/DTE/DTE.types';
 import { Sale } from '../../types/report_contigence';
+import { SVFE_FC_SEND } from '../../types/svf_dte/fc.types';
 import { ITransmitter } from '../../types/transmitter.types';
 import { ambiente } from '../../utils/constants';
 
@@ -9,7 +9,7 @@ export const generateFactura = (
   transmitter: ITransmitter,
   sale: Sale,
   saleCustomer?: Sale
-): IFactura => {
+): SVFE_FC_SEND => {
   return {
     nit: transmitter.nit,
     activo: true,
@@ -147,7 +147,3 @@ export const generateFactura = (
     },
   };
 };
-
-// export const generateCreditoFiscl = (): DteJson => {
-
-// }
