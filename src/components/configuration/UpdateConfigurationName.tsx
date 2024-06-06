@@ -33,7 +33,7 @@ function UpdateConfigurationName(props: Props) {
   };
 
   return (
-    
+    <div className="p-4 dark:text-white">
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -42,7 +42,7 @@ function UpdateConfigurationName(props: Props) {
       >
         {({ errors, touched, handleChange, handleBlur, handleSubmit, values }) => (
           <>
-            <div className=''>
+            <div className="">
               <Input
                 label="Ingrese un nombre"
                 labelPlacement="outside"
@@ -73,7 +73,7 @@ function UpdateConfigurationName(props: Props) {
           </>
         )}
       </Formik>
-    
+    </div>
   );
 }
 

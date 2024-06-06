@@ -18,6 +18,7 @@ import { Image } from 'primereact/image';
 import { Table as ITable, CreditCard, List } from 'lucide-react';
 import MobileViewConfi from './MobileViewConfi';
 import { IConfiguration } from '../../types/configuration.types';
+import HeadlessModal from '../global/HeadlessModal';
 
 function ConfigurationList() {
   const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
@@ -229,27 +230,27 @@ function ConfigurationList() {
         <CreateConfiguration />
       </ModalGlobal>
 
-      <ModalGlobal
+      <HeadlessModal
         isOpen={UpdateImgModal.isOpen}
         onClose={UpdateImgModal.onClose}
         title="Actualizar logo"
-        size="w-full lg:w-[600px]"
+        size="w-[350px] md:w-[500px]"
       >
         <UpdateFile perzonalitationId={logoId} />
-      </ModalGlobal>
+      </HeadlessModal>
 
-      <ModalGlobal
+      <HeadlessModal
         isOpen={updateName.isOpen}
         onClose={updateName.onClose}
         title="Actualizar nombre"
-        size="w-full lg:w-[500px]"
+        size="w-[350px] md:w-[500px]"
       >
         <UpdateConfigurationName
           name={selectedConfiguration}
           reloadData={reloadData}
           onClose={updateName.onClose}
         />
-      </ModalGlobal>
+      </HeadlessModal>
     </>
   );
 }
