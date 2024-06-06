@@ -16,7 +16,7 @@ export interface Promotion {
   startDate: string | Date;
   endDate: string | Date;
   price: number;
-  operatorPrice?: string;
+  operatorPrice: string;
   state?: boolean;
   isActive?: boolean;
   priority: string;

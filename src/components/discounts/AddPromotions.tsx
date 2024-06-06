@@ -5,7 +5,6 @@ import {
   Checkbox,
   CheckboxGroup,
   Input,
-  
   Select,
   SelectItem,
   Textarea,
@@ -32,9 +31,6 @@ import AddPromotionsByCategory from './AddPromotionsByCategory';
 function AddDiscount() {
   const [selectedBranchId] = useState<number | null>(null);
   const [selectedPromotion, setSelectedPromotion] = useState('');
-  const [selectedOperators, setSelectedOperators] = useState('');
-  const [selectedOperatorPrice, setOperatorPrice] = useState('');
-  // const [selectedPiority, setPiority] = useState('');
   const [branchId, setBranchId] = useState(0);
   const [endDate, setEndDate] = useState(formatDate());
   const [startDate, setStartDate] = useState(formatDate());
@@ -66,8 +62,45 @@ function AddDiscount() {
   const { theme } = useContext(ThemeContext);
   const validationSchema = yup.object().shape({
     name: yup.string().required('**El nombre es requerido**'),
-  });
+    price: yup
+      .number()
+      .required('**El precio es requerido**')
+      .min(0, '**El precio no puede ser negativo**'),
+    operator: yup
+      .string()
+      .oneOf(['=', '>', '<', '>=', '<='])
+      .required('**El operador es requerido**'),
+    operatorPrice: yup
+      .string()
+      .oneOf(['=', '>', '<', '>=', '<='])
+      .required('**El operador es requerido**'),
 
+    quantity: yup
+      .number()
+      .required('**La cantidad es requerida**')
+      .min(0, '**La cantidad no puede ser negativa**'),
+    maximum: yup
+      .number()
+      .required('**La cantidad máxima es requerida**')
+      .min(0, '**La cantidad máxima no puede ser negativa**'),
+    fixedPrice: yup.number().min(0, '**El precio fijo no puede ser negativo**'),
+    // startDate: yup.string().required('**La fecha inicial es requerida**'),
+    branchId: yup.string().required('**La sucursal es requerida**'),
+    // endDate: yup.date().required('**La fecha final es requerida**'),
+    description: yup.string().required('**La descripción es requerida**'),
+    // typePromotion: yup.string().required('**El tipo de promoción es requerido**'),
+  });
+  // .test(
+  //   'percentage-or-fixedPrice',
+  //   'Debes ingresar un valor para porcentaje o precio fijo, pero no ambos',
+  //   function (value) {
+  //     const { percentage, fixedPrice } = value || {};
+  //     if (typeof percentage === 'number' && typeof fixedPrice === 'number') {
+  //       return false;
+  //     }
+  //     return true;
+  //   }
+  // );
   const { getPaginatedBranchProducts } = useBranchProductStore();
   const { postPromotions } = usePromotionsStore();
   useEffect(() => {
@@ -83,8 +116,8 @@ function AddDiscount() {
     const payload = {
       ...values,
       branchId: branchId,
-      operator: selectedOperators,
-      operatorPrice: selectedOperatorPrice,
+      operator: values.operator,
+      operatorPrice: values.operatorPrice,
       startDate: startDate,
       endDate: endDate,
       days: daysArrayString.toString(),
@@ -151,7 +184,15 @@ function AddDiscount() {
                     }}
                     onSubmit={handleSave}
                   >
-                    {({ values, errors, touched, handleBlur, handleChange, handleSubmit }) => (
+                    {({
+                      values,
+                      errors,
+                      touched,
+                      handleBlur,
+                      handleChange,
+                      handleSubmit,
+                      setFieldValue,
+                    }) => (
                       <>
                         <div className="w-full ">
                           <div className="w-full grid grid-cols-2 gap-5">
@@ -176,8 +217,12 @@ function AddDiscount() {
                               )}
                             </div>
 
-                            <div className="mt-10">
-                              <Autocomplete placeholder="Selecciona la sucursal">
+                            <div className="mt-4">
+                              <Autocomplete
+                                label="Sucursal"
+                                labelPlacement="outside"
+                                placeholder="Selecciona la sucursal"
+                              >
                                 {branch_list.map((branch) => (
                                   <AutocompleteItem
                                     onClick={() => setBranchId(branch.id)}
@@ -189,6 +234,13 @@ function AddDiscount() {
                                   </AutocompleteItem>
                                 ))}
                               </Autocomplete>
+                              {errors.branchId && touched.branchId && (
+                                <>
+                                  <span className="text-sm font-semibold text-red-500">
+                                    {errors.branchId}
+                                  </span>
+                                </>
+                              )}
                             </div>
                           </div>
 
@@ -221,50 +273,53 @@ function AddDiscount() {
                                   variant="bordered"
                                   placeholder="Selecciona el operador"
                                   className="w-full dark:text-white"
-                                  label="Operador"
+                                  label="Operador de"
                                   labelPlacement="outside"
                                   classNames={{
                                     label: 'font-semibold text-gray-500 text-sm',
                                   }}
-                                  value={values.operatorPrice?.toString()}
-                                  onChange={(e) => {
-                                    setOperatorPrice(e.target.value);
-                                  }}
+                                  value={values.operatorPrice}
+                                  onChange={(e) => setFieldValue('operatorPrice', e.target.value)}
                                 >
-                                  {operadores.map((limit) => (
+                                  {operadores.map((operator) => (
                                     <SelectItem
-                                      key={limit}
-                                      value={limit}
+                                      key={operator.value}
+                                      value={operator.value}
                                       className="dark:text-white"
                                     >
-                                      {limit}
+                                      {operator.label}
                                     </SelectItem>
                                   ))}
                                 </Select>
+
+                                {errors.operatorPrice && touched.operatorPrice && (
+                                  <span className="text-sm font-semibold text-red-500">
+                                    {errors.operatorPrice}
+                                  </span>
+                                )}
                               </div>
                             </div>
-                            <div>
-                              <Input
-                                label="Procentaje de descuento"
-                                labelPlacement="outside"
-                                name="percentage"
-                                value={values.percentage ? values.percentage.toString() : ''}
-                                onChange={handleChange('percentage')}
-                                onBlur={handleBlur('percentage')}
-                                placeholder="0"
-                                classNames={{
-                                  label: 'font-semibold text-gray-500 text-sm',
-                                }}
-                                variant="bordered"
-                                type="number"
-                                startContent="%"
-                              />
-                              {/* {errors.discount && touched.discount && (
-                      <span className="text-sm font-semibold text-red-500">
-                        {errors.discount}
-                      </span>
-                    )} */}
-                            </div>
+                            <Input
+                              label="Procentaje de descuento"
+                              labelPlacement="outside"
+                              name="percentage"
+                              value={values.percentage.toString()}
+                              onChange={(e) => {
+                                const newValue = parseFloat(e.target.value);
+                                handleChange('percentage')(newValue.toString());
+                                if (newValue > 0) {
+                                  setFieldValue('fixedPrice', 0);
+                                }
+                              }}
+                              onBlur={handleBlur('percentage')}
+                              placeholder="0"
+                              classNames={{
+                                label: 'font-semibold text-gray-500 text-sm',
+                              }}
+                              variant="bordered"
+                              type="number"
+                              startContent="%"
+                            />
                           </div>
 
                           <div className="grid grid-cols-2 gap-5 w-full mt-8">
@@ -324,18 +379,16 @@ function AddDiscount() {
                                     classNames={{
                                       label: 'font-semibold text-gray-500 text-sm',
                                     }}
-                                    value={values.operator.toString()}
-                                    onChange={(e) => {
-                                      setSelectedOperators(e.target.value);
-                                    }}
+                                    value={values.operator}
+                                    onChange={(e) => setFieldValue('operator', e.target.value)}
                                   >
-                                    {operadores.map((limit) => (
+                                    {operadores.map((operator) => (
                                       <SelectItem
-                                        key={limit}
-                                        value={limit}
+                                        key={operator.value}
+                                        value={operator.value}
                                         className="dark:text-white"
                                       >
-                                        {limit}
+                                        {operator.label}
                                       </SelectItem>
                                     ))}
                                   </Select>
@@ -347,9 +400,15 @@ function AddDiscount() {
                               <Input
                                 label="Precio Fijo"
                                 labelPlacement="outside"
-                                name=" fixedPrice"
+                                name="fixedPrice"
                                 value={values.fixedPrice ? values.fixedPrice.toString() : ''}
-                                onChange={handleChange('fixedPrice')}
+                                onChange={(e) => {
+                                  const newValue = parseFloat(e.target.value);
+                                  handleChange('fixedPrice')(newValue.toString());
+                                  if (newValue > 0) {
+                                    setFieldValue('percentage', 0);
+                                  }
+                                }}
                                 onBlur={handleBlur('fixedPrice')}
                                 placeholder="0"
                                 classNames={{
@@ -359,9 +418,6 @@ function AddDiscount() {
                                 type="number"
                                 startContent=""
                               />
-                              {/* {errors.price && touched.price && (
-                    <span className="text-sm font-semibold text-red-500">{errors.price}</span>
-                  )} */}
                             </div>
                           </div>
 
@@ -380,6 +436,13 @@ function AddDiscount() {
                                   onChange={(e) => setStartDate(e.target.value)}
                                   value={startDate}
                                 />
+                                {errors.startDate && touched.startDate && (
+                                  <>
+                                    <span className="text-sm font-semibold text-red-500">
+                                      {errors.startDate}
+                                    </span>
+                                  </>
+                                )}
                               </div>
                               <div>
                                 <Input
@@ -394,6 +457,13 @@ function AddDiscount() {
                                   onChange={(e) => setEndDate(e.target.value)}
                                   value={endDate}
                                 />
+                                {errors.endDate && touched.endDate && (
+                                  <>
+                                    <span className="text-sm font-semibold text-red-500">
+                                      {errors.endDate}
+                                    </span>
+                                  </>
+                                )}
                               </div>
                             </div>
                             <div>
@@ -434,6 +504,11 @@ function AddDiscount() {
                                     </Checkbox>
                                   ))}
                                 </CheckboxGroup>
+                                {errors.priority && touched.priority && (
+                                  <span className="text-sm font-semibold text-red-500">
+                                    {errors.priority}
+                                  </span>
+                                )}
                               </div>
                             </div>
                           </div>
