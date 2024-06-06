@@ -7,7 +7,7 @@ import { ThemeContext } from '../../hooks/useTheme';
 import { IConfiguration } from '../../types/configuration.types';
 
 interface Props {
-  id: IConfiguration | undefined;
+  name: IConfiguration | undefined;
   reloadData: () => void;
   onClose: () => void;
 }
@@ -27,7 +27,7 @@ function UpdateConfigurationName(props: Props) {
   });
 
   const handleSave = async ({ name }: { name: string }) => {
-    await UpdateConfigurationName({ name }, props.id?.id || 0);
+    await UpdateConfigurationName({ name }, props.name?.id || 0);
     props.reloadData();
     props.onClose();
   };
