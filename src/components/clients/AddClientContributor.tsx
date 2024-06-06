@@ -161,7 +161,7 @@ function AddClientContributor(props: Props) {
   };
 
   return (
-    <div>
+    <div className='p-4 dark:text-white'>
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}

@@ -32,7 +32,6 @@ import {
   BadgeCheck,
   Filter,
 } from 'lucide-react';
-import ModalGlobal from '../global/ModalGlobal';
 import AddClientNormal from './AddClientNormal';
 import AddClientContributor from './AddClientContributor';
 import { ButtonGroup } from '@nextui-org/react';
@@ -43,6 +42,8 @@ import Pagination from '../global/Pagination';
 import { global_styles } from '../../styles/global.styles';
 import SmPagination from '../global/SmPagination';
 import classNames from 'classnames';
+import HeadlessModal from '../global/HeadlessModal';
+
 const ListClients = () => {
   const { theme, context } = useContext(ThemeContext);
   const { getCustomersPagination, customer_pagination, save_active_customer } = useCustomerStore();
@@ -571,7 +572,7 @@ const ListClients = () => {
             </>
           )}
         </div>
-        <ModalGlobal
+        <HeadlessModal
           isOpen={modalAdd.isOpen}
           onClose={() => {
             clearClose();
@@ -608,7 +609,7 @@ const ListClients = () => {
               />
             )}
           </>
-        </ModalGlobal>
+        </HeadlessModal>
       </div>
     </>
   );

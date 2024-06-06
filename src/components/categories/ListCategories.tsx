@@ -24,7 +24,6 @@ import {
 import { useCategoriesStore } from '../../store/categories.store';
 import { ThemeContext } from '../../hooks/useTheme';
 import AddCategory from './AddCategory';
-import ModalGlobal from '../global/ModalGlobal';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import AddButton from '../global/AddButton';
@@ -36,6 +35,7 @@ import { global_styles } from '../../styles/global.styles';
 import classNames from 'classnames';
 import { limit_options } from '../../utils/constants';
 import SmPagination from '../global/SmPagination';
+import HeadlessModal from '../global/HeadlessModal';
 
 interface PProps {
   actions: string[];
@@ -368,14 +368,14 @@ function ListCategories({ actions }: PProps) {
           </>
         )}
       </div>
-      <ModalGlobal
-        size="w-full md:w-[500px]"
+      <HeadlessModal
+        size="w-[350px] md:w-[500px]"
         title={selectedCategory ? 'Editar categoría' : 'Nueva categoría'}
         isOpen={modalAdd.isOpen}
         onClose={modalAdd.onClose}
       >
         <AddCategory closeModal={modalAdd.onClose} category={selectedCategory} />
-      </ModalGlobal>
+      </HeadlessModal>
     </div>
   );
 }

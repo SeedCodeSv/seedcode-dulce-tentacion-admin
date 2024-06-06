@@ -10,25 +10,18 @@ import {
   Textarea,
 } from '@nextui-org/react';
 import { Formik } from 'formik';
-import { Key, useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import * as yup from 'yup';
 import { ThemeContext } from '../../hooks/useTheme';
 import WeekSelector from './WeekSelector';
 import { useBranchesStore } from '../../store/branches.store';
 import { formatDate } from '../../utils/dates';
-import Layout from '../../layout/Layout';
-import { useNavigate } from 'react-router';
-import { ArrowLeft } from 'lucide-react';
 import { Tipos_Promotions, operadores } from '../../utils/constants';
 import { Promotion } from '../../types/promotions.types';
 import { useBranchProductStore } from '../../store/branch_product.store';
 import { usePromotionsStore } from '../../store/promotions/promotions.store';
-import { Tab, Tabs } from '@nextui-org/react';
-import React from 'react';
-import AddPromotionsByProducts from './AddPromotionsByProducts';
-import AddPromotionsByCategory from './AddPromotionsByCategory';
 
-function AddDiscount() {
+function AddPromotionsByCategory() {
   const [selectedBranchId] = useState<number | null>(null);
   const [selectedPromotion, setSelectedPromotion] = useState('');
   const [branchId, setBranchId] = useState(0);
@@ -39,7 +32,6 @@ function AddDiscount() {
 
   type Priority = 'LOW' | 'MEDIUM' | 'HIGH';
   const priority: Priority[] = ['LOW', 'MEDIUM', 'HIGH'];
-
   interface PriorityInfo {
     label: string;
     color: string;
@@ -59,48 +51,12 @@ function AddDiscount() {
   const handleDaysSelected = (days: string[]) => {
     setSelectedDays(days);
   };
+
   const { theme } = useContext(ThemeContext);
   const validationSchema = yup.object().shape({
     name: yup.string().required('**El nombre es requerido**'),
-    price: yup
-      .number()
-      .required('**El precio es requerido**')
-      .min(0, '**El precio no puede ser negativo**'),
-    operator: yup
-      .string()
-      .oneOf(['=', '>', '<', '>=', '<='])
-      .required('**El operador es requerido**'),
-    operatorPrice: yup
-      .string()
-      .oneOf(['=', '>', '<', '>=', '<='])
-      .required('**El operador es requerido**'),
-
-    quantity: yup
-      .number()
-      .required('**La cantidad es requerida**')
-      .min(0, '**La cantidad no puede ser negativa**'),
-    maximum: yup
-      .number()
-      .required('**La cantidad máxima es requerida**')
-      .min(0, '**La cantidad máxima no puede ser negativa**'),
-    fixedPrice: yup.number().min(0, '**El precio fijo no puede ser negativo**'),
-    // startDate: yup.string().required('**La fecha inicial es requerida**'),
-    branchId: yup.string().required('**La sucursal es requerida**'),
-    // endDate: yup.date().required('**La fecha final es requerida**'),
-    description: yup.string().required('**La descripción es requerida**'),
-    // typePromotion: yup.string().required('**El tipo de promoción es requerido**'),
   });
-  // .test(
-  //   'percentage-or-fixedPrice',
-  //   'Debes ingresar un valor para porcentaje o precio fijo, pero no ambos',
-  //   function (value) {
-  //     const { percentage, fixedPrice } = value || {};
-  //     if (typeof percentage === 'number' && typeof fixedPrice === 'number') {
-  //       return false;
-  //     }
-  //     return true;
-  //   }
-  // );
+
   const { getPaginatedBranchProducts } = useBranchProductStore();
   const { postPromotions } = usePromotionsStore();
   useEffect(() => {
@@ -126,44 +82,11 @@ function AddDiscount() {
     };
     postPromotions(payload);
   };
-  const navigate = useNavigate();
-  const [selected, setSelected] = React.useState<string>('sucursales');
-
-  const handleSelectionChange = (key: Key) => {
-    setSelected(key as string);
-  };
-  useEffect(() => {
-    if (selected === 'sucursales') {
-      setSelectedPromotion('sucursales');
-    } else if (selected === 'productos') {
-      setSelectedPromotion('productos');
-    } else if (selected === 'categoria') {
-      setSelectedPromotion('categoria');
-    }
-  }, [selected]);
 
   return (
-    <Layout title="Nueva Promocion">
-      <>
-        <div className="h-full m-9">
-          <div className="flex flex-row ">
-            <div className="mt-2">
-              <ArrowLeft
-                onClick={() => {
-                  navigate('/discounts');
-                }}
-                className="cursor-pointer"
-                size={25}
-              />
-            </div>
-            <div className="flex flex-col justify-center items-center">
-              <Tabs
-                aria-label="Options"
-                selectedKey={selected}
-                onSelectionChange={handleSelectionChange}
-              >
-                <Tab key="sucursales" title="Sucursales">
-                  <Formik
+    <>
+      <div className="h-full">
+      <Formik
                     validationSchema={validationSchema}
                     initialValues={{
                       name: '',
@@ -584,20 +507,9 @@ function AddDiscount() {
                       </>
                     )}
                   </Formik>
-                </Tab>
-                <Tab key="productos" title="Productos">
-                  <AddPromotionsByProducts />
-                </Tab>
-                <Tab key="categoria" title="Categoria">
-                  <AddPromotionsByCategory />
-                </Tab>
-              </Tabs>
-            </div>
-          </div>
-        </div>
-      </>
-    </Layout>
+      </div>
+    </>
   );
 }
 
-export default AddDiscount;
+export default AddPromotionsByCategory;
