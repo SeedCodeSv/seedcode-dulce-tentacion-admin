@@ -19,17 +19,12 @@ export interface WeekSelectorProps {
 const WeekSelector: React.FC<WeekSelectorProps> = ({ onDaysSelected }) => {
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
 
-  const toggleDay = (day: string) => {
-    setSelectedDays((prevSelectedDays) =>
-      prevSelectedDays.includes(day)
-        ? prevSelectedDays.filter((d) => d !== day)
-        : [...prevSelectedDays, day]
-    );
-  };
-
   const handleDayClick = (day: string) => {
-    toggleDay(day);
-    onDaysSelected(selectedDays);
+    const updatedSelectedDays = selectedDays.includes(day)
+      ? selectedDays.filter((d) => d !== day)
+      : [...selectedDays, day];
+    setSelectedDays(updatedSelectedDays);
+    onDaysSelected(updatedSelectedDays);
   };
 
   return (
