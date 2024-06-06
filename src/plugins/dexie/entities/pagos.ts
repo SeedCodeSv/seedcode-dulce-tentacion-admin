@@ -4,6 +4,6 @@ export interface Pagos {
   montoPago: number;
   referencia: string;
   plazo: string;
-  periodo: string;
+  periodo: number;
   ventaId: number;
 }

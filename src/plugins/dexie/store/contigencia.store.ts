@@ -72,7 +72,7 @@ export const useContingenciaStore = create<IContingenciaStore>(() => ({
             montoPago: pagos ? Number(pagos[0].montoPago) : 0,
             referencia: pagos ? pagos[0].referencia ?? "0" : '0',
             plazo: pagos ? pagos[0].plazo ?? '0' : '0',
-            periodo: pagos ? pagos[0].periodo ?? '0' : '0',
+            periodo: pagos ? pagos[0].periodo ?? 0 : 0,
             ventaId: result.id,
           };
 

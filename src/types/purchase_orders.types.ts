@@ -126,7 +126,8 @@ export interface DetailOrderItems {
     orderId: number,
     total: number,
     isNew: boolean,
-    productId: number
+    productId: number,
+    iva: boolean
 }
 
 export interface UpdatePurchaseItems {

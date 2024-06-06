@@ -2,15 +2,15 @@ import {
   Autocomplete,
   AutocompleteItem,
   Button,
+  Input,
   useDisclosure,
 } from "@nextui-org/react";
 import { useBillingStore } from "../../store/facturation/billing.store";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useCustomerStore } from "../../store/customers.store";
 import { Customer } from "../../types/customers.types";
 import { toast } from "sonner";
 import { ITipoDocumento } from "../../types/DTE/tipo_documento.types";
-import { IFormasDePago } from "../../types/DTE/forma_de_pago.types";
 import { generate_factura } from "../../utils/DTE/factura";
 import { useTransmitterStore } from "../../store/transmitter.store";
 import { useBranchProductStore } from "../../store/branch_product.store";
@@ -23,8 +23,7 @@ import {
   firmarDocumentoFactura,
   send_to_mh,
 } from "../../services/DTE.service";
-import ModalGlobal from "../global/ModalGlobal";
-import { LoaderCircle, ShieldAlert } from "lucide-react";
+import { LoaderCircle, Plus, ShieldAlert, X } from "lucide-react";
 import { global_styles } from "../../styles/global.styles";
 import { get_token, return_mh_token } from "../../storage/localStorage";
 import { PayloadMH } from "../../types/DTE/DTE.types";
@@ -39,6 +38,8 @@ import { save_logs } from "../../services/logs.service";
 import { formatDate } from "../../utils/dates";
 import { SVFE_FC_SEND } from "../../types/svf_dte/fc.types";
 import Template1CFC from "../../pages/invoices/Template1CFC";
+import { SeedcodeCatalogosMhService } from "seedcode-catalogos-mh";
+import HeadlessModal from "../global/HeadlessModal";
 
 interface Props {
   clear: () => void;
@@ -48,8 +49,8 @@ function FormMakeSale(props: Props) {
   const [Customer, setCustomer] = useState<Customer>();
   const { cart_products } = useBranchProductStore();
   const [tipeDocument, setTipeDocument] = useState<ITipoDocumento>();
-  const [tipePayment, setTipePayment] = useState<IFormasDePago>();
   const [tipeTribute, setTipeTribute] = useState<TipoTributo>();
+  const [condition, setCondition] = useState("1");
 
   const [currentDTE, setCurrentDTE] = useState<SVFE_FC_SEND>();
 
@@ -79,11 +80,95 @@ function FormMakeSale(props: Props) {
 
   const { getCorrelativesByDte } = useCorrelativesDteStore();
 
-  const generateFactura = async () => {
-    // setLoading(true); // Mostrar mensaje de espera
-    if (!tipePayment) {
-      toast.info("Debes seleccionar el método de pago");
+  const services = new SeedcodeCatalogosMhService();
 
+  const total = cart_products
+    .map((a) => Number(a.total))
+    .reduce((a, b) => a + b, 0);
+
+  const condiciones = services.get016CondicionDeLaOperacio();
+
+  const plazos = services.get018Plazo();
+  const [pays, setPays] = useState([
+    {
+      codigo: "01",
+      plazo: "",
+      periodo: 0,
+      monto: total,
+    },
+  ]);
+
+  const handleAddPay = () => {
+    setPays([...pays, { codigo: "01", plazo: "", periodo: 0, monto: 0 }]);
+  };
+
+  const onUpdatePeriodo = (index: number, value: number) => {
+    const newPays = [...pays];
+    newPays[index].periodo = value;
+    setPays(newPays);
+  };
+
+  const onUpdateMonto = (index: number, value: number) => {
+    const newPays = [...pays];
+    newPays[index].monto = value;
+    setPays(newPays);
+  };
+
+  const handleUpdatePlazo = (index: number, value: string) => {
+    const newPays = [...pays];
+    newPays[index].plazo = value;
+    setPays(newPays);
+  };
+
+  const handleUpdateTipoPago = (index: number, value: string) => {
+    const newPays = [...pays];
+    newPays[index].codigo = value;
+    setPays(newPays);
+  };
+
+  const handleRemovePay = (index: number) => {
+    setPays(pays.filter((_, i) => i !== index));
+  };
+
+  const generateFactura = async () => {
+    if (condition === "") {
+      toast.error("Debes seleccionar una condición");
+      return;
+    }
+
+    const tipo_pago = pays.filter((type) => {
+      if (condition === "1") {
+        if (type.codigo !== "") {
+          if (type.monto > 0) {
+            return true;
+          } else {
+            return false;
+          }
+        } else {
+          return false;
+        }
+      } else {
+        if (type.monto > 0 && type.periodo > 0 && type.plazo !== "") {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    });
+
+    const total_filteres = tipo_pago
+      .map((a) => a.monto)
+      .reduce((a, b) => a + b, 0);
+
+    if (total_filteres !== total) {
+      toast.error(
+        "Los montos de las formas de pago no coinciden con el total de la compra"
+      );
+      return;
+    }
+
+    if (tipo_pago.length === 0) {
+      toast.error("Debes agregar al menos una forma de pago");
       return;
     }
     if (!tipeDocument) {
@@ -109,7 +194,15 @@ function FormMakeSale(props: Props) {
       tipeDocument,
       Customer,
       cart_products,
-      tipePayment
+      tipo_pago.map((a) => {
+        return {
+          codigo: a.codigo,
+          montoPago: a.monto,
+          plazo: condition === "1" ? null : a.plazo,
+          periodo: condition === "1" ? null : a.periodo,
+          referencia: "",
+        };
+      })
     );
 
     setCurrentDTE(generate);
@@ -351,7 +444,7 @@ function FormMakeSale(props: Props) {
 
   const propsCredito = {
     Customer: Customer,
-    tipePayment: tipePayment,
+    tipePayment: pays,
     tipeDocument: tipeDocument,
     tipeTribute: tipeTribute,
     clear: props.clear,
@@ -396,149 +489,286 @@ function FormMakeSale(props: Props) {
   };
 
   return (
-    <div>
-      <Autocomplete
-        onSelectionChange={(key) => {
-          if (key) {
-            const customerSelected = JSON.parse(key as string) as Customer;
-            setCustomer(customerSelected);
-          }
-        }}
-        variant="bordered"
-        label="Cliente"
-        labelPlacement="outside"
-        placeholder="Selecciona el cliente"
-      >
-        {customer_list.map((item) => (
-          <AutocompleteItem key={JSON.stringify(item)} value={item.nombre} className='dark:text-white'>
-            {item.nombre}
-          </AutocompleteItem>
-        ))}
-      </Autocomplete>
-      <Autocomplete
-        onSelectionChange={(key) => {
-          if (key) {
-            const tipePaymentSelected = JSON.parse(
-              key as string
-            ) as IFormasDePago;
-            setTipePayment(tipePaymentSelected);
-          }
-        }}
-        className="pt-5"
-        variant="bordered"
-        label="Método de pago"
-        labelPlacement="outside"
-        placeholder="Selecciona el método de pago"
-      >
-        {metodos_de_pago.map((item) => (
-          <AutocompleteItem key={JSON.stringify(item)} value={item.codigo} className='dark:text-white'>
-            {item.valores}
-          </AutocompleteItem>
-        ))}
-      </Autocomplete>
-      <Autocomplete
-        onSelectionChange={(key) => {
-          if (key) {
-            const tipeDocumentSelected = JSON.parse(
-              key as string
-            ) as ITipoDocumento;
-            setTipeDocument(tipeDocumentSelected);
-          }
-        }}
-        className="pt-5"
-        variant="bordered"
-        label="Tipo de documento a emitir"
-        labelPlacement="outside"
-        placeholder="Selecciona el tipo de documento"
-      >
-        {tipos_de_documento.map((item) => (
-          <AutocompleteItem key={JSON.stringify(item)} value={item.codigo}>
-            {item.valores}
-          </AutocompleteItem>
-        ))}
-      </Autocomplete>
-      {tipeDocument?.codigo === "03" && (
+    <div className="w-full h-full grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div>
         <Autocomplete
           onSelectionChange={(key) => {
             if (key) {
-              const tipeTributeSelected = JSON.parse(
+              const customerSelected = JSON.parse(key as string) as Customer;
+              setCustomer(customerSelected);
+            }
+          }}
+          variant="bordered"
+          label="Cliente"
+          labelPlacement="outside"
+          placeholder="Selecciona el cliente"
+        >
+          {customer_list.map((item) => (
+            <AutocompleteItem
+              key={JSON.stringify(item)}
+              value={item.nombre}
+              className="dark:text-white"
+            >
+              {item.nombre}
+            </AutocompleteItem>
+          ))}
+        </Autocomplete>
+        <Autocomplete
+          onSelectionChange={(key) => {
+            if (key) {
+              setCondition(key as string);
+            } else {
+              setCondition("");
+            }
+          }}
+          className="pt-5"
+          defaultSelectedKey={condition}
+          variant="bordered"
+          label="Condición de la operación"
+          labelPlacement="outside"
+          placeholder="Selecciona la condición"
+        >
+          {condiciones.map((item) => (
+            <AutocompleteItem key={item.codigo} value={item.codigo}>
+              {item.valores}
+            </AutocompleteItem>
+          ))}
+        </Autocomplete>
+        <Autocomplete
+          onSelectionChange={(key) => {
+            if (key) {
+              const tipeDocumentSelected = JSON.parse(
                 key as string
-              ) as TipoTributo;
-              setTipeTribute(tipeTributeSelected);
+              ) as ITipoDocumento;
+              setTipeDocument(tipeDocumentSelected);
             }
           }}
           className="pt-5"
           variant="bordered"
-          label="Tipo de tributo"
+          label="Tipo de documento a emitir"
           labelPlacement="outside"
-          placeholder="Selecciona el tipo de tributo"
+          placeholder="Selecciona el tipo de documento"
         >
-          {tipos_tributo.map((item) => (
+          {tipos_de_documento.map((item) => (
             <AutocompleteItem key={JSON.stringify(item)} value={item.codigo}>
               {item.valores}
             </AutocompleteItem>
           ))}
         </Autocomplete>
-      )}
-      {tipeDocument?.codigo === "01" || tipeDocument?.codigo === undefined ? (
-        <div className="flex justify-center mt-4 mb-4 w-full">
-          <div className="w-full flex  justify-center">
-            {loading ? (
-              <LoaderCircle size={50} className=" animate-spin " />
-            ) : (
-              <Button
-                style={global_styles().secondaryStyle}
-                className="w-full"
-                onClick={generateFactura}
-              >
-                Generar Factura
-              </Button>
-            )}
-          </div>
+
+        {tipeDocument?.codigo === "03" && (
+          <Autocomplete
+            onSelectionChange={(key) => {
+              if (key) {
+                const tipeTributeSelected = JSON.parse(
+                  key as string
+                ) as TipoTributo;
+                setTipeTribute(tipeTributeSelected);
+              }
+            }}
+            className="pt-5"
+            variant="bordered"
+            label="Tipo de tributo"
+            labelPlacement="outside"
+            placeholder="Selecciona el tipo de tributo"
+          >
+            {tipos_tributo.map((item) => (
+              <AutocompleteItem key={JSON.stringify(item)} value={item.codigo}>
+                {item.valores}
+              </AutocompleteItem>
+            ))}
+          </Autocomplete>
+        )}
+        <div className="hidden lg:block">
+          {tipeDocument?.codigo === "01" ||
+          tipeDocument?.codigo === undefined ? (
+            <div className="flex justify-center mt-4 mb-4 w-full">
+              <div className="w-full flex  justify-center">
+                {loading ? (
+                  <LoaderCircle size={50} className=" animate-spin " />
+                ) : (
+                  <Button
+                    style={global_styles().secondaryStyle}
+                    className="w-full"
+                    onClick={generateFactura}
+                  >
+                    Generar Factura
+                  </Button>
+                )}
+              </div>
+            </div>
+          ) : (
+            <CreditoFiscal {...propsCredito} condition={condition} />
+          )}
         </div>
-      ) : (
-        <CreditoFiscal {...propsCredito} />
-      )}
-      <ModalGlobal
+      </div>
+      <div className="overflow-y-auto max-h-[70vh]">
+        <div className="flex py-4 justify-between">
+          <p className="font-semibold">Pagos</p>
+          <Button
+            onClick={handleAddPay}
+            style={global_styles().thirdStyle}
+            isIconOnly
+          >
+            <Plus />
+          </Button>
+        </div>
+        <div className="">
+          {pays.map((item, index) => (
+            <Fragment key={index}>
+              <div className="relative p-6 bg-gray-100 mb-4 dark:bg-gray-900 rounded-xl">
+                <button
+                  onClick={() => handleRemovePay(index)}
+                  className=" bg-transparent border-none outline-none absolute top-3 right-3"
+                >
+                  <X />
+                </button>
+                <div className="w-full grid grid-cols-2 gap-5">
+                  <Autocomplete
+                    onSelectionChange={(key) => {
+                      if (key) {
+                        handleUpdateTipoPago(index, key as string);
+                      }
+                    }}
+                    variant="bordered"
+                    label="Método de pago"
+                    labelPlacement="outside"
+                    value={item.codigo}
+                    defaultSelectedKey={item.codigo}
+                    placeholder="Selecciona el método de pago"
+                  >
+                    {metodos_de_pago.map((item) => (
+                      <AutocompleteItem
+                        key={item.codigo}
+                        value={item.codigo}
+                        className="dark:text-white"
+                      >
+                        {item.valores}
+                      </AutocompleteItem>
+                    ))}
+                  </Autocomplete>
+                  {condition !== "1" && (
+                    <>
+                      <Autocomplete
+                        onSelectionChange={(key) => {
+                          if (key) {
+                            handleUpdatePlazo(index, key as string);
+                          } else {
+                            handleUpdatePlazo(index, "");
+                          }
+                        }}
+                        value={item.plazo}
+                        variant="bordered"
+                        label="Plazo de pago"
+                        labelPlacement="outside"
+                        defaultSelectedKey={item.plazo}
+                        placeholder="Selecciona el plazo"
+                      >
+                        {plazos.map((item) => (
+                          <AutocompleteItem
+                            key={item.codigo}
+                            value={item.codigo}
+                            className="dark:text-white"
+                          >
+                            {item.valores}
+                          </AutocompleteItem>
+                        ))}
+                      </Autocomplete>
+                      <Input
+                        variant="bordered"
+                        label="Periodo"
+                        placeholder="0"
+                        defaultValue={item.periodo.toString()}
+                        labelPlacement="outside"
+                        onChange={(e) =>
+                          onUpdatePeriodo(index, Number(e.target.value))
+                        }
+                      />
+                    </>
+                  )}
+
+                  <Input
+                    variant="bordered"
+                    label="Monto"
+                    placeholder="0.0"
+                    labelPlacement="outside"
+                    defaultValue={item.monto.toString()}
+                    startContent={"$"}
+                    step={0.01}
+                    onChange={(e) =>
+                      onUpdateMonto(index, Number(e.target.value))
+                    }
+                  />
+                </div>
+              </div>
+            </Fragment>
+          ))}
+        </div>
+      </div>
+      <div className="block lg:hidden">
+        {tipeDocument?.codigo === "01" || tipeDocument?.codigo === undefined ? (
+          <div className="flex justify-center mt-4 mb-4 w-full">
+            <div className="w-full flex  justify-center">
+              {loading ? (
+                <LoaderCircle size={50} className=" animate-spin " />
+              ) : (
+                <Button
+                  style={global_styles().secondaryStyle}
+                  className="w-full"
+                  onClick={generateFactura}
+                >
+                  Generar Factura
+                </Button>
+              )}
+            </div>
+          </div>
+        ) : (
+          <CreditoFiscal {...propsCredito} condition={condition} />
+        )}
+      </div>
+
+      <HeadlessModal
         title={title}
         size="w-full md:w-[600px] lg:w-[700px]"
         isOpen={modalError.isOpen}
         onClose={modalError.onClose}
       >
-        <div className="flex flex-col justify-center items-center">
-          <ShieldAlert size={75} color="red" />
-          <p className="text-lg font-semibold">{errorMessage}</p>
+        <div className="p-5">
+          <div className="flex flex-col justify-center items-center">
+            <ShieldAlert size={75} color="red" />
+            <p className="text-lg font-semibold">{errorMessage}</p>
+          </div>
+          {loading ? (
+            <div className="flex justify-center w-full mt-5">
+              <LoaderCircle size={50} className=" animate-spin " />
+            </div>
+          ) : (
+            <div className="grid grid-cols-3 gap-5 mt-5">
+              <Button
+                onClick={() => {
+                  modalError.onClose();
+                  generateFactura();
+                }}
+                style={global_styles().secondaryStyle}
+              >
+                Re-intentar
+              </Button>
+              <Button
+                onClick={handleVerify}
+                style={global_styles().warningStyles}
+              >
+                Verificar
+              </Button>
+              <Button
+                onClick={sendToContingencia}
+                style={global_styles().dangerStyles}
+              >
+                Enviar a contingencia
+              </Button>
+            </div>
+          )}
         </div>
-        {loading ? (
-          <div className="flex justify-center w-full mt-5">
-            <LoaderCircle size={50} className=" animate-spin " />
-          </div>
-        ) : (
-          <div className="grid grid-cols-3 gap-5 mt-5">
-            <Button
-              onClick={() => {
-                modalError.onClose();
-                generateFactura();
-              }}
-              style={global_styles().secondaryStyle}
-            >
-              Re-intentar
-            </Button>
-            <Button
-              onClick={handleVerify}
-              style={global_styles().warningStyles}
-            >
-              Verificar
-            </Button>
-            <Button
-              onClick={sendToContingencia}
-              style={global_styles().dangerStyles}
-            >
-              Enviar a contingencia
-            </Button>
-          </div>
-        )}
-      </ModalGlobal>
+      </HeadlessModal>
     </div>
   );
 }

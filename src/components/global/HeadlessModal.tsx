@@ -34,7 +34,7 @@ function HeadlessModal(props: Props) {
               <Dialog.Overlay className="fixed inset-0 bg-gray-950/50" />
               <Dialog.Panel
                 className={classNames(
-                  "bg-white rounded-xl dark:bg-gray-800 backdrop-blur-2xl",
+                  "bg-white rounded-xl h-full dark:bg-gray-800 backdrop-blur-2xl",
                   size
                 )}
               >

@@ -1,4 +1,6 @@
 import {
+  Autocomplete,
+  AutocompleteItem,
   Button,
   ButtonGroup,
   Chip,
@@ -30,6 +32,7 @@ import {
   // SearchIcon,
 } from "lucide-react";
 import { global_styles } from "../../styles/global.styles";
+import { useSupplierStore } from "../../store/supplier.store";
 // import { Drawer } from "vaul";
 function ListPurchasesOrders() {
   const modalAdd = useDisclosure();
@@ -38,6 +41,7 @@ function ListPurchasesOrders() {
   const [limit, setLimit] = useState(5);
   const [mode, setMode] = useState("show");
   const [view, setView] = useState<"table" | "grid" | "list">("table");
+  const [supplier, setSupplier] = useState("");
   // const [openVaul, setOpenVaul] = useState(false);
   const [showState, setShowState] = useState("todos");
 
@@ -47,9 +51,15 @@ function ListPurchasesOrders() {
     pagination_purchase_orders,
   } = usePurchaseOrdersStore();
 
+  const { getSupplierList, supplier_list } = useSupplierStore();
+
   useEffect(() => {
-    getPurchaseOrders(startDate, endDate, 1, limit,"",showState);
-  }, [startDate, endDate, limit, showState]);
+    getPurchaseOrders(startDate, endDate, 1, limit, supplier, showState);
+  }, [startDate, endDate, limit, showState, supplier]);
+
+  useEffect(() => {
+    getSupplierList();
+  }, []);
 
   const { theme } = useContext(ThemeContext);
 
@@ -60,7 +70,7 @@ function ListPurchasesOrders() {
 
   const reload = () => {
     setLimit(5);
-    getPurchaseOrders(startDate, endDate, 1, limit);
+    getPurchaseOrders(startDate, endDate, 1, limit, "");
   };
 
   const [selectedOrder, setSelectedOrder] = useState<PurchaseOrder>();
@@ -109,6 +119,27 @@ function ListPurchasesOrders() {
                   onChange={(e) => setEndDate(e.target.value)}
                   value={endDate}
                 />
+              </div>
+              <div>
+                <Autocomplete
+                  label="Proveedor"
+                  onSelect={(e) => {
+                    setSupplier(e.currentTarget.value);
+                  }}
+                  placeholder="Selecciona un proveedor"
+                  labelPlacement="outside"
+                  variant="bordered"
+                >
+                  {supplier_list.map((branch) => (
+                    <AutocompleteItem
+                      className="dark:text-white"
+                      key={branch.id}
+                      value={branch.nombre}
+                    >
+                      {branch.nombre}
+                    </AutocompleteItem>
+                  ))}
+                </Autocomplete>
               </div>
             </div>
             <div className="flex flex-col mt-4 justify-between w-full gap-5 xl:flex-row xl:gap-0">
@@ -159,15 +190,29 @@ function ListPurchasesOrders() {
                   labelPlacement="outside"
                   variant="bordered"
                   value={limit}
-                  onChange={(e) => setShowState(e.target.value ? e.target.value : "")}
+                  onChange={(e) =>
+                    setShowState(e.target.value ? e.target.value : "")
+                  }
                 >
-                  <SelectItem className="text-white" key={""} value={"todos"}>
+                  <SelectItem
+                    className="dark:text-white"
+                    key={""}
+                    value={"todos"}
+                  >
                     Mostrar todos
                   </SelectItem>
-                  <SelectItem className="text-white" key={"false"} value={"false"}>
+                  <SelectItem
+                    className="dark:text-white"
+                    key={"false"}
+                    value={"false"}
+                  >
                     Pendientes
                   </SelectItem>
-                  <SelectItem className="text-white" key={"true"} value={"true"}>
+                  <SelectItem
+                    className="dark:text-white"
+                    key={"true"}
+                    value={"true"}
+                  >
                     Completados
                   </SelectItem>
                 </Select>
@@ -216,12 +261,18 @@ function ListPurchasesOrders() {
                 header="Sucursal"
               />
               <Column
-               headerClassName="text-sm font-semibold"
-               headerStyle={style}
-               field="state"
-               header="Estado"
-               body={(item) => (item.state ? <Chip color="success">Completado</Chip> : <Chip color="danger">Pendiente</Chip>)}
-               />
+                headerClassName="text-sm font-semibold"
+                headerStyle={style}
+                field="state"
+                header="Estado"
+                body={(item) =>
+                  item.state ? (
+                    <Chip color="success">Completado</Chip>
+                  ) : (
+                    <Chip color="danger">Pendiente</Chip>
+                  )
+                }
+              />
               <Column
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}

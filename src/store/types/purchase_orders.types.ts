@@ -26,6 +26,7 @@ export interface PurchaseOrderStore {
     price: number | string,
     quantity: number | string
   ) => void;
+  updateIvaOrder: (id: number, iva: boolean) => void;
   deleteProductDetail: (id: number) => void;
   addProductToOrder: (product: BranchProduct) => void;
   deleteProductOrder: (id: number) => void;
