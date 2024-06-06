@@ -41,7 +41,7 @@ const AddCategory = (props: Props) => {
       >
         {({ values, errors, touched, handleBlur, handleChange, handleSubmit }) => (
           <>
-            <div className="flex flex-col w-full">
+            <div className="flex flex-col w-full dark:text-white">
               <Input
                 name="name"
                 labelPlacement="outside"
