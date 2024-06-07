@@ -49,3 +49,16 @@ export interface IGetCategories {
   message: string;
   categoryProducts: CategoryProduct[];
 }
+
+//Listado sin paginar
+export interface IGetCategoriesList {
+  ok: boolean;
+  message: string;
+  categoryProducts: CategoryProductList[];
+}
+
+export interface CategoryProductList {
+  id: number;
+  name: string;
+  isActive: boolean;
+}
