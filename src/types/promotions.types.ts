@@ -43,6 +43,9 @@ export interface PromotionCategories {
   typePromotion: string;
   categories: CategoryProduct[];
 }
+export interface CategoryProduct {
+  categoryId: number;
+}
 
 export interface PromotionPayload {
   name: string;
@@ -62,10 +65,30 @@ export interface PromotionPayload {
   branchId: number;
   priority: string;
   typePromotion: string;
-  
 }
 
-export interface CategoryProduct {
-  categoryId: number;
 
+
+export interface PromotionProduct {
+  name: string;
+  description: string;
+  days: string;
+  quantity: number;
+  percentage: number;
+  operator: string;
+  fixedPrice: number;
+  maximum: number;
+  startDate: string | Date;
+  endDate: string | Date;
+  price: number;
+  operatorPrice: string;
+  state?: boolean;
+  isActive?: boolean;
+  priority: string;
+  branchId: number;
+  typePromotion: string;
+  products: Products[];
+}
+export interface Products {
+  productId: number;
 }

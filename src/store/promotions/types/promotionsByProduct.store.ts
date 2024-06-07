@@ -1,5 +1,5 @@
-import { PromotionPayload } from '../../../types/promotions/promotionsByProduct.types';
+import { PromotionPayloadByProduct } from '../../../types/promotions/promotionsByProduct.types';
 
 export interface IPromotionsByProductStore {
-  postPromotions: (payload: PromotionPayload) => void;
+  postPromotions: (payload: PromotionPayloadByProduct) => void;
 }
