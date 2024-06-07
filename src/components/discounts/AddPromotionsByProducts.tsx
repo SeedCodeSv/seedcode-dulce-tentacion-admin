@@ -429,7 +429,11 @@ function AddPromotionsByProducts() {
                     <h1 className="text-sm mb-4 font-semibold ">
                       Selecciona los días de la semana
                     </h1>
-                    <WeekSelector onDaysSelected={handleDaysSelected} />
+                    <WeekSelector
+                      startDate={startDate}
+                      endDate={endDate}
+                      onDaysSelected={handleDaysSelected}
+                    />
                   </div>
                   {/* Descripción  */}
                   <div className="mt-4">
