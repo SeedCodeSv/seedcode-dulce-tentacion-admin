@@ -221,14 +221,14 @@ function ConfigurationList() {
         <CreateTheme />
       </ModalGlobal>
 
-      <ModalGlobal
+      <HeadlessModal
         isOpen={addLogo.isOpen}
         onClose={addLogo.onClose}
         title="Agregar logo y nombre"
-        size="w-full lg:w-[600px]"
+        size="w-[350px] md:w-[500px]"
       >
         <CreateConfiguration />
-      </ModalGlobal>
+      </HeadlessModal>
 
       <HeadlessModal
         isOpen={UpdateImgModal.isOpen}
