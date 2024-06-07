@@ -755,7 +755,7 @@ export const BottomAdd = ({ setTypeClient, openModal }: PopoverAddProps) => {
         </Button>
       </PopoverTrigger>
       <PopoverContent aria-labelledby="popover-title">
-        <div className="flex flex-col gap-5 p-3 bg-white">
+        <div className="flex flex-col gap-5 p-3 bg-white dark:bg-zinc-900">
           <Button
             onClick={() => {
               onClose();

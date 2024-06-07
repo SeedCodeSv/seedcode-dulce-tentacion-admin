@@ -80,7 +80,7 @@ function AddBranch(props: Props) {
       <div className="w-full p-4">
         {visible ? (
           <>
-            <div className=" justify-center items-center">
+            <div className=" justify-center items-center dark:text-white">
               <div className=" text-center text-xl font-semibold mb-2">
                 Esta sucursal cuenta con una caja activa
               </div>
@@ -104,10 +104,10 @@ function AddBranch(props: Props) {
                 </PopoverTrigger>
                 <PopoverContent>
                   <div className="w-full p-5">
-                    <p className="font-semibold text-gray-600 text-center text-base">
+                    <p className="font-semibold dark:text-white text-center text-base">
                       Cierres de cajas
                     </p>
-                    <p className="mt-3 text-center text-gray-600 w-72">
+                    <p className="mt-3 text-center dark:text-white w-72">
                       ¿Como quieres cerrar la caja?
                     </p>
                     <div className="mt-4">
@@ -139,7 +139,7 @@ function AddBranch(props: Props) {
           </>
         ) : (
           <>
-            <div className=" text-center text-xl font-semibold">Caja</div>
+            <div className=" text-center text-xl font-semibold dark:text-white">Caja</div>
             <Formik
               initialValues={{
                 start: 0,
@@ -150,9 +150,9 @@ function AddBranch(props: Props) {
               {({ values, errors, touched, handleBlur, handleChange, handleSubmit }) => (
                 <>
                   <div className="">
-                    <div className="w-full pt-3 mb-4">
+                    <div className="w-full pt-3 mb-4 dark:text-white">
                       <Input
-                        label="Monto inicial"
+                        label="Monto inicial "
                         placeholder="Cantidad"
                         variant="bordered"
                         onChange={handleChange('start')}

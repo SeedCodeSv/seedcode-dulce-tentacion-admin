@@ -27,15 +27,16 @@ export interface IExpensePayload {
 }
 
 export interface ICreacteExpense {
+  id?: number
   description: string;
   total: number;
   boxId?: number;
   categoryExpenseId: number;
-  file?: File | Blob | null;
-
+  files?: (File | Blob)[] | null | undefined
+  expenses?: IGetExpense[]
 }
 export interface IExpensePayloads extends ICreacteExpense {
-  file?: File | Blob | null | undefined;
+  files?: (File | Blob)[] | null | undefined;
 }
 
 export interface IGetExpense {
