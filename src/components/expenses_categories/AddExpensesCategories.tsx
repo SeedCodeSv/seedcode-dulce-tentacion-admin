@@ -40,7 +40,7 @@ const AddCategoryExpenses = (props: Props) => {
   };
 
   return (
-    <div className="">
+    <div className="p-4">
       <Formik
         validationSchema={validationSchema}
         initialValues={{ name: props.categoryExpenses?.name ?? '' }}

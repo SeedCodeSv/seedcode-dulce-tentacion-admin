@@ -21,8 +21,9 @@ import { Column } from 'primereact/column';
 import Pagination from '../global/Pagination';
 import { Paginator } from 'primereact/paginator';
 import { paginator_styles } from '../../styles/paginator.styles';
-import ModalGlobal from '../global/ModalGlobal';
 import AddExpensesCategories from '../../components/expenses_categories/AddExpensesCategories';
+import HeadlessModal from '../global/HeadlessModal.tsx';
+
 const ListExpensesCategories = () => {
   const { theme } = useContext(ThemeContext);
 
@@ -240,14 +241,14 @@ const ListExpensesCategories = () => {
           </>
         )}
       </div>
-      <ModalGlobal
-        size="w-full sm:w-[500px]"
+      <HeadlessModal
+        size="w-[350px] md:w-[500px]"
         title={selectedCategory ? 'Editar categoría de gastos' : 'Nueva categoría de gastos'}
         isOpen={modalAdd.isOpen}
         onClose={modalAdd.onClose}
       >
         <AddExpensesCategories closeModal={modalAdd.onClose} categoryExpenses={selectedCategory} />
-      </ModalGlobal>
+      </HeadlessModal>
     </div>
   );
 };
