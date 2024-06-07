@@ -84,7 +84,7 @@ const AddActionRol = ({ closeModal }: Props) => {
     rolId: 0,
   };
   return (
-    <div>
+    <div className='p-4'>
       <Formik
         validationSchema={validationSchema}
         initialValues={initialValues}
