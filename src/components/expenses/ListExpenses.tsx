@@ -328,7 +328,7 @@ const ListExpenses = () => {
         {selectedCategory && <Description expense={selectedCategory} />}
       </ModalGlobal>
       <ModalGlobal
-        size="w-full sm:w-[500px]"
+        size="w-full sm:w-[1000px]"
         title="Nuevo gasto"
         isOpen={modalAdd.isOpen}
         onClose={modalAdd.onClose}
