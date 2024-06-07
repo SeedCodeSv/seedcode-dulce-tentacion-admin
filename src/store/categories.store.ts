@@ -7,6 +7,7 @@ import {
   update_category,
   delete_category,
   activate_category,
+  get_products_categories_list,
 } from '../services/categories.service';
 import { toast } from 'sonner';
 import { messages } from '../utils/constants';
@@ -23,6 +24,7 @@ export const useCategoriesStore = create<ICategoriesStore>((set, get) => ({
     ok: false,
   },
   list_categories: [],
+  categories_list: [],
   loading_categories: false,
   limit_filter: 5,
   getListCategories() {
@@ -30,6 +32,14 @@ export const useCategoriesStore = create<ICategoriesStore>((set, get) => ({
       .then((categories) => set({ list_categories: categories.data.categoryProducts }))
       .catch(() => {
         set({ list_categories: [] });
+      });
+  },
+
+  getListCategoriesList() {
+    get_products_categories_list()
+      .then((categories) => set({ categories_list: categories.data.categoryProducts }))
+      .catch(() => {
+        set({ categories_list: [] });
       });
   },
   getPaginatedCategories: (page: number, limit: number, name: string, active = 1) => {

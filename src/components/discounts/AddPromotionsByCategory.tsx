@@ -17,11 +17,14 @@ import WeekSelector from './WeekSelector';
 import { useBranchesStore } from '../../store/branches.store';
 import { formatDate } from '../../utils/dates';
 import { Tipos_Promotions, operadores } from '../../utils/constants';
-import { Promotion } from '../../types/promotions.types';
+import {  PromotionCategories } from '../../types/promotions.types';
 import { useBranchProductStore } from '../../store/branch_product.store';
-import { usePromotionsStore } from '../../store/promotions/promotions.store';
+import { usePromotionsByCategoryStore } from '../../store/promotions/promotionsByCategory.store';
+import { useCategoriesStore } from '../../store/categories.store';
 
 function AddPromotionsByCategory() {
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const { categories_list, getListCategoriesList } = useCategoriesStore();
   const [selectedBranchId] = useState<number | null>(null);
   const [selectedPromotion, setSelectedPromotion] = useState('');
   const [branchId, setBranchId] = useState(0);
@@ -29,7 +32,9 @@ function AddPromotionsByCategory() {
   const [startDate, setStartDate] = useState(formatDate());
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
   const { getBranchesList, branch_list } = useBranchesStore();
-
+  useEffect(() => {
+    getListCategoriesList();
+  }, []);
   type Priority = 'LOW' | 'MEDIUM' | 'HIGH';
   const priority: Priority[] = ['LOW', 'MEDIUM', 'HIGH'];
   interface PriorityInfo {
@@ -58,7 +63,7 @@ function AddPromotionsByCategory() {
   });
 
   const { getPaginatedBranchProducts } = useBranchProductStore();
-  const { postPromotions } = usePromotionsStore();
+  const { postPromotions } = usePromotionsByCategoryStore();
   useEffect(() => {
     if (selectedBranchId) {
       getPaginatedBranchProducts(Number(selectedBranchId));
@@ -67,7 +72,7 @@ function AddPromotionsByCategory() {
   useEffect(() => {
     getBranchesList();
   }, []);
-  const handleSave = (values: Promotion) => {
+  const handleSave = (values: PromotionCategories) => {
     const daysArrayString = JSON.stringify(selectedDays);
     const payload = {
       ...values,
@@ -79,6 +84,8 @@ function AddPromotionsByCategory() {
       days: daysArrayString.toString(),
       typePromotion: selectedPromotion,
       priority: selectedPriority,
+      categories: selectedCategories.map((categories) => ({ categoryId: Number(categories) })),
+    
     };
     postPromotions(payload);
   };
@@ -104,6 +111,8 @@ function AddPromotionsByCategory() {
             maximum: 0,
             price: 0,
             priority: '',
+            categories: [],
+            
           }}
           onSubmit={handleSave}
         >
@@ -455,7 +464,9 @@ function AddPromotionsByCategory() {
                       </span>
                     )}
                   </div>
+                </div>
 
+                <div className="grid grid-cols-2 gap-5">
                   {/* Seleccionar tipo */}
                   <div className="">
                     <Select
@@ -475,6 +486,45 @@ function AddPromotionsByCategory() {
                       {Tipos_Promotions.map((limit) => (
                         <SelectItem key={limit} value={limit} className="dark:text-white">
                           {limit}
+                        </SelectItem>
+                      ))}
+                    </Select>
+                  </div>
+                  <div>
+                    <Select
+                      multiple
+                      variant="bordered"
+                      placeholder="Selecciona las categorías"
+                      selectedKeys={selectedCategories}
+                      label="Categorías"
+                      onBlur={handleBlur('branch')}
+                      classNames={{
+                        label: 'font-semibold text-gray-500 text-sm',
+                      }}
+                      name="categories"
+                      labelPlacement="outside"
+                      onSelectionChange={(keys) => {
+                        const setkeys = new Set(keys as unknown as string[]);
+                        const keysArray = Array.from(setkeys);
+                        if (keysArray.length > 0) {
+                          const includes_key = selectedCategories.includes(keysArray[0]);
+                          if (!includes_key) {
+                            const news = [...selectedCategories, ...keysArray];
+                            setSelectedCategories(news);
+                            setFieldValue('categories', news);
+                          } else {
+                            setSelectedCategories(keysArray);
+                            setFieldValue('categories', keysArray);
+                          }
+                        } else {
+                          setSelectedCategories([]);
+                          setFieldValue('categories', []);
+                        }
+                      }}
+                    >
+                      {categories_list.map((val) => (
+                        <SelectItem key={val.id} value={val.id} className="dark:text-white">
+                          {val.name}
                         </SelectItem>
                       ))}
                     </Select>
