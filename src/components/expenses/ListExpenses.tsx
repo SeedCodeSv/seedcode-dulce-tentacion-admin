@@ -341,7 +341,13 @@ const ListExpenses = () => {
       </ModalGlobal>
 
       {pathSelected > 0 ? (
-        <Anexo
+        <ModalGlobal
+          isOpen={showAnexo.isOpen}
+          onClose={showAnexo.onClose}
+          title='Anexos de gastos'
+          size="w-auto"
+        >
+          <Anexo
           pdfViewerOpen={showAnexo.isOpen}
           onClose={() => {
             showAnexo.onClose();
@@ -349,9 +355,17 @@ const ListExpenses = () => {
           }}
           id={pathSelected}
         />
+        </ModalGlobal>
       ) : null}
+
       {pathSelected > 0 ? (
-        <AnexoImg
+        <ModalGlobal
+          isOpen={showAnexoimg.isOpen}
+          onClose={showAnexoimg.onClose}
+          title='Anexos de gasto'
+          size='w-auto'
+        >
+          <AnexoImg
           pdfViewerOpen={showAnexoimg.isOpen}
           onClose={() => {
             showAnexoimg.onClose();
@@ -359,6 +373,7 @@ const ListExpenses = () => {
           }}
           id={pathSelected}
         />
+        </ModalGlobal>
       ) : null}
     </div>
   );
