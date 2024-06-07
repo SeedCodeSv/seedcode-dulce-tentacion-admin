@@ -26,6 +26,7 @@ export interface IBranchProductStore {
   addProductOrder: (product: IBranchProductOrder) => void;
   deleteProductOrder: (id: number) => void;
   updateQuantityOrders: (id: number, quantity: number) => void;
+  updatePriceOrders: (id: number, price: number) => void;
   clearProductOrders: () => void;
   getProductByCodeOrders: (branch: string, supplier?: string, product?: string, code?: string) => void
   // ! Cart

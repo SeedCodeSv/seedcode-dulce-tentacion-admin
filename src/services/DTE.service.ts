@@ -6,7 +6,6 @@ import { ResponseMHSuccess } from '../types/DTE/contingencia.types';
 import { IGetFormasDePago } from '../types/DTE/forma_de_pago.types';
 import { IGetTiposDocumento } from '../types/DTE/tipo_documento.types';
 import { IGetTipoTributos } from '../types/DTE/tipo_tributo.types';
-import { ISendMHFiscal } from '../types/DTE/credito_fiscal.types';
 import { IContingencia, ISendMHContingencia } from '../types/DTE/contingencia.types';
 import { IDTE } from '../types/DTE/DTE.types';
 import { ICheckPayload, ICheckResponse } from '../types/DTE/check.types';
@@ -16,6 +15,7 @@ import {
   ISignInvalidationData,
 } from '../types/DTE/invalidation.types';
 import { SVFE_FC_SEND } from '../types/svf_dte/fc.types';
+import { SVFE_CF_SEND } from '../types/svf_dte/cf.types';
 
 export const get_ambiente_destino = () => {
   return axios<IGetAmbienteDestino>(FACTURACION_API + '/cat-001-ambiente-de-destino');
@@ -62,7 +62,7 @@ export const get_tipos_de_tributo = () => {
   return axios.get<IGetTipoTributos>(FACTURACION_API + '/cat-015-tributos');
 };
 
-export const firmarDocumentoFiscal = (payload: ISendMHFiscal) => {
+export const firmarDocumentoFiscal = (payload: SVFE_CF_SEND) => {
   return axios.post<{ body: string }>(API_FIRMADOR, payload);
 };
 

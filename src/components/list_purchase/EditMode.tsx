@@ -8,7 +8,7 @@ import { ThemeContext } from "../../hooks/useTheme";
 import PurchaseOrders from "../invoice/PurchaseOrders";
 import { pdf } from "@react-pdf/renderer";
 import print from "print-js";
-import { Button, Input, useDisclosure } from "@nextui-org/react";
+import { Button, Input, Switch, useDisclosure } from "@nextui-org/react";
 import { ArrowLeft, Plus, Printer, Trash } from "lucide-react";
 import { global_styles } from "../../styles/global.styles";
 import AddProduct from "./AddProduct";
@@ -26,6 +26,7 @@ function EditMode(props: Props) {
     updatePurchaseOrder,
     updateQuantityOrder,
     updatePriceOrder,
+    updateIvaOrder
   } = usePurchaseOrdersStore();
 
   useEffect(() => {
@@ -226,6 +227,16 @@ function EditMode(props: Props) {
               field="total"
               header="Total"
               body={(item) => formatCurrency(Number(item.total))}
+            />
+            <Column
+              headerClassName="text-sm font-semibold"
+              headerStyle={style}
+              header="IVA incluido"
+              body={(item) => (
+                <>
+                  <Switch defaultChecked={item.iva} onValueChange={() => updateIvaOrder(item.orderId, !item.iva)}>{item.iva ? "Incluido" : "No incluido"}</Switch>
+                </>
+              )}
             />
             <Column
               headerClassName="text-sm font-semibold"

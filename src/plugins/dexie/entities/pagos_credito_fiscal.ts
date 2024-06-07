@@ -4,6 +4,6 @@ export interface CreditoPagos {
   montoPago: number;
   referencia: string;
   plazo?: string | null;
-  periodo?: string | null;
+  periodo: number | null;
   ventaId: number;
 }

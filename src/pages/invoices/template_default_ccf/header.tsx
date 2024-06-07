@@ -1,10 +1,10 @@
 import { View, Text, Image } from "@react-pdf/renderer";
 import { styles } from "./style";
-import { CreditoFiscalJSON } from "../../../types/DTE/credito_fiscal.types";
 import { MH_QUERY } from "../../../utils/constants";
+import { SVFC_CF_Firmado } from "../../../types/svf_dte/cf.types";
 
 interface ICCFProps {
-  dte: CreditoFiscalJSON;
+  dte: SVFC_CF_Firmado;
 }
 
 function header({ dte }: ICCFProps) {

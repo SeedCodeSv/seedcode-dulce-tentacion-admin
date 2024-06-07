@@ -58,6 +58,15 @@ export const useBranchProductStore = create<IBranchProductStore>((set, get) => (
 
     set({ orders_by_supplier: groupBySupplier(get().order_branch_products) })
   },
+  updatePriceOrders(id, price) {
+    set((state) => ({
+      order_branch_products: state.order_branch_products.map((cp) =>
+        cp.id === id ? { ...cp, price  } : cp
+      ),
+    }));
+
+    set({ orders_by_supplier: groupBySupplier(get().order_branch_products) })
+  },
   getProductByCodeOrders(branch, supplier, product, code) {
     get_branch_product_orders(branch, supplier, product, code).then(({ data }) => {
       if(data.branchProducts.length > 0) {

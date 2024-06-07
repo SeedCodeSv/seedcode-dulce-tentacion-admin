@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { Customer } from "../../types/customers.types";
 import { toast } from "sonner";
 import { ITipoDocumento } from "../../types/DTE/tipo_documento.types";
-import { IFormasDePago } from "../../types/DTE/forma_de_pago.types";
 import { generate_credito_fiscal } from "../../utils/DTE/credito_fiscal";
 import { useTransmitterStore } from "../../store/transmitter.store";
 import { useBranchProductStore } from "../../store/branch_product.store";
@@ -26,25 +25,37 @@ import { LoaderCircle, ShieldAlert } from "lucide-react";
 import { global_styles } from "../../styles/global.styles";
 import { ICheckResponse } from "../../types/DTE/check.types";
 import { useContingenciaCreditoStore } from "../../plugins/dexie/store/contingencia_credito.store";
-import { ISendMHFiscal } from "../../types/DTE/credito_fiscal.types";
 import { formatDate } from "../../utils/dates";
 import { save_logs } from "../../services/logs.service";
 import { useConfigurationStore } from "../../store/perzonalitation.store";
 import { pdf } from "@react-pdf/renderer";
 import Template1CCF from "../../pages/invoices/Template1CCF";
+import { SVFE_CF_SEND } from "../../types/svf_dte/cf.types";
+
+interface Pagos {
+  codigo: string;
+  plazo: string;
+  periodo: number;
+  monto: number;
+}
+
 interface Props {
   clear: () => void;
   Customer?: Customer;
-  tipePayment?: IFormasDePago;
+  tipePayment: Pagos[];
   tipeDocument?: ITipoDocumento;
   tipeTribute?: TipoTributo;
+  condition: string;
 }
 
 function CreditoFiscal(props: Props) {
+
+  const {condition,tipePayment} = props
+
   const { cart_products } = useBranchProductStore();
   const [errorMessage, setErrorMessage] = useState("");
   const [title, setTitle] = useState<string>("");
-  const [currentDTE, setCurrentDTE] = useState<ISendMHFiscal>();
+  const [currentDTE, setCurrentDTE] = useState<SVFE_CF_SEND>();
   const [loading, setLoading] = useState(false);
 
   const modalError = useDisclosure();
@@ -55,13 +66,52 @@ function CreditoFiscal(props: Props) {
     gettransmitter();
   }, []);
 
+  const total = cart_products.map((a) => Number(a.price) * a.quantity).reduce((a, b) => a + b, 0);
+
   const generateFactura = async () => {
     GetConfiguration(transmitter.id);
-    if (!props.tipePayment) {
-      toast.info("Debes seleccionar el método de pago");
-
+    
+    if (condition === "") {
+      toast.error("Debes seleccionar una condición");
       return;
     }
+
+    const tipo_pago = tipePayment.filter((type) => {
+      if (condition === "1") {
+        if (type.codigo !== "") {
+          if (type.monto > 0) {
+            return true;
+          } else {
+            return false;
+          }
+        } else {
+          return false;
+        }
+      } else {
+        if (type.monto > 0 && type.periodo > 0 && type.plazo !== "") {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    });
+
+    const total_filteres = tipo_pago
+      .map((a) => a.monto)
+      .reduce((a, b) => a + b, 0);
+
+    if (total_filteres !== total) {
+      toast.error(
+        "Los montos de las formas de pago no coinciden con el total de la compra"
+      );
+      return;
+    }
+
+    if (tipo_pago.length === 0) {
+      toast.error("Debes agregar al menos una forma de pago");
+      return;
+    }
+
     if (!props.tipeDocument) {
       toast.info("Debes seleccionar el tipo de documento");
 
@@ -114,8 +164,8 @@ function CreditoFiscal(props: Props) {
       Number(correlatives!.siguiente),
       receptor,
       cart_products,
+      props.tipePayment,
       props.tipeTribute,
-      props.tipePayment
     );
     setCurrentDTE(generate);
     setLoading(true);
@@ -228,6 +278,10 @@ function CreditoFiscal(props: Props) {
                                     setLoading(false);
                                   });
                               }
+                            })
+                            .catch(() => {
+                              toast.error("Error al guardar el pdf");
+                              setLoading(false);
                             });
                         }
                       })

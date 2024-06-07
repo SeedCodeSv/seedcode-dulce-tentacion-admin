@@ -1,10 +1,10 @@
 import { View, Text } from "@react-pdf/renderer";
 import { styles } from "./style";
-import { CreditoFiscalJSON } from "../../../types/DTE/credito_fiscal.types";
 import { SeedcodeCatalogosMhService } from "seedcode-catalogos-mh";
+import { SVFC_CF_Firmado } from "../../../types/svf_dte/cf.types";
 
 interface ICCFProps {
-  dte: CreditoFiscalJSON;
+  dte: SVFC_CF_Firmado;
 }
 
 function transmitter_receptor({ dte }: ICCFProps) {

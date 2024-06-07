@@ -56,7 +56,7 @@ import { useContingenciaStore } from "../../plugins/dexie/store/contigencia.stor
 import { useContingenciaCreditoStore } from "../../plugins/dexie/store/contingencia_credito.store";
 import { generate_uuid } from "../../utils/random/random";
 import { IContingencia } from "../../types/DTE/contingencia.types";
-import { ambiente, API_URL, MH_QUERY } from "../../utils/constants";
+import { ambiente, API_URL } from "../../utils/constants";
 import { generate_contingencia } from "../../utils/DTE/contigencia";
 import { generateFactura } from "./generate";
 import { generateCredit } from "./credito_generate";
@@ -64,7 +64,6 @@ import { PayloadMH } from "../../types/DTE/DTE.types";
 import { SendMHFailed } from "../../types/transmitter.types";
 import { save_logs } from "../../services/logs.service";
 import { pdf } from "@react-pdf/renderer";
-import { CreditoInvoice } from "../../pages/CreditInvoice";
 import { PutObjectCommand, PutObjectCommandInput } from "@aws-sdk/client-s3";
 import { s3Client } from "../../plugins/s3";
 import { delete_credito_venta } from "../../plugins/dexie/services/credito_venta.service";
@@ -77,6 +76,7 @@ import { useSaleStatusStore } from "../../store/sale_status.store";
 import { AddSealMH } from "./AddSealMH";
 import { CreditSale } from "../../types/DTE/sub_interface/credito_contingencia";
 import Template1CFC from "../../pages/invoices/Template1CFC";
+import Template1CCF from "../../pages/invoices/Template1CCF";
 
 function SalesReportContigence() {
   const [openVaul, setOpenVaul] = useState(false);
@@ -596,14 +596,12 @@ function SalesReportContigence() {
                           });
 
                           const blob = await pdf(
-                            <CreditoInvoice
-                              MHUrl={generateURLMH(
-                                ambiente,
-                                data.dteJson.identificacion.codigoGeneracion,
-                                data.dteJson.identificacion.fecEmi
-                              )}
-                              DTE={data}
-                              sello={respuestaMH.data.selloRecibido}
+                            <Template1CCF
+                              dte={{
+                                ...data.dteJson,
+                                respuestaMH: respuestaMH.data,
+                                firma: firmador.data.body,
+                              }}
                             />
                           ).toBlob();
                           if (json_blob && blob) {
@@ -773,14 +771,6 @@ function SalesReportContigence() {
   };
 
   const modalEdit = useDisclosure();
-
-  const generateURLMH = (
-    ambiente: string,
-    codegen: string,
-    fechaEmi: string
-  ) => {
-    return `${MH_QUERY}?ambiente=${ambiente}&codGen=${codegen}&fechaEmi=${fechaEmi}`;
-  };
 
   const [codigoGeneracion, setCodigoGeneracion] = useState("");
   const [dataCustomer, setDataCustomer] = useState<Customer>();

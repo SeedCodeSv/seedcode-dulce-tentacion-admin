@@ -1,7 +1,5 @@
-import { FiscalReceptor } from '../../types/DTE/credito_fiscal.types';
 import { ResponseMHSuccess } from '../../types/DTE/contingencia.types';
 import { ISendMHFiscal } from '../../types/DTE/credito_fiscal.types';
-import { IFormasDePago } from '../../types/DTE/forma_de_pago.types';
 import { ITipoDocumento } from '../../types/DTE/tipo_documento.types';
 import { TipoTributo } from '../../types/DTE/tipo_tributo.types';
 import { ITransmitter } from '../../types/transmitter.types';
@@ -12,6 +10,14 @@ import { convertCurrencyFormat } from '../money';
 import { ambiente } from '../constants';
 import { generate_uuid } from '../random/random';
 import { ICartProduct } from '../../types/branch_products.types';
+import { CF_Receptor, SVFE_CF_SEND } from '../../types/svf_dte/cf.types';
+
+interface Pagos {
+  codigo: string;
+  plazo: string;
+  periodo: number;
+  monto: number;
+}
 
 export const make_to_pdf_fiscal = (DTE: ISendMHFiscal, total: number, data: ResponseMHSuccess) => {
   return {
@@ -120,11 +126,11 @@ export const generate_credito_fiscal = (
   emisor: ITransmitter,
   valueTipo: ITipoDocumento,
   next_number: number,
-  receptor: FiscalReceptor,
+  receptor: CF_Receptor,
   products_carts: ICartProduct[],
+  tipo_pago: Pagos[],
   tributo?: TipoTributo,
-  tipo_pago?: IFormasDePago
-) => {
+): SVFE_CF_SEND => {
   return {
     nit: emisor.nit,
     activo: true,
@@ -188,21 +194,21 @@ export const generate_credito_fiscal = (
         ),
         saldoFavor: 0,
         condicionOperacion: 1,
-        pagos: [
-          {
-            codigo: tipo_pago?.codigo,
-            montoPago: Number((total(products_carts) + total_iva(products_carts)).toFixed(2)),
-            referencia: '',
-            plazo: null,
-            periodo: null,
-          },
-        ],
+        pagos: tipo_pago.map((tp) => {
+          return {
+            codigo: tp.codigo,
+            plazo: tp.plazo,
+            periodo: tp.periodo,
+            montoPago: tp.monto,
+            referencia: ""
+          }
+        }),
         numPagoElectronico: null,
       },
       extension: null,
       apendice: null,
     },
-  } as unknown as ISendMHFiscal;
+  };
 };
 export const make_cuerpo_documento_fiscal = (products_cart: ICartProduct[]) => {
   return products_cart.map((cp, index) => {
