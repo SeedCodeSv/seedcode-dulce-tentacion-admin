@@ -7,7 +7,7 @@ import { ThemeContext } from '../../hooks/useTheme';
 import { IConfiguration } from '../../types/configuration.types';
 
 interface Props {
-  id: IConfiguration | undefined;
+  name: IConfiguration | undefined;
   reloadData: () => void;
   onClose: () => void;
 }
@@ -27,13 +27,13 @@ function UpdateConfigurationName(props: Props) {
   });
 
   const handleSave = async ({ name }: { name: string }) => {
-    await UpdateConfigurationName({ name }, props.id?.id || 0);
+    await UpdateConfigurationName({ name }, props.name?.id || 0);
     props.reloadData();
     props.onClose();
   };
 
   return (
-    
+    <div className="p-4 dark:text-white">
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -42,7 +42,7 @@ function UpdateConfigurationName(props: Props) {
       >
         {({ errors, touched, handleChange, handleBlur, handleSubmit, values }) => (
           <>
-            <div className=''>
+            <div className="">
               <Input
                 label="Ingrese un nombre"
                 labelPlacement="outside"
@@ -73,7 +73,7 @@ function UpdateConfigurationName(props: Props) {
           </>
         )}
       </Formik>
-    
+    </div>
   );
 }
 

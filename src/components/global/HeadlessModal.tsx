@@ -34,25 +34,25 @@ function HeadlessModal(props: Props) {
               <Dialog.Overlay className="fixed inset-0 bg-gray-950/50" />
               <Dialog.Panel
                 className={classNames(
-                  "bg-white rounded-xl dark:bg-gray-800 backdrop-blur-2xl",
+                  "bg-white rounded-xl h-full dark:bg-gray-800 backdrop-blur-2xl",
                   size
                 )}
               >
-                <div className="w-full flex justify-between p-5">
+                <div className="w-full flex justify-between p-1 mt-1">
                   <Dialog.Title
                     as="h3"
-                    className="text-base/7 font-medium dark:text-white"
+                    className=" font-medium dark:text-white ml-3"
                   >
                     {title}
                   </Dialog.Title>
                   <button
                     onClick={onClose}
-                    className="bg-transparent border-0 outline-none"
+                    className="bg-transparent border-0 mr-3 outline-none"
                   >
                     <X className="dark:text-white" />
                   </button>
                 </div>
-                {children}
+                <div className="w-full top-[-10]">{children}</div>
               </Dialog.Panel>
             </Transition.Child>
           </div>

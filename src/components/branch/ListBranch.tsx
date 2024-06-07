@@ -30,7 +30,6 @@ import { Drawer } from 'vaul';
 import Pagination from '../global/Pagination';
 import { Paginator } from 'primereact/paginator';
 import { paginator_styles } from '../../styles/paginator.styles';
-import ModalGlobal from '../global/ModalGlobal';
 import AddBranch from './AddBranch';
 import { global_styles } from '../../styles/global.styles';
 import { limit_options, messages } from '../../utils/constants';
@@ -41,6 +40,8 @@ import { toast } from 'sonner';
 import ListBranchProduct from './branch_product/ListBranchProduct';
 import BoxBranch from './BoxBranch';
 import classNames from 'classnames';
+import HeadlessModal from '../global/HeadlessModal';
+
 function ListBranch() {
   const { theme, context } = useContext(ThemeContext);
 
@@ -420,28 +421,29 @@ function ListBranch() {
               </>
             )}
           </div>
-          <ModalGlobal
+          <HeadlessModal
             isOpen={modalAdd.isOpen}
             onClose={() => {
               modalAdd.onClose();
               setSelectedBranch(undefined);
             }}
             title={selectedBranch ? 'Editar sucursal' : 'Nueva sucursal'}
-            size="w-full md:w-[500px]"
+            size="w-[350px] md:w-[500px]"
           >
             <AddBranch branch={selectedBranch} closeModal={modalAdd.onClose} />
-          </ModalGlobal>
+          </HeadlessModal>
 
-          <ModalGlobal
+          <HeadlessModal
+            title=''
             isOpen={modalBoxBranch.isOpen}
             onClose={() => {
               clearClose();
               modalBoxBranch.onClose();
             }}
-            size="w-full sm:w-[500px]"
+            size="w-[350px] md:w-[500px]"
           >
             <BoxBranch branch={Branch} closeModal={modalBoxBranch.onClose} setBranch={setBranch} />
-          </ModalGlobal>
+          </HeadlessModal>
         </div>
       )}
     </>

@@ -1,4 +1,3 @@
-import ModalGlobal from '../global/ModalGlobal';
 import AddNormalSupplier from './AddNormalSupplier';
 import AddTributeSupplier from './AddTributeSupplier';
 import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
@@ -36,6 +35,7 @@ import MobileViewSupplier from './MobileViewSupplier';
 import { Drawer } from 'vaul';
 import classNames from 'classnames';
 import SmPagination from '../global/SmPagination';
+import HeadlessModal from '../global/HeadlessModal';
 
 function ListSuppliers() {
   const { theme, context } = useContext(ThemeContext);
@@ -523,7 +523,7 @@ function ListSuppliers() {
             </>
           )}
         </div>
-        <ModalGlobal
+        <HeadlessModal
           isOpen={modalAdd.isOpen}
           onClose={() => {
             clearClose();
@@ -560,7 +560,7 @@ function ListSuppliers() {
               />
             )}
           </>
-        </ModalGlobal>
+        </HeadlessModal>
       </div>
     </>
   );
@@ -584,7 +584,7 @@ export const DeletePopover = ({ supplier }: PopProps) => {
   };
 
   return (
-    <Popover isOpen={isOpen} onClose={onClose} backdrop="blur" showArrow>
+    <Popover isOpen={isOpen} onClose={onClose} backdrop="blur" showArrow >
       <PopoverTrigger>
         <Button
           onClick={onOpen}
@@ -602,9 +602,9 @@ export const DeletePopover = ({ supplier }: PopProps) => {
         </Button>
       </PopoverTrigger>
       <PopoverContent>
-        <div className="w-full p-5">
-          <p className="font-semibold text-gray-600">Eliminar {supplier.nombre}</p>
-          <p className="mt-3 text-center text-gray-600 w-72">
+        <div className="w-full p-5 dark:text-white">
+          <p className="font-semibold text-gray-600 dark:text-white">Eliminar {supplier.nombre}</p>
+          <p className="mt-3 text-center text-gray-600 w-72 dark:text-white">
             ¿Estas seguro de eliminar este registro?
           </p>
           <div className="mt-4">
@@ -657,7 +657,7 @@ export const BottomAdd = ({ setTypeSupplier, openModal }: PopoverAddProps) => {
         </Button>
       </PopoverTrigger>
       <PopoverContent aria-labelledby="popover-title">
-        <div className="flex flex-col gap-5 p-3 bg-white">
+        <div className="flex flex-col gap-5 p-3 bg-white dark:bg-zinc-900">
           <Button
             onClick={() => {
               onClose();

@@ -1,4 +1,3 @@
-import { IFormasDePago } from '../../types/DTE/forma_de_pago.types';
 import { ITipoDocumento } from '../../types/DTE/tipo_documento.types';
 import { Customer } from '../../types/customers.types';
 import { ITransmitter } from '../../types/transmitter.types';
@@ -14,8 +13,8 @@ import { convertCurrencyFormat } from '../money';
 import { generate_uuid } from '../random/random';
 import { ambiente } from '../../utils/constants.ts';
 import { ICartProduct } from '../../types/branch_products.types.ts';
-import { DteJson } from '../../types/DTE/DTE.types.ts';
 import moment from 'moment';
+import { FC_PagosItems, SVFE_FC_SEND } from '../../types/svf_dte/fc.types.ts';
 
 export const generate_factura = (
   transmitter: ITransmitter,
@@ -23,8 +22,8 @@ export const generate_factura = (
   valueTipo: ITipoDocumento,
   customer: Customer,
   products_carts: ICartProduct[],
-  tipo_pago: IFormasDePago
-) => {
+  tipo_pago: FC_PagosItems[]
+) :SVFE_FC_SEND => {
   return {
     nit: transmitter.nit,
     activo: true,
@@ -80,21 +79,13 @@ export const generate_factura = (
         totalLetras: convertCurrencyFormat(total(products_carts).toFixed(2)),
         saldoFavor: 0,
         condicionOperacion: 1,
-        pagos: [
-          {
-            codigo: tipo_pago.codigo!,
-            montoPago: Number(total(products_carts).toFixed(2)),
-            referencia: '',
-            plazo: null,
-            periodo: null,
-          },
-        ],
+        pagos: tipo_pago,
         numPagoElectronico: null,
       },
       extension: null,
       apendice: null,
     },
-  } as DteJson;
+  };
 };
 function calcularPorcentajeDescuento(totalSinDescuento: number, totalDescuento: number): number {
   return ((totalSinDescuento - totalDescuento) / totalSinDescuento) * 100;

@@ -24,10 +24,13 @@ export const useContingenciaStore = create<IContingenciaStore>(() => ({
     const result = await add_venta(venta);
 
     if (result?.id) {
+
+      const { receptor } = DteJson.dteJson
+
       const direccion: Address = {
-        municipio: DteJson.dteJson.receptor.direccion.municipio,
-        departamento: DteJson.dteJson.receptor.direccion.departamento,
-        complemento: DteJson.dteJson.receptor.direccion.complemento,
+        municipio: receptor.direccion ? receptor.direccion.municipio : "0",
+        departamento: receptor.direccion ? receptor.direccion.departamento : "0",
+        complemento: receptor.direccion ? receptor.direccion.complemento : "0",
       };
 
       const direccion_result = await add_address(direccion);
@@ -54,7 +57,7 @@ export const useContingenciaStore = create<IContingenciaStore>(() => ({
               : DteJson.dteJson.receptor.descActividad,
           telefono:
             DteJson.dteJson.receptor.telefono === null ? '0' : DteJson.dteJson.receptor.telefono,
-          correo: DteJson.dteJson.receptor.correo,
+          correo: DteJson.dteJson.receptor.correo ?? "0",
           addressId: direccion_result.id,
           ventaId: result.id,
         };
@@ -62,19 +65,18 @@ export const useContingenciaStore = create<IContingenciaStore>(() => ({
         const receptor_result = await add_receptor(receptor);
 
         if (receptor_result) {
-          const pagos: Pagos = {
-            codigo: DteJson.dteJson.resumen.pagos[0].codigo,
-            montoPago: DteJson.dteJson.resumen.pagos[0].montoPago,
-            referencia:
-              DteJson.dteJson.resumen.pagos[0].referencia === null
-                ? '0'
-                : DteJson.dteJson.resumen.pagos[0].referencia,
-            plazo: DteJson.dteJson.resumen.pagos[0].plazo ?? '0',
-            periodo: DteJson.dteJson.resumen.pagos[0].periodo ?? '0',
+          const { pagos } = DteJson.dteJson.resumen
+
+          const pagosr: Pagos = {
+            codigo: pagos ? pagos[0].codigo : '0',
+            montoPago: pagos ? Number(pagos[0].montoPago) : 0,
+            referencia: pagos ? pagos[0].referencia ?? "0" : '0',
+            plazo: pagos ? pagos[0].plazo ?? '0' : '0',
+            periodo: pagos ? pagos[0].periodo ?? 0 : 0,
             ventaId: result.id,
           };
 
-          const pagos_result = await add_pagos(pagos);
+          const pagos_result = await add_pagos(pagosr);
 
           if (pagos_result?.id) {
             const resumen: Resumen = {
@@ -129,7 +131,7 @@ export const useContingenciaStore = create<IContingenciaStore>(() => ({
                   };
                 }
               );
-              add_cuerpo(cuerpo_documento).then(() => {});
+              add_cuerpo(cuerpo_documento).then(() => { });
             }
           }
         }

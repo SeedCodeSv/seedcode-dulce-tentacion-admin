@@ -50,13 +50,10 @@ export const useContingenciaCreditoStore = create<IContingenciaCreditoStore>(() 
               : DteJson.dteJson.receptor.nombreComercial,
           nit: DteJson.dteJson.receptor === null ? '0' : DteJson.dteJson.receptor.nit,
           tipoDocumento:
-            DteJson.dteJson.receptor.tipoDocumento === null
+            DteJson.dteJson.receptor.nit === null
               ? '0'
-              : DteJson.dteJson.receptor.tipoDocumento,
-          numDocumento:
-            DteJson.dteJson.receptor.numDocumento === null
-              ? '0'
-              : DteJson.dteJson.receptor.numDocumento,
+              : DteJson.dteJson.receptor.nit,
+          numDocumento: "0",
           nrc: DteJson.dteJson.receptor.nrc === null ? '0' : DteJson.dteJson.receptor.nrc,
           nombre: DteJson.dteJson.receptor.nombre === null ? '0' : DteJson.dteJson.receptor.nombre,
           codActividad:
@@ -77,21 +74,25 @@ export const useContingenciaCreditoStore = create<IContingenciaCreditoStore>(() 
         const receptor_result = await add_credito_receptor(receptor);
 
         if (receptor_result) {
-          const pagos: CreditoPagos = {
-            codigo: DteJson.dteJson.resumen.pagos[0].codigo,
-            montoPago: DteJson.dteJson.resumen.pagos[0].montoPago,
-            referencia:
-              DteJson.dteJson.resumen.pagos[0].referencia === null
-                ? '0'
-                : DteJson.dteJson.resumen.pagos[0].referencia,
-            plazo: DteJson.dteJson.resumen.pagos[0].plazo ?? '0',
-            periodo: DteJson.dteJson.resumen.pagos[0].periodo ?? '0',
+
+          const { pagos } = DteJson.dteJson.resumen
+
+          const ppagos: CreditoPagos = {
+            codigo: pagos ? pagos[0].codigo : '0',
+            montoPago: pagos ? pagos[0].montoPago : 0
+            ,
+            referencia: pagos ? pagos[0].referencia ?? '0' : '0',
+            plazo: pagos ? pagos[0].plazo ?? '0' : '0',
+            periodo: pagos ? pagos[0].periodo ?? 0 : 0,
             ventaId: result.id,
           };
 
-          const pagos_result = await add_credito_pagos(pagos);
+          const pagos_result = await add_credito_pagos(ppagos);
 
           if (pagos_result?.id) {
+
+            const { tributos } = DteJson.dteJson.resumen
+
             const resumen: CreditoResumen = {
               totalNoSuj: Number(DteJson.dteJson.resumen.totalNoSuj),
               totalExenta: Number(DteJson.dteJson.resumen.totalExenta),
@@ -104,15 +105,15 @@ export const useContingenciaCreditoStore = create<IContingenciaCreditoStore>(() 
               totalDescu: Number(DteJson.dteJson.resumen.totalDescu),
               tributos: [
                 {
-                  codigo: DteJson.dteJson.resumen.tributos[0].codigo,
-                  descripcion: DteJson.dteJson.resumen.tributos[0].descripcion,
-                  valor: Number(DteJson.dteJson.resumen.tributos[0].valor),
+                  codigo: tributos ? tributos[0].codigo : '0',
+                  descripcion: tributos ? tributos[0].descripcion : '0',
+                  valor: Number(tributos ? tributos[0].valor : 0),
                 },
               ],
               subTotal: Number(DteJson.dteJson.resumen.subTotal),
               ivaRete1: Number(DteJson.dteJson.resumen.ivaRete1),
               reteRenta: Number(DteJson.dteJson.resumen.reteRenta),
-              totalIva: Number(DteJson.dteJson.resumen.totalIva),
+              totalIva: Number(0),
               montoTotalOperacion: Number(DteJson.dteJson.resumen.montoTotalOperacion),
               totalNoGravado: Number(DteJson.dteJson.resumen.totalNoGravado),
               totalPagar: Number(DteJson.dteJson.resumen.totalPagar),
@@ -144,14 +145,14 @@ export const useContingenciaCreditoStore = create<IContingenciaCreditoStore>(() 
                     ventaNoSuj: Number(cuerpo.ventaNoSuj),
                     ventaExenta: Number(cuerpo.ventaExenta),
                     ventaGravada: Number(cuerpo.ventaGravada),
-                    ivaItem: Number(cuerpo.ivaItem),
+                    ivaItem: Number(0),
                     tributos: '0',
                     psv: 0,
                     noGravado: 0,
                     ventaId: result.id!,
                   };
                 });
-              add_credito_cuerpo(credito_cuerpo_documento).then(() => {});
+              add_credito_cuerpo(credito_cuerpo_documento).then(() => { });
             }
           }
         }

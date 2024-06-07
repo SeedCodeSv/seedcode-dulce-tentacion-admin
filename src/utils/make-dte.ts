@@ -1,10 +1,11 @@
-import { DteJson, ICuerpoDocumento } from '../types/DTE/credito_fiscal.types';
+import { DteJson } from '../types/DTE/credito_fiscal.types';
 import { ITransmitter } from '../types/transmitter.types';
 import { convertCurrencyFormat } from './money';
 import { Customer } from '../types/customers.types';
 import { ResponseMHSuccess } from '../types/DTE/contingencia.types';
 import { ISendMHFiscal } from '../types/DTE/credito_fiscal.types';
 import { ICartProduct } from '../types/branch_products.types';
+import { FC_CuerpoDocumentoItems } from '../types/svf_dte/fc.types';
 
 export const generate_emisor = (transmitter: ITransmitter) => {
   return {
@@ -29,7 +30,7 @@ export const generate_emisor = (transmitter: ITransmitter) => {
   };
 };
 
-export const make_cuerpo_documento = (products_cart: ICartProduct[]): ICuerpoDocumento[] => {
+export const make_cuerpo_documento = (products_cart: ICartProduct[]): FC_CuerpoDocumentoItems[] => {
   return products_cart.map((cp, index) => {
     return {
       numItem: index + 1,
@@ -117,7 +118,7 @@ export const make_cuerpo_documento_pdf = (DTE: DteJson) => {
       ventaNoSuj: Number(item.ventaNoSuj).toFixed(2),
       ventaExenta: Number(item.ventaExenta).toFixed(2),
       ventaGravada: Number(item.ventaGravada).toFixed(2),
-      ivaItem: Number(item.ivaItem).toFixed(2),
+      ivaItem: Number(0).toFixed(2),
       psv: Number(item.psv).toFixed(2),
       noGravado: Number(item.noGravado).toFixed(2),
     };

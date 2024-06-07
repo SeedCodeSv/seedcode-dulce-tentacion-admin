@@ -27,13 +27,14 @@ export const usePurchaseOrdersStore = create<PurchaseOrderStore>(
           set({
             details_order_purchase: res.data.detailPurchaseOrders.map(
               (detail) => ({
-                price: detail.cost ,
+                price: detail.cost,
                 name: detail.branchProduct.product.name,
                 quantity: detail.quantity,
                 orderId: detail.id,
                 total: Number(detail.cost) * Number(detail.quantity),
                 isNew: false,
                 productId: detail.branchProduct.id,
+                iva: false
               })
             ),
           });
@@ -120,6 +121,7 @@ export const usePurchaseOrdersStore = create<PurchaseOrderStore>(
               total: Number(product.price),
               isNew: true,
               productId: product.id,
+              iva: false
             },
           ],
         });
@@ -175,6 +177,9 @@ export const usePurchaseOrdersStore = create<PurchaseOrderStore>(
       }).catch(() => {
         toast.error("Error al actualizar la orden");
       });
+    },
+    updateIvaOrder(id, iva) {
+      set({ details_order_purchase: get().details_order_purchase.map((cp) => cp.orderId === id ? { ...cp, iva } : cp) });
     },
   })
 );

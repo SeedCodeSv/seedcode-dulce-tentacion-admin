@@ -13,18 +13,82 @@ export interface Promotion {
   operator: string;
   fixedPrice: number;
   maximum: number;
-  startDatestring: string;
+  startDate: string | Date;
+  endDate: string | Date;
   price: number;
   operatorPrice: string;
-  state: boolean;
-  isActive: boolean;
-  products: {
-    productId: number;
-  };
-  branches: {
-    branchId: number;
-  };
-  categories: {
-    categoryId: number;
-  };
+  state?: boolean;
+  isActive?: boolean;
+  priority: string;
+  branchId: number;
+  typePromotion: string;
+}
+export interface PromotionCategories {
+  name: string;
+  description: string;
+  days: string;
+  quantity: number;
+  percentage: number;
+  operator: string;
+  fixedPrice: number;
+  maximum: number;
+  startDate: string | Date;
+  endDate: string | Date;
+  price: number;
+  operatorPrice: string;
+  state?: boolean;
+  isActive?: boolean;
+  priority: string;
+  branchId: number;
+  typePromotion: string;
+  categories: CategoryProduct[];
+}
+export interface CategoryProduct {
+  categoryId: number;
+}
+
+export interface PromotionPayload {
+  name: string;
+  description: string;
+  days: string;
+  quantity: number;
+  percentage: number;
+  operator: string;
+  fixedPrice: number;
+  maximum: number;
+  startDate: string | Date;
+  endDate: string | Date;
+  price: number;
+  operatorPrice: string;
+  state?: boolean;
+  isActive?: boolean;
+  branchId: number;
+  priority: string;
+  typePromotion: string;
+}
+
+
+
+export interface PromotionProduct {
+  name: string;
+  description: string;
+  days: string;
+  quantity: number;
+  percentage: number;
+  operator: string;
+  fixedPrice: number;
+  maximum: number;
+  startDate: string | Date;
+  endDate: string | Date;
+  price: number;
+  operatorPrice: string;
+  state?: boolean;
+  isActive?: boolean;
+  priority: string;
+  branchId: number;
+  typePromotion: string;
+  products: Products[];
+}
+export interface Products {
+  productId: number;
 }

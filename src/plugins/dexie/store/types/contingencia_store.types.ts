@@ -1,4 +1,4 @@
-import { DteJson } from '../../../../types/DTE/DTE.types';
+import { SVFE_FC_SEND } from '../../../../types/svf_dte/fc.types';
 import { Address } from '../../entities/address';
 import { CuerpoDocumento } from '../../entities/cuerpo_documento';
 import { Receptor } from '../../entities/factura-receptor';
@@ -16,6 +16,6 @@ export interface SaleContingenciaI {
 }
 
 export interface IContingenciaStore {
-  createContingencia: (DteJson: DteJson) => Promise<void>;
+  createContingencia: (DteJson: SVFE_FC_SEND) => Promise<void>;
   getVentaByCodigo: (codigo: string) => Promise<SaleContingenciaI | undefined>;
 }

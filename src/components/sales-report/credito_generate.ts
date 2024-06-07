@@ -1,18 +1,16 @@
 import { CreditSaleContingenciaI } from '../../plugins/dexie/store/types/contingencia_credito_store.types';
 import { CreditSale } from '../../types/DTE/sub_interface/credito_contingencia';
-// import { ISendMHFiscal as ICredito } from "../../types/DTE/DTE.types";
 import { ITransmitter } from '../../types/transmitter.types';
 import { ambiente } from '../../utils/constants';
-// import { ISendMHFiscal } from "../../types/DTE/credito_fiscal.types";
-import { ISendMHFiscal as ICredito } from '../../types/DTE/credito_fiscal.types';
 import { Sale } from '../../types/report_contigence';
+import { SVFE_CF_SEND } from '../../types/svf_dte/cf.types';
 
 export const generateCredit = (
   info: CreditSaleContingenciaI,
   emisor: ITransmitter,
   sale: CreditSale,
   saleCustomer?: Sale
-): ICredito => {
+): SVFE_CF_SEND => {
   return {
     nit: emisor.nit,
     activo: true,
@@ -57,34 +55,22 @@ export const generateCredit = (
         nombreComercial: saleCustomer
           ? saleCustomer.customer.nombreComercial
           : info.credito_receptor!.nombreComercial,
-        tipoDocumento:
-          info.credito_receptor!.tipoDocumento === '0' ||
-          info.credito_receptor.tipoDocumento === 'N/A'
-            ? null
-            : info.credito_receptor!.tipoDocumento,
+        // tipoDocumento:
+        //   info.credito_receptor!.tipoDocumento === '0' ||
+        //   info.credito_receptor.tipoDocumento === 'N/A'
+        //     ? null
+        //     : info.credito_receptor!.tipoDocumento,
         // numDocumento: saleCustomer
         //   ? saleCustomer.customer.numDocumento
         //   : info.credito_receptor!.numDocumento === "0" ||
         //     info.credito_receptor.numDocumento === "N/A"
         //   ? null
         //   : info.credito_receptor!.numDocumento,
-        nit: saleCustomer
-          ? saleCustomer.customer.nit
-          : info.credito_receptor!.nit === '0' || info.credito_receptor.nit === 'N/A'
-            ? null
-            : info.credito_receptor!.nit,
+        nit: saleCustomer!.customer.nit,
         nrc: saleCustomer ? saleCustomer.customer.nrc : info.credito_receptor!.nrc,
         nombre: saleCustomer ? saleCustomer.customer.nombre : info.credito_receptor!.nombre,
-        codActividad: saleCustomer
-          ? saleCustomer.customer.codActividad
-          : Number(info.credito_receptor!.codActividad) === 0
-            ? null
-            : info.credito_receptor!.codActividad,
-        descActividad: saleCustomer
-          ? saleCustomer.customer.descActividad
-          : Number(info.credito_receptor!.descActividad) === 0
-            ? null
-            : info.credito_receptor!.descActividad,
+        codActividad: saleCustomer!.customer.codActividad,
+        descActividad: saleCustomer!.customer.descActividad,
         direccion: {
           departamento: saleCustomer?.customer.direccion.departamento
             ? saleCustomer.customer.direccion.departamento
@@ -126,13 +112,13 @@ export const generateCredit = (
       resumen: {
         totalNoSuj: 0,
         totalExenta: 0,
-        totalGravada: info.credito_resumen.totalGravada,
-        subTotalVentas: info.credito_resumen.subTotalVentas,
+        totalGravada: Number(Number(info.credito_resumen.totalGravada).toFixed(2)),
+        subTotalVentas: Number(Number(info.credito_resumen.subTotalVentas).toFixed(2)),
         descuNoSuj: 0,
         descuExenta: 0,
         descuGravada: 0,
-        porcentajeDescuento: info.credito_resumen.porcentajeDescuento,
-        totalDescu: info.credito_resumen.totalDescu,
+        porcentajeDescuento: Number(Number(info.credito_resumen.porcentajeDescuento).toFixed(2)),
+        totalDescu: Number(Number(info.credito_resumen.totalDescu).toFixed(2)),
         tributos: [
           {
             codigo: info.credito_resumen.tributos[0].codigo,
@@ -140,13 +126,13 @@ export const generateCredit = (
             valor: info.credito_resumen.tributos[0].valor,
           },
         ],
-        subTotal: info.credito_resumen.subTotal,
+        subTotal: Number(Number(info.credito_resumen.subTotal).toFixed(2)),
         ivaRete1: 0,
         reteRenta: 0,
         // totalIva: info.credito_resumen.totalIva,
-        montoTotalOperacion: info.credito_resumen.montoTotalOperacion,
+        montoTotalOperacion: Number(Number(info.credito_resumen.montoTotalOperacion).toFixed(2)),
         totalNoGravado: 0,
-        totalPagar: info.credito_resumen.totalPagar,
+        totalPagar: Number(Number(info.credito_resumen.totalPagar).toFixed(2)),
         totalLetras: info.credito_resumen.totalLetras,
         saldoFavor: 0,
         condicionOperacion: 1,
@@ -165,5 +151,5 @@ export const generateCredit = (
       extension: null,
       apendice: null,
     },
-  } as unknown as ICredito;
+  }
 };
