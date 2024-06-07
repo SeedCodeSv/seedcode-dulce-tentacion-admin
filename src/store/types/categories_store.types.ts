@@ -3,6 +3,7 @@ export interface ICategoriesStore {
   paginated_categories: IGetCategoriesPaginated;
   list_categories: CategoryProduct[];
   loading_categories: boolean;
+  limit_filter: number
   getListCategories: () => void;
   getPaginatedCategories: (page: number, limit: number, name: string, active?: number) => void;
   postCategories: (name: string) => void;

@@ -7,12 +7,12 @@ import SaleOnAccount from "./template_default_ccf/sale_on_account";
 import RelationsDocuments from "./template_default_ccf/relations_documents";
 import TableFooter from "./template_default_ccf/table_footer";
 import { TableCell, TableHeader, TableRow, Table } from "./Table";
-import { CreditoFiscalJSON } from "../../types/DTE/credito_fiscal.types";
 import { useMemo } from "react";
 import { formatCurrency } from "../../utils/dte";
+import { SVFC_CF_Firmado } from "../../types/svf_dte/cf.types";
 
 interface ICCFProps {
-  dte: CreditoFiscalJSON;
+  dte: SVFC_CF_Firmado;
 }
 
 export default function Template1CCF({ dte }: ICCFProps) {

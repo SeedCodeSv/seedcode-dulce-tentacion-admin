@@ -102,7 +102,7 @@ export interface FC_CuerpoDocumento {
 
 export interface FC_TributosItems {
     codigo: string,
-    tributo: string,
+    descripcion: string,
     valor: number
 }
 
@@ -111,7 +111,7 @@ export interface FC_PagosItems{
     montoPago: number,
     referencia: string | null,
     plazo: string | null,
-    periodo: string | null
+    periodo: number | null
 }
 
 export interface FC_Resumen {

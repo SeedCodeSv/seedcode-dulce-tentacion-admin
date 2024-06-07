@@ -1,30 +1,33 @@
 import { useMemo } from "react";
-import { CreditoFiscalJSON } from "../../../types/DTE/credito_fiscal.types";
 import { formatCurrency } from "../../../utils/dte";
 import { TableCellWithoutBorder, TableRow, TableWithoutBorder } from "../Table";
 import { Text } from "@react-pdf/renderer";
+import { SVFC_CF_Firmado } from "../../../types/svf_dte/cf.types";
 
 interface ICCFProps {
-  dte: CreditoFiscalJSON;
+  dte: SVFC_CF_Firmado;
 }
 
 function TableFooter({ dte }: ICCFProps) {
   const { resumen } = dte;
 
   const iva13 = useMemo(() => {
-    const tributes = resumen.tributos.filter((tribute) => {
-      return (tribute.codigo = "20");
-    });
+    if (resumen.tributos) {
+      const tributes = resumen.tributos?.filter((tribute) => {
+        return (tribute.codigo = "20");
+      });
 
-    const iva = tributes
-      .map((tribute) => {
-        return Number(tribute.valor);
-      })
-      .reduce((a, b) => {
-        return a + b;
-      }, 0);
+      const iva = tributes
+        .map((tribute) => {
+          return Number(tribute.valor);
+        })
+        .reduce((a, b) => {
+          return a + b;
+        }, 0);
 
-    return formatCurrency(iva);
+      return formatCurrency(iva);
+    }
+    return "$0.00";
   }, [resumen]);
 
   return (

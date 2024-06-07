@@ -25,7 +25,6 @@ import { global_styles } from "../../styles/global.styles";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { ThemeContext } from "../../hooks/useTheme";
-import { formatCurrency } from "../../utils/dte";
 import { IBranchProductOrderQuantity } from "../../types/branch_products.types";
 import HeadlessModal from "../global/HeadlessModal";
 import {
@@ -50,9 +49,9 @@ function AddPurchaseOrders(props: Props) {
     addProductOrder,
     updateQuantityOrders,
     deleteProductOrder,
-    order_branch_products,
     orders_by_supplier,
     clearProductOrders,
+    updatePriceOrders
   } = useBranchProductStore();
 
   const { getSupplierList, supplier_list } = useSupplierStore();
@@ -136,29 +135,8 @@ function AddPurchaseOrders(props: Props) {
       await postPurchaseOrder(payload);
     }
     clearProductOrders();
-    props.reload()
+    props.reload();
     props.closeModal();
-  };
-
-  const cellEditor = (product: IBranchProductOrderQuantity) => {
-    const product_finded = order_branch_products.find(
-      (p) => p.id === product.id
-    );
-
-    return (
-      <div className="w-full">
-        <Input
-          variant="bordered"
-          color="primary"
-          className="w-32"
-          type="number"
-          defaultValue={product_finded?.quantity.toString()}
-          onChange={(e) =>
-            updateQuantityOrders(product.id, Number(e.target.value))
-          }
-        />
-      </div>
-    );
   };
 
   return (
@@ -219,7 +197,18 @@ function AddPurchaseOrders(props: Props) {
                 headerStyle={style}
                 field="quantity"
                 header="Cantidad"
-                editor={(options) => cellEditor(options.rowData)}
+                body={(item) => (
+                  <Input
+                    className="w-32"
+                    variant="bordered"
+                    defaultValue={item.quantity.toString()}
+                    type="number"
+                    lang="es"
+                    onChange={(e) => {
+                      updateQuantityOrders(item.id, Number(e.target.value));
+                    }}
+                  />
+                )}
               />
               <Column
                 headerClassName="text-sm font-semibold"
@@ -232,7 +221,19 @@ function AddPurchaseOrders(props: Props) {
                 headerStyle={style}
                 field="price"
                 header="Precio"
-                body={(rowData) => formatCurrency(Number(rowData.price))}
+                body={(item) => (
+                  <Input
+                    className="w-32"
+                    variant="bordered"
+                    defaultValue={item.price.toString()}
+                    type="number"
+                    startContent="$"
+                    lang="es"
+                    onChange={(e) => {
+                      updatePriceOrders(item.id, Number(e.target.value));
+                    }}
+                  />
+                )}
               />
               <Column
                 headerStyle={{ ...style, borderTopRightRadius: "10px" }}
@@ -315,7 +316,7 @@ function AddPurchaseOrders(props: Props) {
                 onSelect={(e) => {
                   setSupplier(e.currentTarget.value);
                 }}
-                placeholder="Selecciona una sucursal"
+                placeholder="Selecciona un proveedor"
                 labelPlacement="outside"
                 variant="bordered"
               >

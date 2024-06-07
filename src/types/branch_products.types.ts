@@ -28,7 +28,7 @@ export interface Branch {
 export interface BranchProduct {
   id: number;
   stock: number;
-  price: string;
+  price: number;
   isActive: boolean;
   product: Product;
   branch: Branch;
@@ -114,7 +114,7 @@ export interface Supplier {
 export interface IBranchProductOrder {
 	id: number;
 	stock: number;
-	price: string;
+	price: number;
 	priceA: string;
 	priceB: string;
 	priceC: string;
