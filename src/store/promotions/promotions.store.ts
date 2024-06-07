@@ -30,9 +30,16 @@ export const usePromotionsStore = create<IPromotionsStore>((set) => ({
       });
   },
 
-  getPaginatedPromotions: (page = 1, limit = 5, branchId: number, type: string) => {
+  getPaginatedPromotions: (
+    page = 1,
+    limit = 5,
+    branchId: number,
+    type: string,
+    startDate: string,
+    endDate: string
+  ) => {
     set({ loading_products: true });
-    get_promotions(page, limit, branchId, type)
+    get_promotions(page, limit, branchId, type, startDate, endDate)
       .then((products) => set({ pagination_promotions: products.data, loading_products: false }))
       .catch(() => {
         set({
@@ -50,6 +57,4 @@ export const usePromotionsStore = create<IPromotionsStore>((set) => ({
         });
       });
   },
-
-
 }));

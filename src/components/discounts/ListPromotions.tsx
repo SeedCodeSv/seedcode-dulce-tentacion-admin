@@ -10,6 +10,7 @@ import {
   AutocompleteItem,
   Button,
   ButtonGroup,
+  Input,
   Select,
   SelectItem,
 } from '@nextui-org/react';
@@ -18,6 +19,7 @@ import { useBranchesStore } from '../../store/branches.store';
 import { Tipos_Promotions, limit_options } from '../../utils/constants';
 import Pagination from '../global/Pagination';
 import SmPagination from '../global/SmPagination';
+import { formatDate } from '../../utils/dates';
 
 function ListDiscount() {
   const [page, serPage] = useState(1);
@@ -25,11 +27,13 @@ function ListDiscount() {
   const [branchId, setbranchId] = useState(0);
   const [type, setType] = useState('');
   const { getBranchesList, branch_list } = useBranchesStore();
+  const [dateInitial, setDateInitial] = useState(formatDate());
+  const [dateEnd, setDateEnd] = useState(formatDate());
 
   const { pagination_promotions, getPaginatedPromotions, loading_products } = usePromotionsStore();
 
   useEffect(() => {
-    getPaginatedPromotions(1, limit, branchId, type);
+    getPaginatedPromotions(1, limit, branchId, type, dateInitial, dateEnd);
     getBranchesList();
   }, [limit]);
   const { theme } = useContext(ThemeContext);
@@ -40,7 +44,7 @@ function ListDiscount() {
     color: theme.colors.primary,
   };
   const handleSearch = (searchParam: string | undefined) => {
-    getPaginatedPromotions(page, limit, branchId, searchParam ?? type);
+    getPaginatedPromotions(page, limit, branchId, searchParam ?? type, dateInitial, dateEnd);
   };
 
   const navigate = useNavigate();
@@ -87,6 +91,33 @@ function ListDiscount() {
                   </SelectItem>
                 ))}
               </Select>
+              <Input
+                onChange={(e) => setDateInitial(e.target.value)}
+                value={dateInitial}
+                defaultValue={formatDate()}
+                placeholder="Buscar por nombre..."
+                type="date"
+                variant="bordered"
+                label="Fecha inicial"
+                labelPlacement="outside"
+                classNames={{
+                  input: 'dark:text-white dark:border-gray-600',
+                  label: 'text-sm font-semibold dark:text-white',
+                }}
+              />
+              <Input
+                onChange={(e) => setDateEnd(e.target.value)}
+                value={dateEnd}
+                placeholder="Buscar por nombre..."
+                variant="bordered"
+                label="Fecha final"
+                type="date"
+                labelPlacement="outside"
+                classNames={{
+                  input: 'dark:text-white dark:border-gray-600',
+                  label: 'text-sm font-semibold dark:text-white',
+                }}
+              />
               <Button
                 style={{
                   backgroundColor: theme.colors.secondary,
@@ -186,10 +217,6 @@ function ListDiscount() {
                   headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
                   field="id"
                   className="text-center justify-center"
-                  // body={(rowData) => {
-                  //   const actionId = idCounter + actions_roles_grouped.indexOf(rowData);
-                  //   return actionId;
-                  // }}
                   header="No."
                 />
                 <Column
@@ -269,7 +296,7 @@ function ListDiscount() {
                     totalPages={pagination_promotions.totalPag}
                     onPageChange={(page) => {
                       serPage(page);
-                      getPaginatedPromotions(page, limit, branchId, type);
+                      getPaginatedPromotions(page, limit, branchId, type, dateInitial, dateEnd);
                     }}
                   />
                 </div>
@@ -282,7 +309,9 @@ function ListDiscount() {
 
                         limit,
                         branchId,
-                        type
+                        type,
+                        dateInitial,
+                        dateEnd
                       );
                     }}
                     handlePrev={() => {
@@ -292,7 +321,9 @@ function ListDiscount() {
 
                         limit,
                         branchId,
-                        type
+                        type,
+                        dateInitial,
+                        dateEnd
                       );
                     }}
                     currentPage={pagination_promotions.currentPag}

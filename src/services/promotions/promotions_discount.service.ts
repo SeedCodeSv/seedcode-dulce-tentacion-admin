@@ -13,11 +13,11 @@ export const create_promotion_discount = (values: PromotionPayload) => {
   });
 };
 
-export const get_promotions = (page = 1, limit = 8, branchId: number, type: string) => {
+export const get_promotions = (page = 1, limit = 8, branchId: number, type: string, startDate: string, endDate: string) => {
   const token = get_token() ?? '';
   return axios.get<IGetPromotionsPaginated>(
     API_URL +
-      `/promotion-discounts/promos-paginated/${branchId}?page=${page}&limit=${limit}&type=${type}`,
+      `/promotion-discounts/promos-paginated/${branchId}?page=${page}&limit=${limit}&type=${type}&startDate=${startDate}&endDate=${endDate}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
