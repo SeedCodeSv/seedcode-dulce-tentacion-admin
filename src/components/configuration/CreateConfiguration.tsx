@@ -1,6 +1,6 @@
-import { ChangeEvent, useContext, useRef, useState } from 'react';
+import { ChangeEvent, useContext, useRef, useState, useEffect } from 'react';
 import { toast } from 'sonner';
-import { Image as NextImage, Button, Input } from '@nextui-org/react';
+import { Image as NextImage, Button, Input, Checkbox } from '@nextui-org/react';
 import { useConfigurationStore } from '../../store/perzonalitation.store';
 import { ICreacteConfiguaration } from '../../types/configuration.types';
 import DefaultImage from '../../assets/react.svg';
@@ -14,13 +14,20 @@ function CreateConfiguration() {
   const { theme } = useContext(ThemeContext);
   const { user } = useAuthStore();
   const [loading, setLoading] = useState(false);
+  const [wantPrint, setWantPrint] = useState(false);
 
   const [formData, setFormData] = useState<ICreacteConfiguaration>({
     name: '',
     themeId: 1,
     transmitterId: user?.employee?.branch?.transmitterId || 0,
-    file: null,
+    selectedTemplate: 'template',
+    wantPrint: false || true,
+    file: null, 
   });
+
+  useEffect(() => {
+    setFormData((prevData) => ({ ...prevData, wantPrint: wantPrint ? true : false }));
+  }, [wantPrint]);
 
   const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -84,7 +91,7 @@ function CreateConfiguration() {
     try {
       await OnCreateConfiguration(formData);
       toast.success('Personalización guardada');
-      location.reload();
+      // location.reload();
     } catch (error) {
       toast.error('Ocurrió un error al guardar');
     }
@@ -98,7 +105,7 @@ function CreateConfiguration() {
   };
 
   return (
-    <div className="p-4">
+    <div className="p-4 dark:text-white">
       <div className="flex flex-col items-center justify-center m-4 2xl:mt-10">
         <NextImage
           src={selectedImage}
@@ -140,6 +147,11 @@ function CreateConfiguration() {
             onChange={(event) => setFormData({ ...formData, name: event.target.value })}
             label="Ingrese el nombre"
           />
+        </div>
+        <div className="mt-2 w-full">
+          <Checkbox isSelected={wantPrint} onChange={(e) => setWantPrint(e.target.checked)}>
+            Habilitar impresión
+          </Checkbox>
         </div>
         <Button
           color="primary"
