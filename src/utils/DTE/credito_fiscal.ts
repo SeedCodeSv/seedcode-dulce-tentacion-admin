@@ -218,7 +218,7 @@ export const make_cuerpo_documento_fiscal = (products_cart: ICartProduct[]) => {
       uniMedida: Number(26),
       numeroDocumento: null,
       cantidad: cp.quantity,
-      codigo: null,
+      codigo: cp.product.code !== "N/A" ? cp.product.code : null,
       codTributo: null,
       descripcion: cp.product.name,
       precioUni:
