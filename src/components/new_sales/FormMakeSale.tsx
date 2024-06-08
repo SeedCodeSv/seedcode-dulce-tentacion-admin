@@ -41,6 +41,7 @@ import Template1CFC from "../../pages/invoices/Template1CFC";
 import { SeedcodeCatalogosMhService } from "seedcode-catalogos-mh";
 import HeadlessModal from "../global/HeadlessModal";
 
+
 interface Props {
   clear: () => void;
 }
@@ -238,16 +239,12 @@ function FormMakeSale(props: Props) {
                     description: "Estamos guardando tus datos",
                   });
 
-                  const json_url = `CLIENTES/${
-                    transmitter.nombre
-                  }/${new Date().getFullYear()}/VENTAS/FACTURAS/${formatDate()}/${
-                    generate.dteJson.identificacion.codigoGeneracion
-                  }/${generate.dteJson.identificacion.codigoGeneracion}.json`;
-                  const pdf_url = `CLIENTES/${
-                    transmitter.nombre
-                  }/${new Date().getFullYear()}/VENTAS/FACTURAS/${formatDate()}/${
-                    generate.dteJson.identificacion.codigoGeneracion
-                  }/${generate.dteJson.identificacion.codigoGeneracion}.pdf`;
+                  const json_url = `CLIENTES/${transmitter.nombre
+                    }/${new Date().getFullYear()}/VENTAS/FACTURAS/${formatDate()}/${generate.dteJson.identificacion.codigoGeneracion
+                    }/${generate.dteJson.identificacion.codigoGeneracion}.json`;
+                  const pdf_url = `CLIENTES/${transmitter.nombre
+                    }/${new Date().getFullYear()}/VENTAS/FACTURAS/${formatDate()}/${generate.dteJson.identificacion.codigoGeneracion
+                    }/${generate.dteJson.identificacion.codigoGeneracion}.pdf`;
 
                   const JSON_DTE = JSON.stringify(
                     {
@@ -350,7 +347,7 @@ function FormMakeSale(props: Props) {
                   );
                   setTitle(
                     error.response.data.descripcionMsg ??
-                      "Error al procesar venta"
+                    "Error al procesar venta"
                   );
                   modalError.onOpen();
                   setLoading(false);
@@ -479,10 +476,9 @@ function FormMakeSale(props: Props) {
         }
 
         toast.error("ERROR", {
-          description: `Error: ${
-            error.response?.data.descripcionMsg ??
+          description: `Error: ${error.response?.data.descripcionMsg ??
             "DTE no encontrado en hacienda"
-          }`,
+            }`,
         });
         setLoading(false);
       });
@@ -581,7 +577,7 @@ function FormMakeSale(props: Props) {
         )}
         <div className="hidden lg:block">
           {tipeDocument?.codigo === "01" ||
-          tipeDocument?.codigo === undefined ? (
+            tipeDocument?.codigo === undefined ? (
             <div className="flex justify-center mt-4 mb-4 w-full">
               <div className="w-full flex  justify-center">
                 {loading ? (

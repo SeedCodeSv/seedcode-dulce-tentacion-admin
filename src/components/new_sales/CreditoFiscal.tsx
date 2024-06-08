@@ -20,7 +20,6 @@ import { s3Client } from "../../plugins/s3";
 import { SendMHFailed } from "../../types/transmitter.types";
 import { API_URL } from "../../utils/constants";
 import { useCorrelativesDteStore } from "../../store/correlatives_dte.store";
-import ModalGlobal from "../global/ModalGlobal";
 import { LoaderCircle, ShieldAlert } from "lucide-react";
 import { global_styles } from "../../styles/global.styles";
 import { ICheckResponse } from "../../types/DTE/check.types";
@@ -31,6 +30,7 @@ import { useConfigurationStore } from "../../store/perzonalitation.store";
 import { pdf } from "@react-pdf/renderer";
 import Template1CCF from "../../pages/invoices/Template1CCF";
 import { SVFE_CF_SEND } from "../../types/svf_dte/cf.types";
+import HeadlessModal from "../global/HeadlessModal";
 
 interface Pagos {
   codigo: string;
@@ -49,8 +49,7 @@ interface Props {
 }
 
 function CreditoFiscal(props: Props) {
-
-  const {condition,tipePayment} = props
+  const { condition, tipePayment } = props;
 
   const { cart_products } = useBranchProductStore();
   const [errorMessage, setErrorMessage] = useState("");
@@ -66,11 +65,13 @@ function CreditoFiscal(props: Props) {
     gettransmitter();
   }, []);
 
-  const total = cart_products.map((a) => Number(a.price) * a.quantity).reduce((a, b) => a + b, 0);
+  const total = cart_products
+    .map((a) => Number(a.price) * a.quantity)
+    .reduce((a, b) => a + b, 0);
 
   const generateFactura = async () => {
     GetConfiguration(transmitter.id);
-    
+
     if (condition === "") {
       toast.error("Debes seleccionar una condición");
       return;
@@ -165,7 +166,7 @@ function CreditoFiscal(props: Props) {
       receptor,
       cart_products,
       props.tipePayment,
-      props.tipeTribute,
+      props.tipeTribute
     );
     setCurrentDTE(generate);
     setLoading(true);
@@ -467,46 +468,48 @@ function CreditoFiscal(props: Props) {
           )}
         </div>
       </div>
-      <ModalGlobal
+      <HeadlessModal
         title={title}
         size="w-full md:w-[600px] lg:w-[700px]"
         isOpen={modalError.isOpen}
         onClose={modalError.onClose}
       >
-        <div className="flex flex-col justify-center items-center">
-          <ShieldAlert size={75} color="red" />
-          <p className="text-lg font-semibold">{errorMessage}</p>
+        <div className="p-5">
+          <div className="flex flex-col justify-center items-center">
+            <ShieldAlert size={75} color="red" />
+            <p className="text-lg font-semibold">{errorMessage}</p>
+          </div>
+          {loading ? (
+            <div className="flex justify-center w-full mt-5">
+              <LoaderCircle size={50} className=" animate-spin " />
+            </div>
+          ) : (
+            <div className="grid grid-cols-3 gap-5 mt-5">
+              <Button
+                onClick={() => {
+                  modalError.onClose();
+                  generateFactura();
+                }}
+                style={global_styles().secondaryStyle}
+              >
+                Re-intentar
+              </Button>
+              <Button
+                onClick={handleVerify}
+                style={global_styles().warningStyles}
+              >
+                Verificar
+              </Button>
+              <Button
+                onClick={sendToContingencia}
+                style={global_styles().dangerStyles}
+              >
+                Enviar a contingencia
+              </Button>
+            </div>
+          )}
         </div>
-        {loading ? (
-          <div className="flex justify-center w-full mt-5">
-            <LoaderCircle size={50} className=" animate-spin " />
-          </div>
-        ) : (
-          <div className="grid grid-cols-3 gap-5 mt-5">
-            <Button
-              onClick={() => {
-                modalError.onClose();
-                generateFactura();
-              }}
-              style={global_styles().secondaryStyle}
-            >
-              Re-intentar
-            </Button>
-            <Button
-              onClick={handleVerify}
-              style={global_styles().warningStyles}
-            >
-              Verificar
-            </Button>
-            <Button
-              onClick={sendToContingencia}
-              style={global_styles().dangerStyles}
-            >
-              Enviar a contingencia
-            </Button>
-          </div>
-        )}
-      </ModalGlobal>
+      </HeadlessModal>
     </div>
   );
 }
