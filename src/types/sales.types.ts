@@ -72,10 +72,11 @@ export interface Product {
 export interface BranchProduct {
 	id: number;
 	stock: number;
-	price: string;
-	priceA: string;
-	priceB: string;
-	priceC: string;
+	price: number;
+	newPrice: number;
+	priceA: number;
+	priceB: number;
+	priceC: number;
 	minimumStock: number;
 	costoUnitario: string;
 	isActive: boolean;
@@ -87,11 +88,17 @@ export interface BranchProduct {
 
 export interface Detail {
 	id: number;
-	montoDescu: string;
-	ventaNoSuj: string;
-	ventaExenta: string;
-	ventaGravada: string;
-	totalItem: string;
+	montoDescu: number;
+	porcentajeDescuento: number;
+	newPorcentajeDescu: number;
+	ventaNoSuj: number;
+	ventaExenta: number;
+	ventaGravada: number;
+	totalItem: number;
+	mewTotal: number;
+	newMontoDescu: number;
+	newCantidadItem: number;
+	newTotalItem: number;
 	cantidadItem: number;
 	isActive: boolean;
 	branchProduct: BranchProduct;
@@ -134,6 +141,7 @@ export interface SaleDetails {
 	employeeId: number;
 	salesStatusId: number;
 	details: Detail[];
+	isEdited: boolean;
 }
 
 export interface IGetSaleDetails {

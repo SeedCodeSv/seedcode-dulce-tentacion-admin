@@ -9,7 +9,7 @@ import { useSupplierStore } from "../../store/supplier.store";
 import { useBranchesStore } from "../../store/branches.store";
 import { global_styles } from "../../styles/global.styles";
 import { DollarSign, ScrollText, Search, Truck } from "lucide-react";
-import { usePurchaseOrdersStore } from "../../store/purchase_orders.store";
+// import { usePurchaseOrdersStore } from "../../store/purchase_orders.store";
 
 interface Props {
   isOpen: boolean;
@@ -24,9 +24,9 @@ function AddProduct({ isOpen, onClose, supplierName, branchName }: Props) {
     branch_product_order
   } = useBranchProductStore();
 
-  const {
-    addProductToOrder
-  } = usePurchaseOrdersStore();
+  // const {
+  //   addProductToOrder
+  // } = usePurchaseOrdersStore();
 
   const { getSupplierList } = useSupplierStore();
 
@@ -92,7 +92,7 @@ function AddProduct({ isOpen, onClose, supplierName, branchName }: Props) {
               <Button
                 className="px-10 mt-3"
                 style={global_styles().thirdStyle}
-                onPress={() => addProductToOrder(branch_product)}
+                // onPress={() => addProductToOrder(branch_product)}
               >
                 Agregar
               </Button>

@@ -10,4 +10,5 @@ export interface salesStore {
   ) => void;
   sale_details: SaleDetails | undefined,
   getSaleDetails: (id:number) => void
+  updateSaleDetails: (data:SaleDetails) => void
 }

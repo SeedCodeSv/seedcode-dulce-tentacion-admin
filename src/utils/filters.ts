@@ -45,3 +45,15 @@ export const groupBySupplier = (items: IBranchProductOrderQuantity[]): SupplierP
 
   return Array.from(supplierMap.values());
 };
+
+export function calcularPorcentajeDescuento(total: number, descuento: number): number {
+  const precioOriginal = total + descuento;
+  const porcentajeDescuento = (descuento / precioOriginal) * 100;
+  return porcentajeDescuento;
+}
+
+export function calculateDiscountedTotal(price: number, discountPercentage: number): { discountedTotal: number, discountAmount: number } {
+  const discountAmount = (price * discountPercentage) / 100;
+  const discountedTotal = price - discountAmount;
+  return { discountedTotal, discountAmount };
+}
