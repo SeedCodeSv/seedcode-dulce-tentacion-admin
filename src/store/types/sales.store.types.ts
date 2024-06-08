@@ -1,3 +1,5 @@
+import { SaleDetails } from "../../types/sales.types";
+
 export interface salesStore {
   postSales: (
     pdf: string,
@@ -6,4 +8,6 @@ export interface salesStore {
     codigoEmpleado: string,
     sello: string
   ) => void;
+  sale_details: SaleDetails | undefined,
+  getSaleDetails: (id:number) => void
 }
