@@ -19,7 +19,7 @@ import { formatDate } from '../../utils/dates';
 import Layout from '../../layout/Layout';
 import { useNavigate } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
-import { Tipos_Promotions, operadores } from '../../utils/constants';
+import { operadores } from '../../utils/constants';
 import { Promotion } from '../../types/promotions.types';
 import { useBranchProductStore } from '../../store/branch_product.store';
 import { usePromotionsStore } from '../../store/promotions/promotions.store';
@@ -30,7 +30,7 @@ import AddPromotionsByCategory from './AddPromotionsByCategory';
 
 function AddDiscount() {
   const [selectedBranchId] = useState<number | null>(null);
-  const [selectedPromotion, setSelectedPromotion] = useState('');
+  // const [selectedPromotion, setSelectedPromotion] = useState('');
   const [branchId, setBranchId] = useState(0);
   const [endDate, setEndDate] = useState(formatDate());
   const [startDate, setStartDate] = useState(formatDate());
@@ -121,7 +121,7 @@ function AddDiscount() {
       startDate: startDate,
       endDate: endDate,
       days: daysArrayString.toString(),
-      typePromotion: selectedPromotion,
+      // typePromotion: selectedPromotion,
       priority: selectedPriority,
     };
     postPromotions(payload);
@@ -132,15 +132,15 @@ function AddDiscount() {
   const handleSelectionChange = (key: Key) => {
     setSelected(key as string);
   };
-  useEffect(() => {
-    if (selected === 'sucursales') {
-      setSelectedPromotion('sucursales');
-    } else if (selected === 'productos') {
-      setSelectedPromotion('productos');
-    } else if (selected === 'categoria') {
-      setSelectedPromotion('categoria');
-    }
-  }, [selected]);
+  // useEffect(() => {
+  //   if (selected === 'sucursales') {
+  //     setSelectedPromotion('sucursales');
+  //   } else if (selected === 'productos') {
+  //     setSelectedPromotion('productos');
+  //   } else if (selected === 'categoria') {
+  //     setSelectedPromotion('categoria');
+  //   }
+  // }, [selected]);
 
   return (
     <Layout title="Nueva Promocion">
@@ -177,7 +177,7 @@ function AddDiscount() {
                       operator: '',
                       operatorPrice: '',
                       fixedPrice: 0,
-                      typePromotion: '',
+
                       maximum: 0,
                       price: 0,
                       priority: '',
@@ -195,9 +195,9 @@ function AddDiscount() {
                     }) => (
                       <>
                         <div className="w-full mt-4">
-                          <div className="grid grid-cols-2 gap-5 w-full">
+                          <div className="grid grid-cols-2 gap-5 w-full ">
                             {/* Columna 1 */}
-                            <div>
+                            <div className="">
                               <div className="mt-4">
                                 <Input
                                   name="name"
@@ -398,7 +398,7 @@ function AddDiscount() {
                                   onDaysSelected={handleDaysSelected}
                                 />
                               </div>
-                              <div className="mt-4">
+                              {/* <div className="mt-4">
                                 <Select
                                   variant="bordered"
                                   placeholder="Selecciona el tipo de promoción"
@@ -423,6 +423,26 @@ function AddDiscount() {
                                     </SelectItem>
                                   ))}
                                 </Select>
+                              </div> */}
+                              <div className="mt-5">
+                                <Textarea
+                                  label="Descripción"
+                                  labelPlacement="outside"
+                                  name="description"
+                                  value={values.description}
+                                  onChange={handleChange('description')}
+                                  onBlur={handleBlur('description')}
+                                  placeholder="Ingresa la descripción"
+                                  classNames={{
+                                    label: 'font-semibold text-gray-500 text-sm ',
+                                  }}
+                                  variant="bordered"
+                                />
+                                {errors.description && touched.description && (
+                                  <span className="text-sm font-semibold text-red-500">
+                                    {errors.description}
+                                  </span>
+                                )}
                               </div>
                             </div>
 
@@ -499,9 +519,9 @@ function AddDiscount() {
                                   startContent=""
                                 />
                               </div>
-                              <div className="mt-10">
+                              <div className="mt-4">
                                 <CheckboxGroup
-                                  className="font-semibold text-gray-500 text-lg "
+                                  className="font-semibold text-black text-lg "
                                   orientation="horizontal"
                                   value={selectedPriority ? [selectedPriority] : []}
                                   onChange={handlePriorityChange}
@@ -519,26 +539,6 @@ function AddDiscount() {
                                 {errors.priority && touched.priority && (
                                   <span className="text-sm font-semibold text-red-500">
                                     {errors.priority}
-                                  </span>
-                                )}
-                              </div>
-                              <div className="mt-10">
-                                <Textarea
-                                  label="Descripción"
-                                  labelPlacement="outside"
-                                  name="description"
-                                  value={values.description}
-                                  onChange={handleChange('description')}
-                                  onBlur={handleBlur('description')}
-                                  placeholder="Ingresa la descripción"
-                                  classNames={{
-                                    label: 'font-semibold text-gray-500 text-sm ',
-                                  }}
-                                  variant="bordered"
-                                />
-                                {errors.description && touched.description && (
-                                  <span className="text-sm font-semibold text-red-500">
-                                    {errors.description}
                                   </span>
                                 )}
                               </div>

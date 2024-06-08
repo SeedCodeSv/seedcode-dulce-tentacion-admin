@@ -21,7 +21,7 @@ export interface Promotion {
   isActive?: boolean;
   priority: string;
   branchId: number;
-  typePromotion: string;
+
 }
 export interface PromotionCategories {
   name: string;
@@ -64,7 +64,7 @@ export interface PromotionPayload {
   isActive?: boolean;
   branchId: number;
   priority: string;
-  typePromotion: string;
+  // typePromotion: string;
 }
 
 
