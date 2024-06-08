@@ -64,7 +64,6 @@ function TableFooter({ dte }: ICCFProps) {
         </TableRow>
       </TableWithoutBorder>
       <TableWithoutBorder>
-        s
         <TableRow>
           <TableCellWithoutBorder size={7.5}>
             <Text style={{ fontSize: 7, textAlign: "right" }}>{""}</Text>

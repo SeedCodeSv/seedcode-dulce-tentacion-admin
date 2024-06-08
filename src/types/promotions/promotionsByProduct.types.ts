@@ -24,7 +24,7 @@ export interface IGetPromotions {
     typePromotion: string;
   }
   
-  export interface PromotionPayload {
+  export interface PromotionPayloadByProduct {
     name: string;
     description: string;
     days: string;
@@ -42,5 +42,8 @@ export interface IGetPromotions {
     branchId: number;
     priority: string;
     typePromotion: string;
+    products: Products[];
   }
-  
+  export interface Products {
+    productId: number;
+  }

@@ -4,7 +4,7 @@ import { messages } from '../../utils/constants';
 import { create_promotion_discount_by_product } from '../../services/promotions/promotions_discountByProduct.service';
 import { IPromotionsByProductStore } from './types/promotionsByProduct.store';
 
-export const usePromotionsStore = create<IPromotionsByProductStore>(() => ({
+export const usePromotionsProductsStore = create<IPromotionsByProductStore>(() => ({
   postPromotions(payload) {
     create_promotion_discount_by_product(payload)
       .then(() => {

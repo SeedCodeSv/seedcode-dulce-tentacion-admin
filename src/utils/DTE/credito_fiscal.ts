@@ -197,8 +197,8 @@ export const generate_credito_fiscal = (
         pagos: tipo_pago.map((tp) => {
           return {
             codigo: tp.codigo,
-            plazo: tp.plazo,
-            periodo: tp.periodo,
+            plazo: null,
+            periodo: null,
             montoPago: tp.monto,
             referencia: ""
           }
@@ -218,7 +218,7 @@ export const make_cuerpo_documento_fiscal = (products_cart: ICartProduct[]) => {
       uniMedida: Number(26),
       numeroDocumento: null,
       cantidad: cp.quantity,
-      codigo: null,
+      codigo: cp.product.code !== "N/A" ? cp.product.code : null,
       codTributo: null,
       descripcion: cp.product.name,
       precioUni:
