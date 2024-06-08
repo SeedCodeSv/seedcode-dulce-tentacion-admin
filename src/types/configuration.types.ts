@@ -5,6 +5,8 @@ export interface IConfiguration {
   name: string;
   themeId: number;
   transmitterId: number;
+  selectedTemplate: string;
+  wantPrint: boolean;
   isActive?: boolean;
 }
 
@@ -28,6 +30,8 @@ export interface ICreacteConfiguaration {
   name: string;
   themeId: number;
   transmitterId: number;
+  selectedTemplate: string;
+  wantPrint: false | true;
   file?: File | Blob | null;
 }
 

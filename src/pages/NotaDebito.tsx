@@ -5,10 +5,14 @@ import { useContext, useEffect } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { ThemeContext } from "../hooks/useTheme";
+import { Input } from "@nextui-org/react";
+import { formatCurrency } from "../utils/dte";
+import { calculateDiscountedTotal } from "../utils/filters";
+import { toast } from "sonner";
 
 function NotaDebito() {
   const { id } = useParams();
-  const { getSaleDetails, sale_details } = useSalesStore();
+  const { getSaleDetails, sale_details, updateSaleDetails } = useSalesStore();
 
   useEffect(() => {
     getSaleDetails(Number(id));
@@ -18,6 +22,64 @@ function NotaDebito() {
   const style = {
     backgroundColor: theme.colors.dark,
     color: theme.colors.primary,
+  }
+
+  const updatePrice = (price: number, id: number) => {
+    const items = sale_details?.details;
+
+    if (items) {
+      const item = items.find((i) => i.id === id);
+      if (item) {
+        if (price < item.branchProduct.price) {
+          toast.error("El precio no puede ser menor al precio de venta");
+          item.branchProduct.newPrice = item.branchProduct.price;
+          item.newTotalItem = item.branchProduct.price * item.newCantidadItem;
+
+          const edited = items.map((i) => (i.id === id ? item : i));
+
+          updateSaleDetails({
+            ...sale_details,
+            isEdited: true,
+            details: edited,
+          });
+          return;
+        }
+
+        const discount = calculateDiscountedTotal(
+          price,
+          Number(item.porcentajeDescuento)
+        );
+
+        item.newMontoDescu = discount.discountAmount * item.newCantidadItem;
+        item.newTotalItem = discount.discountedTotal * item.newCantidadItem;
+        item.branchProduct.newPrice = price;
+
+        const edited = items.map((i) => (i.id === id ? item : i));
+
+        updateSaleDetails({ ...sale_details, isEdited: true, details: edited });
+      }
+    }
+  };
+
+  const updateQuantity = (quantity: number, id: number) => {
+    const items = sale_details?.details;
+
+    if (items) {
+      const item = items.find((i) => i.id === id);
+      if (item) {
+        item.newCantidadItem = quantity;
+
+        const discount = calculateDiscountedTotal(
+          item.branchProduct.newPrice,
+          Number(item.porcentajeDescuento)
+        );
+
+        item.newMontoDescu = discount.discountAmount * item.newCantidadItem;
+        item.newTotalItem = discount.discountedTotal * item.newCantidadItem;
+        const edited = items.map((i) => (i.id === id ? item : i));
+        updateSaleDetails({ ...sale_details, isEdited: true, details: edited });
+      }
+    }
   };
 
   return (
@@ -47,7 +109,7 @@ function NotaDebito() {
               </span>
             </p>
           </div>
-          <p>Productos</p>
+          <p className="text-lg font-semibold py-8">Productos</p>
           {sale_details?.details && (
             <DataTable
               className="shadow"
@@ -66,14 +128,60 @@ function NotaDebito() {
                 headerStyle={style}
                 field="branchProduct.product.name"
                 header="Nombre"
+                body={(rowData) => (
+                  <Input
+                    variant="bordered"
+                    defaultValue={rowData.branchProduct.product.name}
+                    onChange={(e) => {
+                      updateSaleDetails({
+                        ...sale_details,
+                        details: sale_details?.details?.map((item) => {
+                          if (item.id === rowData.id) {
+                            return {
+                              ...item,
+                              branchProduct: {
+                                ...item.branchProduct,
+                                product: {
+                                  ...item.branchProduct.product,
+                                  name: e.target.value,
+                                },
+                              },
+                            };
+                          }
+                          return item;
+                        }),
+                      });
+                    }}
+                  />
+                )}
               />
-               <Column
+              <Column
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
                 field="cantidadItem"
                 header="Cantidad"
+                body={(rowData) => (
+                  <Input
+                    variant="bordered"
+                    className="w-32"
+                    defaultValue={rowData.cantidadItem}
+                    min={Number(rowData.cantidadItem)}
+                    type="number"
+                    onChange={(e) =>
+                      updateQuantity(Number(e.target.value), rowData.id)
+                    }
+                  />
+                )}
               />
-               <Column
+              <Column
+                headerClassName="text-sm font-semibold"
+                headerStyle={style}
+                body={(rowData) =>
+                  formatCurrency(Number(rowData.newMontoDescu))
+                }
+                header="Codigo"
+              />
+              <Column
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
                 field="branchProduct.product.code"
@@ -84,12 +192,44 @@ function NotaDebito() {
                 headerStyle={style}
                 field="branchProduct.price"
                 header="Precio"
+                body={(rowData) => (
+                  <Input
+                    variant="bordered"
+                    className="w-64"
+                    defaultValue={rowData.branchProduct.newPrice}
+                    min={Number(rowData.branchProduct.price)}
+                    type="number"
+                    startContent="$"
+                    isInvalid={
+                      rowData.branchProduct.newPrice <
+                      rowData.branchProduct.price
+                    }
+                    errorMessage="El precio no puede ser menor al precio de venta"
+                    onChange={(e) =>
+                      updatePrice(
+                        Number(e.target.value),
+                        rowData.id
+                      )
+                    }
+                    endContent={
+                      <span>
+                        {rowData.branchProduct.newPrice !==
+                        rowData.branchProduct.price ? (
+                          <s>${rowData.branchProduct.price}</s>
+                        ) : (
+                          ""
+                        )}
+                      </span>
+                    }
+                  />
+                )}
               />
-               <Column
+              <Column
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
-                field="totalItem"
+                field="newTotalItem"
                 header="Total"
+                body={(rowData) => formatCurrency(Number(rowData.newTotalItem))}
               />
             </DataTable>
           )}
