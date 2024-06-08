@@ -3,6 +3,7 @@ import { IBranchProductStore } from './types/branch_product.types';
 import { get_branch_product, get_branch_product_orders, get_product_by_code } from '../services/branch_product.service';
 import { toast } from 'sonner';
 import { groupBySupplier } from '../utils/filters';
+// import { totalAPagar } from '../components/new_sales/MainView';
 
 export const useBranchProductStore = create<IBranchProductStore>((set, get) => ({
   branch_products: [],
@@ -61,7 +62,7 @@ export const useBranchProductStore = create<IBranchProductStore>((set, get) => (
   updatePriceOrders(id, price) {
     set((state) => ({
       order_branch_products: state.order_branch_products.map((cp) =>
-        cp.id === id ? { ...cp, price  } : cp
+        cp.id === id ? { ...cp, price } : cp
       ),
     }));
 
@@ -69,7 +70,7 @@ export const useBranchProductStore = create<IBranchProductStore>((set, get) => (
   },
   getProductByCodeOrders(branch, supplier, product, code) {
     get_branch_product_orders(branch, supplier, product, code).then(({ data }) => {
-      if(data.branchProducts.length > 0) {
+      if (data.branchProducts.length > 0) {
         get().addProductOrder(data.branchProducts[0])
       }
     }).catch(() => {
@@ -136,7 +137,7 @@ export const useBranchProductStore = create<IBranchProductStore>((set, get) => (
               base_price: Number(data.product.price),
               discount: 0,
               total: Number(data.product.price),
-              percentage: 0,
+              porcentaje: 0,
             },
           ],
         });
@@ -157,8 +158,8 @@ export const useBranchProductStore = create<IBranchProductStore>((set, get) => (
             quantity: 1,
             base_price: Number(product.price),
             discount: 0,
-            total: Number(product.price),
-            percentage: 0,
+            total: 0,// poner totalAPagar
+            porcentaje: 0,
           },
         ],
       });

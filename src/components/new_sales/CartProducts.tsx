@@ -71,16 +71,10 @@ function CartProducts() {
   //   return formatCurrency(0);
   // };
   const priceBodyTemplate = (item: BranchProduct) => {
-    // return formatCurrency(Number(product.price));
     const currentDay = new Date().toLocaleDateString("es-ES", { weekday: "long" }).toUpperCase();
     const useFixedPrice = item.days ? item.days.includes(currentDay) : false;
     return useFixedPrice ? item.fixedPrice : item.price || 0;
   };
-
-  // const discountBodyTemplate = (item: { id: string | number }) => {
-  //   const discount = descuentoProducto[item.id] || 0
-  //   return `${discount}%`
-  // }
 
   return (
     <DataTable
@@ -119,7 +113,9 @@ function CartProducts() {
         headerClassName="text-sm font-semibold"
         headerStyle={style}
         bodyClassName={"bg-white"}
-        // body={discountBodyTemplate}
+        // body={(item) =>
+        //   `${descuentoProducto.filter((d) => d.descripcion === item.product.name)[0]?.descuento || 0}%`
+        // }
         header="Descuento"
       />
       {/* <Column

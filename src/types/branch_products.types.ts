@@ -61,7 +61,7 @@ export interface IGetBranchProductPaginated {
 export interface ICartProduct extends BranchProduct {
 	quantity: number;
 	discount: number;
-	percentage: number;
+	porcentaje: number
 	total: number;
 	base_price: number;
 }

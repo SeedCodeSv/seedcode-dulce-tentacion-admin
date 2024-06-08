@@ -42,7 +42,8 @@ import CartProductsMobile from "./MobileView/CartProductMovile";
 import HeadlessModal from "../global/HeadlessModal";
 
 // export let totalAPagar = 0;
-// // export const descuentoProducto: { [key: string]: number | string } = {};
+// export let isDescuento = false;
+// export const descuentoProducto: { descripcion: string; descuento: number }[] = []
 // export let descuentoTotal = 0;
 
 const MainView = () => {
@@ -136,40 +137,50 @@ const MainView = () => {
   }, []);
 
 
-  // function calculateTotal(cart_products: BranchProduct[]) {
+  // function calculateTotal(cart_products: ICartProduct[]) {
   //   let total = 0
+
   //   const currentDay = new Date().toLocaleString("en-US", { weekday: "long" }).toUpperCase()
 
   //   cart_products.forEach((product) => {
   //     const fixedPrice = Number(product.fixedPrice)
   //     const normalPrice = Number(product.price)
   //     const percentage = Number(product.porcentaje)
-  //     const quantity = product.product.quantity ?? 0;
+  //     const quantity = product.quantity ?? 0
   //     let applicablePrice = normalPrice
 
   //     if (product.days && product.days.includes(currentDay)) {
   //       if (fixedPrice > 0) {
   //         applicablePrice = fixedPrice
   //         const descuento = (((normalPrice - fixedPrice) / normalPrice) * 100).toFixed(2)
-  //         descuentoProducto[product.id] = Number(descuento)
+  //         descuentoProducto.push({
+  //           descripcion: product.product.name,
+  //           descuento: Number(descuento)
+  //         })
   //         descuentoTotal += Number(descuento)
   //       } else if (percentage > 0) {
   //         applicablePrice = normalPrice - normalPrice * (percentage / 100)
-  //         descuentoProducto[product.id] = percentage.toFixed(2)
+  //         descuentoProducto.push({
+  //           descripcion: product.product.name,
+  //           descuento: Number(percentage.toFixed(2))
+  //         })
   //         descuentoTotal += percentage
   //       }
   //     } else {
   //       applicablePrice = normalPrice
-  //       descuentoProducto[product.id] = 0
+  //       descuentoProducto.push({ descripcion: product.product.name, descuento: 0 })
   //     }
 
   //     if (quantity >= product.minimum && quantity <= product.maximum) {
   //       total += applicablePrice * quantity
+  //       isDescuento = true
   //     } else if (quantity < product.minimum) {
   //       total += normalPrice * quantity
+  //       isDescuento = false
   //     } else {
   //       total += normalPrice * (quantity - product.maximum)
   //       total += applicablePrice * product.maximum
+  //       isDescuento = true
   //     }
   //   })
 
