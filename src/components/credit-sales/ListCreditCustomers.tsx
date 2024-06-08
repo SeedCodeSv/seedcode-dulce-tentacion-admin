@@ -100,7 +100,7 @@ const ListCreditCustomers = () => {
       { id: 1, codigo: '01', valores: 'Factura Comercial', isActivated: true },
       customer as Customer,
       //only for test
-      exampleProduct as ICartProduct[],
+      exampleProduct as unknown as ICartProduct[],
       paymentType
     );
 
@@ -110,7 +110,7 @@ const ListCreditCustomers = () => {
     toast.info('Estamos firmado tu documento');
 
     firmarDocumentoFactura(generate)
-      .then(async (firma) => {
+      .then((firma) => {
         const token_mh = return_mh_token();
         if (firma.data.body) {
           const data_send: PayloadMH = {
