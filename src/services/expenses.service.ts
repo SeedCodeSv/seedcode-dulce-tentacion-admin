@@ -17,8 +17,10 @@ export const get_expenses_paginated = (idBox = 0, page = 1, limit = 5, category 
 };
 export const save_expenses = (payload: IExpensePayloads) => {
   const formData = new FormData();
-  if (payload.file) {
-    formData.append('file', payload.file);
+  if (payload.files) {
+    payload.files.forEach((file) => {
+      formData.append("files", file)
+    })
   }
 
   formData.append('description', payload.description);
