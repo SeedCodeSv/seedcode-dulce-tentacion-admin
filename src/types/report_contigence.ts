@@ -52,6 +52,11 @@ export interface Sale {
   customer: Customer;
   employee: Employee;
   direccion: Direccion;
+  salesStatus: {
+    id: number
+    isActive: boolean
+    name: string
+  }
   employeeId: number;
   selloInvalidation: string;
   tipoItem?: number;

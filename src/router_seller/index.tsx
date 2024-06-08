@@ -6,6 +6,8 @@ import Expenses from "../pages/Expenses";
 import HomeSeller from "../pages/Seller/HomeSeller";
 import Customers from "../pages/Customers";
 import Configuration from "../pages/Configuration";
+import Test from "../pages/Test";
+import NotaCredito from "../pages/NotaCredito";
 
 export const router_seller = () => {
   return createBrowserRouter([
@@ -32,6 +34,14 @@ export const router_seller = () => {
     {
       path: "/configuration",
       element: <Configuration />,
+    },
+    {
+      path: "/credit-note/:id",
+      element: <NotaCredito />,
+    },
+    {
+      path: "/test",
+      element: <Test />,
     },
     {
       path: "*",

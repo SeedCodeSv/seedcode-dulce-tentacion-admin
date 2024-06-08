@@ -4,9 +4,13 @@ import { useContext, useEffect, useState } from "react";
 import {
   Button,
   Input,
+  Listbox,
+  ListboxItem,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
   Select,
   SelectItem,
-  Switch,
   Textarea,
   useDisclosure,
 } from "@nextui-org/react";
@@ -19,6 +23,7 @@ import {
 } from "../../storage/localStorage";
 import {
   EditIcon,
+  EllipsisVertical,
   Filter,
   LoaderCircle,
   RefreshCwOff,
@@ -129,7 +134,7 @@ function SalesReportContigence() {
     backgroundColor: theme.colors.dark,
     color: theme.colors.primary,
   };
-  const [isActive, setIsActive] = useState(false);
+  const [isActive, setIsActive] = useState(true);
 
   const formatCurrency = (value: number) => {
     return value.toLocaleString("en-US", {
@@ -924,10 +929,38 @@ function SalesReportContigence() {
             </div>
           </div>
           <div className="md:flex md:mb-2  mb-4 grid overflow-hidden justify-end mr-3">
-            <Switch onChange={() => setIsActive(!isActive)} defaultSelected>
-              {isActive ? "No Contigencia" : "Contigencia"}
-            </Switch>
+            <Select
+              classNames={{
+                label: "text-sm font-semibold dark:text-white",
+              }}
+              className="w-44"
+              variant="bordered"
+              placeholder="Selecciona una opción"
+              label="Mostrar por estado"
+              labelPlacement="outside"
+              onChange={(e) => {
+                if (e.target.value) {
+                  const value = e.target.value;
+                  if (value === "1") {
+                    setIsActive(true);
+                  } else if (value === "0") {
+                    setIsActive(false);
+                  }
+                } else {
+                  setIsActive(false);
+                }
+              }}
+              defaultSelectedKeys={["1"]}
+            >
+              <SelectItem key={"1"} value={"1"}>
+                Procesadas
+              </SelectItem>
+              <SelectItem key={"0"} value={"0"}>
+                Contingencia
+              </SelectItem>
+            </Select>
           </div>
+          {isActive ? "true" : "false"}
           {isActive === true ? (
             <>
               <DataTable
@@ -971,11 +1004,14 @@ function SalesReportContigence() {
                   headerClassName="text-sm font-semibold"
                   headerStyle={style}
                   header="Estado"
-                  body={(rowData) =>
-                    rowData.selloInvalidacion === "null"
-                      ? "Procesado"
-                      : "Anulado"
-                  }
+                  field="salesStatus.name"
+                />
+                 <Column
+                  headerClassName="text-sm font-semibold"
+                  headerStyle={style}
+                  header="Tipo de documento"
+                  field="tipoDte"
+                  body={(rowData) => rowData.rolDte === "01" ? "Factura" : "Crédito Fiscal"}
                 />
                 <Column
                   headerClassName="text-sm font-semibold"
@@ -984,15 +1020,36 @@ function SalesReportContigence() {
                   body={(rowData) => (
                     <>
                       {rowData.selloInvalidacion === "null" ? (
-                        <Button
-                          style={global_styles().dangerStyles}
-                          isIconOnly
-                          onClick={() => {
-                            setSelectedSale(rowData), modalAnulation.onOpen();
-                          }}
-                        >
-                          <RefreshCwOff size={20} />
-                        </Button>
+                        <div className="flex gap-5">
+                          <Button
+                            style={global_styles().dangerStyles}
+                            isIconOnly
+                            onClick={() => {
+                              setSelectedSale(rowData), modalAnulation.onOpen();
+                            }}
+                          >
+                            <RefreshCwOff size={20} />
+                          </Button>
+                          <Popover showArrow placement="bottom">
+                            <PopoverTrigger>
+                              <Button
+                                style={global_styles().thirdStyle}
+                                isIconOnly
+                              >
+                                <EllipsisVertical />
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="p-1">
+                              <Listbox
+                                aria-label="Actions"
+                                onAction={(key) => alert(key)}
+                              >
+                                <ListboxItem key="new">Nota de credito</ListboxItem>
+                                <ListboxItem key="copy">Nota de debito</ListboxItem>
+                              </Listbox>
+                            </PopoverContent>
+                          </Popover>
+                        </div>
                       ) : (
                         <Button
                           style={{
