@@ -98,60 +98,62 @@ function CreateConfiguration() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center m-4 2xl:mt-10">
-      <NextImage
-        src={selectedImage}
-        alt="Cargando..."
-        fallbackSrc={DefaultImage}
-        className="h-720 w-72 rounded-lg object-cover"
-      />
-      <div className="mt-2">
-        <label htmlFor="fileInput">
-          <Button
-            className="text-white font-semibold px-5"
-            onClick={handleButtonClick}
-            style={{
-              backgroundColor: theme.colors.dark,
-              color: theme.colors.primary,
-            }}
-            disabled={loading}
-          >
-            {loading ? 'Cargando...' : 'Selecciona un archivo'}
-          </Button>
-        </label>
-        <input
-          type="file"
-          id="fileInput"
-          accept="image/*"
-          style={{ display: 'none' }}
-          onChange={handleFileChange}
-          ref={fileInputRef}
+    <div className="p-4">
+      <div className="flex flex-col items-center justify-center m-4 2xl:mt-10">
+        <NextImage
+          src={selectedImage}
+          alt="Cargando..."
+          fallbackSrc={DefaultImage}
+          className="h-720 w-72 rounded-lg object-cover"
         />
+        <div className="mt-2">
+          <label htmlFor="fileInput">
+            <Button
+              className="text-white font-semibold px-5"
+              onClick={handleButtonClick}
+              style={{
+                backgroundColor: theme.colors.dark,
+                color: theme.colors.primary,
+              }}
+              disabled={loading}
+            >
+              {loading ? 'Cargando...' : 'Selecciona un archivo'}
+            </Button>
+          </label>
+          <input
+            type="file"
+            id="fileInput"
+            accept="image/*"
+            style={{ display: 'none' }}
+            onChange={handleFileChange}
+            ref={fileInputRef}
+          />
+        </div>
+        <div className="mt-2 w-full">
+          <Input
+            isRequired
+            type="text"
+            name="name"
+            variant="bordered"
+            placeholder="Nombre"
+            value={formData.name}
+            onChange={(event) => setFormData({ ...formData, name: event.target.value })}
+            label="Ingrese el nombre"
+          />
+        </div>
+        <Button
+          color="primary"
+          className="font-semibold w-full mt-4 text-sm text-white shadow-lg"
+          onClick={handleSave}
+          style={{
+            backgroundColor: theme.colors.third,
+            color: theme.colors.primary,
+          }}
+          disabled={loading}
+        >
+          {loading ? 'Guardando...' : 'Guardar'}
+        </Button>
       </div>
-      <div className="mt-2 w-full">
-        <Input
-          isRequired
-          type="text"
-          name="name"
-          variant="bordered"
-          placeholder="Nombre"
-          value={formData.name}
-          onChange={(event) => setFormData({ ...formData, name: event.target.value })}
-          label="Ingrese el nombre"
-        />
-      </div>
-      <Button
-        color="primary"
-        className="font-semibold w-full mt-4 text-sm text-white shadow-lg"
-        onClick={handleSave}
-        style={{
-          backgroundColor: theme.colors.third,
-          color: theme.colors.primary,
-        }}
-        disabled={loading}
-      >
-        {loading ? 'Guardando...' : 'Guardar'}
-      </Button>
     </div>
   );
 }

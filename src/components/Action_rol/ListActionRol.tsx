@@ -5,10 +5,11 @@ import { ThemeContext } from '../../hooks/useTheme';
 import AddButton from '../global/AddButton';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import ModalGlobal from '../global/ModalGlobal';
 import AddActionRol from './AddActionRol';
 import { useActionsRolStore } from '../../store/actions_rol.store';
 import MobileView from './MobileView';
+import HeadlessModal from '../global/HeadlessModal';
+
 interface Props {
   actions: string[];
 }
@@ -185,14 +186,14 @@ const ListActionRol = ({ actions }: Props) => {
           )}
         </div>
       </div>
-      <ModalGlobal
+      <HeadlessModal
         title={'Asignar nuevas acciones'}
         onClose={modalAdd.onClose}
         size="w-full md:w-[500px]"
         isOpen={modalAdd.isOpen}
       >
         <AddActionRol closeModal={modalAdd.onClose} />
-      </ModalGlobal>
+      </HeadlessModal>
     </>
   );
 };

@@ -17,7 +17,7 @@ export const limit_options = ['5', '10', '20', '30', '40', '50', '75', '100'];
 
 export const priority = ['LOW', 'MEDIUM', 'HIGH'];
 
-export const Tipos_Promotions = ['Producos', 'Categorias', 'Sucursales'];
+export const Tipos_Promotions = ['Productos', 'Categorias', 'Sucursales'];
 // export const operadores = ['=', '>', '<', '>=', '<='];
 
 export const operadores = [
@@ -32,8 +32,6 @@ export const defaultTheme = {
   name: 'theme1',
   context: 'dark',
   colors: {
-
-    
     danger: '#e63946',
     primary: '#f1faee',
     secondary: '#5eb8e0',
