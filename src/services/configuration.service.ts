@@ -16,6 +16,8 @@ export const create_configuration = (configuration: IGetConfiguration) => {
   formData.append('name', configuration.name);
   formData.append('themeId', configuration.themeId.toLocaleString());
   formData.append('transmitterId', configuration.transmitterId.toLocaleString());
+  formData.append('selectedTemplate', configuration.selectedTemplate);
+  formData.append('wantPrint', configuration.wantPrint.toString())
   return axios.post<{ ok: boolean; status: number }>(API_URL + '/personalization', formData, {
     headers: {
       Authorization: `Bearer ${token}`,

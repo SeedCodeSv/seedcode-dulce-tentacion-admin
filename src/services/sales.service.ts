@@ -23,6 +23,26 @@ export const post_sales = (
   );
 };
 
+export const post_sales_with_credit = (
+  pdf: string,
+  dte: string,
+  cajaId: number,
+  codigoEmpleado: string,
+  sello: string,
+  creditId: number
+) => {
+  const token = get_token() ?? '';
+  return axios.post(
+    API_URL + '/sales/credit-sale',
+    { pdf, dte, cajaId, codigoEmpleado, sello, creditId },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};
+
 export const invalidate_sale = (id: number, selloInvalidacion: string) => {
   const token = get_token();
   return axios.patch<IInvalidationResponse>(
