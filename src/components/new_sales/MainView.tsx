@@ -136,58 +136,59 @@ const MainView = () => {
     };
   }, []);
 
-
   function calculateTotal(cart_products: ICartProduct[]) {
-    let total = 0
-
-    const currentDay = new Date().toLocaleString("en-US", { weekday: "long" }).toUpperCase()
-
+    let total = 0;
+   
+    const currentDay = new Date().toLocaleString("en-US", { weekday: "long" }).toUpperCase();
+  
     cart_products.forEach((product) => {
-      const fixedPrice = Number(product.fixedPrice)
-      const normalPrice = Number(product.price)
-      const percentage = Number(product.porcentaje)
-      const quantity = product.quantity ?? 0
-      let applicablePrice = normalPrice
-
+      const fixedPrice = Number(product.fixedPrice) || 0;
+      const normalPrice = Number(product.price) || 0;
+      const percentage = Number(product.porcentaje) || 0;
+      const quantity = product.quantity ?? 0;
+      let applicablePrice = normalPrice;
+  
       if (product.days && product.days.includes(currentDay)) {
         if (fixedPrice > 0) {
-          applicablePrice = fixedPrice
-          const descuento = (((normalPrice - fixedPrice) / normalPrice) * 100).toFixed(2)
+          applicablePrice = fixedPrice;
+          const descuento = (((normalPrice - fixedPrice) / normalPrice) * 100).toFixed(2);
           descuentoProducto.push({
             descripcion: product.product.name,
-            descuento: Number(descuento)
-          })
-          descuentoTotal += Number(descuento)
+            descuento: Number(descuento),
+          });
+          descuentoTotal += Number(descuento);
         } else if (percentage > 0) {
-          applicablePrice = normalPrice - normalPrice * (percentage / 100)
+          applicablePrice = normalPrice - normalPrice * (percentage / 100);
           descuentoProducto.push({
             descripcion: product.product.name,
-            descuento: Number(percentage.toFixed(2))
-          })
-          descuentoTotal += percentage
+            descuento: Number(percentage.toFixed(2)),
+          });
+          descuentoTotal += percentage;
         }
       } else {
-        applicablePrice = normalPrice
-        descuentoProducto.push({ descripcion: product.product.name, descuento: 0 })
+        applicablePrice = normalPrice;
+        descuentoProducto.push({ descripcion: product.product.name, descuento: 0 });
       }
-
-      if (quantity >= product.minimum && quantity <= product.maximum) {
-        total += applicablePrice * quantity
-        isDescuento = true
-      } else if (quantity < product.minimum) {
-        total += normalPrice * quantity
-        isDescuento = false
+  
+      if (quantity >= (product.minimum || 0) && quantity <= (product.maximum || Infinity)) {
+        total += applicablePrice * quantity;
+        isDescuento = true;
+      } else if (quantity < (product.minimum || 0)) {
+        total += normalPrice * quantity;
+        isDescuento = false;
       } else {
-        total += normalPrice * (quantity - product.maximum)
-        total += applicablePrice * product.maximum
-        isDescuento = true
+        total += normalPrice * (quantity - (product.maximum || 0));
+        total += applicablePrice * (product.maximum || 0);
+        isDescuento = true;
       }
-    })
-
-    totalAPagar = total
-    return formatCurrency(total)
+    });
+  
+     totalAPagar = total;
+    return formatCurrency(total);
   }
-  const total = calculateTotal(cart_products)
+  
+  const total = calculateTotal(cart_products);
+  
   return (
     <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
       <div className="w-full h-full grid grid-cols-1 lg:grid-cols-2">
