@@ -6,6 +6,7 @@ import { BranchProduct, ICartProduct } from '../../types/branch_products.types';
 import { useBranchProductStore } from '../../store/branch_product.store';
 import { Minus, Plus, Trash } from 'lucide-react';
 import { ThemeContext } from '../../hooks/useTheme';
+// import { descuentoProducto } from "./MainView"
 
 function CartProducts() {
   const { cart_products, onMinusQuantity, onUpdateQuantity, onPlusQuantity, onRemoveProduct } =
@@ -35,16 +36,13 @@ function CartProducts() {
     );
   };
 
-  const formatCurrency = (value: number) => {
-    return value.toLocaleString('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    });
-  };
+  // const formatCurrency = (value: number) => {
+  //   return value.toLocaleString('en-US', {
+  //     style: 'currency',
+  //     currency: 'USD',
+  //   });
+  // };
 
-  const priceBodyTemplate = (product: BranchProduct) => {
-    return formatCurrency(Number(product.price));
-  };
 
   const nameBodyTemplate = (product: BranchProduct) => {
     const name =
@@ -54,7 +52,7 @@ function CartProducts() {
     return (
       <>
         {product.product.name.length > 20 ? (
-          <Tooltip content={product.product.name} showArrow>
+          <Tooltip content={product.product.name} showArrow className="dark:text-white">
             <span>{name}</span>
           </Tooltip>
         ) : (
@@ -64,13 +62,18 @@ function CartProducts() {
     );
   };
 
-  const totalBodyTemplate = (product: BranchProduct) => {
-    const product_finded = cart_products.find((p) => p.id === product.id);
+  // const totalBodyTemplate = (product: BranchProduct) => {
+  //   const product_finded = cart_products.find((p) => p.id === product.id);
 
-    if (product_finded) {
-      return formatCurrency(Number(product_finded.price) * product_finded.quantity);
-    }
-    return formatCurrency(0);
+  //   if (product_finded) {
+  //     return formatCurrency(Number(product_finded.price) * product_finded.quantity);
+  //   }
+  //   return formatCurrency(0);
+  // };
+  const priceBodyTemplate = (item: BranchProduct) => {
+    const currentDay = new Date().toLocaleDateString("es-ES", { weekday: "long" }).toUpperCase();
+    const useFixedPrice = item.days ? item.days.includes(currentDay) : false;
+    return useFixedPrice ? item.fixedPrice : item.price || 0;
   };
 
   return (
@@ -106,11 +109,21 @@ function CartProducts() {
         header="Precio"
       />
       <Column
+        className="dark:bg-gray-900 dark:text-slate-400"
+        headerClassName="text-sm font-semibold"
+        headerStyle={style}
+        bodyClassName={"bg-white"}
+        // body={(item) =>
+        //   `${descuentoProducto.filter((d) => d.descripcion === item.product.name)[0]?.descuento || 0}%`
+        // }
+        header="Descuento"
+      />
+      {/* <Column
         headerClassName="text-sm font-semibold"
         headerStyle={style}
         body={totalBodyTemplate}
         header="Total"
-      />
+      /> */}
 
       <Column
         headerStyle={{ ...style }}

@@ -2,7 +2,7 @@ import axios from 'axios';
 import { API_URL } from '../utils/constants';
 import { get_token } from '../storage/localStorage';
 import { IInvalidationResponse } from '../types/DTE/invalidation.types';
-import { IGetSales } from '../types/sales.types';
+import { IGetSaleDetails, IGetSales } from '../types/sales.types';
 
 export const post_sales = (
   pdf: string,
@@ -15,6 +15,26 @@ export const post_sales = (
   return axios.post(
     API_URL + '/sales/factura-sale',
     { pdf, dte, cajaId, codigoEmpleado, sello },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};
+
+export const post_sales_with_credit = (
+  pdf: string,
+  dte: string,
+  cajaId: number,
+  codigoEmpleado: string,
+  sello: string,
+  creditId: number
+) => {
+  const token = get_token() ?? '';
+  return axios.post(
+    API_URL + '/sales/credit-sale',
+    { pdf, dte, cajaId, codigoEmpleado, sello, creditId },
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -71,6 +91,16 @@ export const get_sales_by_status = (
 ) => {
   return axios.get<IGetSales>(
     API_URL +
-      `/sales/get-contigencia/${id}?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}&status=${status}`
+    `/sales/get-contigencia/${id}?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}&status=${status}`
   );
 };
+
+
+export const get_sale_details = (id: number) => {
+  const token = get_token();
+  return axios.get<IGetSaleDetails>(API_URL + `/sales/sale-details/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+}

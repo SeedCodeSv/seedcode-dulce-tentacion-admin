@@ -1,6 +1,6 @@
 import {
-  Autocomplete,
-  AutocompleteItem,
+ 
+
   Button,
   Checkbox,
   CheckboxGroup,
@@ -16,8 +16,8 @@ import { ThemeContext } from '../../hooks/useTheme';
 import WeekSelector from './WeekSelector';
 import { useBranchesStore } from '../../store/branches.store';
 import { formatDate } from '../../utils/dates';
-import { Tipos_Promotions, operadores } from '../../utils/constants';
-import {  PromotionCategories } from '../../types/promotions.types';
+import {  operadores } from '../../utils/constants';
+import { PromotionCategories } from '../../types/promotions.types';
 import { useBranchProductStore } from '../../store/branch_product.store';
 import { usePromotionsByCategoryStore } from '../../store/promotions/promotionsByCategory.store';
 import { useCategoriesStore } from '../../store/categories.store';
@@ -26,12 +26,12 @@ function AddPromotionsByCategory() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const { categories_list, getListCategoriesList } = useCategoriesStore();
   const [selectedBranchId] = useState<number | null>(null);
-  const [selectedPromotion, setSelectedPromotion] = useState('');
-  const [branchId, setBranchId] = useState(0);
+  // const [selectedPromotion, setSelectedPromotion] = useState('');
+  const [branchId, ] = useState(0);
   const [endDate, setEndDate] = useState(formatDate());
   const [startDate, setStartDate] = useState(formatDate());
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
-  const { getBranchesList, branch_list } = useBranchesStore();
+  const { getBranchesList } = useBranchesStore();
   useEffect(() => {
     getListCategoriesList();
   }, []);
@@ -82,17 +82,16 @@ function AddPromotionsByCategory() {
       startDate: startDate,
       endDate: endDate,
       days: daysArrayString.toString(),
-      typePromotion: selectedPromotion,
+      typePromotion: 'Categorias',
       priority: selectedPriority,
       categories: selectedCategories.map((categories) => ({ categoryId: Number(categories) })),
-    
     };
     postPromotions(payload);
   };
 
   return (
     <>
-      <div className="h-full">
+      <div className="flex flex-col justify-center items-center w-full">
         <Formik
           validationSchema={validationSchema}
           initialValues={{
@@ -112,15 +111,14 @@ function AddPromotionsByCategory() {
             price: 0,
             priority: '',
             categories: [],
-            
           }}
           onSubmit={handleSave}
         >
           {({ values, errors, touched, handleBlur, handleChange, handleSubmit, setFieldValue }) => (
             <>
-              <div className="w-full ">
-                <div className="w-full grid grid-cols-2 gap-5">
-                  <div className="flex flex-col pt-2 mt-2">
+              <div className="grid grid-cols-2 gap-5 ">
+                <div className="grid grid-cols-1 gap-5 w-full">
+                  <div>
                     <Input
                       name="name"
                       labelPlacement="outside"
@@ -138,37 +136,8 @@ function AddPromotionsByCategory() {
                       </>
                     )}
                   </div>
-
-                  <div className="mt-4">
-                    <Autocomplete
-                      label="Sucursal"
-                      labelPlacement="outside"
-                      placeholder="Selecciona la sucursal"
-                    >
-                      {branch_list.map((branch) => (
-                        <AutocompleteItem
-                          onClick={() => setBranchId(branch.id)}
-                          className="dark:text-white"
-                          key={branch.id}
-                          value={branch.id}
-                        >
-                          {branch.name}
-                        </AutocompleteItem>
-                      ))}
-                    </Autocomplete>
-                    {errors.branchId && touched.branchId && (
-                      <>
-                        <span className="text-sm font-semibold text-red-500">
-                          {errors.branchId}
-                        </span>
-                      </>
-                    )}
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 mt-4 gap-5">
-                  <div className="grid grid-cols-2 gap-5">
-                    <div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="">
                       <Input
                         label="Precio"
                         labelPlacement="outside"
@@ -219,31 +188,8 @@ function AddPromotionsByCategory() {
                       )}
                     </div>
                   </div>
-                  <Input
-                    label="Procentaje de descuento"
-                    labelPlacement="outside"
-                    name="percentage"
-                    value={values.percentage.toString()}
-                    onChange={(e) => {
-                      const newValue = parseFloat(e.target.value);
-                      handleChange('percentage')(newValue.toString());
-                      if (newValue > 0) {
-                        setFieldValue('fixedPrice', 0);
-                      }
-                    }}
-                    onBlur={handleBlur('percentage')}
-                    placeholder="0"
-                    classNames={{
-                      label: 'font-semibold text-gray-500 text-sm',
-                    }}
-                    variant="bordered"
-                    type="number"
-                    startContent="%"
-                  />
-                </div>
 
-                <div className="grid grid-cols-2 gap-5 w-full mt-8">
-                  <div className="grid grid-cols-3 gap-2 w-full">
+                  <div className="grid grid-cols-3 gap-2 w-full ">
                     <div>
                       <Input
                         label="Cantidad Minima"
@@ -267,6 +213,30 @@ function AddPromotionsByCategory() {
                       )}
                     </div>
                     <div>
+                      <Select
+                        variant="bordered"
+                        placeholder="Selecciona el operador"
+                        className="w-full dark:text-white"
+                        label="Operador"
+                        labelPlacement="outside"
+                        classNames={{
+                          label: 'font-semibold text-gray-500 text-sm',
+                        }}
+                        value={values.operator}
+                        onChange={(e) => setFieldValue('operator', e.target.value)}
+                      >
+                        {operadores.map((operator) => (
+                          <SelectItem
+                            key={operator.value}
+                            value={operator.value}
+                            className="dark:text-white"
+                          >
+                            {operator.label}
+                          </SelectItem>
+                        ))}
+                      </Select>
+                    </div>
+                    <div>
                       <Input
                         label="Cantidad Maxima"
                         labelPlacement="outside"
@@ -286,128 +256,59 @@ function AddPromotionsByCategory() {
                         <span className="text-sm font-semibold text-red-500">{errors.maximum}</span>
                       )}
                     </div>
-                    <div>
-                      <div className="">
-                        <Select
-                          variant="bordered"
-                          placeholder="Selecciona el operador"
-                          className="w-full dark:text-white"
-                          label="Operador"
-                          labelPlacement="outside"
-                          classNames={{
-                            label: 'font-semibold text-gray-500 text-sm',
-                          }}
-                          value={values.operator}
-                          onChange={(e) => setFieldValue('operator', e.target.value)}
-                        >
-                          {operadores.map((operator) => (
-                            <SelectItem
-                              key={operator.value}
-                              value={operator.value}
-                              className="dark:text-white"
-                            >
-                              {operator.label}
-                            </SelectItem>
-                          ))}
-                        </Select>
-                      </div>
-                    </div>
                   </div>
-
-                  <div>
+                </div>
+                <div className="grid grid-cols-1">
+                  <div className="">
                     <Input
-                      label="Precio Fijo"
+                      label="Porcentaje de descuento"
                       labelPlacement="outside"
-                      name="fixedPrice"
-                      value={values.fixedPrice ? values.fixedPrice.toString() : ''}
+                      name="percentage"
+                      value={values.percentage.toString()}
                       onChange={(e) => {
                         const newValue = parseFloat(e.target.value);
-                        handleChange('fixedPrice')(newValue.toString());
+                        handleChange('percentage')(newValue.toString());
                         if (newValue > 0) {
-                          setFieldValue('percentage', 0);
+                          setFieldValue('fixedPrice', 0);
                         }
                       }}
-                      onBlur={handleBlur('fixedPrice')}
+                      onBlur={handleBlur('percentage')}
                       placeholder="0"
                       classNames={{
                         label: 'font-semibold text-gray-500 text-sm',
                       }}
                       variant="bordered"
                       type="number"
-                      startContent=""
+                      startContent="%"
                     />
-                  </div>
-                </div>
-
-                <div className="w-full grid grid-cols-2 gap-5 mt-4">
-                  <div className="grid grid-cols-2 gap-5">
-                    <div className="">
+                    <div className="mt-11">
                       <Input
-                        type="date"
-                        variant="bordered"
-                        label="Fecha inicial"
+                        label="Precio Fijo"
                         labelPlacement="outside"
-                        className="dark:text-white"
-                        classNames={{
-                          label: 'font-semibold',
+                        name="fixedPrice"
+                        value={values.fixedPrice ? values.fixedPrice.toString() : ''}
+                        onChange={(e) => {
+                          const newValue = parseFloat(e.target.value);
+                          handleChange('fixedPrice')(newValue.toString());
+                          if (newValue > 0) {
+                            setFieldValue('percentage', 0);
+                          }
                         }}
-                        onChange={(e) => setStartDate(e.target.value)}
-                        value={startDate}
-                      />
-                      {errors.startDate && touched.startDate && (
-                        <>
-                          <span className="text-sm font-semibold text-red-500">
-                            {errors.startDate}
-                          </span>
-                        </>
-                      )}
-                    </div>
-                    <div>
-                      <Input
-                        type="date"
+                        onBlur={handleBlur('fixedPrice')}
+                        placeholder="0"
+                        classNames={{
+                          label: 'font-semibold text-gray-500 text-sm',
+                        }}
                         variant="bordered"
-                        label="Fecha final"
-                        labelPlacement="outside"
-                        className="dark:text-white"
-                        classNames={{
-                          label: 'font-semibold',
-                        }}
-                        onChange={(e) => setEndDate(e.target.value)}
-                        value={endDate}
+                        type="number"
+                        startContent=""
                       />
-                      {errors.endDate && touched.endDate && (
-                        <>
-                          <span className="text-sm font-semibold text-red-500">
-                            {errors.endDate}
-                          </span>
-                        </>
-                      )}
                     </div>
-                  </div>
-                  <div>
-                    {/* <Select
-                                variant="bordered"
-                                placeholder="Selecciona el prioridad"
-                                className="w-full dark:text-white"
-                                label="Prioridad"
-                                labelPlacement="outside"
-                                classNames={{
-                                  label: 'font-semibold text-gray-500 text-sm',
-                                }}
-                                value={values.priority.toString()}
-                                onChange={(e) => {
-                                  setPiority(e.target.value);
-                                }}
-                              >
-                                {priority.map((limit) => (
-                                  <SelectItem key={limit} value={limit} className="dark:text-white">
-                                    {limit}
-                                  </SelectItem>
-                                ))}
-                              </Select> */}
-                    <div>
+                    <div className="mt-6">
                       <CheckboxGroup
-                        className="font-semibold text-gray-500 text-lg "
+                        classNames={{
+                          label: 'font-semibold text-black text-md',
+                        }}
                         orientation="horizontal"
                         value={selectedPriority ? [selectedPriority] : []}
                         onChange={handlePriorityChange}
@@ -430,13 +331,93 @@ function AddPromotionsByCategory() {
                     </div>
                   </div>
                 </div>
+                <div className="grid grid-cols-2  gap-4">
+                  <div className="">
+                    <Input
+                      type="date"
+                      variant="bordered"
+                      label="Fecha inicial"
+                      labelPlacement="outside"
+                      className="dark:text-white"
+                      classNames={{
+                        label: 'font-semibold',
+                      }}
+                      onChange={(e) => setStartDate(e.target.value)}
+                      value={startDate}
+                    />
+                    {errors.startDate && touched.startDate && (
+                      <>
+                        <span className="text-sm font-semibold text-red-500">
+                          {errors.startDate}
+                        </span>
+                      </>
+                    )}
+                  </div>
+                  <div>
+                    <Input
+                      type="date"
+                      variant="bordered"
+                      label="Fecha final"
+                      labelPlacement="outside"
+                      className="dark:text-white"
+                      classNames={{
+                        label: 'font-semibold',
+                      }}
+                      onChange={(e) => setEndDate(e.target.value)}
+                      value={endDate}
+                    />
+                    {errors.endDate && touched.endDate && (
+                      <>
+                        <span className="text-sm font-semibold text-red-500">{errors.endDate}</span>
+                      </>
+                    )}
+                  </div>
+                </div>
 
-                <div className="w-full  grid grid-cols-2 gap-5">
+                <div className="grid grid-cols-1 gap-5">
+                  <Select
+                    multiple
+                    variant="bordered"
+                    placeholder="Selecciona las categorías"
+                    selectedKeys={selectedCategories}
+                    label="Categorías"
+                    onBlur={handleBlur('branch')}
+                    classNames={{
+                      label: 'font-semibold text-gray-500 text-sm',
+                    }}
+                    name="categories"
+                    labelPlacement="outside"
+                    onSelectionChange={(keys) => {
+                      const setkeys = new Set(keys as unknown as string[]);
+                      const keysArray = Array.from(setkeys);
+                      if (keysArray.length > 0) {
+                        const includes_key = selectedCategories.includes(keysArray[0]);
+                        if (!includes_key) {
+                          const news = [...selectedCategories, ...keysArray];
+                          setSelectedCategories(news);
+                          setFieldValue('categories', news);
+                        } else {
+                          setSelectedCategories(keysArray);
+                          setFieldValue('categories', keysArray);
+                        }
+                      } else {
+                        setSelectedCategories([]);
+                        setFieldValue('categories', []);
+                      }
+                    }}
+                  >
+                    {categories_list.map((val) => (
+                      <SelectItem key={val.id} value={val.id} className="dark:text-white">
+                        {val.name}
+                      </SelectItem>
+                    ))}
+                  </Select>
+                  <div></div>
+                </div>
+                <div className="grid grid-cols-1 ">
                   {/* Seleccionar dia */}
-                  <div className="mt-5 flex flex-col items-start w-full">
-                    <h1 className="text-sm mb-4 font-semibold ">
-                      Selecciona los días de la semana
-                    </h1>
+                  <h1 className="text-sm  font-semibold ">Selecciona los días de la semana</h1>
+                  <div className=" grid grid-cols-6 items-start ">
                     <WeekSelector
                       startDate={startDate}
                       endDate={endDate}
@@ -444,7 +425,7 @@ function AddPromotionsByCategory() {
                     />
                   </div>
                   {/* Descripción  */}
-                  <div className="mt-4">
+                  <div className="mt-2">
                     <Textarea
                       label="Descripción"
                       labelPlacement="outside"
@@ -466,75 +447,10 @@ function AddPromotionsByCategory() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-5">
-                  {/* Seleccionar tipo */}
-                  <div className="">
-                    <Select
-                      variant="bordered"
-                      placeholder="Selecciona el tipo de promoción"
-                      className="w-full dark:text-white"
-                      label="Tipo de Promoción"
-                      labelPlacement="outside"
-                      classNames={{
-                        label: 'font-semibold text-gray-500 text-sm',
-                      }}
-                      value={selectedPromotion}
-                      onChange={(e) => {
-                        setSelectedPromotion(e.target.value);
-                      }}
-                    >
-                      {Tipos_Promotions.map((limit) => (
-                        <SelectItem key={limit} value={limit} className="dark:text-white">
-                          {limit}
-                        </SelectItem>
-                      ))}
-                    </Select>
-                  </div>
-                  <div>
-                    <Select
-                      multiple
-                      variant="bordered"
-                      placeholder="Selecciona las categorías"
-                      selectedKeys={selectedCategories}
-                      label="Categorías"
-                      onBlur={handleBlur('branch')}
-                      classNames={{
-                        label: 'font-semibold text-gray-500 text-sm',
-                      }}
-                      name="categories"
-                      labelPlacement="outside"
-                      onSelectionChange={(keys) => {
-                        const setkeys = new Set(keys as unknown as string[]);
-                        const keysArray = Array.from(setkeys);
-                        if (keysArray.length > 0) {
-                          const includes_key = selectedCategories.includes(keysArray[0]);
-                          if (!includes_key) {
-                            const news = [...selectedCategories, ...keysArray];
-                            setSelectedCategories(news);
-                            setFieldValue('categories', news);
-                          } else {
-                            setSelectedCategories(keysArray);
-                            setFieldValue('categories', keysArray);
-                          }
-                        } else {
-                          setSelectedCategories([]);
-                          setFieldValue('categories', []);
-                        }
-                      }}
-                    >
-                      {categories_list.map((val) => (
-                        <SelectItem key={val.id} value={val.id} className="dark:text-white">
-                          {val.name}
-                        </SelectItem>
-                      ))}
-                    </Select>
-                  </div>
-                </div>
-
-                <div className="flex flex-col w-full items-center mt-7">
+                <div className="mt-40">
                   <Button
                     onClick={() => handleSubmit()}
-                    className="w-500 text-sm font-semibold px-10"
+                    className="hidden font-semibold md:flex w-full h-full py-2"
                     style={{
                       backgroundColor: theme.colors.third,
                       color: theme.colors.primary,

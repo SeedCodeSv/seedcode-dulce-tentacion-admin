@@ -28,7 +28,7 @@ export const SideBar = (props: Props) => {
   const { theme } = useContext(ThemeContext);
 
   const { user, makeLogout } = useAuthStore();
-  const { setIsAuth, setToken } = useContext(SessionContext);
+  const { setIsAuth, setToken, setMode } = useContext(SessionContext);
 
   useEffect(() => {}, [user, theme]);
   const [windowSize, setWindowSize] = useState({
@@ -43,6 +43,7 @@ export const SideBar = (props: Props) => {
     setToken('');
     delete_RVA();
     navigation('/');
+    setMode("")
   };
   useEffect(() => {
     const handleResize = () => {

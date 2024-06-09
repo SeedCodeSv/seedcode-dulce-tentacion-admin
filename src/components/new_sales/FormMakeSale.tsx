@@ -41,6 +41,7 @@ import Template1CFC from "../../pages/invoices/Template1CFC";
 import { SeedcodeCatalogosMhService } from "seedcode-catalogos-mh";
 import HeadlessModal from "../global/HeadlessModal";
 
+
 interface Props {
   clear: () => void;
 }
@@ -89,12 +90,13 @@ function FormMakeSale(props: Props) {
   const condiciones = services.get016CondicionDeLaOperacio();
 
   const plazos = services.get018Plazo();
+
   const [pays, setPays] = useState([
     {
       codigo: "01",
       plazo: "",
       periodo: 0,
-      monto: total,
+      monto: total, //poner Total a pagar
     },
   ]);
 
@@ -238,16 +240,12 @@ function FormMakeSale(props: Props) {
                     description: "Estamos guardando tus datos",
                   });
 
-                  const json_url = `CLIENTES/${
-                    transmitter.nombre
-                  }/${new Date().getFullYear()}/VENTAS/FACTURAS/${formatDate()}/${
-                    generate.dteJson.identificacion.codigoGeneracion
-                  }/${generate.dteJson.identificacion.codigoGeneracion}.json`;
-                  const pdf_url = `CLIENTES/${
-                    transmitter.nombre
-                  }/${new Date().getFullYear()}/VENTAS/FACTURAS/${formatDate()}/${
-                    generate.dteJson.identificacion.codigoGeneracion
-                  }/${generate.dteJson.identificacion.codigoGeneracion}.pdf`;
+                  const json_url = `CLIENTES/${transmitter.nombre
+                    }/${new Date().getFullYear()}/VENTAS/FACTURAS/${formatDate()}/${generate.dteJson.identificacion.codigoGeneracion
+                    }/${generate.dteJson.identificacion.codigoGeneracion}.json`;
+                  const pdf_url = `CLIENTES/${transmitter.nombre
+                    }/${new Date().getFullYear()}/VENTAS/FACTURAS/${formatDate()}/${generate.dteJson.identificacion.codigoGeneracion
+                    }/${generate.dteJson.identificacion.codigoGeneracion}.pdf`;
 
                   const JSON_DTE = JSON.stringify(
                     {
@@ -350,7 +348,7 @@ function FormMakeSale(props: Props) {
                   );
                   setTitle(
                     error.response.data.descripcionMsg ??
-                      "Error al procesar venta"
+                    "Error al procesar venta"
                   );
                   modalError.onOpen();
                   setLoading(false);
@@ -377,6 +375,29 @@ function FormMakeSale(props: Props) {
         setLoading(false);
       });
   };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   const { createContingencia } = useContingenciaStore();
 
@@ -479,10 +500,9 @@ function FormMakeSale(props: Props) {
         }
 
         toast.error("ERROR", {
-          description: `Error: ${
-            error.response?.data.descripcionMsg ??
+          description: `Error: ${error.response?.data.descripcionMsg ??
             "DTE no encontrado en hacienda"
-          }`,
+            }`,
         });
         setLoading(false);
       });
@@ -492,6 +512,7 @@ function FormMakeSale(props: Props) {
     <div className="w-full h-full grid grid-cols-1 lg:grid-cols-2 gap-6">
       <div>
         <Autocomplete
+          className="dark:text-white"
           onSelectionChange={(key) => {
             if (key) {
               const customerSelected = JSON.parse(key as string) as Customer;
@@ -521,7 +542,7 @@ function FormMakeSale(props: Props) {
               setCondition("");
             }
           }}
-          className="pt-5"
+          className="pt-5 dark:text-white"
           defaultSelectedKey={condition}
           variant="bordered"
           label="Condición de la operación"
@@ -529,7 +550,7 @@ function FormMakeSale(props: Props) {
           placeholder="Selecciona la condición"
         >
           {condiciones.map((item) => (
-            <AutocompleteItem key={item.codigo} value={item.codigo}>
+            <AutocompleteItem className="dark:text-white" key={item.codigo} value={item.codigo}>
               {item.valores}
             </AutocompleteItem>
           ))}
@@ -543,14 +564,14 @@ function FormMakeSale(props: Props) {
               setTipeDocument(tipeDocumentSelected);
             }
           }}
-          className="pt-5"
+          className="pt-5 dark:text-white"
           variant="bordered"
           label="Tipo de documento a emitir"
           labelPlacement="outside"
           placeholder="Selecciona el tipo de documento"
         >
           {tipos_de_documento.map((item) => (
-            <AutocompleteItem key={JSON.stringify(item)} value={item.codigo}>
+            <AutocompleteItem className="dark:text-white" key={JSON.stringify(item)} value={item.codigo}>
               {item.valores}
             </AutocompleteItem>
           ))}
@@ -581,7 +602,7 @@ function FormMakeSale(props: Props) {
         )}
         <div className="hidden lg:block">
           {tipeDocument?.codigo === "01" ||
-          tipeDocument?.codigo === undefined ? (
+            tipeDocument?.codigo === undefined ? (
             <div className="flex justify-center mt-4 mb-4 w-full">
               <div className="w-full flex  justify-center">
                 {loading ? (
@@ -604,7 +625,7 @@ function FormMakeSale(props: Props) {
       </div>
       <div className="overflow-y-auto max-h-[70vh]">
         <div className="flex py-4 justify-between">
-          <p className="font-semibold">Pagos</p>
+          <p className="font-semibold dark:text-white">Pagos</p>
           <Button
             onClick={handleAddPay}
             style={global_styles().thirdStyle}
@@ -625,6 +646,7 @@ function FormMakeSale(props: Props) {
                 </button>
                 <div className="w-full grid grid-cols-2 gap-5">
                   <Autocomplete
+                    className="dark:text-white"
                     onSelectionChange={(key) => {
                       if (key) {
                         handleUpdateTipoPago(index, key as string);
@@ -663,6 +685,7 @@ function FormMakeSale(props: Props) {
                         labelPlacement="outside"
                         defaultSelectedKey={item.plazo}
                         placeholder="Selecciona el plazo"
+                        className="dark:text-white"
                       >
                         {plazos.map((item) => (
                           <AutocompleteItem
@@ -692,6 +715,7 @@ function FormMakeSale(props: Props) {
                     label="Monto"
                     placeholder="0.0"
                     labelPlacement="outside"
+                    className="dark:text-white"
                     defaultValue={item.monto.toString()}
                     startContent={"$"}
                     step={0.01}

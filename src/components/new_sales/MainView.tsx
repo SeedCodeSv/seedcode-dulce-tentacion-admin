@@ -19,7 +19,7 @@ import {
   Plus,
   Send,
 } from "lucide-react";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ThemeContext } from "../../hooks/useTheme";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
@@ -40,6 +40,11 @@ import { formatCurrency } from "../../utils/dte";
 import MobileView_NewSale from "./MobileView_NewSale";
 import CartProductsMobile from "./MobileView/CartProductMovile";
 import HeadlessModal from "../global/HeadlessModal";
+
+// export let totalAPagar = 0;
+// export let isDescuento = false;
+// export const descuentoProducto: { descripcion: string; descuento: number }[] = []
+// export let descuentoTotal = 0;
 
 const MainView = () => {
   const { theme } = useContext(ThemeContext);
@@ -73,12 +78,12 @@ const MainView = () => {
     );
   }, [limit]);
 
-  const formatCurrency = (value: number) => {
-    return value.toLocaleString("en-US", {
-      style: "currency",
-      currency: "USD",
-    });
-  };
+  // const formatCurrency = (value: number) => {
+  //   return value.toLocaleString("en-US", {
+  //     style: "currency",
+  //     currency: "USD",
+  //   });
+  // };
 
   const handleSearch = () => {
     getPaginatedBranchProducts(
@@ -109,12 +114,12 @@ const MainView = () => {
 
   useEventListener("keydown", handler as TEventHandler);
 
-  const total = useMemo(() => {
-    const total = cart_products.reduce((acc, product) => {
-      return acc + Number(product.price) * product.quantity;
-    }, 0);
-    return formatCurrency(total);
-  }, [cart_products]);
+  // const total = useMemo(() => {
+  //   const total = cart_products.reduce((acc, product) => {
+  //     return acc + Number(product.price) * product.quantity;
+  //   }, 0);
+  //   return formatCurrency(total);
+  // }, [cart_products]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -130,6 +135,59 @@ const MainView = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+
+  // function calculateTotal(cart_products: ICartProduct[]) {
+  //   let total = 0
+
+  //   const currentDay = new Date().toLocaleString("en-US", { weekday: "long" }).toUpperCase()
+
+  //   cart_products.forEach((product) => {
+  //     const fixedPrice = Number(product.fixedPrice)
+  //     const normalPrice = Number(product.price)
+  //     const percentage = Number(product.porcentaje)
+  //     const quantity = product.quantity ?? 0
+  //     let applicablePrice = normalPrice
+
+  //     if (product.days && product.days.includes(currentDay)) {
+  //       if (fixedPrice > 0) {
+  //         applicablePrice = fixedPrice
+  //         const descuento = (((normalPrice - fixedPrice) / normalPrice) * 100).toFixed(2)
+  //         descuentoProducto.push({
+  //           descripcion: product.product.name,
+  //           descuento: Number(descuento)
+  //         })
+  //         descuentoTotal += Number(descuento)
+  //       } else if (percentage > 0) {
+  //         applicablePrice = normalPrice - normalPrice * (percentage / 100)
+  //         descuentoProducto.push({
+  //           descripcion: product.product.name,
+  //           descuento: Number(percentage.toFixed(2))
+  //         })
+  //         descuentoTotal += percentage
+  //       }
+  //     } else {
+  //       applicablePrice = normalPrice
+  //       descuentoProducto.push({ descripcion: product.product.name, descuento: 0 })
+  //     }
+
+  //     if (quantity >= product.minimum && quantity <= product.maximum) {
+  //       total += applicablePrice * quantity
+  //       isDescuento = true
+  //     } else if (quantity < product.minimum) {
+  //       total += normalPrice * quantity
+  //       isDescuento = false
+  //     } else {
+  //       total += normalPrice * (quantity - product.maximum)
+  //       total += applicablePrice * product.maximum
+  //       isDescuento = true
+  //     }
+  //   })
+
+  //   totalAPagar = total
+  //   return formatCurrency(total)
+  // }
+  // const total = calculateTotal(cart_products)
   return (
     <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
       <div className="w-full h-full grid grid-cols-1 lg:grid-cols-2">
@@ -142,11 +200,11 @@ const MainView = () => {
             <div className="w-full h-full flex flex-col justify-center items-center bg-gray-100 dark:bg-gray-900 p-5">
               <div className="grid grid-cols-2 w-full">
                 <p className="text-lg font-semibold dark:text-white">
-                  Total: <span className="font-normal">{total}</span>
+                  {/* Total: <span className="font-normal">{total}</span> */}
                 </p>
-                <p className="text-lg font-semibold dark:text-white">
+                {/* <p className="text-lg font-semibold dark:text-white">
                   Descuento: <span className="font-normal">$0</span>
-                </p>
+                </p> */}
               </div>
               <div className="flex items-end justify-end w-full mt-5">
                 <Button
@@ -428,7 +486,7 @@ const ListProduct = () => {
     return (
       <>
         {product.product.name.length > 20 ? (
-          <Tooltip content={product.product.name} showArrow>
+          <Tooltip content={product.product.name} showArrow className="dark:text-white">
             <span>{name}</span>
           </Tooltip>
         ) : (

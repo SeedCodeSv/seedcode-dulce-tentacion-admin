@@ -1,7 +1,7 @@
-import React from "react";
-import { Dialog, Transition } from "@headlessui/react";
-import { X } from "lucide-react";
-import classNames from "classnames";
+import React from 'react';
+import { Dialog, Transition } from '@headlessui/react';
+import { X } from 'lucide-react';
+import classNames from 'classnames';
 
 interface Props {
   isOpen: boolean;
@@ -19,7 +19,14 @@ function HeadlessModal(props: Props) {
       <Dialog
         as="div"
         className="relative z-[1141] focus:outline-none"
-        onClose={onClose}
+        onClose={(event: React.MouseEvent<HTMLElement> | boolean) => {
+          if (event instanceof MouseEvent) {
+            if (event.target === event.currentTarget) {
+              return;
+            }
+            onClose;
+          }
+        }}
       >
         <div className="fixed inset-0 z-[1151] w-screen h-screen overflow-hidden">
           <div className="flex w-screen h-screen overflow-hidden items-center justify-center">
@@ -31,24 +38,25 @@ function HeadlessModal(props: Props) {
               leaveFrom="opacity-100 transform-[scale(100%)]"
               leaveTo="opacity-0 transform-[scale(95%)]"
             >
-              <Dialog.Overlay className="fixed inset-0 bg-gray-950/50" />
+              <Dialog.Overlay
+                onClick={(event) => {
+                  if (event.target === event.currentTarget) {
+                    event.stopPropagation();
+                  }
+                }}
+                className="fixed inset-0 bg-gray-950/50"
+              />
               <Dialog.Panel
                 className={classNames(
-                  "bg-white rounded-xl h-full dark:bg-gray-800 backdrop-blur-2xl",
+                  'bg-white rounded-xl h-full dark:bg-gray-800 backdrop-blur-2xl',
                   size
                 )}
               >
                 <div className="w-full flex justify-between p-1 mt-1">
-                  <Dialog.Title
-                    as="h3"
-                    className=" font-medium dark:text-white ml-3"
-                  >
+                  <Dialog.Title as="h3" className=" font-medium dark:text-white ml-3">
                     {title}
                   </Dialog.Title>
-                  <button
-                    onClick={onClose}
-                    className="bg-transparent border-0 mr-3 outline-none"
-                  >
+                  <button onClick={onClose} className="bg-transparent border-0 mr-3 outline-none">
                     <X className="dark:text-white" />
                   </button>
                 </div>

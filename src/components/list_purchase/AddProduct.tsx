@@ -9,7 +9,7 @@ import { useSupplierStore } from "../../store/supplier.store";
 import { useBranchesStore } from "../../store/branches.store";
 import { global_styles } from "../../styles/global.styles";
 import { DollarSign, ScrollText, Search, Truck } from "lucide-react";
-import { usePurchaseOrdersStore } from "../../store/purchase_orders.store";
+// import { usePurchaseOrdersStore } from "../../store/purchase_orders.store";
 
 interface Props {
   isOpen: boolean;
@@ -24,9 +24,9 @@ function AddProduct({ isOpen, onClose, supplierName, branchName }: Props) {
     branch_product_order
   } = useBranchProductStore();
 
-  const {
-    addProductToOrder
-  } = usePurchaseOrdersStore();
+  // const {
+  //   addProductToOrder
+  // } = usePurchaseOrdersStore();
 
   const { getSupplierList } = useSupplierStore();
 
@@ -62,11 +62,7 @@ function AddProduct({ isOpen, onClose, supplierName, branchName }: Props) {
           </div>
         </div>
         <div className="w-full flex justify-end py-5">
-          <Button
-            onClick={onClose}
-            style={global_styles().secondaryStyle}
-            className="px-10"
-          >
+          <Button onClick={onClose} style={global_styles().secondaryStyle} className="px-10">
             Aceptar
           </Button>
         </div>
@@ -76,9 +72,7 @@ function AddProduct({ isOpen, onClose, supplierName, branchName }: Props) {
               key={branch_product.id}
               className="shadow border p-4 rounded-lg dark:border-gray-500"
             >
-              <p className="font-semibold dark:text-white">
-                {branch_product.product.name}
-              </p>
+              <p className="font-semibold dark:text-white">{branch_product.product.name}</p>
               <p className="dark:text-white">Stock: {branch_product.stock}</p>
               <p className="mt-2 flex gap-3 dark:text-white">
                 <Truck /> {branch_product.supplier.nombre}
@@ -89,10 +83,11 @@ function AddProduct({ isOpen, onClose, supplierName, branchName }: Props) {
               <p className="mt-2 flex gap-3 dark:text-white">
                 <DollarSign /> ${branch_product.price}
               </p>
+              /* eslint-disable no-unused-vars */ /* eslint-enable no-unused-vars */
               <Button
                 className="px-10 mt-3"
                 style={global_styles().thirdStyle}
-                onPress={() => addProductToOrder(branch_product)}
+              // onPress={() => addProductToOrder(branch_product)}
               >
                 Agregar
               </Button>
