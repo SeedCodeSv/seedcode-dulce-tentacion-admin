@@ -6,6 +6,7 @@ import { BranchProduct, ICartProduct } from '../../types/branch_products.types';
 import { useBranchProductStore } from '../../store/branch_product.store';
 import { Minus, Plus, Trash } from 'lucide-react';
 import { ThemeContext } from '../../hooks/useTheme';
+import { descuentoProducto } from './MainView';
 // import { descuentoProducto } from "./MainView"
 
 function CartProducts() {
@@ -113,9 +114,9 @@ function CartProducts() {
         headerClassName="text-sm font-semibold"
         headerStyle={style}
         bodyClassName={"bg-white"}
-        // body={(item) =>
-        //   `${descuentoProducto.filter((d) => d.descripcion === item.product.name)[0]?.descuento || 0}%`
-        // }
+        body={(item) =>
+          `${descuentoProducto.filter((d) => d.descripcion === item.product.name)[0]?.descuento || 0}%`
+        }
         header="Descuento"
       />
       {/* <Column
