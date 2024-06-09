@@ -25,7 +25,7 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { useBranchProductStore } from "../../store/branch_product.store";
 import { return_branch_id } from "../../storage/localStorage";
-import { BranchProduct } from "../../types/branch_products.types";
+import { BranchProduct, ICartProduct } from "../../types/branch_products.types";
 import Pagination from "../global/Pagination";
 import { limit_options } from "../../utils/constants";
 import { global_styles } from "../../styles/global.styles";
@@ -41,10 +41,11 @@ import MobileView_NewSale from "./MobileView_NewSale";
 import CartProductsMobile from "./MobileView/CartProductMovile";
 import HeadlessModal from "../global/HeadlessModal";
 
-// export let totalAPagar = 0;
-// export let isDescuento = false;
-// export const descuentoProducto: { descripcion: string; descuento: number }[] = []
-// export let descuentoTotal = 0;
+//eslint-warnings no-unused-vars
+export let totalAPagar = 0;
+export let isDescuento = false;
+export const descuentoProducto: { descripcion: string; descuento: number }[] = []
+export let descuentoTotal = 0;
 
 const MainView = () => {
   const { theme } = useContext(ThemeContext);
@@ -53,7 +54,6 @@ const MainView = () => {
     width: window.innerWidth,
     height: window.innerHeight,
   });
-
   const [name, setName] = useState<string>("");
   const [code, setCode] = useState<string>("");
   const [limit, setLimit] = useState<number>(5);
@@ -137,57 +137,57 @@ const MainView = () => {
   }, []);
 
 
-  // function calculateTotal(cart_products: ICartProduct[]) {
-  //   let total = 0
+  function calculateTotal(cart_products: ICartProduct[]) {
+    let total = 0
 
-  //   const currentDay = new Date().toLocaleString("en-US", { weekday: "long" }).toUpperCase()
+    const currentDay = new Date().toLocaleString("en-US", { weekday: "long" }).toUpperCase()
 
-  //   cart_products.forEach((product) => {
-  //     const fixedPrice = Number(product.fixedPrice)
-  //     const normalPrice = Number(product.price)
-  //     const percentage = Number(product.porcentaje)
-  //     const quantity = product.quantity ?? 0
-  //     let applicablePrice = normalPrice
+    cart_products.forEach((product) => {
+      const fixedPrice = Number(product.fixedPrice)
+      const normalPrice = Number(product.price)
+      const percentage = Number(product.porcentaje)
+      const quantity = product.quantity ?? 0
+      let applicablePrice = normalPrice
 
-  //     if (product.days && product.days.includes(currentDay)) {
-  //       if (fixedPrice > 0) {
-  //         applicablePrice = fixedPrice
-  //         const descuento = (((normalPrice - fixedPrice) / normalPrice) * 100).toFixed(2)
-  //         descuentoProducto.push({
-  //           descripcion: product.product.name,
-  //           descuento: Number(descuento)
-  //         })
-  //         descuentoTotal += Number(descuento)
-  //       } else if (percentage > 0) {
-  //         applicablePrice = normalPrice - normalPrice * (percentage / 100)
-  //         descuentoProducto.push({
-  //           descripcion: product.product.name,
-  //           descuento: Number(percentage.toFixed(2))
-  //         })
-  //         descuentoTotal += percentage
-  //       }
-  //     } else {
-  //       applicablePrice = normalPrice
-  //       descuentoProducto.push({ descripcion: product.product.name, descuento: 0 })
-  //     }
+      if (product.days && product.days.includes(currentDay)) {
+        if (fixedPrice > 0) {
+          applicablePrice = fixedPrice
+          const descuento = (((normalPrice - fixedPrice) / normalPrice) * 100).toFixed(2)
+          descuentoProducto.push({
+            descripcion: product.product.name,
+            descuento: Number(descuento)
+          })
+          descuentoTotal += Number(descuento)
+        } else if (percentage > 0) {
+          applicablePrice = normalPrice - normalPrice * (percentage / 100)
+          descuentoProducto.push({
+            descripcion: product.product.name,
+            descuento: Number(percentage.toFixed(2))
+          })
+          descuentoTotal += percentage
+        }
+      } else {
+        applicablePrice = normalPrice
+        descuentoProducto.push({ descripcion: product.product.name, descuento: 0 })
+      }
 
-  //     if (quantity >= product.minimum && quantity <= product.maximum) {
-  //       total += applicablePrice * quantity
-  //       isDescuento = true
-  //     } else if (quantity < product.minimum) {
-  //       total += normalPrice * quantity
-  //       isDescuento = false
-  //     } else {
-  //       total += normalPrice * (quantity - product.maximum)
-  //       total += applicablePrice * product.maximum
-  //       isDescuento = true
-  //     }
-  //   })
+      if (quantity >= product.minimum && quantity <= product.maximum) {
+        total += applicablePrice * quantity
+        isDescuento = true
+      } else if (quantity < product.minimum) {
+        total += normalPrice * quantity
+        isDescuento = false
+      } else {
+        total += normalPrice * (quantity - product.maximum)
+        total += applicablePrice * product.maximum
+        isDescuento = true
+      }
+    })
 
-  //   totalAPagar = total
-  //   return formatCurrency(total)
-  // }
-  // const total = calculateTotal(cart_products)
+    totalAPagar = total
+    return formatCurrency(total)
+  }
+  const total = calculateTotal(cart_products)
   return (
     <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
       <div className="w-full h-full grid grid-cols-1 lg:grid-cols-2">
@@ -200,7 +200,7 @@ const MainView = () => {
             <div className="w-full h-full flex flex-col justify-center items-center bg-gray-100 dark:bg-gray-900 p-5">
               <div className="grid grid-cols-2 w-full">
                 <p className="text-lg font-semibold dark:text-white">
-                  {/* Total: <span className="font-normal">{total}</span> */}
+                  Total: <span className="font-normal">{total}</span>
                 </p>
                 {/* <p className="text-lg font-semibold dark:text-white">
                   Descuento: <span className="font-normal">$0</span>

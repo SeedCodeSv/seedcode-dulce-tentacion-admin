@@ -42,7 +42,7 @@ const [page, serPage] = useState(1);
 
   useEffect(() => {
     getBranchProducts(id, page, 5, name, category, code);
-  }, []);
+  }, [id]);
   useEffect(() => {
     getListCategories();
   }, []);
