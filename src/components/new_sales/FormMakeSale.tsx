@@ -52,7 +52,8 @@ function FormMakeSale(props: Props) {
   const [tipeDocument, setTipeDocument] = useState<ITipoDocumento>();
   const [tipeTribute, setTipeTribute] = useState<TipoTributo>();
   const [condition, setCondition] = useState("1");
-
+  // const [period, setPeriod] = useState(0);
+  // const [each, setEach] = useState('MONTH');
   const [currentDTE, setCurrentDTE] = useState<SVFE_FC_SEND>();
 
   const {
@@ -294,6 +295,8 @@ function FormMakeSale(props: Props) {
 
                                 axios
                                   .post(
+                                    // condition === "2" ?
+                                    // API_URL + "/sales/credit-sale" :
                                     API_URL + "/sales/factura-sale",
                                     {
                                       pdf: pdf_url,
@@ -539,7 +542,7 @@ function FormMakeSale(props: Props) {
             if (key) {
               setCondition(key as string);
             } else {
-              setCondition("");
+              setCondition('');
             }
           }}
           className="pt-5 dark:text-white"
@@ -558,9 +561,7 @@ function FormMakeSale(props: Props) {
         <Autocomplete
           onSelectionChange={(key) => {
             if (key) {
-              const tipeDocumentSelected = JSON.parse(
-                key as string
-              ) as ITipoDocumento;
+              const tipeDocumentSelected = JSON.parse(key as string) as ITipoDocumento;
               setTipeDocument(tipeDocumentSelected);
             }
           }}
@@ -571,19 +572,21 @@ function FormMakeSale(props: Props) {
           placeholder="Selecciona el tipo de documento"
         >
           {tipos_de_documento.map((item) => (
-            <AutocompleteItem className="dark:text-white" key={JSON.stringify(item)} value={item.codigo}>
+            <AutocompleteItem
+              className="dark:text-white"
+              key={JSON.stringify(item)}
+              value={item.codigo}
+            >
               {item.valores}
             </AutocompleteItem>
           ))}
         </Autocomplete>
 
-        {tipeDocument?.codigo === "03" && (
+        {tipeDocument?.codigo === '03' && (
           <Autocomplete
             onSelectionChange={(key) => {
               if (key) {
-                const tipeTributeSelected = JSON.parse(
-                  key as string
-                ) as TipoTributo;
+                const tipeTributeSelected = JSON.parse(key as string) as TipoTributo;
                 setTipeTribute(tipeTributeSelected);
               }
             }}
@@ -601,8 +604,7 @@ function FormMakeSale(props: Props) {
           </Autocomplete>
         )}
         <div className="hidden lg:block">
-          {tipeDocument?.codigo === "01" ||
-            tipeDocument?.codigo === undefined ? (
+          {tipeDocument?.codigo === '01' || tipeDocument?.codigo === undefined ? (
             <div className="flex justify-center mt-4 mb-4 w-full">
               <div className="w-full flex  justify-center">
                 {loading ? (
@@ -626,11 +628,7 @@ function FormMakeSale(props: Props) {
       <div className="overflow-y-auto max-h-[70vh]">
         <div className="flex py-4 justify-between">
           <p className="font-semibold dark:text-white">Pagos</p>
-          <Button
-            onClick={handleAddPay}
-            style={global_styles().thirdStyle}
-            isIconOnly
-          >
+          <Button onClick={handleAddPay} style={global_styles().thirdStyle} isIconOnly>
             <Plus />
           </Button>
         </div>
@@ -669,14 +667,14 @@ function FormMakeSale(props: Props) {
                       </AutocompleteItem>
                     ))}
                   </Autocomplete>
-                  {condition !== "1" && (
+                  {condition !== '1' && (
                     <>
                       <Autocomplete
                         onSelectionChange={(key) => {
                           if (key) {
                             handleUpdatePlazo(index, key as string);
                           } else {
-                            handleUpdatePlazo(index, "");
+                            handleUpdatePlazo(index, '');
                           }
                         }}
                         value={item.plazo}
@@ -703,10 +701,35 @@ function FormMakeSale(props: Props) {
                         placeholder="0"
                         defaultValue={item.periodo.toString()}
                         labelPlacement="outside"
-                        onChange={(e) =>
-                          onUpdatePeriodo(index, Number(e.target.value))
-                        }
+                        onChange={(e) => onUpdatePeriodo(index, Number(e.target.value))}
                       />
+                      {/* <Input
+                        variant="bordered"
+                        label="Period"
+                        placeholder="0"
+                        defaultValue={period.toString()}
+                        labelPlacement="outside"
+                        onChange={(e) => onUpdatePeriodo(index, Number(e.target.value))}
+                      />
+                      <Autocomplete
+                        value={each}
+                        variant="bordered"
+                        label="Pago Cada"
+                        labelPlacement="outside"
+                        defaultSelectedKey={item.plazo}
+                        placeholder="Selecciona el plazo"
+                        className="dark:text-white"
+                      >
+                        {plazos.map((item) => (
+                          <AutocompleteItem
+                            key={item.codigo}
+                            value={item.codigo}
+                            className="dark:text-white"
+                          >
+                            {item.valores}
+                          </AutocompleteItem>
+                        ))}
+                      </Autocomplete> */}
                     </>
                   )}
 
@@ -717,11 +740,9 @@ function FormMakeSale(props: Props) {
                     labelPlacement="outside"
                     className="dark:text-white"
                     defaultValue={item.monto.toString()}
-                    startContent={"$"}
+                    startContent={'$'}
                     step={0.01}
-                    onChange={(e) =>
-                      onUpdateMonto(index, Number(e.target.value))
-                    }
+                    onChange={(e) => onUpdateMonto(index, Number(e.target.value))}
                   />
                 </div>
               </div>
@@ -730,7 +751,7 @@ function FormMakeSale(props: Props) {
         </div>
       </div>
       <div className="block lg:hidden">
-        {tipeDocument?.codigo === "01" || tipeDocument?.codigo === undefined ? (
+        {tipeDocument?.codigo === '01' || tipeDocument?.codigo === undefined ? (
           <div className="flex justify-center mt-4 mb-4 w-full">
             <div className="w-full flex  justify-center">
               {loading ? (
@@ -777,16 +798,10 @@ function FormMakeSale(props: Props) {
               >
                 Re-intentar
               </Button>
-              <Button
-                onClick={handleVerify}
-                style={global_styles().warningStyles}
-              >
+              <Button onClick={handleVerify} style={global_styles().warningStyles}>
                 Verificar
               </Button>
-              <Button
-                onClick={sendToContingencia}
-                style={global_styles().dangerStyles}
-              >
+              <Button onClick={sendToContingencia} style={global_styles().dangerStyles}>
                 Enviar a contingencia
               </Button>
             </div>
