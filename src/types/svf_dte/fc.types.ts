@@ -18,7 +18,7 @@ export interface FC_Identificacion {
 export interface FC_DocumentoRelacionadoItems {
     tipoDocumento: string,
     tipoGeneracion: number,
-    numeroDocumento: number,
+    numeroDocumento: string,
     fechaEmision: string
 }
 

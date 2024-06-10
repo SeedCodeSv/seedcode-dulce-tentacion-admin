@@ -16,6 +16,7 @@ import {
 } from '../types/DTE/invalidation.types';
 import { SVFE_FC_SEND } from '../types/svf_dte/fc.types';
 import { SVFE_CF_SEND } from '../types/svf_dte/cf.types';
+import { SVFE_ND_SEND } from '../types/svf_dte/nd.types';
 
 export const get_ambiente_destino = () => {
   return axios<IGetAmbienteDestino>(FACTURACION_API + '/cat-001-ambiente-de-destino');
@@ -63,6 +64,10 @@ export const get_tipos_de_tributo = () => {
 };
 
 export const firmarDocumentoFiscal = (payload: SVFE_CF_SEND) => {
+  return axios.post<{ body: string }>(API_FIRMADOR, payload);
+};
+
+export const firmarDocumentoNotaDebito = (payload: SVFE_ND_SEND) => {
   return axios.post<{ body: string }>(API_FIRMADOR, payload);
 };
 

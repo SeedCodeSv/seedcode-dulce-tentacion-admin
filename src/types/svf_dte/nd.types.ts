@@ -1,13 +1,28 @@
 import { ResponseMHSuccess } from "../DTE/contingencia.types";
 import { CF_Receptor } from "./cf.types";
-import { FC_ApendiceItems, FC_DocumentoRelacionadoItems, FC_Emisor, FC_Extension, FC_Identificacion, FC_VentaTercerosItems } from "./fc.types";
+import { FC_ApendiceItems, FC_DocumentoRelacionadoItems, FC_Extension, FC_Identificacion, FC_VentaTercerosItems } from "./fc.types";
 import { NC_CuerpoDocumentoItems, NC_Resumen } from "./nc.types";
 
 export interface ND_Identificacion extends FC_Identificacion { }
 
 export interface ND_DocumentoRelacionadoItems extends FC_DocumentoRelacionadoItems { }
 
-export interface ND_Emisor extends FC_Emisor { }
+export interface ND_Emisor {
+    nit: string,
+    nrc: string,
+    nombre: string,
+    codActividad: string,
+    descActividad: string,
+    nombreComercial: string,
+    tipoEstablecimiento: string
+    direccion: {
+        departamento: string,
+        municipio: string,
+        complemento: string
+    },
+    telefono: string,
+    correo: string,
+}
 
 export interface ND_Receptor extends CF_Receptor { }
 
@@ -35,12 +50,12 @@ export interface SVFE_ND {
     apendice: FC_ApendiceItems[] | null
 }
 
-export interface SVFE_NC_Firmado extends SVFE_ND {
+export interface SVFE_ND_Firmado extends SVFE_ND {
     respuestaMH: ResponseMHSuccess,
     firma: string
 }
 
-export interface SVFE_NC_SEND {
+export interface SVFE_ND_SEND {
     nit: string,
     activo: boolean,
     passwordPri: string,

@@ -16,10 +16,14 @@ import { formatCurrency } from "../../../utils/dte";
 import DTE from "../../../assets/json/20F6B3E1-4AA4-4A93-A169-7F718E9987E9.json";
 import TableFooter from "../template_default_ccf/table_footer";
 import { SVFC_CF_Firmado } from "../../../types/svf_dte/cf.types";
+import { SVFE_ND_Firmado } from "../../../types/svf_dte/nd.types";
 
-function CreditoFiscalTMP() {
+export interface Props {
+  dte: SVFE_ND_Firmado;
+}
+
+function NotaDebitoTMP({ dte }: Props) {
   const theme = JSON.parse(localStorage.getItem("theme") ?? "{}") as Theme;
-
   Font.register({
     family: "Oswald",
     fonts: [
@@ -65,23 +69,6 @@ function CreditoFiscalTMP() {
       justifyContent: "space-between",
     },
   });
-
-  const headers = [
-    "Cantidad",
-    "Descripción",
-    `Precio 
-    Unitario`,
-    `Descuento 
-    por ítem`,
-    `Otros montos no 
-    afectos`,
-    `Ventas No 
-    Sujetas`,
-    `Ventas 
-    Exentas`,
-    `Ventas 
-    Gravadas`,
-  ];
 
   return (
     <Document>
@@ -138,7 +125,7 @@ function CreditoFiscalTMP() {
                   { fontWeight: 500, textAlign: "left" },
                 ]}
               >
-                23FF0344-CD9B-4C52-A7D7-12D2245B8E85
+                {dte.identificacion.codigoGeneracion}
               </Text>
             </View>
             <View
@@ -163,7 +150,7 @@ function CreditoFiscalTMP() {
                   { fontWeight: 500, textAlign: "left" },
                 ]}
               >
-                DTE-01-M002P001-000000000005026
+                {dte.identificacion.numeroControl}
               </Text>
             </View>
             <View
@@ -188,7 +175,7 @@ function CreditoFiscalTMP() {
                   { fontWeight: 500, textAlign: "left" },
                 ]}
               >
-                202449E51CC7F66B410BBA0DFEF6DDE04A0BQXGX
+                {dte.respuestaMH.selloRecibido}
               </Text>
             </View>
           </View>
@@ -258,7 +245,7 @@ function CreditoFiscalTMP() {
                   { fontWeight: 500, textAlign: "left" },
                 ]}
               >
-                2024-06-04 17:11:11
+                {dte.identificacion.fecEmi} {dte.identificacion.horEmi}
               </Text>
             </View>
           </View>
@@ -295,7 +282,7 @@ function CreditoFiscalTMP() {
                   Nombre o razón social:
                 </Text>
                 <Text style={style.text_roboto_regular}>
-                  HERNANDEZ MARQUEZ, JOSE MANUEL
+                  {dte.emisor.nombre}
                 </Text>
               </View>
               <View
@@ -307,7 +294,7 @@ function CreditoFiscalTMP() {
                 }}
               >
                 <Text style={style.text_roboto_bold}>NIT:</Text>
-                <Text style={style.text_roboto_regular}>0316-090298-101-0</Text>
+                <Text style={style.text_roboto_regular}>{dte.emisor.nit}</Text>
               </View>
               <View
                 style={{
@@ -318,7 +305,7 @@ function CreditoFiscalTMP() {
                 }}
               >
                 <Text style={style.text_roboto_bold}>NRC:</Text>
-                <Text style={style.text_roboto_regular}>316529-8</Text>
+                <Text style={style.text_roboto_regular}>{dte.emisor.nrc}</Text>
               </View>
               <View
                 style={{
@@ -569,59 +556,7 @@ function CreditoFiscalTMP() {
           </Table>
         </View>
         <View style={{ marginTop: 5 }}>
-          <Table borderColor={theme.colors.third}>
-            <TableHeader
-              colorCell={theme.colors.dark}
-              textColor={theme.colors.primary}
-              borderColor={theme.colors.third}
-              headers={headers}
-              sizes={[7.5, 41, 8, 8, 11, 8.5, 8, 8]}
-              fontSize={7}
-            />
-            <TableRow borderColor={theme.colors.third}>
-              <TableCell size={7.5} borderColor={theme.colors.third}>
-                <Text style={{ fontSize: 6.5, textAlign: "center" }}>{23}</Text>
-              </TableCell>
-              <TableCell size={41} borderColor={theme.colors.third}>
-                <Text style={{ fontSize: 6.5, textAlign: "center" }}>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolor
-                  ratione voluptatum blanditiis tenetur magni voluptatibus vel
-                  corrupti, laboriosam minus ipsam! Aliquid nesciunt reiciendis
-                  omnis repudiandae consequatur quia tenetur culpa a!
-                </Text>
-              </TableCell>
-              <TableCell size={8} borderColor={theme.colors.third}>
-                <Text style={{ fontSize: 6.5, textAlign: "right" }}>
-                  {formatCurrency(Number(23))}
-                </Text>
-              </TableCell>
-              <TableCell size={8} borderColor={theme.colors.third}>
-                <Text style={{ fontSize: 6.5, textAlign: "right" }}>
-                  {formatCurrency(Number(43))}
-                </Text>
-              </TableCell>
-              <TableCell size={11} borderColor={theme.colors.third}>
-                <Text style={{ fontSize: 6.5, textAlign: "right" }}>
-                  {formatCurrency(Number(0))}
-                </Text>
-              </TableCell>
-              <TableCell size={8.5} borderColor={theme.colors.third}>
-                <Text style={{ fontSize: 6.5, textAlign: "right" }}>
-                  {formatCurrency(Number(0))}
-                </Text>
-              </TableCell>
-              <TableCell size={8} borderColor={theme.colors.third}>
-                <Text style={{ fontSize: 6.5, textAlign: "right" }}>
-                  {formatCurrency(Number(0))}
-                </Text>
-              </TableCell>
-              <TableCell size={8} borderColor={theme.colors.third}>
-                <Text style={{ fontSize: 6.5, textAlign: "right" }}>
-                  {formatCurrency(Number(34))}
-                </Text>
-              </TableCell>
-            </TableRow>
-          </Table>
+          <TableProduct dte={dte} />
         </View>
 
         <View style={{ marginTop: 2 }}>
@@ -640,4 +575,78 @@ function CreditoFiscalTMP() {
   );
 }
 
-export default CreditoFiscalTMP;
+export default NotaDebitoTMP;
+
+export const TableProduct = (props: Props) => {
+  const theme = JSON.parse(localStorage.getItem("theme") ?? "{}") as Theme;
+
+  const headers = [
+    "Cantidad",
+    "Descripción",
+    `Precio 
+    Unitario`,
+    `Descuento 
+    por ítem`,
+    `Otros montos no 
+    afectos`,
+    `Ventas No 
+    Sujetas`,
+    `Ventas 
+    Exentas`,
+    `Ventas 
+    Gravadas`,
+  ];
+
+  return (
+    <Table borderColor={theme.colors.third}>
+      <TableHeader
+        colorCell={theme.colors.dark}
+        textColor={theme.colors.primary}
+        borderColor={theme.colors.third}
+        headers={headers}
+        sizes={[7.5, 41, 8, 8, 11, 8.5, 8, 8]}
+        fontSize={7}
+      />
+      {props.dte.cuerpoDocumento.map((item,index) => (
+        <TableRow key={index} borderColor={theme.colors.third}>
+          <TableCell size={7.5} borderColor={theme.colors.third}>
+            <Text style={{ fontSize: 6.5, textAlign: "center" }}>{item.cantidad}</Text>
+          </TableCell>
+          <TableCell size={41} borderColor={theme.colors.third}>
+            <Text style={{ fontSize: 6.5, textAlign: "center" }}>{item.descripcion}</Text>
+          </TableCell>
+          <TableCell size={8} borderColor={theme.colors.third}>
+            <Text style={{ fontSize: 6.5, textAlign: "right" }}>
+              {formatCurrency(Number(item.precioUni))}
+            </Text>
+          </TableCell>
+          <TableCell size={8} borderColor={theme.colors.third}>
+            <Text style={{ fontSize: 6.5, textAlign: "right" }}>
+              {formatCurrency(Number(item.montoDescu))}
+            </Text>
+          </TableCell>
+          <TableCell size={11} borderColor={theme.colors.third}>
+            <Text style={{ fontSize: 6.5, textAlign: "right" }}>
+              {formatCurrency(Number(0))}
+            </Text>
+          </TableCell>
+          <TableCell size={8.5} borderColor={theme.colors.third}>
+            <Text style={{ fontSize: 6.5, textAlign: "right" }}>
+              {formatCurrency(Number(item.ventaNoSuj))}
+            </Text>
+          </TableCell>
+          <TableCell size={8} borderColor={theme.colors.third}>
+            <Text style={{ fontSize: 6.5, textAlign: "right" }}>
+              {formatCurrency(Number(item.ventaExenta))}
+            </Text>
+          </TableCell>
+          <TableCell size={8} borderColor={theme.colors.third}>
+            <Text style={{ fontSize: 6.5, textAlign: "right" }}>
+              {formatCurrency(Number(item.ventaGravada))}
+            </Text>
+          </TableCell>
+        </TableRow>
+      ))}
+    </Table>
+  );
+};
