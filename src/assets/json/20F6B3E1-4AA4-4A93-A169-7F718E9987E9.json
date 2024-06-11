@@ -411,6 +411,366 @@
       ],
       "psv": 0,
       "noGravado": 0
+    },
+    {
+      "numItem": 1,
+      "tipoItem": 1,
+      "uniMedida": 26,
+      "numeroDocumento": null,
+      "cantidad": 1,
+      "codigo": null,
+      "codTributo": null,
+      "descripcion": "Amazon Echo Show 10",
+      "precioUni": 34,
+      "montoDescu": 0,
+      "ventaNoSuj": 0,
+      "ventaExenta": 0,
+      "ventaGravada": 34,
+      "tributos": [
+        "20"
+      ],
+      "psv": 0,
+      "noGravado": 0
+    },
+    {
+      "numItem": 2,
+      "tipoItem": 1,
+      "uniMedida": 26,
+      "numeroDocumento": null,
+      "cantidad": 1,
+      "codigo": null,
+      "codTributo": null,
+      "descripcion": "Amazon Echo Show 10",
+      "precioUni": 249,
+      "montoDescu": 0,
+      "ventaNoSuj": 0,
+      "ventaExenta": 0,
+      "ventaGravada": 249,
+      "tributos": [
+        "20"
+      ],
+      "psv": 0,
+      "noGravado": 0
+    },
+    {
+      "numItem": 3,
+      "tipoItem": 1,
+      "uniMedida": 26,
+      "numeroDocumento": null,
+      "cantidad": 1,
+      "codigo": null,
+      "codTributo": null,
+      "descripcion": "Apple Watch Series 8",
+      "precioUni": 56,
+      "montoDescu": 0,
+      "ventaNoSuj": 0,
+      "ventaExenta": 0,
+      "ventaGravada": 56,
+      "tributos": [
+        "20"
+      ],
+      "psv": 0,
+      "noGravado": 0
+    },
+    {
+      "numItem": 4,
+      "tipoItem": 1,
+      "uniMedida": 26,
+      "numeroDocumento": null,
+      "cantidad": 1,
+      "codigo": null,
+      "codTributo": null,
+      "descripcion": "Apple Watch Series 8",
+      "precioUni": 399,
+      "montoDescu": 0,
+      "ventaNoSuj": 0,
+      "ventaExenta": 0,
+      "ventaGravada": 399,
+      "tributos": [
+        "20"
+      ],
+      "psv": 0,
+      "noGravado": 0
+    },
+    {
+      "numItem": 5,
+      "tipoItem": 1,
+      "uniMedida": 26,
+      "numeroDocumento": null,
+      "cantidad": 1,
+      "codigo": null,
+      "codTributo": null,
+      "descripcion": "ASUS ROG Phone 6",
+      "precioUni": 3,
+      "montoDescu": 0,
+      "ventaNoSuj": 0,
+      "ventaExenta": 0,
+      "ventaGravada": 3,
+      "tributos": [
+        "20"
+      ],
+      "psv": 0,
+      "noGravado": 0
+    },
+    {
+      "numItem": 6,
+      "tipoItem": 1,
+      "uniMedida": 26,
+      "numeroDocumento": null,
+      "cantidad": 1,
+      "codigo": null,
+      "codTributo": null,
+      "descripcion": "ASUS ROG Phone 6",
+      "precioUni": 999,
+      "montoDescu": 0,
+      "ventaNoSuj": 0,
+      "ventaExenta": 0,
+      "ventaGravada": 999,
+      "tributos": [
+        "20"
+      ],
+      "psv": 0,
+      "noGravado": 0
+    },
+    {
+      "numItem": 7,
+      "tipoItem": 1,
+      "uniMedida": 26,
+      "numeroDocumento": null,
+      "cantidad": 1,
+      "codigo": null,
+      "codTributo": null,
+      "descripcion": "Bose QuietComfort 45",
+      "precioUni": 59,
+      "montoDescu": 0,
+      "ventaNoSuj": 0,
+      "ventaExenta": 0,
+      "ventaGravada": 59,
+      "tributos": [
+        "20"
+      ],
+      "psv": 0,
+      "noGravado": 0
+    },
+    {
+      "numItem": 8,
+      "tipoItem": 1,
+      "uniMedida": 26,
+      "numeroDocumento": null,
+      "cantidad": 1,
+      "codigo": null,
+      "codTributo": null,
+      "descripcion": "Bose QuietComfort 45",
+      "precioUni": 329,
+      "montoDescu": 0,
+      "ventaNoSuj": 0,
+      "ventaExenta": 0,
+      "ventaGravada": 329,
+      "tributos": [
+        "20"
+      ],
+      "psv": 0,
+      "noGravado": 0
+    },
+    {
+      "numItem": 9,
+      "tipoItem": 1,
+      "uniMedida": 26,
+      "numeroDocumento": null,
+      "cantidad": 1,
+      "codigo": null,
+      "codTributo": null,
+      "descripcion": "Dell XPS 13 (2023)",
+      "precioUni": 76,
+      "montoDescu": 0,
+      "ventaNoSuj": 0,
+      "ventaExenta": 0,
+      "ventaGravada": 76,
+      "tributos": [
+        "20"
+      ],
+      "psv": 0,
+      "noGravado": 0
+    },
+    {
+      "numItem": 10,
+      "tipoItem": 1,
+      "uniMedida": 26,
+      "numeroDocumento": null,
+      "cantidad": 1,
+      "codigo": null,
+      "codTributo": null,
+      "descripcion": "Dell XPS 13 (2023)",
+      "precioUni": 999,
+      "montoDescu": 0,
+      "ventaNoSuj": 0,
+      "ventaExenta": 0,
+      "ventaGravada": 999,
+      "tributos": [
+        "20"
+      ],
+      "psv": 0,
+      "noGravado": 0
+    },
+    {
+      "numItem": 11,
+      "tipoItem": 1,
+      "uniMedida": 26,
+      "numeroDocumento": null,
+      "cantidad": 1,
+      "codigo": null,
+      "codTributo": null,
+      "descripcion": "DJI Mini 3 Pro",
+      "precioUni": 12,
+      "montoDescu": 0,
+      "ventaNoSuj": 0,
+      "ventaExenta": 0,
+      "ventaGravada": 12,
+      "tributos": [
+        "20"
+      ],
+      "psv": 0,
+      "noGravado": 0
+    },
+    {
+      "numItem": 12,
+      "tipoItem": 1,
+      "uniMedida": 26,
+      "numeroDocumento": null,
+      "cantidad": 1,
+      "codigo": null,
+      "codTributo": null,
+      "descripcion": "DJI Mini 3 Pro",
+      "precioUni": 759,
+      "montoDescu": 0,
+      "ventaNoSuj": 0,
+      "ventaExenta": 0,
+      "ventaGravada": 759,
+      "tributos": [
+        "20"
+      ],
+      "psv": 0,
+      "noGravado": 0
+    },
+    {
+      "numItem": 13,
+      "tipoItem": 1,
+      "uniMedida": 26,
+      "numeroDocumento": null,
+      "cantidad": 1,
+      "codigo": null,
+      "codTributo": null,
+      "descripcion": "Escritorio Gamer DXRacer",
+      "precioUni": 200,
+      "montoDescu": 0,
+      "ventaNoSuj": 0,
+      "ventaExenta": 0,
+      "ventaGravada": 200,
+      "tributos": [
+        "20"
+      ],
+      "psv": 0,
+      "noGravado": 0
+    },
+    {
+      "numItem": 14,
+      "tipoItem": 1,
+      "uniMedida": 26,
+      "numeroDocumento": null,
+      "cantidad": 1,
+      "codigo": null,
+      "codTributo": null,
+      "descripcion": "Fitbit Charge 5",
+      "precioUni": 2,
+      "montoDescu": 0,
+      "ventaNoSuj": 0,
+      "ventaExenta": 0,
+      "ventaGravada": 2,
+      "tributos": [
+        "20"
+      ],
+      "psv": 0,
+      "noGravado": 0
+    },
+    {
+      "numItem": 15,
+      "tipoItem": 1,
+      "uniMedida": 26,
+      "numeroDocumento": null,
+      "cantidad": 1,
+      "codigo": null,
+      "codTributo": null,
+      "descripcion": "Fitbit Charge 5",
+      "precioUni": 179,
+      "montoDescu": 0,
+      "ventaNoSuj": 0,
+      "ventaExenta": 0,
+      "ventaGravada": 179,
+      "tributos": [
+        "20"
+      ],
+      "psv": 0,
+      "noGravado": 0
+    },
+    {
+      "numItem": 16,
+      "tipoItem": 1,
+      "uniMedida": 26,
+      "numeroDocumento": null,
+      "cantidad": 1,
+      "codigo": null,
+      "codTributo": null,
+      "descripcion": "Google Pixel 7 Pro",
+      "precioUni": 23,
+      "montoDescu": 0,
+      "ventaNoSuj": 0,
+      "ventaExenta": 0,
+      "ventaGravada": 23,
+      "tributos": [
+        "20"
+      ],
+      "psv": 0,
+      "noGravado": 0
+    },
+    {
+      "numItem": 17,
+      "tipoItem": 1,
+      "uniMedida": 26,
+      "numeroDocumento": null,
+      "cantidad": 1,
+      "codigo": null,
+      "codTributo": null,
+      "descripcion": "Google Pixel 7 Pro",
+      "precioUni": 899,
+      "montoDescu": 0,
+      "ventaNoSuj": 0,
+      "ventaExenta": 0,
+      "ventaGravada": 899,
+      "tributos": [
+        "20"
+      ],
+      "psv": 0,
+      "noGravado": 0
+    },
+    {
+      "numItem": 18,
+      "tipoItem": 1,
+      "uniMedida": 26,
+      "numeroDocumento": null,
+      "cantidad": 1,
+      "codigo": null,
+      "codTributo": null,
+      "descripcion": "GoPro HERO11 Black",
+      "precioUni": 1,
+      "montoDescu": 0,
+      "ventaNoSuj": 0,
+      "ventaExenta": 0,
+      "ventaGravada": 1,
+      "tributos": [
+        "20"
+      ],
+      "psv": 0,
+      "noGravado": 0
     }
   ],
   "resumen": {

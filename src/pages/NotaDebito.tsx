@@ -46,28 +46,9 @@ function NotaDebito() {
     if (items) {
       const item = items.find((i) => i.id === id);
       if (item) {
-        if (price < item.branchProduct.price) {
-          toast.error("El precio no puede ser menor al precio de venta");
-          item.branchProduct.newPrice = item.branchProduct.price;
-          item.newTotalItem = item.branchProduct.price * item.newCantidadItem;
-
-          const edited = items.map((i) => (i.id === id ? item : i));
-
-          updateSaleDetails({
-            ...sale_details,
-            isEdited: true,
-            details: edited,
-          });
-          return;
-        }
-
-        const discount = calculateDiscountedTotal(
-          price,
-          Number(item.porcentajeDescuento)
-        );
-
-        item.newMontoDescu = discount.discountAmount * item.newCantidadItem;
-        item.newTotalItem = discount.discountedTotal * item.newCantidadItem;
+        item.newMontoDescu = 0;
+        item.porcentajeDescuento = 0,
+        item.newTotalItem = price * item.newCantidadItem;
         item.branchProduct.newPrice = price;
 
         const edited = items.map((i) => (i.id === id ? item : i));
@@ -265,30 +246,30 @@ function NotaDebito() {
     <Layout title="Nota de débito">
       <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
         <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
-          <p className="text-lg font-semibold">Detalles</p>
+          <p className="text-lg font-semibold dark:text-white">Detalles</p>
           <div className="grid grid-cols-2 gap-5">
-            <p className="font-semibold">
+            <p className="font-semibold dark:text-white">
               Código Generación:{" "}
               <span className="font-normal">
                 {sale_details?.codigoGeneracion}
               </span>
             </p>
-            <p className="font-semibold">
+            <p className="font-semibold dark:text-white">
               Sello recepción:{" "}
               <span className="font-normal">{sale_details?.selloRecibido}</span>
             </p>
-            <p className="font-semibold">
+            <p className="font-semibold dark:text-white">
               Numero control:{" "}
               <span className="font-normal">{sale_details?.numeroControl}</span>
             </p>
-            <p className="font-semibold">
+            <p className="font-semibold dark:text-white">
               Fecha hora:{" "}
               <span className="font-normal">
                 {sale_details?.fecEmi} - {sale_details?.horEmi}
               </span>
             </p>
           </div>
-          <p className="text-lg font-semibold py-8">Productos</p>
+          <p className="text-lg font-semibold py-8 dark:text-white">Productos</p>
           {sale_details?.details && (
             <DataTable
               className="shadow"
@@ -352,14 +333,16 @@ function NotaDebito() {
                   />
                 )}
               />
-              <Column
+              {/* <Column
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
                 body={(rowData) =>
-                  formatCurrency(Number(rowData.newMontoDescu))
+                 <>
+                 
+                 </>
                 }
-                header="Codigo"
-              />
+                header="Descuento"
+              /> */}
               <Column
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
@@ -374,7 +357,7 @@ function NotaDebito() {
                 body={(rowData) => (
                   <Input
                     variant="bordered"
-                    className="w-64"
+                    className="w-52"
                     defaultValue={rowData.branchProduct.newPrice}
                     min={Number(rowData.branchProduct.price)}
                     type="number"
