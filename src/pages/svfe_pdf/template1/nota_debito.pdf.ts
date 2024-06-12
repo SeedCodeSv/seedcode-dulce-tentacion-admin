@@ -6,15 +6,15 @@ import {
   makeHeader,
   returnBoldText,
 } from "../global/global.pdf";
-import { SVFC_CF_Firmado } from "../../../types/svf_dte/cf.types";
 import LOGOMIN from "../../../assets/logoMIN.png";
 import autoTable, { RowInput } from "jspdf-autotable";
 import { Theme } from "../../../hooks/useTheme";
 import { formatCurrency } from "../../../utils/dte";
+import { SVFE_ND_Firmado } from "../../../types/svf_dte/nd.types";
 
-export const makePDFCreditoFiscal = (
+export const makePDFNotaDebito = (
   doc: jsPDF,
-  dte: SVFC_CF_Firmado,
+  dte: SVFE_ND_Firmado,
   LOGO: string | Uint8Array,
   QR: string | Uint8Array,
   theme: Theme
@@ -22,8 +22,8 @@ export const makePDFCreditoFiscal = (
   doc.addImage(typeof LOGO === "string" ? LOGOMIN : LOGO, "PNG", 10, 5, 15, 15);
   doc.addImage(QR, "PNG", 40, 5, 15, 15);
   doc.setFontSize(8);
-  doc.setFont("helvetica", "bold");
   doc.setTextColor(theme.colors.dark);
+  doc.setFont("helvetica", "bold");
   doc.text(
     "DOCUMENTO DE CONSULTA PORTAL OPERATIVO",
     doc.internal.pageSize.getWidth() - 10,
@@ -37,7 +37,7 @@ export const makePDFCreditoFiscal = (
     { align: "right" }
   );
   doc.text(
-    "COMPROBANTE DE CREDITO FISCAL",
+    "COMPROBANTE DE NOTA DE DÉBITO",
     doc.internal.pageSize.getWidth() - 10,
     16,
     { align: "right" }
@@ -89,10 +89,11 @@ export const makePDFCreditoFiscal = (
     },
     bodyStyles: {
       halign: "center",
-      fontSize: 7,
+      fontSize: 6,
       lineWidth: 0.1,
       lineColor: theme.colors.third,
       cellPadding: 1,
+      textColor: theme.colors.dark,
     },
     body: [["-", "-"]],
   });
@@ -135,6 +136,7 @@ export const makePDFCreditoFiscal = (
       lineWidth: 0.1,
       lineColor: theme.colors.third,
       cellPadding: 1,
+      textColor: theme.colors.dark,
     },
     body: [["-", "-"]],
   });
@@ -153,6 +155,15 @@ export const makePDFCreditoFiscal = (
     "center"
   );
   doc.setTextColor(theme.colors.dark);
+
+  const array_object_doc: unknown[] = [];
+  dte.documentoRelacionado?.map((doc) => {
+    array_object_doc.push([
+      "Comprobante de crédito fiscal",
+      doc.numeroDocumento,
+      doc.fechaEmision,
+    ]);
+  });
 
   autoTable(doc, {
     head: [["Tipo de Documento", "N° de Documento", "Fecha de Documento"]],
@@ -173,9 +184,10 @@ export const makePDFCreditoFiscal = (
       fontSize: 6,
       lineWidth: 0.1,
       lineColor: theme.colors.third,
+      textColor: theme.colors.dark,
       cellPadding: 1,
     },
-    body: [["-", "-", "-"]],
+    body: (array_object_doc as unknown) as RowInput[],
   });
   const finalY_rel = ((doc as unknown) as {
     lastAutoTable: { finalY: number };
@@ -186,7 +198,6 @@ export const makePDFCreditoFiscal = (
     "Descripción",
     `Precio Unitario`,
     `Descuento por ítem`,
-    `Otros montos no afectos`,
     `Ventas No Sujetas`,
     `Ventas Exentas`,
     `Ventas Gravadas`,
@@ -200,7 +211,6 @@ export const makePDFCreditoFiscal = (
         desc: prd.descripcion,
         price: formatCurrency(prd.precioUni),
         descu: formatCurrency(prd.montoDescu),
-        other: formatCurrency(0),
         vtSuj: formatCurrency(prd.ventaNoSuj),
         vtExe: formatCurrency(prd.ventaExenta),
         vtGrav: formatCurrency(prd.ventaGravada),
@@ -235,12 +245,11 @@ export const makePDFCreditoFiscal = (
     columnStyles: {
       0: { cellWidth: 15 },
       1: { cellWidth: "wrap" },
-      2: { cellWidth: 15 },
-      3: { cellWidth: 15 },
-      4: { cellWidth: 20 },
-      5: { cellWidth: 15 },
-      6: { cellWidth: 15 },
-      7: { cellWidth: 15 },
+      2: { cellWidth: 19 },
+      3: { cellWidth: 19 },
+      4: { cellWidth: 19 },
+      5: { cellWidth: 19 },
+      6: { cellWidth: 19 },
     },
     body: (array_object as unknown) as RowInput[],
   });
@@ -271,74 +280,90 @@ export const makePDFCreditoFiscal = (
       halign: "right",
       cellPadding: 1,
     },
-    body: [["", "", "Sumatoria de Ventas", "3", "2", "1"]],
+    body: [
+      [
+        "",
+        "",
+        "Sumatoria de Ventas",
+        formatCurrency(Number(dte.resumen.totalNoSuj)),
+        formatCurrency(Number(dte.resumen.totalExenta)),
+        formatCurrency(Number(dte.resumen.totalGravada)),
+      ],
+    ],
   });
 
   let finalY = ((doc as unknown) as { lastAutoTable: { finalY: number } })
     .lastAutoTable.finalY;
+  finalY = createTableResumen(
+    doc,
+    finalY,
+    [
+      "",
+      "",
+      "Suma Total de Operaciones:",
+      formatCurrency(Number(dte.resumen.subTotalVentas)),
+    ],
+    theme
+  );
+  finalY = createTableResumen(
+    doc,
+    finalY,
+    [
+      "",
+      "",
+      "Monto global Desc., Rebajas y otros a ventas no sujetas:",
+      formatCurrency(Number(dte.resumen.descuNoSuj)),
+    ],
+    theme
+  );
+  finalY = createTableResumen(
+    doc,
+    finalY,
+    [
+      "",
+      "",
+      "Monto global Desc., Rebajas y otros a ventas Exentas:",
+      formatCurrency(Number(dte.resumen.descuExenta)),
+    ],
+    theme
+  );
+  finalY = createTableResumen(
+    doc,
+    finalY,
+    [
+      "",
+      "",
+      "Monto global Desc., Rebajas y otros a ventas gravadas:",
+      formatCurrency(Number(dte.resumen.descuGravada)),
+    ],
+    theme
+  );
+
+  const iva13 = Number(dte.resumen.subTotal) * 0.13;
 
   finalY = createTableResumen(
     doc,
     finalY,
-    ["", "", "Suma Total de Operaciones:", "3"],
+    ["", "", "Impuesto al Valor Agregado 13%", formatCurrency(Number(iva13))],
     theme
   );
   finalY = createTableResumen(
     doc,
     finalY,
-    ["", "", "Monto global Desc., Rebajas y otros a ventas no sujetas:", "3"],
+    ["", "", "Sub-Total:", formatCurrency(Number(dte.resumen.subTotal))],
     theme
   );
-  finalY = createTableResumen(
+  createTableResumen(
     doc,
     finalY,
-    ["", "", "Monto global Desc., Rebajas y otros a ventas Exentas:", "3"],
+    [
+      "",
+      "",
+      "Monto Total de la Operación:",
+      formatCurrency(Number(dte.resumen.montoTotalOperacion)),
+    ],
     theme
   );
-  finalY = createTableResumen(
-    doc,
-    finalY,
-    ["", "", "Monto global Desc., Rebajas y otros a ventas gravadas:", "3"],
-    theme
-  );
-  finalY = createTableResumen(
-    doc,
-    finalY,
-    ["", "", "Impuesto al Valor Agregado 13%", "3"],
-    theme
-  );
-  finalY = createTableResumen(doc, finalY, ["", "", "Sub-Total:", "3"], theme);
-  finalY = createTableResumen(
-    doc,
-    finalY,
-    ["", "", "IVA Percibido:", "3"],
-    theme
-  );
-  finalY = createTableResumen(
-    doc,
-    finalY,
-    ["", "", "IVA Retenido:", "3"],
-    theme
-  );
-  finalY = createTableResumen(
-    doc,
-    finalY,
-    ["", "", "Retención Renta:", "3"],
-    theme
-  );
-  finalY = createTableResumen(
-    doc,
-    finalY,
-    ["", "", "Monto Total de la Operación:", "3"],
-    theme
-  );
-  finalY = createTableResumen(
-    doc,
-    finalY,
-    ["", "", "Total Otros montos no afectos:", "3"],
-    theme
-  );
-  createTableResumen(doc, finalY, ["", "", "Total a Pagar:", "3"], theme);
 
   const pageCount = doc.internal.pages.length - 1;
   for (let i = 1; i <= pageCount; i++) {
@@ -383,7 +408,7 @@ export const makePDFCreditoFiscal = (
   return doc.output("blob");
 };
 
-export const makeEmisor = (doc: jsPDF, dte: SVFC_CF_Firmado) => {
+export const makeEmisor = (doc: jsPDF, dte: SVFE_ND_Firmado) => {
   const fields = [
     {
       label: "Nombre o razón social:",
@@ -425,29 +450,29 @@ export const makeEmisor = (doc: jsPDF, dte: SVFC_CF_Firmado) => {
   return { totalHeight };
 };
 
-export const makeReceptor = (doc: jsPDF, dte: SVFC_CF_Firmado) => {
+export const makeReceptor = (doc: jsPDF, dte: SVFE_ND_Firmado) => {
   const fields = [
     {
       label: "Nombre o razón social:",
-      value: dte.emisor.nombre,
+      value: dte.receptor.nombre,
     },
     {
       label: "Actividad económica:",
-      value: dte.emisor.descActividad,
+      value: dte.receptor.descActividad,
     },
-    { label: "NIT:", value: dte.emisor.nit },
-    { label: "NRC:", value: dte.emisor.nrc },
+    { label: "NIT:", value: dte.receptor.nit },
+    { label: "NRC:", value: dte.receptor.nrc },
     {
       label: "Dirección:",
-      value: `${dte.emisor.direccion.departamento}, ${dte.emisor.direccion.municipio}, ${dte.emisor.direccion.complemento}`,
+      value: `${dte.receptor.direccion.departamento}, ${dte.receptor.direccion.municipio}, ${dte.receptor.direccion.complemento}`,
     },
     {
       label: "Número de teléfono:",
-      value: dte.emisor.telefono ?? "no-registrado",
+      value: dte.receptor.telefono ?? "no-registrado",
     },
     {
       label: "Correo electrónico:",
-      value: dte.emisor.correo ?? "no-registrado",
+      value: dte.receptor.correo ?? "no-registrado",
     },
   ];
 

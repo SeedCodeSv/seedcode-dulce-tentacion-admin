@@ -1,11 +1,11 @@
 import { useParams } from "react-router";
 import Layout from "../layout/Layout";
 import { useSalesStore } from "../store/sales.store";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { ThemeContext } from "../hooks/useTheme";
-import { Button, Input } from "@nextui-org/react";
+import { Button, Input, useDisclosure } from "@nextui-org/react";
 import { formatCurrency } from "../utils/dte";
 import { calculateDiscountedTotal } from "../utils/filters";
 import { toast } from "sonner";
@@ -22,13 +22,25 @@ import { generateNotaDebito } from "../utils/DTE/nota-debito";
 import { firmarDocumentoNotaDebito, send_to_mh } from "../services/DTE.service";
 import { PayloadMH } from "../types/DTE/DTE.types";
 import { return_mh_token } from "../storage/localStorage";
-import axios from "axios";
-import { pdf } from "@react-pdf/renderer";
-import NotaDebitoTMP from "./invoices/Template2/CND";
+import axios, { AxiosError } from "axios";
+import HeadlessModal from "../components/global/HeadlessModal";
+import { LoaderIcon } from "lucide-react";
+import { SendMHFailed } from "../types/transmitter.types";
+import { save_logs } from "../services/logs.service";
+import jsPDF from "jspdf";
+import { useConfigurationStore } from "../store/perzonalitation.store";
+import { makePDFNotaDebito } from "./svfe_pdf/template1/nota_debito.pdf";
+import { PutObjectCommand, PutObjectCommandInput } from "@aws-sdk/client-s3";
+import { formatDate } from "../utils/dates";
+import { s3Client } from "../plugins/s3";
 
 function NotaDebito() {
   const { id } = useParams();
   const { getSaleDetails, sale_details, updateSaleDetails } = useSalesStore();
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [title, setTitle] = useState<string>("");
 
   useEffect(() => {
     getSaleDetails(Number(id));
@@ -47,13 +59,14 @@ function NotaDebito() {
       const item = items.find((i) => i.id === id);
       if (item) {
         item.newMontoDescu = 0;
-        item.porcentajeDescuento = 0,
-        item.newTotalItem = price * item.newCantidadItem;
+        (item.porcentajeDescuento = 0),
+          (item.newTotalItem = price * item.newCantidadItem);
         item.branchProduct.newPrice = price;
+        item.isEdited = true;
 
         const edited = items.map((i) => (i.id === id ? item : i));
 
-        updateSaleDetails({ ...sale_details, isEdited: true, details: edited });
+        updateSaleDetails({ ...sale_details, details: edited });
       }
     }
   };
@@ -71,10 +84,12 @@ function NotaDebito() {
           Number(item.porcentajeDescuento)
         );
 
+        item.isEdited = true;
+
         item.newMontoDescu = discount.discountAmount * item.newCantidadItem;
         item.newTotalItem = discount.discountedTotal * item.newCantidadItem;
         const edited = items.map((i) => (i.id === id ? item : i));
-        updateSaleDetails({ ...sale_details, isEdited: true, details: edited });
+        updateSaleDetails({ ...sale_details, details: edited });
       }
     }
   };
@@ -85,8 +100,29 @@ function NotaDebito() {
     gettransmitter();
   }, []);
 
+  const modalError = useDisclosure();
+
+  const { personalization } = useConfigurationStore();
+
   const proccessNotaDebito = async () => {
     if (sale_details) {
+      const edited_items = sale_details.details.filter((item) => {
+        if (item.isEdited) {
+          return (
+            item.newCantidadItem >= item.cantidadItem &&
+            item.branchProduct.newPrice >= item.branchProduct.price
+          );
+        }
+        return false;
+      });
+
+      if (edited_items.length === 0) {
+        toast.error(
+          "No se encontraron items editados o tienes errores sin resolver"
+        );
+        return;
+      }
+
       const correlatives = await getCorrelativesByDte(transmitter.id, "06");
 
       const items: ND_CuerpoDocumentoItems[] = sale_details.details.map(
@@ -204,40 +240,146 @@ function NotaDebito() {
             documento: firmador.data.body,
           };
           const token_mh = return_mh_token();
-          const source = axios.CancelToken.source();
-          const timeout = setTimeout(() => {
-            source.cancel("El tiempo de espera ha expirado");
-          }, 25000);
-          send_to_mh(data_send, token_mh ?? "", source)
-            .then((response) => {
-              clearTimeout(timeout);
-              const DTE_FORMED = {
-                ...nota_debito.dteJson,
-                respuestaMH: response.data,
-                firma: firmador.data.body,
-              };
+          if (token_mh) {
+            const source = axios.CancelToken.source();
+            const timeout = setTimeout(() => {
+              source.cancel("El tiempo de espera ha expirado");
+            }, 25000);
+            send_to_mh(data_send, token_mh ?? "", source)
+              .then(async (response) => {
+                clearTimeout(timeout);
+                const DTE_FORMED = {
+                  ...nota_debito.dteJson,
+                  respuestaMH: response.data,
+                  firma: firmador.data.body,
+                };
 
-              pdf(<NotaDebitoTMP dte={DTE_FORMED} />)
-                .toBlob()
-                .then((blob) => {
-                  const url = URL.createObjectURL(blob);
+                const doc = new jsPDF();
 
-                  const link = document.createElement("a");
-                  link.href = url;
-                  link.download = "invoice.pdf";
-                  link.click();
-
-                  URL.revokeObjectURL(url);
-                  toast.success("Se ha descargado el archivo");
+                const data = await axios.get(personalization[0].logo, {
+                  responseType: "arraybuffer",
                 });
-            })
-            .catch(() => {
-              clearTimeout(timeout);
-              toast.error("Error al enviar el documento");
-            });
+
+                const QR = await axios.get(
+                  "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Example",
+                  {
+                    responseType: "arraybuffer",
+                  }
+                );
+
+                const JSON_DTE = JSON.stringify(
+                  {
+                    ...DTE_FORMED,
+                  },
+                  null,
+                  2
+                );
+
+                const json_url = `CLIENTES/${
+                  transmitter.nombre
+                }/${new Date().getFullYear()}/VENTAS/NOTAS_DE_DEBITO/${formatDate()}/${
+                  nota_debito.dteJson.identificacion.codigoGeneracion
+                }/${nota_debito.dteJson.identificacion.codigoGeneracion}.json`;
+                const pdf_url = `CLIENTES/${
+                  transmitter.nombre
+                }/${new Date().getFullYear()}/VENTAS/NOTAS_DE_DEBITO/${formatDate()}/${
+                  nota_debito.dteJson.identificacion.codigoGeneracion
+                }/${nota_debito.dteJson.identificacion.codigoGeneracion}.pdf`;
+
+                const blob = makePDFNotaDebito(
+                  doc,
+                  DTE_FORMED,
+                  data.data ? new Uint8Array(data.data) : "",
+                  new Uint8Array(QR.data),
+                  theme
+                );
+
+                const json_blob = new Blob([JSON_DTE], {
+                  type: "application/json",
+                });
+
+                const uploadParams: PutObjectCommandInput = {
+                  Bucket: "seedcode-facturacion",
+                  Key: json_url,
+                  Body: json_blob,
+                };
+                const uploadParamsPDF: PutObjectCommandInput = {
+                  Bucket: "seedcode-facturacion",
+                  Key: pdf_url,
+                  Body: blob,
+                };
+
+                s3Client
+                  .send(new PutObjectCommand(uploadParamsPDF))
+                  .then((response) => {
+                    if (response.$metadata) {
+                      s3Client
+                        .send(new PutObjectCommand(uploadParams))
+                        .then((response) => {
+                          if (response.$metadata) {
+                            setIsLoading(false);
+                            toast.success("Nota de debito enviada");
+                          }
+                        })
+                        .catch(() => {
+                          setIsLoading(false);
+                          modalError.onOpen();
+                        });
+                    }
+                  })
+                  .catch(() => {
+                    setIsLoading(false);
+                    toast.error("Error al enviar el PDF");
+                  });
+              })
+              .catch(async (error: AxiosError<SendMHFailed>) => {
+                clearTimeout(timeout);
+                if (axios.isCancel(error)) {
+                  setTitle("Tiempo de espera agotado");
+                  setErrorMessage("El tiempo limite de espera ha expirado");
+                  modalError.onOpen();
+                  setIsLoading(false);
+                }
+                modalError.onOpen();
+                setIsLoading(false);
+
+                if (error.response?.data) {
+                  setErrorMessage(
+                    error.response.data.observaciones &&
+                      error.response.data.observaciones.length > 0
+                      ? error.response?.data.observaciones.join("\n\n")
+                      : ""
+                  );
+                  setTitle(
+                    error.response?.data.descripcionMsg ??
+                      "Error al procesar venta"
+                  );
+                  await save_logs({
+                    title:
+                      error.response.data.descripcionMsg ??
+                      "Error al procesar venta",
+                    message:
+                      error.response.data.observaciones &&
+                      error.response.data.observaciones.length > 0
+                        ? error.response?.data.observaciones.join("\n\n")
+                        : error.response.data.descripcionMsg,
+                    generationCode:
+                      nota_debito.dteJson.identificacion.codigoGeneracion,
+                  });
+                }
+              });
+          } else {
+            modalError.onOpen();
+            setIsLoading(false);
+            setErrorMessage("No se ha podido obtener el token de hacienda");
+            return;
+          }
         })
         .catch(() => {
-          toast.error("Error al firmar el documento");
+          modalError.onOpen();
+          setIsLoading(false);
+          setTitle("Error en el firmador");
+          setErrorMessage("Error al firmar el documento");
         });
     }
   };
@@ -269,7 +411,9 @@ function NotaDebito() {
               </span>
             </p>
           </div>
-          <p className="text-lg font-semibold py-8 dark:text-white">Productos</p>
+          <p className="text-lg font-semibold py-8 dark:text-white">
+            Productos
+          </p>
           {sale_details?.details && (
             <DataTable
               className="shadow"
@@ -326,6 +470,8 @@ function NotaDebito() {
                     className="w-32"
                     defaultValue={rowData.cantidadItem}
                     min={Number(rowData.cantidadItem)}
+                    isInvalid={rowData.newCantidadItem < rowData.cantidadItem}
+                    errorMessage="La cantidad no puede ser menor a la cantidad de venta"
                     type="number"
                     onChange={(e) =>
                       updateQuantity(Number(e.target.value), rowData.id)
@@ -396,11 +542,24 @@ function NotaDebito() {
             <Button
               style={global_styles().thirdStyle}
               onClick={proccessNotaDebito}
+              disabled={isLoading}
             >
-              Procesar Nota Debito
+              {isLoading ? (
+                <LoaderIcon className="animate-spin" />
+              ) : (
+                "Procesar Nota de Debito"
+              )}
             </Button>
           </div>
         </div>
+        <HeadlessModal
+          isOpen={false}
+          onClose={() => {}}
+          title="Cargando"
+          size="w-[600px]"
+        >
+          <div>{title} {errorMessage}</div>
+        </HeadlessModal>
       </div>
     </Layout>
   );

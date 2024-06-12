@@ -12,7 +12,7 @@ export interface FC_Identificacion {
     motivoContin: string | null,
     fecEmi: string,
     horEmi: string,
-    tipoMoneda: "USD"
+    tipoMoneda: string
 }
 
 export interface FC_DocumentoRelacionadoItems {

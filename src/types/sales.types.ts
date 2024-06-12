@@ -104,6 +104,7 @@ export interface Detail {
 	branchProduct: BranchProduct;
 	saleId: number;
 	branchProductId: number;
+	isEdited: boolean;
 }
 
 export interface SaleDetails {
@@ -141,7 +142,7 @@ export interface SaleDetails {
 	employeeId: number;
 	salesStatusId: number;
 	details: Detail[];
-	isEdited: boolean;
+	
 }
 
 export interface IGetSaleDetails {
