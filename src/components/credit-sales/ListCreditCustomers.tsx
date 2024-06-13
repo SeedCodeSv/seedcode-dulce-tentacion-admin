@@ -10,7 +10,7 @@ import { toast } from 'sonner';
 import { useCorrelativesDteStore } from '../../store/correlatives_dte.store';
 import { useTransmitterStore } from '../../store/transmitter.store';
 import { SVFE_FC_SEND } from '../../types/svf_dte/fc.types';
-import { generate_factura } from '../../utils/DTE/factura';
+import { generate_credit_factura } from '../../utils/DTE/factura';
 import { firmarDocumentoFactura, send_to_mh } from '../../services/DTE.service';
 import { get_token, return_mh_token } from '../../storage/localStorage';
 import { PayloadMH } from '../../types/DTE/DTE.types';
@@ -23,7 +23,6 @@ import { s3Client } from '../../plugins/s3';
 import { SendMHFailed } from '../../types/transmitter.types';
 import { Customer } from '../../types/customers.types';
 import { pdf } from '@react-pdf/renderer';
-import { ICartProduct } from '../../types/branch_products.types';
 
 const ListCreditCustomers = () => {
   const { theme } = useContext(ThemeContext);
@@ -37,6 +36,8 @@ const ListCreditCustomers = () => {
   const { getCorrelativesByDte } = useCorrelativesDteStore();
 
   const [customer, setCustomer] = useState<Customer>();
+  const [cantidad] = useState<number>(0);
+  const [interes] = useState<number>(0);
   const [, setErrorMessage] = useState('');
   const [, setTitle] = useState<string>('');
   const [selectedAccount, setSelectedAccount] = useState<number>(0);
@@ -70,37 +71,24 @@ const ListCreditCustomers = () => {
       toast.info('Debes seleccionar el cliente');
       return;
     }
+
     const paymentType = [
       {
         codigo: '01',
-        plazo: '',
-        periodo: 0,
-        montoPago: 0,
-        referencia: '',
+        plazo: '02',
+        periodo: 2,
+        montoPago: 25,
+        referencia: null,
       },
     ];
 
-    const exampleProduct = [
-      {
-        id: 1,
-        stock: 10,
-        price: 5,
-        isActive: true,
-        quantity: 1,
-        discount: 0,
-        percentage: 0,
-        total: 0,
-        base_price: 0,
-      },
-    ];
-
-    const generate = generate_factura(
+    const generate = generate_credit_factura(
       transmitter,
       Number(correlatives!.siguiente),
-      { id: 1, codigo: '01', valores: 'Factura Comercial', isActivated: true },
+      { id: 1, codigo: '01', valores: 'Factura', isActivated: true },
+      cantidad,
+      interes,
       customer as Customer,
-      //only for test
-      exampleProduct as unknown as ICartProduct[],
       paymentType
     );
 
@@ -139,12 +127,12 @@ const ListCreditCustomers = () => {
 
                   const json_url = `CLIENTES/${
                     transmitter.nombre
-                  }/${new Date().getFullYear()}/VENTAS/FACTURAS/${formatDate()}/${
+                  }/${new Date().getFullYear()}/CREDITOS/FACTURAS/${formatDate()}/${
                     generate.dteJson.identificacion.codigoGeneracion
                   }/${generate.dteJson.identificacion.codigoGeneracion}.json`;
                   const pdf_url = `CLIENTES/${
                     transmitter.nombre
-                  }/${new Date().getFullYear()}/VENTAS/FACTURAS/${formatDate()}/${
+                  }/${new Date().getFullYear()}/CREDITOS/FACTURAS/${formatDate()}/${
                     generate.dteJson.identificacion.codigoGeneracion
                   }/${generate.dteJson.identificacion.codigoGeneracion}.pdf`;
 

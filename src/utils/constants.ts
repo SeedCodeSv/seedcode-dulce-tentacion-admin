@@ -62,6 +62,7 @@ export const views_enabled = [
   'Proveedores',
   'Ordenes de compra',
   'Descuentos',
+  'Creditos de clientes',
 ];
 
 export const views_seller = [
@@ -70,4 +71,5 @@ export const views_seller = [
   'Ventas',
   'Productos',
   'Reporte de ventas',
+  'Creditos de clientes',
 ];
