@@ -16,7 +16,6 @@ import { formatCurrency } from "../utils/dte";
 import { SeedcodeCatalogosMhService } from "seedcode-catalogos-mh";
 
 function Test() {
-
   const makePDF = () => {
     const doc = new jsPDF();
 
@@ -125,7 +124,8 @@ function Test() {
 
     const text3Y2 = text2Y2 + nitHeight + 1;
     const codigoGen = doc.splitTextToSize(
-      `CODIGO GENERACION ${" "} ${" "} : ${" "}${JSONDTE.identificacion.codigoGeneracion
+      `CODIGO GENERACION ${" "} ${" "} : ${" "}${
+        JSONDTE.identificacion.codigoGeneracion
       }`,
       120
     );
@@ -134,7 +134,8 @@ function Test() {
 
     const text4Y2 = text3Y2 + codigoGenHeight + 1;
     const numeroControl = doc.splitTextToSize(
-      `NUMERO DE CONTROL ${" "} ${" "} : ${" "}${JSONDTE.identificacion.numeroControl
+      `NUMERO DE CONTROL ${" "} ${" "} : ${" "}${
+        JSONDTE.identificacion.numeroControl
       }`,
       120
     );
@@ -151,7 +152,8 @@ function Test() {
 
     const text6Y2 = text5Y2 + selloHeight + 1;
     const fecHora = doc.splitTextToSize(
-      `FECHA HORA EMISION ${" "} ${" "} : ${" "}${JSONDTE.identificacion.fecEmi
+      `FECHA HORA EMISION ${" "} ${" "} : ${" "}${
+        JSONDTE.identificacion.fecEmi
       }: ${JSONDTE.identificacion.horEmi}`,
       120
     );
@@ -271,7 +273,7 @@ function Test() {
       5,
       finalY + 2,
       doc.internal.pageSize.width - 10,
-      10,
+      12,
       2,
       2,
       "S"
@@ -288,7 +290,21 @@ function Test() {
           cellWidth: 60,
         },
       },
-      body: [["", ""]],
+      body: [
+        [
+          JSONDTE.identificacion.tipoDte === "01"
+            ? "Factura Comercial"
+            : "Comprobante de Crédito Fiscal",
+          JSONDTE.identificacion.codigoGeneracion,
+          JSONDTE.identificacion.fecEmi,
+        ],
+      ],
+      bodyStyles: {
+        fontSize: 7,
+      },
+      margin: {
+        bottom: 5,
+      },
       startY: finalY + 2,
     });
 
@@ -327,7 +343,7 @@ function Test() {
 
     autoTable(doc, {
       theme: "plain",
-      startY: finalY,
+      startY: finalY + 5,
       margin: {
         right: 5,
         left: 5,
@@ -372,30 +388,52 @@ function Test() {
     for (let i = 1; i <= pageCount; i++) {
       doc.setPage(i);
       if (i !== 1) {
-        headerDoc(doc)
+        headerDoc(doc);
       }
       doc.roundedRect(doc.internal.pageSize.width - 45, 20, 40, 20, 2, 2, "S");
-      doc.setFontSize(5)
-      returnBoldText(doc, "DOCUMENTO TRIBUTARIO ELECTRONICO", doc.internal.pageSize.width - 25, 23, "center")
-      const docName = doc.splitTextToSize("COMPROBANTE DE CRÉDITO FISCAL", 30)
-      doc.setFontSize(6)
-      returnBoldText(doc, docName, doc.internal.pageSize.width - 25, 26, "center")
-      doc.setFontSize(7)
-      returnBoldText(doc, `N.I.T. ${JSONDTE.emisor.nit}`, doc.internal.pageSize.width - 25, 33, "center")
-      returnBoldText(doc, `NRC No. ${JSONDTE.emisor.nrc}`, doc.internal.pageSize.width - 25, 36, "center")
+      doc.setFontSize(5);
+      returnBoldText(
+        doc,
+        "DOCUMENTO TRIBUTARIO ELECTRONICO",
+        doc.internal.pageSize.width - 25,
+        23,
+        "center"
+      );
+      const docName = doc.splitTextToSize("NOTA DE DÉBITO", 30);
+      doc.setFontSize(6);
+      returnBoldText(
+        doc,
+        docName,
+        doc.internal.pageSize.width - 25,
+        26,
+        "center"
+      );
+      doc.setFontSize(7);
+      returnBoldText(
+        doc,
+        `N.I.T. ${JSONDTE.emisor.nit}`,
+        doc.internal.pageSize.width - 25,
+        33,
+        "center"
+      );
+      returnBoldText(
+        doc,
+        `NRC No. ${JSONDTE.emisor.nrc}`,
+        doc.internal.pageSize.width - 25,
+        36,
+        "center"
+      );
       doc.addImage(QR, "PNG", doc.internal.pageSize.width - 67, 20, 18, 18);
       const margin = 5;
       const rectWidth = doc.internal.pageSize.getWidth() - 2 * margin;
       const radius = 2;
       const rectHeight =
         doc.internal.pageSize.getHeight() -
-        (i > 1 ? 50 : finalYFirtsPage) -
+        (i > 1 ? 50 : finalYFirtsPage + 5) -
         margin +
         (i > 1 ? 0 : pageCount > 1 ? 50 : 0);
 
       const rectMargin = doc.internal.pageSize.getHeight() - 50 - margin;
-
-      console.log("margin: ", rectMargin);
 
       doc.setFillColor(255, 255, 255);
       doc.setDrawColor(0, 0, 0);
@@ -403,7 +441,7 @@ function Test() {
       doc.setFillColor("#ced4da");
       doc.roundedRect(
         85,
-        i > 1 ? 50 : finalYFirtsPage,
+        i > 1 ? 50 : finalYFirtsPage + 5,
         20,
         rectHeight - 50,
         0,
@@ -413,7 +451,7 @@ function Test() {
       // doc.roundedRect(105, 50, 20, rectHeight, 0, 0, "S");
       doc.roundedRect(
         125,
-        i > 1 ? 50 : finalYFirtsPage,
+        i > 1 ? 50 : finalYFirtsPage + 5,
         20,
         rectHeight - 50,
         0,
@@ -423,7 +461,7 @@ function Test() {
       // doc.roundedRect(145, 50, 20, rectHeight, 0, 0, "S");
       doc.roundedRect(
         165,
-        i !== 1 ? 50 : finalYFirtsPage,
+        i !== 1 ? 50 : finalYFirtsPage + 5,
         20,
         rectHeight - 50,
         0,
@@ -432,7 +470,7 @@ function Test() {
       );
       doc.roundedRect(
         margin,
-        i !== 1 ? 50 : finalYFirtsPage,
+        i !== 1 ? 50 : finalYFirtsPage + 5,
         rectWidth,
         rectHeight - (i !== 1 ? 0 : pageCount === 1 ? 0 : 50),
         radius,
@@ -443,7 +481,7 @@ function Test() {
       doc.setFillColor("#ced4da");
       doc.roundedRect(
         margin,
-        i !== 1 ? 50 : finalYFirtsPage,
+        i !== 1 ? 50 : finalYFirtsPage + 5,
         rectWidth,
         8,
         radius,
@@ -451,7 +489,7 @@ function Test() {
         "FD"
       );
       autoTable(doc, {
-        startY: i !== 1 ? 50 : finalYFirtsPage,
+        startY: i !== 1 ? 50 : finalYFirtsPage + 5,
         theme: "plain",
         head: [headers],
         columnStyles: {
@@ -781,12 +819,8 @@ export const makeHeader = (doc: jsPDF, lastTop: number) => {
 
 // #region FooterTable
 export const footerDocument = (doc: jsPDF, rectMargin: number) => {
-  const { resumen } = JSONDTE
-  doc.text(
-    `${resumen.totalLetras}`,
-    10,
-    rectMargin + 4
-  );
+  const { resumen } = JSONDTE;
+  doc.text(`${resumen.totalLetras}`, 10, rectMargin + 4);
   doc.text("SUMA DE VENTAS:", 120, rectMargin + 4);
   doc.text(`$${" "} ${" "} ${resumen.totalNoSuj}`, 145, rectMargin + 4);
   doc.text(`$${" "} ${" "} ${resumen.totalExenta}`, 165, rectMargin + 4);
@@ -823,14 +857,11 @@ export const footerDocument = (doc: jsPDF, rectMargin: number) => {
   );
   doc.text("IVA 13%: ", 127, rectMargin + 22);
   doc.text("Sub-Total: ", 127, rectMargin + 25);
-  doc.text("IVA Percibido: ", 127, rectMargin + 28);
-  doc.text("IVA Retenido: ", 127, rectMargin + 31);
-  doc.text("Retención Renta: ", 127, rectMargin + 34);
-  doc.text("Monto Total de la Operación: ", 127, rectMargin + 37);
-  doc.text("Total Otros montos no afectos: ", 127, rectMargin + 40);
-  doc.text("Total a Pagar: ", 127, rectMargin + 43);
+  doc.text("Monto Total de la Operación: ", 127, rectMargin + 28);
+  doc.text("Total Otros montos no afectos: ", 127, rectMargin + 31);
+  doc.text("Total a Pagar: ", 127, rectMargin + 34);
 
-  for (let i = 0; i < 12; i++) {
+  for (let i = 0; i < 9; i++) {
     doc.text("$", 185, rectMargin + i * 3 + 10);
   }
 
@@ -839,11 +870,11 @@ export const footerDocument = (doc: jsPDF, rectMargin: number) => {
     resumen.descuNoSuj.toFixed(2),
     resumen.descuExenta.toFixed(2),
     resumen.descuGravada.toFixed(2),
-    resumen.tributos.map((tr) => Number(tr.valor)).reduce((a, b) => a + b).toFixed(2),
+    resumen.tributos
+      .map((tr) => Number(tr.valor))
+      .reduce((a, b) => a + b)
+      .toFixed(2),
     resumen.subTotal.toFixed(2),
-    resumen.ivaPerci1.toFixed(2),
-    resumen.ivaRete1.toFixed(2),
-    resumen.reteRenta.toFixed(2),
     resumen.montoTotalOperacion.toFixed(2),
     "0.00",
     resumen.totalPagar.toFixed(2),
@@ -893,8 +924,7 @@ export const headerDoc = (doc: jsPDF) => {
   returnBoldText(doc, `TEL: ${JSONDTE.emisor.telefono}`, 90, distTel, "center");
 };
 
-
-// #region Return Address 
+// #region Return Address
 
 export const returnAddress = (depP: string, munP: string) => {
   const catalogos_service = new SeedcodeCatalogosMhService();
