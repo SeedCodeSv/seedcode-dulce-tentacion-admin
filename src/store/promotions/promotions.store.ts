@@ -3,6 +3,7 @@ import { toast } from 'sonner';
 import {
   create_promotion_discount,
   get_promotions,
+  patch_promotion_branch,
 } from '../../services/promotions/promotions_discount.service';
 import { IPromotionsStore } from './types/promotions.store';
 import { messages } from '../../utils/constants';
@@ -27,6 +28,18 @@ export const usePromotionsStore = create<IPromotionsStore>((set) => ({
       })
       .catch(() => {
         toast.error(messages.error);
+      });
+  },
+  patchPromotions(payload, id) {
+    return patch_promotion_branch(payload, id)
+      .then((res) => {
+        toast.success(messages.success);
+         
+        return res.data.ok;
+      })
+      .catch(() => {
+        toast.warning(messages.error);
+        return false;
       });
   },
 

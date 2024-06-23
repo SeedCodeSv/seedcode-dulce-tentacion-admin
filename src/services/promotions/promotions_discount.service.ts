@@ -25,3 +25,12 @@ export const get_promotions = (page = 1, limit = 8, branchId: number, type: stri
     }
   );
 };
+
+export const patch_promotion_branch = (payload: PromotionPayload, id: number) => {
+  const token = get_token() ?? '';
+  return axios.patch<{ ok: boolean }>(API_URL + '/promotion-discounts/' + id, payload, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { IGetProductsPaginated, ProductPayload } from '../types/products.types';
+import { IGetProductsPaginated, ProductList, ProductPayload } from '../types/products.types';
 import { API_URL } from '../utils/constants';
 import { get_token } from '../storage/localStorage';
 
@@ -24,6 +24,17 @@ export const create_products = (values: ProductPayload) => {
     },
   });
 };
+
+
+export const get_promotions_products_list = () => {
+  const token = get_token() ?? '';
+  return axios.get<ProductList>(API_URL + `/products`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
 
 export const update_products = (values: ProductPayload, id: number) => {
   const token = get_token() ?? '';

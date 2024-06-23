@@ -8,6 +8,7 @@ import {
   Select,
   SelectItem,
   Textarea,
+  Tooltip,
 } from '@nextui-org/react';
 import { Formik } from 'formik';
 import { Key, useContext, useEffect, useState } from 'react';
@@ -27,6 +28,7 @@ import { Tab, Tabs } from '@nextui-org/react';
 import React from 'react';
 import AddPromotionsByProducts from './AddPromotionsByProducts';
 import AddPromotionsByCategory from './AddPromotionsByCategory';
+
 
 function AddDiscount() {
   const [selectedBranchId] = useState<number | null>(null);
@@ -71,28 +73,23 @@ function AddDiscount() {
       .number()
       .required('**El precio es requerido**')
       .min(0, '**El precio no puede ser negativo**'),
-    operator: yup
-      .string()
-      .oneOf(['=', '>', '<', '>=', '<='])
-      .required('**El operador es requerido**'),
     operatorPrice: yup
       .string()
       .oneOf(['=', '>', '<', '>=', '<='])
       .required('**El operador es requerido**'),
-
-    quantity: yup
-      .number()
-      .required('**La cantidad es requerida**')
-      .min(0, '**La cantidad no puede ser negativa**'),
-    maximum: yup
-      .number()
-      .required('**La cantidad máxima es requerida**')
-      .min(0, '**La cantidad máxima no puede ser negativa**'),
     fixedPrice: yup.number().min(0, '**El precio fijo no puede ser negativo**'),
 
-    branchId: yup.string().required('**La sucursal es requerida**'),
+    branchId: yup
+      .string()
+      .required('**Debes seleccionar la sucursal**')
+      .min(1, '**Debes seleccionar la sucursal*'),
 
     description: yup.string().required('**La descripción es requerida**'),
+    percentage: yup
+      .number()
+      .required('**El porcentaje es requerido**')
+      .min(0, '**El porcentaje no puede ser negativo**')
+      .max(100, '**El porcentaje no puede ser mayor a 100**'),
   });
   const { getPaginatedBranchProducts } = useBranchProductStore();
   const { postPromotions } = usePromotionsStore();
@@ -101,6 +98,8 @@ function AddDiscount() {
       getPaginatedBranchProducts(Number(selectedBranchId));
     }
   }, [selectedBranchId]);
+
+  const navigate = useNavigate();
   useEffect(() => {
     getBranchesList();
   }, []);
@@ -109,7 +108,7 @@ function AddDiscount() {
     const payload = {
       ...values,
       branchId: branchId,
-      operator: values.operator,
+      // operator: values.operator,
       operatorPrice: values.operatorPrice,
       startDate: startDate,
       endDate: endDate,
@@ -118,18 +117,22 @@ function AddDiscount() {
       priority: selectedPriority,
     };
     postPromotions(payload);
+    navigate('/discounts');
   };
-  const navigate = useNavigate();
+
   const [selected, setSelected] = React.useState<string>('sucursales');
 
   const handleSelectionChange = (key: Key) => {
     setSelected(key as string);
   };
+
+  const [showTooltipFixedPrice, setShowTooltipFixedPrice] = useState(false);
+  // const [showTooltip, setShowTooltip] = useState(false);
   return (
     <Layout title="Nueva Promoción">
       <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
-        <div className="w-full flex flex-col h-full p-5 bg-white shadow rounded-xl dark:bg-transparent">
-          <div className="justify-between w-full   lg:flex-row lg:gap-0">
+        <div className="w-full flex flex-col h-full dark:bg-transparent relative p-2">
+          <div className="justify-between w-full lg:flex-row lg:gap-0 absolute top-8 left-4 ">
             <ArrowLeft
               onClick={() => {
                 navigate('/discounts');
@@ -138,7 +141,7 @@ function AddDiscount() {
               size={25}
             />
           </div>
-          <div className="flex flex-col justify-center items-center w-full">
+          <div className="flex flex-col justify-center items-center w-full p-5  shadow rounded-xl border dark:border-gray-600 ">
             <Tabs
               aria-label="Options"
               selectedKey={selected}
@@ -154,12 +157,12 @@ function AddDiscount() {
                     description: '',
                     startDate: formatDate(),
                     endDate: formatDate(),
-                    quantity: 0,
+                    // quantity: 0,
                     percentage: 0,
-                    operator: '',
+                    // operator: '',
                     operatorPrice: '',
                     fixedPrice: 0,
-                    maximum: 0,
+                    // maximum: 0,
                     price: 0,
                     priority: '',
                   }}
@@ -174,8 +177,8 @@ function AddDiscount() {
                     handleSubmit,
                     setFieldValue,
                   }) => (
-                    <form className="w-full mt-4" onSubmit={handleSubmit}>
-                      <div className="grid grid-cols-2 gap-5 w-full">
+                    <form className="w-full mt-4 " onSubmit={handleSubmit}>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-5 w-full">
                         {/* Columna 1 */}
                         <div>
                           <Input
@@ -207,7 +210,7 @@ function AddDiscount() {
                                 placeholder="0"
                                 classNames={{ label: 'font-semibold text-gray-500 text-sm' }}
                                 variant="bordered"
-                                type="number"
+                                className='dark:text-white'
                               />
                               {errors.price && touched.price && (
                                 <span className="text-sm font-semibold text-red-500">
@@ -220,7 +223,7 @@ function AddDiscount() {
                                 variant="bordered"
                                 placeholder="Selecciona el operador"
                                 className="w-full dark:text-white"
-                                label="Operador de"
+                                label="Operador de precio"
                                 labelPlacement="outside"
                                 classNames={{ label: 'font-semibold text-gray-500 text-sm' }}
                                 value={values.operatorPrice}
@@ -243,70 +246,6 @@ function AddDiscount() {
                               )}
                             </div>
                           </div>
-
-                          <div className="grid grid-cols-3 gap-2 w-full mt-4">
-                            <div>
-                              <Input
-                                label="Cantidad Minima"
-                                labelPlacement="outside"
-                                name="quantity"
-                                value={values.quantity.toString()}
-                                onChange={handleChange('quantity')}
-                                onBlur={handleBlur('quantity')}
-                                placeholder="0"
-                                classNames={{ label: 'font-semibold text-gray-500 text-sm' }}
-                                variant="bordered"
-                                type="number"
-                              />
-                              {errors.quantity && touched.quantity && (
-                                <span className="text-sm font-semibold text-red-500">
-                                  {errors.quantity}
-                                </span>
-                              )}
-                            </div>
-                            <div>
-                              <Select
-                                variant="bordered"
-                                placeholder="Selecciona el operador"
-                                className="w-full dark:text-white"
-                                label="Operador"
-                                labelPlacement="outside"
-                                classNames={{ label: 'font-semibold text-gray-500 text-sm' }}
-                                value={values.operator}
-                                onChange={(e) => setFieldValue('operator', e.target.value)}
-                              >
-                                {operadores.map((operator) => (
-                                  <SelectItem
-                                    key={operator.value}
-                                    value={operator.value}
-                                    className="dark:text-white"
-                                  >
-                                    {operator.label}
-                                  </SelectItem>
-                                ))}
-                              </Select>
-                            </div>
-                            <div>
-                              <Input
-                                label="Cantidad Maxima"
-                                labelPlacement="outside"
-                                name="maximum"
-                                value={values.maximum?.toString()}
-                                onChange={handleChange('maximum')}
-                                onBlur={handleBlur('maximum')}
-                                placeholder="0"
-                                classNames={{ label: 'font-semibold text-gray-500 text-sm' }}
-                                variant="bordered"
-                                type="number"
-                              />
-                              {errors.maximum && touched.maximum && (
-                                <span className="text-sm font-semibold text-red-500">
-                                  {errors.maximum}
-                                </span>
-                              )}
-                            </div>
-                          </div>
-
                           <div className="grid grid-cols-2 gap-5 mt-4">
                             <div>
                               <Input
@@ -343,18 +282,7 @@ function AddDiscount() {
                               )}
                             </div>
                           </div>
-                          <div className="grid grid-cols-1">
-                            <h1 className="text-sm mb-6 font-semibold ">
-                              Selecciona los días de la semana
-                            </h1>
-                            <div className=" grid grid-cols-6 items-start ">
-                              <WeekSelector
-                                startDate={startDate}
-                                endDate={endDate}
-                                onDaysSelected={handleDaysSelected}
-                              />
-                            </div>
-                          </div>
+
                           <div className="mt-5">
                             <Textarea
                               label="Descripción"
@@ -373,14 +301,28 @@ function AddDiscount() {
                               </span>
                             )}
                           </div>
+                          <div className="grid grid-cols-1">
+                            <h1 className="text-sm mb-3 font-semibold mt-4 dark:text-white">
+                              Selecciona los días de la semana
+                            </h1>
+                            <div className=" grid grid-cols-6 items-start ">
+                              <WeekSelector
+                                startDate={startDate}
+                                endDate={endDate}
+                                onDaysSelected={handleDaysSelected}
+                              />
+                            </div>
+                          </div>
                         </div>
 
                         {/* Columna 2 */}
                         <div>
                           <Autocomplete
+                            className="font-semibold"
                             label="Sucursal"
                             labelPlacement="outside"
                             placeholder="Selecciona la sucursal"
+                            variant="bordered"
                           >
                             {branch_list.map((branch) => (
                               <AutocompleteItem
@@ -400,50 +342,106 @@ function AddDiscount() {
                           )}
 
                           <div className="mt-10">
-                            <Input
-                              label="Porcentaje de descuento"
-                              labelPlacement="outside"
-                              name="percentage"
-                              value={values.percentage.toString()}
-                              onChange={(e) => {
-                                const newValue = parseFloat(e.target.value);
-                                handleChange('percentage')(newValue.toString());
-                                if (newValue > 0) {
-                                  setFieldValue('fixedPrice', 0);
-                                }
-                              }}
-                              onBlur={handleBlur('percentage')}
-                              placeholder="0"
-                              classNames={{ label: 'font-semibold text-gray-500 text-sm' }}
-                              variant="bordered"
-                              type="number"
-                              startContent="%"
-                            />
+                            <div>
+                              {/* <Tooltip
+                                color="primary"
+                                content="Solo puedes llenar uno de los campos: porcentaje o precio fijo"
+                                isOpen={showTooltip}
+                                onOpenChange={setShowTooltip}
+                                placement="right"
+                              >
+                                <Input
+                                  label="Porcentaje"
+                                  labelPlacement="outside"
+                                  name="percentage"
+                                  type="number"
+                                  value={values.percentage ? values.percentage.toString() : ''}
+                                  onChange={(e) => {
+                                    const newValue = parseFloat(e.target.value);
+                                    handleChange('percentage')(e);
+                                    if (newValue > 0) {
+                                      setFieldValue('fixedPrice', 0);
+                                      setShowTooltip(false);
+                                    }
+                                    if (newValue > 0 && values.fixedPrice > 0) {
+                                      setShowTooltip(true);
+                                    }
+                                  }}
+                                  onBlur={handleBlur('percentage')}
+                                  placeholder="0"
+                                  classNames={{ label: 'font-semibold text-gray-500 text-sm' }}
+                                  variant="bordered"
+                                />
+                                
+                              </Tooltip> */}
+
+                              <Input
+                                label="Porcentaje"
+                                labelPlacement="outside"
+                                name="percentage"
+                                type="number"
+                                value={values.percentage ? values.percentage.toString() : ''}
+                                onChange={(e) => {
+                                  const newValue = parseFloat(e.target.value);
+                                  handleChange('percentage')(e);
+                                  if (newValue > 0) {
+                                    setFieldValue('fixedPrice', 0);
+                                    // setShowTooltip(false);
+                                  }
+                                  if (newValue > 0 && values.fixedPrice > 0) {
+                                    // setShowTooltip(true);
+                                  }
+                                }}
+                                onBlur={handleBlur('percentage')}
+                                placeholder="0"
+                                classNames={{ label: 'font-semibold text-gray-500 text-sm' }}
+                                variant="bordered"
+                              />
+                              {errors.percentage && touched.percentage && (
+                                <span className="text-sm font-semibold text-red-500">
+                                  {errors.percentage}
+                                </span>
+                              )}
+                            </div>
                           </div>
+
                           <div className="mt-10">
-                            <Input
-                              label="Precio Fijo"
-                              labelPlacement="outside"
-                              name="fixedPrice"
-                              value={values.fixedPrice ? values.fixedPrice.toString() : ''}
-                              onChange={(e) => {
-                                const newValue = parseFloat(e.target.value);
-                                handleChange('fixedPrice')(newValue.toString());
-                                if (newValue > 0) {
-                                  setFieldValue('percentage', 0);
-                                }
-                              }}
-                              onBlur={handleBlur('fixedPrice')}
-                              placeholder="0"
-                              classNames={{ label: 'font-semibold text-gray-500 text-sm' }}
-                              variant="bordered"
-                              type="number"
-                              startContent="$"
-                            />
+                            <Tooltip                              
+                              color="primary"
+                              className="capitize"
+                              content="Solo puedes llenar uno de los campos: porcentaje o precio fijo"
+                              isOpen={showTooltipFixedPrice}
+                              onOpenChange={setShowTooltipFixedPrice}
+                              placement="bottom-start"
+                            >
+                              <Input
+                                label="Precio Fijo"
+                                labelPlacement="outside"
+                                name="fixedPrice"
+                                type="number"
+                                value={values.fixedPrice ? values.fixedPrice.toString() : ''}
+                                onChange={(e) => {
+                                  const newValue = parseFloat(e.target.value);
+                                  handleChange('fixedPrice')(e);
+                                  if (newValue > 0) {
+                                    setFieldValue('percentage', 0);
+                                    setShowTooltipFixedPrice(false);
+                                  }
+                                  if (newValue > 0 && values.percentage > 0) {
+                                    setShowTooltipFixedPrice(true);
+                                  }
+                                }}
+                                onBlur={handleBlur('fixedPrice')}
+                                placeholder="0"
+                                classNames={{ label: 'font-semibold text-gray-500 text-sm' }}
+                                variant="bordered"
+                              />
+                            </Tooltip>
                           </div>
+
                           <div className="mt-4">
                             <CheckboxGroup
-                              className="font-semibold text-black text-lg "
+                              className="font-semibold text-black text-lg dark:text-white"
                               orientation="horizontal"
                               value={selectedPriority ? [selectedPriority] : []}
                               onChange={handlePriorityChange}
@@ -464,16 +462,16 @@ function AddDiscount() {
                               </span>
                             )}
                           </div>
-                          <div className="mt-44">
-                            <Button
-                              type="submit"
-                              style={style}
-                              className="hidden font-semibold md:flex w-full h-full py-2"
-                            >
-                              Crear Promoción
-                            </Button>
-                          </div>
                         </div>
+                      </div>
+                      <div className="mt-4 flex flex-row justify-center">
+                        <Button
+                          type="submit"
+                          style={style}
+                          className="hidden w-44 font-semibold md:flex h-full py-2"
+                        >
+                          Crear Promoción
+                        </Button>
                       </div>
                     </form>
                   )}
@@ -482,9 +480,10 @@ function AddDiscount() {
               <Tab key="productos" title="Productos">
                 <AddPromotionsByProducts />
               </Tab>
-              <Tab key="categoria" title="Categoria">
+              <Tab key="categoria" title="Categorias">
                 <AddPromotionsByCategory />
               </Tab>
+         
             </Tabs>
           </div>
         </div>

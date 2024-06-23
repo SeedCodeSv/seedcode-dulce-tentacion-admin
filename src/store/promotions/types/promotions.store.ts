@@ -9,6 +9,7 @@ export interface IPromotionsStore {
   pagination_promotions: IGetPromotionsPaginated;
   loading_products: boolean;
   postPromotions: (payload: PromotionPayload) => void;
+  patchPromotions: (payload: PromotionPayload, id:number) => void;
   getPaginatedPromotions: (
     page: number,
     limit: number,

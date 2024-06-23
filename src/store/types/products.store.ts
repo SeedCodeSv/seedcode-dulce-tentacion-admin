@@ -1,7 +1,8 @@
 import { TipoDeItem } from '../../types/billing/cat-011-tipo-de-item.types';
-import { IGetProductsPaginated, ProductPayload } from '../../types/products.types';
+import { IGetProductsPaginated, Product, ProductPayload } from '../../types/products.types';
 
 export interface IProductsStore {
+  products_list: Product[],
   cat_011_tipo_de_item: TipoDeItem[];
   loading_products: boolean;
   paginated_products: IGetProductsPaginated;
@@ -18,4 +19,5 @@ export interface IProductsStore {
   patchProducts: (payload: ProductPayload, id: number) => void;
   deleteProducts: (id: number) => void;
   activateProduct: (id: number) => Promise<void>;
+  getListProductsList: () => void;
 }

@@ -1,6 +1,4 @@
 import {
- 
-
   Button,
   Checkbox,
   CheckboxGroup,
@@ -8,6 +6,9 @@ import {
   Select,
   SelectItem,
   Textarea,
+  Autocomplete,
+  AutocompleteItem,
+  Tooltip,
 } from '@nextui-org/react';
 import { Formik } from 'formik';
 import { useContext, useEffect, useState } from 'react';
@@ -16,22 +17,23 @@ import { ThemeContext } from '../../hooks/useTheme';
 import WeekSelector from './WeekSelector';
 import { useBranchesStore } from '../../store/branches.store';
 import { formatDate } from '../../utils/dates';
-import {  operadores } from '../../utils/constants';
+import { operadores } from '../../utils/constants';
 import { PromotionCategories } from '../../types/promotions.types';
 import { useBranchProductStore } from '../../store/branch_product.store';
 import { usePromotionsByCategoryStore } from '../../store/promotions/promotionsByCategory.store';
 import { useCategoriesStore } from '../../store/categories.store';
+import { useNavigate } from 'react-router';
 
 function AddPromotionsByCategory() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const { categories_list, getListCategoriesList } = useCategoriesStore();
   const [selectedBranchId] = useState<number | null>(null);
   // const [selectedPromotion, setSelectedPromotion] = useState('');
-  const [branchId, ] = useState(0);
+  const [branchId, setBranchId] = useState(0);
   const [endDate, setEndDate] = useState(formatDate());
   const [startDate, setStartDate] = useState(formatDate());
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
-  const { getBranchesList } = useBranchesStore();
+  const { getBranchesList, branch_list } = useBranchesStore();
   useEffect(() => {
     getListCategoriesList();
   }, []);
@@ -72,12 +74,13 @@ function AddPromotionsByCategory() {
   useEffect(() => {
     getBranchesList();
   }, []);
+  const navigate = useNavigate();
   const handleSave = (values: PromotionCategories) => {
     const daysArrayString = JSON.stringify(selectedDays);
     const payload = {
       ...values,
       branchId: branchId,
-      operator: values.operator,
+      // operator: values.operator,
       operatorPrice: values.operatorPrice,
       startDate: startDate,
       endDate: endDate,
@@ -87,7 +90,9 @@ function AddPromotionsByCategory() {
       categories: selectedCategories.map((categories) => ({ categoryId: Number(categories) })),
     };
     postPromotions(payload);
+    navigate('/discounts');
   };
+  const [showTooltipFixedPrice, setShowTooltipFixedPrice] = useState(false);
 
   return (
     <>
@@ -101,13 +106,13 @@ function AddPromotionsByCategory() {
             description: '',
             startDate: formatDate(),
             endDate: formatDate(),
-            quantity: 0,
+            // quantity: 0,
             percentage: 0,
-            operator: '',
+            // operator: '',
             operatorPrice: '',
             fixedPrice: 0,
             typePromotion: '',
-            maximum: 0,
+            // maximum: 0,
             price: 0,
             priority: '',
             categories: [],
@@ -116,8 +121,9 @@ function AddPromotionsByCategory() {
         >
           {({ values, errors, touched, handleBlur, handleChange, handleSubmit, setFieldValue }) => (
             <>
-              <div className="grid grid-cols-2 gap-5 ">
-                <div className="grid grid-cols-1 gap-5 w-full">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-5 w-full">
+                {/* COLUMNA 1 */}
+                <div>
                   <div>
                     <Input
                       name="name"
@@ -136,7 +142,7 @@ function AddPromotionsByCategory() {
                       </>
                     )}
                   </div>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-2 gap-2 mt-6">
                     <div className="">
                       <Input
                         label="Precio"
@@ -152,6 +158,7 @@ function AddPromotionsByCategory() {
                         variant="bordered"
                         type="number"
                         startContent=""
+                        className="dark:text-white"
                       />
                       {errors.price && touched.price && (
                         <span className="text-sm font-semibold text-red-500">{errors.price}</span>
@@ -162,7 +169,7 @@ function AddPromotionsByCategory() {
                         variant="bordered"
                         placeholder="Selecciona el operador"
                         className="w-full dark:text-white"
-                        label="Operador de"
+                        label="Operador de precio"
                         labelPlacement="outside"
                         classNames={{
                           label: 'font-semibold text-gray-500 text-sm',
@@ -188,126 +195,215 @@ function AddPromotionsByCategory() {
                       )}
                     </div>
                   </div>
-
-                  <div className="grid grid-cols-3 gap-2 w-full ">
-                    <div>
+                  <div className="grid grid-cols-2  gap-4 mt-6">
+                    <div className="">
                       <Input
-                        label="Cantidad Minima"
-                        labelPlacement="outside"
-                        name="quantity"
-                        value={values.quantity.toString()}
-                        onChange={handleChange('quantity')}
-                        onBlur={handleBlur('quantity')}
-                        placeholder="0"
-                        classNames={{
-                          label: 'font-semibold text-gray-500 text-sm',
-                        }}
+                        type="date"
                         variant="bordered"
-                        type="number"
-                        startContent=""
+                        label="Fecha inicial"
+                        labelPlacement="outside"
+                        className="dark:text-white"
+                        classNames={{
+                          label: 'font-semibold',
+                        }}
+                        onChange={(e) => setStartDate(e.target.value)}
+                        value={startDate}
                       />
-                      {errors.quantity && touched.quantity && (
-                        <span className="text-sm font-semibold text-red-500">
-                          {errors.quantity}
-                        </span>
+                      {errors.startDate && touched.startDate && (
+                        <>
+                          <span className="text-sm font-semibold text-red-500">
+                            {errors.startDate}
+                          </span>
+                        </>
                       )}
                     </div>
                     <div>
-                      <Select
-                        variant="bordered"
-                        placeholder="Selecciona el operador"
-                        className="w-full dark:text-white"
-                        label="Operador"
-                        labelPlacement="outside"
-                        classNames={{
-                          label: 'font-semibold text-gray-500 text-sm',
-                        }}
-                        value={values.operator}
-                        onChange={(e) => setFieldValue('operator', e.target.value)}
-                      >
-                        {operadores.map((operator) => (
-                          <SelectItem
-                            key={operator.value}
-                            value={operator.value}
-                            className="dark:text-white"
-                          >
-                            {operator.label}
-                          </SelectItem>
-                        ))}
-                      </Select>
-                    </div>
-                    <div>
                       <Input
-                        label="Cantidad Maxima"
-                        labelPlacement="outside"
-                        name="maximum"
-                        value={values.maximum?.toString()}
-                        onChange={handleChange('maximum')}
-                        onBlur={handleBlur('maximum')}
-                        placeholder="0"
-                        classNames={{
-                          label: 'font-semibold text-gray-500 text-sm',
-                        }}
+                        type="date"
                         variant="bordered"
-                        type="number"
-                        startContent=""
+                        label="Fecha final"
+                        labelPlacement="outside"
+                        className="dark:text-white"
+                        classNames={{
+                          label: 'font-semibold',
+                        }}
+                        onChange={(e) => setEndDate(e.target.value)}
+                        value={endDate}
                       />
-                      {errors.maximum && touched.maximum && (
-                        <span className="text-sm font-semibold text-red-500">{errors.maximum}</span>
+                      {errors.endDate && touched.endDate && (
+                        <>
+                          <span className="text-sm font-semibold text-red-500">
+                            {errors.endDate}
+                          </span>
+                        </>
                       )}
                     </div>
                   </div>
-                </div>
-                <div className="grid grid-cols-1">
-                  <div className="">
-                    <Input
-                      label="Porcentaje de descuento"
+
+                  {/* Descripción  */}
+                  <div className="mt-2">
+                    <Textarea
+                      label="Descripción"
                       labelPlacement="outside"
-                      name="percentage"
-                      value={values.percentage.toString()}
-                      onChange={(e) => {
-                        const newValue = parseFloat(e.target.value);
-                        handleChange('percentage')(newValue.toString());
-                        if (newValue > 0) {
-                          setFieldValue('fixedPrice', 0);
-                        }
-                      }}
-                      onBlur={handleBlur('percentage')}
-                      placeholder="0"
+                      name="description"
+                      value={values.description}
+                      onChange={handleChange('description')}
+                      onBlur={handleBlur('description')}
+                      placeholder="Ingresa la descripción"
                       classNames={{
-                        label: 'font-semibold text-gray-500 text-sm',
+                        label: 'font-semibold text-gray-500 text-sm ',
                       }}
                       variant="bordered"
-                      type="number"
-                      startContent="%"
                     />
-                    <div className="mt-11">
-                      <Input
-                        label="Precio Fijo"
-                        labelPlacement="outside"
-                        name="fixedPrice"
-                        value={values.fixedPrice ? values.fixedPrice.toString() : ''}
-                        onChange={(e) => {
-                          const newValue = parseFloat(e.target.value);
-                          handleChange('fixedPrice')(newValue.toString());
-                          if (newValue > 0) {
-                            setFieldValue('percentage', 0);
-                          }
-                        }}
-                        onBlur={handleBlur('fixedPrice')}
-                        placeholder="0"
+                    {errors.description && touched.description && (
+                      <span className="text-sm font-semibold text-red-500">
+                        {errors.description}
+                      </span>
+                    )}
+                  </div>
+                  <div className="grid grid-cols-1 mt-6">
+                    {/* Seleccionar dia */}
+                    <div className="grid grid-cols-1">
+                      <h1 className="text-sm  font-semibold dark:text-white">
+                        Selecciona los días de la semana
+                      </h1>
+                      <div className=" grid grid-cols-6 items-start mt-2">
+                        <WeekSelector
+                          startDate={startDate}
+                          endDate={endDate}
+                          onDaysSelected={handleDaysSelected}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* COLUMNA 2 */}
+                <div>
+                  <div>
+                    <Autocomplete
+                      className="font-semibold"
+                      label="Sucursal"
+                      labelPlacement="outside"
+                      placeholder="Selecciona la sucursal"
+                      variant="bordered"
+                    >
+                      {branch_list.map((branch) => (
+                        <AutocompleteItem
+                          onClick={() => setBranchId(branch.id)}
+                          className="dark:text-white"
+                          key={branch.id}
+                          value={branch.id}
+                        >
+                          {branch.name}
+                        </AutocompleteItem>
+                      ))}
+                    </Autocomplete>
+                  </div>
+                  <div className="mt-6">
+                    <div className="grid grid-cols-2 gap-2 mt-4">
+                      <div>
+                        <Input
+                          label="Porcentaje"
+                          labelPlacement="outside"
+                          name="percentage"
+                          type="number"
+                          value={values.percentage ? values.percentage.toString() : ''}
+                          onChange={(e) => {
+                            const newValue = parseFloat(e.target.value);
+                            handleChange('percentage')(e);
+                            if (newValue > 0) {
+                              setFieldValue('fixedPrice', 0);
+                              // setShowTooltip(false);
+                            }
+                            if (newValue > 0 && values.fixedPrice > 0) {
+                              // setShowTooltip(true);
+                            }
+                          }}
+                          onBlur={handleBlur('percentage')}
+                          placeholder="0"
+                          classNames={{ label: 'font-semibold text-gray-500 text-sm' }}
+                          variant="bordered"
+                        />
+                      </div>
+                      <div>
+                        <Tooltip
+                          color="primary"
+                          className="capitize"
+                          content="Solo puedes llenar uno de los campos: porcentaje o precio fijo"
+                          isOpen={showTooltipFixedPrice}
+                          onOpenChange={setShowTooltipFixedPrice}
+                          placement="bottom-start"
+                        >
+                          <Input
+                            label="Precio Fijo"
+                            labelPlacement="outside"
+                            name="fixedPrice"
+                            type="number"
+                            value={values.fixedPrice ? values.fixedPrice.toString() : ''}
+                            onChange={(e) => {
+                              const newValue = parseFloat(e.target.value);
+                              handleChange('fixedPrice')(e);
+                              if (newValue > 0) {
+                                setFieldValue('percentage', 0);
+                                setShowTooltipFixedPrice(false);
+                              }
+                              if (newValue > 0 && values.percentage > 0) {
+                                setShowTooltipFixedPrice(true);
+                              }
+                            }}
+                            onBlur={handleBlur('fixedPrice')}
+                            placeholder="0"
+                            classNames={{ label: 'font-semibold text-gray-500 text-sm' }}
+                            variant="bordered"
+                          />
+                        </Tooltip>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 gap-5 mt-6">
+                      <Select
+                        multiple
+                        variant="bordered"
+                        placeholder="Selecciona las categorías"
+                        selectedKeys={selectedCategories}
+                        label="Categorías"
+                        onBlur={handleBlur('branch')}
                         classNames={{
                           label: 'font-semibold text-gray-500 text-sm',
                         }}
-                        variant="bordered"
-                        type="number"
-                        startContent=""
-                      />
+                        name="categories"
+                        labelPlacement="outside"
+                        onSelectionChange={(keys) => {
+                          const setkeys = new Set(keys as unknown as string[]);
+                          const keysArray = Array.from(setkeys);
+                          if (keysArray.length > 0) {
+                            const includes_key = selectedCategories.includes(keysArray[0]);
+                            if (!includes_key) {
+                              const news = [...selectedCategories, ...keysArray];
+                              setSelectedCategories(news);
+                              setFieldValue('categories', news);
+                            } else {
+                              setSelectedCategories(keysArray);
+                              setFieldValue('categories', keysArray);
+                            }
+                          } else {
+                            setSelectedCategories([]);
+                            setFieldValue('categories', []);
+                          }
+                        }}
+                      >
+                        {categories_list.map((val) => (
+                          <SelectItem key={val.id} value={val.id} className="dark:text-white">
+                            {val.name}
+                          </SelectItem>
+                        ))}
+                      </Select>
+                      <div></div>
                     </div>
                     <div className="mt-6">
                       <CheckboxGroup
                         classNames={{
-                          label: 'font-semibold text-black text-md',
+                          label: 'font-semibold text-black text-md dark:text-white',
                         }}
                         orientation="horizontal"
                         value={selectedPriority ? [selectedPriority] : []}
@@ -331,134 +427,18 @@ function AddPromotionsByCategory() {
                     </div>
                   </div>
                 </div>
-                <div className="grid grid-cols-2  gap-4">
-                  <div className="">
-                    <Input
-                      type="date"
-                      variant="bordered"
-                      label="Fecha inicial"
-                      labelPlacement="outside"
-                      className="dark:text-white"
-                      classNames={{
-                        label: 'font-semibold',
-                      }}
-                      onChange={(e) => setStartDate(e.target.value)}
-                      value={startDate}
-                    />
-                    {errors.startDate && touched.startDate && (
-                      <>
-                        <span className="text-sm font-semibold text-red-500">
-                          {errors.startDate}
-                        </span>
-                      </>
-                    )}
-                  </div>
-                  <div>
-                    <Input
-                      type="date"
-                      variant="bordered"
-                      label="Fecha final"
-                      labelPlacement="outside"
-                      className="dark:text-white"
-                      classNames={{
-                        label: 'font-semibold',
-                      }}
-                      onChange={(e) => setEndDate(e.target.value)}
-                      value={endDate}
-                    />
-                    {errors.endDate && touched.endDate && (
-                      <>
-                        <span className="text-sm font-semibold text-red-500">{errors.endDate}</span>
-                      </>
-                    )}
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 gap-5">
-                  <Select
-                    multiple
-                    variant="bordered"
-                    placeholder="Selecciona las categorías"
-                    selectedKeys={selectedCategories}
-                    label="Categorías"
-                    onBlur={handleBlur('branch')}
-                    classNames={{
-                      label: 'font-semibold text-gray-500 text-sm',
-                    }}
-                    name="categories"
-                    labelPlacement="outside"
-                    onSelectionChange={(keys) => {
-                      const setkeys = new Set(keys as unknown as string[]);
-                      const keysArray = Array.from(setkeys);
-                      if (keysArray.length > 0) {
-                        const includes_key = selectedCategories.includes(keysArray[0]);
-                        if (!includes_key) {
-                          const news = [...selectedCategories, ...keysArray];
-                          setSelectedCategories(news);
-                          setFieldValue('categories', news);
-                        } else {
-                          setSelectedCategories(keysArray);
-                          setFieldValue('categories', keysArray);
-                        }
-                      } else {
-                        setSelectedCategories([]);
-                        setFieldValue('categories', []);
-                      }
-                    }}
-                  >
-                    {categories_list.map((val) => (
-                      <SelectItem key={val.id} value={val.id} className="dark:text-white">
-                        {val.name}
-                      </SelectItem>
-                    ))}
-                  </Select>
-                  <div></div>
-                </div>
-                <div className="grid grid-cols-1 ">
-                  {/* Seleccionar dia */}
-                  <h1 className="text-sm  font-semibold ">Selecciona los días de la semana</h1>
-                  <div className=" grid grid-cols-6 items-start ">
-                    <WeekSelector
-                      startDate={startDate}
-                      endDate={endDate}
-                      onDaysSelected={handleDaysSelected}
-                    />
-                  </div>
-                  {/* Descripción  */}
-                  <div className="mt-2">
-                    <Textarea
-                      label="Descripción"
-                      labelPlacement="outside"
-                      name="description"
-                      value={values.description}
-                      onChange={handleChange('description')}
-                      onBlur={handleBlur('description')}
-                      placeholder="Ingresa la descripción"
-                      classNames={{
-                        label: 'font-semibold text-gray-500 text-sm ',
-                      }}
-                      variant="bordered"
-                    />
-                    {errors.description && touched.description && (
-                      <span className="text-sm font-semibold text-red-500">
-                        {errors.description}
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                <div className="mt-40">
-                  <Button
-                    onClick={() => handleSubmit()}
-                    className="hidden font-semibold md:flex w-full h-full py-2"
-                    style={{
-                      backgroundColor: theme.colors.third,
-                      color: theme.colors.primary,
-                    }}
-                  >
-                    Guardar
-                  </Button>
-                </div>
+              </div>
+              <div className="mt-4 flex flex-row justify-center">
+                <Button
+                  onClick={() => handleSubmit()}
+                  className="hidden font-semibold md:flex w-44 h-full py-2"
+                  style={{
+                    backgroundColor: theme.colors.third,
+                    color: theme.colors.primary,
+                  }}
+                >
+                  Crear Promoción
+                </Button>
               </div>
             </>
           )}

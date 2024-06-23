@@ -6,6 +6,7 @@ import {
   update_products,
   delete_products,
   activate_product,
+  get_promotions_products_list,
 } from '../services/products.service';
 import { IProductsStore } from './types/products.store';
 import { toast } from 'sonner';
@@ -14,6 +15,7 @@ import { cat_011_tipo_de_item } from '../services/facturation/cat-011-tipo-de-it
 
 export const useProductsStore = create<IProductsStore>((set, get) => ({
   cat_011_tipo_de_item: [],
+  products_list: [],
   paginated_products: {
     products: [],
     total: 0,
@@ -44,6 +46,13 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
             ok: false,
           },
         });
+      });
+  },
+  getListProductsList() {
+    get_promotions_products_list()
+      .then((products) => set({ products_list: products.data.products }))
+      .catch(() => {
+        set({ products_list: [] });
       });
   },
   getCat011TipoDeItem() {

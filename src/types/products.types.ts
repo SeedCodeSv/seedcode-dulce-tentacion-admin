@@ -47,6 +47,11 @@ export interface ProductPayload {
   branch: { id: number }[];
   supplierId: number;
 }
+export interface ProductList {
+  ok: boolean;
+  message: string;
+  products: Product[];
+}
 
 export interface ProductPayloadFormik {
   name: string;
