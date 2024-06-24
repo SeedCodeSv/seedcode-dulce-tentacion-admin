@@ -1,7 +1,7 @@
-import { useContext } from 'react';
+// import { useContext } from 'react';
 import classNames from 'classnames';
 import { Dialog } from 'primereact/dialog';
-import { ThemeContext } from '../../hooks/useTheme';
+// import { ThemeContext } from '../../hooks/useTheme';
 
 interface Props {
   children: React.ReactNode;
@@ -16,36 +16,36 @@ interface Props {
 }
 
 function ModalGlobal({ children, isOpen, onClose, title, size, isFull, isMaximizable = false }: Props) {
-  const { context } = useContext(ThemeContext);
+  // const { context } = useContext(ThemeContext);
 
   return (
     <Dialog
       visible={isOpen}
       maximizable={isMaximizable}
       className={classNames(
-        context === 'light' ? 'light' : 'dark',
+        // context === 'light' ? 'light' : 'dark',
         isFull && 'w-full overflow-y-auto',
         size,
         'dark:bg-gray-800 overflow-y-auto'
       )}
-      pt={{
-        content: () => {
-          return {
-            style: {
-              backgroundColor: context === 'light' ? '#ffffff' : 'rgb(31 41 55)',
-              color: context === 'light' ? 'rgb(31 41 55)' : '#ffffff',
-            },
-          };
-        },
-        header: () => {
-          return {
-            style: {
-              backgroundColor: context === 'light' ? '#ffffff' : 'rgb(31 41 55)',
-              color: context === 'light' ? 'rgb(31 41 55)' : '#ffffff',
-            },
-          };
-        },
-      }}
+      // pt={{
+      //   content: () => {
+      //     return {
+      //       style: {
+      //         backgroundColor: context === 'light' ? '#ffffff' : 'rgb(31 41 55)',
+      //         color: context === 'light' ? 'rgb(31 41 55)' : '#ffffff',
+      //       },
+      //     };
+      //   },
+      //   header: () => {
+      //     return {
+      //       style: {
+      //         backgroundColor: context === 'light' ? '#ffffff' : 'rgb(31 41 55)',
+      //         color: context === 'light' ? 'rgb(31 41 55)' : '#ffffff',
+      //       },
+      //     };
+      //   },
+      // }}
       onHide={() => onClose()}
       header={
         title && (
