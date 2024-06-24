@@ -19,17 +19,22 @@ import { Table as ITable, CreditCard, List } from 'lucide-react';
 import MobileViewConfi from './MobileViewConfi';
 import { IConfiguration } from '../../types/configuration.types';
 import HeadlessModal from '../global/HeadlessModal';
+import { update_theme } from '../../services/configuration.service';
+import { toast } from 'sonner';
 
 function ConfigurationList() {
   const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
   const { getPaginatedThemes, themes } = useThemeStore();
   const { theme, toggleTheme } = useContext(ThemeContext);
   const [logoId, setLogoId] = useState(0);
+  const [selectedTheme, setSelectedTheme] = useState('')
 
   const [selectedConfiguration, setSelectedConfiguration] = useState<IConfiguration>();
 
   const { personalization, GetConfigurationByTransmitter } = useConfigurationStore();
   const { user } = useAuthStore();
+
+  const idConfig = personalization?.find((config) => config?.id)?.id || 0;
   const tramsiter = user?.employee?.branch?.transmitterId;
 
   useEffect(() => {
@@ -50,6 +55,17 @@ function ConfigurationList() {
   const addLogo = useDisclosure();
   const UpdateImgModal = useDisclosure();
   const updateName = useDisclosure();
+
+  const handleUpdate = (theme: Theme) => {
+    toggleTheme(theme);
+    update_theme(idConfig, theme.name)
+    .then(() => {
+      toast.success('Se actualizo el tema');
+    })
+    .catch(() => {
+      toast.success('Tema seleccionado')
+    })
+  }
 
   return (
     <>
@@ -175,7 +191,10 @@ function ConfigurationList() {
                   key={index}
                   className="grid w-full grid-cols-6 border shadow"
                   isPressable
-                  onClick={() => toggleTheme(themeS as Theme)}
+                  onClick={() => {handleUpdate(themeS),
+                    setSelectedTheme(themeS.name)
+                  }}
+                  // onClick={() => toggleTheme(themeS as Theme)}
                 >
                   {/* <h1>{themeS.name}</h1> */}
                   <div className="absolute top-5 right-5">
@@ -227,7 +246,7 @@ function ConfigurationList() {
         title="Agregar logo y nombre"
         size="w-[350px] md:w-[500px]"
       >
-        <CreateConfiguration />
+        <CreateConfiguration theme={selectedTheme} />
       </HeadlessModal>
 
       <HeadlessModal

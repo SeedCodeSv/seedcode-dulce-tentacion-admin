@@ -28,10 +28,10 @@ export interface pachConfigurationName {
 
 export interface ICreacteConfiguaration {
   name: string;
-  themeId: number;
+  theme: string;
   transmitterId: number;
   selectedTemplate: string;
-  wantPrint: false | true;
+  wantPrint: number;
   file?: File | Blob | null;
 }
 

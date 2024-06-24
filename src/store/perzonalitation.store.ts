@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { IConfigurationStore } from './types/perzonalitation.types.store';
-import { IConfiguration, IGetConfiguration } from '../types/configuration.types';
+import { IConfiguration, ICreacteConfiguaration } from '../types/configuration.types';
 import {
   create_configuration,
   get_by_transmitter,
@@ -9,16 +9,18 @@ import {
 import { toast } from 'sonner';
 import { messages } from '../utils/constants';
 
-export const useConfigurationStore = create<IConfigurationStore>((set) => ({
+export const useConfigurationStore = create<IConfigurationStore>((set, get) => ({
   personalization: [],
   config: {} as IConfiguration,
-  OnCreateConfiguration: (payload: IGetConfiguration) => {
+  OnCreateConfiguration: (payload: ICreacteConfiguaration) => {
     create_configuration(payload)
       .then(() => {
+        window.location.reload();
+        get().GetConfigurationByTransmitter(get().config.transmitterId);
         toast.success('Personalización guardada');
       })
       .catch(() => {
-        toast.error('Ocurrió un error al crear');
+        toast.info('Debes de seleccionar un tema para la configuración');
       });
   },
 

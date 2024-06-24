@@ -8,25 +8,29 @@ import { ThemeContext } from '../../hooks/useTheme';
 import { useAuthStore } from '../../store/auth.store';
 import compressImage from 'browser-image-compression';
 
-function CreateConfiguration() {
+interface Props {
+  theme: string;
+}
+
+function CreateConfiguration(props: Props) {
   const { OnCreateConfiguration } = useConfigurationStore();
   const [selectedImage, setSelectedImage] = useState(DefaultImage);
   const { theme } = useContext(ThemeContext);
   const { user } = useAuthStore();
   const [loading, setLoading] = useState(false);
-  const [wantPrint, setWantPrint] = useState(false);
+  const [wantPrint, setWantPrint] = useState(0);
 
   const [formData, setFormData] = useState<ICreacteConfiguaration>({
     name: '',
-    themeId: 1,
+    theme: '',
     transmitterId: user?.employee?.branch?.transmitterId || 0,
     selectedTemplate: 'template',
-    wantPrint: false || true,
-    file: null, 
+    wantPrint: 0,
+    file: null,
   });
 
   useEffect(() => {
-    setFormData((prevData) => ({ ...prevData, wantPrint: wantPrint ? true : false }));
+    setFormData((prevData) => ({ ...prevData, wantPrint: wantPrint }));
   }, [wantPrint]);
 
   const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -89,11 +93,9 @@ function CreateConfiguration() {
     await new Promise((resolve) => setTimeout(resolve, 0));
 
     try {
-      await OnCreateConfiguration(formData);
-      toast.success('Personalización guardada');
-      // location.reload();
+      await OnCreateConfiguration({ ...formData, theme: props.theme });
     } catch (error) {
-      toast.error('Ocurrió un error al guardar');
+      toast.info('Debes de seleccionar un tema para la configuración');
     }
   };
 
@@ -149,7 +151,10 @@ function CreateConfiguration() {
           />
         </div>
         <div className="mt-2 w-full">
-          <Checkbox isSelected={wantPrint} onChange={(e) => setWantPrint(e.target.checked)}>
+          <Checkbox
+            isSelected={wantPrint === 1 ? true : false}
+            onChange={(e) => setWantPrint(e.target.checked ? 1 : 0)}
+          >
             Habilitar impresión
           </Checkbox>
         </div>
