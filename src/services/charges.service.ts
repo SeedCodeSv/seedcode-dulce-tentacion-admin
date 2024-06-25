@@ -15,7 +15,7 @@ export const create_charge = async (payload: IChargePayload) => {
 
 export const get_charges_list = async () => {
   const token = get_token();
-  await axios.get<IGetListCharges>(`${API_URL}/charges`, {
+  return await axios.get<IGetListCharges>(`${API_URL}/charges`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

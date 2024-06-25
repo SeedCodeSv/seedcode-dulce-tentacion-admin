@@ -5,14 +5,15 @@ import {
   Autocomplete,
   AutocompleteItem,
 } from "@nextui-org/react";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useCategoriesStore } from "../../store/categories.store";
 import { Product, ProductPayload } from "../../types/products.types";
 import { useProductsStore } from "../../store/products.store";
 import { CategoryProduct } from "../../types/categories.types";
 import { ThemeContext } from "../../hooks/useTheme";
-import { useBillingStore } from "../../store/facturation/billing.store";
 import { SeedcodeCatalogosMhService } from "seedcode-catalogos-mh";
+import {useSubCategoriesStore} from '../../store/sub-categories.store';
+
 
 interface Props {
   product?: Product;
@@ -20,36 +21,33 @@ interface Props {
 }
 
 function UpdateProduct({ product, onCloseModal }: Props) {
-  const unidadDeMedidaList = new SeedcodeCatalogosMhService().get014UnidadDeMedida();
+  const service = new SeedcodeCatalogosMhService();
+  const unidadDeMedidaList =service.get014UnidadDeMedida();
+  const itemTypes = service.get011TipoDeItem();
+  const { getSubcategories, subcategories } = useSubCategoriesStore();
 
   const { list_categories, getListCategories } = useCategoriesStore();
-  const {
-    patchProducts,
-    cat_011_tipo_de_item,
-    getCat011TipoDeItem,
-  } = useProductsStore();
-  const { getCat014UnidadDeMedida } = useBillingStore();
+  const { patchProducts} = useProductsStore();
   const { theme } = useContext(ThemeContext);
 
   useEffect(() => {
     getListCategories();
-    getCat011TipoDeItem();
-    getCat014UnidadDeMedida();
-  }, [getListCategories, getCat011TipoDeItem, getCat014UnidadDeMedida]);
+    getSubcategories(product?.subCategory.categoryProductId || 0);
+  }, [getListCategories]);
 
   const initialProductState: ProductPayload = {
     name: product?.name || "",
     description: product?.description || "",
-    price: product?.price || "",
-    costoUnitario: product?.costoUnitario || "",
-    categoryProductId: product?.categoryProductId || 0,
+    // price: product?.price || "",
+    // costoUnitario: product?.costoUnitario || "",
+    subCategoryId: product?.subCategoryId || 0,
     tipoDeItem: product?.tipoDeItem || "",
     unidaDeMedida: product?.unidaDeMedida || "",
     tipoItem: product?.tipoItem || "",
     uniMedida: product?.uniMedida || "",
     code: product?.code || "",
-    branch: [],
-    supplierId: 0,
+    // branch: [],
+    // supplierId: 0,
   };
 
   const [dataUpdateProduct, setDataUpdateProduct] = useState<ProductPayload>(
@@ -61,16 +59,6 @@ function UpdateProduct({ product, onCloseModal }: Props) {
     patchProducts(dataUpdateProduct, product?.id || 0);
     onCloseModal();
   };
-
-  const selectedKeyCategory = useMemo(() => {
-    if (product) {
-      const category = list_categories.find(
-        (category) => category.id === product.categoryProductId
-      );
-      return JSON.stringify(category);
-    }
-    return "";
-  }, [product, list_categories]);
 
   const generarCodigo = () => {
     const makeid = (length: number) => {
@@ -110,7 +98,7 @@ function UpdateProduct({ product, onCloseModal }: Props) {
     <div className="mb-32 sm:mb-0 w-full pt-5">
       <div className="grid grid-cols-2 gap-2">
         <div>
-          <div className="mt-4">
+          <div className="pt-2">
             <Input
               label="Nombre"
               labelPlacement="outside"
@@ -136,7 +124,7 @@ function UpdateProduct({ product, onCloseModal }: Props) {
               variant="bordered"
             />
           </div>
-          <div className="mt-2">
+          {/* <div className="pt-2">
             <Input
               onChange={(e) => handleInputChange(e, "price")}
               label="Precio"
@@ -150,7 +138,7 @@ function UpdateProduct({ product, onCloseModal }: Props) {
               startContent="$"
             />
           </div>
-          <div className="mt-2">
+          <div className="pt-2">
             <Input
               onChange={(e) => handleInputChange(e, "costoUnitario")}
               label="Costo unitario"
@@ -163,36 +151,28 @@ function UpdateProduct({ product, onCloseModal }: Props) {
               type="number"
               startContent="$"
             />
-          </div>
-        </div>
-        <div>
+          </div> */}
           <div className="mt-2">
             <Autocomplete
               onSelectionChange={(key) => {
                 if (key) {
-                  const categorySelected = JSON.parse(
-                    key as string
-                  ) as CategoryProduct;
-                  setDataUpdateProduct((prev) => ({
-                    ...prev,
-                    categoryProductId: categorySelected.id,
-                  }));
+                  const categorySelected = JSON.parse(key as string) as CategoryProduct;
+                  getSubcategories(categorySelected.id);
                 }
               }}
               label="Categoría producto"
               labelPlacement="outside"
-              placeholder={
-                product?.categoryProduct?.name || "Selecciona la categoría"
-              }
+              placeholder= "Selecciona la categoría"
+              value={product?.subCategory?.categoryProduct.name || ""}
               variant="bordered"
-              classNames={{ base: "font-semibold text-gray-500 text-sm" }}
-              defaultSelectedKey={selectedKeyCategory}
-              value={selectedKeyCategory}    
+              defaultInputValue={product?.subCategory?.categoryProduct.name || ""}
+              classNames={{ base: "font-semibold text-sm" }}  
             >
               {list_categories.map((category) => (
                 <AutocompleteItem
                   value={category.name}
                   key={JSON.stringify(category)}
+                  className="dark:text-white"
                 >
                   {category.name}
                 </AutocompleteItem>
@@ -200,14 +180,47 @@ function UpdateProduct({ product, onCloseModal }: Props) {
             </Autocomplete>
           </div>
           <div className="mt-2">
-            <Autocomplete
-              className="pt-5"
+                  <Autocomplete
+                    name='subCategoryId'
+                    label="Subcategoría"
+                    labelPlacement="outside"
+                    placeholder="Selecciona la subcategoria"
+                    variant="bordered"
+                    classNames={{base: 'font-semibold text-sm',
+                    }}
+                    className="dark:text-white"
+                    defaultInputValue={product?.subCategory.name || ""}
+                   
+                  >
+                    {subcategories?.map((sub) => (
+                      <AutocompleteItem
+                        value={sub.id.toString()}
+                        key={JSON.stringify(sub)}
+                        onClick={() => {
+                          setDataUpdateProduct((prev) => ({
+                            ...prev,
+                            subCategoryId: sub.id,
+                          }));
+                        }}
+                        className="dark:text-white"
+                      >
+                        {sub.name}
+                      </AutocompleteItem>
+                    ))}
+                  </Autocomplete>
+                  
+                </div>
+        </div>
+        <div>
+          <div className="mt-2">
+            <Autocomplete              
               variant="bordered"
               label="Tipo de item"
               labelPlacement="outside"
-              placeholder={product?.tipoDeItem || "Selecciona el item"}
+              placeholder="Selecciona el item"
+              defaultInputValue={product?.tipoDeItem || ""}
             >
-              {cat_011_tipo_de_item.map((item) => (
+              {itemTypes.map((item) => (
                 <AutocompleteItem
                   className="dark:text-white"
                   key={JSON.stringify(item)}
@@ -235,9 +248,8 @@ function UpdateProduct({ product, onCloseModal }: Props) {
               name="unidadDeMedida"
               label="Unidad de medida"
               labelPlacement="outside"
-              placeholder={
-                product?.unidaDeMedida || "Selecciona unidad de medida"
-              }
+              placeholder="Selecciona unidad de medida"
+              defaultInputValue={product?.unidaDeMedida || ""}
             >
               {unidadDeMedidaList.map((item) => (
                 <AutocompleteItem
@@ -261,7 +273,7 @@ function UpdateProduct({ product, onCloseModal }: Props) {
             </Autocomplete>
           </div>
 
-          <div className="flex mt-2 gap-2">
+          <div className="flex mt-5 gap-2">
             <div className="mt-2 w-full">
               <Input
                 label="Código"
@@ -274,7 +286,7 @@ function UpdateProduct({ product, onCloseModal }: Props) {
                 variant="bordered"
               />
             </div>
-            <div className="mt-10 w-full">
+            <div className="mt-8 w-full">
               <Button
                 className="w-full text-sm font-semibold"
                 style={{

@@ -6,7 +6,7 @@ export const useSubCategoriesStore = create<ISubCategoryStore>((set) => ({
     subcategories: [],
     getSubcategories(id) {
         get_subcategories(id)
-            .then((subcategories) => set({ subcategories: subcategories.data.subcategories }))
+            .then((subcategories) => set({ subcategories: subcategories.data.subCategories }))
             .catch(() => {
                 set({ subcategories: [] });
             });

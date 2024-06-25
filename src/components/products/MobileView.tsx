@@ -83,7 +83,7 @@ const GridItem = (props: GridProps) => {
               className="dark:text-gray-400 text-[#00bbf9]"
               size={33}
             />
-            {product.categoryProduct.name}
+            {product.subCategory.categoryProduct.name}
           </div>
           <div className="flex w-full gap-2 mt-3">
             <Barcode className="dark:text-gray-400 text-[#006d77]" size={33} />
@@ -155,7 +155,7 @@ const ListItem = (props: GridProps) => {
               className="dark:text-gray-400 text-[#00bbf9]"
               size={33}
             />
-            {product.categoryProduct.name}
+            {product.subCategory.categoryProduct.name}
           </div>
           <div className="flex items-center w-full gap-2 mt-3">
             <Barcode className="dark:text-gray-400 text-[#006d77]" size={33} />

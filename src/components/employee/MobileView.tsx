@@ -66,7 +66,7 @@ const GridItem = (props: GridProps) => {
         >
           <div className="flex w-full gap-2">
             <IUser className="text-[#274c77] dark:text-gray-400" size={35} />
-            {employee.fullName}
+            {`${employee.firstName} ${employee.firstLastName}`}
           </div>
           <div className="flex w-full gap-2 mt-3">
             <Phone size={35} className="text-[#00bbf9] dark:text-gray-400" />
@@ -131,7 +131,7 @@ const ListItem = (props: GridProps) => {
         <div className="w-full">
           <div className="flex items-center w-full gap-2">
             <IUser className="text-[#274c77] dark:text-gray-400" size={35} />
-            {employee.fullName}
+            {`${employee.firstName} ${employee.firstLastName}`}
           </div>
           <div className="flex items-center w-full gap-2 mt-3">
             <Phone size={35} className="text-[#00bbf9] dark:text-gray-400" />
