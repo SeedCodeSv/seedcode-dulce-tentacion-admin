@@ -205,6 +205,7 @@ function AddProducts(props: Props) {
                     <span className="text-sm font-semibold text-red-500">{errors.name}</span>
                   )}
                 </div>
+                <div className="grid grid-cols-2 gap-5">
                 <div>
                   <Autocomplete
                     variant="bordered"
@@ -232,6 +233,38 @@ function AddProducts(props: Props) {
                   {errors.tipoItem && touched.tipoItem && (
                     <span className="text-sm font-semibold text-red-500">{errors.tipoItem}</span>
                   )}
+                </div>
+                <div>
+                  <Autocomplete
+                    className="dark:text-white"
+                    variant="bordered"
+                    name="unidaDeMedida"
+                    label="Unidad de medida"
+                    labelPlacement="outside"
+                    placeholder={
+                      props.product?.tipoDeItem ??
+                      props.product?.tipoDeItem ??
+                      'Selecciona unidad de medida'
+                    }
+                  >
+                    {unidadDeMedidaList.map((item) => (
+                      <AutocompleteItem
+                        key={JSON.stringify(item)}
+                        value={item.valores}
+                        onClick={() => {
+                          handleChange('unidaDeMedida')(item.valores.toString());
+                          handleChange('uniMedida')(item.codigo.toString());
+                        }}
+                        className="dark:text-white"
+                      >
+                        {item.valores}
+                      </AutocompleteItem>
+                    ))}
+                  </Autocomplete>
+                  {errors.uniMedida && touched.uniMedida && (
+                    <span className="text-sm font-semibold text-red-500">{errors.uniMedida}</span>
+                  )}
+                </div>
                 </div>
               </div>
               <div className="w-full gap-5 grid grid-cols-1 md:grid-cols-2 mt-5">
@@ -303,35 +336,45 @@ function AddProducts(props: Props) {
                 </div>
                 <div>
                   <Autocomplete
-                    className="dark:text-white"
-                    variant="bordered"
-                    name="unidaDeMedida"
-                    label="Unidad de medida"
+                    onSelectionChange={(key) => {
+                      if (key) {
+                        const branchSelected = JSON.parse(key as string) as CategoryProduct;
+                        handleChange('categoryProductId')(branchSelected.id.toString());
+                      }
+                    }}
+                    onBlur={handleBlur('categoryProductId')}
+                    label="Categoría producto"
                     labelPlacement="outside"
                     placeholder={
-                      props.product?.tipoDeItem ??
-                      props.product?.tipoDeItem ??
-                      'Selecciona unidad de medida'
+                      props.product?.categoryProduct.name ??
+                      props.product?.categoryProduct.name ??
+                      'Selecciona la categoría'
                     }
+                    variant="bordered"
+                    classNames={{
+                      base: 'font-semibold text-gray-500 text-sm',
+                    }}
+                    className="dark:text-white"
+                    defaultSelectedKey={selectedKeyCategory}
+                    value={selectedKeyCategory}
                   >
-                    {unidadDeMedidaList.map((item) => (
+                    {list_categories.map((bra) => (
                       <AutocompleteItem
-                        key={JSON.stringify(item)}
-                        value={item.valores}
-                        onClick={() => {
-                          handleChange('unidaDeMedida')(item.valores.toString());
-                          handleChange('uniMedida')(item.codigo.toString());
-                        }}
+                        value={bra.name}
+                        key={JSON.stringify(bra)}
                         className="dark:text-white"
                       >
-                        {item.valores}
+                        {bra.name}
                       </AutocompleteItem>
                     ))}
                   </Autocomplete>
-                  {errors.uniMedida && touched.uniMedida && (
-                    <span className="text-sm font-semibold text-red-500">{errors.uniMedida}</span>
+                  {errors.categoryProductId && touched.categoryProductId && (
+                    <span className="text-sm font-semibold text-red-500">
+                      {errors.categoryProductId}
+                    </span>
                   )}
                 </div>
+                
               </div>
               <div className="w-full gap-5 grid grid-cols-1 md:grid-cols-2 mt-5">
                 <div className="flex items-end gap-2">
@@ -381,7 +424,7 @@ function AddProducts(props: Props) {
                       }
                     }}
                     onBlur={handleBlur('categoryProductId')}
-                    label="Categoría producto"
+                    label="Subcategoría"
                     labelPlacement="outside"
                     placeholder={
                       props.product?.categoryProduct.name ??
@@ -480,6 +523,7 @@ function AddProducts(props: Props) {
                     </div>
                   </div>
                 </div>
+                
                 <div>
                   <Textarea
                     label="Descripción"
@@ -579,10 +623,10 @@ function AddProducts(props: Props) {
                   )}
                 </div>
               </div>
-              <div className="w-full flex justify-center items-center gap-5 mt-5">
+              <div className="w-full flex justify-end items-end gap-5 mt-5">
                 <Button
                   onClick={() => handleSubmit()}
-                  className="w-40 mt-4 text-sm font-semibold"
+                  className="w-full sm:w-1/2 md:w-1/4 mt-4 text-sm font-semibold"
                   style={{
                     backgroundColor: theme.colors.third,
                     color: theme.colors.primary,
