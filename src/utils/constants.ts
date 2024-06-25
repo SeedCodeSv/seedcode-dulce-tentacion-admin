@@ -1,4 +1,4 @@
-export const API_URL = 'http://localhost:8080/api';
+export const API_URL = 'http://localhost:3000/api';
 export const FACTURACION_API = 'https://cats-facturacion-43ay7.ondigitalocean.app/api';
 export const MH_QUERY = 'https://admin.factura.gob.sv/consultaPublica';
 export const ambiente = '00';
@@ -50,6 +50,8 @@ export const views_enabled = [
   'Productos',
   'Permisos',
   'Categorias',
+  'Cargos',
+  'Sub Categorias', 
   'Sucursales',
   'Empleados',
   'Clientes',

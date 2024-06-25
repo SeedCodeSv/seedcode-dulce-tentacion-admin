@@ -215,6 +215,28 @@ export const LayoutItems = () => {
                   <p className="ml-2 text-sm 2xl:text-base">Categorías</p>
                 </NavLink>
               )}
+              {views.includes('Categorias') && (
+                <NavLink
+                  to={'/subCategories'}
+                  className={({ isActive }) => {
+                    return (
+                      (isActive
+                        ? 'font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green'
+                        : 'font-semibold border-white') +
+                      ' flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
+                    );
+                  }}
+                  style={({ isActive }) => {
+                    return {
+                      borderLeftColor: isActive ? theme.colors.dark : 'transparent',
+                      borderLeftWidth: 5,
+                    };
+                  }}
+                >
+                  <Box size={iconSize} />
+                  <p className="ml-2 text-sm 2xl:text-base">Sub Categorías</p>
+                </NavLink>
+              )}
 
               {views.includes('Reportes') && (
                 <div className="flex flex-col justify-start items-center px-6 w-full">
@@ -321,6 +343,20 @@ export const LayoutItems = () => {
                         >
                           <User size={iconSize} />
                           <p className="ml-2 text-sm 2xl:text-base">Empleados</p>
+                        </NavLink>
+                      )}
+                      {views.includes('Empleados') && (
+                        <NavLink
+                          to={'/charges'}
+                          className={({ isActive }) =>
+                            (isActive
+                              ? 'font-semibold bg-gray-300 dark:bg-gray-700'
+                              : 'text-coffee-brown font-semibold border-white') +
+                            ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
+                          }
+                        >
+                          <User size={iconSize} />
+                          <p className="ml-2 text-sm 2xl:text-base">Cargos</p>
                         </NavLink>
                       )}
                       {views.includes('Clientes') && (

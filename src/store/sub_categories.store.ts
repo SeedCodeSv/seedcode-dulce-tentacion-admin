@@ -1,0 +1,86 @@
+import { create } from 'zustand';
+import { ISubCategoriesStore } from './types/sub_categories.store.types';
+import { toast } from 'sonner';
+import { messages } from '../utils/constants';
+import { activate_sub_category, create_sub_category, delete_sub_category, get_sub_categories_list, get_sub_categories_paginated, update_sub_category } from '../services/sub_categories.service';
+import { ISubCategoryPayload } from '../types/sub_categories.types';
+
+export const useCategoriesStore = create<ISubCategoriesStore>((set, get) => ({
+  sub_categories_paginated: {
+    subCategories: [],
+    total: 0,
+    totalPag: 0,
+    currentPag: 0,
+    nextPag: 0,
+    prevPag: 0,
+    status: 404,
+    ok: false,
+  },
+  sub_categories: [],
+  getSubCategoriesList() {
+    get_sub_categories_list()
+      .then(() => set({ sub_categories: [] }))
+      .catch(() => {
+        set({ sub_categories: [] });
+      });
+  },
+
+  getSubCategoriesPaginated: (page: number, limit: number, name: string, active = 1) => {
+    get_sub_categories_paginated(page, limit, name, active)
+      .then(() =>
+        set({
+          sub_categories_paginated: {
+            subCategories: [],
+            total: 0,
+            totalPag: 0,
+            currentPag: 0,
+            nextPag: 0,
+            prevPag: 0,
+            status: 404,
+            ok: false,
+          },
+        })
+      )
+      .catch(() => {
+        set({
+          sub_categories_paginated: {
+            subCategories: [],
+            total: 0,
+            totalPag: 0,
+            currentPag: 0,
+            nextPag: 0,
+            prevPag: 0,
+            status: 404,
+            ok: false,
+          },
+        });
+      });
+  },
+  postSubCategory(payload: ISubCategoryPayload) {
+    create_sub_category(payload)
+      .then(() => {
+        get().getSubCategoriesPaginated(1, 5, '', 1);
+        toast.success(messages.success);
+      })
+      .catch(() => {
+        toast.error(messages.error);
+      });
+  },
+  patchSubCategory(payload, id) {
+    update_sub_category(payload, id)
+      .then(() => {
+        get().getSubCategoriesPaginated(1, 5, '', 1);
+        toast.success(messages.success);
+      })
+      .catch(() => {
+        toast.error(messages.success);
+      });
+  },
+  deleteSubCategory: async (id) => {
+    delete_sub_category(id)
+    return true;
+  },
+  activateSubCategory(id) {
+    return activate_sub_category(id)
+  }
+}));

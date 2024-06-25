@@ -11,6 +11,8 @@ import Product from '../pages/Product';
 import ExpensesCategories from '../pages/ExpensesCategories';
 import Expenses from '../pages/Expenses';
 import ActionRol from '../pages/ActionRol';
+import Charges from '../pages/Charges';
+import SubCategories from '../pages/SubCategories';
 import NewSales from '../pages/NewSales';
 import Configuration from '../pages/Configuration';
 import CreateConfiguration from '../components/configuration/CreateConfiguration';
@@ -60,12 +62,20 @@ export const router = () => {
       element: views && views.includes('Categorias') && <ProductsCategories />,
     },
     {
+      path: '/subCategories',
+      element: views && views.includes('Categorias') && <SubCategories  />,
+    },
+    {
       path: '/users',
       element: views && views.includes('Usuarios') && <Users />,
     },
     {
       path: '/employees',
       element: views && views.includes('Empleados') && <Employees />,
+    },
+    {
+      path: '/charges',
+      element: views && views.includes('Categorias') && <Charges />,
     },
     {
       path: '/clients',
