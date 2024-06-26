@@ -18,7 +18,7 @@ export const get_user_paginated = (page = 1, limit = 5, userName = '', role = ''
   return axios.get<IGetUserPaginated>(
     API_URL +
       '/users/paginated/' +
-      user?.employee.branch.transmitterId +
+      user?.correlative.branch.transmitterId +
       `?page=${page}&limit=${limit}&userName=${userName}&role=${role}&active=${active}`,
     {
       headers: {

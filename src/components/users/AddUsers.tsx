@@ -3,8 +3,6 @@ import { Formik } from 'formik';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import * as yup from 'yup';
 import { useRolesStore } from '../../store/roles.store';
-// import { useEmployeeStore } from '../../store/employee.store';
-// import { Employee } from '../../types/employees.types';
 import { Role } from '../../types/roles.types';
 import { useUsersStore } from '../../store/users.store';
 import { UserPayload } from '../../types/users.types';
@@ -26,34 +24,30 @@ function AddUsers(props: Props) {
 
   useEffect(() => {
     getBranchesList();
-    get_correlativesByBranch(selectedIdBranch);
+    if (selectedIdBranch !== 0) {
+      get_correlativesByBranch(Number(selectedIdBranch));
+    }
   }, [selectedIdBranch]);
+  const validationSchema = yup.object().shape({
+    userName: yup.string().required('El usuario es requerido'),
+    password: yup.string().required('La contraseña es requerida'),
+    correlativeId: yup.number().required('El correlativo es requerido'),
+    roleId: yup.number().required('El rol es requerido').min(1, 'El rol es requerido'),
+  });
 
   const initialValues = {
     userName: '',
     password: '',
     roleId: 0,
-    // employeeId: 0,
     correlativeId: 0,
   };
 
-  const validationSchema = yup.object().shape({
-    userName: yup.string().required('El usuario es requerido'),
-    password: yup.string().required('La contraseña es requerida'),
-    roleId: yup.number().required('El rol es requerido').min(1, 'El rol es requerido'),
-    // employeeId: yup
-    //   .number()
-    //   .required('El empleado es requerido')
-    //   .min(1, 'El empleado es requerido'),
-  });
-
   const { roles_list, getRolesList } = useRolesStore();
-  // const { employee_list, getEmployeesList } = useEmployeeStore();
+
   const { postUser } = useUsersStore();
 
   useEffect(() => {
     getRolesList();
-    // getEmployeesList();
   }, []);
 
   const handleSubmit = (values: UserPayload) => {
@@ -119,38 +113,7 @@ function AddUsers(props: Props) {
                 <span className="text-sm font-semibold text-red-500">{errors.password}</span>
               )}
             </div>
-            {/* <div className="pt-2">
-              <Autocomplete
-                onSelectionChange={(key) => {
-                  if (key) {
-                    const depSelected = JSON.parse(key as string) as Employee;
-                    handleChange('employeeId')(depSelected.id.toString());
-                  }
-                }}
-                onBlur={handleBlur('employeeId')}
-                label="Empleado"
-                labelPlacement="outside"
-                className="dark:text-white"
-                placeholder="Selecciona el empleado"
-                variant="bordered"
-                classNames={{
-                  base: 'text-gray-500 text-sm',
-                }}
-              >
-                {employee_list.map((dep) => (
-                  <AutocompleteItem
-                    className="dark:text-white"
-                    value={dep.id}
-                    key={JSON.stringify(dep)}
-                  >
-                    {dep.firstName}
-                  </AutocompleteItem>
-                ))}
-              </Autocomplete>
-              {errors.employeeId && touched.employeeId && (
-                <span className="text-sm font-semibold text-red-500">{errors.employeeId}</span>
-              )}
-            </div> */}
+
             <div className="pt-2">
               <Autocomplete
                 onSelectionChange={(key) => {
@@ -190,8 +153,8 @@ function AddUsers(props: Props) {
                   if (key) {
                     const depSelected = JSON.parse(key as string) as Correlatives;
                     setSelectedIdBranch(depSelected.id);
-                    handleChange('branchId')(depSelected.id.toString());
-                    handleChange('branchName')(depSelected.code.toString());
+                    // handleChange('branchId')(depSelected.id.toString());
+                    handleChange('branchName')(depSelected.branch.name);
                   }
                 }}
                 onBlur={handleBlur('branchId')}
@@ -228,16 +191,13 @@ function AddUsers(props: Props) {
                   if (key) {
                     const depSelected = JSON.parse(key as string) as Branches;
                     handleChange('correlativeId')(depSelected.id.toString());
-                    handleChange('code')(depSelected.name.toString());
+                    handleChange('name')(depSelected.name);
                   }
                 }}
-                onBlur={handleBlur('municipio')}
+                onBlur={handleBlur('correlativeId')}
                 label="Correlativo"
                 labelPlacement="outside"
                 className="dark:text-white"
-                // placeholder={
-                //   values. ? values.nombreMunicipio : 'Selecciona el municipio'
-                // }
                 placeholder="Selecciona el correlativo"
                 variant="bordered"
                 classNames={{
@@ -252,14 +212,15 @@ function AddUsers(props: Props) {
                     key={JSON.stringify(cor)}
                     className="dark:text-white"
                   >
-                    {cor.typeVoucher} + {cor.code}
+                    {cor.code}
                   </AutocompleteItem>
                 ))}
               </Autocomplete>
-              {/* {errors.employeeId && touched.employeeId && (
-                <span className="text-sm font-semibold text-red-500">{errors.employeeId}</span>
-              )} */}
+              {errors.correlativeId && touched.correlativeId && (
+                <span className="text-sm font-semibold text-red-500">{errors.correlativeId}</span>
+              )}
             </div>
+
             <Button
               onClick={() => handleSubmit()}
               className="w-full mt-4 text-sm font-semibold"

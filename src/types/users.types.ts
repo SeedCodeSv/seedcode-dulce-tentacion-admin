@@ -14,7 +14,8 @@ export interface UserPayload {
 export interface UserUpdate {
   userName: string;
   roleId: number;
-  employeeId: number;
+  // employeeId: number;
+  correlativeId: number;
 }
 export interface Role {
   id: number;
@@ -45,9 +46,10 @@ export interface User {
   userName: string;
   active: boolean;
   role: Role;
-  employee: Employee;
+  // employee: Employee;
   roleId: number;
-  employeeId: number;
+  correlativeId: number;
+  // employeeId: number;
 }
 
 export interface RootObject {
