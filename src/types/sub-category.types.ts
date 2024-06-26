@@ -5,11 +5,11 @@ export interface SubCategory {
     name: string;
     isActive: boolean;
     categoryProduct: CategoryProductList;
-    categoryPorudctId: number;
+    categoryProductId: number;
   }
 
   export interface IGetSubCategory {
     ok: boolean;
-    message: string;
-    subcategories: SubCategory[];
+    status: number;
+    subCategories: SubCategory[];
   }

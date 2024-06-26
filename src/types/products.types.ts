@@ -1,8 +1,5 @@
-export interface CategoryProduct {
-  id: number;
-  name: string;
-  isActive: boolean;
-}
+import { SubCategory } from "./sub-category.types";
+
 
 export interface Product {
   id: number;
@@ -14,12 +11,12 @@ export interface Product {
   type: string;
   minimumStock: number;
   isActive: boolean;
-  categoryProduct: CategoryProduct;
-  categoryProductId: number;
   tipoDeItem: string;
   tipoItem: string;
   uniMedida: string;
   unidaDeMedida: string;
+  subCategoryId: number;
+  subCategory: SubCategory;
 }
 
 export interface IGetProductsPaginated {
@@ -36,16 +33,16 @@ export interface IGetProductsPaginated {
 export interface ProductPayload {
   name: string;
   description: string;
-  price: string;
-  costoUnitario: string;
+  price?: string;
+  costoUnitario?: string;
   code: string;
-  categoryProductId: number;
+  subCategoryId: number;
   tipoDeItem: string;
   tipoItem: string;
   uniMedida: string;
   unidaDeMedida: string;
-  branch: { id: number }[];
-  supplierId: number;
+  branch?: { id: number }[];
+  supplierId?: number;
 }
 export interface ProductList {
   ok: boolean;
@@ -59,7 +56,7 @@ export interface ProductPayloadFormik {
   price: string;
   costoUnitario: string;
   code: string;
-  categoryProductId: number;
+  subCategoryId: number;
   tipoDeItem: string;
   tipoItem: string;
   uniMedida: string;

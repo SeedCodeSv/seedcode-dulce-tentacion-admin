@@ -1,8 +1,23 @@
 import { Branches } from './branches.types';
 
+export interface Charge {
+  id: number;
+  name: string;
+  isActive: boolean;
+}
+
 export interface Employee {
   id: number;
-  fullName: string;
+  firstName: string;
+  secondName: string;
+  firstLastName: string;
+  secondLastName: string;
+  bankAccount: string;
+  chargeId: number;
+  charge: Charge;
+  nit: string;
+  dui: string;
+  isss: string;
   phone: string;
   isActive: boolean;
   branch: Branches;
@@ -21,11 +36,18 @@ export interface IGetEmployeesPaginated {
 }
 
 export interface EmployeePayload {
-  fullName: string;
+  firstName: string;
+  secondName: string;
+  firstLastName: string;
+  secondLastName: string;
+  bankAccount: string;
+  chargeId: number;
+  nit: string;
+  dui: string;
+  isss: string;
   phone: string;
   branchId: number;
 }
-
 export interface GetEmployeeList {
   ok: boolean;
   message: string;

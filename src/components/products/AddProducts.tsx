@@ -8,29 +8,30 @@ import {
   SelectItem,
 } from '@nextui-org/react';
 import { Formik } from 'formik';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import * as yup from 'yup';
 import { useCategoriesStore } from '../../store/categories.store';
 import { Product, ProductPayloadFormik } from '../../types/products.types';
 import { useProductsStore } from '../../store/products.store';
 import { CategoryProduct } from '../../types/categories.types';
 import { ThemeContext } from '../../hooks/useTheme';
-import { useBillingStore } from '../../store/facturation/billing.store';
 import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
 import { useBranchesStore } from '../../store/branches.store';
 import { useSupplierStore } from '../../store/supplier.store';
 import { Supplier } from '../../types/supplier.types';
+import {useSubCategoriesStore} from '../../store/sub-categories.store';
 interface Props {
   product?: Product;
   onCloseModal: () => void;
 }
 function AddProducts(props: Props) {
   const [selectedBranches, setSelectedBranches] = useState<string[]>([]);
-
   const { getBranchesList, branch_list } = useBranchesStore();
   const { getSupplierList, supplier_list } = useSupplierStore();
-
-  const unidadDeMedidaList = new SeedcodeCatalogosMhService().get014UnidadDeMedida();
+  const { getSubcategories, subcategories } = useSubCategoriesStore();
+  const service = new SeedcodeCatalogosMhService();
+  const unidadDeMedidaList = service.get014UnidadDeMedida();
+  const itemTypes = service.get011TipoDeItem();
 
   const validationSchema = yup.object().shape({
     name: yup.string().required('**El nombre es requerido**'),
@@ -54,10 +55,10 @@ function AddProducts(props: Props) {
       .string()
       .required('**El Código es requerido**')
       .length(12, '**El código debe tener exactamente 12 dígitos**'),
-    categoryProductId: yup
+      subCategoryId: yup
       .number()
-      .required('**Debes seleccionar la categoría**')
-      .min(1, '**Debes seleccionar la categoría**'),
+      .required('**Debes seleccionar la subcategoría**')
+      .min(1, '**Debes seleccionar la subcategoría**'),  
     tipoItem: yup
       .string()
       .required('**Debes seleccionar el tipo de item**')
@@ -89,7 +90,7 @@ function AddProducts(props: Props) {
     costoUnitario: props.product?.costoUnitario ?? '',
     minimumStock: props.product?.minimumStock ?? '',
     code: props.product?.code ?? 'N/A',
-    categoryProductId: props.product?.categoryProductId ?? 0,
+    subCategoryId: props.product?.subCategoryId ?? 0,
     tipoDeItem: props.product?.tipoDeItem ?? 'N/A',
     unidaDeMedida: props.product?.unidaDeMedida ?? 'N/A',
     tipoItem: props.product?.tipoItem ?? '',
@@ -103,16 +104,15 @@ function AddProducts(props: Props) {
     getSupplierList();
   }, []);
 
-  const { postProducts, patchProducts, cat_011_tipo_de_item, getCat011TipoDeItem } =
-    useProductsStore();
-  const { getCat014UnidadDeMedida } = useBillingStore();
+  const { postProducts, patchProducts, getCat011TipoDeItem } = useProductsStore();
   useEffect(() => {
     getCat011TipoDeItem();
-    getCat014UnidadDeMedida();
     getBranchesList();
+    getSubcategories(0);
   }, []);
-  const { theme } = useContext(ThemeContext);
 
+  
+  const { theme } = useContext(ThemeContext);
   const handleSave = (values: ProductPayloadFormik) => {
     const payload = {
       ...values,
@@ -127,33 +127,6 @@ function AddProducts(props: Props) {
 
     props.onCloseModal();
   };
-  // const handleSave = (values: ProductPayloadFormik) => {
-  //   if (props.product) {
-  //     patchProducts(
-  //       {
-  //         ...values,
-  //         branch: values.branch.map((branch) => ({ id: Number(branch) })),
-  //       },
-  //       props.product.id
-  //     );
-  //   } else {
-  //     postProducts({
-  //       ...values,
-  //       branch: values.branch.map((branch) => ({ id: Number(branch) })),
-  //     });
-  //   }
-
-  //   props.onCloseModal();
-  // };
-  const selectedKeyCategory = useMemo(() => {
-    if (props.product) {
-      const category = list_categories.find(
-        (category) => category.id === props.product?.categoryProductId
-      );
-
-      return JSON.stringify(category);
-    }
-  }, [props, props.product, list_categories]);
 
   const [codigo, setCodigo] = useState('');
 
@@ -197,7 +170,7 @@ function AddProducts(props: Props) {
                     onBlur={handleBlur('name')}
                     placeholder="Ingresa el nombre"
                     classNames={{
-                      label: 'font-semibold text-gray-500 dark:text-gray-200 text-sm',
+                      label: 'font-semibold dark:text-gray-200 text-sm',
                     }}
                     variant="bordered"
                   />
@@ -216,7 +189,7 @@ function AddProducts(props: Props) {
                       props.product?.tipoDeItem ?? props.product?.tipoDeItem ?? 'Selecciona el item'
                     }
                   >
-                    {cat_011_tipo_de_item.map((item) => (
+                    {itemTypes.map((item) => (
                       <AutocompleteItem
                         key={JSON.stringify(item)}
                         value={item.codigo}
@@ -241,11 +214,8 @@ function AddProducts(props: Props) {
                     name="unidaDeMedida"
                     label="Unidad de medida"
                     labelPlacement="outside"
-                    placeholder={
-                      props.product?.tipoDeItem ??
-                      props.product?.tipoDeItem ??
-                      'Selecciona unidad de medida'
-                    }
+                    placeholder='Selecciona unidad de medida'
+                    
                   >
                     {unidadDeMedidaList.map((item) => (
                       <AutocompleteItem
@@ -279,7 +249,7 @@ function AddProducts(props: Props) {
                       onBlur={handleBlur('costoUnitario')}
                       placeholder="00.00"
                       classNames={{
-                        label: 'font-semibold text-gray-500 text-sm',
+                        label: 'font-semibold   text-sm',
                       }}
                       variant="bordered"
                       type="number"
@@ -301,7 +271,7 @@ function AddProducts(props: Props) {
                       onBlur={handleBlur('price')}
                       placeholder="00.00"
                       classNames={{
-                        label: 'font-semibold text-gray-500 text-sm',
+                        label: 'font-semibold   text-sm',
                       }}
                       variant="bordered"
                       type="number"
@@ -321,7 +291,7 @@ function AddProducts(props: Props) {
                       onBlur={handleBlur('minimumStock')}
                       placeholder="0"
                       classNames={{
-                        label: 'font-semibold text-gray-500 text-sm ',
+                        label: 'font-semibold   text-sm ',
                       }}
                       variant="bordered"
                       type="number"
@@ -339,24 +309,18 @@ function AddProducts(props: Props) {
                     onSelectionChange={(key) => {
                       if (key) {
                         const branchSelected = JSON.parse(key as string) as CategoryProduct;
-                        handleChange('categoryProductId')(branchSelected.id.toString());
+                        getSubcategories(branchSelected.id);
                       }
                     }}
-                    onBlur={handleBlur('categoryProductId')}
                     label="Categoría producto"
                     labelPlacement="outside"
-                    placeholder={
-                      props.product?.categoryProduct.name ??
-                      props.product?.categoryProduct.name ??
-                      'Selecciona la categoría'
-                    }
+                    placeholder='Selecciona la categoría'
+                    
                     variant="bordered"
                     classNames={{
-                      base: 'font-semibold text-gray-500 text-sm',
+                      base: 'font-semibold text-sm',
                     }}
-                    className="dark:text-white"
-                    defaultSelectedKey={selectedKeyCategory}
-                    value={selectedKeyCategory}
+                    className="dark:text-white"                    
                   >
                     {list_categories.map((bra) => (
                       <AutocompleteItem
@@ -368,11 +332,6 @@ function AddProducts(props: Props) {
                       </AutocompleteItem>
                     ))}
                   </Autocomplete>
-                  {errors.categoryProductId && touched.categoryProductId && (
-                    <span className="text-sm font-semibold text-red-500">
-                      {errors.categoryProductId}
-                    </span>
-                  )}
                 </div>
                 
               </div>
@@ -408,7 +367,7 @@ function AddProducts(props: Props) {
                       }}
                       onClick={() => {
                         const code = generarCodigo();
-                        handleChange('code')(code); // Actualiza el valor del formulario con el código generado
+                        handleChange('code')(code);
                       }}
                     >
                       Generar Código
@@ -417,41 +376,32 @@ function AddProducts(props: Props) {
                 </div>
                 <div>
                   <Autocomplete
-                    onSelectionChange={(key) => {
-                      if (key) {
-                        const branchSelected = JSON.parse(key as string) as CategoryProduct;
-                        handleChange('categoryProductId')(branchSelected.id.toString());
-                      }
-                    }}
-                    onBlur={handleBlur('categoryProductId')}
+                    name='subCategoryId'
                     label="Subcategoría"
                     labelPlacement="outside"
-                    placeholder={
-                      props.product?.categoryProduct.name ??
-                      props.product?.categoryProduct.name ??
-                      'Selecciona la categoría'
-                    }
+                    placeholder='Selecciona la subcategoria'
                     variant="bordered"
-                    classNames={{
-                      base: 'font-semibold text-gray-500 text-sm',
+                    classNames={{base: 'font-semibold text-sm',
                     }}
                     className="dark:text-white"
-                    defaultSelectedKey={selectedKeyCategory}
-                    value={selectedKeyCategory}
+                   
                   >
-                    {list_categories.map((bra) => (
+                    {subcategories?.map((sub) => (
                       <AutocompleteItem
-                        value={bra.name}
-                        key={JSON.stringify(bra)}
+                        value={sub.id.toString()}
+                        key={JSON.stringify(sub)}
+                        onClick={() => {
+                          handleChange('subCategoryId')(sub.id.toString());
+                        }}
                         className="dark:text-white"
                       >
-                        {bra.name}
+                        {sub.name}
                       </AutocompleteItem>
                     ))}
                   </Autocomplete>
-                  {errors.categoryProductId && touched.categoryProductId && (
+                  {errors.subCategoryId && touched.subCategoryId && (
                     <span className="text-sm font-semibold text-red-500">
-                      {errors.categoryProductId}
+                      {errors.subCategoryId}
                     </span>
                   )}
                 </div>
@@ -468,7 +418,7 @@ function AddProducts(props: Props) {
                       onBlur={handleBlur('priceA')}
                       placeholder="00.00"
                       classNames={{
-                        label: 'font-semibold text-gray-500 text-sm',
+                        label: 'font-semibold   text-sm',
                       }}
                       variant="bordered"
                       type="number"
@@ -489,7 +439,7 @@ function AddProducts(props: Props) {
                         onBlur={handleBlur('priceB')}
                         placeholder="00.00"
                         classNames={{
-                          label: 'font-semibold text-gray-500 text-sm',
+                          label: 'font-semibold   text-sm',
                         }}
                         variant="bordered"
                         type="number"
@@ -511,7 +461,7 @@ function AddProducts(props: Props) {
                         onBlur={handleBlur('priceC')}
                         placeholder="00.00"
                         classNames={{
-                          label: 'font-semibold text-gray-500 text-sm',
+                          label: 'font-semibold   text-sm',
                         }}
                         variant="bordered"
                         type="number"
@@ -523,7 +473,6 @@ function AddProducts(props: Props) {
                     </div>
                   </div>
                 </div>
-                
                 <div>
                   <Textarea
                     label="Descripción"
@@ -534,7 +483,7 @@ function AddProducts(props: Props) {
                     onBlur={handleBlur('description')}
                     placeholder="Ingresa la descripción"
                     classNames={{
-                      label: 'font-semibold text-gray-500 text-sm ',
+                      label: 'font-semibold text-sm ',
                     }}
                     variant="bordered"
                   />
@@ -553,7 +502,7 @@ function AddProducts(props: Props) {
                     label="Sucursales"
                     onBlur={handleBlur('branch')}
                     classNames={{
-                      label: 'font-semibold text-gray-500 text-sm',
+                      label: 'font-semibold   text-sm',
                     }}
                     name="branch"
                     labelPlacement="outside"
@@ -600,10 +549,9 @@ function AddProducts(props: Props) {
                     placeholder={'Selecciona el proveedor'}
                     variant="bordered"
                     classNames={{
-                      base: 'font-semibold text-gray-500 text-sm',
+                      base: 'font-semibold text-sm',
                     }}
                     className="dark:text-white"
-                    defaultSelectedKey={selectedKeyCategory}
                     value={values.supplierId}
                   >
                     {supplier_list.map((bra) => (
@@ -616,9 +564,9 @@ function AddProducts(props: Props) {
                       </AutocompleteItem>
                     ))}
                   </Autocomplete>
-                  {errors.categoryProductId && touched.categoryProductId && (
+                  {errors.supplierId && touched.supplierId && (
                     <span className="text-sm font-semibold text-red-500">
-                      {errors.categoryProductId}
+                      {errors.supplierId}
                     </span>
                   )}
                 </div>

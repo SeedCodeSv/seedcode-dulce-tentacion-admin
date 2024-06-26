@@ -9,6 +9,7 @@ export interface IEmployeeStore {
     page: number,
     limit: number,
     fullName: string,
+    firstLastName: string,
     branch: string,
     phone: string,
     active?: number

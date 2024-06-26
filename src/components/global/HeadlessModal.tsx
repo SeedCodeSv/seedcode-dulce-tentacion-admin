@@ -53,7 +53,7 @@ function HeadlessModal(props: Props) {
                 )}
               >
                 <div className="w-full flex justify-between p-1 mt-1">
-                  <Dialog.Title as="h3" className=" font-medium dark:text-white ml-3">
+                  <Dialog.Title as="h3" className=" font-medium dark:text-white mt-4 ml-3">
                     {title}
                   </Dialog.Title>
                   <button onClick={onClose} className="bg-transparent border-0 mr-3 outline-none">

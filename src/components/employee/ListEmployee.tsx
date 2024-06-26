@@ -53,6 +53,7 @@ function ListEmployee({ actions }: Props) {
     useEmployeeStore();
 
   const [fullName, setFullName] = useState('');
+  const [firstLastName, setFirstLastName] = useState('')
   const [branch, setBranch] = useState('');
   const [phone, setPhone] = useState('');
   const [limit, setLimit] = useState(5);
@@ -65,7 +66,7 @@ function ListEmployee({ actions }: Props) {
   const [selectedEmployee, setSelectedEmployee] = useState<Employee>();
 
   const changePage = () => {
-    getEmployeesPaginated(1, limit, fullName, branch, phone, active ? 1 : 0);
+    getEmployeesPaginated(1, limit, fullName,firstLastName, branch, phone, active ? 1 : 0);
   };
   const style = {
     backgroundColor: theme.colors.dark,
@@ -74,12 +75,12 @@ function ListEmployee({ actions }: Props) {
 
   useEffect(() => {
     getBranchesList();
-    getEmployeesPaginated(1, limit, fullName, branch, phone, active ? 1 : 0);
+    getEmployeesPaginated(1, limit, fullName,firstLastName, branch, phone, active ? 1 : 0);
   }, [limit, active]);
 
   const handleActivate = (id: number) => {
     activateEmployee(id).then(() => {
-      getEmployeesPaginated(1, limit, '', '', '', active ? 1 : 0);
+      getEmployeesPaginated(1, limit, '', '', '', '',active ? 1 : 0);
     });
   };
 
@@ -329,7 +330,7 @@ function ListEmployee({ actions }: Props) {
               <Column
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
-                field="fullName"
+                field="firstName"
                 header="Nombre"
               />
               <Column
@@ -392,7 +393,7 @@ function ListEmployee({ actions }: Props) {
                   currentPage={employee_paginated.currentPag}
                   totalPages={employee_paginated.totalPag}
                   onPageChange={(page) => {
-                    getEmployeesPaginated(page, limit, fullName, branch, phone, active ? 1 : 0);
+                    getEmployeesPaginated(page, limit, fullName,firstLastName, branch, phone, active ? 1 : 0);
                   }}
                 />
               </div>
@@ -404,6 +405,7 @@ function ListEmployee({ actions }: Props) {
                         employee_paginated.nextPag,
                         limit,
                         fullName,
+                        firstLastName,
                         branch,
                         phone,
                         active ? 1 : 0
@@ -414,6 +416,7 @@ function ListEmployee({ actions }: Props) {
                         employee_paginated.prevPag,
                         limit,
                         fullName,
+                        firstLastName,
                         branch,
                         phone,
                         active ? 1 : 0
@@ -432,7 +435,7 @@ function ListEmployee({ actions }: Props) {
         isOpen={modalAdd.isOpen}
         onClose={modalAdd.onClose}
         title={selectedEmployee ? 'Editar Empleado' : 'Agregar Empleado'}
-        size="w-[350px] md:w-[500px]"
+        size="w-[350px] md:w-[800px]"
       >
         <AddEmployee closeModal={modalAdd.onClose} employee={selectedEmployee} />
       </HeadlessModal>
@@ -478,7 +481,7 @@ export const DeletePopover = ({ employee }: PopProps) => {
         <PopoverContent>
           <div className="w-full p-5">
             <p className="font-semibold text-gray-600 dark:text-white">
-              Eliminar {employee.fullName}
+              Eliminar {employee.firstName}
             </p>
             <p className="mt-3 text-center text-gray-600 dark:text-white w-72">
               ¿Estas seguro de eliminar este registro?

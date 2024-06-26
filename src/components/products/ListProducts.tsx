@@ -349,7 +349,7 @@ function ListProducts({ actions }: Props) {
               DeletePopover={DeletePopover}
               openEditModal={(product) => {
                 setSelectedProduct(product);
-                modalAdd.onOpen();
+                setIsOpenModalUpdate(true);
               }}
               layout={view as "grid" | "list"}
               actions={actions}
