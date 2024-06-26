@@ -52,8 +52,8 @@ function ListEmployee({ actions }: Props) {
   const { getEmployeesPaginated, employee_paginated, activateEmployee, loading_employees } =
     useEmployeeStore();
 
-  const [fullName, setFullName] = useState('');
-  const [firstLastName, setFirstLastName] = useState('')
+  const [firstName, setFirstName] = useState('');
+  const [firstLastName, ] = useState('')
   const [branch, setBranch] = useState('');
   const [phone, setPhone] = useState('');
   const [limit, setLimit] = useState(5);
@@ -66,7 +66,7 @@ function ListEmployee({ actions }: Props) {
   const [selectedEmployee, setSelectedEmployee] = useState<Employee>();
 
   const changePage = () => {
-    getEmployeesPaginated(1, limit, fullName,firstLastName, branch, phone, active ? 1 : 0);
+    getEmployeesPaginated(1, limit, firstName,firstLastName, branch, phone, active ? 1 : 0);
   };
   const style = {
     backgroundColor: theme.colors.dark,
@@ -75,7 +75,7 @@ function ListEmployee({ actions }: Props) {
 
   useEffect(() => {
     getBranchesList();
-    getEmployeesPaginated(1, limit, fullName,firstLastName, branch, phone, active ? 1 : 0);
+    getEmployeesPaginated(1, limit, firstName,firstLastName, branch, phone, active ? 1 : 0);
   }, [limit, active]);
 
   const handleActivate = (id: number) => {
@@ -100,11 +100,11 @@ function ListEmployee({ actions }: Props) {
           variant="bordered"
           name="searchName"
           id="searchName"
-          value={fullName}
+          value={firstName}
           autoComplete="search"
-          onChange={(e) => setFullName(e.target.value)}
+          onChange={(e) => setFirstName(e.target.value)}
           isClearable
-          onClear={() => setFullName('')}
+          onClear={() => setFirstName('')}
         />
         <Input
           classNames={{
@@ -155,7 +155,7 @@ function ListEmployee({ actions }: Props) {
         </Autocomplete>
       </>
     );
-  }, [fullName, setFullName, phone, setPhone, branch, setBranch, branch_list]);
+  }, [firstName, setFirstName, phone, setPhone, branch, setBranch, branch_list]);
 
   return (
     <>
@@ -329,9 +329,10 @@ function ListEmployee({ actions }: Props) {
               />
               <Column
                 headerClassName="text-sm font-semibold"
-                headerStyle={style}
                 field="firstName"
-                header="Nombre"
+                headerStyle={style}
+               header="Nombre"
+                body={(rowData) => `${rowData.firstName} ${rowData.firstLastName}`}
               />
               <Column
                 headerClassName="text-sm font-semibold"
@@ -393,7 +394,7 @@ function ListEmployee({ actions }: Props) {
                   currentPage={employee_paginated.currentPag}
                   totalPages={employee_paginated.totalPag}
                   onPageChange={(page) => {
-                    getEmployeesPaginated(page, limit, fullName,firstLastName, branch, phone, active ? 1 : 0);
+                    getEmployeesPaginated(page, limit, firstName,firstLastName, branch, phone, active ? 1 : 0);
                   }}
                 />
               </div>
@@ -404,7 +405,7 @@ function ListEmployee({ actions }: Props) {
                       getEmployeesPaginated(
                         employee_paginated.nextPag,
                         limit,
-                        fullName,
+                        firstName,
                         firstLastName,
                         branch,
                         phone,
@@ -415,7 +416,7 @@ function ListEmployee({ actions }: Props) {
                       getEmployeesPaginated(
                         employee_paginated.prevPag,
                         limit,
-                        fullName,
+                        firstName,
                         firstLastName,
                         branch,
                         phone,

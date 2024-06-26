@@ -6,7 +6,7 @@ import { get_token } from '../storage/localStorage';
 export const get_employees_paginated = (
   page: number,
   limit: number,
-  fullName: string,
+  firstName: string,
   firstLastName: string,
   branch: string,
   phone: string,
@@ -15,7 +15,7 @@ export const get_employees_paginated = (
   const token = get_token() ?? '';
   return axios.get<IGetEmployeesPaginated>(
     API_URL +
-      '/employees/list-paginated?page='+page +'&limit=' +limit +'&firstName=' +fullName +'&firstLastName='+firstLastName+'&branch=' +branch +'&phone=' +phone +'&active=' +active,
+      '/employees/list-paginated?page='+page +'&limit=' +limit +'&firstName=' +firstName +'&firstLastName='+firstLastName+'&branch=' +branch +'&phone=' +phone +'&active=' +active,
     {
       headers: {
         Authorization: `Bearer ${token}`,

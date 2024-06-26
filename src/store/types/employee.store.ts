@@ -8,7 +8,7 @@ export interface IEmployeeStore {
   getEmployeesPaginated: (
     page: number,
     limit: number,
-    fullName: string,
+    firstName: string,
     firstLastName: string,
     branch: string,
     phone: string,

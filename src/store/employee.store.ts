@@ -27,9 +27,9 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
   saveEmployeesPaginated(employee_paginated) {
     set({ employee_paginated });
   },
-  getEmployeesPaginated(page, limit, fullName,firstLastName, branch, phone, active = 1) {
+  getEmployeesPaginated(page, limit, firstName,firstLastName, branch, phone, active = 1) {
     set({ loading_employees: true });
-    get_employees_paginated(page, limit, fullName,firstLastName, branch, phone, active)
+    get_employees_paginated(page, limit, firstName,firstLastName, branch, phone, active)
       .then(({ data }) => set({ employee_paginated: data, loading_employees: false }))
       .catch(() => {
         set({
