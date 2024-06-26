@@ -8,5 +8,5 @@ export interface ISubCategoriesStore {
   postSubCategory: (payload: ISubCategoryPayload) => void;
   patchSubCategory: (payload: ISubCategoryPayload, id: number) => void;
   deleteSubCategory: (id: number) => Promise<boolean>;
-  activateSubCategory: (id: number) => Promise<void>;
+  activateSubCategory: (id: number) => Promise<boolean>;
 }

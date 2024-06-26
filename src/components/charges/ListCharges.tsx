@@ -21,7 +21,7 @@ import {
   Filter,
   RefreshCcw,
 } from 'lucide-react';
-import { useCategoriesStore } from '../../store/categories.store';
+import { useChargesStore } from '../../store/charges.store';
 import { ThemeContext } from '../../hooks/useTheme';
 import ChargesForm from './ChargesForm';
 import { DataTable } from 'primereact/datatable';
@@ -37,15 +37,15 @@ import { limit_options } from '../../utils/constants';
 import SmPagination from '../global/SmPagination';
 import HeadlessModal from '../global/HeadlessModal';
 
-interface PProps {
+interface IProps {
   actions: string[];
 }
 
-function ListCharges({ actions }: PProps) {
+function ListCharges({ actions }: IProps) {
   const { theme, context } = useContext(ThemeContext);
   const [openVaul, setOpenVaul] = useState(false);
-  const { paginated_categories, getPaginatedCategories, activateCategory, loading_categories } =
-    useCategoriesStore();
+  const { charges_paginated, getChargesPaginated, activateCharge } = 
+    useChargesStore();
 
   const [selectedCategory, setSelectedCategory] = useState<
     { id: number; name: string } | undefined
@@ -56,11 +56,11 @@ function ListCharges({ actions }: PProps) {
   const [active, setActive] = useState(true);
 
   useEffect(() => {
-    getPaginatedCategories(1, limit, search, active ? 1 : 0);
+    getChargesPaginated(1, limit, search, active ? 1 : 0);
   }, [limit, active]);
 
   const handleSearch = (name: string | undefined) => {
-    getPaginatedCategories(1, limit, name ?? search);
+    getChargesPaginated(1, limit, name ?? search);
   };
 
   const modalAdd = useDisclosure();
@@ -81,8 +81,8 @@ function ListCharges({ actions }: PProps) {
   };
 
   const handleActivate = (id: number) => {
-    activateCategory(id).then(() => {
-      getPaginatedCategories(1, limit, search, active ? 1 : 0);
+    activateCharge(id).then(() => {
+      getChargesPaginated(1, limit, search, active ? 1 : 0);
     });
   };
 
@@ -286,9 +286,9 @@ function ListCharges({ actions }: PProps) {
           <DataTable
             className="w-full shadow"
             emptyMessage="No se encontraron resultados"
-            value={paginated_categories.categoryProducts}
+            value={charges_paginated.charges}
             tableStyle={{ minWidth: '50rem' }}
-            loading={loading_categories}
+            // loading={loading_categories}
           >
             <Column
               headerClassName="text-sm font-semibold"
@@ -338,16 +338,16 @@ function ListCharges({ actions }: PProps) {
             />
           </DataTable>
         )}
-        {paginated_categories.totalPag > 1 && (
+        {charges_paginated.totalPag > 1 && (
           <>
             <div className="hidden w-full mt-5 md:flex">
               <Pagination
-                previousPage={paginated_categories.prevPag}
-                nextPage={paginated_categories.nextPag}
-                currentPage={paginated_categories.currentPag}
-                totalPages={paginated_categories.totalPag}
+                previousPage={charges_paginated.prevPag}
+                nextPage={charges_paginated.nextPag}
+                currentPage={charges_paginated.currentPag}
+                totalPages={charges_paginated.totalPag}
                 onPageChange={(page) => {
-                  getPaginatedCategories(page, limit, search);
+                  getChargesPaginated(page, limit, search);
                 }}
               />
             </div>
@@ -355,13 +355,13 @@ function ListCharges({ actions }: PProps) {
               <div className="flex w-full mt-5 md:hidden">
                 <SmPagination
                   handleNext={() => {
-                    getPaginatedCategories(paginated_categories.nextPag, limit, search);
+                    getChargesPaginated(charges_paginated.nextPag, limit, search);
                   }}
                   handlePrev={() => {
-                    getPaginatedCategories(paginated_categories.prevPag, limit, search);
+                    getChargesPaginated(charges_paginated.prevPag, limit, search);
                   }}
-                  currentPage={paginated_categories.currentPag}
-                  totalPages={paginated_categories.totalPag}
+                  currentPage={charges_paginated.currentPag}
+                  totalPages={charges_paginated.totalPag}
                 />
               </div>
             </div>
@@ -388,11 +388,11 @@ interface Props {
 const DeletePopUp = ({ category }: Props) => {
   const { theme } = useContext(ThemeContext);
 
-  const { deleteCategory } = useCategoriesStore();
+  // const { deleteCharge } = useChargesStore();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleDelete = async () => {
-    await deleteCategory(category.id);
+    // await deleteCategory(category.id);
     onClose();
   };
 
