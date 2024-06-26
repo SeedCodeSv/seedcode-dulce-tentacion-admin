@@ -1,14 +1,18 @@
 import { Autocomplete, AutocompleteItem, Button, Input } from '@nextui-org/react';
 import { Formik } from 'formik';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import * as yup from 'yup';
 import { useRolesStore } from '../../store/roles.store';
-import { useEmployeeStore } from '../../store/employee.store';
-import { Employee } from '../../types/employees.types';
+// import { useEmployeeStore } from '../../store/employee.store';
+// import { Employee } from '../../types/employees.types';
 import { Role } from '../../types/roles.types';
 import { useUsersStore } from '../../store/users.store';
 import { UserPayload } from '../../types/users.types';
 import { ThemeContext } from '../../hooks/useTheme';
+import { useBranchesStore } from '../../store/branches.store';
+import { useCorrelativesStore } from '../../store/correlatives.store';
+import { Branches } from '../../types/branches.types';
+import { Correlatives } from '../../types/correlatives.types';
 
 interface Props {
   onClose: () => void;
@@ -16,31 +20,40 @@ interface Props {
 
 function AddUsers(props: Props) {
   const { theme } = useContext(ThemeContext);
+  const [selectedIdBranch, setSelectedIdBranch] = useState(0);
+  const { getBranchesList, branch_list } = useBranchesStore();
+  const { get_correlativesByBranch, list_correlatives } = useCorrelativesStore();
+
+  useEffect(() => {
+    getBranchesList();
+    get_correlativesByBranch(selectedIdBranch);
+  }, [selectedIdBranch]);
 
   const initialValues = {
     userName: '',
     password: '',
     roleId: 0,
-    employeeId: 0,
+    // employeeId: 0,
+    correlativeId: 0,
   };
 
   const validationSchema = yup.object().shape({
     userName: yup.string().required('El usuario es requerido'),
     password: yup.string().required('La contraseña es requerida'),
     roleId: yup.number().required('El rol es requerido').min(1, 'El rol es requerido'),
-    employeeId: yup
-      .number()
-      .required('El empleado es requerido')
-      .min(1, 'El empleado es requerido'),
+    // employeeId: yup
+    //   .number()
+    //   .required('El empleado es requerido')
+    //   .min(1, 'El empleado es requerido'),
   });
 
   const { roles_list, getRolesList } = useRolesStore();
-  const { employee_list, getEmployeesList } = useEmployeeStore();
+  // const { employee_list, getEmployeesList } = useEmployeeStore();
   const { postUser } = useUsersStore();
 
   useEffect(() => {
     getRolesList();
-    getEmployeesList();
+    // getEmployeesList();
   }, []);
 
   const handleSubmit = (values: UserPayload) => {
@@ -48,8 +61,18 @@ function AddUsers(props: Props) {
     props.onClose();
   };
 
+  const selectedKeyBranch = useMemo(() => {
+    const branchCorrelative = branch_list.find((branchC) => branchC.id);
+    return JSON.stringify(branchCorrelative);
+  }, [branch_list, branch_list.length]);
+
+  const selectedKeyCorrelative = useMemo(() => {
+    const correlativeBranch = list_correlatives.find((correlativesB) => correlativesB.id);
+    return JSON.stringify(correlativeBranch);
+  }, [list_correlatives, list_correlatives.length]);
+
   return (
-    <div className='p-4 dark:text-white'>
+    <div className="p-4 dark:text-white">
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -96,7 +119,7 @@ function AddUsers(props: Props) {
                 <span className="text-sm font-semibold text-red-500">{errors.password}</span>
               )}
             </div>
-            <div className="pt-2">
+            {/* <div className="pt-2">
               <Autocomplete
                 onSelectionChange={(key) => {
                   if (key) {
@@ -120,14 +143,14 @@ function AddUsers(props: Props) {
                     value={dep.id}
                     key={JSON.stringify(dep)}
                   >
-                    {dep.fullName}
+                    {dep.firstName}
                   </AutocompleteItem>
                 ))}
               </Autocomplete>
               {errors.employeeId && touched.employeeId && (
                 <span className="text-sm font-semibold text-red-500">{errors.employeeId}</span>
               )}
-            </div>
+            </div> */}
             <div className="pt-2">
               <Autocomplete
                 onSelectionChange={(key) => {
@@ -159,6 +182,83 @@ function AddUsers(props: Props) {
               {errors.roleId && touched.roleId && (
                 <span className="text-sm font-semibold text-red-500">{errors.roleId}</span>
               )}
+            </div>
+            {/* Seleccionar sucursal */}
+            <div className="pt-2">
+              <Autocomplete
+                onSelectionChange={(key) => {
+                  if (key) {
+                    const depSelected = JSON.parse(key as string) as Correlatives;
+                    setSelectedIdBranch(depSelected.id);
+                    handleChange('branchId')(depSelected.id.toString());
+                    handleChange('branchName')(depSelected.code.toString());
+                  }
+                }}
+                onBlur={handleBlur('branchId')}
+                className="font-semibold"
+                label="Sucursal"
+                labelPlacement="outside"
+                // placeholder={
+                //   valu
+                // }
+                placeholder="Selecciona la sucursal"
+                variant="bordered"
+                defaultSelectedKey={selectedKeyBranch}
+                value={selectedKeyBranch}
+              >
+                {branch_list.map((branch) => (
+                  <AutocompleteItem
+                    // onClick={() => setBranchId(branch.id)}
+                    className="dark:text-white"
+                    key={JSON.stringify(branch)}
+                    value={branch.id}
+                  >
+                    {branch.name}
+                  </AutocompleteItem>
+                ))}
+              </Autocomplete>
+              {/* {errors.branchId && touched.branchId && (
+                <span className="text-sm font-semibold text-red-500">{errors.branchId}</span>
+              )} */}
+            </div>
+            {/* Seleccionar spunto de venta  es correlativo en base a la sucursal*/}
+            <div className="pt-2">
+              <Autocomplete
+                onSelectionChange={(key) => {
+                  if (key) {
+                    const depSelected = JSON.parse(key as string) as Branches;
+                    handleChange('correlativeId')(depSelected.id.toString());
+                    handleChange('code')(depSelected.name.toString());
+                  }
+                }}
+                onBlur={handleBlur('municipio')}
+                label="Correlativo"
+                labelPlacement="outside"
+                className="dark:text-white"
+                // placeholder={
+                //   values. ? values.nombreMunicipio : 'Selecciona el municipio'
+                // }
+                placeholder="Selecciona el correlativo"
+                variant="bordered"
+                classNames={{
+                  base: 'font-semibold text-gray-500 text-sm',
+                }}
+                defaultSelectedKey={selectedKeyCorrelative}
+                value={selectedKeyCorrelative}
+              >
+                {list_correlatives.map((cor) => (
+                  <AutocompleteItem
+                    value={cor.id}
+                    key={JSON.stringify(cor)}
+                    className="dark:text-white"
+                  >
+                    {cor.typeVoucher} + {cor.code}
+                  </AutocompleteItem>
+                ))}
+              </Autocomplete>
+              {/* {errors.employeeId && touched.employeeId && (
+                <span className="text-sm font-semibold text-red-500">{errors.employeeId}</span>
+              )} */}
             </div>
             <Button
               onClick={() => handleSubmit()}

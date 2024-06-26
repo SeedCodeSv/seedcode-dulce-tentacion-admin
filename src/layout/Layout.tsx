@@ -26,7 +26,7 @@ function Layout(props: Props) {
   const { OnGetActionsByRole } = useActionsRolStore();
 
   useEffect(() => {
-    GetConfigurationByTransmitter(user?.employee.branch.transmitterId ?? 0);
+    GetConfigurationByTransmitter(user?.correlative.branch.transmitterId ?? 0);
     if (!roleActions) {
       OnGetActionsByRole(user?.roleId ?? 0).then((data) => {
         if (data) {

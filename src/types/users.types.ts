@@ -8,7 +8,8 @@ export interface UserPayload {
   userName: string;
   password: string;
   roleId: number;
-  employeeId: number;
+  // employeeId: number;
+  correlativeId: number;
 }
 export interface UserUpdate {
   userName: string;

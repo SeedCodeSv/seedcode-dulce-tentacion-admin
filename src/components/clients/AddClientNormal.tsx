@@ -90,14 +90,14 @@ const AddClientNormal = (props: Props) => {
       const values = {
         ...payload,
         esContribuyente: 0,
-        transmitterId: Number(user?.employee.branch.transmitterId),
+        transmitterId: Number(user?.correlative.branch.transmitterId),
       };
       patchCustomer(values, props.id!);
     } else {
       const values = {
         ...payload,
         esContribuyente: 0,
-        transmitterId: Number(user?.employee.branch.transmitterId),
+        transmitterId: Number(user?.correlative.branch.transmitterId),
       };
       postCustomer(values);
     }

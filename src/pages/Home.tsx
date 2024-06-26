@@ -43,7 +43,7 @@ function Home() {
 
   useEffect(() => {
     if (user) {
-      const branchId = user.employee.branch.transmitterId;
+      const branchId = user.correlative.branch.transmitterId;
       getSalesByBranchAndMonth(branchId);
       getExpensesBranchMonth(branchId);
       getMostProductMostSelled(branchId);

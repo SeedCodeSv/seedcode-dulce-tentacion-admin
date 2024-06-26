@@ -101,13 +101,13 @@ export const SideBar = (props: Props) => {
                   description={
                     <span className="hidden lg:block text-gray-400">{user?.userName}</span>
                   }
-                  name={<span className="hidden lg:block">{user?.employee.fullName}</span>}
+                  name={<span className="hidden lg:block">{user?.userName}</span>}
                 ></User>
               </DropdownTrigger>
               <DropdownMenu aria-label="User Actions" variant="flat">
                 <DropdownItem key="profile" className="h-14 gap-2">
                   <p className="font-bold dark:text-white">Sesión iniciada</p>
-                  <p className="font-bold dark:text-white">{user?.employee.fullName}</p>
+                  <p className="font-bold dark:text-white">{user?.userName}</p>
                 </DropdownItem>
                 <DropdownItem
                   key="logout"

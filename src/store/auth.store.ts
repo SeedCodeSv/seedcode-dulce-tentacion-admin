@@ -39,16 +39,17 @@ export const useAuthStore = create<IAuthStore>((set, get) => ({
           set({ user: data.user })
           if (mode === 'vendedor') {
             post_box(data.box.id.toString());
-            save_branch_id(data.box.branchId.toString());
+            save_branch_id(data.user.correlative.branchId.toString());
           } else {
             delete_seller_mode();
           }
           if (is_admin(data.user.role.name)) {
-            await save_branch_id(String(data.user.employee.branch.id));
+            // await save_branch_id(String(data.user.employee.branch.id));
+            await save_branch_id(String(data.user.correlative.branchId));
           }
 
           await get()
-            .OnLoginMH(data.user.employee.branch.transmitterId, data.token)
+            .OnLoginMH(data.user.correlative.branch.transmitterId, data.token)
             .catch(() => {
               toast.error('Error al conectarse con el servidor');
               return;

@@ -7,7 +7,7 @@ import { Branches } from '../../types/branches.types';
 import { Employee, EmployeePayload } from '../../types/employees.types';
 import { useEmployeeStore } from '../../store/employee.store';
 import { ThemeContext } from '../../hooks/useTheme';
-import { useChargeStore} from '../../store/charges.store';
+import { useChargesStore} from '../../store/charges.store';
 
 interface Props {
   closeModal: () => void;
@@ -33,7 +33,7 @@ function AddEmployee(props: Props) {
 
   const { getBranchesList, branch_list } = useBranchesStore();
   const { patchEmployee, postEmployee } = useEmployeeStore();
-  const { getChargesList, charges } = useChargeStore();
+  const { getChargesList, charges } = useChargesStore();
 
   useEffect(() => {
     getBranchesList();

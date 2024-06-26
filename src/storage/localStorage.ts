@@ -1,5 +1,5 @@
 import { jwtDecode } from 'jwt-decode';
-import { UserLogin } from '../types/auth.types';
+import { User, UserLogin } from '../types/auth.types';
 import { RoleViewAction } from '../types/actions_rol.types';
 import { decryptData, encryptData } from '../plugins/crypto';
 export const set_token = (token: string) => {
@@ -33,7 +33,7 @@ export const is_authenticate = () => {
   return false;
 };
 
-export const save_user = (user: UserLogin) => {
+export const save_user = (user: User) => {
   return localStorage.setItem('_RSU', encryptData(user));
 };
 
@@ -42,7 +42,7 @@ export const get_user = () => {
 
   if (user) {
     const dec = decryptData(user);
-    return dec as UserLogin;
+    return dec as User;
   }
 
   return undefined;
