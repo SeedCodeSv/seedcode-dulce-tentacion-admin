@@ -29,7 +29,7 @@ export interface Employee {
   branch: Branches;
   branchId: number;
   employeeStatus: EmployeeStatus;
-  employeeStatusId: number;
+  statusId: number;
   studyLevel: StudyLevel;
   studyLevelId: number;
   contractType: ContractType;
@@ -69,14 +69,14 @@ export interface EmployeePayload {
   dateOfEntry: string;
   dateOfExit: string;
   responsibleContact: string;
-  employeeStatusId: number;
+  statusId: number;
   studyLevelId: number;
   contractTypeId: number;
-  departamento: string;
-  nombreDepartamento: string;
-  municipio: string;
-  nombreMunicipio: string;
-  complemento: string;
+  department: string;
+  departmentName: string;
+  municipality: string;
+  municipalityName: string;
+  complement: string;
   branchId: number;
 }
 export interface GetEmployeeList {
