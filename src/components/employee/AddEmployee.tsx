@@ -2,12 +2,18 @@ import { Autocomplete, AutocompleteItem, Button, Input } from '@nextui-org/react
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { useBranchesStore } from '../../store/branches.store';
-import { useContext, useEffect, useMemo } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { Branches } from '../../types/branches.types';
 import { Employee, EmployeePayload } from '../../types/employees.types';
 import { useEmployeeStore } from '../../store/employee.store';
 import { ThemeContext } from '../../hooks/useTheme';
 import { useChargesStore} from '../../store/charges.store';
+import { Municipio } from '../../types/billing/cat-013-municipio.types';
+import { useBillingStore } from '../../store/facturation/billing.store';
+import { Departamento } from '../../types/billing/cat-012-departamento.types';
+import { useEmployeeStatusStore } from '../../store/employee_status.store';
+import { useContractTypeStore } from '../../store/contract_type.store';
+import { useStudyLevelStore } from '../../store/study_level.store';
 
 interface Props {
   closeModal: () => void;
@@ -16,6 +22,15 @@ interface Props {
 
 function AddEmployee(props: Props) {
   const { theme } = useContext(ThemeContext);
+  const [selectCodeDep, setSelectCodeDep] = useState('0');
+  const { GetEmployeeStatus, employee_status } = useEmployeeStatusStore();
+  const { GetContractType, contract_type } = useContractTypeStore();
+  const { GetStudyLevel, study_level } = useStudyLevelStore();
+  const { getBranchesList, branch_list } = useBranchesStore();
+  const { patchEmployee, postEmployee } = useEmployeeStore();
+  const { getChargesList, charges } = useChargesStore();
+  const {getCat012Departamento, cat_012_departamento, getCat013Municipios,cat_013_municipios } = useBillingStore();
+
 
   const initialValues = {
     firstName: props.employee?.firstName ?? '',
@@ -26,19 +41,40 @@ function AddEmployee(props: Props) {
     nit: props.employee?.nit ?? '',
     chargeId: props.employee?.chargeId ?? 0,
     isss: props.employee?.isss ?? '',
+    afp: props.employee?.afp ?? '',
+    code: props.employee?.code ?? '',
     dui: props.employee?.dui ?? '',
     phone: props.employee?.phone ?? '',
+    age: props.employee?.age ?? '',
+    salary: props.employee?.salary ?? '',
+    dateOfBirth: props.employee?.dateOfBirth ?? '',
+    dateOfEntry: props.employee?.dateOfEntry ?? '',
+    dateOfExit: props.employee?.dateOfExit ?? '',
+    responsibleContact: props.employee?.responsibleContact ?? '',
+    employeeStatusId: props.employee?.employeeStatusId ?? 0,
+    studyLevelId: props.employee?.studyLevelId ?? 0,
+    contractTypeId: props.employee?.contractTypeId ?? 0,
+    departamento: props.employee?.address?.departamento ?? '',
+    nombreDepartamento: props.employee?.address?.nombreDepartamento ?? '',
+    municipio: props.employee?.address?.municipio ?? '',
+    nombreMunicipio: props.employee?.address?.nombreMunicipio ?? '',
+    complemento: props.employee?.address?.complemento ?? '',
     branchId: props.employee?.branchId ?? 0,
-  };
-
-  const { getBranchesList, branch_list } = useBranchesStore();
-  const { patchEmployee, postEmployee } = useEmployeeStore();
-  const { getChargesList, charges } = useChargesStore();
+  }
 
   useEffect(() => {
     getBranchesList();
     getChargesList();
+    getCat012Departamento();
+    GetEmployeeStatus();
+    GetContractType();
+    GetStudyLevel();
   }, []);
+
+  useEffect(() => {
+    getCat013Municipios(selectCodeDep);
+  }, [selectCodeDep]);
+
 
   const validationSchema = yup.object().shape({
     phone: yup
@@ -48,7 +84,7 @@ function AddEmployee(props: Props) {
     branchId: yup
       .number()
       .required('La sucursal es requerida')
-      .typeError('La sucursal es requerida'),
+      .typeError('La sucursal es requerida'),  
   });
 
   const handleSubmit = (values: EmployeePayload) => {
@@ -69,8 +105,26 @@ function AddEmployee(props: Props) {
     }
   }, [props, props.employee, branch_list]);
 
+  const selectedKeyDepartment = useMemo(() => {
+    if (props.employee?.address) {
+      const department = cat_012_departamento.find(
+        (department) => department.codigo === props.employee?.address?.departamento
+      );
+
+      return JSON.stringify(department);
+    }
+  }, [props, props.employee?.address, cat_012_departamento, cat_012_departamento.length]);
+
+  const selectedKeyCity = useMemo(() => {
+    if (props.employee?.address) {
+      const city = cat_013_municipios.find(
+        (department) => department.codigo === props.employee?.address?.municipio
+      );
+      return JSON.stringify(city);
+    }
+  }, [props, props.employee?.address, cat_013_municipios, cat_013_municipios.length]);
   return (
-    <div className="p-4 dark:text-white grid grid-cols-2 gap-4">
+    <div className="p-4 dark:text-white">
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -78,7 +132,8 @@ function AddEmployee(props: Props) {
       >
         {({ values, touched, errors, handleBlur, handleChange, handleSubmit }) => (
           <>
-            <div className="flex flex-col mt-4">
+            <div className='grid grid-cols-4 gap-4'>
+            <div className="flex flex-col mt-3">
               <Input
                 name="firstName"
                 labelPlacement="outside"
@@ -97,7 +152,7 @@ function AddEmployee(props: Props) {
                 </>
               )}
             </div>
-            <div className="flex flex-col mt-4">
+            <div className="flex flex-col mt-3">
               <Input
                 name="secondName"
                 labelPlacement="outside"
@@ -116,7 +171,7 @@ function AddEmployee(props: Props) {
                 </>
               )}
             </div>
-            <div className="flex flex-col mt-4">
+            <div className="mt-3">
               <Input
                 name="firstLastName"
                 labelPlacement="outside"
@@ -135,7 +190,7 @@ function AddEmployee(props: Props) {
                 </>
               )}
             </div>
-            <div className="flex flex-col mt-4">
+            <div className="flex flex-col mt-3">
               <Input
                 name="secondLastName"
                 labelPlacement="outside"
@@ -154,7 +209,7 @@ function AddEmployee(props: Props) {
                 </>
               )}
             </div>
-            <div className="flex flex-col mt-4">
+            <div className="flex flex-col mt-3">
               <Input
                 name="bankAccount"
                 labelPlacement="outside"
@@ -164,7 +219,7 @@ function AddEmployee(props: Props) {
                 placeholder="Ingresa el numero de cuenta"
                 classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
                 variant="bordered"
-                label="Numero de Cuenta"
+                label="Numero de cuenta bancaria"
                 autoComplete="off"
               />
               {errors.bankAccount && touched.bankAccount && (
@@ -173,14 +228,14 @@ function AddEmployee(props: Props) {
                 </>
               )}
             </div>
-            <div className="flex flex-col mt-4">
+            <div className="flex flex-col mt-3">
               <Input
                 name="dui"
                 labelPlacement="outside"
                 value={values.dui}
                 onChange={handleChange('dui')}
                 onBlur={handleBlur('dui')}
-                placeholder="Ingresa el numero de dui"
+                placeholder="Ingresa el numero de DUI"
                 classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
                 variant="bordered"
                 label="DUI"
@@ -192,14 +247,14 @@ function AddEmployee(props: Props) {
                 </>
               )}
             </div>
-            <div className="flex flex-col mt-4">
+            <div className="flex flex-col mt-3">
               <Input
                 name="nit"
                 labelPlacement="outside"
                 value={values.nit}
                 onChange={handleChange('nit')}
                 onBlur={handleBlur('nit')}
-                placeholder="Ingresa el numero de nit"
+                placeholder="Ingresa el numero de NIT"
                 classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
                 variant="bordered"
                 label="NIT"
@@ -211,14 +266,14 @@ function AddEmployee(props: Props) {
                 </>
               )}
             </div>
-            <div className="flex flex-col mt-4">
+            <div className="flex flex-col mt-3">
               <Input
                 name="isss"
                 labelPlacement="outside"
                 value={values.isss}
                 onChange={handleChange('isss')}
                 onBlur={handleBlur('isss')}
-                placeholder="Ingresa el numero de isss"
+                placeholder="Ingresa el numero de ISSS"
                 classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
                 variant="bordered"
                 label="ISSS"
@@ -229,13 +284,281 @@ function AddEmployee(props: Props) {
                 </>
               )}
             </div>
-            <div className="flex flex-col mt-4">
+            <div className="flex flex-col mt-3">
+              <Input
+                name="afp"
+                labelPlacement="outside"
+                value={values.afp}
+                onChange={handleChange('afp')}
+                onBlur={handleBlur('afp')}
+                placeholder="Ingresa el numero de AFP"
+                classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
+                variant="bordered"
+                label="AFP"
+              />
+              {errors.afp && touched.afp && (
+                <>
+                  <span className="text-sm font-semibold text-red-600">{errors.afp}</span>
+                </>
+              )}
+            </div>
+            <div className="flex flex-col mt-3">
+              <Input
+                name="code"
+                labelPlacement="outside"
+                value={values.code}
+                onChange={handleChange('code')}
+                onBlur={handleBlur('code')}
+                placeholder="Ingresa el codigo"
+                classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
+                variant="bordered"
+                label="Codigo Empleado"
+              />
+              {errors.code && touched.code && (
+                <>
+                  <span className="text-sm font-semibold text-red-600">{errors.code}</span>
+                </>
+              )}
+            </div>
+            <div className="flex flex-col mt-3">
+              <Input
+                type="number"
+                name="name"
+                labelPlacement="outside"
+                value={values.phone}
+                onChange={handleChange('phone')}
+                onBlur={handleBlur('phone')}
+                placeholder="Ingresa el numero de teléfono"
+                classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
+                variant="bordered"
+                label="Teléfono"
+                autoComplete="off"
+              />
+              {errors.phone && touched.phone && (
+                <>
+                  <span className="text-sm font-semibold text-red-600">{errors.phone}</span>
+                </>
+              )}
+            </div>
+            <div className="flex flex-col mt-3">
+              <Input
+                type="number"
+                name="age"
+                labelPlacement="outside"
+                value={values.age}
+                onChange={handleChange('age')}
+                onBlur={handleBlur('age')}
+                placeholder="Ingresa la edad"
+                classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
+                variant="bordered"
+                label="Edad"
+                autoComplete="off"
+              />
+              {errors.age && touched.age && (
+                <>
+                  <span className="text-sm font-semibold text-red-600">{errors.age}</span>
+                </>
+              )}
+            </div>
+            <div className="flex flex-col mt-3">
+              <Input
+                type="number"
+                name="salary"
+                labelPlacement="outside"
+                value={values.salary}
+                onChange={handleChange('salary')}
+                onBlur={handleBlur('salary')}
+                placeholder="Ingresa el salario mensual"
+                classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
+                variant="bordered"
+                label="Salario Mensual"
+                autoComplete="off"
+              />
+              {errors.salary && touched.salary && (
+                <>
+                  <span className="text-sm font-semibold text-red-600">{errors.salary}</span>
+                </>
+              )}
+            </div>
+            <div className="flex flex-col mt-3">
+              <Input
+                type="date"
+                name="dateOfBirth"
+                labelPlacement="outside"
+                value={values.dateOfBirth}
+                onChange={handleChange('dateOfBirth')}
+                onBlur={handleBlur('dateOfBirth')}
+                classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
+                variant="bordered"
+                label="Fecha de Nacimiento"
+                autoComplete="off"
+              />
+              {errors.dateOfBirth && touched.dateOfBirth && (
+                <>
+                  <span className="text-sm font-semibold text-red-600">{errors.dateOfBirth}</span>
+                </>
+              )}
+            </div>
+            <div className="flex flex-col mt-3">
+              <Input
+                type="date"
+                name="dateOfEntry"
+                labelPlacement="outside"
+                value={values.dateOfEntry}
+                onChange={handleChange('dateOfEntry')}
+                onBlur={handleBlur('dateOfEntry')}
+                classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
+                variant="bordered"
+                label="Fecha de Ingreso"
+                autoComplete="off"
+              />
+              {errors.dateOfEntry && touched.dateOfEntry && (
+                <>
+                  <span className="text-sm font-semibold text-red-600">{errors.dateOfEntry}</span>
+                </>
+              )}
+            </div>
+            <div className="flex flex-col mt-3">
+              <Input
+                type="date"
+                name="dateOfExit"
+                labelPlacement="outside"
+                value={values.dateOfExit}
+                onChange={handleChange('dateOfExit')}
+                onBlur={handleBlur('dateOfExit')}
+                classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
+                variant="bordered"
+                label="Fecha de Salida"
+                autoComplete="off"
+              />
+              {errors.dateOfExit && touched.dateOfExit && (
+                <>
+                  <span className="text-sm font-semibold text-red-600">{errors.dateOfExit}</span>
+                </>
+              )}
+            </div>
+            <div className="flex flex-col mt-3">
+            <Autocomplete
+                    variant="bordered"
+                    label="Nivel de Estudio"
+                    labelPlacement="outside"
+                    className="dark:text-white"
+                    placeholder='Seleccione el nivel de estudio'
+                    classNames={{
+                      base: 'font-semibold text-sm',
+                    }}
+                    defaultInputValue={props.employee?.studyLevel?.name}
+                    
+                  >
+                    {study_level?.map((item) => (
+                      <AutocompleteItem
+                        key={JSON.stringify(item)}
+                        value={item.name}
+                        onClick={() => {
+                          handleChange('studyLevelId')(item.id.toString());
+                        }}
+                        className="dark:text-white"
+                      >
+                        {item.name}
+                      </AutocompleteItem>
+                    ))}
+                  </Autocomplete>
+              {errors.studyLevelId && touched.studyLevelId && (
+                <>
+                  <span className="text-sm font-semibold text-red-600">{errors.studyLevelId}</span>
+                </>
+              )}
+            </div>
+            <div className="flex flex-col mt-3">
+            <Autocomplete
+                    variant="bordered"
+                    label="Estado del Empleado"
+                    labelPlacement="outside"
+                    className="dark:text-white"
+                    placeholder='Seleccione el estado del empleado'
+                    classNames={{
+                      base: 'font-semibold text-sm',
+                    }}
+                    defaultInputValue={props.employee?.employeeStatus?.name}
+                    
+                  >
+                    {employee_status?.map((item) => (
+                      <AutocompleteItem
+                        key={JSON.stringify(item)}
+                        value={item.name}
+                        onClick={() => {
+                          handleChange('employeeStatusId')(item.id.toString());
+                        }}
+                        className="dark:text-white"
+                      >
+                        {item.name}
+                      </AutocompleteItem>
+                    ))}
+                  </Autocomplete>
+              {errors.employeeStatusId && touched.employeeStatusId && (
+                <>
+                  <span className="text-sm font-semibold text-red-600">{errors.employeeStatusId}</span>
+                </>
+              )}
+            </div>
+            <div className="flex flex-col mt-3">
+            <Autocomplete
+                    variant="bordered"
+                    label="Tipo de contratacion"
+                    labelPlacement="outside"
+                    className="dark:text-white"
+                    placeholder='Seleccione el tipo de contrato'
+                    classNames={{
+                      base: 'font-semibold text-sm',
+                    }}
+                    defaultInputValue={props.employee?.contractType?.name}
+                    
+                  >
+                    {contract_type.map((item) => (
+                      <AutocompleteItem
+                        key={JSON.stringify(item)}
+                        value={item.name}
+                        onClick={() => {
+                          handleChange('contractTypeId')(item.id.toString());
+                        }}
+                        className="dark:text-white"
+                      >
+                        {item.name}
+                      </AutocompleteItem>
+                    ))}
+                  </Autocomplete>
+              {errors.contractTypeId && touched.contractTypeId && (
+                <>
+                  <span className="text-sm font-semibold text-red-600">{errors.contractTypeId}</span>
+                </>
+              )}
+            </div>
+            <div className="flex flex-col mt-3">
+              <Input
+                type="text"
+                name="responsibleContact"
+                labelPlacement="outside"
+                value={values.responsibleContact}
+                onChange={handleChange('responsibleContact')}
+                onBlur={handleBlur('responsibleContact')}
+                classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
+                variant="bordered"
+                label="Contacto Responsable"
+                placeholder="Ingresa el contacto responsable"
+                autoComplete="off"
+              />
+            </div>
+            
+            <div className="flex flex-col mt-3">
             <Autocomplete
                     variant="bordered"
                     label="Cargo"
                     labelPlacement="outside"
                     className="dark:text-white"
                     placeholder='Seleccione el cargo'
+                    classNames={{
+                      base: 'font-semibold text-sm',
+                    }}
                     defaultInputValue={props.employee?.charge?.name}
                     
                   >
@@ -258,28 +581,7 @@ function AddEmployee(props: Props) {
                 </>
               )}
             </div>
-            <div className="flex flex-col mt-4">
-              <Input
-                type="number"
-                name="name"
-                labelPlacement="outside"
-                value={values.phone}
-                onChange={handleChange('phone')}
-                onBlur={handleBlur('phone')}
-                placeholder="Ingresa el numero de teléfono"
-                classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
-                variant="bordered"
-                label="Teléfono"
-                autoComplete="off"
-              />
-              {errors.phone && touched.phone && (
-                <>
-                  <span className="text-sm font-semibold text-red-600">{errors.phone}</span>
-                </>
-              )}
-            </div>
-            
-            <div className="mt-4">
+            <div className="mt-3">
               <Autocomplete
                 onSelectionChange={(key) => {
                   if (key) {
@@ -313,10 +615,103 @@ function AddEmployee(props: Props) {
                 <span className="text-sm font-semibold text-red-500">{errors.branchId}</span>
               )}
             </div>
+            </div>
+            <span className="flex flex-col mt-4">-- Dirección --</span>
+            <div className="grid grid-cols-2 gap-4 mt-3">
+            <div >
+                <Autocomplete
+                  onSelectionChange={(key) => {
+                    if (key) {
+                      const depSelected = JSON.parse(key as string) as Departamento;
+                      setSelectCodeDep(depSelected.codigo);
+                      handleChange('departamento')(depSelected.codigo);
+                      handleChange('nombreDepartamento')(depSelected.valores);
+                    }
+                  }}
+                  onBlur={handleBlur('departamento')}
+                  label="Departamento"
+                  labelPlacement="outside"
+                  placeholder='Selecciona el departamento'
+                  variant="bordered"
+                  classNames={{
+                    base: 'font-semibold text-gray-500 text-sm',
+                  }}
+                  className="dark:text-white"
+                  defaultSelectedKey={selectedKeyDepartment}
+                  value={selectedKeyDepartment}
+                >
+                  {cat_012_departamento.map((dep) => (
+                    <AutocompleteItem
+                      value={dep.codigo}
+                      key={JSON.stringify(dep)}
+                      className="dark:text-white"
+                    >
+                      {dep.valores}
+                    </AutocompleteItem>
+                  ))}
+                </Autocomplete>
+                {errors.departamento && touched.departamento && (
+                  <span className="text-sm font-semibold text-red-500">{errors.departamento}</span>
+                )}
+              </div>
+              <div>
+                <Autocomplete
+                  onSelectionChange={(key) => {
+                    if (key) {
+                      const depSelected = JSON.parse(key as string) as Municipio;
+                      handleChange('municipio')(depSelected.codigo);
+                      handleChange('nombreMunicipio')(depSelected.valores);
+                    }
+                  }}
+                  onBlur={handleBlur('municipio')}
+                  label="Municipio"
+                  labelPlacement="outside"
+                  className="dark:text-white"
+                  placeholder='Selecciona el municipio' 
+                  variant="bordered"
+                  classNames={{
+                    base: 'font-semibold text-gray-500 text-sm',
+                  }}
+                  defaultSelectedKey={props.employee?.address?.municipio}
+                  value={selectedKeyCity}
+                >
+                  {cat_013_municipios.map((dep) => (
+                    <AutocompleteItem
+                      value={dep.codigo}
+                      key={JSON.stringify(dep)}
+                      className="dark:text-white"
+                    >
+                      {dep.valores}
+                    </AutocompleteItem>
+                  ))}
+                </Autocomplete>
+                {errors.municipio && touched.municipio && (
+                  <span className="text-sm font-semibold text-red-500">{errors.municipio}</span>
+                )}
+              </div>
+              <div className="pt-2">
+              <Input
+                label="Complemento de dirección"
+                classNames={{
+                  label: 'font-semibold text-gray-500 text-sm',
+                }}
+                labelPlacement="outside"
+                variant="bordered"
+                placeholder="Ingresa el complemento de dirección"
+                name="complemento"
+                value={values.complemento}
+                onChange={handleChange('complemento')}
+                onBlur={handleBlur('complemento')}
+              />
+              {errors.complemento && touched.complemento && (
+                <span className="text-sm font-semibold text-red-500">{errors.complemento}</span>
+              )}
+            </div>
+            </div>
             <div className='mt-0 md:mt-6'>
             <Button
               onClick={() => handleSubmit()}
-              className="w-full mt-4 text-sm font-semibold"
+              className="w-full mt-3 text-sm font-semibold"
               style={{
                 backgroundColor: theme.colors.dark,
                 color: theme.colors.primary,

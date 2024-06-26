@@ -68,7 +68,7 @@ export const useChargesStore = create<IChargesStore>((set, get) => ({
       });
   },
   deleteCharge: async (id) => {
-    return delete_charge(id).then((res) => {
+    return await delete_charge(id).then((res) => {
       get().getChargesPaginated(1, 5, '', 1);
       toast.success(messages.success);
       return res.data.ok;
