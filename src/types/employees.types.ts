@@ -1,10 +1,9 @@
+import { Address } from '../plugins/dexie/entities/address';
 import { Branches } from './branches.types';
-
-export interface Charge {
-  id: number;
-  name: string;
-  isActive: boolean;
-}
+import { ICharge } from './charges.types';
+import { ContractType } from './contract_type.types';
+import { EmployeeStatus } from './employee_status.types';
+import { StudyLevel } from './study_level.types';
 
 export interface Employee {
   id: number;
@@ -13,15 +12,31 @@ export interface Employee {
   firstLastName: string;
   secondLastName: string;
   bankAccount: string;
-  chargeId: number;
-  charge: Charge;
   nit: string;
   dui: string;
   isss: string;
+  afp: string;
+  code: string;
   phone: string;
-  isActive: boolean;
+  age: string;
+  salary: string;
+ dateOfBirth: string;
+  dateOfEntry: string;
+  dateOfExit: string;
+  responsibleContact: string;
+  chargeId: number;
+  charge: ICharge;
   branch: Branches;
   branchId: number;
+  employeeStatus: EmployeeStatus;
+  employeeStatusId: number;
+  studyLevel: StudyLevel;
+  studyLevelId: number;
+  contractType: ContractType;
+  contractTypeId: number;
+  address: Address;
+  addressId: number;
+  isActive: boolean;
 }
 
 export interface IGetEmployeesPaginated {
@@ -45,7 +60,23 @@ export interface EmployeePayload {
   nit: string;
   dui: string;
   isss: string;
+  afp: string;
+  code: string;
   phone: string;
+  age: string;
+  salary: string;
+ dateOfBirth: string;
+  dateOfEntry: string;
+  dateOfExit: string;
+  responsibleContact: string;
+  employeeStatusId: number;
+  studyLevelId: number;
+  contractTypeId: number;
+  departamento: string;
+  nombreDepartamento: string;
+  municipio: string;
+  nombreMunicipio: string;
+  complemento: string;
   branchId: number;
 }
 export interface GetEmployeeList {

@@ -5,7 +5,7 @@ export interface SubCategory {
     name: string;
     isActive: boolean;
     categoryProduct: CategoryProductList;
-    categoryProductId: number;
+    categoryPorudctId: number;
   }
 
   export interface IGetSubCategory {

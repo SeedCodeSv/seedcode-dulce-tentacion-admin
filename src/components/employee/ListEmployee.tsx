@@ -436,7 +436,7 @@ function ListEmployee({ actions }: Props) {
         isOpen={modalAdd.isOpen}
         onClose={modalAdd.onClose}
         title={selectedEmployee ? 'Editar Empleado' : 'Agregar Empleado'}
-        size="w-[350px] md:w-[800px]"
+        size="w-[350px] md:w-full"
       >
         <AddEmployee closeModal={modalAdd.onClose} employee={selectedEmployee} />
       </HeadlessModal>

@@ -32,7 +32,7 @@ function UpdateProduct({ product, onCloseModal }: Props) {
 
   useEffect(() => {
     getListCategories();
-    getSubcategories(product?.subCategory.categoryProductId || 0);
+    getSubcategories(product?.subCategory.categoryPorudctId || 0);
   }, [getListCategories]);
 
   const initialProductState: ProductPayload = {
