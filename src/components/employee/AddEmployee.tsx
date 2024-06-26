@@ -51,14 +51,14 @@ function AddEmployee(props: Props) {
     dateOfEntry: props.employee?.dateOfEntry ?? '',
     dateOfExit: props.employee?.dateOfExit ?? '',
     responsibleContact: props.employee?.responsibleContact ?? '',
-    employeeStatusId: props.employee?.employeeStatusId ?? 0,
+    statusId: props.employee?.statusId ?? 0,
     studyLevelId: props.employee?.studyLevelId ?? 0,
     contractTypeId: props.employee?.contractTypeId ?? 0,
-    departamento: props.employee?.address?.departamento ?? '',
-    nombreDepartamento: props.employee?.address?.nombreDepartamento ?? '',
-    municipio: props.employee?.address?.municipio ?? '',
-    nombreMunicipio: props.employee?.address?.nombreMunicipio ?? '',
-    complemento: props.employee?.address?.complemento ?? '',
+    department: props.employee?.address?.departamento ?? '',
+    departmentName: props.employee?.address?.nombreDepartamento ?? '',
+    municipality: props.employee?.address?.municipio ?? '',
+    municipalityName: props.employee?.address?.nombreMunicipio ?? '',
+    complement: props.employee?.address?.complemento ?? '',
     branchId: props.employee?.branchId ?? 0,
   }
 
@@ -487,7 +487,7 @@ function AddEmployee(props: Props) {
                         key={JSON.stringify(item)}
                         value={item.name}
                         onClick={() => {
-                          handleChange('employeeStatusId')(item.id.toString());
+                          handleChange('statusId')(item.id.toString());
                         }}
                         className="dark:text-white"
                       >
@@ -495,9 +495,9 @@ function AddEmployee(props: Props) {
                       </AutocompleteItem>
                     ))}
                   </Autocomplete>
-              {errors.employeeStatusId && touched.employeeStatusId && (
+              {errors.statusId && touched.statusId && (
                 <>
-                  <span className="text-sm font-semibold text-red-600">{errors.employeeStatusId}</span>
+                  <span className="text-sm font-semibold text-red-600">{errors.statusId}</span>
                 </>
               )}
             </div>
@@ -624,11 +624,11 @@ function AddEmployee(props: Props) {
                     if (key) {
                       const depSelected = JSON.parse(key as string) as Departamento;
                       setSelectCodeDep(depSelected.codigo);
-                      handleChange('departamento')(depSelected.codigo);
-                      handleChange('nombreDepartamento')(depSelected.valores);
+                      handleChange('department')(depSelected.codigo);
+                      handleChange('departmentName')(depSelected.valores);
                     }
                   }}
-                  onBlur={handleBlur('departamento')}
+                  onBlur={handleBlur('department')}
                   label="Departamento"
                   labelPlacement="outside"
                   placeholder='Selecciona el departamento'
@@ -650,8 +650,8 @@ function AddEmployee(props: Props) {
                     </AutocompleteItem>
                   ))}
                 </Autocomplete>
-                {errors.departamento && touched.departamento && (
-                  <span className="text-sm font-semibold text-red-500">{errors.departamento}</span>
+                {errors.department && touched.department && (
+                  <span className="text-sm font-semibold text-red-500">{errors.department}</span>
                 )}
               </div>
               <div>
@@ -659,8 +659,8 @@ function AddEmployee(props: Props) {
                   onSelectionChange={(key) => {
                     if (key) {
                       const depSelected = JSON.parse(key as string) as Municipio;
-                      handleChange('municipio')(depSelected.codigo);
-                      handleChange('nombreMunicipio')(depSelected.valores);
+                      handleChange('municipality')(depSelected.codigo);
+                      handleChange('municipalityName')(depSelected.valores);
                     }
                   }}
                   onBlur={handleBlur('municipio')}
@@ -685,8 +685,8 @@ function AddEmployee(props: Props) {
                     </AutocompleteItem>
                   ))}
                 </Autocomplete>
-                {errors.municipio && touched.municipio && (
-                  <span className="text-sm font-semibold text-red-500">{errors.municipio}</span>
+                {errors.municipality && touched.municipality && (
+                  <span className="text-sm font-semibold text-red-500">{errors.municipality}</span>
                 )}
               </div>
               <div className="pt-2">
@@ -699,12 +699,12 @@ function AddEmployee(props: Props) {
                 variant="bordered"
                 placeholder="Ingresa el complemento de dirección"
                 name="complemento"
-                value={values.complemento}
-                onChange={handleChange('complemento')}
-                onBlur={handleBlur('complemento')}
+                value={values.complement}
+                onChange={handleChange('complement')}
+                onBlur={handleBlur('complement')}
               />
-              {errors.complemento && touched.complemento && (
-                <span className="text-sm font-semibold text-red-500">{errors.complemento}</span>
+              {errors.complement && touched.complement && (
+                <span className="text-sm font-semibold text-red-500">{errors.complement}</span>
               )}
             </div>
             </div>
