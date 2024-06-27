@@ -23,6 +23,7 @@ interface Props {
 function AddEmployee(props: Props) {
   const { theme } = useContext(ThemeContext);
   const [selectCodeDep, setSelectCodeDep] = useState('0');
+  const [employee, setEmployee] = useState({ firstName: '', firstLastName: '', employeeCode: '' });
   const { GetEmployeeStatus, employee_status } = useEmployeeStatusStore();
   const { GetContractType, contract_type } = useContractTypeStore();
   const { GetStudyLevel, study_level } = useStudyLevelStore();
@@ -61,6 +62,19 @@ function AddEmployee(props: Props) {
     complement: props.employee?.address?.complemento ?? '',
     branchId: props.employee?.branchId ?? 0,
   }
+
+  const generateEmployeeCode = () => {
+    const { firstName, firstLastName } = employee;
+    if (firstName && firstLastName) {
+      const firstInitial = firstName.charAt(0).toUpperCase();
+      const lastInitial = firstLastName.charAt(0).toUpperCase();
+      const randomNumbers = Math.floor(1000 + Math.random() * 9000);
+      const generatedCode = `${firstInitial}${lastInitial}${randomNumbers}`;
+      setEmployee({ ...employee, employeeCode: generatedCode });
+    } else {
+      alert('Please enter first name and last name');
+    }
+  };
 
   useEffect(() => {
     getBranchesList();
@@ -138,7 +152,10 @@ function AddEmployee(props: Props) {
                 name="firstName"
                 labelPlacement="outside"
                 value={values.firstName}
-                onChange={handleChange('firstName')}
+                onChange={(e) => {
+                  handleChange(e);
+                  setEmployee({ ...employee, firstName: e.target.value });
+                }}
                 onBlur={handleBlur('firstName')}
                 placeholder="Ingresa el primer nombre"
                 classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
@@ -157,7 +174,10 @@ function AddEmployee(props: Props) {
                 name="secondName"
                 labelPlacement="outside"
                 value={values.secondName}
-                onChange={handleChange('secondName')}
+                onChange={(e) => {
+                  handleChange(e);
+                  setEmployee({ ...employee, firstLastName: e.target.value });
+                }}
                 onBlur={handleBlur('secondName')}
                 placeholder="Ingresa el segundo nombre"
                 classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
@@ -314,6 +334,20 @@ function AddEmployee(props: Props) {
                 variant="bordered"
                 label="Codigo Empleado"
               />
+                <Button
+                  className="w-full mt-3 text-sm font-semibold bg-blue-400"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    generateEmployeeCode();
+                    handleChange('code')(employee.employeeCode);
+                  }}
+                  style={{
+                    backgroundColor: theme.colors.dark,
+                    color: theme.colors.primary,
+                  }}
+                >
+                  Generar Codigo
+                </Button>
               {errors.code && touched.code && (
                 <>
                   <span className="text-sm font-semibold text-red-600">{errors.code}</span>
