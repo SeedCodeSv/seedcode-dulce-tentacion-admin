@@ -134,10 +134,6 @@ export const router = () => {
       element: <Configuration />,
     },
     {
-      path: '/create-configuration',
-      element: <CreateConfiguration />,
-    },
-    {
       path: 'sales-reports',
       element: views && views.includes('Reporte de ventas') && <SalesReportContigencePage />,
     },
