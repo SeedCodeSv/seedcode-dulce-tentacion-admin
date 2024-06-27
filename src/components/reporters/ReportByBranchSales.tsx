@@ -32,7 +32,7 @@ function ReportSalesByBranch() {
 
   const handleSearch = () => {
     OnGetReportByBranchSales(branchId, startDate, endDate);
-    getSalesByTransmitter(user?.employee.branch.transmitterId || 0, startDate, endDate);
+    getSalesByTransmitter(user?.correlative.branch.transmitterId || 0, startDate, endDate);
   };
 
   const series = [

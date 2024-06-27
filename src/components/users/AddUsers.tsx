@@ -10,7 +10,7 @@ import { ThemeContext } from '../../hooks/useTheme';
 import { useBranchesStore } from '../../store/branches.store';
 import { useCorrelativesStore } from '../../store/correlatives.store';
 import { Branches } from '../../types/branches.types';
-import { Correlatives } from '../../types/correlatives.types';
+// import { Correlatives } from '../../types/correlatives.types';
 
 interface Props {
   onClose: () => void;
@@ -41,8 +41,13 @@ function AddUsers(props: Props) {
   const validationSchema = yup.object().shape({
     userName: yup.string().required('El usuario es requerido'),
     password: yup.string().required('La contraseña es requerida'),
-    correlativeId: yup.number().required('El correlativo es requerido'),
+    // correlativeId: yup.number().nullable(),
+    // correlativeId: yup.number().required('El correlativo es requerido'),
     roleId: yup.number().required('El rol es requerido').min(1, 'El rol es requerido'),
+    correlativeId: yup
+      .number()
+      .required('El Correlativo es requerido, antes debes seleccionar una sucursal')
+      .min(1, 'El Correlativo es requerido, antes debes seleccionar una sucursal.'),
   });
 
   const initialValues = {
@@ -60,20 +65,12 @@ function AddUsers(props: Props) {
     getRolesList();
   }, []);
 
-  const handleSubmit = (values: UserPayload) => {
-    postUser(values);
+  const handleSubmit = async (values: UserPayload, resetForm: () => void) => {
+    await postUser(values);
+
+    resetForm();
     props.onClose();
   };
-
-  // const selectedKeyBranch = useMemo(() => {
-  //   const branchCorrelative = branch_list.find((branchC) => branchC.id);
-  //   return JSON.stringify(branchCorrelative);
-  // }, [branch_list, branch_list.length]);
-
-  // const selectedKeyCorrelative = useMemo(() => {
-  //   const correlativeBranch = list_correlatives.find((correlativesB) => correlativesB.id);
-  //   return JSON.stringify(correlativeBranch);
-  // }, [list_correlatives, list_correlatives.length]);
 
   const selectedKeyBranch = useMemo(() => {
     const branchCorrelative = branch_list.find((branchC) => branchC.id === selectedIdBranch);
@@ -90,8 +87,11 @@ function AddUsers(props: Props) {
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={(values) => {
-          handleSubmit(values);
+        // onSubmit={(values) => {
+        //   handleSubmit(values);
+        // }}
+        onSubmit={(values, { resetForm }) => {
+          handleSubmit(values, resetForm);
         }}
       >
         {({ values, touched, errors, handleBlur, handleChange, handleSubmit }) => (
@@ -178,6 +178,7 @@ function AddUsers(props: Props) {
                 onBlur={handleBlur('branchId')}
                 label="Sucursal"
                 labelPlacement="outside"
+                placeholder="Selecciona la sucursal"
                 variant="bordered"
                 defaultSelectedKey={selectedKeyBranch!}
                 value={selectedKeyBranch!}
@@ -188,41 +189,6 @@ function AddUsers(props: Props) {
                   </AutocompleteItem>
                 ))}
               </Autocomplete>
-              {/* <Autocomplete
-                onSelectionChange={(key) => {
-                  if (key) {
-                    const depSelected = JSON.parse(key as string) as Correlatives;
-                    setSelectedIdBranch(depSelected.id);
-                    // handleChange('branchId')(depSelected.id.toString());
-                    handleChange('branchName')(depSelected.branch.name);
-                  }
-                }}
-                onBlur={handleBlur('branchId')}
-                className="font-semibold"
-                label="Sucursal"
-                labelPlacement="outside"
-                // placeholder={
-                //   valu
-                // }
-                placeholder="Selecciona la sucursal"
-                variant="bordered"
-                defaultSelectedKey={selectedKeyBranch}
-                value={selectedKeyBranch}
-              >
-                {branch_list.map((branch) => (
-                  <AutocompleteItem
-                    // onClick={() => setBranchId(branch.id)}
-                    className="dark:text-white"
-                    key={JSON.stringify(branch)}
-                    value={branch.id}
-                  >
-                    {branch.name}
-                  </AutocompleteItem>
-                ))}
-              </Autocomplete> */}
-              {/* {errors.branchId && touched.branchId && (
-                <span className="text-sm font-semibold text-red-500">{errors.branchId}</span>
-              )} */}
             </div>
             {/* Seleccionar spunto de venta  es correlativo en base a la sucursal*/}
             <div className="pt-2">
@@ -236,6 +202,7 @@ function AddUsers(props: Props) {
                 }}
                 onBlur={handleBlur('correlativeId')}
                 label="Correlativo"
+                placeholder="Selecciona el correlativo"
                 labelPlacement="outside"
                 className="dark:text-white"
                 variant="bordered"
@@ -255,36 +222,7 @@ function AddUsers(props: Props) {
                   </AutocompleteItem>
                 ))}
               </Autocomplete>
-              {/* <Autocomplete
-                onSelectionChange={(key) => {
-                  if (key) {
-                    const depSelected = JSON.parse(key as string) as Branches;
-                    handleChange('correlativeId')(depSelected.id.toString());
-                    handleChange('name')(depSelected.name);
-                  }
-                }}
-                onBlur={handleBlur('correlativeId')}
-                label="Correlativo"
-                labelPlacement="outside"
-                className="dark:text-white"
-                placeholder="Selecciona el correlativo"
-                variant="bordered"
-                classNames={{
-                  base: 'font-semibold text-gray-500 text-sm',
-                }}
-                defaultSelectedKey={selectedKeyCorrelative}
-                value={selectedKeyCorrelative}
-              >
-                {list_correlatives.map((cor) => (
-                  <AutocompleteItem
-                    value={cor.id}
-                    key={JSON.stringify(cor)}
-                    className="dark:text-white"
-                  >
-                    {cor.code}
-                  </AutocompleteItem>
-                ))}
-              </Autocomplete> */}
+
               {errors.correlativeId && touched.correlativeId && (
                 <span className="text-sm font-semibold text-red-500">{errors.correlativeId}</span>
               )}

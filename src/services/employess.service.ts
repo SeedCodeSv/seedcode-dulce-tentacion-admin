@@ -72,3 +72,12 @@ export const activate_employee = (id: number) => {
     }
   );
 };
+
+export const verify_code = (code: string) => {
+  const token = get_token() ?? '';
+  return axios.get<{ ok: boolean }>(API_URL + '/employees/verify-code' + code, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};

@@ -35,7 +35,7 @@ function ConfigurationList() {
   const { user } = useAuthStore();
 
   const idConfig = personalization?.find((config) => config?.id)?.id || 0;
-  const tramsiter = user?.employee?.branch?.transmitterId;
+  const tramsiter = user?.correlative.branch.transmitterId;
 
   useEffect(() => {
     GetConfigurationByTransmitter(tramsiter || 0);

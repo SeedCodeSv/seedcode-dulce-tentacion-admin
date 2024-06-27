@@ -19,4 +19,5 @@ export interface IEmployeeStore {
   deleteEmployee: (id: number) => Promise<boolean>;
   getEmployeesList: () => void;
   activateEmployee: (id: number) => Promise<void>;
+  // verifyCode: (code: string) => Promise<boolean>;
 }

@@ -33,7 +33,7 @@ function HomeSeller() {
   const { user } = useAuthStore();
 
   useEffect(() => {
-    const branchId = user?.employee.branchId ?? 0;
+    const branchId = user?.correlative.branch.transmitterId ?? 0;
     if (user) {
       getSalesByYear(branchId);
       getSalesByDays(branchId);

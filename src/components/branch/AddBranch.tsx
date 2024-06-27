@@ -25,7 +25,7 @@ function AddBranch(props: Props) {
   const handleSubmit = (values: IBranchForm) => {
     if (props.branch) {
       patchBranch(
-        { ...values, transmitterId: user?.employee.branch.transmitterId ?? 0 },
+        { ...values, transmitterId: user?.correlative.branch.transmitterId?? 0 },
         props.branch.id
       ).then((res) => {
         if (res) props.closeModal();
@@ -33,7 +33,7 @@ function AddBranch(props: Props) {
     } else {
       postBranch({
         ...values,
-        transmitterId: user?.employee.branch.transmitterId ?? 0,
+        transmitterId: user?.correlative.branch.transmitterId ?? 0,
       }).then((res) => {
         if (res) props.closeModal();
       });

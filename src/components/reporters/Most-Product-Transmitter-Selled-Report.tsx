@@ -32,9 +32,9 @@ const MostProductTransmitterSelled = () => {
   useEffect(() => {
     return_branch_id();
     getBranchesList();
-    getProductMostSelledGrafic(user?.employee.branch.transmitterId || 0, startDate, endDate);
+    getProductMostSelledGrafic(user?.correlative.branch.transmitterId || 0, startDate, endDate);
     getProductMostSelledTable(
-      user?.employee.branch.transmitterId ?? 0,
+      user?.correlative.branch.transmitterId ?? 0,
       fechaActualString,
       fechaActualString,
       branchId
@@ -43,13 +43,13 @@ const MostProductTransmitterSelled = () => {
 
   const search = () => {
     getProductMostSelledTable(
-      user?.employee.branch.transmitterId ?? 0,
+      user?.correlative.branch.transmitterId ?? 0,
       startDate,
       endDate,
       branchId
     );
     getProductMostSelledGrafic(
-      user?.employee.branch.transmitterId ?? 0,
+      user?.correlative.branch.transmitterId ?? 0,
       startDate,
       endDate,
 

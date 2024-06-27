@@ -12,7 +12,6 @@ import Chart from 'react-apexcharts';
 import { useReportsByBranch } from '../../store/reports/report_store';
 import { formatCurrency } from '../../utils/dte';
 
-
 function ExpensesByDatesTransmitter() {
   const { theme } = useContext(ThemeContext);
   const [startDate, setStartDate] = useState(fechaActualString);
@@ -22,15 +21,15 @@ function ExpensesByDatesTransmitter() {
     backgroundColor: theme.colors.dark,
     color: theme.colors.primary,
   };
-  const { expenses, OnGetReportExpenseByBranch } = useReportsByBranch()
+  const { expenses, OnGetReportExpenseByBranch } = useReportsByBranch();
   const { branch_list, getBranchesList } = useBranchesStore();
-  const { data, getExpensesByTransmitter } = useReportExpensesStore()
+  const { data, getExpensesByTransmitter } = useReportExpensesStore();
   const [branchId, setBranchId] = useState(0);
 
   const fetchInitialData = useCallback(() => {
     getBranchesList();
-    OnGetReportExpenseByBranch(branchId, startDate, endDate)
-    getExpensesByTransmitter(user?.employee.branch.transmitterId || 0, startDate, endDate);
+    OnGetReportExpenseByBranch(branchId, startDate, endDate);
+    getExpensesByTransmitter(user?.correlative.branch.transmitterId || 0, startDate, endDate);
   }, []);
 
   useEffect(() => {
@@ -38,8 +37,8 @@ function ExpensesByDatesTransmitter() {
   }, [fetchInitialData]);
 
   const handleSearch = () => {
-    OnGetReportExpenseByBranch(branchId, startDate, endDate)
-    getExpensesByTransmitter(user?.employee.branch.transmitterId || 0, startDate, endDate);
+    OnGetReportExpenseByBranch(branchId, startDate, endDate);
+    getExpensesByTransmitter(user?.correlative.branch.transmitterId || 0, startDate, endDate);
   };
   const series = [
     {
