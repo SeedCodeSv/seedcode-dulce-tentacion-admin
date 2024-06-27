@@ -23,7 +23,7 @@ function CreateConfiguration(props: Props) {
   const [formData, setFormData] = useState<ICreacteConfiguaration>({
     name: '',
     theme: '',
-    transmitterId: user?.employee?.branch?.transmitterId || 0,
+    transmitterId: user?.correlative.branch.transmitterId|| 0,
     selectedTemplate: 'template',
     wantPrint: 0,
     file: null,

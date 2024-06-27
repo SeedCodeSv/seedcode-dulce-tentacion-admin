@@ -23,7 +23,7 @@ export const get_supplier_pagination = (
   const token = get_token() ?? '';
   return axios.get<IGetSupplierPagination>(
     API_URL +
-      `/suppliers/list/${user?.employee.branch.transmitterId}` +
+      `/suppliers/list/${user?.correlative.branch.transmitterId}` +
       '?page=' +
       page +
       '&limit=' +
@@ -41,7 +41,6 @@ export const get_supplier_pagination = (
     }
   );
 };
-
 
 export const update_supplier = (payload: PayloadSupplier, id: number) => {
   const token = get_token() ?? '';
@@ -62,14 +61,14 @@ export const delete_supplier = (id: number) => {
 };
 
 export const get_supplier = () => {
-    const user = get_user();
-    const token = get_token() ?? '';
-    return axios.get<IGetSuppliers>(
-      API_URL + `/suppliers/list-by-transmitter/${user?.employee.branch.transmitterId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-  };
+  const user = get_user();
+  const token = get_token() ?? '';
+  return axios.get<IGetSuppliers>(
+    API_URL + `/suppliers/list-by-transmitter/${user?.correlative.branch.transmitterId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};

@@ -19,7 +19,7 @@ function UpdateFile(props: Props) {
   const [loading, setLoading] = useState(false);
   const { personalization, GetConfigurationByTransmitter } = useConfigurationStore();
   const { user } = useAuthStore();
-  const tramsiter = user?.employee?.branch?.transmitterId;
+  const tramsiter = user?.correlative.branch.transmitterId;
 
   useEffect(() => {
     GetConfigurationByTransmitter(tramsiter || 0);

@@ -28,7 +28,7 @@ const AddCategoryExpenses = (props: Props) => {
     const user = get_user();
     const payload: CategoryExpensePayload = {
       name: name,
-      transmitterId: Number(user?.employee.branch.transmitterId),
+      transmitterId: Number(user?.correlative.branch.transmitterId),
     };
     if (props.categoryExpenses) {
       pathCategoriesExpenses(props.categoryExpenses.id, payload);

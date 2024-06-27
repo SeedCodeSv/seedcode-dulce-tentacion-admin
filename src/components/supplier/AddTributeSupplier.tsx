@@ -135,7 +135,7 @@ function AddTributeSupplier(props: Props) {
 
   const { patchSupplier, onPostSupplier } = useSupplierStore();
   const user = get_user();
-  const transmiter = Number(user?.employee.branch.transmitterId);
+  const transmiter = Number(user?.correlative.branch.transmitterId);
 
   const onSubmit = async (payload: PayloadSupplier) => {
     if (props.id || props.id != 0) {

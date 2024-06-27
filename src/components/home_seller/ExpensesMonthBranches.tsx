@@ -7,7 +7,7 @@ function SalesMonthBranches() {
   const { user } = useAuthStore();
   const { getSalesByDays, sales_by_day } = salesReportStore();
   useEffect(() => {
-    getSalesByDays(user?.employee.branch.id ?? 0);
+    getSalesByDays(user?.correlative.branch.transmitterId ?? 0);
   }, []);
   const sales = {
     series: [

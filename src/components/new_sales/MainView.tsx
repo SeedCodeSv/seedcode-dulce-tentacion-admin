@@ -104,7 +104,7 @@ const MainView = () => {
     if (interval) clearInterval(interval);
     if (evt.code === "Enter") {
       if (barcode)
-        getProductByCode(user?.employee.branch.transmitterId ?? 0, barcode);
+        getProductByCode(user?.correlative.branch.transmitterId ?? 0, barcode);
       barcode = "";
       return;
     }
@@ -451,7 +451,7 @@ const ListProduct = () => {
     if (interval) clearInterval(interval);
     if (evt.code === "Enter") {
       if (barcode)
-        getProductByCode(user?.employee.branch.transmitterId ?? 0, barcode);
+        getProductByCode(user?.correlative.branch.transmitterId ?? 0, barcode);
       barcode = "";
       return;
     }

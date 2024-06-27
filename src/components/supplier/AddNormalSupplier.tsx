@@ -95,14 +95,14 @@ function AddNormalSupplier(props: Props) {
       const values = {
         ...payload,
         esContribuyente: 0,
-        transmitterId: Number(user?.employee.branch.transmitterId),
+        transmitterId: Number(user?.correlative.branch.transmitterId),
       };
       patchSupplier(values, props.id!);
     } else {
       const values = {
         ...payload,
         esContribuyente: 0,
-        transmitterId: Number(user?.employee.branch.transmitterId),
+        transmitterId: Number(user?.correlative.branch.transmitterId),
       };
       onPostSupplier(values);
     }
