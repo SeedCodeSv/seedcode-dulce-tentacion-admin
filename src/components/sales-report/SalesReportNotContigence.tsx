@@ -13,7 +13,7 @@ function SalesReportNotContigence() {
   useEffect(() => {
     const getSalesContigence = () => {
       const data = get_user();
-      setBranchId(data?.employee.branch.id || 0);
+      setBranchId(data?.correlative.branchId || 0);
     };
     getSalesContigence();
 
