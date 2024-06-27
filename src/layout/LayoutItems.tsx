@@ -20,6 +20,7 @@ import {
   Book,
   FileText,
   TicketPercent,
+  Handshake 
 } from 'lucide-react';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { ThemeContext } from '../hooks/useTheme';
@@ -355,7 +356,7 @@ export const LayoutItems = () => {
                             ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
                           }
                         >
-                          <User size={iconSize} />
+                          <Handshake  size={iconSize} />
                           <p className="ml-2 text-sm 2xl:text-base">Cargos</p>
                         </NavLink>
                       )}

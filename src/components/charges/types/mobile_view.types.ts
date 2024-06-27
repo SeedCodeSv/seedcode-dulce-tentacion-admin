@@ -1,18 +1,18 @@
-import { CategoryProduct } from "../../../types/categories.types";
+import { ICharge } from './../../../types/charges.types';
 
 export interface MobileViewProps {
     layout: 'grid' | 'list';
-    deletePopover: ({ category }: { category: CategoryProduct }) => JSX.Element;
-    handleEdit: (category: CategoryProduct) => void;
+    deletePopover: ({ charges }: { charges: ICharge }) => JSX.Element;
+    handleEdit: (charges: ICharge) => void;
     actions: string[];
     handleActive: (id: number) => void;
 }
 
 export interface GridProps {
-    category: CategoryProduct,
+    charges: ICharge,
     layout: "grid" | "list",
-    deletePopover: ({ category }: { category: CategoryProduct }) => JSX.Element,
-    handleEdit: (category: CategoryProduct) => void,
+    deletePopover: ({ charges }: { charges: ICharge }) => JSX.Element,
+    handleEdit: (charges: ICharge) => void,
     actions: string[],
     handleActive: (id: number) => void
 }

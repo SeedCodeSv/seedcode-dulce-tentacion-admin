@@ -75,7 +75,7 @@ export const router = () => {
     },
     {
       path: '/charges',
-      element: views && views.includes('Categorias') && <Charges />,
+      element: views && views.includes('Empleados') && <Charges />,
     },
     {
       path: '/clients',
@@ -132,10 +132,6 @@ export const router = () => {
     {
       path: '/configuration',
       element: <Configuration />,
-    },
-    {
-      path: '/create-configuration',
-      element: <CreateConfiguration />,
     },
     {
       path: 'sales-reports',

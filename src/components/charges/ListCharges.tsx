@@ -9,6 +9,7 @@ import {
   PopoverTrigger,
   PopoverContent,
   Switch,
+  Pagination,
 } from '@nextui-org/react';
 import { useContext, useEffect, useState } from 'react';
 import {
@@ -28,8 +29,7 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import AddButton from '../global/AddButton';
 import MobileView from './MobileView';
-import Pagination from '../global/Pagination';
-import { CategoryProduct } from '../../types/categories.types';
+import { ICharge } from '../../types/charges.types';
 import { Drawer } from 'vaul';
 import { global_styles } from '../../styles/global.styles';
 import classNames from 'classnames';
@@ -47,7 +47,7 @@ function ListCharges({ actions }: IProps) {
   const { charges_paginated, getChargesPaginated, activateCharge } = 
     useChargesStore();
 
-  const [selectedCategory, setSelectedCategory] = useState<
+  const [selectedCharge, setSelectedCharge] = useState<
     { id: number; name: string } | undefined
   >();
 
@@ -72,8 +72,8 @@ function ListCharges({ actions }: IProps) {
 
   const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
 
-  const handleEdit = (item: CategoryProduct) => {
-    setSelectedCategory({
+  const handleEdit = (item: ICharge) => {
+    setSelectedCharge({
       id: item.id,
       name: item.name,
     });
@@ -235,14 +235,14 @@ function ListCharges({ actions }: IProps) {
                 </Drawer.Root>
               </div>
             </div>
-            {actions.includes('Agregar') && (
+            
               <AddButton
                 onClick={() => {
-                  setSelectedCategory(undefined);
+                  setSelectedCharge(undefined);
                   modalAdd.onOpen();
                 }}
               />
-            )}
+            
           </div>
         </div>
         <div className="flex justify-end items-end w-full mb-5 gap-5">
@@ -307,7 +307,7 @@ function ListCharges({ actions }: IProps) {
               header="Acciones"
               body={(item) => (
                 <div className="flex gap-6">
-                  {actions.includes('Editar') && (
+               
                     <Button
                       onClick={() => handleEdit(item)}
                       isIconOnly
@@ -317,11 +317,11 @@ function ListCharges({ actions }: IProps) {
                     >
                       <EditIcon style={{ color: theme.colors.primary }} size={20} />
                     </Button>
-                  )}
-                  {actions.includes('Eliminar') && (
+                  
+               
                     <>
                       {item.isActive ? (
-                        <DeletePopUp category={item} />
+                        <DeletePopUp charges={item} />
                       ) : (
                         <Button
                           onClick={() => handleActivate(item.id)}
@@ -332,7 +332,7 @@ function ListCharges({ actions }: IProps) {
                         </Button>
                       )}
                     </>
-                  )}
+                  
                 </div>
               )}
             />
@@ -341,7 +341,7 @@ function ListCharges({ actions }: IProps) {
         {charges_paginated.totalPag > 1 && (
           <>
             <div className="hidden w-full mt-5 md:flex">
-              <Pagination
+              {/* <Pagination
                 previousPage={charges_paginated.prevPag}
                 nextPage={charges_paginated.nextPag}
                 currentPage={charges_paginated.currentPag}
@@ -349,7 +349,7 @@ function ListCharges({ actions }: IProps) {
                 onPageChange={(page) => {
                   getChargesPaginated(page, limit, search);
                 }}
-              />
+              /> */}
             </div>
             <div className="flex w-full mt-5 md:hidden">
               <div className="flex w-full mt-5 md:hidden">
@@ -370,11 +370,11 @@ function ListCharges({ actions }: IProps) {
       </div>
       <HeadlessModal
         size="w-[350px] md:w-[500px]"
-        title={selectedCategory ? 'Editar categoría' : 'Nueva categoría'}
+        title={selectedCharge ? 'Editar cargo' : 'Nuevo cargo'}
         isOpen={modalAdd.isOpen}
         onClose={modalAdd.onClose}
       >
-        <ChargesForm closeModal={modalAdd.onClose} category={selectedCategory} />
+        <ChargesForm closeModal={modalAdd.onClose} charges={selectedCharge} />
       </HeadlessModal>
     </div>
   );
@@ -382,10 +382,10 @@ function ListCharges({ actions }: IProps) {
 
 export default ListCharges;
 interface Props {
-  category: CategoryProduct;
+  charges: ICharge;
 }
 
-const DeletePopUp = ({ category }: Props) => {
+const DeletePopUp = ({ charges }: Props) => {
   const { theme } = useContext(ThemeContext);
 
   // const { deleteCharge } = useChargesStore();
@@ -417,7 +417,7 @@ const DeletePopUp = ({ category }: Props) => {
         </PopoverTrigger>
         <PopoverContent>
           <div className="w-full p-5">
-            <p className="font-semibold text-gray-600 dark:text-white">Eliminar {category.name}</p>
+            <p className="font-semibold text-gray-600 dark:text-white">Eliminar {charges.name}</p>
             <p className="mt-3 text-center text-gray-600 dark:text-white w-72">
               ¿Estas seguro de eliminar este registro?
             </p>

@@ -1,13 +1,13 @@
 import { Input, Button } from '@nextui-org/react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import { useCategoriesStore } from '../../store/categories.store';
 import { ThemeContext } from '../../hooks/useTheme';
 import { useContext } from 'react';
+import { useChargesStore } from '../../store/charges.store';
 
 interface Props {
   closeModal: () => void;
-  category?: {
+  charges?: {
     id: number;
     name: string;
   };
@@ -20,14 +20,14 @@ const ChargesForm = (props: Props) => {
     name: yup.string().required('**Debes especificar el nombre de la categoría**'),
   });
 
-  const { postCategories, patchCategory } = useCategoriesStore();
+  const { postCharge, patchCharge } = useChargesStore();
 
   const handleSave = ({ name }: { name: string }) => {
-    if (props.category) {
-      patchCategory(name, props.category.id);
+    if (props.charges) {
+      patchCharge(name, props.charges.id);
       props.closeModal();
     } else {
-      postCategories(name);
+      postCharge(name);
       props.closeModal();
     }
   };
@@ -36,7 +36,7 @@ const ChargesForm = (props: Props) => {
     <div className="p-5 w-full">
       <Formik
         validationSchema={validationSchema}
-        initialValues={{ name: props.category?.name ?? '' }}
+        initialValues={{ name: props.charges?.name ?? '' }}
         onSubmit={handleSave}
       >
         {({ values, errors, touched, handleBlur, handleChange, handleSubmit }) => (

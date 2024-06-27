@@ -1,7 +1,6 @@
 import { create } from "zustand"
 import { IChargesStore } from "./types/charges.store.types";
 import { activate_charge, create_charge, delete_charge, get_charges_list, get_charges_paginated, update_charge } from "../services/charges.service";
-import { IChargePayload } from "../types/charges.types";
 import { toast } from "sonner";
 import { messages } from "../utils/constants";
 
@@ -27,10 +26,8 @@ export const useChargesStore = create<IChargesStore>((set, get) => ({
   },
   getChargesPaginated: (page: number, limit: number, name: string, active = 1) => {
     get_charges_paginated(page, limit, name, active)
-      .then(({ data }) =>
-        set({
-          charges_paginated: data,
-        })
+      .then((categories) =>
+        set({ charges_paginated: categories.data })
       )
       .catch(() => {
         set({
@@ -47,8 +44,8 @@ export const useChargesStore = create<IChargesStore>((set, get) => ({
         });
       });
   },
-  postCharge(payload: IChargePayload) {
-    create_charge(payload)
+  postCharge(name) {
+    create_charge({name})
       .then(() => {
         get().getChargesPaginated(1, 5, '', 1);
         toast.success(messages.success);
@@ -57,8 +54,8 @@ export const useChargesStore = create<IChargesStore>((set, get) => ({
         toast.error(messages.error);
       });
   },
-  patchCharge(payload: IChargePayload, id: number) {
-    update_charge(payload, id)
+  patchCharge(name, id) {
+    update_charge({ name }, id)
       .then(() => {
         get().getChargesPaginated(1, 5, '', 1);
         toast.success(messages.success);
