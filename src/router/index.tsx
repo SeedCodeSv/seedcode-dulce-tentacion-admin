@@ -15,7 +15,7 @@ import Charges from '../pages/Charges';
 import SubCategories from '../pages/SubCategories';
 import NewSales from '../pages/NewSales';
 import Configuration from '../pages/Configuration';
-import CreateConfiguration from '../components/configuration/CreateConfiguration';
+
 import SalesReportContigencePage from '../pages/SalesReportContigencePage';
 import { useActionsRolStore } from '../store/actions_rol.store';
 import { useEffect } from 'react';

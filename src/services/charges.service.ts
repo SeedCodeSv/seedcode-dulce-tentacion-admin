@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { API_URL } from '../utils/constants';
 import { get_token } from '../storage/localStorage';
-import { IChargePayload, IGetChargesPaginated, IGetListCharges } from "../types/charges.types";
+import {  IGetChargesPaginated, IGetListCharges } from "../types/charges.types";
 
 
 export const create_charge = ({ name }: { name: string }) => {

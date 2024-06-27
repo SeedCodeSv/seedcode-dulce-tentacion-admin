@@ -11,7 +11,7 @@ import { User, UserUpdate } from '../../types/users.types';
 import { ThemeContext } from '../../hooks/useTheme';
 import { useBranchesStore } from '../../store/branches.store';
 import { useCorrelativesStore } from '../../store/correlatives.store';
-import { Correlatives } from '../../types/correlatives.types';
+
 import { Branches } from '../../types/branches.types';
 
 interface Props {
@@ -50,7 +50,7 @@ function AddUsers(props: Props) {
   });
 
   const { roles_list, getRolesList } = useRolesStore();
-  const { employee_list, getEmployeesList } = useEmployeeStore();
+  // const {, getEmployeesList } = useEmployeeStore();
   const { patchUser } = useUsersStore();
 
   useEffect(() => {

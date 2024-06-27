@@ -42,7 +42,7 @@ export const useReportContigenceStore = create<ISalesContigenceStore>((set) => (
   ) => {
     const { data } = await get_contigence_not_report(id, page, limit, startDate, endDate);
     set({
-      saless: data.saless,
+      sales: data.saless,
       pagination_saless: {
         total: data.total,
         totalPag: data.totalPag,
@@ -65,7 +65,7 @@ export const useReportContigenceStore = create<ISalesContigenceStore>((set) => (
   ) => {
     const { data } = await get_sales_by_status(id, page, limit, startDate, endDate, status);
     set({
-      sales: data.sales,
+      // sales: data.sales,
       pagination_sales: {
         total: data.total,
         totalPag: data.totalPag,

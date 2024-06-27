@@ -19,7 +19,7 @@ function Discounts() {
   return (
     <Layout title="DESCUENTOS">
       {actions_role_view ? (
-        <ListPromotions />
+        <ListPromotions actions={actions_role_view} />
       ) : (
         <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
           <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent flex justify-center items-center">
