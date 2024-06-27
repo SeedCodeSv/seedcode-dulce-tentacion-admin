@@ -10,7 +10,7 @@ import { ThemeContext } from '../../hooks/useTheme';
 import { useBranchesStore } from '../../store/branches.store';
 import { useCorrelativesStore } from '../../store/correlatives.store';
 import { Branches } from '../../types/branches.types';
-import { Correlatives } from '../../types/correlatives.types';
+// import { Correlatives } from '../../types/correlatives.types';
 
 interface Props {
   onClose: () => void;
@@ -65,9 +65,10 @@ function AddUsers(props: Props) {
     getRolesList();
   }, []);
 
-  const handleSubmit = (values: UserPayload) => {
-    postUser(values);
+  const handleSubmit = async (values: UserPayload, resetForm: () => void) => {
+    await postUser(values);
 
+    resetForm();
     props.onClose();
   };
 
@@ -86,12 +87,12 @@ function AddUsers(props: Props) {
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={(values) => {
-          handleSubmit(values);
-        }}
-        // onSubmit={(values, { resetForm }) => {
-        //   handleSubmit(values, resetForm);
+        // onSubmit={(values) => {
+        //   handleSubmit(values);
         // }}
+        onSubmit={(values, { resetForm }) => {
+          handleSubmit(values, resetForm);
+        }}
       >
         {({ values, touched, errors, handleBlur, handleChange, handleSubmit }) => (
           <>
