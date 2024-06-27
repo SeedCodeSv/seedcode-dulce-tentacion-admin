@@ -169,6 +169,7 @@ function AddUsers(props: Props) {
                 }}
                 onBlur={handleBlur('branchId')}
                 label="Sucursal"
+                placeholder="Selecciona la sucursal"
                 labelPlacement="outside"
                 variant="bordered"
                 defaultSelectedKey={selectedKeyBranch!}
