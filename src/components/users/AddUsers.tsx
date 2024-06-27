@@ -24,10 +24,20 @@ function AddUsers(props: Props) {
 
   useEffect(() => {
     getBranchesList();
+  }, []);
+
+  useEffect(() => {
     if (selectedIdBranch !== 0) {
       get_correlativesByBranch(Number(selectedIdBranch));
     }
-  }, [selectedIdBranch]);
+  }, [selectedIdBranch, get_correlativesByBranch]);
+
+  // useEffect(() => {
+  //   getBranchesList();
+  //   if (selectedIdBranch !== 0) {
+  //     get_correlativesByBranch(Number(selectedIdBranch));
+  //   }
+  // }, [selectedIdBranch]);
   const validationSchema = yup.object().shape({
     userName: yup.string().required('El usuario es requerido'),
     password: yup.string().required('La contraseña es requerida'),
@@ -55,15 +65,25 @@ function AddUsers(props: Props) {
     props.onClose();
   };
 
+  // const selectedKeyBranch = useMemo(() => {
+  //   const branchCorrelative = branch_list.find((branchC) => branchC.id);
+  //   return JSON.stringify(branchCorrelative);
+  // }, [branch_list, branch_list.length]);
+
+  // const selectedKeyCorrelative = useMemo(() => {
+  //   const correlativeBranch = list_correlatives.find((correlativesB) => correlativesB.id);
+  //   return JSON.stringify(correlativeBranch);
+  // }, [list_correlatives, list_correlatives.length]);
+
   const selectedKeyBranch = useMemo(() => {
-    const branchCorrelative = branch_list.find((branchC) => branchC.id);
-    return JSON.stringify(branchCorrelative);
-  }, [branch_list, branch_list.length]);
+    const branchCorrelative = branch_list.find((branchC) => branchC.id === selectedIdBranch);
+    return branchCorrelative ? JSON.stringify(branchCorrelative) : null;
+  }, [branch_list, selectedIdBranch]);
 
   const selectedKeyCorrelative = useMemo(() => {
     const correlativeBranch = list_correlatives.find((correlativesB) => correlativesB.id);
-    return JSON.stringify(correlativeBranch);
-  }, [list_correlatives, list_correlatives.length]);
+    return correlativeBranch ? JSON.stringify(correlativeBranch) : null;
+  }, [list_correlatives]);
 
   return (
     <div className="p-4 dark:text-white">
@@ -151,6 +171,26 @@ function AddUsers(props: Props) {
               <Autocomplete
                 onSelectionChange={(key) => {
                   if (key) {
+                    const depSelected = JSON.parse(key as string) as Branches;
+                    setSelectedIdBranch(depSelected.id);
+                  }
+                }}
+                onBlur={handleBlur('branchId')}
+                label="Sucursal"
+                labelPlacement="outside"
+                variant="bordered"
+                defaultSelectedKey={selectedKeyBranch!}
+                value={selectedKeyBranch!}
+              >
+                {branch_list.map((branch) => (
+                  <AutocompleteItem key={JSON.stringify(branch)} value={JSON.stringify(branch)}>
+                    {branch.name}
+                  </AutocompleteItem>
+                ))}
+              </Autocomplete>
+              {/* <Autocomplete
+                onSelectionChange={(key) => {
+                  if (key) {
                     const depSelected = JSON.parse(key as string) as Correlatives;
                     setSelectedIdBranch(depSelected.id);
                     // handleChange('branchId')(depSelected.id.toString());
@@ -179,7 +219,7 @@ function AddUsers(props: Props) {
                     {branch.name}
                   </AutocompleteItem>
                 ))}
-              </Autocomplete>
+              </Autocomplete> */}
               {/* {errors.branchId && touched.branchId && (
                 <span className="text-sm font-semibold text-red-500">{errors.branchId}</span>
               )} */}
@@ -187,6 +227,35 @@ function AddUsers(props: Props) {
             {/* Seleccionar spunto de venta  es correlativo en base a la sucursal*/}
             <div className="pt-2">
               <Autocomplete
+                onSelectionChange={(key) => {
+                  if (key) {
+                    const depSelected = JSON.parse(key as string) as Branches;
+                    handleChange('correlativeId')(depSelected.id.toString());
+                    // handleChange('name')(depSelected.name);
+                  }
+                }}
+                onBlur={handleBlur('correlativeId')}
+                label="Correlativo"
+                labelPlacement="outside"
+                className="dark:text-white"
+                variant="bordered"
+                classNames={{
+                  base: 'font-semibold text-gray-500 text-sm',
+                }}
+                defaultSelectedKey={selectedKeyCorrelative!}
+                value={selectedKeyCorrelative!}
+              >
+                {list_correlatives.map((cor) => (
+                  <AutocompleteItem
+                    key={JSON.stringify(cor)}
+                    value={JSON.stringify(cor)}
+                    className="dark:text-white"
+                  >
+                    {cor.code}
+                  </AutocompleteItem>
+                ))}
+              </Autocomplete>
+              {/* <Autocomplete
                 onSelectionChange={(key) => {
                   if (key) {
                     const depSelected = JSON.parse(key as string) as Branches;
@@ -215,7 +284,7 @@ function AddUsers(props: Props) {
                     {cor.code}
                   </AutocompleteItem>
                 ))}
-              </Autocomplete>
+              </Autocomplete> */}
               {errors.correlativeId && touched.correlativeId && (
                 <span className="text-sm font-semibold text-red-500">{errors.correlativeId}</span>
               )}

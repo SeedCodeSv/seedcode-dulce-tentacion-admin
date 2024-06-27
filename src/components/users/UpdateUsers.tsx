@@ -27,10 +27,13 @@ function AddUsers(props: Props) {
 
   useEffect(() => {
     getBranchesList();
+  }, []);
+
+  useEffect(() => {
     if (selectedIdBranch !== 0) {
       get_correlativesByBranch(Number(selectedIdBranch));
     }
-  }, [selectedIdBranch]);
+  }, [selectedIdBranch, get_correlativesByBranch]);
 
   const initialValues = {
     userName: props.user?.userName ?? '',
@@ -61,15 +64,14 @@ function AddUsers(props: Props) {
   };
 
   const selectedKeyBranch = useMemo(() => {
-    const branchCorrelative = branch_list.find((branchC) => branchC.id);
-    return JSON.stringify(branchCorrelative);
-  }, [branch_list, branch_list.length]);
+    const branchCorrelative = branch_list.find((branchC) => branchC.id === selectedIdBranch);
+    return branchCorrelative ? JSON.stringify(branchCorrelative) : null;
+  }, [branch_list, selectedIdBranch]);
 
   const selectedKeyCorrelative = useMemo(() => {
     const correlativeBranch = list_correlatives.find((correlativesB) => correlativesB.id);
-    return JSON.stringify(correlativeBranch);
-  }, [list_correlatives, list_correlatives.length]);
-
+    return correlativeBranch ? JSON.stringify(correlativeBranch) : null;
+  }, [list_correlatives]);
   return (
     <div className="p-4">
       <Formik
@@ -161,35 +163,19 @@ function AddUsers(props: Props) {
               <Autocomplete
                 onSelectionChange={(key) => {
                   if (key) {
-                    const depSelected = JSON.parse(key as string) as Correlatives;
+                    const depSelected = JSON.parse(key as string) as Branches;
                     setSelectedIdBranch(depSelected.id);
-                    // handleChange('branchId')(depSelected.id.toString());
-                    handleChange('branchName')(depSelected.branch.name);
                   }
                 }}
                 onBlur={handleBlur('branchId')}
-                className="font-semibold"
                 label="Sucursal"
                 labelPlacement="outside"
-                // placeholder={
-                //   valu
-                // }
-                // placeholder={
-                //   props.user?.correlatives.branch.name
-                //     ? props.user?.correlatives.branch.name
-                //     : 'Selecciona la sucursal'
-                // }
                 variant="bordered"
-                defaultSelectedKey={selectedKeyBranch}
-                value={selectedKeyBranch}
+                defaultSelectedKey={selectedKeyBranch!}
+                value={selectedKeyBranch!}
               >
                 {branch_list.map((branch) => (
-                  <AutocompleteItem
-                    // onClick={() => setBranchId(branch.id)}
-                    className="dark:text-white"
-                    key={JSON.stringify(branch)}
-                    value={branch.id}
-                  >
+                  <AutocompleteItem key={JSON.stringify(branch)} value={JSON.stringify(branch)}>
                     {branch.name}
                   </AutocompleteItem>
                 ))}
@@ -205,7 +191,7 @@ function AddUsers(props: Props) {
                   if (key) {
                     const depSelected = JSON.parse(key as string) as Branches;
                     handleChange('correlativeId')(depSelected.id.toString());
-                    handleChange('name')(depSelected.name);
+                    // handleChange('name')(depSelected.name);
                   }
                 }}
                 onBlur={handleBlur('correlativeId')}
@@ -216,13 +202,13 @@ function AddUsers(props: Props) {
                 classNames={{
                   base: 'font-semibold text-gray-500 text-sm',
                 }}
-                defaultSelectedKey={selectedKeyCorrelative}
-                value={selectedKeyCorrelative}
+                defaultSelectedKey={selectedKeyCorrelative!}
+                value={selectedKeyCorrelative!}
               >
                 {list_correlatives.map((cor) => (
                   <AutocompleteItem
-                    value={cor.id}
                     key={JSON.stringify(cor)}
+                    value={JSON.stringify(cor)}
                     className="dark:text-white"
                   >
                     {cor.code}
