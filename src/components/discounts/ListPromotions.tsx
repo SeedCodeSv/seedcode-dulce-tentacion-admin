@@ -21,7 +21,7 @@ import Pagination from '../global/Pagination';
 import SmPagination from '../global/SmPagination';
 import { formatDate } from '../../utils/dates';
 import MobileView from './MobileView';
-import UpdatePromotionsByCategory from './UpdatePromotionsCategories';
+// import UpdatePromotionsByCategory from './UpdatePromotionsCategories';
 import { Promotion, PromotionCategories, PromotionProducts } from '../../types/promotions.types';
 import UpdatePromotionsBranch from './UpdatePromotionBranch';
 import HeadlessModal from '../global/HeadlessModal';
@@ -72,10 +72,10 @@ function ListDiscount({ actions }: Props) {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenPromotionProduct, setIsOpenPromotionProduct] = useState(false);
-  const [isOpenPromotionCategory, setIsOpenPromotionCategory] = useState(false);
+  const [, setIsOpenPromotionCategory] = useState(false);
 
   const [promotionId, setPromotionId] = useState(0);
-  const [dataPromotion, setDataPromotion] = useState<PromotionCategories>();
+  const [, setDataPromotion] = useState<PromotionCategories>();
   const [dataPromotionProduct, setDataPromotionProduct] = useState<PromotionProducts>();
   // const [dataPromotionClass, setDataPromotionClass] = useState<PromotionClass>();
   const [dataPromotionBranch, setDataPromotionBranch] = useState<Promotion>();
@@ -462,7 +462,7 @@ function ListDiscount({ actions }: Props) {
             )}
           </div>
         </div>
-        <HeadlessModal
+        {/* <HeadlessModal
           size="2xl"
           title="Actualizar promoción por categoría"
           isOpen={isOpenPromotionCategory}
@@ -476,7 +476,7 @@ function ListDiscount({ actions }: Props) {
             }
             promotion={dataPromotion}
           />
-        </HeadlessModal>
+        </HeadlessModal> */}
 
         <HeadlessModal
           title="Actualizar promoción por producto"

@@ -3,7 +3,7 @@ import { Formik } from 'formik';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import * as yup from 'yup';
 import { useRolesStore } from '../../store/roles.store';
-import { useEmployeeStore } from '../../store/employee.store';
+// import { useEmployeeStore } from '../../store/employee.store';
 // import { Employee } from '../../types/employees.types';
 import { Role } from '../../types/roles.types';
 import { useUsersStore } from '../../store/users.store';
@@ -55,7 +55,7 @@ function AddUsers(props: Props) {
 
   useEffect(() => {
     getRolesList();
-    getEmployeesList();
+    // getEmployeesList();
   }, []);
 
   const handleSubmit = (values: UserUpdate) => {

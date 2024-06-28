@@ -7,7 +7,7 @@ import {
   User as IUser,
   Key,
   ShieldCheck,
-  SquareUserRound,
+  // SquareUserRound,
 } from "lucide-react";
 import { global_styles } from "../../styles/global.styles";
 import { GridProps, IMobileViewProps } from "./types/mobile-view.types";
@@ -59,13 +59,13 @@ const GridItem = (props: GridProps) => {
             <IUser className="text-[#274c77] dark:text-gray-400" size={35} />
             {user.userName}
           </div>
-          <div className="flex w-full gap-2 mt-3">
+          {/* <div className="flex w-full gap-2 mt-3">
             <SquareUserRound
               className="text-[#00bbf9] dark:text-gray-400"
               size={35}
             />
-            {user.employee.fullName}
-          </div>
+            {user.}
+          </div> */}
           <div className="flex w-full gap-2 mt-3">
             <ShieldCheck
               className="text-[#006d77] dark:text-gray-400"
@@ -115,10 +115,10 @@ const ListItem = (props: GridProps) => {
             <IUser color={"#274c77"} size={35} />
             {user.userName}
           </div>
-          <div className="flex items-center w-full gap-2 mt-3">
+          {/* <div className="flex items-center w-full gap-2 mt-3">
             <SquareUserRound color="#00bbf9" size={35} />
             {user.employee.fullName}
-          </div>
+          </div> */}
           <div className="flex items-center w-full gap-2 mt-3">
             <ShieldCheck color={"#006d77"} size={35} />
             {user.role.name}
