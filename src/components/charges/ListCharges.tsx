@@ -53,7 +53,7 @@ function ListCharges({ actions }: IProps) {
 
   const [search, setSearch] = useState('');
   const [limit, setLimit] = useState(5);
-  const [active, setActive] = useState(true);
+  const [active, ] = useState(true);
 
   useEffect(() => {
     getChargesPaginated(1, limit, search, active ? 1 : 0);
