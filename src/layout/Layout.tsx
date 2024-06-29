@@ -1,14 +1,14 @@
-import { useContext, useEffect } from "react";
-import { ThemeContext } from "../hooks/useTheme";
-import NavBar from "./NavBar";
-import { SideBar } from "./SideBar";
-import classNames from "classnames";
-import { useConfigurationStore } from "../store/perzonalitation.store";
-import { useAuthStore } from "../store/auth.store";
-import { Helmet } from "react-helmet-async";
-import { ActionsContext } from "../hooks/useActions";
-import { useActionsRolStore } from "../store/actions_rol.store";
-import { encryptData } from "../plugins/crypto";
+import { useContext, useEffect } from 'react';
+import { ThemeContext } from '../hooks/useTheme';
+import NavBar from './NavBar';
+import { SideBar } from './SideBar';
+import classNames from 'classnames';
+import { useConfigurationStore } from '../store/perzonalitation.store';
+import { useAuthStore } from '../store/auth.store';
+import { Helmet } from 'react-helmet-async';
+import { ActionsContext } from '../hooks/useActions';
+import { useActionsRolStore } from '../store/actions_rol.store';
+import { encryptData } from '../plugins/crypto';
 
 interface Props {
   children: JSX.Element;
@@ -30,7 +30,7 @@ function Layout(props: Props) {
     if (!roleActions) {
       OnGetActionsByRole(user?.roleId ?? 0).then((data) => {
         if (data) {
-          localStorage.setItem("_RVA", encryptData(data));
+          localStorage.setItem('_RVA', encryptData(data));
           setRoleActions(data);
         }
       });
@@ -44,13 +44,8 @@ function Layout(props: Props) {
       </Helmet>
 
       {roleActions ? (
-        <div
-          className={classNames(
-            "w-full h-full",
-            context === "dark" ? "dark" : ""
-          )}
-        >
-          {navbar === "topbar" && (
+        <div className={classNames('w-full h-full', context === 'dark' ? 'dark' : '')}>
+          {navbar === 'topbar' && (
             <>
               <div className="flex flex-col w-screen h-screen">
                 <NavBar />
@@ -60,7 +55,7 @@ function Layout(props: Props) {
               </div>
             </>
           )}
-          {navbar === "sidebar" && (
+          {navbar === 'sidebar' && (
             <>
               <SideBar title={props.title}>
                 <div className="w-full h-full overflow-y-auto bg-gray-50 dark:bg-gray-800">

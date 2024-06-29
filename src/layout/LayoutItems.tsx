@@ -131,7 +131,7 @@ export const LayoutItems = () => {
         </>
       )}
 
-      {mode !== 'vendedor' ? (
+      {/* {mode !== 'vendedor' ? (
         <div className=" justify-center items-center px-2 mt-2">
           <Button
             onClick={() => handleSeller()}
@@ -151,8 +151,8 @@ export const LayoutItems = () => {
             <p className="ml-2 text-sm 2xl:text-base">Administración</p>
           </Button>
         </div>
-      )}
-      {mode === 'vendedor' && <SalesMode />}
+      )} */}
+      {/* {mode === 'vendedor' && <SalesMode />} */}
       {mode !== 'vendedor' && (
         <>
           {views && (
