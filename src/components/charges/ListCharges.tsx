@@ -35,6 +35,7 @@ import classNames from 'classnames';
 import { limit_options } from '../../utils/constants';
 import SmPagination from '../global/SmPagination';
 import HeadlessModal from '../global/HeadlessModal';
+import Pagination from '../global/Pagination';
 
 interface IProps {
   actions: string[];
@@ -52,7 +53,7 @@ function ListCharges({ actions }: IProps) {
 
   const [search, setSearch] = useState('');
   const [limit, setLimit] = useState(5);
-  const [active, setActive] = useState(true);
+  const [active, ] = useState(true);
 
   useEffect(() => {
     getChargesPaginated(1, limit, search, active ? 1 : 0);
@@ -264,13 +265,13 @@ function ListCharges({ actions }: IProps) {
               </SelectItem>
             ))}
           </Select>
-          <div className="flex items-center">
+          {/* <div className="flex items-center">
             <Switch onValueChange={(active) => setActive(active)} isSelected={active}>
               <span className="text-sm sm:text-base whitespace-nowrap">
                 Mostrar {active ? 'inactivos' : 'activos'}
               </span>
             </Switch>
-          </div>
+          </div> */}
         </div>
         {(view === 'grid' || view === 'list') && (
           <MobileView
@@ -340,7 +341,7 @@ function ListCharges({ actions }: IProps) {
         {charges_paginated.totalPag > 1 && (
           <>
             <div className="hidden w-full mt-5 md:flex">
-              {/* <Pagination
+              <Pagination
                 previousPage={charges_paginated.prevPag}
                 nextPage={charges_paginated.nextPag}
                 currentPage={charges_paginated.currentPag}
@@ -348,7 +349,7 @@ function ListCharges({ actions }: IProps) {
                 onPageChange={(page) => {
                   getChargesPaginated(page, limit, search);
                 }}
-              /> */}
+              />
             </div>
             <div className="flex w-full mt-5 md:hidden">
               <div className="flex w-full mt-5 md:hidden">
@@ -387,11 +388,11 @@ interface Props {
 const DeletePopUp = ({ charges }: Props) => {
   const { theme } = useContext(ThemeContext);
 
-  // const { deleteCharge } = useChargesStore();
+  const { deleteCharge } = useChargesStore();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleDelete = async () => {
-    // await deleteCategory(category.id);
+    await deleteCharge(charges.id);
     onClose();
   };
 
