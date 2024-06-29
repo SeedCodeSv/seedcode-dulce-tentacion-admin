@@ -592,74 +592,73 @@ export const LayoutItems = () => {
                 <ShoppingBag size={iconSize} />
                 <p className="ml-2 text-sm 2xl:text-base">Ordenes de compra</p>
               </NavLink>
-
-              <NavLink
-                to={''}
-                onClick={() => setIsOpenComponentBigZ(true)}
-                className={({ isActive }) => {
-                  return (
-                    (isActive
-                      ? 'text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green'
-                      : 'text-coffee-brown font-semibold border-white') +
-                    ' flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
-                  );
-                }}
-                style={({ isActive }) => {
-                  return {
-                    borderLeftColor: isActive ? theme.colors.dark : 'transparent',
-                    borderLeftWidth: 5,
-                  };
-                }}
-              >
-                <ShoppingBag onClick={() => setIsOpenComponentBigZ(true)} size={iconSize} />
-                <p className="ml-2 text-sm 2xl:text-base">Corte Gran Z</p>
-              </NavLink>
-              <NavLink
-                to={''}
-                onClick={() => setIsCushCatsX(true)}
-                className={({ isActive }) => {
-                  return (
-                    (isActive
-                      ? 'text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green'
-                      : 'text-coffee-brown font-semibold border-white') +
-                    ' flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
-                  );
-                }}
-                style={({ isActive }) => {
-                  return {
-                    borderLeftColor: isActive ? theme.colors.dark : 'transparent',
-                    borderLeftWidth: 5,
-                  };
-                }}
-              >
-                <ShoppingBag onClick={() => setIsCushCatsX(true)} size={iconSize} />
-                <p className="ml-2 text-sm 2xl:text-base">Corte de X</p>
-              </NavLink>
-              <NavLink
-                to={''}
-                onClick={() => setIsCushCatsZ(true)}
-                className={({ isActive }) => {
-                  return (
-                    (isActive
-                      ? 'text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green'
-                      : 'text-coffee-brown font-semibold border-white') +
-                    ' flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
-                  );
-                }}
-                style={({ isActive }) => {
-                  return {
-                    borderLeftColor: isActive ? theme.colors.dark : 'transparent',
-                    borderLeftWidth: 5,
-                  };
-                }}
-              >
-                <ShoppingBag onClick={() => setIsCushCatsZ(true)} size={iconSize} />
-                <p className="ml-2 text-sm 2xl:text-base">Corte de Z</p>
-              </NavLink>
             </>
           )}
         </>
       )}
+      <NavLink
+        to={''}
+        onClick={() => setIsOpenComponentBigZ(true)}
+        className={({ isActive }) => {
+          return (
+            (isActive
+              ? 'text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green'
+              : 'text-coffee-brown font-semibold border-white') +
+            ' flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
+          );
+        }}
+        style={({ isActive }) => {
+          return {
+            borderLeftColor: isActive ? theme.colors.dark : 'transparent',
+            borderLeftWidth: 5,
+          };
+        }}
+      >
+        <ShoppingBag onClick={() => setIsOpenComponentBigZ(true)} size={iconSize} />
+        <p className="ml-2 text-sm 2xl:text-base">Corte Gran Z</p>
+      </NavLink>
+      <NavLink
+        to={''}
+        onClick={() => setIsCushCatsX(true)}
+        className={({ isActive }) => {
+          return (
+            (isActive
+              ? 'text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green'
+              : 'text-coffee-brown font-semibold border-white') +
+            ' flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
+          );
+        }}
+        style={({ isActive }) => {
+          return {
+            borderLeftColor: isActive ? theme.colors.dark : 'transparent',
+            borderLeftWidth: 5,
+          };
+        }}
+      >
+        <ShoppingBag onClick={() => setIsCushCatsX(true)} size={iconSize} />
+        <p className="ml-2 text-sm 2xl:text-base">Corte de X</p>
+      </NavLink>
+      <NavLink
+        to={''}
+        onClick={() => setIsCushCatsZ(true)}
+        className={({ isActive }) => {
+          return (
+            (isActive
+              ? 'text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green'
+              : 'text-coffee-brown font-semibold border-white') +
+            ' flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
+          );
+        }}
+        style={({ isActive }) => {
+          return {
+            borderLeftColor: isActive ? theme.colors.dark : 'transparent',
+            borderLeftWidth: 5,
+          };
+        }}
+      >
+        <ShoppingBag onClick={() => setIsCushCatsZ(true)} size={iconSize} />
+        <p className="ml-2 text-sm 2xl:text-base">Corte de Z</p>
+      </NavLink>
       <div
         className={
           ' flex w-full py-4 pl-5 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
