@@ -98,3 +98,20 @@ export function shortMonth(numero: number): string {
     return 'Número inválido';
   }
 }
+
+
+const getFormattedDate = (date: Date): string => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+export const getInitialAndEndDate = () => {
+  const today = new Date();
+  const initialDate = new Date(today.getFullYear(), today.getMonth(), 1);
+  const endDate = today;
+  return {
+    initial: getFormattedDate(initialDate),
+    end: getFormattedDate(endDate),
+  };
+};
