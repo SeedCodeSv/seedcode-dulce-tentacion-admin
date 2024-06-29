@@ -8,7 +8,6 @@ import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-  Switch,
 } from '@nextui-org/react';
 import { useContext, useEffect, useState } from 'react';
 import {
