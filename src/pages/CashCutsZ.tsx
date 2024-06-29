@@ -72,7 +72,7 @@ const CushCatsZ = (props: CashCutsProps) => {
           0
         : 0,
     };
-
+    // window.print();
     try {
       await close_x(payload);
 

@@ -40,7 +40,7 @@ function HomeSeller() {
       getSalesByCategory(branchId);
       getProductSelledByBranch(branchId);
       getMostProductMostSelled(branchId);
-      getSalesTableDay(branchId);
+      getSalesTableDay(0);
     }
   }, [user, theme]);
 

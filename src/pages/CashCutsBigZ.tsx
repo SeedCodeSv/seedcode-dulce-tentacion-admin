@@ -145,8 +145,6 @@ const CushCatsBigZ = (props: CashCutsProps) => {
           </Autocomplete>
         </div>
 
-        <div className="mt-4"></div>
-
         <div className="flex flex-col items-center justify-center w-full h-full p-5 mt-4 bg-gray-600">
           <div className="grid grid-cols-2 gap-4 w-[500px] mt-4">
             <Button
