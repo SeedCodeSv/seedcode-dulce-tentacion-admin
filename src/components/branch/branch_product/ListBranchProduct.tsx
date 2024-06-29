@@ -21,33 +21,26 @@ interface Props {
   id: number;
   onclick: () => void;
 }
-function ListEmployee({ id , onclick }: Props) {
+function ListEmployee({ id, onclick }: Props) {
   const { theme } = useContext(ThemeContext);
-
-  const { getBranchProducts,branch_product_Paginated } = useBranchesStore();
+  const { getBranchProducts, branch_product_Paginated } = useBranchesStore();
   const { list_categories, getListCategories } = useCategoriesStore();
-
   const [category, setCategory] = useState('');
-  const [code , setCode] = useState('');
-const [page, serPage] = useState(1);
+  const [code, setCode] = useState('');
+  const [page, serPage] = useState(1);
   const [name, setName] = useState('');
   const [limit, setLimit] = useState(8);
   const [openVaul, setOpenVaul] = useState(false);
-
   //   const modalAdd = useDisclosure();
-
   const changePage = () => {
     getBranchProducts(id, page, 5, name, category, code);
   };
-
   useEffect(() => {
     getBranchProducts(id, page, 5, name, category, code);
   }, [id]);
   useEffect(() => {
     getListCategories();
   }, []);
-  
- 
   return (
     <>
       <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
@@ -58,7 +51,7 @@ const [page, serPage] = useState(1);
             </Button>
           </div>
           <div className="hidden w-full   gap-2 mb-4 md:grid">
-            <div className='flex gap-5 '>
+            <div className="flex gap-5 ">
               <Input
                 classNames={{
                   label: 'font-semibold text-gray-700',
@@ -93,7 +86,7 @@ const [page, serPage] = useState(1);
                 isClearable
                 onClear={() => setCode('')}
               />
-              
+
               <Autocomplete
                 onSelectionChange={(key) => {
                   if (key) {
@@ -123,7 +116,6 @@ const [page, serPage] = useState(1);
                   </AutocompleteItem>
                 ))}
               </Autocomplete>
-             
             </div>
           </div>
 

@@ -20,7 +20,7 @@ import {
   Book,
   FileText,
   TicketPercent,
-  Handshake 
+  Handshake,
 } from 'lucide-react';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { ThemeContext } from '../hooks/useTheme';
@@ -32,6 +32,9 @@ import { useConfigurationStore } from '../store/perzonalitation.store';
 import useWindowSize from '../hooks/useWindowSize';
 import { ActionsContext } from '../hooks/useActions';
 import SalesMode from './LayoutModes/SalesMode';
+import CushCatsBigZ from '../pages/CashCutsBigZ';
+import CashCutsX from '../pages/CashCutsX';
+import CushCatsZ from '../pages/CashCutsZ';
 export const LayoutItems = () => {
   const { theme, toggleContext, context } = useContext(ThemeContext);
   const { makeLogout } = useAuthStore();
@@ -93,6 +96,9 @@ export const LayoutItems = () => {
     setIsMenuOpen(false);
   };
 
+  const [isOpenComponentBigZ, setIsOpenComponentBigZ] = useState(false);
+  const [isCushCatsZ, setIsCushCatsZ] = useState(false);
+  const [isCushCatsX, setIsCushCatsX] = useState(false);
   return (
     <>
       {personalization.length === 0 ? (
@@ -105,7 +111,7 @@ export const LayoutItems = () => {
         >
           <img src={LOGO} className="max-h-14" />
           <p className="ml-3 font-sans text-sm font-bold text-coffee-brown dark:text-white">
-            SeedCodeERP
+            MADNESS
           </p>
         </div>
       ) : (
@@ -356,7 +362,7 @@ export const LayoutItems = () => {
                             ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
                           }
                         >
-                          <Handshake  size={iconSize} />
+                          <Handshake size={iconSize} />
                           <p className="ml-2 text-sm 2xl:text-base">Cargos</p>
                         </NavLink>
                       )}
@@ -460,7 +466,7 @@ export const LayoutItems = () => {
                     };
                   }}
                 >
-                  <Grid2X2Icon size={iconSize} />
+                  <Grid2X2Icon onClick={() => setIsOpenComponentBigZ(true)} size={iconSize} />
                   <p className="ml-2 text-sm 2xl:text-base">Categoría de gastos</p>
                 </NavLink>
               )}
@@ -565,26 +571,92 @@ export const LayoutItems = () => {
             </NavLink>
           )}
           {views && views.includes('Ordenes de compra') && (
-            <NavLink
-              to={'/purchase-orders'}
-              className={({ isActive }) => {
-                return (
-                  (isActive
-                    ? 'text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green'
-                    : 'text-coffee-brown font-semibold border-white') +
-                  ' flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
-                );
-              }}
-              style={({ isActive }) => {
-                return {
-                  borderLeftColor: isActive ? theme.colors.dark : 'transparent',
-                  borderLeftWidth: 5,
-                };
-              }}
-            >
-              <ShoppingBag size={iconSize} />
-              <p className="ml-2 text-sm 2xl:text-base">Ordenes de compra</p>
-            </NavLink>
+            <>
+              <NavLink
+                to={'/purchase-orders'}
+                className={({ isActive }) => {
+                  return (
+                    (isActive
+                      ? 'text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green'
+                      : 'text-coffee-brown font-semibold border-white') +
+                    ' flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
+                  );
+                }}
+                style={({ isActive }) => {
+                  return {
+                    borderLeftColor: isActive ? theme.colors.dark : 'transparent',
+                    borderLeftWidth: 5,
+                  };
+                }}
+              >
+                <ShoppingBag size={iconSize} />
+                <p className="ml-2 text-sm 2xl:text-base">Ordenes de compra</p>
+              </NavLink>
+
+              <NavLink
+                to={''}
+                onClick={() => setIsOpenComponentBigZ(true)}
+                className={({ isActive }) => {
+                  return (
+                    (isActive
+                      ? 'text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green'
+                      : 'text-coffee-brown font-semibold border-white') +
+                    ' flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
+                  );
+                }}
+                style={({ isActive }) => {
+                  return {
+                    borderLeftColor: isActive ? theme.colors.dark : 'transparent',
+                    borderLeftWidth: 5,
+                  };
+                }}
+              >
+                <ShoppingBag onClick={() => setIsOpenComponentBigZ(true)} size={iconSize} />
+                <p className="ml-2 text-sm 2xl:text-base">Corte Gran Z</p>
+              </NavLink>
+              <NavLink
+                to={''}
+                onClick={() => setIsCushCatsX(true)}
+                className={({ isActive }) => {
+                  return (
+                    (isActive
+                      ? 'text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green'
+                      : 'text-coffee-brown font-semibold border-white') +
+                    ' flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
+                  );
+                }}
+                style={({ isActive }) => {
+                  return {
+                    borderLeftColor: isActive ? theme.colors.dark : 'transparent',
+                    borderLeftWidth: 5,
+                  };
+                }}
+              >
+                <ShoppingBag onClick={() => setIsCushCatsX(true)} size={iconSize} />
+                <p className="ml-2 text-sm 2xl:text-base">Corte de X</p>
+              </NavLink>
+              <NavLink
+                to={''}
+                onClick={() => setIsCushCatsZ(true)}
+                className={({ isActive }) => {
+                  return (
+                    (isActive
+                      ? 'text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green'
+                      : 'text-coffee-brown font-semibold border-white') +
+                    ' flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
+                  );
+                }}
+                style={({ isActive }) => {
+                  return {
+                    borderLeftColor: isActive ? theme.colors.dark : 'transparent',
+                    borderLeftWidth: 5,
+                  };
+                }}
+              >
+                <ShoppingBag onClick={() => setIsCushCatsZ(true)} size={iconSize} />
+                <p className="ml-2 text-sm 2xl:text-base">Corte de Z</p>
+              </NavLink>
+            </>
           )}
         </>
       )}
@@ -604,6 +676,12 @@ export const LayoutItems = () => {
           </p>
         </Switch>
       </div>
+
+      {isOpenComponentBigZ && (
+        <CushCatsBigZ isOpen={isOpenComponentBigZ} onClose={() => setIsOpenComponentBigZ(false)} />
+      )}
+      {isCushCatsX && <CashCutsX isOpen={isCushCatsX} onClose={() => setIsCushCatsX(false)} />}
+      {isCushCatsZ && <CushCatsZ isOpen={isCushCatsZ} onClose={() => setIsCushCatsZ(false)} />}
     </>
   );
 };

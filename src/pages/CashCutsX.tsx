@@ -1,36 +1,46 @@
 import { useContext, useEffect, useState } from 'react';
-import { Autocomplete, AutocompleteItem, Button, Input } from '@nextui-org/react';
+import { Autocomplete, AutocompleteItem, Button } from '@nextui-org/react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import { toast } from 'sonner';
 
-import { global_styles } from '../styles/global.styles';
+import { toast } from 'sonner';
 import { ThemeContext } from '../hooks/useTheme';
 import { CloseZ, ZCashCutsResponse } from '../types/cashCuts.types';
 import { useAuthStore } from '../store/auth.store';
-import { close_x, get_cashCuts } from '../services/facturation/cashCuts.service';
+import { fechaActualString } from '../utils/dates';
+import { close_x, get_cashCuts_x } from '../services/facturation/cashCuts.service';
 import ModalGlobal from '../components/global/ModalGlobal';
+import { global_styles } from '../styles/global.styles';
 import { useBranchesStore } from '../store/branches.store';
-import { getInitialAndEndDate } from '../utils/dates';
+import { get_correlatives } from '../services/correlatives.service';
+import { Correlatives } from '../types/correlatives.types';
+
 interface CashCutsProps {
   isOpen: boolean;
   onClose: () => void;
 }
-const CushCatsBigZ = (props: CashCutsProps) => {
+const CashCutsX = (props: CashCutsProps) => {
   const { theme } = useContext(ThemeContext);
   const [data, setData] = useState<ZCashCutsResponse | null>(null);
   const { user } = useAuthStore();
-  const { initial, end } = getInitialAndEndDate();
-  const [dateInitial, setInitial] = useState(initial);
-  const [dateEnd, setEnd] = useState(end);
-  const [branchId, setBranch] = useState(1);
+  const [dateInitial] = useState(fechaActualString);
+  const [dateEnd] = useState(fechaActualString);
+  const [branchId, setBranchId] = useState(0);
+  const [codeSale, setCodeSale] = useState<Correlatives[]>([]);
+  const [codeSelected, setCodeSelected] = useState('');
   useEffect(() => {
+    const getBranchId = () => {};
+    getBranchId();
     const getIdBranch = async () => {
       try {
-        const response = await get_cashCuts(branchId, dateInitial, dateEnd);
+        const response = await get_cashCuts_x(branchId, codeSelected);
         setData(response.data.data);
       } catch (error) {
         console.error('Error fetching cash cuts:', error);
+      }
+      if (branchId > 0) {
+        const data = await get_correlatives(branchId);
+        setCodeSale(data.data.correlatives);
       }
     };
     getIdBranch();
@@ -45,12 +55,12 @@ const CushCatsBigZ = (props: CashCutsProps) => {
     ? [
         {
           type: 'Ticket',
-          inicio: data.Ticket?.inicio.toFixed(2) || 0,
-          fin: data.Ticket?.fin.toFixed(2) || 0,
-          total: data.Ticket?.total.toFixed(2) || 0,
-          gravadas: calculateGravadas(data.Ticket?.total || 0).toFixed(2) || 0,
+          inicio: data.Ticket?.inicio || 0,
+          fin: data.Ticket?.fin || 0,
+          total: data.Ticket?.total || 0,
+          gravadas: calculateGravadas(data.Ticket?.total || 0),
           iva: calculateIVA(data.Ticket?.total || 0),
-          subTotal: data.Ticket?.total.toFixed(2) || 0,
+          subTotal: data.Ticket?.total || 0,
           exentas: 0,
           noSujetas: 0,
         },
@@ -100,6 +110,11 @@ const CushCatsBigZ = (props: CashCutsProps) => {
         },
       ]
     : [];
+
+  // const totalGeneral = data ? data.totalGeneral : 0
+  // const totalGravadas = tableData.reduce((acc, item) => acc + item.gravadas, 0)
+  // const totalIVA = tableData.reduce((acc, item) => acc + item.iva, 0)
+  // const totalSubTotal = tableData.reduce((acc, item) => acc + item.subTotal, 0)
   const print = async () => {
     const payload: CloseZ = {
       posId: user?.correlative.id || 0,
@@ -110,7 +125,7 @@ const CushCatsBigZ = (props: CashCutsProps) => {
       inicioF: data?.Factura?.inicio || 0,
       finF: data?.Factura?.fin || 0,
       totalF: data?.Factura?.total || 0,
-      typeCut: 'BIGZ',
+      typeCut: 'X',
       inicioCF: data?.CreditoFiscal?.inicio || 0,
       finCF: data?.CreditoFiscal?.fin || 0,
       totalCF: data?.CreditoFiscal?.total || 0,
@@ -128,10 +143,11 @@ const CushCatsBigZ = (props: CashCutsProps) => {
           0
         : 0,
     };
+
     try {
       await close_x(payload);
-      toast.success('Corte de Caja Generado');
       props.onClose();
+      toast.success('Corte de Caja Generado');
     } catch (error) {
       toast.error('Error al generar el corte de caja');
     }
@@ -144,50 +160,40 @@ const CushCatsBigZ = (props: CashCutsProps) => {
     <>
       <ModalGlobal
         size="w-full h-full p-5 bg-gray-200 dark:bg-gray-800"
-        title=" Corte de Caja Gran Z"
+        title="Corte de Caja  X"
         isOpen={props.isOpen}
         onClose={() => props.onClose()}
       >
         <div className="grid grid-cols-3  gap-4">
-          <Input
-            value={initial}
-            className="mt-4"
-            type="date"
-            onChange={(e) => setInitial(e.target.value)}
-          />
-          <Input
-            value={end}
-            className="mt-4"
-            type="date"
-            onChange={(e) => setEnd(e.target.value)}
-          />
+          <Autocomplete
+            className="w-full  order-3 mt-4"
+            labelPlacement="outside"
+            label="Sucursal"
+            placeholder="Selecciona la sucursal"
+            variant="bordered"
+          >
+            {branch_list.map((item) => (
+              <AutocompleteItem key={item.id} value={item.id} onClick={() => setBranchId(item.id)}>
+                {item.name}
+              </AutocompleteItem>
+            ))}
+          </Autocomplete>
           <Autocomplete
             className="w-full  order-3 mt-4"
             labelPlacement="outside"
             placeholder="Selecciona la sucursal"
             variant="bordered"
+            label="Punto de Venta"
           >
-            {branch_list.map((item) => (
-              <AutocompleteItem key={item.id} value={item.id} onClick={() => setBranch(item.id)}>
-                {item.name}
+            {codeSale.map((item) => (
+              <AutocompleteItem onClick={() => setCodeSelected(item.code)} key={item.id}>
+                {item.code}
               </AutocompleteItem>
             ))}
           </Autocomplete>
         </div>
-
         <div className="mt-4"></div>
-        <Autocomplete
-          className="w-full  order-3"
-          labelPlacement="outside"
-          placeholder="Selecciona la categoría"
-          variant="bordered"
-        >
-          {branch_list.map((item) => (
-            <AutocompleteItem key={item.id} value={item.id} onClick={() => setBranch(item.id)}>
-              {item.name}
-            </AutocompleteItem>
-          ))}
-        </Autocomplete>
+
         <DataTable
           value={tableData}
           className="shadow dark:text-white"
@@ -268,4 +274,4 @@ const CushCatsBigZ = (props: CashCutsProps) => {
   );
 };
 
-export default CushCatsBigZ;
+export default CashCutsX;
