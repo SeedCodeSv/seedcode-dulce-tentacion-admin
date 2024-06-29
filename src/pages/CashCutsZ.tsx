@@ -97,6 +97,74 @@ const CushCatsZ = (props: CashCutsProps) => {
 
     return totalTicket + totalFactura + totalCreditoFiscal + totalDevolucionNC + totalDevolucionT;
   }, [data]);
+
+  const printEstheticService = () => {
+    const iframe = document.createElement('iframe');
+    iframe.style.height = '0';
+    iframe.style.visibility = 'hidden';
+    iframe.style.width = '0';
+    iframe.setAttribute('srcdoc', '<html><body></body></html>');
+    document.body.appendChild(iframe);
+    iframe.contentWindow?.addEventListener('afterprint', () => {
+      iframe.parentNode?.removeChild(iframe);
+    });
+    iframe.addEventListener('load', () => {
+      const body = iframe.contentDocument?.body;
+      if (!body) return;
+      body.style.textAlign = 'center';
+      const otherParent = document.createElement('div');
+      otherParent.style.display = 'flex';
+      otherParent.style.justifyContent = 'center';
+      otherParent.style.alignItems = 'center';
+      otherParent.style.width = '100%';
+      otherParent.style.height = '100%';
+      otherParent.style.padding = '10px';
+     
+      body.appendChild(otherParent);
+      body.style.fontFamily = 'Arial, sans-serif';
+      const now = new Date();
+      const date = now.toLocaleDateString();
+      const time = now.toLocaleTimeString();
+      const Am = now.getHours() < 12 ? 'AM' : 'PM';
+      const customContent = `
+          <p style="text-align: center" id="text">Clínica de Diagnóstico Veterinario</p>
+           <p style="text-align: center; margin: 0; padding: 0" id="text">${date}</p>
+          <p style="text-align: center; margin: 0; padding: 0" id="text">${time} ${Am}</p>
+          <p style="text-align: center" id="text">______________________________________________</p>
+          <table id="table" style="width: 100%">
+            <thead>
+              <tr>
+                <th id="w-30">Cant.</th>
+            <th id="w-50">Producto</th>
+            <th id="w-60">P.Unitario</th>
+            <th id="w-60">Total</th>
+              </tr>
+            </thead>
+           
+          </table>
+          <p style="text-align: center" id="text">______________________________________________</p>
+          <table id="table" style="width: 100%">
+            <thead>
+              <tr>
+                <th id="w-50" style="text-align:left">TOTAL</th>
+                <th id="w-60" style="text-align:right">$</th>
+              </tr>
+            </thead>
+          </table>
+          <p style="text-align: center" id="text">TELÉFONO: 2451 9309</p>
+          <p style="text-align: center" id="text">SONSONATE</p>
+          <p style="text-align: center" id="text">GRACIAS POR TU COMPRA</p>
+          <p style="text-align: center" id="text">TE ESPERAMOS PRONTO</p>
+        `;
+      const div = document.createElement('div');
+      div.innerHTML = customContent;
+      body.appendChild(div);
+
+     
+        iframe.contentWindow?.print();
+     
+    });
+  };
   return (
     <>
       <ModalGlobal
@@ -139,7 +207,7 @@ const CushCatsZ = (props: CashCutsProps) => {
             <Button
               className="w-full"
               style={global_styles().secondaryStyle}
-              onClick={() => print()}
+              onClick={() => printEstheticService()}
             >
               Imprimir y cerrar
             </Button>
