@@ -21,6 +21,7 @@ import {
   FileText,
   TicketPercent,
   Handshake,
+  Coins,
 } from 'lucide-react';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { ThemeContext } from '../hooks/useTheme';
@@ -86,19 +87,32 @@ export const LayoutItems = () => {
   }, [roleActions]);
   const [isClientsOpen, setIsClientsOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMenuBox, setIsMenuBox] = useState(false);
+
   const toggleDropdownMenu = () => {
     setIsMenuOpen(!isMenuOpen);
     setIsClientsOpen(false);
+    setIsMenuBox(false);
   };
 
   const toggleDropdownClient = () => {
     setIsClientsOpen(!isClientsOpen);
-    setIsMenuOpen(false);
+    if (isMenuOpen) {
+      setIsMenuOpen(false);
+    }
+  };
+
+  const toggleDropdownBox = () => {
+    setIsMenuBox(!isMenuBox);
+    if (isMenuOpen) {
+      setIsMenuOpen(false);
+    }
   };
 
   const [isOpenComponentBigZ, setIsOpenComponentBigZ] = useState(false);
   const [isCushCatsZ, setIsCushCatsZ] = useState(false);
   const [isCushCatsX, setIsCushCatsX] = useState(false);
+  
   return (
     <>
       {personalization.length === 0 ? (
@@ -596,69 +610,92 @@ export const LayoutItems = () => {
           )}
         </>
       )}
-      <NavLink
-        to={''}
-        onClick={() => setIsOpenComponentBigZ(true)}
-        className={({ isActive }) => {
-          return (
-            (isActive
-              ? 'text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green'
-              : 'text-coffee-brown font-semibold border-white') +
-            ' flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
-          );
-        }}
-        style={({ isActive }) => {
-          return {
-            borderLeftColor: isActive ? theme.colors.dark : 'transparent',
-            borderLeftWidth: 5,
-          };
-        }}
-      >
-        <ShoppingBag onClick={() => setIsOpenComponentBigZ(true)} size={iconSize} />
-        <p className="ml-2 text-sm 2xl:text-base">Corte Gran Z</p>
-      </NavLink>
-      <NavLink
-        to={''}
-        onClick={() => setIsCushCatsX(true)}
-        className={({ isActive }) => {
-          return (
-            (isActive
-              ? 'text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green'
-              : 'text-coffee-brown font-semibold border-white') +
-            ' flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
-          );
-        }}
-        style={({ isActive }) => {
-          return {
-            borderLeftColor: isActive ? theme.colors.dark : 'transparent',
-            borderLeftWidth: 5,
-          };
-        }}
-      >
-        <ShoppingBag onClick={() => setIsCushCatsX(true)} size={iconSize} />
-        <p className="ml-2 text-sm 2xl:text-base">Corte de X</p>
-      </NavLink>
-      <NavLink
-        to={''}
-        onClick={() => setIsCushCatsZ(true)}
-        className={({ isActive }) => {
-          return (
-            (isActive
-              ? 'text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green'
-              : 'text-coffee-brown font-semibold border-white') +
-            ' flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
-          );
-        }}
-        style={({ isActive }) => {
-          return {
-            borderLeftColor: isActive ? theme.colors.dark : 'transparent',
-            borderLeftWidth: 5,
-          };
-        }}
-      >
-        <ShoppingBag onClick={() => setIsCushCatsZ(true)} size={iconSize} />
-        <p className="ml-2 text-sm 2xl:text-base">Corte de Z</p>
-      </NavLink>
+
+      <div className="flex flex-col justify-start items-center px-6 w-full ">
+        <button
+          onClick={toggleDropdownBox}
+          className="focus:outline-none focus:text-black text-left text-black flex items-center w-full py-3 space-x-3"
+        >
+          <Coins className="dark:text-white" size={iconSize} />
+          <p className="text-sm dark:text-white font-semibold 2xl:text-base">Cortes de caja</p>
+          <ChevronDown className="justify-end items-end dark:text-white" size={iconSize} />
+        </button>
+        <div
+          id="menu1"
+          className={`flex flex-col w-full h-[900px] pb-1 overflow-hidden transition-all duration-500 ${
+            isMenuBox ? 'xl:max-h-52 max-h-44' : 'max-h-0'
+          }`}
+        >
+          <div className="py-1">
+            <NavLink
+              to={''}
+              onClick={() => setIsOpenComponentBigZ(true)}
+              className={({ isActive }) => {
+                return (
+                  (isActive
+                    ? 'text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green'
+                    : 'text-coffee-brown font-semibold border-white') +
+                  ' flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
+                );
+              }}
+              style={({ isActive }) => {
+                return {
+                  borderLeftColor: isActive ? theme.colors.dark : 'transparent',
+                  borderLeftWidth: 5,
+                };
+              }}
+            >
+              <ShoppingBag onClick={() => setIsOpenComponentBigZ(true)} size={iconSize} />
+              <p className="ml-2 text-sm 2xl:text-base">Corte Gran Z</p>
+            </NavLink>
+
+            <NavLink
+              to={''}
+              onClick={() => setIsCushCatsX(true)}
+              className={({ isActive }) => {
+                return (
+                  (isActive
+                    ? 'text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green'
+                    : 'text-coffee-brown font-semibold border-white') +
+                  ' flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
+                );
+              }}
+              style={({ isActive }) => {
+                return {
+                  borderLeftColor: isActive ? theme.colors.dark : 'transparent',
+                  borderLeftWidth: 5,
+                };
+              }}
+            >
+              <ShoppingBag onClick={() => setIsCushCatsX(true)} size={iconSize} />
+              <p className="ml-2 text-sm 2xl:text-base">Corte de X</p>
+            </NavLink>
+
+            <NavLink
+              to={''}
+              onClick={() => setIsCushCatsZ(true)}
+              className={({ isActive }) => {
+                return (
+                  (isActive
+                    ? 'text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green'
+                    : 'text-coffee-brown font-semibold border-white') +
+                  ' flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
+                );
+              }}
+              style={({ isActive }) => {
+                return {
+                  borderLeftColor: isActive ? theme.colors.dark : 'transparent',
+                  borderLeftWidth: 5,
+                };
+              }}
+            >
+              <ShoppingBag onClick={() => setIsCushCatsZ(true)} size={iconSize} />
+              <p className="ml-2 text-sm 2xl:text-base">Corte de Z</p>
+            </NavLink>
+          </div>
+        </div>
+      </div>
+
       <div
         className={
           ' flex w-full py-4 pl-5 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
