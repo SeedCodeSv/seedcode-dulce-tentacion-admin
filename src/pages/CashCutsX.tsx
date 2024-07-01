@@ -24,6 +24,8 @@ const CashCutsX = (props: CashCutsProps) => {
   const [branchId, setBranchId] = useState(0);
   const [codeSale, setCodeSale] = useState<Correlatives[]>([]);
   const [codeSelected, setCodeSelected] = useState('');
+  const [branchName, setBranchName] = useState('');
+
   useEffect(() => {
     const getBranchId = () => {};
     getBranchId();
@@ -116,7 +118,7 @@ const CashCutsX = (props: CashCutsProps) => {
         onClose={() => props.onClose()}
       >
         <div className="grid grid-cols-3  gap-4">
-          <Autocomplete
+        <Autocomplete
             className="w-full  order-3 mt-4"
             labelPlacement="outside"
             label="Sucursal"
@@ -124,7 +126,14 @@ const CashCutsX = (props: CashCutsProps) => {
             variant="bordered"
           >
             {branch_list.map((item) => (
-              <AutocompleteItem key={item.id} value={item.id} onClick={() => setBranchId(item.id)}>
+              <AutocompleteItem
+                key={item.id}
+                value={item.id}
+                onClick={() => {
+                  setBranchId(item.id);
+                  setBranchName(item.name);
+                }}
+              >
                 {item.name}
               </AutocompleteItem>
             ))}
@@ -164,7 +173,7 @@ const CashCutsX = (props: CashCutsProps) => {
           </div>
           <div className="mt-4 bg-white w-[500px] h-full overflow-y-auto flex items-center justify-center flex-col p-5 rounded-2xl">
             <h1>MADNESS</h1>
-            <h1>{user?.correlative.branch.name}</h1>
+            <h1>{branchName || user?.correlative.branch.name}</h1>
             <h1>{user?.correlative.branch.address}</h1>
             <h1>Creado por: {user?.userName}</h1>
             <h1>GIRO: VENTA AL POR MENOR DE ROPA</h1>
