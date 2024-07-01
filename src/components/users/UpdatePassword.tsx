@@ -42,7 +42,7 @@ function UpdatePassword(props: Props) {
           <>
             <div>
               <Input
-                label="Nombre"
+                label="Contraseña"
                 labelPlacement="outside"
                 name="password"
                 value={values.password}

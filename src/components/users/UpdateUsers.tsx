@@ -172,6 +172,7 @@ function AddUsers(props: Props) {
                 placeholder="Selecciona la sucursal"
                 labelPlacement="outside"
                 variant="bordered"
+                defaultInputValue={props.user?.correlative.branch.name || ""}
                 defaultSelectedKey={selectedKeyBranch!}
                 value={selectedKeyBranch!}
               >
@@ -203,6 +204,7 @@ function AddUsers(props: Props) {
                 classNames={{
                   base: 'font-semibold text-gray-500 text-sm',
                 }}
+                defaultInputValue={props.user?.correlative.code || ""}
                 defaultSelectedKey={selectedKeyCorrelative!}
                 value={selectedKeyCorrelative!}
               >
