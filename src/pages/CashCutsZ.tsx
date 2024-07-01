@@ -1,22 +1,22 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Autocomplete, AutocompleteItem, Button } from '@nextui-org/react';
-
 import { toast } from 'sonner';
-
 import { CloseZ, ZCashCutsResponse } from '../types/cashCuts.types';
 import { useAuthStore } from '../store/auth.store';
 import { fechaActualString } from '../utils/dates';
 import { close_x, get_cashCuts } from '../services/facturation/cashCuts.service';
-import ModalGlobal from '../components/global/ModalGlobal';
+import HeadlessModal from '../components/global/HeadlessModal';
 import { global_styles } from '../styles/global.styles';
 import { useBranchesStore } from '../store/branches.store';
 import { formatCurrency } from '../utils/dte';
 import { get_correlatives } from '../services/correlatives.service';
 import { Correlatives } from '../types/correlatives.types';
+
 interface CashCutsProps {
   isOpen: boolean;
   onClose: () => void;
 }
+
 const CushCatsZ = (props: CashCutsProps) => {
   const [data, setData] = useState<ZCashCutsResponse | null>(null);
   const { user } = useAuthStore();
@@ -25,6 +25,8 @@ const CushCatsZ = (props: CashCutsProps) => {
   const [branchId, setBranchId] = useState(0);
   const [codeSale, setCodeSale] = useState<Correlatives[]>([]);
   const [codeSelected, setCodeSelected] = useState('');
+  const [branchName, setBranchName] = useState('');
+
   useEffect(() => {
     const getIdBranch = async () => {
       try {
@@ -167,10 +169,10 @@ const CushCatsZ = (props: CashCutsProps) => {
   };
   return (
     <>
-      <ModalGlobal
+      <HeadlessModal
         size="h-screen"
         title=" Corte de Caja  Z"
-        isFull
+        isFull={true}
         isOpen={props.isOpen}
         onClose={() => props.onClose()}
       >
@@ -183,7 +185,10 @@ const CushCatsZ = (props: CashCutsProps) => {
             variant="bordered"
           >
             {branch_list.map((item) => (
-              <AutocompleteItem key={item.id} value={item.id} onClick={() => setBranchId(item.id)}>
+              <AutocompleteItem key={item.id} value={item.id} onClick={() => {
+                setBranchId(item.id)
+                setBranchName(item.name)
+              }}>
                 {item.name}
               </AutocompleteItem>
             ))}
@@ -219,9 +224,9 @@ const CushCatsZ = (props: CashCutsProps) => {
               Cancelar
             </Button>
           </div>
-          <div className="p-5 mt-4 bg-white w-[500px] h-full overflow-y-auto flex items-center justify-center flex-col p-5 rounded-2xl">
+          <div className="mt-4 bg-white w-[500px] h-full overflow-y-auto flex items-center justify-center flex-col p-5 rounded-2xl">
             <h1>MADNESS</h1>
-            <h1>{user?.correlative.branch.name}</h1>
+            <h1>{branchName || user?.correlative.branch.name}</h1>
             <h1>{user?.correlative.branch.address}</h1>
             <h1>Creado por: {user?.userName}</h1>
             <h1>GIRO: VENTA AL POR MENOR DE ROPA</h1>
@@ -312,7 +317,7 @@ const CushCatsZ = (props: CashCutsProps) => {
             </div>
           </div>
         </div>
-      </ModalGlobal>
+      </HeadlessModal>
     </>
   );
 };
