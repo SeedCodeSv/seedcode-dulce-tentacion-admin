@@ -1,3 +1,5 @@
+import { Correlatives } from "./correlatives.types";
+
 export interface IGetUsers {
   ok: boolean;
   message: string;
@@ -49,6 +51,7 @@ export interface User {
   // employee: Employee;
   roleId: number;
   correlativeId: number;
+  correlative: Correlatives
   // employeeId: number;
 }
 

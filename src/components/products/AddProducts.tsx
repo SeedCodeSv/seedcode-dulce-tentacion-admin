@@ -315,7 +315,6 @@ function AddProducts(props: Props) {
                     label="Categoría producto"
                     labelPlacement="outside"
                     placeholder='Selecciona la categoría'
-                    
                     variant="bordered"
                     classNames={{
                       base: 'font-semibold text-sm',
