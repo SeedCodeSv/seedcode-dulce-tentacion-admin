@@ -9,10 +9,11 @@ interface Props {
   children: React.ReactNode;
   title: string;
   size: string;
+  isFull?: boolean;
 }
 
 function HeadlessModal(props: Props) {
-  const { isOpen, onClose, children, title, size } = props;
+  const { isOpen, onClose, children, title, size, isFull } = props;
 
   return (
     <Transition appear show={isOpen}>
@@ -48,19 +49,31 @@ function HeadlessModal(props: Props) {
               />
               <Dialog.Panel
                 className={classNames(
-                  'bg-white rounded-xl h-full dark:bg-gray-800 backdrop-blur-2xl',
-                  size
+                  isFull
+                    ? 'h-screen w-screen rounded-0'
+                    : size + ' rounded-lg max-h-[90vh] overflow-y-auto',
+                  'relative transform bg-white z-[100] text-left shadow-xl transition-all'
                 )}
               >
-                <div className="w-full flex justify-between p-1 mt-1">
-                  <Dialog.Title as="h3" className=" font-medium dark:text-white mt-4 ml-3">
-                    {title}
-                  </Dialog.Title>
-                  <button onClick={onClose} className="bg-transparent border-0 mr-3 outline-none">
-                    <X className="dark:text-white" />
-                  </button>
+                <div className="bg-white w-full h-full overflow-y-auto p-3 dark:bg-gray-800">
+                  <div>
+                    <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                      <div className="w-full flex justify-between">
+                        <Dialog.Title
+                          as="h3"
+                          className="text-base font-semibold leading-6 text-gray-900 dark:text-gray-100"
+                        >
+                          {title}
+                        </Dialog.Title>
+
+                        <button onClick={() => onClose()}>
+                          <X size={20} className="dark:text-white" />
+                        </button>
+                      </div>
+                      {children}
+                    </div>
+                  </div>
                 </div>
-                <div className="w-full top-[-10]">{children}</div>
               </Dialog.Panel>
             </Transition.Child>
           </div>

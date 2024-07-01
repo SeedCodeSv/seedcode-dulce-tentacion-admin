@@ -5,7 +5,7 @@ import { CloseZ, ZCashCutsResponse } from '../types/cashCuts.types';
 import { useAuthStore } from '../store/auth.store';
 import { fechaActualString } from '../utils/dates';
 import { close_x, get_cashCuts_x } from '../services/facturation/cashCuts.service';
-import ModalGlobal from '../components/global/ModalGlobal';
+import HeadlessModal from '../components/global/HeadlessModal';
 import { global_styles } from '../styles/global.styles';
 import { useBranchesStore } from '../store/branches.store';
 import { get_correlatives } from '../services/correlatives.service';
@@ -111,10 +111,11 @@ const CashCutsX = (props: CashCutsProps) => {
   }, []);
   return (
     <>
-      <ModalGlobal
-        size="w-full h-full p-5 bg-gray-200 dark:bg-gray-800"
+      <HeadlessModal
+        size="h-screen"
         title="Corte de Caja  X"
         isOpen={props.isOpen}
+        isFull={true}
         onClose={() => props.onClose()}
       >
         <div className="grid grid-cols-3  gap-4">
@@ -340,7 +341,7 @@ const CashCutsX = (props: CashCutsProps) => {
             </div>
           </div>
         </div>
-      </ModalGlobal>
+      </HeadlessModal>
     </>
   );
 };
