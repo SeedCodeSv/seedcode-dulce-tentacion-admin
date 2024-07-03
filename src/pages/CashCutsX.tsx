@@ -25,6 +25,7 @@ const CashCutsX = (props: CashCutsProps) => {
   const [codeSale, setCodeSale] = useState<Correlatives[]>([]);
   const [codeSelected, setCodeSelected] = useState('');
   const [branchName, setBranchName] = useState('');
+  const [branchAdress, setBranchAdress] = useState('');
 
   useEffect(() => {
     const getBranchId = () => {};
@@ -109,6 +110,175 @@ const CashCutsX = (props: CashCutsProps) => {
   useEffect(() => {
     getBranchesList();
   }, []);
+
+  const printCutX = () => {
+    const iframe = document.createElement('iframe');
+    iframe.style.height = '0';
+    iframe.style.visibility = 'hidden';
+    iframe.style.width = '0';
+    iframe.setAttribute('srcdoc', '<html><body></body></html>');
+    document.body.appendChild(iframe);
+    iframe.contentWindow?.addEventListener('afterprint', () => {
+      iframe.parentNode?.removeChild(iframe);
+    });
+    iframe.addEventListener('load', () => {
+      const body = iframe.contentDocument?.body;
+      if (!body) return;
+      // Añadir estilos para ocultar encabezados y pies de página
+      const style = document.createElement('style');
+      style.innerHTML = `
+          @page {
+              margin: 0;
+          }
+          body {
+              -webkit-print-color-adjust: exact;
+              margin: 0;
+          }
+      `;
+      iframe.contentDocument?.head.appendChild(style);
+      body.style.textAlign = 'center';
+      body.style.fontFamily = 'Arial, sans-serif';
+      body.style.textAlign = 'center';
+      const otherParent = document.createElement('div');
+      otherParent.style.display = 'flex';
+      otherParent.style.justifyContent = 'center';
+      otherParent.style.alignItems = 'center';
+      otherParent.style.width = '200%';
+      otherParent.style.height = '200%';
+      otherParent.style.padding = '5px';
+  
+      body.appendChild(otherParent);
+      body.style.fontFamily = 'Arial, sans-serif';
+      const now = new Date();
+      const date = now.toLocaleDateString();
+      const time = now.toLocaleTimeString();
+      const Am = now.getHours() < 12 ? 'AM' : 'PM';
+      const customContent = `
+        <div>
+         <span>------------------------------------</span><br />
+         <span style="text-align: right:30px;">X</span><br />
+         <span>------------------------------------</span><br />
+          <span>MADNESS</span><br />
+          <span>${branchName || user?.correlative.branch.name}</span><br /><br />
+          <span>${branchAdress || user?.correlative.branch.address}</span><br />
+          <span>Creado por: ${user?.userName}</span><br />
+          <span>GIRO: VENTA AL POR MENOR DE ROPA</span><br />
+          <span>
+            FECHA: ${date} - ${time} ${Am}
+          </span><br />
+          <br />
+          <span>------------------------------------</span><br />
+          <span>------------------------------------</span<br />
+          <div className="w-full">
+            <span>VENTAS CON TICKET</span><br />
+            <span>N. INICIAL: ${data?.Ticket?.inicio}</span><br />
+            <span>N. FINAL: ${data?.Ticket?.fin}</span><br />
+            <span>
+              GRAVADAS: ${formatCurrency(
+                Number(data?.Ticket.total ?? 0) - calculateIVA(data?.Ticket?.total || 0)
+              )}
+            </span><br />
+            <span>IVA: ${formatCurrency(calculateIVA(data?.Ticket?.total || 0))}</span><br />
+            <span>SUB_TOTAL: ${formatCurrency(Number(data?.Ticket?.total))}</span><br />
+            <span>EXENTAS: $0.00</span><br />
+            <span>NO SUJETAS: $0.00</span><br />
+            <span>TOTAL: ${formatCurrency(Number(data?.Ticket?.total))}</span>
+          </div>
+          <br />
+          <span>------------------------------------</span><br />
+          <span>------------------------------------</span<br />
+          <div className="w-full">
+            <span>VENTAS CON FACTURA</span><br />
+            <span>N. INICIAL: ${data?.Factura?.inicio}</span><br />
+            <span>N. FINAL: ${data?.Factura?.fin}</span><br />
+            <span>
+              GRAVADAS: ${formatCurrency(
+                Number(data?.Factura.total ?? 0) - calculateIVA(data?.Factura?.total || 0)
+              )}
+            </span><br />
+            <span>IVA: ${formatCurrency(calculateIVA(data?.Factura?.total || 0))}</span><br />
+            <span>SUB_TOTAL: ${formatCurrency(Number(data?.Factura?.total))}</span><br />
+            <span>EXENTAS: $0.00</span><br />
+            <span>NO SUJETAS: $0.00</span><br />
+            <span>TOTAL: ${formatCurrency(Number(data?.Factura?.total))}</span><br />
+          </div>
+          <br />
+          <span>------------------------------------</span><br />
+          <span>------------------------------------</span<br />
+          <div className="w-full">
+            <span>VENTAS CON CRÉDITO FISCAL</span><br />
+            <span>N. INICIAL: ${data?.CreditoFiscal?.inicio}</span><br />
+            <span>N. FINAL: ${data?.CreditoFiscal?.fin}</span><br />
+            <span>
+              GRAVADAS: ${formatCurrency(
+                Number(data?.CreditoFiscal.total ?? 0) - calculateIVA(data?.CreditoFiscal?.total || 0)
+              )}
+            </span><br />
+            <span>IVA: ${formatCurrency(calculateIVA(data?.CreditoFiscal?.total || 0))}</span><br />
+            <span>SUB_TOTAL: ${formatCurrency(Number(data?.CreditoFiscal?.total))}</span><br />
+            <span>EXENTAS: $0.00</span><br />
+            <span>NO SUJETAS: $0.00</span><br />
+            <span>TOTAL: ${formatCurrency(Number(data?.CreditoFiscal?.total))}</span><br />
+          </div>
+          <br />
+          <span>------------------------------------</span><br />
+          <span>------------------------------------</span<br />
+          <div className="w-full">
+            <span>DEVOLUCIONES CON NOTA DE CRÉDITO</span><br />
+            <span>N. INICIAL: ${data?.DevolucionNC?.inicio}</span><br />
+            <span>N. FINAL: ${data?.DevolucionNC?.fin}</span><br />
+            <span>
+              GRAVADAS: ${formatCurrency(
+                Number(data?.DevolucionNC.total ?? 0) - calculateIVA(data?.DevolucionNC?.total || 0)
+              )}
+            </span><br />
+            <span>IVA: ${formatCurrency(calculateIVA(data?.DevolucionNC?.total || 0))}</span><br />
+            <span>SUB_TOTAL: ${formatCurrency(Number(data?.DevolucionNC?.total))}</span><br />
+            <span>EXENTAS: $0.00</span><br />
+            <span>NO SUJETAS: $0.00</span><br />
+            <span>TOTAL: ${formatCurrency(Number(data?.DevolucionNC?.total))}</span><br />
+          </div>
+          <br />
+          <span>------------------------------------</span><br />
+          <span>------------------------------------</span<br />
+          <div className="w-full">
+            <span>DEVOLUCIONES CON TICKET</span><br />
+            <span>N. INICIAL: ${data?.DevolucionT?.inicio}</span><br />
+            <span>N. FINAL: ${data?.DevolucionT?.fin}</span><br />
+            <span>
+              GRAVADAS: ${formatCurrency(
+                Number(data?.DevolucionT.total ?? 0) - calculateIVA(data?.DevolucionT?.total || 0)
+              )}
+            </span><br />
+            <span>IVA: ${formatCurrency(calculateIVA(data?.DevolucionT?.total || 0))}</span><br />
+            <span>SUB_TOTAL: ${formatCurrency(Number(data?.DevolucionT?.total))}</span><br />
+            <span>EXENTAS: $0.00</span><br />
+            <span>NO SUJETAS: $0.00</span><br />
+            <span>TOTAL: ${formatCurrency(Number(data?.DevolucionT?.total))}</span><br />
+          </div>
+          <br />
+          <br />
+          <div>
+            <span>TOTAL GENERAL</span><br />
+            <span>GRAVADAS: ${formatCurrency(totalGeneral - totalGeneral * 0.13)}</span><br />
+            <span>IVA: ${formatCurrency(totalGeneral * 0.13)}</span><br />
+            <span>SUB-TOTAL: ${formatCurrency(totalGeneral)}</span><br />
+            <span>EXENTAS:</span><br />
+            <span>NO SUJETAS:</span><br />
+            <span>RETENCIONES:</span><br />
+            <span>TOTAL: ${formatCurrency(totalGeneral)}</span>
+          </div>
+        </div>
+      `;
+      const div = document.createElement('div');
+      div.innerHTML = customContent;
+      body.appendChild(div);
+  
+      iframe.contentWindow?.print();
+    });
+  };
+  
+
   return (
     <>
       <HeadlessModal
@@ -133,6 +303,7 @@ const CashCutsX = (props: CashCutsProps) => {
                 onClick={() => {
                   setBranchId(item.id);
                   setBranchName(item.name);
+                  setBranchAdress(item.address);
                 }}
               >
                 {item.name}
@@ -160,7 +331,7 @@ const CashCutsX = (props: CashCutsProps) => {
             <Button
               className="w-full"
               style={global_styles().secondaryStyle}
-              onClick={() => print()}
+              onClick={() => printCutX()}
             >
               Imprimir y cerrar
             </Button>
@@ -175,7 +346,7 @@ const CashCutsX = (props: CashCutsProps) => {
           <div className="mt-4 bg-white w-[500px] h-full overflow-y-auto flex items-center justify-center flex-col p-5 rounded-2xl">
             <h1>MADNESS</h1>
             <h1>{branchName || user?.correlative.branch.name}</h1>
-            <h1>{user?.correlative.branch.address}</h1>
+            <h1>{branchAdress || user?.correlative.branch.address}</h1>
             <h1>Creado por: {user?.userName}</h1>
             <h1>GIRO: VENTA AL POR MENOR DE ROPA</h1>
             <h1>

@@ -118,10 +118,10 @@ const CushCatsZ = (props: CashCutsProps) => {
       otherParent.style.display = 'flex';
       otherParent.style.justifyContent = 'center';
       otherParent.style.alignItems = 'center';
-      otherParent.style.width = '100%';
-      otherParent.style.height = '100%';
-      otherParent.style.padding = '10px';
-     
+      otherParent.style.width = '200%';
+      otherParent.style.height = '200%';
+      otherParent.style.padding = '5px';
+
       body.appendChild(otherParent);
       body.style.fontFamily = 'Arial, sans-serif';
       const now = new Date();
@@ -129,34 +129,101 @@ const CushCatsZ = (props: CashCutsProps) => {
       const time = now.toLocaleTimeString();
       const Am = now.getHours() < 12 ? 'AM' : 'PM';
       const customContent = `
-          <p style="text-align: center" id="text">Clínica de Diagnóstico Veterinario</p>
-           <p style="text-align: center; margin: 0; padding: 0" id="text">${date}</p>
-          <p style="text-align: center; margin: 0; padding: 0" id="text">${time} ${Am}</p>
-          <p style="text-align: center" id="text">______________________________________________</p>
-          <table id="table" style="width: 100%">
-            <thead>
-              <tr>
-                <th id="w-30">Cant.</th>
-            <th id="w-50">Producto</th>
-            <th id="w-60">P.Unitario</th>
-            <th id="w-60">Total</th>
-              </tr>
-            </thead>
-           
-          </table>
-          <p style="text-align: center" id="text">______________________________________________</p>
-          <table id="table" style="width: 100%">
-            <thead>
-              <tr>
-                <th id="w-50" style="text-align:left">TOTAL</th>
-                <th id="w-60" style="text-align:right">$</th>
-              </tr>
-            </thead>
-          </table>
-          <p style="text-align: center" id="text">TELÉFONO: 2451 9309</p>
-          <p style="text-align: center" id="text">SONSONATE</p>
-          <p style="text-align: center" id="text">GRACIAS POR TU COMPRA</p>
-          <p style="text-align: center" id="text">TE ESPERAMOS PRONTO</p>
+         <div>
+         <span>------------------------------------</span><br />
+         <span style="text-align: right:30px;">Z</span><br />
+         <span>------------------------------------</span><br />
+          <span>MADNESS</span><br />
+          <span>${branchName || user?.correlative.branch.name}</span><br />
+          <span>${user?.correlative.branch.address}</span><br />
+          <span>Creado por: ${user?.userName}</span><br />
+          <span>GIRO: VENTA AL POR MENOR DE ROPA</span><br />
+          <span>
+            FECHA: ${date} - ${time} ${Am}
+          </span><br />
+          <br />
+          <span>------------------------------------</span><br />
+          <span>------------------------------------</span<br />
+          <div>
+            <span>VENTAS CON TICKET</span><br />
+            <span>N. INICIAL: ${data?.Ticket?.inicio}</span><br />
+            <span>N. FINAL: ${data?.Ticket?.fin}</span><br />
+            <span>GRAVADAS: $0.00</span><br />
+            <span>IVA: ${formatCurrency(calculateIVA(data?.Ticket?.total || 0))}</span><br />
+            <span>SUB_TOTAL: ${formatCurrency(Number(data?.Ticket?.total))}</span><br />
+            <span>EXENTAS: $0.00</span><br />
+            <span>NO SUJETAS: $0.00</span><br />
+            <span>TOTAL: ${formatCurrency(Number(data?.Ticket?.total))}</span><br />
+          </div>
+          <br />
+          <span>---------------------------------------------------------------------</span>
+          <span>---------------------------------------------------------------------</span>
+          <div>
+            <span>VENTAS CON FACTURA</span><br />
+            <span>N. INICIAL: ${data?.Factura?.inicio}</span><br />
+            <span>N. FINAL: ${data?.Factura?.fin}</span><br />
+            <span>GRAVADAS: $0.00</span><br />
+            <span>IVA: ${formatCurrency(calculateIVA(data?.Factura?.total || 0))}</span><br />
+            <span>SUB_TOTAL: ${formatCurrency(Number(data?.Factura?.total))}</span><br />
+            <span>EXENTAS: $0.00</span><br />
+            <span>NO SUJETAS: $0.00</span><br />
+            <span>TOTAL: ${formatCurrency(Number(data?.Factura?.total))}</span><br />
+          </div>
+          <br />
+          <span>------------------------------------</span><br />
+          <span>------------------------------------</span<br />
+          <div>
+            <span>VENTAS CON CRÉDITO FISCAL</span><br />
+            <span>N. INICIAL: ${data?.CreditoFiscal?.inicio}</span><br />
+            <span>N. FINAL: ${data?.CreditoFiscal?.fin}</span><br />
+            <span>GRAVADAS: $0.00</span><br />
+            <span>IVA: ${formatCurrency(calculateIVA(data?.CreditoFiscal?.total || 0))}</span><br />
+            <span>SUB_TOTAL: ${formatCurrency(Number(data?.CreditoFiscal?.total))}</span><br />
+            <span>EXENTAS: $0.00</span><br />
+            <span>NO SUJETAS: $0.00}</h1><br />
+            <span>TOTAL: ${formatCurrency(Number(data?.CreditoFiscal?.total))}</span><br />
+          </div>
+          <br />
+          <span>------------------------------------</span><br />
+          <span>------------------------------------</span<br />
+          <div>
+            <span>DEVOLUCIONES CON NOTA DE CRÉDITO</span><br />
+            <span>N. INICIAL: ${data?.DevolucionNC?.inicio}</span><br />
+            <span>N. FINAL: ${data?.DevolucionNC?.fin}</span><br />
+            <span>GRAVADAS: $0.00</span><br />
+            <span>IVA: ${formatCurrency(calculateIVA(data?.DevolucionNC?.total || 0))}</span><br />
+            <span>SUB_TOTAL: ${formatCurrency(Number(data?.DevolucionNC?.total))}</span><br />
+            <span>EXENTAS: $0.00</span><br />
+            <span>NO SUJETAS: $0.00}</h1><br />
+            <span>TOTAL: ${formatCurrency(Number(data?.DevolucionNC?.total))}</span><br />
+          </div>
+          <br />
+          <span>------------------------------------</span><br />
+          <span>------------------------------------</span<br />
+          <div>
+            <span>DEVOLUCIONES CON TICKET</span><br />
+            <span>N. INICIAL: ${data?.DevolucionT?.inicio}</span><br />
+            <span>N. FINAL: ${data?.DevolucionT?.fin}</span><br />
+            <span>GRAVADAS: $0.00</span><br />
+            <span>IVA: ${formatCurrency(calculateIVA(data?.DevolucionT?.total || 0))}</span><br />
+            <span>SUB_TOTAL: ${formatCurrency(Number(data?.DevolucionT?.total))}</span><br />
+            <span>EXENTAS: $0.00}</h1><br />
+            <span>NO SUJETAS: $0.00}</h1><br />
+            <span>TOTAL: ${formatCurrency(Number(data?.DevolucionT?.total))}</span><br />
+          </div>
+          <br />
+          <br />
+          <div>
+            <span>TOTAL GENERAL</span><br />
+            <span>GRAVADAS: ${formatCurrency(totalGeneral - totalGeneral * 0.13)}</span><br />
+            <span>IVA: ${formatCurrency(totalGeneral * 0.13)}</span><br />
+            <span>SUB-TOTAL: ${formatCurrency(totalGeneral)}</span><br />
+            <span>EXENTAS:</span><br />
+            <span>NO SUJETAS:</span><br />
+            <span>RETENCIONES:</span><br />
+            <hspanTOTAL: $${formatCurrency(totalGeneral)}</h1><br />
+          </div>
+        </div>
         `;
       const div = document.createElement('div');
       div.innerHTML = customContent;
