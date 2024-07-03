@@ -1,13 +1,13 @@
 import { create } from 'zustand';
-import { ISubCategoriesStore } from './types/sub_categories.store.types';
+import { SubCategoryStore } from './types/sub_category_store';
 import { toast } from 'sonner';
 import { messages } from '../utils/constants';
 import { activate_sub_category, create_sub_category, delete_sub_category, get_sub_categories_list, get_sub_categories_paginated, update_sub_category } from '../services/sub_categories.service';
 import { ISubCategoryPayload } from '../types/sub_categories.types';
 
-export const useCategoriesStore = create<ISubCategoriesStore>((set, get) => ({
+export const useSubCategoryStore = create<SubCategoryStore>((set, get) => ({
   sub_categories_paginated: {
-    subCategories: [],
+    SubCategories: [],
     total: 0,
     totalPag: 0,
     currentPag: 0,
@@ -25,8 +25,8 @@ export const useCategoriesStore = create<ISubCategoriesStore>((set, get) => ({
       });
   },
 
-  getSubCategoriesPaginated: (page: number, limit: number, name: string, active = 1) => {
-    get_sub_categories_paginated(page, limit, name, active)
+  getSubCategoriesPaginated: (page: number, limit: number, name: string) => {
+    get_sub_categories_paginated(page, limit, name)
       .then(({ data }) =>
         set({
           sub_categories_paginated: data,
@@ -35,7 +35,7 @@ export const useCategoriesStore = create<ISubCategoriesStore>((set, get) => ({
       .catch(() => {
         set({
           sub_categories_paginated: {
-            subCategories: [],
+            SubCategories: [],
             total: 0,
             totalPag: 0,
             currentPag: 0,
@@ -50,7 +50,7 @@ export const useCategoriesStore = create<ISubCategoriesStore>((set, get) => ({
   postSubCategory(payload: ISubCategoryPayload) {
     create_sub_category(payload)
       .then(() => {
-        get().getSubCategoriesPaginated(1, 5, '', 1);
+        get().getSubCategoriesPaginated(1, 5, '');
         toast.success(messages.success);
       })
       .catch(() => {
@@ -60,7 +60,7 @@ export const useCategoriesStore = create<ISubCategoriesStore>((set, get) => ({
   patchSubCategory(payload, id) {
     update_sub_category(payload, id)
       .then(() => {
-        get().getSubCategoriesPaginated(1, 5, '', 1);
+        get().getSubCategoriesPaginated(1, 5, '');
         toast.success(messages.success);
       })
       .catch(() => {
@@ -69,7 +69,7 @@ export const useCategoriesStore = create<ISubCategoriesStore>((set, get) => ({
   },
   deleteSubCategory: async (id) => {
     return delete_sub_category(id).then((res) => {
-      get().getSubCategoriesPaginated(1, 5, '', 1);
+      get().getSubCategoriesPaginated(1, 5, '');
       toast.success(messages.success);
       return res.data.ok;
     }).catch(() => {
@@ -80,7 +80,7 @@ export const useCategoriesStore = create<ISubCategoriesStore>((set, get) => ({
   async activateSubCategory(id) {
     try {
       const res = await activate_sub_category(id);
-      get().getSubCategoriesPaginated(1, 5, '', 1);
+      get().getSubCategoriesPaginated(1, 5, '');
       toast.success(messages.success);
       return res.data.ok;
     } catch {

@@ -1,4 +1,4 @@
-import { CategoryProduct } from "./categories.types";
+import { CategoryProduct } from './categories.types';
 
 export interface ISubCategory {
   id: number;
@@ -8,7 +8,7 @@ export interface ISubCategory {
   categoryProductId: number;
 }
 
-export interface IGetListSubCategories { 
+export interface IGetListSubCategories {
   ok: boolean;
   status: number;
   subCategories: ISubCategory[];
@@ -16,7 +16,7 @@ export interface IGetListSubCategories {
 
 export interface IGetSubCategoriesPaginated {
   ok: boolean;
-  subCategories: ISubCategory[];
+  SubCategories: ISubCategory[];
   total: number;
   totalPag: number;
   currentPag: number;

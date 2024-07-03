@@ -23,10 +23,10 @@ export const get_sub_categories_list = async () => {
   });
 };
 
-export const get_sub_categories_paginated = async (page: number, limit: number, name: string, active = 1) => {
+export const get_sub_categories_paginated = async (page: number, limit: number, name: string ) => {
   const token = get_token();
   return axios.get<IGetSubCategoriesPaginated>(
-    `${API_URL}/sub-categories/list-paginated/${page}?limit=${limit}&name=${name}&active=${active}`,
+    `${API_URL}/sub-categories/list-paginated/?page=${page}&limit=${limit}&name=${name}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,

@@ -36,31 +36,32 @@ import classNames from 'classnames';
 import { limit_options } from '../../utils/constants';
 import SmPagination from '../global/SmPagination';
 import HeadlessModal from '../global/HeadlessModal';
+import { ISubCategory } from '../../types/sub_categories.types';
+import { useSubCategoryStore } from '../../store/sub-category';
 
 interface PProps {
   actions: string[];
 }
 
-function ListCategories({ actions }: PProps) {
+function ListSubCategory({ actions }: PProps) {
   const { theme, context } = useContext(ThemeContext);
   const [openVaul, setOpenVaul] = useState(false);
-  const { paginated_categories, getPaginatedCategories, activateCategory, loading_categories } =
-    useCategoriesStore();
-
-  const [selectedCategory, setSelectedCategory] = useState<
-    { id: number; name: string } | undefined
-  >();
+  // const { paginated_categories, getPaginatedCategories, activateCategory, loading_categories } =
+  //   useCategoriesStore();
+  const [selectedCategory, setSelectedCategory] = useState<ISubCategory | undefined>();
+  const { sub_categories_paginated, getSubCategoriesPaginated } =
+  useSubCategoryStore();
 
   const [search, setSearch] = useState('');
   const [limit, setLimit] = useState(5);
   const [active, setActive] = useState(true);
 
   useEffect(() => {
-    getPaginatedCategories(1, limit, search, active ? 1 : 0);
+    getSubCategoriesPaginated(1, limit, search);
   }, [limit, active]);
 
   const handleSearch = (name: string | undefined) => {
-    getPaginatedCategories(1, limit, name ?? search);
+    getSubCategoriesPaginated(1, limit, name ?? search);
   };
 
   const modalAdd = useDisclosure();
@@ -72,19 +73,22 @@ function ListCategories({ actions }: PProps) {
 
   const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
 
-  const handleEdit = (item: CategoryProduct) => {
+  const handleEdit = (item: ISubCategory) => {
     setSelectedCategory({
       id: item.id,
       name: item.name,
+      isActive: item.isActive,
+      categoryProduct: item.categoryProduct,
+      categoryProductId: item.categoryProductId,
     });
     modalAdd.onOpen();
   };
 
-  const handleActivate = (id: number) => {
-    activateCategory(id).then(() => {
-      getPaginatedCategories(1, limit, search, active ? 1 : 0);
-    });
-  };
+  // const handleActivate = (id: number) => {
+  //   activateCategory(id).then(() => {
+  //     getPaginatedCategories(1, limit, search, active ? 1 : 0);
+  //   });
+  // };
 
   return (
     <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
@@ -274,21 +278,21 @@ function ListCategories({ actions }: PProps) {
           </div>
         </div>
         {(view === 'grid' || view === 'list') && (
-          <MobileView
-            handleActive={handleActivate}
-            deletePopover={DeletePopUp}
-            layout={view as 'grid' | 'list'}
-            handleEdit={handleEdit}
-            actions={actions}
-          />
+          <span>movil view</span>
+          // <MobileView
+          //   handleActive={handleActivate}
+          //   deletePopover={DeletePopUp}
+          //   layout={view as 'grid' | 'list'}
+          //   handleEdit={handleEdit}
+          //   actions={actions}
+          // />
         )}
         {view === 'table' && (
           <DataTable
             className="w-full shadow"
             emptyMessage="No se encontraron resultados"
-            value={paginated_categories.categoryProducts}
+            value={sub_categories_paginated.SubCategories}
             tableStyle={{ minWidth: '50rem' }}
-            loading={loading_categories}
           >
             <Column
               headerClassName="text-sm font-semibold"
@@ -324,7 +328,7 @@ function ListCategories({ actions }: PProps) {
                         <DeletePopUp category={item} />
                       ) : (
                         <Button
-                          onClick={() => handleActivate(item.id)}
+                          // onClick={() => handleActivate(item.id)}
                           isIconOnly
                           style={global_styles().thirdStyle}
                         >
@@ -338,16 +342,16 @@ function ListCategories({ actions }: PProps) {
             />
           </DataTable>
         )}
-        {paginated_categories.totalPag > 1 && (
+        {sub_categories_paginated.totalPag > 1 && (
           <>
             <div className="hidden w-full mt-5 md:flex">
               <Pagination
-                previousPage={paginated_categories.prevPag}
-                nextPage={paginated_categories.nextPag}
-                currentPage={paginated_categories.currentPag}
-                totalPages={paginated_categories.totalPag}
+                previousPage={sub_categories_paginated.prevPag}
+                nextPage={sub_categories_paginated.nextPag}
+                currentPage={sub_categories_paginated.currentPag}
+                totalPages={sub_categories_paginated.totalPag}
                 onPageChange={(page) => {
-                  getPaginatedCategories(page, limit, search);
+                  getSubCategoriesPaginated(page, limit, search);
                 }}
               />
             </div>
@@ -355,13 +359,13 @@ function ListCategories({ actions }: PProps) {
               <div className="flex w-full mt-5 md:hidden">
                 <SmPagination
                   handleNext={() => {
-                    getPaginatedCategories(paginated_categories.nextPag, limit, search);
+                    getSubCategoriesPaginated(sub_categories_paginated.nextPag, limit, search);
                   }}
                   handlePrev={() => {
-                    getPaginatedCategories(paginated_categories.prevPag, limit, search);
+                    getSubCategoriesPaginated(sub_categories_paginated.prevPag, limit, search);
                   }}
-                  currentPage={paginated_categories.currentPag}
-                  totalPages={paginated_categories.totalPag}
+                  currentPage={sub_categories_paginated.currentPag}
+                  totalPages={sub_categories_paginated.totalPag}
                 />
               </div>
             </div>
@@ -374,13 +378,13 @@ function ListCategories({ actions }: PProps) {
         isOpen={modalAdd.isOpen}
         onClose={modalAdd.onClose}
       >
-        <AddSubCategory closeModal={modalAdd.onClose} category={selectedCategory} />
+        <AddSubCategory closeModal={modalAdd.onClose} subCategory={selectedCategory} />
       </HeadlessModal>
     </div>
   );
 }
 
-export default ListCategories;
+export default ListSubCategory;
 interface Props {
   category: CategoryProduct;
 }

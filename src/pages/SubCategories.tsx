@@ -3,6 +3,7 @@ import Layout from '../layout/Layout';
 import ListCategories from '../components/categories/ListCategories';
 import { ActionsContext } from '../hooks/useActions';
 import { filterActions } from '../utils/filters';
+import ListSubCategory from '../components/sub_categories/ListSubCategories';
 
 function ProductsCategories() {
   const { roleActions } = useContext(ActionsContext);
@@ -17,7 +18,7 @@ function ProductsCategories() {
   return (
     <Layout title="Categorías de producto">
       {actions_role_view ? (
-        <ListCategories actions={actions_role_view} />
+        <ListSubCategory actions={actions_role_view} />
       ) : (
         <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
           <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent flex justify-center items-center">
