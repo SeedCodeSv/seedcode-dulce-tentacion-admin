@@ -95,6 +95,152 @@ const CushCatsBigZ = (props: CashCutsProps) => {
 
     return totalTicket + totalFactura + totalCreditoFiscal + totalDevolucionNC + totalDevolucionT;
   }, [data]);
+
+  const printBigZ = () => {
+    const iframe = document.createElement('iframe');
+    iframe.style.height = '0';
+    iframe.style.visibility = 'hidden';
+    iframe.style.width = '0';
+    iframe.setAttribute('srcdoc', '<html><body></body></html>');
+    document.body.appendChild(iframe);
+    iframe.contentWindow?.addEventListener('afterprint', () => {
+      iframe.parentNode?.removeChild(iframe);
+    });
+    iframe.addEventListener('load', () => {
+      const body = iframe.contentDocument?.body;
+      if (!body) return;
+      // Añadir estilos para ocultar encabezados y pies de página
+      const style = document.createElement('style');
+      style.innerHTML = `
+          @page {
+              margin: 0;
+          }
+          body {
+              -webkit-print-color-adjust: exact;
+              margin: 0;
+          }
+      `;
+      iframe.contentDocument?.head.appendChild(style);
+      body.style.textAlign = 'center';
+      const otherParent = document.createElement('div');
+      otherParent.style.display = 'flex';
+      otherParent.style.justifyContent = 'center';
+      otherParent.style.alignItems = 'center';
+      otherParent.style.width = '200%';
+      otherParent.style.height = '200%';
+      otherParent.style.padding = '5px';
+
+      body.appendChild(otherParent);
+      body.style.fontFamily = 'Arial, sans-serif';
+      const now = new Date();
+      const date = now.toLocaleDateString();
+      const time = now.toLocaleTimeString();
+      const Am = now.getHours() < 12 ? 'AM' : 'PM';
+      const customContent = `
+      <div>
+        <span>------------------------------------</span><br />
+        <span style="text-align: right:30px;">Gran Z</span><br />
+        <span>------------------------------------</span><br />
+        <span>MADNESS</span<br />
+        <span>${branchName || user?.correlative.branch.name}</span><br />
+        <span>${user?.correlative.branch.address}</span><br />
+        <span>Creado por: ${user?.userName}</span><br />
+        <span>GIRO: VENTA AL POR MENOR DE ROPA</span><br />
+        <span>
+           FECHA: ${date} - ${time} ${Am}
+        </span><br />
+        <br />
+        <span>------------------------------------</span><br />
+        <span>------------------------------------</span<br />
+        <div class="w-full">
+          <span>VENTAS CON TICKET</span><br />
+          <span>N. INICIAL: ${data?.Ticket?.inicio}</span><br />
+          <span>N. FINAL: ${data?.Ticket?.fin}</span><br />
+          <span>GRAVADAS: $0.00</span><br />
+          <span>IVA: ${calculateIVA(data?.Ticket?.total || 0)}</span><br />
+          <span>SUB_TOTAL: ${formatCurrency(Number(data?.Ticket?.total))}</span><br />
+          <span>EXENTAS: $0.00</span><br />
+          <span>NO SUJETAS: $0.00</span><br />
+          <span>TOTAL: ${formatCurrency(Number(data?.Ticket?.total))}</span><br />
+        </div>
+        <br />
+        <span>------------------------------------</span><br />
+        <span>------------------------------------</span<br />
+        <div class="w-full">
+          <span>VENTAS CON FACTURA</span><br />
+          <span>N. INICIAL: ${data?.Factura?.inicio}</span><br />
+          <span>N. FINAL: ${data?.Factura?.fin}</span><br />
+          <span>GRAVADAS: $0.00</span><br />
+          <span>IVA: ${calculateIVA(data?.Factura?.total || 0)}</span><br />
+          <span>SUB_TOTAL: ${formatCurrency(Number(data?.Factura?.total))}</span><br />
+          <span>EXENTAS: $0.00</span><br />
+          <span>NO SUJETAS: $0.00</span><br />
+          <span>TOTAL: ${formatCurrency(Number(data?.Factura?.total))}</span><br />
+        </div>
+        <br />
+        <span>------------------------------------</span><br />
+        <span>------------------------------------</span<br />
+        <div class="w-full">
+          <span>VspanTAS CON CRÉDITO FISCAL</span><br />
+          <span>N. INICIAL: ${data?.CreditoFiscal?.inicio}</span><br />
+          <span>N. FINAL: ${data?.CreditoFiscal?.fin}</span><br />
+          <span>GRAVADAS: $0.00</span><br />
+          <span>IVA: ${calculateIVA(data?.CreditoFiscal?.total || 0)}</span><br />
+          <span>SUB_TOTAL: ${formatCurrency(Number(data?.CreditoFiscal?.total))}</span><br />
+          <span>EXENTAS: $0.00</span><br />
+          <span>NO SUJETAS: $0.00</span><br />
+          <span>TOTAL: ${formatCurrency(Number(data?.CreditoFiscal?.total))}</span><br />
+        </div>
+        <br />
+        <span>------------------------------------</span><br />
+        <span>------------------------------------</span<br />
+        <div class="w-full">
+          <span>DEVOLUCIONES CON NOTA DE CRÉDITO</span><br />
+          <span>N. INICIAL: ${data?.DevolucionNC?.inicio}</span><br />
+          <span>N. FINAL: ${data?.DevolucionNC?.fin}</span><br />
+          <span>GRAVADAS: $0.00</span><br />
+          <span>IVA: ${calculateIVA(data?.DevolucionNC?.total || 0)}</span><br />
+          <span>SUB_TOTAL: ${formatCurrency(Number(data?.DevolucionNC?.total))}</span><br />
+          <span>EXENTAS: $0.00</span><br />
+          <span>NO SUJETAS: $0.00</span><br />
+          <span>TOTAL: ${formatCurrency(Number(data?.DevolucionNC?.total))}</span><br />
+        </div>
+        <br />
+        <span>------------------------------------</span><br />
+        <span>------------------------------------</span<br />
+        <div class="w-full">
+          <span>DEVOLUCIONES CON TICKET</span><br />
+          <span>N. INICIAL: ${data?.DevolucionT?.inicio}</span><br />
+          <span>N. FINAL: ${data?.DevolucionT?.fin}</span><br />
+          <span>GRAVADAS: $0.00</span><br />
+          <span>IVA: ${calculateIVA(data?.DevolucionT?.total || 0)}</span><br />
+          <span>SUB_TOTAL: ${formatCurrency(Number(data?.DevolucionT?.total))}</span><br />
+          <span>EXENTAS: $0.00</span><br />
+          <span>NO SUJETAS: $0.00</span><br />
+          <span>TOTAL: ${formatCurrency(Number(data?.DevolucionT?.total))}</span><br />
+        </div>
+        <br span
+        <br />
+        <div class="w-full">
+          <span>TOTAL GENERAL</span><br />
+          <span>GRAVADAS: ${formatCurrency(totalGeneral - totalGeneral * 0.13)}</span><br />
+          <span>IVA: ${formatCurrency(totalGeneral * 0.13)}</span><br />
+          <span>SUB-TOTAL: ${formatCurrency(totalGeneral)}</span><br />
+          <span>EXENTAS:</span><br />
+          <span>NO SUJETAS:</span><br />
+          <span>RETENCIONES:</span><br />
+          <span>TOTAL: $${formatCurrency(totalGeneral)}</span><br />
+        </div>
+      </div>
+    `;
+      const div = document.createElement('div');
+      div.innerHTML = customContent;
+      body.appendChild(div);
+
+      iframe.contentWindow?.print();
+    });
+  };
+
   return (
     <>
       <HeadlessModal
@@ -127,10 +273,14 @@ const CushCatsBigZ = (props: CashCutsProps) => {
             variant="bordered"
           >
             {branch_list.map((item) => (
-              <AutocompleteItem key={item.id} value={item.id} onClick={() => {
-                setBranch(item.id);
-                setBranchName(item.name);
-              }}>
+              <AutocompleteItem
+                key={item.id}
+                value={item.id}
+                onClick={() => {
+                  setBranch(item.id);
+                  setBranchName(item.name);
+                }}
+              >
                 {item.name}
               </AutocompleteItem>
             ))}
@@ -155,7 +305,8 @@ const CushCatsBigZ = (props: CashCutsProps) => {
             <Button
               className="w-full"
               style={global_styles().secondaryStyle}
-              onClick={() => print()}
+              // onClick={() => print()}
+              onClick={() => printBigZ()}
             >
               Imprimir y cerrar
             </Button>
