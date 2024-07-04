@@ -21,7 +21,6 @@ import {
   Filter,
   RefreshCcw,
 } from 'lucide-react';
-import { useCategoriesStore } from '../../store/categories.store';
 import { ThemeContext } from '../../hooks/useTheme';
 import AddSubCategory from './AddSubCategory';
 import { DataTable } from 'primereact/datatable';
@@ -29,7 +28,6 @@ import { Column } from 'primereact/column';
 import AddButton from '../global/AddButton';
 import MobileView from './MobileView';
 import Pagination from '../global/Pagination';
-import { CategoryProduct } from '../../types/categories.types';
 import { Drawer } from 'vaul';
 import { global_styles } from '../../styles/global.styles';
 import classNames from 'classnames';
@@ -46,12 +44,11 @@ interface PProps {
 function ListSubCategory({ actions }: PProps) {
   const { theme, context } = useContext(ThemeContext);
   const [openVaul, setOpenVaul] = useState(false);
-  // const { paginated_categories, getPaginatedCategories, activateCategory, loading_categories } =
-  //   useCategoriesStore();
-  const [selectedCategory, setSelectedCategory] = useState<ISubCategory | undefined>();
+  const [selectedCategory, setSelectedCategory] = useState<ISubCategory>();
   const { sub_categories_paginated, getSubCategoriesPaginated } =
   useSubCategoryStore();
 
+  const modalAdd = useDisclosure();
   const [search, setSearch] = useState('');
   const [limit, setLimit] = useState(5);
   const [active, setActive] = useState(true);
@@ -64,25 +61,12 @@ function ListSubCategory({ actions }: PProps) {
     getSubCategoriesPaginated(1, limit, name ?? search);
   };
 
-  const modalAdd = useDisclosure();
-
   const style = {
     backgroundColor: theme.colors.dark,
     color: theme.colors.primary,
   };
 
   const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
-
-  const handleEdit = (item: ISubCategory) => {
-    setSelectedCategory({
-      id: item.id,
-      name: item.name,
-      isActive: item.isActive,
-      categoryProduct: item.categoryProduct,
-      categoryProductId: item.categoryProductId,
-    });
-    modalAdd.onOpen();
-  };
 
   // const handleActivate = (id: number) => {
   //   activateCategory(id).then(() => {
@@ -307,13 +291,22 @@ function ListSubCategory({ actions }: PProps) {
               header="Nombre"
             />
             <Column
+              headerClassName="text-sm font-semibold"
+              headerStyle={style}
+              field="categoryProduct.name"
+              header="Categoría de producto"
+            />
+            <Column
               headerStyle={{ ...style, borderTopRightRadius: '10px' }}
               header="Acciones"
               body={(item) => (
                 <div className="flex gap-6">
                   {actions.includes('Editar') && (
                     <Button
-                      onClick={() => handleEdit(item)}
+                      onClick={() => {
+                        setSelectedCategory(item);
+                        modalAdd.onOpen();
+                      }}
                       isIconOnly
                       style={{
                         backgroundColor: theme.colors.secondary,
@@ -325,7 +318,7 @@ function ListSubCategory({ actions }: PProps) {
                   {actions.includes('Eliminar') && (
                     <>
                       {item.isActive ? (
-                        <DeletePopUp category={item} />
+                        <DeletePopUp subCategory={item} />
                       ) : (
                         <Button
                           // onClick={() => handleActivate(item.id)}
@@ -374,7 +367,7 @@ function ListSubCategory({ actions }: PProps) {
       </div>
       <HeadlessModal
         size="w-[350px] md:w-[500px]"
-        title={selectedCategory ? 'Editar categoría' : 'Nueva categoría'}
+        title={selectedCategory ? 'Editar sub categoría' : 'Agregar'}
         isOpen={modalAdd.isOpen}
         onClose={modalAdd.onClose}
       >
@@ -386,17 +379,17 @@ function ListSubCategory({ actions }: PProps) {
 
 export default ListSubCategory;
 interface Props {
-  category: CategoryProduct;
+  subCategory: ISubCategory;
 }
 
-const DeletePopUp = ({ category }: Props) => {
+const DeletePopUp = ({ subCategory }: Props) => {
   const { theme } = useContext(ThemeContext);
 
-  const { deleteCategory } = useCategoriesStore();
+  const { deleteSubCategory } = useSubCategoryStore();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleDelete = async () => {
-    await deleteCategory(category.id);
+    await deleteSubCategory(subCategory.id);
     onClose();
   };
 
@@ -421,7 +414,7 @@ const DeletePopUp = ({ category }: Props) => {
         </PopoverTrigger>
         <PopoverContent>
           <div className="w-full p-5">
-            <p className="font-semibold text-gray-600 dark:text-white">Eliminar {category.name}</p>
+            <p className="font-semibold text-gray-600 dark:text-white">Eliminar {subCategory.name}</p>
             <p className="mt-3 text-center text-gray-600 dark:text-white w-72">
               ¿Estas seguro de eliminar este registro?
             </p>

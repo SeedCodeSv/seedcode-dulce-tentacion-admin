@@ -1,14 +1,16 @@
-import { Input, Button } from '@nextui-org/react';
+import { Input, Button, Autocomplete, AutocompleteItem } from '@nextui-org/react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { ThemeContext } from '../../hooks/useTheme';
-import { useContext } from 'react';
+import { useContext, useEffect, useMemo } from 'react';
 import { ISubCategory, ISubCategoryPayload } from '../../types/sub_categories.types';
 import { useSubCategoryStore } from '../../store/sub-category';
+import { useCategoriesStore } from '../../store/categories.store';
+import { CategoryProduct } from '../../types/branch_products.types';
 
 interface Props {
   closeModal: () => void;
-  subCategory?: ISubCategory;
+  subCategory: ISubCategory | undefined;
 }
 
 const AddSubCategory = (props: Props) => {
@@ -16,14 +18,20 @@ const AddSubCategory = (props: Props) => {
 
   const validationSchema = yup.object().shape({
     name: yup.string().required('**Debes especificar el nombre de la categoría**'),
+    categoryProductId: yup.number().required('**Debes especificar el nombre de la categoría**'),
   });
 
   const initialValues = {
     name: props.subCategory?.name ?? '',
-    categoryProductId: props.subCategory?.categoryProductId ?? 0,
+    categoryProductId: props.subCategory?.categoryPorudctId ?? 0,
   };
 
   const { postSubCategory, patchSubCategory } = useSubCategoryStore();
+  const { list_categories, getListCategories } = useCategoriesStore();
+
+  useEffect(() => {
+    getListCategories();
+  }, []);
 
   const handleSave = (payload: ISubCategoryPayload) => {
     if (props.subCategory) {
@@ -35,8 +43,17 @@ const AddSubCategory = (props: Props) => {
     }
   };
 
+  const selectedKeyCategory = useMemo(() => {
+    if (props.subCategory) {
+      const classProduct = list_categories.find(
+        (classProduct) => classProduct.id === props.subCategory?.categoryPorudctId
+      );
+      return JSON.stringify(classProduct);
+    }
+  }, [props, props.subCategory, list_categories]);
+
   return (
-    <div className="p-5 w-full">
+    <div className="w-full">
       <Formik
         validationSchema={validationSchema}
         initialValues={initialValues}
@@ -59,6 +76,45 @@ const AddSubCategory = (props: Props) => {
               {errors.name && touched.name && (
                 <>
                   <span className="text-sm font-semibold text-red-600">{errors.name}</span>
+                </>
+              )}
+
+              <Autocomplete
+                onSelectionChange={(key) => {
+                  if (key) {
+                    const category = JSON.parse(key as string) as CategoryProduct;
+                    handleChange('categoryProductId')(category.id.toString());
+                  }
+                }}
+                onBlur={handleBlur('categoryProductId')}
+                label="Categoria de producto"
+                labelPlacement="outside"
+                variant="bordered"
+                className="dark:text-white mt-4"
+                placeholder={
+                  props.subCategory?.categoryProduct?.name
+                    ? props.subCategory?.categoryProduct.name
+                    : 'Selecciona una categoria'
+                }
+                defaultSelectedKey={selectedKeyCategory}
+                value={selectedKeyCategory}
+                name="categoryProductId"
+              >
+                {list_categories.map((bra) => (
+                  <AutocompleteItem
+                    className="dark:text-white"
+                    value={bra.name}
+                    key={JSON.stringify(bra)}
+                  >
+                    {bra.name}
+                  </AutocompleteItem>
+                ))}
+              </Autocomplete>
+              {errors.categoryProductId && touched.categoryProductId && (
+                <>
+                  <span className="text-sm font-semibold text-red-600">
+                    {errors.categoryProductId}
+                  </span>
                 </>
               )}
             </div>

@@ -58,13 +58,15 @@ export const useSubCategoryStore = create<SubCategoryStore>((set, get) => ({
       });
   },
   patchSubCategory(payload, id) {
-    update_sub_category(payload, id)
-      .then(() => {
+    return update_sub_category(payload, id)
+      .then(({ data }) => {
         get().getSubCategoriesPaginated(1, 5, '');
         toast.success(messages.success);
+        return data.ok;
       })
       .catch(() => {
-        toast.error(messages.success);
+        toast.error(messages.error);
+        return false;
       });
   },
   deleteSubCategory: async (id) => {

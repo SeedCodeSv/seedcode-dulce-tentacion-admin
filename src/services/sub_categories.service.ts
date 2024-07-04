@@ -35,9 +35,9 @@ export const get_sub_categories_paginated = async (page: number, limit: number, 
   );
 };
 
-export const update_sub_category = async (payload: ISubCategoryPayload, id: number) => {
-  const token = get_token();
-  return axios.patch<{ ok: boolean }>(`${API_URL}/sub-categories/${id}`, payload, {
+export const update_sub_category = (payload: ISubCategoryPayload, id: number) => {
+  const token = get_token() ?? '';
+  return axios.patch<{ ok: boolean }>(API_URL + '/sub-categories/' + id, payload, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
