@@ -1,20 +1,19 @@
 import { Button } from '@nextui-org/react';
 import { DataView } from 'primereact/dataview';
 import { classNames } from 'primereact/utils';
-import { EditIcon, RefreshCcw, ScrollIcon } from 'lucide-react';
-import { useCategoriesStore } from '../../store/categories.store';
+import { EditIcon, RefreshCcw, ScrollIcon, PackageSearch  } from 'lucide-react';
 import { global_styles } from '../../styles/global.styles';
 import { GridProps, MobileViewProps } from './types/mobile_view.types';
+import { useSubCategoryStore } from '../../store/sub-category';
 
 function MobileView(props: MobileViewProps) {
   const { layout, deletePopover, handleEdit, actions, handleActive } = props;
-  const { paginated_categories, loading_categories } = useCategoriesStore();
+  const { sub_categories_paginated } = useSubCategoryStore();
   return (
     <div className="w-full pb-10">
       <DataView
-        value={paginated_categories.categoryProducts}
+        value={sub_categories_paginated.SubCategories}
         gutter
-        loading={loading_categories}
         layout={layout}
         pt={{
           grid: () => ({
@@ -25,7 +24,7 @@ function MobileView(props: MobileViewProps) {
         color="surface"
         itemTemplate={(cat) => (
           <GridItem
-            category={cat}
+            subcategory={cat}
             layout={layout}
             deletePopover={deletePopover}
             handleEdit={handleEdit}
@@ -42,7 +41,7 @@ function MobileView(props: MobileViewProps) {
 export default MobileView;
 
 const GridItem = (props: GridProps) => {
-  const { category, layout, deletePopover, handleEdit, actions, handleActive } = props;
+  const { subcategory, layout, deletePopover, handleEdit, actions, handleActive } = props;
   return (
     <>
       {layout === 'grid' ? (
@@ -50,16 +49,20 @@ const GridItem = (props: GridProps) => {
           className={classNames(
             'w-full shadow-sm hover:shadow-lg p-8 dark:border dark:border-gray-600 rounded-2xl'
           )}
-          key={category.id}
+          key={subcategory.id}
         >
           <div className="flex w-full gap-2">
             <ScrollIcon className="text-[#274c77] dark:text-gray-400" size={35} />
-            {category.name}
+            {subcategory.name}
+          </div>
+          <div className="flex w-full gap-2">
+            <PackageSearch  className="text-[#274c77] dark:text-gray-400" size={35} />
+            {subcategory.categoryProduct.name}
           </div>
           <div className="flex justify-between mt-5 w-ful">
             {actions.includes('Editar') && (
               <Button
-                onClick={() => handleEdit(category)}
+                onClick={() => handleEdit(subcategory)}
                 isIconOnly
                 style={global_styles().secondaryStyle}
               >
@@ -68,11 +71,11 @@ const GridItem = (props: GridProps) => {
             )}
             {actions.includes('Eliminar') && (
               <>
-                {category.isActive ? (
-                  deletePopover({ category })
+                {subcategory.isActive ? (
+                  deletePopover({ subcategory })
                 ) : (
                   <Button
-                    onClick={() => handleActive(category.id)}
+                    onClick={() => handleActive(subcategory.id)}
                     isIconOnly
                     style={global_styles().thirdStyle}
                   >
@@ -86,7 +89,7 @@ const GridItem = (props: GridProps) => {
       ) : (
         <ListItem
           handleActive={handleActive}
-          category={category}
+          subcategory={subcategory}
           layout="list"
           deletePopover={deletePopover}
           handleEdit={handleEdit}
@@ -98,20 +101,24 @@ const GridItem = (props: GridProps) => {
 };
 
 const ListItem = (props: GridProps) => {
-  const { category, deletePopover, handleEdit, actions, handleActive } = props;
+  const { subcategory, deletePopover, handleEdit, actions, handleActive } = props;
   return (
     <>
       <div className="flex w-full col-span-1 p-5 border-b shadow md:col-span-2 lg:col-span-3 xl:col-span-4">
         <div className="w-full">
           <div className="flex items-center w-full gap-2">
             <ScrollIcon className="text-[#274c77] dark:text-gray-400" size={35} />
-            {category.name}
+            {subcategory?.name}
+          </div>
+          <div className="flex items-center w-full gap-2">
+            <PackageSearch  className="text-[#274c77] dark:text-gray-400" size={35} />
+            {subcategory?.categoryProduct.name}
           </div>
         </div>
         <div className="flex flex-col items-end justify-between w-full gap-5">
           {actions.includes('Editar') && (
             <Button
-              onClick={() => handleEdit(category)}
+              onClick={() => handleEdit(subcategory)}
               isIconOnly
               style={global_styles().secondaryStyle}
             >
@@ -120,11 +127,11 @@ const ListItem = (props: GridProps) => {
           )}
           {actions.includes('Eliminar') && (
             <>
-              {category.isActive ? (
-                deletePopover({ category })
+              {subcategory.isActive ? (
+                deletePopover({ subcategory })
               ) : (
                 <Button
-                  onClick={() => handleActive(category.id)}
+                  onClick={() => handleActive(subcategory.id)}
                   isIconOnly
                   style={global_styles().thirdStyle}
                 >

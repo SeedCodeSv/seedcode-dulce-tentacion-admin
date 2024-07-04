@@ -1,6 +1,5 @@
 import { useContext, useMemo } from 'react';
 import Layout from '../layout/Layout';
-import ListCategories from '../components/categories/ListCategories';
 import { ActionsContext } from '../hooks/useActions';
 import { filterActions } from '../utils/filters';
 import ListSubCategory from '../components/sub_categories/ListSubCategories';
@@ -16,7 +15,7 @@ function ProductsCategories() {
     return undefined;
   }, [roleActions]);
   return (
-    <Layout title="Categorías de producto">
+    <Layout title="Sub Categorías">
       {actions_role_view ? (
         <ListSubCategory actions={actions_role_view} />
       ) : (

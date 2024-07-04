@@ -45,7 +45,7 @@ function ListSubCategory({ actions }: PProps) {
   const { theme, context } = useContext(ThemeContext);
   const [openVaul, setOpenVaul] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<ISubCategory>();
-  const { sub_categories_paginated, getSubCategoriesPaginated } =
+  const { sub_categories_paginated, getSubCategoriesPaginated, activateSubCategory } =
   useSubCategoryStore();
 
   const modalAdd = useDisclosure();
@@ -68,11 +68,11 @@ function ListSubCategory({ actions }: PProps) {
 
   const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
 
-  // const handleActivate = (id: number) => {
-  //   activateCategory(id).then(() => {
-  //     getPaginatedCategories(1, limit, search, active ? 1 : 0);
-  //   });
-  // };
+  const handleActivate = (id: number) => {
+    activateSubCategory(id).then(() => {
+      getSubCategoriesPaginated(1, limit, search);
+    });
+  };
 
   return (
     <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
@@ -237,6 +237,7 @@ function ListSubCategory({ actions }: PProps) {
           <Select
             className="w-44 dark:text-white"
             variant="bordered"
+            defaultSelectedKeys={'5'}
             label="Mostrar"
             labelPlacement="outside"
             classNames={{
@@ -253,7 +254,7 @@ function ListSubCategory({ actions }: PProps) {
               </SelectItem>
             ))}
           </Select>
-          <div className="flex items-center">
+          <div className="items-center hidden">
             <Switch onValueChange={(active) => setActive(active)} isSelected={active}>
               <span className="text-sm sm:text-base whitespace-nowrap">
                 Mostrar {active ? 'inactivos' : 'activos'}
@@ -262,14 +263,16 @@ function ListSubCategory({ actions }: PProps) {
           </div>
         </div>
         {(view === 'grid' || view === 'list') && (
-          <span>movil view</span>
-          // <MobileView
-          //   handleActive={handleActivate}
-          //   deletePopover={DeletePopUp}
-          //   layout={view as 'grid' | 'list'}
-          //   handleEdit={handleEdit}
-          //   actions={actions}
-          // />
+          <MobileView
+            handleActive={handleActivate}
+            deletePopover={DeletePopUp}
+            layout={view as 'grid' | 'list'}
+            handleEdit={(item) => {
+              setSelectedCategory(item);
+              modalAdd.onOpen();
+            }}
+            actions={actions}
+          />
         )}
         {view === 'table' && (
           <DataTable
@@ -304,7 +307,7 @@ function ListSubCategory({ actions }: PProps) {
                   {actions.includes('Editar') && (
                     <Button
                       onClick={() => {
-                        setSelectedCategory(item);
+                        setSelectedCategory(item);4
                         modalAdd.onOpen();
                       }}
                       isIconOnly
@@ -318,7 +321,7 @@ function ListSubCategory({ actions }: PProps) {
                   {actions.includes('Eliminar') && (
                     <>
                       {item.isActive ? (
-                        <DeletePopUp subCategory={item} />
+                        <DeletePopUp subcategory={item} />
                       ) : (
                         <Button
                           // onClick={() => handleActivate(item.id)}
@@ -379,17 +382,17 @@ function ListSubCategory({ actions }: PProps) {
 
 export default ListSubCategory;
 interface Props {
-  subCategory: ISubCategory;
+  subcategory: ISubCategory;
 }
 
-const DeletePopUp = ({ subCategory }: Props) => {
+const DeletePopUp = ({ subcategory }: Props) => {
   const { theme } = useContext(ThemeContext);
 
   const { deleteSubCategory } = useSubCategoryStore();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleDelete = async () => {
-    await deleteSubCategory(subCategory.id);
+    await deleteSubCategory(subcategory.id);
     onClose();
   };
 
@@ -414,7 +417,7 @@ const DeletePopUp = ({ subCategory }: Props) => {
         </PopoverTrigger>
         <PopoverContent>
           <div className="w-full p-5">
-            <p className="font-semibold text-gray-600 dark:text-white">Eliminar {subCategory.name}</p>
+            <p className="font-semibold text-gray-600 dark:text-white">Eliminar {subcategory.name}</p>
             <p className="mt-3 text-center text-gray-600 dark:text-white w-72">
               ¿Estas seguro de eliminar este registro?
             </p>
