@@ -1,16 +1,22 @@
-import {  useEffect, useMemo, useState } from 'react';
-import { Autocomplete, AutocompleteItem, Button } from '@nextui-org/react';
-import { toast } from 'sonner';
-import { CloseZ, ZCashCutsResponse } from '../types/cashCuts.types';
-import { useAuthStore } from '../store/auth.store';
-import { fechaActualString } from '../utils/dates';
-import { close_x, get_cashCuts_x } from '../services/facturation/cashCuts.service';
-import HeadlessModal from '../components/global/HeadlessModal';
-import { global_styles } from '../styles/global.styles';
-import { useBranchesStore } from '../store/branches.store';
-import { get_correlatives } from '../services/correlatives.service';
-import { Correlatives } from '../types/correlatives.types';
-import { formatCurrency } from '../utils/dte';
+import { useEffect, useMemo, useState } from "react";
+import { Autocomplete, AutocompleteItem, Button } from "@nextui-org/react";
+import { toast } from "sonner";
+import { CloseZ, ZCashCutsResponse } from "../types/cashCuts.types";
+import { useAuthStore } from "../store/auth.store";
+import { fechaActualString } from "../utils/dates";
+import {
+  close_x,
+  get_cashCuts_x,
+} from "../services/facturation/cashCuts.service";
+import HeadlessModal from "../components/global/HeadlessModal";
+import { global_styles } from "../styles/global.styles";
+import { useBranchesStore } from "../store/branches.store";
+import { get_correlatives } from "../services/correlatives.service";
+import { Correlatives } from "../types/correlatives.types";
+import { formatCurrency } from "../utils/dte";
+import CsvDownloader from "react-csv-downloader";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 interface CashCutsProps {
   isOpen: boolean;
@@ -23,9 +29,9 @@ const CashCutsX = (props: CashCutsProps) => {
   const [dateEnd] = useState(fechaActualString);
   const [branchId, setBranchId] = useState(0);
   const [codeSale, setCodeSale] = useState<Correlatives[]>([]);
-  const [codeSelected, setCodeSelected] = useState('');
-  const [branchName, setBranchName] = useState('');
-  const [branchAdress, setBranchAdress] = useState('');
+  const [codeSelected, setCodeSelected] = useState("");
+  const [branchName, setBranchName] = useState("");
+  const [branchAdress, setBranchAdress] = useState("");
 
   useEffect(() => {
     const getBranchId = () => {};
@@ -35,7 +41,7 @@ const CashCutsX = (props: CashCutsProps) => {
         const response = await get_cashCuts_x(branchId, codeSelected);
         setData(response.data.data);
       } catch (error) {
-        console.error('Error fetching cash cuts:', error);
+        console.error("Error fetching cash cuts:", error);
       }
       if (branchId > 0) {
         const data = await get_correlatives(branchId);
@@ -47,8 +53,6 @@ const CashCutsX = (props: CashCutsProps) => {
 
   const calculateIVA = (total: number) => total * 0.13;
 
-
-    
   const totalGeneral = useMemo(() => {
     const totalTicket = Number(data?.Ticket?.total ?? 0);
     const totalFactura = Number(data?.Factura?.total ?? 0);
@@ -79,7 +83,7 @@ const CashCutsX = (props: CashCutsProps) => {
       inicioF: data?.Factura?.inicio || 0,
       finF: data?.Factura?.fin || 0,
       totalF: data?.Factura?.total || 0,
-      typeCut: 'X',
+      typeCut: "X",
       inicioCF: data?.CreditoFiscal?.inicio || 0,
       finCF: data?.CreditoFiscal?.fin || 0,
       totalCF: data?.CreditoFiscal?.total || 0,
@@ -101,9 +105,9 @@ const CashCutsX = (props: CashCutsProps) => {
     try {
       await close_x(payload);
       props.onClose();
-      toast.success('Corte de Caja Generado');
+      toast.success("Corte de Caja Generado");
     } catch (error) {
-      toast.error('Error al generar el corte de caja');
+      toast.error("Error al generar el corte de caja");
     }
   };
   const { getBranchesList, branch_list } = useBranchesStore();
@@ -112,20 +116,20 @@ const CashCutsX = (props: CashCutsProps) => {
   }, []);
 
   const printCutX = () => {
-    const iframe = document.createElement('iframe');
-    iframe.style.height = '0';
-    iframe.style.visibility = 'hidden';
-    iframe.style.width = '0';
-    iframe.setAttribute('srcdoc', '<html><body></body></html>');
+    const iframe = document.createElement("iframe");
+    iframe.style.height = "0";
+    iframe.style.visibility = "hidden";
+    iframe.style.width = "0";
+    iframe.setAttribute("srcdoc", "<html><body></body></html>");
     document.body.appendChild(iframe);
-    iframe.contentWindow?.addEventListener('afterprint', () => {
+    iframe.contentWindow?.addEventListener("afterprint", () => {
       iframe.parentNode?.removeChild(iframe);
     });
-    iframe.addEventListener('load', () => {
+    iframe.addEventListener("load", () => {
       const body = iframe.contentDocument?.body;
       if (!body) return;
       // Añadir estilos para ocultar encabezados y pies de página
-      const style = document.createElement('style');
+      const style = document.createElement("style");
       style.innerHTML = `
           @page {
               margin: 0;
@@ -136,30 +140,32 @@ const CashCutsX = (props: CashCutsProps) => {
           }
       `;
       iframe.contentDocument?.head.appendChild(style);
-      body.style.textAlign = 'center';
-      body.style.fontFamily = 'Arial, sans-serif';
-      body.style.textAlign = 'center';
-      const otherParent = document.createElement('div');
-      otherParent.style.display = 'flex';
-      otherParent.style.justifyContent = 'center';
-      otherParent.style.alignItems = 'center';
-      otherParent.style.width = '200%';
-      otherParent.style.height = '200%';
-      otherParent.style.padding = '5px';
-  
+      body.style.textAlign = "center";
+      body.style.fontFamily = "Arial, sans-serif";
+      body.style.textAlign = "center";
+      const otherParent = document.createElement("div");
+      otherParent.style.display = "flex";
+      otherParent.style.justifyContent = "center";
+      otherParent.style.alignItems = "center";
+      otherParent.style.width = "200%";
+      otherParent.style.height = "200%";
+      otherParent.style.padding = "5px";
+
       body.appendChild(otherParent);
-      body.style.fontFamily = 'Arial, sans-serif';
+      body.style.fontFamily = "Arial, sans-serif";
       const now = new Date();
       const date = now.toLocaleDateString();
       const time = now.toLocaleTimeString();
-      const Am = now.getHours() < 12 ? 'AM' : 'PM';
+      const Am = now.getHours() < 12 ? "AM" : "PM";
       const customContent = `
         <div>
          <span>------------------------------------</span><br />
          <span style="text-align: right:30px;">X</span><br />
          <span>------------------------------------</span><br />
           <span>MADNESS</span><br />
-          <span>${branchName || user?.correlative.branch.name}</span><br /><br />
+          <span>${
+            branchName || user?.correlative.branch.name
+          }</span><br /><br />
           <span>${branchAdress || user?.correlative.branch.address}</span><br />
           <span>Creado por: ${user?.userName}</span><br />
           <span>GIRO: VENTA AL POR MENOR DE ROPA</span><br />
@@ -175,11 +181,16 @@ const CashCutsX = (props: CashCutsProps) => {
             <span>N. FINAL: ${data?.Ticket?.fin}</span><br />
             <span>
               GRAVADAS: ${formatCurrency(
-                Number(data?.Ticket.total ?? 0) - calculateIVA(data?.Ticket?.total || 0)
+                Number(data?.Ticket.total ?? 0) -
+                  calculateIVA(data?.Ticket?.total || 0)
               )}
             </span><br />
-            <span>IVA: ${formatCurrency(calculateIVA(data?.Ticket?.total || 0))}</span><br />
-            <span>SUB_TOTAL: ${formatCurrency(Number(data?.Ticket?.total))}</span><br />
+            <span>IVA: ${formatCurrency(
+              calculateIVA(data?.Ticket?.total || 0)
+            )}</span><br />
+            <span>SUB_TOTAL: ${formatCurrency(
+              Number(data?.Ticket?.total)
+            )}</span><br />
             <span>EXENTAS: $0.00</span><br />
             <span>NO SUJETAS: $0.00</span><br />
             <span>TOTAL: ${formatCurrency(Number(data?.Ticket?.total))}</span>
@@ -193,14 +204,21 @@ const CashCutsX = (props: CashCutsProps) => {
             <span>N. FINAL: ${data?.Factura?.fin}</span><br />
             <span>
               GRAVADAS: ${formatCurrency(
-                Number(data?.Factura.total ?? 0) - calculateIVA(data?.Factura?.total || 0)
+                Number(data?.Factura.total ?? 0) -
+                  calculateIVA(data?.Factura?.total || 0)
               )}
             </span><br />
-            <span>IVA: ${formatCurrency(calculateIVA(data?.Factura?.total || 0))}</span><br />
-            <span>SUB_TOTAL: ${formatCurrency(Number(data?.Factura?.total))}</span><br />
+            <span>IVA: ${formatCurrency(
+              calculateIVA(data?.Factura?.total || 0)
+            )}</span><br />
+            <span>SUB_TOTAL: ${formatCurrency(
+              Number(data?.Factura?.total)
+            )}</span><br />
             <span>EXENTAS: $0.00</span><br />
             <span>NO SUJETAS: $0.00</span><br />
-            <span>TOTAL: ${formatCurrency(Number(data?.Factura?.total))}</span><br />
+            <span>TOTAL: ${formatCurrency(
+              Number(data?.Factura?.total)
+            )}</span><br />
           </div>
           <br />
           <span>------------------------------------</span><br />
@@ -211,14 +229,21 @@ const CashCutsX = (props: CashCutsProps) => {
             <span>N. FINAL: ${data?.CreditoFiscal?.fin}</span><br />
             <span>
               GRAVADAS: ${formatCurrency(
-                Number(data?.CreditoFiscal.total ?? 0) - calculateIVA(data?.CreditoFiscal?.total || 0)
+                Number(data?.CreditoFiscal.total ?? 0) -
+                  calculateIVA(data?.CreditoFiscal?.total || 0)
               )}
             </span><br />
-            <span>IVA: ${formatCurrency(calculateIVA(data?.CreditoFiscal?.total || 0))}</span><br />
-            <span>SUB_TOTAL: ${formatCurrency(Number(data?.CreditoFiscal?.total))}</span><br />
+            <span>IVA: ${formatCurrency(
+              calculateIVA(data?.CreditoFiscal?.total || 0)
+            )}</span><br />
+            <span>SUB_TOTAL: ${formatCurrency(
+              Number(data?.CreditoFiscal?.total)
+            )}</span><br />
             <span>EXENTAS: $0.00</span><br />
             <span>NO SUJETAS: $0.00</span><br />
-            <span>TOTAL: ${formatCurrency(Number(data?.CreditoFiscal?.total))}</span><br />
+            <span>TOTAL: ${formatCurrency(
+              Number(data?.CreditoFiscal?.total)
+            )}</span><br />
           </div>
           <br />
           <span>------------------------------------</span><br />
@@ -229,14 +254,21 @@ const CashCutsX = (props: CashCutsProps) => {
             <span>N. FINAL: ${data?.DevolucionNC?.fin}</span><br />
             <span>
               GRAVADAS: ${formatCurrency(
-                Number(data?.DevolucionNC.total ?? 0) - calculateIVA(data?.DevolucionNC?.total || 0)
+                Number(data?.DevolucionNC.total ?? 0) -
+                  calculateIVA(data?.DevolucionNC?.total || 0)
               )}
             </span><br />
-            <span>IVA: ${formatCurrency(calculateIVA(data?.DevolucionNC?.total || 0))}</span><br />
-            <span>SUB_TOTAL: ${formatCurrency(Number(data?.DevolucionNC?.total))}</span><br />
+            <span>IVA: ${formatCurrency(
+              calculateIVA(data?.DevolucionNC?.total || 0)
+            )}</span><br />
+            <span>SUB_TOTAL: ${formatCurrency(
+              Number(data?.DevolucionNC?.total)
+            )}</span><br />
             <span>EXENTAS: $0.00</span><br />
             <span>NO SUJETAS: $0.00</span><br />
-            <span>TOTAL: ${formatCurrency(Number(data?.DevolucionNC?.total))}</span><br />
+            <span>TOTAL: ${formatCurrency(
+              Number(data?.DevolucionNC?.total)
+            )}</span><br />
           </div>
           <br />
           <span>------------------------------------</span><br />
@@ -247,20 +279,29 @@ const CashCutsX = (props: CashCutsProps) => {
             <span>N. FINAL: ${data?.DevolucionT?.fin}</span><br />
             <span>
               GRAVADAS: ${formatCurrency(
-                Number(data?.DevolucionT.total ?? 0) - calculateIVA(data?.DevolucionT?.total || 0)
+                Number(data?.DevolucionT.total ?? 0) -
+                  calculateIVA(data?.DevolucionT?.total || 0)
               )}
             </span><br />
-            <span>IVA: ${formatCurrency(calculateIVA(data?.DevolucionT?.total || 0))}</span><br />
-            <span>SUB_TOTAL: ${formatCurrency(Number(data?.DevolucionT?.total))}</span><br />
+            <span>IVA: ${formatCurrency(
+              calculateIVA(data?.DevolucionT?.total || 0)
+            )}</span><br />
+            <span>SUB_TOTAL: ${formatCurrency(
+              Number(data?.DevolucionT?.total)
+            )}</span><br />
             <span>EXENTAS: $0.00</span><br />
             <span>NO SUJETAS: $0.00</span><br />
-            <span>TOTAL: ${formatCurrency(Number(data?.DevolucionT?.total))}</span><br />
+            <span>TOTAL: ${formatCurrency(
+              Number(data?.DevolucionT?.total)
+            )}</span><br />
           </div>
           <br />
           <br />
           <div>
             <span>TOTAL GENERAL</span><br />
-            <span>GRAVADAS: ${formatCurrency(totalGeneral - totalGeneral * 0.13)}</span><br />
+            <span>GRAVADAS: ${formatCurrency(
+              totalGeneral - totalGeneral * 0.13
+            )}</span><br />
             <span>IVA: ${formatCurrency(totalGeneral * 0.13)}</span><br />
             <span>SUB-TOTAL: ${formatCurrency(totalGeneral)}</span><br />
             <span>EXENTAS:</span><br />
@@ -270,14 +311,65 @@ const CashCutsX = (props: CashCutsProps) => {
           </div>
         </div>
       `;
-      const div = document.createElement('div');
+      const div = document.createElement("div");
       div.innerHTML = customContent;
       body.appendChild(div);
-  
+
       iframe.contentWindow?.print();
     });
   };
-  
+
+  const exportDataToExcel = () => {
+    const data_convert = [
+      {
+        Tipo: "Factura",
+        Inicio: data?.Ticket.inicio,
+        Final: data?.Ticket.fin,
+        Corte: data?.Ticket.total,
+      },
+      {
+        Tipo: "Credito Fiscal",
+        Inicio: data?.CreditoFiscal.inicio,
+        Final: data?.CreditoFiscal.fin,
+        Corte: data?.CreditoFiscal.total,
+      },
+      {
+        Tipo: "Devolucion NC",
+        Inicio: data?.DevolucionNC.inicio,
+        Final: data?.DevolucionNC.fin,
+        Corte: data?.DevolucionNC.total,
+      },
+      {
+        Tipo: "Devolucion T",
+        Inicio: data?.DevolucionT.inicio,
+        Final: data?.DevolucionT.fin,
+        Corte: data?.DevolucionT.total,
+      },
+      {
+        Tipo: "Total General",
+        Corte: data?.totalGeneral,
+      },
+    ];
+
+    const worksheet = XLSX.utils.json_to_sheet(data_convert);
+    const currencyFormat = '"$"#,##0.00';
+
+    Object.keys(worksheet).forEach((cell) => {
+      if (cell.startsWith("D") && !isNaN(worksheet[cell].v)) {
+        worksheet[cell].z = currencyFormat;
+      }
+    });
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+    const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+    saveAs(blob, `Corte_x_${branchName}_${Date.now()}.xlsx`);
+  };
 
   return (
     <>
@@ -288,9 +380,9 @@ const CashCutsX = (props: CashCutsProps) => {
         isFull={true}
         onClose={() => props.onClose()}
       >
-        <div className="grid grid-cols-3  gap-4">
-        <Autocomplete
-            className="w-full  order-3 mt-4"
+        <div className="grid grid-cols-3 gap-4">
+          <Autocomplete
+            className="order-3 w-full mt-4"
             labelPlacement="outside"
             label="Sucursal"
             placeholder="Selecciona la sucursal"
@@ -311,14 +403,17 @@ const CashCutsX = (props: CashCutsProps) => {
             ))}
           </Autocomplete>
           <Autocomplete
-            className="w-full  order-3 mt-4"
+            className="order-3 w-full mt-4"
             labelPlacement="outside"
             placeholder="Selecciona la sucursal"
             variant="bordered"
             label="Punto de Venta"
           >
             {codeSale.map((item) => (
-              <AutocompleteItem onClick={() => setCodeSelected(item.code)} key={item.id}>
+              <AutocompleteItem
+                onClick={() => setCodeSelected(item.code)}
+                key={item.id}
+              >
                 {item.code}
               </AutocompleteItem>
             ))}
@@ -328,6 +423,7 @@ const CashCutsX = (props: CashCutsProps) => {
 
         <div className="flex flex-col items-center justify-center w-full h-full p-5 mt-4 bg-gray-600">
           <div className="grid grid-cols-2 gap-4 w-[500px] mt-4">
+            <button onClick={exportDataToExcel}>Imprimir</button>
             <Button
               className="w-full"
               style={global_styles().secondaryStyle}
@@ -368,7 +464,7 @@ const CashCutsX = (props: CashCutsProps) => {
                 GRAVADAS:{" "}
                 {formatCurrency(
                   Number(data?.Ticket.total ?? 0) -
-                  calculateIVA(data?.Ticket?.total || 0)
+                    calculateIVA(data?.Ticket?.total || 0)
                 )}
               </h1>
               <h1>
@@ -394,7 +490,7 @@ const CashCutsX = (props: CashCutsProps) => {
                 GRAVADAS:{" "}
                 {formatCurrency(
                   Number(data?.Factura.total ?? 0) -
-                  calculateIVA(data?.Factura?.total || 0)
+                    calculateIVA(data?.Factura?.total || 0)
                 )}
               </h1>
               <h1>
@@ -420,7 +516,7 @@ const CashCutsX = (props: CashCutsProps) => {
                 GRAVADAS:{" "}
                 {formatCurrency(
                   Number(data?.CreditoFiscal.total ?? 0) -
-                  calculateIVA(data?.CreditoFiscal?.total || 0)
+                    calculateIVA(data?.CreditoFiscal?.total || 0)
                 )}
               </h1>
               <h1>
@@ -451,7 +547,7 @@ const CashCutsX = (props: CashCutsProps) => {
                 GRAVADAS:{" "}
                 {formatCurrency(
                   Number(data?.DevolucionNC.total ?? 0) -
-                  calculateIVA(data?.DevolucionNC?.total || 0)
+                    calculateIVA(data?.DevolucionNC?.total || 0)
                 )}
               </h1>
               <h1>
@@ -482,7 +578,7 @@ const CashCutsX = (props: CashCutsProps) => {
                 GRAVADAS:{" "}
                 {formatCurrency(
                   Number(data?.DevolucionT.total ?? 0) -
-                  calculateIVA(data?.DevolucionT?.total || 0)
+                    calculateIVA(data?.DevolucionT?.total || 0)
                 )}
               </h1>
               <h1>
