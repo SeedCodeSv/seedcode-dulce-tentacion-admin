@@ -12,22 +12,20 @@ import { useStudyLevelStore } from '../../store/study_level.store';
 import Layout from '../../layout/Layout';
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router';
-import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
-
+import { useEmployeeStore } from '../../store/employee.store';
+import { EmployeePayload } from '../../types/employees.types';
+import { toast } from 'sonner';
 function AddEmployee() {
   const { theme } = useContext(ThemeContext);
   const { GetEmployeeStatus, employee_status } = useEmployeeStatusStore();
   const { GetContractType, contract_type } = useContractTypeStore();
   const { GetStudyLevel, study_level } = useStudyLevelStore();
   const { getBranchesList, branch_list } = useBranchesStore();
-  // const { postEmployee } = useEmployeeStore();
   const { getChargesList, charges } = useChargesStore();
-  const { getCat012Departamento, cat_012_departamento, cat_013_municipios } =
+  const { getCat012Departamento, getCat013Municipios, cat_012_departamento, cat_013_municipios } =
     useBillingStore();
-  const service = new SeedcodeCatalogosMhService();
-  const data = service.get013Municipio('');
-  data?.map((r) => r.departamento);
-  const [nameDepartamento, setDepartamento] = useState('');
+  const [codeDepartamento, setCodeDepartamento] = useState('');
+  const [codigoGenerado, setCodigoGenerado] = useState('');
 
   useEffect(() => {
     getBranchesList();
@@ -35,12 +33,61 @@ function AddEmployee() {
     getCat012Departamento();
     GetEmployeeStatus();
     GetContractType();
-    service.get013Municipio('014');
+    getCat013Municipios(codeDepartamento);
     GetStudyLevel();
-  }, [nameDepartamento]);
-  // const handleSubmit = (values: EmployeePayload) => {
-  //   postEmployee(values);
-  // };
+  }, [codeDepartamento, codigoGenerado]);
+  const { postEmployee } = useEmployeeStore();
+  const [dataCreate, setDataCreate] = useState<EmployeePayload>({
+    firstName: '',
+    secondName: '',
+    firstLastName: '',
+    secondLastName: '',
+    bankAccount: '',
+    chargeId: 0,
+    nit: '',
+    dui: '',
+    isss: '',
+    afp: '',
+    code: '',
+    phone: '',
+    age: '',
+    salary: '',
+    dateOfBirth: '',
+    dateOfEntry: '',
+    dateOfExit: '',
+    responsibleContact: '',
+    statusId: 0,
+    studyLevelId: 0,
+    contractTypeId: 0,
+    department: '',
+    departmentName: '',
+    municipality: '',
+    municipalityName: '',
+    complement: '',
+    branchId: 0,
+  });
+  const createEmployee = async () => {
+    try {
+      const data = await postEmployee(dataCreate);
+      if (data) {
+        navigate('/employees');
+      } else {
+        toast.error('Error al crear el empleado');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const generateCode = async () => {
+    const name = dataCreate.firstName;
+    const lastName = dataCreate.firstLastName;
+    const initials = name.charAt(0).toUpperCase() + lastName.charAt(0).toUpperCase();
+    const randomNum = Math.floor(1000 + Math.random() * 9000);
+    const code = `${initials}-${randomNum}`;
+    dataCreate.code = code;
+    setCodigoGenerado(code);
+    return code;
+  };
 
   const navigate = useNavigate();
   return (
@@ -57,6 +104,7 @@ function AddEmployee() {
                 <div className="grid grid-cols-4 gap-4">
                   <div className="flex flex-col mt-3">
                     <Input
+                      onChange={(e) => setDataCreate({ ...dataCreate, firstName: e.target.value })}
                       name="firstName"
                       labelPlacement="outside"
                       placeholder="Ingresa el primer nombre"
@@ -68,6 +116,7 @@ function AddEmployee() {
                   </div>
                   <div className="flex flex-col mt-3">
                     <Input
+                      onChange={(e) => setDataCreate({ ...dataCreate, secondName: e.target.value })}
                       name="secondName"
                       labelPlacement="outside"
                       placeholder="Ingresa el segundo nombre"
@@ -79,6 +128,9 @@ function AddEmployee() {
                   </div>
                   <div className="mt-3">
                     <Input
+                      onChange={(e) =>
+                        setDataCreate({ ...dataCreate, firstLastName: e.target.value })
+                      }
                       name="firstLastName"
                       labelPlacement="outside"
                       placeholder="Ingresa el primer apellido"
@@ -90,6 +142,9 @@ function AddEmployee() {
                   </div>
                   <div className="flex flex-col mt-3">
                     <Input
+                      onChange={(e) =>
+                        setDataCreate({ ...dataCreate, secondLastName: e.target.value })
+                      }
                       name="secondLastName"
                       labelPlacement="outside"
                       placeholder="Ingresa el segundo apellido"
@@ -101,6 +156,9 @@ function AddEmployee() {
                   </div>
                   <div className="flex flex-col mt-3">
                     <Input
+                      onChange={(e) =>
+                        setDataCreate({ ...dataCreate, bankAccount: e.target.value })
+                      }
                       name="bankAccount"
                       labelPlacement="outside"
                       placeholder="Ingresa el numero de cuenta"
@@ -112,6 +170,7 @@ function AddEmployee() {
                   </div>
                   <div className="flex flex-col mt-3">
                     <Input
+                      onChange={(e) => setDataCreate({ ...dataCreate, dui: e.target.value })}
                       name="dui"
                       labelPlacement="outside"
                       placeholder="Ingresa el numero de DUI"
@@ -123,6 +182,7 @@ function AddEmployee() {
                   </div>
                   <div className="flex flex-col mt-3">
                     <Input
+                      onChange={(e) => setDataCreate({ ...dataCreate, nit: e.target.value })}
                       name="nit"
                       labelPlacement="outside"
                       placeholder="Ingresa el numero de NIT"
@@ -134,6 +194,7 @@ function AddEmployee() {
                   </div>
                   <div className="flex flex-col mt-3">
                     <Input
+                      onChange={(e) => setDataCreate({ ...dataCreate, isss: e.target.value })}
                       name="isss"
                       labelPlacement="outside"
                       placeholder="Ingresa el numero de ISSS"
@@ -144,6 +205,7 @@ function AddEmployee() {
                   </div>
                   <div className="flex flex-col mt-3">
                     <Input
+                      onChange={(e) => setDataCreate({ ...dataCreate, afp: e.target.value })}
                       name="afp"
                       labelPlacement="outside"
                       placeholder="Ingresa el numero de AFP"
@@ -155,7 +217,9 @@ function AddEmployee() {
                   <div className="flex flex-row gap-1 mt-3">
                     <div>
                       <Input
+                        onChange={(e) => setDataCreate({ ...dataCreate, code: e.target.value })}
                         name="code"
+                        value={dataCreate.code}
                         labelPlacement="outside"
                         placeholder="Ingresa el codigo"
                         classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
@@ -165,6 +229,9 @@ function AddEmployee() {
                     </div>
                     <div className="mt-3">
                       <Button
+                        onClick={() => {
+                          generateCode();
+                        }}
                         className="w-full mt-3 text-sm font-semibold bg-blue-400"
                         style={{
                           backgroundColor: theme.colors.dark,
@@ -177,6 +244,7 @@ function AddEmployee() {
                   </div>
                   <div className="flex flex-col mt-3">
                     <Input
+                      onChange={(e) => setDataCreate({ ...dataCreate, phone: e.target.value })}
                       type="number"
                       name="name"
                       labelPlacement="outside"
@@ -189,6 +257,7 @@ function AddEmployee() {
                   </div>
                   <div className="flex flex-col mt-3">
                     <Input
+                      onChange={(e) => setDataCreate({ ...dataCreate, age: e.target.value })}
                       type="number"
                       name="age"
                       labelPlacement="outside"
@@ -201,6 +270,7 @@ function AddEmployee() {
                   </div>
                   <div className="flex flex-col mt-3">
                     <Input
+                      onChange={(e) => setDataCreate({ ...dataCreate, salary: e.target.value })}
                       type="number"
                       name="salary"
                       labelPlacement="outside"
@@ -213,6 +283,9 @@ function AddEmployee() {
                   </div>
                   <div className="flex flex-col mt-3">
                     <Input
+                      onChange={(e) =>
+                        setDataCreate({ ...dataCreate, dateOfBirth: e.target.value })
+                      }
                       type="date"
                       name="dateOfBirth"
                       labelPlacement="outside"
@@ -224,6 +297,9 @@ function AddEmployee() {
                   </div>
                   <div className="flex flex-col mt-3">
                     <Input
+                      onChange={(e) =>
+                        setDataCreate({ ...dataCreate, dateOfEntry: e.target.value })
+                      }
                       type="date"
                       name="dateOfEntry"
                       labelPlacement="outside"
@@ -235,6 +311,7 @@ function AddEmployee() {
                   </div>
                   <div className="flex flex-col mt-3">
                     <Input
+                      onChange={(e) => setDataCreate({ ...dataCreate, dateOfExit: e.target.value })}
                       type="date"
                       name="dateOfExit"
                       labelPlacement="outside"
@@ -257,6 +334,7 @@ function AddEmployee() {
                     >
                       {study_level?.map((item) => (
                         <AutocompleteItem
+                          onClick={() => setDataCreate({ ...dataCreate, studyLevelId: item.id })}
                           key={JSON.stringify(item)}
                           value={item.name}
                           className="dark:text-white"
@@ -279,6 +357,7 @@ function AddEmployee() {
                     >
                       {employee_status?.map((item) => (
                         <AutocompleteItem
+                          onClick={() => setDataCreate({ ...dataCreate, statusId: item.id })}
                           key={JSON.stringify(item)}
                           value={item.name}
                           className="dark:text-white"
@@ -301,6 +380,7 @@ function AddEmployee() {
                     >
                       {contract_type.map((item) => (
                         <AutocompleteItem
+                          onClick={() => setDataCreate({ ...dataCreate, contractTypeId: item.id })}
                           key={JSON.stringify(item)}
                           value={item.name}
                           className="dark:text-white"
@@ -312,6 +392,9 @@ function AddEmployee() {
                   </div>
                   <div className="flex flex-col mt-3">
                     <Input
+                      onChange={(e) =>
+                        setDataCreate({ ...dataCreate, responsibleContact: e.target.value })
+                      }
                       type="text"
                       name="responsibleContact"
                       labelPlacement="outside"
@@ -336,6 +419,7 @@ function AddEmployee() {
                     >
                       {charges.map((item) => (
                         <AutocompleteItem
+                          onClick={() => setDataCreate({ ...dataCreate, chargeId: item.id })}
                           key={JSON.stringify(item)}
                           value={item.name}
                           className="dark:text-white"
@@ -358,6 +442,7 @@ function AddEmployee() {
                     >
                       {branch_list.map((bra) => (
                         <AutocompleteItem
+                          onClick={() => setDataCreate({ ...dataCreate, branchId: bra.id })}
                           className="dark:text-white"
                           value={bra.name}
                           key={JSON.stringify(bra)}
@@ -373,7 +458,7 @@ function AddEmployee() {
                       labelPlacement="outside"
                       placeholder="Selecciona el departamento"
                       variant="bordered"
-                      onChange={(e) => setDepartamento(e.target.value)}
+                      onChange={(e) => setCodeDepartamento(e.target.value)}
                       classNames={{
                         base: 'font-semibold text-gray-500 text-sm',
                       }}
@@ -381,7 +466,14 @@ function AddEmployee() {
                     >
                       {cat_012_departamento.map((dep) => (
                         <AutocompleteItem
-                          onClick={() => setDepartamento(dep.valores)}
+                          onClick={() => {
+                            setCodeDepartamento(dep.codigo),
+                              setDataCreate({
+                                ...dataCreate,
+                                department: dep.codigo,
+                                departmentName: dep.valores,
+                              });
+                          }}
                           value={dep.codigo}
                           key={JSON.stringify(dep)}
                           className="dark:text-white"
@@ -404,6 +496,14 @@ function AddEmployee() {
                     >
                       {cat_013_municipios.map((dep) => (
                         <AutocompleteItem
+                          onClick={() => {
+                            setCodeDepartamento(dep.codigo),
+                              setDataCreate({
+                                ...dataCreate,
+                                municipality: dep.codigo,
+                                municipalityName: dep.valores,
+                              });
+                          }}
                           value={dep.codigo}
                           key={JSON.stringify(dep)}
                           className="dark:text-white"
@@ -419,6 +519,7 @@ function AddEmployee() {
                 <div className="grid grid-cols-2 gap-4 mt-3">
                   <div>
                     <Input
+                      onChange={(e) => setDataCreate({ ...dataCreate, complement: e.target.value })}
                       label="Complemento de dirección"
                       classNames={{
                         label: 'font-semibold text-gray-500 text-sm',
@@ -432,6 +533,7 @@ function AddEmployee() {
 
                   <div className="mt-0 md:mt-3">
                     <Button
+                      onClick={createEmployee}
                       className="w-full mt-3 text-sm font-semibold"
                       style={{
                         backgroundColor: theme.colors.dark,
