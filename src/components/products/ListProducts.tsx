@@ -58,6 +58,7 @@ import {
 } from "@/components/ui/select";
 import HeadlessModal from "../global/HeadlessModal";
 import classNames from "classnames";
+import TooltipGlobal from "../global/TooltipGlobal";
 
 interface Props {
   actions: string[];
@@ -227,104 +228,18 @@ function ListProducts({ actions }: Props) {
               </ButtonGroup>
               <div className="flex items-center gap-5">
                 <div className="block md:hidden">
-                  {/* <Drawer.Root
-                    shouldScaleBackground
-                    open={openVaul}
-                    onClose={() => setOpenVaul(false)}
-                  >
-                    <Drawer.Trigger asChild>
-                      <Button
-                        style={global_styles().thirdStyle}
-                        isIconOnly
-                        onClick={() => setOpenVaul(true)}
-                        type="button"
-                      >
-                        <Filter />
-                      </Button>
-                    </Drawer.Trigger>
-                    <Drawer.Portal>
-                      <Drawer.Overlay
-                        className="fixed inset-0 bg-black/40 z-[60]"
-                        onClick={() => setOpenVaul(false)}
-                      />
-                      <Drawer.Content
-                        className={classNames(
-                          "bg-gray-100 z-[60] flex flex-col rounded-t-[10px] h-auto mt-24 max-h-[80%] fixed bottom-0 left-0 right-0",
-                          context === "dark" ? "dark" : ""
-                        )}
-                      >
-                        <div className="p-4 bg-white dark:bg-gray-800 rounded-t-[10px] flex-1">
-                          <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-gray-300 dark:bg-gray-400 mb-8" />
-                          <Drawer.Title className="mb-4 font-medium dark:text-white">
-                            Filtros disponibles
-                          </Drawer.Title>
-
-                          <div className="flex flex-col gap-3">
-                            <Input
-                              startContent={<SearchIcon />}
-                              className="w-full dark:text-white"
-                              variant="bordered"
-                              labelPlacement="outside"
-                              label="Nombre"
-                              classNames={{
-                                label: "font-semibold text-gray-700",
-                                inputWrapper: "pr-0",
-                              }}
-                              value={search}
-                              onChange={(e) => setSearch(e.target.value)}
-                              placeholder="Escribe para buscar..."
-                              isClearable
-                              onClear={() => {
-                                setSearch("");
-                              }}
-                            />
-                            <Input
-                              startContent={<SearchIcon />}
-                              className="w-full dark:text-white"
-                              variant="bordered"
-                              labelPlacement="outside"
-                              label="Categoria"
-                              classNames={{
-                                label: "font-semibold text-gray-700",
-                                inputWrapper: "pr-0",
-                              }}
-                              value={category}
-                              onChange={(e) => setCategory(e.target.value)}
-                              placeholder="Escribe para buscar..."
-                              isClearable
-                              onClear={() => {
-                                setCategory("");
-                              }}
-                            />
-                            <Button
-                              style={{
-                                backgroundColor: theme.colors.secondary,
-                                color: theme.colors.primary,
-                              }}
-                              className="font-semibold"
-                              color="primary"
-                              onClick={() => {
-                                handleSearch(undefined);
-                                setOpenVaul(false);
-                              }}
-                            >
-                              Aplicar
-                            </Button>
-                          </div>
-                        </div>
-                      </Drawer.Content>
-                    </Drawer.Portal>
-                  </Drawer.Root> */}
                   <Drawer open={openVaul} onClose={() => setOpenVaul(false)}>
                     <DrawerTrigger asChild>
-                      <Button
-                        style={global_styles().thirdStyle}
-                        isIconOnly
-                        type="button"
-                        onClick={() => setOpenVaul(true)}
-                      >
-                        <Filter />
-                      </Button>
+                      <TooltipGlobal text="Filtros disponibles" color="primary">
+                        <Button
+                          style={global_styles().thirdStyle}
+                          isIconOnly
+                          type="button"
+                          onClick={() => setOpenVaul(true)}
+                        >
+                          <Filter />
+                        </Button>
+                      </TooltipGlobal>
                     </DrawerTrigger>
                     <DrawerContent>
                       <DrawerHeader>

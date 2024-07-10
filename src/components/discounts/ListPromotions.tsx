@@ -1,10 +1,10 @@
-import { useNavigate } from 'react-router';
-import AddButton from '../global/AddButton';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
-import { Table as ITable, CreditCard, List, EditIcon } from 'lucide-react';
-import { useContext, useEffect, useState } from 'react';
-import { ThemeContext } from '../../hooks/useTheme';
+import { useNavigate } from "react-router";
+import AddButton from "../global/AddButton";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
+import { Table as ITable, CreditCard, List, EditIcon } from "lucide-react";
+import { useContext, useEffect, useState } from "react";
+import { ThemeContext } from "../../hooks/useTheme";
 import {
   Autocomplete,
   AutocompleteItem,
@@ -13,23 +13,27 @@ import {
   Input,
   Select,
   SelectItem,
-} from '@nextui-org/react';
-import { usePromotionsStore } from '../../store/promotions/promotions.store';
-import { useBranchesStore } from '../../store/branches.store';
-import { Tipos_Promotions, limit_options } from '../../utils/constants';
-import Pagination from '../global/Pagination';
-import SmPagination from '../global/SmPagination';
-import { formatDate } from '../../utils/dates';
-import MobileView from './MobileView';
+} from "@nextui-org/react";
+import { usePromotionsStore } from "../../store/promotions/promotions.store";
+import { useBranchesStore } from "../../store/branches.store";
+import { Tipos_Promotions, limit_options } from "../../utils/constants";
+import Pagination from "../global/Pagination";
+import SmPagination from "../global/SmPagination";
+import { formatDate } from "../../utils/dates";
+import MobileView from "./MobileView";
 // import UpdatePromotionsByCategory from './UpdatePromotionsCategories';
-import { Promotion, PromotionCategories, PromotionProducts } from '../../types/promotions.types';
-import UpdatePromotionsBranch from './UpdatePromotionBranch';
-import HeadlessModal from '../global/HeadlessModal';
-import { Branches } from '../../types/branches.types';
+import {
+  Promotion,
+  PromotionCategories,
+  PromotionProducts,
+} from "../../types/promotions.types";
+import UpdatePromotionsBranch from "./UpdatePromotionBranch";
+import HeadlessModal from "../global/HeadlessModal";
+import { Branches } from "../../types/branches.types";
 
-import { global_styles } from '../../styles/global.styles';
-import TooltipGlobal from '../global/TooltipGlobal';
-import UpdatePromotionsProduct from './UpdatePromotionsProduct';
+import { global_styles } from "../../styles/global.styles";
+import TooltipGlobal from "../global/TooltipGlobal";
+import UpdatePromotionsProduct from "./UpdatePromotionsProduct";
 
 interface Props {
   actions: string[];
@@ -40,19 +44,30 @@ function ListDiscount({ actions }: Props) {
 
   const [limit, setLimit] = useState(5);
   const [branch, setbranch] = useState<Branches>();
-  const [type, setType] = useState('');
+  const [type, setType] = useState("");
   const { getBranchesList, branch_list } = useBranchesStore();
   const [dateInitial, setDateInitial] = useState(formatDate());
   const [dateEnd, setDateEnd] = useState(formatDate());
 
-  const { pagination_promotions, getPaginatedPromotions, loading_products } = usePromotionsStore();
+  const {
+    pagination_promotions,
+    getPaginatedPromotions,
+    loading_products,
+  } = usePromotionsStore();
 
   useEffect(() => {
-    getPaginatedPromotions(1, limit, Number(branch?.id), type, dateInitial, dateEnd);
+    getPaginatedPromotions(
+      1,
+      limit,
+      Number(branch?.id),
+      type,
+      dateInitial,
+      dateEnd
+    );
     getBranchesList();
   }, [limit]);
   const { theme } = useContext(ThemeContext);
-  const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
+  const [view, setView] = useState<"table" | "grid" | "list">("table");
 
   const style = {
     backgroundColor: theme.colors.dark,
@@ -76,22 +91,24 @@ function ListDiscount({ actions }: Props) {
 
   const [promotionId, setPromotionId] = useState(0);
   const [, setDataPromotion] = useState<PromotionCategories>();
-  const [dataPromotionProduct, setDataPromotionProduct] = useState<PromotionProducts>();
+  const [dataPromotionProduct, setDataPromotionProduct] = useState<
+    PromotionProducts
+  >();
   // const [dataPromotionClass, setDataPromotionClass] = useState<PromotionClass>();
   const [dataPromotionBranch, setDataPromotionBranch] = useState<Promotion>();
   const priorityMapping: { [key: string]: string } = {
-    LOW: 'Baja',
-    MEDIUM: 'Media',
-    HIGH: 'Alta',
+    LOW: "Baja",
+    MEDIUM: "Media",
+    HIGH: "Alta",
   };
 
   // Define un tipo para las prioridades
-  type Priority = 'LOW' | 'MEDIUM' | 'HIGH';
+  type Priority = "LOW" | "MEDIUM" | "HIGH";
 
   const priorityMap: Record<Priority, { label: string; color: string }> = {
-    LOW: { label: 'Baja', color: 'green' },
-    MEDIUM: { label: 'Media', color: 'orange' },
-    HIGH: { label: 'Alta', color: 'red' },
+    LOW: { label: "Baja", color: "green" },
+    MEDIUM: { label: "Media", color: "orange" },
+    HIGH: { label: "Alta", color: "red" },
   };
 
   <Column
@@ -106,9 +123,9 @@ function ListDiscount({ actions }: Props) {
   return (
     <>
       <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
-        <div className="w-full flex flex-col h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
+        <div className="flex flex-col w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
           <div className="justify-between w-full gap-5 mb-5 lg:mb-10 lg:flex-row lg:gap-0">
-            <div className="flex w-full justify-between items-end gap-3">
+            <div className="flex items-end justify-between w-full gap-3">
               <Autocomplete
                 className="font-semibold dark:text-white"
                 label="Sucursal"
@@ -135,7 +152,7 @@ function ListDiscount({ actions }: Props) {
                 label="Tipo de Promoción"
                 labelPlacement="outside"
                 classNames={{
-                  label: 'font-semibold text-gray-500 text-sm',
+                  label: "font-semibold text-gray-500 text-sm",
                 }}
                 value={type}
                 onChange={(e) => {
@@ -143,7 +160,11 @@ function ListDiscount({ actions }: Props) {
                 }}
               >
                 {Tipos_Promotions.map((limit) => (
-                  <SelectItem key={limit} value={limit} className="dark:text-white">
+                  <SelectItem
+                    key={limit}
+                    value={limit}
+                    className="dark:text-white"
+                  >
                     {limit}
                   </SelectItem>
                 ))}
@@ -158,8 +179,8 @@ function ListDiscount({ actions }: Props) {
                 label="Fecha inicial"
                 labelPlacement="outside"
                 classNames={{
-                  input: 'dark:text-white dark:border-gray-600',
-                  label: 'text-sm font-semibold dark:text-white',
+                  input: "dark:text-white dark:border-gray-600",
+                  label: "text-sm font-semibold dark:text-white",
                 }}
               />
               <Input
@@ -171,8 +192,8 @@ function ListDiscount({ actions }: Props) {
                 type="date"
                 labelPlacement="outside"
                 classNames={{
-                  input: 'dark:text-white dark:border-gray-600',
-                  label: 'text-sm font-semibold dark:text-white',
+                  input: "dark:text-white dark:border-gray-600",
+                  label: "text-sm font-semibold dark:text-white",
                 }}
               />
               <Button
@@ -191,21 +212,27 @@ function ListDiscount({ actions }: Props) {
             <div className="flex w-full mt-4">
               <div className="flex items-start justify-between w-full gap-10 lg:justify-start">
                 <Select
-                  className="max-w-44  dark:text-white"
+                  className="max-w-44 dark:text-white"
                   variant="bordered"
                   label="Mostrar"
                   labelPlacement="outside"
-                  defaultSelectedKeys={['5']}
+                  defaultSelectedKeys={["5"]}
                   classNames={{
-                    label: 'font-semibold',
+                    label: "font-semibold",
                   }}
                   value={limit}
                   onChange={(e) => {
-                    setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
+                    setLimit(
+                      Number(e.target.value !== "" ? e.target.value : "5")
+                    );
                   }}
                 >
                   {limit_options.map((limit) => (
-                    <SelectItem key={limit} value={limit} className="dark:text-white">
+                    <SelectItem
+                      key={limit}
+                      value={limit}
+                      className="dark:text-white"
+                    >
                       {limit}
                     </SelectItem>
                   ))}
@@ -216,10 +243,12 @@ function ListDiscount({ actions }: Props) {
                       isIconOnly
                       color="secondary"
                       style={{
-                        backgroundColor: view === 'table' ? theme.colors.third : '#e5e5e5',
-                        color: view === 'table' ? theme.colors.primary : '#3e3e3e',
+                        backgroundColor:
+                          view === "table" ? theme.colors.third : "#e5e5e5",
+                        color:
+                          view === "table" ? theme.colors.primary : "#3e3e3e",
                       }}
-                      onClick={() => setView('table')}
+                      onClick={() => setView("table")}
                     >
                       <ITable />
                     </Button>
@@ -228,10 +257,12 @@ function ListDiscount({ actions }: Props) {
                       isIconOnly
                       color="default"
                       style={{
-                        backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
-                        color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
+                        backgroundColor:
+                          view === "grid" ? theme.colors.third : "#e5e5e5",
+                        color:
+                          view === "grid" ? theme.colors.primary : "#3e3e3e",
                       }}
-                      onClick={() => setView('grid')}
+                      onClick={() => setView("grid")}
                     >
                       <CreditCard />
                     </Button>
@@ -239,10 +270,12 @@ function ListDiscount({ actions }: Props) {
                       isIconOnly
                       color="default"
                       style={{
-                        backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
-                        color: view === 'list' ? theme.colors.primary : '#3e3e3e',
+                        backgroundColor:
+                          view === "list" ? theme.colors.third : "#e5e5e5",
+                        color:
+                          view === "list" ? theme.colors.primary : "#3e3e3e",
                       }}
-                      onClick={() => setView('list')}
+                      onClick={() => setView("list")}
                     >
                       <List />
                     </Button>
@@ -254,27 +287,27 @@ function ListDiscount({ actions }: Props) {
                 <div className="flex justify-end w-full">
                   <AddButton
                     onClick={() => {
-                      navigate('/AddPromotions');
+                      navigate("/AddPromotions");
                     }}
                   />
                 </div>
               </div>
             </div>
 
-            {(view === 'grid' || view === 'list') && (
+            {(view === "grid" || view === "list") && (
               <MobileView
-                layout={view as 'grid' | 'list'}
+                layout={view as "grid" | "list"}
                 actions={actions}
                 openEditModal={(promotion) => {
-                  if (type === 'Categorias') {
+                  if (type === "Categorias") {
                     setIsOpenPromotionCategory(true);
                     setPromotionId(promotion.id);
                     // setDataPromotion(promotion.id);
-                  } else if (type === 'Productos') {
+                  } else if (type === "Productos") {
                     setIsOpenPromotionProduct(true);
                     setPromotionId(promotion.id);
                     // setDataPromotionProduct(promotion.id);
-                  } else if (type === 'Sucursales') {
+                  } else if (type === "Sucursales") {
                     setIsOpen(true);
                     setPromotionId(promotion.id);
                     // setDataPromotionBranch(promotion.id);
@@ -283,17 +316,17 @@ function ListDiscount({ actions }: Props) {
               />
             )}
 
-            {view === 'table' && (
+            {view === "table" && (
               <DataTable
-                className="w-full shadow mt-6 "
+                className="w-full mt-6 shadow "
                 emptyMessage="No se encontraron resultados"
                 value={pagination_promotions.promotionsDiscount}
-                tableStyle={{ minWidth: '50rem' }}
+                tableStyle={{ minWidth: "50rem" }}
                 loading={loading_products}
               >
                 <Column
                   headerClassName="text-sm font-semibold"
-                  headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
+                  headerStyle={{ ...style, borderTopLeftRadius: "10px" }}
                   field="id"
                   header="No."
                 />
@@ -325,8 +358,8 @@ function ListDiscount({ actions }: Props) {
                       {item.percentage > 0
                         ? `${item.percentage}%`
                         : item.fixedPrice
-                          ? `$${item.fixedPrice}`
-                          : ''}
+                        ? `$${item.fixedPrice}`
+                        : ""}
                     </span>
                   )}
                 />
@@ -336,14 +369,15 @@ function ListDiscount({ actions }: Props) {
                   headerStyle={style}
                   header="Prioridad"
                   body={(item: { priority: Priority }) => (
-                    <span style={{ display: 'flex', alignItems: 'center' }}>
+                    <span style={{ display: "flex", alignItems: "center" }}>
                       <span
                         style={{
-                          width: '20px',
-                          height: '20px',
-                          borderRadius: '50%',
-                          backgroundColor: priorityMap[item.priority]?.color || 'black',
-                          marginRight: '8px',
+                          width: "20px",
+                          height: "20px",
+                          borderRadius: "50%",
+                          backgroundColor:
+                            priorityMap[item.priority]?.color || "black",
+                          marginRight: "8px",
                         }}
                       ></span>
                       {priorityMap[item.priority]?.label || item.priority}
@@ -356,25 +390,22 @@ function ListDiscount({ actions }: Props) {
                   headerStyle={style}
                   body={(item) => (
                     <div className="">
-                      {type === 'Categorias' && (
-                        <TooltipGlobal
-                          childrem={
-                            <Button
-                              onClick={() => {
-                                setIsOpenPromotionCategory(true);
-                                setPromotionId(item.id);
-                                setDataPromotion(item);
-                              }}
-                              isIconOnly
-                              style={global_styles().secondaryStyle}
-                            >
-                              <EditIcon color={theme.colors.primary} size={20} />
-                            </Button>
-                          }
-                          text={'Editar Promoción'}
-                        ></TooltipGlobal>
+                      {type === "Categorias" && (
+                        <TooltipGlobal text={"Editar Promoción"}>
+                          <Button
+                            onClick={() => {
+                              setIsOpenPromotionCategory(true);
+                              setPromotionId(item.id);
+                              setDataPromotion(item);
+                            }}
+                            isIconOnly
+                            style={global_styles().secondaryStyle}
+                          >
+                            <EditIcon color={theme.colors.primary} size={20} />
+                          </Button>
+                        </TooltipGlobal>
                       )}
-                      {type === 'Productos' && (
+                      {type === "Productos" && (
                         <Button
                           onClick={() => {
                             setPromotionId(item.id);
@@ -387,7 +418,7 @@ function ListDiscount({ actions }: Props) {
                           <EditIcon color={theme.colors.primary} size={20} />
                         </Button>
                       )}
-                      {type === 'Sucursales' && (
+                      {type === "Sucursales" && (
                         <Button
                           onClick={() => {
                             setIsOpen(true);
@@ -490,7 +521,14 @@ function ListDiscount({ actions }: Props) {
             promotion={dataPromotionProduct}
             branch={branch}
             reloadData={() =>
-              getPaginatedPromotions(1, limit, Number(branch?.id), type, dateInitial, dateEnd)
+              getPaginatedPromotions(
+                1,
+                limit,
+                Number(branch?.id),
+                type,
+                dateInitial,
+                dateEnd
+              )
             }
           />
         </HeadlessModal>
@@ -505,7 +543,14 @@ function ListDiscount({ actions }: Props) {
             <UpdatePromotionsBranch
               onClose={() => setIsOpen(false)}
               reloadData={() =>
-                getPaginatedPromotions(1, limit, Number(branch?.id), type, dateInitial, dateEnd)
+                getPaginatedPromotions(
+                  1,
+                  limit,
+                  Number(branch?.id),
+                  type,
+                  dateInitial,
+                  dateEnd
+                )
               }
               id={promotionId}
               promotion={dataPromotionBranch}

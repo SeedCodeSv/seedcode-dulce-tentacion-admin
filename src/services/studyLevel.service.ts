@@ -4,11 +4,11 @@ import { get_token } from '../storage/localStorage';
 
 import { IGetStudyLevelPaginated } from '../types/studyLevel.types';
 
-export const get_study_level = (page = 1, limit = 8, name = '', description = '', active = 1) => {
+export const get_study_level = (page = 1, limit = 8, name = '', isActive = 1) => {
   const token = get_token() ?? '';
   return axios.get<IGetStudyLevelPaginated>(
     API_URL +
-      `/study-level/list-paginated?page=${page}&limit=${limit}&name=${name}&description=${description}&active=${active}`,
+      `/study-level/list-paginated?page=${page}&limit=${limit}&name=${name}&isActive=${isActive}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -18,7 +18,8 @@ export const get_study_level = (page = 1, limit = 8, name = '', description = ''
 };
 
 export const create_study_level = ({
-  name
+  name,
+  description,
 }: {
   name: string;
   description: string;
@@ -28,6 +29,7 @@ export const create_study_level = ({
     API_URL + '/study-level',
     {
       name,
+      description,
     },
     {
       headers: {
@@ -38,7 +40,7 @@ export const create_study_level = ({
 };
 
 export const update_study_level = (
-  { name }: { name: string; description: string },
+  { name, description }: { name: string; description: string },
   id: number
 ) => {
   const token = get_token() ?? '';
@@ -46,6 +48,7 @@ export const update_study_level = (
     API_URL + '/study-level/' + id,
     {
       name,
+      description,
     },
     {
       headers: {
@@ -62,4 +65,17 @@ export const delete_study_level = (id: number) => {
       Authorization: `Bearer ${token}`,
     },
   });
+};
+
+export const activate_study_level = (id: number) => {
+  const token = get_token() ?? '';
+  return axios.patch<{ ok: boolean }>(
+    API_URL + '/study-level/active/' + id,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 };

@@ -34,6 +34,7 @@ import ContratType from '../pages/ContratType';
 
 import AddEmployee from '../components/employee/AddEmployee';
 import VentasPorPeriodo from '../pages/reports/VentasPorPeriodo';
+import StudyLevel from '@/pages/StudyLevel';
 
 /* eslint-disable react-hooks/rules-of-hooks */
 export const router = () => {
@@ -159,6 +160,10 @@ export const router = () => {
     {
       path: '/contractTypes',
       element: views && views.includes('Tipo de contratacion') && <ContratType />,
+    },
+    {
+      path: '/studyLevel',
+      element: views && views.includes('Nivel de estudio') && <StudyLevel />,
     },
     {
       path: '/AddPromotions',
