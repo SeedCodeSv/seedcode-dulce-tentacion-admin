@@ -37,7 +37,6 @@ import { CategoryProduct } from "../../types/categories.types";
 import MobileView from "./MobileView";
 // import { Drawer } from "vaul";
 import { global_styles } from "../../styles/global.styles";
-import classNames from "classnames";
 import UpdateProduct from "./UpdateProduct";
 import { limit_options } from "../../utils/constants";
 import SmPagination from "../global/SmPagination";
