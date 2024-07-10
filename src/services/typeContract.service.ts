@@ -3,10 +3,11 @@ import { API_URL } from '../utils/constants';
 import { get_token } from '../storage/localStorage';
 import { IGetContractTypePaginated } from '../types/contarctType.types';
 
-export const get_contract_type = (page = 1, limit = 8, name = '') => {
+export const get_contract_type = (page = 1, limit = 8, name = '', isActive = 1) => {
   const token = get_token() ?? '';
   return axios.get<IGetContractTypePaginated>(
-    API_URL + `/contract-type/list-paginated?page=${page}&limit=${limit}&name=${name}`,
+    API_URL +
+      `/contract-type/list-paginated?page=${page}&limit=${limit}&name=${name}&isActive=${isActive}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -52,4 +53,17 @@ export const delete_contract_type = (id: number) => {
       Authorization: `Bearer ${token}`,
     },
   });
+};
+
+export const activate_contract_type = (id: number) => {
+  const token = get_token() ?? '';
+  return axios.patch<{ ok: boolean }>(
+    API_URL + '/contract-type/active/' + id,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 };

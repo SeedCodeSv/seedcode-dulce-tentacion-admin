@@ -3,6 +3,7 @@ import { toast } from 'sonner';
 import { messages } from '../utils/constants';
 import { IContractTypeStore } from './types/contratType.store';
 import {
+  activate_contract_type,
   create_contract_type,
   delete_contract_type,
   get_contract_type,
@@ -23,9 +24,9 @@ export const useContractTypeStore = create<IContractTypeStore>((set, get) => ({
   loading_contract_type: false,
   limit_filter: 5,
 
-  getPaginatedContractType: (page: number, limit: number, name: string) => {
+  getPaginatedContractType: (page: number, limit: number, name: string, isActive = 1) => {
     set({ loading_contract_type: true, limit_filter: limit });
-    get_contract_type(page, limit, name)
+    get_contract_type(page, limit, name, isActive)
       .then((statusEmployees) =>
         set({ paginated_contract_type: statusEmployees.data, loading_contract_type: false })
       )
@@ -75,6 +76,16 @@ export const useContractTypeStore = create<IContractTypeStore>((set, get) => ({
       .catch(() => {
         toast.warning(messages.error);
         return false;
+      });
+  },
+
+  activateContractType(id) {
+    return activate_contract_type(id)
+      .then(() => {
+        toast.success('Se activo el registro');
+      })
+      .catch(() => {
+        toast.error('Error al activar la registro');
       });
   },
 }));

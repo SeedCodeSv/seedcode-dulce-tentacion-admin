@@ -1,4 +1,12 @@
 import moment from 'moment-timezone';
+import { format } from "@formkit/tempo"
+
+const l = "es"
+
+export const formatDateShort = (date: string) => {
+
+  return format(new Date(date), "MMMM DD YYYY", l)
+}
 
 export const formatDate = () => {
   const date = new Date();

@@ -2,6 +2,7 @@ import { useEffect, useMemo } from "react";
 import { connect } from "socket.io-client";
 import { WS_URL } from "../utils/constants";
 import { toast } from "sonner";
+// import MP3 from "../assets/tienes_un_mensaje.mp3"
 
 function SocketContext() {
   const socket = useMemo(() => {
@@ -14,9 +15,11 @@ function SocketContext() {
     socket.on("connect", () => {});
 
     socket.on("new-sale-admin", () => {
+      // new Audio(MP3).play();
       toast.success("Nueva venta registrada",{
         duration: 3000,
         icon: "👏",
+        position:"top-right"
       });
     });
 

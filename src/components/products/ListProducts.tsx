@@ -28,24 +28,42 @@ import AddButton from "../global/AddButton";
 import { useProductsStore } from "../../store/products.store";
 import Pagination from "../global/Pagination";
 import { Product } from "../../types/products.types";
-import ModalGlobal from "../global/ModalGlobal";
 import AddProducts from "./AddProducts";
 import { useCategoriesStore } from "../../store/categories.store";
 import { ThemeContext } from "../../hooks/useTheme";
 import { ButtonGroup } from "@nextui-org/react";
 import { CategoryProduct } from "../../types/categories.types";
 import MobileView from "./MobileView";
-import { Drawer } from "vaul";
+// import { Drawer } from "vaul";
 import { global_styles } from "../../styles/global.styles";
-import classNames from "classnames";
 import UpdateProduct from "./UpdateProduct";
 import { limit_options } from "../../utils/constants";
 import SmPagination from "../global/SmPagination";
+import useWindowSize from "../../hooks/useWindowSize";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+
+import {
+  Select as UISelect,
+  SelectContent,
+  SelectItem as UISelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import HeadlessModal from "../global/HeadlessModal";
+import classNames from "classnames";
+
 interface Props {
   actions: string[];
 }
 function ListProducts({ actions }: Props) {
-  const { theme, context } = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
   const style = {
     backgroundColor: theme.colors.dark,
     color: theme.colors.primary,
@@ -61,7 +79,10 @@ function ListProducts({ actions }: Props) {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
   const [limit, setLimit] = useState(5);
-  const [view, setView] = useState<"table" | "grid" | "list">("table");
+  const { windowSize } = useWindowSize();
+  const [view, setView] = useState<"table" | "grid" | "list">(
+    windowSize.width < 768 ? "grid" : "table"
+  );
   const [page, serPage] = useState(1);
   const [active, setActive] = useState(true);
 
@@ -98,8 +119,8 @@ function ListProducts({ actions }: Props) {
     <>
       <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
         <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
-          <div className="w-full hidden gap-5 md:flex">
-            <div className="flex w-full justify-between items-end gap-3">
+          <div className="hidden w-full gap-5 md:flex">
+            <div className="flex items-end justify-between w-full gap-3">
               <Input
                 startContent={<SearchIcon />}
                 className="w-full dark:text-white"
@@ -164,8 +185,8 @@ function ListProducts({ actions }: Props) {
               </Button>
             </div>
           </div>
-          <div className="flex flex-col mt-4 justify-between w-full gap-5 xl:flex-row xl:gap-0">
-            <div className="flex w-full items-end justify-between gap-10 mt lg:justify-end">
+          <div className="flex flex-col justify-between w-full gap-5 mt-4 xl:flex-row xl:gap-0">
+            <div className="flex items-end justify-between w-full gap-10 mt lg:justify-end">
               <ButtonGroup>
                 <Button
                   isIconOnly
@@ -206,7 +227,7 @@ function ListProducts({ actions }: Props) {
               </ButtonGroup>
               <div className="flex items-center gap-5">
                 <div className="block md:hidden">
-                  <Drawer.Root
+                  {/* <Drawer.Root
                     shouldScaleBackground
                     open={openVaul}
                     onClose={() => setOpenVaul(false)}
@@ -234,7 +255,7 @@ function ListProducts({ actions }: Props) {
                       >
                         <div className="p-4 bg-white dark:bg-gray-800 rounded-t-[10px] flex-1">
                           <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-gray-300 dark:bg-gray-400 mb-8" />
-                          <Drawer.Title className="mb-4 dark:text-white font-medium">
+                          <Drawer.Title className="mb-4 font-medium dark:text-white">
                             Filtros disponibles
                           </Drawer.Title>
 
@@ -293,7 +314,62 @@ function ListProducts({ actions }: Props) {
                         </div>
                       </Drawer.Content>
                     </Drawer.Portal>
-                  </Drawer.Root>
+                  </Drawer.Root> */}
+                  <Drawer open={openVaul} onClose={() => setOpenVaul(false)}>
+                    <DrawerTrigger asChild>
+                      <Button
+                        style={global_styles().thirdStyle}
+                        isIconOnly
+                        type="button"
+                        onClick={() => setOpenVaul(true)}
+                      >
+                        <Filter />
+                      </Button>
+                    </DrawerTrigger>
+                    <DrawerContent>
+                      <DrawerHeader>
+                        <DrawerTitle>Filtros disponibles</DrawerTitle>
+                      </DrawerHeader>
+                      <DrawerFooter>
+                        <label htmlFor="">Categoría</label>
+                        <UISelect
+                          value={category}
+                          onValueChange={(value) =>
+                            setCategory(value === "TODAS" ? "" : value)
+                          }
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Todas las categorías" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <UISelectItem value={"TODAS"}>
+                              MOSTRAR TODAS
+                            </UISelectItem>
+                            {list_categories.map((item) => (
+                              <UISelectItem key={item.id} value={item.name}>
+                                {item.name}
+                              </UISelectItem>
+                            ))}
+                          </SelectContent>
+                        </UISelect>
+                        <Input
+                          placeholder="Escribe para buscar..."
+                          label="Nombre"
+                          labelPlacement="outside"
+                          variant="bordered"
+                        ></Input>
+                        <Button
+                          onClick={() => {
+                            handleSearch(undefined);
+                            setOpenVaul(false);
+                          }}
+                          className="w-full mb-10"
+                        >
+                          Aplicar filtros
+                        </Button>
+                      </DrawerFooter>
+                    </DrawerContent>
+                  </Drawer>
                 </div>
               </div>
               <div className="flex justify-end w-full">
@@ -308,7 +384,7 @@ function ListProducts({ actions }: Props) {
               </div>
             </div>
           </div>
-          <div className="flex justify-end gap-5 items-end w-full mb-5 pt-4">
+          <div className="flex items-end justify-end w-full gap-5 pt-4 mb-5">
             <Select
               className="max-w-44 dark:text-white"
               variant="bordered"
@@ -337,6 +413,10 @@ function ListProducts({ actions }: Props) {
               <Switch
                 onValueChange={(active) => setActive(active)}
                 isSelected={active}
+                classNames={{
+                  thumb: classNames(active ? "bg-blue-500" : "bg-gray-400"),
+                  wrapper: classNames(active ? "!bg-blue-300" : "bg-gray-200"),
+                }}
               >
                 <span className="text-sm sm:text-base whitespace-nowrap">
                   Mostrar {active ? "inactivos" : "activos"}
@@ -358,7 +438,7 @@ function ListProducts({ actions }: Props) {
           )}
           {view === "table" && (
             <DataTable
-              className="shadow"
+              className="shadow dark:text-white"
               emptyMessage="No se encontraron resultados"
               value={paginated_products.products}
               tableStyle={{ minWidth: "50rem" }}
@@ -366,18 +446,21 @@ function ListProducts({ actions }: Props) {
             >
               <Column
                 headerClassName="text-sm font-semibold"
+                bodyClassName={"dark:text-white"}
                 headerStyle={{ ...style, borderTopLeftRadius: "10px" }}
                 field="id"
                 header="No."
               />
               <Column
                 headerClassName="text-sm font-semibold"
+                bodyClassName={"dark:text-white"}
                 headerStyle={style}
                 field="name"
                 header="Nombre"
               />
               <Column
                 headerClassName="text-sm font-semibold"
+                bodyClassName={"dark:text-white"}
                 headerStyle={style}
                 field="code"
                 header="Código"
@@ -473,21 +556,20 @@ function ListProducts({ actions }: Props) {
             </>
           )}
         </div>
-        <ModalGlobal
+        <HeadlessModal
           title={selectedProduct ? "Editar producto" : "Nuevo producto"}
           onClose={modalAdd.onClose}
           size="w-full md:w-[90vw] lg:w-[80vw]"
           isOpen={modalAdd.isOpen}
-          isMaximizable
-          isFull
+          // isFull
         >
           <AddProducts
             onCloseModal={modalAdd.onClose}
             product={selectedProduct}
           />
-        </ModalGlobal>
+        </HeadlessModal>
 
-        <ModalGlobal
+        <HeadlessModal
           title={"Editar producto"}
           onClose={() => {
             setIsOpenModalUpdate(false);
@@ -499,7 +581,7 @@ function ListProducts({ actions }: Props) {
             onCloseModal={() => setIsOpenModalUpdate(false)}
             product={selectedProduct}
           />
-        </ModalGlobal>
+        </HeadlessModal>
       </div>
     </>
   );
@@ -541,14 +623,14 @@ export const DeletePopover = ({ product }: PopProps) => {
         </Button>
       </PopoverTrigger>
       <PopoverContent>
-        <div className="w-full p-5 flex flex-col items-center justify-center">
+        <div className="flex flex-col items-center justify-center w-full p-5">
           <p className="font-semibold text-gray-600 dark:text-white">
             Eliminar {product.name}
           </p>
           <p className="mt-3 text-center text-gray-600 dark:text-white w-72">
             ¿Estas seguro de eliminar este registro?
           </p>
-          <div className="mt-4  flex justify-center">
+          <div className="flex justify-center mt-4">
             <Button onClick={onClose}>No, cancelar</Button>
             <Button
               onClick={() => handleDelete()}

@@ -11,13 +11,11 @@ import { useStudyLevelStore } from '../../store/study_level.store';
 import { ArrowLeft } from 'lucide-react';
 
 import { useEmployeeStore } from '../../store/employee.store';
-import { Employee, EmployeePayload } from '../../types/employees.types';
+import { EmployeePayload } from '../../types/employees.types';
 import { toast } from 'sonner';
-interface Props {
-  data?: Employee | undefined;
-  id: (id: number) => void;
-}
-function UpdateEmployee(props: Props) {
+import { PropsUpdateEmployee } from '@/types/sub_categories.types';
+
+function UpdateEmployee(props: PropsUpdateEmployee) {
   const { theme } = useContext(ThemeContext);
   const { GetEmployeeStatus, employee_status } = useEmployeeStatusStore();
   const { GetContractType, contract_type } = useContractTypeStore();
@@ -76,10 +74,10 @@ function UpdateEmployee(props: Props) {
         toast.error('Error al crear el empleado');
       }
     } catch (error) {
-      console.log(error);
+      toast.error('Error al crear el empleado');
     }
   };
-  const generateCode = async () => {
+  const generateCode = () => {
     const name = dataCreate.firstName;
     const lastName = dataCreate.firstLastName;
     const initials = name.charAt(0).toUpperCase() + lastName.charAt(0).toUpperCase();
@@ -335,9 +333,7 @@ function UpdateEmployee(props: Props) {
                     label="Nivel de Estudio"
                     labelPlacement="outside"
                     className="dark:text-white"
-                    placeholder={
-                      `Seleccione el nivel de estudio ` ? props.data?.studyLevel.name : ''
-                    }
+                    placeholder={props.data?.studyLevel.name ?? 'Seleccione el nivel de estudio'}
                     classNames={{
                       base: 'font-semibold text-sm',
                     }}
@@ -360,7 +356,9 @@ function UpdateEmployee(props: Props) {
                     label="Estado del Empleado"
                     labelPlacement="outside"
                     placeholder={
-                      `Seleccione el estado del empleado ` ? props.data?.employeeStatus.name : ''
+                      `Seleccione el estado del empleado `
+                        ? props.data?.employeeStatus.name
+                        : ' Seleccione el estado del empleado'
                     }
                     className="dark:text-white"
                     classNames={{
@@ -386,7 +384,9 @@ function UpdateEmployee(props: Props) {
                     labelPlacement="outside"
                     className="dark:text-white"
                     placeholder={
-                      `Seleccione el tipo de contrato ` ? props.data?.contractType.name : ''
+                      `Seleccione el tipo de contrato `
+                        ? props.data?.contractType.name
+                        : ' Seleccione el tipo de contrato'
                     }
                     classNames={{
                       base: 'font-semibold text-sm',
@@ -427,7 +427,7 @@ function UpdateEmployee(props: Props) {
                     label="Cargo"
                     labelPlacement="outside"
                     className="dark:text-white"
-                    placeholder={`Seleccione el cargo ` ? props.data?.charge.name : ''}
+                    placeholder={props.data?.charge.name ?? 'Seleccione el cargo'}
                     classNames={{
                       base: 'font-semibold text-sm',
                     }}
@@ -448,7 +448,7 @@ function UpdateEmployee(props: Props) {
                   <Autocomplete
                     label="Sucursal"
                     labelPlacement="outside"
-                    placeholder={`Selecciona la sucursal ` ? props.data?.branch.name : ''}
+                    placeholder={ props.data?.branch.name ?? 'Selecciona la sucursal'}
                     variant="bordered"
                     className="dark:text-white"
                     classNames={{
@@ -472,7 +472,9 @@ function UpdateEmployee(props: Props) {
                     label="Departamento"
                     labelPlacement="outside"
                     placeholder={
-                      `Selecciona el departamento ` ? props.data?.address.nombreDepartamento : ''
+                      `Selecciona el departamento `
+                        ? props.data?.address.nombreDepartamento
+                        : ' Selecciona el departamento'
                     }
                     variant="bordered"
                     onChange={(e) => setCodeDepartamento(e.target.value)}
@@ -504,7 +506,9 @@ function UpdateEmployee(props: Props) {
                   <Autocomplete
                     label="Municipio"
                     labelPlacement="outside"
-                    placeholder={`Municipio ` ? props.data?.address.nombreMunicipio : ''}
+                    placeholder={
+                       props.data?.address.nombreMunicipio ?? 'Seleccione el municipio'
+                    }
                     className="dark:text-white"
                     variant="bordered"
                     classNames={{

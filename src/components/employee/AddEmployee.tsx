@@ -75,10 +75,10 @@ function AddEmployee() {
         toast.error('Error al crear el empleado');
       }
     } catch (error) {
-      console.log(error);
+      toast.error('Error al crear el empleado');
     }
   };
-  const generateCode = async () => {
+  const generateCode = () => {
     const name = dataCreate.firstName;
     const lastName = dataCreate.firstLastName;
     const initials = name.charAt(0).toUpperCase() + lastName.charAt(0).toUpperCase();

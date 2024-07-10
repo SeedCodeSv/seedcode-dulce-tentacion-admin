@@ -1,3 +1,4 @@
+import { Employee } from './employees.types'
 
 export interface ISubCategory {
   id: number
@@ -33,4 +34,9 @@ export interface CategoryProduct {
   id: number
   name: string
   isActive?: boolean
+}
+export interface PropsUpdateEmployee {
+  data?: Employee | undefined;
+
+  id: (id: number) => void;
 }
