@@ -1,4 +1,4 @@
-import { Button, Switch } from "@nextui-org/react";
+import { Switch } from "@nextui-org/react";
 import { NavLink } from "react-router-dom";
 import LOGO from "../assets/react.svg";
 import {
@@ -8,9 +8,7 @@ import {
   BookUser,
   ShieldHalf,
   Grid2X2Icon,
-  ShoppingCart,
   DollarSign,
-  Contact,
   ScanBarcode,
   ChevronDown,
   FolderOpen,
@@ -26,9 +24,9 @@ import {
 } from 'lucide-react';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { ThemeContext } from '../hooks/useTheme';
-import { useAuthStore } from '../store/auth.store';
-import { save_seller_mode } from '../storage/localStorage';
-import { useNavigate } from 'react-router';
+// import { useAuthStore } from '../store/auth.store';
+// import { save_seller_mode } from '../storage/localStorage';
+// import { useNavigate } from 'react-router';
 import { SessionContext } from '../hooks/useSession';
 import { useConfigurationStore } from '../store/perzonalitation.store';
 import useWindowSize from '../hooks/useWindowSize';
@@ -38,8 +36,8 @@ import CashCutsX from '../pages/CashCutsX';
 import CushCatsZ from '../pages/CashCutsZ';
 export const LayoutItems = () => {
   const { theme, toggleContext, context } = useContext(ThemeContext);
-  const { makeLogout } = useAuthStore();
-  const { setIsAuth, setToken, mode, setMode } = useContext(SessionContext);
+  // const { makeLogout } = useAuthStore();
+  const { mode } = useContext(SessionContext);
   useEffect(() => {
     if (context === "dark") {
       document.getElementsByTagName("body")[0].classList.add("dark");
@@ -47,23 +45,23 @@ export const LayoutItems = () => {
       document.getElementsByTagName("body")[0].classList.remove("dark");
     }
   }, [context]);
-  const navigate = useNavigate();
-  const handleSeller = () => {
-    setMode("vendedor");
-    save_seller_mode("vendedor");
-    makeLogout();
-    setIsAuth(false);
-    setToken("");
-    navigate("/");
-  };
-  const handleAdmin = () => {
-    setMode("");
-    makeLogout();
-    localStorage.removeItem("seller_mode");
-    setIsAuth(false);
-    setToken("");
-    navigate("/");
-  };
+  // const navigate = useNavigate();
+  // const handleSeller = () => {
+  //   setMode("vendedor");
+  //   save_seller_mode("vendedor");
+  //   makeLogout();
+  //   setIsAuth(false);
+  //   setToken("");
+  //   navigate("/");
+  // };
+  // const handleAdmin = () => {
+  //   setMode("");
+  //   makeLogout();
+  //   localStorage.removeItem("seller_mode");
+  //   setIsAuth(false);
+  //   setToken("");
+  //   navigate("/");
+  // };
 
   const { personalization } = useConfigurationStore();
   const { windowSize } = useWindowSize();

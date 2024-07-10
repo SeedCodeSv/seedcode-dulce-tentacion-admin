@@ -18,8 +18,7 @@ export const get_study_level = (page = 1, limit = 8, name = '', description = ''
 };
 
 export const create_study_level = ({
-  name,
-  description,
+  name
 }: {
   name: string;
   description: string;
@@ -39,7 +38,7 @@ export const create_study_level = ({
 };
 
 export const update_study_level = (
-  { name, description }: { name: string; description: string },
+  { name }: { name: string; description: string },
   id: number
 ) => {
   const token = get_token() ?? '';

@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { Autocomplete, AutocompleteItem, Button } from "@nextui-org/react";
-import { toast } from "sonner";
-import { CloseZ, ZCashCutsResponse } from "../types/cashCuts.types";
+// import { toast } from "sonner";
+import { ZCashCutsResponse } from "../types/cashCuts.types";
 import { useAuthStore } from "../store/auth.store";
 import { fechaActualString } from "../utils/dates";
 import {
-  close_x,
+  // close_x,
   get_cashCuts,
 } from "../services/facturation/cashCuts.service";
 import HeadlessModal from "../components/global/HeadlessModal";
@@ -58,46 +58,46 @@ const CushCatsZ = (props: CashCutsProps) => {
 
   const calculateIVA = (total: number) => total * 0.13;
 
-  const print = async () => {
-    const payload: CloseZ = {
-      posId: user?.correlative.id || 0,
-      numberCut: (user?.correlative.next ?? 0) + 1,
-      inicioTkt: data?.Ticket?.inicio || 0,
-      finTkt: data?.Ticket?.fin || 0,
-      totalTkt: data?.Ticket?.total || 0,
-      inicioF: data?.Factura?.inicio || 0,
-      finF: data?.Factura?.fin || 0,
-      typeCut: "Z",
-      totalF: data?.Factura?.total || 0,
-      inicioCF: data?.CreditoFiscal?.inicio || 0,
-      finCF: data?.CreditoFiscal?.fin || 0,
-      totalCF: data?.CreditoFiscal?.total || 0,
-      inicioDevNC: data?.DevolucionNC?.inicio || 0,
-      finDevNC: data?.DevolucionNC?.fin || 0,
-      totalDevNC: data?.DevolucionNC?.total || 0,
-      ivaDevTkt: calculateIVA(data?.DevolucionT?.total || 0),
-      totalDevTkt: data?.DevolucionT?.total || 0,
-      totalGeneral: data
-        ? data.Ticket?.total ||
-          0 + data.Factura?.total ||
-          0 + data.CreditoFiscal?.total ||
-          0 + data.DevolucionNC?.total ||
-          0 + data.DevolucionT?.total ||
-          0
-        : 0,
-    };
-    // window.print();
-    try {
-      await close_x(payload);
+  // const print = async () => {
+  //   const payload: CloseZ = {
+  //     posId: user?.correlative.id || 0,
+  //     numberCut: (user?.correlative.next ?? 0) + 1,
+  //     inicioTkt: data?.Ticket?.inicio || 0,
+  //     finTkt: data?.Ticket?.fin || 0,
+  //     totalTkt: data?.Ticket?.total || 0,
+  //     inicioF: data?.Factura?.inicio || 0,
+  //     finF: data?.Factura?.fin || 0,
+  //     typeCut: "Z",
+  //     totalF: data?.Factura?.total || 0,
+  //     inicioCF: data?.CreditoFiscal?.inicio || 0,
+  //     finCF: data?.CreditoFiscal?.fin || 0,
+  //     totalCF: data?.CreditoFiscal?.total || 0,
+  //     inicioDevNC: data?.DevolucionNC?.inicio || 0,
+  //     finDevNC: data?.DevolucionNC?.fin || 0,
+  //     totalDevNC: data?.DevolucionNC?.total || 0,
+  //     ivaDevTkt: calculateIVA(data?.DevolucionT?.total || 0),
+  //     totalDevTkt: data?.DevolucionT?.total || 0,
+  //     totalGeneral: data
+  //       ? data.Ticket?.total ||
+  //         0 + data.Factura?.total ||
+  //         0 + data.CreditoFiscal?.total ||
+  //         0 + data.DevolucionNC?.total ||
+  //         0 + data.DevolucionT?.total ||
+  //         0
+  //       : 0,
+  //   };
+  //   // window.print();
+  //   try {
+  //     await close_x(payload);
 
-      toast.success("Reporte Generado");
+  //     toast.success("Reporte Generado");
 
-      localStorage.setItem("boxData", "null");
-      props.onClose();
-    } catch (error) {
-      toast.error("Error al generar el corte de caja");
-    }
-  };
+  //     localStorage.setItem("boxData", "null");
+  //     props.onClose();
+  //   } catch (error) {
+  //     toast.error("Error al generar el corte de caja");
+  //   }
+  // };
   const { getBranchesList, branch_list } = useBranchesStore();
   useEffect(() => {
     getBranchesList();

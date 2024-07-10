@@ -1,4 +1,4 @@
-import axios, { AxiosHeaders } from "axios";
+import axios from "axios";
 import { API_URL } from "../../utils/constants";
 import {
   IGetMostProductSelled,

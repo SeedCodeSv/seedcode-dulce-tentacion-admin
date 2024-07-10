@@ -5,12 +5,10 @@ import {
   Button,
   Input,
 } from "@nextui-org/react";
-import { toast } from "sonner";
 import { global_styles } from "../styles/global.styles";
-import { CloseZ, ZCashCutsResponse } from "../types/cashCuts.types";
+import { ZCashCutsResponse } from "../types/cashCuts.types";
 import { useAuthStore } from "../store/auth.store";
 import {
-  close_x,
   get_cashCuts,
 } from "../services/facturation/cashCuts.service";
 import HeadlessModal from "../components/global/HeadlessModal";
@@ -62,42 +60,42 @@ const CushCatsBigZ = (props: CashCutsProps) => {
 
   const calculateIVA = (total: number) => total * 0.13;
 
-  const print = async () => {
-    const payload: CloseZ = {
-      posId: user?.correlative.id || 0,
-      numberCut: (user?.correlative.next ?? 0) + 1,
-      inicioTkt: data?.Ticket?.inicio || 0,
-      finTkt: data?.Ticket?.fin || 0,
-      totalTkt: data?.Ticket?.total || 0,
-      inicioF: data?.Factura?.inicio || 0,
-      finF: data?.Factura?.fin || 0,
-      totalF: data?.Factura?.total || 0,
-      typeCut: "BIGZ",
-      inicioCF: data?.CreditoFiscal?.inicio || 0,
-      finCF: data?.CreditoFiscal?.fin || 0,
-      totalCF: data?.CreditoFiscal?.total || 0,
-      inicioDevNC: data?.DevolucionNC?.inicio || 0,
-      finDevNC: data?.DevolucionNC?.fin || 0,
-      totalDevNC: data?.DevolucionNC?.total || 0,
-      ivaDevTkt: calculateIVA(data?.DevolucionT?.total || 0),
-      totalDevTkt: data?.DevolucionT?.total || 0,
-      totalGeneral: data
-        ? data.Ticket?.total ||
-          0 + data.Factura?.total ||
-          0 + data.CreditoFiscal?.total ||
-          0 + data.DevolucionNC?.total ||
-          0 + data.DevolucionT?.total ||
-          0
-        : 0,
-    };
-    try {
-      await close_x(payload);
-      toast.success("Reporte Generado");
-      props.onClose();
-    } catch (error) {
-      toast.error("Error al generar el corte de caja");
-    }
-  };
+  // const print = async () => {
+  //   const payload: CloseZ = {
+  //     posId: user?.correlative.id || 0,
+  //     numberCut: (user?.correlative.next ?? 0) + 1,
+  //     inicioTkt: data?.Ticket?.inicio || 0,
+  //     finTkt: data?.Ticket?.fin || 0,
+  //     totalTkt: data?.Ticket?.total || 0,
+  //     inicioF: data?.Factura?.inicio || 0,
+  //     finF: data?.Factura?.fin || 0,
+  //     totalF: data?.Factura?.total || 0,
+  //     typeCut: "BIGZ",
+  //     inicioCF: data?.CreditoFiscal?.inicio || 0,
+  //     finCF: data?.CreditoFiscal?.fin || 0,
+  //     totalCF: data?.CreditoFiscal?.total || 0,
+  //     inicioDevNC: data?.DevolucionNC?.inicio || 0,
+  //     finDevNC: data?.DevolucionNC?.fin || 0,
+  //     totalDevNC: data?.DevolucionNC?.total || 0,
+  //     ivaDevTkt: calculateIVA(data?.DevolucionT?.total || 0),
+  //     totalDevTkt: data?.DevolucionT?.total || 0,
+  //     totalGeneral: data
+  //       ? data.Ticket?.total ||
+  //         0 + data.Factura?.total ||
+  //         0 + data.CreditoFiscal?.total ||
+  //         0 + data.DevolucionNC?.total ||
+  //         0 + data.DevolucionT?.total ||
+  //         0
+  //       : 0,
+  //   };
+  //   try {
+  //     await close_x(payload);
+  //     toast.success("Reporte Generado");
+  //     props.onClose();
+  //   } catch (error) {
+  //     toast.error("Error al generar el corte de caja");
+  //   }
+  // };
   const { getBranchesList, branch_list } = useBranchesStore();
   useEffect(() => {
     getBranchesList();

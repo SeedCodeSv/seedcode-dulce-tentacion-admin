@@ -1,16 +1,14 @@
 import { Autocomplete, AutocompleteItem, Button, Input } from '@nextui-org/react';
 import { useBranchesStore } from '../../store/branches.store';
 import { useContext, useEffect, useState } from 'react';
-import { EmployeePayload } from '../../types/employees.types';
-import { useEmployeeStore } from '../../store/employee.store';
+// import { EmployeePayload } from '../../types/employees.types';
+// import { useEmployeeStore } from '../../store/employee.store';
 import { ThemeContext } from '../../hooks/useTheme';
 import { useChargesStore } from '../../store/charges.store';
 import { useBillingStore } from '../../store/facturation/billing.store';
-
 import { useEmployeeStatusStore } from '../../store/employee_status.store';
 import { useContractTypeStore } from '../../store/contract_type.store';
 import { useStudyLevelStore } from '../../store/study_level.store';
-import { toast } from 'sonner';
 import Layout from '../../layout/Layout';
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router';
@@ -22,9 +20,9 @@ function AddEmployee() {
   const { GetContractType, contract_type } = useContractTypeStore();
   const { GetStudyLevel, study_level } = useStudyLevelStore();
   const { getBranchesList, branch_list } = useBranchesStore();
-  const { postEmployee } = useEmployeeStore();
+  // const { postEmployee } = useEmployeeStore();
   const { getChargesList, charges } = useChargesStore();
-  const { getCat012Departamento, cat_012_departamento, getCat013Municipios, cat_013_municipios } =
+  const { getCat012Departamento, cat_012_departamento, cat_013_municipios } =
     useBillingStore();
   const service = new SeedcodeCatalogosMhService();
   const data = service.get013Municipio('');
@@ -40,20 +38,20 @@ function AddEmployee() {
     service.get013Municipio('014');
     GetStudyLevel();
   }, [nameDepartamento]);
-  const handleSubmit = (values: EmployeePayload) => {
-    postEmployee(values);
-  };
+  // const handleSubmit = (values: EmployeePayload) => {
+  //   postEmployee(values);
+  // };
 
   const navigate = useNavigate();
   return (
     <Layout title="Agregar Empleado">
       <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
         <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
-          <Button onClick={() => navigate('/employees')} className="dark:text-white bg-transparent">
+          <Button onClick={() => navigate('/employees')} className="bg-transparent dark:text-white">
             <ArrowLeft className="dark:text-white" />
             Atras
           </Button>
-          <div className="p-2 dark:text-white overflow-y-auto">
+          <div className="p-2 overflow-y-auto dark:text-white">
             <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
               <>
                 <div className="grid grid-cols-4 gap-4">
