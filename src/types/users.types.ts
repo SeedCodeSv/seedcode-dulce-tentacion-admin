@@ -35,12 +35,31 @@ export interface Branch {
 }
 
 export interface Employee {
-  id: number;
-  fullName: string;
-  phone: string;
+  addressId: number;
+  afp: string
+  age:number
+  bankAccount: string
+  branchId:number
+  chargeId:number
+  code: string
+  contractTypeId:number
+  dateOfBirth: string
+  dateOfEntry: string
+  dateOfExit: null;
+  dui: string
+  employeeStatusId: string
+  firstLastName: string
+  firstName: string
+  id:number
   isActive: boolean;
-  branch: Branch;
-  branchId: number;
+  isss: string
+  nit: string
+  phone: string
+  responsibleContact: string
+  salary: string
+  secondLastName: string
+  secondName: string
+  studyLevelId:number
 }
 
 export interface User {
@@ -51,7 +70,7 @@ export interface User {
   // employee: Employee;
   roleId: number;
   correlativeId: number;
-  correlative: Correlatives
+  correlative: Correlatives;
   // employeeId: number;
 }
 

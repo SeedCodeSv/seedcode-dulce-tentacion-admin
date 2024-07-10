@@ -13,6 +13,7 @@ import { ThemeContext } from "../../hooks/useTheme";
 import { useProductsStore } from "../../store/products.store";
 import { global_styles } from "../../styles/global.styles";
 import { GridProps, IMobileView } from "./types/mobile-view.types";
+import ERROR404 from "../../assets/not-found-error-alert-svgrepo-com.svg";
 
 function MobileView(props: IMobileView) {
   const { paginated_products } = useProductsStore();
@@ -24,30 +25,41 @@ function MobileView(props: IMobileView) {
     handleActivate,
   } = props;
   return (
-    <div className="w-full pb-10">
-      <DataView
-        value={paginated_products.products}
-        gutter
-        layout={layout}
-        pt={{
-          grid: () => ({
-            className:
-              "grid dark:bg-slate-800 pb-10 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5 mt-5",
-          }),
-        }}
-        color="surface"
-        itemTemplate={(customer) => (
-          <GridItem
-            product={customer}
+    <div className="flex justify-center w-full pb-10">
+      {paginated_products.products.length > 0 ? (
+        <>
+          <DataView
+            value={paginated_products.products}
+            gutter
             layout={layout}
-            openEditModal={openEditModal}
-            actions={actions}
-            DeletePopover={DeletePopover}
-            handleActivate={handleActivate}
+            pt={{
+              grid: () => ({
+                className:
+                  "grid dark:bg-slate-800 pb-10 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5 mt-5",
+              }),
+            }}
+            color="surface"
+            itemTemplate={(customer) => (
+              <GridItem
+                product={customer}
+                layout={layout}
+                openEditModal={openEditModal}
+                actions={actions}
+                DeletePopover={DeletePopover}
+                handleActivate={handleActivate}
+              />
+            )}
+            emptyMessage="No se encontraron productos"
           />
-        )}
-        emptyMessage="No se encontraron productos"
-      />
+        </>
+      ) : (
+        <>
+          <div className="flex flex-col items-center justify-center border shadow rounded-2xl w-96 h-96">
+            <img src={ERROR404} className="w-32" alt="no-data" />
+            <p className="text-xl font-light">No se encontraron productos</p>
+          </div>
+        </>
+      )}
     </div>
   );
 }
