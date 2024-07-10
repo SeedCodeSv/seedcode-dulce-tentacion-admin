@@ -436,7 +436,7 @@ export const LayoutItems = () => {
                   <div
                     id="menu1"
                     className={`flex flex-col w-full h-[900px] pb-1 overflow-hidden transition-all duration-500 ${
-                      isMenuOpen ? 'xl:max-h-52 max-h-44' : 'max-h-0'
+                      isMenuOpen ? 'xl:max-h-56 max-h-44' : 'max-h-0'
                     }`}
                   >
                     <div className="py-1">
@@ -535,7 +535,7 @@ export const LayoutItems = () => {
                     className="flex items-center w-full py-3 space-x-3 text-left text-black focus:outline-none focus:text-black"
                   >
                     <User className="dark:text-white" size={iconSize} />
-                    <p className="text-sm font-semibold dark:text-white 2xl:text-base">
+                    <p className="text-sm font-semibold dark:text-white 2xl:text-base whitespace-nowrap">
                       Gestión de reportes
                     </p>
                     <ChevronDown
