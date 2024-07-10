@@ -11,7 +11,16 @@ import {
   Switch,
 } from '@nextui-org/react';
 import { useContext, useEffect, useState } from 'react';
-import { EditIcon, User, TrashIcon, Table as ITable, CreditCard, List, Filter } from 'lucide-react';
+import {
+  EditIcon,
+  User,
+  TrashIcon,
+  Table as ITable,
+  CreditCard,
+  List,
+  Filter,
+  RefreshCcw,
+} from 'lucide-react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Drawer } from 'vaul';
@@ -39,8 +48,12 @@ function ListContractType({ actions }: PProps) {
   const { theme, context } = useContext(ThemeContext);
   const [openVaul, setOpenVaul] = useState(false);
 
-  const { paginated_contract_type, getPaginatedContractType, loading_contract_type } =
-  useContractTypeStore();
+  const {
+    paginated_contract_type,
+    activateContractType,
+    getPaginatedContractType,
+    loading_contract_type,
+  } = useContractTypeStore();
 
   const [selectedContractType, setContractType] = useState<
     { id: number; name: string } | undefined
@@ -48,11 +61,11 @@ function ListContractType({ actions }: PProps) {
 
   const [search, setSearch] = useState('');
   const [limit, setLimit] = useState(5);
-  const [active, setActive] = useState(true);
+  const [isActive, setActive] = useState(true);
 
   useEffect(() => {
-    getPaginatedContractType(1, limit, search, active ? 1 : 0);
-  }, [limit, active]);
+    getPaginatedContractType(1, limit, search, isActive ? 1 : 0);
+  }, [limit, isActive]);
 
   const handleSearch = (name: string | undefined) => {
     getPaginatedContractType(1, limit, name ?? search);
@@ -75,11 +88,11 @@ function ListContractType({ actions }: PProps) {
     modalAdd.onOpen();
   };
 
-  // const handleActivate = (id: number) => {
-  //   activateCategory(id).then(() => {
-  //     getPaginatedStatusEmployee(1, limit, search, active ? 1 : 0);
-  //   });
-  // };
+  const handleActivate = (id: number) => {
+    activateContractType(id).then(() => {
+      getPaginatedContractType(1, limit, search, isActive ? 1 : 0);
+    });
+  };
 
   return (
     <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
@@ -261,16 +274,16 @@ function ListContractType({ actions }: PProps) {
             ))}
           </Select>
           <div className="flex items-center">
-            <Switch onValueChange={(active) => setActive(active)} isSelected={active}>
+            <Switch onValueChange={(isActive) => setActive(isActive)} isSelected={isActive}>
               <span className="text-sm sm:text-base whitespace-nowrap">
-                Mostrar {active ? 'inactivos' : 'activos'}
+                Mostrar {isActive ? 'inactivos' : 'activos'}
               </span>
             </Switch>
           </div>
         </div>
         {(view === 'grid' || view === 'list') && (
           <MobileView
-            // handleActive={handleActivate}
+            handleActive={handleActivate}
             deletePopover={DeletePopUp}
             layout={view as 'grid' | 'list'}
             handleEdit={handleEdit}
@@ -315,18 +328,18 @@ function ListContractType({ actions }: PProps) {
                   )}
                   {actions.includes('Eliminar') && (
                     <>
-                      <DeletePopUp ContractTypes={item} />
-                      {/* {item.isActive ? (
-                          <DeletePopUp category={item} />
-                        ) : (
-                          <Button
-                            onClick={() => handleActivate(item.id)}
-                            isIconOnly
-                            style={global_styles().thirdStyle}
-                          >
-                            <RefreshCcw />
-                          </Button>
-                        )} */}
+                      {/* <DeletePopUp ContractTypes={item} /> */}
+                      {item.isActive ? (
+                        <DeletePopUp ContractTypes={item} />
+                      ) : (
+                        <Button
+                          onClick={() => handleActivate(item.id)}
+                          isIconOnly
+                          style={global_styles().thirdStyle}
+                        >
+                          <RefreshCcw />
+                        </Button>
+                      )}
                     </>
                   )}
                 </div>
@@ -343,7 +356,7 @@ function ListContractType({ actions }: PProps) {
                 currentPage={paginated_contract_type.currentPag}
                 totalPages={paginated_contract_type.totalPag}
                 onPageChange={(page) => {
-                    getPaginatedContractType(page, limit, search);
+                  getPaginatedContractType(page, limit, search);
                 }}
               />
             </div>

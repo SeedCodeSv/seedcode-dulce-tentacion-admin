@@ -11,7 +11,7 @@ import {
   Switch,
 } from '@nextui-org/react';
 import { useContext, useEffect, useState } from 'react';
-import { EditIcon, User, TrashIcon, Table as ITable, CreditCard, List, Filter } from 'lucide-react';
+import { EditIcon, User, TrashIcon, Table as ITable, CreditCard, List, Filter, RefreshCcw } from 'lucide-react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Drawer } from 'vaul';
@@ -36,7 +36,7 @@ function ListStatusEmployee({ actions }: PProps) {
   const { theme, context } = useContext(ThemeContext);
   const [openVaul, setOpenVaul] = useState(false);
 
-  const { paginated_status_employee, getPaginatedStatusEmployee, loading_status_employee } =
+  const { paginated_status_employee,activateStatusEmployee, getPaginatedStatusEmployee, loading_status_employee } =
     useStatusEmployeeStore();
 
   const [selectedStatusEmployee, setSelectedStatusEmployee] = useState<
@@ -45,11 +45,11 @@ function ListStatusEmployee({ actions }: PProps) {
 
   const [search, setSearch] = useState('');
   const [limit, setLimit] = useState(5);
-  const [active, setActive] = useState(true);
+  const [isActive, setActive] = useState(true);
 
   useEffect(() => {
-    getPaginatedStatusEmployee(1, limit, search, active ? 1 : 0);
-  }, [limit, active]);
+    getPaginatedStatusEmployee(1, limit, search, isActive ? 1 : 0);
+  }, [limit, isActive]);
 
   const handleSearch = (name: string | undefined) => {
     getPaginatedStatusEmployee(1, limit, name ?? search);
@@ -72,11 +72,11 @@ function ListStatusEmployee({ actions }: PProps) {
     modalAdd.onOpen();
   };
 
-  // const handleActivate = (id: number) => {
-  //   activateCategory(id).then(() => {
-  //     getPaginatedStatusEmployee(1, limit, search, active ? 1 : 0);
-  //   });
-  // };
+  const handleActivate = (id: number) => {
+    activateStatusEmployee(id).then(() => {
+      getPaginatedStatusEmployee(1, limit, search, isActive ? 1 : 0);
+    });
+  };
 
   return (
     <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
@@ -258,16 +258,16 @@ function ListStatusEmployee({ actions }: PProps) {
             ))}
           </Select>
           <div className="flex items-center">
-            <Switch onValueChange={(active) => setActive(active)} isSelected={active}>
+            <Switch onValueChange={(isActive) => setActive(isActive)} isSelected={isActive}>
               <span className="text-sm sm:text-base whitespace-nowrap">
-                Mostrar {active ? 'inactivos' : 'activos'}
+                Mostrar {isActive ? 'inactivos' : 'activos'}
               </span>
             </Switch>
           </div>
         </div>
         {(view === 'grid' || view === 'list') && (
           <MobileView
-            // handleActive={handleActivate}
+            handleActive={handleActivate}
             deletePopover={DeletePopUp}
             layout={view as 'grid' | 'list'}
             handleEdit={handleEdit}
@@ -312,9 +312,9 @@ function ListStatusEmployee({ actions }: PProps) {
                   )}
                   {actions.includes('Eliminar') && (
                     <>
-                      <DeletePopUp statusEmployees={item} />
-                      {/* {item.isActive ? (
-                        <DeletePopUp category={item} />
+                      {/* <DeletePopUp statusEmployees={item} /> */}
+                      {item.isActive ? (
+                        <DeletePopUp statusEmployees={item} />
                       ) : (
                         <Button
                           onClick={() => handleActivate(item.id)}
@@ -323,7 +323,7 @@ function ListStatusEmployee({ actions }: PProps) {
                         >
                           <RefreshCcw />
                         </Button>
-                      )} */}
+                      )}
                     </>
                   )}
                 </div>

@@ -1,14 +1,14 @@
 import { Button } from '@nextui-org/react';
 import { DataView } from 'primereact/dataview';
 import { classNames } from 'primereact/utils';
-import { EditIcon, ScrollIcon } from 'lucide-react';
+import { EditIcon, RefreshCcw, ScrollIcon } from 'lucide-react';
 
 import { GridProps, MobileViewProps } from './types/mobile_view.types';
 import { global_styles } from '../../../styles/global.styles';
 import { useStatusEmployeeStore } from '../../../store/statusEmployee';
 
 function MobileView(props: MobileViewProps) {
-  const { layout, deletePopover, handleEdit, actions } = props;
+  const { layout, deletePopover, handleEdit, actions, handleActive } = props;
 
   const { paginated_status_employee, loading_status_employee } = useStatusEmployeeStore();
   return (
@@ -32,7 +32,7 @@ function MobileView(props: MobileViewProps) {
             deletePopover={deletePopover}
             handleEdit={handleEdit}
             actions={actions}
-            // handleActive={handleActive}
+            handleActive={handleActive}
           />
         )}
         emptyMessage="No se encontraron estados de empleos"
@@ -44,7 +44,7 @@ function MobileView(props: MobileViewProps) {
 export default MobileView;
 
 const GridItem = (props: GridProps) => {
-  const { statusEmployees, layout, deletePopover, handleEdit, actions } = props;
+  const { statusEmployees, layout, deletePopover, handleEdit, actions, handleActive } = props;
   return (
     <>
       {layout === 'grid' ? (
@@ -70,8 +70,8 @@ const GridItem = (props: GridProps) => {
             )}
             {actions.includes('Eliminar') && (
               <>
-               {deletePopover({ statusEmployees })}
-                {/* {statusEmployees.isActive ? (
+                {/* {deletePopover({ statusEmployees })} */}
+                {statusEmployees.isActive ? (
                   deletePopover({ statusEmployees })
                 ) : (
                   <Button
@@ -81,14 +81,14 @@ const GridItem = (props: GridProps) => {
                   >
                     <RefreshCcw />
                   </Button>
-                )} */}
+                )}
               </>
             )}
           </div>
         </div>
       ) : (
         <ListItem
-          // handleActive={handleActive}
+          handleActive={handleActive}
           statusEmployees={statusEmployees}
           layout="list"
           deletePopover={deletePopover}
@@ -101,7 +101,7 @@ const GridItem = (props: GridProps) => {
 };
 
 const ListItem = (props: GridProps) => {
-  const { statusEmployees, deletePopover, handleEdit, actions } = props;
+  const { statusEmployees, deletePopover, handleEdit, actions, handleActive } = props;
   return (
     <>
       <div className="flex w-full col-span-1 p-5 border-b shadow md:col-span-2 lg:col-span-3 xl:col-span-4">
@@ -123,9 +123,9 @@ const ListItem = (props: GridProps) => {
           )}
           {actions.includes('Eliminar') && (
             <>
-              {deletePopover({ statusEmployees })}
+              {/* {deletePopover({ statusEmployees })} */}
 
-              {/* {statusEmployees.isActive ? (
+              {statusEmployees.isActive ? (
                 deletePopover({ statusEmployees })
               ) : (
                 <Button
@@ -135,7 +135,7 @@ const ListItem = (props: GridProps) => {
                 >
                   <RefreshCcw />
                 </Button>
-              )} */}
+              )}
             </>
           )}
         </div>
