@@ -19,7 +19,9 @@ import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
 import { useBranchesStore } from '../../store/branches.store';
 import { useSupplierStore } from '../../store/supplier.store';
 import { Supplier } from '../../types/supplier.types';
-import {useSubCategoriesStore} from '../../store/sub-categories.store';
+import { useSubCategoriesStore } from '../../store/sub-categories.store';
+import { verify_code_product } from '../../services/products.service';
+import { toast } from 'sonner';
 interface Props {
   product?: Product;
   onCloseModal: () => void;
@@ -47,26 +49,21 @@ function AddProducts(props: Props) {
       .number()
       .required('**El precio es requerido**')
       .typeError('**El precio es requerido**'),
-    minimumStock: yup
-      .number()
-      .required('**La cantidad es requerido**')
-      .typeError('**La cantidad es requerido**'),
-    code: yup
-      .string()
-      .required('**El Código es requerido**')
-      .length(12, '**El código debe tener exactamente 12 dígitos**'),
-      subCategoryId: yup
+    minimumStock: yup.number().required('**Campo requerido**').typeError('**Campo requerido**'),
+    code: yup.string().required('**El Código es requerido**'),
+    // .length(12, '**El código debe tener exactamente 12 dígitos**'),
+    subCategoryId: yup
       .number()
       .required('**Debes seleccionar la subcategoría**')
-      .min(1, '**Debes seleccionar la subcategoría**'),  
+      .min(1, '**Debes seleccionar la subcategoría**'),
     tipoItem: yup
       .string()
       .required('**Debes seleccionar el tipo de item**')
       .min(1, '**Debes seleccionar el tipo de item**'),
     uniMedida: yup
       .string()
-      .required('**Debes seleccionar la unidad de medida**')
-      .min(1, '**Debes seleccionar la unidad de medida**'),
+      .required('**Debes seleccionar la unidad**')
+      .min(1, '**Debes seleccionar la unidad**'),
     branch: yup
       .array()
       .of(yup.string().required('**Debes seleccionar las sucursales**'))
@@ -111,7 +108,6 @@ function AddProducts(props: Props) {
     getSubcategories(0);
   }, []);
 
-  
   const { theme } = useContext(ThemeContext);
   const handleSave = (values: ProductPayloadFormik) => {
     const payload = {
@@ -149,6 +145,18 @@ function AddProducts(props: Props) {
     return codigoGenerado;
   };
 
+  const verifyCode = async () => {
+    try {
+      const data = await verify_code_product(codigo)
+      if (data.data.ok === true) {
+        toast.success('Codigo no registrado')
+      }
+    } catch (error) {
+      toast.error('Codigo en uso')
+    }
+  }
+
+
   return (
     <div className="w-full">
       <Formik
@@ -179,62 +187,63 @@ function AddProducts(props: Props) {
                   )}
                 </div>
                 <div className="grid grid-cols-2 gap-5">
-                <div>
-                  <Autocomplete
-                    variant="bordered"
-                    label="Tipo de item"
-                    labelPlacement="outside"
-                    className="dark:text-white"
-                    placeholder={
-                      props.product?.tipoDeItem ?? props.product?.tipoDeItem ?? 'Selecciona el item'
-                    }
-                  >
-                    {itemTypes.map((item) => (
-                      <AutocompleteItem
-                        key={JSON.stringify(item)}
-                        value={item.codigo}
-                        onClick={() => {
-                          handleChange('tipoDeItem')(item.valores.toString());
-                          handleChange('tipoItem')(item.codigo.toString());
-                        }}
-                        className="dark:text-white"
-                      >
-                        {item.valores}
-                      </AutocompleteItem>
-                    ))}
-                  </Autocomplete>
-                  {errors.tipoItem && touched.tipoItem && (
-                    <span className="text-sm font-semibold text-red-500">{errors.tipoItem}</span>
-                  )}
-                </div>
-                <div>
-                  <Autocomplete
-                    className="dark:text-white"
-                    variant="bordered"
-                    name="unidaDeMedida"
-                    label="Unidad de medida"
-                    labelPlacement="outside"
-                    placeholder='Selecciona unidad de medida'
-                    
-                  >
-                    {unidadDeMedidaList.map((item) => (
-                      <AutocompleteItem
-                        key={JSON.stringify(item)}
-                        value={item.valores}
-                        onClick={() => {
-                          handleChange('unidaDeMedida')(item.valores.toString());
-                          handleChange('uniMedida')(item.codigo.toString());
-                        }}
-                        className="dark:text-white"
-                      >
-                        {item.valores}
-                      </AutocompleteItem>
-                    ))}
-                  </Autocomplete>
-                  {errors.uniMedida && touched.uniMedida && (
-                    <span className="text-sm font-semibold text-red-500">{errors.uniMedida}</span>
-                  )}
-                </div>
+                  <div>
+                    <Autocomplete
+                      variant="bordered"
+                      label="Tipo de item"
+                      labelPlacement="outside"
+                      className="dark:text-white"
+                      placeholder={
+                        props.product?.tipoDeItem ??
+                        props.product?.tipoDeItem ??
+                        'Selecciona el item'
+                      }
+                    >
+                      {itemTypes.map((item) => (
+                        <AutocompleteItem
+                          key={JSON.stringify(item)}
+                          value={item.codigo}
+                          onClick={() => {
+                            handleChange('tipoDeItem')(item.valores.toString());
+                            handleChange('tipoItem')(item.codigo.toString());
+                          }}
+                          className="dark:text-white"
+                        >
+                          {item.valores}
+                        </AutocompleteItem>
+                      ))}
+                    </Autocomplete>
+                    {errors.tipoItem && touched.tipoItem && (
+                      <span className="text-sm font-semibold text-red-500">{errors.tipoItem}</span>
+                    )}
+                  </div>
+                  <div>
+                    <Autocomplete
+                      className="dark:text-white"
+                      variant="bordered"
+                      name="unidaDeMedida"
+                      label="Unidad de medida"
+                      labelPlacement="outside"
+                      placeholder="Selecciona unidad de medida"
+                    >
+                      {unidadDeMedidaList.map((item) => (
+                        <AutocompleteItem
+                          key={JSON.stringify(item)}
+                          value={item.valores}
+                          onClick={() => {
+                            handleChange('unidaDeMedida')(item.valores.toString());
+                            handleChange('uniMedida')(item.codigo.toString());
+                          }}
+                          className="dark:text-white"
+                        >
+                          {item.valores}
+                        </AutocompleteItem>
+                      ))}
+                    </Autocomplete>
+                    {errors.uniMedida && touched.uniMedida && (
+                      <span className="text-sm font-semibold text-red-500">{errors.uniMedida}</span>
+                    )}
+                  </div>
                 </div>
               </div>
               <div className="w-full gap-5 grid grid-cols-1 md:grid-cols-2 mt-5">
@@ -281,7 +290,7 @@ function AddProducts(props: Props) {
                       <span className="text-sm font-semibold text-red-500">{errors.price}</span>
                     )}
                   </div>
-                  <div className='w-full'>
+                  <div className="w-full">
                     <Input
                       label="Cantidad Minima"
                       labelPlacement="outside"
@@ -314,12 +323,12 @@ function AddProducts(props: Props) {
                     }}
                     label="Categoría producto"
                     labelPlacement="outside"
-                    placeholder='Selecciona la categoría'
+                    placeholder="Selecciona la categoría"
                     variant="bordered"
                     classNames={{
                       base: 'font-semibold text-sm',
                     }}
-                    className="dark:text-white"                    
+                    className="dark:text-white"
                   >
                     {list_categories.map((bra) => (
                       <AutocompleteItem
@@ -332,7 +341,6 @@ function AddProducts(props: Props) {
                     ))}
                   </Autocomplete>
                 </div>
-                
               </div>
               <div className="w-full gap-5 grid grid-cols-1 md:grid-cols-2 mt-5">
                 <div className="flex items-end gap-2">
@@ -372,18 +380,30 @@ function AddProducts(props: Props) {
                       Generar Código
                     </Button>
                   </div>
+                  <div className="w-25">
+                    <Button
+                      className="w-full text-sm font-semibold"
+                      style={{
+                        backgroundColor: theme.colors.warning,
+                        color: theme.colors.primary
+                      }}
+                      onClick={() => {
+                        verifyCode()
+                      }}
+                    >
+                      Verificar Código
+                    </Button>
+                  </div>
                 </div>
                 <div>
                   <Autocomplete
-                    name='subCategoryId'
+                    name="subCategoryId"
                     label="Subcategoría"
                     labelPlacement="outside"
-                    placeholder='Selecciona la subcategoria'
+                    placeholder="Selecciona la subcategoria"
                     variant="bordered"
-                    classNames={{base: 'font-semibold text-sm',
-                    }}
+                    classNames={{ base: 'font-semibold text-sm' }}
                     className="dark:text-white"
-                   
                   >
                     {subcategories?.map((sub) => (
                       <AutocompleteItem
@@ -564,9 +584,7 @@ function AddProducts(props: Props) {
                     ))}
                   </Autocomplete>
                   {errors.supplierId && touched.supplierId && (
-                    <span className="text-sm font-semibold text-red-500">
-                      {errors.supplierId}
-                    </span>
+                    <span className="text-sm font-semibold text-red-500">{errors.supplierId}</span>
                   )}
                 </div>
               </div>

@@ -1,19 +1,22 @@
 import { Button } from '@nextui-org/react';
 import { DataView } from 'primereact/dataview';
 import { classNames } from 'primereact/utils';
-import { EditIcon, RefreshCcw, ScrollIcon, PackageSearch  } from 'lucide-react';
-import { global_styles } from '../../styles/global.styles';
+import { EditIcon, ScrollIcon } from 'lucide-react';
+
 import { GridProps, MobileViewProps } from './types/mobile_view.types';
-import { useSubCategoryStore } from '../../store/sub-category';
+import { global_styles } from '../../../styles/global.styles';
+import { useStatusEmployeeStore } from '../../../store/statusEmployee';
 
 function MobileView(props: MobileViewProps) {
-  const { layout, deletePopover, handleEdit, actions, handleActive } = props;
-  const { sub_categories_paginated } = useSubCategoryStore();
+  const { layout, deletePopover, handleEdit, actions } = props;
+
+  const { paginated_status_employee, loading_status_employee } = useStatusEmployeeStore();
   return (
     <div className="w-full pb-10">
       <DataView
-        value={sub_categories_paginated.SubCategories}
+        value={paginated_status_employee.employeeStatus}
         gutter
+        loading={loading_status_employee}
         layout={layout}
         pt={{
           grid: () => ({
@@ -24,15 +27,15 @@ function MobileView(props: MobileViewProps) {
         color="surface"
         itemTemplate={(cat) => (
           <GridItem
-            subcategory={cat}
+            statusEmployees={cat}
             layout={layout}
             deletePopover={deletePopover}
             handleEdit={handleEdit}
             actions={actions}
-            handleActive={handleActive}
+            // handleActive={handleActive}
           />
         )}
-        emptyMessage="No category found"
+        emptyMessage="No se encontraron estados de empleos"
       />
     </div>
   );
@@ -41,7 +44,7 @@ function MobileView(props: MobileViewProps) {
 export default MobileView;
 
 const GridItem = (props: GridProps) => {
-  const { subcategory, layout, deletePopover, handleEdit, actions, handleActive } = props;
+  const { statusEmployees, layout, deletePopover, handleEdit, actions } = props;
   return (
     <>
       {layout === 'grid' ? (
@@ -49,20 +52,16 @@ const GridItem = (props: GridProps) => {
           className={classNames(
             'w-full shadow-sm hover:shadow-lg p-8 dark:border dark:border-gray-600 rounded-2xl'
           )}
-          key={subcategory.id}
+          key={statusEmployees.id}
         >
           <div className="flex w-full gap-2">
             <ScrollIcon className="text-[#274c77] dark:text-gray-400" size={20} />
-            {subcategory.name}
-          </div>
-          <div className="flex w-full gap-2 mt-3">
-            <PackageSearch  className="text-[#006d77] dark:text-gray-400" size={20} />
-            {subcategory.categoryProduct.name}
+            {statusEmployees.name}
           </div>
           <div className="flex justify-between mt-5 w-ful">
             {actions.includes('Editar') && (
               <Button
-                onClick={() => handleEdit(subcategory)}
+                onClick={() => handleEdit(statusEmployees)}
                 isIconOnly
                 style={global_styles().secondaryStyle}
               >
@@ -71,25 +70,26 @@ const GridItem = (props: GridProps) => {
             )}
             {actions.includes('Eliminar') && (
               <>
-                {subcategory.isActive ? (
-                  deletePopover({ subcategory })
+               {deletePopover({ statusEmployees })}
+                {/* {statusEmployees.isActive ? (
+                  deletePopover({ statusEmployees })
                 ) : (
                   <Button
-                    onClick={() => handleActive(subcategory.id)}
+                    onClick={() => handleActive(statusEmployees.id)}
                     isIconOnly
                     style={global_styles().thirdStyle}
                   >
                     <RefreshCcw />
                   </Button>
-                )}
+                )} */}
               </>
             )}
           </div>
         </div>
       ) : (
         <ListItem
-          handleActive={handleActive}
-          subcategory={subcategory}
+          // handleActive={handleActive}
+          statusEmployees={statusEmployees}
           layout="list"
           deletePopover={deletePopover}
           handleEdit={handleEdit}
@@ -101,24 +101,20 @@ const GridItem = (props: GridProps) => {
 };
 
 const ListItem = (props: GridProps) => {
-  const { subcategory, deletePopover, handleEdit, actions, handleActive } = props;
+  const { statusEmployees, deletePopover, handleEdit, actions } = props;
   return (
     <>
       <div className="flex w-full col-span-1 p-5 border-b shadow md:col-span-2 lg:col-span-3 xl:col-span-4">
         <div className="w-full">
           <div className="flex items-center w-full gap-2">
             <ScrollIcon className="text-[#274c77] dark:text-gray-400" size={20} />
-            {subcategory?.name}
-          </div>
-          <div className="flex items-center w-full gap-2 mt-2">
-            <PackageSearch  className="text-[#006d77] dark:text-gray-400" size={20} />
-            {subcategory?.categoryProduct.name}
+            {statusEmployees.name}
           </div>
         </div>
         <div className="flex flex-col items-end justify-between w-full gap-5">
           {actions.includes('Editar') && (
             <Button
-              onClick={() => handleEdit(subcategory)}
+              onClick={() => handleEdit(statusEmployees)}
               isIconOnly
               style={global_styles().secondaryStyle}
             >
@@ -127,17 +123,19 @@ const ListItem = (props: GridProps) => {
           )}
           {actions.includes('Eliminar') && (
             <>
-              {subcategory.isActive ? (
-                deletePopover({ subcategory })
+              {deletePopover({ statusEmployees })}
+
+              {/* {statusEmployees.isActive ? (
+                deletePopover({ statusEmployees })
               ) : (
                 <Button
-                  onClick={() => handleActive(subcategory.id)}
+                  onClick={() => handleActive(statusEmployees.id)}
                   isIconOnly
                   style={global_styles().thirdStyle}
                 >
                   <RefreshCcw />
                 </Button>
-              )}
+              )} */}
             </>
           )}
         </div>

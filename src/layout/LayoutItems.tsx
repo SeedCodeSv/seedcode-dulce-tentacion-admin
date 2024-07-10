@@ -32,7 +32,6 @@ import { SessionContext } from '../hooks/useSession';
 import { useConfigurationStore } from '../store/perzonalitation.store';
 import useWindowSize from '../hooks/useWindowSize';
 import { ActionsContext } from '../hooks/useActions';
-import SalesMode from './LayoutModes/SalesMode';
 import CushCatsBigZ from '../pages/CashCutsBigZ';
 import CashCutsX from '../pages/CashCutsX';
 import CushCatsZ from '../pages/CashCutsZ';
@@ -87,12 +86,17 @@ export const LayoutItems = () => {
   }, [roleActions]);
   const [isClientsOpen, setIsClientsOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMenuOpen2, setIsMenuOpen2] = useState(false);
   const [isMenuBox, setIsMenuBox] = useState(false);
 
   const toggleDropdownMenu = () => {
     setIsMenuOpen(!isMenuOpen);
     setIsClientsOpen(false);
     setIsMenuBox(false);
+  };
+
+  const toggleDropdownMenu2 = () => {
+    setIsMenuOpen2(!isMenuOpen2);
   };
 
   const toggleDropdownClient = () => {
@@ -112,7 +116,7 @@ export const LayoutItems = () => {
   const [isOpenComponentBigZ, setIsOpenComponentBigZ] = useState(false);
   const [isCushCatsZ, setIsCushCatsZ] = useState(false);
   const [isCushCatsX, setIsCushCatsX] = useState(false);
-  
+
   return (
     <>
       {personalization.length === 0 ? (
@@ -329,6 +333,81 @@ export const LayoutItems = () => {
                   </div>
                 </div>
               )}
+
+              {/* Gestion de planillas ----------------------------------------------------------------- */}
+              {views.includes('Tipo de contratacion') ||
+              (views && views.includes('Estado del empleado')) ||
+              views.includes('Employee') ? (
+                <div className="flex flex-col justify-start items-center px-6 w-full">
+                  <button
+                    onClick={toggleDropdownMenu2}
+                    className="focus:outline-none focus:text-black text-left text-black flex items-center w-full py-3 space-x-3"
+                  >
+                    <User className="dark:text-white" size={iconSize} />
+                    <p className="text-sm dark:text-white font-semibold 2xl:text-base">
+                      Gestión de planillas
+                    </p>
+                    <ChevronDown
+                      className="justify-end items-end dark:text-white"
+                      size={iconSize}
+                    />
+                  </button>
+                  <div
+                    id="menu2"
+                    className={`flex flex-col w-full h-[700px] pb-1 overflow-hidden transition-all duration-500 ${
+                      isMenuOpen2 ? 'xl:max-h-36 max-h-36' : 'max-h-0'
+                    }`}
+                  >
+                    <div className="py-1">
+                      {views.includes('Nivel de estudio') && (
+                        <NavLink
+                          to={'/employees'}
+                          className={({ isActive }) =>
+                            (isActive
+                              ? 'font-semibold bg-gray-300 dark:bg-gray-700'
+                              : 'text-coffee-brown font-semibold border-white') +
+                            ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
+                          }
+                        >
+                          <User size={iconSize} />
+                          <p className="ml-2 text-sm 2xl:text-base">Nivel de estudio</p>
+                        </NavLink>
+                      )}
+
+                      {views.includes('Estado del empleado') && (
+                        <NavLink
+                          to={'/statusEmployee'}
+                          className={({ isActive }) =>
+                            (isActive
+                              ? 'font-semibold bg-gray-300 dark:bg-gray-700'
+                              : 'text-coffee-brown font-semibold border-white') +
+                            ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
+                          }
+                        >
+                          <BookUser size={iconSize} />
+                          <p className="ml-2 text-sm 2xl:text-base">Estado del empleado</p>
+                        </NavLink>
+                      )}
+                      {views.includes('Tipo de contratacion') && (
+                        <NavLink
+                          to={'/contractTypes'}
+                          className={({ isActive }) =>
+                            (isActive
+                              ? 'font-semibold bg-gray-300 dark:bg-gray-700'
+                              : 'text-coffee-brown font-semibold border-white') +
+                            ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
+                          }
+                        >
+                          <User size={iconSize} />
+                          <p className="ml-2 text-sm 2xl:text-base">Tipo de contratacion</p>
+                        </NavLink>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ) : null}
+              {/* fin de gestion de planillas -------------------------------------------------------------*/}
+
               {views.includes('Empleados') ||
               (views && views.includes('Clientes')) ||
               views.includes('Usuarios') ||

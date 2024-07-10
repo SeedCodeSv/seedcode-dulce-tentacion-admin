@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { IGetProductsPaginated, ProductList, ProductPayload } from '../types/products.types';
+import { IGetProductsPaginated, ProductList, ProductPayload, Verify_Code } from '../types/products.types';
 import { API_URL } from '../utils/constants';
 import { get_token } from '../storage/localStorage';
 
@@ -65,3 +65,7 @@ export const activate_product = (id: number) => {
     }
   );
 };
+
+export const verify_code_product = (code: string) => {
+  return axios.get<Verify_Code>(API_URL + `/branch-products/verify-code?code=${code}`)
+}

@@ -11,55 +11,54 @@ import {
   Switch,
 } from '@nextui-org/react';
 import { useContext, useEffect, useState } from 'react';
-import {
-  EditIcon,
-  User,
-  TrashIcon,
-  Table as ITable,
-  CreditCard,
-  List,
-  Filter,
-  RefreshCcw,
-} from 'lucide-react';
-import { ThemeContext } from '../../hooks/useTheme';
-import AddSubCategory from './AddSubCategory';
+import { EditIcon, User, TrashIcon, Table as ITable, CreditCard, List, Filter } from 'lucide-react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import AddButton from '../global/AddButton';
-import MobileView from './MobileView';
-import Pagination from '../global/Pagination';
 import { Drawer } from 'vaul';
-import { global_styles } from '../../styles/global.styles';
 import classNames from 'classnames';
-import { limit_options } from '../../utils/constants';
-import SmPagination from '../global/SmPagination';
-import HeadlessModal from '../global/HeadlessModal';
-import { ISubCategory } from '../../types/sub_categories.types';
-import { useSubCategoryStore } from '../../store/sub-category';
+
+import { ThemeContext } from '../../../hooks/useTheme';
+import { global_styles } from '../../../styles/global.styles';
+import AddButton from '../../global/AddButton';
+import Pagination from '../../global/Pagination';
+import HeadlessModal from '../../global/HeadlessModal';
+import SmPagination from '../../global/SmPagination';
+import { limit_options } from '../../../utils/constants';
+
+import { statusEmployee } from '../../../types/statusEmployee.types';
+import MobileView from './MobileView';
+import AddTypeContract from './AddTypeContract';
+import { useContractTypeStore } from '../../../store/contractType';
+import { ContractType } from '../../../types/contarctType.types';
 
 interface PProps {
   actions: string[];
 }
 
-function ListSubCategory({ actions }: PProps) {
+function ListContractType({ actions }: PProps) {
   const { theme, context } = useContext(ThemeContext);
   const [openVaul, setOpenVaul] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<ISubCategory>();
-  const { sub_categories_paginated, getSubCategoriesPaginated, activateSubCategory } =
-    useSubCategoryStore();
 
-  const modalAdd = useDisclosure();
+  const { paginated_contract_type, getPaginatedContractType, loading_contract_type } =
+  useContractTypeStore();
+
+  const [selectedContractType, setContractType] = useState<
+    { id: number; name: string } | undefined
+  >();
+
   const [search, setSearch] = useState('');
   const [limit, setLimit] = useState(5);
   const [active, setActive] = useState(true);
 
   useEffect(() => {
-    getSubCategoriesPaginated(1, limit, search);
+    getPaginatedContractType(1, limit, search, active ? 1 : 0);
   }, [limit, active]);
 
   const handleSearch = (name: string | undefined) => {
-    getSubCategoriesPaginated(1, limit, name ?? search);
+    getPaginatedContractType(1, limit, name ?? search);
   };
+
+  const modalAdd = useDisclosure();
 
   const style = {
     backgroundColor: theme.colors.dark,
@@ -68,16 +67,24 @@ function ListSubCategory({ actions }: PProps) {
 
   const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
 
-  const handleActivate = (id: number) => {
-    activateSubCategory(id).then(() => {
-      getSubCategoriesPaginated(1, limit, search);
+  const handleEdit = (item: ContractType) => {
+    setContractType({
+      id: item.id,
+      name: item.name,
     });
+    modalAdd.onOpen();
   };
+
+  // const handleActivate = (id: number) => {
+  //   activateCategory(id).then(() => {
+  //     getPaginatedStatusEmployee(1, limit, search, active ? 1 : 0);
+  //   });
+  // };
 
   return (
     <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
       <div className="flex flex-col w-full p-5 rounded">
-        <div className="flex flex-col justify-between w-full gap-5 mb-5 lg:mb-10 lg:flex-row lg:gap-0">
+        <div className="flex flex-col justify-between w-full gap-5 mb-5 lg:mb-5 lg:flex-row lg:gap-0">
           <div className="flex items-end gap-3">
             <div className="hidden w-full md:flex gap-3">
               <Input
@@ -226,18 +233,17 @@ function ListSubCategory({ actions }: PProps) {
             {actions.includes('Agregar') && (
               <AddButton
                 onClick={() => {
-                  setSelectedCategory(undefined);
+                  setContractType(undefined);
                   modalAdd.onOpen();
                 }}
               />
             )}
           </div>
         </div>
-        <div className="flex justify-end items-end w-full mb-5 gap-5">
+        <div className="flex justify-end items-end w-full mb-4 gap-5">
           <Select
             className="w-44 dark:text-white"
             variant="bordered"
-            defaultSelectedKeys={'5'}
             label="Mostrar"
             labelPlacement="outside"
             classNames={{
@@ -254,7 +260,7 @@ function ListSubCategory({ actions }: PProps) {
               </SelectItem>
             ))}
           </Select>
-          <div className="items-center hidden">
+          <div className="flex items-center">
             <Switch onValueChange={(active) => setActive(active)} isSelected={active}>
               <span className="text-sm sm:text-base whitespace-nowrap">
                 Mostrar {active ? 'inactivos' : 'activos'}
@@ -264,13 +270,10 @@ function ListSubCategory({ actions }: PProps) {
         </div>
         {(view === 'grid' || view === 'list') && (
           <MobileView
-            handleActive={handleActivate}
+            // handleActive={handleActivate}
             deletePopover={DeletePopUp}
             layout={view as 'grid' | 'list'}
-            handleEdit={(item) => {
-              setSelectedCategory(item);
-              modalAdd.onOpen();
-            }}
+            handleEdit={handleEdit}
             actions={actions}
           />
         )}
@@ -278,8 +281,9 @@ function ListSubCategory({ actions }: PProps) {
           <DataTable
             className="w-full shadow"
             emptyMessage="No se encontraron resultados"
-            value={sub_categories_paginated.SubCategories}
+            value={paginated_contract_type.contractTypes}
             tableStyle={{ minWidth: '50rem' }}
+            loading={loading_contract_type}
           >
             <Column
               headerClassName="text-sm font-semibold"
@@ -294,23 +298,13 @@ function ListSubCategory({ actions }: PProps) {
               header="Nombre"
             />
             <Column
-              headerClassName="text-sm font-semibold"
-              headerStyle={style}
-              field="categoryProduct.name"
-              header="Categoría de producto"
-            />
-            <Column
               headerStyle={{ ...style, borderTopRightRadius: '10px' }}
               header="Acciones"
               body={(item) => (
                 <div className="flex gap-6">
                   {actions.includes('Editar') && (
                     <Button
-                      onClick={() => {
-                        setSelectedCategory(item);
-                        4;
-                        modalAdd.onOpen();
-                      }}
+                      onClick={() => handleEdit(item)}
                       isIconOnly
                       style={{
                         backgroundColor: theme.colors.secondary,
@@ -321,17 +315,18 @@ function ListSubCategory({ actions }: PProps) {
                   )}
                   {actions.includes('Eliminar') && (
                     <>
-                      {item.isActive ? (
-                        <DeletePopUp subcategory={item} />
-                      ) : (
-                        <Button
-                          // onClick={() => handleActivate(item.id)}
-                          isIconOnly
-                          style={global_styles().thirdStyle}
-                        >
-                          <RefreshCcw />
-                        </Button>
-                      )}
+                      <DeletePopUp ContractTypes={item} />
+                      {/* {item.isActive ? (
+                          <DeletePopUp category={item} />
+                        ) : (
+                          <Button
+                            onClick={() => handleActivate(item.id)}
+                            isIconOnly
+                            style={global_styles().thirdStyle}
+                          >
+                            <RefreshCcw />
+                          </Button>
+                        )} */}
                     </>
                   )}
                 </div>
@@ -339,16 +334,16 @@ function ListSubCategory({ actions }: PProps) {
             />
           </DataTable>
         )}
-        {sub_categories_paginated.totalPag > 1 && (
+        {paginated_contract_type.totalPag > 1 && (
           <>
             <div className="hidden w-full mt-5 md:flex">
               <Pagination
-                previousPage={sub_categories_paginated.prevPag}
-                nextPage={sub_categories_paginated.nextPag}
-                currentPage={sub_categories_paginated.currentPag}
-                totalPages={sub_categories_paginated.totalPag}
+                previousPage={paginated_contract_type.prevPag}
+                nextPage={paginated_contract_type.nextPag}
+                currentPage={paginated_contract_type.currentPag}
+                totalPages={paginated_contract_type.totalPag}
                 onPageChange={(page) => {
-                  getSubCategoriesPaginated(page, limit, search);
+                    getPaginatedContractType(page, limit, search);
                 }}
               />
             </div>
@@ -356,13 +351,13 @@ function ListSubCategory({ actions }: PProps) {
               <div className="flex w-full mt-5 md:hidden">
                 <SmPagination
                   handleNext={() => {
-                    getSubCategoriesPaginated(sub_categories_paginated.nextPag, limit, search);
+                    getPaginatedContractType(paginated_contract_type.nextPag, limit, search);
                   }}
                   handlePrev={() => {
-                    getSubCategoriesPaginated(sub_categories_paginated.prevPag, limit, search);
+                    getPaginatedContractType(paginated_contract_type.prevPag, limit, search);
                   }}
-                  currentPage={sub_categories_paginated.currentPag}
-                  totalPages={sub_categories_paginated.totalPag}
+                  currentPage={paginated_contract_type.currentPag}
+                  totalPages={paginated_contract_type.totalPag}
                 />
               </div>
             </div>
@@ -371,29 +366,28 @@ function ListSubCategory({ actions }: PProps) {
       </div>
       <HeadlessModal
         size="w-[350px] md:w-[500px]"
-        title={selectedCategory ? 'Editar sub categoría' : 'Nueva Sub-categoría'}
+        title={selectedContractType ? 'Editar tipo de contrato' : 'Nuevo tipo de contrato'}
         isOpen={modalAdd.isOpen}
         onClose={modalAdd.onClose}
       >
-        <AddSubCategory closeModal={modalAdd.onClose} subCategory={selectedCategory} />
+        <AddTypeContract closeModal={modalAdd.onClose} ContractTypes={selectedContractType} />
       </HeadlessModal>
     </div>
   );
 }
 
-export default ListSubCategory;
+export default ListContractType;
 interface Props {
-  subcategory: ISubCategory;
+  ContractTypes: statusEmployee;
 }
 
-const DeletePopUp = ({ subcategory }: Props) => {
+const DeletePopUp = ({ ContractTypes }: Props) => {
   const { theme } = useContext(ThemeContext);
-
-  const { deleteSubCategory } = useSubCategoryStore();
+  const { deleteContractType } = useContractTypeStore();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleDelete = async () => {
-    await deleteSubCategory(subcategory.id);
+    await deleteContractType(ContractTypes.id);
     onClose();
   };
 
@@ -417,14 +411,14 @@ const DeletePopUp = ({ subcategory }: Props) => {
           </Button>
         </PopoverTrigger>
         <PopoverContent>
-          <div className="w-full p-5 flex flex-col items-center justify-center">
+          <div className="w-full p-5 flex flex-col items-center justify-cente">
             <p className="font-semibold text-gray-600 dark:text-white">
-              Eliminar {subcategory.name}
+              Eliminar {ContractTypes.name}
             </p>
             <p className="mt-3 text-center text-gray-600 dark:text-white w-72">
               ¿Estas seguro de eliminar este registro?
             </p>
-            <div className="mt-4">
+            <div className="mt-4 flex justify-center">
               <Button onClick={onClose}>No, cancelar</Button>
               <Button
                 onClick={() => handleDelete()}

@@ -15,14 +15,12 @@ import Charges from '../pages/Charges';
 import SubCategories from '../pages/SubCategories';
 import NewSales from '../pages/NewSales';
 import Configuration from '../pages/Configuration';
-
 import SalesReportContigencePage from '../pages/SalesReportContigencePage';
 import { useActionsRolStore } from '../store/actions_rol.store';
 import { useEffect } from 'react';
 import Views from '../pages/Views';
 import { useAuthStore } from '../store/auth.store';
 import HomeSeller from '../pages/Seller/HomeSeller';
-
 import ExpenseByDatesTransmitter from '../pages/ExpenseByDatesTransmitter';
 import Supplier from '../pages/Supplier';
 import ReportByBranchSalesByBranch from '../pages/ReportByBranchSalesByBranch';
@@ -31,6 +29,10 @@ import PurchaseOrders from '../pages/PurchaseOrders';
 import MostProductTransmitterSelledPage from '../pages/MostProductTransmitterSelledPage';
 import Discount from '../pages/Promotions';
 import AddPromotions from '../components/discounts/AddPromotions';
+import StatusEmployee from '../pages/statusEmployee';
+import ContratType from '../pages/ContratType';
+
+
 
 /* eslint-disable react-hooks/rules-of-hooks */
 export const router = () => {
@@ -148,6 +150,14 @@ export const router = () => {
     {
       path: '/discounts',
       element: views && views.includes('Descuentos') && <Discount />,
+    },
+    {
+      path: '/statusEmployee',
+      element: views && views.includes('Estado del empleado') && <StatusEmployee />,
+    },
+    {
+      path: '/contractTypes',
+      element: views && views.includes('Tipo de contratacion') && <ContratType />,
     },
     {
       path: '/AddPromotions',

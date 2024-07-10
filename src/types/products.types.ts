@@ -19,6 +19,14 @@ export interface Product {
   subCategory: SubCategory;
 }
 
+
+export interface Verify_Code {
+  ok: boolean
+  message: string
+  status: number
+}
+
+
 export interface IGetProductsPaginated {
   ok: boolean;
   products: Product[];
