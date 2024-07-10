@@ -53,7 +53,7 @@ const AddSubCategory = (props: Props) => {
   }, [props, props.subCategory, list_categories]);
 
   return (
-    <div className="w-full">
+    <div className="w-full mt-4">
       <Formik
         validationSchema={validationSchema}
         initialValues={initialValues}
@@ -87,14 +87,14 @@ const AddSubCategory = (props: Props) => {
                   }
                 }}
                 onBlur={handleBlur('categoryProductId')}
-                label="Categoria de producto"
+                label="Categoría de producto"
                 labelPlacement="outside"
                 variant="bordered"
-                className="dark:text-white mt-4"
+                className="dark:text-white mt-4 font-semibold"
                 placeholder={
                   props.subCategory?.categoryProduct?.name
                     ? props.subCategory?.categoryProduct.name
-                    : 'Selecciona una categoria'
+                    : 'Selecciona una categoría'
                 }
                 defaultSelectedKey={selectedKeyCategory}
                 value={selectedKeyCategory}

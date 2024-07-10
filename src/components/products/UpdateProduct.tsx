@@ -1,19 +1,14 @@
-import {
-  Input,
-  Textarea,
-  Button,
-  Autocomplete,
-  AutocompleteItem,
-} from "@nextui-org/react";
-import { useContext, useEffect, useState } from "react";
-import { useCategoriesStore } from "../../store/categories.store";
-import { Product, ProductPayload } from "../../types/products.types";
-import { useProductsStore } from "../../store/products.store";
-import { CategoryProduct } from "../../types/categories.types";
-import { ThemeContext } from "../../hooks/useTheme";
-import { SeedcodeCatalogosMhService } from "seedcode-catalogos-mh";
-import {useSubCategoriesStore} from '../../store/sub-categories.store';
-
+import { Input, Textarea, Button, Autocomplete, AutocompleteItem } from '@nextui-org/react';
+import { useContext, useEffect, useState } from 'react';
+import { useCategoriesStore } from '../../store/categories.store';
+import { Product, ProductPayload } from '../../types/products.types';
+import { useProductsStore } from '../../store/products.store';
+import { CategoryProduct } from '../../types/categories.types';
+import { ThemeContext } from '../../hooks/useTheme';
+import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
+import { useSubCategoriesStore } from '../../store/sub-categories.store';
+import { toast } from 'sonner';
+import { verify_code_product } from '../../services/products.service';
 
 interface Props {
   product?: Product;
@@ -22,12 +17,12 @@ interface Props {
 
 function UpdateProduct({ product, onCloseModal }: Props) {
   const service = new SeedcodeCatalogosMhService();
-  const unidadDeMedidaList =service.get014UnidadDeMedida();
+  const unidadDeMedidaList = service.get014UnidadDeMedida();
   const itemTypes = service.get011TipoDeItem();
   const { getSubcategories, subcategories } = useSubCategoriesStore();
 
   const { list_categories, getListCategories } = useCategoriesStore();
-  const { patchProducts} = useProductsStore();
+  const { patchProducts } = useProductsStore();
   const { theme } = useContext(ThemeContext);
 
   useEffect(() => {
@@ -36,24 +31,22 @@ function UpdateProduct({ product, onCloseModal }: Props) {
   }, [getListCategories]);
 
   const initialProductState: ProductPayload = {
-    name: product?.name || "",
-    description: product?.description || "",
+    name: product?.name || '',
+    description: product?.description || '',
     // price: product?.price || "",
     // costoUnitario: product?.costoUnitario || "",
     subCategoryId: product?.subCategoryId || 0,
-    tipoDeItem: product?.tipoDeItem || "",
-    unidaDeMedida: product?.unidaDeMedida || "",
-    tipoItem: product?.tipoItem || "",
-    uniMedida: product?.uniMedida || "",
-    code: product?.code || "",
+    tipoDeItem: product?.tipoDeItem || '',
+    unidaDeMedida: product?.unidaDeMedida || '',
+    tipoItem: product?.tipoItem || '',
+    uniMedida: product?.uniMedida || '',
+    code: product?.code || '',
     // branch: [],
     // supplierId: 0,
   };
 
-  const [dataUpdateProduct, setDataUpdateProduct] = useState<ProductPayload>(
-    initialProductState
-  );
-  const [codigo, setCodigo] = useState(product?.code || "");
+  const [dataUpdateProduct, setDataUpdateProduct] = useState<ProductPayload>(initialProductState);
+  const [codigo, setCodigo] = useState(product?.code || '');
 
   const handleSave = () => {
     patchProducts(dataUpdateProduct, product?.id || 0);
@@ -62,13 +55,11 @@ function UpdateProduct({ product, onCloseModal }: Props) {
 
   const generarCodigo = () => {
     const makeid = (length: number) => {
-      let result = "";
-      const characters = "0123456789";
+      let result = '';
+      const characters = '0123456789';
       const charactersLength = characters.length;
       for (let i = 0; i < length; i++) {
-        result += characters.charAt(
-          Math.floor(Math.random() * charactersLength)
-        );
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
       }
       return result;
     };
@@ -85,13 +76,22 @@ function UpdateProduct({ product, onCloseModal }: Props) {
     field: keyof ProductPayload
   ) => {
     const value =
-      field === "price" || field === "costoUnitario"
-        ? Number(e.target.value)
-        : e.target.value;
+      field === 'price' || field === 'costoUnitario' ? Number(e.target.value) : e.target.value;
     setDataUpdateProduct((prev) => ({
       ...prev,
       [field]: value,
     }));
+  };
+
+  const verifyCode = async () => {
+    try {
+      const data = await verify_code_product(codigo);
+      if (data.data.ok === true) {
+        toast.success('Codigo no registrado');
+      }
+    } catch (error) {
+      toast.error('Codigo en uso');
+    }
   };
 
   return (
@@ -103,11 +103,11 @@ function UpdateProduct({ product, onCloseModal }: Props) {
               label="Nombre"
               labelPlacement="outside"
               defaultValue={product?.name}
-              onChange={(e) => handleInputChange(e, "name")}
+              onChange={(e) => handleInputChange(e, 'name')}
               name="name"
               placeholder="Ingresa el nombre"
               classNames={{
-                label: "font-semibold text-gray-500 dark:text-gray-200 text-sm",
+                label: 'font-semibold text-gray-500 dark:text-gray-200 text-sm',
               }}
               variant="bordered"
             />
@@ -115,12 +115,12 @@ function UpdateProduct({ product, onCloseModal }: Props) {
           <div className="mt-2">
             <Textarea
               label="Descripción"
-              onChange={(e) => handleInputChange(e, "description")}
+              onChange={(e) => handleInputChange(e, 'description')}
               defaultValue={product?.description}
               labelPlacement="outside"
               name="description"
               placeholder="Ingresa la descripción"
-              classNames={{ label: "font-semibold text-gray-500 text-sm" }}
+              classNames={{ label: 'font-semibold text-gray-500 text-sm' }}
               variant="bordered"
             />
           </div>
@@ -162,11 +162,11 @@ function UpdateProduct({ product, onCloseModal }: Props) {
               }}
               label="Categoría producto"
               labelPlacement="outside"
-              placeholder= "Selecciona la categoría"
-              value={product?.subCategory?.categoryProduct.name || ""}
+              placeholder="Selecciona la categoría"
+              value={product?.subCategory?.categoryProduct.name || ''}
               variant="bordered"
-              defaultInputValue={product?.subCategory?.categoryProduct.name || ""}
-              classNames={{ base: "font-semibold text-sm" }}  
+              defaultInputValue={product?.subCategory?.categoryProduct.name || ''}
+              classNames={{ base: 'font-semibold text-sm' }}
             >
               {list_categories.map((category) => (
                 <AutocompleteItem
@@ -180,45 +180,42 @@ function UpdateProduct({ product, onCloseModal }: Props) {
             </Autocomplete>
           </div>
           <div className="mt-2">
-                  <Autocomplete
-                    name='subCategoryId'
-                    label="Subcategoría"
-                    labelPlacement="outside"
-                    placeholder="Selecciona la subcategoria"
-                    variant="bordered"
-                    classNames={{base: 'font-semibold text-sm',
-                    }}
-                    className="dark:text-white"
-                    defaultInputValue={product?.subCategory.name || ""}
-                   
-                  >
-                    {subcategories?.map((sub) => (
-                      <AutocompleteItem
-                        value={sub.id.toString()}
-                        key={JSON.stringify(sub)}
-                        onClick={() => {
-                          setDataUpdateProduct((prev) => ({
-                            ...prev,
-                            subCategoryId: sub.id,
-                          }));
-                        }}
-                        className="dark:text-white"
-                      >
-                        {sub.name}
-                      </AutocompleteItem>
-                    ))}
-                  </Autocomplete>
-                  
-                </div>
+            <Autocomplete
+              name="subCategoryId"
+              label="Subcategoría"
+              labelPlacement="outside"
+              placeholder="Selecciona la subcategoria"
+              variant="bordered"
+              classNames={{ base: 'font-semibold text-sm' }}
+              className="dark:text-white"
+              defaultInputValue={product?.subCategory.name || ''}
+            >
+              {subcategories?.map((sub) => (
+                <AutocompleteItem
+                  value={sub.id.toString()}
+                  key={JSON.stringify(sub)}
+                  onClick={() => {
+                    setDataUpdateProduct((prev) => ({
+                      ...prev,
+                      subCategoryId: sub.id,
+                    }));
+                  }}
+                  className="dark:text-white"
+                >
+                  {sub.name}
+                </AutocompleteItem>
+              ))}
+            </Autocomplete>
+          </div>
         </div>
         <div>
           <div className="mt-2">
-            <Autocomplete              
+            <Autocomplete
               variant="bordered"
               label="Tipo de item"
               labelPlacement="outside"
               placeholder="Selecciona el item"
-              defaultInputValue={product?.tipoDeItem || ""}
+              defaultInputValue={product?.tipoDeItem || ''}
             >
               {itemTypes.map((item) => (
                 <AutocompleteItem
@@ -249,7 +246,7 @@ function UpdateProduct({ product, onCloseModal }: Props) {
               label="Unidad de medida"
               labelPlacement="outside"
               placeholder="Selecciona unidad de medida"
-              defaultInputValue={product?.unidaDeMedida || ""}
+              defaultInputValue={product?.unidaDeMedida || ''}
             >
               {unidadDeMedidaList.map((item) => (
                 <AutocompleteItem
@@ -282,11 +279,11 @@ function UpdateProduct({ product, onCloseModal }: Props) {
                 defaultValue={product?.code}
                 value={codigo}
                 placeholder="Ingresa o genera el código"
-                classNames={{ label: "font-semibold text-sm" }}
+                classNames={{ label: 'font-semibold text-sm' }}
                 variant="bordered"
               />
             </div>
-            <div className="mt-8 w-full">
+            <div className="mt-8 w-25">
               <Button
                 className="w-full text-sm font-semibold"
                 style={{
@@ -298,6 +295,20 @@ function UpdateProduct({ product, onCloseModal }: Props) {
                 }}
               >
                 Generar Código
+              </Button>
+            </div>
+            <div className="w-25 mt-8">
+              <Button
+                className="w-full text-sm font-semibold"
+                style={{
+                  backgroundColor: theme.colors.warning,
+                  color: theme.colors.primary,
+                }}
+                onClick={() => {
+                  verifyCode();
+                }}
+              >
+                Verificar Código
               </Button>
             </div>
           </div>

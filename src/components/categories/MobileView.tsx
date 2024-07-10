@@ -57,7 +57,7 @@ const GridItem = (props:GridProps) => {
           <div className="flex w-full gap-2">
             <ScrollIcon
               className="text-[#274c77] dark:text-gray-400"
-              size={35}
+              size={20}
             />
             {category.name}
           </div>
@@ -111,7 +111,7 @@ const ListItem = (props:GridProps) => {
           <div className="flex items-center w-full gap-2">
             <ScrollIcon
               className="text-[#274c77] dark:text-gray-400"
-              size={35}
+              size={20}
             />
             {category.name}
           </div>

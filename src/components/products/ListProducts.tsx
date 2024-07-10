@@ -541,14 +541,14 @@ export const DeletePopover = ({ product }: PopProps) => {
         </Button>
       </PopoverTrigger>
       <PopoverContent>
-        <div className="w-full p-5">
+        <div className="w-full p-5 flex flex-col items-center justify-center">
           <p className="font-semibold text-gray-600 dark:text-white">
             Eliminar {product.name}
           </p>
           <p className="mt-3 text-center text-gray-600 dark:text-white w-72">
             ¿Estas seguro de eliminar este registro?
           </p>
-          <div className="mt-4">
+          <div className="mt-4  flex justify-center">
             <Button onClick={onClose}>No, cancelar</Button>
             <Button
               onClick={() => handleDelete()}

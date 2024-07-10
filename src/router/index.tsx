@@ -1,38 +1,40 @@
-import { createBrowserRouter } from "react-router-dom";
-import Home from "../pages/Home";
-import Tables from "../pages/Tables";
-import ProductsCategories from "../pages/ProductsCategories";
-import Users from "../pages/Users";
-import Employees from "../pages/Employees";
-import Customers from "../pages/Customers";
-import Branch from "../pages/Branch";
-import Error404 from "../pages/Error404";
-import Product from "../pages/Product";
-import ExpensesCategories from "../pages/ExpensesCategories";
-import Expenses from "../pages/Expenses";
-import ActionRol from "../pages/ActionRol";
-import Charges from "../pages/Charges";
-import SubCategories from "../pages/SubCategories";
-import NewSales from "../pages/NewSales";
-import Configuration from "../pages/Configuration";
+import { createBrowserRouter } from 'react-router-dom';
+import Home from '../pages/Home';
+import Tables from '../pages/Tables';
+import ProductsCategories from '../pages/ProductsCategories';
+import Users from '../pages/Users';
+import Employees from '../pages/Employees';
+import Customers from '../pages/Customers';
+import Branch from '../pages/Branch';
+import Error404 from '../pages/Error404';
+import Product from '../pages/Product';
+import ExpensesCategories from '../pages/ExpensesCategories';
+import Expenses from '../pages/Expenses';
+import ActionRol from '../pages/ActionRol';
+import Charges from '../pages/Charges';
+import SubCategories from '../pages/SubCategories';
+import NewSales from '../pages/NewSales';
+import Configuration from '../pages/Configuration';
+import SalesReportContigencePage from '../pages/SalesReportContigencePage';
+import { useActionsRolStore } from '../store/actions_rol.store';
+import { useEffect } from 'react';
+import Views from '../pages/Views';
+import { useAuthStore } from '../store/auth.store';
+import HomeSeller from '../pages/Seller/HomeSeller';
+import ExpenseByDatesTransmitter from '../pages/ExpenseByDatesTransmitter';
+import Supplier from '../pages/Supplier';
+import ReportByBranchSalesByBranch from '../pages/ReportByBranchSalesByBranch';
+import ReportExpensesByBranchPage from '../pages/ReportExpenseByBranchPage';
+import PurchaseOrders from '../pages/PurchaseOrders';
+import MostProductTransmitterSelledPage from '../pages/MostProductTransmitterSelledPage';
+import Discount from '../pages/Promotions';
+import AddPromotions from '../components/discounts/AddPromotions';
+import StatusEmployee from '../pages/statusEmployee';
+import ContratType from '../pages/ContratType';
 
-import SalesReportContigencePage from "../pages/SalesReportContigencePage";
-import { useActionsRolStore } from "../store/actions_rol.store";
-import { useEffect } from "react";
-import Views from "../pages/Views";
-import { useAuthStore } from "../store/auth.store";
-import HomeSeller from "../pages/Seller/HomeSeller";
 
-import ExpenseByDatesTransmitter from "../pages/ExpenseByDatesTransmitter";
-import Supplier from "../pages/Supplier";
-import ReportByBranchSalesByBranch from "../pages/ReportByBranchSalesByBranch";
-import ReportExpensesByBranchPage from "../pages/ReportExpenseByBranchPage";
-import PurchaseOrders from "../pages/PurchaseOrders";
-import MostProductTransmitterSelledPage from "../pages/MostProductTransmitterSelledPage";
-import Discount from "../pages/Promotions";
-import AddPromotions from "../components/discounts/AddPromotions";
-import VentasPorPeriodo from "../pages/reports/VentasPorPeriodo";
-import VentasPorProducto from "../pages/reports/VentasPorProducto";
+import AddEmployee from '../components/employee/AddEmployee';
+import VentasPorPeriodo from '../pages/reports/VentasPorPeriodo';
 
 /* eslint-disable react-hooks/rules-of-hooks */
 export const router = () => {
@@ -66,8 +68,8 @@ export const router = () => {
       element: views && views.includes("Categorias") && <ProductsCategories />,
     },
     {
-      path: "/subCategories",
-      element: views && views.includes("Categorias") && <SubCategories />,
+      path: '/subCategories',
+      element: views && views.includes('Categorias') && <SubCategories />,
     },
     {
       path: "/users",
@@ -168,19 +170,27 @@ export const router = () => {
       element: views && views.includes("Descuentos") && <Discount />,
     },
     {
-      path: "/AddPromotions",
+      path: '/statusEmployee',
+      element: views && views.includes('Estado del empleado') && <StatusEmployee />,
+    },
+    {
+      path: '/contractTypes',
+      element: views && views.includes('Tipo de contratacion') && <ContratType />,
+    },
+    {
+      path: '/AddPromotions',
       element: <AddPromotions />,
     },
     {
-      path: "/reports/sales-by-period",
-      element: <VentasPorPeriodo />,
+      path: '/AddEmployee',
+      element: <AddEmployee />,
     },
     {
-      path: "/reports/sales-by-product",
-      element: <VentasPorProducto />,
+      path:"/reports/sales-by-period",
+      element: <VentasPorPeriodo />
     },
     {
-      path: "*",
+      path: '*',
       element: <Error404 />,
     },
   ]);

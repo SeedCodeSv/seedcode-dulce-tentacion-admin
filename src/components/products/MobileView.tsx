@@ -74,19 +74,19 @@ const GridItem = (props: GridProps) => {
           <div className="flex w-full gap-2">
             <ShoppingBag
               className="dark:text-gray-400 text-[#274c77]"
-              size={33}
+              size={20}
             />
             {product.name}
           </div>
           <div className="flex w-full gap-2 mt-3">
             <ClipboardList
               className="dark:text-gray-400 text-[#00bbf9]"
-              size={33}
+              size={20}
             />
             {product.subCategory.categoryProduct.name}
           </div>
           <div className="flex w-full gap-2 mt-3">
-            <Barcode className="dark:text-gray-400 text-[#006d77]" size={33} />
+            <Barcode className="dark:text-gray-400 text-[#006d77]" size={20} />
             {product.code}
           </div>
           <div className="flex justify-between mt-5 w-ful">
@@ -146,19 +146,19 @@ const ListItem = (props: GridProps) => {
           <div className="flex items-center w-full gap-2">
             <ShoppingBag
               className="dark:text-gray-400 text-[#274c77]"
-              size={33}
+              size={20}
             />
             {product.name}
           </div>
           <div className="flex items-center w-full gap-2 mt-3">
             <ClipboardList
               className="dark:text-gray-400 text-[#00bbf9]"
-              size={33}
+              size={20}
             />
             {product.subCategory.categoryProduct.name}
           </div>
           <div className="flex items-center w-full gap-2 mt-3">
-            <Barcode className="dark:text-gray-400 text-[#006d77]" size={33} />
+            <Barcode className="dark:text-gray-400 text-[#006d77]" size={20} />
             {product.code}
           </div>
         </div>
