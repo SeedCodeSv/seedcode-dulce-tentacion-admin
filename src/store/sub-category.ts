@@ -69,7 +69,7 @@ export const useSubCategoryStore = create<SubCategoryStore>((set, get) => ({
         return false;
       });
   },
-  deleteSubCategory: async (id) => {
+  deleteSubCategory: (id) => {
     return delete_sub_category(id).then((res) => {
       get().getSubCategoriesPaginated(1, 5, '');
       toast.success(messages.success);

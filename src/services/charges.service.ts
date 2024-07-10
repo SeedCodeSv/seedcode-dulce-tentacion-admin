@@ -19,7 +19,7 @@ export const create_charge = ({ name }: { name: string }) => {
   );
 };
 
-export const get_charges_list = async () => {
+export const get_charges_list = () => {
   const token = get_token();
   return axios.get<IGetListCharges>(`${API_URL}/charges`, {
     headers: {
@@ -43,7 +43,7 @@ export const update_charge = ({ name }: { name: string }, id: number) => {
   );
 };
 
-export const delete_charge = async (id: number) => {
+export const delete_charge =  (id: number) => {
   const token = get_token();
   return axios.delete<{ ok: boolean }>(`${API_URL}/charges/${id}`, {
     headers: {
@@ -52,7 +52,7 @@ export const delete_charge = async (id: number) => {
   });
 };
 
-export const activate_charge = async (id: number) => {
+export const activate_charge = (id: number) => {
   const token = get_token();
   return axios.patch<{ ok: boolean }>(`${API_URL}/charges/activate/${id}`, {}, {
     headers: {

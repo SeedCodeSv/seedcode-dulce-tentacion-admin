@@ -25,7 +25,7 @@ function MobileView(props: IMobileView) {
     handleActivate,
   } = props;
   return (
-    <div className="flex justify-center w-full pb-10">
+    <div className="w-full pb-10 ">
       {paginated_products.products.length > 0 ? (
         <>
           <DataView
@@ -37,6 +37,7 @@ function MobileView(props: IMobileView) {
                 className:
                   "w-full grid dark:bg-slate-800 pb-10 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5 mt-5",
               }),
+              
             }}
             color="surface"
             itemTemplate={(customer) => (
@@ -153,7 +154,7 @@ const ListItem = (props: GridProps) => {
   const { theme } = useContext(ThemeContext);
   return (
     <>
-      <div className="flex w-full col-span-1 p-5 border-b shadow md:col-span-2 lg:col-span-3 xl:col-span-4">
+      <div className="flex w-full col-span-1 p-5 border-b shadow ">
         <div className="w-full">
           <div className="flex w-full gap-2">
             <ShoppingBag
