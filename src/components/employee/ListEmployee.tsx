@@ -41,6 +41,7 @@ import { Branches } from '../../types/branches.types';
 import { limit_options } from '../../utils/constants';
 import SmPagination from '../global/SmPagination';
 import HeadlessModal from '../global/HeadlessModal';
+import { useNavigate } from 'react-router';
 
 interface Props {
   actions: string[];
@@ -53,7 +54,7 @@ function ListEmployee({ actions }: Props) {
     useEmployeeStore();
 
   const [firstName, setFirstName] = useState('');
-  const [firstLastName, ] = useState('')
+  const [firstLastName] = useState('');
   const [branch, setBranch] = useState('');
   const [phone, setPhone] = useState('');
   const [limit, setLimit] = useState(5);
@@ -66,7 +67,7 @@ function ListEmployee({ actions }: Props) {
   const [selectedEmployee, setSelectedEmployee] = useState<Employee>();
 
   const changePage = () => {
-    getEmployeesPaginated(1, limit, firstName,firstLastName, branch, phone, active ? 1 : 0);
+    getEmployeesPaginated(1, limit, firstName, firstLastName, branch, phone, active ? 1 : 0);
   };
   const style = {
     backgroundColor: theme.colors.dark,
@@ -75,15 +76,15 @@ function ListEmployee({ actions }: Props) {
 
   useEffect(() => {
     getBranchesList();
-    getEmployeesPaginated(1, limit, firstName,firstLastName, branch, phone, active ? 1 : 0);
+    getEmployeesPaginated(1, limit, firstName, firstLastName, branch, phone, active ? 1 : 0);
   }, [limit, active]);
 
   const handleActivate = (id: number) => {
     activateEmployee(id).then(() => {
-      getEmployeesPaginated(1, limit, '', '', '', '',active ? 1 : 0);
+      getEmployeesPaginated(1, limit, '', '', '', '', active ? 1 : 0);
     });
   };
-
+  const navigate = useNavigate();
   const filters = useMemo(() => {
     return (
       <>
@@ -266,6 +267,7 @@ function ListEmployee({ actions }: Props) {
                   <AddButton
                     onClick={() => {
                       modalAdd.onOpen();
+                      navigate('/AddEmployee');
                       setSelectedEmployee(undefined);
                     }}
                   />
@@ -331,7 +333,7 @@ function ListEmployee({ actions }: Props) {
                 headerClassName="text-sm font-semibold"
                 field="firstName"
                 headerStyle={style}
-               header="Nombre"
+                header="Nombre"
                 body={(rowData) => `${rowData.firstName} ${rowData.firstLastName}`}
               />
               <Column
@@ -394,7 +396,15 @@ function ListEmployee({ actions }: Props) {
                   currentPage={employee_paginated.currentPag}
                   totalPages={employee_paginated.totalPag}
                   onPageChange={(page) => {
-                    getEmployeesPaginated(page, limit, firstName,firstLastName, branch, phone, active ? 1 : 0);
+                    getEmployeesPaginated(
+                      page,
+                      limit,
+                      firstName,
+                      firstLastName,
+                      branch,
+                      phone,
+                      active ? 1 : 0
+                    );
                   }}
                 />
               </div>
@@ -438,7 +448,7 @@ function ListEmployee({ actions }: Props) {
         title={selectedEmployee ? 'Editar Empleado' : 'Agregar Empleado'}
         size="w-[350px] md:w-full"
       >
-        <AddEmployee closeModal={modalAdd.onClose} employee={selectedEmployee} />
+        <AddEmployee />
       </HeadlessModal>
     </>
   );

@@ -36,7 +36,7 @@ export const useAuthStore = create<IAuthStore>((set, get) => ({
         if (data.ok) {
           set_token(data.token);
           save_user(data.user);
-          set({ user: data.user })
+          set({ user: data.user });
           if (mode === 'vendedor') {
             post_box(data.box.id.toString());
             save_branch_id(data.user.correlative.branchId.toString());
@@ -45,7 +45,7 @@ export const useAuthStore = create<IAuthStore>((set, get) => ({
           }
           if (is_admin(data.user.role.name)) {
             // await save_branch_id(String(data.user.employee.branch.id));
-            await save_branch_id(String(data.user.correlative.branchId));
+             save_branch_id(String(data.user.correlative.branch.id));
           }
 
           await get()
