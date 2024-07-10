@@ -10,6 +10,8 @@ import {
   get_sales_by_day,
   get_sales_by_day_table,
   get_sales_by_month_and_year,
+  get_sales_by_period,
+  get_sales_by_period_chart,
 } from '../../services/reports/sales.reports.service';
 
 export const salesReportStore = create<ISalesReportStore>((set) => ({
@@ -20,6 +22,24 @@ export const salesReportStore = create<ISalesReportStore>((set) => ({
   sales_table_day: [],
   data: [],
   products_most_selled: [],
+  sales_by_period: undefined,
+  sales_by_period_graph: undefined,
+  getSalesByPeriodChart(startDate, endDate) {
+    get_sales_by_period_chart(startDate, endDate).then(({ data }) => {
+      set({ sales_by_period_graph: data });
+    }).catch(() => {
+      set({ sales_by_period_graph: undefined });
+    });
+  },
+  getSalesByPeriod(page, startDate, endDate) {
+    get_sales_by_period(page, startDate, endDate)
+      .then(({ data }) => {
+        set({ sales_by_period: data });
+      })
+      .catch(() => {
+        set({ sales_by_period: undefined });
+      });
+  },
   getSalesTableDay: (id) => {
     get_sales_by_day_table(id)
       .then(({ data }) => {

@@ -1,0 +1,30 @@
+export interface Sale {
+	date: string;
+	totalSales: string;
+	salesCount: string;
+}
+
+export interface IGetSalesByPeriod {
+	ok: boolean;
+	sales: Sale[];
+	total: number;
+	totalPag: number;
+	currentPag: number;
+	nextPag: number;
+	prevPag: number;
+	status: number;
+}
+
+export interface SalesGraph {
+	branch: string;
+	quantity: number;
+	total: number;
+}
+
+export interface SalesChartGraphPeriod {
+	ok: boolean;
+	message: string;
+	startDate: string;
+	endDate: string;
+	data: SalesGraph[];
+}

@@ -14,7 +14,10 @@ function SocketContext() {
     socket.on("connect", () => {});
 
     socket.on("new-sale-admin", () => {
-      toast.success("Nueva venta registrada");
+      toast.success("Nueva venta registrada",{
+        duration: 3000,
+        icon: "👏",
+      });
     });
 
     return () => {

@@ -61,7 +61,7 @@ export const SideBar = (props: Props) => {
   }, []);
 
   return (
-    <div className="flex w-screen h-screen">
+    <div className="flex w-screen h-screen overflow-x-hidden">
       {windowSize.width < 1280 ? (
         <SmLayout isOpen={isOpen} setIsOpen={setIsOpen} items={() => <LayoutItems />} />
       ) : (
@@ -81,10 +81,10 @@ export const SideBar = (props: Props) => {
             </Button>
           </div>
           <div className="ml-3 lg:ml-0">
-            <p className="text-sm uppercase font-bold whitespace-nowrap start">{props.title}</p>
+            <p className="text-sm font-bold uppercase whitespace-nowrap start">{props.title}</p>
           </div>
-          <div className="flex justify-end items-end w-full "></div>
-          <div className="flex justify-end items-end w-full ">
+          <div className="flex items-end justify-end w-full "></div>
+          <div className="flex items-end justify-end w-full ">
             <Dropdown placement="bottom-start" showArrow>
               <DropdownTrigger>
                 <User
@@ -99,13 +99,13 @@ export const SideBar = (props: Props) => {
                   }}
                   className="transition-transform"
                   description={
-                    <span className="hidden lg:block text-gray-400">{user?.userName}</span>
+                    <span className="hidden text-gray-400 lg:block">{user?.userName}</span>
                   }
                   name={<span className="hidden lg:block">{user?.userName}</span>}
                 ></User>
               </DropdownTrigger>
               <DropdownMenu aria-label="User Actions" variant="flat">
-                <DropdownItem key="profile" className="h-14 gap-2">
+                <DropdownItem key="profile" className="gap-2 h-14">
                   <p className="font-bold dark:text-white">Sesión iniciada</p>
                   <p className="font-bold dark:text-white">{user?.userName}</p>
                 </DropdownItem>

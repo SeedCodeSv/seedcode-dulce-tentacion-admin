@@ -5,6 +5,7 @@ import {
   SaleMonthYear,
   SaleTableDay,
 } from '../../../types/reports/sales.reports.types';
+import { IGetSalesByPeriod, SalesChartGraphPeriod } from '../../../types/reports/sales_by_period.report';
 
 export interface ISalesReportStore {
   products_most_selled: ProductoMostSelledTable[];
@@ -14,8 +15,11 @@ export interface ISalesReportStore {
   expenses: IDataExpense[];
   sales_table_day: SaleTableDay[];
   data: IDataSalesGrafic[];
+  sales_by_period: IGetSalesByPeriod | undefined;
+  sales_by_period_graph: SalesChartGraphPeriod | undefined;
   getSalesTableDay: (id: number) => void;
-
+  getSalesByPeriod: (page: number, startDate: string, endDate: string) => void;
+  getSalesByPeriodChart: (startDate: string, endDate: string) => void;
   getSalesByDay: (id: number) => void;
   getSalesExpenseByDate: (id: number, startDate: string, endDate: string) => void;
   getSalesByTransmitter: (id: number, startDate: string, endDate: string) => void;

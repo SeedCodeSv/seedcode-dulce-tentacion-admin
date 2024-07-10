@@ -14,7 +14,8 @@ import { useBranchesStore } from "../store/branches.store";
 import { get_correlatives } from "../services/correlatives.service";
 import { Correlatives } from "../types/correlatives.types";
 import { formatCurrency } from "../utils/dte";
-import CsvDownloader from "react-csv-downloader";
+import { PiMicrosoftExcelLogoBold } from "react-icons/pi";
+import { IoPrintSharp } from "react-icons/io5";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 
@@ -322,32 +323,320 @@ const CashCutsX = (props: CashCutsProps) => {
   const exportDataToExcel = () => {
     const data_convert = [
       {
-        Tipo: "Factura",
-        Inicio: data?.Ticket.inicio,
-        Final: data?.Ticket.fin,
-        Corte: data?.Ticket.total,
+        descripcion: "",
+        cantidad: 0,
+        total: 0,
       },
       {
-        Tipo: "Credito Fiscal",
-        Inicio: data?.CreditoFiscal.inicio,
-        Final: data?.CreditoFiscal.fin,
-        Corte: data?.CreditoFiscal.total,
+        descripcion: "==============================================",
+        cantidad: 0,
+        total: 0,
       },
       {
-        Tipo: "Devolucion NC",
-        Inicio: data?.DevolucionNC.inicio,
-        Final: data?.DevolucionNC.fin,
-        Corte: data?.DevolucionNC.total,
+        descripcion: "DETALLE VENTAS POR COMPROBANTE",
+        cantidad: 0,
+        total: 0,
       },
       {
-        Tipo: "Devolucion T",
-        Inicio: data?.DevolucionT.inicio,
-        Final: data?.DevolucionT.fin,
-        Corte: data?.DevolucionT.total,
+        descripcion: "==============================================",
+        cantidad: 0,
+        total: 0,
       },
       {
-        Tipo: "Total General",
-        Corte: data?.totalGeneral,
+        descripcion: "VENTAS CON TICKET",
+        cantidad: 0,
+        total: 0,
+      },
+      {
+        descripcion: `No. INICIAL: ${data?.Ticket.inicio}`,
+        cantidad: 0,
+        total: 0,
+      },
+      {
+        descripcion: `No. FINAL: ${data?.Ticket.fin}`,
+        cantidad: 0,
+        total: 0,
+      },
+      {
+        descripcion: `GRAVADAS:`,
+        cantidad: 0,
+        total: Number(data?.Ticket.total) - Number(data?.Ticket.total) * 0.13,
+      },
+      {
+        descripcion: `IVA:`,
+        cantidad: 0,
+        total: Number(data?.Ticket.total) * 0.13,
+      },
+      {
+        descripcion: `SUB-TOTAL:`,
+        cantidad: 0,
+        total: Number(data?.Ticket.total),
+      },
+      {
+        descripcion: `EXENTAS:`,
+        cantidad: 0,
+        total: 0,
+      },
+      {
+        descripcion: `NO-SUJETAS:`,
+        cantidad: 0,
+        total: 0,
+      },
+      {
+        descripcion: `TOTAL:`,
+        cantidad: 0,
+        total: data?.Ticket.total,
+      },
+      {
+        descripcion: "",
+        cantidad: 0,
+        total: 0,
+      },
+      {
+        descripcion: "VENTAS CON FACTURA",
+        cantidad: 0,
+        total: 0,
+      },
+      {
+        descripcion: `No. INICIAL: ${data?.Factura.inicio}`,
+        cantidad: 0,
+        total: 0,
+      },
+      {
+        descripcion: `No. FINAL: ${data?.Factura.fin}`,
+        cantidad: 0,
+        total: 0,
+      },
+      {
+        descripcion: `GRAVADAS:`,
+        cantidad: 0,
+        total: Number(data?.Factura.total) - Number(data?.Factura.total) * 0.13,
+      },
+      {
+        descripcion: `IVA:`,
+        cantidad: 0,
+        total: Number(data?.Factura.total) * 0.13,
+      },
+      {
+        descripcion: `SUB-TOTAL:`,
+        cantidad: 0,
+        total: Number(data?.Factura.total),
+      },
+      {
+        descripcion: `EXENTAS:`,
+        cantidad: 0,
+        total: 0,
+      },
+      {
+        descripcion: `NO-SUJETAS:`,
+        cantidad: 0,
+        total: 0,
+      },
+      {
+        descripcion: `TOTAL:`,
+        cantidad: 0,
+        total: data?.Factura.total,
+      },
+      {
+        descripcion: "",
+        cantidad: 0,
+        total: 0,
+      },
+      {
+        descripcion: "VENTAS CON CRÉDITO FISCAL",
+        cantidad: 0,
+        total: 0,
+      },
+      {
+        descripcion: `No. INICIAL: ${data?.CreditoFiscal.inicio}`,
+        cantidad: 0,
+        total: 0,
+      },
+      {
+        descripcion: `No. FINAL: ${data?.CreditoFiscal.fin}`,
+        cantidad: 0,
+        total: 0,
+      },
+      {
+        descripcion: `GRAVADAS:`,
+        cantidad: 0,
+        total:
+          Number(data?.CreditoFiscal.total) -
+          Number(data?.CreditoFiscal.total) * 0.13,
+      },
+      {
+        descripcion: `IVA:`,
+        cantidad: 0,
+        total: Number(data?.CreditoFiscal.total) * 0.13,
+      },
+      {
+        descripcion: `SUB-TOTAL:`,
+        cantidad: 0,
+        total: Number(data?.CreditoFiscal.total),
+      },
+      {
+        descripcion: `EXENTAS:`,
+        cantidad: 0,
+        total: 0,
+      },
+      {
+        descripcion: `NO-SUJETAS:`,
+        cantidad: 0,
+        total: 0,
+      },
+      {
+        descripcion: `TOTAL:`,
+        cantidad: 0,
+        total: data?.CreditoFiscal.total,
+      },
+      {
+        descripcion: "",
+        cantidad: 0,
+        total: 0,
+      },
+      {
+        descripcion: "DEVOLUCIONES CON NOTA DE CRÉDITO",
+        cantidad: 0,
+        total: 0,
+      },
+      {
+        descripcion: `No. INICIAL: ${data?.DevolucionNC.inicio}`,
+        cantidad: 0,
+        total: 0,
+      },
+      {
+        descripcion: `No. FINAL: ${data?.DevolucionNC.fin}`,
+        cantidad: 0,
+        total: 0,
+      },
+      {
+        descripcion: `GRAVADAS:`,
+        cantidad: 0,
+        total:
+          Number(data?.DevolucionNC.total) -
+          Number(data?.DevolucionNC.total) * 0.13,
+      },
+      {
+        descripcion: `IVA:`,
+        cantidad: 0,
+        total: Number(data?.DevolucionNC.total) * 0.13,
+      },
+      {
+        descripcion: `SUB-TOTAL:`,
+        cantidad: 0,
+        total: Number(data?.DevolucionNC.total),
+      },
+      {
+        descripcion: `EXENTAS:`,
+        cantidad: 0,
+        total: 0,
+      },
+      {
+        descripcion: `NO-SUJETAS:`,
+        cantidad: 0,
+        total: 0,
+      },
+      {
+        descripcion: `TOTAL:`,
+        cantidad: 0,
+        total: data?.DevolucionNC.total,
+      },
+      {
+        descripcion: "",
+        cantidad: 0,
+        total: 0,
+      },
+      {
+        descripcion: "DEVOLUCIONES CON TICKET",
+        cantidad: 0,
+        total: 0,
+      },
+      {
+        descripcion: `No. INICIAL: ${data?.DevolucionT.inicio}`,
+        cantidad: 0,
+        total: 0,
+      },
+      {
+        descripcion: `No. FINAL: ${data?.DevolucionT.fin}`,
+        cantidad: 0,
+        total: 0,
+      },
+      {
+        descripcion: `GRAVADAS:`,
+        cantidad: 0,
+        total:
+          Number(data?.DevolucionT.total) -
+          Number(data?.DevolucionT.total) * 0.13,
+      },
+      {
+        descripcion: `IVA:`,
+        cantidad: 0,
+        total: Number(data?.DevolucionT.total) * 0.13,
+      },
+      {
+        descripcion: `SUB-TOTAL:`,
+        cantidad: 0,
+        total: Number(data?.DevolucionT.total),
+      },
+      {
+        descripcion: `EXENTAS:`,
+        cantidad: 0,
+        total: 0,
+      },
+      {
+        descripcion: `NO-SUJETAS:`,
+        cantidad: 0,
+        total: 0,
+      },
+      {
+        descripcion: `TOTAL:`,
+        cantidad: 0,
+        total: data?.DevolucionT.total,
+      },
+      {
+        descripcion: "",
+        cantidad: 0,
+        total: 0,
+      },
+      {
+        descripcion: `TOTAL GENERAL:`,
+        cantidad: 0,
+        total: 0,
+      },
+      {
+        descripcion: `GRAVADAS:`,
+        cantidad: 0,
+        total: Number(data?.totalGeneral) - Number(data?.totalGeneral) * 0.13,
+      },
+      {
+        descripcion: `IVA:`,
+        cantidad: 0,
+        total: Number(data?.totalGeneral) * 0.13,
+      },
+      {
+        descripcion: `SUB-TOTAL:`,
+        cantidad: 0,
+        total: Number(data?.totalGeneral) - Number(data?.totalGeneral) * 0.13,
+      },
+      {
+        descripcion: `EXENTAS:`,
+        cantidad: 0,
+        total: 0,
+      },
+      {
+        descripcion: `NO SUJETAS:`,
+        cantidad: 0,
+        total: 0,
+      },
+      {
+        descripcion: `RETENCIONES:`,
+        cantidad: 0,
+        total: 0,
+      },
+      {
+        descripcion: `TOTAL:`,
+        cantidad: 0,
+        total: data?.totalGeneral,
       },
     ];
 
@@ -355,7 +644,7 @@ const CashCutsX = (props: CashCutsProps) => {
     const currencyFormat = '"$"#,##0.00';
 
     Object.keys(worksheet).forEach((cell) => {
-      if (cell.startsWith("D") && !isNaN(worksheet[cell].v)) {
+      if (cell.startsWith("C") && !isNaN(worksheet[cell].v)) {
         worksheet[cell].z = currencyFormat;
       }
     });
@@ -423,11 +712,18 @@ const CashCutsX = (props: CashCutsProps) => {
 
         <div className="flex flex-col items-center justify-center w-full h-full p-5 mt-4 bg-gray-600">
           <div className="grid grid-cols-2 gap-4 w-[500px] mt-4">
-            <button onClick={exportDataToExcel}>Imprimir</button>
+            <Button
+              color="success"
+              startContent={<PiMicrosoftExcelLogoBold size={25} />}
+              onClick={exportDataToExcel}
+            >
+              Exportar a excel
+            </Button>
             <Button
               className="w-full"
               style={global_styles().secondaryStyle}
               onClick={() => printCutX()}
+              startContent={<IoPrintSharp size={25} />}
             >
               Imprimir y cerrar
             </Button>
