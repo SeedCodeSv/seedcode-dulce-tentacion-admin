@@ -158,7 +158,7 @@ function AddProducts(props: Props) {
 
 
   return (
-    <div className="w-full">
+    <div className="w-full h-full">
       <Formik
         validationSchema={validationSchema}
         initialValues={initialValues}
@@ -167,7 +167,7 @@ function AddProducts(props: Props) {
         {({ values, errors, touched, handleBlur, handleSubmit, handleChange, setFieldValue }) => (
           <>
             <div className="w-full">
-              <div className="w-full gap-5 grid grid-cols-1 md:grid-cols-2">
+              <div className="grid w-full grid-cols-1 gap-5 md:grid-cols-2">
                 <div>
                   <Input
                     label="Nombre"
@@ -246,8 +246,8 @@ function AddProducts(props: Props) {
                   </div>
                 </div>
               </div>
-              <div className="w-full gap-5 grid grid-cols-1 md:grid-cols-2 mt-5">
-                <div className="w-full grid grid-cols-2 xl:grid-cols-3 lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-3 gap-5">
+              <div className="grid w-full grid-cols-1 gap-5 mt-5 md:grid-cols-2">
+                <div className="grid w-full grid-cols-2 gap-5 xl:grid-cols-3 lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-3">
                   <div>
                     <Input
                       label="Costo unitario"
@@ -342,7 +342,7 @@ function AddProducts(props: Props) {
                   </Autocomplete>
                 </div>
               </div>
-              <div className="w-full gap-5 grid grid-cols-1 md:grid-cols-2 mt-5">
+              <div className="grid w-full grid-cols-1 gap-5 mt-5 md:grid-cols-2">
                 <div className="flex items-end gap-2">
                   <div className="w-full">
                     <Input
@@ -425,8 +425,8 @@ function AddProducts(props: Props) {
                   )}
                 </div>
               </div>
-              <div className="w-full gap-5 grid grid-cols-1 md:grid-cols-2 mt-5">
-                <div className="w-full grid grid-cols-3 gap-5">
+              <div className="grid w-full grid-cols-1 gap-5 mt-5 md:grid-cols-2">
+                <div className="grid w-full grid-cols-3 gap-5">
                   <div>
                     <Input
                       label="Precio A"
@@ -511,7 +511,7 @@ function AddProducts(props: Props) {
                   )}
                 </div>
               </div>
-              <div className="w-full gap-5 grid grid-cols-2 mt-5">
+              <div className="grid w-full grid-cols-2 gap-5 mt-5">
                 <div className="flex flex-col justify-content-center">
                   <Select
                     multiple
@@ -588,10 +588,10 @@ function AddProducts(props: Props) {
                   )}
                 </div>
               </div>
-              <div className="w-full flex justify-end items-end gap-5 mt-5">
+              <div className="flex items-end justify-end w-full gap-5 mt-5 mb-5">
                 <Button
                   onClick={() => handleSubmit()}
-                  className="w-full sm:w-1/2 md:w-1/4 mt-4 text-sm font-semibold"
+                  className="w-full mt-4 text-sm font-semibold sm:w-1/2 md:w-1/4"
                   style={{
                     backgroundColor: theme.colors.third,
                     color: theme.colors.primary,

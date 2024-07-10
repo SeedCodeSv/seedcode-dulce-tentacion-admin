@@ -16,6 +16,7 @@ import { PiMicrosoftExcelLogoBold } from "react-icons/pi";
 import { IoPrintSharp } from "react-icons/io5";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
+import { toast } from "sonner";
 
 interface CashCutsProps {
   isOpen: boolean;
@@ -40,7 +41,7 @@ const CashCutsX = (props: CashCutsProps) => {
         const response = await get_cashCuts_x(branchId, codeSelected);
         setData(response.data.data);
       } catch (error) {
-        console.error("Error fetching cash cuts:", error);
+        toast.error("Error al cargar los cortes de caja");
       }
       if (branchId > 0) {
         const data = await get_correlatives(branchId);

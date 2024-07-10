@@ -1,6 +1,4 @@
 import { useContext, useEffect, useState, useCallback } from "react";
-import { Column } from "primereact/column";
-import { DataTable } from "primereact/datatable";
 import {
   Autocomplete,
   AutocompleteItem,
@@ -110,11 +108,6 @@ function ReportSalesByBranch() {
         },
       },
     },
-  };
-
-  const style = {
-    backgroundColor: theme.colors.dark,
-    color: theme.colors.primary,
   };
   return (
     <>

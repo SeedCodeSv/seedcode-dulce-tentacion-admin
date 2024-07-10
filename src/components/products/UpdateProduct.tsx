@@ -95,8 +95,8 @@ function UpdateProduct({ product, onCloseModal }: Props) {
   };
 
   return (
-    <div className="mb-32 sm:mb-0 w-full pt-5">
-      <div className="grid grid-cols-2 gap-2">
+    <div className="w-full pt-5">
+      <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
         <div>
           <div className="pt-2">
             <Input
@@ -120,7 +120,7 @@ function UpdateProduct({ product, onCloseModal }: Props) {
               labelPlacement="outside"
               name="description"
               placeholder="Ingresa la descripción"
-              classNames={{ label: 'font-semibold text-gray-500 text-sm' }}
+              classNames={{ label: 'font-semibold text-gray-500 text-sm text-left' }}
               variant="bordered"
             />
           </div>
@@ -270,8 +270,8 @@ function UpdateProduct({ product, onCloseModal }: Props) {
             </Autocomplete>
           </div>
 
-          <div className="flex mt-5 gap-2">
-            <div className="mt-2 w-full">
+          <div className="flex gap-2 mt-5">
+            <div className="w-full mt-2">
               <Input
                 label="Código"
                 labelPlacement="outside"
@@ -297,7 +297,7 @@ function UpdateProduct({ product, onCloseModal }: Props) {
                 Generar Código
               </Button>
             </div>
-            <div className="w-25 mt-8">
+            <div className="mt-8 w-25">
               <Button
                 className="w-full text-sm font-semibold"
                 style={{

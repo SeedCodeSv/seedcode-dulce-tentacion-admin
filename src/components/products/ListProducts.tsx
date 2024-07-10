@@ -28,7 +28,6 @@ import AddButton from "../global/AddButton";
 import { useProductsStore } from "../../store/products.store";
 import Pagination from "../global/Pagination";
 import { Product } from "../../types/products.types";
-import ModalGlobal from "../global/ModalGlobal";
 import AddProducts from "./AddProducts";
 import { useCategoriesStore } from "../../store/categories.store";
 import { ThemeContext } from "../../hooks/useTheme";
@@ -43,9 +42,7 @@ import SmPagination from "../global/SmPagination";
 import useWindowSize from "../../hooks/useWindowSize";
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
-  DrawerDescription,
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
@@ -59,12 +56,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import HeadlessModal from "../global/HeadlessModal";
+import classNames from "classnames";
 
 interface Props {
   actions: string[];
 }
 function ListProducts({ actions }: Props) {
-  const { theme, context } = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
   const style = {
     backgroundColor: theme.colors.dark,
     color: theme.colors.primary,
@@ -414,6 +413,10 @@ function ListProducts({ actions }: Props) {
               <Switch
                 onValueChange={(active) => setActive(active)}
                 isSelected={active}
+                classNames={{
+                  thumb: classNames(active ? "bg-blue-500" : "bg-gray-400"),
+                  wrapper: classNames(active ? "!bg-blue-300" : "bg-gray-200"),
+                }}
               >
                 <span className="text-sm sm:text-base whitespace-nowrap">
                   Mostrar {active ? "inactivos" : "activos"}
@@ -435,7 +438,7 @@ function ListProducts({ actions }: Props) {
           )}
           {view === "table" && (
             <DataTable
-              className="shadow"
+              className="shadow dark:text-white"
               emptyMessage="No se encontraron resultados"
               value={paginated_products.products}
               tableStyle={{ minWidth: "50rem" }}
@@ -443,18 +446,21 @@ function ListProducts({ actions }: Props) {
             >
               <Column
                 headerClassName="text-sm font-semibold"
+                bodyClassName={"dark:text-white"}
                 headerStyle={{ ...style, borderTopLeftRadius: "10px" }}
                 field="id"
                 header="No."
               />
               <Column
                 headerClassName="text-sm font-semibold"
+                bodyClassName={"dark:text-white"}
                 headerStyle={style}
                 field="name"
                 header="Nombre"
               />
               <Column
                 headerClassName="text-sm font-semibold"
+                bodyClassName={"dark:text-white"}
                 headerStyle={style}
                 field="code"
                 header="Código"
@@ -550,21 +556,20 @@ function ListProducts({ actions }: Props) {
             </>
           )}
         </div>
-        <ModalGlobal
+        <HeadlessModal
           title={selectedProduct ? "Editar producto" : "Nuevo producto"}
           onClose={modalAdd.onClose}
           size="w-full md:w-[90vw] lg:w-[80vw]"
           isOpen={modalAdd.isOpen}
-          isMaximizable
-          isFull
+          // isFull
         >
           <AddProducts
             onCloseModal={modalAdd.onClose}
             product={selectedProduct}
           />
-        </ModalGlobal>
+        </HeadlessModal>
 
-        <ModalGlobal
+        <HeadlessModal
           title={"Editar producto"}
           onClose={() => {
             setIsOpenModalUpdate(false);
@@ -576,7 +581,7 @@ function ListProducts({ actions }: Props) {
             onCloseModal={() => setIsOpenModalUpdate(false)}
             product={selectedProduct}
           />
-        </ModalGlobal>
+        </HeadlessModal>
       </div>
     </>
   );
