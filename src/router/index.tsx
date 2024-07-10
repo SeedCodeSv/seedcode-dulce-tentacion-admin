@@ -33,6 +33,7 @@ import StatusEmployee from '../pages/statusEmployee';
 import ContratType from '../pages/ContratType';
 
 
+import AddEmployee from '../components/employee/AddEmployee';
 
 /* eslint-disable react-hooks/rules-of-hooks */
 export const router = () => {
@@ -65,7 +66,7 @@ export const router = () => {
     },
     {
       path: '/subCategories',
-      element: views && views.includes('Categorias') && <SubCategories  />,
+      element: views && views.includes('Categorias') && <SubCategories />,
     },
     {
       path: '/users',
@@ -162,6 +163,10 @@ export const router = () => {
     {
       path: '/AddPromotions',
       element: <AddPromotions />,
+    },
+    {
+      path: '/AddEmployee',
+      element: <AddEmployee />,
     },
     {
       path: '*',
