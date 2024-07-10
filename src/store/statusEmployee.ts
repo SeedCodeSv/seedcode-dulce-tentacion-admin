@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { toast } from 'sonner';
 import { messages } from '../utils/constants';
 import {
+  activate_status_employee,
   create_status_employee,
   delete_status_employee,
   get_status_employee,
@@ -23,9 +24,9 @@ export const useStatusEmployeeStore = create<IStatusEmployeeStore>((set, get) =>
   loading_status_employee: false,
   limit_filter: 5,
 
-  getPaginatedStatusEmployee: (page: number, limit: number, name: string) => {
+  getPaginatedStatusEmployee: (page: number, limit: number, name: string, isActive = 1) => {
     set({ loading_status_employee: true, limit_filter: limit });
-    get_status_employee(page, limit, name)
+    get_status_employee(page, limit, name, isActive)
       .then((statusEmployees) =>
         set({ paginated_status_employee: statusEmployees.data, loading_status_employee: false })
       )
@@ -77,4 +78,16 @@ export const useStatusEmployeeStore = create<IStatusEmployeeStore>((set, get) =>
         return false;
       });
   },
+
+  activateStatusEmployee(id) {
+    return activate_status_employee(id)
+      .then(() => {
+        toast.success('Se activo el registro');
+      })
+      .catch(() => {
+        toast.error('Error al activar la registro');
+      });
+  },
+
+
 }));

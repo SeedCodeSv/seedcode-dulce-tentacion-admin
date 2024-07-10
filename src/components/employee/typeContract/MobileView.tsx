@@ -1,13 +1,13 @@
 import { Button } from '@nextui-org/react';
 import { DataView } from 'primereact/dataview';
 import { classNames } from 'primereact/utils';
-import { EditIcon, ScrollIcon } from 'lucide-react';
+import { EditIcon, RefreshCcw, ScrollIcon } from 'lucide-react';
 import { GridProps, MobileViewProps } from './types/mobile_view.types';
 import { global_styles } from '../../../styles/global.styles';
 import { useContractTypeStore } from '../../../store/contractType';
 
 function MobileView(props: MobileViewProps) {
-  const { layout, deletePopover, handleEdit, actions } = props;
+  const { layout, deletePopover, handleEdit, actions, handleActive } = props;
 
   const { loading_contract_type, paginated_contract_type } = useContractTypeStore();
   return (
@@ -31,7 +31,7 @@ function MobileView(props: MobileViewProps) {
             deletePopover={deletePopover}
             handleEdit={handleEdit}
             actions={actions}
-            // handleActive={handleActive}
+            handleActive={handleActive}
           />
         )}
         emptyMessage="No se encontraron tipos de contrato"
@@ -43,7 +43,7 @@ function MobileView(props: MobileViewProps) {
 export default MobileView;
 
 const GridItem = (props: GridProps) => {
-  const { ContractTypes, layout, deletePopover, handleEdit, actions } = props;
+  const { ContractTypes, layout, deletePopover, handleEdit, actions, handleActive } = props;
   return (
     <>
       {layout === 'grid' ? (
@@ -69,25 +69,25 @@ const GridItem = (props: GridProps) => {
             )}
             {actions.includes('Eliminar') && (
               <>
-                {deletePopover({ ContractTypes })}
-                {/* {statusEmployees.isActive ? (
-                  deletePopover({ statusEmployees })
+                {/* {deletePopover({ ContractTypes })} */}
+                {ContractTypes.isActive ? (
+                  deletePopover({ ContractTypes })
                 ) : (
                   <Button
-                    onClick={() => handleActive(statusEmployees.id)}
+                    onClick={() => handleActive(ContractTypes.id)}
                     isIconOnly
                     style={global_styles().thirdStyle}
                   >
                     <RefreshCcw />
                   </Button>
-                )} */}
+                )}
               </>
             )}
           </div>
         </div>
       ) : (
         <ListItem
-          // handleActive={handleActive}
+          handleActive={handleActive}
           ContractTypes={ContractTypes}
           layout="list"
           deletePopover={deletePopover}

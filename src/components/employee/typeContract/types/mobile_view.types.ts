@@ -5,7 +5,7 @@ export interface MobileViewProps {
   deletePopover: ({ ContractTypes }: { ContractTypes: ContractType }) => JSX.Element;
   handleEdit: (ContractTypes: ContractType) => void;
   actions: string[];
-  // handleActive: (id: number) => void;
+  handleActive: (id: number) => void;
 }
 
 export interface GridProps {
@@ -14,5 +14,5 @@ export interface GridProps {
   deletePopover: ({ ContractTypes }: { ContractTypes: ContractType }) => JSX.Element;
   handleEdit: (ContractTypes: ContractType) => void;
   actions: string[];
-  // handleActive: (id: number) => void;
+  handleActive: (id: number) => void;
 }

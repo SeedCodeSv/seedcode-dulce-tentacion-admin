@@ -5,7 +5,7 @@ export interface MobileViewProps {
   deletePopover: ({ statusEmployees }: { statusEmployees: statusEmployee }) => JSX.Element;
   handleEdit: (statusEmployees: statusEmployee) => void;
   actions: string[];
-  // handleActive: (id: number) => void;
+  handleActive: (id: number) => void;
 }
 
 export interface GridProps {
@@ -14,5 +14,5 @@ export interface GridProps {
   deletePopover: ({ statusEmployees }: { statusEmployees: statusEmployee }) => JSX.Element;
   handleEdit: (statusEmployees: statusEmployee) => void;
   actions: string[];
-  // handleActive: (id: number) => void;
+  handleActive: (id: number) => void;
 }
