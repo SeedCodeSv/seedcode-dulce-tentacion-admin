@@ -55,7 +55,7 @@ const CushCatsZ = (props: CashCutsProps) => {
       }
     };
     getIdBranch();
-  }, [dateInitial, dateEnd, branchId]);
+  }, [dateInitial, dateEnd, branchId ,codeSelected]);
 
   const calculateIVA = (total: number) => total * 0.13;
 
