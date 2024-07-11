@@ -14,6 +14,7 @@ import { useProductsStore } from "../../store/products.store";
 import { global_styles } from "../../styles/global.styles";
 import { GridProps, IMobileView } from "./types/mobile-view.types";
 import ERROR404 from "../../assets/not-found-error-alert-svgrepo-com.svg";
+import TooltipGlobal from "../global/TooltipGlobal";
 
 function MobileView(props: IMobileView) {
   const { paginated_products } = useProductsStore();
@@ -37,7 +38,6 @@ function MobileView(props: IMobileView) {
                 className:
                   "w-full grid dark:bg-slate-800 pb-10 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5 mt-5",
               }),
-              
             }}
             color="surface"
             itemTemplate={(customer) => (
@@ -104,26 +104,30 @@ const GridItem = (props: GridProps) => {
           </div>
           <div className="flex justify-between mt-5 w-ful">
             {actions.includes("Editar") && (
-              <Button
-                onClick={() => openEditModal(product)}
-                isIconOnly
-                style={global_styles().secondaryStyle}
-              >
-                <EditIcon size={20} />
-              </Button>
+              <TooltipGlobal text="Editar">
+                <Button
+                  onClick={() => openEditModal(product)}
+                  isIconOnly
+                  style={global_styles().secondaryStyle}
+                >
+                  <EditIcon size={20} />
+                </Button>
+              </TooltipGlobal>
             )}
             {actions.includes("Eliminar") && (
               <>
                 {product.isActive ? (
                   DeletePopover({ product: product })
                 ) : (
-                  <Button
-                    onClick={() => handleActivate(product.id)}
-                    isIconOnly
-                    style={global_styles().thirdStyle}
-                  >
-                    <RefreshCcw />
-                  </Button>
+                  <TooltipGlobal text="Activar">
+                    <Button
+                      onClick={() => handleActivate(product.id)}
+                      isIconOnly
+                      style={global_styles().thirdStyle}
+                    >
+                      <RefreshCcw />
+                    </Button>
+                  </TooltipGlobal>
                 )}
               </>
             )}
@@ -154,7 +158,7 @@ const ListItem = (props: GridProps) => {
   const { theme } = useContext(ThemeContext);
   return (
     <>
-      <div className="flex w-full col-span-1 p-5 border-b shadow ">
+      <div className="flex w-full col-span-1 p-5 border shadow rounded-2xl ">
         <div className="w-full">
           <div className="flex w-full gap-2">
             <ShoppingBag
@@ -177,28 +181,32 @@ const ListItem = (props: GridProps) => {
         </div>
         <div className="flex flex-col items-end justify-between w-full">
           {actions.includes("Editar") && (
-            <Button
-              onClick={() => openEditModal(product)}
-              isIconOnly
-              style={{
-                backgroundColor: theme.colors.secondary,
-              }}
-            >
-              <EditIcon style={{ color: theme.colors.primary }} size={20} />
-            </Button>
+            <TooltipGlobal text="Editar">
+              <Button
+                onClick={() => openEditModal(product)}
+                isIconOnly
+                style={{
+                  backgroundColor: theme.colors.secondary,
+                }}
+              >
+                <EditIcon style={{ color: theme.colors.primary }} size={20} />
+              </Button>
+            </TooltipGlobal>
           )}
           {actions.includes("Eliminar") && (
             <>
               {product.isActive ? (
                 DeletePopover({ product: product })
               ) : (
-                <Button
-                  onClick={() => handleActivate(product.id)}
-                  isIconOnly
-                  style={global_styles().thirdStyle}
-                >
-                  <RefreshCcw />
-                </Button>
+                <TooltipGlobal text="Activar">
+                  <Button
+                    onClick={() => handleActivate(product.id)}
+                    isIconOnly
+                    style={global_styles().thirdStyle}
+                  >
+                    <RefreshCcw />
+                  </Button>
+                </TooltipGlobal>
               )}
             </>
           )}

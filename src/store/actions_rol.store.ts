@@ -75,15 +75,11 @@ export const useActionsRolStore = create<IActionsRolStore>((set, get) => ({
   },
 
   OnGetActionsRoleList() {
-    set({ loading_actions: true });
     get_actions_role()
       .then(({ data }) => {
         if (data.ok) {
-          set((state) => {
-            return {
-              ...state,
-              actions_roles_grouped: formatActionsRole(data.roleActions),
-            };
+          set({
+            roleActions: data.roleActions,
           });
         } else {
           set((state) => {
@@ -129,10 +125,6 @@ export const useActionsRolStore = create<IActionsRolStore>((set, get) => ({
               };
             })
             .filter((ac) => ac.actions.length > 0);
-
-          set({
-            roleActions: data.roleActions,
-          });
 
           if (views_exist !== undefined) {
             const new_eval: RoleViewAction = {

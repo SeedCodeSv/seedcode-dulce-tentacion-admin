@@ -116,7 +116,7 @@ const ListItem = (props: GridProps) => {
   const { category, deletePopover, handleEdit, actions, handleActive } = props;
   return (
     <>
-      <div className="flex w-full p-5 border-b shadow">
+      <div className="flex w-full p-5 border shadow rounded-2xl">
         <div className="w-full">
           <div className="flex items-center w-full gap-2">
             <ScrollIcon

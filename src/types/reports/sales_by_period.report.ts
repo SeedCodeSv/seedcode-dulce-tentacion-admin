@@ -19,6 +19,7 @@ export interface SalesGraph {
 	branch: string;
 	quantity: number;
 	total: number;
+	id:number
 }
 
 export interface SalesChartGraphPeriod {
@@ -27,4 +28,17 @@ export interface SalesChartGraphPeriod {
 	startDate: string;
 	endDate: string;
 	data: SalesGraph[];
+}
+
+export interface SalesMap {
+	code: string;
+	quantity: number;
+	total: number;
+}
+
+export interface IGetSalesByBranchPointSale {
+	ok: boolean;
+	totalSales: number;
+	salesMap: SalesMap[];
+	status: number;
 }
