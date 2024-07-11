@@ -393,7 +393,8 @@ function ListProducts({ actions }: Props) {
                 body={(item) => (
                   <div className="flex w-full gap-5">
                     {actions.includes("Editar") && (
-                      <Button
+                     <TooltipGlobal text="Editar">
+                       <Button
                         onClick={() => {
                           setSelectedProduct(item);
 
@@ -409,19 +410,22 @@ function ListProducts({ actions }: Props) {
                           size={20}
                         />
                       </Button>
+                     </TooltipGlobal>
                     )}
                     {actions.includes("Eliminar") && (
                       <>
                         {item.isActive ? (
                           <DeletePopover product={item} />
                         ) : (
-                          <Button
-                            onClick={() => handleActivate(item.id)}
-                            isIconOnly
-                            style={global_styles().thirdStyle}
-                          >
-                            <RefreshCcw />
-                          </Button>
+                          <TooltipGlobal text="Activar">
+                            <Button
+                              onClick={() => handleActivate(item.id)}
+                              isIconOnly
+                              style={global_styles().thirdStyle}
+                            >
+                              <RefreshCcw />
+                            </Button>
+                          </TooltipGlobal>
                         )}
                       </>
                     )}
@@ -529,12 +533,14 @@ export const DeletePopover = ({ product }: PopProps) => {
             backgroundColor: theme.colors.danger,
           }}
         >
-          <TrashIcon
-            style={{
-              color: theme.colors.primary,
-            }}
-            size={20}
-          />
+          <TooltipGlobal text="Eliminar el producto" color="primary">
+            <TrashIcon
+              style={{
+                color: theme.colors.primary,
+              }}
+              size={20}
+            />
+          </TooltipGlobal>
         </Button>
       </PopoverTrigger>
       <PopoverContent>

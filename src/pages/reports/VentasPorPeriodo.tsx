@@ -133,15 +133,17 @@ function VentasPorPeriodo() {
               <div className="w-full">
                 {sales_by_period_graph?.data && (
                   <SalesChartPeriod
-                    labels={sales_by_period_graph.data.map(
-                      (sale) => sale.branch
-                    )}
+                    startDate={startDate}
+                    endDate={endDate}
+                    labels={sales_by_period_graph.data
+                      .sort((a, b) => Number(b.total) - Number(a.total))
+                      .map((sale) => sale.branch)}
                     series={[
                       {
                         name: "Ventas",
-                        data: sales_by_period_graph.data.map((sale) =>
-                          Number(sale.total.toFixed(2))
-                        ),
+                        data: sales_by_period_graph.data
+                          .map((sale) => Number(sale.total.toFixed(2)))
+                          .sort((a, b) => b - a),
                       },
                     ]}
                   />
