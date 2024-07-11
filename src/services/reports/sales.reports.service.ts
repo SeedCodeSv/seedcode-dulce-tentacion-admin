@@ -98,11 +98,12 @@ export const get_products_most_selled_by_transmitter_grafic = (
 export const get_sales_by_period = (
   page: number,
   startDate: string,
-  endDate: string
+  endDate: string,
+  paymentType: string = ""
 ) => {
   return axios.get<IGetSalesByPeriod>(
     API_URL +
-      `/sales/get-sales-for-dates?page=${page}&startDate=${startDate}&endDate=${endDate}`
+      `/sales/get-sales-for-dates?page=${page}&startDate=${startDate}&endDate=${endDate}&paymentType=${paymentType}`
   );
 };
 

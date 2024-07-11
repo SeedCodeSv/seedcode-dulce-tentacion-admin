@@ -108,11 +108,6 @@ export interface SaleTableDay {
   salesStatusId?: number;
 }
 
-export interface IGetSalesByDayTable {
-  ok: boolean;
-  sales: SaleTableDay[];
-}
-
 
 export interface IResponseDataProductGrafic {
   ok: boolean;
@@ -123,4 +118,16 @@ export interface IDataProductGrafic {
   productName: string
   quantity: string
   total: string
+}
+
+export interface SaleTable {
+	id: number;
+	branch: string;
+	numberOfSales: string;
+	totalSales: string;
+}
+
+export interface IGetSalesByDayTable {
+	ok: boolean;
+	sales: SaleTable[];
 }

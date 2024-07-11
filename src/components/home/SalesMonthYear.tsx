@@ -1,4 +1,5 @@
 import ApexChart from 'react-apexcharts';
+import { formatCurrency } from '../../utils/dte';
 
 interface Props {
   sales: {
@@ -16,7 +17,7 @@ function SalesMonthBranches({ sales }: Props) {
   return (
     <>
       <div
-        className="border dark:border-gray-700 shadow flex flex-col rounded-lg min-h-52 h-full dark:bg-gray-900"
+        className="flex flex-col h-full border rounded-lg shadow dark:border-gray-700 min-h-52 dark:bg-gray-900"
         style={{
           backgroundImage: `linear-gradient(to right, #f7934c, #f08080)`,
         }}
@@ -25,7 +26,7 @@ function SalesMonthBranches({ sales }: Props) {
           {sales.title}
         </p>
         <p className="text-sm tracking-wide px-[10px] font-bold text-white uppercase">
-          {sales.total}
+          {formatCurrency(sales.total)}
         </p>
         <ApexChart
           type="line"
