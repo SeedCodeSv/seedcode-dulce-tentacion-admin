@@ -356,9 +356,8 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
                     label="Estado del Empleado"
                     labelPlacement="outside"
                     placeholder={
-                      `Seleccione el estado del empleado `
-                        ? props.data?.employeeStatus.name
-                        : ' Seleccione el estado del empleado'
+                       props.data?.employeeStatus.name
+                        ?? ' Seleccione el estado del empleado'
                     }
                     className="dark:text-white"
                     classNames={{
@@ -384,9 +383,8 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
                     labelPlacement="outside"
                     className="dark:text-white"
                     placeholder={
-                      `Seleccione el tipo de contrato `
-                        ? props.data?.contractType.name
-                        : ' Seleccione el tipo de contrato'
+                       props.data?.contractType.name
+                        ?? ' Seleccione el tipo de contrato'
                     }
                     classNames={{
                       base: 'font-semibold text-sm',
@@ -472,9 +470,8 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
                     label="Departamento"
                     labelPlacement="outside"
                     placeholder={
-                      `Selecciona el departamento `
-                        ? props.data?.address.nombreDepartamento
-                        : ' Selecciona el departamento'
+                      props.data?.address.nombreDepartamento
+                        ?? ' Selecciona el departamento'
                     }
                     variant="bordered"
                     onChange={(e) => setCodeDepartamento(e.target.value)}
