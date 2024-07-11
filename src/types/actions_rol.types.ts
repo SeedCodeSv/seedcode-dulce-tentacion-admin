@@ -27,7 +27,9 @@ export interface RoleViewAction {
 
 
 
-
+export interface ICreateRol {
+  name : string;
+}
 
 
 

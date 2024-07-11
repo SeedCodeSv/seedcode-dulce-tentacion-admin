@@ -35,6 +35,7 @@ import ContratType from '../pages/ContratType';
 import AddEmployee from '../components/employee/AddEmployee';
 import VentasPorPeriodo from '../pages/reports/VentasPorPeriodo';
 import StudyLevel from '@/pages/StudyLevel';
+import AddActionRol from '@/components/Action_rol/AddActionRol';
 
 /* eslint-disable react-hooks/rules-of-hooks */
 export const router = () => {
@@ -167,16 +168,20 @@ export const router = () => {
     },
     {
       path: '/AddPromotions',
-      element: <AddPromotions />,
+      element: views && views.includes('Descuentos') && <AddPromotions />,
     },
     {
       path: '/AddEmployee',
-      element: <AddEmployee />,
+      element: views && views.includes('Empleados') && <AddEmployee />,
     },
     // {
     //   path: '/UpdateEmployee/:id',
     //   element: <UpdateEmployee />,
     // },
+    {
+      path: '/AddActionRol',
+      element: views && views.includes('Permisos') && <AddActionRol />,
+    },
     {
       path: '/reports/sales-by-period',
       element: <VentasPorPeriodo />,
