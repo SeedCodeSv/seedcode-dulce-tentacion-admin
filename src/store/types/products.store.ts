@@ -11,7 +11,9 @@ export interface IProductsStore {
     page: number,
     limit: number,
     category: string,
+    subCategary: string,
     name: string,
+    code: string,
     active?: number
   ) => void;
   getCat011TipoDeItem: () => void;

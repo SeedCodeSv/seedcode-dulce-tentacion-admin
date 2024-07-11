@@ -31,6 +31,7 @@ export const operadores = [
   { label: '<= menor o igual', value: '<=' },
 ];
 
+
 export const defaultTheme = {
   name: 'theme1',
   context: 'dark',

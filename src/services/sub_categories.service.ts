@@ -16,7 +16,7 @@ export const create_sub_category = (payload: ISubCategoryPayload) => {
 
 export const get_sub_categories_list = () => {
   const token = get_token();
-  return axios.get<IGetListSubCategories>(`${API_URL}/sub-categories`, {
+  return axios.get<IGetListSubCategories>(`${API_URL}/sub-categories/list`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

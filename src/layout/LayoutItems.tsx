@@ -3,7 +3,6 @@ import { NavLink } from 'react-router-dom';
 import LOGO from '../assets/react.svg';
 import {
   Home,
-  Box,
   User,
   BookUser,
   ShieldHalf,
@@ -22,6 +21,11 @@ import {
   Coins,
   Calendar,
   GraduationCap,
+  FolderKanban,
+  FolderCog,
+  FolderCheck,
+  LayoutList,
+  LayoutGrid,
 } from 'lucide-react';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { ThemeContext } from '../hooks/useTheme';
@@ -245,7 +249,7 @@ export const LayoutItems = () => {
                     };
                   }}
                 >
-                  <Box size={iconSize} />
+                  <LayoutGrid size={iconSize} />
                   <p className="ml-2 text-sm 2xl:text-base">Categorías</p>
                 </NavLink>
               )}
@@ -267,7 +271,7 @@ export const LayoutItems = () => {
                     };
                   }}
                 >
-                  <Box size={iconSize} />
+                  <LayoutList size={iconSize} />
                   <p className="ml-2 text-sm 2xl:text-base">Sub Categorías</p>
                 </NavLink>
               )}
@@ -352,7 +356,7 @@ export const LayoutItems = () => {
                     onClick={toggleDropdownMenu2}
                     className="flex items-center w-full py-3 space-x-3 text-left text-black focus:outline-none focus:text-black"
                   >
-                    <User className="dark:text-white" size={iconSize} />
+                    <FolderKanban className="dark:text-white" size={iconSize} />
                     <p className="text-sm font-semibold dark:text-white 2xl:text-base">
                       Gestión de planillas
                     </p>
@@ -426,8 +430,10 @@ export const LayoutItems = () => {
                     onClick={toggleDropdownMenu}
                     className="flex items-center w-full py-3 space-x-3 text-left text-black focus:outline-none focus:text-black"
                   >
-                    <User className="dark:text-white" size={iconSize} />
-                    <p className="text-sm font-semibold dark:text-white 2xl:text-base">Menu</p>
+                    <FolderCog className="dark:text-white" size={iconSize} />
+                    <p className="text-sm font-semibold dark:text-white 2xl:text-base">
+                      Administración
+                    </p>
                     <ChevronDown
                       className="items-end justify-end dark:text-white"
                       size={iconSize}
@@ -436,7 +442,7 @@ export const LayoutItems = () => {
                   <div
                     id="menu1"
                     className={`flex flex-col w-full h-[900px] pb-1 overflow-hidden transition-all duration-500 ${
-                      isMenuOpen ? 'xl:max-h-52 max-h-44' : 'max-h-0'
+                      isMenuOpen ? 'xl:max-h-56 max-h-44' : 'max-h-0'
                     }`}
                   >
                     <div className="py-1">
@@ -534,19 +540,19 @@ export const LayoutItems = () => {
                     onClick={toggleDropdownMenuReports}
                     className="flex items-center w-full py-3 space-x-3 text-left text-black focus:outline-none focus:text-black"
                   >
-                    <User className="dark:text-white" size={iconSize} />
-                    <p className="text-sm font-semibold dark:text-white 2xl:text-base">
+                    <FolderCheck className="dark:text-white" size={iconSize} />
+                    <p className="text-sm font-semibold dark:text-white 2xl:text-base whitespace-nowrap">
                       Gestión de reportes
                     </p>
                     <ChevronDown
-                      className="items-end justify-end dark:text-white"
+                      className="items-end justify-end dark:text-white h"
                       size={iconSize}
                     />
                   </button>
                   <div
                     id="menu1"
                     className={`flex flex-col w-full h-[900px] pb-1 overflow-hidden transition-all duration-500 ${
-                      reports ? 'max-h-20' : 'max-h-0'
+                      reports ? 'max-h-14' : 'max-h-0'
                     }`}
                   >
                     <div className="py-1">

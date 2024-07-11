@@ -50,7 +50,13 @@ function AddProducts(props: Props) {
       .required('**El precio es requerido**')
       .typeError('**El precio es requerido**'),
     minimumStock: yup.number().required('**Campo requerido**').typeError('**Campo requerido**'),
+    // code: yup.string().required('**El Código es requerido**'),
     code: yup.string().required('**El Código es requerido**'),
+    // .test('unique-code', 'El código ya está en uso', async (value) => {
+    //   if (!value) return false;
+    //   const response = await verify_code_product(value);
+    //   return response.data.ok === false;
+    // }),
     // .length(12, '**El código debe tener exactamente 12 dígitos**'),
     subCategoryId: yup
       .number()
@@ -109,11 +115,36 @@ function AddProducts(props: Props) {
   }, []);
 
   const { theme } = useContext(ThemeContext);
+
+  // const verifyCode = async () => {
+  //   try {
+  //     const data = await verify_code_product(codigo);
+  //     if (data.data.ok === true) {
+  //       toast.success('Codigo no registrado');
+  //     }
+  //   } catch (error) {
+  //     toast.error('Codigo en uso');
+  //   }
+  // };
+
+  // const verifyCode = async (code: string) => {
+  //   try {
+  //     const data = await verify_code_product(code);
+  //     return data.data.ok;
+  //   } catch (error) {
+  //     return false;
+  //   }
+  // };
   const handleSave = (values: ProductPayloadFormik) => {
     const payload = {
       ...values,
       branch: selectedBranches.map((branch) => ({ id: Number(branch) })),
     };
+    // const isCodeAvailable = await verifyCode(values.code);
+    // if (!isCodeAvailable) {
+    //   toast.error('Código en uso, por favor intente con otro código');
+    //   return;
+    // }
 
     if (props.product) {
       patchProducts(payload, props.product.id);
@@ -147,15 +178,14 @@ function AddProducts(props: Props) {
 
   const verifyCode = async () => {
     try {
-      const data = await verify_code_product(codigo)
+      const data = await verify_code_product(codigo);
       if (data.data.ok === true) {
-        toast.success('Codigo no registrado')
+        toast.success('Codigo no registrado');
       }
     } catch (error) {
-      toast.error('Codigo en uso')
+      toast.error('Codigo en uso');
     }
-  }
-
+  };
 
   return (
     <div className="w-full h-full">
@@ -385,11 +415,12 @@ function AddProducts(props: Props) {
                       className="w-full text-sm font-semibold"
                       style={{
                         backgroundColor: theme.colors.warning,
-                        color: theme.colors.primary
+                        color: theme.colors.primary,
                       }}
                       onClick={() => {
-                        verifyCode()
+                        verifyCode();
                       }}
+                      // onClick={() => verifyCode(values.code)}
                     >
                       Verificar Código
                     </Button>
