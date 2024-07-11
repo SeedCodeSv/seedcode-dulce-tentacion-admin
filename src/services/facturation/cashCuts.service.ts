@@ -4,7 +4,7 @@ import { API_URL } from '../../utils/constants';
 export const get_cashCuts = (id?: number, startDate?: string, endDate?: string, code?: string) => {
   return axios.get<ZCashCutsRequest>(
     API_URL +
-      '/sales/z-cash-cuts?' +
+      '/sales/grant-z-cash-cuts?' +
       'branchId=' +
       id +
       '&startDate=' +

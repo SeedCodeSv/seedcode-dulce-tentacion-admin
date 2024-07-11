@@ -9,6 +9,8 @@ import AddActionRol from './AddActionRol';
 import { useActionsRolStore } from '../../store/actions_rol.store';
 import HeadlessModal from '../global/HeadlessModal';
 import { get_user } from '@/storage/localStorage';
+import { get_roles_list } from '@/services/users.service';
+import { Role } from '@/types/auth.types';
 const ListActionRol = () => {
   const { theme } = useContext(ThemeContext);
   const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
@@ -16,6 +18,7 @@ const ListActionRol = () => {
   const modalAdd = useDisclosure();
 
   const { OnGetActionsRoleList, roleActions } = useActionsRolStore();
+  const [roles, setRoles] = useState<Role[]>([]);
   useEffect(() => {
     const getRolId = () => {
       const rolId = get_user();
@@ -23,6 +26,13 @@ const ListActionRol = () => {
         setRolId(rolId.role.id as number);
       }
     };
+    const get_roles = async () => {
+      const data = await get_roles_list();
+      if (data) {
+        setRoles(data.data.roles);
+      }
+    };
+    get_roles();
     getRolId();
     OnGetActionsRoleList();
   }, [rolId]);
