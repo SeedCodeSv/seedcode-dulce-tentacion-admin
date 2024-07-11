@@ -19,12 +19,14 @@ function Home() {
   const {
     getSalesByBranchAndMonth,
     sales_branch_month,
+    loading_sales_by_branch_and_month,
     getSalesByYearAndMonth,
     sales_month_year,
     sales_by_day,
     getSalesByDay,
     getSalesTableDay,
     sales_table_day,
+    loading_sales_by_table_date,
   } = salesReportStore();
 
   const {
@@ -91,10 +93,20 @@ function Home() {
   };
 
   return (
-    <Layout title="Home">
-      <div className="w-full h-full p-5 overflow-y-auto bg-white dark:bg-gray-800">
-        <div className="grid w-full grid-cols-1 gap-5 pt-10 md:grid-cols-2 xl:grid-cols-4 2xl:gap-10">
-          <div>
+    <Layout title="Inicio">
+      <div className="w-full h-full overflow-y-auto p-5 bg-white dark:bg-gray-800">
+        <div className="w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 2xl:gap-10 pt-10">
+          {loading_sales_by_branch_and_month ? (
+            <>
+              <div className="flex flex-col items-center justify-center w-full h-64">
+                <div className="loader"></div>
+                <p className="mt-3 text-xl font-semibold">Cargando...</p>
+              </div>
+            
+            </>
+          ) : (
+            <>
+                      <div>
             <SalesMonthBranches
               sales={{
                 title: 'Ventas del mes',
@@ -109,6 +121,9 @@ function Home() {
               }}
             />
           </div>
+            </>
+          )}
+
 
           <div>
             <ExpensesMonthBranches
@@ -132,12 +147,19 @@ function Home() {
                 title: 'Producto mas vendido',
                 labels: most_product_selled.map((sl) => sl.branchProduct.name),
                 total: mostProductSelled,
+                branch: most_product_selled.map((ld) => ld.branch),
+                // branch: most_product_selled[0].branch,
                 series: [
                   {
                     name: 'Total',
                     data: most_product_selled.map((sl) => Number(sl.total)),
                   },
+                  {
+                    name: 'Sucursal',
+                    data: most_product_selled.map((sl) => Number(sl.branch)),
+                  },
                 ],
+              
               }}
             />
           </div>
@@ -179,7 +201,17 @@ function Home() {
           </div>
           <div className="col-span-3 p-5 mt-10 bg-gray-100 rounded-lg dark:bg-gray-900 xl:mt-0 lg:mt-0 mb:mt-0 sm:mt-0">
             <p className="pb-4 text-lg font-semibold dark:text-white">Ventas del dia</p>
-            <DataTable
+
+            {loading_sales_by_table_date ? (
+              <>
+                  <div className="flex flex-col items-center justify-center w-full h-64">
+                <div className="loader"></div>
+                <p className="mt-3 text-xl font-semibold">Cargando...</p>
+              </div>
+              </>
+            ) : (
+              <>
+               <DataTable
               className="w-full shadow"
               emptyMessage="No se encontraron resultados"
               value={sales_table_day}
@@ -207,6 +239,10 @@ function Home() {
                 body={(rowData) => formatCurrency(Number(rowData.totalSales))}
               />
             </DataTable>
+              </>
+              
+            )}
+           
           </div>
         </div>
       </div>

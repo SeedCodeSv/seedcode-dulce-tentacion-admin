@@ -60,7 +60,7 @@ function ExpensesByDatesTransmitter() {
   return (
     <>
       <div className="col-span-3 bg-gray-100 p-5 dark:bg-gray-900 rounded-lg">
-        <p className="pb-4 text-lg font-semibold dark:text-white">Gastos por sucursal </p>
+        {/* <p className="pb-4 text-lg font-semibold dark:text-white">Gastos por sucursal </p> */}
         <div className="grid grid-cols-2 gap-2 py-2">
           <label className="text-sm font-semibold dark:text-white">Fecha inicial</label>
           <label className="text-sm font-semibold dark:text-white">Fecha final</label>

@@ -182,7 +182,7 @@ function ReportSalesByBranch() {
       <div className="col-span-3 p-5 bg-gray-100 rounded-lg dark:bg-gray-900">
         <div className="flex flex-col w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
           <div className="flex items-center justify-between w-full">
-            <p className="pb-4 text-lg font-semibold dark:text-white">Ventas</p>
+            {/* <p className="pb-4 text-lg font-semibold dark:text-white">Ventas</p> */}
             <TooltipGlobal text="Filtros">
               <Button
                 style={global_styles().thirdStyle}
