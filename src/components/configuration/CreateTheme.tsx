@@ -64,8 +64,8 @@ function CreateTheme() {
 
   return (
     <>
-      <div className="ml-2">
-        <div className="lg:ml-28 md:ml-60">
+      <div className="">
+        <div className="flex items-center justify-center">
           <ColorPicker
             format="hex"
             pt={{

@@ -6,7 +6,7 @@ export interface IConfiguration {
   themeId: number;
   transmitterId: number;
   selectedTemplate: string;
-  wantPrint: boolean;
+  wantPrint: number;
   isActive?: boolean;
 }
 
@@ -24,6 +24,7 @@ export interface IGetConfiguration extends ICreacteConfiguaration {
 
 export interface pachConfigurationName {
   name: string;
+  wantPrint: number | boolean;
 }
 
 export interface ICreacteConfiguaration {

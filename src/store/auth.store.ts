@@ -75,8 +75,8 @@ export const useAuthStore = create<IAuthStore>((set, get) => ({
             if (login_mh.data.status === 'OK') {
               await save_mh_token(login_mh.data.body.token);
             } else {
-              const data = login_mh as unknown as ILoginMHFailed;
-              toast.error(`Error ${data}`);
+              // const data = login_mh as unknown as ILoginMHFailed;
+              // toast.error(`Error ${data}`);
               return;
             }
           })
