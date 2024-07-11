@@ -693,18 +693,17 @@ const CashCutsX = (props: CashCutsProps) => {
           <Autocomplete
             className="order-3 w-full mt-4"
             labelPlacement="outside"
-            placeholder="Selecciona la sucursal"
+            placeholder="Selecciona el punto de venta"
             variant="bordered"
             label="Punto de Venta"
           >
-            {codeSale.map((item) => (
-              <AutocompleteItem
-                onClick={() => setCodeSelected(item.code)}
-                key={item.id}
-              >
-                {item.code}
-              </AutocompleteItem>
-            ))}
+            {codeSale
+              .filter((item) => item.typeVoucher === 'T')
+              .map((item) => (
+                <AutocompleteItem onClick={() => setCodeSelected(item.code)} key={item.id}>
+                  {item.code}
+                </AutocompleteItem>
+              ))}
           </Autocomplete>
         </div>
         <div className="mt-4"></div>
@@ -741,148 +740,101 @@ const CashCutsX = (props: CashCutsProps) => {
             <h1>Creado por: {user?.userName}</h1>
             <h1>GIRO: VENTA AL POR MENOR DE ROPA</h1>
             <h1>
-              FECHA: {new Date().toLocaleDateString()} -{" "}
-              {new Date().toLocaleTimeString()}
+              FECHA: {new Date().toLocaleDateString()} - {new Date().toLocaleTimeString()}
             </h1>
             <br />
-            <h1>
-              ---------------------------------------------------------------------
-            </h1>
-            <h1>
-              ---------------------------------------------------------------------
-            </h1>
+            <h1>---------------------------------------------------------------------</h1>
+            <h1>---------------------------------------------------------------------</h1>
             <div className="w-full">
               <h1>VENTAS CON TICKET</h1>
               <h1>N. INICIAL: {data?.Ticket?.inicio}</h1>
               <h1>N. FINAL: {data?.Ticket?.fin}</h1>
               <h1>
-                GRAVADAS:{" "}
+                GRAVADAS:{' '}
                 {formatCurrency(
-                  Number(data?.Ticket.total ?? 0) -
-                    calculateIVA(data?.Ticket?.total || 0)
+                  Number(data?.Ticket.total ?? 0) - calculateIVA(data?.Ticket?.total || 0)
                 )}
               </h1>
-              <h1>
-                IVA: {formatCurrency(calculateIVA(data?.Ticket?.total || 0))}
-              </h1>
+              <h1>IVA: {formatCurrency(calculateIVA(data?.Ticket?.total || 0))}</h1>
               <h1>SUB_TOTAL: {formatCurrency(Number(data?.Ticket?.total))}</h1>
               <h1>EXENTAS: $0.00</h1>
               <h1>NO SUJETAS: $0.00</h1>
               <h1>TOTAL: {formatCurrency(Number(data?.Ticket?.total))}</h1>
             </div>
             <br />
-            <h1>
-              ---------------------------------------------------------------------
-            </h1>
-            <h1>
-              ---------------------------------------------------------------------
-            </h1>
+            <h1>---------------------------------------------------------------------</h1>
+            <h1>---------------------------------------------------------------------</h1>
             <div className="w-full">
               <h1>VENTAS CON FACTURA</h1>
               <h1>N. INICIAL: {data?.Factura?.inicio}</h1>
               <h1>N. FINAL: {data?.Factura?.fin}</h1>
               <h1>
-                GRAVADAS:{" "}
+                GRAVADAS:{' '}
                 {formatCurrency(
-                  Number(data?.Factura.total ?? 0) -
-                    calculateIVA(data?.Factura?.total || 0)
+                  Number(data?.Factura.total ?? 0) - calculateIVA(data?.Factura?.total || 0)
                 )}
               </h1>
-              <h1>
-                IVA: {formatCurrency(calculateIVA(data?.Factura?.total || 0))}
-              </h1>
+              <h1>IVA: {formatCurrency(calculateIVA(data?.Factura?.total || 0))}</h1>
               <h1>SUB_TOTAL: {formatCurrency(Number(data?.Factura?.total))}</h1>
               <h1>EXENTAS: $0.00</h1>
               <h1>NO SUJETAS: $0.00</h1>
               <h1>TOTAL: {formatCurrency(Number(data?.Factura?.total))}</h1>
             </div>
             <br />
-            <h1>
-              ---------------------------------------------------------------------
-            </h1>
-            <h1>
-              ---------------------------------------------------------------------
-            </h1>
+            <h1>---------------------------------------------------------------------</h1>
+            <h1>---------------------------------------------------------------------</h1>
             <div className="w-full">
               <h1>VENTAS CON CRÉDITO FISCAL</h1>
               <h1>N. INICIAL: {data?.CreditoFiscal?.inicio}</h1>
               <h1>N. FINAL: {data?.CreditoFiscal?.fin}</h1>
               <h1>
-                GRAVADAS:{" "}
+                GRAVADAS:{' '}
                 {formatCurrency(
                   Number(data?.CreditoFiscal.total ?? 0) -
                     calculateIVA(data?.CreditoFiscal?.total || 0)
                 )}
               </h1>
-              <h1>
-                IVA:{" "}
-                {formatCurrency(calculateIVA(data?.CreditoFiscal?.total || 0))}
-              </h1>
-              <h1>
-                SUB_TOTAL: {formatCurrency(Number(data?.CreditoFiscal?.total))}
-              </h1>
+              <h1>IVA: {formatCurrency(calculateIVA(data?.CreditoFiscal?.total || 0))}</h1>
+              <h1>SUB_TOTAL: {formatCurrency(Number(data?.CreditoFiscal?.total))}</h1>
               <h1>EXENTAS: $0.00</h1>
               <h1>NO SUJETAS: $0.00</h1>
-              <h1>
-                TOTAL: {formatCurrency(Number(data?.CreditoFiscal?.total))}
-              </h1>
+              <h1>TOTAL: {formatCurrency(Number(data?.CreditoFiscal?.total))}</h1>
             </div>
             <br />
-            <h1>
-              ---------------------------------------------------------------------
-            </h1>
-            <h1>
-              ---------------------------------------------------------------------
-            </h1>
+            <h1>---------------------------------------------------------------------</h1>
+            <h1>---------------------------------------------------------------------</h1>
             <div className="w-full">
               <h1>DEVOLUCIONES CON NOTA DE CRÉDITO</h1>
               <h1>N. INICIAL: {data?.DevolucionNC?.inicio}</h1>
               <h1>N. FINAL: {data?.DevolucionNC?.fin}</h1>
               <h1>
-                GRAVADAS:{" "}
+                GRAVADAS:{' '}
                 {formatCurrency(
                   Number(data?.DevolucionNC.total ?? 0) -
                     calculateIVA(data?.DevolucionNC?.total || 0)
                 )}
               </h1>
-              <h1>
-                IVA:{" "}
-                {formatCurrency(calculateIVA(data?.DevolucionNC?.total || 0))}
-              </h1>
-              <h1>
-                SUB_TOTAL: {formatCurrency(Number(data?.DevolucionNC?.total))}
-              </h1>
+              <h1>IVA: {formatCurrency(calculateIVA(data?.DevolucionNC?.total || 0))}</h1>
+              <h1>SUB_TOTAL: {formatCurrency(Number(data?.DevolucionNC?.total))}</h1>
               <h1>EXENTAS: $0.00</h1>
               <h1>NO SUJETAS: $0.00</h1>
-              <h1>
-                TOTAL: {formatCurrency(Number(data?.DevolucionNC?.total))}
-              </h1>
+              <h1>TOTAL: {formatCurrency(Number(data?.DevolucionNC?.total))}</h1>
             </div>
             <br />
-            <h1>
-              ---------------------------------------------------------------------
-            </h1>
-            <h1>
-              ---------------------------------------------------------------------
-            </h1>
+            <h1>---------------------------------------------------------------------</h1>
+            <h1>---------------------------------------------------------------------</h1>
             <div className="w-full">
               <h1>DEVOLUCIONES CON TICKET</h1>
               <h1>N. INICIAL: {data?.DevolucionT?.inicio}</h1>
               <h1>N. FINAL: {data?.DevolucionT?.fin}</h1>
               <h1>
-                GRAVADAS:{" "}
+                GRAVADAS:{' '}
                 {formatCurrency(
-                  Number(data?.DevolucionT.total ?? 0) -
-                    calculateIVA(data?.DevolucionT?.total || 0)
+                  Number(data?.DevolucionT.total ?? 0) - calculateIVA(data?.DevolucionT?.total || 0)
                 )}
               </h1>
-              <h1>
-                IVA:{" "}
-                {formatCurrency(calculateIVA(data?.DevolucionT?.total || 0))}
-              </h1>
-              <h1>
-                SUB_TOTAL: {formatCurrency(Number(data?.DevolucionT?.total))}
-              </h1>
+              <h1>IVA: {formatCurrency(calculateIVA(data?.DevolucionT?.total || 0))}</h1>
+              <h1>SUB_TOTAL: {formatCurrency(Number(data?.DevolucionT?.total))}</h1>
               <h1>EXENTAS: $0.00</h1>
               <h1>NO SUJETAS: $0.00</h1>
               <h1>TOTAL: {formatCurrency(Number(data?.DevolucionT?.total))}</h1>
@@ -891,9 +843,7 @@ const CashCutsX = (props: CashCutsProps) => {
             <br />
             <div className="w-full">
               <h1>TOTAL GENERAL</h1>
-              <h1>
-                GRAVADAS: {formatCurrency(totalGeneral - totalGeneral * 0.13)}
-              </h1>
+              <h1>GRAVADAS: {formatCurrency(totalGeneral - totalGeneral * 0.13)}</h1>
               <h1>IVA: {formatCurrency(totalGeneral * 0.13)}</h1>
               <h1>SUB-TOTAL: {formatCurrency(totalGeneral)}</h1>
               <h1>EXENTAS:</h1>

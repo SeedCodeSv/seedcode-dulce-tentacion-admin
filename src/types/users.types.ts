@@ -90,3 +90,11 @@ export interface IGetUserPaginated {
   prevPag: number;
   status: number;
 }
+
+
+export interface IResponseRoles  {
+  ok: boolean;
+  message: string;
+  status: number;
+  roles: Role[];
+};

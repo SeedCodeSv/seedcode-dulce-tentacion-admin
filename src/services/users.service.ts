@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { API_URL } from '../utils/constants';
-import { IGetUserPaginated, IGetUsers, UserPayload, UserUpdate } from '../types/users.types';
+import { IGetUserPaginated, IGetUsers, IResponseRoles, UserPayload, UserUpdate } from '../types/users.types';
 import { get_token, get_user } from '../storage/localStorage';
 
 export const get_users_list = () => {
@@ -68,4 +68,13 @@ export const patch_password = (password: string, id: number) => {
       },
     }
   );
+};
+
+export const get_roles_list = () => {
+  const token = get_token() ?? '';
+  return axios.get<IResponseRoles>(API_URL + '/roles', {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 };
