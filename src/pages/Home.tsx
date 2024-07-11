@@ -165,26 +165,26 @@ function Home() {
             />
           </div>
         </div>
-        <div className="w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 xl:gap-10 lg:gap-10 sm:gap-10 mb:gap-10 pt-10">
-          <div className="w-full flex flex-col gap-10">
-            <div className="dark:bg-gray-900 dark:border-gray-700 w-full border h-32 rounded-lg shadow flex flex-col justify-center items-center">
+        <div className="grid w-full grid-cols-1 pt-10 md:grid-cols-2 xl:grid-cols-4 xl:gap-10 lg:gap-10 sm:gap-10 mb:gap-10">
+          <div className="flex flex-col w-full gap-10">
+            <div className="flex flex-col items-center justify-center w-full h-32 border rounded-lg shadow dark:bg-gray-900 dark:border-gray-700">
               <p className="text-2xl font-semibold dark:text-white">No. de ventas</p>
               <p className="text-lg font-semibold dark:text-white">{sales_table_day.length}</p>
             </div>
-            <div className="dark:bg-gray-900 dark:border-gray-700 w-full border h-32 rounded-lg shadow flex flex-col justify-center items-center">
+            <div className="flex flex-col items-center justify-center w-full h-32 border rounded-lg shadow dark:bg-gray-900 dark:border-gray-700">
               <p className="text-2xl font-semibold dark:text-white">Ventas del dia</p>
               <p className="text-lg font-semibold dark:text-white">
                 {formatCurrency(sales_by_day)}
               </p>
             </div>
-            <div className="dark:bg-gray-900 dark:border-gray-700 w-full border h-32 rounded-lg shadow flex flex-col justify-center items-center">
+            <div className="flex flex-col items-center justify-center w-full h-32 border rounded-lg shadow dark:bg-gray-900 dark:border-gray-700">
               <p className="text-2xl font-semibold dark:text-white">Gastos del dia</p>
               <p className="text-lg font-semibold dark:text-white">
                 {formatCurrency(expenses_by_day)}
               </p>
             </div>
           </div>
-          <div className="col-span-3 bg-gray-100 p-5 dark:bg-gray-900 rounded-lg mt-10 xl:mt-0 lg:mt-0 mb:mt-0 sm:mt-0">
+          <div className="col-span-3 p-5 mt-10 bg-gray-100 rounded-lg dark:bg-gray-900 xl:mt-0 lg:mt-0 mb:mt-0 sm:mt-0">
             <p className="pb-4 text-lg font-semibold dark:text-white">Ventas del dia</p>
             <DataTable
               className="w-full shadow"
@@ -197,28 +197,21 @@ function Home() {
               <Column
                 headerClassName="text-sm font-semibold"
                 headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
-                field="numeroControl"
-                header="Numero de control"
-              />
-              <Column
-                headerClassName="text-sm font-semibold"
-                headerStyle={style}
-                field="box.branch.name"
+                field="branch"
                 header="Sucursal"
               />
               <Column
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
-                field="totalDescu"
-                header="Descuento"
-                body={(rowData) => formatCurrency(Number(rowData.totalDescu))}
+                field="numberOfSales"
+                header="N° de ventas"
               />
               <Column
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
-                field="montoTotalOperacion"
-                header="Total"
-                body={(rowData) => formatCurrency(Number(rowData.montoTotalOperacion))}
+                field="totalSales"
+                header="Descuento"
+                body={(rowData) => formatCurrency(Number(rowData.totalSales))}
               />
             </DataTable>
           </div>

@@ -26,6 +26,7 @@ export const salesReportStore = create<ISalesReportStore>((set) => ({
   sales_by_period: undefined,
   sales_by_period_graph: undefined,
   sales_by_point_of_sale_branch: undefined,
+  loading_sales_period: false,
   getSalePointOfSaleByBranch: (id, startDate, endDate) => {
     get_sales_point_of_sale_by_branch(id, startDate, endDate).then(({ data }) => {
       set({ sales_by_point_of_sale_branch: data });
@@ -40,13 +41,14 @@ export const salesReportStore = create<ISalesReportStore>((set) => ({
       set({ sales_by_period_graph: undefined });
     });
   },
-  getSalesByPeriod(page, startDate, endDate) {
-    get_sales_by_period(page, startDate, endDate)
+  getSalesByPeriod(page, startDate, endDate, paymentType = "") {
+    set({ loading_sales_period: true });
+    get_sales_by_period(page, startDate, endDate, paymentType)
       .then(({ data }) => {
-        set({ sales_by_period: data });
+        set({ sales_by_period: data, loading_sales_period: false });
       })
       .catch(() => {
-        set({ sales_by_period: undefined });
+        set({ sales_by_period: undefined, loading_sales_period: false });
       });
   },
   getSalesTableDay: (id) => {

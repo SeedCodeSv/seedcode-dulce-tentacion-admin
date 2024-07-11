@@ -3,7 +3,7 @@ import {
   ProductoMostSelledTable,
   SaleBranchMonth,
   SaleMonthYear,
-  SaleTableDay,
+  SaleTable
 } from '../../../types/reports/sales.reports.types';
 import { IGetSalesByBranchPointSale, IGetSalesByPeriod, SalesChartGraphPeriod } from '../../../types/reports/sales_by_period.report';
 
@@ -13,14 +13,15 @@ export interface ISalesReportStore {
   sales_month_year: SaleMonthYear[];
   sales_by_day: number;
   expenses: IDataExpense[];
-  sales_table_day: SaleTableDay[];
+  sales_table_day: SaleTable[];
   data: IDataSalesGrafic[];
   sales_by_period: IGetSalesByPeriod | undefined;
+  loading_sales_period: boolean;
   sales_by_period_graph: SalesChartGraphPeriod | undefined;
   sales_by_point_of_sale_branch: IGetSalesByBranchPointSale | undefined;
   getSalePointOfSaleByBranch: (id: number, startDate: string, endDate: string) => void;
   getSalesTableDay: (id: number) => void;
-  getSalesByPeriod: (page: number, startDate: string, endDate: string) => void;
+  getSalesByPeriod: (page: number, startDate: string, endDate: string,paymentType ? : string) => void;
   getSalesByPeriodChart: (startDate: string, endDate: string) => void;
   getSalesByDay: (id: number) => void;
   getSalesExpenseByDate: (id: number, startDate: string, endDate: string) => void;

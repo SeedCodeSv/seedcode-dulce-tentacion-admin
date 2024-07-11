@@ -139,7 +139,7 @@ const CushCatsZ = (props: CashCutsProps) => {
       const customContent = `
          <div>
          <span>------------------------------------</span><br />
-         <span style="text-align: right:30px;">Z</span><br />
+         <span style="text-align: right:30px;"> Reporte de Ventas</span><br />
          <span>------------------------------------</span><br />
           <span>MADNESS</span><br />
           <span>${branchName || user?.correlative.branch.name}</span><br />
@@ -148,7 +148,13 @@ const CushCatsZ = (props: CashCutsProps) => {
           <span>GIRO: VENTA AL POR MENOR DE ROPA</span><br />
           <span>
             FECHA: ${date} - ${time} ${Am}
-          </span><br />
+          </span>
+          <br />
+          <br />
+          
+           <span>
+           PUNTO DE VENTA: ${codeSelected ? codeSelected : 'GENERAL'}
+        </span>
           <br />
           <span>------------------------------------</span><br />
           <span>------------------------------------</span<br />

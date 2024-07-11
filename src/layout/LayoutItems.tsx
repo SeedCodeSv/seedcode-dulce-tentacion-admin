@@ -1,6 +1,6 @@
 import { Switch } from '@nextui-org/react';
 import { NavLink } from 'react-router-dom';
-import LOGO from '../assets/react.svg';
+import LOGO from '../assets/MADNESS.png';
 import {
   Home,
   User,
@@ -141,9 +141,6 @@ export const LayoutItems = () => {
           }}
         >
           <img src={LOGO} className="max-h-14" />
-          <p className="ml-3 font-sans text-sm font-bold text-coffee-brown dark:text-white">
-            MADNESS
-          </p>
         </div>
       ) : (
         <>
