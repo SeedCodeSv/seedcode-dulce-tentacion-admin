@@ -70,7 +70,7 @@ function ConfigurationList() {
   return (
     <>
       <div className="p-4 dark:bg-gray-800">
-        <div className="flex items-end justify-between gap-10 mt lg:justify-end mt-5 mr-5">
+        <div className="flex items-end justify-between gap-10 mt-5 mr-5 mt lg:justify-end">
           <ButtonGroup>
             <Button
               isIconOnly
@@ -121,7 +121,7 @@ function ConfigurationList() {
         </div>
 
         <div className="flex justify-center p-5 bg-gray-50 dark:bg-gray-800">
-          <div className="bg-gray-50 w-full dark:bg-gray-800 dark:text-white">
+          <div className="w-full bg-gray-50 dark:bg-gray-800 dark:text-white">
             {(view === 'grid' || view === 'list') && (
               <MobileViewConfi
                 handleEdit={(config) => {
@@ -135,7 +135,7 @@ function ConfigurationList() {
             {view == 'table' && (
               <>
                 {personalization.length === 0 ? (
-                  <span>no ay datos de logo ni nombre...</span>
+                  <span>No hay configuraciones disponibles</span>
                 ) : (
                   <DataTable
                     value={personalization}
@@ -179,13 +179,13 @@ function ConfigurationList() {
         </div>
       </div>
 
-      <div className="bg-gray-50 dark:bg-gray-800 w-full">
+      <div className="w-full bg-gray-50 dark:bg-gray-800">
         <div className="p-4 ">
-          <div className="flex items-end justify-between gap-10 mt lg:justify-end mt-5 mr-5">
+          <div className="flex items-end justify-between gap-10 mt-5 mr-5 mt lg:justify-end">
             <AddButton onClick={() => modalAdd.onOpen()} />
           </div>
           <div className="p-5 bg-gray-50 dark:bg-gray-800">
-            <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid grid-cols-1 gap-6 mt-10 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {themes.map((themeS, index) => (
                 <Card
                   key={index}

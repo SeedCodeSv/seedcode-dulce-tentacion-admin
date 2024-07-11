@@ -38,12 +38,11 @@ const AddClientNormal = (props: Props) => {
   const validationSchema = yup.object().shape({
     nombre: yup.string().required('El nombre es requerido'),
     correo: yup.string().required('El correo es requerido'),
-    telefono: yup
-      .string(),
-      // .required('Este campo solo permite números sin guiones')
-      // .test('length', 'Debe ser de 8 dígitos', (value) => {
-      //   return value?.length === 8;
-      // }),
+    telefono: yup.string(),
+    // .required('Este campo solo permite números sin guiones')
+    // .test('length', 'Debe ser de 8 dígitos', (value) => {
+    //   return value?.length === 8;
+    // }),
     numDocumento: yup
       .string()
       .required('Este campo solo permite números sin guiones')
@@ -79,25 +78,29 @@ const AddClientNormal = (props: Props) => {
 
   useEffect(() => {
     getCat013Municipios(selectedCodeDep);
-    getCat022TipoDeDocumentoDeIde()
+    getCat022TipoDeDocumentoDeIde();
   }, [selectedCodeDep]);
 
   const { postCustomer, patchCustomer } = useCustomerStore();
   const user = get_user();
 
   const onSubmit = (payload: PayloadCustomer) => {
+    payload.correo = payload.correo || 'N/A@gmail.com';
+    payload.telefono = payload.telefono || '0';
     if (props.id || props.id !== 0) {
       const values = {
         ...payload,
         esContribuyente: 0,
-        transmitterId: Number(user?.correlative.branch.transmitterId),
+        // transmitterId: Number(user?.correlative.branch.transmitterId),
+        branchId: Number(user?.correlative.branch.id),
       };
       patchCustomer(values, props.id!);
     } else {
       const values = {
         ...payload,
         esContribuyente: 0,
-        transmitterId: Number(user?.correlative.branch.transmitterId),
+        // transmitterId: Number(user?.correlative.branch.transmitterId),
+        branchId: Number(user?.correlative.branch.id),
       };
       postCustomer(values);
     }
@@ -122,7 +125,7 @@ const AddClientNormal = (props: Props) => {
     }
   }, [props, props.customer_direction, cat_013_municipios, cat_013_municipios.length]);
   return (
-    <div className='p-4 dark:text-white'>
+    <div className="p-4 dark:text-white">
       <Formik
         initialValues={{ ...initialValues }}
         validationSchema={validationSchema}
@@ -166,7 +169,6 @@ const AddClientNormal = (props: Props) => {
                 <span className="text-sm font-semibold text-red-500">{errors.correo}</span>
               )}
             </div>
-
 
             <div className="grid grid-cols-2 gap-5 pt-3">
               <div className="pt-2">

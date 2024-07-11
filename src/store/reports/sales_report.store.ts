@@ -12,6 +12,7 @@ import {
   get_sales_by_month_and_year,
   get_sales_by_period,
   get_sales_by_period_chart,
+  get_sales_point_of_sale_by_branch,
 } from '../../services/reports/sales.reports.service';
 
 export const salesReportStore = create<ISalesReportStore>((set) => ({
@@ -24,6 +25,14 @@ export const salesReportStore = create<ISalesReportStore>((set) => ({
   products_most_selled: [],
   sales_by_period: undefined,
   sales_by_period_graph: undefined,
+  sales_by_point_of_sale_branch: undefined,
+  getSalePointOfSaleByBranch: (id, startDate, endDate) => {
+    get_sales_point_of_sale_by_branch(id, startDate, endDate).then(({ data }) => {
+      set({ sales_by_point_of_sale_branch: data });
+    }).catch(() => {
+      set({ sales_by_point_of_sale_branch: undefined });
+    });
+  },
   getSalesByPeriodChart(startDate, endDate) {
     get_sales_by_period_chart(startDate, endDate).then(({ data }) => {
       set({ sales_by_period_graph: data });

@@ -5,7 +5,7 @@ import {
   SaleMonthYear,
   SaleTableDay,
 } from '../../../types/reports/sales.reports.types';
-import { IGetSalesByPeriod, SalesChartGraphPeriod } from '../../../types/reports/sales_by_period.report';
+import { IGetSalesByBranchPointSale, IGetSalesByPeriod, SalesChartGraphPeriod } from '../../../types/reports/sales_by_period.report';
 
 export interface ISalesReportStore {
   products_most_selled: ProductoMostSelledTable[];
@@ -17,6 +17,8 @@ export interface ISalesReportStore {
   data: IDataSalesGrafic[];
   sales_by_period: IGetSalesByPeriod | undefined;
   sales_by_period_graph: SalesChartGraphPeriod | undefined;
+  sales_by_point_of_sale_branch: IGetSalesByBranchPointSale | undefined;
+  getSalePointOfSaleByBranch: (id: number, startDate: string, endDate: string) => void;
   getSalesTableDay: (id: number) => void;
   getSalesByPeriod: (page: number, startDate: string, endDate: string) => void;
   getSalesByPeriodChart: (startDate: string, endDate: string) => void;

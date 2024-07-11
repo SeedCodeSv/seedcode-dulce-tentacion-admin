@@ -12,7 +12,11 @@ import {
   IResponseDataSalesGrafic,
   IResponseDataExpenses,
 } from "../../types/reports/branch_product.reports";
-import { IGetSalesByPeriod, SalesChartGraphPeriod } from "../../types/reports/sales_by_period.report";
+import {
+  IGetSalesByBranchPointSale,
+  IGetSalesByPeriod,
+  SalesChartGraphPeriod,
+} from "../../types/reports/sales_by_period.report";
 
 export const get_sales_by_branch_and_current_month = (id: number) => {
   return axios.get<IGetSalesByBranchOfCurrentMonth>(
@@ -109,5 +113,16 @@ export const get_sales_by_period_chart = (
   return axios.get<SalesChartGraphPeriod>(
     API_URL +
       `/sales/graphic/by-branches?startDate=${startDate}&endDate=${endDate}`
+  );
+};
+
+export const get_sales_point_of_sale_by_branch = (
+  id: number,
+  startDate: string,
+  endDate: string
+) => {
+  return axios.get<IGetSalesByBranchPointSale>(
+    API_URL +
+      `/sales/graphic-correlations-for-dates/${id}?startDate=${startDate}&endDate=${endDate}`
   );
 };
