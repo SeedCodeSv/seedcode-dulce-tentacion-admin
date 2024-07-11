@@ -20,8 +20,9 @@ export interface Employee {
   phone: string;
   age: string;
   salary: string;
- dateOfBirth: string;
+  dateOfBirth: string;
   dateOfEntry: string;
+  employeeStatusId: number;
   dateOfExit: string;
   responsibleContact: string;
   chargeId: number;
@@ -35,6 +36,12 @@ export interface Employee {
   contractType: ContractType;
   contractTypeId: number;
   address: Address;
+  department: string;
+  departmentName: string;
+  municipality: string;
+  complement: string;
+  municipalityName: string;
+
   addressId: number;
   isActive: boolean;
 }
@@ -51,6 +58,7 @@ export interface IGetEmployeesPaginated {
 }
 
 export interface EmployeePayload {
+  id?: number;
   firstName: string;
   secondName: string;
   firstLastName: string;
@@ -65,7 +73,7 @@ export interface EmployeePayload {
   phone: string;
   age: string;
   salary: string;
- dateOfBirth: string;
+  dateOfBirth: string;
   dateOfEntry: string;
   dateOfExit: string;
   responsibleContact: string;

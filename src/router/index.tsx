@@ -173,6 +173,10 @@ export const router = () => {
       path: '/AddEmployee',
       element: <AddEmployee />,
     },
+    // {
+    //   path: '/UpdateEmployee/:id',
+    //   element: <UpdateEmployee />,
+    // },
     {
       path: '/reports/sales-by-period',
       element: <VentasPorPeriodo />,
