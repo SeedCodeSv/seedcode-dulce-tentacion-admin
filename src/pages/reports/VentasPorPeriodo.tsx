@@ -12,11 +12,12 @@ import {
 import Layout from "../../layout/Layout";
 import { SeedcodeCatalogosMhService } from "seedcode-catalogos-mh";
 import { useEffect, useState } from "react";
-import { formatDate } from "../../utils/dates";
+import { formatDate, formatDateShort } from "../../utils/dates";
 import { salesReportStore } from "../../store/reports/sales_report.store";
 import { formatCurrency } from "../../utils/dte";
 import Pagination from "../../components/global/Pagination";
 import SalesChartPeriod from "./Period/SalesChartPeriod";
+import { global_styles } from "@/styles/global.styles";
 
 function VentasPorPeriodo() {
   const service = new SeedcodeCatalogosMhService();
@@ -42,7 +43,7 @@ function VentasPorPeriodo() {
     <Layout title="Ventas por Periodo">
       <div className="w-full h-full p-5 overflow-x-hidden overflow-y-hidden bg-gray-50 dark:bg-gray-800">
         <div className="w-full h-full p-5 overflow-x-hidden overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
-          <div className="grid w-full grid-cols-3 gap-5">
+          <div className="grid w-full grid-cols-1 gap-5 md:grid-cols-3">
             <Input
               label="Fecha inicial"
               labelPlacement="outside"
@@ -96,14 +97,14 @@ function VentasPorPeriodo() {
               <div className="w-full">
                 <Table aria-label="Example static collection table">
                   <TableHeader>
-                    <TableColumn>FECHA</TableColumn>
-                    <TableColumn>TOTAL EN VENTAS</TableColumn>
-                    <TableColumn>NO. DE VENTAS</TableColumn>
+                    <TableColumn style={global_styles().darkStyle}>FECHA</TableColumn>
+                    <TableColumn style={global_styles().darkStyle}>TOTAL EN VENTAS</TableColumn>
+                    <TableColumn style={global_styles().darkStyle}>NO. DE VENTAS</TableColumn>
                   </TableHeader>
-                  <TableBody>
+                  <TableBody emptyContent="No hay resultados">
                     {sales_by_period.sales.map((sale, index) => (
                       <TableRow key={index}>
-                        <TableCell>{sale.date}</TableCell>
+                        <TableCell>{formatDateShort(sale.date)}</TableCell>
                         <TableCell>
                           {formatCurrency(Number(sale.totalSales))}
                         </TableCell>
@@ -125,9 +126,9 @@ function VentasPorPeriodo() {
                 </div>
               </div>
             ) : (
-              <>
+              <div className="flex items-center justify-center w-full h-64 text-center">
                 <p>No hay resultados</p>
-              </>
+              </div>
             )}
             <div className="w-full p-5 mt-4 overflow-x-hidden bg-white border shadow rounded-2xl">
               <div className="w-full">
@@ -138,14 +139,7 @@ function VentasPorPeriodo() {
                     labels={sales_by_period_graph.data
                       .sort((a, b) => Number(b.total) - Number(a.total))
                       .map((sale) => sale.branch)}
-                    series={[
-                      {
-                        name: "Ventas",
-                        data: sales_by_period_graph.data
-                          .map((sale) => Number(sale.total.toFixed(2)))
-                          .sort((a, b) => b - a),
-                      },
-                    ]}
+                    
                   />
                 )}
               </div>

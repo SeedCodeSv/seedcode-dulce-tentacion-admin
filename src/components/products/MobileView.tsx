@@ -158,7 +158,7 @@ const ListItem = (props: GridProps) => {
   const { theme } = useContext(ThemeContext);
   return (
     <>
-      <div className="flex w-full col-span-1 p-5 border-b shadow ">
+      <div className="flex w-full col-span-1 p-5 border shadow rounded-2xl ">
         <div className="w-full">
           <div className="flex w-full gap-2">
             <ShoppingBag

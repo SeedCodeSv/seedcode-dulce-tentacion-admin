@@ -1,15 +1,15 @@
 import ApexChart from "react-apexcharts";
-import { formatCurrency } from "../../../utils/dte";
+import { formatCurrency } from "@/utils/dte";
 import { salesReportStore } from "@/store/reports/sales_report.store";
+import useWindowSize from "@/hooks/useWindowSize";
+import { useEffect, useMemo, useState } from "react";
+import { Button } from "@nextui-org/react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface Props {
   startDate: string;
   endDate: string;
   labels: string[];
-  series: {
-    name: string;
-    data: number[];
-  }[];
 }
 
 function SalesChartPeriod(props: Props) {
@@ -28,11 +28,98 @@ function SalesChartPeriod(props: Props) {
     }
   };
 
+  const { windowSize } = useWindowSize();
+
+  const [currentPage, setCurrentPage] = useState(0);
+
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+
+  useEffect(() => {
+    if (windowSize.width < 600) setItemsPerPage(3);
+  }, [windowSize.width]);
+
+  const totalPages = Math.ceil(
+    sales_by_period_graph!.data.length / itemsPerPage
+  );
+
+  const series = useMemo(() => {
+    if (windowSize.width < 768) {
+      return [
+        {
+          name: "Total",
+          data: sales_by_period_graph!.data
+            .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
+            .map((d) => Number(d.total))
+            .sort((a, b) => b - a),
+        },
+      ];
+    }
+
+    return [
+      {
+        name: "Total",
+        data: sales_by_period_graph!.data
+          .map((d) => Number(d.total))
+          .sort((a, b) => b - a),
+      },
+    ];
+  }, [
+    windowSize.width,
+    sales_by_period_graph!.data,
+    currentPage,
+    itemsPerPage,
+  ]);
+
+  const labels = useMemo(() => {
+    if (windowSize.width < 768) {
+      return sales_by_period_graph!.data
+        .sort((a, b) => Number(b.total) - Number(a.total))
+        .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
+        .map((d) => d.branch);
+    }
+
+    return sales_by_period_graph!.data
+      .sort((a, b) => Number(b.total) - Number(a.total))
+      .map((d) => d.branch);
+  }, [
+    windowSize.width,
+    sales_by_period_graph!.data,
+    currentPage,
+    itemsPerPage,
+  ]);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages - 1) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 0) {
+      setCurrentPage(currentPage - 1);
+    }
+  }
+
   return (
     <>
+      <div className="flex items-center justify-between">
+        <p className="pb-4 text-lg font-semibold dark:text-white">Ventas</p>
+        {windowSize.width < 768 && (
+          <>
+            <div className="flex gap-3">
+              <Button isIconOnly onClick={handlePrevPage}>
+                <ChevronLeft />
+              </Button>
+              <Button isIconOnly onClick={handleNextPage}>
+                <ChevronRight />
+              </Button>
+            </div>
+          </>
+        )}
+      </div>
       <ApexChart
         type="bar"
-        series={props.series}
+        series={series}
         options={{
           chart: {
             events: {
@@ -43,7 +130,7 @@ function SalesChartPeriod(props: Props) {
               },
             },
           },
-          labels: props.labels,
+          labels: labels,
           title: {
             text: "Ventas por sucursales",
           },
@@ -74,6 +161,11 @@ function SalesChartPeriod(props: Props) {
             },
           },
           yaxis: {
+            labels: {
+              formatter(value) {
+                return Number(value).toFixed(0);
+              },
+            },
             crosshairs: {
               show: true,
               stroke: {
@@ -121,9 +213,9 @@ function SalesChartPeriod(props: Props) {
                 labels: sales_by_point_of_sale_branch.salesMap.map(
                   (el) => el.code
                 ),
-                title:{
-                  text:"Ventas por punto de venta"
-                }
+                title: {
+                  text: "Ventas por punto de venta",
+                },
               }}
             />
           </>

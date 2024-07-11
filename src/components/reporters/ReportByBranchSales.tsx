@@ -302,6 +302,12 @@ function ReportSalesByBranch() {
             <div className="max-h-[600px] overflow-y-scroll flex flex-col gap-5 md:hidden">
               {sales.map((sale) => (
                 <div className="w-full p-5 border shadow rounded-2xl">
+                   <p className="font-semibold">
+                    Numero de control: 
+                    <span className="font-normal">
+                      {sale.numeroControl}
+                    </span>
+                  </p>
                   <p className="font-semibold">
                     Fecha:{" "}
                     <span className="font-normal">
