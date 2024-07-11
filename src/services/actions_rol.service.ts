@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { API_URL } from '../utils/constants';
 import { get_token } from '../storage/localStorage';
-import { IGetActionRolList, IAddActionRol } from '../types/actions_rol.types';
+import { IGetActionRolList, IAddActionRol, IResponseDataRoleActions } from '../types/actions_rol.types';
 
 export const get_actions_by_rol_and_view = (rolId: number, viewId: number) => {
   const token = get_token() ?? '';
@@ -25,7 +25,7 @@ export const save_action_rol = (actionRol: IAddActionRol) => {
 
 export const get_actions_role = () => {
   const token = get_token() ?? '';
-  return axios.get<IGetActionRolList>(API_URL + '/role-actions', {
+  return axios.get<IResponseDataRoleActions>(API_URL + '/role-actions', {
     headers: {
       Authorization: `Bearer ${token}`,
     },

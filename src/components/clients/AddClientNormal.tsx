@@ -24,26 +24,26 @@ const AddClientNormal = (props: Props) => {
 
   const initialValues = {
     nombre: props.customer?.nombre ?? '',
-    correo: props.customer?.correo ?? '',
-    telefono: props.customer?.telefono ?? '',
-    numDocumento: props.customer?.numDocumento ?? '',
-    municipio: props.customer_direction?.municipio ?? '',
-    tipoDocumento: props.customer?.tipoDocumento ?? '',
-    nombreMunicipio: props.customer_direction?.nombreMunicipio ?? '',
-    departamento: props.customer_direction?.departamento ?? '',
-    nombreDepartamento: props.customer_direction?.nombreDepartamento ?? '',
-    complemento: props.customer_direction?.complemento ?? '',
+    correo: props.customer?.correo ?? 'N/A@gmail.com',
+    telefono: props.customer?.telefono ?? '0',
+    numDocumento: props.customer?.numDocumento ?? '0',
+    municipio: props.customer_direction?.municipio ?? 'N/A',
+    tipoDocumento: props.customer?.tipoDocumento ?? '13',
+    nombreMunicipio: props.customer_direction?.nombreMunicipio ?? 'N/A',
+    departamento: props.customer_direction?.departamento ?? 'N/A',
+    nombreDepartamento: props.customer_direction?.nombreDepartamento ?? 'N/A',
+    complemento: props.customer_direction?.complemento ?? 'N/A',
   };
 
   const validationSchema = yup.object().shape({
     nombre: yup.string().required('El nombre es requerido'),
     correo: yup.string().required('El correo es requerido'),
     telefono: yup
-      .string()
-      .required('Este campo solo permite números sin guiones')
-      .test('length', 'Debe ser de 8 dígitos', (value) => {
-        return value?.length === 8;
-      }),
+      .string(),
+      // .required('Este campo solo permite números sin guiones')
+      // .test('length', 'Debe ser de 8 dígitos', (value) => {
+      //   return value?.length === 8;
+      // }),
     numDocumento: yup
       .string()
       .required('Este campo solo permite números sin guiones')

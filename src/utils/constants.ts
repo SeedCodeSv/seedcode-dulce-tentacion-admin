@@ -69,6 +69,9 @@ export const views_enabled = [
   'Ordenes de compra',
   'Descuentos',
   'Creditos de clientes',
+  'Nivel de estudio',
+  'Estado del empleado',
+  'Tipo de contratacion',
 ];
 
 export const views_seller = [
