@@ -1,13 +1,26 @@
 import axios from 'axios';
-import { IGetProductsPaginated, ProductList, ProductPayload, Verify_Code } from '../types/products.types';
+import {
+  IGetProductsPaginated,
+  ProductList,
+  ProductPayload,
+  Verify_Code,
+} from '../types/products.types';
 import { API_URL } from '../utils/constants';
 import { get_token } from '../storage/localStorage';
 
-export const get_products = (page = 1, limit = 5, category = '', name = '', active = 1) => {
+export const get_products = (
+  page = 1,
+  limit = 5,
+  category = '',
+  subCategory = '',
+  name = '',
+  code = '',
+  active = 1
+) => {
   const token = get_token() ?? '';
   return axios.get<IGetProductsPaginated>(
     API_URL +
-      `/products/list-paginated?page=${page}&limit=${limit}&category=${category}&name=${name}&active=${active}`,
+      `/products/list-paginated?page=${page}&limit=${limit}&category=${category}&subCategory=${subCategory}&name=${name}&code=${code}&active=${active}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -25,7 +38,6 @@ export const create_products = (values: ProductPayload) => {
   });
 };
 
-
 export const get_promotions_products_list = () => {
   const token = get_token() ?? '';
   return axios.get<ProductList>(API_URL + `/products`, {
@@ -34,7 +46,6 @@ export const get_promotions_products_list = () => {
     },
   });
 };
-
 
 export const update_products = (values: ProductPayload, id: number) => {
   const token = get_token() ?? '';
@@ -67,5 +78,5 @@ export const activate_product = (id: number) => {
 };
 
 export const verify_code_product = (code: string) => {
-  return axios.get<Verify_Code>(API_URL + `/branch-products/verify-code?code=${code}`)
-}
+  return axios.get<Verify_Code>(API_URL + `/branch-products/verify-code?code=${code}`);
+};

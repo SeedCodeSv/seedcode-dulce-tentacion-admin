@@ -3,7 +3,6 @@ import { NavLink } from 'react-router-dom';
 import LOGO from '../assets/react.svg';
 import {
   Home,
-  Box,
   User,
   BookUser,
   ShieldHalf,
@@ -25,6 +24,8 @@ import {
   FolderKanban,
   FolderCog,
   FolderCheck,
+  LayoutList,
+  LayoutGrid,
 } from 'lucide-react';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { ThemeContext } from '../hooks/useTheme';
@@ -248,7 +249,7 @@ export const LayoutItems = () => {
                     };
                   }}
                 >
-                  <Box size={iconSize} />
+                  <LayoutGrid size={iconSize} />
                   <p className="ml-2 text-sm 2xl:text-base">Categorías</p>
                 </NavLink>
               )}
@@ -270,7 +271,7 @@ export const LayoutItems = () => {
                     };
                   }}
                 >
-                  <Box size={iconSize} />
+                  <LayoutList size={iconSize} />
                   <p className="ml-2 text-sm 2xl:text-base">Sub Categorías</p>
                 </NavLink>
               )}

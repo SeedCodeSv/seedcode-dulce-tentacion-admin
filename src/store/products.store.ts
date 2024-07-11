@@ -28,9 +28,9 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
   },
   loading_products: false,
   savePaginatedProducts: (products: IGetProductsPaginated) => set({ paginated_products: products }),
-  getPaginatedProducts: (page, limit, category, name, active = 1) => {
+  getPaginatedProducts: (page, limit, category, subCategory, name, code, active = 1) => {
     set({ loading_products: true });
-    get_products(page, limit, category, name, active)
+    get_products(page, limit, category, subCategory, name, code, active)
       .then((products) => set({ paginated_products: products.data, loading_products: false }))
       .catch(() => {
         set({
@@ -73,7 +73,7 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
   postProducts(payload) {
     create_products(payload)
       .then(() => {
-        get().getPaginatedProducts(1, 5, '', '');
+        get().getPaginatedProducts(1, 5, '', '', '', '');
         toast.success(messages.success);
       })
       .catch(() => {
@@ -83,7 +83,7 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
   patchProducts(payload, id) {
     update_products(payload, id)
       .then(() => {
-        get().getPaginatedProducts(1, 5, '', '');
+        get().getPaginatedProducts(1, 5, '', '', '', '');
         toast.success(messages.success);
       })
       .catch(() => {
@@ -94,7 +94,7 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
     await delete_products(id)
       .then(() => {
         toast.success(messages.success);
-        get().getPaginatedProducts(1, 5, '', '');
+        get().getPaginatedProducts(1, 5, '', '', '', '');
       })
       .catch(() => {
         toast.error(messages.error);
