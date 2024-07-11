@@ -75,7 +75,7 @@ const MostProductTransmitterSelled = () => {
   return (
     <>
       <div className="col-span-3 bg-gray-100 p-5 dark:bg-gray-900 rounded-lg">
-        <p className="pb-4 text-xl font-semibold dark:text-white">Producto mas vendido</p>
+        {/* <p className="pb-4 text-xl font-semibold dark:text-white">Producto mas vendido</p> */}
         <div className="grid grid-cols-2 gap-2 py-2">
           <label className="text-sm font-semibold dark:text-white">Fecha inicial</label>
           <label className="text-sm font-semibold dark:text-white">Fecha final</label>

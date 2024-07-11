@@ -91,7 +91,7 @@ function Home() {
   };
 
   return (
-    <Layout title="Home">
+    <Layout title="Inicio">
       <div className="w-full h-full overflow-y-auto p-5 bg-white dark:bg-gray-800">
         <div className="w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 2xl:gap-10 pt-10">
           <div>
@@ -132,12 +132,19 @@ function Home() {
                 title: 'Producto mas vendido',
                 labels: most_product_selled.map((sl) => sl.branchProduct.name),
                 total: mostProductSelled,
+                branch: most_product_selled.map((ld) => ld.branch),
+                // branch: most_product_selled[0].branch,
                 series: [
                   {
                     name: 'Total',
                     data: most_product_selled.map((sl) => Number(sl.total)),
                   },
+                  {
+                    name: 'Sucursal',
+                    data: most_product_selled.map((sl) => Number(sl.branch)),
+                  },
                 ],
+              
               }}
             />
           </div>
