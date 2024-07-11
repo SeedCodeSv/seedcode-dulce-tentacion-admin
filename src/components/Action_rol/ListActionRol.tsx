@@ -1,10 +1,9 @@
-import { Button, ButtonGroup, useDisclosure } from '@nextui-org/react';
-import { Table as ITable, CreditCard, List } from 'lucide-react';
-import { useContext, useEffect, useState } from 'react';
-import { ThemeContext } from '../../hooks/useTheme';
+import {  useDisclosure } from '@nextui-org/react';
+// import { Table as ITable, CreditCard, List } from 'lucide-react';
+import { useEffect, useState } from 'react';
+// import { ThemeContext } from '../../hooks/useTheme';
 import AddButton from '../global/AddButton';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
+
 import AddActionRol from './AddActionRol';
 import { useActionsRolStore } from '../../store/actions_rol.store';
 import HeadlessModal from '../global/HeadlessModal';
@@ -12,13 +11,13 @@ import { get_user } from '@/storage/localStorage';
 import { get_roles_list } from '@/services/users.service';
 import { Role } from '@/types/auth.types';
 const ListActionRol = () => {
-  const { theme } = useContext(ThemeContext);
-  const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
+  // const { theme } = useContext(ThemeContext);
+  // const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
   const [rolId, setRolId] = useState(0);
   const modalAdd = useDisclosure();
 
   const { OnGetActionsRoleList, roleActions } = useActionsRolStore();
-  const [roles, setRoles] = useState<Role[]>([]);
+  const [, setRoles] = useState<Role[]>([]);
   useEffect(() => {
     const getRolId = () => {
       const rolId = get_user();
@@ -36,10 +35,10 @@ const ListActionRol = () => {
     getRolId();
     OnGetActionsRoleList();
   }, [rolId]);
-  const style = {
-    backgroundColor: theme.colors.dark,
-    color: theme.colors.primary,
-  };
+  // const style = {
+  //   backgroundColor: theme.colors.dark,
+  //   color: theme.colors.primary,
+  // };
   const uniqueRoles = [...new Set(roleActions.map((item) => item.role?.name))];
 
   return (
