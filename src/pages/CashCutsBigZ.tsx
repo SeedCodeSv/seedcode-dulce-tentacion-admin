@@ -136,22 +136,20 @@ const CushCatsBigZ = (props: CashCutsProps) => {
 
       body.appendChild(otherParent);
       body.style.fontFamily = 'Arial, sans-serif';
-      const now = new Date();
-      const date = now.toLocaleDateString();
-      const time = now.toLocaleTimeString();
-      const Am = now.getHours() < 12 ? 'AM' : 'PM';
+      
+     
       const customContent = `
       <div>
         <span>------------------------------------</span><br />
-        <span style="text-align: right:30px;">Gran Z</span><br />
+        <span style="text-align: right:30px;">Reporte de Ventas</span><br />
         <span>------------------------------------</span><br />
         <span>MADNESS</span<br />
         <span>${branchName || user?.correlative.branch.name}</span><br />
         <span>${user?.correlative.branch.address}</span><br />
-        <span>Creado por: ${user?.userName}</span><br />
+       
         <span>GIRO: VENTA AL POR MENOR DE ROPA</span><br />
         <span>
-           FECHA: ${date} - ${time} ${Am}
+           FECHA: ${dateInitial} - ${dateEnd} 
         </span><br />
         <br />
         <span>------------------------------------</span><br />
@@ -391,11 +389,12 @@ const CushCatsBigZ = (props: CashCutsProps) => {
             <h1>MADNESS</h1>
             <h1>{branchName || user?.correlative.branch.name}</h1>
             <h1>{user?.correlative.branch.address}</h1>
-            <h1>Creado por: {user?.userName}</h1>
+
             <h1>GIRO: VENTA AL POR MENOR DE ROPA</h1>
             <h1>
-              FECHA: {new Date().toLocaleDateString()} - {new Date().toLocaleTimeString()}
+              FECHA: {dateInitial} - {dateEnd}
             </h1>
+            <h1>PUNTO DE VENTA: {codeSelected ? codeSelected : 'GENERAL'}</h1>
             <br />
             <h1>---------------------------------------------------------------------</h1>
             <h1>---------------------------------------------------------------------</h1>
