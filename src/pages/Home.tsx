@@ -19,12 +19,14 @@ function Home() {
   const {
     getSalesByBranchAndMonth,
     sales_branch_month,
+    loading_sales_by_branch_and_month,
     getSalesByYearAndMonth,
     sales_month_year,
     sales_by_day,
     getSalesByDay,
     getSalesTableDay,
     sales_table_day,
+    loading_sales_by_table_date,
   } = salesReportStore();
 
   const {
@@ -94,7 +96,17 @@ function Home() {
     <Layout title="Inicio">
       <div className="w-full h-full overflow-y-auto p-5 bg-white dark:bg-gray-800">
         <div className="w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 2xl:gap-10 pt-10">
-          <div>
+          {loading_sales_by_branch_and_month ? (
+            <>
+              <div className="flex flex-col items-center justify-center w-full h-64">
+                <div className="loader"></div>
+                <p className="mt-3 text-xl font-semibold">Cargando...</p>
+              </div>
+            
+            </>
+          ) : (
+            <>
+                      <div>
             <SalesMonthBranches
               sales={{
                 title: 'Ventas del mes',
@@ -109,6 +121,9 @@ function Home() {
               }}
             />
           </div>
+            </>
+          )}
+
 
           <div>
             <ExpensesMonthBranches
@@ -186,7 +201,17 @@ function Home() {
           </div>
           <div className="col-span-3 p-5 mt-10 bg-gray-100 rounded-lg dark:bg-gray-900 xl:mt-0 lg:mt-0 mb:mt-0 sm:mt-0">
             <p className="pb-4 text-lg font-semibold dark:text-white">Ventas del dia</p>
-            <DataTable
+
+            {loading_sales_by_table_date ? (
+              <>
+                  <div className="flex flex-col items-center justify-center w-full h-64">
+                <div className="loader"></div>
+                <p className="mt-3 text-xl font-semibold">Cargando...</p>
+              </div>
+              </>
+            ) : (
+              <>
+               <DataTable
               className="w-full shadow"
               emptyMessage="No se encontraron resultados"
               value={sales_table_day}
@@ -214,6 +239,10 @@ function Home() {
                 body={(rowData) => formatCurrency(Number(rowData.totalSales))}
               />
             </DataTable>
+              </>
+              
+            )}
+           
           </div>
         </div>
       </div>
