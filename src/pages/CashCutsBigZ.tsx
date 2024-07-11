@@ -136,8 +136,7 @@ const CushCatsBigZ = (props: CashCutsProps) => {
 
       body.appendChild(otherParent);
       body.style.fontFamily = 'Arial, sans-serif';
-      
-     
+
       const customContent = `
       <div>
         <span>------------------------------------</span><br />
@@ -150,7 +149,13 @@ const CushCatsBigZ = (props: CashCutsProps) => {
         <span>GIRO: VENTA AL POR MENOR DE ROPA</span><br />
         <span>
            FECHA: ${dateInitial} - ${dateEnd} 
-        </span><br />
+        </span>
+          <br />
+          <br />
+         <span>
+           PUNTO DE VENTA: ${codeSelected ? codeSelected : 'GENERAL'}
+        </span>
+       
         <br />
         <span>------------------------------------</span><br />
         <span>------------------------------------</span<br />
@@ -403,11 +408,12 @@ const CushCatsBigZ = (props: CashCutsProps) => {
               <h1>N. INICIAL: {data?.Ticket?.inicio}</h1>
               <h1>N. FINAL: {data?.Ticket?.fin}</h1>
               <h1>GRAVADAS: $0.00</h1>
-              <h1>IVA: {calculateIVA(data?.Ticket?.total || 0)}</h1>
-              <h1>SUB_TOTAL: {formatCurrency(Number(data?.Ticket?.total))}</h1>
+              <h1>IVA: {calculateIVA(data?.Ticket?.total || 0).toFixed(2)}</h1>
+
+              <h1>SUB_TOTAL: {formatCurrency(Number(data?.Ticket?.total.toFixed(2)))}</h1>
               <h1>EXENTAS: $0.00</h1>
               <h1>NO SUJETAS: $0.00</h1>
-              <h1>TOTAL: {formatCurrency(Number(data?.Ticket?.total))}</h1>
+              <h1>TOTAL: {formatCurrency(Number(data?.Ticket?.total.toFixed(2)))}</h1>
             </div>
             <br />
             <h1>---------------------------------------------------------------------</h1>
@@ -417,11 +423,11 @@ const CushCatsBigZ = (props: CashCutsProps) => {
               <h1>N. INICIAL: {data?.Factura?.inicio}</h1>
               <h1>N. FINAL: {data?.Factura?.fin}</h1>
               <h1>GRAVADAS: $0.00</h1>
-              <h1>IVA: {calculateIVA(data?.Factura?.total || 0)}</h1>
+              <h1>IVA: {calculateIVA(data?.Factura?.total || 0).toFixed(2)}</h1>
               <h1>SUB_TOTAL: {formatCurrency(Number(data?.Factura?.total))}</h1>
               <h1>EXENTAS: $0.00</h1>
               <h1>NO SUJETAS: $0.00</h1>
-              <h1>TOTAL: {formatCurrency(Number(data?.Factura?.total))}</h1>
+              <h1>TOTAL: {formatCurrency(Number(data?.Factura?.total.toFixed(2)))}</h1>
             </div>
             <br />
             <h1>---------------------------------------------------------------------</h1>
@@ -431,7 +437,7 @@ const CushCatsBigZ = (props: CashCutsProps) => {
               <h1>N. INICIAL: {data?.CreditoFiscal?.inicio}</h1>
               <h1>N. FINAL: {data?.CreditoFiscal?.fin}</h1>
               <h1>GRAVADAS: $0.00</h1>
-              <h1>IVA: {calculateIVA(data?.CreditoFiscal?.total || 0)}</h1>
+              <h1>IVA: {calculateIVA(data?.CreditoFiscal?.total || 0).toFixed(2)}</h1>
               <h1>SUB_TOTAL: {formatCurrency(Number(data?.CreditoFiscal?.total))}</h1>
               <h1>EXENTAS: $0.00</h1>
               <h1>NO SUJETAS: $0.00</h1>
@@ -445,11 +451,11 @@ const CushCatsBigZ = (props: CashCutsProps) => {
               <h1>N. INICIAL: {data?.DevolucionNC?.inicio}</h1>
               <h1>N. FINAL: {data?.DevolucionNC?.fin}</h1>
               <h1>GRAVADAS: $0.00</h1>
-              <h1>IVA: {calculateIVA(data?.DevolucionNC?.total || 0)}</h1>
-              <h1>SUB_TOTAL: {formatCurrency(Number(data?.DevolucionNC?.total))}</h1>
+              <h1>IVA: {calculateIVA(data?.DevolucionNC?.total || 0).toFixed(2)}</h1>
+              <h1>SUB_TOTAL: {formatCurrency(Number(data?.DevolucionNC?.total.toFixed(2)))}</h1>
               <h1>EXENTAS: $0.00</h1>
               <h1>NO SUJETAS: $0.00</h1>
-              <h1>TOTAL: {formatCurrency(Number(data?.DevolucionNC?.total))}</h1>
+              <h1>TOTAL: {formatCurrency(Number(data?.DevolucionNC?.total.toFixed(2)))}</h1>
             </div>
             <br />
             <h1>---------------------------------------------------------------------</h1>
@@ -460,10 +466,10 @@ const CushCatsBigZ = (props: CashCutsProps) => {
               <h1>N. FINAL: {data?.DevolucionT?.fin}</h1>
               <h1>GRAVADAS: $0.00</h1>
               <h1>IVA: {calculateIVA(data?.DevolucionT?.total || 0)}</h1>
-              <h1>SUB_TOTAL: {formatCurrency(Number(data?.DevolucionT?.total))}</h1>
+              <h1>SUB_TOTAL: {formatCurrency(Number(data?.DevolucionT?.total.toFixed(2)))}</h1>
               <h1>EXENTAS: $0.00</h1>
               <h1>NO SUJETAS: $0.00</h1>
-              <h1>TOTAL: {formatCurrency(Number(data?.DevolucionT?.total))}</h1>
+              <h1>TOTAL: {formatCurrency(Number(data?.DevolucionT?.total.toFixed(2)))}</h1>
             </div>
             <br />
             <br />
@@ -475,7 +481,7 @@ const CushCatsBigZ = (props: CashCutsProps) => {
               <h1>EXENTAS:</h1>
               <h1>NO SUJETAS:</h1>
               <h1>RETENCIONES:</h1>
-              <h1>TOTAL: ${formatCurrency(totalGeneral)}</h1>
+              <h1>TOTAL: {formatCurrency(totalGeneral)}</h1>
             </div>
           </div>
         </div>
