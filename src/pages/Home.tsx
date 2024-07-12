@@ -27,6 +27,8 @@ function Home() {
     getSalesTableDay,
     sales_table_day,
     loading_sales_by_table_date,
+    getSalesCount,
+    sales_count
   } = salesReportStore();
 
   const {
@@ -53,6 +55,7 @@ function Home() {
       getSalesByDay(branchId);
       getExpensesByDay(branchId);
       getSalesTableDay(branchId);
+      getSalesCount()
     }
   }, [user, theme]);
 
@@ -94,8 +97,8 @@ function Home() {
 
   return (
     <Layout title="Inicio">
-      <div className="w-full h-full overflow-y-auto p-5 bg-white dark:bg-gray-800">
-        <div className="w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 2xl:gap-10 pt-10">
+      <div className="w-full h-full p-5 overflow-y-auto bg-white dark:bg-gray-800">
+        <div className="grid w-full grid-cols-1 gap-5 pt-10 md:grid-cols-2 xl:grid-cols-4 2xl:gap-10">
           {loading_sales_by_branch_and_month ? (
             <>
               <div className="flex flex-col items-center justify-center w-full h-64">
@@ -184,7 +187,7 @@ function Home() {
           <div className="flex flex-col w-full gap-10">
             <div className="flex flex-col items-center justify-center w-full h-32 border rounded-lg shadow dark:bg-gray-900 dark:border-gray-700">
               <p className="text-2xl font-semibold dark:text-white">No. de ventas</p>
-              <p className="text-lg font-semibold dark:text-white">{sales_table_day.length}</p>
+              <p className="text-2xl font-semibold dark:text-white animated-count">{sales_count}</p>
             </div>
             <div className="flex flex-col items-center justify-center w-full h-32 border rounded-lg shadow dark:bg-gray-900 dark:border-gray-700">
               <p className="text-2xl font-semibold dark:text-white">Ventas del dia</p>

@@ -21,6 +21,8 @@ export interface ISalesReportStore {
   loading_sales_by_branch_and_month: boolean;
   sales_by_period_graph: SalesChartGraphPeriod | undefined;
   sales_by_point_of_sale_branch: IGetSalesByBranchPointSale | undefined;
+  sales_count: number;
+  getSalesCount: () => void;
   getSalePointOfSaleByBranch: (id: number, startDate: string, endDate: string) => void;
   getSalesTableDay: (id: number) => void;
   getSalesByPeriod: (page: number, startDate: string, endDate: string,paymentType ? : string) => void;
