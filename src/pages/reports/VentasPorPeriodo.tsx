@@ -94,7 +94,6 @@ function VentasPorPeriodo() {
           </div>
           <div className="grid grid-cols-3"></div>
           <div className="w-full mt-5">
-            
             {loading_sales_period ? (
               <div className="flex flex-col items-center justify-center w-full h-64">
                 <div className="loader"></div>
@@ -147,7 +146,7 @@ function VentasPorPeriodo() {
                 )}
               </>
             )}
-            <div className="w-full p-5 mt-4 overflow-x-hidden bg-white border shadow rounded-2xl">
+            <div className="w-full p-5 mt-4 overflow-x-hidden bg-white border shadow dark:text-white dark:bg-gray-900 rounded-2xl">
               <div className="w-full">
                 {sales_by_period_graph?.data && (
                   <SalesChartPeriod

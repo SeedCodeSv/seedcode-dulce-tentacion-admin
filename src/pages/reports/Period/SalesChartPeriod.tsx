@@ -2,9 +2,10 @@ import ApexChart from "react-apexcharts";
 import { formatCurrency } from "@/utils/dte";
 import { salesReportStore } from "@/store/reports/sales_report.store";
 import useWindowSize from "@/hooks/useWindowSize";
-import { useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { Button } from "@nextui-org/react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ThemeContext } from "@/hooks/useTheme";
 
 interface Props {
   startDate: string;
@@ -13,6 +14,8 @@ interface Props {
 }
 
 function SalesChartPeriod(props: Props) {
+  const { context } = useContext(ThemeContext);
+
   const {
     sales_by_point_of_sale_branch,
     getSalePointOfSaleByBranch,
@@ -98,12 +101,14 @@ function SalesChartPeriod(props: Props) {
     if (currentPage > 0) {
       setCurrentPage(currentPage - 1);
     }
-  }
+  };
 
   return (
     <>
       <div className="flex items-center justify-between">
-        <p className="pb-4 text-lg font-semibold dark:text-white">Ventas</p>
+        <p className="pb-4 text-lg font-semibold dark:text-white">
+          Gráfico de Ventas
+        </p>
         {windowSize.width < 768 && (
           <>
             <div className="flex gap-3">
@@ -133,6 +138,9 @@ function SalesChartPeriod(props: Props) {
           labels: labels,
           title: {
             text: "Ventas por sucursales",
+            style: {
+              color: context === "light" ? "#000" : "#fff",
+            },
           },
           plotOptions: {
             bar: {
@@ -165,6 +173,10 @@ function SalesChartPeriod(props: Props) {
               formatter(value) {
                 return Number(value).toFixed(0);
               },
+              style: {
+                cssClass: "text-white",
+                colors: [...(context === "light" ? ["#000"] : ["#fff"])],
+              },
             },
             crosshairs: {
               show: true,
@@ -176,6 +188,14 @@ function SalesChartPeriod(props: Props) {
             },
           },
           xaxis: {
+            labels: {
+              style: {
+                cssClass: "text-white",
+                colors: [
+                  ...(context === "light" ? ["#000"] : Array.from({ length: 10 }, () => "#fff")),
+                ],
+              },
+            },
             crosshairs: {
               fill: {
                 type: "gradient",
