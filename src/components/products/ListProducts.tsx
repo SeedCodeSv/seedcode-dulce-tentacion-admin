@@ -11,7 +11,7 @@ import {
   AutocompleteItem,
   Switch,
 } from "@nextui-org/react";
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useMemo } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import {
@@ -54,12 +54,14 @@ import TooltipGlobal from "../global/TooltipGlobal";
 import { useSubCategoryStore } from "@/store/sub-category";
 import { useNavigate } from "react-router";
 import BottomDrawer from "../global/BottomDrawer";
+import { useSubCategoriesStore } from "@/store/sub-categories.store";
 
 interface Props {
   actions: string[];
 }
 function ListProducts({ actions }: Props) {
   const { sub_categories, getSubCategoriesList } = useSubCategoryStore();
+  const { getSubcategories, subcategories } = useSubCategoriesStore();
 
   // console.log("listado de sub-Categories",sub_categories)
   const { theme } = useContext(ThemeContext);
@@ -78,6 +80,7 @@ function ListProducts({ actions }: Props) {
   const [search, setSearch] = useState("");
   const [code, setCode] = useState("");
   const [category, setCategory] = useState("");
+  const [categoryId, setCategoryId] = useState(0);
   const [subCategory, setSubCategory] = useState("");
   const [limit, setLimit] = useState(5);
   const { windowSize } = useWindowSize();
@@ -98,6 +101,10 @@ function ListProducts({ actions }: Props) {
       active ? 1 : 0
     );
   }, [limit, active]);
+
+  useEffect(() => {
+    getSubcategories(categoryId);
+  }, [categoryId]);
 
   const { list_categories, getListCategories } = useCategoriesStore();
 
@@ -130,6 +137,11 @@ function ListProducts({ actions }: Props) {
   };
 
   const navigate = useNavigate();
+
+  const itemSubCategories = useMemo(() => {
+    if (subcategories.length > 0) return subcategories;
+    return sub_categories;
+  }, [sub_categories, subcategories]);
 
   return (
     <>
@@ -182,6 +194,7 @@ function ListProducts({ actions }: Props) {
                       key as string
                     ) as CategoryProduct;
                     setCategory(branchSelected.name);
+                    setCategoryId(branchSelected.id);
                   }
                 }}
                 className="w-full dark:text-white"
@@ -194,7 +207,10 @@ function ListProducts({ actions }: Props) {
                 }}
                 value={category}
                 clearButtonProps={{
-                  onClick: () => setCategory(""),
+                  onClick: () => {
+                    setCategory("");
+                    setCategoryId(0);
+                  },
                 }}
               >
                 {list_categories.map((bra) => (
@@ -226,19 +242,26 @@ function ListProducts({ actions }: Props) {
                   base: "font-semibold text-gray-500 text-sm",
                 }}
                 value={category}
+                items={
+                  subcategories.length > 0 || categoryId > 0
+                    ? subcategories
+                    : sub_categories
+                }
                 clearButtonProps={{
-                  onClick: () => setSubCategory(""),
+                  onClick: () => {
+                    setSubCategory("");
+                  },
                 }}
               >
-                {sub_categories.map((bra) => (
+                {(item) => (
                   <AutocompleteItem
-                    value={bra.name}
-                    key={JSON.stringify(bra)}
+                    value={item.name}
+                    key={JSON.stringify(item)}
                     className="dark:text-white"
                   >
-                    {bra.name}
+                    {item.name}
                   </AutocompleteItem>
-                ))}
+                )}
               </Autocomplete>
             </div>
           </div>
@@ -299,33 +322,117 @@ function ListProducts({ actions }: Props) {
                     open={openVaul}
                     onClose={() => setOpenVaul(false)}
                   >
-                    <label htmlFor="">Categoría</label>
-                    <UISelect
-                      value={category}
-                      onValueChange={(value) =>
-                        setCategory(value === "TODAS" ? "" : value)
-                      }
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Todas las categorías" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <UISelectItem value={"TODAS"}>
-                          MOSTRAR TODAS
-                        </UISelectItem>
-                        {list_categories.map((item) => (
-                          <UISelectItem key={item.id} value={item.name}>
-                            {item.name}
-                          </UISelectItem>
-                        ))}
-                      </SelectContent>
-                    </UISelect>
                     <Input
-                      placeholder="Escribe para buscar..."
-                      label="Nombre"
-                      labelPlacement="outside"
+                      startContent={<SearchIcon />}
+                      className="w-full dark:text-white"
                       variant="bordered"
-                    ></Input>
+                      labelPlacement="outside"
+                      label="Nombre"
+                      classNames={{
+                        label: "font-semibold text-gray-700",
+                        inputWrapper: "pr-0",
+                      }}
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                      placeholder="Escribe para buscar..."
+                      isClearable
+                      onClear={() => {
+                        // handleSearch("");
+                        setSearch("");
+                      }}
+                    />
+                    <Input
+                      startContent={<SearchIcon />}
+                      className="w-full dark:text-white"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      label="Código"
+                      classNames={{
+                        label: "font-semibold text-gray-700",
+                        inputWrapper: "pr-0",
+                      }}
+                      value={search}
+                      onChange={(e) => setCode(e.target.value)}
+                      placeholder="Escribe para buscar..."
+                      isClearable
+                      onClear={() => {
+                        // handleSearch("");
+                        setCode("");
+                      }}
+                    />
+                    <Autocomplete
+                      onSelectionChange={(key) => {
+                        if (key) {
+                          const branchSelected = JSON.parse(
+                            key as string
+                          ) as CategoryProduct;
+                          setCategory(branchSelected.name);
+                          setCategoryId(branchSelected.id);
+                        }
+                      }}
+                      className="w-full dark:text-white"
+                      label="Categoría producto"
+                      labelPlacement="outside"
+                      placeholder="Selecciona la categoría"
+                      variant="bordered"
+                      classNames={{
+                        base: "font-semibold text-gray-500 text-sm",
+                      }}
+                      value={category}
+                      defaultSelectedKey={category}
+                      clearButtonProps={{
+                        onClick: () => {
+                          setCategory("");
+                          setCategoryId(0);
+                        },
+                      }}
+                    >
+                      {list_categories.map((bra) => (
+                        <AutocompleteItem
+                          value={bra.name}
+                          key={JSON.stringify(bra)}
+                          className="dark:text-white"
+                        >
+                          {bra.name}
+                        </AutocompleteItem>
+                      ))}
+                    </Autocomplete>
+
+                    <Autocomplete
+                      onSelectionChange={(key) => {
+                        if (key) {
+                          const branchSelected = JSON.parse(
+                            key as string
+                          ) as CategoryProduct;
+                          setSubCategory(branchSelected.name);
+                        }
+                      }}
+                      className="w-full dark:text-white"
+                      label="Sub Categoría"
+                      labelPlacement="outside"
+                      placeholder="Selecciona la sub categoría"
+                      variant="bordered"
+                      classNames={{
+                        base: "font-semibold text-gray-500 text-sm",
+                      }}
+                      
+                      defaultSelectedKey={subCategory}
+                      clearButtonProps={{
+                        onClick: () => {
+                          setSubCategory("");
+                        },
+                      }}
+                    >
+                      {itemSubCategories.map((item) => (
+                        <AutocompleteItem
+                          value={item.name}
+                          key={JSON.stringify(item)}
+                          className="dark:text-white"
+                        >
+                          {item.name}
+                        </AutocompleteItem>
+                      ))}
+                    </Autocomplete>
                     <Button
                       onClick={() => {
                         handleSearch(undefined);
@@ -351,7 +458,7 @@ function ListProducts({ actions }: Props) {
                     backgroundColor: theme.colors.secondary,
                     color: theme.colors.primary,
                   }}
-                  className="hidden font-semibold md:block"
+                  className="hidden font-semibold md:flex"
                   color="primary"
                   endContent={<SearchIcon size={15} />}
                   onClick={() => handleSearch(undefined)}

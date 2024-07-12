@@ -1,4 +1,7 @@
+import { ThemeContext } from "@/hooks/useTheme";
+import classNames from "classnames";
 import { AnimatePresence, motion } from "framer-motion";
+import { useContext } from "react";
 
 interface BottomDrawerProps {
   children: React.ReactNode;
@@ -8,6 +11,7 @@ interface BottomDrawerProps {
 }
 
 export default function BottomDrawer(props: BottomDrawerProps) {
+  const { context } = useContext(ThemeContext);
   return (
     <AnimatePresence>
       {props.open && (
@@ -30,13 +34,16 @@ export default function BottomDrawer(props: BottomDrawerProps) {
             onDragEnd={(_, info) => {
               if (info.offset.y > 100) props.onClose();
             }}
-            className="fixed bottom-0 left-0 z-[60] right-0 p-4 bg-white shadow-xl rounded-t-2xl"
+            className={classNames(
+              context ,
+              "fixed bottom-0 dark:bg-gray-800 left-0 z-[60] right-0 p-4 bg-white shadow-xl rounded-t-2xl"
+            )} //"fixed bottom-0 left-0 z-[60] right-0 p-4 bg-white shadow-xl rounded-t-2xl"}
           >
             <div className="flex items-center justify-center w-full">
-              <span className="w-16 h-2 bg-gray-800 border rounded"></span>
+              <span className="w-16 h-2 border rounded bg-gray- dark:bg-gray-400"></span>
             </div>
             <div className="w-full py-3">
-              <p className="text-lg font-semibold text-center">{props.title}</p>
+              <p className="text-lg font-semibold text-center dark:text-white">{props.title}</p>
             </div>
             {props.children}
           </motion.div>

@@ -106,7 +106,7 @@ function AddProduct() {
   };
 
   const { postProducts } = useProductsStore();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleSave = (values: ProductPayloadFormik) => {
     const send_payload = {
@@ -119,7 +119,7 @@ function AddProduct() {
       }),
     };
     postProducts(send_payload).then(() => {
-      navigate('/products')
+      navigate("/products");
     });
   };
 
@@ -163,8 +163,11 @@ function AddProduct() {
   return (
     <Layout title="Nuevo producto">
       <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
-        <div className="w-full h-full p-10 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
-          <button onClick={() => navigate("/products")} className="flex items-center gap-2 bg-transparent">
+        <div className="w-full h-full p-4 overflow-y-auto bg-white shadow md:p-10 rounded-xl dark:bg-gray-900">
+          <button
+            onClick={() => navigate("/products")}
+            className="flex items-center gap-2 bg-transparent"
+          >
             <ArrowLeft />
             <span>Volver</span>
           </button>
@@ -195,6 +198,7 @@ function AddProduct() {
                       value={values.name}
                       isInvalid={touched.name && !!errors.name}
                       errorMessage={touched.name && errors.name}
+                      className="dark:text-white"
                       classNames={{
                         label:
                           "font-semibold dark:text-white text-gray-500 text-sm",
@@ -210,6 +214,7 @@ function AddProduct() {
                       step="0.01"
                       placeholder="Ingresa el costo unitario"
                       startContent="$"
+                      className="dark:text-white"
                       onChange={handleChange("costoUnitario")}
                       onBlur={handleBlur("costoUnitario")}
                       value={values.costoUnitario}
@@ -234,6 +239,7 @@ function AddProduct() {
                       type="number"
                       step="0.01"
                       startContent="$"
+                      className="dark:text-white"
                       onChange={handleChange("price")}
                       onBlur={handleBlur("price")}
                       value={values.price}
@@ -252,6 +258,7 @@ function AddProduct() {
                       label="Cantidad minima"
                       placeholder="Ingresa la cantidad minima"
                       onChange={handleChange("minimumStock")}
+                      className="dark:text-white"
                       onBlur={handleBlur("minimumStock")}
                       value={values.minimumStock}
                       isInvalid={touched.minimumStock && !!errors.minimumStock}
@@ -268,6 +275,7 @@ function AddProduct() {
                       labelPlacement="outside"
                       label="Código"
                       placeholder="Ingresa el codigo"
+                      className="dark:text-white"
                       onChange={handleChange("code")}
                       onBlur={handleBlur("code")}
                       value={values.code}
@@ -300,6 +308,7 @@ function AddProduct() {
                     <Input
                       variant="bordered"
                       label="Precio A"
+                      className="dark:text-white"
                       type="number"
                       step="0.01"
                       labelPlacement="outside"
@@ -320,6 +329,7 @@ function AddProduct() {
                       label="Precio B"
                       type="number"
                       step="0.01"
+                      className="dark:text-white"
                       labelPlacement="outside"
                       startContent="$"
                       placeholder="Ingresa el precio B"
@@ -334,7 +344,7 @@ function AddProduct() {
                       }}
                     />
                     <Input
-                      className="col-span-2"
+                      className="col-span-2 dark:text-white"
                       variant="bordered"
                       label="Precio C"
                       type="number"
@@ -357,6 +367,7 @@ function AddProduct() {
                     <Select
                       multiple
                       variant="bordered"
+                      className="dark:text-white"
                       placeholder="Selecciona la sucursal"
                       selectedKeys={selectedBranches}
                       label="Sucursales"
@@ -406,9 +417,9 @@ function AddProduct() {
                   <div>
                     <Autocomplete
                       variant="bordered"
+                      className="dark:text-white"
                       label="Tipo de item"
                       labelPlacement="outside"
-                      className="dark:text-white"
                       placeholder={"Ingresa el tipo de item"}
                       value={values.tipoItem}
                       onSelectionChange={(key) => {
