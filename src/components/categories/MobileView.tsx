@@ -20,7 +20,7 @@ function MobileView(props: MobileViewProps) {
         pt={{
           grid: () => ({
             className:
-              "grid dark:bg-slate-800 pb-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid-nogutter gap-5 mt-5",
+              "grid dark:bg-transparent pb-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid-nogutter gap-5 mt-5",
           }),
         }}
         color="surface"
