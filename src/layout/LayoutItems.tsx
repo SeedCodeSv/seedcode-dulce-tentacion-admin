@@ -681,7 +681,7 @@ export const LayoutItems = () => {
         )}
       </> */}
 
-      {mode !== 'vendedor' && (
+    
         <>
           {views && views.includes('Permisos') && (
             <NavLink
@@ -753,7 +753,7 @@ export const LayoutItems = () => {
             </NavLink>
           )}
         </>
-      )}
+    
 
       <div className="flex flex-col items-center justify-start w-full px-6 ">
         <button

@@ -6,9 +6,10 @@ import { useNavigate } from 'react-router';
 import { create_action_by_view } from '@/services/actions.service';
 import { toast } from 'sonner';
 
-const permissions = ['Mostrar', 'Agregar', 'Editar', 'Eliminar'];
 
 const PermissionTable: React.FC = () => {
+  const permissions = ['Mostrar', 'Agregar', 'Editar', 'Eliminar'];
+
   const { OnGetViewasAction, viewasAction } = useViewsStore();
   const [selectedActions, setSelectedActions] = useState<{ [viewId: number]: string[] }>({});
   const [defaultActions, setDefaultActions] = useState<{ [viewId: number]: string[] }>({});

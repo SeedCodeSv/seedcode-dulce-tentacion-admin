@@ -6,10 +6,9 @@ import { ActionsContext } from '../hooks/useActions';
 
 function ActionRol() {
   const { roleActions } = useContext(ActionsContext);
-
   const actions_role_view = useMemo(() => {
     if (roleActions) {
-      const actions = filterActions('Productos', roleActions)?.actions.map((re) => re.name);
+      const actions = filterActions('Permisos', roleActions)?.actions.map((re) => re.name);
       return actions;
     }
     return undefined;
@@ -17,7 +16,7 @@ function ActionRol() {
   return (
     <Layout title="Acción por rol">
       {actions_role_view ? (
-        <ListActionRol/>
+        <ListActionRol />
       ) : (
         <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
           <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent flex justify-center items-center">

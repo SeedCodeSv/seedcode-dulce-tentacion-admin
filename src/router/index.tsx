@@ -173,7 +173,7 @@ export const router = () => {
     },
     {
       path: '/AddPromotions',
-      element: views && views.includes('Descuentos') && <AddPromotions />,
+      element:  <AddPromotions />,
     },
     {
       path: '/AddEmployee',
