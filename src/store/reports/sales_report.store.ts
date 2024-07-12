@@ -24,6 +24,7 @@ export const salesReportStore = create<ISalesReportStore>((set) => ({
   sales_table_day: [],
   loading_sales_by_branch_and_month: false,
   loading_sales_by_table_date: false,
+  loading_sales_month_year: false,
   data: [],
   products_most_selled: [],
   sales_by_period: undefined,
@@ -32,27 +33,33 @@ export const salesReportStore = create<ISalesReportStore>((set) => ({
   loading_sales_period: false,
   sales_count: 0,
   getSalesCount() {
-    get_sales_count().then(({ data }) => {
-      set({ sales_count: data.totalSales });
-    }).catch(() => {
-      set({ sales_count: 0 });
-    });
+    get_sales_count()
+      .then(({ data }) => {
+        set({ sales_count: data.totalSales });
+      })
+      .catch(() => {
+        set({ sales_count: 0 });
+      });
   },
   getSalePointOfSaleByBranch: (id, startDate, endDate) => {
-    get_sales_point_of_sale_by_branch(id, startDate, endDate).then(({ data }) => {
-      set({ sales_by_point_of_sale_branch: data });
-    }).catch(() => {
-      set({ sales_by_point_of_sale_branch: undefined });
-    });
+    get_sales_point_of_sale_by_branch(id, startDate, endDate)
+      .then(({ data }) => {
+        set({ sales_by_point_of_sale_branch: data });
+      })
+      .catch(() => {
+        set({ sales_by_point_of_sale_branch: undefined });
+      });
   },
   getSalesByPeriodChart(startDate, endDate) {
-    get_sales_by_period_chart(startDate, endDate).then(({ data }) => {
-      set({ sales_by_period_graph: data });
-    }).catch(() => {
-      set({ sales_by_period_graph: undefined });
-    });
+    get_sales_by_period_chart(startDate, endDate)
+      .then(({ data }) => {
+        set({ sales_by_period_graph: data });
+      })
+      .catch(() => {
+        set({ sales_by_period_graph: undefined });
+      });
   },
-  getSalesByPeriod(page, startDate, endDate, paymentType = "") {
+  getSalesByPeriod(page, startDate, endDate, paymentType = '') {
     set({ loading_sales_period: true });
     get_sales_by_period(page, startDate, endDate, paymentType)
       .then(({ data }) => {
@@ -91,21 +98,16 @@ export const salesReportStore = create<ISalesReportStore>((set) => ({
       });
   },
   getExpensesByDateTransmitter: (id: number, startDate: string, endDate: string) => {
-    get_expense_by_dates_transmitter(id, startDate, endDate)
-    //   .then(({ data }) => {
-    //   set({})
-    // }).catch(() => {
-
-    // })
+    get_expense_by_dates_transmitter(id, startDate, endDate);
   },
-
   getSalesByYearAndMonth(id) {
+    set({ loading_sales_month_year: true });
     get_sales_by_month_and_year(id)
       .then(({ data }) => {
-        set({ sales_month_year: data.sales });
+        set({ sales_month_year: data.sales, loading_sales_month_year: false });
       })
       .catch(() => {
-        set({ sales_month_year: [] });
+        set({ sales_month_year: [], loading_sales_month_year: false });
       });
   },
   getSalesByBranchAndMonth: (id) => {
@@ -137,5 +139,4 @@ export const salesReportStore = create<ISalesReportStore>((set) => ({
         set({ expenses: [] });
       });
   },
-
 }));

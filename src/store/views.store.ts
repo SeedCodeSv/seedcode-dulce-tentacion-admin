@@ -1,13 +1,29 @@
 import { ViewsStore } from './types/views.store.types';
 import { create } from 'zustand';
-import { create_view, delete_views, get_views } from '../services/views.service';
+import { create_view, delete_views, get_views, get_views_list } from '../services/views.service';
 import { views_enabled } from '../utils/constants';
 import { AxiosError } from 'axios';
 
 export const useViewsStore = create<ViewsStore>((set, get) => ({
   views_list: [],
+  viewasAction: [],
   views : [],
   founds: [],
+  OnGetViewasAction :  async() => {
+    await get_views_list()
+    .then(({data}) => {
+       set({
+        viewasAction :  data.viewasAction
+       })
+     
+    })
+    .catch(() => {
+      set((state) => ({
+        ...state,
+        viewasAction: [],
+      }));
+    });
+  },
   OnGetViews :  async() => {
     await get_views()
     .then(({data}) => {

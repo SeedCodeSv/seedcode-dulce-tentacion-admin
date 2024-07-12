@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, {  useContext, useEffect, useState } from 'react';
 import { Check } from 'lucide-react';
 
 import { get_roles_list } from '@/services/users.service';
@@ -15,19 +15,19 @@ const permissions = ['Mostrar', 'Agregar', 'Editar', 'Eliminar'];
 const ListRolActions: React.FC = () => {
   const [roles, setRoles] = useState<Role[]>([]);
   const [rolId, setRolId] = useState(0);
-  const [selectedActions,] = useState<{ [view: string]: { actions: string[], viewId: number } }>({});
+  const [selectedActions] = useState<{ [view: string]: { actions: string[]; viewId: number } }>({});
   const { OnGetActionsByRolePage, roleActionsPage } = useActionsRolStore();
   const { theme } = useContext(ThemeContext);
-  const fetchRoles = useCallback(async () => {
+  const fetchRoles = async () => {
     try {
       const data = await get_roles_list();
       if (data) {
         setRoles(data.data.roles);
       }
-    } finally {
-       toast.success("")
+    } catch (error) {
+      toast.error('Error al obtener los roles');
     }
-  }, []);
+  };
 
   useEffect(() => {
     OnGetActionsByRolePage(rolId);
@@ -60,8 +60,11 @@ const ListRolActions: React.FC = () => {
   const renderSection = (vista: string) => (
     <div className="w-full sm:w-1/2 p-2" key={vista}>
       <div className="mb-4 bg-white shadow rounded-lg overflow-hidden">
-        <div className="px-4 py-2" style={{ backgroundColor: theme.colors.dark, color: theme.colors.primary }}>
-          <p className='text-white'> {vista}</p>
+        <div
+          className="px-4 py-2"
+          style={{ backgroundColor: theme.colors.dark, color: theme.colors.primary }}
+        >
+          <p className="text-white"> {vista}</p>
         </div>
         <div className="px-4 py-2 border-t border-gray-300">
           <div className="min-w-full bg-white">
@@ -69,18 +72,26 @@ const ListRolActions: React.FC = () => {
               <div className="w-1/2">
                 <div>
                   {permissions.slice(0, 2).map((permission) => (
-                    <div key={permission} className="px-4 py-2 border-b border-gray-200 text-center">
+                    <div
+                      key={permission}
+                      className="px-4 py-2 border-b border-gray-200 text-center"
+                    >
                       {permission}
-                      {roleActionsPage.some((action) => action.action.name === permission && action.action.view.name === vista) ? (
+                      {roleActionsPage.some(
+                        (action) =>
+                          action.action.name === permission && action.action.view.name === vista
+                      ) ? (
                         <div className="mt-2 flex justify-center">
                           <div className="bg-green-500 text-white rounded-full h-8 w-8 flex items-center justify-center">
-                            <Check className='text-white' />
+                            <Check className="text-white" />
                           </div>
                         </div>
                       ) : (
                         <div className="mt-2 flex justify-center">
                           <div className="bg-green-500 text-white rounded-full h-8 w-8 flex items-center justify-center cursor-pointer">
-                            {selectedActions[vista]?.actions.includes(permission) && <Check className="text-white" />}
+                            {selectedActions[vista]?.actions.includes(permission) && (
+                              <Check className="text-white" />
+                            )}
                           </div>
                         </div>
                       )}
@@ -91,18 +102,26 @@ const ListRolActions: React.FC = () => {
               <div className="w-1/2">
                 <div>
                   {permissions.slice(2, 4).map((permission) => (
-                    <div key={permission} className="px-4 py-2 border-b border-gray-200 text-center">
+                    <div
+                      key={permission}
+                      className="px-4 py-2 border-b border-gray-200 text-center"
+                    >
                       {permission}
-                      {roleActionsPage.some((action) => action.action.name === permission && action.action.view.name === vista) ? (
+                      {roleActionsPage.some(
+                        (action) =>
+                          action.action.name === permission && action.action.view.name === vista
+                      ) ? (
                         <div className="mt-2 flex justify-center">
                           <div className="bg-green-500 text-white rounded-full h-8 w-8 flex items-center justify-center">
-                            <Check className='text-white' />
+                            <Check className="text-white" />
                           </div>
                         </div>
                       ) : (
                         <div className="mt-2 flex justify-center">
-                          <div className="bg-green-500 text-white rounded-full h-8 w-8 flex items-center justify-center cursor-pointer">
-                            {selectedActions[vista]?.actions.includes(permission) && <Check className="text-white" />}
+                          <div className="bg-green-500 text-white rounded-full h-8 w-8 flex items-center justify-center">
+                            {selectedActions[vista]?.actions.includes(permission) && (
+                              <Check className="text-white" />
+                            )}
                           </div>
                         </div>
                       )}
@@ -118,7 +137,6 @@ const ListRolActions: React.FC = () => {
   );
 
   return (
-
     <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
       <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
         <div className="flex flex-col justify-between w-full gap-5 mb-5 lg:mb-10 lg:flex-row lg:gap-0">
@@ -130,7 +148,6 @@ const ListRolActions: React.FC = () => {
           </div>
         </div>
         <Autocomplete
-
           className="w-full dark:text-white"
           label="Selecciona el rol"
           labelPlacement="outside"
@@ -139,7 +156,6 @@ const ListRolActions: React.FC = () => {
           classNames={{
             base: 'font-semibold text-gray-500 text-sm',
           }}
-
         >
           {roles.map((bra) => (
             <AutocompleteItem
@@ -155,21 +171,15 @@ const ListRolActions: React.FC = () => {
 
         <div className="flex flex-wrap -mx-2">
           {uniqueViews.map((view) => (
-            <React.Fragment key={view}>
-              {renderSection(view)}
-            </React.Fragment>
+            <React.Fragment key={view}>{renderSection(view)}</React.Fragment>
           ))}
         </div>
-
       </div>
     </div>
-
   );
 };
 
 export default ListRolActions;
-
-
 
 // <div className="grid dark:bg-slate-800 pb-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid-nogutter gap-5 mt-5">
 // {roles.map((role) => (
@@ -192,7 +202,8 @@ export default ListRolActions;
 //   </div>
 // ))}
 // </div>
-{/* <div className="mt-4">
+{
+  /* <div className="mt-4">
             <button
               onClick={handleSubmit}
               disabled={Object.keys(selectedActions).length === 0}
@@ -200,4 +211,5 @@ export default ListRolActions;
             >
               Enviar
             </button>
-          </div> */}
+          </div> */
+}

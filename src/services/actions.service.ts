@@ -11,3 +11,13 @@ export const save_action = (action: IActionPayload) => {
     },
   });
 };
+
+
+export const create_action_by_view = (action: IActionPayload) => {
+  const token = get_token() ?? '';
+  return axios.post<IGetActionRol>(`${API_URL}/actions`, action, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};

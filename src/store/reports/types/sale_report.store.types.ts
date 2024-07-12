@@ -17,6 +17,7 @@ export interface ISalesReportStore {
   data: IDataSalesGrafic[];
   sales_by_period: IGetSalesByPeriod | undefined;
   loading_sales_period: boolean;
+  loading_sales_month_year: boolean;
   loading_sales_by_table_date: boolean;
   loading_sales_by_branch_and_month: boolean;
   sales_by_period_graph: SalesChartGraphPeriod | undefined;
