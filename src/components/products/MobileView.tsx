@@ -89,18 +89,18 @@ const GridItem = (props: GridProps) => {
               className="text-[#274c77] dark:text-gray-400"
               size={20}
             />
-            <p className="w-full">{product.name}</p>
+            <p className="w-full dark:text-white">{product.name}</p>
           </div>
           <div className="flex w-full gap-2 mt-3">
             <ClipboardList
               className="text-[#274c77] dark:text-gray-400"
               size={20}
             />
-            <p className="w-full">{product.subCategory.categoryProduct.name}</p>
+            <p className="w-full dark:text-white">{product.subCategory.categoryProduct.name}</p>
           </div>
           <div className="flex w-full gap-2 mt-3">
             <Barcode className="text-[#274c77] dark:text-gray-400" size={20} />
-            <p className="w-full">{product.code}</p>
+            <p className="w-full dark:text-white">{product.code}</p>
           </div>
           <div className="flex justify-between mt-5 w-ful">
             {actions.includes("Editar") && (
@@ -165,18 +165,18 @@ const ListItem = (props: GridProps) => {
               className="text-[#274c77] dark:text-gray-400"
               size={20}
             />
-            <p className="w-full">{product.name}</p>
+            <p className="w-full dark:text-white">{product.name}</p>
           </div>
           <div className="flex w-full gap-2 mt-3">
             <ClipboardList
               className="text-[#274c77] dark:text-gray-400"
               size={20}
             />
-            <p className="w-full">{product.subCategory.categoryProduct.name}</p>
+            <p className="w-full dark:text-white">{product.subCategory.categoryProduct.name}</p>
           </div>
           <div className="flex w-full gap-2 mt-3">
             <Barcode className="text-[#274c77] dark:text-gray-400" size={20} />
-            <p className="w-full">{product.code}</p>
+            <p className="w-full dark:text-white">{product.code}</p>
           </div>
         </div>
         <div className="flex flex-col items-end justify-between w-full">
