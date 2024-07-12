@@ -17,7 +17,6 @@ import {
   FileText,
   TicketPercent,
   Handshake,
-  Coins,
   Calendar,
   GraduationCap,
   FolderKanban,
@@ -49,23 +48,6 @@ export const LayoutItems = () => {
       document.getElementsByTagName('body')[0].classList.remove('dark');
     }
   }, [context]);
-  // const navigate = useNavigate();
-  // const handleSeller = () => {
-  //   setMode("vendedor");
-  //   save_seller_mode("vendedor");
-  //   makeLogout();
-  //   setIsAuth(false);
-  //   setToken("");
-  //   navigate("/");
-  // };
-  // const handleAdmin = () => {
-  //   setMode("");
-  //   makeLogout();
-  //   localStorage.removeItem("seller_mode");
-  //   setIsAuth(false);
-  //   setToken("");
-  //   navigate("/");
-  // };
 
   const { personalization } = useConfigurationStore();
   const { windowSize } = useWindowSize();
@@ -89,43 +71,65 @@ export const LayoutItems = () => {
   }, [roleActions]);
   // const [isClientsOpen, setIsClientsOpen] = useState(false);
   const [isProductOpen, setIsProductOpen] = useState(false);
+  const [isContabilityOpen, setIsContabilityOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMenuOpen2, setIsMenuOpen2] = useState(false);
   const [isMenuBox, setIsMenuBox] = useState(false);
   const [reports, setReports] = useState(false);
-
+  // Administración
   const toggleDropdownMenu = () => {
     setIsMenuOpen(!isMenuOpen);
     setIsProductOpen(false);
     setIsMenuBox(false);
+    setIsMenuOpen2(false);
+    setReports(false);
+    setIsContabilityOpen(false);
+  };
+  // Gestión de reportes
+  const toggleDropdownMenuReports = () => {
+    setIsMenuOpen(false);
+    setIsProductOpen(false);
+    setIsMenuBox(false);
+    setIsMenuOpen2(false);
+    setReports(!reports);
+    setIsContabilityOpen(false);
+  };
+
+  //Gestion de planillas
+  const toggleDropdownMenu2 = () => {
+    setIsMenuOpen2(!isMenuOpen2);
+    setIsProductOpen(false);
+    setIsMenuBox(false);
+    setIsMenuOpen(false);
+    setReports(false);
+    setIsContabilityOpen(false);
+  };
+  //Gestion de productos
+  const ttoggleDropdowProduct = () => {
+    setIsProductOpen(!isProductOpen);
+    setIsMenuOpen(false);
+    setIsMenuBox(false);
+    setIsMenuOpen2(false);
+    setReports(false);
+    setIsContabilityOpen(false);
+  };
+
+  //Contabilidad
+  const toggleDropdowContabilidad = () => {
+    setIsContabilityOpen(!isContabilityOpen);
+    setIsMenuOpen(false);
+    setIsProductOpen(false);
+    setIsMenuBox(false);
+    setIsMenuOpen2(false);
     setReports(false);
   };
 
-  const toggleDropdownMenuReports = () => {
-    setIsMenuOpen(false);
-    // setIsClientsOpen(false);
-    setIsProductOpen(false);
-    setIsMenuBox(false);
-    setReports(!reports);
-  };
-
-  const toggleDropdownMenu2 = () => {
-    setIsMenuOpen2(!isMenuOpen2);
-  };
-
-  // const toggleDropdownClient = () => {
-  //   setIsClientsOpen(!isClientsOpen);
+  // const toggleDropdowProduct = () => {
+  //   setIsProductOpen(!isProductOpen);
   //   if (isMenuOpen) {
   //     setIsMenuOpen(false);
   //   }
   // };
-
-  const toggleDropdowProduct = () => {
-    setIsProductOpen(!isProductOpen);
-    if (isMenuOpen) {
-      setIsMenuOpen(false);
-    }
-  };
 
   const toggleDropdownBox = () => {
     setIsMenuBox(!isMenuBox);
@@ -192,36 +196,13 @@ export const LayoutItems = () => {
                 <p className="ml-2 text-sm 2xl:text-base">Inicio</p>
               </NavLink>
 
-              {/* {views.includes('Productos') && (
-                <NavLink
-                  to={'/products'}
-                  className={({ isActive }) => {
-                    return (
-                      (isActive
-                        ? 'text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green'
-                        : 'text-coffee-brown font-semibold border-white') +
-                      ' flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
-                    );
-                  }}
-                  style={({ isActive }) => {
-                    return {
-                      borderLeftColor: isActive ? theme.colors.dark : 'transparent',
-                      borderLeftWidth: 5,
-                    };
-                  }}
-                >
-                  <ScanBarcode size={iconSize} />
-                  <p className="ml-2 text-sm 2xl:text-base">Productos</p>
-                </NavLink>
-              )} */}
-
               {views.includes('Productos') ||
               (views && views.includes('Categorias')) ||
               views.includes('Sub Categorias') ||
               views.includes('Ordenes de compra') ? (
                 <div className="flex flex-col items-center justify-start w-full px-6">
                   <button
-                    onClick={toggleDropdowProduct}
+                    onClick={ttoggleDropdowProduct}
                     className="flex items-center w-full py-3 space-x-3 text-left focus:outline-none focus:text-blac -"
                   >
                     <FileText size={iconSize} />
@@ -608,6 +589,79 @@ export const LayoutItems = () => {
                   </div>
                 </div>
               </>
+
+              <>
+                <div className="flex flex-col items-center justify-start w-full px-6 ">
+                  <button
+                    onClick={toggleDropdowContabilidad}
+                    className="flex items-center w-full py-3 space-x-3 text-left text-black focus:outline-none focus:text-black"
+                  >
+                    <FolderCheck className="dark:text-white" size={iconSize} />
+                    <p className="text-sm font-semibold dark:text-white 2xl:text-base whitespace-nowrap">
+                      Contabilidad
+                    </p>
+                    <ChevronDown
+                      className="items-end justify-end  dark:text-white h"
+                      size={iconSize}
+                    />
+                  </button>
+                  <div
+                    id="menuContability"
+                    className={`flex flex-col w-full h-[900px] pb-1 overflow-hidden transition-all duration-500 ${
+                      isContabilityOpen ? 'max-h-52' : 'max-h-0'
+                    }`}
+                  >
+                    <div className="py-1">
+                      <NavLink
+                        to={''}
+                        onClick={() => setIsOpenComponentBigZ(true)}
+                        className={({ isActive }) => {
+                          return (
+                            (isActive
+                              ? 'font-semibold bg-gray-300 dark:bg-gray-700'
+                              : 'text-coffee-brown font-semibold border-white') +
+                            ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
+                          );
+                        }}
+                      >
+                        <ShoppingBag onClick={() => setIsOpenComponentBigZ(true)} size={iconSize} />
+                        <p className="ml-2 text-sm 2xl:text-base">Corte Gran Z</p>
+                      </NavLink>
+                      <NavLink
+                        to={''}
+                        onClick={() => setIsCushCatsX(true)}
+                        className={({ isActive }) => {
+                          return (
+                            (isActive
+                              ? 'tfont-semibold bg-gray-300 dark:bg-gray-700'
+                              : 'text-coffee-brown font-semibold border-white') +
+                            ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
+                          );
+                        }}
+                      >
+                        <ShoppingBag onClick={() => setIsCushCatsX(true)} size={iconSize} />
+                        <p className="ml-2 text-sm 2xl:text-base">Corte de X</p>
+                      </NavLink>
+
+                      <NavLink
+                        to={''}
+                        onClick={() => setIsCushCatsZ(true)}
+                        className={({ isActive }) => {
+                          return (
+                            (isActive
+                              ? 'font-semibold bg-gray-300 dark:bg-gray-700'
+                              : 'text-coffee-brown font-semibold border-white') +
+                            ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
+                          );
+                        }}
+                      >
+                        <ShoppingBag onClick={() => setIsCushCatsZ(true)} size={iconSize} />
+                        <p className="ml-2 text-sm 2xl:text-base">Corte de Z</p>
+                      </NavLink>
+                    </div>
+                  </div>
+                </div>
+              </>
               {views.includes('Categoría de gastos') && (
                 <NavLink
                   to={'/expensesCategories'}
@@ -755,7 +809,7 @@ export const LayoutItems = () => {
         </>
       )}
 
-      <div className="flex flex-col items-center justify-start w-full px-6 ">
+      {/* <div className="flex flex-col items-center justify-start w-full px-6 ">
         <button
           onClick={toggleDropdownBox}
           className="flex items-center w-full py-3 space-x-3 text-left text-black focus:outline-none focus:text-black"
@@ -838,7 +892,7 @@ export const LayoutItems = () => {
             </NavLink>
           </div>
         </div>
-      </div>
+      </div> */}
 
       <div
         className={
