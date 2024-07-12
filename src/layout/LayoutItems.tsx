@@ -7,7 +7,6 @@ import {
   BookUser,
   ShieldHalf,
   Grid2X2Icon,
-  DollarSign,
   ScanBarcode,
   ChevronDown,
   FolderOpen,
@@ -88,22 +87,24 @@ export const LayoutItems = () => {
   const views = useMemo(() => {
     return roleActions?.view.map((vw) => vw.name);
   }, [roleActions]);
-  const [isClientsOpen, setIsClientsOpen] = useState(false);
+  // const [isClientsOpen, setIsClientsOpen] = useState(false);
+  const [isProductOpen, setIsProductOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   const [isMenuOpen2, setIsMenuOpen2] = useState(false);
   const [isMenuBox, setIsMenuBox] = useState(false);
   const [reports, setReports] = useState(false);
 
   const toggleDropdownMenu = () => {
     setIsMenuOpen(!isMenuOpen);
-    setIsClientsOpen(false);
+    // setIsClientsOpen(false);
     setIsMenuBox(false);
     setReports(false);
   };
 
   const toggleDropdownMenuReports = () => {
     setIsMenuOpen(false);
-    setIsClientsOpen(false);
+    // setIsClientsOpen(false);
     setIsMenuBox(false);
     setReports(!reports);
   };
@@ -112,8 +113,15 @@ export const LayoutItems = () => {
     setIsMenuOpen2(!isMenuOpen2);
   };
 
-  const toggleDropdownClient = () => {
-    setIsClientsOpen(!isClientsOpen);
+  // const toggleDropdownClient = () => {
+  //   setIsClientsOpen(!isClientsOpen);
+  //   if (isMenuOpen) {
+  //     setIsMenuOpen(false);
+  //   }
+  // };
+
+  const toggleDropdowProduct = () => {
+    setIsProductOpen(!isProductOpen);
     if (isMenuOpen) {
       setIsMenuOpen(false);
     }
@@ -159,28 +167,6 @@ export const LayoutItems = () => {
         </>
       )}
 
-      {/* {mode !== 'vendedor' ? (
-        <div className="items-center justify-center px-2 mt-2 ">
-          <Button
-            onClick={() => handleSeller()}
-            className="items-center justify-center font-semibold bg-transparent bg-gray-100 text-coffee-green border-coffee-green"
-          >
-            <ShoppingCart size={iconSize} />
-            <p className="ml-2 text-sm 2xl:text-base">Modo venta</p>
-          </Button>
-        </div>
-      ) : (
-        <div className="items-center justify-center px-2 mt-2 ">
-          <Button
-            onClick={() => handleAdmin()}
-            className="items-center justify-center font-semibold bg-transparent bg-gray-100 text-coffee-green border-coffee-green"
-          >
-            <Contact size={iconSize} />
-            <p className="ml-2 text-sm 2xl:text-base">Administración</p>
-          </Button>
-        </div>
-      )} */}
-      {/* {mode === 'vendedor' && <SalesMode />} */}
       {mode !== 'vendedor' && (
         <>
           {views && (
@@ -206,7 +192,7 @@ export const LayoutItems = () => {
                 <p className="ml-2 text-sm 2xl:text-base">Inicio</p>
               </NavLink>
 
-              {views.includes('Productos') && (
+              {/* {views.includes('Productos') && (
                 <NavLink
                   to={'/products'}
                   className={({ isActive }) => {
@@ -227,53 +213,103 @@ export const LayoutItems = () => {
                   <ScanBarcode size={iconSize} />
                   <p className="ml-2 text-sm 2xl:text-base">Productos</p>
                 </NavLink>
-              )}
-              {views.includes('Categorias') && (
-                <NavLink
-                  to={'/categories'}
-                  className={({ isActive }) => {
-                    return (
-                      (isActive
-                        ? 'text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green'
-                        : 'text-coffee-brown font-semibold border-white') +
-                      ' flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
-                    );
-                  }}
-                  style={({ isActive }) => {
-                    return {
-                      borderLeftColor: isActive ? theme.colors.dark : 'transparent',
-                      borderLeftWidth: 5,
-                    };
-                  }}
-                >
-                  <LayoutGrid size={iconSize} />
-                  <p className="ml-2 text-sm 2xl:text-base">Categorías</p>
-                </NavLink>
-              )}
-              {views.includes('Categorias') && (
-                <NavLink
-                  to={'/subCategories'}
-                  className={({ isActive }) => {
-                    return (
-                      (isActive
-                        ? 'font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green'
-                        : 'font-semibold border-white') +
-                      ' flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
-                    );
-                  }}
-                  style={({ isActive }) => {
-                    return {
-                      borderLeftColor: isActive ? theme.colors.dark : 'transparent',
-                      borderLeftWidth: 5,
-                    };
-                  }}
-                >
-                  <LayoutList size={iconSize} />
-                  <p className="ml-2 text-sm 2xl:text-base">Sub Categorías</p>
-                </NavLink>
+              )} */}
+
+              {views.includes('Productos') && (
+                <div className="flex flex-col items-center justify-start w-full px-6">
+                  <button
+                    onClick={toggleDropdowProduct}
+                    className="flex items-center w-full py-3 space-x-3 text-left focus:outline-none focus:text-blac -"
+                  >
+                    <FileText size={iconSize} />
+                    <p className="text-sm font-semibold dark:text-white semibold 2xl:text-base  whitespace-nowrap">
+                      Gestión productos
+                    </p>
+
+                    <ChevronDown className="items-end justify-end " size={iconSize} />
+                  </button>
+                  <div
+                    id="menuProducto"
+                    className={`flex flex-col w-full pb-1 overflow-hidden transition-all duration-500 ${
+                      isProductOpen ? 'max-h-52' : 'max-h-0'
+                    }`}
+                  >
+                    <>
+                      <div className="py-1">
+                        {views.includes('Productos') && (
+                          <NavLink
+                            to={'/products'}
+                            className={({ isActive }) => {
+                              return (
+                                (isActive
+                                  ? 'font-semibold bg-gray-300 dark:bg-gray-700'
+                                  : 'text-coffee-brown font-semibold border-white') +
+                                ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
+                              );
+                            }}
+                          >
+                            <ScanBarcode size={iconSize} />
+                            <p className="ml-2 text-sm 2xl:text-base">Productos</p>
+                          </NavLink>
+                        )}
+
+                        {views.includes('Categorias') && (
+                          <NavLink
+                            to={'/categories'}
+                            className={({ isActive }) => {
+                              return (
+                                (isActive
+                                  ? 'font-semibold bg-gray-300 dark:bg-gray-700'
+                                  : 'text-coffee-brown font-semibold border-white') +
+                                ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
+                              );
+                            }}
+                          >
+                            <LayoutGrid size={iconSize} />
+                            <p className="ml-2 text-sm 2xl:text-base">Categorías</p>
+                          </NavLink>
+                        )}
+                        {views.includes('Categorias') && (
+                          <NavLink
+                            to={'/subCategories'}
+                            className={({ isActive }) => {
+                              return (
+                                (isActive
+                                  ? 'font-semibold bg-gray-300 dark:bg-gray-700'
+                                  : 'text-coffee-brown font-semibold border-white') +
+                                ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
+                              );
+                            }}
+                          >
+                            <LayoutList size={iconSize} />
+                            <p className="ml-2 text-sm 2xl:text-base">Sub Categorías</p>
+                          </NavLink>
+                        )}
+                        {views && views.includes('Ordenes de compra') && (
+                          <>
+                            <NavLink
+                              to={'/purchase-orders'}
+                              className={({ isActive }) => {
+                                return (
+                                  (isActive
+                                    ? 'font-semibold bg-gray-300 dark:bg-gray-700'
+                                    : 'text-coffee-brown font-semibold border-white') +
+                                  ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
+                                );
+                              }}
+                            >
+                              <ShoppingBag size={iconSize} />
+                              <p className="ml-2 text-sm 2xl:text-base">Ordenes de compra</p>
+                            </NavLink>
+                          </>
+                        )}
+                      </div>
+                    </>
+                  </div>
+                </div>
               )}
 
-              {views.includes('Reportes') && (
+              {/* {views.includes('Reportes') && (
                 <div className="flex flex-col items-center justify-start w-full px-6">
                   <button
                     onClick={toggleDropdownClient}
@@ -342,7 +378,7 @@ export const LayoutItems = () => {
                     </>
                   </div>
                 </div>
-              )}
+              )} */}
 
               {/* Gestion de planillas ----------------------------------------------------------------- */}
               {views.includes('Tipo de contratacion') ||
@@ -617,7 +653,7 @@ export const LayoutItems = () => {
           )}
         </>
       )}
-      <>
+      {/* <>
         {views && views.includes('Reporte de ventas') && (
           <NavLink
             to={'/sales-reports'}
@@ -640,7 +676,7 @@ export const LayoutItems = () => {
             <p className="ml-2 text-sm 2xl:text-base">Reporte de Ventas</p>
           </NavLink>
         )}
-      </>
+      </> */}
 
       {mode !== 'vendedor' && (
         <>
@@ -712,30 +748,6 @@ export const LayoutItems = () => {
               <FolderOpen size={iconSize} />
               <p className="ml-2 text-sm 2xl:text-base">Modulos</p>
             </NavLink>
-          )}
-          {views && views.includes('Ordenes de compra') && (
-            <>
-              <NavLink
-                to={'/purchase-orders'}
-                className={({ isActive }) => {
-                  return (
-                    (isActive
-                      ? 'text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green'
-                      : 'text-coffee-brown font-semibold border-white') +
-                    ' flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
-                  );
-                }}
-                style={({ isActive }) => {
-                  return {
-                    borderLeftColor: isActive ? theme.colors.dark : 'transparent',
-                    borderLeftWidth: 5,
-                  };
-                }}
-              >
-                <ShoppingBag size={iconSize} />
-                <p className="ml-2 text-sm 2xl:text-base">Ordenes de compra</p>
-              </NavLink>
-            </>
           )}
         </>
       )}
