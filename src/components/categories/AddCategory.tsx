@@ -2,8 +2,7 @@ import { Input, Button } from '@nextui-org/react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { useCategoriesStore } from '../../store/categories.store';
-import { ThemeContext } from '../../hooks/useTheme';
-import { useContext } from 'react';
+import { global_styles } from '@/styles/global.styles';
 
 interface Props {
   closeModal: () => void;
@@ -14,7 +13,6 @@ interface Props {
 }
 
 const AddCategory = (props: Props) => {
-  const { theme } = useContext(ThemeContext);
 
   const validationSchema = yup.object().shape({
     name: yup.string().required('**Debes especificar el nombre de la categoría**'),
@@ -33,7 +31,7 @@ const AddCategory = (props: Props) => {
   };
 
   return (
-    <div className="p-5 w-full">
+    <div className="w-full py-4">
       <Formik
         validationSchema={validationSchema}
         initialValues={{ name: props.category?.name ?? '' }}
@@ -45,6 +43,7 @@ const AddCategory = (props: Props) => {
               <Input
                 name="name"
                 labelPlacement="outside"
+                className='dark:text-white'
                 value={values.name}
                 onChange={handleChange('name')}
                 onBlur={handleBlur('name')}
@@ -52,20 +51,14 @@ const AddCategory = (props: Props) => {
                 classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
                 variant="bordered"
                 label="Nombre"
+                isInvalid={!!errors.name && touched.name}
+                errorMessage={errors.name}
               />
-              {errors.name && touched.name && (
-                <>
-                  <span className="text-sm font-semibold text-red-600">{errors.name}</span>
-                </>
-              )}
             </div>
             <Button
               onClick={() => handleSubmit()}
               className="w-full mt-4 text-sm font-semibold"
-              style={{
-                backgroundColor: theme.colors.third,
-                color: theme.colors.primary,
-              }}
+              style={global_styles().thirdStyle}
             >
               Guardar
             </Button>

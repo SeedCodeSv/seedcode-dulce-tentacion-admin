@@ -40,14 +40,6 @@ import UpdateProduct from "./UpdateProduct";
 import { limit_options } from "../../utils/constants";
 import SmPagination from "../global/SmPagination";
 import useWindowSize from "../../hooks/useWindowSize";
-
-import {
-  Select as UISelect,
-  SelectContent,
-  SelectItem as UISelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import HeadlessModal from "../global/HeadlessModal";
 import classNames from "classnames";
 import TooltipGlobal from "../global/TooltipGlobal";
