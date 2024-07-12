@@ -19,3 +19,28 @@ export interface IViewPayload {
 export interface IGetViewPaginated extends IPagination {
   views: IView[];
 }
+
+
+
+export interface IResponseDataViewasAction {
+  ok: boolean;
+  viewasAction: ViewasAction[];
+  status: number;
+}
+
+export interface ViewasAction {
+  view: View;
+  actions: Actions;
+}
+
+export interface View {
+  id: number;
+  name: string;
+  type: string;
+  isActive: boolean;
+}
+
+export interface Actions {
+  id: number[];
+  name: string[];
+}

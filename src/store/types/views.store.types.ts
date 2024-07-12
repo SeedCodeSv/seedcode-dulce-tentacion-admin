@@ -1,10 +1,12 @@
-import { IView, IViewPayload } from '../../types/view.types';
+import { IView, IViewPayload, ViewasAction } from '../../types/view.types';
 export interface ViewsStore {
   views_list: IView[];
+  viewasAction: ViewasAction[];
   founds: string[];
-  views : IView[]
+  views: IView[];
   getViews: () => void;
-  OnGetViews : () => void
+  OnGetViewasAction: () => void;
+  OnGetViews: () => void;
   OnCreateView: (views: IViewPayload[]) => Promise<boolean>;
   OnDeleteView: (id: number) => Promise<boolean>;
 }
