@@ -9,7 +9,7 @@ function Employees() {
 
   const actions_role_view = useMemo(() => {
     if (roleActions) {
-      const actions = filterActions('Productos', roleActions)?.actions.map((re) => re.name);
+      const actions = filterActions('Empleados', roleActions)?.actions.map((re) => re.name);
       return actions;
     }
     return undefined;
