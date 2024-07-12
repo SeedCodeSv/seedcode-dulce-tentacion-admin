@@ -17,7 +17,7 @@ export interface IProductsStore {
     active?: number
   ) => void;
   getCat011TipoDeItem: () => void;
-  postProducts: (payload: ProductPayload) => void;
+  postProducts: (payload: ProductPayload) => Promise<void>;
   patchProducts: (payload: ProductPayload, id: number) => void;
   deleteProducts: (id: number) => void;
   activateProduct: (id: number) => Promise<void>;

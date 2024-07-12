@@ -62,6 +62,9 @@ export interface ProductPayloadFormik {
   name: string;
   description: string;
   price: string;
+  priceA: string,
+  priceB: string,
+  priceC: string,
   costoUnitario: string;
   code: string;
   subCategoryId: number;

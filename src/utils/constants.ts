@@ -12,7 +12,7 @@ export const MH_DTE = 'https://apitest.dtes.mh.gob.sv/fesv/recepciondte';
 export const MH_URL = 'https://apitest.dtes.mh.gob.sv/fesv/';
 export const AUTH_MH = 'https://apitest.dtes.mh.gob.sv/seguridad/auth';
 export const CHECK_URL = 'https://apitest.dtes.mh.gob.sv/fesv/recepcion/consultadte/';
-export const messages = {
+export const messages = { 
   error: 'Ocurrió un error al procesar la petición',
   success: 'Petición procesada con éxito',
 };

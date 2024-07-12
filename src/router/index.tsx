@@ -36,6 +36,7 @@ import AddEmployee from '../components/employee/AddEmployee';
 import VentasPorPeriodo from '../pages/reports/VentasPorPeriodo';
 import StudyLevel from '@/pages/StudyLevel';
 import AddActionRol from '@/components/Action_rol/AddActionRol';
+import AddProduct from '@/pages/AddProduct';
 
 /* eslint-disable react-hooks/rules-of-hooks */
 export const router = () => {
@@ -93,6 +94,10 @@ export const router = () => {
     {
       path: '/products',
       element: views && views.includes('Productos') && <Product />,
+    },
+    {
+      path: '/add-product',
+      element: views && views.includes('Productos') && <AddProduct />,
     },
     {
       path: '/expensesCategories',

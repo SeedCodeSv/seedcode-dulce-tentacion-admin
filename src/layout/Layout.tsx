@@ -40,7 +40,7 @@ function Layout(props: Props) {
   return (
     <>
       <Helmet>
-        <title>{props.title}</title>
+        <title>{props.title.toUpperCase()}</title>
       </Helmet>
 
       {roleActions ? (
