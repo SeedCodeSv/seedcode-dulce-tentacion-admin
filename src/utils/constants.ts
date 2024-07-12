@@ -72,6 +72,7 @@ export const views_enabled = [
   'Nivel de estudio',
   'Estado del empleado',
   'Tipo de contratacion',
+  'Sub Categorias'
 ];
 
 export const views_seller = [

@@ -9,7 +9,7 @@ function ProductsCategories() {
 
   const actions_role_view = useMemo(() => {
     if (roleActions) {
-      const actions = filterActions('Categorias', roleActions)?.actions.map((re) => re.name);
+      const actions = filterActions('Sub Categorias', roleActions)?.actions.map((re) => re.name);
       return actions;
     }
     return undefined;

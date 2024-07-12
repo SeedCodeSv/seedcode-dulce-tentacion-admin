@@ -90,14 +90,13 @@ export const LayoutItems = () => {
   // const [isClientsOpen, setIsClientsOpen] = useState(false);
   const [isProductOpen, setIsProductOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
   const [isMenuOpen2, setIsMenuOpen2] = useState(false);
   const [isMenuBox, setIsMenuBox] = useState(false);
   const [reports, setReports] = useState(false);
 
   const toggleDropdownMenu = () => {
     setIsMenuOpen(!isMenuOpen);
-    // setIsClientsOpen(false);
+    setIsProductOpen(false);
     setIsMenuBox(false);
     setReports(false);
   };
@@ -105,6 +104,7 @@ export const LayoutItems = () => {
   const toggleDropdownMenuReports = () => {
     setIsMenuOpen(false);
     // setIsClientsOpen(false);
+    setIsProductOpen(false);
     setIsMenuBox(false);
     setReports(!reports);
   };
@@ -215,7 +215,10 @@ export const LayoutItems = () => {
                 </NavLink>
               )} */}
 
-              {views.includes('Productos') && (
+              {views.includes('Productos') ||
+              (views && views.includes('Categorias')) ||
+              views.includes('Sub Categorias') ||
+              views.includes('Ordenes de compra') ? (
                 <div className="flex flex-col items-center justify-start w-full px-6">
                   <button
                     onClick={toggleDropdowProduct}
@@ -269,7 +272,7 @@ export const LayoutItems = () => {
                             <p className="ml-2 text-sm 2xl:text-base">Categorías</p>
                           </NavLink>
                         )}
-                        {views.includes('Categorias') && (
+                        {views.includes('Sub Categorias') && (
                           <NavLink
                             to={'/subCategories'}
                             className={({ isActive }) => {
@@ -307,7 +310,7 @@ export const LayoutItems = () => {
                     </>
                   </div>
                 </div>
-              )}
+              ) : null}
 
               {/* {views.includes('Reportes') && (
                 <div className="flex flex-col items-center justify-start w-full px-6">
