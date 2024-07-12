@@ -101,3 +101,17 @@
     }
   }
   
+
+  .animated-count {
+    display: inline-block;
+    transform: translateY(100%);
+    opacity: 0;
+    animation: countAnimation 0.5s ease-out forwards;
+}
+
+@keyframes countAnimation {
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}

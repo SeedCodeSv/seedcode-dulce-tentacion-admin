@@ -131,3 +131,8 @@ export interface IGetSalesByDayTable {
 	ok: boolean;
 	sales: SaleTable[];
 }
+
+export interface IGetSalesCount {
+	ok: boolean;
+	totalSales: number;
+}
