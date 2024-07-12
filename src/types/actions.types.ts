@@ -11,6 +11,10 @@ export interface IActionPayload {
   names: { name: string }[];
   viewId: number;
 }
+export interface ICreateRoleActionPayload {
+  actionIds: { id: number }[];
+  roleId: number;
+};
 export interface IGetActionRol {
   ok: boolean;
   actionsId: IAction[];
