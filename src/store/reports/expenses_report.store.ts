@@ -10,6 +10,7 @@ export const useReportExpensesStore = create<IExpensesReportStore>((set) => ({
   expenses_branch_month: [],
   data: [],
   expenses_by_day: 0,
+  loading_expenses_branchMonth: false,
   getExpensesByDay(id) {
     get_expenses_by_day(id)
       .then(({ data }) => {
@@ -29,12 +30,13 @@ export const useReportExpensesStore = create<IExpensesReportStore>((set) => ({
       });
   },
   getExpensesBranchMonth(id) {
+    set({ loading_expenses_branchMonth: true });
     get_expenses_by_branch_month(id)
       .then(({ data }) => {
-        set({ expenses_branch_month: data.expenses });
+        set({ expenses_branch_month: data.expenses, loading_expenses_branchMonth: false });
       })
       .catch(() => {
-        set({ expenses_branch_month: [] });
+        set({ expenses_branch_month: [], loading_expenses_branchMonth: false });
       });
   },
 }));
