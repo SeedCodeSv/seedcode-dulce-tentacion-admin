@@ -50,14 +50,7 @@ function AddProducts(props: Props) {
       .required('**El precio es requerido**')
       .typeError('**El precio es requerido**'),
     minimumStock: yup.number().required('**Campo requerido**').typeError('**Campo requerido**'),
-    // code: yup.string().required('**El Código es requerido**'),
     code: yup.string().required('**El Código es requerido**'),
-    // .test('unique-code', 'El código ya está en uso', async (value) => {
-    //   if (!value) return false;
-    //   const response = await verify_code_product(value);
-    //   return response.data.ok === false;
-    // }),
-    // .length(12, '**El código debe tener exactamente 12 dígitos**'),
     subCategoryId: yup
       .number()
       .required('**Debes seleccionar la subcategoría**')
@@ -197,8 +190,8 @@ function AddProducts(props: Props) {
         {({ values, errors, touched, handleBlur, handleSubmit, handleChange, setFieldValue }) => (
           <>
             <div className="w-full">
-              <div className="grid w-full grid-cols-1 gap-5 md:grid-cols-2">
-                <div>
+              <div className="grid w-full grid-cols-1 gap-5 mt-2 md:grid-cols-2">
+                <div className='pt-5 pb-2'>
                   <Input
                     label="Nombre"
                     labelPlacement="outside"

@@ -28,7 +28,7 @@ function Home() {
     sales_table_day,
     loading_sales_by_table_date,
     getSalesCount,
-    sales_count
+    sales_count,
   } = salesReportStore();
 
   const {
@@ -55,7 +55,7 @@ function Home() {
       getSalesByDay(branchId);
       getExpensesByDay(branchId);
       getSalesTableDay(branchId);
-      getSalesCount()
+      getSalesCount();
     }
   }, [user, theme]);
 
@@ -105,38 +105,36 @@ function Home() {
                 <div className="loader"></div>
                 <p className="mt-3 text-xl font-semibold">Cargando...</p>
               </div>
-            
             </>
           ) : (
             <>
-                      <div>
-            <SalesMonthBranches
-              sales={{
-                title: 'Ventas del mes',
-                labels: sales_branch_month.map((sl) => sl.branch),
-                total,
-                series: [
-                  {
-                    name: 'Total',
-                    data: sales_branch_month.map((sl) => sl.total),
-                  },
-                ],
-              }}
-            />
-          </div>
+              <div>
+                <SalesMonthBranches
+                  sales={{
+                    title: "Ventas del mes",
+                    labels: sales_branch_month.map((sl) => sl.branch),
+                    total,
+                    series: [
+                      {
+                        name: "Total",
+                        data: sales_branch_month.map((sl) => sl.total),
+                      },
+                    ],
+                  }}
+                />
+              </div>
             </>
           )}
-
 
           <div>
             <ExpensesMonthBranches
               sales={{
-                title: 'Gastos del mes',
+                title: "Gastos del mes",
                 labels: expenses_branch_month.map((sl) => sl.branch),
                 total: totalExpenses,
                 series: [
                   {
-                    name: 'Total',
+                    name: "Total",
                     data: expenses_branch_month.map((sl) => sl.total),
                   },
                 ],
@@ -147,22 +145,21 @@ function Home() {
           <div>
             <MostProductSelled
               sales={{
-                title: 'Producto mas vendido',
+                title: "Producto mas vendido",
                 labels: most_product_selled.map((sl) => sl.branchProduct.name),
                 total: mostProductSelled,
                 branch: most_product_selled.map((ld) => ld.branch),
                 // branch: most_product_selled[0].branch,
                 series: [
                   {
-                    name: 'Total',
+                    name: "Total",
                     data: most_product_selled.map((sl) => Number(sl.total)),
                   },
                   {
-                    name: 'Sucursal',
+                    name: "Sucursal",
                     data: most_product_selled.map((sl) => Number(sl.branch)),
                   },
                 ],
-              
               }}
             />
           </div>
@@ -170,12 +167,12 @@ function Home() {
           <div>
             <SalesMonthYear
               sales={{
-                title: 'Ventas por año',
+                title: "Ventas por año",
                 labels: sales_month_year.map((sl) => shortMonth(sl.month)),
                 total: yearTotal,
                 series: [
                   {
-                    name: 'Total',
+                    name: "Total",
                     data: sales_month_year.map((sl) => Number(sl.total)),
                   },
                 ],
@@ -186,66 +183,79 @@ function Home() {
         <div className="grid w-full grid-cols-1 pt-10 md:grid-cols-2 xl:grid-cols-4 xl:gap-10 lg:gap-10 sm:gap-10 mb:gap-10">
           <div className="flex flex-col w-full gap-10">
             <div className="flex flex-col items-center justify-center w-full h-32 border rounded-lg shadow dark:bg-gray-900 dark:border-gray-700">
-              <p className="text-2xl font-semibold dark:text-white">No. de ventas</p>
-              <p className="text-2xl font-semibold dark:text-white animated-count">{sales_count}</p>
+              <p className="text-2xl font-semibold dark:text-white">
+                No. de ventas
+              </p>
+              <p className="text-2xl font-semibold dark:text-white animated-count">
+                {sales_count}
+              </p>
             </div>
             <div className="flex flex-col items-center justify-center w-full h-32 border rounded-lg shadow dark:bg-gray-900 dark:border-gray-700">
-              <p className="text-2xl font-semibold dark:text-white">Ventas del dia</p>
+              <p className="text-2xl font-semibold dark:text-white">
+                Ventas del dia
+              </p>
               <p className="text-lg font-semibold dark:text-white">
                 {formatCurrency(sales_by_day)}
               </p>
             </div>
             <div className="flex flex-col items-center justify-center w-full h-32 border rounded-lg shadow dark:bg-gray-900 dark:border-gray-700">
-              <p className="text-2xl font-semibold dark:text-white">Gastos del dia</p>
+              <p className="text-2xl font-semibold dark:text-white">
+                Gastos del dia
+              </p>
               <p className="text-lg font-semibold dark:text-white">
                 {formatCurrency(expenses_by_day)}
               </p>
             </div>
           </div>
           <div className="col-span-3 p-5 mt-10 bg-gray-100 rounded-lg dark:bg-gray-900 xl:mt-0 lg:mt-0 mb:mt-0 sm:mt-0">
-            <p className="pb-4 text-lg font-semibold dark:text-white">Ventas del dia</p>
+            <p className="pb-4 text-lg font-semibold dark:text-white">
+              Ventas del dia
+            </p>
 
             {loading_sales_by_table_date ? (
               <>
-                  <div className="flex flex-col items-center justify-center w-full h-64">
-                <div className="loader"></div>
-                <p className="mt-3 text-xl font-semibold">Cargando...</p>
-              </div>
+                <div className="flex flex-col items-center justify-center w-full h-64">
+                  <div className="loader"></div>
+                  <p className="mt-3 text-xl font-semibold">Cargando...</p>
+                </div>
               </>
             ) : (
               <>
-               <DataTable
-              className="w-full shadow"
-              emptyMessage="No se encontraron resultados"
-              value={sales_table_day}
-              tableStyle={{ minWidth: '50rem' }}
-              scrollable
-              scrollHeight="30rem"
-            >
-              <Column
-                headerClassName="text-sm font-semibold"
-                headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
-                field="branch"
-                header="Sucursal"
-              />
-              <Column
-                headerClassName="text-sm font-semibold"
-                headerStyle={style}
-                field="numberOfSales"
-                header="N° de ventas"
-              />
-              <Column
-                headerClassName="text-sm font-semibold"
-                headerStyle={style}
-                field="totalSales"
-                header="Descuento"
-                body={(rowData) => formatCurrency(Number(rowData.totalSales))}
-              />
-            </DataTable>
+                <DataTable
+                  className="w-full shadow"
+                  emptyMessage="No se encontraron resultados"
+                  value={sales_table_day}
+                  tableStyle={{ minWidth: "50rem" }}
+                  scrollable
+                  scrollHeight="30rem"
+                >
+                  <Column
+                    headerClassName="text-sm font-semibold"
+                    bodyClassName={"dark:text-white"}
+                    headerStyle={{ ...style, borderTopLeftRadius: "10px" }}
+                    field="branch"
+                    header="Sucursal"
+                  />
+                  <Column
+                    headerClassName="text-sm font-semibold"
+                    bodyClassName={"dark:text-white"}
+                    headerStyle={style}
+                    field="numberOfSales"
+                    header="N° de ventas"
+                  />
+                  <Column
+                    headerClassName="text-sm font-semibold"
+                    bodyClassName={"dark:text-white"}
+                    headerStyle={style}
+                    field="totalSales"
+                    header="Descuento"
+                    body={(rowData) =>
+                      formatCurrency(Number(rowData.totalSales))
+                    }
+                  />
+                </DataTable>
               </>
-              
             )}
-           
           </div>
         </div>
       </div>

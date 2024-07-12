@@ -6,7 +6,7 @@ interface Props {
 }
 function TooltipGlobal(props: Props) {
   return (
-    <Tooltip content={props.text} color='primary' className="dark:text-white ">
+    <Tooltip content={props.text} color='primary' className="dark:text-white dark:bg-gray-800 ">
       {props.children}
     </Tooltip>
   );

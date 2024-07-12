@@ -71,7 +71,7 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
       });
   },
   postProducts(payload) {
-    create_products(payload)
+    return create_products(payload)
       .then(() => {
         get().getPaginatedProducts(1, 5, '', '', '', '');
         toast.success(messages.success);
