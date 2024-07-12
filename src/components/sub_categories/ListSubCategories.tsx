@@ -9,8 +9,8 @@ import {
   PopoverTrigger,
   PopoverContent,
   Switch,
-} from '@nextui-org/react';
-import { useContext, useEffect, useState } from 'react';
+} from "@nextui-org/react";
+import { useContext, useEffect, useState } from "react";
 import {
   EditIcon,
   User,
@@ -20,36 +20,39 @@ import {
   List,
   Filter,
   RefreshCcw,
-} from 'lucide-react';
-import { ThemeContext } from '../../hooks/useTheme';
-import AddSubCategory from './AddSubCategory';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
-import AddButton from '../global/AddButton';
-import MobileView from './MobileView';
-import Pagination from '../global/Pagination';
-import { Drawer } from 'vaul';
-import { global_styles } from '../../styles/global.styles';
-import classNames from 'classnames';
-import { limit_options } from '../../utils/constants';
-import SmPagination from '../global/SmPagination';
-import HeadlessModal from '../global/HeadlessModal';
-import { ISubCategory } from '../../types/sub_categories.types';
-import { useSubCategoryStore } from '../../store/sub-category';
+} from "lucide-react";
+import { ThemeContext } from "../../hooks/useTheme";
+import AddSubCategory from "./AddSubCategory";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
+import AddButton from "../global/AddButton";
+import MobileView from "./MobileView";
+import Pagination from "../global/Pagination";
+import { global_styles } from "../../styles/global.styles";
+import { limit_options } from "../../utils/constants";
+import SmPagination from "../global/SmPagination";
+import HeadlessModal from "../global/HeadlessModal";
+import { ISubCategory } from "../../types/sub_categories.types";
+import { useSubCategoryStore } from "../../store/sub-category";
+import TooltipGlobal from "../global/TooltipGlobal";
+import BottomDrawer from "../global/BottomDrawer";
 
 interface PProps {
   actions: string[];
 }
 
 function ListSubCategory({ actions }: PProps) {
-  const { theme, context } = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
   const [openVaul, setOpenVaul] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<ISubCategory>();
-  const { sub_categories_paginated, getSubCategoriesPaginated, activateSubCategory } =
-    useSubCategoryStore();
+  const {
+    sub_categories_paginated,
+    getSubCategoriesPaginated,
+    activateSubCategory,
+  } = useSubCategoryStore();
 
   const modalAdd = useDisclosure();
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [limit, setLimit] = useState(5);
   const [active, setActive] = useState(true);
 
@@ -66,7 +69,7 @@ function ListSubCategory({ actions }: PProps) {
     color: theme.colors.primary,
   };
 
-  const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
+  const [view, setView] = useState<"table" | "grid" | "list">("table");
 
   const handleActivate = (id: number) => {
     activateSubCategory(id).then(() => {
@@ -76,10 +79,10 @@ function ListSubCategory({ actions }: PProps) {
 
   return (
     <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
-      <div className="flex flex-col w-full p-5 rounded">
+        <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
         <div className="flex flex-col justify-between w-full gap-5 mb-5 lg:mb-10 lg:flex-row lg:gap-0">
           <div className="flex items-end gap-3">
-            <div className="hidden w-full md:flex gap-3">
+            <div className="hidden w-full gap-3 md:flex">
               <Input
                 startContent={<User />}
                 className="w-full xl:w-96 dark:text-white"
@@ -87,16 +90,16 @@ function ListSubCategory({ actions }: PProps) {
                 labelPlacement="outside"
                 label="Nombre"
                 classNames={{
-                  label: 'font-semibold text-gray-700',
-                  inputWrapper: 'pr-0',
+                  label: "font-semibold text-gray-700",
+                  inputWrapper: "pr-0",
                 }}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Escribe para buscar..."
                 isClearable
                 onClear={() => {
-                  setSearch('');
-                  handleSearch('');
+                  setSearch("");
+                  handleSearch("");
                 }}
               />
               <Button
@@ -118,10 +121,11 @@ function ListSubCategory({ actions }: PProps) {
                 isIconOnly
                 color="secondary"
                 style={{
-                  backgroundColor: view === 'table' ? theme.colors.third : '#e5e5e5',
-                  color: view === 'table' ? theme.colors.primary : '#3e3e3e',
+                  backgroundColor:
+                    view === "table" ? theme.colors.third : "#e5e5e5",
+                  color: view === "table" ? theme.colors.primary : "#3e3e3e",
                 }}
-                onClick={() => setView('table')}
+                onClick={() => setView("table")}
               >
                 <ITable />
               </Button>
@@ -129,10 +133,11 @@ function ListSubCategory({ actions }: PProps) {
                 isIconOnly
                 color="default"
                 style={{
-                  backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
-                  color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
+                  backgroundColor:
+                    view === "grid" ? theme.colors.third : "#e5e5e5",
+                  color: view === "grid" ? theme.colors.primary : "#3e3e3e",
                 }}
-                onClick={() => setView('grid')}
+                onClick={() => setView("grid")}
               >
                 <CreditCard />
               </Button>
@@ -140,90 +145,73 @@ function ListSubCategory({ actions }: PProps) {
                 isIconOnly
                 color="default"
                 style={{
-                  backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
-                  color: view === 'list' ? theme.colors.primary : '#3e3e3e',
+                  backgroundColor:
+                    view === "list" ? theme.colors.third : "#e5e5e5",
+                  color: view === "list" ? theme.colors.primary : "#3e3e3e",
                 }}
-                onClick={() => setView('list')}
+                onClick={() => setView("list")}
               >
                 <List />
               </Button>
             </ButtonGroup>
             <div className="flex items-center gap-5">
               <div className="block md:hidden">
-                <Drawer.Root
-                  shouldScaleBackground
+                <TooltipGlobal text="Filtrar">
+                  <Button
+                    style={global_styles().thirdStyle}
+                    isIconOnly
+                    onClick={() => setOpenVaul(true)}
+                    type="button"
+                  >
+                    <Filter />
+                  </Button>
+                </TooltipGlobal>
+                <BottomDrawer
                   open={openVaul}
                   onClose={() => setOpenVaul(false)}
+                  title="Filtros disponibles"
                 >
-                  <Drawer.Trigger asChild>
-                    <Button
-                      style={global_styles().thirdStyle}
-                      isIconOnly
-                      onClick={() => setOpenVaul(true)}
-                      type="button"
-                    >
-                      <Filter />
-                    </Button>
-                  </Drawer.Trigger>
-                  <Drawer.Portal>
-                    <Drawer.Overlay
-                      className="fixed inset-0 bg-black/40 z-[60]"
-                      onClick={() => setOpenVaul(false)}
-                    />
-                    <Drawer.Content
-                      className={classNames(
-                        'bg-gray-100 z-[60] flex flex-col rounded-t-[10px] h-auto mt-24 max-h-[80%] fixed bottom-0 left-0 right-0',
-                        context === 'dark' ? 'dark' : ''
-                      )}
-                    >
-                      <div className="p-4 bg-white dark:bg-gray-800 rounded-t-[10px] flex-1">
-                        <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-gray-300 dark:bg-gray-400 mb-8" />
-                        <Drawer.Title className="mb-4 dark:text-white font-medium">
-                          Filtros disponibles
-                        </Drawer.Title>
-
-                        <div className="flex flex-col gap-3">
-                          <Input
-                            startContent={<User />}
-                            className="w-full xl:w-96 dark:text-white"
-                            variant="bordered"
-                            labelPlacement="outside"
-                            label="Nombre"
-                            classNames={{
-                              label: 'font-semibold text-gray-700',
-                              inputWrapper: 'pr-0',
-                            }}
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            placeholder="Escribe para buscar..."
-                            isClearable
-                            onClear={() => {
-                              setSearch('');
-                              handleSearch('');
-                            }}
-                          />
-                          <Button
-                            style={{
-                              backgroundColor: theme.colors.secondary,
-                              color: theme.colors.primary,
-                            }}
-                            className="mt-6 font-semibold"
-                            color="primary"
-                            onClick={() => {
-                              handleSearch(undefined);
-                              setOpenVaul(false);
-                            }}
-                          >
-                            Buscar
-                          </Button>
-                        </div>
-                      </div>
-                    </Drawer.Content>
-                  </Drawer.Portal>
-                </Drawer.Root>
+                  <div className="p-4 bg-white dark:bg-gray-800 rounded-t-[10px] flex-1">
+                    <div className="flex flex-col gap-3">
+                      <Input
+                        startContent={<User />}
+                        className="w-full xl:w-96 dark:text-white"
+                        variant="bordered"
+                        labelPlacement="outside"
+                        label="Nombre"
+                        classNames={{
+                          label: "font-semibold text-gray-700",
+                          inputWrapper: "pr-0",
+                        }}
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        placeholder="Escribe para buscar..."
+                        isClearable
+                        onClear={() => {
+                          setSearch("");
+                          handleSearch("");
+                        }}
+                      />
+                      <Button
+                        style={{
+                          backgroundColor: theme.colors.secondary,
+                          color: theme.colors.primary,
+                        }}
+                        className="mt-6 font-semibold"
+                        color="primary"
+                        onClick={() => {
+                          handleSearch(undefined);
+                          setOpenVaul(false);
+                        }}
+                      >
+                        Buscar
+                      </Button>
+                    </div>
+                  </div>
+                </BottomDrawer>
               </div>
             </div>
-            {actions.includes('Agregar') && (
+            {actions.includes("Agregar") && (
               <AddButton
                 onClick={() => {
                   setSelectedCategory(undefined);
@@ -233,40 +221,47 @@ function ListSubCategory({ actions }: PProps) {
             )}
           </div>
         </div>
-        <div className="flex justify-end items-end w-full mb-5 gap-5">
+        <div className="flex items-end justify-end w-full gap-5 mb-5">
           <Select
             className="w-44 dark:text-white"
             variant="bordered"
-            defaultSelectedKeys={'5'}
+            defaultSelectedKeys={"5"}
             label="Mostrar"
             labelPlacement="outside"
             classNames={{
-              label: 'font-semibold',
+              label: "font-semibold",
             }}
             value={limit}
             onChange={(e) => {
-              setLimit(Number(e.target.value !== '' ? e.target.value : '8'));
+              setLimit(Number(e.target.value !== "" ? e.target.value : "8"));
             }}
           >
             {limit_options.map((option) => (
-              <SelectItem key={option} value={option} className="dark:text-white">
+              <SelectItem
+                key={option}
+                value={option}
+                className="dark:text-white"
+              >
                 {option}
               </SelectItem>
             ))}
           </Select>
           <div className="items-center hidden">
-            <Switch onValueChange={(active) => setActive(active)} isSelected={active}>
+            <Switch
+              onValueChange={(active) => setActive(active)}
+              isSelected={active}
+            >
               <span className="text-sm sm:text-base whitespace-nowrap">
-                Mostrar {active ? 'inactivos' : 'activos'}
+                Mostrar {active ? "inactivos" : "activos"}
               </span>
             </Switch>
           </div>
         </div>
-        {(view === 'grid' || view === 'list') && (
+        {(view === "grid" || view === "list") && (
           <MobileView
             handleActive={handleActivate}
             deletePopover={DeletePopUp}
-            layout={view as 'grid' | 'list'}
+            layout={view as "grid" | "list"}
             handleEdit={(item) => {
               setSelectedCategory(item);
               modalAdd.onOpen();
@@ -274,37 +269,40 @@ function ListSubCategory({ actions }: PProps) {
             actions={actions}
           />
         )}
-        {view === 'table' && (
+        {view === "table" && (
           <DataTable
             className="w-full shadow"
             emptyMessage="No se encontraron resultados"
             value={sub_categories_paginated.SubCategories}
-            tableStyle={{ minWidth: '50rem' }}
+            tableStyle={{ minWidth: "50rem" }}
           >
             <Column
               headerClassName="text-sm font-semibold"
-              headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
+              headerStyle={{ ...style, borderTopLeftRadius: "10px" }}
+              bodyClassName={"dark:text-white"}
               field="id"
               header="No."
             />
             <Column
               headerClassName="text-sm font-semibold"
+              bodyClassName={"dark:text-white"}
               headerStyle={style}
               field="name"
               header="Nombre"
             />
             <Column
               headerClassName="text-sm font-semibold"
+              bodyClassName={"dark:text-white"}
               headerStyle={style}
               field="categoryProduct.name"
               header="Categoría de producto"
             />
             <Column
-              headerStyle={{ ...style, borderTopRightRadius: '10px' }}
+              headerStyle={{ ...style, borderTopRightRadius: "10px" }}
               header="Acciones"
               body={(item) => (
                 <div className="flex gap-6">
-                  {actions.includes('Editar') && (
+                  {actions.includes("Editar") && (
                     <Button
                       onClick={() => {
                         setSelectedCategory(item);
@@ -316,10 +314,13 @@ function ListSubCategory({ actions }: PProps) {
                         backgroundColor: theme.colors.secondary,
                       }}
                     >
-                      <EditIcon style={{ color: theme.colors.primary }} size={20} />
+                      <EditIcon
+                        style={{ color: theme.colors.primary }}
+                        size={20}
+                      />
                     </Button>
                   )}
-                  {actions.includes('Eliminar') && (
+                  {actions.includes("Eliminar") && (
                     <>
                       {item.isActive ? (
                         <DeletePopUp subcategory={item} />
@@ -356,10 +357,18 @@ function ListSubCategory({ actions }: PProps) {
               <div className="flex w-full mt-5 md:hidden">
                 <SmPagination
                   handleNext={() => {
-                    getSubCategoriesPaginated(sub_categories_paginated.nextPag, limit, search);
+                    getSubCategoriesPaginated(
+                      sub_categories_paginated.nextPag,
+                      limit,
+                      search
+                    );
                   }}
                   handlePrev={() => {
-                    getSubCategoriesPaginated(sub_categories_paginated.prevPag, limit, search);
+                    getSubCategoriesPaginated(
+                      sub_categories_paginated.prevPag,
+                      limit,
+                      search
+                    );
                   }}
                   currentPage={sub_categories_paginated.currentPag}
                   totalPages={sub_categories_paginated.totalPag}
@@ -371,11 +380,16 @@ function ListSubCategory({ actions }: PProps) {
       </div>
       <HeadlessModal
         size="w-[350px] md:w-[500px]"
-        title={selectedCategory ? 'Editar sub categoría' : 'Nueva Sub-categoría'}
+        title={
+          selectedCategory ? "Editar sub categoría" : "Nueva Sub-categoría"
+        }
         isOpen={modalAdd.isOpen}
         onClose={modalAdd.onClose}
       >
-        <AddSubCategory closeModal={modalAdd.onClose} subCategory={selectedCategory} />
+        <AddSubCategory
+          closeModal={modalAdd.onClose}
+          subCategory={selectedCategory}
+        />
       </HeadlessModal>
     </div>
   );
@@ -417,7 +431,7 @@ const DeletePopUp = ({ subcategory }: Props) => {
           </Button>
         </PopoverTrigger>
         <PopoverContent>
-          <div className="w-full p-5 flex flex-col items-center justify-center">
+          <div className="flex flex-col items-center justify-center w-full p-5">
             <p className="font-semibold text-gray-600 dark:text-white">
               Eliminar {subcategory.name}
             </p>

@@ -26,7 +26,7 @@ function MobileView(props: IMobileView) {
         pt={{
           grid: () => ({
             className:
-              "grid dark:bg-slate-800 pb-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid-nogutter gap-5 mt-5",
+              "grid dark:bg-transparent pb-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid-nogutter gap-5 mt-5",
           }),
         }}
         color="surface"
@@ -65,16 +65,16 @@ const GridItem = (props: GridProps) => {
           key={employee.id}
         >
           <div className="flex w-full gap-2">
-            <IUser className="text-[#274c77] dark:text-gray-400" size={35} />
-            {`${employee.firstName} ${employee.firstLastName}`}
+            <IUser className="text-[#274c77] dark:text-gray-400" size={20} />
+            <p className="w-full">{`${employee.firstName} ${employee.firstLastName}`}</p>
           </div>
           <div className="flex w-full gap-2 mt-3">
-            <Phone size={35} className="text-[#00bbf9] dark:text-gray-400" />
-            {employee.phone}
+            <Phone size={20} className="text-[#274c77] dark:text-gray-400" />
+            <p className="w-full">{employee.phone}</p>
           </div>
           <div className="flex w-full gap-2 mt-3">
-            <Truck className="text-[#006d77] dark:text-gray-400" size={35} />
-            {employee.branch.name}
+            <Truck className="text-[#274c77] dark:text-gray-400" size={20} />
+            <p className="w-full">{employee.branch.name}</p>
           </div>
           <div className="flex justify-between mt-5 w-ful">
             {actions.includes("Editar") && (
@@ -127,19 +127,19 @@ const ListItem = (props: GridProps) => {
   } = props;
   return (
     <>
-      <div className="flex w-full col-span-1 p-5 border-b shadow md:col-span-2 lg:col-span-3 xl:col-span-4">
+      <div className="flex w-full p-5 border shadow dark:border-gray-600 rounded-2xl">
         <div className="w-full">
-          <div className="flex items-center w-full gap-2">
-            <IUser className="text-[#274c77] dark:text-gray-400" size={35} />
-            {`${employee.firstName} ${employee.firstLastName}`}
+          <div className="flex w-full gap-2">
+            <IUser className="text-[#274c77] dark:text-gray-400" size={20} />
+            <p className="w-full">{`${employee.firstName} ${employee.firstLastName}`}</p>
           </div>
-          <div className="flex items-center w-full gap-2 mt-3">
-            <Phone size={35} className="text-[#00bbf9] dark:text-gray-400" />
-            {employee.phone}
+          <div className="flex w-full gap-2 mt-3">
+            <Phone size={20} className="text-[#274c77] dark:text-gray-400" />
+            <p className="w-full">{employee.phone}</p>
           </div>
-          <div className="flex items-center w-full gap-2 mt-3">
-            <Truck className="text-[#006d77] dark:text-gray-400" size={35} />
-            {employee.branch.name}
+          <div className="flex w-full gap-2 mt-3">
+            <Truck className="text-[#274c77] dark:text-gray-400" size={20} />
+            <p className="w-full">{employee.branch.name}</p>
           </div>
         </div>
         <div className="flex flex-col items-end justify-between w-full">
