@@ -434,21 +434,21 @@ function ListProducts({ actions }: Props) {
                 body={(item) => (
                   <div className="flex w-full gap-5">
                     {actions.includes("Editar") && (
-                     <TooltipGlobal text="Editar">
-                       <Button
-                        onClick={() => {
-                          setSelectedProduct(item);
+                      <TooltipGlobal text="Editar">
+                        <Button
+                          onClick={() => {
+                            setSelectedProduct(item);
 
-                          setIsOpenModalUpdate(true);
-                        }}
-                        isIconOnly
-                        style={{
-                          backgroundColor: theme.colors.secondary,
-                        }}
-                      >
-                        <EditIcon style={{ color: theme.colors.primary }} size={20} />
-                      </Button>
-                     </TooltipGlobal>
+                            setIsOpenModalUpdate(true);
+                          }}
+                          isIconOnly
+                          style={{
+                            backgroundColor: theme.colors.secondary,
+                          }}
+                        >
+                          <EditIcon style={{ color: theme.colors.primary }} size={20} />
+                        </Button>
+                      </TooltipGlobal>
                     )}
                     {actions.includes('Eliminar') && (
                       <>
@@ -522,7 +522,7 @@ function ListProducts({ actions }: Props) {
           onClose={modalAdd.onClose}
           size="w-full md:w-[90vw] lg:w-[80vw]"
           isOpen={modalAdd.isOpen}
-          // isFull
+        // isFull
         >
           <AddProducts onCloseModal={modalAdd.onClose} product={selectedProduct} />
         </HeadlessModal>

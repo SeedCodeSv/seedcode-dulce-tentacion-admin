@@ -5,11 +5,13 @@ export interface IActionRol {
   role: Role;
   action: IAction;
   isActive: boolean;
+
 }
 export interface IGetActionRolList {
   ok: boolean;
   roleActions: IActionRol[];
   status: number;
+  role?: Role;
 }
 export interface IAddActionRol {
   roleId: number;
@@ -57,7 +59,7 @@ export interface Action {
   id: number;
   name: string;
   isActive: boolean;
-  view: View;
+  view: View; 
   actionId: number;
 }
 
