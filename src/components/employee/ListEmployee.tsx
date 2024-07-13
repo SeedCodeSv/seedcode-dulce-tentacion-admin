@@ -208,6 +208,7 @@ function ListEmployee({ actions }: Props) {
     dateOfExit: "",
     responsibleContact: "",
     statusId: 0,
+    addressId: 0,
     studyLevelId: 0,
     contractTypeId: 0,
     department: "",
@@ -217,6 +218,7 @@ function ListEmployee({ actions }: Props) {
     complement: "",
     branchId: 0,
   });
+  console.log("data de enmepleado a catualizar", dataUpdate)
 
   return (
     <>

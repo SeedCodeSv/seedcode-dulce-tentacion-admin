@@ -41,7 +41,6 @@ export interface Employee {
   municipality: string;
   complement: string;
   municipalityName: string;
-
   addressId: number;
   isActive: boolean;
 }
@@ -80,6 +79,7 @@ export interface EmployeePayload {
   statusId: number;
   studyLevelId: number;
   contractTypeId: number;
+  addressId: number;
   department: string;
   departmentName: string;
   municipality: string;

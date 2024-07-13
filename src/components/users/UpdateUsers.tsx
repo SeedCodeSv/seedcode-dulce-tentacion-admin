@@ -130,7 +130,7 @@ function AddUsers(props: Props) {
                 <span className="text-sm font-semibold text-red-500">{errors.employeeId}</span>
               )}
             </div> */}
-            <div className="pt-2">
+            <div className="">
               <Autocomplete
                 onSelectionChange={(key) => {
                   if (key) {
@@ -172,7 +172,7 @@ function AddUsers(props: Props) {
                 placeholder="Selecciona la sucursal"
                 labelPlacement="outside"
                 variant="bordered"
-                defaultInputValue={props.user?.correlative.branch.name || ""}
+                defaultInputValue={props.user?.correlative.branch.name || ''}
                 defaultSelectedKey={selectedKeyBranch!}
                 value={selectedKeyBranch!}
               >
@@ -204,7 +204,7 @@ function AddUsers(props: Props) {
                 classNames={{
                   base: 'font-semibold text-gray-500 text-sm',
                 }}
-                defaultInputValue={props.user?.correlative.code || ""}
+                defaultInputValue={props.user?.correlative.code || ''}
                 defaultSelectedKey={selectedKeyCorrelative!}
                 value={selectedKeyCorrelative!}
               >
@@ -214,7 +214,7 @@ function AddUsers(props: Props) {
                     value={JSON.stringify(cor)}
                     className="dark:text-white"
                   >
-                    {cor.code}
+                    {cor.code ? cor.code : cor.typeVoucher}
                   </AutocompleteItem>
                 ))}
               </Autocomplete>
