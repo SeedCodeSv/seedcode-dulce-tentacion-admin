@@ -1,23 +1,17 @@
 import {
   Input,
   Select,
-  SelectItem,
-  Table,
-  TableBody,
-  TableCell,
-  TableColumn,
-  TableHeader,
-  TableRow,
+  SelectItem
 } from "@nextui-org/react";
 import Layout from "../../layout/Layout";
 import { SeedcodeCatalogosMhService } from "seedcode-catalogos-mh";
 import { useEffect, useState } from "react";
 import { formatDate, formatDateShort } from "../../utils/dates";
 import { salesReportStore } from "../../store/reports/sales_report.store";
-import { formatCurrency } from "../../utils/dte";
 import Pagination from "../../components/global/Pagination";
 import SalesChartPeriod from "./Period/SalesChartPeriod";
-import { global_styles } from "@/styles/global.styles";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
 
 function VentasPorPeriodo() {
   const service = new SeedcodeCatalogosMhService();
@@ -103,30 +97,19 @@ function VentasPorPeriodo() {
               <>
                 {sales_by_period ? (
                   <div className="w-full">
-                    <Table aria-label="Example static collection table">
-                      <TableHeader>
-                        <TableColumn style={global_styles().darkStyle}>
-                          FECHA
-                        </TableColumn>
-                        <TableColumn style={global_styles().darkStyle}>
-                          TOTAL EN VENTAS
-                        </TableColumn>
-                        <TableColumn style={global_styles().darkStyle}>
-                          NO. DE VENTAS
-                        </TableColumn>
-                      </TableHeader>
-                      <TableBody emptyContent="No hay resultados">
-                        {sales_by_period.sales.map((sale, index) => (
-                          <TableRow key={index}>
-                            <TableCell>{formatDateShort(sale.date)}</TableCell>
-                            <TableCell>
-                              {formatCurrency(Number(sale.totalSales))}
-                            </TableCell>
-                            <TableCell>{sale.salesCount}</TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
+                    <DataTable
+                      value={sales_by_period.sales}
+                      className="shadow dark:text-white"
+                      emptyMessage="No se encontraron resultados"
+                    >
+                      <Column
+                        headerClassName="text-sm font-semibold"
+                        bodyClassName={"dark:text-white"}
+                        headerStyle={{ borderTopLeftRadius: "10px" }}
+                        body={(field) => formatDateShort(field.date)}
+                        header="Fecha"
+                      ></Column>
+                    </DataTable>
                     <div className="w-full mt-4">
                       <Pagination
                         nextPage={sales_by_period.nextPag}
