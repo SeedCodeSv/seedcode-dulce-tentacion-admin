@@ -13,8 +13,9 @@ import { formatCurrency } from '../utils/dte';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { ThemeContext } from '../hooks/useTheme';
-import { Skeleton } from '@nextui-org/react';
+// import { Skeleton } from '@nextui-org/react';
 import '../components/home/style.css';
+import { Skeleton } from '@/components/ui/skeleton';
 
 function Home() {
   const { theme } = useContext(ThemeContext);
@@ -99,9 +100,7 @@ function Home() {
           <div>
             {loading_sales_by_branch_and_month ? (
               <>
-                <Skeleton
-                  // ref={handleSkeletonRef(0)}
-                  // isLoaded={isLoaded}
+                {/* <Skeleton
                   isLoaded={!loading_sales_by_branch_and_month}
                   disableAnimation={true}
                   className="h-full rounded-lg max-h-52 slow-skeleton"
@@ -119,7 +118,14 @@ function Home() {
                       ],
                     }}
                   />
-                </Skeleton>
+                </Skeleton> */}
+                <div className="flex flex-col space-y-3">
+                  <Skeleton className="h-[125px] w-[250px] rounded-xl" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-[250px]" />
+                    <Skeleton className="h-4 w-[200px]" />
+                  </div>
+                </div>
               </>
             ) : (
               <>
@@ -142,26 +148,32 @@ function Home() {
 
           <div>
             {loading_expenses_branchMonth ? (
-              <Skeleton
-                // isLoaded={isLoaded}
-                isLoaded={!loading_expenses_branchMonth}
-                disableAnimation={true}
-                className="h-full rounded-lg max-h-52"
-              >
-                <ExpensesMonthBranches
-                  sales={{
-                    title: 'Gastos del mes',
-                    labels: expenses_branch_month.map((sl) => sl.branch),
-                    total: totalExpenses,
-                    series: [
-                      {
-                        name: 'Total',
-                        data: expenses_branch_month.map((sl) => sl.total),
-                      },
-                    ],
-                  }}
-                />
-              </Skeleton>
+              // <Skeleton
+              //   isLoaded={!loading_expenses_branchMonth}
+              //   disableAnimation={true}
+              //   className="h-full rounded-lg max-h-52"
+              // >
+              //   <ExpensesMonthBranches
+              //     sales={{
+              //       title: 'Gastos del mes',
+              //       labels: expenses_branch_month.map((sl) => sl.branch),
+              //       total: totalExpenses,
+              //       series: [
+              //         {
+              //           name: 'Total',
+              //           data: expenses_branch_month.map((sl) => sl.total),
+              //         },
+              //       ],
+              //     }}
+              //   />
+              // </Skeleton>
+              <div className="flex flex-col space-y-3">
+                <Skeleton className="h-[125px] w-[250px] rounded-xl" />
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-[250px]" />
+                  <Skeleton className="h-4 w-[200px]" />
+                </div>
+              </div>
             ) : (
               <>
                 <ExpensesMonthBranches
@@ -184,8 +196,7 @@ function Home() {
           <div>
             {loading_most_selled_product ? (
               <>
-                <Skeleton
-                  // isLoaded={isLoaded}
+                {/* <Skeleton
                   isLoaded={!loading_most_selled_product}
                   disableAnimation={true}
                   className="h-full rounded-lg max-h-52"
@@ -208,7 +219,14 @@ function Home() {
                       ],
                     }}
                   />
-                </Skeleton>
+                </Skeleton> */}
+                <div className="flex flex-col space-y-3">
+                  <Skeleton className="h-[125px] w-[250px] rounded-xl" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-[250px]" />
+                    <Skeleton className="h-4 w-[200px]" />
+                  </div>
+                </div>
               </>
             ) : (
               <>
@@ -237,8 +255,7 @@ function Home() {
           <div>
             {loading_sales_month_year ? (
               <>
-                <Skeleton
-                  // isLoaded={isLoaded}
+                {/* <Skeleton
                   isLoaded={!loading_sales_month_year}
                   disableAnimation={true}
                   className="h-full rounded-lg max-h-52"
@@ -255,9 +272,16 @@ function Home() {
                         },
                       ],
                     }}
-                    // loading={loading_sales_month_year}
+              
                   />
-                </Skeleton>
+                </Skeleton> */}
+                <div className="flex flex-col space-y-3">
+                  <Skeleton className="h-[125px] w-[250px] rounded-xl" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-[250px]" />
+                    <Skeleton className="h-4 w-[200px]" />
+                  </div>
+                </div>
               </>
             ) : (
               <>
@@ -282,34 +306,24 @@ function Home() {
         <div className="grid w-full grid-cols-1 pt-10 md:grid-cols-2 xl:grid-cols-4 xl:gap-10 lg:gap-10 sm:gap-10 mb:gap-10">
           <div className="flex flex-col w-full gap-10">
             <div className="flex flex-col items-center justify-center w-full h-32 border rounded-lg shadow dark:bg-gray-900 dark:border-gray-700">
-              <p className="text-2xl font-semibold dark:text-white">
-                No. de ventas
-              </p>
-              <p className="text-2xl font-semibold dark:text-white animated-count">
-                {sales_count}
-              </p>
+              <p className="text-2xl font-semibold dark:text-white">No. de ventas</p>
+              <p className="text-2xl font-semibold dark:text-white animated-count">{sales_count}</p>
             </div>
             <div className="flex flex-col items-center justify-center w-full h-32 border rounded-lg shadow dark:bg-gray-900 dark:border-gray-700">
-              <p className="text-2xl font-semibold dark:text-white">
-                Ventas del dia
-              </p>
+              <p className="text-2xl font-semibold dark:text-white">Ventas del dia</p>
               <p className="text-lg font-semibold dark:text-white">
                 {formatCurrency(sales_by_day)}
               </p>
             </div>
             <div className="flex flex-col items-center justify-center w-full h-32 border rounded-lg shadow dark:bg-gray-900 dark:border-gray-700">
-              <p className="text-2xl font-semibold dark:text-white">
-                Gastos del dia
-              </p>
+              <p className="text-2xl font-semibold dark:text-white">Gastos del dia</p>
               <p className="text-lg font-semibold dark:text-white">
                 {formatCurrency(expenses_by_day)}
               </p>
             </div>
           </div>
           <div className="col-span-3 p-5 mt-10 bg-gray-100 rounded-lg dark:bg-gray-900 xl:mt-0 lg:mt-0 mb:mt-0 sm:mt-0">
-            <p className="pb-4 text-lg font-semibold dark:text-white">
-              Ventas del dia
-            </p>
+            <p className="pb-4 text-lg font-semibold dark:text-white">Ventas del dia</p>
 
             {loading_sales_by_table_date ? (
               <>

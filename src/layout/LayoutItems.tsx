@@ -24,6 +24,10 @@ import {
   FolderCheck,
   LayoutList,
   LayoutGrid,
+  FolderPen,
+  ClipboardCheck,
+  UserCheck,
+  BriefcaseBusiness,
 } from 'lucide-react';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { ThemeContext } from '../hooks/useTheme';
@@ -50,9 +54,9 @@ export const LayoutItems = () => {
     } else {
       document.getElementsByTagName('body')[0].classList.remove('dark');
     }
-    OnGetViewasAction()
+    OnGetViewasAction();
   }, [context]);
-  const views = viewasAction.map((r) => r.view.name)
+  const views = viewasAction.map((r) => r.view.name);
   const { personalization } = useConfigurationStore();
   const { windowSize } = useWindowSize();
   const iconSize = useMemo(() => {
@@ -196,9 +200,9 @@ export const LayoutItems = () => {
               </NavLink>
 
               {views.includes('Productos') ||
-                (views && views.includes('Categorias')) ||
-                views.includes('Sub Categorias') ||
-                views.includes('Ordenes de compra') ? (
+              (views && views.includes('Categorias')) ||
+              views.includes('Sub Categorias') ||
+              views.includes('Ordenes de compra') ? (
                 <div className="flex flex-col items-center justify-start w-full px-6">
                   <button
                     onClick={ttoggleDropdowProduct}
@@ -213,8 +217,9 @@ export const LayoutItems = () => {
                   </button>
                   <div
                     id="menuProducto"
-                    className={`flex flex-col w-full pb-1 overflow-hidden transition-all duration-500 ${isProductOpen ? 'max-h-52' : 'max-h-0'
-                      }`}
+                    className={`flex flex-col w-full pb-1 overflow-hidden transition-all duration-500 ${
+                      isProductOpen ? 'max-h-52' : 'max-h-0'
+                    }`}
                   >
                     <>
                       <div className="py-1">
@@ -291,12 +296,10 @@ export const LayoutItems = () => {
                 </div>
               ) : null}
 
-
-
               {/* Gestion de planillas ----------------------------------------------------------------- */}
               {views.includes('Tipo de contratacion') ||
-                (views && views.includes('Estado del empleado')) ||
-                views.includes('Employee') ? (
+              (views && views.includes('Estado del empleado')) ||
+              views.includes('Employee') ? (
                 <div className="flex flex-col items-center justify-start w-full px-6">
                   <button
                     onClick={toggleDropdownMenu2}
@@ -313,8 +316,9 @@ export const LayoutItems = () => {
                   </button>
                   <div
                     id="menu2"
-                    className={`flex flex-col w-full h-[700px] pb-1 overflow-hidden transition-all duration-500 ${isMenuOpen2 ? 'xl:max-h-36 max-h-36' : 'max-h-0'
-                      }`}
+                    className={`flex flex-col w-full h-[700px] pb-1 overflow-hidden transition-all duration-500 ${
+                      isMenuOpen2 ? 'xl:max-h-36 max-h-36' : 'max-h-0'
+                    }`}
                   >
                     <div className="py-1">
                       {views.includes('Nivel de estudio') && (
@@ -367,9 +371,9 @@ export const LayoutItems = () => {
               {/* fin de gestion de planillas -------------------------------------------------------------*/}
 
               {views.includes('Empleados') ||
-                (views && views.includes('Clientes')) ||
-                views.includes('Usuarios') ||
-                views.includes('Sucursales') ? (
+              (views && views.includes('Clientes')) ||
+              views.includes('Usuarios') ||
+              views.includes('Sucursales') ? (
                 <div className="flex flex-col items-center justify-start w-full px-6 ">
                   <button
                     onClick={toggleDropdownMenu}
@@ -386,8 +390,9 @@ export const LayoutItems = () => {
                   </button>
                   <div
                     id="menu1"
-                    className={`flex flex-col w-full h-[900px] pb-1 overflow-hidden transition-all duration-500 ${isMenuOpen ? 'xl:max-h-56 max-h-44' : 'max-h-0'
-                      }`}
+                    className={`flex flex-col w-full h-[900px] pb-1 overflow-hidden transition-all duration-500 ${
+                      isMenuOpen ? 'xl:max-h-56 max-h-44' : 'max-h-0'
+                    }`}
                   >
                     <div className="py-1">
                       {views.includes('Empleados') && (
@@ -400,7 +405,7 @@ export const LayoutItems = () => {
                             ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
                           }
                         >
-                          <User size={iconSize} />
+                          <UserCheck size={iconSize} />
                           <p className="ml-2 text-sm 2xl:text-base">Empleados</p>
                         </NavLink>
                       )}
@@ -414,7 +419,7 @@ export const LayoutItems = () => {
                             ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
                           }
                         >
-                          <Handshake size={iconSize} />
+                          <BriefcaseBusiness size={iconSize} />
                           <p className="ml-2 text-sm 2xl:text-base">Cargos</p>
                         </NavLink>
                       )}
@@ -495,8 +500,9 @@ export const LayoutItems = () => {
                   </button>
                   <div
                     id="menu1"
-                    className={`flex flex-col w-full h-[900px] pb-1 overflow-hidden transition-all duration-500 ${reports ? 'max-h-14' : 'max-h-0'
-                      }`}
+                    className={`flex flex-col w-full h-[900px] pb-1 overflow-hidden transition-all duration-500 ${
+                      reports ? 'max-h-14' : 'max-h-0'
+                    }`}
                   >
                     <div className="py-1">
                       <NavLink
@@ -522,7 +528,7 @@ export const LayoutItems = () => {
                     onClick={toggleDropdowContabilidad}
                     className="flex items-center w-full py-3 space-x-3 text-left text-black focus:outline-none focus:text-black"
                   >
-                    <FolderCheck className="dark:text-white" size={iconSize} />
+                    <FolderPen className="dark:text-white" size={iconSize} />
                     <p className="text-sm font-semibold dark:text-white 2xl:text-base whitespace-nowrap">
                       Contabilidad
                     </p>
@@ -533,8 +539,9 @@ export const LayoutItems = () => {
                   </button>
                   <div
                     id="menuContability"
-                    className={`flex flex-col w-full h-[900px] pb-1 overflow-hidden transition-all duration-500 ${isContabilityOpen ? 'max-h-52' : 'max-h-0'
-                      }`}
+                    className={`flex flex-col w-full pb-1 overflow-hidden transition-all duration-500 ${
+                      isContabilityOpen ? 'max-h-52' : 'max-h-0'
+                    }`}
                   >
                     <div className="py-1">
                       <NavLink
@@ -543,13 +550,16 @@ export const LayoutItems = () => {
                         className={({ isActive }) => {
                           return (
                             (isActive
-                              ? 'font-semibold bg-gray-300 dark:bg-gray-700'
+                              ? 'font-semibold bg-gray-white'
                               : 'text-coffee-brown font-semibold border-white') +
                             ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
                           );
                         }}
                       >
-                        <ShoppingBag onClick={() => setIsOpenComponentBigZ(true)} size={iconSize} />
+                        <ClipboardCheck
+                          onClick={() => setIsOpenComponentBigZ(true)}
+                          size={iconSize}
+                        />
                         <p className="ml-2 text-sm 2xl:text-base">Corte Gran Z</p>
                       </NavLink>
                       <NavLink
@@ -558,13 +568,13 @@ export const LayoutItems = () => {
                         className={({ isActive }) => {
                           return (
                             (isActive
-                              ? 'tfont-semibold bg-gray-300 dark:bg-gray-700'
+                              ? 'font-semibold bg-gray-white'
                               : 'text-coffee-brown font-semibold border-white') +
                             ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
                           );
                         }}
                       >
-                        <ShoppingBag onClick={() => setIsCushCatsX(true)} size={iconSize} />
+                        <ClipboardCheck onClick={() => setIsCushCatsX(true)} size={iconSize} />
                         <p className="ml-2 text-sm 2xl:text-base">Corte de X</p>
                       </NavLink>
 
@@ -574,13 +584,13 @@ export const LayoutItems = () => {
                         className={({ isActive }) => {
                           return (
                             (isActive
-                              ? 'font-semibold bg-gray-300 dark:bg-gray-700'
+                              ? 'font-semibold bg-gray-white'
                               : 'text-coffee-brown font-semibold border-white') +
                             ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
                           );
                         }}
                       >
-                        <ShoppingBag onClick={() => setIsCushCatsZ(true)} size={iconSize} />
+                        <ClipboardCheck onClick={() => setIsCushCatsZ(true)} size={iconSize} />
                         <p className="ml-2 text-sm 2xl:text-base">Corte de Z</p>
                       </NavLink>
                     </div>
@@ -636,9 +646,7 @@ export const LayoutItems = () => {
         </>
       )}
 
-
       <>
-
         <NavLink
           to={'/actionRol'}
           className={({ isActive }) => {
@@ -659,7 +667,6 @@ export const LayoutItems = () => {
           <ShieldHalf size={iconSize} />
           <p className="ml-2 text-sm 2xl:text-base">Permisos</p>
         </NavLink>
-
 
         {/* Descuentos */}
         {views && views.includes('Descuentos') && (
@@ -709,11 +716,9 @@ export const LayoutItems = () => {
         )}
       </>
 
-
-
       <div
         className={
-          ' flex w-full py-4 pl-5 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
+          ' flex w-full py-4 pl-5 cursor-pointer :-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
         }
       >
         <Switch
