@@ -57,3 +57,11 @@ export function calculateDiscountedTotal(price: number, discountPercentage: numb
   const discountedTotal = price - discountAmount;
   return { discountedTotal, discountAmount };
 }
+
+export function getRandomColorsArray(): string[] {
+  const colors = [
+    "#14b8a6", "#06b6d4", "#0ea5e9", "#3b82f6", "#6366f1", "#8b5cf6",
+  ];
+
+  return colors
+}

@@ -15,8 +15,9 @@ interface PaginationProps {
 }
 /* eslint-enable no-unused-vars */
 
-const Pagination: React.FC<PaginationProps> = ({ totalPages, onPageChange, totalItems = 5 }) => {
-  const [currentPage, setCurrentPage] = useState(1);
+const Pagination: React.FC<PaginationProps> = (props) => {
+  const { totalPages, onPageChange, totalItems = 5 } = props
+  const [currentPage, setCurrentPage] = useState(props.currentPage);
 
   const { theme } = useContext(ThemeContext);
 
