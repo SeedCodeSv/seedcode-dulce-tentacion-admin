@@ -59,9 +59,9 @@ export const salesReportStore = create<ISalesReportStore>((set) => ({
         set({ sales_by_period_graph: undefined });
       });
   },
-  getSalesByPeriod(page, startDate, endDate, paymentType = '') {
+  getSalesByPeriod(page, limit, startDate, endDate, paymentType = '', branch = "", correlative = "") {
     set({ loading_sales_period: true, sales_by_period: undefined });
-    get_sales_by_period(page, startDate, endDate, paymentType)
+    get_sales_by_period(page, limit, startDate, endDate, paymentType, branch, correlative)
       .then(({ data }) => {
         set({ sales_by_period: data, loading_sales_period: false });
       })

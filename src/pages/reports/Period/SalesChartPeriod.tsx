@@ -258,9 +258,9 @@ function SalesChartPeriod(props: Props) {
       <div className="mt-10">
         {sales_by_point_of_sale_branch && (
           <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
-            <div className="w-full p-4 border shadow rounded-2xl">
+            <div className="w-full p-4 border border-gray-600 shadow rounded-2xl">
               <ApexChart
-                height={300}
+                height={windowSize.width < 600 ? 300 : 300}
                 type="donut"
                 series={[
                   ...sales_by_point_of_sale_branch.salesMap.map(
@@ -275,6 +275,9 @@ function SalesChartPeriod(props: Props) {
                   ],
                   title: {
                     text: "Ventas por punto de venta",
+                    style:{
+                      color: context === "light" ? "#000" : "#fff"
+                    }
                   },
                   fill: {
                     opacity: 1,
@@ -300,12 +303,12 @@ function SalesChartPeriod(props: Props) {
                           show: true,
                           name: {
                             show: true,
-                            color: "#333",
+                            color: context === "light" ? "#000" : "#fff",
                             fontSize: "16px",
                           },
                           value: {
                             show: true,
-                            color: "#333",
+                            color: context === "light" ? "#000" : "#fff",
                             fontSize: "14px",
                             formatter(val) {
                               return formatCurrency(Number(val));
@@ -317,13 +320,17 @@ function SalesChartPeriod(props: Props) {
                     },
                   },
                   legend: {
-                    position: "left",
-                    offsetY: 80,
+                    show: true,
+                    position: windowSize.width < 600 ? "bottom" : "left",
+                    offsetY: windowSize.width < 600 ? 0 : 80,
+                    labels:{
+                      colors: context === "light" ? "#000" : "#fff",
+                    }
                   },
                 }}
               />
             </div>
-            <div className="flex flex-col items-center justify-center w-full p-4 border shadow rounded-2xl">
+            <div className="flex flex-col items-center justify-center w-full p-4 border border-gray-600 shadow rounded-2xl">
               <p className="py-2 text-xl font-semibold md:text-2xl">
                 {branchSelected?.branch}
               </p>
