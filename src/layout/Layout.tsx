@@ -43,7 +43,7 @@ function Layout(props: Props) {
         <title>{props.title.toUpperCase()}</title>
       </Helmet>
 
-      {roleActions ? (
+      
         <div className={classNames('w-full h-full', context === 'dark' ? 'dark' : '')}>
           {navbar === 'topbar' && (
             <>
@@ -65,9 +65,7 @@ function Layout(props: Props) {
             </>
           )}
         </div>
-      ) : (
-        <div className="flex items-center justify-center w-full h-full">Loading</div>
-      )}
+     
     </>
   );
 }

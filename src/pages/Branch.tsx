@@ -15,7 +15,7 @@ function Branch() {
      return undefined;
    }, [roleActions]);
   return (
-    <Layout title="e">
+    <Layout title="Sucursales">
       {actions_role_view ? (
         <ListBranch/>
       ) : (
