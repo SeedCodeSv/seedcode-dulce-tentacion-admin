@@ -1,0 +1,46 @@
+{
+  "view_actions": [
+    {
+      "view": "Productos",
+      "actions": ["Mostrar", "Crear", "Editar", "Eliminar"]
+    },
+    {
+      "view": "Categorías",
+      "actions": ["Mostrar", "Crear", "Editar", "Eliminar"]
+    },
+    {
+      "view": "Sub Categorías",
+      "actions": ["Mostrar", "Crear", "Editar", "Eliminar"]
+    },
+    {
+      "view": "Ordenes de Compra",
+      "actions": ["Mostrar", "Crear", "Editar", "Eliminar"]
+    },
+    {
+      "view": "Empleados",
+      "actions": ["Mostrar", "Crear", "Editar", "Eliminar"]
+    },
+    {
+      "view": "Cargos",
+      "actions": ["Mostrar", "Crear", "Editar", "Eliminar"]
+    },
+    {
+      "view": "Cargos",
+      "actions": ["Mostrar", "Crear", "Editar", "Eliminar", "Cambiar"]
+    },
+    {
+      "view": "Cargos",
+      "actions": [
+        "Mostrar",
+        "Crear",
+        "Editar",
+        "Eliminar",
+        "Cambiar contraseña"
+      ]
+    },
+    {
+      "view": "Cargos",
+      "actions": ["Mostrar", "Crear", "Editar", "Eliminar", "Cambiar"]
+    }
+  ]
+}

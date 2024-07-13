@@ -6,6 +6,9 @@ import { useContext, useEffect, useMemo, useState } from "react";
 import { Button } from "@nextui-org/react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { ThemeContext } from "@/hooks/useTheme";
+import { ApexTooltip } from "@/types/Apex";
+import { SalesGraph } from "@/types/reports/sales_by_period.report";
+import { getRandomColorsArray } from "@/utils/filters";
 
 interface Props {
   startDate: string;
@@ -21,6 +24,7 @@ function SalesChartPeriod(props: Props) {
     getSalePointOfSaleByBranch,
     sales_by_period_graph,
   } = salesReportStore();
+  const [branchSelected, setBranchSelected] = useState<SalesGraph>();
 
   const handleFindIndex = (index_p: string) => {
     const findResult = sales_by_period_graph?.data.find(
@@ -28,6 +32,7 @@ function SalesChartPeriod(props: Props) {
     );
     if (findResult) {
       getSalePointOfSaleByBranch(findResult.id, props.startDate, props.endDate);
+      setBranchSelected(findResult);
     }
   };
 
@@ -103,6 +108,26 @@ function SalesChartPeriod(props: Props) {
     }
   };
 
+  const itemTooltip = (label: string) => {
+    const findResult = sales_by_period_graph?.data.find(
+      (el) => el.branch === label
+    );
+    if (findResult) {
+      return `<p class="bg-gray-200 dark:bg-gray-800 p-2 px-4 font-semibold">${
+        findResult.branch
+      }</p>
+      <p class="px-4 py-2 flex gap-2"><span class="h-4 w-4 rounded-full bg-blue-500"></span> Total: ${formatCurrency(
+        findResult.total
+      )}</p>
+       <p class="px-4 py-2 flex gap-2"><span class="h-4 w-4 rounded-full bg-blue-500"></span> No de ventas: ${
+         findResult.quantity
+       }</p>
+      `;
+    }
+
+    return "";
+  };
+
   return (
     <>
       <div className="flex items-center justify-between">
@@ -142,6 +167,17 @@ function SalesChartPeriod(props: Props) {
               color: context === "light" ? "#000" : "#fff",
             },
           },
+          tooltip: {
+            custom(options: ApexTooltip) {
+              console.log(options);
+              return `<div class="shadow-2xl dark:bg-black dark:text-white rounded-md text-xs">
+                ${itemTooltip(options.w.globals.labels[options.dataPointIndex])}
+                </div>`;
+            },
+          },
+          // tooltip:{
+          //   cssClass: "text-black dark:text-white",
+          // },
           plotOptions: {
             bar: {
               borderRadius: 10,
@@ -165,7 +201,9 @@ function SalesChartPeriod(props: Props) {
             offsetY: -20,
             style: {
               fontSize: "12px",
-              colors: ["#304758"],
+              colors: [
+                ...(context === "light" ? ["#000"] : labels.map(() => "#fff")),
+              ],
             },
           },
           yaxis: {
@@ -192,7 +230,9 @@ function SalesChartPeriod(props: Props) {
               style: {
                 cssClass: "text-white",
                 colors: [
-                  ...(context === "light" ? ["#000"] : Array.from({ length: 10 }, () => "#fff")),
+                  ...(context === "light"
+                    ? ["#000"]
+                    : labels.map(() => "#fff")),
                 ],
               },
             },
@@ -217,28 +257,87 @@ function SalesChartPeriod(props: Props) {
 
       <div className="mt-10">
         {sales_by_point_of_sale_branch && (
-          <>
-            <ApexChart
-              height={450}
-              type="area"
-              series={[
-                {
-                  name: "Ventas",
-                  data: sales_by_point_of_sale_branch.salesMap.map((el) =>
-                    Number(el.total)
+          <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+            <div className="w-full p-4 border shadow rounded-2xl">
+              <ApexChart
+                height={300}
+                type="donut"
+                series={[
+                  ...sales_by_point_of_sale_branch.salesMap.map(
+                    (el) => el.total
                   ),
-                },
-              ]}
-              options={{
-                labels: sales_by_point_of_sale_branch.salesMap.map(
-                  (el) => el.code
-                ),
-                title: {
-                  text: "Ventas por punto de venta",
-                },
-              }}
-            />
-          </>
+                ]}
+                options={{
+                  labels: [
+                    ...sales_by_point_of_sale_branch.salesMap.map(
+                      (el) => el.code
+                    ),
+                  ],
+                  title: {
+                    text: "Ventas por punto de venta",
+                  },
+                  fill: {
+                    opacity: 1,
+                    type: "gradient",
+                    gradient: {
+                      type: "vertical",
+                      shadeIntensity: 1,
+                      inverseColors: false,
+                      opacityFrom: 1,
+                      opacityTo: 1,
+                      stops: [100, 100],
+                    },
+                  },
+                  colors: [
+                    ...getRandomColorsArray()
+                  ],
+                  plotOptions: {
+                    pie: {
+                      customScale: 1,
+                      donut: {
+                        size: "55%",
+                        labels: {
+                          show: true,
+                          name: {
+                            show: true,
+                            color: "#333",
+                            fontSize: "16px",
+                          },
+                          value: {
+                            show: true,
+                            color: "#333",
+                            fontSize: "14px",
+                            formatter(val) {
+                              return formatCurrency(Number(val));
+                            },
+                          },
+                        },
+                      },
+                      offsetY: 20,
+                    },
+                  },
+                  legend: {
+                    position: "left",
+                    offsetY: 80,
+                  },
+                }}
+              />
+            </div>
+            <div className="flex flex-col items-center justify-center w-full p-4 border shadow rounded-2xl">
+              <p className="py-2 text-xl font-semibold md:text-2xl">
+                {branchSelected?.branch}
+              </p>
+              <p className="py-2 text-xl font-semibold md:text-2xl ">
+                No de ventas: {branchSelected?.quantity}
+              </p>
+              <p className="py-2 text-xl font-semibold md:text-2xl ">
+                Total:{" "}
+                <span className="font-bold text-green-500">
+                  {formatCurrency(Number(branchSelected?.total ?? 0))}
+                </span>
+              </p>
+            </div>
+          </div>
         )}
       </div>
     </>
