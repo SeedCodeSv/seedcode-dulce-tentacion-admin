@@ -13,6 +13,7 @@ const PermissionTable: React.FC = () => {
   const { OnGetViewasAction, viewasAction } = useViewsStore();
   const [selectedActions, setSelectedActions] = useState<{ [viewId: number]: string[] }>({});
   const [defaultActions, setDefaultActions] = useState<{ [viewId: number]: string[] }>({});
+  const [selectedViewId, setSelectedViewId] = useState<number | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -76,24 +77,26 @@ const PermissionTable: React.FC = () => {
           })
         )
       );
-      navigate('/actionRol');
+      toast.success('Acciones asignadas correctamente');
     } catch (error) {
       toast.error('Error al enviar el payload');
     }
   };
 
-  const renderSection = (view: { id: number; name: string }) => (
-    <div className="w-full sm:w-1/2 p-2" key={view.id}>
+  const renderActions = (viewId: number) => (
+    <div className="w-full p-2" key={viewId}>
       <div className="mb-4 bg-white shadow-lg rounded-lg overflow-hidden">
         <div className="px-4 py-3 bg-blue-900 text-white flex justify-between items-center">
-          <p className="font-semibold">{view.name}</p>
+          <p className="font-semibold">
+            {viewasAction.find((view) => view.view.id === viewId)?.view.name}
+          </p>
           <div
             className={`cursor-pointer ${
-              selectedActions[view.id]?.length === permissions.length
+              selectedActions[viewId]?.length === permissions.length
                 ? 'bg-green-500'
                 : 'bg-gray-500'
             } rounded-full h-8 w-8 flex items-center justify-center`}
-            onClick={() => handleSelectAllActions(view.id)}
+            onClick={() => handleSelectAllActions(viewId)}
           >
             <Check className="text-white" />
           </div>
@@ -107,14 +110,14 @@ const PermissionTable: React.FC = () => {
                     <div
                       key={permission}
                       className={`flex items-center justify-between px-4 py-2 border-b border-gray-200 cursor-pointer ${
-                        defaultActions[view.id]?.includes(permission) ? 'cursor-not-allowed' : ''
+                        defaultActions[viewId]?.includes(permission) ? 'cursor-not-allowed' : ''
                       }`}
-                      onClick={() => handleSelectAction(view.id, permission)}
+                      onClick={() => handleSelectAction(viewId, permission)}
                     >
                       <span>{permission}</span>
                       <div
                         className={`${
-                          selectedActions[view.id]?.includes(permission)
+                          selectedActions[viewId]?.includes(permission)
                             ? 'bg-green-500'
                             : 'bg-gray-500'
                         } rounded-full h-8 w-8 flex items-center justify-center`}
@@ -133,31 +136,45 @@ const PermissionTable: React.FC = () => {
   );
 
   return (
-    <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
-      <div className="w-full h-full p-5 overflow-y-auto bg-white shadow-xl rounded-xl dark:bg-gray-900">
-        <div className="flex flex-col justify-between w-full gap-5 mb-5 lg:mb-10 lg:flex-row lg:gap-0">
-          <div className="flex items-start gap-3">
-            <h1 className="dark:text-white">Agregar Acciones a Vistas</h1>
-          </div>
-          <div className="flex justify-center items-start gap-3">
-            <div>
-              <AddButton onClick={() => navigate('/AddActionRol')} />
-            </div>
-          </div>
+    <div className="flex h-screen flex-col lg:flex-row">
+      <div className="w-full lg:w-1/4 bg-gray-100 p-4">
+        <div className="mb-4">
+          <AddButton onClick={() => navigate('/AddActionRol')}></AddButton>
         </div>
-
-        <div className="flex flex-wrap -mx-2">
+        <div className="overflow-y-auto h-64 lg:h-full">
+          {' '}
+          {/* Ajusta la altura para dispositivos móviles y de escritorio */}
           {viewasAction.map((view) => (
-            <React.Fragment key={view.view.id}>{renderSection(view.view)}</React.Fragment>
+            <div key={view.view.id} className="mb-2">
+              <button
+                className={`w-full text-left bg-white py-2 px-4 rounded-lg shadow-md hover:bg-gray-200 transition ${
+                  selectedViewId === view.view.id ? 'bg-blue-200' : ''
+                }`}
+                onClick={() => setSelectedViewId(view.view.id)}
+              >
+                {view.view.name}
+              </button>
+            </div>
           ))}
         </div>
-        <div className="mt-4 flex justify-end">
-          <button
-            onClick={handleSubmit}
-            className="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition disabled:opacity-50"
-          >
-            Enviar
-          </button>
+      </div>
+      <div className="w-full lg:w-3/4 p-5 bg-gray-50 dark:bg-gray-800">
+        <div className="w-full h-full p-5 overflow-y-auto bg-white shadow-xl rounded-xl dark:bg-gray-900">
+          <div className="flex flex-col justify-between w-full gap-5 mb-5 lg:mb-10 lg:flex-row lg:gap-0">
+            <div className="flex items-start gap-3">
+              <h1 className="dark:text-white">Agregar Acciones a Vistas</h1>
+            </div>
+          </div>
+
+          <div>{selectedViewId && renderActions(selectedViewId)}</div>
+          <div className="mt-4 flex justify-end">
+            <button
+              onClick={handleSubmit}
+              className="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition disabled:opacity-50"
+            >
+              Enviar
+            </button>
+          </div>
         </div>
       </div>
     </div>

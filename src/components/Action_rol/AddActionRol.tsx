@@ -22,7 +22,7 @@ const PermissionTable: React.FC = () => {
   const { OnGetViewasAction, viewasAction } = useViewsStore();
   const [selectedActions, setSelectedActions] = useState<{ [viewId: number]: string[] }>({});
   const [defaultActions, setDefaultActions] = useState<{ [viewId: number]: string[] }>({});
-  const navigate = useNavigate();
+
   const { OnGetActionsByRolePage, roleActionsPage } = useActionsRolStore();
   const [dataRoles, setDataRoles] = useState<Role[]>([]);
   const [selectedCustomer, setSelectedCustomer] = useState(1);
@@ -119,7 +119,7 @@ const PermissionTable: React.FC = () => {
   };
   const { OnGetActionsByRole } = useActionsRolStore();
   const { user } = useAuthStore();
- 
+const navigate = useNavigate();
   const handleSubmit = async () => {
     if (selectedCustomer === 0) {
       toast.error('Selecciona el rol');
@@ -145,7 +145,7 @@ const PermissionTable: React.FC = () => {
         actionIds,
         roleId: selectedCustomer,
       };
-      const navigate = useNavigate();
+      
       navigate('/actionRol');
       await create_role_action(payload);
       OnGetActionsByRole(user?.roleId as number);
@@ -157,7 +157,7 @@ const PermissionTable: React.FC = () => {
   const { theme } = useContext(ThemeContext);
   const renderSection = (view: { id: number; name: string }) => (
     <div className="w-full sm:w-1/3 p-2" key={view.id}>
-      <div className="mb-4 bg-teal-500 shadow-lg rounded-lg overflow-hidden">
+      <div className="mb-4 dark:bg-gray-900 bg-white shadow-lg border border-gray-300 rounded-lg overflow-hidden">
         <div
           style={{ backgroundColor: theme.colors.dark, color: theme.colors.primary }}
           className="px-4 py-3 bg-teal-700 text-white flex justify-between items-center"
@@ -175,12 +175,12 @@ const PermissionTable: React.FC = () => {
         </div>
         <div className="border-t-2 border-white"></div>
         <div className="px-4 py-2 border-t border-teal-600">
-          <div className="bg-teal-500">
-            <div className="grid grid-cols-2 gap-4">
+          <div className="dark:bg-gray-900 bg-white">
+            <div className="grid grid-cols-2 gap-4 ">
               {['Mostrar', 'Agregar', 'Editar', 'Eliminar'].map((permission, index) => (
                 <div
                   key={index}
-                  className={`flex items-center justify-center px-4 py-2 border-b  cursor-pointer ${
+                  className={`flex items-center justify-center  px-4 py-2 border-b dark:border-gray-600 cursor-pointer ${
                     defaultActions[view.id]?.includes(permission) ? 'cursor-not-allowed' : ''
                   }`}
                   onClick={() =>
@@ -193,9 +193,9 @@ const PermissionTable: React.FC = () => {
                       type="checkbox"
                       checked={selectedActions[view.id]?.includes(permission)}
                       onChange={() => handleSelectAction(view.id, permission)}
-                      className="form-checkbox h-5 w-5 text-teal-400 bg-teal-700 border-teal-600 rounded focus:ring-teal-500"
+                      className="form-checkbox h-5 w-5 text-teal-40 rounded focus:ring-teal-500"
                     />
-                    <span className="text-white flex ml-4 w-12">{permission}</span>
+                    <span className=" dark:text-white flex ml-4 w-12">{permission}</span>
                   </div>
                 </div>
               ))}
