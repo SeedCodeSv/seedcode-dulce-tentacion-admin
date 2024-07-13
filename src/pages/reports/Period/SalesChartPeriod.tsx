@@ -169,7 +169,6 @@ function SalesChartPeriod(props: Props) {
           },
           tooltip: {
             custom(options: ApexTooltip) {
-              console.log(options);
               return `<div class="shadow-2xl dark:bg-black dark:text-white rounded-md text-xs">
                 ${itemTooltip(options.w.globals.labels[options.dataPointIndex])}
                 </div>`;

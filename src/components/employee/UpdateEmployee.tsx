@@ -67,7 +67,6 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
   const createEmployee = async () => {
     try {
       const data = await patchEmployee(dataCreate, props.data?.id || 0);
-      console.log("jaime lechiga",data)
       if (data) {
         props.id(0);
       } else {

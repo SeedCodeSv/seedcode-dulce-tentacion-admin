@@ -218,7 +218,6 @@ function ListEmployee({ actions }: Props) {
     complement: "",
     branchId: 0,
   });
-  console.log("data de enmepleado a catualizar", dataUpdate)
 
   return (
     <>

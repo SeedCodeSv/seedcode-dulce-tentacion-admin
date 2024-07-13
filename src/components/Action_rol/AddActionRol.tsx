@@ -119,6 +119,7 @@ const PermissionTable: React.FC = () => {
   };
   const { OnGetActionsByRole } = useActionsRolStore();
   const { user } = useAuthStore();
+  const navigate = useNavigate();
  
   const handleSubmit = async () => {
     if (selectedCustomer === 0) {
@@ -145,7 +146,7 @@ const PermissionTable: React.FC = () => {
         actionIds,
         roleId: selectedCustomer,
       };
-      const navigate = useNavigate();
+      
       navigate('/actionRol');
       await create_role_action(payload);
       OnGetActionsByRole(user?.roleId as number);
@@ -156,11 +157,11 @@ const PermissionTable: React.FC = () => {
   };
   const { theme } = useContext(ThemeContext);
   const renderSection = (view: { id: number; name: string }) => (
-    <div className="w-full sm:w-1/3 p-2" key={view.id}>
-      <div className="mb-4 bg-teal-500 shadow-lg rounded-lg overflow-hidden">
+    <div className="w-full p-2 sm:w-1/3" key={view.id}>
+      <div className="mb-4 overflow-hidden bg-teal-500 rounded-lg shadow-lg">
         <div
           style={{ backgroundColor: theme.colors.dark, color: theme.colors.primary }}
-          className="px-4 py-3 bg-teal-700 text-white flex justify-between items-center"
+          className="flex items-center justify-between px-4 py-3 text-white bg-teal-700"
         >
           <p className="font-semibold">{view.name}</p>
           <div className="flex items-center justify-center">
@@ -169,7 +170,7 @@ const PermissionTable: React.FC = () => {
               type="checkbox"
               checked={selectedActions[view.id]?.length === permissions.length}
               onChange={() => handleSelectAllActions(view.id)}
-              className="form-checkbox h-5 w-5 text-teal-400 bg-teal-700 border-teal-600 rounded ml-2 focus:ring-teal-500"
+              className="w-5 h-5 ml-2 text-teal-400 bg-teal-700 border-teal-600 rounded form-checkbox focus:ring-teal-500"
             />
           </div>
         </div>
@@ -188,14 +189,14 @@ const PermissionTable: React.FC = () => {
                     handleSelectAction(view.id, permission)
                   }
                 >
-                  <div className="flex items-center w-full justify-center">
+                  <div className="flex items-center justify-center w-full">
                     <input
                       type="checkbox"
                       checked={selectedActions[view.id]?.includes(permission)}
                       onChange={() => handleSelectAction(view.id, permission)}
-                      className="form-checkbox h-5 w-5 text-teal-400 bg-teal-700 border-teal-600 rounded focus:ring-teal-500"
+                      className="w-5 h-5 text-teal-400 bg-teal-700 border-teal-600 rounded form-checkbox focus:ring-teal-500"
                     />
-                    <span className="text-white flex ml-4 w-12">{permission}</span>
+                    <span className="flex w-12 ml-4 text-white">{permission}</span>
                   </div>
                 </div>
               ))}
@@ -210,7 +211,7 @@ const PermissionTable: React.FC = () => {
     <Layout title="Acciones por rol">
       <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
         <div className="w-full h-full p-5 overflow-y-auto bg-white shadow-xl rounded-xl dark:bg-gray-900">
-          <div className="flex flex-col lg:flex-row justify-between items-center w-full gap-5 mb-5 lg:mb-10 lg:gap-0">
+          <div className="flex flex-col items-center justify-between w-full gap-5 mb-5 lg:flex-row lg:mb-10 lg:gap-0">
             <div className="flex justify-start w-full lg:w-auto">
               <ArrowLeft
                 onClick={() => navigate('/actionRol')}
@@ -219,7 +220,7 @@ const PermissionTable: React.FC = () => {
             </div>
 
             <div className="flex justify-center w-full lg:w-auto">
-              <h1 className="dark:text-white text-center">Agregar Acciones a rol</h1>
+              <h1 className="text-center dark:text-white">Agregar Acciones a rol</h1>
             </div>
 
             <div className="flex justify-end w-full lg:w-auto">
@@ -255,10 +256,10 @@ const PermissionTable: React.FC = () => {
               <React.Fragment key={view.id}>{renderSection(view)}</React.Fragment>
             ))}
           </div>
-          <div className="mt-4 flex justify-end">
+          <div className="flex justify-end mt-4">
             <button
               onClick={handleSubmit}
-              className="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition disabled:opacity-50"
+              className="px-6 py-2 text-white transition bg-blue-600 rounded-full hover:bg-blue-700 disabled:opacity-50"
             >
               Enviar
             </button>
