@@ -116,7 +116,7 @@ function AddPromotionsByProducts() {
 
   return (
     <>
-      <div className="flex flex-col justify-center items-center w-full">
+      <div className="flex flex-col items-center justify-center w-full">
         <Formik
           validationSchema={validationSchema}
           initialValues={{
@@ -141,14 +141,14 @@ function AddPromotionsByProducts() {
         >
           {({ values, errors, touched, handleBlur, handleChange, handleSubmit, setFieldValue }) => (
             <>
-              <div className=" flex justify-end absolute  right-20 top-8">
+              <div className="absolute flex justify-end  right-20 top-8">
                 <Button onClick={vaul.onOpen} style={global_styles().thirdStyle}>
                   Agregar Producto
                 </Button>
               </div>
 
               <div className="grid grid-cols-2 gap-5 ">
-                <div className="grid grid-cols-1 gap-5 w-full">
+                <div className="grid w-full grid-cols-1 gap-5">
                   <div>
                     <Input
                       name="name"
@@ -221,7 +221,7 @@ function AddPromotionsByProducts() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-3 gap-2 w-full ">
+                  <div className="grid w-full grid-cols-3 gap-2 ">
                     <div>
                       <Input
                         label="Cantidad Minima"
@@ -430,10 +430,10 @@ function AddPromotionsByProducts() {
 
                 <div className="grid grid-cols-1 ">
                   {/* Seleccionar dia */}
-                  <h1 className="text-sm  font-semibold dark:text-white">
+                  <h1 className="text-sm font-semibold dark:text-white">
                     Selecciona los días de la semana
                   </h1>
-                  <div className=" grid grid-cols-6 items-start ">
+                  <div className="grid items-start grid-cols-6 ">
                     <WeekSelector
                       startDate={startDate}
                       endDate={endDate}
@@ -466,7 +466,7 @@ function AddPromotionsByProducts() {
                 <div className="mt-32">
                   <Button
                     onClick={() => handleSubmit()}
-                    className="hidden font-semibold md:flex w-full h-full py-2"
+                    className="hidden w-full h-full py-2 font-semibold md:flex"
                     style={{
                       backgroundColor: theme.colors.third,
                       color: theme.colors.primary,
@@ -488,7 +488,7 @@ function AddPromotionsByProducts() {
         size="w-screen h-screen pb-20 md:pb-0 p-5 overflow-y-auto xl:w-[80vw]"
       >
         <div className="w-full bg-white dark:bg-gray-800">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-4">
             <div>
               <Select
                 label="Sucursal"
@@ -557,7 +557,7 @@ function AddPromotionsByProducts() {
               />
             </div>
           </div>
-          {/* <div className="w-full flex justify-end py-5">
+          {/* <div className="flex justify-end w-full py-5">
             <Button
               // onClick={vaul.onClose}
               style={global_styles().secondaryStyle}
@@ -565,24 +565,24 @@ function AddPromotionsByProducts() {
               Aceptar
             </Button>
           </div> */}
-          <div className="w-full mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid w-full grid-cols-1 gap-5 mt-4 md:grid-cols-2 lg:grid-cols-3">
             {branch_product_order.map((branch_product) => (
               <div
                 key={branch_product.id}
-                className="shadow border p-4 rounded-lg dark:border-gray-500"
+                className="p-4 border rounded-lg shadow dark:border-gray-500"
               >
                 <p className="font-semibold dark:text-white">{branch_product.product.name}</p>
                 <p className="dark:text-white">Stock: {branch_product.stock}</p>
-                <p className="mt-2 flex gap-3 dark:text-white">
+                <p className="flex gap-3 mt-2 dark:text-white">
                   <Truck /> {branch_product.supplier.nombre}
                 </p>
-                <p className="mt-2 flex gap-3 dark:text-white">
-                  <ScrollText /> {branch_product.product.categoryProduct.name}
+                <p className="flex gap-3 mt-2 dark:text-white">
+                  <ScrollText /> {branch_product.product.subCategory.name}
                 </p>
-                <p className="mt-2 flex gap-3 dark:text-white">
+                <p className="flex gap-3 mt-2 dark:text-white">
                   <DollarSign /> ${branch_product.price}
                 </p>
-                <p className="mt-2 flex gap-3 dark:text-white">
+                <p className="flex gap-3 mt-2 dark:text-white">
                   <ScanBarcode /> {branch_product.product.code}
                 </p>
 

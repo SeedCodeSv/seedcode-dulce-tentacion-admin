@@ -153,7 +153,6 @@ const PermissionTable: React.FC = () => {
         actionIds,
         roleId: selectedCustomer,
       };
-
       await create_role_action(payload);
       OnGetActionsByRole(user?.roleId as number);
       toast.success('Acciones asignadas correctamente');
@@ -170,7 +169,7 @@ const PermissionTable: React.FC = () => {
       <div className="mb-4 dark:bg-gray-900 bg-white shadow-lg border border-gray-300 rounded-lg overflow-hidden">
         <div
           style={{ backgroundColor: theme.colors.dark, color: theme.colors.primary }}
-          className="px-4 py-3 bg-teal-700 text-white flex justify-between items-center"
+          className="flex items-center justify-between px-4 py-3 text-white bg-teal-700"
         >
           <p className="font-semibold">{view.name}</p>
           <div className="flex items-center justify-center">
@@ -182,7 +181,7 @@ const PermissionTable: React.FC = () => {
                 (view.name === 'Usuarios' ? permissions.length + 1 : permissions.length)
               }
               onChange={() => handleSelectAllActions(view.id)}
-              className="form-checkbox h-5 w-5 text-teal-400 bg-teal-700 border-teal-600 rounded ml-2 focus:ring-teal-500"
+              className="w-5 h-5 ml-2 text-teal-400 bg-teal-700 border-teal-600 rounded form-checkbox focus:ring-teal-500"
             />
           </div>
         </div>

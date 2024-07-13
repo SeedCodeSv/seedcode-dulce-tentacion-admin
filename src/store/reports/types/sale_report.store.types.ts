@@ -1,11 +1,18 @@
-import { IDataExpense, IDataSalesGrafic } from '../../../types/reports/branch_product.reports';
+import {
+  IDataExpense,
+  IDataSalesGrafic,
+} from "../../../types/reports/branch_product.reports";
 import {
   ProductoMostSelledTable,
   SaleBranchMonth,
   SaleMonthYear,
-  SaleTable
-} from '../../../types/reports/sales.reports.types';
-import { IGetSalesByBranchPointSale, IGetSalesByPeriod, SalesChartGraphPeriod } from '../../../types/reports/sales_by_period.report';
+  SaleTable,
+} from "../../../types/reports/sales.reports.types";
+import {
+  IGetSalesByBranchPointSale,
+  IGetSalesByPeriod,
+  SalesChartGraphPeriod,
+} from "../../../types/reports/sales_by_period.report";
 
 export interface ISalesReportStore {
   products_most_selled: ProductoMostSelledTable[];
@@ -24,13 +31,34 @@ export interface ISalesReportStore {
   sales_by_point_of_sale_branch: IGetSalesByBranchPointSale | undefined;
   sales_count: number;
   getSalesCount: () => void;
-  getSalePointOfSaleByBranch: (id: number, startDate: string, endDate: string) => void;
+  getSalePointOfSaleByBranch: (
+    id: number,
+    startDate: string,
+    endDate: string
+  ) => void;
   getSalesTableDay: (id: number) => void;
-  getSalesByPeriod: (page: number, startDate: string, endDate: string,paymentType ? : string) => void;
+  getSalesByPeriod: (
+    page: number,
+    limit: number,
+    startDate: string,
+    endDate: string,
+    paymentType?: string,
+    branch?: string,
+    correlative?: string,
+
+  ) => void;
   getSalesByPeriodChart: (startDate: string, endDate: string) => void;
   getSalesByDay: (id: number) => void;
-  getSalesExpenseByDate: (id: number, startDate: string, endDate: string) => void;
-  getSalesByTransmitter: (id: number, startDate: string, endDate: string) => void;
+  getSalesExpenseByDate: (
+    id: number,
+    startDate: string,
+    endDate: string
+  ) => void;
+  getSalesByTransmitter: (
+    id: number,
+    startDate: string,
+    endDate: string
+  ) => void;
   getProductMostSelledTable: (
     id: number,
     startDate: string,

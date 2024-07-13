@@ -208,6 +208,7 @@ function ListEmployee({ actions }: Props) {
     dateOfExit: "",
     responsibleContact: "",
     statusId: 0,
+    addressId: 0,
     studyLevelId: 0,
     contractTypeId: 0,
     department: "",

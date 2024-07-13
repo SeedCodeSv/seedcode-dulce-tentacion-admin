@@ -55,6 +55,7 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
     responsibleContact: props.data?.responsibleContact || '',
     statusId: props.data?.employeeStatusId || 0,
     studyLevelId: props.data?.studyLevelId || 0,
+    addressId: props.data?.addressId || 0,
     contractTypeId: props.data?.contractTypeId || 0,
     department: props.data?.address.departamento || '',
     departmentName: props.data?.address.nombreDepartamento || '',

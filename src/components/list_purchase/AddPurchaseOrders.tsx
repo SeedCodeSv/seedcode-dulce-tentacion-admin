@@ -364,8 +364,13 @@ function AddPurchaseOrders(props: Props) {
                 <p className="mt-2 flex gap-3 dark:text-white">
                   <Truck /> {branch_product.supplier.nombre}
                 </p>
-                <p className="mt-2 flex gap-3 dark:text-white">
+                {/* <p className="mt-2 flex gap-3 dark:text-white">
                   <ScrollText /> {branch_product.product.categoryProduct.name}
+                </p> */}
+
+                <p className="mt-2 flex gap-3 dark:text-white">
+                  <ScrollText /> {branch_product.product.subCategory.categoryProduct.name}
+                
                 </p>
                 <p className="mt-2 flex gap-3 dark:text-white">
                   <DollarSign /> ${branch_product.price}

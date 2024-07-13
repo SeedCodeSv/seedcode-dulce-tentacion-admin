@@ -164,7 +164,7 @@ function UpdatePromotionsByProduct(props: Props) {
   }, [branch, selectedBrancheId]);
   return (
     <>
-      <div className="flex flex-col justify-center items-center  p-8">
+      <div className="flex flex-col items-center justify-center p-8">
         <Formik
           validationSchema={validationSchema}
           initialValues={{
@@ -190,7 +190,7 @@ function UpdatePromotionsByProduct(props: Props) {
           {({ values, errors, touched, handleBlur, handleChange, handleSubmit, setFieldValue }) => (
             <>
               <form className="w-full max-w-5xl mt-4" onSubmit={handleSubmit}>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-5 w-50">
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 w-50">
                   {/* COLUMNA 1 */}
                   <div>
                     <Input
@@ -331,11 +331,11 @@ function UpdatePromotionsByProduct(props: Props) {
                       )}
                     </div>
                     <div>
-                      <h1 className="text-sm mb-3 font-semibold mt-4 dark:text-white">
+                      <h1 className="mt-4 mb-3 text-sm font-semibold dark:text-white">
                         Selecciona los días de la semana
                       </h1>
                       {/* Seleccionar dia */}
-                      <div className=" grid grid-cols-6 items-start ">
+                      <div className="grid items-start grid-cols-6 ">
                         <WeekSelector
                           startDate={startDate as string}
                           endDate={endDate as string}
@@ -425,11 +425,11 @@ function UpdatePromotionsByProduct(props: Props) {
                     </div>
                   </div>
                 </div>
-                <div className="mt-4 flex flex-row justify-center">
+                <div className="flex flex-row justify-center mt-4">
                   <Button
                     onClick={() => handleSubmit()}
                     type="submit"
-                    className="hidden font-semibold md:flex w-44 h-full py-2"
+                    className="hidden h-full py-2 font-semibold md:flex w-44"
                     style={{
                       backgroundColor: theme.colors.third,
                       color: theme.colors.primary,
@@ -450,7 +450,7 @@ function UpdatePromotionsByProduct(props: Props) {
         size="w-screen h-screen pb-20 md:pb-0 p-5 overflow-y-auto xl:w-[80vw]"
       >
         <div className="w-full bg-white dark:bg-gray-800">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
             <div>
               <Select
                 label="Sucursal"
@@ -491,7 +491,7 @@ function UpdatePromotionsByProduct(props: Props) {
               />
             </div>
           </div>
-          <div className="w-full flex justify-end py-5">
+          <div className="flex justify-end w-full py-5">
             <Button
               onClick={() => handleAccept()}
               style={global_styles().secondaryStyle}
@@ -500,21 +500,21 @@ function UpdatePromotionsByProduct(props: Props) {
               Aceptar
             </Button>
           </div>
-          <div className="w-full mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid w-full grid-cols-1 gap-5 mt-4 md:grid-cols-2 lg:grid-cols-3">
             {branch_product_order.map((branch_product) => (
               <div
                 key={branch_product.id}
-                className="shadow border p-4 rounded-lg dark:border-gray-500"
+                className="p-4 border rounded-lg shadow dark:border-gray-500"
               >
                 <p className="font-semibold dark:text-white">{branch_product.product.name}</p>
                 <p className="dark:text-white">Stock: {branch_product.stock}</p>
-                <p className="mt-2 flex gap-3 dark:text-white">
+                <p className="flex gap-3 mt-2 dark:text-white">
                   <Truck /> {branch_product.supplier.nombre}
                 </p>
-                <p className="mt-2 flex gap-3 dark:text-white">
-                  <ScrollText /> {branch_product.product.categoryProduct.name}
+                <p className="flex gap-3 mt-2 dark:text-white">
+                  <ScrollText /> {branch_product.product.subCategory.name}
                 </p>
-                <p className="mt-2 flex gap-3 dark:text-white">
+                <p className="flex gap-3 mt-2 dark:text-white">
                   <DollarSign /> ${branch_product.price}
                 </p>
                 <div className="flex justify-start">

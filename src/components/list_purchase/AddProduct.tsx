@@ -1,28 +1,22 @@
-import { useEffect } from "react";
-import HeadlessModal from "../global/HeadlessModal";
-import {
-  Button,
-  Input
-} from "@nextui-org/react";
-import { useBranchProductStore } from "../../store/branch_product.store";
-import { useSupplierStore } from "../../store/supplier.store";
-import { useBranchesStore } from "../../store/branches.store";
-import { global_styles } from "../../styles/global.styles";
-import { DollarSign, ScrollText, Search, Truck } from "lucide-react";
+import { useEffect } from 'react';
+import HeadlessModal from '../global/HeadlessModal';
+import { Button, Input } from '@nextui-org/react';
+import { useBranchProductStore } from '../../store/branch_product.store';
+import { useSupplierStore } from '../../store/supplier.store';
+import { useBranchesStore } from '../../store/branches.store';
+import { global_styles } from '../../styles/global.styles';
+import { DollarSign, ScrollText, Search, Truck } from 'lucide-react';
 // import { usePurchaseOrdersStore } from "../../store/purchase_orders.store";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
   supplierName: string;
-  branchName: string
+  branchName: string;
 }
 
 function AddProduct({ isOpen, onClose, supplierName, branchName }: Props) {
-  const {
-    getBranchProductOrders,
-    branch_product_order
-  } = useBranchProductStore();
+  const { getBranchProductOrders, branch_product_order } = useBranchProductStore();
 
   // const {
   //   addProductToOrder
@@ -38,7 +32,7 @@ function AddProduct({ isOpen, onClose, supplierName, branchName }: Props) {
   }, []);
 
   useEffect(() => {
-    getBranchProductOrders(branchName, supplierName, "", "");
+    getBranchProductOrders(branchName, supplierName, '', '');
   }, [branchName, supplierName]);
 
   return (
@@ -78,7 +72,7 @@ function AddProduct({ isOpen, onClose, supplierName, branchName }: Props) {
                 <Truck /> {branch_product.supplier.nombre}
               </p>
               <p className="mt-2 flex gap-3 dark:text-white">
-                <ScrollText /> {branch_product.product.categoryProduct.name}
+                <ScrollText /> {branch_product.product.subCategory.categoryProduct.name}
               </p>
               <p className="mt-2 flex gap-3 dark:text-white">
                 <DollarSign /> ${branch_product.price}
@@ -87,7 +81,7 @@ function AddProduct({ isOpen, onClose, supplierName, branchName }: Props) {
               <Button
                 className="px-10 mt-3"
                 style={global_styles().thirdStyle}
-              // onPress={() => addProductToOrder(branch_product)}
+                // onPress={() => addProductToOrder(branch_product)}
               >
                 Agregar
               </Button>

@@ -54,11 +54,11 @@ const gridItem = (product: BranchProduct, layout: 'grid' | 'list') => {
           key={product.id}
         >
           <p className="font-semibold">{product.product.name}</p>
-          <p className="text-sm mt-2 text-green-700 font-semibold">
+          <p className="mt-2 text-sm font-semibold text-green-700">
             Precio: {formatCurrency(Number(product.price))}{' '}
           </p>
-          <p className="text-sm mt-2 text-blue-800 font-semibold">
-            Categoría:{product.product.categoryProduct.name}
+          <p className="mt-2 text-sm font-semibold text-blue-800">
+            Categoría:{product.product.subCategory.name}
           </p>
           <div className="mt-3">
             <Button
@@ -84,15 +84,14 @@ const ListItem = ({ product }: { product: BranchProduct }) => {
   const { addProductCart } = useBranchProductStore();
   return (
     <>
-      <div className="flex w-screen sm:w-full col-span-1 p-5 border-b shadow md:col-span-2 lg:col-span-3 xl:col-span-4 gap-10">
-        <div className="flex flex-col 
-        justify-center">
+      <div className="flex w-screen col-span-1 gap-10 p-5 border-b shadow sm:w-full md:col-span-2 lg:col-span-3 xl:col-span-4">
+        <div className="flex flex-col justify-center">
           <p className="font-semibold">{product.product.name}</p>
-          <p className="text-sm mt-2 text-green-700 font-semibold">
+          <p className="mt-2 text-sm font-semibold text-green-700">
             Precio: {formatCurrency(Number(product.price))}{' '}
           </p>
-          <p className="text-sm mt-2 text-blue-800 font-semibold">
-            Categoría:{product.product.categoryProduct.name}
+          <p className="mt-2 text-sm font-semibold text-blue-800">
+            Categoría:{product.product.subCategory.name}
           </p>
         </div>
         <div className="flex flex-col items-end justify-between w-full">

@@ -22,6 +22,7 @@ import { Supplier } from '../../types/supplier.types';
 import { useSubCategoriesStore } from '../../store/sub-categories.store';
 import { verify_code_product } from '../../services/products.service';
 import { toast } from 'sonner';
+import './style.css';
 interface Props {
   product?: Product;
   onCloseModal: () => void;
@@ -191,7 +192,7 @@ function AddProducts(props: Props) {
           <>
             <div className="w-full">
               <div className="grid w-full grid-cols-1 gap-5 mt-2 md:grid-cols-2">
-                <div className='pt-5 pb-2'>
+                <div className="pt-5 pb-2">
                   <Input
                     label="Nombre"
                     labelPlacement="outside"
@@ -209,12 +210,13 @@ function AddProducts(props: Props) {
                     <span className="text-sm font-semibold text-red-500">{errors.name}</span>
                   )}
                 </div>
-                <div className="grid grid-cols-2 gap-5">
-                  <div>
+                <div className="grid grid-cols-2  gap-5">
+                  <div className="font-semibold">
                     <Autocomplete
                       variant="bordered"
                       label="Tipo de item"
                       labelPlacement="outside"
+                      classNames={{ base: '!font-semibold' }}
                       className="dark:text-white"
                       placeholder={
                         props.product?.tipoDeItem ??

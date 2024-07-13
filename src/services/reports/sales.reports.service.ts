@@ -42,7 +42,7 @@ export const get_products_most_selled_by_transmitter_table = (
 ) => {
   return axios.get<IGetMostProductSelled>(
     API_URL +
-    `/reports/most-product-transmitter-selled-table/${id}?startDate=${startDate}&endDate=${endDate}&branchId=${branchId}`
+      `/reports/most-product-transmitter-selled-table/${id}?startDate=${startDate}&endDate=${endDate}&branchId=${branchId}`
   );
 };
 
@@ -53,7 +53,7 @@ export const get_expense_by_dates_transmitter = (
 ) => {
   return axios.get(
     API_URL +
-    `/reports/expenses-by-dates-transmitter/${id}?startDate=${startDate}&endDate=${endDate}`
+      `/reports/expenses-by-dates-transmitter/${id}?startDate=${startDate}&endDate=${endDate}`
   );
 };
 
@@ -70,7 +70,7 @@ export const get_sales_by_branch_and_current_month_table = (
 ) => {
   return axios.get<IResponseDataSalesGrafic>(
     API_URL +
-    `/reports/sales-by-transmitter/${id}?startDate=${startDate}&endDate=${endDate}`
+      `/reports/sales-by-transmitter/${id}?startDate=${startDate}&endDate=${endDate}`
   );
 };
 
@@ -81,7 +81,7 @@ export const get_expenses_by_day = (
 ) => {
   return axios.get<IResponseDataExpenses>(
     API_URL +
-    `/reports/expenses-by-dates-transmitter/${id}?startDate=${startDate}&endDate=${endDate}`
+      `/reports/expenses-by-dates-transmitter/${id}?startDate=${startDate}&endDate=${endDate}`
   );
 };
 
@@ -92,19 +92,22 @@ export const get_products_most_selled_by_transmitter_grafic = (
 ) => {
   return axios.get<IResponseDataProductGrafic>(
     API_URL +
-    `/reports/most-product-transmitter-selled/${id}?startDate=${startDate}&endDate=${endDate}`
+      `/reports/most-product-transmitter-selled/${id}?startDate=${startDate}&endDate=${endDate}`
   );
 };
 
 export const get_sales_by_period = (
   page: number,
+  limit: number,
   startDate: string,
   endDate: string,
-  paymentType: string = ""
+  paymentType: string = "",
+  branch: string = "",
+  correlative: string = ""
 ) => {
   return axios.get<IGetSalesByPeriod>(
     API_URL +
-    `/sales/get-sales-for-dates?page=${page}&startDate=${startDate}&endDate=${endDate}&paymentType=${paymentType}`
+      `/sales/get-sales-for-dates?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}&paymentType=${paymentType}&branch=${branch}&correlative=${correlative}`
   );
 };
 
@@ -114,7 +117,7 @@ export const get_sales_by_period_chart = (
 ) => {
   return axios.get<SalesChartGraphPeriod>(
     API_URL +
-    `/sales/graphic/by-branches?startDate=${startDate}&endDate=${endDate}`
+      `/sales/graphic/by-branches?startDate=${startDate}&endDate=${endDate}`
   );
 };
 
@@ -125,10 +128,10 @@ export const get_sales_point_of_sale_by_branch = (
 ) => {
   return axios.get<IGetSalesByBranchPointSale>(
     API_URL +
-    `/sales/graphic-correlations-for-dates/${id}?startDate=${startDate}&endDate=${endDate}`
+      `/sales/graphic-correlations-for-dates/${id}?startDate=${startDate}&endDate=${endDate}`
   );
 };
 
 export const get_sales_count = () => {
-  return axios.get<IGetSalesCount>(API_URL + "/reports/count-sales")
-}
+  return axios.get<IGetSalesCount>(API_URL + "/reports/count-sales");
+};

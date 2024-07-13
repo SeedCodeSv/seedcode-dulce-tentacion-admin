@@ -74,6 +74,7 @@ function AddEmployee() {
     municipalityName: "",
     complement: "",
     branchId: 0,
+    addressId: 0,
   });
   const createEmployee = async () => {
     try {
