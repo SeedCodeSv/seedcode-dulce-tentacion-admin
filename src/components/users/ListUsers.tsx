@@ -369,18 +369,20 @@ function ListUsers({ actions }: Props) {
                         <EditIcon style={{ color: theme.colors.primary }} size={20} />
                       </Button>
                     )}
-                    <Button
-                      onClick={() => {
-                        setSelectedId(item.id);
-                        modalChangePassword.onOpen();
-                      }}
-                      isIconOnly
-                      style={{
-                        backgroundColor: theme.colors.warning,
-                      }}
-                    >
-                      <Key color={theme.colors.primary} size={20} />
-                    </Button>
+                    {actions.includes('Cambiar Contraseña') && (
+                      <Button
+                        onClick={() => {
+                          setSelectedId(item.id);
+                          modalChangePassword.onOpen();
+                        }}
+                        isIconOnly
+                        style={{
+                          backgroundColor: theme.colors.warning,
+                        }}
+                      >
+                        <Key color={theme.colors.primary} size={20} />
+                      </Button>
+                    )}
                     {actions.includes('Eliminar') && <DeletePopUp user={item} />}
                   </div>
                 )}

@@ -1,24 +1,19 @@
-import { useContext, useMemo } from "react";
+import {  useEffect } from "react";
 import Layout from "../layout/Layout";
-import { ActionsContext } from "../hooks/useActions";
-import { filterActions } from "../utils/filters";
 import ListPurchasesOrders from "../components/list_purchase/ListPurchasesOrders";
+import { useViewsStore } from '@/store/views.store';
 
 function PurchaseOrders() {
-  const { roleActions } = useContext(ActionsContext);
+  const { OnGetViewasAction, viewasAction } = useViewsStore();
 
-  const actions_role_view = useMemo(() => {
-    if (roleActions) {
-      const actions = filterActions("Productos", roleActions)?.actions.map(
-        (re) => re.name
-      );
-      return actions;
-    }
-    return undefined;
-  }, [roleActions]);
+  const purchaseOrdersView = viewasAction.find((view) => view.view.name === 'Productos');
+  // const actions = purchaseOrdersView?.actions?.name || [];
+    useEffect(() => {
+      OnGetViewasAction();
+    }, []);
   return (
     <Layout title="Ordenes de Compra">
-      {actions_role_view ? (
+      {purchaseOrdersView ? (
         <ListPurchasesOrders />
       ) : (
         <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">

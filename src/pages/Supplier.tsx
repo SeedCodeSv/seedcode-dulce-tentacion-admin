@@ -1,22 +1,21 @@
 import Layout from "../layout/Layout";
 import ListSuppliers from "../components/supplier/ListSuppliers";
-import { useContext, useMemo } from "react";
-import { ActionsContext } from "@/hooks/useActions";
-import { filterActions } from "@/utils/filters";
+import {  useEffect } from "react";
+
+import { useViewsStore } from '@/store/views.store';
 
 function Supplier() {
-  const { roleActions } = useContext(ActionsContext);
-  const actions_role_view = useMemo(() => {
-    if (roleActions) {
-      const actions = filterActions('Proveedores', roleActions)?.actions.map((re) => re.name);
-      return actions;
-    }
-    return undefined;
-  }, [roleActions]);
+  const { OnGetViewasAction, viewasAction } = useViewsStore();
+   
+  const supplierView = viewasAction.find((view) => view.view.name === 'Proveedores');
+  // const actions = supplierView?.actions?.name || [];
+    useEffect(() => {
+      OnGetViewasAction();
+    }, []);
   return (
     <Layout title="Proveedores">
-      {actions_role_view ? (
-          <ListSuppliers />
+      {supplierView ? (
+        <ListSuppliers />
       ) : (
         <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
           <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent flex justify-center items-center">

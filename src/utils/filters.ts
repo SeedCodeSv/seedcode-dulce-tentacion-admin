@@ -33,11 +33,11 @@ export const filterActions = (name: string, actions: RoleViewAction) => {
 export const groupBySupplier = (items: IBranchProductOrderQuantity[]): SupplierProducts[] => {
   const supplierMap = new Map<number, SupplierProducts>();
 
-  items.forEach(item => {
+  items.forEach((item) => {
     if (!supplierMap.has(item.supplierId)) {
       supplierMap.set(item.supplierId, {
         supplier: item.supplier,
-        products: []
+        products: [],
       });
     }
     supplierMap.get(item.supplierId)!.products.push(item);
@@ -52,16 +52,17 @@ export function calcularPorcentajeDescuento(total: number, descuento: number): n
   return porcentajeDescuento;
 }
 
-export function calculateDiscountedTotal(price: number, discountPercentage: number): { discountedTotal: number, discountAmount: number } {
+export function calculateDiscountedTotal(
+  price: number,
+  discountPercentage: number
+): { discountedTotal: number; discountAmount: number } {
   const discountAmount = (price * discountPercentage) / 100;
   const discountedTotal = price - discountAmount;
   return { discountedTotal, discountAmount };
 }
 
 export function getRandomColorsArray(): string[] {
-  const colors = [
-    "#14b8a6", "#06b6d4", "#0ea5e9", "#3b82f6", "#6366f1", "#8b5cf6",
-  ];
+  const colors = ['#14b8a6', '#06b6d4', '#0ea5e9', '#3b82f6', '#6366f1', '#8b5cf6'];
 
-  return colors
+  return colors;
 }

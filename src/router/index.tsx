@@ -1,6 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
 import Home from '../pages/Home';
-import Tables from '../pages/Tables';
+// import Tables from '../pages/Tables';
 import ProductsCategories from '../pages/ProductsCategories';
 import Users from '../pages/Users';
 import Employees from '../pages/Employees';
@@ -37,7 +37,6 @@ import VentasPorPeriodo from '../pages/reports/VentasPorPeriodo';
 import StudyLevel from '@/pages/StudyLevel';
 import AddActionRol from '@/components/Action_rol/AddActionRol';
 import AddProduct from '@/pages/AddProduct';
-
 /* eslint-disable react-hooks/rules-of-hooks */
 export const router = () => {
   const { role_view_action, OnGetActionsByRole } = useActionsRolStore();
@@ -56,20 +55,25 @@ export const router = () => {
       element: <Home />,
     },
     {
+      path: '/configuration',
+      element: <Configuration />,
+    },
+    {
+      path: '/actionRol',
+      element: views && views.includes('Permisos') && <ActionRol />,
+    },
+    {
       path: '/homeSeller',
       element: views && views.includes('Inicio de ventas') && <HomeSeller />,
     },
-    {
-      path: '/tables',
-      element: <Tables />,
-    },
+
     {
       path: '/categories',
       element: views && views.includes('Categorias') && <ProductsCategories />,
     },
     {
       path: '/subCategories',
-      element: views && views.includes('Categorias') && <SubCategories />,
+      element: views && views.includes('Sub Categorias') && <SubCategories />,
     },
     {
       path: '/users',
@@ -81,7 +85,7 @@ export const router = () => {
     },
     {
       path: '/charges',
-      element: views && views.includes('Empleados') && <Charges />,
+      element: views && views.includes('Cargos de Empleados') && <Charges />,
     },
     {
       path: '/clients',
@@ -101,16 +105,13 @@ export const router = () => {
     },
     {
       path: '/expensesCategories',
-      element: views && views.includes('Categoria de gastos') && <ExpensesCategories />,
+      element: views && views.includes('Categoria de Gastos') && <ExpensesCategories />,
     },
     {
       path: '/expenses',
       element: views && views.includes('Gastos') && <Expenses />,
     },
-    {
-      path: '/actionRol',
-      element: <ActionRol />,
-    },
+
     {
       path: '/modules',
       element: views && views.includes('Modulos') && <Views />,
@@ -119,10 +120,6 @@ export const router = () => {
       path: '/newSales',
       element: views && views.includes('Ventas') && <NewSales />,
     },
-    // {
-    //   path: '/reporters',
-    //   element: views && views.includes('Reportes') && <Reporters />,
-    // },
     {
       path: '/most-product-transmitter-selled',
       element: views && views.includes('Reportes') && <MostProductTransmitterSelledPage />,
@@ -139,10 +136,7 @@ export const router = () => {
       path: '/expenses-by-branch',
       element: views && views.includes('Reportes') && <ReportExpensesByBranchPage />,
     },
-    {
-      path: '/configuration',
-      element: <Configuration />,
-    },
+
     {
       path: 'sales-reports',
       element: views && views.includes('Reporte de ventas') && <SalesReportContigencePage />,
@@ -153,7 +147,7 @@ export const router = () => {
     },
     {
       path: '/purchase-orders',
-      element: views && views.includes('Ordenes de compra') && <PurchaseOrders />,
+      element: views && views.includes('Ordenes de Compra') && <PurchaseOrders />,
     },
     {
       path: '/discounts',
@@ -161,35 +155,31 @@ export const router = () => {
     },
     {
       path: '/statusEmployee',
-      element: views && views.includes('Estado del empleado') && <StatusEmployee />,
+      element: views && views.includes('Estados del Empleado') && <StatusEmployee />,
     },
     {
       path: '/contractTypes',
-      element: views && views.includes('Tipo de contratacion') && <ContratType />,
+      element: views && views.includes('Tipo de Contratacion') && <ContratType />,
     },
     {
       path: '/studyLevel',
-      element: views && views.includes('Nivel de estudio') && <StudyLevel />,
+      element: views && views.includes('Nivel de Estudio') && <StudyLevel />,
     },
     {
       path: '/AddPromotions',
-      element:  <AddPromotions />,
+      element : views && views.includes('Descuentos') && <AddPromotions />,
     },
     {
       path: '/AddEmployee',
       element: views && views.includes('Empleados') && <AddEmployee />,
     },
-    // {
-    //   path: '/UpdateEmployee/:id',
-    //   element: <UpdateEmployee />,
-    // },
     {
-      path: '/AddActionRol',
-      element: <AddActionRol />,
+      path:  '/AddActionRol',
+      element: views && views.includes('Permisos') && <AddActionRol />,
     },
     {
       path: '/reports/sales-by-period',
-      element: <VentasPorPeriodo />,
+      element : views && views.includes('Reportes') && <VentasPorPeriodo />,
     },
     {
       path: '*',

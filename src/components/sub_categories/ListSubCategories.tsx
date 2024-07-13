@@ -58,6 +58,7 @@ function ListSubCategory({ actions }: PProps) {
 
   useEffect(() => {
     getSubCategoriesPaginated(1, limit, search);
+    
   }, [limit, active]);
 
   const handleSearch = (name: string | undefined) => {

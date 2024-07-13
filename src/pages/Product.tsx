@@ -1,24 +1,22 @@
 import Layout from '../layout/Layout';
 import ListProducts from '../components/products/ListProducts';
-import { useContext, useMemo } from 'react';
-import { ActionsContext } from '../hooks/useActions';
-import { filterActions } from '../utils/filters';
+import {  useEffect } from 'react';
+
+import { useViewsStore } from '@/store/views.store';
 
 function Employees() {
-  const { roleActions } = useContext(ActionsContext);
+  const { OnGetViewasAction, viewasAction } = useViewsStore();
 
-  const actions_role_view = useMemo(() => {
-    if (roleActions) {
-      const actions = filterActions('Productos', roleActions)?.actions.map((re) => re.name);
-      return actions;
-    }
-    return undefined;
-  }, [roleActions]);
+  const productsView = viewasAction.find((view) => view.view.name === 'Productos');
+  const actions = productsView?.actions?.name || [];
+    useEffect(() => {
+      OnGetViewasAction();
+    }, []);
 
   return (
     <Layout title="PRODUCTOS">
-      {actions_role_view ? (
-        <ListProducts actions={actions_role_view} />
+      {productsView ? (
+        <ListProducts actions={actions} />
       ) : (
         <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
           <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent flex justify-center items-center">

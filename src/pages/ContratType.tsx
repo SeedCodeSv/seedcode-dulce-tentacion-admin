@@ -1,23 +1,21 @@
 import Layout from '../layout/Layout';
-import { useContext, useMemo } from 'react';
-import { ActionsContext } from '../hooks/useActions';
-import { filterActions } from '../utils/filters';
+import { useEffect } from 'react';
+
 import ListContractType from '../components/employee/typeContract/ListTypeContract';
+import { useViewsStore } from '@/store/views.store';
 
 function ContratType() {
-  const { roleActions } = useContext(ActionsContext);
+  const { OnGetViewasAction, viewasAction } = useViewsStore();
 
-  const actions_role_view = useMemo(() => {
-    if (roleActions) {
-      const actions = filterActions('Tipo de contratacion', roleActions)?.actions.map((re) => re.name);
-      return actions;
-    }
-    return undefined;
-  }, [roleActions]);
+  const contractTypeView = viewasAction.find((view) => view.view.name === 'Tipo de contratacion');
+  const actions = contractTypeView?.actions?.name || [];
+  useEffect(() => {
+    OnGetViewasAction();
+  }, []);
   return (
     <Layout title="Tipo de contratación">
-      {actions_role_view ? (
-        <ListContractType actions={actions_role_view} />
+      {contractTypeView ? (
+        <ListContractType actions={actions} />
       ) : (
         <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
           <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent flex justify-center items-center">

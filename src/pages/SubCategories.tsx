@@ -1,23 +1,18 @@
-import { useContext, useMemo } from 'react';
+import { useEffect } from 'react';
 import Layout from '../layout/Layout';
-import { ActionsContext } from '../hooks/useActions';
-import { filterActions } from '../utils/filters';
 import ListSubCategory from '../components/sub_categories/ListSubCategories';
-
+import { useViewsStore } from '@/store/views.store';
 function ProductsCategories() {
-  const { roleActions } = useContext(ActionsContext);
-
-  const actions_role_view = useMemo(() => {
-    if (roleActions) {
-      const actions = filterActions('Sub Categorias', roleActions)?.actions.map((re) => re.name);
-      return actions;
-    }
-    return undefined;
-  }, [roleActions]);
+  const { OnGetViewasAction, viewasAction } = useViewsStore();
+  useEffect(() => {
+    OnGetViewasAction();
+  }, []);
+  const subcategoriasView = viewasAction.find((view) => view.view.name === 'Sub Categorias');
+  const actions = subcategoriasView?.actions?.name || [];
   return (
-    <Layout title="Sub Categorías">
-      {actions_role_view ? (
-        <ListSubCategory actions={actions_role_view} />
+    <Layout title="Sub Categorias">
+      {subcategoriasView ? (
+        <ListSubCategory actions={actions} />
       ) : (
         <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
           <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent flex justify-center items-center">

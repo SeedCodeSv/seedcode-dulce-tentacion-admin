@@ -1,23 +1,18 @@
 import Layout from '../layout/Layout';
 import ListEmployee from '../components/employee/ListEmployee';
-import { useContext, useMemo } from 'react';
-import { ActionsContext } from '../hooks/useActions';
-import { filterActions } from '../utils/filters';
-
+import { useEffect } from 'react';
+import { useViewsStore } from '@/store/views.store';
 function Employees() {
-  const { roleActions } = useContext(ActionsContext);
-
-  const actions_role_view = useMemo(() => {
-    if (roleActions) {
-      const actions = filterActions('Empleados', roleActions)?.actions.map((re) => re.name);
-      return actions;
-    }
-    return undefined;
-  }, [roleActions]);
+  const { OnGetViewasAction, viewasAction } = useViewsStore();
+  useEffect(() => {
+    OnGetViewasAction();
+  }, []);
+  const empleadosView = viewasAction.find((view) => view.view.name === 'Empleados');
+  const actions = empleadosView?.actions?.name || [];
   return (
     <Layout title="EMPLEADOS">
-      {actions_role_view ? (
-        <ListEmployee actions={actions_role_view} />
+      {empleadosView ? (
+        <ListEmployee actions={actions} />
       ) : (
         <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
           <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent flex justify-center items-center">

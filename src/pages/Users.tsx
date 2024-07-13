@@ -1,23 +1,19 @@
 import Layout from '../layout/Layout';
 import ListUsers from '../components/users/ListUsers';
-import { useContext, useMemo } from 'react';
-import { ActionsContext } from '../hooks/useActions';
-import { filterActions } from '../utils/filters';
-
+import { useEffect } from 'react';
+import { useViewsStore } from '@/store/views.store';
 function Users() {
-  const { roleActions } = useContext(ActionsContext);
+  const { OnGetViewasAction, viewasAction } = useViewsStore();
 
-  const actions_role_view = useMemo(() => {
-    if (roleActions) {
-      const actions = filterActions('Usuarios', roleActions)?.actions.map((re) => re.name);
-      return actions;
-    }
-    return undefined;
-  }, [roleActions]);
+  const usuariosView = viewasAction.find((view) => view.view.name === 'Usuarios');
+  const actions = usuariosView?.actions?.name || [];
+    useEffect(() => {
+      OnGetViewasAction();
+    }, []);
   return (
     <Layout title="Usuarios">
-      {actions_role_view ? (
-        <ListUsers actions={actions_role_view} />
+      {usuariosView ? (
+        <ListUsers actions={actions} />
       ) : (
         <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
           <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent flex justify-center items-center">
@@ -30,5 +26,4 @@ function Users() {
     </Layout>
   );
 }
-
 export default Users;

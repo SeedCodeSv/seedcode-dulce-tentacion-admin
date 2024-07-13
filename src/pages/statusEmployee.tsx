@@ -1,24 +1,21 @@
 import Layout from '../layout/Layout';
 
-import { useContext, useMemo } from 'react';
-import { ActionsContext } from '../hooks/useActions';
-import { filterActions } from '../utils/filters';
+import { useEffect } from 'react'; 
 import ListStatusEmployee from '../components/employee/statusEmployee/ListStatusEmployee';
+import { useViewsStore } from '@/store/views.store';
 
 function StatusEmployee() {
-  const { roleActions } = useContext(ActionsContext);
-
-  const actions_role_view = useMemo(() => {
-    if (roleActions) {
-      const actions = filterActions('Productos', roleActions)?.actions.map((re) => re.name);
-      return actions;
-    }
-    return undefined;
-  }, [roleActions]);
+  const { OnGetViewasAction, viewasAction } = useViewsStore();
+   
+  const statusEmployeeView = viewasAction.find((view) => view.view.name === 'Estado del empleado');
+  const actions = statusEmployeeView?.actions?.name || [];
+    useEffect(() => {
+      OnGetViewasAction();
+    }, []);
   return (
     <Layout title="Estado del empleado">
-      {actions_role_view ? (
-        <ListStatusEmployee actions={actions_role_view} />
+      {statusEmployeeView ? (
+        <ListStatusEmployee actions={actions} />
       ) : (
         <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
           <div className="flex items-center justify-center w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
