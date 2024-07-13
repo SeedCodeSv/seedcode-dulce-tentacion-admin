@@ -1,21 +1,3 @@
-export interface CategoryProduct {
-	id: number;
-	name: string;
-	isActive: boolean;
-	transmitterId: number;
-}
-
-export interface Product {
-	quantity: number;
-	id: number;
-	name: string;
-	description: string;
-	price: string;
-	code: string;
-	isActive: boolean;
-	categoryProduct: CategoryProduct;
-	categoryProductId: number;
-}
 
 export interface Branch {
 	id: number;
@@ -73,26 +55,35 @@ export interface IGetBranchProductByCode {
 }
 
 
-export interface CategoryProduct {
-	id: number;
-	name: string;
-	isActive: boolean;
-	transmitterId: number;
-}
 
 export interface Product {
+	id: number
+	name: string
+	description: string
+	tipoItem: string
+	tipoDeItem: string
+	uniMedida: string
+	unidaDeMedida: string
+	code: string
+	isActive: boolean
+	subCategory: SubCategory
+	subCategoryId: number
+}
+export interface SubCategory {
+	id: number
+	name: string
+	isActive: boolean
+	categoryProduct: CategoryProduct
+	categoryPorudctId: number
+  }
+
+  export interface CategoryProduct {
 	id: number;
 	name: string;
-	description: string;
-	tipoItem: string;
-	tipoDeItem: string;
-	uniMedida: string;
-	unidaDeMedida: string;
-	code: string;
 	isActive: boolean;
-	categoryProduct: CategoryProduct;
-	categoryProductId: number;
+
 }
+
 
 export interface Branch {
 	id: number;
