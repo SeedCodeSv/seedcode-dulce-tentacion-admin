@@ -7,7 +7,6 @@ import { create_action_by_view } from '@/services/actions.service';
 import { toast } from 'sonner';
 import AddButton from '../global/AddButton';
 
-
 const PermissionTable: React.FC = () => {
   const permissions = ['Mostrar', 'Agregar', 'Editar', 'Eliminar'];
 
@@ -65,7 +64,7 @@ const PermissionTable: React.FC = () => {
       viewId: Number(viewId),
       names: selectedActions[Number(viewId)] || [],
     }));
-  
+
     try {
       await Promise.all(
         payload.map((item) =>
@@ -82,7 +81,6 @@ const PermissionTable: React.FC = () => {
       toast.error('Error al enviar el payload');
     }
   };
-  
 
   const renderSection = (view: { id: number; name: string }) => (
     <div className="w-full sm:w-1/2 p-2" key={view.id}>
@@ -135,42 +133,35 @@ const PermissionTable: React.FC = () => {
   );
 
   return (
-  
-      <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
-        <div className="w-full h-full p-5 overflow-y-auto bg-white shadow-xl rounded-xl dark:bg-gray-900">
-          <div className="flex flex-col justify-between w-full gap-5 mb-5 lg:mb-10 lg:flex-row lg:gap-0">
-            <div className="flex items-start gap-3">
-            <h1 className='dark:text-white'>
-               Agregar Acciones a Vistas
-              </h1>
-            </div>
-            <div className="flex justify-center items-start gap-3">
-              
+    <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
+      <div className="w-full h-full p-5 overflow-y-auto bg-white shadow-xl rounded-xl dark:bg-gray-900">
+        <div className="flex flex-col justify-between w-full gap-5 mb-5 lg:mb-10 lg:flex-row lg:gap-0">
+          <div className="flex items-start gap-3">
+            <h1 className="dark:text-white">Agregar Acciones a Vistas</h1>
+          </div>
+          <div className="flex justify-center items-start gap-3">
             <div>
               <AddButton onClick={() => navigate('/AddActionRol')} />
             </div>
           </div>
-           
-          </div>
+        </div>
 
-          <div className="flex flex-wrap -mx-2">
-            {viewasAction.map((view) => (
-              <React.Fragment key={view.view.id}>{renderSection(view.view)}</React.Fragment>
-            ))}
-          </div>
-          <div className="mt-4 flex justify-end">
-            <button
-              onClick={handleSubmit}
-              className="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition disabled:opacity-50"
-            >
-              Enviar
-            </button>
-          </div>
+        <div className="flex flex-wrap -mx-2">
+          {viewasAction.map((view) => (
+            <React.Fragment key={view.view.id}>{renderSection(view.view)}</React.Fragment>
+          ))}
+        </div>
+        <div className="mt-4 flex justify-end">
+          <button
+            onClick={handleSubmit}
+            className="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition disabled:opacity-50"
+          >
+            Enviar
+          </button>
         </div>
       </div>
-   
+    </div>
   );
 };
 
 export default PermissionTable;
-
