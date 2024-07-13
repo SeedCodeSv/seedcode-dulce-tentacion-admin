@@ -34,10 +34,10 @@ export const GridItem = ({
           </div>
           <div className="flex w-full gap-2 mt-3">
             <ClipboardList className="dark:text-gray-400 text-[#274c77]" size={33} />
-            {product.product.categoryProduct.name}
+            {product.product.subCategory.name}
           </div>
 
-          <div className="flex gap-6 mt-3 justify-end">
+          <div className="flex justify-end gap-6 mt-3">
             <Button
               style={global_styles().secondaryStyle}
               isIconOnly

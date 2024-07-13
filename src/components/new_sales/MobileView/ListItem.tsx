@@ -21,9 +21,9 @@ export const ListItem = ({ product }: { product: BranchProduct }) => {
           </div>
           <div className="flex items-center w-full gap-2 mt-3">
             <ClipboardList className="dark:text-gray-400 text-[#274c77]" size={33} />
-            {product.product.categoryProduct.name}
+            {product.product.subCategory.name}
           </div>
-          <div className="flex items-center w-full gap-2 mt-3 justify-end">
+          <div className="flex items-center justify-end w-full gap-2 mt-3">
             <Button
               style={global_styles().secondaryStyle}
               isIconOnly

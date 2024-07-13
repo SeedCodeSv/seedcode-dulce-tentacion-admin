@@ -141,9 +141,9 @@ function AddPurchaseOrders(props: Props) {
 
   return (
     <div className="w-full">
-      <div className="w-full flex flex-col justify-between">
-        <div className="w-full flex justify-between">
-          <p className="text-xl dark:text-white font-semibold">
+      <div className="flex flex-col justify-between w-full">
+        <div className="flex justify-between w-full">
+          <p className="text-xl font-semibold dark:text-white">
             Lista de productos
           </p>
           <Button
@@ -156,14 +156,14 @@ function AddPurchaseOrders(props: Props) {
         </div>
 
         {orders_by_supplier.length === 0 && (
-          <div className="w-full h-full flex flex-col items-center">
+          <div className="flex flex-col items-center w-full h-full">
             <div className="lds-ellipsis">
               <div className="bg-gray-600 dark:bg-gray-200"></div>
               <div className="bg-gray-600 dark:bg-gray-200"></div>
               <div className="bg-gray-600 dark:bg-gray-200"></div>
               <div className="bg-gray-600 dark:bg-gray-200"></div>
             </div>
-            <p className="dark:text-white text-xl pb-10">
+            <p className="pb-10 text-xl dark:text-white">
               Aun no agregas productos
             </p>
           </div>
@@ -175,7 +175,7 @@ function AddPurchaseOrders(props: Props) {
               Proveedor: {supplier.supplier.nombre}
             </p>
             <DataTable
-              className="shadow mt-5"
+              className="mt-5 shadow"
               emptyMessage="No se encontraron resultados"
               value={supplier.products}
               tableStyle={{ minWidth: "50rem" }}
@@ -251,7 +251,7 @@ function AddPurchaseOrders(props: Props) {
                 )}
               />
             </DataTable>
-            <div className="w-full py-5 flex justify-start">
+            <div className="flex justify-start w-full py-5">
               <Button
                 onClick={() =>
                   handlePrint(supplier.products, supplier.supplier.nombre)
@@ -264,7 +264,7 @@ function AddPurchaseOrders(props: Props) {
           </div>
         ))}
 
-        <div className="w-full flex justify-end mt-4">
+        <div className="flex justify-end w-full mt-4">
           <Button
             onClick={handleSaveOrder}
             style={global_styles().secondaryStyle}
@@ -281,7 +281,7 @@ function AddPurchaseOrders(props: Props) {
         size="w-screen h-screen pb-20 md:pb-0 p-5 overflow-y-auto xl:w-[80vw]"
       >
         <div className="w-full bg-white dark:bg-gray-800">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
             <div>
               <Select
                 label="Sucursal"
@@ -342,7 +342,7 @@ function AddPurchaseOrders(props: Props) {
               />
             </div>
           </div>
-          <div className="w-full flex justify-end py-5">
+          <div className="flex justify-end w-full py-5">
             <Button
               onClick={vaul.onClose}
               style={global_styles().secondaryStyle}
@@ -351,23 +351,23 @@ function AddPurchaseOrders(props: Props) {
               Aceptar
             </Button>
           </div>
-          <div className="w-full mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid w-full grid-cols-1 gap-5 mt-4 md:grid-cols-2 lg:grid-cols-3">
             {branch_product_order.map((branch_product) => (
               <div
                 key={branch_product.id}
-                className="shadow border p-4 rounded-lg dark:border-gray-500"
+                className="p-4 border rounded-lg shadow dark:border-gray-500"
               >
                 <p className="font-semibold dark:text-white">
                   {branch_product.product.name}
                 </p>
                 <p className="dark:text-white">Stock: {branch_product.stock}</p>
-                <p className="mt-2 flex gap-3 dark:text-white">
+                <p className="flex gap-3 mt-2 dark:text-white">
                   <Truck /> {branch_product.supplier.nombre}
                 </p>
-                <p className="mt-2 flex gap-3 dark:text-white">
-                  <ScrollText /> {branch_product.product.categoryProduct.name}
+                <p className="flex gap-3 mt-2 dark:text-white">
+                  <ScrollText /> {branch_product.product.subCategory.name}
                 </p>
-                <p className="mt-2 flex gap-3 dark:text-white">
+                <p className="flex gap-3 mt-2 dark:text-white">
                   <DollarSign /> ${branch_product.price}
                 </p>
                 <Button
