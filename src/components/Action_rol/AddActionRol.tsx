@@ -119,7 +119,6 @@ const PermissionTable: React.FC = () => {
   };
   const { OnGetActionsByRole } = useActionsRolStore();
   const { user } = useAuthStore();
-  const navigate = useNavigate();
  
   const handleSubmit = async () => {
     if (selectedCustomer === 0) {
