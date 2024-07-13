@@ -33,7 +33,7 @@ import { ThemeContext } from '../hooks/useTheme';
 import { SessionContext } from '../hooks/useSession';
 import { useConfigurationStore } from '../store/perzonalitation.store';
 import useWindowSize from '../hooks/useWindowSize';
-import { ActionsContext } from '../hooks/useActions';
+
 import CushCatsBigZ from '../pages/CashCutsBigZ';
 import CashCutsX from '../pages/CashCutsX';
 import CushCatsZ from '../pages/CashCutsZ';
@@ -73,7 +73,7 @@ export const LayoutItems = () => {
   const [isContabilityOpen, setIsContabilityOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMenuOpen2, setIsMenuOpen2] = useState(false);
-  const [isMenuBox, setIsMenuBox] = useState(false);
+  const [, setIsMenuBox] = useState(false);
   const [reports, setReports] = useState(false);
   // Administración
   const toggleDropdownMenu = () => {
@@ -130,12 +130,12 @@ export const LayoutItems = () => {
   //   }
   // };
 
-  const toggleDropdownBox = () => {
-    setIsMenuBox(!isMenuBox);
-    if (isMenuOpen) {
-      setIsMenuOpen(false);
-    }
-  };
+  // const toggleDropdownBox = () => {
+  //   setIsMenuBox(!isMenuBox);
+  //   if (isMenuOpen) {
+  //     setIsMenuOpen(false);
+  //   }
+  // };
 
   const [isOpenComponentBigZ, setIsOpenComponentBigZ] = useState(false);
   const [isCushCatsZ, setIsCushCatsZ] = useState(false);
