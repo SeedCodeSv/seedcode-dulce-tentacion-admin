@@ -43,16 +43,13 @@ interface IProps {
 function ListCharges({ actions }: IProps) {
   const { theme, context } = useContext(ThemeContext);
   const [openVaul, setOpenVaul] = useState(false);
-  const { charges_paginated, getChargesPaginated, activateCharge } = 
-    useChargesStore();
+  const { charges_paginated, getChargesPaginated, activateCharge } = useChargesStore();
 
-  const [selectedCharge, setSelectedCharge] = useState<
-    { id: number; name: string } | undefined
-  >();
+  const [selectedCharge, setSelectedCharge] = useState<{ id: number; name: string } | undefined>();
 
   const [search, setSearch] = useState('');
   const [limit, setLimit] = useState(5);
-  const [active, ] = useState(true);
+  const [active] = useState(true);
 
   useEffect(() => {
     getChargesPaginated(1, limit, search, active ? 1 : 0);
@@ -234,14 +231,13 @@ function ListCharges({ actions }: IProps) {
                 </Drawer.Root>
               </div>
             </div>
-            
-              <AddButton
-                onClick={() => {
-                  setSelectedCharge(undefined);
-                  modalAdd.onOpen();
-                }}
-              />
-            
+
+            <AddButton
+              onClick={() => {
+                setSelectedCharge(undefined);
+                modalAdd.onOpen();
+              }}
+            />
           </div>
         </div>
         <div className="flex justify-end items-end w-full mb-5 gap-5">
@@ -306,32 +302,29 @@ function ListCharges({ actions }: IProps) {
               header="Acciones"
               body={(item) => (
                 <div className="flex gap-6">
-               
-                    <Button
-                      onClick={() => handleEdit(item)}
-                      isIconOnly
-                      style={{
-                        backgroundColor: theme.colors.secondary,
-                      }}
-                    >
-                      <EditIcon style={{ color: theme.colors.primary }} size={20} />
-                    </Button>
-                  
-               
-                    <>
-                      {item.isActive ? (
-                        <DeletePopUp charges={item} />
-                      ) : (
-                        <Button
-                          onClick={() => handleActivate(item.id)}
-                          isIconOnly
-                          style={global_styles().thirdStyle}
-                        >
-                          <RefreshCcw />
-                        </Button>
-                      )}
-                    </>
-                  
+                  <Button
+                    onClick={() => handleEdit(item)}
+                    isIconOnly
+                    style={{
+                      backgroundColor: theme.colors.secondary,
+                    }}
+                  >
+                    <EditIcon style={{ color: theme.colors.primary }} size={20} />
+                  </Button>
+
+                  <>
+                    {item.isActive ? (
+                      <DeletePopUp charges={item} />
+                    ) : (
+                      <Button
+                        onClick={() => handleActivate(item.id)}
+                        isIconOnly
+                        style={global_styles().thirdStyle}
+                      >
+                        <RefreshCcw />
+                      </Button>
+                    )}
+                  </>
                 </div>
               )}
             />

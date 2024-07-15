@@ -7,13 +7,13 @@ import { useViewsStore } from '@/store/views.store';
 function ContratType() {
   const { OnGetViewasAction, viewasAction } = useViewsStore();
 
-  const contractTypeView = viewasAction.find((view) => view.view.name === 'Tipo de contratacion');
+  const contractTypeView = viewasAction.find((view) => view.view.name === 'Tipo de Contratacion');
   const actions = contractTypeView?.actions?.name || [];
   useEffect(() => {
     OnGetViewasAction();
   }, []);
   return (
-    <Layout title="Tipo de contratación">
+    <Layout title="Tipo de Contratación">
       {contractTypeView ? (
         <ListContractType actions={actions} />
       ) : (

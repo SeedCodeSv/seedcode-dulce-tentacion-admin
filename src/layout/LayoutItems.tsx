@@ -12,7 +12,7 @@ import {
   FolderOpen,
   Store,
   Truck,
-  ShoppingBag,
+  // ShoppingBag,
   Book,
   FileText,
   TicketPercent,
@@ -151,7 +151,7 @@ export const LayoutItems = () => {
         <div
           className="flex items-center pl-5 w-full border-b shadow h-[70px]"
           style={{
-            backgroundColor: theme.colors.dark,
+            // backgroundColor: theme.colors.dark,
             color: theme.colors.primary,
           }}
         >
@@ -272,6 +272,7 @@ export const LayoutItems = () => {
                             <p className="ml-2 text-sm 2xl:text-base">Sub Categorías</p>
                           </NavLink>
                         )}
+                        {/*                         
                         {views && views.includes('Ordenes de compra') && (
                           <>
                             <NavLink
@@ -289,7 +290,7 @@ export const LayoutItems = () => {
                               <p className="ml-2 text-sm 2xl:text-base">Ordenes de compra</p>
                             </NavLink>
                           </>
-                        )}
+                        )} */}
                       </div>
                     </>
                   </div>
@@ -297,9 +298,9 @@ export const LayoutItems = () => {
               ) : null}
 
               {/* Gestion de planillas ----------------------------------------------------------------- */}
-              {views.includes('Tipo de contratacion') ||
-              (views && views.includes('Estado del empleado')) ||
-              views.includes('Employee') ? (
+              {views.includes('Tipo de Contratacion') ||
+              (views && views.includes('Estados del Empleado')) ||
+              views.includes('Nivel de Estudio') ? (
                 <div className="flex flex-col items-center justify-start w-full px-6">
                   <button
                     onClick={toggleDropdownMenu2}
@@ -321,7 +322,7 @@ export const LayoutItems = () => {
                     }`}
                   >
                     <div className="py-1">
-                      {views.includes('Nivel de estudio') && (
+                      {views.includes('Nivel de Estudio') && (
                         <NavLink
                           to={'/studyLevel'}
                           className={({ isActive }) =>
@@ -336,7 +337,7 @@ export const LayoutItems = () => {
                         </NavLink>
                       )}
 
-                      {views.includes('Estado del empleado') && (
+                      {views.includes('Estados del Empleado') && (
                         <NavLink
                           to={'/statusEmployee'}
                           className={({ isActive }) =>
@@ -350,7 +351,7 @@ export const LayoutItems = () => {
                           <p className="ml-2 text-sm 2xl:text-base">Estado del empleado</p>
                         </NavLink>
                       )}
-                      {views.includes('Tipo de contratacion') && (
+                      {views.includes('Tipo de Contratacion') && (
                         <NavLink
                           to={'/contractTypes'}
                           className={({ isActive }) =>
@@ -372,6 +373,7 @@ export const LayoutItems = () => {
 
               {views.includes('Empleados') ||
               (views && views.includes('Clientes')) ||
+              views.includes('Cargos de Empleados') ||
               views.includes('Usuarios') ||
               views.includes('Sucursales') ? (
                 <div className="flex flex-col items-center justify-start w-full px-6 ">
@@ -409,7 +411,7 @@ export const LayoutItems = () => {
                           <p className="ml-2 text-sm 2xl:text-base">Empleados</p>
                         </NavLink>
                       )}
-                      {views.includes('Empleados') && (
+                      {views.includes('Cargos de Empleados') && (
                         <NavLink
                           to={'/charges'}
                           className={({ isActive }) =>

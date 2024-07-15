@@ -1,34 +1,31 @@
-import { Input, Select, SelectItem } from "@nextui-org/react";
-import Layout from "../../layout/Layout";
-import { SeedcodeCatalogosMhService } from "seedcode-catalogos-mh";
-import { useEffect, useState } from "react";
-import { formatDate } from "../../utils/dates";
-import { salesReportStore } from "../../store/reports/sales_report.store";
-import Pagination from "../../components/global/Pagination";
-import SalesChartPeriod from "./Period/SalesChartPeriod";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
-import { formatCurrency } from "@/utils/dte";
-import { global_styles } from "@/styles/global.styles";
-import { limit_options } from "@/utils/constants";
-import { useBranchesStore } from "@/store/branches.store";
-import { useCorrelativesStore } from "@/store/correlatives.store";
-import { Branches } from "@/types/branches.types";
+import { Input, Select, SelectItem } from '@nextui-org/react';
+import Layout from '../../layout/Layout';
+import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
+import { useEffect, useState } from 'react';
+import { formatDate } from '../../utils/dates';
+import { salesReportStore } from '../../store/reports/sales_report.store';
+import Pagination from '../../components/global/Pagination';
+import SalesChartPeriod from './Period/SalesChartPeriod';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+import { formatCurrency } from '@/utils/dte';
+import { global_styles } from '@/styles/global.styles';
+import { limit_options } from '@/utils/constants';
+import { useBranchesStore } from '@/store/branches.store';
+import { useCorrelativesStore } from '@/store/correlatives.store';
+import { Branches } from '@/types/branches.types';
 
 function VentasPorPeriodo() {
   const service = new SeedcodeCatalogosMhService();
   const typeSales = service.get017FormaDePago();
   const { getBranchesList, branch_list } = useBranchesStore();
-  const {
-    get_correlativesByBranch,
-    list_correlatives,
-  } = useCorrelativesStore();
+  const { get_correlativesByBranch, list_correlatives } = useCorrelativesStore();
 
   const [startDate, setStartDate] = useState(formatDate());
   const [endDate, setEndDate] = useState(formatDate());
-  const [typePayment, setTypePayment] = useState("01");
+  const [typePayment, setTypePayment] = useState('');
   const [limit, setLimit] = useState(Number(limit_options[0]));
-  const [code , setCode] = useState('')
+  const [code, setCode] = useState('');
 
   const [selectedBranch, setSelectedBranch] = useState<Branches>();
 
@@ -47,10 +44,26 @@ function VentasPorPeriodo() {
   } = salesReportStore();
 
   useEffect(() => {
-    getSalesByPeriod(1, limit, startDate, endDate, typePayment, selectedBranch?.name,code);
+    getSalesByPeriod(1, limit, startDate, endDate, typePayment, selectedBranch?.name, code);
     getSalesByPeriodChart(startDate, endDate);
     getBranchesList();
   }, [startDate, endDate, typePayment, limit, selectedBranch, code]);
+
+  // const totalSalesCount = sales_by_period
+  //   ? sales_by_period.sales.reduce((sum, sale) => sum + Number(sale.salesCount), 0)
+  //   : 0;
+  // const totalSalesAmount = sales_by_period
+  //   ? sales_by_period.sales.reduce((sum, sale) => sum + Number(sale.totalSales), 0)
+  //   : 0;
+  // const { totalSalesCount, totalSalesAmount } = useMemo(() => {
+  //   const totalSalesCount = sales_by_period
+  //     ? sales_by_period.sales.reduce((sum, sale) => sum + Number(sale.salesCount), 0)
+  //     : 0;
+  //   const totalSalesAmount = sales_by_period
+  //     ? sales_by_period.sales.reduce((sum, sale) => sum + Number(sale.totalSales), 0)
+  //     : 0;
+  //   return { totalSalesCount, totalSalesAmount };
+  // }, [sales_by_period]);
 
   return (
     <Layout title="Ventas por Periodo">
@@ -60,7 +73,7 @@ function VentasPorPeriodo() {
             <Input
               label="Fecha inicial"
               labelPlacement="outside"
-              classNames={{ label: "font-semibold" }}
+              classNames={{ label: 'font-semibold' }}
               variant="bordered"
               className="w-full"
               type="date"
@@ -70,7 +83,7 @@ function VentasPorPeriodo() {
             <Input
               label="Fecha final"
               labelPlacement="outside"
-              classNames={{ label: "font-semibold" }}
+              classNames={{ label: 'font-semibold' }}
               variant="bordered"
               className="w-full"
               type="date"
@@ -82,7 +95,7 @@ function VentasPorPeriodo() {
               label="Tipo de pago"
               placeholder="Selecciona el tipo de pago"
               labelPlacement="outside"
-              classNames={{ label: "font-semibold" }}
+              classNames={{ label: 'font-semibold' }}
               className="w-full"
               value={typePayment}
               defaultSelectedKeys={typePayment}
@@ -94,11 +107,7 @@ function VentasPorPeriodo() {
               }}
             >
               {typeSales.map((type) => (
-                <SelectItem
-                  key={type.codigo}
-                  value={type.codigo}
-                  className="dark:text-white"
-                >
+                <SelectItem key={type.codigo} value={type.codigo} className="dark:text-white">
                   {type.valores}
                 </SelectItem>
               ))}
@@ -107,7 +116,7 @@ function VentasPorPeriodo() {
           <div className="grid grid-cols-1 gap-5 mt-2 md:grid-cols-3">
             <div>
               <Select
-                classNames={{ label: "font-semibold" }}
+                classNames={{ label: 'font-semibold' }}
                 label="Sucursal"
                 labelPlacement="outside"
                 onSelectionChange={(key) => {
@@ -124,11 +133,7 @@ function VentasPorPeriodo() {
                 placeholder="Selecciona la sucursal"
               >
                 {branch_list.map((branch) => (
-                  <SelectItem
-                    key={branch.id}
-                    value={branch.id}
-                    className="dark:text-white"
-                  >
+                  <SelectItem key={branch.id} value={branch.id} className="dark:text-white">
                     {branch.name}
                   </SelectItem>
                 ))}
@@ -136,7 +141,7 @@ function VentasPorPeriodo() {
             </div>
             <div>
               <Select
-                classNames={{ label: "font-semibold" }}
+                classNames={{ label: 'font-semibold' }}
                 label="Punto de venta"
                 labelPlacement="outside"
                 variant="bordered"
@@ -144,16 +149,12 @@ function VentasPorPeriodo() {
                 onSelectionChange={(key) => {
                   if (key) {
                     const corr = new Set(key).values().next().value;
-                    setCode(corr)
+                    setCode(corr);
                   }
                 }}
               >
                 {list_correlatives.map((corr) => (
-                  <SelectItem
-                    key={corr.code}
-                    value={corr.code}
-                    className="dark:text-white"
-                  >
+                  <SelectItem key={corr.code} value={corr.code} className="dark:text-white">
                     {corr.code}
                   </SelectItem>
                 ))}
@@ -164,7 +165,7 @@ function VentasPorPeriodo() {
                 label="Limite"
                 variant="bordered"
                 labelPlacement="outside"
-                classNames={{ label: "font-semibold" }}
+                classNames={{ label: 'font-semibold' }}
                 className="w-full"
                 value={limit_options[0]}
                 defaultSelectedKeys={limit_options[0]}
@@ -188,6 +189,45 @@ function VentasPorPeriodo() {
               </Select>
             </div>
           </div>
+
+          <div className="flex flex-col md:flex-row w-full pt-10 gap-10">
+            <div className="flex flex-col items-center justify-center w-full h-32 border rounded-lg shadow dark:bg-gray-900 dark:border-gray-700">
+              <p className="text-lg md:text-2xl font-semibold text-gray-700 dark:text-white animated-count">
+                No. de ventas
+              </p>
+              {/* <p className="text-2xl font-semibold text-gray-700 dark:text-white animated-count">
+                {totalSalesCount}
+            </p> */}
+              {loading_sales_period ? (
+                <div className="flex flex-col items-center justify-center w-full mt-2">
+                  <div className="loader2"></div>
+                  {/* <p className="mt-3 text-xl font-semibold">Cargando...</p> */}
+                </div>
+              ) : (
+                <p className="text-lg md:text-2xl font-semibold text-gray-700 dark:text-white animated-count">
+                  {sales_by_period?.countSales || 0}
+                </p>
+              )}
+            </div>
+            <div className="flex flex-col items-center justify-center w-full h-32 border rounded-lg shadow dark:bg-gray-900 dark:border-gray-700">
+              <p className="text-lg md:text-2xl font-semibold text-gray-700 dark:text-white animated-count">
+                Total en ventas
+              </p>
+              <div className="text-lg md:text-2xl text-gray-700 font-semibold dark:text-white animated-count">
+                {loading_sales_period ? (
+                  <div className="flex flex-col items-center justify-center w-full mt-2">
+                    <div className="loader2"></div>
+                    {/* <p className="mt-3 text-xl font-semibold">Cargando...</p> */}
+                  </div>
+                ) : (
+                  <p className="text-lg md:text-2xl font-semibold text-gray-700 dark:text-white animated-count">
+                    {formatCurrency(sales_by_period?.totalSales || 0)}
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+
           <div className="w-full mt-5">
             {loading_sales_period ? (
               <div className="flex flex-col items-center justify-center w-full h-64">
@@ -205,29 +245,27 @@ function VentasPorPeriodo() {
                     >
                       <Column
                         headerClassName="text-sm font-semibold"
-                        bodyClassName={"dark:text-white"}
+                        bodyClassName={'dark:text-white'}
                         headerStyle={{
                           ...global_styles().darkStyle,
-                          borderTopLeftRadius: "10px",
+                          borderTopLeftRadius: '10px',
                         }}
                         body={(field) => field.date}
                         header="Fecha"
                       />
                       <Column
                         headerClassName="text-sm font-semibold"
-                        bodyClassName={"dark:text-white"}
+                        bodyClassName={'dark:text-white'}
                         headerStyle={{ ...global_styles().darkStyle }}
-                        body={(field) =>
-                          formatCurrency(Number(field.totalSales))
-                        }
+                        body={(field) => formatCurrency(Number(field.totalSales))}
                         header="Total en ventas"
                       />
                       <Column
                         headerClassName="text-sm font-semibold"
-                        bodyClassName={"dark:text-white"}
+                        bodyClassName={'dark:text-white'}
                         headerStyle={{
                           ...global_styles().darkStyle,
-                          borderTopRightRadius: "10px",
+                          borderTopRightRadius: '10px',
                         }}
                         body={(field) => field.salesCount}
                         header="No. de ventas"
@@ -239,9 +277,7 @@ function VentasPorPeriodo() {
                         previousPage={sales_by_period.prevPag}
                         totalPages={sales_by_period.totalPag}
                         currentPage={sales_by_period.currentPag}
-                        onPageChange={(page) =>
-                          getSalesByPeriod(page, limit, startDate, endDate)
-                        }
+                        onPageChange={(page) => getSalesByPeriod(page, limit, startDate, endDate)}
                       />
                     </div>
                   </div>
