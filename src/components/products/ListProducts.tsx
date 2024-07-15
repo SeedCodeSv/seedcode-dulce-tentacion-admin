@@ -35,18 +35,18 @@ import { ButtonGroup } from '@nextui-org/react';
 import { CategoryProduct } from '../../types/categories.types';
 import MobileView from './MobileView';
 // import { Drawer } from "vaul";
-import { global_styles } from "../../styles/global.styles";
-import UpdateProduct from "./UpdateProduct";
-import { limit_options } from "../../utils/constants";
-import SmPagination from "../global/SmPagination";
-import useWindowSize from "../../hooks/useWindowSize";
-import HeadlessModal from "../global/HeadlessModal";
-import classNames from "classnames";
-import TooltipGlobal from "../global/TooltipGlobal";
-import { useSubCategoryStore } from "@/store/sub-category";
-import { useNavigate } from "react-router";
-import BottomDrawer from "../global/BottomDrawer";
-import { useSubCategoriesStore } from "@/store/sub-categories.store";
+import { global_styles } from '../../styles/global.styles';
+import UpdateProduct from './UpdateProduct';
+import { limit_options } from '../../utils/constants';
+import SmPagination from '../global/SmPagination';
+import useWindowSize from '../../hooks/useWindowSize';
+import HeadlessModal from '../global/HeadlessModal';
+import classNames from 'classnames';
+import TooltipGlobal from '../global/TooltipGlobal';
+import { useSubCategoryStore } from '@/store/sub-category';
+import { useNavigate } from 'react-router';
+import BottomDrawer from '../global/BottomDrawer';
+import { useSubCategoriesStore } from '@/store/sub-categories.store';
 
 interface Props {
   actions: string[];
@@ -318,7 +318,7 @@ function ListProducts({ actions }: Props) {
                         label: 'font-semibold text-gray-700',
                         inputWrapper: 'pr-0',
                       }}
-                      value={search}
+                      value={code}
                       onChange={(e) => setCode(e.target.value)}
                       placeholder="Escribe para buscar..."
                       isClearable
@@ -423,7 +423,10 @@ function ListProducts({ actions }: Props) {
                   className="hidden font-semibold md:flex"
                   color="primary"
                   endContent={<SearchIcon size={15} />}
-                  onClick={() => handleSearch(undefined)}
+                  onClick={() => {
+                    handleSearch(undefined);
+                    setOpenVaul(false);
+                  }}
                 >
                   Buscar
                 </Button>

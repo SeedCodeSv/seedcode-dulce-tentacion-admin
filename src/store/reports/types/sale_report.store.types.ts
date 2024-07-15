@@ -1,8 +1,10 @@
+import { GraphicSubCategory, SaleProduct } from '../../../types/reports/sales.reports.types';
 import {
   IDataExpense,
   IDataSalesGrafic,
 } from "../../../types/reports/branch_product.reports";
 import {
+  ISaleCategoryProduct,
   ProductoMostSelledTable,
   SaleBranchMonth,
   SaleMonthYear,
@@ -30,6 +32,14 @@ export interface ISalesReportStore {
   sales_by_period_graph: SalesChartGraphPeriod | undefined;
   sales_by_point_of_sale_branch: IGetSalesByBranchPointSale | undefined;
   sales_count: number;
+  graphic_for_category_products_for_dates: ISaleCategoryProduct[],
+  graphic_sub_category_products_for_dates: GraphicSubCategory[],
+  sales_products: SaleProduct[],
+  loading_sales_products: boolean
+  total_sales_product: number
+  getSalesProducts: (startDate: string, endDate: string, branch?: string) => void
+  getGraphicSubCategoryProductsForDates: (id: number, startDate: string, endDate: string, branch?: string) => void
+  getGraphicForCategoryProductsForDates: (startDate: string, endDate: string, branch?: string) => void
   getSalesCount: () => void;
   getSalePointOfSaleByBranch: (
     id: number,

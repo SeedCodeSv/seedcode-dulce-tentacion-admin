@@ -1,7 +1,10 @@
-import { Color, Theme } from '../hooks/useTheme';
-import { Theme as ITheme } from '../types/themes.types';
-import { RoleViewAction } from '../types/actions_rol.types';
-import { IBranchProductOrderQuantity, SupplierProducts } from '../types/branch_products.types';
+import { Color, Theme } from "../hooks/useTheme";
+import { Theme as ITheme } from "../types/themes.types";
+import { RoleViewAction } from "../types/actions_rol.types";
+import {
+  IBranchProductOrderQuantity,
+  SupplierProducts,
+} from "../types/branch_products.types";
 
 export const is_admin = (rol: string) => {
   const patron = /administrador/i;
@@ -9,8 +12,8 @@ export const is_admin = (rol: string) => {
 };
 export const normalize = (text: string) =>
   text
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase();
 
 export function formatThemeData(themesData: ITheme[]): Theme[] {
@@ -30,7 +33,9 @@ export const filterActions = (name: string, actions: RoleViewAction) => {
   return actions_return;
 };
 
-export const groupBySupplier = (items: IBranchProductOrderQuantity[]): SupplierProducts[] => {
+export const groupBySupplier = (
+  items: IBranchProductOrderQuantity[]
+): SupplierProducts[] => {
   const supplierMap = new Map<number, SupplierProducts>();
 
   items.forEach((item) => {
@@ -46,7 +51,10 @@ export const groupBySupplier = (items: IBranchProductOrderQuantity[]): SupplierP
   return Array.from(supplierMap.values());
 };
 
-export function calcularPorcentajeDescuento(total: number, descuento: number): number {
+export function calcularPorcentajeDescuento(
+  total: number,
+  descuento: number
+): number {
   const precioOriginal = total + descuento;
   const porcentajeDescuento = (descuento / precioOriginal) * 100;
   return porcentajeDescuento;
@@ -62,7 +70,20 @@ export function calculateDiscountedTotal(
 }
 
 export function getRandomColorsArray(): string[] {
-  const colors = ['#14b8a6', '#06b6d4', '#0ea5e9', '#3b82f6', '#6366f1', '#8b5cf6'];
+  const colors = [
+    "#14b8a6",
+    "#06b6d4",
+    "#0ea5e9",
+    "#3b82f6",
+    "#6366f1",
+    "#8b5cf6",
+    "#a855f7",
+    "#d946ef",
+    "#f472b6",
+    "#f87171",
+    "#fca5a5",
+    "#fee2e2",
+  ];
 
   return colors;
 }

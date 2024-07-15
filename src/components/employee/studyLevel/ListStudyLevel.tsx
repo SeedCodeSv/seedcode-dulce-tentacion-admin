@@ -20,10 +20,10 @@ import {
   List,
   Filter,
   RefreshCcw,
+  SearchIcon,
 } from 'lucide-react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import { Drawer } from 'vaul';
 import classNames from 'classnames';
 import { ThemeContext } from '../../../hooks/useTheme';
 import { global_styles } from '../../../styles/global.styles';
@@ -36,14 +36,17 @@ import MobileView from './MobileView';
 import AddStudyLevel from './AddStudyLevel';
 import { useStatusStudyLevel } from '@/store/studyLevel';
 import { StudyLevel } from '@/types/study_level.types';
+import BottomDrawer from '@/components/global/BottomDrawer';
+import TooltipGlobal from '@/components/global/TooltipGlobal';
 
 interface PProps {
   actions: string[];
 }
 
 function ListStudyLevel({ actions }: PProps) {
-  const { theme, context } = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
   const [openVaul, setOpenVaul] = useState(false);
+  const [isActive, setActive] = useState(true);
 
   const { paginated_study_level, activateStudyLevel, getPaginatedStudyLevel, loading_study_level } =
     useStatusStudyLevel();
@@ -54,7 +57,7 @@ function ListStudyLevel({ actions }: PProps) {
 
   const [search, setSearch] = useState('');
   const [limit, setLimit] = useState(5);
-  const [isActive, setActive] = useState(true);
+  // const [isActive, setActive] = useState(true);
 
   useEffect(() => {
     getPaginatedStudyLevel(1, limit, search, isActive ? 1 : 0);
@@ -118,8 +121,9 @@ function ListStudyLevel({ actions }: PProps) {
                   backgroundColor: theme.colors.secondary,
                   color: theme.colors.primary,
                 }}
-                className="mt-6 font-semibold"
+                className="hidden mt-6 font-semibold md:flex"
                 color="primary"
+                endContent={<SearchIcon size={15} />}
                 onClick={() => handleSearch(undefined)}
               >
                 Buscar
@@ -164,77 +168,60 @@ function ListStudyLevel({ actions }: PProps) {
             </ButtonGroup>
             <div className="flex items-center gap-5">
               <div className="block md:hidden">
-                <Drawer.Root
-                  shouldScaleBackground
+                <TooltipGlobal text="Filtrar">
+                  <Button
+                    style={global_styles().thirdStyle}
+                    isIconOnly
+                    onClick={() => setOpenVaul(true)}
+                    type="button"
+                  >
+                    <Filter />
+                  </Button>
+                </TooltipGlobal>
+                <BottomDrawer
                   open={openVaul}
                   onClose={() => setOpenVaul(false)}
+                  title="Filtros disponibles"
                 >
-                  <Drawer.Trigger asChild>
-                    <Button
-                      style={global_styles().thirdStyle}
-                      isIconOnly
-                      onClick={() => setOpenVaul(true)}
-                      type="button"
-                    >
-                      <Filter />
-                    </Button>
-                  </Drawer.Trigger>
-                  <Drawer.Portal>
-                    <Drawer.Overlay
-                      className="fixed inset-0 bg-black/40 z-[60]"
-                      onClick={() => setOpenVaul(false)}
-                    />
-                    <Drawer.Content
-                      className={classNames(
-                        'bg-gray-100 z-[60] flex flex-col rounded-t-[10px] h-auto mt-24 max-h-[80%] fixed bottom-0 left-0 right-0',
-                        context === 'dark' ? 'dark' : ''
-                      )}
-                    >
-                      <div className="p-4 bg-white dark:bg-gray-800 rounded-t-[10px] flex-1">
-                        <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-gray-300 dark:bg-gray-400 mb-8" />
-                        <Drawer.Title className="mb-4 dark:text-white font-medium">
-                          Filtros disponibles
-                        </Drawer.Title>
+                  <div className="p-4 bg-white dark:bg-gray-800 rounded-t-[10px] flex-1">
+                    <div className="flex flex-col gap-3" />
 
-                        <div className="flex flex-col gap-3">
-                          <Input
-                            startContent={<User />}
-                            className="w-full xl:w-96 dark:text-white"
-                            variant="bordered"
-                            labelPlacement="outside"
-                            label="Nombre"
-                            classNames={{
-                              label: 'font-semibold text-gray-700',
-                              inputWrapper: 'pr-0',
-                            }}
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            placeholder="Escribe para buscar..."
-                            isClearable
-                            onClear={() => {
-                              setSearch('');
-                              handleSearch('');
-                            }}
-                          />
-                          <Button
-                            style={{
-                              backgroundColor: theme.colors.secondary,
-                              color: theme.colors.primary,
-                            }}
-                            className="mt-6 font-semibold"
-                            color="primary"
-                            onClick={() => {
-                              handleSearch(undefined);
-                              setOpenVaul(false);
-                            }}
-                          >
-                            Buscar
-                          </Button>
-                        </div>
-                      </div>
-                    </Drawer.Content>
-                  </Drawer.Portal>
-                </Drawer.Root>
+                    <Input
+                      startContent={<User />}
+                      className="w-full xl:w-96 dark:text-white"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      label="Nombre"
+                      classNames={{
+                        label: 'font-semibold text-gray-700',
+                        inputWrapper: 'pr-0',
+                      }}
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                      placeholder="Escribe para buscar..."
+                      isClearable
+                      onClear={() => {
+                        setSearch('');
+                        handleSearch('');
+                      }}
+                    />
+                    <Button
+                      // style={{
+                      //   backgroundColor: theme.colors.secondary,
+                      //   color: theme.colors.primary,
+                      // }}
+                      className="mt-6 w-full font-semibold"
+                      // color="primary"
+                      // endContent={<SearchIcon size={15} />}
+                      onClick={() => {
+                        handleSearch(undefined);
+                        setOpenVaul(false);
+                      }}
+                    >
+                      Aplicar filtros
+                    </Button>
+                  </div>
+                </BottomDrawer>
               </div>
             </div>
             {actions.includes('Agregar') && (
@@ -268,7 +255,14 @@ function ListStudyLevel({ actions }: PProps) {
             ))}
           </Select>
           <div className="flex items-center">
-            <Switch onValueChange={(isActive) => setActive(isActive)} isSelected={isActive}>
+            <Switch
+              onValueChange={(isActive) => setActive(isActive)}
+              isSelected={isActive}
+              classNames={{
+                thumb: classNames(isActive ? 'bg-blue-500' : 'bg-gray-400'),
+                wrapper: classNames(isActive ? '!bg-blue-300' : 'bg-gray-200'),
+              }}
+            >
               <span className="text-sm sm:text-base whitespace-nowrap">
                 Mostrar {isActive ? 'inactivos' : 'activos'}
               </span>
@@ -296,18 +290,21 @@ function ListStudyLevel({ actions }: PProps) {
               headerClassName="text-sm font-semibold"
               headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
               field="id"
+              bodyClassName={'dark:text-white'}
               header="No."
             />
             <Column
               headerClassName="text-sm font-semibold"
               headerStyle={style}
               field="name"
+              bodyClassName={'dark:text-white'}
               header="Nombre"
             />
             <Column
               headerClassName="text-sm font-semibold"
               headerStyle={style}
               field="description"
+              bodyClassName={'dark:text-white'}
               header="Descripción"
             />
             <Column
@@ -316,15 +313,17 @@ function ListStudyLevel({ actions }: PProps) {
               body={(item) => (
                 <div className="flex gap-6">
                   {actions.includes('Editar') && (
-                    <Button
-                      onClick={() => handleEdit(item)}
-                      isIconOnly
-                      style={{
-                        backgroundColor: theme.colors.secondary,
-                      }}
-                    >
-                      <EditIcon style={{ color: theme.colors.primary }} size={20} />
-                    </Button>
+                    <TooltipGlobal text="Editar el registro" color="primary">
+                      <Button
+                        onClick={() => handleEdit(item)}
+                        isIconOnly
+                        style={{
+                          backgroundColor: theme.colors.secondary,
+                        }}
+                      >
+                        <EditIcon style={{ color: theme.colors.primary }} size={20} />
+                      </Button>
+                    </TooltipGlobal>
                   )}
                   {actions.includes('Eliminar') && (
                     <>
@@ -332,13 +331,15 @@ function ListStudyLevel({ actions }: PProps) {
                       {item.isActive ? (
                         <DeletePopUp studyLevel={item} />
                       ) : (
-                        <Button
-                          onClick={() => handleActivate(item.id)}
-                          isIconOnly
-                          style={global_styles().thirdStyle}
-                        >
-                          <RefreshCcw />
-                        </Button>
+                        <TooltipGlobal text="Activar la categoría" color="primary">
+                          <Button
+                            onClick={() => handleActivate(item.id)}
+                            isIconOnly
+                            style={global_styles().thirdStyle}
+                          >
+                            <RefreshCcw />
+                          </Button>
+                        </TooltipGlobal>
                       )}
                     </>
                   )}

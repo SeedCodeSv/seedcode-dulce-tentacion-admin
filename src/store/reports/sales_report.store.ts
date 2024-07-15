@@ -15,6 +15,7 @@ import {
   get_sales_count,
   get_sales_point_of_sale_by_branch,
 } from '../../services/reports/sales.reports.service';
+import { get_graphic_for_category_products_for_dates, get_graphic_sub_category_products_for_dates, get_sales_by_product } from '@/services/sales.service';
 
 export const salesReportStore = create<ISalesReportStore>((set) => ({
   sales_branch_month: [],
@@ -32,6 +33,39 @@ export const salesReportStore = create<ISalesReportStore>((set) => ({
   sales_by_point_of_sale_branch: undefined,
   loading_sales_period: false,
   sales_count: 0,
+  graphic_for_category_products_for_dates: [],
+  graphic_sub_category_products_for_dates: [],
+  sales_products: [],
+  total_sales_product: 0,
+  loading_sales_products: false,
+  getSalesProducts(startDate, endDate, branch) {
+    set({ loading_sales_products: true, graphic_sub_category_products_for_dates: [] });
+    get_sales_by_product(startDate, endDate, branch)
+      .then(({ data }) => {
+        set({ sales_products: data.sales, total_sales_product: data.totalSales, loading_sales_products: false });
+      })
+      .catch(() => {
+        set({ sales_products: [], total_sales_product: 0, loading_sales_products: false });
+      });
+  },
+  getGraphicSubCategoryProductsForDates(id, startDate, endDate, branch) {
+    get_graphic_sub_category_products_for_dates(id, startDate, endDate, branch)
+      .then(({ data }) => {
+        set({ graphic_sub_category_products_for_dates: data.detailSales });
+      })
+      .catch(() => {
+        set({ graphic_sub_category_products_for_dates: [] });
+      });
+  },
+  getGraphicForCategoryProductsForDates(startDate, endDate, branch) {
+    get_graphic_for_category_products_for_dates(startDate, endDate, branch)
+      .then(({ data }) => {
+        set({ graphic_for_category_products_for_dates: data.sales });
+      })
+      .catch(() => {
+        set({ graphic_for_category_products_for_dates: [] });
+      });
+  },
   getSalesCount() {
     get_sales_count()
       .then(({ data }) => {

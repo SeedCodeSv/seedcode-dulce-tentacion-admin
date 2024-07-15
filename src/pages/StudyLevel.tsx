@@ -7,13 +7,13 @@ import { useViewsStore } from '@/store/views.store';
 function EstudyLevel() {
   const { OnGetViewasAction, viewasAction } = useViewsStore();
 
-  const studyLevelView = viewasAction.find((view) => view.view.name === 'Nivel de estudio');
+  const studyLevelView = viewasAction.find((view) => view.view.name === 'Nivel de Estudio');
   const actions = studyLevelView?.actions?.name || [];
   useEffect(() => {
     OnGetViewasAction();
   }, []);
   return (
-    <Layout title="Nivel de estudio">
+    <Layout title="Nivel de Estudio">
       {studyLevelView ? (
         <ListStudyLevel actions={actions} />
       ) : (

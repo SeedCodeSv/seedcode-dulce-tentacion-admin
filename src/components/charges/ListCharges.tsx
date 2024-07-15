@@ -44,17 +44,19 @@ interface IProps {
 function ListCharges({ actions }: IProps) {
   const { theme } = useContext(ThemeContext);
   const [openVaul, setOpenVaul] = useState(false);
+<<<<<<< HEAD
   const { windowSize } = useWindowSize();
   const { charges_paginated, getChargesPaginated, activateCharge } = 
     useChargesStore();
+=======
+  const { charges_paginated, getChargesPaginated, activateCharge } = useChargesStore();
+>>>>>>> 8ea7f59d491d40eb39c104a000d95c49db9c5f9a
 
-  const [selectedCharge, setSelectedCharge] = useState<
-    { id: number; name: string } | undefined
-  >();
+  const [selectedCharge, setSelectedCharge] = useState<{ id: number; name: string } | undefined>();
 
   const [search, setSearch] = useState('');
   const [limit, setLimit] = useState(5);
-  const [active, ] = useState(true);
+  const [active] = useState(true);
 
   useEffect(() => {
     getChargesPaginated(1, limit, search, active ? 1 : 0);
@@ -221,14 +223,13 @@ function ListCharges({ actions }: IProps) {
                 
               </div>
             </div>
-            
-              <AddButton
-                onClick={() => {
-                  setSelectedCharge(undefined);
-                  modalAdd.onOpen();
-                }}
-              />
-            
+
+            <AddButton
+              onClick={() => {
+                setSelectedCharge(undefined);
+                modalAdd.onOpen();
+              }}
+            />
           </div>
         </div>
         <div className="flex justify-end items-end w-full mb-5 gap-5">
