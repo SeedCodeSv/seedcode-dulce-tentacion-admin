@@ -22,7 +22,7 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
   const { getChargesList, charges } = useChargesStore();
   const { getCat012Departamento, getCat013Municipios, cat_012_departamento, cat_013_municipios } =
     useBillingStore();
-  const [codeDepartamento, setCodeDepartamento] = useState('');
+  const [codeDepartamento, setCodeDepartamento] = useState(props.data?.address.departamento ?? '0');
   const [codigoGenerado, setCodigoGenerado] = useState('');
   useEffect(() => {
     getBranchesList();
@@ -30,9 +30,16 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
     getCat012Departamento();
     GetEmployeeStatus();
     GetContractType();
-    getCat013Municipios(codeDepartamento);
+    // getCat013Municipios(codeDepartamento);
     GetStudyLevel();
   }, [codeDepartamento, codigoGenerado]);
+  useEffect(() => {
+    if (codeDepartamento !== '0') {
+      getCat013Municipios(props.data?.department ?? codeDepartamento);
+    }
+    getCat013Municipios(codeDepartamento);
+
+  }, [codeDepartamento, props.data?.address.departamento]);
   const { patchEmployee } = useEmployeeStore();
   const [dataCreate, setDataCreate] = useState<EmployeePayload>({
     firstName: props.data?.firstName || '',
@@ -55,7 +62,7 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
     responsibleContact: props.data?.responsibleContact || '',
     statusId: props.data?.employeeStatusId || 0,
     studyLevelId: props.data?.studyLevelId || 0,
-    addressId: props.data?.addressId || 0,
+    // addressId: props.data?.addressId || 0,
     contractTypeId: props.data?.contractTypeId || 0,
     department: props.data?.address.departamento || '',
     departmentName: props.data?.address.nombreDepartamento || '',
@@ -66,14 +73,14 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
   });
   const createEmployee = async () => {
     try {
-      const data = await patchEmployee(dataCreate, props.data?.id || 0);
-      if (data) {
-        props.id(0);
-      } else {
-        toast.error('Error al crear el empleado');
-      }
+       await patchEmployee(dataCreate, props.data?.id || 0);
+      // if (data) {
+      //   props.id(0);
+      // } else {
+      //   toast.error('Error al editar el empleado');
+      // }
     } catch (error) {
-      toast.error('Error al crear el empleado');
+      toast.error('Error al editar el empleado');
     }
   };
   const generateCode = () => {
@@ -336,6 +343,7 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
                     classNames={{
                       base: 'font-semibold text-sm',
                     }}
+                    defaultInputValue={props.data?.studyLevel.name ?? ''}
                   >
                     {study_level?.map((item) => (
                       <AutocompleteItem
@@ -361,6 +369,7 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
                     classNames={{
                       base: 'font-semibold text-sm',
                     }}
+                    defaultInputValue={props.data?.employeeStatus.name ?? ''}
                   >
                     {employee_status?.map((item) => (
                       <AutocompleteItem
@@ -384,6 +393,7 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
                     classNames={{
                       base: 'font-semibold text-sm',
                     }}
+                    defaultInputValue={props.data?.contractType.name ?? ''}
                   >
                     {contract_type.map((item) => (
                       <AutocompleteItem
@@ -424,6 +434,7 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
                     classNames={{
                       base: 'font-semibold text-sm',
                     }}
+                    defaultInputValue={props.data?.charge.name ?? ''}
                   >
                     {charges.map((item) => (
                       <AutocompleteItem
@@ -447,6 +458,7 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
                     classNames={{
                       base: 'font-semibold text-sm',
                     }}
+                    defaultInputValue={props.data?.branch.name ?? ''}
                   >
                     {branch_list.map((bra) => (
                       <AutocompleteItem
@@ -473,6 +485,7 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
                       base: 'font-semibold text-gray-500 text-sm',
                     }}
                     className="dark:text-white"
+                    defaultInputValue={props.data?.address?.nombreDepartamento ?? ''}
                   >
                     {cat_012_departamento.map((dep) => (
                       <AutocompleteItem
@@ -503,6 +516,7 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
                     classNames={{
                       base: 'font-semibold text-gray-500 text-sm',
                     }}
+                    defaultInputValue={props.data?.address?.nombreMunicipio ?? ''}
                   >
                     {cat_013_municipios.map((dep) => (
                       <AutocompleteItem

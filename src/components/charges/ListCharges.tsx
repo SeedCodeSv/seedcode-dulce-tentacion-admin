@@ -28,21 +28,23 @@ import { Column } from 'primereact/column';
 import AddButton from '../global/AddButton';
 import MobileView from './MobileView';
 import { ICharge } from '../../types/charges.types';
-import { Drawer } from 'vaul';
 import { global_styles } from '../../styles/global.styles';
-import classNames from 'classnames';
 import { limit_options } from '../../utils/constants';
 import SmPagination from '../global/SmPagination';
 import HeadlessModal from '../global/HeadlessModal';
 import Pagination from '../global/Pagination';
+import TooltipGlobal from '../global/TooltipGlobal';
+import useWindowSize from '@/hooks/useWindowSize';
+import BottomDrawer from '../global/BottomDrawer';
 
 interface IProps {
   actions: string[];
 }
 
 function ListCharges({ actions }: IProps) {
-  const { theme, context } = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
   const [openVaul, setOpenVaul] = useState(false);
+  const { windowSize } = useWindowSize();
   const { charges_paginated, getChargesPaginated, activateCharge } = 
     useChargesStore();
 
@@ -69,7 +71,7 @@ function ListCharges({ actions }: IProps) {
     color: theme.colors.primary,
   };
 
-  const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
+  const [view, setView] = useState<'table' | 'grid' | 'list'>(windowSize.width < 768 ? 'grid' : 'table');
 
   const handleEdit = (item: ICharge) => {
     setSelectedCharge({
@@ -161,12 +163,8 @@ function ListCharges({ actions }: IProps) {
             </ButtonGroup>
             <div className="flex items-center gap-5">
               <div className="block md:hidden">
-                <Drawer.Root
-                  shouldScaleBackground
-                  open={openVaul}
-                  onClose={() => setOpenVaul(false)}
-                >
-                  <Drawer.Trigger asChild>
+               
+              <TooltipGlobal text="Filtrar">
                     <Button
                       style={global_styles().thirdStyle}
                       isIconOnly
@@ -175,24 +173,14 @@ function ListCharges({ actions }: IProps) {
                     >
                       <Filter />
                     </Button>
-                  </Drawer.Trigger>
-                  <Drawer.Portal>
-                    <Drawer.Overlay
-                      className="fixed inset-0 bg-black/40 z-[60]"
-                      onClick={() => setOpenVaul(false)}
-                    />
-                    <Drawer.Content
-                      className={classNames(
-                        'bg-gray-100 z-[60] flex flex-col rounded-t-[10px] h-auto mt-24 max-h-[80%] fixed bottom-0 left-0 right-0',
-                        context === 'dark' ? 'dark' : ''
-                      )}
-                    >
+                    </TooltipGlobal>
+                    <BottomDrawer
+                        open={openVaul}
+                        title="Filtros disponibles"
+                        onClose={() => setOpenVaul(false)}
+                      >
                       <div className="p-4 bg-white dark:bg-gray-800 rounded-t-[10px] flex-1">
-                        <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-gray-300 dark:bg-gray-400 mb-8" />
-                        <Drawer.Title className="mb-4 dark:text-white font-medium">
-                          Filtros disponibles
-                        </Drawer.Title>
-
+                       
                         <div className="flex flex-col gap-3">
                           <Input
                             startContent={<User />}
@@ -229,9 +217,8 @@ function ListCharges({ actions }: IProps) {
                           </Button>
                         </div>
                       </div>
-                    </Drawer.Content>
-                  </Drawer.Portal>
-                </Drawer.Root>
+                  </BottomDrawer>
+                
               </div>
             </div>
             
@@ -283,7 +270,7 @@ function ListCharges({ actions }: IProps) {
         )}
         {view === 'table' && (
           <DataTable
-            className="w-full shadow"
+            className="w-full shadow dark:text-white"
             emptyMessage="No se encontraron resultados"
             value={charges_paginated.charges}
             tableStyle={{ minWidth: '50rem' }}
@@ -291,6 +278,7 @@ function ListCharges({ actions }: IProps) {
           >
             <Column
               headerClassName="text-sm font-semibold"
+              bodyClassName={'dark:text-white'}
               headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
               field="id"
               header="No."
@@ -298,6 +286,7 @@ function ListCharges({ actions }: IProps) {
             <Column
               headerClassName="text-sm font-semibold"
               headerStyle={style}
+              bodyClassName={'dark:text-white'}
               field="name"
               header="Nombre"
             />
@@ -306,7 +295,7 @@ function ListCharges({ actions }: IProps) {
               header="Acciones"
               body={(item) => (
                 <div className="flex gap-6">
-               
+                    <TooltipGlobal text="Editar">
                     <Button
                       onClick={() => handleEdit(item)}
                       isIconOnly
@@ -316,8 +305,7 @@ function ListCharges({ actions }: IProps) {
                     >
                       <EditIcon style={{ color: theme.colors.primary }} size={20} />
                     </Button>
-                  
-               
+                  </TooltipGlobal>
                     <>
                       {item.isActive ? (
                         <DeletePopUp charges={item} />
@@ -399,6 +387,7 @@ const DeletePopUp = ({ charges }: Props) => {
     <>
       <Popover isOpen={isOpen} onClose={onClose} backdrop="blur" showArrow>
         <PopoverTrigger>
+        <TooltipGlobal text="Eliminar">
           <Button
             onClick={onOpen}
             isIconOnly
@@ -413,6 +402,7 @@ const DeletePopUp = ({ charges }: Props) => {
               size={20}
             />
           </Button>
+        </TooltipGlobal>
         </PopoverTrigger>
         <PopoverContent>
           <div className="w-full p-5">

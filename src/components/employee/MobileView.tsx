@@ -5,6 +5,7 @@ import { User as IUser, Truck, Phone, Edit, RefreshCcw } from "lucide-react";
 import { useEmployeeStore } from "../../store/employee.store";
 import { global_styles } from "../../styles/global.styles";
 import { GridProps, IMobileView } from "./types/mobile-view.types";
+import TooltipGlobal from "../global/TooltipGlobal";
 
 function MobileView(props: IMobileView) {
   const {
@@ -66,25 +67,27 @@ const GridItem = (props: GridProps) => {
         >
           <div className="flex w-full gap-2">
             <IUser className="text-[#274c77] dark:text-gray-400" size={20} />
-            <p className="w-full">{`${employee.firstName} ${employee.firstLastName}`}</p>
+            <p className="w-full dark:text-white">{`${employee.firstName} ${employee.firstLastName}`}</p>
           </div>
           <div className="flex w-full gap-2 mt-3">
             <Phone size={20} className="text-[#274c77] dark:text-gray-400" />
-            <p className="w-full">{employee.phone}</p>
+            <p className="w-full dark:text-white">{employee.phone}</p>
           </div>
           <div className="flex w-full gap-2 mt-3">
             <Truck className="text-[#274c77] dark:text-gray-400" size={20} />
-            <p className="w-full">{employee.branch.name}</p>
+            <p className="w-full dark:text-white">{employee.branch.name}</p>
           </div>
           <div className="flex justify-between mt-5 w-ful">
             {actions.includes("Editar") && (
+              <TooltipGlobal text="Editar">
               <Button
                 onClick={() => openEditModal(employee)}
                 isIconOnly
-                style={global_styles().thirdStyle}
+                style={global_styles().secondaryStyle}
               >
                 <Edit size={15} />
               </Button>
+              </TooltipGlobal>
             )}
             {actions.includes("Eliminar") && (
               <>
@@ -131,26 +134,28 @@ const ListItem = (props: GridProps) => {
         <div className="w-full">
           <div className="flex w-full gap-2">
             <IUser className="text-[#274c77] dark:text-gray-400" size={20} />
-            <p className="w-full">{`${employee.firstName} ${employee.firstLastName}`}</p>
+            <p className="w-full dark:text-white">{`${employee.firstName} ${employee.firstLastName}`}</p>
           </div>
           <div className="flex w-full gap-2 mt-3">
             <Phone size={20} className="text-[#274c77] dark:text-gray-400" />
-            <p className="w-full">{employee.phone}</p>
+            <p className="w-full dark:text-white">{employee.phone}</p>
           </div>
           <div className="flex w-full gap-2 mt-3">
             <Truck className="text-[#274c77] dark:text-gray-400" size={20} />
-            <p className="w-full">{employee.branch.name}</p>
+            <p className="w-full dark:text-white">{employee.branch.name}</p>
           </div>
         </div>
         <div className="flex flex-col items-end justify-between w-full">
           {actions.includes("Editar") && (
+            <TooltipGlobal text="Editar">
             <Button
               onClick={() => openEditModal(employee)}
               isIconOnly
-              style={global_styles().thirdStyle}
+              style={global_styles().secondaryStyle}
             >
               <Edit size={15} />
             </Button>
+            </TooltipGlobal>
           )}
           {actions.includes("Eliminar") && (
             <>
