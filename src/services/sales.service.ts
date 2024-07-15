@@ -3,7 +3,11 @@ import { API_URL } from "../utils/constants";
 import { get_token } from "../storage/localStorage";
 import { IInvalidationResponse } from "../types/DTE/invalidation.types";
 import { IGetSaleDetails, IGetSales } from "../types/sales.types";
-import { IGraphicForCategoryProductsForDates, IGraphicSubCategoryProductsForDates } from "@/types/reports/sales.reports.types";
+import {
+  IGetSaleByProduct,
+  IGraphicForCategoryProductsForDates,
+  IGraphicSubCategoryProductsForDates,
+} from "@/types/reports/sales.reports.types";
 
 export const post_sales = (
   pdf: string,
@@ -92,7 +96,7 @@ export const get_sales_by_status = (
 ) => {
   return axios.get<IGetSales>(
     API_URL +
-    `/sales/get-contigencia/${id}?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}&status=${status}`
+      `/sales/get-contigencia/${id}?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}&status=${status}`
   );
 };
 
@@ -112,23 +116,39 @@ export const get_graphic_for_category_products_for_dates = (
 ) => {
   return axios.get<IGraphicForCategoryProductsForDates>(
     API_URL +
-    "/sales/graphic-for-category-products-for-dates?startDate=" +
-    startDate +
-    "&endDate=" +
-    endDate +
-    "&branch=" +
-    branch
+      "/sales/graphic-for-category-products-for-dates?startDate=" +
+      startDate +
+      "&endDate=" +
+      endDate +
+      "&branch=" +
+      branch
   );
 };
 
-export const get_graphic_sub_category_products_for_dates = (id: number, startDate: string, endDate: string, branch = "") => {
+export const get_graphic_sub_category_products_for_dates = (
+  id: number,
+  startDate: string,
+  endDate: string,
+  branch = ""
+) => {
   return axios.get<IGraphicSubCategoryProductsForDates>(
     API_URL +
-    `/sales/graphic-sub-category-products-for-dates/${id}?startDate=` +
-    startDate +
-    "&endDate=" +
-    endDate +
-    "&branch=" +
-    branch
+      `/sales/graphic-sub-category-products-for-dates/${id}?startDate=` +
+      startDate +
+      "&endDate=" +
+      endDate +
+      "&branch=" +
+      branch
   );
-}
+};
+
+export const get_sales_by_product = (
+  startDate: string,
+  endDate: string,
+  branch = ""
+) => {
+  return axios.get<IGetSaleByProduct>(
+    API_URL +
+      `/sales/get-sales-by-product?startDate=${startDate}&endDate=${endDate}&branch=${branch}`
+  );
+};
