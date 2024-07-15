@@ -376,7 +376,7 @@ export const LayoutItems = () => {
               views.includes('Cargos de Empleados') ||
               views.includes('Usuarios') ||
               views.includes('Sucursales') ? (
-                <div className="flex flex-col items-center justify-start w-full px-6 ">
+                <div className="flex flex-col items-center justify-start w-full px-6  ">
                   <button
                     onClick={toggleDropdownMenu}
                     className="flex items-center w-full py-3 space-x-3 text-left text-black focus:outline-none focus:text-black"
@@ -393,7 +393,7 @@ export const LayoutItems = () => {
                   <div
                     id="menu1"
                     className={`flex flex-col w-full h-[900px] pb-1 overflow-hidden transition-all duration-500 ${
-                      isMenuOpen ? 'xl:max-h-56 max-h-44' : 'max-h-0'
+                      isMenuOpen ? 'xl:max-h-72 max-h-44' : 'max-h-0'
                     }`}
                   >
                     <div className="py-1">
