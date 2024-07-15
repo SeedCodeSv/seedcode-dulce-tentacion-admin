@@ -1,8 +1,10 @@
 import { SeedcodeCatalogosMhService } from "seedcode-catalogos-mh";
 import Layout from "../../layout/Layout";
 import { Input, Select, SelectItem } from "@nextui-org/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { formatDate } from "../../utils/dates";
+import GraphicProductCategory from "./Product/GraphicProductCategory";
+import { salesReportStore } from "@/store/reports/sales_report.store";
 
 function VentasPorProducto() {
   const service = new SeedcodeCatalogosMhService();
@@ -10,13 +12,21 @@ function VentasPorProducto() {
 
   const [startDate, setStartDate] = useState(formatDate());
   const [endDate, setEndDate] = useState(formatDate());
-  const [typePayment, setTypePayment] = useState("01");
+  const [typePayment, setTypePayment] = useState("");
+
+
+  const {getGraphicForCategoryProductsForDates} = salesReportStore()
+
+  useEffect(() => {
+    getGraphicForCategoryProductsForDates(startDate, endDate, typePayment)
+  }, [startDate, endDate, typePayment])
+
 
   return (
     <Layout title="Ventas por Producto">
       <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
-        <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
-          <div className="grid w-full grid-cols-3 gap-5">
+        <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
+          <div className="grid w-full gap-5 grdid-cols-1 md:grid-cols-3">
             <Input
               label="Fecha inicial"
               labelPlacement="outside"
@@ -65,6 +75,7 @@ function VentasPorProducto() {
             </Select>
           </div>
           <div className="grid grid-cols-3"></div>
+          <GraphicProductCategory startDate={startDate} endDate={endDate} branch="" />
         </div>
       </div>
     </Layout>

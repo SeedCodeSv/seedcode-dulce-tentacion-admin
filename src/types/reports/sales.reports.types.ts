@@ -121,18 +121,43 @@ export interface IDataProductGrafic {
 }
 
 export interface SaleTable {
-	id: number;
-	branch: string;
-	numberOfSales: string;
-	totalSales: string;
+  id: number;
+  branch: string;
+  numberOfSales: string;
+  totalSales: string;
 }
 
 export interface IGetSalesByDayTable {
-	ok: boolean;
-	sales: SaleTable[];
+  ok: boolean;
+  sales: SaleTable[];
 }
 
 export interface IGetSalesCount {
+  ok: boolean;
+  totalSales: number;
+}
+
+export interface ISaleCategoryProduct {
+  categoryId: number;
+  categoryName: string;
+  totalItems: string;
+}
+
+export interface IGraphicForCategoryProductsForDates {
+  ok: boolean;
+  message: string;
+  sales: ISaleCategoryProduct[];
+  totalSales: number;
+}
+
+export interface GraphicSubCategory {
+	subCategoryName: string;
+	totalItems: string;
+}
+
+export interface IGraphicSubCategoryProductsForDates {
 	ok: boolean;
+	message: string;
+	detailSales: GraphicSubCategory[];
 	totalSales: number;
 }

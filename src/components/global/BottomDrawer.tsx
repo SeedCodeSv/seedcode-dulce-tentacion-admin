@@ -40,7 +40,7 @@ export default function BottomDrawer(props: BottomDrawerProps) {
             )} //"fixed bottom-0 left-0 z-[60] right-0 p-4 bg-white shadow-xl rounded-t-2xl"}
           >
             <div className="flex items-center justify-center w-full">
-              <span className="w-16 h-2 border rounded bg-gray- dark:bg-gray-400"></span>
+              <span className="w-16 h-2 bg-gray-300 border rounded dark:bg-gray-400"></span>
             </div>
             <div className="w-full py-3">
               <p className="text-lg font-semibold text-center dark:text-white">{props.title}</p>
