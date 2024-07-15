@@ -1,4 +1,4 @@
-import { GraphicSubCategory } from '../../../types/reports/sales.reports.types';
+import { GraphicSubCategory, SaleProduct } from '../../../types/reports/sales.reports.types';
 import {
   IDataExpense,
   IDataSalesGrafic,
@@ -34,8 +34,12 @@ export interface ISalesReportStore {
   sales_count: number;
   graphic_for_category_products_for_dates: ISaleCategoryProduct[],
   graphic_sub_category_products_for_dates: GraphicSubCategory[],
-  getGraphicSubCategoryProductsForDates: (id:number, startDate:string, endDate:string, branch?:string) => void
-  getGraphicForCategoryProductsForDates: (startDate:string, endDate:string, branch?:string) => void
+  sales_products: SaleProduct[],
+  loading_sales_products: boolean
+  total_sales_product: number
+  getSalesProducts: (startDate: string, endDate: string, branch?: string) => void
+  getGraphicSubCategoryProductsForDates: (id: number, startDate: string, endDate: string, branch?: string) => void
+  getGraphicForCategoryProductsForDates: (startDate: string, endDate: string, branch?: string) => void
   getSalesCount: () => void;
   getSalePointOfSaleByBranch: (
     id: number,

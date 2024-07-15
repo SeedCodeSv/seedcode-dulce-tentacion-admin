@@ -161,3 +161,14 @@ export interface IGraphicSubCategoryProductsForDates {
 	detailSales: GraphicSubCategory[];
 	totalSales: number;
 }
+
+export interface SaleProduct {
+	productName: string;
+	totalItemSum: string;
+}
+
+export interface IGetSaleByProduct {
+	ok: boolean;
+	sales: SaleProduct[];
+	totalSales: number;
+}
