@@ -347,12 +347,14 @@ function Home() {
                     headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
                     field="branch"
                     header="Sucursal"
+                    bodyClassName={"dark:text-white"}
                   />
                   <Column
                     headerClassName="text-sm font-semibold"
                     headerStyle={style}
                     field="totalSales"
-                    header="Descuento"
+                    bodyClassName={"dark:text-white"}
+                    header="Total"
                     body={(rowData) => formatCurrency(Number(rowData.totalSales))}
                   />
                 </DataTable>
