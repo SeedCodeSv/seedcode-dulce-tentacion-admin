@@ -503,12 +503,24 @@ export const LayoutItems = () => {
                   <div
                     id="menu1"
                     className={`flex flex-col w-full h-[900px] pb-1 overflow-hidden transition-all duration-500 ${
-                      reports ? 'max-h-14' : 'max-h-0'
+                      reports ? 'max-h-28' : 'max-h-0'
                     }`}
                   >
                     <div className="py-1">
                       <NavLink
                         to={'/reports/sales-by-period'}
+                        className={({ isActive }) =>
+                          (isActive
+                            ? 'font-semibold bg-gray-300 dark:bg-gray-700 '
+                            : 'text-coffee-brown font-semibold border-white') +
+                          ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
+                        }
+                      >
+                        <Calendar size={iconSize} />
+                        <p className="ml-2 text-sm 2xl:text-base">Ventas por periodo</p>
+                      </NavLink>
+                      <NavLink
+                        to={'/reports/sales-by-product'}
                         className={({ isActive }) =>
                           (isActive
                             ? 'font-semibold bg-gray-300 dark:bg-gray-700'
@@ -517,7 +529,7 @@ export const LayoutItems = () => {
                         }
                       >
                         <Calendar size={iconSize} />
-                        <p className="ml-2 text-sm 2xl:text-base">Ventas por periodo</p>
+                        <p className="ml-2 text-sm 2xl:text-base">Ventas por produtos</p>
                       </NavLink>
                     </div>
                   </div>
