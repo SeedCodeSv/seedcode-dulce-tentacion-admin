@@ -290,18 +290,21 @@ function ListStudyLevel({ actions }: PProps) {
               headerClassName="text-sm font-semibold"
               headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
               field="id"
+              bodyClassName={'dark:text-white'}
               header="No."
             />
             <Column
               headerClassName="text-sm font-semibold"
               headerStyle={style}
               field="name"
+              bodyClassName={'dark:text-white'}
               header="Nombre"
             />
             <Column
               headerClassName="text-sm font-semibold"
               headerStyle={style}
               field="description"
+              bodyClassName={'dark:text-white'}
               header="Descripción"
             />
             <Column
@@ -310,15 +313,17 @@ function ListStudyLevel({ actions }: PProps) {
               body={(item) => (
                 <div className="flex gap-6">
                   {actions.includes('Editar') && (
-                    <Button
-                      onClick={() => handleEdit(item)}
-                      isIconOnly
-                      style={{
-                        backgroundColor: theme.colors.secondary,
-                      }}
-                    >
-                      <EditIcon style={{ color: theme.colors.primary }} size={20} />
-                    </Button>
+                    <TooltipGlobal text="Editar el registro" color="primary">
+                      <Button
+                        onClick={() => handleEdit(item)}
+                        isIconOnly
+                        style={{
+                          backgroundColor: theme.colors.secondary,
+                        }}
+                      >
+                        <EditIcon style={{ color: theme.colors.primary }} size={20} />
+                      </Button>
+                    </TooltipGlobal>
                   )}
                   {actions.includes('Eliminar') && (
                     <>
@@ -326,13 +331,15 @@ function ListStudyLevel({ actions }: PProps) {
                       {item.isActive ? (
                         <DeletePopUp studyLevel={item} />
                       ) : (
-                        <Button
-                          onClick={() => handleActivate(item.id)}
-                          isIconOnly
-                          style={global_styles().thirdStyle}
-                        >
-                          <RefreshCcw />
-                        </Button>
+                        <TooltipGlobal text="Activar la categoría" color="primary">
+                          <Button
+                            onClick={() => handleActivate(item.id)}
+                            isIconOnly
+                            style={global_styles().thirdStyle}
+                          >
+                            <RefreshCcw />
+                          </Button>
+                        </TooltipGlobal>
                       )}
                     </>
                   )}

@@ -108,14 +108,14 @@ const ListItem = (props: GridProps) => {
   const { studyLevel, deletePopover, handleEdit, actions, handleActive } = props;
   return (
     <>
-      <div className="flex w-full col-span-1 p-5 border-b shadow md:col-span-2 lg:col-span-3 xl:col-span-4">
+      <div className="flex w-full p-5 border shadow dark:border-gray-600 rounded-2xl">
         <div className="w-full">
           <div className="flex items-center w-full gap-2">
             <BookText className="text-[#274c77] dark:text-gray-400" size={20} />
             {studyLevel.name}
           </div>
           <div className="flex items-center w-full gap-2 mt-3">
-            <ScrollIcon className="text-[#274c77] dark:text-gray-400" size={20} />
+            <ScrollIcon className="text-[#274c77]  dark:text-gray-400" size={20} />
             {studyLevel.description}
           </div>
         </div>
