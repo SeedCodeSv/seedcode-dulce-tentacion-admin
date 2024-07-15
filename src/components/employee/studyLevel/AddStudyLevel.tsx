@@ -63,7 +63,7 @@ const AddStatusEmployee = (props: Props) => {
                 </>
               )}
             </div>
-            <div className="mt-2">
+            <div className="mt-2 ">
               <Textarea
                 label="Descripción"
                 labelPlacement="outside"
