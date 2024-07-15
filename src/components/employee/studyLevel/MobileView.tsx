@@ -59,7 +59,7 @@ const GridItem = (props: GridProps) => {
             {studyLevel.name}
           </div>
           <div className="flex w-full gap-2 mt-3">
-            <ScrollIcon className="text-[#00bbf9] dark:text-gray-400" size={20} />
+            <ScrollIcon className="text-[#274c77] dark:text-gray-400" size={20} />
             {studyLevel.description}
           </div>
           <div className="flex justify-between mt-5 w-ful">
@@ -115,7 +115,7 @@ const ListItem = (props: GridProps) => {
             {studyLevel.name}
           </div>
           <div className="flex items-center w-full gap-2 mt-3">
-            <ScrollIcon className="text-[#00bbf9] dark:text-gray-400" size={20} />
+            <ScrollIcon className="text-[#274c77] dark:text-gray-400" size={20} />
             {studyLevel.description}
           </div>
         </div>

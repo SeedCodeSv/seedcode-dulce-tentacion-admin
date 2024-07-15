@@ -1,18 +1,18 @@
-export const API_URL = 'https://shark-app-wcoqq.ondigitalocean.app/api';
- export const WS_URL = 'ws://shark-app-wcoqq.ondigitalocean.app/sales-gateway';
- 
+// export const API_URL = 'https://shark-app-wcoqq.ondigitalocean.app/api';
+//  export const WS_URL = 'ws://shark-app-wcoqq.ondigitalocean.app/sales-gateway';
+
 export const FACTURACION_API = 'https://cats-facturacion-43ay7.ondigitalocean.app/api';
 export const MH_QUERY = 'https://admin.factura.gob.sv/consultaPublica';
 export const ambiente = '00';
 export const version = 2;
-// export const API_URL = 'http://192.168.0.13:8080/api';
-// export const WS_URL = 'ws://192.168.0.13:8080/sales-gateway';
+export const API_URL = 'http://192.168.0.20:8080/api';
+export const WS_URL = 'ws://localhost:8080/sales-gateway';
 export const API_FIRMADOR = 'https://firmadorseedcodesv.online/firmardocumento/';
 export const MH_DTE = 'https://apitest.dtes.mh.gob.sv/fesv/recepciondte';
 export const MH_URL = 'https://apitest.dtes.mh.gob.sv/fesv/';
 export const AUTH_MH = 'https://apitest.dtes.mh.gob.sv/seguridad/auth';
 export const CHECK_URL = 'https://apitest.dtes.mh.gob.sv/fesv/recepcion/consultadte/';
-export const messages = { 
+export const messages = {
   error: 'Ocurrió un error al procesar la petición',
   success: 'Petición procesada con éxito',
 };
@@ -72,7 +72,8 @@ export const views_enabled = [
   'Nivel de estudio',
   'Estado del empleado',
   'Tipo de contratacion',
-  'Sub Categorias'
+  'Sub Categorias',
+  'Cargos de Empleados',
 ];
 
 export const views_seller = [
