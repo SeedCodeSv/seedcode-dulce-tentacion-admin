@@ -36,6 +36,7 @@ export interface ISalesReportStore {
   graphic_sub_category_products_for_dates: GraphicSubCategory[],
   sales_products: SaleProduct[],
   loading_sales_products: boolean
+  loading_sales_by_subcategory: boolean
   total_sales_product: number
   getSalesProducts: (startDate: string, endDate: string, branch?: string) => void
   getGraphicSubCategoryProductsForDates: (id: number, startDate: string, endDate: string, branch?: string) => void
