@@ -21,6 +21,7 @@ function VentasPorProducto() {
     getSalesProducts,
     sales_products,
     loading_sales_products,
+    total_sales_product
   } = salesReportStore();
 
   useEffect(() => {
@@ -86,7 +87,7 @@ function VentasPorProducto() {
               ))}
             </Select>
           </div>
-          <div className="w-full py-1 mt-5 border-b dark:border-gray-700">
+          <div className="w-full py-1 border-b dark:border-gray-700">
             <div className="w-full mt-5">
               {loading_sales_products ? (
                 <div className="flex flex-col items-center justify-center w-full h-64">
@@ -95,6 +96,9 @@ function VentasPorProducto() {
                 </div>
               ) : (
                 <>
+                <div className="w-full p-5 my-10 border shadow dark:border-gray-500">
+                <p className="text-lg font-semibold dark:text-white">Venta total : {formatCurrency(Number(total_sales_product))}</p>
+                </div>
                   <DataTable
                     value={sales_products}
                     className="shadow dark:text-white dark:bg-gray-950"
