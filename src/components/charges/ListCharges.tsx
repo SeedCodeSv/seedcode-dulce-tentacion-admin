@@ -44,13 +44,9 @@ interface IProps {
 function ListCharges({ actions }: IProps) {
   const { theme } = useContext(ThemeContext);
   const [openVaul, setOpenVaul] = useState(false);
-<<<<<<< HEAD
   const { windowSize } = useWindowSize();
   const { charges_paginated, getChargesPaginated, activateCharge } = 
     useChargesStore();
-=======
-  const { charges_paginated, getChargesPaginated, activateCharge } = useChargesStore();
->>>>>>> 8ea7f59d491d40eb39c104a000d95c49db9c5f9a
 
   const [selectedCharge, setSelectedCharge] = useState<{ id: number; name: string } | undefined>();
 
