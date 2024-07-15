@@ -68,7 +68,7 @@ function VentasPorPeriodo() {
   return (
     <Layout title="Ventas por Periodo">
       <div className="w-full h-full p-5 overflow-x-hidden overflow-y-hidden bg-gray-50 dark:bg-gray-800">
-        <div className="w-full h-full p-5 overflow-x-hidden overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
+        <div className="w-full h-full p-5 overflow-x-hidden overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
           <div className="grid w-full grid-cols-1 gap-5 md:grid-cols-3">
             <Input
               label="Fecha inicial"
@@ -190,9 +190,9 @@ function VentasPorPeriodo() {
             </div>
           </div>
 
-          <div className="flex flex-col md:flex-row w-full pt-10 gap-10">
-            <div className="flex flex-col items-center justify-center w-full h-32 border rounded-lg shadow dark:bg-gray-900 dark:border-gray-700">
-              <p className="text-lg md:text-2xl font-semibold text-gray-700 dark:text-white animated-count">
+          <div className="flex flex-col w-full gap-10 pt-10 md:flex-row">
+            <div className="flex flex-col items-center justify-center w-full h-32 border rounded-lg shadow dark:bg-gray-950 dark:border-gray-700">
+              <p className="text-lg font-semibold text-gray-700 md:text-2xl dark:text-white animated-count">
                 No. de ventas
               </p>
               {/* <p className="text-2xl font-semibold text-gray-700 dark:text-white animated-count">
@@ -204,23 +204,23 @@ function VentasPorPeriodo() {
                   {/* <p className="mt-3 text-xl font-semibold">Cargando...</p> */}
                 </div>
               ) : (
-                <p className="text-lg md:text-2xl font-semibold text-gray-700 dark:text-white animated-count">
+                <p className="text-lg font-semibold text-gray-700 md:text-2xl dark:text-white animated-count">
                   {sales_by_period?.countSales || 0}
                 </p>
               )}
             </div>
-            <div className="flex flex-col items-center justify-center w-full h-32 border rounded-lg shadow dark:bg-gray-900 dark:border-gray-700">
-              <p className="text-lg md:text-2xl font-semibold text-gray-700 dark:text-white animated-count">
+            <div className="flex flex-col items-center justify-center w-full h-32 border rounded-lg shadow dark:bg-gray-950 dark:border-gray-700">
+              <p className="text-lg font-semibold text-gray-700 md:text-2xl dark:text-white animated-count">
                 Total en ventas
               </p>
-              <div className="text-lg md:text-2xl text-gray-700 font-semibold dark:text-white animated-count">
+              <div className="text-lg font-semibold text-gray-700 md:text-2xl dark:text-white animated-count">
                 {loading_sales_period ? (
                   <div className="flex flex-col items-center justify-center w-full mt-2">
                     <div className="loader2"></div>
                     {/* <p className="mt-3 text-xl font-semibold">Cargando...</p> */}
                   </div>
                 ) : (
-                  <p className="text-lg md:text-2xl font-semibold text-gray-700 dark:text-white animated-count">
+                  <p className="text-lg font-semibold text-gray-700 md:text-2xl dark:text-white animated-count">
                     {formatCurrency(sales_by_period?.totalSales || 0)}
                   </p>
                 )}
@@ -288,7 +288,7 @@ function VentasPorPeriodo() {
                 )}
               </>
             )}
-            <div className="w-full p-5 mt-4 overflow-x-hidden bg-white border shadow dark:text-white dark:bg-gray-900 rounded-2xl">
+            <div className="w-full p-5 mt-4 overflow-x-hidden bg-white border shadow dark:text-white dark:bg-gray-950 rounded-2xl">
               <div className="w-full">
                 {sales_by_period_graph?.data && (
                   <SalesChartPeriod
