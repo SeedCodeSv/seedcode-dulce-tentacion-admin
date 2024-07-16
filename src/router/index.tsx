@@ -63,7 +63,7 @@ export const router = () => {
     },
     {
       path: "/actionRol",
-      element: views && views.includes("Permisos") && <ActionRol />,
+      element:  <ActionRol />,
     },
     {
       path: "/homeSeller",
@@ -196,7 +196,7 @@ export const router = () => {
     },
     {
       path: '/AddActionRol',
-      element: views && views.includes('Permisos') && <AddActionRol />,
+      element:   <AddActionRol />,
     },
     {
       path: '/reports/sales-by-period',
