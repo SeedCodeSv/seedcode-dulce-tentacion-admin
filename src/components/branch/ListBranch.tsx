@@ -170,9 +170,9 @@ function ListBranch() {
         <ListBranchProduct onclick={() => setBranchId(0)} id={BranchId} />
       ) : (
         <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
-          <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
+          <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
             <div className="hidden w-full grid-cols-3 gap-5 mb-4 md:grid ">{filters}</div>
-            <div className="grid md:flex md:justify-between w-full grid-cols-1 gap-5 mb-4 lg:grid-cols-2">
+            <div className="grid w-full grid-cols-1 gap-5 mb-4 md:flex md:justify-between lg:grid-cols-2">
               <div className="hidden md:flex">
                 <Button
                   style={global_styles().secondaryStyle}
@@ -252,7 +252,7 @@ function ListBranch() {
                         >
                           <div className="p-4 bg-white dark:bg-gray-800 rounded-t-[10px] flex-1">
                             <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-gray-300 dark:bg-gray-400 mb-8" />
-                            <Drawer.Title className="mb-4 dark:text-white font-medium">
+                            <Drawer.Title className="mb-4 font-medium dark:text-white">
                               Filtros disponibles
                             </Drawer.Title>
                             <div className="flex flex-col gap-3">
@@ -278,7 +278,7 @@ function ListBranch() {
                 </div>
               </div>
             </div>
-            <div className="flex flex-col gap-5 sm:flex-row sm:items-center justify-between w-full mb-5">
+            <div className="flex flex-col justify-between w-full gap-5 mb-5 sm:flex-row sm:items-center">
               <Switch
                 defaultSelected
                 classNames={{

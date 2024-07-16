@@ -1,3 +1,4 @@
+import { ReactNode } from 'react';
 import { IPagination } from './global.types';
 
 export interface IView {
@@ -43,4 +44,11 @@ export interface View {
 export interface Actions {
   id: number[];
   name: string[];
+}
+
+export interface SidebarLinkGroupProps {
+  children: (handleClick: () => void, open: boolean) => ReactNode;
+  activeCondition: boolean;
+  isOpen: boolean;
+  onGroupClick: () => void;
 }
