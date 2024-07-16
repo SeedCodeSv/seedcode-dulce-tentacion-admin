@@ -2,7 +2,7 @@
   "view_actions": [
     {
       "view": "Usuarios",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Cambiar contraseña"]
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Cambiar Contraseña"]
     },
     {
       "view": "Inicio",

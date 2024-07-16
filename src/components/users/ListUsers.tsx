@@ -332,12 +332,7 @@ function ListUsers({ actions }: Props) {
                 field="id"
                 header="No."
               />
-              <Column
-                headerClassName="text-sm font-semibold"
-                headerStyle={style}
-                field="employee.fullName"
-                header="Empleado"
-              />
+              
               <Column
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}

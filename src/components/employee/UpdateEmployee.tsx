@@ -38,7 +38,6 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
       getCat013Municipios(props.data?.department ?? codeDepartamento);
     }
     getCat013Municipios(codeDepartamento);
-
   }, [codeDepartamento, props.data?.address.departamento]);
   const { patchEmployee } = useEmployeeStore();
   const [dataCreate, setDataCreate] = useState<EmployeePayload>({
@@ -73,12 +72,8 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
   });
   const createEmployee = async () => {
     try {
-       await patchEmployee(dataCreate, props.data?.id || 0);
-      // if (data) {
-      //   props.id(0);
-      // } else {
-      //   toast.error('Error al editar el empleado');
-      // }
+      await patchEmployee(dataCreate, props.data?.id || 0);
+      props.id(0);
     } catch (error) {
       toast.error('Error al editar el empleado');
     }
@@ -513,6 +508,7 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
                     placeholder={props.data?.address.nombreMunicipio ?? 'Seleccione el municipio'}
                     className="dark:text-white"
                     variant="bordered"
+                    onChange={(e) => setDataCreate({ ...dataCreate, municipality: e.target.value })}
                     classNames={{
                       base: 'font-semibold text-gray-500 text-sm',
                     }}
@@ -521,12 +517,11 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
                     {cat_013_municipios.map((dep) => (
                       <AutocompleteItem
                         onClick={() => {
-                          setCodeDepartamento(dep.codigo),
-                            setDataCreate({
-                              ...dataCreate,
-                              municipality: dep.codigo,
-                              municipalityName: dep.valores,
-                            });
+                          setDataCreate({
+                            ...dataCreate,
+                            municipality: dep.codigo,
+                            municipalityName: dep.valores,
+                          });
                         }}
                         value={dep.codigo}
                         key={JSON.stringify(dep)}
