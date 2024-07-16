@@ -2,103 +2,115 @@
   "view_actions": [
     {
       "view": "Usuarios",
-      "actions": ["Mostrar", "Crear", "Editar", "Eliminar", "Cambiar contraseña"]
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Cambiar contraseña"]
     },
     {
       "view": "Inicio",
-      "actions": ["Mostrar", "Crear", "Editar", "Eliminar"]
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
     },
     {
       "view": "Inicio de ventas",
-      "actions": ["Mostrar", "Crear", "Editar", "Eliminar"]
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
     },
     {
       "view": "Productos",
-      "actions": ["Mostrar", "Crear", "Editar", "Eliminar"]
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
     },
     {
       "view": "Permisos",
-      "actions": ["Mostrar", "Crear", "Editar", "Eliminar"]
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
     },
     {
       "view": "Categorias",
-      "actions": ["Mostrar", "Crear", "Editar", "Eliminar"]
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
     },
     {
-      "view": "Cargos",
-      "actions": ["Mostrar", "Crear", "Editar", "Eliminar"]
+      "view": "Cargos de Empleados",
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
     },
     {
       "view": "Sub Categorias",
-      "actions": ["Mostrar", "Crear", "Editar", "Eliminar"]
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
     },
     {
       "view": "Sucursales",
-      "actions": ["Mostrar", "Crear", "Editar", "Eliminar"]
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
     },
     {
       "view": "Empleados",
-      "actions": ["Mostrar", "Crear", "Editar", "Eliminar"]
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
     },
     {
       "view": "Clientes",
-      "actions": ["Mostrar", "Crear", "Editar", "Eliminar"]
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
     },
     {
       "view": "Reportes",
-      "actions": ["Mostrar", "Crear", "Editar", "Eliminar"]
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
     },
     {
-      "view": "Categoria de gastos",
-      "actions": ["Mostrar", "Crear", "Editar", "Eliminar"]
+      "view": "Categoria de Gastos",
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
     },
     {
       "view": "Gastos",
-      "actions": ["Mostrar", "Crear", "Editar", "Eliminar"]
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
     },
     {
       "view": "Ventas",
-      "actions": ["Mostrar", "Crear", "Editar", "Eliminar"]
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
     },
     {
-      "view": "Reporte de ventas",
-      "actions": ["Mostrar", "Crear", "Editar", "Eliminar"]
+      "view": "Reporte de Ventas",
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
     },
     {
       "view": "Modulos",
-      "actions": ["Mostrar", "Crear", "Editar", "Eliminar"]
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
     },
     {
       "view": "Proveedores",
-      "actions": ["Mostrar", "Crear", "Editar", "Eliminar"]
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
     },
     {
-      "view": "Ordenes de compra",
-      "actions": ["Mostrar", "Crear", "Editar", "Eliminar"]
+      "view": "Ordenes de Compra",
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
     },
     {
       "view": "Descuentos",
-      "actions": ["Mostrar", "Crear", "Editar", "Eliminar"]
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
     },
     {
-      "view": "Creditos de clientes",
-      "actions": ["Mostrar", "Crear", "Editar", "Eliminar"]
+      "view": "Creditos de Clientes",
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
     },
     {
-      "view": "Nivel de estudio",
-      "actions": ["Mostrar", "Crear", "Editar", "Eliminar"]
+      "view": "Nivel de Estudio",
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
     },
     {
-      "view": "Estado del empleado",
-      "actions": ["Mostrar", "Crear", "Editar", "Eliminar"]
+      "view": "Estados del Empleado",
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
     },
     {
-      "view": "Tipo de contratacion",
-      "actions": ["Mostrar", "Crear", "Editar", "Eliminar"]
+      "view": "Tipo de Contratacion",
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
     },
     {
-      "view": "Sub Categorias",
-      "actions": ["Mostrar", "Crear", "Editar", "Eliminar"]
+      "view": "Ventas por Periodo",
+      "actions": ["Mostrar", "Exportar Excel", "Descargar PDF"]
+    },
+    {
+      "view": "Prueba de Vistas 1",
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
+    },
+    {
+      "view": "Prueba de Vistas 2",
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
+    },
+    {
+      "view": "Prueba de Vistas 3",
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
     }
   ]
 }

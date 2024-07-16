@@ -11,20 +11,16 @@ import { useActionsRolStore } from '@/store/actions_rol.store';
 import Layout from '@/layout/Layout';
 import { ThemeContext } from '@/hooks/useTheme';
 import { useAuthStore } from '@/store/auth.store';
-
 type Permission = 'Mostrar' | 'Agregar' | 'Editar' | 'Eliminar' | 'Cambiar Contraseña';
 
 const PermissionTable: React.FC = () => {
   const permissions: Permission[] = ['Mostrar', 'Agregar', 'Editar', 'Eliminar'];
-
   const { OnGetViewasAction, viewasAction } = useViewsStore();
   const [selectedActions, setSelectedActions] = useState<{ [viewId: number]: string[] }>({});
   const [defaultActions, setDefaultActions] = useState<{ [viewId: number]: string[] }>({});
-
   const { OnGetActionsByRolePage, roleActionsPage } = useActionsRolStore();
   const [dataRoles, setDataRoles] = useState<Role[]>([]);
   const [selectedCustomer, setSelectedCustomer] = useState(1);
-
   useEffect(() => {
     const fetchRoles = async () => {
       try {
@@ -43,11 +39,9 @@ const PermissionTable: React.FC = () => {
     fetchRoles();
     OnGetViewasAction();
   }, [OnGetViewasAction, OnGetActionsByRolePage]);
-
   const selectedCustomerKey = useMemo(() => {
     return selectedCustomer.toString() ?? dataRoles[0].id.toString();
   }, [selectedCustomer]);
-
   useEffect(() => {
     if (selectedCustomer === 0) {
       if (dataRoles.length > 0) {
@@ -55,7 +49,6 @@ const PermissionTable: React.FC = () => {
       }
     }
   }, [dataRoles]);
-
   useEffect(() => {
     if (viewasAction) {
       const initialSelectedActions: { [viewId: number]: string[] } = {};
@@ -74,7 +67,6 @@ const PermissionTable: React.FC = () => {
       setDefaultActions(initialDefaultActions);
     }
   }, [viewasAction, roleActionsPage]);
-
   const handleSelectAllActions = (viewId: number) => {
     setSelectedActions((prev) => {
       const actions = prev[viewId] || [];
@@ -101,7 +93,6 @@ const PermissionTable: React.FC = () => {
       }
     });
   };
-
   const handleSelectAction = (viewId: number, action: string) => {
     setSelectedActions((prev) => {
       const actions = prev[viewId] || [];
@@ -120,11 +111,9 @@ const PermissionTable: React.FC = () => {
       return prev;
     });
   };
-
   const { OnGetActionsByRole } = useActionsRolStore();
   const { user } = useAuthStore();
   const navigate = useNavigate();
-
   const handleSubmit = async () => {
     if (selectedCustomer === 0) {
       toast.error('Selecciona el rol');
@@ -148,7 +137,6 @@ const PermissionTable: React.FC = () => {
             });
         })
         .filter((id) => id !== null);
-
       const payload = {
         actionIds,
         roleId: selectedCustomer,
@@ -161,9 +149,7 @@ const PermissionTable: React.FC = () => {
       toast.error('Error al asignar acciones');
     }
   };
-
   const { theme } = useContext(ThemeContext);
-
   const renderSection = (view: { id: number; name: string }) => (
     <div className="w-full sm:w-1/3 p-2" key={view.id}>
       <div className="mb-4 dark:bg-gray-900 bg-white shadow-lg border border-gray-300 rounded-lg overflow-hidden">
@@ -219,17 +205,19 @@ const PermissionTable: React.FC = () => {
       </div>
     </div>
   );
-
   return (
     <Layout title="Acciones por rol">
       <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800 relative">
         <div className="w-full h-full p-5 overflow-y-auto bg-white shadow-xl rounded-xl dark:bg-gray-900">
           <div className="flex flex-col lg:flex-row justify-between items-center w-full gap-5 mb-5 lg:mb-10 lg:gap-0">
-            <div onClick={ () => navigate('/actionRol')} className="flex justify-start w-full lg:w-auto cursor-pointer">
+            <div
+              onClick={() => navigate('/actionRol')}
+              className="flex justify-start w-full lg:w-auto cursor-pointer"
+            >
               <ArrowLeft
                 onClick={() => navigate('/actionRol')}
                 className="text-gray-500 cursor-pointer hover:text-gray-700"
-              /> 
+              />
               <h1 className="dark:text-white text-center">Regresar</h1>
             </div>
 
@@ -280,5 +268,4 @@ const PermissionTable: React.FC = () => {
     </Layout>
   );
 };
-
 export default PermissionTable;

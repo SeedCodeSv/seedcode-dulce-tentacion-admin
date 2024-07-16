@@ -167,19 +167,19 @@ export const router = () => {
     },
     {
       path: '/AddPromotions',
-      element : views && views.includes('Descuentos') && <AddPromotions />,
+      element: views && views.includes('Descuentos') && <AddPromotions />,
     },
     {
       path: '/AddEmployee',
       element: views && views.includes('Empleados') && <AddEmployee />,
     },
     {
-      path:  '/AddActionRol',
+      path: '/AddActionRol',
       element: views && views.includes('Permisos') && <AddActionRol />,
     },
     {
       path: '/reports/sales-by-period',
-      element : views && views.includes('Reportes') && <VentasPorPeriodo />,
+      element: views && views.includes('Ventas por Periodo') && <VentasPorPeriodo />,
     },
     {
       path: '*',
