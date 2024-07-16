@@ -162,8 +162,8 @@ function AddProduct() {
 
   return (
     <Layout title="Nuevo producto">
-      <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
-        <div className="w-full h-full p-4 overflow-y-auto bg-white shadow md:p-10 rounded-xl dark:bg-gray-900">
+      <div className="w-full h-full p-4 md:p-10 md:px-12">
+        <div className="w-full h-full p-4 overflow-y-auto bg-white shadow custom-scrollbar md:p-8 dark:bg-gray-900">
           <button
             onClick={() => navigate("/products")}
             className="flex items-center gap-2 bg-transparent"

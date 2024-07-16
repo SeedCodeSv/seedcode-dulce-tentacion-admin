@@ -31,24 +31,28 @@ function TableBranch(props: Props) {
             borderTopLeftRadius: '10px',
           }}
           field="id"
+          bodyClassName={"dark:text-white"}
           header="No."
         />
         <Column
           headerClassName="text-sm font-semibold"
           headerStyle={global_styles().darkStyle}
           field="name"
+          bodyClassName={"dark:text-white"}
           header="Nombre"
         />
         <Column
           headerClassName="text-sm font-semibold"
           headerStyle={global_styles().darkStyle}
           field="phone"
+          bodyClassName={"dark:text-white"}
           header="Teléfono"
         />
         <Column
           headerClassName="text-sm font-semibold"
           headerStyle={global_styles().darkStyle}
           field="address"
+          bodyClassName={"dark:text-white"}
           header="Dirección"
         />
         <Column
@@ -56,6 +60,7 @@ function TableBranch(props: Props) {
             ...global_styles().darkStyle,
             borderTopRightRadius: '10px',
           }}
+          bodyClassName={"dark:text-white"}
           header="Acciones"
           body={(item) => props.actionsElement(item)}
         />

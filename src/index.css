@@ -64,7 +64,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply text-base font-normal bg-background text-foreground font-satoshi;
   }
 }
 
@@ -146,4 +146,160 @@
     transform: translateY(0);
     opacity: 1;
   }
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('./assets/fonts/Satoshi-Light.woff2') format('woff2'),
+       url('./assets/fonts/Satoshi-Light.woff') format('woff'),
+       url('./assets/fonts/Satoshi-Light.ttf') format('truetype');
+       font-weight: 300;
+       font-display: swap;
+       font-style: normal;
+}
+
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('./assets/fonts/Satoshi-LightItalic.woff2') format('woff2'),
+       url('./assets/fonts/Satoshi-LightItalic.woff') format('woff'),
+       url('./assets/fonts/Satoshi-LightItalic.ttf') format('truetype');
+       font-weight: 300;
+       font-display: swap;
+       font-style: italic;
+}
+
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('./assets/fonts/Satoshi-Regular.woff2') format('woff2'),
+       url('./assets/fonts/Satoshi-Regular.woff') format('woff'),
+       url('./assets/fonts/Satoshi-Regular.ttf') format('truetype');
+       font-weight: 400;
+       font-display: swap;
+       font-style: normal;
+}
+
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('./assets/fonts/Satoshi-Italic.woff2') format('woff2'),
+       url('./assets/fonts/Satoshi-Italic.woff') format('woff'),
+       url('./assets/fonts/Satoshi-Italic.ttf') format('truetype');
+       font-weight: 400;
+       font-display: swap;
+       font-style: italic;
+}
+
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('./assets/fonts/Satoshi-Medium.woff2') format('woff2'),
+       url('./assets/fonts/Satoshi-Medium.woff') format('woff'),
+       url('./assets/fonts/Satoshi-Medium.ttf') format('truetype');
+       font-weight: 500;
+       font-display: swap;
+       font-style: normal;
+}
+
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('./assets/fonts/Satoshi-MediumItalic.woff2') format('woff2'),
+       url('./assets/fonts/Satoshi-MediumItalic.woff') format('woff'),
+       url('./assets/fonts/Satoshi-MediumItalic.ttf') format('truetype');
+       font-weight: 500;
+       font-display: swap;
+       font-style: italic;
+}
+
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('./assets/fonts/Satoshi-Bold.woff2') format('woff2'),
+       url('./assets/fonts/Satoshi-Bold.woff') format('woff'),
+       url('./assets/fonts/Satoshi-Bold.ttf') format('truetype');
+       font-weight: 700;
+       font-display: swap;
+       font-style: normal;
+}
+
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('./assets/fonts/Satoshi-BoldItalic.woff2') format('woff2'),
+       url('./assets/fonts/Satoshi-BoldItalic.woff') format('woff'),
+       url('./assets/fonts/Satoshi-BoldItalic.ttf') format('truetype');
+       font-weight: 700;
+       font-display: swap;
+       font-style: italic;
+}
+
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('./assets/fonts/Satoshi-Black.woff2') format('woff2'),
+       url('./assets/fonts/Satoshi-Black.woff') format('woff'),
+       url('./assets/fonts/Satoshi-Black.ttf') format('truetype');
+       font-weight: 900;
+       font-display: swap;
+       font-style: normal;
+}
+
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('./assets/fonts/Satoshi-BlackItalic.woff2') format('woff2'),
+       url('./assets/fonts/Satoshi-BlackItalic.woff') format('woff'),
+       url('./assets/fonts/Satoshi-BlackItalic.ttf') format('truetype');
+       font-weight: 900;
+       font-display: swap;
+       font-style: italic;
+}
+
+.fadeIn {
+  animation: 0.5s fadeIn ease-in;
+}
+
+.fadeOut {
+  animation: 0.5s fadeOut ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-20px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate(0px, 0px);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translate(0px, 0px);
+  }
+  to {
+    transform: translate(-20px, 0);
+    opacity: 0;
+  }
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }

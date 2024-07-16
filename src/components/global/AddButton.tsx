@@ -1,11 +1,12 @@
-import { Button } from "@nextui-org/react";
-import { Plus } from "lucide-react";
-import { useContext } from "react";
-import { ThemeContext } from "../../hooks/useTheme";
-import TooltipGlobal from "./TooltipGlobal";
+import { Button } from '@nextui-org/react';
+import { Plus } from 'lucide-react';
+import { useContext } from 'react';
+import { ThemeContext } from '../../hooks/useTheme';
+import TooltipGlobal from './TooltipGlobal';
 
 interface Props {
   onClick: () => void;
+  text?: string;
 }
 
 function AddButton(props: Props) {
@@ -26,7 +27,7 @@ function AddButton(props: Props) {
         className="hidden font-semibold md:flex"
         type="button"
       >
-        Agregar nuevo
+        {props.text ? props.text : 'Agregar nuevo'}
       </Button>
       <TooltipGlobal text="Agregar nuevo" color="primary">
         <Button
