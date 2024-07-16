@@ -32,3 +32,8 @@ export interface GroupedAction {
   view: string;
   action: string[];
 }
+
+export interface ICraeteView {
+  name : string 
+  type : string
+}

@@ -195,12 +195,12 @@ export const router = () => {
       element: views && views.includes("Empleados") && <AddEmployee />,
     },
     {
-      path: "/AddActionRol",
-      element: views && views.includes("Permisos") && <AddActionRol />,
+      path: '/AddActionRol',
+      element: views && views.includes('Permisos') && <AddActionRol />,
     },
     {
-      path: "/reports/sales-by-period",
-      element: views && views.includes("Reportes") && <VentasPorPeriodo />,
+      path: '/reports/sales-by-period',
+      element: views && views.includes('Ventas por Periodo') && <VentasPorPeriodo />,
     },
     {
       path: "/reports/sales-by-product",
