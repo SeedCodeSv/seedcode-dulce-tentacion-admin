@@ -100,7 +100,7 @@ export const LayoutItems = () => {
     },
     {
       name: "Sub Categorías",
-      path: "/sub-categories",
+      path: "/subCategories",
       show: validateIfArrayContain(views, ["Sub Categorias"]),
       icon: () => <List size={15} />,
     },
@@ -221,7 +221,7 @@ export const LayoutItems = () => {
                     activeCondition={validate_pathname(pathname, [
                       "products",
                       "categories",
-                      "subcategories",
+                      "subCategories",
                       "orders",
                     ])}
                     isOpen={openGroup === "productos"}
@@ -234,7 +234,7 @@ export const LayoutItems = () => {
                             validate_pathname(pathname, [
                               "products",
                               "categories",
-                              "subcategories",
+                              "subCategories",
                               "orders",
                             ]) && "bg-gray-200 dark:bg-gray-700",
                             "group cursor-pointer relative flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700"

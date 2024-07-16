@@ -3,6 +3,7 @@ import { IGetSubCategoriesPaginated, ISubCategory, ISubCategoryPayload } from ".
 export interface SubCategoryStore {
   sub_categories: ISubCategory[];
   sub_categories_paginated: IGetSubCategoriesPaginated;
+  loading_sub_categories: boolean;
   getSubCategoriesList: () => void;
   getSubCategoriesPaginated: (page: number, limit: number, name: string) => void;
   postSubCategory: (payload: ISubCategoryPayload) => void;

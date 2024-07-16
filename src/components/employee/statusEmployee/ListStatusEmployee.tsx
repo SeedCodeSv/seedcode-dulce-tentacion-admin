@@ -22,9 +22,8 @@ import {
   RefreshCcw,
   SearchIcon,
 } from 'lucide-react';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
 import classNames from 'classnames';
+import NO_DATA from '@/assets/svg/no_data.svg';
 import { ThemeContext } from '../../../hooks/useTheme';
 import { global_styles } from '../../../styles/global.styles';
 import AddButton from '../../global/AddButton';
@@ -72,10 +71,10 @@ function ListStatusEmployee({ actions }: PProps) {
 
   const modalAdd = useDisclosure();
 
-  const style = {
-    backgroundColor: theme.colors.dark,
-    color: theme.colors.primary,
-  };
+  // const style = {
+  //   backgroundColor: theme.colors.dark,
+  //   color: theme.colors.primary,
+  // };
 
   const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
 
@@ -282,67 +281,179 @@ function ListStatusEmployee({ actions }: PProps) {
           />
         )}
         {view === 'table' && (
-          <DataTable
-            className="w-full dark:text-whit"
-            emptyMessage="No se encontraron resultados"
-            value={paginated_status_employee.employeeStatus}
-            tableStyle={{ minWidth: '50rem' }}
-            loading={loading_status_employee}
-          >
-            <Column
-              headerClassName="text-sm font-semibold"
-              headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
-              field="id"
-              bodyClassName={'dark:text-white'}
-              header="No."
-            />
-            <Column
-              headerClassName="text-sm font-semibold"
-              headerStyle={style}
-              field="name"
-              bodyClassName={'dark:text-white'}
-              header="Nombre"
-            />
-            <Column
-              headerStyle={{ ...style, borderTopRightRadius: '10px' }}
-              header="Acciones"
-              body={(item) => (
-                <div className="flex gap-6">
-                  {actions.includes('Editar') && (
-                    <TooltipGlobal text="Editar el registro" color="primary">
-                      <Button
-                        onClick={() => handleEdit(item)}
-                        isIconOnly
-                        style={{
-                          backgroundColor: theme.colors.secondary,
-                        }}
-                      >
-                        <EditIcon style={{ color: theme.colors.primary }} size={20} />
-                      </Button>
-                    </TooltipGlobal>
-                  )}
-                  {actions.includes('Eliminar') && (
+          <>
+            <div className="max-h-[400px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
+              <table className="w-full">
+                <thead className="sticky top-0 z-20 bg-white">
+                  <tr>
+                    <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                      No.
+                    </th>
+                    <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                      Nombre
+                    </th>
+                    {/* <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                      Código
+                    </th> */}
+                    {/* <th className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                    Descripción
+                  </th> */}
+                    <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                      Acciones
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="max-h-[600px] w-full overflow-y-auto">
+                  {loading_status_employee ? (
+                    <tr>
+                      <td colSpan={5} className="p-3 text-sm text-center text-slate-500">
+                        <div className="flex flex-col items-center justify-center w-full h-64">
+                          <div className="loader"></div>
+                          <p className="mt-3 text-xl font-semibold">Cargando...</p>
+                        </div>
+                      </td>
+                    </tr>
+                  ) : (
                     <>
-                      {/* <DeletePopUp statusEmployees={item} /> */}
-                      {item.isActive ? (
-                        <DeletePopUp statusEmployees={item} />
+                      {paginated_status_employee.employeeStatus.length > 0 ? (
+                        <>
+                          {paginated_status_employee.employeeStatus.map((employeeStatus) => (
+                            <tr className="border-b border-slate-200">
+                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                {employeeStatus.id}
+                              </td>
+                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
+                                {employeeStatus.name}
+                              </td>
+                              {/* <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                              {employeeStatus.}
+                            </td> */}
+                              {/* <td className="p-3 text-sm text-slate-500 whitespace-nowrap dark:text-slate-100">
+                              {categories.subCategory.name}
+                            </td> */}
+                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                <div className="flex w-full gap-5">
+                                  {actions.includes('Editar') && (
+                                    <TooltipGlobal text="Editar">
+                                      <Button
+                                        onClick={() => {
+                                          handleEdit(employeeStatus);
+
+                                          modalAdd.onOpen();
+                                        }}
+                                        isIconOnly
+                                        style={{
+                                          backgroundColor: theme.colors.secondary,
+                                        }}
+                                      >
+                                        <EditIcon
+                                          style={{
+                                            color: theme.colors.primary,
+                                          }}
+                                          size={20}
+                                        />
+                                      </Button>
+                                    </TooltipGlobal>
+                                  )}
+                                  {actions.includes('Eliminar') && (
+                                    <>
+                                      {employeeStatus.isActive ? (
+                                        <DeletePopUp statusEmployees={employeeStatus} />
+                                      ) : (
+                                        <TooltipGlobal text="Activar">
+                                          <Button
+                                            onClick={() => handleActivate(employeeStatus.id)}
+                                            isIconOnly
+                                            style={global_styles().thirdStyle}
+                                          >
+                                            <RefreshCcw />
+                                          </Button>
+                                        </TooltipGlobal>
+                                      )}
+                                    </>
+                                  )}
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </>
                       ) : (
-                        <TooltipGlobal text="Activar la categoría" color="primary">
-                          <Button
-                            onClick={() => handleActivate(item.id)}
-                            isIconOnly
-                            style={global_styles().thirdStyle}
-                          >
-                            <RefreshCcw />
-                          </Button>
-                        </TooltipGlobal>
+                        <tr>
+                          <td colSpan={5}>
+                            <div className="flex flex-col items-center justify-center w-full">
+                              <img src={NO_DATA} alt="X" className="w-32 h-32" />
+                              <p className="mt-3 text-xl">No se encontraron resultados</p>
+                            </div>
+                          </td>
+                        </tr>
                       )}
                     </>
                   )}
-                </div>
-              )}
-            />
-          </DataTable>
+                </tbody>
+              </table>
+            </div>
+          </>
+          // <DataTable
+          //   className="w-full dark:text-whit"
+          //   emptyMessage="No se encontraron resultados"
+          //   value={paginated_status_employee.employeeStatus}
+          //   tableStyle={{ minWidth: '50rem' }}
+          //   loading={loading_status_employee}
+          // >
+          //   <Column
+          //     headerClassName="text-sm font-semibold"
+          //     headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
+          //     field="id"
+          //     bodyClassName={'dark:text-white'}
+          //     header="No."
+          //   />
+          //   <Column
+          //     headerClassName="text-sm font-semibold"
+          //     headerStyle={style}
+          //     field="name"
+          //     bodyClassName={'dark:text-white'}
+          //     header="Nombre"
+          //   />
+          //   <Column
+          //     headerStyle={{ ...style, borderTopRightRadius: '10px' }}
+          //     header="Acciones"
+          //     body={(item) => (
+          //       <div className="flex gap-6">
+          //         {actions.includes('Editar') && (
+          //           <TooltipGlobal text="Editar el registro" color="primary">
+          //             <Button
+          //               onClick={() => handleEdit(item)}
+          //               isIconOnly
+          //               style={{
+          //                 backgroundColor: theme.colors.secondary,
+          //               }}
+          //             >
+          //               <EditIcon style={{ color: theme.colors.primary }} size={20} />
+          //             </Button>
+          //           </TooltipGlobal>
+          //         )}
+          //         {actions.includes('Eliminar') && (
+          //           <>
+          //             {/* <DeletePopUp statusEmployees={item} /> */}
+          //             {item.isActive ? (
+          //               <DeletePopUp statusEmployees={item} />
+          //             ) : (
+          //               <TooltipGlobal text="Activar la categoría" color="primary">
+          //                 <Button
+          //                   onClick={() => handleActivate(item.id)}
+          //                   isIconOnly
+          //                   style={global_styles().thirdStyle}
+          //                 >
+          //                   <RefreshCcw />
+          //                 </Button>
+          //               </TooltipGlobal>
+          //             )}
+          //           </>
+          //         )}
+          //       </div>
+          //     )}
+          //   />
+          // </DataTable>
         )}
         {paginated_status_employee.totalPag > 1 && (
           <>

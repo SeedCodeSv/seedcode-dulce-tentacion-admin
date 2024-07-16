@@ -8,6 +8,7 @@ import { useBranchesStore } from "../../store/branches.store";
 import { useContext, useEffect, useState } from "react";
 // import { EmployeePayload } from '../../types/employees.types';
 // import { useEmployeeStore } from '../../store/employee.store';
+//import * as yup from 'yup';
 import { ThemeContext } from "../../hooks/useTheme";
 import { useChargesStore } from "../../store/charges.store";
 import { useBillingStore } from "../../store/facturation/billing.store";
@@ -76,6 +77,17 @@ function AddEmployee() {
     branchId: 0,
     // addressId: 0,
   });
+
+  // const validationSchema = yup.object().shape({
+  //   firstName: yup.string().required('El primer nombre es requerido'),
+  //   firstLastName: yup.string().required('El primer apellido es requerida'),
+  //   phone: yup.string().required('El teléfono es requerido'),
+  //   dui: yup.string().required('El DUI es requerido'),
+  //   departamento: yup.string().required('El departamento es requerido'),
+  //   municipio: yup.string().required('El municipio es requerido'),
+  //   complemento: yup.string().required('El complemento es requerido'),
+  // });
+
   const createEmployee = async () => {
     try {
       const data = await postEmployee(dataCreate);

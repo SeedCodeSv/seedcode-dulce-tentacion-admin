@@ -31,19 +31,21 @@ import MobileView from './MobileView';
 import AddButton from '../global/AddButton';
 import Pagination from '../global/Pagination';
 import { User } from '../../types/users.types';
-import { Drawer } from 'vaul';
 import { global_styles } from '../../styles/global.styles';
 import classNames from 'classnames';
 import { limit_options } from '../../utils/constants';
 import SmPagination from '../global/SmPagination';
 import { Search } from 'lucide-react';
 import HeadlessModal from '../global/HeadlessModal';
+import useWindowSize from '@/hooks/useWindowSize';
+import TooltipGlobal from '../global/TooltipGlobal';
+import BottomDrawer from '../global/BottomDrawer';
 interface Props {
   actions: string[];
 }
 
 function ListUsers({ actions }: Props) {
-  const { theme, context } = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
   const [limit, setLimit] = useState(5);
   const { users_paginated, getUsersPaginated } = useUsersStore();
   const [user, setUser] = useState<User | undefined>();
@@ -64,8 +66,11 @@ function ListUsers({ actions }: Props) {
     backgroundColor: theme.colors.dark,
     color: theme.colors.primary,
   };
+  const { windowSize } = useWindowSize();
 
-  const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
+  const [view, setView] = useState<'table' | 'grid' | 'list'>(
+    windowSize.width < 768 ? 'grid' : 'table'
+  );
 
   const [userName, setUserName] = useState('');
   const [rol, setRol] = useState('')
@@ -79,8 +84,8 @@ function ListUsers({ actions }: Props) {
   return (
     <>
       <div className="w-full h-full p-5 bg-gray-100 dark:bg-gray-800">
-        <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
-          <div className="flex flex-col justify-between w-full gap-5 lg:flex-row lg:gap-0">
+      <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
+      <div className="flex flex-col justify-between w-full gap-5 lg:flex-row lg:gap-0">
             <div className="hidden w-full gap-5 md:flex">
               <div className="w-1/2">
                 <Input
@@ -176,12 +181,8 @@ function ListUsers({ actions }: Props) {
               </ButtonGroup>
               <div className="flex items-center gap-5">
                 <div className="block md:hidden">
-                  <Drawer.Root
-                    shouldScaleBackground
-                    open={openVaul}
-                    onClose={() => setOpenVaul(false)}
-                  >
-                    <Drawer.Trigger asChild>
+                
+                    <TooltipGlobal text="Buscar por filtros" color="primary">
                       <Button
                         style={global_styles().thirdStyle}
                         isIconOnly
@@ -190,24 +191,12 @@ function ListUsers({ actions }: Props) {
                       >
                         <Filter />
                       </Button>
-                    </Drawer.Trigger>
-                    <Drawer.Portal>
-                      <Drawer.Overlay
-                        className="fixed inset-0 bg-black/40 z-[60]"
-                        onClick={() => setOpenVaul(false)}
-                      />
-                      <Drawer.Content
-                        className={classNames(
-                          'bg-gray-100 z-[60] flex flex-col rounded-t-[10px] h-auto mt-24 max-h-[80%] fixed bottom-0 left-0 right-0',
-                          context === 'dark' ? 'dark' : ''
-                        )}
-                      >
-                        <div className="p-4 bg-white dark:bg-gray-800 rounded-t-[10px] flex-1">
-                          <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-gray-300 dark:bg-gray-400 mb-8" />
-                          <Drawer.Title className="mb-4 dark:text-white font-medium">
-                            Filtros disponibles
-                          </Drawer.Title>
-
+                    </TooltipGlobal>
+                    <BottomDrawer
+                    title="Filtros disponibles"
+                    open={openVaul}
+                    onClose={() => setOpenVaul(false)}
+                  >
                           <div className="flex flex-col gap-3">
                             <div className="w-full">
                               <Input
@@ -264,24 +253,22 @@ function ListUsers({ actions }: Props) {
                                 setOpenVaul(false);
                               }}
                             >
-                              Aplicar
+                              Buscar
                             </Button>
                           </div>
-                        </div>
-                      </Drawer.Content>
-                    </Drawer.Portal>
-                  </Drawer.Root>
+                       </BottomDrawer>
                 </div>
-              </div>
               {actions.includes('Agregar') && <AddButton onClick={() => modalAdd.onOpen()} />}
+              </div>
             </div>
           </div>
-          <div className="flex justify-end items-end gap-5 w-full mb-3">
+          <div className="flex justify-end items-end gap-5 w-full pt-4 mb-5">
             <Select
               className="w-44 dark:text-white"
               variant="bordered"
               label="Mostrar"
               labelPlacement="outside"
+              defaultSelectedKeys={['5']}
               classNames={{
                 label: 'font-semibold',
               }}
@@ -297,7 +284,11 @@ function ListUsers({ actions }: Props) {
               ))}
             </Select>
             <div className="flex items-center">
-              <Switch onValueChange={(active) => setActive(active)} isSelected={active}>
+              <Switch onValueChange={(active) => setActive(active)} isSelected={active}
+                classNames={{
+                  thumb: classNames(active ? 'bg-blue-500' : 'bg-gray-400'),
+                  wrapper: classNames(active ? '!bg-blue-300' : 'bg-gray-200'),
+                }}>
                 <span className="text-sm sm:text-base whitespace-nowrap">
                   Mostrar {active ? 'inactivos' : 'activos'}
                 </span>
@@ -321,7 +312,7 @@ function ListUsers({ actions }: Props) {
           )}
           {view === 'table' && (
             <DataTable
-              className="shadow"
+              className="shadow dark:text-white"
               emptyMessage="No se encontraron resultados"
               value={users_paginated.users}
               tableStyle={{ minWidth: '50rem' }}
@@ -331,19 +322,28 @@ function ListUsers({ actions }: Props) {
                 headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
                 field="id"
                 header="No."
+                className='dark:text-white'
               />
-              
+              {/* <Column
+                headerClassName="text-sm font-semibold"
+                headerStyle={style}
+                field="employee.fullName"
+                header="Empleado"
+                className='dark:text-white'
+              /> */}
               <Column
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
                 field="userName"
                 header="Nombre de usuario"
+                className='dark:text-white'
               />
               <Column
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
                 field="role.name"
                 header="Rol"
+                className='dark:text-white'
               />
               <Column
                 headerStyle={{ ...style, borderTopRightRadius: '10px' }}
@@ -351,6 +351,7 @@ function ListUsers({ actions }: Props) {
                 body={(item) => (
                   <div className="flex w-full gap-5">
                     {actions.includes('Editar') && (
+                      <TooltipGlobal text="Editar">
                       <Button
                         onClick={() => {
                           setUser(item);
@@ -363,8 +364,10 @@ function ListUsers({ actions }: Props) {
                       >
                         <EditIcon style={{ color: theme.colors.primary }} size={20} />
                       </Button>
+                      </TooltipGlobal>
                     )}
                     {actions.includes('Cambiar Contraseña') && (
+                       <TooltipGlobal text="Cambiar contraseña">
                       <Button
                         onClick={() => {
                           setSelectedId(item.id);
@@ -376,7 +379,7 @@ function ListUsers({ actions }: Props) {
                         }}
                       >
                         <Key color={theme.colors.primary} size={20} />
-                      </Button>
+                      </Button></TooltipGlobal>
                     )}
                     {actions.includes('Eliminar') && <DeletePopUp user={item} />}
                   </div>
@@ -482,12 +485,14 @@ const DeletePopUp = ({ user }: PopProps) => {
               backgroundColor: theme.colors.danger,
             }}
           >
+            <TooltipGlobal text="Eliminar">
             <TrashIcon
               style={{
                 color: theme.colors.primary,
               }}
               size={20}
             />
+          </TooltipGlobal>
           </Button>
         </PopoverTrigger>
         <PopoverContent>

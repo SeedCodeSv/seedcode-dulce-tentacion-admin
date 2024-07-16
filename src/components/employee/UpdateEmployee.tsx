@@ -97,9 +97,9 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
           Atras
         </Button>
         <div className="p-2 overflow-y-auto dark:text-white">
-          <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
+          <div className="w-full h-full p-5 overflow-y-auto bg-white rounded-xl dark:bg-transparent">
             <>
-              <div className="grid grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className="flex flex-col mt-3">
                   <Input
                     onChange={(e) => setDataCreate({ ...dataCreate, firstName: e.target.value })}
@@ -551,7 +551,7 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
                   />
                 </div>
 
-                <div className="mt-0 md:mt-3">
+                <div className="mt-3 md:mt-3">
                   <Button
                     onClick={createEmployee}
                     className="w-full mt-3 text-sm font-semibold"

@@ -61,7 +61,7 @@ const AddClientNormal = (props: Props) => {
     complemento: yup.string().required('**El complemento es requerida**'),
   });
 
-  const [selectedCodeDep, setSelectedCodeDep] = useState('0');
+  const [selectedCodeDep, setSelectedCodeDep] = useState( props.customer_direction?.departamento ?? '0');
 
   const {
     getCat012Departamento,
@@ -77,7 +77,14 @@ const AddClientNormal = (props: Props) => {
   }, []);
 
   useEffect(() => {
+    if (selectedCodeDep !== '0') {
+      getCat013Municipios(props.customer_direction?.departamento ?? selectedCodeDep);
+    }
     getCat013Municipios(selectedCodeDep);
+  }, [selectedCodeDep, props.customer_direction]);
+
+  useEffect(() => {
+   
     getCat022TipoDeDocumentoDeIde();
   }, [selectedCodeDep]);
 
@@ -290,6 +297,7 @@ const AddClientNormal = (props: Props) => {
                   }}
                   // selectedKey={selectedKeyCity}
                   defaultSelectedKey={props.customer_direction?.municipio}
+                  defaultInputValue={props.customer_direction?.nombreMunicipio}
                   value={selectedKeyCity}
                 >
                   {cat_013_municipios.map((dep) => (

@@ -15,7 +15,6 @@ import {
 import { useCustomerStore } from '../../store/customers.store';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import { Drawer } from 'vaul';
 import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
 import {
   EditIcon,
@@ -43,9 +42,12 @@ import { global_styles } from '../../styles/global.styles';
 import SmPagination from '../global/SmPagination';
 import classNames from 'classnames';
 import HeadlessModal from '../global/HeadlessModal';
+import TooltipGlobal from '../global/TooltipGlobal';
+import BottomDrawer from '../global/BottomDrawer';
+import useWindowSize from '@/hooks/useWindowSize';
 
 const ListClients = () => {
-  const { theme, context } = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
   const { getCustomersPagination, customer_pagination, save_active_customer } = useCustomerStore();
   const [limit, setLimit] = useState(5);
   const [search, setSearch] = useState('');
@@ -61,7 +63,10 @@ const ListClients = () => {
     getCustomersPagination(1, limit, search, email, active ? 1 : 0, tipeCustomer);
   }, [limit, active, tipeCustomer]);
 
-  const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
+  const { windowSize } = useWindowSize();
+  const [view, setView] = useState<'table' | 'grid' | 'list'>(
+    windowSize.width < 768 ? 'grid' : 'table'
+  );
   const [page, serPage] = useState(1);
   const handleSearch = (searchParam: string | undefined) => {
     getCustomersPagination(
@@ -143,7 +148,7 @@ const ListClients = () => {
   return (
     <>
       <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
-        <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
+        <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
           <div className="w-full hidden gap-5 md:flex">
             <div className="flex w-full justify-between items-end gap-3">
               <Input
@@ -199,71 +204,18 @@ const ListClients = () => {
               </div>
             </div>
           </div>
-          <div className="flex items-end justify-between gap-10  lg:justify-end">
-            <ButtonGroup>
-              <Button
-                isIconOnly
-                color="secondary"
-                style={{
-                  backgroundColor: view === 'table' ? theme.colors.third : '#e5e5e5',
-                  color: view === 'table' ? theme.colors.primary : '#3e3e3e',
-                }}
-                onClick={() => setView('table')}
-              >
-                <ITable />
-              </Button>
-              <Button
-                isIconOnly
-                color="default"
-                style={{
-                  backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
-                  color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
-                }}
-                onClick={() => setView('grid')}
-              >
-                <CreditCard />
-              </Button>
-              <Button
-                isIconOnly
-                color="default"
-                style={{
-                  backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
-                  color: view === 'list' ? theme.colors.primary : '#3e3e3e',
-                }}
-                onClick={() => setView('list')}
-              >
-                <List />
-              </Button>
-            </ButtonGroup>
-            <div className="flex-col gap-2 hidden sm:flex sm:flex-row sm:items-center justify-center items-center w-full">
-              <Select
-                className="w-44 ml-2 mt-5"
-                variant="bordered"
-                placeholder="-- Seleccione tipo de cliente --"
-                labelPlacement="outside"
-                classNames={{
-                  label: 'font-semibold',
-                }}
-                value={String(tipeCustomer)}
-                onChange={(e) => {
-                  setTypeCustomer(e.target.value !== '' ? Number(e.target.value) : 0);
-                }}
-              >
-                <SelectItem className="dark:text-white" key={'1'}>
-                  Contribuyente
-                </SelectItem>
-                <SelectItem className="dark:text-white" key={'0'}>
-                  No Contribuyente
-                </SelectItem>
-              </Select>
+          <div className="flex flex-col sm:flex-row items-end justify-between mt-3">
+          <div className="flex-col gap-2 hidden sm:flex sm:flex-row lg:justify-start items-center w-full">
               <Select
                 className="w-44 ml-2"
                 variant="bordered"
                 label="Mostrar"
+                defaultSelectedKeys={['5']}
                 labelPlacement="outside"
                 classNames={{
                   label: 'font-semibold',
                 }}
+
                 value={limit}
                 onChange={(e) => {
                   setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
@@ -291,16 +243,31 @@ const ListClients = () => {
                   100
                 </SelectItem>
               </Select>
+              <Select
+                className="w-44 ml-2 mt-5"
+                variant="bordered"
+                placeholder="-- Seleccione tipo de cliente --"
+                labelPlacement="outside"
+                classNames={{
+                  label: 'font-semibold',
+                }}
+                value={String(tipeCustomer)}
+                onChange={(e) => {
+                  setTypeCustomer(e.target.value !== '' ? Number(e.target.value) : 0);
+                }}
+              >
+                <SelectItem className="dark:text-white" key={'1'}>
+                  Contribuyente
+                </SelectItem>
+                <SelectItem className="dark:text-white" key={'0'}>
+                  No Contribuyente
+                </SelectItem>
+              </Select>
             </div>
-
-            <div className="flex items-center gap-5">
+          <BottomAdd setTypeClient={setTypeClient} openModal={modalAdd.onOpen} />
+          <div className="flex items-center gap-5">
               <div className="block md:hidden">
-                <Drawer.Root
-                  shouldScaleBackground
-                  open={openVaul}
-                  onClose={() => setOpenVaul(false)}
-                >
-                  <Drawer.Trigger asChild>
+                   <TooltipGlobal text="Buscar por filtros" color="primary">
                     <Button
                       style={global_styles().thirdStyle}
                       isIconOnly
@@ -309,24 +276,12 @@ const ListClients = () => {
                     >
                       <Filter />
                     </Button>
-                  </Drawer.Trigger>
-                  <Drawer.Portal>
-                    <Drawer.Overlay
-                      className="fixed inset-0 bg-black/40 z-[60]"
-                      onClick={() => setOpenVaul(false)}
-                    />
-                    <Drawer.Content
-                      className={classNames(
-                        'bg-gray-100 z-[60] flex flex-col rounded-t-[10px] h-auto mt-24 max-h-[80%] fixed bottom-0 left-0 right-0',
-                        context === 'dark' ? 'dark' : ''
-                      )}
-                    >
-                      <div className="p-4 bg-white dark:bg-gray-800 rounded-t-[10px] flex-1">
-                        <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-gray-300 dark:bg-gray-400 mb-8" />
-                        <Drawer.Title className="mb-4 dark:text-white font-medium">
-                          Filtros disponibles
-                        </Drawer.Title>
-
+                  </TooltipGlobal>
+                  <BottomDrawer
+                    title="Filtros disponibles"
+                    open={openVaul}
+                    onClose={() => setOpenVaul(false)}
+                  >
                         <div className="flex flex-col gap-3">
                           <Input
                             startContent={<User />}
@@ -379,27 +334,63 @@ const ListClients = () => {
                               setOpenVaul(false);
                             }}
                           >
-                            Aplicar
+                            Buscar
                           </Button>
                         </div>
-                      </div>
-                    </Drawer.Content>
-                  </Drawer.Portal>
-                </Drawer.Root>
+                 </BottomDrawer>
               </div>
-            </div>
-
-            <div className="flex justify-end w-full">
-              <BottomAdd setTypeClient={setTypeClient} openModal={modalAdd.onOpen} />
               <BottomSm setTypeClient={setTypeClient} openModal={modalAdd.onOpen} />
-            </div>
+              </div>
           </div>
-          <div className="mt-5">
-            <Switch onValueChange={(active) => setActive(active)} isSelected={active}>
+          <div className="flex justify-between mt-4">
+            <div className='w-full flex justify-start'>
+          <Switch onValueChange={(active) => setActive(active)} isSelected={active}  classNames={{
+                  thumb: classNames(active ? 'bg-blue-500' : 'bg-gray-400'),
+                  wrapper: classNames(active ? '!bg-blue-300' : 'bg-gray-200'),
+                }}>
               <span className="text-sm sm:text-base whitespace-nowrap">
                 Mostrar {active ? 'inactivos' : 'activos'}
               </span>
             </Switch>
+            </div>
+            <ButtonGroup>
+              <Button
+                isIconOnly
+                color="secondary"
+                style={{
+                  backgroundColor: view === 'table' ? theme.colors.third : '#e5e5e5',
+                  color: view === 'table' ? theme.colors.primary : '#3e3e3e',
+                }}
+                onClick={() => setView('table')}
+              >
+                <ITable />
+              </Button>
+              <Button
+                isIconOnly
+                color="default"
+                style={{
+                  backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
+                  color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
+                }}
+                onClick={() => setView('grid')}
+              >
+                <CreditCard />
+              </Button>
+              <Button
+                isIconOnly
+                color="default"
+                style={{
+                  backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
+                  color: view === 'list' ? theme.colors.primary : '#3e3e3e',
+                }}
+                onClick={() => setView('list')}
+              >
+                <List />
+              </Button>
+            </ButtonGroup>
+            
+          </div>
+          <div className="mt-5">           
             <div className="xl:hidden">
               <Select
                 className="w-full mt-2"
@@ -434,11 +425,10 @@ const ListClients = () => {
               layout={view as 'grid' | 'list'}
             />
           )}
-          <div className="flex justify-end w-full py-3 bg-first-300"></div>
-
+         <div className="flex justify-end w-full py-3 md:py-0 bg-first-300"></div>
           {view === 'table' && (
             <DataTable
-              className="shadow"
+              className="shadow dark:text-white"
               emptyMessage="No se encontraron resultados"
               value={customer_pagination.customers}
               tableStyle={{ minWidth: '50rem' }}
@@ -448,24 +438,28 @@ const ListClients = () => {
                 headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
                 field="id"
                 header="No."
+                className='dark:text-white'
               />
               <Column
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
                 field="nombre"
                 header="Nombre"
+                className='dark:text-white'
               />
               <Column
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
                 field="telefono"
                 header="Teléfono"
+                className='dark:text-white'
               />
               <Column
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
                 field="correo"
                 header="Correo"
+                className='dark:text-white'
               />
               <Column
                 headerClassName="text-sm font-semibold"
@@ -473,12 +467,16 @@ const ListClients = () => {
                 // field="esContribuyente"
                 body={(item) => (item.esContribuyente ? 'Si' : 'No')}
                 header="Contribuyente"
+                className='dark:text-white'
               />
               <Column
                 headerStyle={{ ...style, borderTopRightRadius: '10px' }}
                 header="Acciones"
                 body={(item) => (
                   <div className="flex w-full gap-5">
+                    {item.isActive ? ( 
+                      <>
+                     <TooltipGlobal text="Editar">
                     <Button
                       onClick={() => handleChangeCustomer(item, 'edit')}
                       isIconOnly
@@ -488,6 +486,10 @@ const ListClients = () => {
                     >
                       <EditIcon style={{ color: theme.colors.primary }} size={20} />
                     </Button>
+                    </TooltipGlobal>
+
+                    {item.esContribuyente === false && (
+                    <TooltipGlobal text="Cambiar tipo de cliente">
                     <Button
                       onClick={() => {
                         setSelectedTitle('Cambiar el tipo de cliente');
@@ -500,7 +502,11 @@ const ListClients = () => {
                     >
                       <Repeat style={{ color: theme.colors.primary }} size={20} />
                     </Button>
-                    {item.isActive === false && (
+                    </TooltipGlobal>
+                    )}
+                     <DeletePopover customers={item} />
+                    </>
+                  ): (<TooltipGlobal text="Activar">
                       <Button
                         onClick={() => {
                           handleActivate(item.id);
@@ -512,8 +518,7 @@ const ListClients = () => {
                       >
                         <BadgeCheck style={{ color: theme.colors.primary }} size={20} />
                       </Button>
-                    )}
-                    <DeletePopover customers={item} />
+                      </TooltipGlobal>)}
                   </div>
                 )}
               />
@@ -634,6 +639,7 @@ export const DeletePopover = ({ customers }: PopProps) => {
   return (
     <Popover isOpen={isOpen} onClose={onClose} backdrop="blur" showArrow>
       <PopoverTrigger>
+      
         <Button
           onClick={onOpen}
           isIconOnly
@@ -641,18 +647,21 @@ export const DeletePopover = ({ customers }: PopProps) => {
             backgroundColor: theme.colors.danger,
           }}
         >
+          <TooltipGlobal text="Eliminar">
           <TrashIcon
             style={{
               color: theme.colors.primary,
             }}
             size={20}
-          />
+          /> 
+          </TooltipGlobal>
         </Button>
+       
       </PopoverTrigger>
       <PopoverContent>
-        <div className="w-full p-5">
-          <p className="font-semibold text-gray-600">Eliminar {customers.nombre}</p>
-          <p className="mt-3 text-center text-gray-600 w-72">
+      <div className="flex flex-col items-center justify-center w-full p-5">
+      <p className="font-semibold text-gray-600 dark:text-white">Eliminar {customers.nombre}</p>
+      <p className="mt-3 text-center text-gray-600 dark:text-white w-72">
             ¿Estas seguro de eliminar este registro?
           </p>
           <div className="mt-4">
@@ -748,7 +757,7 @@ export const BottomAdd = ({ setTypeClient, openModal }: PopoverAddProps) => {
             backgroundColor: theme.colors.third,
             color: theme.colors.primary,
           }}
-          endContent={<PlusIcon />}
+          endContent={<PlusIcon size={35}/>}
           onClick={() => (isOpen ? onClose() : onOpen())}
         >
           Agregar nuevo

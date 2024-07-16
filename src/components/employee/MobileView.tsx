@@ -61,10 +61,11 @@ const GridItem = (props: GridProps) => {
       {layout === "grid" ? (
         <div
           className={classNames(
-            "w-full shadow-sm hover:shadow-lg border dark:border-gray-600 p-8 rounded-2xl"
+            "w-full shadow-sm hover:shadow-lg border dark:border-gray-600 p-8 rounded-2xl flex flex-col justify-between"
           )}
           key={employee.id}
         >
+
           <div className="flex w-full gap-2">
             <IUser className="text-[#274c77] dark:text-gray-400" size={20} />
             <p className="w-full dark:text-white">{`${employee.firstName} ${employee.firstLastName}`}</p>
@@ -79,6 +80,8 @@ const GridItem = (props: GridProps) => {
           </div>
           <div className="flex justify-between mt-5 w-ful">
             {actions.includes("Editar") && (
+              <>
+               {employee.isActive && (
               <TooltipGlobal text="Editar">
               <Button
                 onClick={() => openEditModal(employee)}
@@ -88,6 +91,8 @@ const GridItem = (props: GridProps) => {
                 <Edit size={15} />
               </Button>
               </TooltipGlobal>
+               )}
+               </>
             )}
             {actions.includes("Eliminar") && (
               <>
@@ -147,6 +152,8 @@ const ListItem = (props: GridProps) => {
         </div>
         <div className="flex flex-col items-end justify-between w-full">
           {actions.includes("Editar") && (
+            <>
+             {employee.isActive && (
             <TooltipGlobal text="Editar">
             <Button
               onClick={() => openEditModal(employee)}
@@ -156,6 +163,8 @@ const ListItem = (props: GridProps) => {
               <Edit size={15} />
             </Button>
             </TooltipGlobal>
+             )}
+             </>
           )}
           {actions.includes("Eliminar") && (
             <>
