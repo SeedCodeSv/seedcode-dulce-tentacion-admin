@@ -156,7 +156,7 @@ function ListProducts({ actions }: Props) {
                   label: 'font-semibold text-gray-700',
                   inputWrapper: 'pr-0',
                 }}
-                value={search}
+                value={code}
                 onChange={(e) => setCode(e.target.value)}
                 placeholder="Escribe para buscar..."
                 isClearable
@@ -308,93 +308,98 @@ function ListProducts({ actions }: Props) {
                         setSearch('');
                       }}
                     />
-                    <Input
-                      startContent={<SearchIcon />}
-                      className="w-full dark:text-white"
-                      variant="bordered"
-                      labelPlacement="outside"
-                      label="Código"
-                      classNames={{
-                        label: 'font-semibold text-gray-700',
-                        inputWrapper: 'pr-0',
-                      }}
-                      value={code}
-                      onChange={(e) => setCode(e.target.value)}
-                      placeholder="Escribe para buscar..."
-                      isClearable
-                      onClear={() => {
-                        // handleSearch("");
-                        setCode('');
-                      }}
-                    />
-                    <Autocomplete
-                      onSelectionChange={(key) => {
-                        if (key) {
-                          const branchSelected = JSON.parse(key as string) as CategoryProduct;
-                          setCategory(branchSelected.name);
-                          setCategoryId(branchSelected.id);
-                        }
-                      }}
-                      className="w-full dark:text-white"
-                      label="Categoría producto"
-                      labelPlacement="outside"
-                      placeholder="Selecciona la categoría"
-                      variant="bordered"
-                      classNames={{
-                        base: 'font-semibold text-gray-500 text-sm',
-                      }}
-                      value={category}
-                      defaultSelectedKey={category}
-                      clearButtonProps={{
-                        onClick: () => {
-                          setCategory('');
-                          setCategoryId(0);
-                        },
-                      }}
-                    >
-                      {list_categories.map((bra) => (
-                        <AutocompleteItem
-                          value={bra.name}
-                          key={JSON.stringify(bra)}
-                          className="dark:text-white"
-                        >
-                          {bra.name}
-                        </AutocompleteItem>
-                      ))}
-                    </Autocomplete>
-
-                    <Autocomplete
-                      onSelectionChange={(key) => {
-                        if (key) {
-                          const branchSelected = JSON.parse(key as string) as CategoryProduct;
-                          setSubCategory(branchSelected.name);
-                        }
-                      }}
-                      className="w-full dark:text-white"
-                      label="Sub Categoría"
-                      labelPlacement="outside"
-                      placeholder="Selecciona la sub categoría"
-                      variant="bordered"
-                      classNames={{
-                        base: 'font-semibold text-gray-500 text-sm',
-                      }}
-                      defaultSelectedKey={subCategory}
-                      clearButtonProps={{
-                        onClick: () => {
-                          setSubCategory('');
-                        },
-                      }}
-                    >
-                      {itemSubCategories.map((item) => (
-                        <AutocompleteItem
-                          value={item.name}
-                          key={JSON.stringify(item)}
-                          className="dark:text-white"
-                        >
-                          {item.name}
-                        </AutocompleteItem>
-                      ))}
-                    </Autocomplete>
+                    <div className="pt-4">
+                      <Input
+                        startContent={<SearchIcon />}
+                        className="w-full dark:text-white"
+                        variant="bordered"
+                        labelPlacement="outside"
+                        label="Código"
+                        classNames={{
+                          label: 'font-semibold text-gray-700',
+                          inputWrapper: 'pr-0',
+                        }}
+                        value={code}
+                        onChange={(e) => setCode(e.target.value)}
+                        placeholder="Escribe para buscar..."
+                        isClearable
+                        onClear={() => {
+                          // handleSearch("");
+                          setCode('');
+                        }}
+                      />
+                    </div>
+                    <div className="pt-4">
+                      <Autocomplete
+                        onSelectionChange={(key) => {
+                          if (key) {
+                            const branchSelected = JSON.parse(key as string) as CategoryProduct;
+                            setCategory(branchSelected.name);
+                            setCategoryId(branchSelected.id);
+                          }
+                        }}
+                        className="w-full dark:text-white"
+                        label="Categoría producto"
+                        labelPlacement="outside"
+                        placeholder="Selecciona la categoría"
+                        variant="bordered"
+                        classNames={{
+                          base: 'font-semibold text-gray-500 text-sm',
+                        }}
+                        value={category}
+                        defaultSelectedKey={category}
+                        clearButtonProps={{
+                          onClick: () => {
+                            setCategory('');
+                            setCategoryId(0);
+                          },
+                        }}
+                      >
+                        {list_categories.map((bra) => (
+                          <AutocompleteItem
+                            value={bra.name}
+                            key={JSON.stringify(bra)}
+                            className="dark:text-white"
+                          >
+                            {bra.name}
+                          </AutocompleteItem>
+                        ))}
+                      </Autocomplete>
+                    </div>
+                    <div className="pt-4">
+                      <Autocomplete
+                        onSelectionChange={(key) => {
+                          if (key) {
+                            const branchSelected = JSON.parse(key as string) as CategoryProduct;
+                            setSubCategory(branchSelected.name);
+                          }
+                        }}
+                        className="w-full dark:text-white"
+                        label="Sub Categoría"
+                        labelPlacement="outside"
+                        placeholder="Selecciona la sub categoría"
+                        variant="bordered"
+                        classNames={{
+                          base: 'font-semibold text-gray-500 text-sm',
+                        }}
+                        defaultSelectedKey={subCategory}
+                        clearButtonProps={{
+                          onClick: () => {
+                            setSubCategory('');
+                          },
+                        }}
+                      >
+                        {itemSubCategories.map((item) => (
+                          <AutocompleteItem
+                            value={item.name}
+                            key={JSON.stringify(item)}
+                            className="dark:text-white"
+                          >
+                            {item.name}
+                          </AutocompleteItem>
+                        ))}
+                      </Autocomplete>
+                    </div>
                     <Button
                       onClick={() => {
                         handleSearch(undefined);
