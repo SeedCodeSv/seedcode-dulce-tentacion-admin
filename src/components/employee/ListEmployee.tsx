@@ -43,6 +43,7 @@ import { useNavigate } from "react-router";
 import UpdateEmployee from "./UpdateEmployee";
 import TooltipGlobal from "../global/TooltipGlobal";
 import BottomDrawer from "../global/BottomDrawer";
+import useWindowSize from "@/hooks/useWindowSize";
 
 interface Props {
   actions: string[];
@@ -63,7 +64,8 @@ function ListEmployee({ actions }: Props) {
   const [branch, setBranch] = useState("");
   const [phone, setPhone] = useState("");
   const [limit, setLimit] = useState(5);
-  const [view, setView] = useState<"table" | "grid" | "list">("table");
+  const { windowSize } = useWindowSize();
+  const [view, setView] = useState<"table" | "grid" | "list">( windowSize.width < 768 ? 'grid' : 'table');
   const [openVaul, setOpenVaul] = useState(false);
   const [active, setActive] = useState(true);
 
@@ -208,7 +210,7 @@ function ListEmployee({ actions }: Props) {
     dateOfExit: "",
     responsibleContact: "",
     statusId: 0,
-    addressId: 0,
+    // addressId: 0,
     studyLevelId: 0,
     contractTypeId: 0,
     department: "",
@@ -310,13 +312,13 @@ function ListEmployee({ actions }: Props) {
                             {filters}
                             <Button
                               style={global_styles().secondaryStyle}
-                              className="mb-10 font-semibold"
+                              className="mt-5 font-semibold"
                               onClick={() => {
                                 changePage();
                                 setOpenVaul(false);
                               }}
                             >
-                              Aplicar
+                              Aplicar filtros
                             </Button>
                           </div>
                         </div>
@@ -434,6 +436,7 @@ function ListEmployee({ actions }: Props) {
                     body={(item) => (
                       <div className="flex w-full gap-5">
                         {actions.includes("Editar") && (
+                         <TooltipGlobal text="Editar">
                           <Button
                             onClick={() => {
                               setDataUpdate(item);
@@ -448,6 +451,7 @@ function ListEmployee({ actions }: Props) {
                               size={20}
                             />
                           </Button>
+                          </TooltipGlobal>
                         )}
                         {actions.includes("Eliminar") && (
                           <>
@@ -558,6 +562,7 @@ export const DeletePopover = ({ employee }: PopProps) => {
     <>
       <Popover isOpen={isOpen} onClose={onClose} backdrop="blur" showArrow>
         <PopoverTrigger>
+        <TooltipGlobal text="Eliminar">
           <Button
             onClick={onOpen}
             isIconOnly
@@ -572,6 +577,7 @@ export const DeletePopover = ({ employee }: PopProps) => {
               size={20}
             />
           </Button>
+        </TooltipGlobal>
         </PopoverTrigger>
         <PopoverContent>
           <div className="w-full p-5">

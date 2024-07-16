@@ -9,8 +9,8 @@ import {
   PopoverTrigger,
   PopoverContent,
   Switch,
-} from "@nextui-org/react";
-import { useContext, useEffect, useState } from "react";
+} from '@nextui-org/react';
+import { useContext, useEffect, useState } from 'react';
 import {
   EditIcon,
   User,
@@ -20,22 +20,22 @@ import {
   List,
   Filter,
   RefreshCcw,
-} from "lucide-react";
-import { ThemeContext } from "../../hooks/useTheme";
-import AddSubCategory from "./AddSubCategory";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
-import AddButton from "../global/AddButton";
-import MobileView from "./MobileView";
-import Pagination from "../global/Pagination";
-import { global_styles } from "../../styles/global.styles";
-import { limit_options } from "../../utils/constants";
-import SmPagination from "../global/SmPagination";
-import HeadlessModal from "../global/HeadlessModal";
-import { ISubCategory } from "../../types/sub_categories.types";
-import { useSubCategoryStore } from "../../store/sub-category";
-import TooltipGlobal from "../global/TooltipGlobal";
-import BottomDrawer from "../global/BottomDrawer";
+} from 'lucide-react';
+import { ThemeContext } from '../../hooks/useTheme';
+import AddSubCategory from './AddSubCategory';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+import AddButton from '../global/AddButton';
+import MobileView from './MobileView';
+import Pagination from '../global/Pagination';
+import { global_styles } from '../../styles/global.styles';
+import { limit_options } from '../../utils/constants';
+import SmPagination from '../global/SmPagination';
+import HeadlessModal from '../global/HeadlessModal';
+import { ISubCategory } from '../../types/sub_categories.types';
+import { useSubCategoryStore } from '../../store/sub-category';
+import TooltipGlobal from '../global/TooltipGlobal';
+import BottomDrawer from '../global/BottomDrawer';
 
 interface PProps {
   actions: string[];
@@ -45,20 +45,16 @@ function ListSubCategory({ actions }: PProps) {
   const { theme } = useContext(ThemeContext);
   const [openVaul, setOpenVaul] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<ISubCategory>();
-  const {
-    sub_categories_paginated,
-    getSubCategoriesPaginated,
-    activateSubCategory,
-  } = useSubCategoryStore();
+  const { sub_categories_paginated, getSubCategoriesPaginated, activateSubCategory } =
+    useSubCategoryStore();
 
   const modalAdd = useDisclosure();
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
   const [limit, setLimit] = useState(5);
   const [active, setActive] = useState(true);
 
   useEffect(() => {
     getSubCategoriesPaginated(1, limit, search);
-    
   }, [limit, active]);
 
   const handleSearch = (name: string | undefined) => {
@@ -70,7 +66,7 @@ function ListSubCategory({ actions }: PProps) {
     color: theme.colors.primary,
   };
 
-  const [view, setView] = useState<"table" | "grid" | "list">("table");
+  const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
 
   const handleActivate = (id: number) => {
     activateSubCategory(id).then(() => {
@@ -80,7 +76,7 @@ function ListSubCategory({ actions }: PProps) {
 
   return (
     <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
-        <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
+      <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
         <div className="flex flex-col justify-between w-full gap-5 mb-5 lg:mb-10 lg:flex-row lg:gap-0">
           <div className="flex items-end gap-3">
             <div className="hidden w-full gap-3 md:flex">
@@ -91,16 +87,16 @@ function ListSubCategory({ actions }: PProps) {
                 labelPlacement="outside"
                 label="Nombre"
                 classNames={{
-                  label: "font-semibold text-gray-700",
-                  inputWrapper: "pr-0",
+                  label: 'font-semibold text-gray-700',
+                  inputWrapper: 'pr-0',
                 }}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Escribe para buscar..."
                 isClearable
                 onClear={() => {
-                  setSearch("");
-                  handleSearch("");
+                  setSearch('');
+                  handleSearch('');
                 }}
               />
               <Button
@@ -122,11 +118,10 @@ function ListSubCategory({ actions }: PProps) {
                 isIconOnly
                 color="secondary"
                 style={{
-                  backgroundColor:
-                    view === "table" ? theme.colors.third : "#e5e5e5",
-                  color: view === "table" ? theme.colors.primary : "#3e3e3e",
+                  backgroundColor: view === 'table' ? theme.colors.third : '#e5e5e5',
+                  color: view === 'table' ? theme.colors.primary : '#3e3e3e',
                 }}
-                onClick={() => setView("table")}
+                onClick={() => setView('table')}
               >
                 <ITable />
               </Button>
@@ -134,11 +129,10 @@ function ListSubCategory({ actions }: PProps) {
                 isIconOnly
                 color="default"
                 style={{
-                  backgroundColor:
-                    view === "grid" ? theme.colors.third : "#e5e5e5",
-                  color: view === "grid" ? theme.colors.primary : "#3e3e3e",
+                  backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
+                  color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
                 }}
-                onClick={() => setView("grid")}
+                onClick={() => setView('grid')}
               >
                 <CreditCard />
               </Button>
@@ -146,11 +140,10 @@ function ListSubCategory({ actions }: PProps) {
                 isIconOnly
                 color="default"
                 style={{
-                  backgroundColor:
-                    view === "list" ? theme.colors.third : "#e5e5e5",
-                  color: view === "list" ? theme.colors.primary : "#3e3e3e",
+                  backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
+                  color: view === 'list' ? theme.colors.primary : '#3e3e3e',
                 }}
-                onClick={() => setView("list")}
+                onClick={() => setView('list')}
               >
                 <List />
               </Button>
@@ -181,25 +174,25 @@ function ListSubCategory({ actions }: PProps) {
                         labelPlacement="outside"
                         label="Nombre"
                         classNames={{
-                          label: "font-semibold text-gray-700",
-                          inputWrapper: "pr-0",
+                          label: 'font-semibold text-gray-700',
+                          inputWrapper: 'pr-0',
                         }}
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         placeholder="Escribe para buscar..."
                         isClearable
                         onClear={() => {
-                          setSearch("");
-                          handleSearch("");
+                          setSearch('');
+                          handleSearch('');
                         }}
                       />
                       <Button
-                        style={{
-                          backgroundColor: theme.colors.secondary,
-                          color: theme.colors.primary,
-                        }}
+                        // style={{
+                        //   backgroundColor: theme.colors.secondary,
+                        //   color: theme.colors.primary,
+                        // }}
                         className="mt-6 font-semibold"
-                        color="primary"
+                        // color="primary"
                         onClick={() => {
                           handleSearch(undefined);
                           setOpenVaul(false);
@@ -212,7 +205,7 @@ function ListSubCategory({ actions }: PProps) {
                 </BottomDrawer>
               </div>
             </div>
-            {actions.includes("Agregar") && (
+            {actions.includes('Agregar') && (
               <AddButton
                 onClick={() => {
                   setSelectedCategory(undefined);
@@ -226,43 +219,36 @@ function ListSubCategory({ actions }: PProps) {
           <Select
             className="w-44 dark:text-white"
             variant="bordered"
-            defaultSelectedKeys={"5"}
+            defaultSelectedKeys={'5'}
             label="Mostrar"
             labelPlacement="outside"
             classNames={{
-              label: "font-semibold",
+              label: 'font-semibold',
             }}
             value={limit}
             onChange={(e) => {
-              setLimit(Number(e.target.value !== "" ? e.target.value : "8"));
+              setLimit(Number(e.target.value !== '' ? e.target.value : '8'));
             }}
           >
             {limit_options.map((option) => (
-              <SelectItem
-                key={option}
-                value={option}
-                className="dark:text-white"
-              >
+              <SelectItem key={option} value={option} className="dark:text-white">
                 {option}
               </SelectItem>
             ))}
           </Select>
           <div className="items-center hidden">
-            <Switch
-              onValueChange={(active) => setActive(active)}
-              isSelected={active}
-            >
+            <Switch onValueChange={(active) => setActive(active)} isSelected={active}>
               <span className="text-sm sm:text-base whitespace-nowrap">
-                Mostrar {active ? "inactivos" : "activos"}
+                Mostrar {active ? 'inactivos' : 'activos'}
               </span>
             </Switch>
           </div>
         </div>
-        {(view === "grid" || view === "list") && (
+        {(view === 'grid' || view === 'list') && (
           <MobileView
             handleActive={handleActivate}
             deletePopover={DeletePopUp}
-            layout={view as "grid" | "list"}
+            layout={view as 'grid' | 'list'}
             handleEdit={(item) => {
               setSelectedCategory(item);
               modalAdd.onOpen();
@@ -270,40 +256,40 @@ function ListSubCategory({ actions }: PProps) {
             actions={actions}
           />
         )}
-        {view === "table" && (
+        {view === 'table' && (
           <DataTable
             className="w-full shadow"
             emptyMessage="No se encontraron resultados"
             value={sub_categories_paginated.SubCategories}
-            tableStyle={{ minWidth: "50rem" }}
+            tableStyle={{ minWidth: '50rem' }}
           >
             <Column
               headerClassName="text-sm font-semibold"
-              headerStyle={{ ...style, borderTopLeftRadius: "10px" }}
-              bodyClassName={"dark:text-white"}
+              headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
+              bodyClassName={'dark:text-white'}
               field="id"
               header="No."
             />
             <Column
               headerClassName="text-sm font-semibold"
-              bodyClassName={"dark:text-white"}
+              bodyClassName={'dark:text-white'}
               headerStyle={style}
               field="name"
               header="Nombre"
             />
             <Column
               headerClassName="text-sm font-semibold"
-              bodyClassName={"dark:text-white"}
+              bodyClassName={'dark:text-white'}
               headerStyle={style}
               field="categoryProduct.name"
               header="Categoría de producto"
             />
             <Column
-              headerStyle={{ ...style, borderTopRightRadius: "10px" }}
+              headerStyle={{ ...style, borderTopRightRadius: '10px' }}
               header="Acciones"
               body={(item) => (
                 <div className="flex gap-6">
-                  {actions.includes("Editar") && (
+                  {actions.includes('Editar') && (
                     <Button
                       onClick={() => {
                         setSelectedCategory(item);
@@ -315,13 +301,10 @@ function ListSubCategory({ actions }: PProps) {
                         backgroundColor: theme.colors.secondary,
                       }}
                     >
-                      <EditIcon
-                        style={{ color: theme.colors.primary }}
-                        size={20}
-                      />
+                      <EditIcon style={{ color: theme.colors.primary }} size={20} />
                     </Button>
                   )}
-                  {actions.includes("Eliminar") && (
+                  {actions.includes('Eliminar') && (
                     <>
                       {item.isActive ? (
                         <DeletePopUp subcategory={item} />
@@ -358,18 +341,10 @@ function ListSubCategory({ actions }: PProps) {
               <div className="flex w-full mt-5 md:hidden">
                 <SmPagination
                   handleNext={() => {
-                    getSubCategoriesPaginated(
-                      sub_categories_paginated.nextPag,
-                      limit,
-                      search
-                    );
+                    getSubCategoriesPaginated(sub_categories_paginated.nextPag, limit, search);
                   }}
                   handlePrev={() => {
-                    getSubCategoriesPaginated(
-                      sub_categories_paginated.prevPag,
-                      limit,
-                      search
-                    );
+                    getSubCategoriesPaginated(sub_categories_paginated.prevPag, limit, search);
                   }}
                   currentPage={sub_categories_paginated.currentPag}
                   totalPages={sub_categories_paginated.totalPag}
@@ -381,16 +356,11 @@ function ListSubCategory({ actions }: PProps) {
       </div>
       <HeadlessModal
         size="w-[350px] md:w-[500px]"
-        title={
-          selectedCategory ? "Editar sub categoría" : "Nueva Sub-categoría"
-        }
+        title={selectedCategory ? 'Editar sub categoría' : 'Nueva Sub-categoría'}
         isOpen={modalAdd.isOpen}
         onClose={modalAdd.onClose}
       >
-        <AddSubCategory
-          closeModal={modalAdd.onClose}
-          subCategory={selectedCategory}
-        />
+        <AddSubCategory closeModal={modalAdd.onClose} subCategory={selectedCategory} />
       </HeadlessModal>
     </div>
   );

@@ -79,7 +79,7 @@ export interface EmployeePayload {
   statusId: number;
   studyLevelId: number;
   contractTypeId: number;
-  addressId: number;
+  // addressId: number;
   department: string;
   departmentName: string;
   municipality: string;

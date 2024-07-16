@@ -5,6 +5,7 @@ import { EditIcon, RefreshCcw, ScrollIcon } from 'lucide-react';
 import { global_styles } from '../../styles/global.styles';
 import { GridProps, MobileViewProps } from './types/mobile_view.types';
 import { useChargesStore } from '../../store/charges.store';
+import TooltipGlobal from '../global/TooltipGlobal';
 
 function MobileView(props: MobileViewProps) {
   const { layout, deletePopover, handleEdit, actions, handleActive } = props;
@@ -59,6 +60,7 @@ const GridItem = (props: GridProps) => {
           </div>
           <div className="flex justify-between mt-5 w-ful">
             {actions.includes('Editar') && (
+               <TooltipGlobal text="Editar">
               <Button
                 onClick={() => handleEdit(charges)}
                 isIconOnly
@@ -66,6 +68,7 @@ const GridItem = (props: GridProps) => {
               >
                 <EditIcon size={20} />
               </Button>
+              </TooltipGlobal>
             )}
             {actions.includes('Eliminar') && (
               <>
@@ -111,6 +114,7 @@ const ListItem = (props: GridProps) => {
         </div>
         <div className="flex flex-col items-end justify-between w-full gap-5">
           {actions.includes('Editar') && (
+             <TooltipGlobal text="Editar">
             <Button
               onClick={() => handleEdit(charges)}
               isIconOnly
@@ -118,6 +122,7 @@ const ListItem = (props: GridProps) => {
             >
               <EditIcon size={20} />
             </Button>
+            </TooltipGlobal>
           )}
           {actions.includes('Eliminar') && (
             <>

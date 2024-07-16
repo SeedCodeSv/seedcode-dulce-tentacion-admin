@@ -12,7 +12,7 @@ import {
   FolderOpen,
   Store,
   Truck,
-  ShoppingBag,
+  // ShoppingBag,
   Book,
   FileText,
   TicketPercent,
@@ -151,7 +151,7 @@ export const LayoutItems = () => {
         <div
           className="flex items-center pl-5 w-full border-b shadow h-[70px]"
           style={{
-            backgroundColor: theme.colors.dark,
+            // backgroundColor: theme.colors.dark,
             color: theme.colors.primary,
           }}
         >
@@ -272,6 +272,7 @@ export const LayoutItems = () => {
                             <p className="ml-2 text-sm 2xl:text-base">Sub Categorías</p>
                           </NavLink>
                         )}
+                        {/*                         
                         {views && views.includes('Ordenes de compra') && (
                           <>
                             <NavLink
@@ -289,7 +290,7 @@ export const LayoutItems = () => {
                               <p className="ml-2 text-sm 2xl:text-base">Ordenes de compra</p>
                             </NavLink>
                           </>
-                        )}
+                        )} */}
                       </div>
                     </>
                   </div>
@@ -297,9 +298,9 @@ export const LayoutItems = () => {
               ) : null}
 
               {/* Gestion de planillas ----------------------------------------------------------------- */}
-              {views.includes('Tipo de contratacion') ||
-              (views && views.includes('Estado del empleado')) ||
-              views.includes('Employee') ? (
+              {views.includes('Tipo de Contratacion') ||
+              (views && views.includes('Estados del Empleado')) ||
+              views.includes('Nivel de Estudio') ? (
                 <div className="flex flex-col items-center justify-start w-full px-6">
                   <button
                     onClick={toggleDropdownMenu2}
@@ -321,7 +322,7 @@ export const LayoutItems = () => {
                     }`}
                   >
                     <div className="py-1">
-                      {views.includes('Nivel de estudio') && (
+                      {views.includes('Nivel de Estudio') && (
                         <NavLink
                           to={'/studyLevel'}
                           className={({ isActive }) =>
@@ -336,7 +337,7 @@ export const LayoutItems = () => {
                         </NavLink>
                       )}
 
-                      {views.includes('Estado del empleado') && (
+                      {views.includes('Estados del Empleado') && (
                         <NavLink
                           to={'/statusEmployee'}
                           className={({ isActive }) =>
@@ -350,7 +351,7 @@ export const LayoutItems = () => {
                           <p className="ml-2 text-sm 2xl:text-base">Estado del empleado</p>
                         </NavLink>
                       )}
-                      {views.includes('Tipo de contratacion') && (
+                      {views.includes('Tipo de Contratacion') && (
                         <NavLink
                           to={'/contractTypes'}
                           className={({ isActive }) =>
@@ -372,9 +373,10 @@ export const LayoutItems = () => {
 
               {views.includes('Empleados') ||
               (views && views.includes('Clientes')) ||
+              views.includes('Cargos de Empleados') ||
               views.includes('Usuarios') ||
               views.includes('Sucursales') ? (
-                <div className="flex flex-col items-center justify-start w-full px-6 ">
+                <div className="flex flex-col items-center justify-start w-full px-6  ">
                   <button
                     onClick={toggleDropdownMenu}
                     className="flex items-center w-full py-3 space-x-3 text-left text-black focus:outline-none focus:text-black"
@@ -391,7 +393,7 @@ export const LayoutItems = () => {
                   <div
                     id="menu1"
                     className={`flex flex-col w-full h-[900px] pb-1 overflow-hidden transition-all duration-500 ${
-                      isMenuOpen ? 'xl:max-h-56 max-h-44' : 'max-h-0'
+                      isMenuOpen ? 'xl:max-h-72 max-h-44' : 'max-h-0'
                     }`}
                   >
                     <div className="py-1">
@@ -409,7 +411,7 @@ export const LayoutItems = () => {
                           <p className="ml-2 text-sm 2xl:text-base">Empleados</p>
                         </NavLink>
                       )}
-                      {views.includes('Empleados') && (
+                      {views.includes('Cargos de Empleados') && (
                         <NavLink
                           to={'/charges'}
                           className={({ isActive }) =>
@@ -501,12 +503,24 @@ export const LayoutItems = () => {
                   <div
                     id="menu1"
                     className={`flex flex-col w-full h-[900px] pb-1 overflow-hidden transition-all duration-500 ${
-                      reports ? 'max-h-14' : 'max-h-0'
+                      reports ? 'max-h-28' : 'max-h-0'
                     }`}
                   >
                     <div className="py-1">
                       <NavLink
                         to={'/reports/sales-by-period'}
+                        className={({ isActive }) =>
+                          (isActive
+                            ? 'font-semibold bg-gray-300 dark:bg-gray-700 '
+                            : 'text-coffee-brown font-semibold border-white') +
+                          ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
+                        }
+                      >
+                        <Calendar size={iconSize} />
+                        <p className="ml-2 text-sm 2xl:text-base">Ventas por periodo</p>
+                      </NavLink>
+                      <NavLink
+                        to={'/reports/sales-by-product'}
                         className={({ isActive }) =>
                           (isActive
                             ? 'font-semibold bg-gray-300 dark:bg-gray-700'
@@ -515,7 +529,7 @@ export const LayoutItems = () => {
                         }
                       >
                         <Calendar size={iconSize} />
-                        <p className="ml-2 text-sm 2xl:text-base">Ventas por periodo</p>
+                        <p className="ml-2 text-sm 2xl:text-base">Ventas por produtos</p>
                       </NavLink>
                     </div>
                   </div>
