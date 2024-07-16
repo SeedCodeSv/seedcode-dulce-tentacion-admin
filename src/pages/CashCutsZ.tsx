@@ -54,7 +54,7 @@ const CushCatsZ = (props: CashCutsProps) => {
 
   const calculateIVA = (total: number) => total * 0.13;
 
-  // const print = async () => {
+  const [branchAddress, setBranchAddress] = useState('');
   //   const payload: CloseZ = {
   //     posId: user?.correlative.id || 0,
   //     numberCut: (user?.correlative.next ?? 0) + 1,
@@ -143,7 +143,7 @@ const CushCatsZ = (props: CashCutsProps) => {
          <span>------------------------------------</span><br />
           <span>MADNESS</span><br />
           <span>${branchName || user?.correlative.branch.name}</span><br />
-          <span>${user?.correlative.branch.address}</span><br />
+          <span>${branchAddress || user?.correlative.branch.address}</span><br />
           <span>Creado por: ${user?.userName}</span><br />
           <span>GIRO: VENTA AL POR MENOR DE ROPA</span><br />
           <span>
@@ -308,158 +308,232 @@ const CushCatsZ = (props: CashCutsProps) => {
         isOpen={props.isOpen}
         onClose={() => props.onClose()}
       >
-        <div className="grid grid-cols-3 gap-4">
-          <Autocomplete
-            label="Sucursal"
-            className="order-3 w-full mt-4"
-            labelPlacement="outside"
-            placeholder="Selecciona la sucursal"
-            variant="bordered"
-          >
-            {branch_list.map((item) => (
-              <AutocompleteItem
-                key={item.id}
-                value={item.id}
-                onClick={() => {
-                  setBranchId(item.id);
-                  setBranchName(item.name);
-                }}
-              >
-                {item.name}
-              </AutocompleteItem>
-            ))}
-          </Autocomplete>
-          <Autocomplete
-            className="order-3 w-full mt-4"
-            labelPlacement="outside"
-            placeholder="Selecciona el punto de venta"
-            variant="bordered"
-            label="Punto de Venta"
-          >
-            {codeSale
-              .filter((item) => item.typeVoucher === 'T')
-              .map((item) => (
-                <AutocompleteItem onClick={() => setCodeSelected(item.code)} key={item.id}>
-                  {item.code}
+        <div className="flex flex-col items-center p-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 w-full">
+            <Autocomplete
+              className="mt-4"
+              labelPlacement="outside"
+              label="Sucursal"
+              placeholder="Selecciona la sucursal"
+              variant="bordered"
+            >
+              {branch_list.map((item) => (
+                <AutocompleteItem
+                  key={item.id}
+                  value={item.id}
+                  onClick={() => {
+                    setBranchId(item.id);
+                    setBranchName(item.name);
+                    setBranchAddress(item.address);
+                  }}
+                >
+                  {item.name}
                 </AutocompleteItem>
               ))}
-          </Autocomplete>
-        </div>
-        <div className="flex flex-col items-center justify-center w-full h-full p-5 mt-4 bg-gray-600">
-          <div className="grid grid-cols-2 gap-4 w-[500px] mt-4">
-            <Button
-              color="success"
-              startContent={<PiMicrosoftExcelLogoBold size={25} />}
-              onClick={exportDataToExcel}
+            </Autocomplete>
+            <Autocomplete
+              className="mt-4"
+              labelPlacement="outside"
+              placeholder="Selecciona el punto de venta"
+              variant="bordered"
+              label="Punto de Venta"
             >
-              Exportar a excel
-            </Button>
-            <Button
-              className="w-full"
-              style={global_styles().secondaryStyle}
-              onClick={() => printEstheticService()}
-              startContent={<IoPrintSharp size={25} />}
-            >
-              Imprimir y cerrar
-            </Button>
-            <Button
-              className="w-full"
-              style={global_styles().dangerStyles}
-              onClick={() => props.onClose()}
-            >
-              Cancelar
-            </Button>
+              {codeSale
+                .filter((item) => item.typeVoucher === 'T')
+                .map((item) => (
+                  <AutocompleteItem onClick={() => setCodeSelected(item.code)} key={item.id}>
+                    {item.code}
+                  </AutocompleteItem>
+                ))}
+            </Autocomplete>
           </div>
-          <div className="mt-4 bg-white w-[500px] h-full overflow-y-auto flex items-center justify-center flex-col p-5 rounded-2xl">
-            <h1>MADNESS</h1>
-            <h1>{branchName || user?.correlative.branch.name}</h1>
-            <h1>{user?.correlative.branch.address}</h1>
-            <h1>Creado por: {user?.userName}</h1>
-            <h1>GIRO: VENTA AL POR MENOR DE ROPA</h1>
-            <h1>
-              FECHA: {new Date().toLocaleDateString()} - {new Date().toLocaleTimeString()}
-            </h1>
-            <br />
-            <h1>---------------------------------------------------------------------</h1>
-            <h1>---------------------------------------------------------------------</h1>
-            <div className="w-full">
-              <h1>VENTAS CON TICKET</h1>
-              <h1>N. INICIAL: {data?.Ticket?.inicio}</h1>
-              <h1>N. FINAL: {data?.Ticket?.fin}</h1>
-              <h1>GRAVADAS: $0.00</h1>
-              <h1>IVA: {formatCurrency(calculateIVA(data?.Ticket?.total || 0))}</h1>
-              <h1>SUB_TOTAL: {formatCurrency(Number(data?.Ticket?.total))}</h1>
-              <h1>EXENTAS: $0.00</h1>
-              <h1>NO SUJETAS: $0.00</h1>
-              <h1>TOTAL: {formatCurrency(Number(data?.Ticket?.total))}</h1>
+
+          <div className="flex flex-col items-center w-full h-full p-4 mt-4 bg-gray-600 rounded-md">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
+              <Button
+                color="success"
+                startContent={<PiMicrosoftExcelLogoBold size={25} />}
+                onClick={exportDataToExcel}
+                className="w-full"
+              >
+                Exportar a excel
+              </Button>
+              <Button
+                className="w-full"
+                style={global_styles().secondaryStyle}
+                onClick={() => printEstheticService()}
+                startContent={<IoPrintSharp size={25} />}
+              >
+                Imprimir y cerrar
+              </Button>
+              <Button
+                className="w-full"
+                style={global_styles().dangerStyles}
+                onClick={() => props.onClose()}
+              >
+                Cancelar
+              </Button>
             </div>
-            <br />
-            <h1>---------------------------------------------------------------------</h1>
-            <h1>---------------------------------------------------------------------</h1>
-            <div className="w-full">
-              <h1>VENTAS CON FACTURA</h1>
-              <h1>N. INICIAL: {data?.Factura?.inicio}</h1>
-              <h1>N. FINAL: {data?.Factura?.fin}</h1>
-              <h1>GRAVADAS: $0.00</h1>
-              <h1>IVA: {formatCurrency(calculateIVA(data?.Factura?.total || 0))}</h1>
-              <h1>SUB_TOTAL: {formatCurrency(Number(data?.Factura?.total))}</h1>
-              <h1>EXENTAS: $0.00</h1>
-              <h1>NO SUJETAS: $0.00</h1>
-              <h1>TOTAL: {formatCurrency(Number(data?.Factura?.total))}</h1>
-            </div>
-            <br />
-            <h1>---------------------------------------------------------------------</h1>
-            <h1>---------------------------------------------------------------------</h1>
-            <div className="w-full">
-              <h1>VENTAS CON CRÉDITO FISCAL</h1>
-              <h1>N. INICIAL: {data?.CreditoFiscal?.inicio}</h1>
-              <h1>N. FINAL: {data?.CreditoFiscal?.fin}</h1>
-              <h1>GRAVADAS: $0.00</h1>
-              <h1>IVA: {formatCurrency(calculateIVA(data?.CreditoFiscal?.total || 0))}</h1>
-              <h1>SUB_TOTAL: {formatCurrency(Number(data?.CreditoFiscal?.total))}</h1>
-              <h1>EXENTAS: $0.00</h1>
-              <h1>NO SUJETAS: $0.00</h1>
-              <h1>TOTAL: {formatCurrency(Number(data?.CreditoFiscal?.total))}</h1>
-            </div>
-            <br />
-            <h1>---------------------------------------------------------------------</h1>
-            <h1>---------------------------------------------------------------------</h1>
-            <div className="w-full">
-              <h1>DEVOLUCIONES CON NOTA DE CRÉDITO</h1>
-              <h1>N. INICIAL: {data?.DevolucionNC?.inicio}</h1>
-              <h1>N. FINAL: {data?.DevolucionNC?.fin}</h1>
-              <h1>GRAVADAS: $0.00</h1>
-              <h1>IVA: {formatCurrency(calculateIVA(data?.DevolucionNC?.total || 0))}</h1>
-              <h1>SUB_TOTAL: {formatCurrency(Number(data?.DevolucionNC?.total))}</h1>
-              <h1>EXENTAS: $0.00</h1>
-              <h1>NO SUJETAS: $0.00</h1>
-              <h1>TOTAL: {formatCurrency(Number(data?.DevolucionNC?.total))}</h1>
-            </div>
-            <br />
-            <h1>---------------------------------------------------------------------</h1>
-            <h1>---------------------------------------------------------------------</h1>
-            <div className="w-full">
-              <h1>DEVOLUCIONES CON TICKET</h1>
-              <h1>N. INICIAL: {data?.DevolucionT?.inicio}</h1>
-              <h1>N. FINAL: {data?.DevolucionT?.fin}</h1>
-              <h1>GRAVADAS: $0.00</h1>
-              <h1>IVA: {formatCurrency(calculateIVA(data?.DevolucionT?.total || 0))}</h1>
-              <h1>SUB_TOTAL: {formatCurrency(Number(data?.DevolucionT?.total))}</h1>
-              <h1>EXENTAS: $0.00</h1>
-              <h1>NO SUJETAS: $0.00</h1>
-              <h1>TOTAL: {formatCurrency(Number(data?.DevolucionT?.total))}</h1>
-            </div>
-            <br />
-            <br />
-            <div className="w-full">
-              <h1>TOTAL GENERAL</h1>
-              <h1>GRAVADAS: {formatCurrency(totalGeneral - totalGeneral * 0.13)}</h1>
-              <h1>IVA: {formatCurrency(totalGeneral * 0.13)}</h1>
-              <h1>SUB-TOTAL: {formatCurrency(totalGeneral)}</h1>
-              <h1>EXENTAS:</h1>
-              <h1>NO SUJETAS:</h1>
-              <h1>RETENCIONES:</h1>
-              <h1>TOTAL: ${formatCurrency(totalGeneral)}</h1>
+            <div className="mt-4 bg-white dark:bg-gray-800 w-full max-w-lg h-full overflow-y-auto flex flex-col items-center p-5 rounded-2xl">
+              <h1 className="text-black dark:text-white">MADNESS</h1>
+              <h1 className="text-black dark:text-white">
+                {branchName || user?.correlative.branch.name}
+              </h1>
+              <h1 className="text-black dark:text-white">{user?.correlative.branch.address}</h1>
+
+              <h1 className="text-black dark:text-white">GIRO: VENTA AL POR MENOR DE ROPA</h1>
+              <h1 className="text-black dark:text-white">
+                FECHA: {dateInitial} - {dateEnd}
+              </h1>
+              <h1 className="text-black dark:text-white">
+                PUNTO DE VENTA: {codeSelected ? codeSelected : 'GENERAL'}
+              </h1>
+              <br />
+              <h1 className="text-black dark:text-white">
+                ---------------------------------------------------------------------
+              </h1>
+              <h1 className="text-black dark:text-white">
+                ---------------------------------------------------------------------
+              </h1>
+              <div className="w-full">
+                <h1 className="text-black dark:text-white">VENTAS CON TICKET</h1>
+                <h1 className="text-black dark:text-white">N. INICIAL: {data?.Ticket?.inicio}</h1>
+                <h1 className="text-black dark:text-white">N. FINAL: {data?.Ticket?.fin}</h1>
+                <h1 className="text-black dark:text-white">GRAVADAS: $0.00</h1>
+                <h1 className="text-black dark:text-white">
+                  IVA: {calculateIVA(data?.Ticket?.total || 0).toFixed(2)}
+                </h1>
+                <h1 className="text-black dark:text-white">
+                  SUB_TOTAL: {formatCurrency(Number(data?.Ticket?.total.toFixed(2)))}
+                </h1>
+                <h1 className="text-black dark:text-white">EXENTAS: $0.00</h1>
+                <h1 className="text-black dark:text-white">NO SUJETAS: $0.00</h1>
+                <h1 className="text-black dark:text-white">
+                  TOTAL: {formatCurrency(Number(data?.Ticket?.total.toFixed(2)))}
+                </h1>
+              </div>
+              <br />
+              <h1 className="text-black dark:text-white">
+                ---------------------------------------------------------------------
+              </h1>
+              <h1 className="text-black dark:text-white">
+                ---------------------------------------------------------------------
+              </h1>
+              <div className="w-full">
+                <h1 className="text-black dark:text-white">VENTAS CON FACTURA</h1>
+                <h1 className="text-black dark:text-white">N. INICIAL: {data?.Factura?.inicio}</h1>
+                <h1 className="text-black dark:text-white">N. FINAL: {data?.Factura?.fin}</h1>
+                <h1 className="text-black dark:text-white">GRAVADAS: $0.00</h1>
+                <h1 className="text-black dark:text-white">
+                  IVA: {calculateIVA(data?.Factura?.total || 0).toFixed(2)}
+                </h1>
+                <h1 className="text-black dark:text-white">
+                  SUB_TOTAL: {formatCurrency(Number(data?.Factura?.total))}
+                </h1>
+                <h1 className="text-black dark:text-white">EXENTAS: $0.00</h1>
+                <h1 className="text-black dark:text-white">NO SUJETAS: $0.00</h1>
+                <h1 className="text-black dark:text-white">
+                  TOTAL: {formatCurrency(Number(data?.Factura?.total.toFixed(2)))}
+                </h1>
+              </div>
+              <br />
+              <h1 className="text-black dark:text-white">
+                ---------------------------------------------------------------------
+              </h1>
+              <h1 className="text-black dark:text-white">
+                ---------------------------------------------------------------------
+              </h1>
+              <div className="w-full">
+                <h1 className="text-black dark:text-white">VENTAS CON CRÉDITO FISCAL</h1>
+                <h1 className="text-black dark:text-white">
+                  N. INICIAL: {data?.CreditoFiscal?.inicio}
+                </h1>
+                <h1 className="text-black dark:text-white">N. FINAL: {data?.CreditoFiscal?.fin}</h1>
+                <h1 className="text-black dark:text-white">GRAVADAS: $0.00</h1>
+                <h1 className="text-black dark:text-white">
+                  IVA: {calculateIVA(data?.CreditoFiscal?.total || 0).toFixed(2)}
+                </h1>
+                <h1 className="text-black dark:text-white">
+                  SUB_TOTAL: {formatCurrency(Number(data?.CreditoFiscal?.total))}
+                </h1>
+                <h1 className="text-black dark:text-white">EXENTAS: $0.00</h1>
+                <h1 className="text-black dark:text-white">NO SUJETAS: $0.00</h1>
+                <h1 className="text-black dark:text-white">
+                  TOTAL: {formatCurrency(Number(data?.CreditoFiscal?.total))}
+                </h1>
+              </div>
+              <br />
+              <h1 className="text-black dark:text-white">
+                ---------------------------------------------------------------------
+              </h1>
+              <h1 className="text-black dark:text-white">
+                ---------------------------------------------------------------------
+              </h1>
+              <div className="w-full">
+                <h1 className="text-black dark:text-white">DEVOLUCIONES CON NOTA DE CRÉDITO</h1>
+                <h1 className="text-black dark:text-white">
+                  N. INICIAL: {data?.DevolucionNC?.inicio}
+                </h1>
+                <h1 className="text-black dark:text-white">N. FINAL: {data?.DevolucionNC?.fin}</h1>
+                <h1 className="text-black dark:text-white">GRAVADAS: $0.00</h1>
+                <h1 className="text-black dark:text-white">
+                  IVA: {calculateIVA(data?.DevolucionNC?.total || 0).toFixed(2)}
+                </h1>
+                <h1 className="text-black dark:text-white">
+                  SUB_TOTAL: {formatCurrency(Number(data?.DevolucionNC?.total.toFixed(2)))}
+                </h1>
+                <h1 className="text-black dark:text-white">EXENTAS: $0.00</h1>
+                <h1 className="text-black dark:text-white">NO SUJETAS: $0.00</h1>
+                <h1 className="text-black dark:text-white">
+                  TOTAL: {formatCurrency(Number(data?.DevolucionNC?.total.toFixed(2)))}
+                </h1>
+              </div>
+              <br />
+              <h1 className="text-black dark:text-white">
+                ---------------------------------------------------------------------
+              </h1>
+              <h1 className="text-black dark:text-white">
+                ---------------------------------------------------------------------
+              </h1>
+              <div className="w-full">
+                <h1 className="text-black dark:text-white">DEVOLUCIONES CON TICKET</h1>
+                <h1 className="text-black dark:text-white">
+                  N. INICIAL: {data?.DevolucionT?.inicio}
+                </h1>
+                <h1 className="text-black dark:text-white">N. FINAL: {data?.DevolucionT?.fin}</h1>
+                <h1 className="text-black dark:text-white">GRAVADAS: $0.00</h1>
+                <h1 className="text-black dark:text-white">
+                  IVA: {calculateIVA(data?.DevolucionT?.total || 0)}
+                </h1>
+                <h1 className="text-black dark:text-white">
+                  SUB_TOTAL: {formatCurrency(Number(data?.DevolucionT?.total.toFixed(2)))}
+                </h1>
+                <h1 className="text-black dark:text-white">EXENTAS: $0.00</h1>
+                <h1 className="text-black dark:text-white">NO SUJETAS: $0.00</h1>
+                <h1 className="text-black dark:text-white">
+                  TOTAL: {formatCurrency(Number(data?.DevolucionT?.total.toFixed(2)))}
+                </h1>
+              </div>
+              <br />
+              <br />
+              <div className="w-full">
+                <h1 className="text-black dark:text-white">TOTAL GENERAL</h1>
+                <h1 className="text-black dark:text-white">
+                  GRAVADAS: {formatCurrency(totalGeneral - totalGeneral * 0.13)}
+                </h1>
+                <h1 className="text-black dark:text-white">
+                  IVA: {formatCurrency(totalGeneral * 0.13)}
+                </h1>
+                <h1 className="text-black dark:text-white">
+                  SUB-TOTAL: {formatCurrency(totalGeneral)}
+                </h1>
+                <h1 className="text-black dark:text-white">EXENTAS:</h1>
+                <h1 className="text-black dark:text-white">NO SUJETAS:</h1>
+                <h1 className="text-black dark:text-white">RETENCIONES:</h1>
+                <h1 className="text-black dark:text-white">
+                  TOTAL: {formatCurrency(totalGeneral)}
+                </h1>
+              </div>
             </div>
           </div>
         </div>

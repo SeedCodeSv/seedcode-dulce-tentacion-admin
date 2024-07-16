@@ -7,37 +7,40 @@ import { AxiosError } from 'axios';
 export const useViewsStore = create<ViewsStore>((set, get) => ({
   views_list: [],
   viewasAction: [],
-  views : [],
+  loading_views: false,
+  views: [],
   founds: [],
-  OnGetViewasAction :  async() => {
+  OnGetViewasAction: async () => {
+    set({
+      loading_views: true,
+    });
     await get_views_list()
-    .then(({data}) => {
-       set({
-        viewasAction :  data.viewasAction
-       })
-     
-    })
-    .catch(() => {
-      set((state) => ({
-        ...state,
-        viewasAction: [],
-      }));
-    });
+      .then(({ data }) => {
+        set({
+          viewasAction: data.viewasAction,
+          loading_views: false,
+        });
+      })
+      .catch(() => {
+        set((state) => ({
+          ...state,
+          viewasAction: [],
+        }));
+      });
   },
-  OnGetViews :  async() => {
+  OnGetViews: async () => {
     await get_views()
-    .then(({data}) => {
-       set({
-        views :  data.views
-       })
-     
-    })
-    .catch(() => {
-      set((state) => ({
-        ...state,
-        views: [],
-      }));
-    });
+      .then(({ data }) => {
+        set({
+          views: data.views,
+        });
+      })
+      .catch(() => {
+        set((state) => ({
+          ...state,
+          views: [],
+        }));
+      });
   },
   getViews: async () => {
     await get_views()
