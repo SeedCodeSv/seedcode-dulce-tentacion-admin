@@ -1,5 +1,5 @@
 import { Button } from '@nextui-org/react';
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import classNames from 'classnames';
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
 import { ThemeContext } from '../../hooks/useTheme';
@@ -17,7 +17,6 @@ interface PaginationProps {
 
 const Pagination: React.FC<PaginationProps> = (props) => {
   const { totalPages, onPageChange, totalItems = 5 } = props
-  const [currentPage, setCurrentPage] = useState(props.currentPage);
 
   const { theme } = useContext(ThemeContext);
 
@@ -32,7 +31,6 @@ const Pagination: React.FC<PaginationProps> = (props) => {
   };
 
   const handlePageChange = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
     onPageChange(pageNumber);
   };
 
@@ -45,10 +43,10 @@ const Pagination: React.FC<PaginationProps> = (props) => {
         pages.push(
           <Button
             key={i}
-            style={currentPage === i ? activeStyle : inactiveStyle}
+            style={props.currentPage === i ? activeStyle : inactiveStyle}
             onClick={() => handlePageChange(i)}
             isIconOnly
-            className={classNames(currentPage === i ? 'active' : '', 'px-2 font-semibold')}
+            className={classNames(props.currentPage === i ? 'active' : '', 'px-2 font-semibold')}
           >
             {i}
           </Button>
@@ -57,8 +55,8 @@ const Pagination: React.FC<PaginationProps> = (props) => {
     } else {
       const leftSide = Math.floor(maxPages / 2);
       const rightSide = Math.floor(maxPages / 2) + 1;
-      let start = currentPage - leftSide;
-      let end = currentPage + rightSide;
+      let start = props.currentPage - leftSide;
+      let end = props.currentPage + rightSide;
 
       if (start < 1) {
         start = 1;
@@ -72,24 +70,24 @@ const Pagination: React.FC<PaginationProps> = (props) => {
         pages.push(
           <Button
             key={i}
-            style={currentPage === i ? activeStyle : inactiveStyle}
+            style={props.currentPage === i ? activeStyle : inactiveStyle}
             onClick={() => handlePageChange(i)}
             isIconOnly
-            className={classNames(currentPage === i ? 'active' : '', 'px-2 font-semibold')}
+            className={classNames(props.currentPage === i ? 'active' : '', 'px-2 font-semibold')}
           >
             {i}
           </Button>
         );
       }
 
-      if (currentPage > leftSide + 1) {
+      if (props.currentPage > leftSide + 1) {
         pages.unshift(
           <Button style={inactiveStyle} isIconOnly key="leftDots">
             ...
           </Button>
         );
       }
-      if (currentPage < totalPages - rightSide) {
+      if (props.currentPage < totalPages - rightSide) {
         pages.push(
           <Button style={inactiveStyle} isIconOnly key="rightDots">
             ...
@@ -110,14 +108,14 @@ const Pagination: React.FC<PaginationProps> = (props) => {
   };
 
   const goToPrevPage = () => {
-    if (currentPage > 1) {
-      handlePageChange(currentPage - 1);
+    if (props.currentPage > 1) {
+      handlePageChange(props.currentPage - 1);
     }
   };
 
   const goToNextPage = () => {
-    if (currentPage < totalPages) {
-      handlePageChange(currentPage + 1);
+    if (props.currentPage < totalPages) {
+      handlePageChange(props.currentPage + 1);
     }
   };
 

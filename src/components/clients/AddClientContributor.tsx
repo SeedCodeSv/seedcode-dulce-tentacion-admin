@@ -106,20 +106,22 @@ function AddClientContributor(props: Props) {
     getCat013Municipios(selectedCodeDep);
   }, [selectedCodeDep, props.customer_direction]);
   const { postCustomer, patchCustomer } = useCustomerStore();
-  const user = get_user();
+ const user = get_user();
   const onSubmit = async (payload: PayloadCustomer) => {
     if (props.id || props.id !== 0) {
       const values = {
         ...payload,
         esContribuyente: 1,
-        transmitterId: Number(user?.correlative.branch.transmitterId),
+        // transmitterId: Number(user?.correlative.branch.transmitterId),
+        branchId: Number(user?.correlative.branch.id),
       };
-      patchCustomer(values, props.id!);
+      await patchCustomer(values, props.id!);
     } else {
       const values = {
         ...payload,
         esContribuyente: 1,
-        transmitterId: Number(user?.correlative.branch.transmitterId),
+        branchId: Number(user?.correlative.branch.id),
+        // transmitterId: Number(user?.correlative.branch.transmitterId),
       };
       await postCustomer(values);
     }
@@ -329,7 +331,7 @@ function AddClientContributor(props: Props) {
                     placeholder={
                       props.customer?.descActividad
                         ? props.customer?.descActividad
-                        : 'Selecciona la actividad'
+                        : 'Escribe la actividad'
                     }
                     variant="bordered"
                     classNames={{
@@ -426,6 +428,7 @@ function AddClientContributor(props: Props) {
                     className="dark:text-white"
                     // selectedKey={selectedKeyCity}
                     defaultSelectedKey={props.customer_direction?.nombreMunicipio}
+                    defaultInputValue={props.customer_direction?.nombreMunicipio}
                     value={selectedKeyCity}
                   >
                     {cat_013_municipios.map((dep) => (

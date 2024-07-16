@@ -249,7 +249,7 @@ function ListEmployee({ actions }: Props) {
                     Buscar
                   </Button>
                 </div>
-                <div className="flex items-end justify-between gap-10 mt lg:justify-end">
+                <div className="flex items-end justify-between gap-10 mt-4 lg:justify-end">
                   <ButtonGroup>
                     <Button
                       isIconOnly
@@ -293,7 +293,7 @@ function ListEmployee({ actions }: Props) {
                   </ButtonGroup>
                   <div className="flex items-center gap-5">
                     <div className="block md:hidden">
-                      <TooltipGlobal text="Filtrar">
+                      <TooltipGlobal text="Buscar por filtros">
                         <Button
                           style={global_styles().thirdStyle}
                           isIconOnly
@@ -318,7 +318,7 @@ function ListEmployee({ actions }: Props) {
                                 setOpenVaul(false);
                               }}
                             >
-                              Aplicar filtros
+                             Buscar
                             </Button>
                           </div>
                         </div>
@@ -341,6 +341,7 @@ function ListEmployee({ actions }: Props) {
                   className="w-44 dark:text-white"
                   variant="bordered"
                   label="Mostrar"
+                  defaultSelectedKeys={['5']}
                   labelPlacement="outside"
                   classNames={{
                     label: "font-semibold",
@@ -383,8 +384,7 @@ function ListEmployee({ actions }: Props) {
                 <MobileView
                   deletePopover={DeletePopover}
                   openEditModal={(employee) => {
-                    setSelectedEmployee(employee);
-                    modalAdd.onOpen();
+                    setDataUpdate(employee);
                   }}
                   layout={view as "grid" | "list"}
                   actions={actions}
@@ -436,6 +436,8 @@ function ListEmployee({ actions }: Props) {
                     body={(item) => (
                       <div className="flex w-full gap-5">
                         {actions.includes("Editar") && (
+                          <>
+                          {item.isActive && (
                          <TooltipGlobal text="Editar">
                           <Button
                             onClick={() => {
@@ -453,9 +455,12 @@ function ListEmployee({ actions }: Props) {
                           </Button>
                           </TooltipGlobal>
                         )}
+                        </>
+                        )}
                         {actions.includes("Eliminar") && (
                           <>
                             {item.isActive ? (
+                              
                               <DeletePopover employee={item} />
                             ) : (
                               <Button
@@ -562,7 +567,6 @@ export const DeletePopover = ({ employee }: PopProps) => {
     <>
       <Popover isOpen={isOpen} onClose={onClose} backdrop="blur" showArrow>
         <PopoverTrigger>
-        <TooltipGlobal text="Eliminar">
           <Button
             onClick={onOpen}
             isIconOnly
@@ -570,14 +574,15 @@ export const DeletePopover = ({ employee }: PopProps) => {
               backgroundColor: theme.colors.danger,
             }}
           >
+            <TooltipGlobal text="Eliminar">
             <TrashIcon
               style={{
                 color: theme.colors.primary,
               }}
               size={20}
             />
-          </Button>
         </TooltipGlobal>
+          </Button>
         </PopoverTrigger>
         <PopoverContent>
           <div className="w-full p-5">

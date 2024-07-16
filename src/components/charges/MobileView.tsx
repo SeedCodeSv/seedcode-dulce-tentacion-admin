@@ -21,10 +21,11 @@ function MobileView(props: MobileViewProps) {
         pt={{
           grid: () => ({
             className:
-              'grid dark:bg-slate-800 pb-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid-nogutter gap-5 mt-5',
+              "w-full grid dark:bg-transparent pb-10 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5 mt-5",
           }),
         }}
         color="surface"
+        className='dark:text-white'
         itemTemplate={(cat) => (
           <GridItem
             charges={cat}
@@ -35,7 +36,7 @@ function MobileView(props: MobileViewProps) {
             handleActive={handleActive}
           />
         )}
-        emptyMessage="No category found"
+        emptyMessage="No se encontraron resultados"
       />
     </div>
   );
@@ -50,13 +51,13 @@ const GridItem = (props: GridProps) => {
       {layout === 'grid' ? (
         <div
           className={classNames(
-            'w-full shadow-sm hover:shadow-lg p-8 dark:border dark:border-gray-600 rounded-2xl'
+            "w-full shadow dark:border border-gray-600 hover:shadow-lg p-8 rounded-2xl"
           )}
           key={charges.id}
         >
           <div className="flex w-full gap-2">
             <ScrollIcon className="text-[#274c77] dark:text-gray-400" size={35} />
-            {charges.name}
+            <p className="w-full dark:text-white">{charges.name}</p> 
           </div>
           <div className="flex justify-between mt-5 w-ful">
             {actions.includes('Editar') && (
@@ -105,11 +106,11 @@ const ListItem = (props: GridProps) => {
   const { charges, deletePopover, handleEdit, actions, handleActive } = props;
   return (
     <>
-      <div className="flex w-full col-span-1 p-5 border-b shadow md:col-span-2 lg:col-span-3 xl:col-span-4">
+      <div className="flex w-full col-span-1 p-5 border shadow rounded-2xl ">
         <div className="w-full">
           <div className="flex items-center w-full gap-2">
             <ScrollIcon className="text-[#274c77] dark:text-gray-400" size={35} />
-            {charges.name}
+            <p className="w-full dark:text-white">{charges.name}</p>
           </div>
         </div>
         <div className="flex flex-col items-end justify-between w-full gap-5">
