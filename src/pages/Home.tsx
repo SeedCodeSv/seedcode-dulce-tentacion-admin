@@ -100,27 +100,8 @@ function Home() {
           <div>
             {loading_sales_by_branch_and_month ? (
               <>
-                {/* <Skeleton
-                  isLoaded={!loading_sales_by_branch_and_month}
-                  disableAnimation={true}
-                  className="h-full rounded-lg max-h-52 slow-skeleton"
-                >
-                  <SalesMonthBranches
-                    sales={{
-                      title: 'Ventas del mes',
-                      labels: sales_branch_month.map((sl) => sl.branch),
-                      total,
-                      series: [
-                        {
-                          name: 'Total',
-                          data: sales_branch_month.map((sl) => sl.total),
-                        },
-                      ],
-                    }}
-                  />
-                </Skeleton> */}
                 <div className="flex flex-col space-y-3">
-                  <Skeleton className="h-[125px] w-[250px] rounded-xl" />
+                  <Skeleton className="h-[150px] w-[280px] rounded-xl" />
                   <div className="space-y-2">
                     <Skeleton className="h-4 w-[250px]" />
                     <Skeleton className="h-4 w-[200px]" />
@@ -148,27 +129,8 @@ function Home() {
 
           <div>
             {loading_expenses_branchMonth ? (
-              // <Skeleton
-              //   isLoaded={!loading_expenses_branchMonth}
-              //   disableAnimation={true}
-              //   className="h-full rounded-lg max-h-52"
-              // >
-              //   <ExpensesMonthBranches
-              //     sales={{
-              //       title: 'Gastos del mes',
-              //       labels: expenses_branch_month.map((sl) => sl.branch),
-              //       total: totalExpenses,
-              //       series: [
-              //         {
-              //           name: 'Total',
-              //           data: expenses_branch_month.map((sl) => sl.total),
-              //         },
-              //       ],
-              //     }}
-              //   />
-              // </Skeleton>
               <div className="flex flex-col space-y-3">
-                <Skeleton className="h-[125px] w-[250px] rounded-xl" />
+                <Skeleton className="h-[150px] w-[280px] rounded-xl" />
                 <div className="space-y-2">
                   <Skeleton className="h-4 w-[250px]" />
                   <Skeleton className="h-4 w-[200px]" />
@@ -196,32 +158,8 @@ function Home() {
           <div>
             {loading_most_selled_product ? (
               <>
-                {/* <Skeleton
-                  isLoaded={!loading_most_selled_product}
-                  disableAnimation={true}
-                  className="h-full rounded-lg max-h-52"
-                >
-                  <MostProductSelled
-                    sales={{
-                      title: 'Producto mas vendido',
-                      labels: most_product_selled.map((sl) => sl.branchProduct.name),
-                      total: mostProductSelled,
-                      branch: most_product_selled.map((ld) => ld.branch),
-                      series: [
-                        {
-                          name: 'Total',
-                          data: most_product_selled.map((sl) => Number(sl.total)),
-                        },
-                        {
-                          name: 'Sucursal',
-                          data: most_product_selled.map((sl) => Number(sl.branch)),
-                        },
-                      ],
-                    }}
-                  />
-                </Skeleton> */}
                 <div className="flex flex-col space-y-3">
-                  <Skeleton className="h-[125px] w-[250px] rounded-xl" />
+                  <Skeleton className="h-[150px] w-[280px] rounded-xl" />
                   <div className="space-y-2">
                     <Skeleton className="h-4 w-[250px]" />
                     <Skeleton className="h-4 w-[200px]" />
@@ -255,28 +193,9 @@ function Home() {
           <div>
             {loading_sales_month_year ? (
               <>
-                {/* <Skeleton
-                  isLoaded={!loading_sales_month_year}
-                  disableAnimation={true}
-                  className="h-full rounded-lg max-h-52"
-                >
-                  <SalesMonthYear
-                    sales={{
-                      title: 'Ventas por año',
-                      labels: sales_month_year.map((sl) => shortMonth(sl.month)),
-                      total: yearTotal,
-                      series: [
-                        {
-                          name: 'Total',
-                          data: sales_month_year.map((sl) => Number(sl.total)),
-                        },
-                      ],
-                    }}
-              
-                  />
-                </Skeleton> */}
-                <div className="flex flex-col space-y-3">
-                  <Skeleton className="h-[125px] w-[250px] rounded-xl" />
+      
+                <div className="flex flex-col space-y-3 ">
+                  <Skeleton className="h-[150px] w-full  rounded-xl" />
                   <div className="space-y-2">
                     <Skeleton className="h-4 w-[250px]" />
                     <Skeleton className="h-4 w-[200px]" />
@@ -347,13 +266,13 @@ function Home() {
                     headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
                     field="branch"
                     header="Sucursal"
-                    bodyClassName={"dark:text-white"}
+                    bodyClassName={'dark:text-white'}
                   />
                   <Column
                     headerClassName="text-sm font-semibold"
                     headerStyle={style}
                     field="totalSales"
-                    bodyClassName={"dark:text-white"}
+                    bodyClassName={'dark:text-white'}
                     header="Total"
                     body={(rowData) => formatCurrency(Number(rowData.totalSales))}
                   />
