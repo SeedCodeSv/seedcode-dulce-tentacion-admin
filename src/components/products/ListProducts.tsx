@@ -164,7 +164,7 @@ function ListProducts({ actions }: Props) {
                   label: "font-semibold text-gray-700",
                   inputWrapper: "pr-0",
                 }}
-                value={search}
+                value={code}
                 onChange={(e) => setCode(e.target.value)}
                 placeholder="Escribe para buscar..."
                 isClearable

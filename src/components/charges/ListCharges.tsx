@@ -86,8 +86,8 @@ function ListCharges({ actions }: IProps) {
   };
 
   return (
-    <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
-      <div className="flex flex-col w-full p-5 rounded">
+    <div className="w-full h-full px-5 py-4 bg-gray-50 dark:bg-gray-800">
+      <div className="flex flex-col w-full p-5 bg-white shadow rounded-xl dark:bg-gray-900">
         <div className="flex flex-col justify-between w-full gap-5 mb-5 lg:mb-10 lg:flex-row lg:gap-0">
           <div className="flex items-end gap-3">
             <div className="hidden w-full md:flex gap-3">
@@ -162,7 +162,7 @@ function ListCharges({ actions }: IProps) {
             <div className="flex items-center gap-5">
               <div className="block md:hidden">
                
-              <TooltipGlobal text="Filtrar">
+              <TooltipGlobal text="Buscar por filtros">
                     <Button
                       style={global_styles().thirdStyle}
                       isIconOnly
@@ -218,14 +218,13 @@ function ListCharges({ actions }: IProps) {
                   </BottomDrawer>
                 
               </div>
-            </div>
-
             <AddButton
               onClick={() => {
                 setSelectedCharge(undefined);
                 modalAdd.onOpen();
               }}
             />
+             </div>
           </div>
         </div>
         <div className="flex justify-end items-end w-full mb-5 gap-5">
@@ -384,7 +383,7 @@ const DeletePopUp = ({ charges }: Props) => {
     <>
       <Popover isOpen={isOpen} onClose={onClose} backdrop="blur" showArrow>
         <PopoverTrigger>
-        <TooltipGlobal text="Eliminar">
+        
           <Button
             onClick={onOpen}
             isIconOnly
@@ -392,14 +391,15 @@ const DeletePopUp = ({ charges }: Props) => {
               backgroundColor: theme.colors.danger,
             }}
           >
+            <TooltipGlobal text="Eliminar">
             <TrashIcon
               style={{
                 color: theme.colors.primary,
               }}
               size={20}
             />
-          </Button>
-        </TooltipGlobal>
+            </TooltipGlobal>
+        </Button>
         </PopoverTrigger>
         <PopoverContent>
           <div className="w-full p-5">
