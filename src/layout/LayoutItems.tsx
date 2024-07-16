@@ -56,7 +56,7 @@ export const LayoutItems = () => {
     }
     OnGetViewasAction();
   }, [context]);
-  const views = viewasAction.map((r) => r.view.name);
+  const views = viewasAction && viewasAction.map((r) => r.view.name);
   const { personalization } = useConfigurationStore();
   const { windowSize } = useWindowSize();
   const iconSize = useMemo(() => {
