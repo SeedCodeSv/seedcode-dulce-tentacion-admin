@@ -111,10 +111,11 @@ const PermissionTable: React.FC = () => {
   };
   const { theme } = useContext(ThemeContext);
   const availableViews = permissionss.view_actions.filter(
-    (view) => !viewasAction.some((va) => va.view.name === view.view)
+    (view) => !(viewasAction ?? []).some((va) => va.view.name === view.view)
   );
+  
   const renderActions = (viewId: number) => {
-    const view = viewasAction.find((view) => view.view.id === viewId)?.view;
+    const view = viewasAction.find((view) => view.view.id === viewId)?.view ;
     return (
       <div className="w-full p-2" key={viewId}>
         <div className="mb-4 bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden">
@@ -172,7 +173,7 @@ const PermissionTable: React.FC = () => {
           <AddButton onClick={() => navigate('/AddActionRol')}></AddButton>
         </div>
         <div className="overflow-y-auto h-64 lg:h-full">
-          {viewasAction.map((view) => (
+          { viewasAction && viewasAction.map((view) => (
             <div key={view.view.id} className="mb-2">
               <button
                 className={`w-full text-left bg-white dark:bg-gray-800 py-2 px-4 rounded-lg shadow-md hover:bg-gray-200 dark:hover:bg-gray-700 transition ${
@@ -211,7 +212,7 @@ const PermissionTable: React.FC = () => {
           </div>
           {isViewModalOpen && (
             <div className="flex flex-col space-y-2">
-              {availableViews.map((view) => (
+              { availableViews && availableViews.map((view) => (
                 <div
                   onClick={() => handleSelectView(view.view)}
                   key={view.view}
