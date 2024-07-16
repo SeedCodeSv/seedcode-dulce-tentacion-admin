@@ -24,8 +24,6 @@ import {
 import { useCategoriesStore } from "../../store/categories.store";
 import { ThemeContext } from "../../hooks/useTheme";
 import AddCategory from "./AddCategory";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
 import AddButton from "../global/AddButton";
 import MobileView from "./MobileView";
 import Pagination from "../global/Pagination";
@@ -38,6 +36,7 @@ import HeadlessModal from "../global/HeadlessModal";
 import useWindowSize from "@/hooks/useWindowSize";
 import TooltipGlobal from "../global/TooltipGlobal";
 import BottomDrawer from "../global/BottomDrawer";
+import NO_DATA from "@/assets/svg/no_data.svg";
 
 interface PProps {
   actions: string[];
@@ -71,11 +70,6 @@ function ListCategories({ actions }: PProps) {
 
   const modalAdd = useDisclosure();
 
-  const style = {
-    backgroundColor: theme.colors.dark,
-    color: theme.colors.primary,
-  };
-
   const { windowSize } = useWindowSize();
   const [view, setView] = useState<"table" | "grid" | "list">(
     windowSize.width < 768 ? "grid" : "table"
@@ -96,8 +90,8 @@ function ListCategories({ actions }: PProps) {
   };
 
   return (
-    <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
-      <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
+    <div className="w-full h-full p-4 md:p-10 md:px-12">
+      <div className="w-full h-full p-4 overflow-y-auto bg-white shadow custom-scrollbar md:p-8 dark:bg-gray-900">
         <div className="flex flex-col justify-between w-full gap-5 mb-5 lg:mb-10 lg:flex-row lg:gap-0">
           <div className="flex items-end gap-3">
             <div className="hidden w-full gap-3 md:flex">
@@ -283,72 +277,122 @@ function ListCategories({ actions }: PProps) {
           />
         )}
         {view === "table" && (
-          <DataTable
-            className="w-full shadow"
-            emptyMessage="No se encontraron resultados"
-            value={paginated_categories.categoryProducts}
-            tableStyle={{ minWidth: "50rem" }}
-            loading={loading_categories}
-          >
-            <Column
-              headerClassName="text-sm font-semibold"
-              headerStyle={{ ...style, borderTopLeftRadius: "10px" }}
-              field="id"
-              bodyClassName={"dark:text-white"}
-              header="No."
-            />
-            <Column
-              headerClassName="text-sm font-semibold"
-              headerStyle={style}
-              field="name"
-              bodyClassName={"dark:text-white"}
-              header="Nombre"
-            />
-            <Column
-              headerStyle={{ ...style, borderTopRightRadius: "10px" }}
-              header="Acciones"
-              body={(item) => (
-                <div className="flex gap-6">
-                  {actions.includes("Editar") && (
-                    <TooltipGlobal text="Editar el registro" color="primary">
-                      <Button
-                        onClick={() => handleEdit(item)}
-                        isIconOnly
-                        style={{
-                          backgroundColor: theme.colors.secondary,
-                        }}
+          <>
+            <div className="max-h-[400px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
+              <table className="w-full">
+                <thead className="sticky top-0 z-20 bg-white">
+                  <tr>
+                    <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                      No.
+                    </th>
+                    <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                      Nombre
+                    </th>
+                    <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                      Acciones
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="max-h-[600px] w-full overflow-y-auto">
+                  {loading_categories ? (
+                    <tr>
+                      <td
+                        colSpan={5}
+                        className="p-3 text-sm text-center text-slate-500"
                       >
-                        <EditIcon
-                          style={{ color: theme.colors.primary }}
-                          size={20}
-                        />
-                      </Button>
-                    </TooltipGlobal>
-                  )}
-                  {actions.includes("Eliminar") && (
+                        <div className="flex flex-col items-center justify-center w-full h-64">
+                          <div className="loader"></div>
+                          <p className="mt-3 text-xl font-semibold">
+                            Cargando...
+                          </p>
+                        </div>
+                      </td>
+                    </tr>
+                  ) : (
                     <>
-                      {item.isActive ? (
-                        <DeletePopUp category={item} />
+                      {paginated_categories.categoryProducts.length > 0 ? (
+                        <>
+                          {paginated_categories.categoryProducts.map((cat) => (
+                            <tr className="border-b border-slate-200">
+                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                {cat.id}
+                              </td>
+                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
+                                {cat.name}
+                              </td>
+                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                <div className="flex gap-6">
+                                  {actions.includes("Editar") && (
+                                    <TooltipGlobal
+                                      text="Editar el registro"
+                                      color="primary"
+                                    >
+                                      <Button
+                                        onClick={() => handleEdit(cat)}
+                                        isIconOnly
+                                        style={{
+                                          backgroundColor:
+                                            theme.colors.secondary,
+                                        }}
+                                      >
+                                        <EditIcon
+                                          style={{
+                                            color: theme.colors.primary,
+                                          }}
+                                          size={20}
+                                        />
+                                      </Button>
+                                    </TooltipGlobal>
+                                  )}
+                                  {actions.includes("Eliminar") && (
+                                    <>
+                                      {cat.isActive ? (
+                                        <DeletePopUp category={cat} />
+                                      ) : (
+                                        <TooltipGlobal
+                                          text="Activar la categoría"
+                                          color="primary"
+                                        >
+                                          <Button
+                                            onClick={() =>
+                                              handleActivate(cat.id)
+                                            }
+                                            isIconOnly
+                                            style={global_styles().thirdStyle}
+                                          >
+                                            <RefreshCcw />
+                                          </Button>
+                                        </TooltipGlobal>
+                                      )}
+                                    </>
+                                  )}
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </>
                       ) : (
-                        <TooltipGlobal
-                          text="Activar la categoría"
-                          color="primary"
-                        >
-                          <Button
-                            onClick={() => handleActivate(item.id)}
-                            isIconOnly
-                            style={global_styles().thirdStyle}
-                          >
-                            <RefreshCcw />
-                          </Button>
-                        </TooltipGlobal>
+                        <tr>
+                          <td colSpan={5}>
+                            <div className="flex flex-col items-center justify-center w-full">
+                              <img
+                                src={NO_DATA}
+                                alt="X"
+                                className="w-32 h-32"
+                              />
+                              <p className="mt-3 text-xl">
+                                No se encontraron resultados
+                              </p>
+                            </div>
+                          </td>
+                        </tr>
                       )}
                     </>
                   )}
-                </div>
-              )}
-            />
-          </DataTable>
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
         {paginated_categories.totalPag > 1 && (
           <>

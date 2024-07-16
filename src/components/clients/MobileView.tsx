@@ -4,7 +4,6 @@ import { useCustomerStore } from "../../store/customers.store";
 import { classNames } from "primereact/utils";
 import {
   User as IUser,
-  Trash,
   Phone,
   Mail,
   Users2Icon,
@@ -15,6 +14,8 @@ import {
 } from "lucide-react";
 import { global_styles } from "../../styles/global.styles";
 import { GridProps, MobileViewProps } from "./types/mobile-view.types";
+import TooltipGlobal from "../global/TooltipGlobal";
+import { DeletePopover } from "./ListClients";
 
 function MobileView({
   layout,
@@ -32,10 +33,11 @@ function MobileView({
         pt={{
           grid: () => ({
             className:
-              "grid dark:bg-slate-800 pb-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4  gap-5 mt-5",
+              "w-full grid dark:bg-transparent pb-10 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5 mt-5",
           }),
         }}
         color="surface"
+        className="dark:text-white"
         itemTemplate={
           (customer) => (
             <GridItem
@@ -59,64 +61,77 @@ const GridItem = (props: GridProps) => {
       {layout === "grid" ? (
         <div
           className={classNames(
-            "w-full shadow-sm hover:shadow-lg dark:border dark:border-gray-600 p-6 rounded-2xl"
+            "w-full shadow dark:border border-gray-600 hover:shadow-lg p-8 rounded-2xl"
           )}
           key={customers.id}
         >
           <div className="flex w-full gap-2">
-            <IUser className="text-[#274c77] dark:text-gray-400" size={35} />
-            {customers.nombre}
+            <IUser className="text-[#274c77] dark:text-gray-400"
+              size={20} /> 
+            <p className="w-full dark:text-white">{customers.nombre}</p>
           </div>
           <div className="flex w-full gap-2 mt-3">
-            <Phone className="text-[#00bbf9] dark:text-gray-400" size={33} />
-            {customers.telefono}
+            <Phone className="text-[#274c77] dark:text-gray-400"
+              size={20} />
+           <p className="w-full dark:text-white"> {customers.telefono}</p>
           </div>
           <div className="flex w-full gap-2 mt-3">
             <div>
-              <MapPin className="text-[#00bbf9] dark:text-gray-400 w-auto h-auto" size={35} />
+              <MapPin className="text-[#274c77] dark:text-gray-400"
+              size={20} />
             </div>
-            <div className="w-full">
+            <div className="w-full dark:text-white">
             {customers.direccion.nombreDepartamento} ,
             {customers.direccion.municipio} ,{customers.direccion.complemento}
             </div>
           </div>
           <div className="flex w-full gap-2 mt-3">
             <Users2Icon
-              className="text-[#006d77] dark:text-gray-400"
-              size={35}
+              className="text-[#274c77] dark:text-gray-400"
+              size={20}
             />
-            {customers.esContribuyente ? "Si" : "No"}
+          <p className="w-full dark:text-white"> {customers.esContribuyente ? "Contribuyente" : "No Contribuyente"}</p> 
           </div>
           <div className="flex justify-between mt-5 w-ful">
-            <Button
-              onClick={() => handleChangeCustomer(customers, "edit")}
-              isIconOnly
-              style={global_styles().secondaryStyle}
-            >
-              <EditIcon size={20} />
-            </Button>
-            <Button
-              onClick={() => handleChangeCustomer(customers, "change")}
-              isIconOnly
-              style={global_styles().thirdStyle}
-            >
-              <Repeat size={20} />
-            </Button>
-            <Button isIconOnly style={global_styles().dangerStyles}>
-              <Trash size={20} />
-            </Button>
+          
 
-            {customers.isActive === false && (
+          {customers.isActive ? (
+            <>
+            <TooltipGlobal text="Editar">
               <Button
-                onClick={() => {
-                  handleActive(customers.id);
-                }}
+                onClick={() => handleChangeCustomer(customers, "edit")}
                 isIconOnly
                 style={global_styles().secondaryStyle}
               >
-                <BadgeCheck size={20} />
+                <EditIcon size={20} />
               </Button>
+            </TooltipGlobal>
+            {customers.esContribuyente === false && (
+              <TooltipGlobal text="Cambiar tipo de cliente">
+                <Button
+                  onClick={() => handleChangeCustomer(customers, "change")}
+                  isIconOnly
+                  style={global_styles().thirdStyle}
+                >
+                  <Repeat size={20} />
+                </Button>
+              </TooltipGlobal>
             )}
+            {DeletePopover({ customers: customers })}
+          </>
+          ):(
+            <TooltipGlobal text="Activar">
+            <Button
+              onClick={() => {
+                handleActive(customers.id);
+              }}
+              isIconOnly
+              style={global_styles().secondaryStyle}
+            >
+              <BadgeCheck size={20} />
+            </Button>
+            </TooltipGlobal>
+          )}
           </div>
         </div>
       ) : (
@@ -135,47 +150,56 @@ const ListItem = (props: GridProps) => {
   const { customers, handleChangeCustomer, handleActive } = props;
   return (
     <>
-      <div className="flex w-full col-span-1 p-5 border-b shadow md:col-span-2 lg:col-span-3 xl:col-span-4">
+<div className="flex w-full col-span-1 p-5 border shadow rounded-2xl ">
         <div className="w-full">
           <div className="flex items-center w-full gap-2">
-            <IUser color={"#274c77"} size={35} />
-            {customers.nombre}
+            <IUser className="text-[#274c77] dark:text-gray-400"
+              size={20} />
+            <p className="w-full dark:text-white">{customers.nombre}</p>
           </div>
           <div className="flex items-center w-full gap-2 mt-3">
-            <Phone color="#00bbf9" size={35} />
-            {customers.telefono}
+            <Phone className="text-[#274c77] dark:text-gray-400"
+              size={20} />
+            <p className="w-full dark:text-white">{customers.telefono}</p>
           </div>
           <div className="flex items-center w-full gap-2 mt-3">
-            <Mail color={"#006d77"} size={35} />
-            {customers.correo}
+            <Mail className="text-[#274c77] dark:text-gray-400"
+              size={20} />
+            <p className="w-full dark:text-white">{customers.correo}</p>
           </div>
           <div className="flex items-center w-full gap-2 mt-3">
-            <Users2Icon color={"#006d77"} size={35} />
-            {customers.esContribuyente ? "Si" : "No"}
+            <Users2Icon className="text-[#274c77] dark:text-gray-400"
+              size={20}/>
+            <p className="w-full dark:text-white">{customers.esContribuyente ? "Contribuyente" : "No Contribuyente"}</p>
           </div>
         </div>
         <div className="flex flex-col items-end justify-between w-full">
-          <Button
-            onClick={() => handleChangeCustomer(customers, "edit")}
-            isIconOnly
-            style={global_styles().secondaryStyle}
-          >
-            <EditIcon size={20} />
-          </Button>
-          <Button
-            onClick={() => handleChangeCustomer(customers, "change")}
-            isIconOnly
-            style={global_styles().thirdStyle}
-          >
-            <Repeat size={20} />
-          </Button>
-          <Button
-            isIconOnly
-            style={global_styles().dangerStyles}
-          >
-            <Trash size={20} />
-          </Button>
-          {customers.isActive === false && (
+        {customers.isActive ? (
+            <>
+            <TooltipGlobal text="Editar">
+              <Button
+                onClick={() => handleChangeCustomer(customers, "edit")}
+                isIconOnly
+                style={global_styles().secondaryStyle}
+              >
+                <EditIcon size={20} />
+              </Button>
+            </TooltipGlobal>
+            {customers.esContribuyente === false && (
+              <TooltipGlobal text="Cambiar tipo de cliente">
+                <Button
+                  onClick={() => handleChangeCustomer(customers, "change")}
+                  isIconOnly
+                  style={global_styles().thirdStyle}
+                >
+                  <Repeat size={20} />
+                </Button>
+              </TooltipGlobal>
+            )}
+            {DeletePopover({ customers: customers })}
+          </>
+          ):(
+            <TooltipGlobal text="Activar">
             <Button
               onClick={() => {
                 handleActive(customers.id);
@@ -185,6 +209,7 @@ const ListItem = (props: GridProps) => {
             >
               <BadgeCheck size={20} />
             </Button>
+            </TooltipGlobal>
           )}
         </div>
       </div>

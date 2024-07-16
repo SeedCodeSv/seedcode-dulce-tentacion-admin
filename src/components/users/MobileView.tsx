@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { global_styles } from "../../styles/global.styles";
 import { GridProps, IMobileViewProps } from "./types/mobile-view.types";
+import TooltipGlobal from "../global/TooltipGlobal";
 
 function MobileView(props: IMobileViewProps) {
   const { users_paginated } = useUsersStore();
@@ -25,7 +26,7 @@ function MobileView(props: IMobileViewProps) {
         pt={{
           grid: () => ({
             className:
-              "grid dark:bg-slate-800 pb-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 grid-nogutter gap-5 mt-5",
+              "w-full grid dark:bg-transparent pb-10 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5 mt-5",
           }),
         }}
         color="surface"
@@ -51,13 +52,14 @@ const GridItem = (props: GridProps) => {
       {layout === "grid" ? (
         <div
           className={classNames(
-            "w-full shadow-sm hover:shadow-lg p-8 dark:border dark:border-gray-600 rounded-2xl"
+             "w-full shadow dark:border border-gray-600 hover:shadow-lg p-8 rounded-2xl"
           )}
           key={user.id}
         >
           <div className="flex w-full gap-2">
-            <IUser className="text-[#274c77] dark:text-gray-400" size={35} />
-            {user.userName}
+            <IUser className="text-[#274c77] dark:text-gray-400"
+              size={20} />
+             <p className="w-full dark:text-white">{user.userName}</p>
           </div>
           {/* <div className="flex w-full gap-2 mt-3">
             <SquareUserRound
@@ -68,12 +70,13 @@ const GridItem = (props: GridProps) => {
           </div> */}
           <div className="flex w-full gap-2 mt-3">
             <ShieldCheck
-              className="text-[#006d77] dark:text-gray-400"
-              size={35}
+              className="text-[#274c77] dark:text-gray-400"
+              size={20}
             />
-            {user.role.name}
+            <p className="w-full dark:text-white">{user.role.name}</p> 
           </div>
           <div className="flex justify-between mt-5 w-ful">
+          <TooltipGlobal text="Editar">
             <Button
               onClick={() => openEditModal(user)}
               isIconOnly
@@ -81,6 +84,8 @@ const GridItem = (props: GridProps) => {
             >
               <EditIcon size={20} />
             </Button>
+            </TooltipGlobal>
+            <TooltipGlobal text="Cambiar Contraseña ">
             <Button
               onClick={() => openKeyModal(user)}
               isIconOnly
@@ -88,6 +93,7 @@ const GridItem = (props: GridProps) => {
             >
               <Key size={20} />
             </Button>
+            </TooltipGlobal>
             {deletePopover({ user: user })}
           </div>
         </div>
@@ -109,22 +115,27 @@ const ListItem = (props: GridProps) => {
   const { user, deletePopover, openEditModal, openKeyModal } = props;
   return (
     <>
-      <div className="flex w-full col-span-1 p-5 border-b shadow md:col-span-2 lg:col-span-3 xl:col-span-4">
-        <div className="w-full">
+      <div className="flex w-full col-span-1 p-5 border shadow rounded-2xl ">
+       <div className="w-full">
           <div className="flex items-center w-full gap-2">
-            <IUser color={"#274c77"} size={35} />
-            {user.userName}
+          <IUser className="text-[#274c77] dark:text-gray-400"
+              size={20} />
+             <p className="w-full dark:text-white">{user.userName}</p>
           </div>
           {/* <div className="flex items-center w-full gap-2 mt-3">
             <SquareUserRound color="#00bbf9" size={35} />
             {user.employee.fullName}
           </div> */}
           <div className="flex items-center w-full gap-2 mt-3">
-            <ShieldCheck color={"#006d77"} size={35} />
-            {user.role.name}
+          <ShieldCheck
+              className="text-[#274c77] dark:text-gray-400"
+              size={20}
+            />
+            <p className="w-full dark:text-white">{user.role.name}</p> 
           </div>
         </div>
         <div className="flex flex-col items-end justify-between w-full gap-4">
+        <TooltipGlobal text="Editar">
           <Button
             isIconOnly
             style={global_styles().secondaryStyle}
@@ -134,6 +145,8 @@ const ListItem = (props: GridProps) => {
           >
             <EditIcon size={20} />
           </Button>
+          </TooltipGlobal>
+          <TooltipGlobal text="Cambiar contraseña">
           <Button
             onClick={() => openKeyModal(user)}
             isIconOnly
@@ -141,6 +154,7 @@ const ListItem = (props: GridProps) => {
           >
             <Key size={20} />
           </Button>
+          </TooltipGlobal>
           {deletePopover({ user: user })}
         </div>
       </div>

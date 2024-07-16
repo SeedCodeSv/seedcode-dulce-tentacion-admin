@@ -33,7 +33,7 @@ const ChargesForm = (props: Props) => {
   };
 
   return (
-    <div className="p-5 w-full">
+    <div className="p-5 w-full dark:text-white ">
       <Formik
         validationSchema={validationSchema}
         initialValues={{ name: props.charges?.name ?? '' }}

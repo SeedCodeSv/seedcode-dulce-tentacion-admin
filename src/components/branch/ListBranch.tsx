@@ -1,59 +1,69 @@
-import { useState, useEffect, useContext, useMemo, useRef } from 'react';
-import { useBranchesStore } from '../../store/branches.store';
+import { useState, useEffect, useContext, useMemo } from "react";
+import { useBranchesStore } from "../../store/branches.store";
 import {
   Button,
   ButtonGroup,
   Input,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
   Select,
   SelectItem,
   Switch,
   useDisclosure,
-} from '@nextui-org/react';
+} from "@nextui-org/react";
 import {
   Edit,
   ShoppingBag,
   PhoneIcon,
   User,
   TrashIcon,
-  BoxIcon,
   MapPinIcon,
   Table as ITable,
   CreditCard,
   List,
   Filter,
-  BadgeCheck,
-} from 'lucide-react';
-import { ThemeContext } from '../../hooks/useTheme';
-import { ConfirmPopup } from 'primereact/confirmpopup';
-import AddButton from '../global/AddButton';
-import { Drawer } from 'vaul';
-import Pagination from '../global/Pagination';
-import { Paginator } from 'primereact/paginator';
-import { paginator_styles } from '../../styles/paginator.styles';
-import AddBranch from './AddBranch';
-import { global_styles } from '../../styles/global.styles';
-import { limit_options, messages } from '../../utils/constants';
-import TableBranch from './TableBranch';
-import MobileView from './MobileView';
-import { Branches } from '../../types/branches.types';
-import { toast } from 'sonner';
-import ListBranchProduct from './branch_product/ListBranchProduct';
-import BoxBranch from './BoxBranch';
-import classNames from 'classnames';
-import HeadlessModal from '../global/HeadlessModal';
+  RefreshCcw,
+} from "lucide-react";
+import { ThemeContext } from "../../hooks/useTheme";
+import AddButton from "../global/AddButton";
+import { Drawer } from "vaul";
+import Pagination from "../global/Pagination";
+import { Paginator } from "primereact/paginator";
+import { paginator_styles } from "../../styles/paginator.styles";
+import AddBranch from "./AddBranch";
+import { global_styles } from "../../styles/global.styles";
+import { limit_options, messages } from "../../utils/constants";
+import TableBranch from "./TableBranch";
+import MobileView from "./MobileView";
+import { Branches } from "../../types/branches.types";
+import { toast } from "sonner";
+import ListBranchProduct from "./branch_product/ListBranchProduct";
+import BoxBranch from "./BoxBranch";
+import classNames from "classnames";
+import HeadlessModal from "../global/HeadlessModal";
+import TooltipGlobal from "../global/TooltipGlobal";
 
-function ListBranch() {
+interface PropsBranch {
+  actions: string[];
+}
+
+function ListBranch(props: PropsBranch) {
   const { theme, context } = useContext(ThemeContext);
 
-  const { getBranchesPaginated, branches_paginated, disableBranch } = useBranchesStore();
+  const {
+    getBranchesPaginated,
+    branches_paginated,
+    disableBranch,
+  } = useBranchesStore();
 
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [address, setAddress] = useState('');
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
   const [limit, setLimit] = useState(5);
   const [active, setActive] = useState<1 | 0>(1);
   const [BranchId, setBranchId] = useState(0);
-  const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
+  const [view, setView] = useState<"table" | "grid" | "list">("table");
 
   useEffect(() => {
     getBranchesPaginated(1, limit, name, phone, address, active);
@@ -77,16 +87,16 @@ function ListBranch() {
             labelPlacement="outside"
             label="Nombre"
             classNames={{
-              label: 'font-semibold text-gray-700',
-              inputWrapper: 'pr-0',
+              label: "font-semibold text-gray-700",
+              inputWrapper: "pr-0",
             }}
             isClearable
             value={name}
             placeholder="Escribe para buscar..."
             onChange={(e) => setName(e.target.value)}
             onClear={() => {
-              setName('');
-              getBranchesPaginated(1, limit, '', phone, address, active);
+              setName("");
+              getBranchesPaginated(1, limit, "", phone, address, active);
             }}
           />
         </div>
@@ -98,16 +108,16 @@ function ListBranch() {
             startContent={<PhoneIcon />}
             className="w-full dark:text-white"
             classNames={{
-              label: 'font-semibold text-gray-700',
-              inputWrapper: 'pr-0',
+              label: "font-semibold text-gray-700",
+              inputWrapper: "pr-0",
             }}
             variant="bordered"
             isClearable
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             onClear={() => {
-              setPhone('');
-              getBranchesPaginated(1, limit, name, '', address, active);
+              setPhone("");
+              getBranchesPaginated(1, limit, name, "", address, active);
             }}
           />
         </div>
@@ -121,14 +131,14 @@ function ListBranch() {
             labelPlacement="outside"
             label="Dirección"
             classNames={{
-              label: 'font-semibold text-gray-700',
-              inputWrapper: 'pr-0',
+              label: "font-semibold text-gray-700",
+              inputWrapper: "pr-0",
             }}
             value={address}
             onChange={(e) => setAddress(e.target.value)}
             onClear={() => {
-              setAddress('');
-              getBranchesPaginated(1, limit, name, phone, '', active);
+              setAddress("");
+              getBranchesPaginated(1, limit, name, phone, "", active);
             }}
           />
         </div>
@@ -169,9 +179,11 @@ function ListBranch() {
       {BranchId >= 1 ? (
         <ListBranchProduct onclick={() => setBranchId(0)} id={BranchId} />
       ) : (
-        <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
-          <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
-            <div className="hidden w-full grid-cols-3 gap-5 mb-4 md:grid ">{filters}</div>
+        <div className="w-full h-full p-4 md:p-10 md:px-12">
+          <div className="w-full h-full p-4 overflow-y-auto bg-white shadow custom-scrollbar md:p-8 dark:bg-gray-900">
+            <div className="hidden w-full grid-cols-3 gap-5 mb-4 md:grid ">
+              {filters}
+            </div>
             <div className="grid w-full grid-cols-1 gap-5 mb-4 md:flex md:justify-between lg:grid-cols-2">
               <div className="hidden md:flex">
                 <Button
@@ -189,10 +201,12 @@ function ListBranch() {
                     isIconOnly
                     color="secondary"
                     style={{
-                      backgroundColor: view === 'table' ? theme.colors.third : '#e5e5e5',
-                      color: view === 'table' ? theme.colors.primary : '#3e3e3e',
+                      backgroundColor:
+                        view === "table" ? theme.colors.third : "#e5e5e5",
+                      color:
+                        view === "table" ? theme.colors.primary : "#3e3e3e",
                     }}
-                    onClick={() => setView('table')}
+                    onClick={() => setView("table")}
                     type="button"
                   >
                     <ITable />
@@ -201,10 +215,11 @@ function ListBranch() {
                     isIconOnly
                     color="default"
                     style={{
-                      backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
-                      color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
+                      backgroundColor:
+                        view === "grid" ? theme.colors.third : "#e5e5e5",
+                      color: view === "grid" ? theme.colors.primary : "#3e3e3e",
                     }}
-                    onClick={() => setView('grid')}
+                    onClick={() => setView("grid")}
                     type="button"
                   >
                     <CreditCard />
@@ -213,10 +228,11 @@ function ListBranch() {
                     isIconOnly
                     color="default"
                     style={{
-                      backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
-                      color: view === 'list' ? theme.colors.primary : '#3e3e3e',
+                      backgroundColor:
+                        view === "list" ? theme.colors.third : "#e5e5e5",
+                      color: view === "list" ? theme.colors.primary : "#3e3e3e",
                     }}
-                    onClick={() => setView('list')}
+                    onClick={() => setView("list")}
                     type="button"
                   >
                     <List />
@@ -246,8 +262,8 @@ function ListBranch() {
                         />
                         <Drawer.Content
                           className={classNames(
-                            'bg-gray-100 z-[60] flex flex-col rounded-t-[10px] h-auto mt-24 max-h-[80%] fixed bottom-0 left-0 right-0',
-                            context === 'dark' ? 'dark' : ''
+                            "bg-gray-100 z-[60] flex flex-col rounded-t-[10px] h-auto mt-24 max-h-[80%] fixed bottom-0 left-0 right-0",
+                            context === "dark" ? "dark" : ""
                           )}
                         >
                           <div className="p-4 bg-white dark:bg-gray-800 rounded-t-[10px] flex-1">
@@ -282,11 +298,11 @@ function ListBranch() {
               <Switch
                 defaultSelected
                 classNames={{
-                  label: 'font-semibold text-sm',
+                  label: "font-semibold text-sm",
                 }}
                 onValueChange={(isSelected) => setActive(isSelected ? 1 : 0)}
               >
-                {active === 1 ? 'Mostrar inactivos' : 'Mostrar activos'}
+                {active === 1 ? "Mostrar inactivos" : "Mostrar activos"}
               </Switch>
               <Select
                 className="w-44 dark:text-white"
@@ -294,27 +310,43 @@ function ListBranch() {
                 label="Mostrar"
                 labelPlacement="outside"
                 classNames={{
-                  label: 'font-semibold',
+                  label: "font-semibold",
                 }}
-                defaultSelectedKeys={['5']}
+                defaultSelectedKeys={["5"]}
                 value={limit}
                 onChange={(e) => {
-                  setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
+                  setLimit(
+                    Number(e.target.value !== "" ? e.target.value : "5")
+                  );
                 }}
               >
                 {limit_options.map((option) => (
-                  <SelectItem className="w-full dark:text-white" key={option} value={option}>
+                  <SelectItem
+                    className="w-full dark:text-white"
+                    key={option}
+                    value={option}
+                  >
                     {option}
                   </SelectItem>
                 ))}
               </Select>
             </div>
-            {view === 'table' && (
+            {view === "table" && (
               <TableBranch
                 actionsElement={(item) => (
                   <>
                     <div className="flex w-full gap-5">
-                      {item.isActive ? (
+                      <Button
+                        onClick={() => {
+                          setBranchId(item.id);
+                          modalBranchProduct.onOpen();
+                        }}
+                        isIconOnly
+                        style={global_styles().thirdStyle}
+                      >
+                        <ShoppingBag />
+                      </Button>
+                      {props.actions.includes("Editar") && (
                         <>
                           <Button
                             onClick={() => {
@@ -326,62 +358,38 @@ function ListBranch() {
                             <Edit />
                           </Button>
                         </>
-                      ) : (
+                      )}
+                      {props.actions.includes("Eliminar") && (
                         <>
-                          <Button
-                            size="lg"
-                            onClick={() => {
-                              handleInactive(item);
-                            }}
-                            isIconOnly
-                            style={{
-                              backgroundColor: theme.colors.third,
-                            }}
-                          >
-                            <BadgeCheck
+                          {item.isActive ? (
+                            <DeletePopUp branch={item} />
+                          ) : (
+                            <TooltipGlobal text="Activar la sucursal">
+                              <Button
                               onClick={() => {
                                 handleInactive(item);
                               }}
-                              style={{ color: theme.colors.primary }}
-                              size={20}
-                            />
-                          </Button>
+                              isIconOnly
+                              style={global_styles().thirdStyle}
+                            >
+                              <RefreshCcw />
+                            </Button>
+                            </TooltipGlobal>
+                          )}
                         </>
                       )}
-                      <Button
-                        onClick={() => {
-                          setBranch(item);
-                          modalBoxBranch.onOpen();
-                        }}
-                        isIconOnly
-                        style={global_styles().darkStyle}
-                      >
-                        <BoxIcon />
-                      </Button>
-                      <Button
-                        onClick={() => {
-                          setBranchId(item.id);
-                          modalBranchProduct.onOpen();
-                        }}
-                        isIconOnly
-                        style={global_styles().thirdStyle}
-                      >
-                        <ShoppingBag />
-                      </Button>
-
-                      <DeletePopUp branch={item} />
                     </div>
                   </>
                 )}
               />
             )}
-            {(view === 'grid' || view === 'list') && (
+            {(view === "grid" || view === "list") && (
               <>
                 <MobileView
                   handleActive={() => {
                     handleInactive;
                   }}
-                  layout={view as 'grid' | 'list'}
+                  layout={view as "grid" | "list"}
                   deletePopover={DeletePopUp}
                   handleEdit={handleEdit}
                   handleBranchProduct={handleBranchProduct}
@@ -410,7 +418,7 @@ function ListBranch() {
                     rows={limit}
                     totalRecords={branches_paginated.total}
                     template={{
-                      layout: 'PrevPageLink CurrentPageReport NextPageLink',
+                      layout: "PrevPageLink CurrentPageReport NextPageLink",
                     }}
                     currentPageReportTemplate="{currentPage} de {totalPages}"
                     onPageChange={(e) => {
@@ -427,14 +435,14 @@ function ListBranch() {
               modalAdd.onClose();
               setSelectedBranch(undefined);
             }}
-            title={selectedBranch ? 'Editar sucursal' : 'Nueva sucursal'}
+            title={selectedBranch ? "Editar sucursal" : "Nueva sucursal"}
             size="w-[350px] md:w-[500px]"
           >
             <AddBranch branch={selectedBranch} closeModal={modalAdd.onClose} />
           </HeadlessModal>
 
           <HeadlessModal
-            title=''
+            title=""
             isOpen={modalBoxBranch.isOpen}
             onClose={() => {
               clearClose();
@@ -442,7 +450,11 @@ function ListBranch() {
             }}
             size="w-[350px] md:w-[500px]"
           >
-            <BoxBranch branch={Branch} closeModal={modalBoxBranch.onClose} setBranch={setBranch} />
+            <BoxBranch
+              branch={Branch}
+              closeModal={modalBoxBranch.onClose}
+              setBranch={setBranch}
+            />
           </HeadlessModal>
         </div>
       )}
@@ -457,18 +469,17 @@ interface Props {
 }
 
 const DeletePopUp = ({ branch }: Props) => {
-  const buttonRef = useRef<HTMLButtonElement>(null);
-
   const { deleteBranch, disableBranch } = useBranchesStore();
+  const { theme } = useContext(ThemeContext);
 
-  const [visible, setVisible] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleDelete = () => {
     if (branch.isActive) {
       disableBranch(branch.id, !branch.isActive).then((res) => {
         if (res) {
           toast.success(messages.success);
-          setVisible(false);
+          onClose()
         } else {
           toast.error(messages.error);
         }
@@ -477,7 +488,7 @@ const DeletePopUp = ({ branch }: Props) => {
       deleteBranch(branch.id).then((res) => {
         if (res) {
           toast.success(messages.success);
-          setVisible(false);
+          onClose()
         } else {
           toast.error(messages.error);
         }
@@ -487,42 +498,49 @@ const DeletePopUp = ({ branch }: Props) => {
 
   return (
     <>
-      <Button
-        ref={buttonRef}
-        style={global_styles().dangerStyles}
-        isIconOnly
-        onClick={() => setVisible(!visible)}
-      >
-        <TrashIcon size={20} />
-      </Button>
-      {buttonRef.current && (
-        <ConfirmPopup
-          visible={visible}
-          onHide={() => setVisible(false)}
-          target={buttonRef.current}
-          message="¿Deseas eliminar esta sucursal?"
-          content={({ message, acceptBtnRef, rejectBtnRef }) => (
-            <>
-              <div className="p-5 border border-gray-100 shadow-2xl rounded-xl">
-                <p className="text-lg font-semibold text-center">{message}</p>
-                <div className="flex justify-between gap-5 mt-5">
-                  <Button
-                    ref={acceptBtnRef}
-                    className="font-semibold"
-                    style={global_styles().thirdStyle}
-                    onClick={handleDelete}
-                  >
-                    Eliminar
-                  </Button>
-                  <Button ref={rejectBtnRef} onClick={() => setVisible(false)}>
-                    Cancelar
-                  </Button>
-                </div>
-              </div>
-            </>
-          )}
-        />
-      )}
+      <Popover isOpen={isOpen} onClose={onClose} backdrop="blur" showArrow>
+        <PopoverTrigger>
+          <Button
+            onClick={onOpen}
+            isIconOnly
+            style={{
+              backgroundColor: theme.colors.danger,
+            }}
+          >
+            <TooltipGlobal text="Eliminar la sucursal" color="primary">
+              <TrashIcon
+                style={{
+                  color: theme.colors.primary,
+                }}
+                size={20}
+              />
+            </TooltipGlobal>
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent>
+          <div className="w-full p-5">
+            <p className="font-semibold text-gray-600 dark:text-white">
+              Eliminar {branch.name}
+            </p>
+            <p className="mt-3 text-center text-gray-600 dark:text-white w-72">
+              ¿Estas seguro de eliminar este registro?
+            </p>
+            <div className="mt-4">
+              <Button onClick={onClose}>No, cancelar</Button>
+              <Button
+                onClick={() => handleDelete()}
+                className="ml-5"
+                style={{
+                  backgroundColor: theme.colors.danger,
+                  color: theme.colors.primary,
+                }}
+              >
+                Si, eliminar
+              </Button>
+            </div>
+          </div>
+        </PopoverContent>
+      </Popover>
     </>
   );
 };
