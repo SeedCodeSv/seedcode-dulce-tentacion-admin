@@ -1,7 +1,7 @@
-import { Input, Select, SelectItem } from '@nextui-org/react';
+import { Button, Input, Select, SelectItem } from '@nextui-org/react';
 import Layout from '../../layout/Layout';
 import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { formatDate } from '../../utils/dates';
 import { salesReportStore } from '../../store/reports/sales_report.store';
 import Pagination from '../../components/global/Pagination';
@@ -14,9 +14,14 @@ import { limit_options } from '@/utils/constants';
 import { useBranchesStore } from '@/store/branches.store';
 import { useCorrelativesStore } from '@/store/correlatives.store';
 import { Branches } from '@/types/branches.types';
+import TooltipGlobal from '@/components/global/TooltipGlobal';
+import { Filter, SearchIcon } from 'lucide-react';
+import BottomDrawer from '@/components/global/BottomDrawer';
+import { ThemeContext } from '@/hooks/useTheme';
 
 function VentasPorPeriodo() {
   const service = new SeedcodeCatalogosMhService();
+  const { theme } = useContext(ThemeContext);
   const typeSales = service.get017FormaDePago();
   const { getBranchesList, branch_list } = useBranchesStore();
   const { get_correlativesByBranch, list_correlatives } = useCorrelativesStore();
@@ -24,8 +29,10 @@ function VentasPorPeriodo() {
   const [startDate, setStartDate] = useState(formatDate());
   const [endDate, setEndDate] = useState(formatDate());
   const [typePayment, setTypePayment] = useState('');
+
   const [limit, setLimit] = useState(Number(limit_options[0]));
   const [code, setCode] = useState('');
+  const [openVaul, setOpenVaul] = useState(false);
 
   const [selectedBranch, setSelectedBranch] = useState<Branches>();
 
@@ -44,32 +51,30 @@ function VentasPorPeriodo() {
   } = salesReportStore();
 
   useEffect(() => {
-    getSalesByPeriod(1, limit, startDate, endDate, typePayment, selectedBranch?.name, code);
+    // getSalesByPeriod(1, limit, startDate, endDate, typePayment, selectedBranch?.name, code);
     getSalesByPeriodChart(startDate, endDate);
     getBranchesList();
-  }, [startDate, endDate, typePayment, limit, selectedBranch, code]);
+  }, []);
 
-  // const totalSalesCount = sales_by_period
-  //   ? sales_by_period.sales.reduce((sum, sale) => sum + Number(sale.salesCount), 0)
-  //   : 0;
-  // const totalSalesAmount = sales_by_period
-  //   ? sales_by_period.sales.reduce((sum, sale) => sum + Number(sale.totalSales), 0)
-  //   : 0;
-  // const { totalSalesCount, totalSalesAmount } = useMemo(() => {
-  //   const totalSalesCount = sales_by_period
-  //     ? sales_by_period.sales.reduce((sum, sale) => sum + Number(sale.salesCount), 0)
-  //     : 0;
-  //   const totalSalesAmount = sales_by_period
-  //     ? sales_by_period.sales.reduce((sum, sale) => sum + Number(sale.totalSales), 0)
-  //     : 0;
-  //   return { totalSalesCount, totalSalesAmount };
-  // }, [sales_by_period]);
+  const handleSearch = (searchParam: string | undefined) => {
+    getSalesByPeriod(
+      1,
+      limit,
+      searchParam ?? startDate,
+      searchParam ?? endDate,
+      searchParam ?? typePayment,
+      searchParam ?? selectedBranch?.name,
+      searchParam ?? code
+    );
+    getSalesByPeriodChart(startDate, endDate);
+    getBranchesList();
+  };
 
   return (
     <Layout title="Ventas por Periodo">
       <div className="w-full h-full p-5 overflow-x-hidden overflow-y-hidden bg-gray-50 dark:bg-gray-800">
-        <div className="w-full h-full p-5 overflow-x-hidden overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
-          <div className="grid w-full grid-cols-1 gap-5 md:grid-cols-3">
+        <div className="w-full  h-full p-5 overflow-x-hidden overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
+          <div className="hidden md:grid w-full grid-cols-1 gap-5 md:grid-cols-3">
             <Input
               label="Fecha inicial"
               labelPlacement="outside"
@@ -112,61 +117,227 @@ function VentasPorPeriodo() {
                 </SelectItem>
               ))}
             </Select>
-          </div>
-          <div className="grid grid-cols-1 gap-5 mt-2 md:grid-cols-3">
-            <div>
-              <Select
-                classNames={{ label: 'font-semibold' }}
-                label="Sucursal"
-                labelPlacement="outside"
-                onSelectionChange={(key) => {
-                  if (key) {
-                    const branch_id = new Set(key).values().next().value;
 
-                    const filterBranch = branch_list.find(
-                      (branch) => branch.id === Number(branch_id)
-                    );
-                    setSelectedBranch(filterBranch);
-                  }
-                }}
-                variant="bordered"
-                placeholder="Selecciona la sucursal"
-              >
-                {branch_list.map((branch) => (
-                  <SelectItem key={branch.id} value={branch.id} className="dark:text-white">
-                    {branch.name}
-                  </SelectItem>
-                ))}
-              </Select>
-            </div>
-            <div>
-              <Select
-                classNames={{ label: 'font-semibold' }}
-                label="Punto de venta"
-                labelPlacement="outside"
-                variant="bordered"
-                placeholder="Selecciona la sucursal"
-                onSelectionChange={(key) => {
-                  if (key) {
-                    const corr = new Set(key).values().next().value;
-                    setCode(corr);
-                  }
-                }}
-              >
-                {list_correlatives.map((corr) => (
-                  <SelectItem key={corr.code} value={corr.code} className="dark:text-white">
-                    {corr.code}
-                  </SelectItem>
-                ))}
-              </Select>
-            </div>
-            <div className="flex justify-end">
+            <Select
+              classNames={{ label: 'font-semibold' }}
+              label="Sucursal"
+              labelPlacement="outside"
+              onSelectionChange={(key) => {
+                if (key) {
+                  const branch_id = new Set(key).values().next().value;
+
+                  const filterBranch = branch_list.find(
+                    (branch) => branch.id === Number(branch_id)
+                  );
+                  setSelectedBranch(filterBranch);
+                }
+              }}
+              variant="bordered"
+              placeholder="Selecciona la sucursal"
+            >
+              {branch_list.map((branch) => (
+                <SelectItem key={branch.id} value={branch.id} className="dark:text-white">
+                  {branch.name}
+                </SelectItem>
+              ))}
+            </Select>
+            <Select
+              classNames={{ label: 'font-semibold' }}
+              label="Punto de venta"
+              labelPlacement="outside"
+              variant="bordered"
+              placeholder="Selecciona la sucursal"
+              onSelectionChange={(key) => {
+                if (key) {
+                  const corr = new Set(key).values().next().value;
+                  setCode(corr);
+                }
+              }}
+            >
+              {list_correlatives.map((corr) => (
+                <SelectItem key={corr.code} value={corr.code} className="dark:text-white">
+                  {corr.code}
+                  {/* {corr.code ? corr.code : corr.id} */}
+                </SelectItem>
+              ))}
+            </Select>
+            <div className="grid grid-cols-2 w-full gap-4">
               <Select
                 label="Limite"
                 variant="bordered"
                 labelPlacement="outside"
                 classNames={{ label: 'font-semibold' }}
                 className="w-full"
+                value={limit_options[0]}
+                defaultSelectedKeys={limit_options[0]}
+                onSelectionChange={(key) => {
+                  if (key) {
+                    const limit = new Set(key).values().next().value;
+                    setLimit(limit);
+                  }
+                }}
+              >
+                {limit_options.map((limit) => (
+                  <SelectItem
+                    key={limit}
+                    value={limit}
+                    className="dark:text-white"
+                    textValue={limit}
+                  >
+                    {limit}
+                  </SelectItem>
+                ))}
+              </Select>
+              <div className="flex flex-col mt-6 w-full">
+                <Button
+                  style={{
+                    backgroundColor: theme.colors.secondary,
+                    color: theme.colors.primary,
+                  }}
+                  className="hidden font-semibold md:flex"
+                  color="primary"
+                  endContent={<SearchIcon size={15} />}
+                  onClick={() => {
+                    handleSearch(undefined);
+                    setOpenVaul(false);
+                  }}
+                >
+                  Buscar
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          {/* Parte responsiva para movil */}
+          <div className="flex items-center gap-5">
+            <div className="flex-1 block md:hidden">
+              <TooltipGlobal text="Filtros disponibles" color="primary">
+                <Button
+                  style={global_styles().thirdStyle}
+                  isIconOnly
+                  type="button"
+                  onClick={() => setOpenVaul(true)}
+                >
+                  <Filter />
+                </Button>
+              </TooltipGlobal>
+              <BottomDrawer
+                title="Filtros disponibles"
+                open={openVaul}
+                onClose={() => setOpenVaul(false)}
+              >
+                <Input
+                  label="Fecha inicial"
+                  labelPlacement="outside"
+                  classNames={{ label: 'font-semibold' }}
+                  variant="bordered"
+                  className="w-full"
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  // onClear={() => setStartDate('')}
+                />
+                <div className="pt-4">
+                  <Input
+                    label="Fecha final"
+                    labelPlacement="outside"
+                    classNames={{ label: 'font-semibold' }}
+                    variant="bordered"
+                    className="w-full"
+                    type="date"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                  />
+                </div>
+                <div className="pt-4">
+                  <Select
+                    variant="bordered"
+                    label="Tipo de pago"
+                    placeholder="Selecciona el tipo de pago"
+                    labelPlacement="outside"
+                    classNames={{ label: 'font-semibold' }}
+                    className="w-full"
+                    value={typePayment}
+                    defaultSelectedKeys={typePayment}
+                    onSelectionChange={(key) => {
+                      if (key) {
+                        const payment = new Set(key);
+                        setTypePayment(payment.values().next().value);
+                      }
+                    }}
+                  >
+                    {typeSales.map((type) => (
+                      <SelectItem key={type.codigo} value={type.codigo} className="dark:text-white">
+                        {type.valores}
+                      </SelectItem>
+                    ))}
+                  </Select>
+                </div>
+                <div className="pt-4">
+                  <Select
+                    classNames={{ label: 'font-semibold' }}
+                    label="Sucursal"
+                    labelPlacement="outside"
+                    onSelectionChange={(key) => {
+                      if (key) {
+                        const branch_id = new Set(key).values().next().value;
+
+                        const filterBranch = branch_list.find(
+                          (branch) => branch.id === Number(branch_id)
+                        );
+                        setSelectedBranch(filterBranch);
+                      }
+                    }}
+                    variant="bordered"
+                    placeholder="Selecciona la sucursal"
+                  >
+                    {branch_list.map((branch) => (
+                      <SelectItem key={branch.id} value={branch.id} className="dark:text-white">
+                        {branch.name}
+                      </SelectItem>
+                    ))}
+                  </Select>
+                </div>
+
+                <div className="pt-4">
+                  <Select
+                    classNames={{ label: 'font-semibold' }}
+                    label="Punto de venta"
+                    labelPlacement="outside"
+                    variant="bordered"
+                    placeholder="Selecciona la sucursal"
+                    onSelectionChange={(key) => {
+                      if (key) {
+                        const corr = new Set(key).values().next().value;
+                        setCode(corr);
+                      }
+                    }}
+                  >
+                    {list_correlatives.map((corr) => (
+                      <SelectItem key={corr.code} value={corr.code} className="dark:text-white">
+                        {corr.code}
+                      </SelectItem>
+                    ))}
+                  </Select>
+                </div>
+                <Button
+                  onClick={() => {
+                    handleSearch(undefined);
+                    setOpenVaul(false);
+                  }}
+                  className="w-full mt-5"
+                >
+                  Aplicar filtros
+                </Button>
+              </BottomDrawer>
+            </div>
+            <div className="md:hidden flex justify-end w-full md:w-auto md:ml-auto">
+              <Select
+                label="Limite"
+                variant="bordered"
+                labelPlacement="outside"
+                classNames={{ label: 'font-semibold' }}
+                className="w-24 md:w-32"
                 value={limit_options[0]}
                 defaultSelectedKeys={limit_options[0]}
                 onSelectionChange={(key) => {
@@ -195,9 +366,7 @@ function VentasPorPeriodo() {
               <p className="text-lg font-semibold text-gray-700 md:text-2xl dark:text-white animated-count">
                 No. de ventas
               </p>
-              {/* <p className="text-2xl font-semibold text-gray-700 dark:text-white animated-count">
-                {totalSalesCount}
-            </p> */}
+
               {loading_sales_period ? (
                 <div className="flex flex-col items-center justify-center w-full mt-2">
                   <div className="loader2"></div>
