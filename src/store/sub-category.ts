@@ -16,6 +16,7 @@ export const useSubCategoryStore = create<SubCategoryStore>((set, get) => ({
     status: 404,
     ok: false,
   },
+  loading_sub_categories: false,
   sub_categories: [],
   getSubCategoriesList() {
     get_sub_categories_list()
@@ -26,14 +27,16 @@ export const useSubCategoryStore = create<SubCategoryStore>((set, get) => ({
   },
 
   getSubCategoriesPaginated: (page: number, limit: number, name: string) => {
+  set({ loading_sub_categories: true });
     get_sub_categories_paginated(page, limit, name)
       .then(({ data }) =>
         set({
-          sub_categories_paginated: data,
+          sub_categories_paginated: data, loading_sub_categories: false,
         })
       )
       .catch(() => {
         set({
+          loading_sub_categories: false,
           sub_categories_paginated: {
             SubCategories: [],
             total: 0,

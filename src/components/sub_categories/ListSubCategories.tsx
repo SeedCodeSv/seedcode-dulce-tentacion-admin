@@ -23,8 +23,6 @@ import {
 } from 'lucide-react';
 import { ThemeContext } from '../../hooks/useTheme';
 import AddSubCategory from './AddSubCategory';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
 import AddButton from '../global/AddButton';
 import MobileView from './MobileView';
 import Pagination from '../global/Pagination';
@@ -36,6 +34,7 @@ import { ISubCategory } from '../../types/sub_categories.types';
 import { useSubCategoryStore } from '../../store/sub-category';
 import TooltipGlobal from '../global/TooltipGlobal';
 import BottomDrawer from '../global/BottomDrawer';
+import NO_DATA from '@/assets/svg/no_data.svg';
 
 interface PProps {
   actions: string[];
@@ -45,8 +44,12 @@ function ListSubCategory({ actions }: PProps) {
   const { theme } = useContext(ThemeContext);
   const [openVaul, setOpenVaul] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<ISubCategory>();
-  const { sub_categories_paginated, getSubCategoriesPaginated, activateSubCategory } =
-    useSubCategoryStore();
+  const {
+    sub_categories_paginated,
+    loading_sub_categories,
+    getSubCategoriesPaginated,
+    activateSubCategory,
+  } = useSubCategoryStore();
 
   const modalAdd = useDisclosure();
   const [search, setSearch] = useState('');
@@ -61,10 +64,10 @@ function ListSubCategory({ actions }: PProps) {
     getSubCategoriesPaginated(1, limit, name ?? search);
   };
 
-  const style = {
-    backgroundColor: theme.colors.dark,
-    color: theme.colors.primary,
-  };
+  // const style = {
+  //   backgroundColor: theme.colors.dark,
+  //   color: theme.colors.primary,
+  // };
 
   const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
 
@@ -75,8 +78,8 @@ function ListSubCategory({ actions }: PProps) {
   };
 
   return (
-    <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
-      <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
+    <div className="w-full h-full p-4 md:p-10 md:px-12">
+      <div className="w-full h-full p-4 overflow-y-auto bg-white shadow custom-scrollbar md:p-8 dark:bg-gray-900">
         <div className="flex flex-col justify-between w-full gap-5 mb-5 lg:mb-10 lg:flex-row lg:gap-0">
           <div className="flex items-end gap-3">
             <div className="hidden w-full gap-3 md:flex">
@@ -257,72 +260,185 @@ function ListSubCategory({ actions }: PProps) {
           />
         )}
         {view === 'table' && (
-          <DataTable
-            className="w-full shadow"
-            emptyMessage="No se encontraron resultados"
-            value={sub_categories_paginated.SubCategories}
-            tableStyle={{ minWidth: '50rem' }}
-          >
-            <Column
-              headerClassName="text-sm font-semibold"
-              headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
-              bodyClassName={'dark:text-white'}
-              field="id"
-              header="No."
-            />
-            <Column
-              headerClassName="text-sm font-semibold"
-              bodyClassName={'dark:text-white'}
-              headerStyle={style}
-              field="name"
-              header="Nombre"
-            />
-            <Column
-              headerClassName="text-sm font-semibold"
-              bodyClassName={'dark:text-white'}
-              headerStyle={style}
-              field="categoryProduct.name"
-              header="Categoría de producto"
-            />
-            <Column
-              headerStyle={{ ...style, borderTopRightRadius: '10px' }}
-              header="Acciones"
-              body={(item) => (
-                <div className="flex gap-6">
-                  {actions.includes('Editar') && (
-                    <Button
-                      onClick={() => {
-                        setSelectedCategory(item);
-                        4;
-                        modalAdd.onOpen();
-                      }}
-                      isIconOnly
-                      style={{
-                        backgroundColor: theme.colors.secondary,
-                      }}
-                    >
-                      <EditIcon style={{ color: theme.colors.primary }} size={20} />
-                    </Button>
-                  )}
-                  {actions.includes('Eliminar') && (
+          <>
+            <div className="max-h-[400px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
+              <table className="w-full">
+                <thead className="sticky top-0 z-20 bg-white">
+                  <tr>
+                    <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                      No.
+                    </th>
+                    <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                      Nombre
+                    </th>
+                    {/* <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                      Código
+                    </th> */}
+                    <th className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                      Sub categoría
+                    </th>
+                    <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                      Acciones
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="max-h-[600px] w-full overflow-y-auto">
+                  {loading_sub_categories ? (
+                    <tr>
+                      <td colSpan={5} className="p-3 text-sm text-center text-slate-500">
+                        <div className="flex flex-col items-center justify-center w-full h-64">
+                          <div className="loader"></div>
+                          <p className="mt-3 text-xl font-semibold">Cargando...</p>
+                        </div>
+                      </td>
+                    </tr>
+                  ) : (
                     <>
-                      {item.isActive ? (
-                        <DeletePopUp subcategory={item} />
+                      {sub_categories_paginated.SubCategories.length > 0 ? (
+                        <>
+                          {sub_categories_paginated.SubCategories.map((categories) => (
+                            <tr className="border-b border-slate-200">
+                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                {categories.id}
+                              </td>
+                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
+                                {categories.name}
+                              </td>
+                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                {categories.categoryProduct.name}
+                              </td>
+                              {/* <td className="p-3 text-sm text-slate-500 whitespace-nowrap dark:text-slate-100">
+                              {categories.subCategory.name}
+                            </td> */}
+                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                <div className="flex w-full gap-5">
+                                  {actions.includes('Editar') && (
+                                    <TooltipGlobal text="Editar">
+                                      <Button
+                                        onClick={() => {
+                                          setSelectedCategory(categories);
+
+                                          modalAdd.onOpen();
+                                        }}
+                                        isIconOnly
+                                        style={{
+                                          backgroundColor: theme.colors.secondary,
+                                        }}
+                                      >
+                                        <EditIcon
+                                          style={{
+                                            color: theme.colors.primary,
+                                          }}
+                                          size={20}
+                                        />
+                                      </Button>
+                                    </TooltipGlobal>
+                                  )}
+                                  {actions.includes('Eliminar') && (
+                                    <>
+                                      {categories.isActive ? (
+                                        <DeletePopUp subcategory={categories} />
+                                      ) : (
+                                        <TooltipGlobal text="Activar">
+                                          <Button
+                                            onClick={() => handleActivate(categories.id)}
+                                            isIconOnly
+                                            style={global_styles().thirdStyle}
+                                          >
+                                            <RefreshCcw />
+                                          </Button>
+                                        </TooltipGlobal>
+                                      )}
+                                    </>
+                                  )}
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </>
                       ) : (
-                        <Button
-                          // onClick={() => handleActivate(item.id)}
-                          isIconOnly
-                          style={global_styles().thirdStyle}
-                        >
-                          <RefreshCcw />
-                        </Button>
+                        <tr>
+                          <td colSpan={5}>
+                            <div className="flex flex-col items-center justify-center w-full">
+                              <img src={NO_DATA} alt="X" className="w-32 h-32" />
+                              <p className="mt-3 text-xl">No se encontraron resultados</p>
+                            </div>
+                          </td>
+                        </tr>
                       )}
                     </>
                   )}
-                </div>
-              )}
-            />
-          </DataTable>
+                </tbody>
+              </table>
+            </div>
+          </>
+
+          // <DataTable
+          //   className="w-full shadow"
+          //   emptyMessage="No se encontraron resultados"
+          //   value={sub_categories_paginated.SubCategories}
+          //   tableStyle={{ minWidth: '50rem' }}
+          // >
+          //   <Column
+          //     headerClassName="text-sm font-semibold"
+          //     headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
+          //     bodyClassName={'dark:text-white'}
+          //     field="id"
+          //     header="No."
+          //   />
+          //   <Column
+          //     headerClassName="text-sm font-semibold"
+          //     bodyClassName={'dark:text-white'}
+          //     headerStyle={style}
+          //     field="name"
+          //     header="Nombre"
+          //   />
+          //   <Column
+          //     headerClassName="text-sm font-semibold"
+          //     bodyClassName={'dark:text-white'}
+          //     headerStyle={style}
+          //     field="categoryProduct.name"
+          //     header="Categoría de producto"
+          //   />
+          //   <Column
+          //     headerStyle={{ ...style, borderTopRightRadius: '10px' }}
+          //     header="Acciones"
+          //     body={(item) => (
+          //       <div className="flex gap-6">
+          //         {actions.includes('Editar') && (
+          //           <Button
+          //             onClick={() => {
+          //               setSelectedCategory(item);
+          //               4;
+          //               modalAdd.onOpen();
+          //             }}
+          //             isIconOnly
+          //             style={{
+          //               backgroundColor: theme.colors.secondary,
+          //             }}
+          //           >
+          //             <EditIcon style={{ color: theme.colors.primary }} size={20} />
+          //           </Button>
+          //         )}
+          //         {actions.includes('Eliminar') && (
+          //           <>
+          //             {item.isActive ? (
+          //               <DeletePopUp subcategory={item} />
+          //             ) : (
+          //               <Button
+          //                 // onClick={() => handleActivate(item.id)}
+          //                 isIconOnly
+          //                 style={global_styles().thirdStyle}
+          //               >
+          //                 <RefreshCcw />
+          //               </Button>
+          //             )}
+          //           </>
+          //         )}
+          //       </div>
+          //     )}
+          //   />
+          // </DataTable>
         )}
         {sub_categories_paginated.totalPag > 1 && (
           <>
