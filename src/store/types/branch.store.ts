@@ -13,6 +13,7 @@ export interface IBranchStore {
   loading: boolean;
   active: 1 | 0;
   branch_products_list: IGetBranchProduct[];
+  loading_branch_product: boolean
   saveBranchesPaginated: (data: IGetBranchesPaginated) => void;
   getBranchesPaginated: (
     page: number,
