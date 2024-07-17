@@ -623,7 +623,7 @@ const CashCutsX = () => {
 
               <div className="flex flex-col items-center w-full h-full p-4 mt-4 bg-gray-600 rounded-md">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-                  {actions.includes('Exportar  Excel') && (
+                  {actions.includes('Exportar Excel') && (
                     <Button
                       color="success"
                       startContent={<PiMicrosoftExcelLogoBold size={25} />}

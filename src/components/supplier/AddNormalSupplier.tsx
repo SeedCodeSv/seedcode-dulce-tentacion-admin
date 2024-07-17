@@ -53,7 +53,14 @@ function AddNormalSupplier(props: Props) {
     complemento: yup.string().required('**El complemento es requerida**'),
   });
 
-  const [selectedCodeDep, setSelectedCodeDep] = useState('0');
+  const [selectedCodeDep, setSelectedCodeDep] = useState(props.supplier_direction?.departamento ?? '0');
+
+  useEffect(() => {
+    if (selectedCodeDep !== '0') {
+      getCat013Municipios(props.supplier_direction?.departamento ?? selectedCodeDep);
+    }
+    getCat013Municipios(selectedCodeDep);
+  }, [selectedCodeDep, props.supplier_direction]);
 
   const { getCat012Departamento, cat_012_departamento, getCat013Municipios, cat_013_municipios } =
     useBillingStore();
@@ -61,10 +68,6 @@ function AddNormalSupplier(props: Props) {
   useEffect(() => {
     getCat012Departamento();
   }, []);
-
-  useEffect(() => {
-    getCat013Municipios(selectedCodeDep);
-  }, [selectedCodeDep]);
 
   const { onPostSupplier, patchSupplier } = useSupplierStore();
 
@@ -220,6 +223,7 @@ function AddNormalSupplier(props: Props) {
                   className="dark:text-white"
                   // selectedKey={selectedKeyDepartment}
                   defaultSelectedKey={selectedKeyDepartment}
+                  defaultInputValue={values.nombreDepartamento}
                   value={selectedKeyDepartment}
                 >
                   {cat_012_departamento.map((dep) => (
@@ -258,6 +262,7 @@ function AddNormalSupplier(props: Props) {
                   }}
                   // selectedKey={selectedKeyCity}
                   defaultSelectedKey={props.supplier_direction?.municipio}
+                  defaultInputValue={props.supplier_direction?.nombreMunicipio}
                   value={selectedKeyCity}
                 >
                   {cat_013_municipios.map((dep) => (

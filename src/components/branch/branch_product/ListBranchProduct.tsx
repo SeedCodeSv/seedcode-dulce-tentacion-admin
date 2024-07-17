@@ -7,44 +7,55 @@ import {
   SelectItem,
   Autocomplete,
   AutocompleteItem,
+  ButtonGroup,
 } from '@nextui-org/react';
-import { Search, Filter, ArrowLeft } from 'lucide-react';
+import { Search, Filter, ArrowLeft, CreditCard, Table as ITable } from 'lucide-react';
 import { ThemeContext } from '../../../hooks/useTheme';
 import MobileView from './MobileView';
-import { Drawer } from 'vaul';
 import { global_styles } from '../../../styles/global.styles';
 import { CategoryProduct } from '../../../types/categories.types';
 import { useCategoriesStore } from '../../../store/categories.store';
 import Pagination from '../../global/Pagination';
 import SmPagination from '../../global/SmPagination';
+import { limit_options } from '@/utils/constants';
+import NO_DATA from '@/assets/svg/no_data.svg';
+import { formatCurrency } from '@/utils/dte';
+import BottomDrawer from '@/components/global/BottomDrawer';
 interface Props {
   id: number;
   onclick: () => void;
 }
 function ListEmployee({ id, onclick }: Props) {
   const { theme } = useContext(ThemeContext);
-  const { getBranchProducts, branch_product_Paginated } = useBranchesStore();
+  const {
+    getBranchProducts,
+    branch_product_Paginated,
+    loading_branch_product,
+    branch_products_list,
+  } = useBranchesStore();
   const { list_categories, getListCategories } = useCategoriesStore();
   const [category, setCategory] = useState('');
   const [code, setCode] = useState('');
   const [page, serPage] = useState(1);
   const [name, setName] = useState('');
-  const [limit, setLimit] = useState(8);
+  const [limit, setLimit] = useState(10);
+  const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
+
   const [openVaul, setOpenVaul] = useState(false);
   //   const modalAdd = useDisclosure();
   const changePage = () => {
-    getBranchProducts(id, page, 5, name, category, code);
+    getBranchProducts(id, page, limit, name, category, code);
   };
   useEffect(() => {
-    getBranchProducts(id, page, 5, name, category, code);
-  }, [id]);
+    getBranchProducts(id, page, limit, name, category, code);
+  }, [id, limit]);
   useEffect(() => {
     getListCategories();
   }, []);
   return (
     <>
-      <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
-        <div className="w-full h-auto p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
+      <div className="w-full h-full p-4 md:p-10 md:px-12">
+        <div className="w-full h-full p-4 overflow-y-auto bg-white shadow custom-scrollbar md:p-8 dark:bg-gray-900">
           <div className="mb-4 ">
             <Button onClick={onclick}>
               <ArrowLeft />
@@ -61,6 +72,8 @@ function ListEmployee({ id, onclick }: Props) {
                 placeholder="Buscar por nombre..."
                 startContent={<Search />}
                 variant="bordered"
+                label="Nombre"
+                labelPlacement="outside"
                 name="searchName"
                 id="searchName"
                 value={name}
@@ -79,6 +92,8 @@ function ListEmployee({ id, onclick }: Props) {
                 startContent={<Search />}
                 variant="bordered"
                 name="searCode"
+                label="Código"
+                labelPlacement="outside"
                 id="searCode"
                 value={code}
                 autoComplete="search"
@@ -96,6 +111,7 @@ function ListEmployee({ id, onclick }: Props) {
                 }}
                 className="w-full  order-3"
                 labelPlacement="outside"
+                label="Categoria"
                 placeholder="Selecciona la categoría"
                 variant="bordered"
                 classNames={{
@@ -118,175 +134,239 @@ function ListEmployee({ id, onclick }: Props) {
               </Autocomplete>
             </div>
           </div>
+          <div className="w-full flex items-end justify-between">
+            <ButtonGroup>
+              <Button
+                isIconOnly
+                color="secondary"
+                style={{
+                  backgroundColor: view === 'table' ? theme.colors.third : '#e5e5e5',
+                  color: view === 'table' ? theme.colors.primary : '#3e3e3e',
+                }}
+                onClick={() => setView('table')}
+                type="button"
+              >
+                <ITable />
+              </Button>
+              <Button
+                isIconOnly
+                color="default"
+                style={{
+                  backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
+                  color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
+                }}
+                onClick={() => setView('grid')}
+                type="button"
+              >
+                <CreditCard />
+              </Button>
+            </ButtonGroup>
+            <Button style={global_styles().thirdStyle} isIconOnly onClick={() => setOpenVaul(true)}>
+              <Filter />
+            </Button>
+            <div className="flex items-end gap-5">
+              <div>
+                <Select
+                  className="w-44"
+                  variant="bordered"
+                  label="Mostrar"
+                  placeholder="Mostrar"
+                  labelPlacement="outside"
+                  classNames={{
+                    label: 'font-semibold',
+                  }}
+                  value={limit}
+                  onChange={(e) => {
+                    setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
+                  }}
+                >
+                  {limit_options.map((limit) => (
+                    <SelectItem key={limit} className="dark:text-white">
+                      {limit}
+                    </SelectItem>
+                  ))}
+                </Select>
+              </div>
+              <div className="hidden md:flex">
+                <Button
+                  style={{
+                    backgroundColor: theme.colors.secondary,
+                    color: theme.colors.primary,
+                  }}
+                  color="primary"
+                  onClick={() => changePage()}
+                >
+                  Buscar
+                </Button>
+              </div>
+            </div>
+          </div>
 
           <div className="grid w-full grid-cols-1 gap-5  md:grid-cols-2">
-            <div className="hidden md:flex">
-              <Button
-                style={{
-                  backgroundColor: theme.colors.secondary,
-                  color: theme.colors.primary,
-                }}
-                className="w-full xl:w-72"
-                color="primary"
-                onClick={() => changePage()}
-              >
-                Buscar
-              </Button>
-            </div>
-            <div className="xl:hidden md:flex">
-              <Select
-                className="w-full xl:w-80"
-                variant="bordered"
-                // label="Mostrar"
-                placeholder="Mostrar"
-                labelPlacement="outside"
-                classNames={{
-                  label: 'font-semibold',
-                }}
-                value={limit}
-                onChange={(e) => {
-                  setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
-                }}
-              >
-                <SelectItem key={'5'} className="dark:text-white">
-                  5
-                </SelectItem>
-                <SelectItem key={'10'} className="dark:text-white">
-                  10
-                </SelectItem>
-                <SelectItem key={'20'} className="dark:text-white">
-                  20
-                </SelectItem>
-                <SelectItem key={'30'} className="dark:text-white">
-                  30
-                </SelectItem>
-                <SelectItem key={'40'} className="dark:text-white">
-                  40
-                </SelectItem>
-                <SelectItem key={'50'} className="dark:text-white">
-                  50
-                </SelectItem>
-                <SelectItem key={'100'} className="dark:text-white">
-                  100
-                </SelectItem>
-              </Select>
-            </div>
             <div className="flex items-end justify-between gap-10 mt lg:justify-end">
               <div className="flex items-center gap-5">
                 <div className="block md:hidden">
-                  <Drawer.Root
-                    shouldScaleBackground
+                  <BottomDrawer
+                    title="Filtros disponibles"
                     open={openVaul}
                     onClose={() => setOpenVaul(false)}
                   >
-                    <Drawer.Trigger asChild>
-                      <Button
-                        style={global_styles().thirdStyle}
-                        isIconOnly
-                        onClick={() => setOpenVaul(true)}
-                      >
-                        <Filter />
-                      </Button>
-                    </Drawer.Trigger>
-                    <Drawer.Portal>
-                      <Drawer.Overlay
-                        className="fixed inset-0 bg-black/40 z-[60]"
-                        onClick={() => setOpenVaul(false)}
-                      />
-                      <Drawer.Content className="bg-gray-100 z-[60] flex flex-col rounded-t-[10px] h-auto mt-24 max-h-[80%] fixed bottom-0 left-0 right-0">
-                        <div className="p-4 bg-white rounded-t-[10px] flex-1">
-                          <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-gray-300 mb-8" />
-                          <Drawer.Title className="mb-4 font-medium">
-                            Filtros disponibles
-                          </Drawer.Title>
-                          <div className="flex flex-col gap-3">
-                            <>
-                              <Input
-                                classNames={{
-                                  label: 'font-semibold text-gray-700',
-                                  inputWrapper: 'pr-0',
-                                }}
-                                className="w-full xl:w-96"
-                                placeholder="Buscar por nombre..."
-                                startContent={<Search />}
-                                variant="bordered"
-                                name="searchName"
-                                id="searchName"
-                                value={name}
-                                autoComplete="search"
-                                onChange={(e) => setName(e.target.value)}
-                                isClearable
-                                onClear={() => setName('')}
-                              />
-                              <Input
-                                classNames={{
-                                  label: 'font-semibold text-gray-700',
-                                  inputWrapper: 'pr-0',
-                                }}
-                                className="w-full xl:w-96"
-                                placeholder="Buscar por codigo..."
-                                startContent={<Search />}
-                                variant="bordered"
-                                name="searCode"
-                                id="searCode"
-                                value={code}
-                                autoComplete="search"
-                                onChange={(e) => setCode(e.target.value)}
-                                isClearable
-                                onClear={() => setCode('')}
-                              />
-                              <Autocomplete
-                                onSelectionChange={(key) => {
-                                  if (key) {
-                                    const branchSelected = JSON.parse(
-                                      key as string
-                                    ) as CategoryProduct;
-                                    setCategory(branchSelected.name);
-                                  }
-                                }}
-                                className="w-full xl:w-80"
-                                labelPlacement="outside"
-                                placeholder="Selecciona la categoría"
-                                variant="bordered"
-                                classNames={{
-                                  base: 'font-semibold text-gray-500 text-sm',
-                                }}
-                                value={category}
-                                clearButtonProps={{
-                                  onClick: () => setCategory(''),
-                                }}
-                              >
-                                {list_categories.map((bra) => (
-                                  <AutocompleteItem
-                                    value={bra.name}
-                                    key={JSON.stringify(bra)}
-                                    className="dark:text-white"
-                                  >
-                                    {bra.name}
-                                  </AutocompleteItem>
-                                ))}
-                              </Autocomplete>
-                            </>
-                            <Button
-                              style={global_styles().secondaryStyle}
-                              className="mb-10 font-semibold"
-                              onClick={() => {
-                                changePage();
-                                setOpenVaul(false);
-                              }}
+                    <div className="flex flex-col gap-3">
+                      <>
+                        <Input
+                          classNames={{
+                            label: 'font-semibold text-gray-700',
+                            inputWrapper: 'pr-0',
+                          }}
+                          className="w-full xl:w-96"
+                          placeholder="Buscar por nombre..."
+                          startContent={<Search />}
+                          variant="bordered"
+                          label="Nombre"
+                          labelPlacement='outside'
+                          name="searchName"
+                          id="searchName"
+                          value={name}
+                          autoComplete="search"
+                          onChange={(e) => setName(e.target.value)}
+                          isClearable
+                          onClear={() => setName('')}
+                        />
+                        <Input
+                          classNames={{
+                            label: 'font-semibold text-gray-700',
+                            inputWrapper: 'pr-0',
+                          }}
+                          className="w-full xl:w-96"
+                          placeholder="Buscar por código..."
+                          startContent={<Search />}
+                          variant="bordered"
+                          name="searCode"
+                          label="Código"
+                          labelPlacement='outside'
+                          id="searCode"
+                          value={code}
+                          autoComplete="search"
+                          onChange={(e) => setCode(e.target.value)}
+                          isClearable
+                          onClear={() => setCode('')}
+                        />
+                        <Autocomplete
+                          onSelectionChange={(key) => {
+                            if (key) {
+                              setCategory(key as string);
+                            }
+                          }}
+                          className="w-full xl:w-80"
+                          labelPlacement="outside"
+                          label="Categoría"
+                          placeholder="Selecciona la categoría"
+                          variant="bordered"
+                          classNames={{
+                            base: 'font-semibold text-gray-500 text-sm',
+                          }}
+                          value={category}
+                          defaultSelectedKey={`${category}`}
+                          clearButtonProps={{
+                            onClick: () => setCategory(''),
+                          }}
+                        >
+                          {list_categories.map((bra) => (
+                            <AutocompleteItem
+                              value={bra.name}
+                              key={bra.name}
+                              className="dark:text-white"
                             >
-                              Aplicar
-                            </Button>
-                          </div>
-                        </div>
-                      </Drawer.Content>
-                    </Drawer.Portal>
-                  </Drawer.Root>
+                              {bra.name}
+                            </AutocompleteItem>
+                          ))}
+                        </Autocomplete>
+                      </>
+                      <Button
+                        className="mb-10 font-semibold"
+                        onClick={() => {
+                          changePage();
+                          setOpenVaul(false);
+                        }}
+                      >
+                        Aplicar
+                      </Button>
+                    </div>
+                  </BottomDrawer>
                 </div>
               </div>
             </div>
           </div>
-          <MobileView layout={'grid'} />
+          {view === 'table' && (
+            <>
+              <div className="max-h-[400px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
+                <table className="w-full">
+                  <thead className="sticky top-0 z-20 bg-white">
+                    <tr>
+                      <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                        No.
+                      </th>
+                      <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                        Nombre
+                      </th>
+                      <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                        Codigo
+                      </th>
+                      <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                        Precio
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="max-h-[600px] w-full overflow-y-auto">
+                    {loading_branch_product ? (
+                      <tr>
+                        <td colSpan={5} className="p-3 text-sm text-center text-slate-500">
+                          <div className="flex flex-col items-center justify-center w-full h-64">
+                            <div className="loader"></div>
+                            <p className="mt-3 text-xl font-semibold">Cargando...</p>
+                          </div>
+                        </td>
+                      </tr>
+                    ) : (
+                      <>
+                        {branch_products_list.length > 0 ? (
+                          <>
+                            {branch_products_list.map((cat) => (
+                              <tr className="border-b border-slate-200">
+                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                  {cat.id}
+                                </td>
+                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
+                                  {cat.product.name}
+                                </td>
+                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                  {cat.product.code}
+                                </td>
+                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                  {formatCurrency(Number(cat.price))}
+                                </td>
+                              </tr>
+                            ))}
+                          </>
+                        ) : (
+                          <tr>
+                            <td colSpan={5}>
+                              <div className="flex flex-col items-center justify-center w-full">
+                                <img src={NO_DATA} alt="X" className="w-32 h-32" />
+                                <p className="mt-3 text-xl">No se encontraron resultados</p>
+                              </div>
+                            </td>
+                          </tr>
+                        )}
+                      </>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          )}
+          {(view === 'grid' || view === 'list') && <MobileView layout={'grid'} />}
+
           {branch_product_Paginated.totalPag > 1 && (
             <>
               <div className="hidden w-full mt-5 md:flex">

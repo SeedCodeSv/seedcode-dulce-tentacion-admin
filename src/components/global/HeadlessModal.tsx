@@ -57,7 +57,7 @@ function HeadlessModal(props: Props) {
               >
                 <div className="w-full h-full p-3 overflow-y-auto bg-white dark:bg-gray-800">
                   <div>
-                    <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                    <div className="mt-3 text-center sm:mx-4 sm:mt-0 sm:text-left">
                       <div className="flex justify-between w-full">
                         <Dialog.Title
                           as="h3"
