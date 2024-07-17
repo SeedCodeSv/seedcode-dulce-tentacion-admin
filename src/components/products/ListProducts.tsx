@@ -622,7 +622,7 @@ function ListProducts({ actions }: Props) {
                                   alt="X"
                                   className="w-32 h-32"
                                 />
-                                <p className="mt-3 text-xl">
+                                <p className="mt-3 text-xl dark:text-white">
                                 No se encontraron resultados
                               </p>
                               </div>

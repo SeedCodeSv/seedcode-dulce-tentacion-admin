@@ -11,8 +11,8 @@ import {
   Switch,
   useDisclosure,
 } from '@nextui-org/react';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
+// import { DataTable } from 'primereact/datatable';
+// import { Column } from 'primereact/column';
 import AddUsers from './AddUsers';
 import UpdateUsers from './UpdateUsers';
 import {
@@ -40,6 +40,8 @@ import HeadlessModal from '../global/HeadlessModal';
 import useWindowSize from '@/hooks/useWindowSize';
 import TooltipGlobal from '../global/TooltipGlobal';
 import BottomDrawer from '../global/BottomDrawer';
+import NO_DATA from "@/assets/svg/no_data.svg";
+
 interface Props {
   actions: string[];
 }
@@ -62,10 +64,10 @@ function ListUsers({ actions }: Props) {
 
   const [selectId, setSelectedId] = useState(0);
 
-  const style = {
-    backgroundColor: theme.colors.dark,
-    color: theme.colors.primary,
-  };
+  // const style = {
+  //   backgroundColor: theme.colors.dark,
+  //   color: theme.colors.primary,
+  // };
   const { windowSize } = useWindowSize();
 
   const [view, setView] = useState<'table' | 'grid' | 'list'>(
@@ -81,10 +83,23 @@ function ListUsers({ actions }: Props) {
 
   const [openVaul, setOpenVaul] = useState(false);
 
+  // const emptyMessage = (
+  //   <div className="flex flex-col items-center justify-center w-full">
+  //     <img
+  //       src={NO_DATA}
+  //       alt="No data"
+  //       className="w-32 h-32"
+  //     />
+  //     <p className="mt-3 text-xl dark:text-white">
+  //       No se encontraron resultados
+  //     </p>
+  //   </div>
+  // );
+
   return (
     <>
       <div className="w-full h-full p-5 bg-gray-100 dark:bg-gray-800">
-      <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
+      <div className="w-full h-full p-4 overflow-y-auto bg-white shadow custom-scrollbar md:p-8 dark:bg-gray-900">
       <div className="flex flex-col justify-between w-full gap-5 lg:flex-row lg:gap-0">
             <div className="hidden w-full gap-5 md:flex">
               <div className="w-1/2">
@@ -262,7 +277,7 @@ function ListUsers({ actions }: Props) {
               </div>
             </div>
           </div>
-          <div className="flex justify-end items-end gap-5 w-full pt-4 mb-5">
+          <div className="flex justify-between md:justify-end items-end gap-5 w-full pt-4 mb-5">
             <Select
               className="w-44 dark:text-white"
               variant="bordered"
@@ -311,81 +326,174 @@ function ListUsers({ actions }: Props) {
             />
           )}
           {view === 'table' && (
-            <DataTable
-              className="shadow dark:text-white"
-              emptyMessage="No se encontraron resultados"
-              value={users_paginated.users}
-              tableStyle={{ minWidth: '50rem' }}
-            >
-              <Column
-                headerClassName="text-sm font-semibold"
-                headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
-                field="id"
-                header="No."
-                className='dark:text-white'
-              />
-              {/* <Column
-                headerClassName="text-sm font-semibold"
-                headerStyle={style}
-                field="employee.fullName"
-                header="Empleado"
-                className='dark:text-white'
-              /> */}
-              <Column
-                headerClassName="text-sm font-semibold"
-                headerStyle={style}
-                field="userName"
-                header="Nombre de usuario"
-                className='dark:text-white'
-              />
-              <Column
-                headerClassName="text-sm font-semibold"
-                headerStyle={style}
-                field="role.name"
-                header="Rol"
-                className='dark:text-white'
-              />
-              <Column
-                headerStyle={{ ...style, borderTopRightRadius: '10px' }}
-                header="Acciones"
-                body={(item) => (
-                  <div className="flex w-full gap-5">
-                    {actions.includes('Editar') && (
-                      <TooltipGlobal text="Editar">
-                      <Button
-                        onClick={() => {
-                          setUser(item);
-                          modalUpdate.onOpen();
-                        }}
-                        isIconOnly
-                        style={{
-                          backgroundColor: theme.colors.secondary,
-                        }}
-                      >
-                        <EditIcon style={{ color: theme.colors.primary }} size={20} />
-                      </Button>
-                      </TooltipGlobal>
-                    )}
-                    {actions.includes('Cambiar Contraseña') && (
-                       <TooltipGlobal text="Cambiar contraseña">
-                      <Button
-                        onClick={() => {
-                          setSelectedId(item.id);
-                          modalChangePassword.onOpen();
-                        }}
-                        isIconOnly
-                        style={{
-                          backgroundColor: theme.colors.warning,
-                        }}
-                      >
-                        <Key color={theme.colors.primary} size={20} />
-                      </Button></TooltipGlobal>
-                    )}
-                    {actions.includes('Eliminar') && <DeletePopUp user={item} />}
-                  </div>
-                )}
-              />
-            </DataTable>
+               <div className="overflow-x-auto custom-scrollbar mt-4">
+               <table className="w-full">
+                 <thead className="sticky top-0 z-20 bg-white">
+                   <tr>
+                     <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                       No.
+                     </th>
+                     <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                       Nombre de usuario
+                     </th>
+                     <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                      Rol
+                     </th>
+                     <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                      Acciones
+                     </th>
+                   </tr>
+                 </thead>
+                 <tbody className="max-h-[600px] w-full overflow-y-auto">
+                   
+                       {users_paginated.users.length > 0 ? (
+                         <>
+                           {users_paginated.users.map((item) => (
+                             <tr className="border-b border-slate-200">
+                               <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                 {item.id}
+                               </td>
+                               <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
+                                 {item.userName}
+                               </td>
+                               <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                 {item.role.name}
+                               </td>
+                               <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                 <div className="flex w-full gap-5">
+                                 {actions.includes('Editar') && (
+                        <TooltipGlobal text="Editar">
+                        <Button
+                          onClick={() => {
+                            setUser(item);
+                            modalUpdate.onOpen();
+                          }}
+                          isIconOnly
+                          style={{
+                            backgroundColor: theme.colors.secondary,
+                          }}
+                        >
+                          <EditIcon style={{ color: theme.colors.primary }} size={20} />
+                        </Button>
+                        </TooltipGlobal>
+                      )}
+                      {actions.includes('Cambiar Contraseña') && (
+                         <TooltipGlobal text="Cambiar contraseña">
+                        <Button
+                          onClick={() => {
+                            setSelectedId(item.id);
+                            modalChangePassword.onOpen();
+                          }}
+                          isIconOnly
+                          style={{
+                            backgroundColor: theme.colors.warning,
+                          }}
+                        >
+                          <Key color={theme.colors.primary} size={20} />
+                        </Button></TooltipGlobal>
+                      )}
+                      {actions.includes('Eliminar') && <DeletePopUp user={item} />}
+                                 </div>
+                               </td>
+                             </tr>
+                           ))}
+                         </>
+                       ) : (
+                         <tr>
+                           <td colSpan={5}>
+                             <div className="flex flex-col items-center justify-center w-full">
+                               <img
+                                 src={NO_DATA}
+                                 alt="X"
+                                 className="w-32 h-32"
+                               />
+                               <p className="mt-3 text-xl dark:text-white">
+                               No se encontraron resultados
+                             </p>
+                             </div>
+                             
+                           </td>
+                         </tr>
+                       )}
+                    
+                 </tbody>
+               </table>
+             </div>
+            // <DataTable
+            //   className="shadow dark:text-white w-full"
+            //   emptyMessage={emptyMessage}
+            //   value={users_paginated.users}
+            //   tableStyle={{ minWidth: '50rem' }}
+            // >
+            //   <Column
+            //     headerClassName="text-sm font-semibold"
+            //     headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
+            //     field="id"
+            //     header="No."
+            //     className='dark:text-white'
+            //   />
+            //   {/* <Column
+            //     headerClassName="text-sm font-semibold"
+            //     headerStyle={style}
+            //     field="employee.fullName"
+            //     header="Empleado"
+            //     className='dark:text-white'
+            //   /> */}
+            //   <Column
+            //     headerClassName="text-sm font-semibold"
+            //     headerStyle={style}
+            //     field="userName"
+            //     header="Nombre de usuario"
+            //     className='dark:text-white'
+            //   />
+            //   <Column
+            //     headerClassName="text-sm font-semibold"
+            //     headerStyle={style}
+            //     field="role.name"
+            //     header="Rol"
+            //     className='dark:text-white'
+            //   />
+            //   <Column
+            //     headerStyle={{ ...style, borderTopRightRadius: '10px' }}
+            //     header="Acciones"
+            //     body={(item) => (
+            //       <div className="flex w-full gap-5">
+            //         {actions.includes('Editar') && (
+            //           <TooltipGlobal text="Editar">
+            //           <Button
+            //             onClick={() => {
+            //               setUser(item);
+            //               modalUpdate.onOpen();
+            //             }}
+            //             isIconOnly
+            //             style={{
+            //               backgroundColor: theme.colors.secondary,
+            //             }}
+            //           >
+            //             <EditIcon style={{ color: theme.colors.primary }} size={20} />
+            //           </Button>
+            //           </TooltipGlobal>
+            //         )}
+            //         {actions.includes('Cambiar Contraseña') && (
+            //            <TooltipGlobal text="Cambiar contraseña">
+            //           <Button
+            //             onClick={() => {
+            //               setSelectedId(item.id);
+            //               modalChangePassword.onOpen();
+            //             }}
+            //             isIconOnly
+            //             style={{
+            //               backgroundColor: theme.colors.warning,
+            //             }}
+            //           >
+            //             <Key color={theme.colors.primary} size={20} />
+            //           </Button></TooltipGlobal>
+            //         )}
+            //         {actions.includes('Eliminar') && <DeletePopUp user={item} />}
+            //       </div>
+            //     )}
+            //   />
+            // </DataTable>
           )}
           {users_paginated.totalPag > 1 && (
             <>
@@ -501,7 +609,7 @@ const DeletePopUp = ({ user }: PopProps) => {
             <p className="mt-3 text-center text-gray-600 dark:text-white w-72">
               ¿Estas seguro de eliminar este registro?
             </p>
-            <div className="mt-4">
+            <div className="flex justify-center mt-4">
               <Button onClick={onClose}>No, cancelar</Button>
               <Button
                 onClick={() => handleDelete()}

@@ -30,6 +30,7 @@ export interface IResponseDataViewasAction {
 }
 
 export interface ViewasAction {
+  name: string;
   view: View;
   actions: Actions;
 }

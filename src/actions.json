@@ -113,7 +113,7 @@
     },
     {
       "view": "Contabilidad",
-      "actions": ["Mostrar", "Exportar Excel", "Descargar PDF"]
+      "actions": ["Mostrar", "Exportar Excel", "Imprimir"]
     }
   ]
 }
