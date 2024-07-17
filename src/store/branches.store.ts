@@ -39,6 +39,7 @@ export const useBranchesStore = create<IBranchStore>((set, get) => ({
   loading: false,
   active: 1 as 1 | 0,
   branch_products_list: [],
+  loading_branch_product: false,
   getBranchesList() {
     return get_branches_list()
       .then(({ data }) => {
@@ -117,6 +118,7 @@ export const useBranchesStore = create<IBranchStore>((set, get) => ({
     }
   },
   async getBranchProducts(id, page, limit, name, category, code) {
+    set({ loading_branch_product: true });
     await get_branch_products(id, page, limit, name, category, code)
       .then(({ data }) => {
         set({
@@ -130,10 +132,23 @@ export const useBranchesStore = create<IBranchStore>((set, get) => ({
             status: data.status,
             ok: data.ok,
           },
+          loading_branch_product: false
         });
       })
       .catch(() => {
-        set({ branch_products_list: [] });
+        set({
+          branch_products_list: [],
+          branch_product_Paginated: {
+            total: 0,
+            totalPag: 0,
+            currentPag: 0,
+            nextPag: 0,
+            prevPag: 0,
+            status: 0,
+            ok: false
+          },
+          loading_branch_product:false
+        });
       });
   },
   saveActiveBranch(id, state) {
