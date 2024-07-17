@@ -25,9 +25,9 @@ export const useCustomerStore = create<IUseCustomersStore>((set, get) => ({
   loading_customer: false,
   customer_list: [],
   saveCustomersPagination: (customer_pagination) => set({ customer_pagination }),
-  getCustomersPagination: (page, limit, name, email, isActive, isTransmitter) => {
+  getCustomersPagination: (page, limit, name, email, branchName, isActive, isTransmitter) => {
     set({ loading_customer: true });
-    get_customers_pagination(page, limit, name, email, isActive, isTransmitter)
+    get_customers_pagination(page, limit, name, email, branchName, isActive, isTransmitter)
       .then((customers) => set({ customer_pagination: customers.data, loading_customer: false }))
       .catch(() => {
         set({
@@ -49,7 +49,7 @@ export const useCustomerStore = create<IUseCustomersStore>((set, get) => ({
     return save_customers(payload)
       .then(({ data }) => {
         if (data) {
-          get().getCustomersPagination(1, 5, '', '', 1, 1);
+          get().getCustomersPagination(1, 5, '', '','', 1, 1);
           toast.success(messages.success);
           return true;
         } else {
@@ -66,7 +66,7 @@ export const useCustomerStore = create<IUseCustomersStore>((set, get) => ({
     update_customers(payload, id)
       .then(({ data }) => {
         if (data) {
-          get().getCustomersPagination(1, 5, '', '', 1, 1);
+          get().getCustomersPagination(1, 5, '', '','', 1, 1);
           toast.success(messages.success);
         } else {
           toast.warning(messages.error);
@@ -88,7 +88,7 @@ export const useCustomerStore = create<IUseCustomersStore>((set, get) => ({
   deleteCustomer: async (id) => {
     return await delete_customer(id)
       .then(({ data }) => {
-        get().getCustomersPagination(1, 5, '', '', 1, 1);
+        get().getCustomersPagination(1, 5, '', '','', 1, 1);
         toast.success(messages.success);
         return data.ok;
       })
@@ -101,7 +101,7 @@ export const useCustomerStore = create<IUseCustomersStore>((set, get) => ({
   save_active_customer(id) {
     activate_customer(id).then(({ data }) => {
       if (data.ok) {
-        get().getCustomersPagination(1, 5, '', '', 1, 1);
+        get().getCustomersPagination(1, 5, '', '','', 1, 1);
         toast.success(messages.success);
       } else {
         toast.warning(messages.error);
