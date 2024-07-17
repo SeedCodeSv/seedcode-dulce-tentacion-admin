@@ -152,7 +152,7 @@ function ListSuppliers() {
     <>
       <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
       <div className="w-full h-full p-4 overflow-y-auto bg-white shadow custom-scrollbar md:p-8 dark:bg-gray-900">
-          <div className="flex flex-col justify-between w-full gap-5 mb-5 lg:mb-10 lg:flex-row lg:gap-0">
+          <div className="flex flex-col justify-between w-full gap-5 mb-5 lg:mb-6 2xl:mb-10 lg:flex-row lg:gap-0">
             <div className="hidden w-full gap-5 md:flex">
               <Input
                 startContent={<User />}
@@ -207,7 +207,7 @@ function ListSuppliers() {
               </div>
             </div>
           </div>
-          <div className="flex items-end justify-between gap-10 mt lg:justify-end">
+          <div className="flex items-end justify-between gap-10">
             <ButtonGroup>
               <Button
                 isIconOnly
@@ -317,17 +317,15 @@ function ListSuppliers() {
                         </div>
                       </BottomDrawer>
               </div>
-            </div>
-
-            <div className="flex justify-end w-full">
-              <BottomAdd setTypeSupplier={setTypeProveedor} openModal={modalAdd.onOpen} />
               <BottomSm setTypeSupplier={setTypeProveedor} openModal={modalAdd.onOpen} />
+               <BottomAdd setTypeSupplier={setTypeProveedor} openModal={modalAdd.onOpen} />
             </div>
+             
           </div>
 
           <div className="flex flex-row gap-5 items-center justify-between w-full mb-5 mt-3">
             <Select
-              className="w-72 sm:w-44 ml-2"
+              className="w-72 sm:w-44 dark:text-white"
               variant="bordered"
               label="Tipo de proveedor"
               defaultSelectedKeys={['1']}
@@ -352,6 +350,7 @@ function ListSuppliers() {
               variant="bordered"
               label="Mostrar"
               labelPlacement="outside"
+              defaultSelectedKeys={['5']}
               classNames={{
                 label: 'font-semibold',
               }}
@@ -832,7 +831,9 @@ export const BottomSm = ({ setTypeSupplier, openModal }: PopoverAddProps) => {
           onClick={() => (isOpen ? onClose() : onOpen())}
           isIconOnly
         >
+          <TooltipGlobal text="Agregar nuevo">
           <PlusIcon />
+        </TooltipGlobal>
         </Button>
       </PopoverTrigger>
       <PopoverContent aria-labelledby="popover-title">

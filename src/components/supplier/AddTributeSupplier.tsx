@@ -187,26 +187,6 @@ function AddTributeSupplier(props: Props) {
                 </div>
                 <div className="pt-2">
                   <Input
-                    label="Nombre comercial"
-                    labelPlacement="outside"
-                    name="name"
-                    value={values.nombreComercial}
-                    onChange={handleChange('nombreComercial')}
-                    onBlur={handleBlur('nombreComercial')}
-                    placeholder="Ingresa el nombre comercial"
-                    classNames={{
-                      label: 'font-semibold text-gray-500 text-sm',
-                    }}
-                    variant="bordered"
-                  />
-                  {errors.nombreComercial && touched.nombreComercial && (
-                    <span className="text-sm font-semibold text-red-500">
-                      {errors.nombreComercial}
-                    </span>
-                  )}
-                </div>
-                <div className="pt-2">
-                  <Input
                     label="Correo electrónico"
                     labelPlacement="outside"
                     name="correo"
@@ -309,7 +289,65 @@ function AddTributeSupplier(props: Props) {
                 </div>
               </div>
               <div>
-                <div className="mt-4">
+                <div className="mt-10">
+                  <Input
+                    label="Nombre comercial"
+                    labelPlacement="outside"
+                    name="name"
+                    value={values.nombreComercial}
+                    onChange={handleChange('nombreComercial')}
+                    onBlur={handleBlur('nombreComercial')}
+                    placeholder="Ingresa el nombre comercial"
+                    classNames={{
+                      label: 'font-semibold text-gray-500 text-sm',
+                    }}
+                    variant="bordered"
+                  />
+                  {errors.nombreComercial && touched.nombreComercial && (
+                    <span className="text-sm font-semibold text-red-500">
+                      {errors.nombreComercial}
+                    </span>
+                  )}
+                </div>
+                <div className="pt-2">
+                  <Input
+                    type="number"
+                    label="NIT"
+                    labelPlacement="outside"
+                    name="nit"
+                    value={values.nit}
+                    onChange={handleChange('nit')}
+                    onBlur={handleBlur('nit')}
+                    placeholder="Ingresa su numero de nit"
+                    classNames={{
+                      label: 'font-semibold text-gray-500 text-sm',
+                    }}
+                    variant="bordered"
+                  />
+                  {errors.nit && touched.nit && (
+                    <span className="text-sm font-semibold text-red-500">{errors.nit}</span>
+                  )}
+                </div>
+                <div className="pt-2">
+                  <Input
+                    type="number"
+                    label="NRC"
+                    labelPlacement="outside"
+                    name="numDocumento"
+                    value={values.nrc}
+                    onChange={handleChange('nrc')}
+                    onBlur={handleBlur('nrc')}
+                    placeholder="Ingresa el numero de NRC"
+                    classNames={{
+                      label: 'font-semibold text-gray-500 text-sm',
+                    }}
+                    variant="bordered"
+                  />
+                  {errors.nrc && touched.nrc && (
+                    <span className="text-sm font-semibold text-red-500">{errors.nrc}</span>
+                  )}
+                </div>
+                <div className="pt-2">
                   <Autocomplete
                     onSelectionChange={(key) => {
                       if (key) {
@@ -394,12 +432,14 @@ function AddTributeSupplier(props: Props) {
                     <span className="text-sm font-semibold text-red-500">{errors.municipio}</span>
                   )}
                 </div>
-                <div className="pt-2">
+              </div>
+            </div>
+            <div className="pt-2">
                   <Textarea
                     label="Complemento de dirección"
                     classNames={{
                       label: 'font-semibold text-gray-500 text-sm',
-                      input: 'min-h-[90px]',
+                      input: 'max-h-[90px]',
                     }}
                     labelPlacement="outside"
                     variant="bordered"
@@ -413,46 +453,6 @@ function AddTributeSupplier(props: Props) {
                     <span className="text-sm font-semibold text-red-500">{errors.complemento}</span>
                   )}
                 </div>
-                <div className="pt-2">
-                  <Input
-                    type="number"
-                    label="NIT"
-                    labelPlacement="outside"
-                    name="nit"
-                    value={values.nit}
-                    onChange={handleChange('nit')}
-                    onBlur={handleBlur('nit')}
-                    placeholder="Ingresa su numero de nit"
-                    classNames={{
-                      label: 'font-semibold text-gray-500 text-sm',
-                    }}
-                    variant="bordered"
-                  />
-                  {errors.nit && touched.nit && (
-                    <span className="text-sm font-semibold text-red-500">{errors.nit}</span>
-                  )}
-                </div>
-                <div className="pt-2">
-                  <Input
-                    type="number"
-                    label="NRC"
-                    labelPlacement="outside"
-                    name="numDocumento"
-                    value={values.nrc}
-                    onChange={handleChange('nrc')}
-                    onBlur={handleBlur('nrc')}
-                    placeholder="Ingresa el numero de NRC"
-                    classNames={{
-                      label: 'font-semibold text-gray-500 text-sm',
-                    }}
-                    variant="bordered"
-                  />
-                  {errors.nrc && touched.nrc && (
-                    <span className="text-sm font-semibold text-red-500">{errors.nrc}</span>
-                  )}
-                </div>
-              </div>
-            </div>
             <div className="pt-4">
               <Button
                 onClick={() => handleSubmit()}
