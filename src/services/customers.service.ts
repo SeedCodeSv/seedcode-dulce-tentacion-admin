@@ -8,14 +8,15 @@ export const get_customers_pagination = (
   limit = 5,
   name = '',
   email = '',
+  branchName = '',
   active: number,
-  isTransmitter: number
+  isTransmitter: number | string
 ) => {
-  const user = get_user();
+  // const user = get_user();
   const token = get_token() ?? '';
   return axios.get<IGetCustomerPagination>(
     API_URL +
-      `/customers/list-paginated/${user?.correlative.branch.transmitterId}` +
+      `/customers/all-paginated` +
       '?page=' +
       page +
       '&limit=' +
@@ -24,6 +25,8 @@ export const get_customers_pagination = (
       name +
       '&correo=' +
       email +
+      '&branchName=' +
+      branchName +
       '&active=' +
       active +
       '&isTransmitter=' +

@@ -187,26 +187,6 @@ function AddTributeSupplier(props: Props) {
                 </div>
                 <div className="pt-2">
                   <Input
-                    label="Nombre comercial"
-                    labelPlacement="outside"
-                    name="name"
-                    value={values.nombreComercial}
-                    onChange={handleChange('nombreComercial')}
-                    onBlur={handleBlur('nombreComercial')}
-                    placeholder="Ingresa el nombre comercial"
-                    classNames={{
-                      label: 'font-semibold text-gray-500 text-sm',
-                    }}
-                    variant="bordered"
-                  />
-                  {errors.nombreComercial && touched.nombreComercial && (
-                    <span className="text-sm font-semibold text-red-500">
-                      {errors.nombreComercial}
-                    </span>
-                  )}
-                </div>
-                <div className="pt-2">
-                  <Input
                     label="Correo electrónico"
                     labelPlacement="outside"
                     name="correo"
@@ -287,6 +267,7 @@ function AddTributeSupplier(props: Props) {
                     className="dark:text-white"
                     // selectedKey={selectedKeyCodActivity}
                     defaultSelectedKey={values.descActividad}
+                    defaultInputValue={values.descActividad}
                     value={selectedKeyCodActivity}
                     onInputChange={(e) => handleFilter(e)}
                   >
@@ -308,106 +289,24 @@ function AddTributeSupplier(props: Props) {
                 </div>
               </div>
               <div>
-                <div className="mt-4">
-                  <Autocomplete
-                    onSelectionChange={(key) => {
-                      if (key) {
-                        const depSelected = JSON.parse(key as string) as Municipio;
-                        setSelectedCodeDep(depSelected.codigo);
-                        handleChange('departamento')(depSelected.codigo);
-                        handleChange('nombreDepartamento')(depSelected.valores);
-                      }
-                    }}
-                    onBlur={handleBlur('departamento')}
-                    label="Departamento"
+                <div className="mt-10">
+                  <Input
+                    label="Nombre comercial"
                     labelPlacement="outside"
-                    placeholder={
-                      props.supplier_direction?.nombreDepartamento
-                        ? props.supplier_direction?.nombreDepartamento
-                        : 'Selecciona el departamento'
-                    }
-                    variant="bordered"
-                    classNames={{
-                      base: 'font-semibold text-gray-500 text-sm',
-                    }}
-                    className="dark:text-white"
-                    // selectedKey={selectedKeyDepartment}
-                    defaultSelectedKey={selectedKeyDepartment}
-                    value={selectedKeyDepartment}
-                  >
-                    {cat_012_departamento.map((dep) => (
-                      <AutocompleteItem
-                        value={dep.codigo}
-                        key={JSON.stringify(dep)}
-                        className="dark:text-white"
-                      >
-                        {dep.valores}
-                      </AutocompleteItem>
-                    ))}
-                  </Autocomplete>
-                  {errors.departamento && touched.departamento && (
-                    <span className="text-sm font-semibold text-red-500">
-                      {errors.departamento}
-                    </span>
-                  )}
-                </div>
-                <div className="pt-2">
-                  <Autocomplete
-                    onSelectionChange={(key) => {
-                      if (key) {
-                        const depSelected = JSON.parse(key as string) as Departamento;
-                        handleChange('municipio')(depSelected.codigo);
-                        handleChange('nombreMunicipio')(depSelected.valores);
-                      }
-                    }}
-                    onBlur={handleBlur('municipio')}
-                    label="Municipio"
-                    labelPlacement="outside"
-                    placeholder={
-                      props.supplier_direction?.nombreMunicipio
-                        ? props.supplier_direction?.nombreMunicipio
-                        : 'Selecciona el departamento'
-                    }
-                    variant="bordered"
-                    classNames={{
-                      base: 'font-semibold text-gray-500 text-sm',
-                    }}
-                    className="dark:text-white"
-                    // selectedKey={selectedKeyCity}
-                    defaultSelectedKey={props.supplier_direction?.nombreMunicipio}
-                    value={selectedKeyCity}
-                  >
-                    {cat_013_municipios.map((dep) => (
-                      <AutocompleteItem
-                        value={dep.codigo}
-                        key={JSON.stringify(dep)}
-                        className="dark:text-white"
-                      >
-                        {dep.valores}
-                      </AutocompleteItem>
-                    ))}
-                  </Autocomplete>
-                  {errors.municipio && touched.municipio && (
-                    <span className="text-sm font-semibold text-red-500">{errors.municipio}</span>
-                  )}
-                </div>
-                <div className="pt-2">
-                  <Textarea
-                    label="Complemento de dirección"
+                    name="name"
+                    value={values.nombreComercial}
+                    onChange={handleChange('nombreComercial')}
+                    onBlur={handleBlur('nombreComercial')}
+                    placeholder="Ingresa el nombre comercial"
                     classNames={{
                       label: 'font-semibold text-gray-500 text-sm',
-                      input: 'min-h-[90px]',
                     }}
-                    labelPlacement="outside"
                     variant="bordered"
-                    placeholder="Ingresa el complemento de dirección"
-                    name="complemento"
-                    value={values.complemento}
-                    onChange={handleChange('complemento')}
-                    onBlur={handleBlur('complemento')}
                   />
-                  {errors.complemento && touched.complemento && (
-                    <span className="text-sm font-semibold text-red-500">{errors.complemento}</span>
+                  {errors.nombreComercial && touched.nombreComercial && (
+                    <span className="text-sm font-semibold text-red-500">
+                      {errors.nombreComercial}
+                    </span>
                   )}
                 </div>
                 <div className="pt-2">
@@ -448,8 +347,112 @@ function AddTributeSupplier(props: Props) {
                     <span className="text-sm font-semibold text-red-500">{errors.nrc}</span>
                   )}
                 </div>
+                <div className="pt-2">
+                  <Autocomplete
+                    onSelectionChange={(key) => {
+                      if (key) {
+                        const depSelected = JSON.parse(key as string) as Municipio;
+                        setSelectedCodeDep(depSelected.codigo);
+                        handleChange('departamento')(depSelected.codigo);
+                        handleChange('nombreDepartamento')(depSelected.valores);
+                      }
+                    }}
+                    onBlur={handleBlur('departamento')}
+                    label="Departamento"
+                    labelPlacement="outside"
+                    placeholder={
+                      props.supplier_direction?.nombreDepartamento
+                        ? props.supplier_direction?.nombreDepartamento
+                        : 'Selecciona el departamento'
+                    }
+                    variant="bordered"
+                    classNames={{
+                      base: 'font-semibold text-gray-500 text-sm',
+                    }}
+                    className="dark:text-white"
+                    // selectedKey={selectedKeyDepartment}
+                    defaultSelectedKey={selectedKeyDepartment}
+                    value={selectedKeyDepartment}
+                    defaultInputValue={values.nombreDepartamento}
+                  >
+                    {cat_012_departamento.map((dep) => (
+                      <AutocompleteItem
+                        value={dep.codigo}
+                        key={JSON.stringify(dep)}
+                        className="dark:text-white"
+                      >
+                        {dep.valores}
+                      </AutocompleteItem>
+                    ))}
+                  </Autocomplete>
+                  {errors.departamento && touched.departamento && (
+                    <span className="text-sm font-semibold text-red-500">
+                      {errors.departamento}
+                    </span>
+                  )}
+                </div>
+                <div className="pt-2">
+                  <Autocomplete
+                    onSelectionChange={(key) => {
+                      if (key) {
+                        const depSelected = JSON.parse(key as string) as Departamento;
+                        handleChange('municipio')(depSelected.codigo);
+                        handleChange('nombreMunicipio')(depSelected.valores);
+                      }
+                    }}
+                    onBlur={handleBlur('municipio')}
+                    label="Municipio"
+                    labelPlacement="outside"
+                    placeholder={
+                      props.supplier_direction?.nombreMunicipio
+                        ? props.supplier_direction?.nombreMunicipio
+                        : 'Selecciona el departamento'
+                    }
+                    variant="bordered"
+                    classNames={{
+                      base: 'font-semibold text-gray-500 text-sm',
+                    }}
+                    className="dark:text-white"
+                    // selectedKey={selectedKeyCity}
+                    defaultInputValue={props.supplier_direction?.nombreMunicipio}
+                    defaultSelectedKey={props.supplier_direction?.nombreMunicipio}
+                    value={selectedKeyCity}
+                  >
+                    {cat_013_municipios.map((dep) => (
+                      <AutocompleteItem
+                        value={dep.codigo}
+                        key={JSON.stringify(dep)}
+                        className="dark:text-white"
+                      >
+                        {dep.valores}
+                      </AutocompleteItem>
+                    ))}
+                  </Autocomplete>
+                  {errors.municipio && touched.municipio && (
+                    <span className="text-sm font-semibold text-red-500">{errors.municipio}</span>
+                  )}
+                </div>
               </div>
             </div>
+            <div className="pt-2">
+                  <Textarea
+                    label="Complemento de dirección"
+                    classNames={{
+                      label: 'font-semibold text-gray-500 text-sm',
+                      input: 'max-h-[90px]',
+                    }}
+                    labelPlacement="outside"
+                    variant="bordered"
+                    placeholder="Ingresa el complemento de dirección"
+                    name="complemento"
+                    value={values.complemento}
+                    onChange={handleChange('complemento')}
+                    onBlur={handleBlur('complemento')}
+                  />
+                  {errors.complemento && touched.complemento && (
+                    <span className="text-sm font-semibold text-red-500">{errors.complemento}</span>
+                  )}
+                </div>
             <div className="pt-4">
               <Button
                 onClick={() => handleSubmit()}

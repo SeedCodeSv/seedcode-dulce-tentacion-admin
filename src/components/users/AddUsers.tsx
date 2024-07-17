@@ -107,7 +107,7 @@ function AddUsers(props: Props) {
                   onBlur={handleBlur('userName')}
                   placeholder="Ingresa el nombre de usuario"
                   classNames={{
-                    label: 'text-gray-500 text-base',
+                    label: 'text-gray-500 text-sm',
                   }}
                   variant="bordered"
                 />
@@ -126,7 +126,7 @@ function AddUsers(props: Props) {
                   placeholder="Ingresa la Contraseña"
                   type="password"
                   classNames={{
-                    label: 'text-gray-500 text-base',
+                    label: 'text-gray-500 text-sm',
                   }}
                   variant="bordered"
                 />
@@ -181,6 +181,7 @@ function AddUsers(props: Props) {
                   labelPlacement="outside"
                   placeholder="Selecciona la sucursal"
                   variant="bordered"
+                  className="dark:text-white text-sm"
                   defaultSelectedKey={selectedKeyBranch!}
                   value={selectedKeyBranch!}
                 >
@@ -208,7 +209,7 @@ function AddUsers(props: Props) {
                   className="dark:text-white"
                   variant="bordered"
                   classNames={{
-                    base: 'font-semibold text-gray-500 text-sm',
+                    base: ' text-gray-500 text-sm',
                   }}
                   // defaultSelectedKey={selectedKeyCorrelative!}
                   // value={selectedKeyCorrelative!}

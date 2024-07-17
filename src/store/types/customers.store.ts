@@ -10,8 +10,9 @@ export interface IUseCustomersStore {
     limit: number,
     name: string,
     email: string,
+    branchName: string,
     active: number,
-    isTransmitter: number
+    isTransmitter: number | string,
   ) => void;
   postCustomer: (payload: PayloadCustomer) => Promise<boolean>;
   patchCustomer: (payload: PayloadCustomer, id: number) => void;

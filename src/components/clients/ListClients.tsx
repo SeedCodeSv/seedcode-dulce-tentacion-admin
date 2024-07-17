@@ -11,6 +11,8 @@ import {
   Select,
   SelectItem,
   Switch,
+  Autocomplete,
+  AutocompleteItem,
 } from '@nextui-org/react';
 import { useCustomerStore } from '../../store/customers.store';
 import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
@@ -44,6 +46,7 @@ import TooltipGlobal from '../global/TooltipGlobal';
 import BottomDrawer from '../global/BottomDrawer';
 import useWindowSize from '@/hooks/useWindowSize';
 import NO_DATA from '@/assets/svg/no_data.svg';
+import { useBranchesStore } from '@/store/branches.store';
 interface Props {
   actions: string[];
 }
@@ -55,15 +58,21 @@ const ListClients = ({ actions }: Props) => {
   const [limit, setLimit] = useState(5);
   const [search, setSearch] = useState('');
   const [email, setEmail] = useState('');
+  const [branch, setBranch] = useState('');
   // const style = {
   //   backgroundColor: theme.colors.dark,
   //   color: theme.colors.primary,
   // };
   const [typeClient, setTypeClient] = useState('normal');
   const [active, setActive] = useState(true);
-  const [tipeCustomer, setTypeCustomer] = useState(1);
+  const [tipeCustomer, setTypeCustomer] = useState('');
+  const { getBranchesList, branch_list } = useBranchesStore();
   useEffect(() => {
-    getCustomersPagination(1, limit, search, email, active ? 1 : 0, tipeCustomer);
+    getBranchesList();
+  }, []);
+  // const [tipeCustomer, setTypeCustomer] = useState<number | undefined>(undefined);
+  useEffect(() => {
+    getCustomersPagination(1, limit, search, email, branch, active ? 1 : 0, tipeCustomer);
   }, [limit, active, tipeCustomer]);
 
   const { windowSize } = useWindowSize();
@@ -77,8 +86,9 @@ const ListClients = ({ actions }: Props) => {
       limit,
       searchParam ?? search,
       searchParam ?? email,
+      searchParam ?? branch,
       active ? 1 : 0,
-      tipeCustomer
+      tipeCustomer ?? 0
     );
   };
 
@@ -87,7 +97,8 @@ const ListClients = ({ actions }: Props) => {
   const [selectedCustomer, setSelectedCustomer] = useState<PayloadCustomer>();
   const [selectedCustomerDirection, setSelectedCustomerDirection] = useState<CustomerDirection>();
   const [selectedId, setSelectedId] = useState<number>(0);
-  const [selectedTitle, setSelectedTitle] = useState('');
+  // const [selectedTitle, setSelectedTitle] = useState('');
+  const [selectedTitle, setSelectedTitle] = useState<string>('');
 
   const handleChangeCustomer = (customer: Customer, type = 'edit') => {
     const payload_customer: PayloadCustomer = {
@@ -192,6 +203,32 @@ const ListClients = ({ actions }: Props) => {
                   setEmail('');
                 }}
               />
+
+              <Autocomplete
+                onSelectionChange={(key) => {
+                  if (key) {
+                    setBranch(key as string);
+                  }
+                }}
+                className="w-full dark:text-white"
+                label="Sucursal"
+                labelPlacement="outside"
+                placeholder="Selecciona una sucursal"
+                variant="bordered"
+                defaultSelectedKey={branch}
+                classNames={{
+                  base: 'font-semibold text-gray-500 text-sm',
+                }}
+                clearButtonProps={{
+                  onClick: () => setBranch(''),
+                }}
+              >
+                {branch_list.map((bra) => (
+                  <AutocompleteItem value={bra.name} className="dark:text-white" key={bra.name}>
+                    {bra.name}
+                  </AutocompleteItem>
+                ))}
+              </Autocomplete>
               <div className="mt-6">
                 <Button
                   style={{
@@ -255,7 +292,8 @@ const ListClients = ({ actions }: Props) => {
                 }}
                 value={String(tipeCustomer)}
                 onChange={(e) => {
-                  setTypeCustomer(e.target.value !== '' ? Number(e.target.value) : 0);
+                  // setTypeCustomer(e.target.value !== '' ? Number(e.target.value) : 0);
+                  setTypeCustomer(e.target.value !== '' ? e.target.value : '');
                 }}
               >
                 <SelectItem className="dark:text-white" key={'1'}>
@@ -263,6 +301,9 @@ const ListClients = ({ actions }: Props) => {
                 </SelectItem>
                 <SelectItem className="dark:text-white" key={'0'}>
                   No Contribuyente
+                </SelectItem>
+                <SelectItem className="dark:text-white" key={''}>
+                  Todos
                 </SelectItem>
               </Select>
             </div>
@@ -409,7 +450,8 @@ const ListClients = ({ actions }: Props) => {
                 }}
                 value={String(tipeCustomer)}
                 onChange={(e) => {
-                  setTypeCustomer(e.target.value !== '' ? Number(e.target.value) : 0);
+                  // setTypeCustomer(e.target.value !== '' ? Number(e.target.value) : 0);
+                  setSelectedTitle(e.target.value !== '' ? e.target.value : '0');
                 }}
               >
                 <SelectItem className="dark:text-white" key={'1'}>
@@ -489,7 +531,7 @@ const ListClients = ({ actions }: Props) => {
                                   {customer.correo}
                                 </td>
                                 <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                  {customer.esContribuyente}
+                                  {customer.esContribuyente ? 'Si' : 'No'}
                                 </td>
 
                                 <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
@@ -554,113 +596,6 @@ const ListClients = ({ actions }: Props) => {
                 </table>
               </div>
             </>
-            // <DataTable
-            //   className="shadow dark:text-white"
-            //   emptyMessage="No se encontraron resultados"
-            //   value={customer_pagination.customers}
-            //   tableStyle={{ minWidth: '50rem' }}
-            // >
-            //   <Column
-            //     headerClassName="text-sm font-semibold"
-            //     headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
-            //     field="id"
-            //     header="No."
-            //     className='dark:text-white'
-            //   />
-            //   <Column
-            //     headerClassName="text-sm font-semibold"
-            //     headerStyle={style}
-            //     field="nombre"
-            //     header="Nombre"
-            //     className='dark:text-white'
-            //   />
-            //   <Column
-            //     headerClassName="text-sm font-semibold"
-            //     headerStyle={style}
-            //     field="telefono"
-            //     header="Teléfono"
-            //     className='dark:text-white'
-            //   />
-            //   <Column
-            //     headerClassName="text-sm font-semibold"
-            //     headerStyle={style}
-            //     field="correo"
-            //     header="Correo"
-            //     className='dark:text-white'
-            //   />
-            //   <Column
-            //     headerClassName="text-sm font-semibold"
-            //     headerStyle={style}
-            //     // field="esContribuyente"
-            //     body={(item) => (item.esContribuyente ? 'Si' : 'No')}
-            //     header="Contribuyente"
-            //     className='dark:text-white'
-            //   />
-            //   <Column
-            //     headerStyle={{ ...style, borderTopRightRadius: '10px' }}
-            //     header="Acciones"
-            //     body={(item) => (
-            //       <div className="flex w-full gap-5">
-            //         {item.isActive ? (
-            //           <>
-            //            {actions.includes("Editar") && (
-            //              <TooltipGlobal text="Editar">
-            //              <Button
-            //                onClick={() => handleChangeCustomer(item, 'edit')}
-            //                isIconOnly
-            //                style={{
-            //                  backgroundColor: theme.colors.secondary,
-            //                }}
-            //              >
-            //                <EditIcon style={{ color: theme.colors.primary }} size={20} />
-            //              </Button>
-            //            </TooltipGlobal>
-            //            )}
-
-            //             {actions.includes("Cambiar Tipo de Cliente") && (
-            //               <>
-            //               {item.esContribuyente === false && (
-            //               <TooltipGlobal text="Cambiar tipo de cliente">
-            //                 <Button
-            //                   onClick={() => {
-            //                     setSelectedTitle('Cambiar el tipo de cliente');
-            //                     handleChangeCustomer(item, 'change');
-            //                   }}
-            //                   isIconOnly
-            //                   style={{
-            //                     backgroundColor: theme.colors.third,
-            //                   }}
-            //                 >
-            //                   <Repeat style={{ color: theme.colors.primary }} size={20} />
-            //                 </Button>
-            //               </TooltipGlobal>
-            //             )}</>
-            //             )}
-            //             <DeletePopover customers={item} />
-            //           </>
-            //         ) : (
-            //         <>
-            //         {actions.includes("Activar Cliente") && (
-            //           <TooltipGlobal text="Activar">
-            //           <Button
-            //             onClick={() => {
-            //               handleActivate(item.id);
-            //             }}
-            //             isIconOnly
-            //             style={{
-            //               backgroundColor: theme.colors.third,
-            //             }}
-            //           >
-            //             <BadgeCheck style={{ color: theme.colors.primary }} size={20} />
-            //           </Button>
-            //         </TooltipGlobal>
-            //         )}
-            //         </>
-            //         )}
-            //       </div>
-            //     )}
-            //   />
-            // </DataTable>
           )}
           {customer_pagination.totalPag > 1 && (
             <>
@@ -677,6 +612,7 @@ const ListClients = ({ actions }: Props) => {
                       limit,
                       search,
                       email,
+                      branch,
                       active ? 1 : 0,
                       tipeCustomer
                     );
@@ -693,6 +629,7 @@ const ListClients = ({ actions }: Props) => {
                       limit,
                       search,
                       email,
+                      branch,
                       active ? 1 : 0,
                       tipeCustomer
                     );
@@ -704,6 +641,7 @@ const ListClients = ({ actions }: Props) => {
                       limit,
                       search,
                       email,
+                      branch,
                       active ? 1 : 0,
                       tipeCustomer
                     );

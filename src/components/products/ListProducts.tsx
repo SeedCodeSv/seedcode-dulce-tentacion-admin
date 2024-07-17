@@ -566,7 +566,7 @@ function ListProducts({ actions }: Props) {
                                 </td>
                                 <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                                   <div className="flex w-full gap-5">
-                                    {actions.includes("Editar") && (
+                                    {actions.includes("Editar") &&  (
                                       <TooltipGlobal text="Editar">
                                         <Button
                                           onClick={() => {
@@ -622,7 +622,7 @@ function ListProducts({ actions }: Props) {
                                   alt="X"
                                   className="w-32 h-32"
                                 />
-                                <p className="mt-3 text-xl">
+                                <p className="mt-3 text-xl dark:text-white">
                                 No se encontraron resultados
                               </p>
                               </div>
