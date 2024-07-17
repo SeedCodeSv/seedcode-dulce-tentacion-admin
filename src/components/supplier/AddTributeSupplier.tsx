@@ -287,6 +287,7 @@ function AddTributeSupplier(props: Props) {
                     className="dark:text-white"
                     // selectedKey={selectedKeyCodActivity}
                     defaultSelectedKey={values.descActividad}
+                    defaultInputValue={values.descActividad}
                     value={selectedKeyCodActivity}
                     onInputChange={(e) => handleFilter(e)}
                   >
@@ -334,6 +335,7 @@ function AddTributeSupplier(props: Props) {
                     // selectedKey={selectedKeyDepartment}
                     defaultSelectedKey={selectedKeyDepartment}
                     value={selectedKeyDepartment}
+                    defaultInputValue={values.nombreDepartamento}
                   >
                     {cat_012_departamento.map((dep) => (
                       <AutocompleteItem
@@ -374,6 +376,7 @@ function AddTributeSupplier(props: Props) {
                     }}
                     className="dark:text-white"
                     // selectedKey={selectedKeyCity}
+                    defaultInputValue={props.supplier_direction?.nombreMunicipio}
                     defaultSelectedKey={props.supplier_direction?.nombreMunicipio}
                     value={selectedKeyCity}
                   >

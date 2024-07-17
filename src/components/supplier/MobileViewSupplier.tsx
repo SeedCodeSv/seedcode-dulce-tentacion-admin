@@ -3,7 +3,6 @@ import { DataView } from 'primereact/dataview';
 import { classNames } from 'primereact/utils';
 import {
   User as IUser,
-  Trash,
   Phone,
   Mail,
   Users2Icon,
@@ -14,6 +13,8 @@ import {
 import { global_styles } from '../../styles/global.styles';
 import { GridProps, MobileViewProps } from './types/movile-view.types';
 import { useSupplierStore } from '../../store/supplier.store';
+import TooltipGlobal from '../global/TooltipGlobal';
+import { DeletePopover } from './ListSuppliers';
 
 function MobileViewSupplier({
   layout,
@@ -31,7 +32,7 @@ function MobileViewSupplier({
         pt={{
           grid: () => ({
             className:
-              'grid dark:bg-slate-800 pb-10 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5 mt-5',
+              "w-full grid dark:bg-transparent pb-10 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5 mt-5",
           }),
         }}
         color="surface"
@@ -56,28 +57,28 @@ const GridItem = (props: GridProps) => {
       {layout === 'grid' ? (
         <div
           className={classNames(
-            'w-full shadow-sm dark:border border-gray-600 hover:shadow-lg p-8 rounded-2xl'
+            "w-full shadow dark:border border-gray-600 hover:shadow-lg p-8 rounded-2xl"
           )}
           key={supplier.id}
         >
           <div className="flex w-full gap-2">
             <IUser className="dark:text-gray-400 text-[#274c77]" size={35} />
-            {supplier.nombre}
+            <p className="w-full dark:text-white"> {supplier.nombre}</p>
           </div>
           <div className="flex w-full gap-2 mt-3">
             <Phone className="dark:text-gray-400 text-[#274c77]" size={33} />
-            {supplier.telefono}
+            <p className="w-full dark:text-white">{supplier.telefono}</p> 
           </div>
           <div className="flex w-full gap-2 mt-3">
             <MapPin className="dark:text-gray-400 text-[#274c77]" size={33} />
-            {supplier.direccion.nombreDepartamento} ,{supplier.direccion.municipio} ,
-            {supplier.direccion.complemento}
+            <p className="w-full dark:text-white"> {supplier.direccion.nombreDepartamento} ,{supplier.direccion.municipio} ,{supplier.direccion.complemento}</p>
           </div>
           <div className="flex w-full gap-2 mt-3">
             <Users2Icon className="dark:text-gray-400 text-[#274c77]" size={35} />
-            {supplier.esContribuyente ? 'Si' : 'No'}
+            <p className="w-full dark:text-white">{supplier.esContribuyente ? "Contribuyente" : "No Contribuyente"}</p>
           </div>
           <div className="flex justify-between mt-5 w-ful">
+          <TooltipGlobal text="Editar">
             <Button
               onClick={() => handleChangeSupplier(supplier, 'edit')}
               isIconOnly
@@ -85,16 +86,18 @@ const GridItem = (props: GridProps) => {
             >
               <EditIcon size={20} />
             </Button>
+            </TooltipGlobal>
+            {supplier.esContribuyente === false && (
+              <TooltipGlobal text="Cambiar tipo de proveedor">
             <Button
               onClick={() => handleChangeSupplier(supplier, 'change')}
               isIconOnly
               style={global_styles().thirdStyle}
             >
               <Repeat size={20} />
-            </Button>
-            <Button isIconOnly style={global_styles().dangerStyles}>
-              <Trash size={20} />
-            </Button>
+            </Button></TooltipGlobal>
+            )}
+            {DeletePopover({ supplier: supplier })}
 
             {/* {supplier.isActive === false && (
               <Button
@@ -125,26 +128,27 @@ const ListItem = (props: GridProps) => {
   const { supplier, handleChangeSupplier } = props;
   return (
     <>
-      <div className="flex w-full col-span-1 p-5 border-b shadow md:col-span-2 lg:col-span-3 xl:col-span-4">
+      <div className="flex w-full col-span-1 p-5 border shadow rounded-2xl ">
         <div className="w-full">
           <div className="flex items-center w-full gap-2">
             <IUser className="dark:text-gray-400 text-[#274c77]" size={35} />
-            {supplier.nombre}
+            <p className="w-full dark:text-white"> {supplier.nombre}</p>
           </div>
           <div className="flex items-center w-full gap-2 mt-3">
             <Phone className="dark:text-gray-400 text-[#274c77]" size={35} />
-            {supplier.telefono}
+            <p className="w-full dark:text-white">{supplier.telefono}</p>
           </div>
           <div className="flex items-center w-full gap-2 mt-3">
             <Mail className="dark:text-gray-400 text-[#274c77]" size={35} />
-            {supplier.correo}
+            <p className="w-full dark:text-white">{supplier.correo}</p>
           </div>
           <div className="flex items-center w-full gap-2 mt-3">
             <Users2Icon className="dark:text-gray-400 text-[#274c77]" size={35} />
-            {supplier.esContribuyente ? 'Si' : 'No'}
+            <p className="w-full dark:text-white">{supplier.esContribuyente ? "Contribuyente" : "No Contribuyente"}</p>
           </div>
         </div>
         <div className="flex flex-col items-end justify-between w-full">
+        <TooltipGlobal text="Editar">
           <Button
             onClick={() => handleChangeSupplier(supplier, 'edit')}
             isIconOnly
@@ -152,16 +156,18 @@ const ListItem = (props: GridProps) => {
           >
             <EditIcon size={20} />
           </Button>
+          </TooltipGlobal>
+          {supplier.esContribuyente === false && (
+            <TooltipGlobal text="Cambiar tipo de proveedor">
           <Button
             onClick={() => handleChangeSupplier(supplier, 'change')}
             isIconOnly
             style={global_styles().thirdStyle}
           >
             <Repeat size={20} />
-          </Button>
-          <Button isIconOnly style={global_styles().dangerStyles}>
-            <Trash size={20} />
-          </Button>
+          </Button></TooltipGlobal>
+           )}
+          {DeletePopover({ supplier: supplier })}
           {/* {supplier.isActive === false && (
             <Button
               onClick={() => {
