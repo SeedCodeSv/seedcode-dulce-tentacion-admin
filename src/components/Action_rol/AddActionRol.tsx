@@ -11,11 +11,10 @@ import { useActionsRolStore } from '@/store/actions_rol.store';
 import Layout from '@/layout/Layout';
 import { ThemeContext } from '@/hooks/useTheme';
 import { useAuthStore } from '@/store/auth.store';
-import permission from '../../actions.json';
 type Permission = 'Mostrar' | 'Agregar' | 'Editar' | 'Eliminar' | 'Cambiar Contraseña';
 
 const PermissionTable: React.FC = () => {
-  const permissions: Permission[] = permission.view_actions.map((va) => va.actions as Permission[]).flat();
+  const permissions: Permission[] = ['Mostrar', 'Agregar', 'Editar', 'Eliminar'];
   const { OnGetViewasAction, viewasAction } = useViewsStore();
   const [selectedActions, setSelectedActions] = useState<{ [viewId: number]: string[] }>({});
   const [defaultActions, setDefaultActions] = useState<{ [viewId: number]: string[] }>({});
