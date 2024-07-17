@@ -45,8 +45,11 @@ import HeadlessModal from '../global/HeadlessModal';
 import TooltipGlobal from '../global/TooltipGlobal';
 import BottomDrawer from '../global/BottomDrawer';
 import useWindowSize from '@/hooks/useWindowSize';
+interface Props {
+  actions: string[];
+}
 
-const ListClients = () => {
+const ListClients = ({ actions }: Props) => {
   const { theme } = useContext(ThemeContext);
   const { getCustomersPagination, customer_pagination, save_active_customer } = useCustomerStore();
   const [limit, setLimit] = useState(5);
@@ -205,7 +208,7 @@ const ListClients = () => {
             </div>
           </div>
           <div className="flex flex-col sm:flex-row items-end justify-between mt-3">
-          <div className="flex-col gap-2 hidden sm:flex sm:flex-row lg:justify-start items-center w-full">
+            <div className="flex-col gap-2 hidden sm:flex sm:flex-row lg:justify-start items-center w-full">
               <Select
                 className="w-44 ml-2"
                 variant="bordered"
@@ -264,94 +267,96 @@ const ListClients = () => {
                 </SelectItem>
               </Select>
             </div>
-          <BottomAdd setTypeClient={setTypeClient} openModal={modalAdd.onOpen} />
-          <div className="flex items-center gap-5">
+          {actions.includes("Agregar") && (
+              <BottomAdd setTypeClient={setTypeClient} openModal={modalAdd.onOpen} />
+          )}
+            <div className="flex items-center gap-5">
               <div className="block md:hidden">
-                   <TooltipGlobal text="Buscar por filtros" color="primary">
-                    <Button
-                      style={global_styles().thirdStyle}
-                      isIconOnly
-                      onClick={() => setOpenVaul(true)}
-                      type="button"
-                    >
-                      <Filter />
-                    </Button>
-                  </TooltipGlobal>
-                  <BottomDrawer
-                    title="Filtros disponibles"
-                    open={openVaul}
-                    onClose={() => setOpenVaul(false)}
+                <TooltipGlobal text="Buscar por filtros" color="primary">
+                  <Button
+                    style={global_styles().thirdStyle}
+                    isIconOnly
+                    onClick={() => setOpenVaul(true)}
+                    type="button"
                   >
-                        <div className="flex flex-col gap-3">
-                          <Input
-                            startContent={<User />}
-                            className="w-full dark:text-white"
-                            variant="bordered"
-                            labelPlacement="outside"
-                            label="Nombre"
-                            classNames={{
-                              label: 'font-semibold text-gray-700',
-                              inputWrapper: 'pr-0',
-                            }}
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            placeholder="Escribe para buscar..."
-                            isClearable
-                            onClear={() => {
-                              // handleSearch("");
-                              setSearch('');
-                            }}
-                          />
-                          <Input
-                            startContent={<Mail />}
-                            className="w-full dark:text-white"
-                            variant="bordered"
-                            labelPlacement="outside"
-                            label="Correo"
-                            classNames={{
-                              label: 'font-semibold text-gray-700',
-                              inputWrapper: 'pr-0',
-                            }}
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            placeholder="Escribe para buscar..."
-                            isClearable
-                            onClear={() => {
-                              // handleSearch("");
-                              setEmail('');
-                            }}
-                          />
+                    <Filter />
+                  </Button>
+                </TooltipGlobal>
+                <BottomDrawer
+                  title="Filtros disponibles"
+                  open={openVaul}
+                  onClose={() => setOpenVaul(false)}
+                >
+                  <div className="flex flex-col gap-3">
+                    <Input
+                      startContent={<User />}
+                      className="w-full dark:text-white"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      label="Nombre"
+                      classNames={{
+                        label: 'font-semibold text-gray-700',
+                        inputWrapper: 'pr-0',
+                      }}
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                      placeholder="Escribe para buscar..."
+                      isClearable
+                      onClear={() => {
+                        // handleSearch("");
+                        setSearch('');
+                      }}
+                    />
+                    <Input
+                      startContent={<Mail />}
+                      className="w-full dark:text-white"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      label="Correo"
+                      classNames={{
+                        label: 'font-semibold text-gray-700',
+                        inputWrapper: 'pr-0',
+                      }}
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="Escribe para buscar..."
+                      isClearable
+                      onClear={() => {
+                        // handleSearch("");
+                        setEmail('');
+                      }}
+                    />
 
-                          <Button
-                            style={{
-                              backgroundColor: theme.colors.secondary,
-                              color: theme.colors.primary,
-                            }}
-                            className="font-semibold"
-                            color="primary"
-                            onClick={() => {
-                              handleSearch(undefined);
-                              setOpenVaul(false);
-                            }}
-                          >
-                            Buscar
-                          </Button>
-                        </div>
-                 </BottomDrawer>
+                    <Button
+                      style={{
+                        backgroundColor: theme.colors.secondary,
+                        color: theme.colors.primary,
+                      }}
+                      className="font-semibold"
+                      color="primary"
+                      onClick={() => {
+                        handleSearch(undefined);
+                        setOpenVaul(false);
+                      }}
+                    >
+                      Buscar
+                    </Button>
+                  </div>
+                </BottomDrawer>
               </div>
               <BottomSm setTypeClient={setTypeClient} openModal={modalAdd.onOpen} />
-              </div>
+            </div>
           </div>
           <div className="flex justify-between mt-4">
             <div className='w-full flex justify-start'>
-          <Switch onValueChange={(active) => setActive(active)} isSelected={active}  classNames={{
-                  thumb: classNames(active ? 'bg-blue-500' : 'bg-gray-400'),
-                  wrapper: classNames(active ? '!bg-blue-300' : 'bg-gray-200'),
-                }}>
-              <span className="text-sm sm:text-base whitespace-nowrap">
-                Mostrar {active ? 'inactivos' : 'activos'}
-              </span>
-            </Switch>
+              <Switch onValueChange={(active) => setActive(active)} isSelected={active} classNames={{
+                thumb: classNames(active ? 'bg-blue-500' : 'bg-gray-400'),
+                wrapper: classNames(active ? '!bg-blue-300' : 'bg-gray-200'),
+              }}>
+                <span className="text-sm sm:text-base whitespace-nowrap">
+                  Mostrar {active ? 'inactivos' : 'activos'}
+                </span>
+              </Switch>
             </div>
             <ButtonGroup>
               <Button
@@ -388,9 +393,9 @@ const ListClients = () => {
                 <List />
               </Button>
             </ButtonGroup>
-            
+
           </div>
-          <div className="mt-5">           
+          <div className="mt-5">
             <div className="xl:hidden">
               <Select
                 className="w-full mt-2"
@@ -417,6 +422,7 @@ const ListClients = () => {
           <div className="flex items-center justify-center ml-2"></div>
           {(view === 'grid' || view === 'list') && (
             <MobileView
+            actions={actions}
               handleActive={handleActivate}
               handleChangeCustomer={(customer, type) => {
                 handleChangeCustomer(customer, type);
@@ -425,7 +431,7 @@ const ListClients = () => {
               layout={view as 'grid' | 'list'}
             />
           )}
-         <div className="flex justify-end w-full py-3 md:py-0 bg-first-300"></div>
+          <div className="flex justify-end w-full py-3 md:py-0 bg-first-300"></div>
           {view === 'table' && (
             <DataTable
               className="shadow dark:text-white"
@@ -474,39 +480,47 @@ const ListClients = () => {
                 header="Acciones"
                 body={(item) => (
                   <div className="flex w-full gap-5">
-                    {item.isActive ? ( 
+                    {item.isActive ? (
                       <>
-                     <TooltipGlobal text="Editar">
-                    <Button
-                      onClick={() => handleChangeCustomer(item, 'edit')}
-                      isIconOnly
-                      style={{
-                        backgroundColor: theme.colors.secondary,
-                      }}
-                    >
-                      <EditIcon style={{ color: theme.colors.primary }} size={20} />
-                    </Button>
-                    </TooltipGlobal>
+                       {actions.includes("Editar") && (
+                         <TooltipGlobal text="Editar">
+                         <Button
+                           onClick={() => handleChangeCustomer(item, 'edit')}
+                           isIconOnly
+                           style={{
+                             backgroundColor: theme.colors.secondary,
+                           }}
+                         >
+                           <EditIcon style={{ color: theme.colors.primary }} size={20} />
+                         </Button>
+                       </TooltipGlobal>
+                       )}
 
-                    {item.esContribuyente === false && (
-                    <TooltipGlobal text="Cambiar tipo de cliente">
-                    <Button
-                      onClick={() => {
-                        setSelectedTitle('Cambiar el tipo de cliente');
-                        handleChangeCustomer(item, 'change');
-                      }}
-                      isIconOnly
-                      style={{
-                        backgroundColor: theme.colors.third,
-                      }}
-                    >
-                      <Repeat style={{ color: theme.colors.primary }} size={20} />
-                    </Button>
-                    </TooltipGlobal>
-                    )}
-                     <DeletePopover customers={item} />
-                    </>
-                  ): (<TooltipGlobal text="Activar">
+                        {actions.includes("Cambiar Tipo de Cliente") && (
+                          <>
+                          {item.esContribuyente === false && (
+                          <TooltipGlobal text="Cambiar tipo de cliente">
+                            <Button
+                              onClick={() => {
+                                setSelectedTitle('Cambiar el tipo de cliente');
+                                handleChangeCustomer(item, 'change');
+                              }}
+                              isIconOnly
+                              style={{
+                                backgroundColor: theme.colors.third,
+                              }}
+                            >
+                              <Repeat style={{ color: theme.colors.primary }} size={20} />
+                            </Button>
+                          </TooltipGlobal>
+                        )}</>
+                        )}
+                        <DeletePopover customers={item} />
+                      </>
+                    ) : (
+                    <>
+                    {actions.includes("Activar Cliente") && (
+                      <TooltipGlobal text="Activar">
                       <Button
                         onClick={() => {
                           handleActivate(item.id);
@@ -518,7 +532,10 @@ const ListClients = () => {
                       >
                         <BadgeCheck style={{ color: theme.colors.primary }} size={20} />
                       </Button>
-                      </TooltipGlobal>)}
+                    </TooltipGlobal>
+                    )}
+                    </>
+                    )}
                   </div>
                 )}
               />
@@ -639,7 +656,7 @@ export const DeletePopover = ({ customers }: PopProps) => {
   return (
     <Popover isOpen={isOpen} onClose={onClose} backdrop="blur" showArrow>
       <PopoverTrigger>
-      
+
         <Button
           onClick={onOpen}
           isIconOnly
@@ -648,20 +665,20 @@ export const DeletePopover = ({ customers }: PopProps) => {
           }}
         >
           <TooltipGlobal text="Eliminar">
-          <TrashIcon
-            style={{
-              color: theme.colors.primary,
-            }}
-            size={20}
-          /> 
+            <TrashIcon
+              style={{
+                color: theme.colors.primary,
+              }}
+              size={20}
+            />
           </TooltipGlobal>
         </Button>
-       
+
       </PopoverTrigger>
       <PopoverContent>
-      <div className="flex flex-col items-center justify-center w-full p-5">
-      <p className="font-semibold text-gray-600 dark:text-white">Eliminar {customers.nombre}</p>
-      <p className="mt-3 text-center text-gray-600 dark:text-white w-72">
+        <div className="flex flex-col items-center justify-center w-full p-5">
+          <p className="font-semibold text-gray-600 dark:text-white">Eliminar {customers.nombre}</p>
+          <p className="mt-3 text-center text-gray-600 dark:text-white w-72">
             ¿Estas seguro de eliminar este registro?
           </p>
           <div className="mt-4">
@@ -757,7 +774,7 @@ export const BottomAdd = ({ setTypeClient, openModal }: PopoverAddProps) => {
             backgroundColor: theme.colors.third,
             color: theme.colors.primary,
           }}
-          endContent={<PlusIcon size={35}/>}
+          endContent={<PlusIcon size={35} />}
           onClick={() => (isOpen ? onClose() : onOpen())}
         >
           Agregar nuevo

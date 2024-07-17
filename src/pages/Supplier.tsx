@@ -8,7 +8,7 @@ function Supplier() {
   const { OnGetViewasAction, viewasAction } = useViewsStore();
    
   const supplierView = viewasAction.find((view) => view.view.name === 'Proveedores');
-  // const actions = supplierView?.actions?.name || [];
+  //const actions = supplierView?.actions?.name || [];
     useEffect(() => {
       OnGetViewasAction();
     }, []);

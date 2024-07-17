@@ -6,7 +6,6 @@ import {
   ShieldHalf,
   Grid2X2Icon,
   ChevronDown,
-  FolderOpen,
   Book,
   FileText,
   TicketPercent,
@@ -64,17 +63,10 @@ export const LayoutItems = () => {
     }
   }, [windowSize.width]);
   const [isContabilityOpen, setIsContabilityOpen] = useState(false);
-  // const [isMenuOpen2, setIsMenuOpen2] = useState(false);
-  // Administración
-
-  //Gestion de planillas
-  // const toggleDropdownMenu2 = () => {
-  //   setIsMenuOpen2(!isMenuOpen2);
-  //   setIsContabilityOpen(false);
-  // };
+ 
   const toggleDropdowContabilidad = () => {
     setIsContabilityOpen(!isContabilityOpen);
-    // setIsMenuOpen2(false);
+   
   };
 
   const location = useLocation();
@@ -756,28 +748,7 @@ export const LayoutItems = () => {
           </NavLink>
         )}
 
-        {views && views.includes('Modulos') && (
-          <NavLink
-            to={'/modules'}
-            className={({ isActive }) => {
-              return (
-                (isActive
-                  ? 'text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green'
-                  : 'text-coffee-brown font-semibold border-white') +
-                ' flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
-              );
-            }}
-            style={({ isActive }) => {
-              return {
-                borderLeftColor: isActive ? theme.colors.dark : 'transparent',
-                borderLeftWidth: 5,
-              };
-            }}
-          >
-            <FolderOpen size={iconSize} />
-            <p className="ml-2 text-sm 2xl:text-base">Modulos</p>
-          </NavLink>
-        )}
+       
       </>
 
       <div

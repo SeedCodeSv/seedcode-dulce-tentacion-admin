@@ -1,6 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
 import Home from "../pages/Home";
-// import Tables from '../pages/Tables';
 import ProductsCategories from "../pages/ProductsCategories";
 import Users from "../pages/Users";
 import Employees from "../pages/Employees";
@@ -17,7 +16,7 @@ import NewSales from "../pages/NewSales";
 import Configuration from "../pages/Configuration";
 import SalesReportContigencePage from "../pages/SalesReportContigencePage";
 import { useActionsRolStore } from "../store/actions_rol.store";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Views from "../pages/Views";
 import { useAuthStore } from "../store/auth.store";
 import HomeSeller from "../pages/Seller/HomeSeller";
@@ -31,27 +30,44 @@ import Discount from "../pages/Promotions";
 import AddPromotions from "../components/discounts/AddPromotions";
 import StatusEmployee from "../pages/statusEmployee";
 import ContratType from "../pages/ContratType";
-
 import AddEmployee from "../components/employee/AddEmployee";
 import VentasPorPeriodo from "../pages/reports/VentasPorPeriodo";
 import StudyLevel from "@/pages/StudyLevel";
 import AddActionRol from "@/components/Action_rol/AddActionRol";
 import AddProduct from "@/pages/AddProduct";
 import VentasPorProducto from "@/pages/reports/VentasPorProducto";
+import NoAuthorization from "../pages/NoAuthorization";
+import { JSX } from "react/jsx-runtime";
+
+const Loading = () => {
+  return <div>Cargando...</div>;
+};
+
 /* eslint-disable react-hooks/rules-of-hooks */
 export const router = () => {
   const { role_view_action, OnGetActionsByRole } = useActionsRolStore();
   const { user } = useAuthStore();
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     if (user) {
-      OnGetActionsByRole(user.roleId);
+      OnGetActionsByRole(user.roleId).then(() => setLoading(false));
     }
   }, [user]);
+
   /* eslint-enable react-hooks/rules-of-hooks */
   const views =
     role_view_action &&
     role_view_action.view &&
     role_view_action.view.map((view) => view.name);
+
+  const checkAuthorization = (viewName: string, Component: JSX.Element) => {
+    if (loading) {
+      return <Loading />;
+    }
+    return views && views.includes(viewName) ? Component : <NoAuthorization />;
+  };
+
   return createBrowserRouter([
     {
       path: "/",
@@ -63,148 +79,127 @@ export const router = () => {
     },
     {
       path: "/actionRol",
-      element:  <ActionRol />,
+      element: <ActionRol />,
     },
     {
       path: "/homeSeller",
-      element: views && views.includes("Inicio de ventas") && <HomeSeller />,
+      element: checkAuthorization("Inicio de ventas", <HomeSeller />),
     },
-
     {
       path: "/categories",
-      element: views && views.includes("Categorias") && <ProductsCategories />,
+      element: checkAuthorization("Categorias", <ProductsCategories />),
     },
     {
       path: "/subCategories",
-      element: views && views.includes("Sub Categorias") && <SubCategories />,
+      element: checkAuthorization("Sub Categorias", <SubCategories />),
     },
     {
       path: "/users",
-      element: views && views.includes("Usuarios") && <Users />,
+      element: checkAuthorization("Usuarios", <Users />),
     },
     {
       path: "/employees",
-      element: views && views.includes("Empleados") && <Employees />,
+      element: checkAuthorization("Empleados", <Employees />),
     },
     {
       path: "/charges",
-      element: views && views.includes("Cargos de Empleados") && <Charges />,
+      element: checkAuthorization("Cargos de Empleados", <Charges />),
     },
     {
       path: "/clients",
-      element: views && views.includes("Clientes") && <Customers />,
+      element: checkAuthorization("Clientes", <Customers />),
     },
     {
       path: "/branches",
-      element: views && views.includes("Sucursales") && <Branch />,
+      element: checkAuthorization("Sucursales", <Branch />),
     },
     {
       path: "/products",
-      element: views && views.includes("Productos") && <Product />,
+      element: checkAuthorization("Productos", <Product />),
     },
     {
       path: "/add-product",
-      element: views && views.includes("Productos") && <AddProduct />,
+      element: checkAuthorization("Productos", <AddProduct />),
     },
     {
       path: "/expensesCategories",
-      element: views && views.includes("Categoria de Gastos") && (
-        <ExpensesCategories />
-      ),
+      element: checkAuthorization("Categorias de Gastos", <ExpensesCategories />),
     },
     {
       path: "/expenses",
-      element: views && views.includes("Gastos") && <Expenses />,
+      element: checkAuthorization("Gastos", <Expenses />),
     },
-
     {
       path: "/modules",
-      element: views && views.includes("Modulos") && <Views />,
+      element: checkAuthorization("Modulos", <Views />),
     },
     {
       path: "/newSales",
-      element: views && views.includes("Ventas") && <NewSales />,
+      element: checkAuthorization("Ventas", <NewSales />),
     },
     {
       path: "/most-product-transmitter-selled",
-      element: views && views.includes("Reportes") && (
-        <MostProductTransmitterSelledPage />
-      ),
+      element: checkAuthorization("Reportes", <MostProductTransmitterSelledPage />),
     },
     {
       path: "/expenses-by-dates-transmitter",
-      element: views && views.includes("Reportes") && (
-        <ExpenseByDatesTransmitter />
-      ),
+      element: checkAuthorization("Reportes", <ExpenseByDatesTransmitter />),
     },
     {
       path: "/sales-by-branch",
-      element: views && views.includes("Reportes") && (
-        <ReportByBranchSalesByBranch />
-      ),
+      element: checkAuthorization("Reportes", <ReportByBranchSalesByBranch />),
     },
     {
       path: "/expenses-by-branch",
-      element: views && views.includes("Reportes") && (
-        <ReportExpensesByBranchPage />
-      ),
+      element: checkAuthorization("Reportes", <ReportExpensesByBranchPage />),
     },
-
     {
-      path: "sales-reports",
-      element: views && views.includes("Reporte de ventas") && (
-        <SalesReportContigencePage />
-      ),
+      path: "/sales-reports",
+      element: checkAuthorization("Reporte de ventas", <SalesReportContigencePage />),
     },
     {
       path: "/suppliers",
-      element: views && views.includes("Proveedores") && <Supplier />,
+      element: checkAuthorization("Proveedores", <Supplier />),
     },
     {
       path: "/purchase-orders",
-      element: views && views.includes("Ordenes de Compra") && (
-        <PurchaseOrders />
-      ),
+      element: checkAuthorization("Ordenes de Compra", <PurchaseOrders />),
     },
     {
       path: "/discounts",
-      element: views && views.includes("Descuentos") && <Discount />,
+      element: checkAuthorization("Descuentos", <Discount />),
     },
     {
       path: "/statusEmployee",
-      element: views && views.includes("Estados del Empleado") && (
-        <StatusEmployee />
-      ),
+      element: checkAuthorization("Estados del Empleado", <StatusEmployee />),
     },
     {
       path: "/contractTypes",
-      element: views && views.includes("Tipo de Contratacion") && (
-        <ContratType />
-      ),
+      element: checkAuthorization("Tipo de Contratacion", <ContratType />),
     },
     {
       path: "/studyLevel",
-      element: views && views.includes("Nivel de Estudio") && <StudyLevel />,
+      element: checkAuthorization("Nivel de Estudio", <StudyLevel />),
     },
     {
       path: "/AddPromotions",
-      element: views && views.includes("Descuentos") && <AddPromotions />,
+      element: checkAuthorization("Descuentos", <AddPromotions />),
     },
     {
       path: "/AddEmployee",
-      element: views && views.includes("Empleados") && <AddEmployee />,
+      element: checkAuthorization("Empleados", <AddEmployee />),
     },
     {
-      path: '/AddActionRol',
-      element:   <AddActionRol />,
+      path: "/AddActionRol",
+      element: <AddActionRol />,
     },
     {
-      path: '/reports/sales-by-period',
-      element: views && views.includes('Ventas por Periodo') && <VentasPorPeriodo />,
+      path: "/reports/sales-by-period",
+      element: checkAuthorization("Ventas por Periodo", <VentasPorPeriodo />),
     },
     {
       path: "/reports/sales-by-product",
-      element: views && views.includes("Reportes") && <VentasPorProducto />,
+      element: checkAuthorization("Ventas por Productos", <VentasPorProducto />),
     },
     {
       path: "*",

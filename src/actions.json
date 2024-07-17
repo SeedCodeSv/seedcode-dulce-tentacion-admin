@@ -42,14 +42,14 @@
     },
     {
       "view": "Clientes",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Activar Cliente", "Cambiar Tipo de Cliente"]
     },
     {
       "view": "Reportes",
       "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
     },
     {
-      "view": "Categoria de Gastos",
+      "view": "Categorias de Gastos",
       "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
     },
     {
@@ -101,16 +101,9 @@
       "actions": ["Mostrar", "Exportar Excel", "Descargar PDF"]
     },
     {
-      "view": "Prueba de Vistas 1",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
-    },
-    {
-      "view": "Prueba de Vistas 2",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
-    },
-    {
-      "view": "Prueba de Vistas 3",
+      "view": "Ventas por Productos",
       "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
     }
+   
   ]
 }

@@ -1,23 +1,27 @@
 import Layout from '../layout/Layout';
 import ListBranch from '../components/branch/ListBranch';
-import { useContext, useMemo } from 'react';
-import { ActionsContext } from '@/hooks/useActions';
-import { filterActions } from '@/utils/filters';
+import { useEffect, } from 'react';
+
+import { useViewsStore } from '@/store/views.store';
 
 function Branch() {
-   const { roleActions } = useContext(ActionsContext);
-
-   const actions_role_view = useMemo(() => {
-     if (roleActions) {
-       const actions = filterActions('Sucursales', roleActions)?.actions.map((re) => re.name);
-       return actions;
-     }
-     return undefined;
-   }, [roleActions]);
+  const { OnGetViewasAction, viewasAction, loading_views } = useViewsStore()
+  const branchView = viewasAction.find((view) => view.view.name === "Sucursales")
+  const actions = branchView?.actions?.name || []
+  useEffect(() => {
+    OnGetViewasAction();
+  }, []);
   return (
     <Layout title="Sucursales">
-      {actions_role_view ? (
-        <ListBranch actions={actions_role_view}/>
+      {loading_views ? (
+        <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
+          <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent flex justify-center items-center">
+            <p className="text-lg font-semibold dark:text-white">Cargando...</p>
+          </div>
+        </div>
+
+      ) : branchView ? (
+        <ListBranch actions={actions} />
       ) : (
         <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
           <div className="flex items-center justify-center w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
