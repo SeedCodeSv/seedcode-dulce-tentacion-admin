@@ -2,7 +2,15 @@ import { create } from 'zustand';
 import { SubCategoryStore } from './types/sub_category_store';
 import { toast } from 'sonner';
 import { messages } from '../utils/constants';
-import { activate_sub_category, create_sub_category, delete_sub_category, get_sub_categories_list, get_sub_categories_paginated, update_sub_category } from '../services/sub_categories.service';
+import {
+  activate_sub_category,
+  activate_subCategory,
+  create_sub_category,
+  delete_sub_category,
+  get_sub_categories_list,
+  get_sub_categories_paginated,
+  update_sub_category,
+} from '../services/sub_categories.service';
 import { ISubCategoryPayload } from '../types/sub_categories.types';
 
 export const useSubCategoryStore = create<SubCategoryStore>((set, get) => ({
@@ -26,12 +34,13 @@ export const useSubCategoryStore = create<SubCategoryStore>((set, get) => ({
       });
   },
 
-  getSubCategoriesPaginated: (page: number, limit: number, name: string) => {
-  set({ loading_sub_categories: true });
-    get_sub_categories_paginated(page, limit, name)
+  getSubCategoriesPaginated: (page: number, limit: number, name: string, isActive = 1) => {
+    set({ loading_sub_categories: true });
+    get_sub_categories_paginated(page, limit, name, isActive)
       .then(({ data }) =>
         set({
-          sub_categories_paginated: data, loading_sub_categories: false,
+          sub_categories_paginated: data,
+          loading_sub_categories: false,
         })
       )
       .catch(() => {
@@ -73,14 +82,16 @@ export const useSubCategoryStore = create<SubCategoryStore>((set, get) => ({
       });
   },
   deleteSubCategory: (id) => {
-    return delete_sub_category(id).then((res) => {
-      get().getSubCategoriesPaginated(1, 5, '');
-      toast.success(messages.success);
-      return res.data.ok;
-    }).catch(() => {
-      toast.error(messages.error);
-      return false;
-    });
+    return delete_sub_category(id)
+      .then((res) => {
+        get().getSubCategoriesPaginated(1, 5, '');
+        toast.success(messages.success);
+        return res.data.ok;
+      })
+      .catch(() => {
+        toast.error(messages.error);
+        return false;
+      });
   },
   async activateSubCategory(id) {
     try {
@@ -92,5 +103,14 @@ export const useSubCategoryStore = create<SubCategoryStore>((set, get) => ({
       toast.error(messages.error);
       return false;
     }
-  }
+  },
+  activateSubCategories(id) {
+    return activate_subCategory(id)
+      .then(() => {
+        toast.success('Se activo la Sub categoría');
+      })
+      .catch(() => {
+        toast.error('Error al activar la Sub categoría');
+      });
+  },
 }));

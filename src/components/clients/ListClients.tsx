@@ -13,8 +13,6 @@ import {
   Switch,
 } from '@nextui-org/react';
 import { useCustomerStore } from '../../store/customers.store';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
 import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
 import {
   EditIcon,
@@ -28,8 +26,8 @@ import {
   CreditCard,
   Table as ITable,
   Mail,
-  BadgeCheck,
   Filter,
+  RefreshCcw,
 } from 'lucide-react';
 import AddClientNormal from './AddClientNormal';
 import AddClientContributor from './AddClientContributor';
@@ -45,20 +43,22 @@ import HeadlessModal from '../global/HeadlessModal';
 import TooltipGlobal from '../global/TooltipGlobal';
 import BottomDrawer from '../global/BottomDrawer';
 import useWindowSize from '@/hooks/useWindowSize';
+import NO_DATA from '@/assets/svg/no_data.svg';
 interface Props {
   actions: string[];
 }
 
 const ListClients = ({ actions }: Props) => {
   const { theme } = useContext(ThemeContext);
-  const { getCustomersPagination, customer_pagination, save_active_customer } = useCustomerStore();
+  const { getCustomersPagination, customer_pagination, save_active_customer, loading_customer } =
+    useCustomerStore();
   const [limit, setLimit] = useState(5);
   const [search, setSearch] = useState('');
   const [email, setEmail] = useState('');
-  const style = {
-    backgroundColor: theme.colors.dark,
-    color: theme.colors.primary,
-  };
+  // const style = {
+  //   backgroundColor: theme.colors.dark,
+  //   color: theme.colors.primary,
+  // };
   const [typeClient, setTypeClient] = useState('normal');
   const [active, setActive] = useState(true);
   const [tipeCustomer, setTypeCustomer] = useState(1);
@@ -218,7 +218,6 @@ const ListClients = ({ actions }: Props) => {
                 classNames={{
                   label: 'font-semibold',
                 }}
-
                 value={limit}
                 onChange={(e) => {
                   setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
@@ -267,9 +266,9 @@ const ListClients = ({ actions }: Props) => {
                 </SelectItem>
               </Select>
             </div>
-          {actions.includes("Agregar") && (
+            {actions.includes('Agregar') && (
               <BottomAdd setTypeClient={setTypeClient} openModal={modalAdd.onOpen} />
-          )}
+            )}
             <div className="flex items-center gap-5">
               <div className="block md:hidden">
                 <TooltipGlobal text="Buscar por filtros" color="primary">
@@ -348,11 +347,15 @@ const ListClients = ({ actions }: Props) => {
             </div>
           </div>
           <div className="flex justify-between mt-4">
-            <div className='w-full flex justify-start'>
-              <Switch onValueChange={(active) => setActive(active)} isSelected={active} classNames={{
-                thumb: classNames(active ? 'bg-blue-500' : 'bg-gray-400'),
-                wrapper: classNames(active ? '!bg-blue-300' : 'bg-gray-200'),
-              }}>
+            <div className="w-full flex justify-start">
+              <Switch
+                onValueChange={(active) => setActive(active)}
+                isSelected={active}
+                classNames={{
+                  thumb: classNames(active ? 'bg-blue-500' : 'bg-gray-400'),
+                  wrapper: classNames(active ? '!bg-blue-300' : 'bg-gray-200'),
+                }}
+              >
                 <span className="text-sm sm:text-base whitespace-nowrap">
                   Mostrar {active ? 'inactivos' : 'activos'}
                 </span>
@@ -393,7 +396,6 @@ const ListClients = ({ actions }: Props) => {
                 <List />
               </Button>
             </ButtonGroup>
-
           </div>
           <div className="mt-5">
             <div className="xl:hidden">
@@ -422,7 +424,7 @@ const ListClients = ({ actions }: Props) => {
           <div className="flex items-center justify-center ml-2"></div>
           {(view === 'grid' || view === 'list') && (
             <MobileView
-            actions={actions}
+              actions={actions}
               handleActive={handleActivate}
               handleChangeCustomer={(customer, type) => {
                 handleChangeCustomer(customer, type);
@@ -433,113 +435,232 @@ const ListClients = ({ actions }: Props) => {
           )}
           <div className="flex justify-end w-full py-3 md:py-0 bg-first-300"></div>
           {view === 'table' && (
-            <DataTable
-              className="shadow dark:text-white"
-              emptyMessage="No se encontraron resultados"
-              value={customer_pagination.customers}
-              tableStyle={{ minWidth: '50rem' }}
-            >
-              <Column
-                headerClassName="text-sm font-semibold"
-                headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
-                field="id"
-                header="No."
-                className='dark:text-white'
-              />
-              <Column
-                headerClassName="text-sm font-semibold"
-                headerStyle={style}
-                field="nombre"
-                header="Nombre"
-                className='dark:text-white'
-              />
-              <Column
-                headerClassName="text-sm font-semibold"
-                headerStyle={style}
-                field="telefono"
-                header="Teléfono"
-                className='dark:text-white'
-              />
-              <Column
-                headerClassName="text-sm font-semibold"
-                headerStyle={style}
-                field="correo"
-                header="Correo"
-                className='dark:text-white'
-              />
-              <Column
-                headerClassName="text-sm font-semibold"
-                headerStyle={style}
-                // field="esContribuyente"
-                body={(item) => (item.esContribuyente ? 'Si' : 'No')}
-                header="Contribuyente"
-                className='dark:text-white'
-              />
-              <Column
-                headerStyle={{ ...style, borderTopRightRadius: '10px' }}
-                header="Acciones"
-                body={(item) => (
-                  <div className="flex w-full gap-5">
-                    {item.isActive ? (
-                      <>
-                       {actions.includes("Editar") && (
-                         <TooltipGlobal text="Editar">
-                         <Button
-                           onClick={() => handleChangeCustomer(item, 'edit')}
-                           isIconOnly
-                           style={{
-                             backgroundColor: theme.colors.secondary,
-                           }}
-                         >
-                           <EditIcon style={{ color: theme.colors.primary }} size={20} />
-                         </Button>
-                       </TooltipGlobal>
-                       )}
-
-                        {actions.includes("Cambiar Tipo de Cliente") && (
-                          <>
-                          {item.esContribuyente === false && (
-                          <TooltipGlobal text="Cambiar tipo de cliente">
-                            <Button
-                              onClick={() => {
-                                setSelectedTitle('Cambiar el tipo de cliente');
-                                handleChangeCustomer(item, 'change');
-                              }}
-                              isIconOnly
-                              style={{
-                                backgroundColor: theme.colors.third,
-                              }}
-                            >
-                              <Repeat style={{ color: theme.colors.primary }} size={20} />
-                            </Button>
-                          </TooltipGlobal>
-                        )}</>
-                        )}
-                        <DeletePopover customers={item} />
-                      </>
+            <>
+              <div className="max-h-[400px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
+                <table className="w-full">
+                  <thead className="sticky top-0 z-20 bg-white">
+                    <tr>
+                      <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                        No.
+                      </th>
+                      <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                        Nombre
+                      </th>
+                      <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                        Teléfono
+                      </th>
+                      <th className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                        Correo
+                      </th>
+                      <th className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                        Contribuyente
+                      </th>
+                      <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                        Acciones
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="max-h-[600px] w-full overflow-y-auto">
+                    {loading_customer ? (
+                      <tr>
+                        <td colSpan={5} className="p-3 text-sm text-center text-slate-500">
+                          <div className="flex flex-col items-center justify-center w-full h-64">
+                            <div className="loader"></div>
+                            <p className="mt-3 text-xl font-semibold">Cargando...</p>
+                          </div>
+                        </td>
+                      </tr>
                     ) : (
-                    <>
-                    {actions.includes("Activar Cliente") && (
-                      <TooltipGlobal text="Activar">
-                      <Button
-                        onClick={() => {
-                          handleActivate(item.id);
-                        }}
-                        isIconOnly
-                        style={{
-                          backgroundColor: theme.colors.third,
-                        }}
-                      >
-                        <BadgeCheck style={{ color: theme.colors.primary }} size={20} />
-                      </Button>
-                    </TooltipGlobal>
+                      <>
+                        {customer_pagination.customers.length > 0 ? (
+                          <>
+                            {customer_pagination.customers.map((customer) => (
+                              <tr className="border-b border-slate-200">
+                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                  {customer.id}
+                                </td>
+                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
+                                  {customer.nombre}
+                                </td>
+                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                  {customer.telefono}
+                                </td>
+                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                  {customer.correo}
+                                </td>
+                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                  {customer.esContribuyente}
+                                </td>
+
+                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                  <div className="flex w-full gap-5">
+                                    {actions.includes('Editar') && (
+                                      <TooltipGlobal text="Editar">
+                                        <Button
+                                          onClick={() => {
+                                            handleChangeCustomer(customer);
+
+                                            // setIsOpenModalUpdate(true);
+                                          }}
+                                          isIconOnly
+                                          style={{
+                                            backgroundColor: theme.colors.secondary,
+                                          }}
+                                        >
+                                          <EditIcon
+                                            style={{
+                                              color: theme.colors.primary,
+                                            }}
+                                            size={20}
+                                          />
+                                        </Button>
+                                      </TooltipGlobal>
+                                    )}
+                                    {actions.includes('Eliminar') && (
+                                      <>
+                                        {customer.isActive ? (
+                                          <DeletePopover customers={customer} />
+                                        ) : (
+                                          <TooltipGlobal text="Activar">
+                                            <Button
+                                              onClick={() => handleActivate(customer.id)}
+                                              isIconOnly
+                                              style={global_styles().thirdStyle}
+                                            >
+                                              <RefreshCcw />
+                                            </Button>
+                                          </TooltipGlobal>
+                                        )}
+                                      </>
+                                    )}
+                                  </div>
+                                </td>
+                              </tr>
+                            ))}
+                          </>
+                        ) : (
+                          <tr>
+                            <td colSpan={5}>
+                              <div className="flex flex-col items-center justify-center w-full">
+                                <img src={NO_DATA} alt="X" className="w-32 h-32" />
+                                <p className="mt-3 text-xl">No se encontraron resultados</p>
+                              </div>
+                            </td>
+                          </tr>
+                        )}
+                      </>
                     )}
-                    </>
-                    )}
-                  </div>
-                )}
-              />
-            </DataTable>
+                  </tbody>
+                </table>
+              </div>
+            </>
+            // <DataTable
+            //   className="shadow dark:text-white"
+            //   emptyMessage="No se encontraron resultados"
+            //   value={customer_pagination.customers}
+            //   tableStyle={{ minWidth: '50rem' }}
+            // >
+            //   <Column
+            //     headerClassName="text-sm font-semibold"
+            //     headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
+            //     field="id"
+            //     header="No."
+            //     className='dark:text-white'
+            //   />
+            //   <Column
+            //     headerClassName="text-sm font-semibold"
+            //     headerStyle={style}
+            //     field="nombre"
+            //     header="Nombre"
+            //     className='dark:text-white'
+            //   />
+            //   <Column
+            //     headerClassName="text-sm font-semibold"
+            //     headerStyle={style}
+            //     field="telefono"
+            //     header="Teléfono"
+            //     className='dark:text-white'
+            //   />
+            //   <Column
+            //     headerClassName="text-sm font-semibold"
+            //     headerStyle={style}
+            //     field="correo"
+            //     header="Correo"
+            //     className='dark:text-white'
+            //   />
+            //   <Column
+            //     headerClassName="text-sm font-semibold"
+            //     headerStyle={style}
+            //     // field="esContribuyente"
+            //     body={(item) => (item.esContribuyente ? 'Si' : 'No')}
+            //     header="Contribuyente"
+            //     className='dark:text-white'
+            //   />
+            //   <Column
+            //     headerStyle={{ ...style, borderTopRightRadius: '10px' }}
+            //     header="Acciones"
+            //     body={(item) => (
+            //       <div className="flex w-full gap-5">
+            //         {item.isActive ? (
+            //           <>
+            //            {actions.includes("Editar") && (
+            //              <TooltipGlobal text="Editar">
+            //              <Button
+            //                onClick={() => handleChangeCustomer(item, 'edit')}
+            //                isIconOnly
+            //                style={{
+            //                  backgroundColor: theme.colors.secondary,
+            //                }}
+            //              >
+            //                <EditIcon style={{ color: theme.colors.primary }} size={20} />
+            //              </Button>
+            //            </TooltipGlobal>
+            //            )}
+
+            //             {actions.includes("Cambiar Tipo de Cliente") && (
+            //               <>
+            //               {item.esContribuyente === false && (
+            //               <TooltipGlobal text="Cambiar tipo de cliente">
+            //                 <Button
+            //                   onClick={() => {
+            //                     setSelectedTitle('Cambiar el tipo de cliente');
+            //                     handleChangeCustomer(item, 'change');
+            //                   }}
+            //                   isIconOnly
+            //                   style={{
+            //                     backgroundColor: theme.colors.third,
+            //                   }}
+            //                 >
+            //                   <Repeat style={{ color: theme.colors.primary }} size={20} />
+            //                 </Button>
+            //               </TooltipGlobal>
+            //             )}</>
+            //             )}
+            //             <DeletePopover customers={item} />
+            //           </>
+            //         ) : (
+            //         <>
+            //         {actions.includes("Activar Cliente") && (
+            //           <TooltipGlobal text="Activar">
+            //           <Button
+            //             onClick={() => {
+            //               handleActivate(item.id);
+            //             }}
+            //             isIconOnly
+            //             style={{
+            //               backgroundColor: theme.colors.third,
+            //             }}
+            //           >
+            //             <BadgeCheck style={{ color: theme.colors.primary }} size={20} />
+            //           </Button>
+            //         </TooltipGlobal>
+            //         )}
+            //         </>
+            //         )}
+            //       </div>
+            //     )}
+            //   />
+            // </DataTable>
           )}
           {customer_pagination.totalPag > 1 && (
             <>
@@ -656,7 +777,6 @@ export const DeletePopover = ({ customers }: PopProps) => {
   return (
     <Popover isOpen={isOpen} onClose={onClose} backdrop="blur" showArrow>
       <PopoverTrigger>
-
         <Button
           onClick={onOpen}
           isIconOnly
@@ -673,7 +793,6 @@ export const DeletePopover = ({ customers }: PopProps) => {
             />
           </TooltipGlobal>
         </Button>
-
       </PopoverTrigger>
       <PopoverContent>
         <div className="flex flex-col items-center justify-center w-full p-5">
