@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { API_URL } from '../utils/constants';
 import { get_token } from '../storage/localStorage';
-import { IActionPayload, ICraeteView, ICreateRoleActionPayload, IGetActionRol } from '../types/actions.types';
+import { IActionPayload, ICraeteView, ICreateRoleActionPayload, IGetActionRol, Root } from '../types/actions.types';
 
 export const save_action = (action: IActionPayload) => {
   const token = get_token() ?? '';
@@ -29,7 +29,7 @@ export const create_role_action = (action: ICreateRoleActionPayload) => {
 };
 
 export const  create_view = (views: ICraeteView) => {
-  return axios.post<IGetActionRol>(API_URL + `/view`, {
+  return axios.post<Root>(API_URL + `/view`, {
     ...views,
     type: 'Drawer',
   });

@@ -37,3 +37,16 @@ export interface ICraeteView {
   name : string 
   type : string
 }
+
+export interface Root {
+  ok: boolean;
+  view: View;
+  status: number;
+}
+
+export interface View {
+  name: string;
+  type: string;
+  id: number;
+  isActive: boolean;
+}

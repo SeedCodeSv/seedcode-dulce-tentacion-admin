@@ -8,6 +8,7 @@ import AddButton from '../global/AddButton';
 import { Button } from '@nextui-org/react';
 import { ThemeContext } from '@/hooks/useTheme';
 import permissionss from '../../actions.json';
+
 const PermissionTable: React.FC = () => {
   const { OnGetViewasAction, viewasAction } = useViewsStore();
   const [selectedActions, setSelectedActions] = useState<{ [viewId: number]: string[] }>({});
@@ -15,6 +16,7 @@ const PermissionTable: React.FC = () => {
   const [selectedViewId, setSelectedViewId] = useState<number | null>(null);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [selectedViewName, setSelectedViewName] = useState('');
+  const [newViewActions, setNewViewActions] = useState<string[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -34,38 +36,44 @@ const PermissionTable: React.FC = () => {
     }
   }, [viewasAction]);
 
-  const handleSelectAction = (viewId: number, action: string) => {
-    if (defaultActions[viewId]?.includes(action)) {
-      return;
-    }
-    setSelectedActions((prev) => {
-      const actions = prev[viewId] || [];
-      return {
-        ...prev,
-        [viewId]: actions.includes(action)
-          ? actions.filter((a) => a !== action)
-          : [...actions, action],
-      };
-    });
+const handleSelectAction = (viewId: number, action: string) => {
+  if (defaultActions[viewId]?.includes(action)) {
+    return;
+  }
+  setSelectedActions((prev) => {
+    const actions = prev[viewId] || [];
+    return {
+      ...prev,
+      [viewId]: actions.includes(action)
+        ? actions.filter((a) => a !== action)
+        : [...actions, action],
+    };
+  });
+};
+
+
+  const handleSelectNewViewAction = (action: string) => {
+    setNewViewActions((prev) =>
+      prev.includes(action) ? prev.filter((a) => a !== action) : [...prev, action]
+    );
   };
+
   const handleOpenViewModal = () => {
     setIsViewModalOpen(true);
   };
+
   const handleSelectAllActions = (viewId: number) => {
-    const allActions =
-      permissionss.view_actions.find(
-        (va) => va.view === viewasAction.find((view) => view.view.id === viewId)?.view.name
-      )?.actions || [];
+    const viewName = viewasAction.find((view) => view.view.id === viewId)?.view.name;
+    const allActions = permissionss.view_actions.find((va) => va.view === viewName)?.actions || [];
     const currentSelectedActions = selectedActions[viewId] || [];
 
+    // Check if all actions are already selected
     if (currentSelectedActions.length === allActions.length) {
-      // Si todas las acciones están seleccionadas, deseleccionarlas
       setSelectedActions((prev) => ({
         ...prev,
         [viewId]: [],
       }));
     } else {
-      // Si no todas las acciones están seleccionadas, seleccionarlas todas
       setSelectedActions((prev) => ({
         ...prev,
         [viewId]: allActions,
@@ -73,21 +81,44 @@ const PermissionTable: React.FC = () => {
     }
   };
 
+
   const handleSelectView = (viewName: string) => {
-    setSelectedViewName(viewName);
+    if (selectedViewName === viewName) {
+      setSelectedViewName('');
+      setNewViewActions([]);
+    } else {
+      setSelectedViewName(viewName);
+      setNewViewActions(
+        permissionss.view_actions.find((va) => va.view === viewName)?.actions || []
+      );
+    }
   };
+
   const handleSubmitCreateView = async () => {
     try {
-      await create_view({
+      const response = await create_view({
         name: selectedViewName,
         type: 'Drawer',
       });
-      toast.success('Vista creada correctamente');
+
+      const newView = response.data;
+
+      if (newView && newView.view.id) {
+        await create_action_by_view({
+          viewId: newView.view.id,
+          names: newViewActions.map((name) => ({ name })),
+        });
+      }
+      toast.success('Vista creada correctamente con las acciones asignadas');
       OnGetViewasAction();
+      setIsViewModalOpen(false);
+      setSelectedViewName('');
+      setNewViewActions([]);
     } catch (error) {
       toast.error('Error al crear la vista');
     }
   };
+
   const handleSubmit = async () => {
     const payload = Object.keys(selectedActions).map((viewId) => ({
       viewId: Number(viewId),
@@ -116,6 +147,8 @@ const PermissionTable: React.FC = () => {
 
   const renderActions = (viewId: number) => {
     const view = viewasAction.find((view) => view.view.id === viewId)?.view;
+    const allActions =
+      permissionss.view_actions.find((va) => va.view === view?.name)?.actions || [];
     return (
       <div className="w-full p-2" key={viewId}>
         <div className="mb-4 bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden">
@@ -124,8 +157,7 @@ const PermissionTable: React.FC = () => {
             <div
               onClick={() => handleSelectAllActions(viewId)}
               className={`cursor-pointer ${
-                selectedActions[viewId]?.length ===
-                permissionss.view_actions.find((va) => va.view === view?.name)?.actions.length
+                selectedActions[viewId]?.length === allActions.length
                   ? 'bg-green-500'
                   : 'bg-gray-500'
               } rounded-full h-8 w-8 flex items-center justify-center`}
@@ -136,28 +168,26 @@ const PermissionTable: React.FC = () => {
           <div className="px-4 py-2 border-t border-gray-300 dark:border-gray-700">
             <div className="bg-white dark:bg-gray-800">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {permissionss.view_actions
-                  .find((va) => va.view === view?.name)
-                  ?.actions.map((permission) => (
+                {allActions.map((permission) => (
+                  <div
+                    key={permission}
+                    className={`flex items-center justify-between px-4 py-2 border-b border-gray-200 dark:border-gray-700 cursor-pointer ${
+                      defaultActions[viewId]?.includes(permission) ? 'cursor-not-allowed' : ''
+                    }`}
+                    onClick={() => handleSelectAction(viewId, permission)}
+                  >
+                    <span className="dark:text-white">{permission}</span>
                     <div
-                      key={permission}
-                      className={`flex items-center justify-between px-4 py-2 border-b border-gray-200 dark:border-gray-700 cursor-pointer ${
-                        defaultActions[viewId]?.includes(permission) ? 'cursor-not-allowed' : ''
-                      }`}
-                      onClick={() => handleSelectAction(viewId, permission)}
+                      className={`${
+                        selectedActions[viewId]?.includes(permission)
+                          ? 'bg-green-500'
+                          : 'bg-gray-500'
+                      } rounded-full h-8 w-8 flex items-center justify-center`}
                     >
-                      <span className="dark:text-white">{permission}</span>
-                      <div
-                        className={`${
-                          selectedActions[viewId]?.includes(permission)
-                            ? 'bg-green-500'
-                            : 'bg-gray-500'
-                        } rounded-full h-8 w-8 flex items-center justify-center`}
-                      >
-                        <Check className="text-white" />
-                      </div>
+                      <Check className="text-white" />
                     </div>
-                  ))}
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -165,6 +195,41 @@ const PermissionTable: React.FC = () => {
       </div>
     );
   };
+
+  const renderNewViewActions = () => {
+    return (
+      <div className="w-full p-2">
+        <div className="mb-4 bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden">
+          <div className="px-4 py-3 bg-blue-900 dark:bg-blue-700 text-white flex justify-between items-center">
+            <p className="font-semibold">{selectedViewName}</p>
+          </div>
+          <div className="px-4 py-2 border-t border-gray-300 dark:border-gray-700">
+            <div className="bg-white dark:bg-gray-800">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {newViewActions.map((permission) => (
+                  <div
+                    key={permission}
+                    className={`flex items-center justify-between px-4 py-2 border-b border-gray-200 dark:border-gray-700 cursor-pointer`}
+                    onClick={() => handleSelectNewViewAction(permission)}
+                  >
+                    <span className="dark:text-white">{permission}</span>
+                    <div
+                      className={`${
+                        newViewActions.includes(permission) ? 'bg-green-500' : 'bg-gray-500'
+                      } rounded-full h-8 w-8 flex items-center justify-center`}
+                    >
+                      <Check className="text-white" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="flex flex-col lg:flex-row h-screen">
       <div className="w-full lg:w-1/4 bg-gray-100 dark:bg-gray-900 p-4 mt-2">
@@ -181,7 +246,8 @@ const PermissionTable: React.FC = () => {
                     selectedViewId === view.view.id ? 'bg-blue-200 dark:bg-blue-700' : ''
                   }`}
                   onClick={() => {
-                    setSelectedViewId(view.view.id), setIsViewModalOpen(false);
+                    setSelectedViewId(selectedViewId === view.view.id ? null : view.view.id);
+                    setIsViewModalOpen(false);
                   }}
                 >
                   <span className="dark:text-white">{view.view.name}</span>
@@ -190,77 +256,75 @@ const PermissionTable: React.FC = () => {
             ))}
         </div>
       </div>
-      <div className="w-full lg:w-3/4 p-5 bg-gray-50 dark:bg-gray-800">
-        <div className="w-full h-full p-5 overflow-y-auto bg-white dark:bg-gray-900 shadow-xl rounded-xl">
-          <div className="flex flex-col lg:flex-row items-center justify-between w-full gap-5 mb-5 lg:mb-10 lg:gap-0">
-            <div className="lg:block hidden">
-              <AddButton
-                text="Agregar Vistas"
-                onClick={() => {
-                  setIsViewModalOpen(true), setSelectedViewId(0);
-                }}
-              ></AddButton>
-            </div>
-            <div className="hidden lg:block">
-              <AddButton
-                text="Agregar Acciones"
-                onClick={() => navigate('/AddActionRol')}
-              ></AddButton>
-            </div>
-          </div>
-          <div className={`${selectedViewId ? '' : 'hidden'}`}>
-            {selectedViewId && renderActions(selectedViewId)}
-          </div>
+      <div className="w-full lg:w-3/4 p-5 bg-gray-50 dark:bg-gray-800 flex flex-col">
+        <div className="flex flex-row items-center justify-between mb-4">
+          <AddButton
+            text="Agregar Vistas"
+            onClick={() => {
+              setIsViewModalOpen(true);
+              setSelectedViewId(null);
+            }}
+          />
+          <AddButton text="Agregar Acciones" onClick={() => navigate('/AddActionRol')} />
+        </div>
+        <div className="flex-grow overflow-y-auto p-5 bg-white dark:bg-gray-900 shadow-xl rounded-xl">
           {isViewModalOpen && (
             <div className="flex flex-col space-y-2">
               {availableViews &&
                 availableViews.map((view) => (
-                  <div
-                    onClick={() => handleSelectView(view.view)}
-                    key={view.view}
-                    className="flex items-center justify-between px-4 py-2 border-b border-gray-200 dark:border-gray-700 cursor-pointer 
-                  "
-                  >
-                    <span className="dark:text-white">{view.view}</span>
+                  <div key={view.view}>
                     <div
-                      className={`${selectedViewName === view.view ? '' : ' rounded-full h-8 w-8 flex items-center border-2 border-green-500 justify-center'} `}
+                      onClick={() => handleSelectView(view.view)}
+                      className="flex items-center justify-between px-4 py-2 border-b border-gray-200 dark:border-gray-700 cursor-pointer"
                     >
-                      <Check
-                        size={10}
-                        className={`${selectedViewName === view.view ? 'bg-green-500 w-8 h-8 rounded-full text-white' : 'text-white'}`}
-                      />
+                      <span className="dark:text-white">{view.view}</span>
+                      <div
+                        className={`${
+                          selectedViewName === view.view
+                            ? 'bg-green-500 w-8 h-8 rounded-full'
+                            : 'rounded-full h-8 w-8 flex items-center border-2 border-green-500 justify-center'
+                        } flex items-center justify-center`}
+                      >
+                        <Check
+                          size={10}
+                          className={`${selectedViewName === view.view ? 'text-white' : 'text-white'}`}
+                        />
+                      </div>
                     </div>
+                    {selectedViewName === view.view && renderNewViewActions()}
                   </div>
                 ))}
             </div>
           )}
-          <div className={`${selectedViewId ? '' : 'hidden'}`}>
-            <div className="mt-6 lg:mt-10 flex justify-end">
-              {selectedViewId && (
-                <Button
-                  style={{ backgroundColor: theme.colors.dark, color: theme.colors.primary }}
-                  onClick={handleSubmit}
-                  className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition disabled:opacity-50"
-                >
-                  Guardar
-                </Button>
-              )}
-            </div>
+          <div className={selectedViewId === null ? 'hidden' : ''}>
+            {selectedViewId && renderActions(selectedViewId)}
           </div>
-          {isViewModalOpen && (
-            <div className="mt-6 lg:mt-10 flex justify-end">
+        </div>
+        <div className="mt-4 flex justify-end">
+          <div className={selectedViewId === null ? 'hidden' : ''}>
+            {selectedViewId && (
               <Button
                 style={{ backgroundColor: theme.colors.dark, color: theme.colors.primary }}
-                onClick={handleSubmitCreateView}
+                onClick={handleSubmit}
                 className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition disabled:opacity-50"
               >
-                Guar dar Vista
+                Guardar
               </Button>
-            </div>
+            )}
+          </div>
+          {isViewModalOpen && (
+            <Button
+              style={{ backgroundColor: theme.colors.dark, color: theme.colors.primary }}
+              onClick={handleSubmitCreateView}
+              className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition disabled:opacity-50"
+            >
+              Guardar Vista
+            </Button>
           )}
         </div>
       </div>
     </div>
   );
 };
+
 export default PermissionTable;

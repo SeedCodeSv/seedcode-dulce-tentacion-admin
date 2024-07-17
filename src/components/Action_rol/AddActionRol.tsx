@@ -11,7 +11,7 @@ import { useActionsRolStore } from '@/store/actions_rol.store';
 import Layout from '@/layout/Layout';
 import { ThemeContext } from '@/hooks/useTheme';
 import { useAuthStore } from '@/store/auth.store';
-import viewActions from '../../actions.json'; 
+import viewActions from '../../actions.json';
 const PermissionTable: React.FC = () => {
   const { OnGetViewasAction, viewasAction } = useViewsStore();
   const [selectedActions, setSelectedActions] = useState<{ [viewId: number]: string[] }>({});
@@ -100,7 +100,6 @@ const PermissionTable: React.FC = () => {
     });
   };
 
-
   const handleSelectAction = (viewId: number, action: string) => {
     setSelectedActions((prev) => {
       const actions = prev[viewId] || [];
@@ -163,10 +162,15 @@ const PermissionTable: React.FC = () => {
   };
 
   const { theme } = useContext(ThemeContext);
+const renderSection = (view: { id: number; name: string }) => {
+  const actions = viewActions.view_actions.find((va) => va.view === view.name)?.actions || [];
 
-  const renderSection = (view: { id: number; name: string }) => (
+  return (
     <div className="w-full sm:w-1/3 p-2" key={view.id}>
-      <div className="mb-4 dark:bg-gray-900 bg-white shadow-lg border border-gray-300 rounded-lg overflow-hidden">
+      <div
+        className="mb-4 dark:bg-gray-900 bg-white shadow-lg border border-gray-300 rounded-lg overflow-hidden"
+        style={{ height: '300px', width: '100%' }}
+      >
         <div
           style={{ backgroundColor: theme.colors.dark, color: theme.colors.primary }}
           className="flex items-center justify-between px-4 py-3 text-white bg-teal-700"
@@ -176,10 +180,7 @@ const PermissionTable: React.FC = () => {
             <span className="ml-2">Seleccionar todas</span>
             <input
               type="checkbox"
-              checked={
-                selectedActions[view.id]?.length ===
-                viewActions.view_actions.find((va) => va.view === view.name)?.actions.length
-              }
+              checked={selectedActions[view.id]?.length === actions.length}
               onChange={() => handleSelectAllActions(view.id)}
               className="w-5 h-5 ml-2 text-teal-400 bg-teal-700 border-teal-600 rounded form-checkbox focus:ring-teal-500"
             />
@@ -187,11 +188,14 @@ const PermissionTable: React.FC = () => {
         </div>
         <div className="border-t-2 border-white"></div>
         <div className="px-4 py-2 border-t border-teal-600">
-          <div className="dark:bg-gray-900 bg-white">
-            <div className="grid grid-cols-2 gap-4 ">
-              {viewActions.view_actions
-                .find((va) => va.view === view.name)
-                ?.actions.map((permission, index) => (
+          <div className="dark:bg-gray-900 bg-white h-full">
+            <div className="grid grid-cols-2 gap-4 h-full">
+              {actions.length === 0 ? (
+                <div className="col-span-2 text-center py-4">
+                  <span className="dark:text-white">NO HAY ACCIONES ASIGNADAS</span>
+                </div>
+              ) : (
+                actions.map((permission, index) => (
                   <div
                     key={index}
                     className={`flex items-center justify-center px-4 py-2 border-b dark:border-gray-600 cursor-pointer ${
@@ -212,13 +216,16 @@ const PermissionTable: React.FC = () => {
                       <span className="dark:text-white flex ml-4 w-12">{permission}</span>
                     </div>
                   </div>
-                ))}
+                ))
+              )}
             </div>
           </div>
         </div>
       </div>
     </div>
   );
+};
+
 
   return (
     <Layout title="Acciones por rol">
@@ -263,7 +270,6 @@ const PermissionTable: React.FC = () => {
               </Autocomplete>
             </div>
           </div>
-
           <div className="flex flex-wrap -mx-2">
             {viewasAction.map(({ view }) => (
               <React.Fragment key={view.id}>{renderSection(view)}</React.Fragment>
