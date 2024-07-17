@@ -22,13 +22,16 @@ export const useCustomerStore = create<IUseCustomersStore>((set, get) => ({
     status: 404,
     ok: false,
   },
+  loading_customer: false,
   customer_list: [],
   saveCustomersPagination: (customer_pagination) => set({ customer_pagination }),
   getCustomersPagination: (page, limit, name, email, isActive, isTransmitter) => {
+    set({ loading_customer: true });
     get_customers_pagination(page, limit, name, email, isActive, isTransmitter)
-      .then((customers) => set({ customer_pagination: customers.data }))
+      .then((customers) => set({ customer_pagination: customers.data, loading_customer: false }))
       .catch(() => {
         set({
+          loading_customer: false,
           customer_pagination: {
             customers: [],
             total: 0,

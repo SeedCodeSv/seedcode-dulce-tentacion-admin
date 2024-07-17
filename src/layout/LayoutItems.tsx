@@ -25,9 +25,6 @@ import { ThemeContext } from '../hooks/useTheme';
 import { useConfigurationStore } from '../store/perzonalitation.store';
 import useWindowSize from '../hooks/useWindowSize';
 
-import CushCatsBigZ from '../pages/CashCutsBigZ';
-import CashCutsX from '../pages/CashCutsX';
-import CushCatsZ from '../pages/CashCutsZ';
 import { useViewsStore } from '@/store/views.store';
 import { validate_pathname, validateIfArrayContain } from '@/utils/filters';
 import SidebarLinkGroup from './SidebarLinkGroup';
@@ -63,10 +60,9 @@ export const LayoutItems = () => {
     }
   }, [windowSize.width]);
   const [isContabilityOpen, setIsContabilityOpen] = useState(false);
- 
+
   const toggleDropdowContabilidad = () => {
     setIsContabilityOpen(!isContabilityOpen);
-   
   };
 
   const location = useLocation();
@@ -161,10 +157,6 @@ export const LayoutItems = () => {
       icon: () => <List size={15} />,
     },
   ];
-
-  const [isOpenComponentBigZ, setIsOpenComponentBigZ] = useState(false);
-  const [isCushCatsZ, setIsCushCatsZ] = useState(false);
-  const [isCushCatsX, setIsCushCatsX] = useState(false);
 
   const [openGroup, setOpenGroup] = useState<string | null>(null);
 
@@ -602,8 +594,7 @@ export const LayoutItems = () => {
                 >
                   <div className="py-1">
                     <NavLink
-                      to={''}
-                      onClick={() => setIsOpenComponentBigZ(true)}
+                      to={'/cash-cuts-big-z'}
                       className={({ isActive }) => {
                         return (
                           (isActive
@@ -613,15 +604,11 @@ export const LayoutItems = () => {
                         );
                       }}
                     >
-                      <ClipboardCheck
-                        onClick={() => setIsOpenComponentBigZ(true)}
-                        size={iconSize}
-                      />
+                      <ClipboardCheck size={iconSize} />
                       <p className="ml-2 text-sm 2xl:text-base">Corte Gran Z</p>
                     </NavLink>
                     <NavLink
-                      to={''}
-                      onClick={() => setIsCushCatsX(true)}
+                      to={'/cash-cuts-x'}
                       className={({ isActive }) => {
                         return (
                           (isActive
@@ -631,13 +618,12 @@ export const LayoutItems = () => {
                         );
                       }}
                     >
-                      <ClipboardCheck onClick={() => setIsCushCatsX(true)} size={iconSize} />
+                      <ClipboardCheck size={iconSize} />
                       <p className="ml-2 text-sm 2xl:text-base">Corte de X</p>
                     </NavLink>
 
                     <NavLink
-                      to={''}
-                      onClick={() => setIsCushCatsZ(true)}
+                      to={'/cash-cuts-z'}
                       className={({ isActive }) => {
                         return (
                           (isActive
@@ -647,7 +633,7 @@ export const LayoutItems = () => {
                         );
                       }}
                     >
-                      <ClipboardCheck onClick={() => setIsCushCatsZ(true)} size={iconSize} />
+                      <ClipboardCheck size={iconSize} />
                       <p className="ml-2 text-sm 2xl:text-base">Corte de Z</p>
                     </NavLink>
                   </div>
@@ -694,7 +680,7 @@ export const LayoutItems = () => {
                   };
                 }}
               >
-                <Grid2X2Icon onClick={() => setIsOpenComponentBigZ(true)} size={iconSize} />
+                <Grid2X2Icon size={iconSize} />
                 <p className="ml-2 text-sm 2xl:text-base">Categoría de gastos</p>
               </NavLink>
             )}
@@ -747,8 +733,6 @@ export const LayoutItems = () => {
             <p className="ml-2 text-sm 2xl:text-base">Descuentos</p>
           </NavLink>
         )}
-
-       
       </>
 
       <div
@@ -767,12 +751,6 @@ export const LayoutItems = () => {
           </p>
         </Switch>
       </div>
-
-      {isOpenComponentBigZ && (
-        <CushCatsBigZ isOpen={isOpenComponentBigZ} onClose={() => setIsOpenComponentBigZ(false)} />
-      )}
-      {isCushCatsX && <CashCutsX isOpen={isCushCatsX} onClose={() => setIsCushCatsX(false)} />}
-      {isCushCatsZ && <CushCatsZ isOpen={isCushCatsZ} onClose={() => setIsCushCatsZ(false)} />}
     </>
   );
 };

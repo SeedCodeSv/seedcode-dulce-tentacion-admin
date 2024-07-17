@@ -35,6 +35,7 @@ import { useSubCategoryStore } from '../../store/sub-category';
 import TooltipGlobal from '../global/TooltipGlobal';
 import BottomDrawer from '../global/BottomDrawer';
 import NO_DATA from '@/assets/svg/no_data.svg';
+import classNames from 'classnames';
 
 interface PProps {
   actions: string[];
@@ -48,17 +49,17 @@ function ListSubCategory({ actions }: PProps) {
     sub_categories_paginated,
     loading_sub_categories,
     getSubCategoriesPaginated,
-    activateSubCategory,
+    activateSubCategories,
   } = useSubCategoryStore();
 
   const modalAdd = useDisclosure();
   const [search, setSearch] = useState('');
   const [limit, setLimit] = useState(5);
-  const [active, setActive] = useState(true);
+  const [isActive, setActive] = useState(true);
 
   useEffect(() => {
-    getSubCategoriesPaginated(1, limit, search);
-  }, [limit, active]);
+    getSubCategoriesPaginated(1, limit, search, isActive ? 1 : 0);
+  }, [limit, isActive]);
 
   const handleSearch = (name: string | undefined) => {
     getSubCategoriesPaginated(1, limit, name ?? search);
@@ -72,8 +73,8 @@ function ListSubCategory({ actions }: PProps) {
   const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
 
   const handleActivate = (id: number) => {
-    activateSubCategory(id).then(() => {
-      getSubCategoriesPaginated(1, limit, search);
+    activateSubCategories(id).then(() => {
+      getSubCategoriesPaginated(1, limit, search, isActive ? 1 : 0);
     });
   };
 
@@ -239,13 +240,27 @@ function ListSubCategory({ actions }: PProps) {
               </SelectItem>
             ))}
           </Select>
-          <div className="items-center hidden">
+          <div className="flex items-center">
+            <Switch
+              onValueChange={(isActive) => setActive(isActive)}
+              isSelected={isActive}
+              classNames={{
+                thumb: classNames(isActive ? 'bg-blue-500' : 'bg-gray-400'),
+                wrapper: classNames(isActive ? '!bg-blue-300' : 'bg-gray-200'),
+              }}
+            >
+              <span className="text-sm sm:text-base whitespace-nowrap">
+                Mostrar {isActive ? 'inactivos' : 'activos'}
+              </span>
+            </Switch>
+          </div>
+          {/* <div className="items-center hidden">
             <Switch onValueChange={(active) => setActive(active)} isSelected={active}>
               <span className="text-sm sm:text-base whitespace-nowrap">
                 Mostrar {active ? 'inactivos' : 'activos'}
               </span>
             </Switch>
-          </div>
+          </div> */}
         </div>
         {(view === 'grid' || view === 'list') && (
           <MobileView
