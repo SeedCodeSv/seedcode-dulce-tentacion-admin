@@ -130,7 +130,7 @@ function AddUsers(props: Props) {
                 <span className="text-sm font-semibold text-red-500">{errors.employeeId}</span>
               )}
             </div> */}
-            <div className="">
+            <div className="mt-2  ">
               <Autocomplete
                 onSelectionChange={(key) => {
                   if (key) {
@@ -144,8 +144,9 @@ function AddUsers(props: Props) {
                 placeholder={props.user?.role.name ? props.user?.role.name : 'Selecciona el rol'}
                 variant="bordered"
                 classNames={{
-                  base: 'font-semibold text-gray-500 text-sm',
+                  base: 'font-semibold text-sm',
                 }}
+                defaultInputValue={props.user?.role.name || ''}
               >
                 {roles_list.map((dep) => (
                   <AutocompleteItem value={dep.id} key={JSON.stringify(dep)}>

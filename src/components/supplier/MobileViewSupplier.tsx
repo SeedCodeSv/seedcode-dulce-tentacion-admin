@@ -57,10 +57,11 @@ const GridItem = (props: GridProps) => {
       {layout === 'grid' ? (
         <div
           className={classNames(
-            "w-full shadow dark:border border-gray-600 hover:shadow-lg p-8 rounded-2xl"
+             "w-full shadow flex flex-col justify-between hover:shadow-lg p-5 dark:border dark:border-gray-600 rounded-2xl"
           )}
           key={supplier.id}
         >
+          <div>
           <div className="flex w-full gap-2">
             <IUser className="dark:text-gray-400 text-[#274c77]" size={35} />
             <p className="w-full dark:text-white"> {supplier.nombre}</p>
@@ -76,6 +77,7 @@ const GridItem = (props: GridProps) => {
           <div className="flex w-full gap-2 mt-3">
             <Users2Icon className="dark:text-gray-400 text-[#274c77]" size={35} />
             <p className="w-full dark:text-white">{supplier.esContribuyente ? "Contribuyente" : "No Contribuyente"}</p>
+          </div>
           </div>
           <div className="flex justify-between mt-5 w-ful">
           <TooltipGlobal text="Editar">

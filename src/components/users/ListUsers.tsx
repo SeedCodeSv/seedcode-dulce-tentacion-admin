@@ -353,7 +353,7 @@ function ListUsers({ actions }: Props) {
                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                                  {item.id}
                                </td>
-                               <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
+                               <td className="p-3 text-sm text-slate-500 dark:text-slate-100  max-w-[350px]">
                                  {item.userName}
                                </td>
                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">

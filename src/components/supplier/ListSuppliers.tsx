@@ -178,7 +178,7 @@ function ListSuppliers() {
                 className="w-full dark:text-white"
                 variant="bordered"
                 labelPlacement="outside"
-                label="correo"
+                label="Correo"
                 classNames={{
                   label: 'font-semibold text-gray-700',
                   inputWrapper: 'pr-0',
@@ -522,7 +522,7 @@ function ListSuppliers() {
                               <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                                 {item.id}
                               </td>
-                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
+                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100 max-w-[350px]">
                                 {item.nombre}
                               </td>
                               <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
