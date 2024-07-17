@@ -2,7 +2,6 @@ import { useBranchesStore } from "../../store/branches.store";
 import { DataView } from "primereact/dataview";
 import {
   BadgeCheck,
-  BoxIcon,
   Edit,
   MapPin,
   Phone,
@@ -22,6 +21,7 @@ function MobileView(props: MobileViewProps) {
     handleBranchProduct,
     handleBox,
     handleActive,
+    actions
   } = props;
   const { branches_paginated } = useBranchesStore();
 
@@ -34,7 +34,7 @@ function MobileView(props: MobileViewProps) {
         pt={{
           grid: () => ({
             className:
-              "grid dark:bg-slate-800 pb-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid-nogutter gap-5 mt-5",
+              "grid  pb-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid-nogutter gap-5 mt-5",
           }),
         }}
         color="surface"
@@ -47,6 +47,7 @@ function MobileView(props: MobileViewProps) {
             handleBranchProduct={handleBranchProduct}
             handleBox={handleBox}
             handleActive={handleActive}
+            actions={actions}
           />
         )}
         emptyMessage="No users found"
@@ -66,6 +67,7 @@ const GridItem = (props: GridProps) => {
     handleBox,
     handleActive,
     branch,
+    actions
   } = props;
 
   return (
@@ -73,39 +75,39 @@ const GridItem = (props: GridProps) => {
       {layout === "grid" ? (
         <div
           className={classNames(
-            "w-full shadow-sm hover:shadow-lg p-8 dark:border dark:border-gray-600 rounded-2xl"
+            "w-full shadow flex flex-col justify-between hover:shadow-lg p-5 dark:border dark:border-gray-600 rounded-2xl"
           )}
           key={branch.id}
         >
-          <div className="flex w-full gap-2">
-            <Scroll className="text-[#274c77] dark:text-gray-400" size={35} />
+          <div>
+          <div className="flex items-center w-full gap-2">
+            <Scroll className="text-[#274c77] dark:text-gray-400"
+              size={20} />
             {branch.name}
           </div>
-          <div className="flex w-full gap-2 mt-3">
-            <div>
-              <MapPin className="text-[#00bbf9] dark:text-gray-400" size={35} />
+          <div className="flex items-center w-full gap-2 mt-3">
+            <MapPin className="text-[#274c77] dark:text-gray-400"
+              size={20} />
+            <div className="w-full">
+              <p>{branch.address}</p>
             </div>
-            {branch.address}
           </div>
-          <div className="flex w-full gap-2 mt-3">
-            <Phone className="text-[#00bbf9] dark:text-gray-400" size={35} />
+          <div className="flex items-center w-full gap-2 mt-3">
+            <Phone className="text-[#274c77] dark:text-gray-400"
+              size={20} />
             {branch.phone}
           </div>
+          </div>
           <div className="flex justify-between mt-5 w-ful">
-            <Button
-              onClick={() => handleEdit(branch)}
-              isIconOnly
-              style={global_styles().secondaryStyle}
-            >
-              <Edit />
-            </Button>
-            <Button
-              onClick={() => handleBox(branch)}
-              isIconOnly
-              style={global_styles().darkStyle}
-            >
-              <BoxIcon />
-            </Button>
+            {actions.includes("Editar") && branch.isActive && (<>
+              <Button
+                onClick={() => handleEdit(branch)}
+                isIconOnly
+                style={global_styles().secondaryStyle}
+              >
+                <Edit />
+              </Button>
+            </>)}
             <Button
               onClick={() => {
                 handleBranchProduct(branch.id);
@@ -137,6 +139,7 @@ const GridItem = (props: GridProps) => {
         </div>
       ) : (
         <ListItem
+          actions={actions}
           handleActive={handleActive}
           branch={branch}
           layout="list"
@@ -155,42 +158,37 @@ const ListItem = (props: GridProps) => {
     deletePopover,
     handleEdit,
     handleActive,
-    handleBox,
     handleBranchProduct,
   } = props;
   return (
     <>
-      <div className="flex w-full col-span-1 p-5 border-b shadow md:col-span-2 lg:col-span-3 xl:col-span-4">
+      <div className="flex gap-5 w-full p-5 border-b dark:border dark:border-gray-600 rounded-2xl shadow">
         <div className="w-full">
           <div className="flex items-center w-full gap-2">
-            <Scroll className="text-[#274c77] dark:text-gray-400" size={35} />
+            <Scroll className="text-[#274c77] dark:text-gray-400"
+              size={20} />
             {branch.name}
           </div>
           <div className="flex items-center w-full gap-2 mt-3">
-            <MapPin className="text-[#00bbf9] dark:text-gray-400" size={35} />
+            <MapPin className="text-[#274c77] dark:text-gray-400"
+              size={20} />
             <div className="w-full">
               <p>{branch.address}</p>
             </div>
           </div>
           <div className="flex items-center w-full gap-2 mt-3">
-            <Phone className="text-[#00bbf9] dark:text-gray-400" size={35} />
+            <Phone className="text-[#274c77] dark:text-gray-400"
+              size={20} />
             {branch.phone}
           </div>
         </div>
-        <div className="flex flex-col items-end justify-between w-full gap-4">
+        <div className="flex flex-col items-end justify-between gap-4">
           <Button
             onClick={() => handleEdit(branch)}
             isIconOnly
             style={global_styles().secondaryStyle}
           >
             <Edit />
-          </Button>
-          <Button
-            onClick={() => handleBox(branch)}
-            isIconOnly
-            style={global_styles().darkStyle}
-          >
-            <BoxIcon />
           </Button>
           <Button
             onClick={() => {

@@ -13,9 +13,7 @@ function ProductsCategories() {
   const actions = categoriasView?.actions?.name || [];
   return (
     <Layout title="Categorías de producto">
-    
-        <ListCategories actions={actions} />
-      
+      <ListCategories actions={actions} />
     </Layout>
   );
 }

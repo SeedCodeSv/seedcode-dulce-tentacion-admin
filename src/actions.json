@@ -42,7 +42,14 @@
     },
     {
       "view": "Clientes",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Activar Cliente", "Cambiar Tipo de Cliente"]
+      "actions": [
+        "Mostrar",
+        "Agregar",
+        "Editar",
+        "Eliminar",
+        "Activar Cliente",
+        "Cambiar Tipo de Cliente"
+      ]
     },
     {
       "view": "Reportes",
@@ -103,7 +110,10 @@
     {
       "view": "Ventas por Productos",
       "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
+    },
+    {
+      "view": "Contabilidad",
+      "actions": ["Mostrar", "Exportar Excel", "Imprimir"]
     }
-   
   ]
 }

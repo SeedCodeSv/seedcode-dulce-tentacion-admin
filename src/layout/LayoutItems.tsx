@@ -8,14 +8,19 @@ import {
   ChevronDown,
   Book,
   FileText,
-  TicketPercent,
   Calendar,
   FolderCog,
   FolderCheck,
-  FolderPen,
-  ClipboardCheck,
   List,
   Boxes,
+  GraduationCap,
+  BookUser,
+  Handshake,
+  ClipboardCheck,
+  User,
+  Truck,
+  Store,
+  UserCheck,
 } from 'lucide-react';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { ThemeContext } from '../hooks/useTheme';
@@ -24,10 +29,6 @@ import { ThemeContext } from '../hooks/useTheme';
 // import { useNavigate } from 'react-router';
 import { useConfigurationStore } from '../store/perzonalitation.store';
 import useWindowSize from '../hooks/useWindowSize';
-
-import CushCatsBigZ from '../pages/CashCutsBigZ';
-import CashCutsX from '../pages/CashCutsX';
-import CushCatsZ from '../pages/CashCutsZ';
 import { useViewsStore } from '@/store/views.store';
 import { validate_pathname, validateIfArrayContain } from '@/utils/filters';
 import SidebarLinkGroup from './SidebarLinkGroup';
@@ -62,12 +63,11 @@ export const LayoutItems = () => {
       return 22;
     }
   }, [windowSize.width]);
-  const [isContabilityOpen, setIsContabilityOpen] = useState(false);
- 
-  const toggleDropdowContabilidad = () => {
-    setIsContabilityOpen(!isContabilityOpen);
-   
-  };
+  // const [isContabilityOpen, setIsContabilityOpen] = useState(false);
+
+  // const toggleDropdowContabilidad = () => {
+  //   setIsContabilityOpen(!isContabilityOpen);
+  // };
 
   const location = useLocation();
   const { pathname } = location;
@@ -104,26 +104,31 @@ export const LayoutItems = () => {
       name: 'Empleados',
       path: '/employees',
       show: validateIfArrayContain(views, ['Empleados']),
+      icon: () => <UserCheck size={15} />,
     },
     {
       name: 'Clientes',
       path: '/clients',
       show: validateIfArrayContain(views, ['Clientes']),
+      icon: () => <BookUser size={15} />,
     },
     {
       name: 'Usuarios',
       path: '/users',
       show: validateIfArrayContain(views, ['Usuarios']),
+      icon: () => <User size={15} />,
     },
     {
       name: 'Proveedores',
       path: '/suppliers',
       show: validateIfArrayContain(views, ['Proveedores']),
+      icon: () => <Truck size={15} />,
     },
     {
       name: 'Sucursales',
       path: '/branches',
       show: validateIfArrayContain(views, ['Sucursales']),
+      icon: () => <Store size={15} />,
     },
   ];
   const reports_routes = [
@@ -146,25 +151,42 @@ export const LayoutItems = () => {
       name: 'Nivel de Estudio',
       path: '/studyLevel',
       show: validateIfArrayContain(views, ['Nivel de Estudio']),
-      icon: () => <Calendar size={15} />,
+      icon: () => <GraduationCap size={15} />,
     },
     {
       name: 'Estados del Empleado',
       path: '/statusEmployee',
       show: validateIfArrayContain(views, ['Estados del Empleado']),
-      icon: () => <List size={15} />,
+      icon: () => <BookUser size={15} />,
     },
     {
       name: 'Tipo de Contratacion',
       path: '/contractTypes',
       show: validateIfArrayContain(views, ['Tipo de Contratacion']),
-      icon: () => <List size={15} />,
+      icon: () => <Handshake size={15} />,
     },
   ];
 
-  const [isOpenComponentBigZ, setIsOpenComponentBigZ] = useState(false);
-  const [isCushCatsZ, setIsCushCatsZ] = useState(false);
-  const [isCushCatsX, setIsCushCatsX] = useState(false);
+  const accounting_routes = [
+    {
+      name: 'Corte Gran Z',
+      path: '/cash-cuts-big-z',
+      show: validateIfArrayContain(views, ['Contabilidad']),
+      icon: () => <ClipboardCheck size={15} />,
+    },
+    {
+      name: 'Corte X',
+      path: '/cash-cuts-x',
+      show: validateIfArrayContain(views, ['Contabilidad']),
+      icon: () => <ClipboardCheck size={15} />,
+    },
+    {
+      name: 'Corte Z',
+      path: '/cash-cuts-z',
+      show: validateIfArrayContain(views, ['Contabilidad']),
+      icon: () => <ClipboardCheck size={15} />,
+    },
+  ];
 
   const [openGroup, setOpenGroup] = useState<string | null>(null);
 
@@ -347,10 +369,10 @@ export const LayoutItems = () => {
                           className="overflow-hidden transform translate"
                         >
                           <ul className="mt-2 flex flex-col gap-2.5 pl-6">
-                            {administration_routes.map((item) => (
+                            {administration_routes.map((item, index) => (
                               <>
                                 {item.show && (
-                                  <li>
+                                  <li className="py-1" key={index}>
                                     <NavLink
                                       to={item.path}
                                       className={({ isActive }) =>
@@ -358,7 +380,7 @@ export const LayoutItems = () => {
                                         (isActive && 'font-semibold')
                                       }
                                     >
-                                      {item.name}
+                                      {item.icon()} {item.name}
                                     </NavLink>
                                   </li>
                                 )}
@@ -508,6 +530,70 @@ export const LayoutItems = () => {
                 </ul>
               </>
             )}
+
+            {validateIfArrayContain(views, ['Contabilidad']) && (
+              <>
+                <ul className="flex flex-col gap-1.5">
+                  <SidebarLinkGroup
+                    activeCondition={validate_pathname(pathname, ['contabilidad'])}
+                    isOpen={openGroup === 'contabilidad'}
+                    onGroupClick={() => handleGroupClick('contabilidad')}
+                  >
+                    {(handleClick, open) => (
+                      <>
+                        <div
+                          className={classNames(
+                            validate_pathname(pathname, ['contabilidad']) &&
+                              'bg-gray-200 dark:bg-gray-700',
+                            'group relative cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
+                          )}
+                          onClick={handleClick}
+                        >
+                          <div className="flex items-center gap-2.5">
+                            <FolderCheck size={iconSize} />
+                            Contabilidad
+                          </div>
+                          <ChevronDown
+                            className={classNames(open && ' rotate-180', 'items-end justify-end ')}
+                            size={iconSize}
+                          />
+                        </div>
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{
+                            opacity: open ? 1 : 0,
+                            height: open ? 'auto' : 0,
+                          }}
+                          transition={{ duration: 0.3 }}
+                          className="overflow-hidden transform translate"
+                        >
+                          <ul className="mt-2 mb-2 flex flex-col gap-2.5 pl-4">
+                            {accounting_routes.map((item) => (
+                              <>
+                                {item.show && (
+                                  <li className="py-1">
+                                    <NavLink
+                                      to={item.path}
+                                      className={({ isActive }) =>
+                                        'group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out ' +
+                                        (isActive && 'font-semibold')
+                                      }
+                                    >
+                                      {item.icon()} {item.name}
+                                    </NavLink>
+                                  </li>
+                                )}
+                              </>
+                            ))}
+                          </ul>
+                        </motion.div>
+                      </>
+                    )}
+                  </SidebarLinkGroup>
+                </ul>
+              </>
+            )}
+
             {/* Gestion de planillas ----------------------------------------------------------------- */}
 
             {/* {views.includes('Tipo de Contratacion') ||
@@ -580,7 +666,7 @@ export const LayoutItems = () => {
             ) : null} */}
             {/* fin de gestion de planillas -------------------------------------------------------------*/}
             <>
-              <div className="flex flex-col items-center justify-start w-full px-6 ">
+              {/* <div className="flex flex-col items-center justify-start w-full px-6 ">
                 <button
                   onClick={toggleDropdowContabilidad}
                   className="flex items-center w-full py-3 space-x-3 text-left text-black focus:outline-none focus:text-black"
@@ -602,8 +688,7 @@ export const LayoutItems = () => {
                 >
                   <div className="py-1">
                     <NavLink
-                      to={''}
-                      onClick={() => setIsOpenComponentBigZ(true)}
+                      to={'/cash-cuts-big-z'}
                       className={({ isActive }) => {
                         return (
                           (isActive
@@ -613,15 +698,11 @@ export const LayoutItems = () => {
                         );
                       }}
                     >
-                      <ClipboardCheck
-                        onClick={() => setIsOpenComponentBigZ(true)}
-                        size={iconSize}
-                      />
+                      <ClipboardCheck size={iconSize} />
                       <p className="ml-2 text-sm 2xl:text-base">Corte Gran Z</p>
                     </NavLink>
                     <NavLink
-                      to={''}
-                      onClick={() => setIsCushCatsX(true)}
+                      to={'/cash-cuts-x'}
                       className={({ isActive }) => {
                         return (
                           (isActive
@@ -631,13 +712,12 @@ export const LayoutItems = () => {
                         );
                       }}
                     >
-                      <ClipboardCheck onClick={() => setIsCushCatsX(true)} size={iconSize} />
+                      <ClipboardCheck size={iconSize} />
                       <p className="ml-2 text-sm 2xl:text-base">Corte de X</p>
                     </NavLink>
 
                     <NavLink
-                      to={''}
-                      onClick={() => setIsCushCatsZ(true)}
+                      to={'/cash-cuts-z'}
                       className={({ isActive }) => {
                         return (
                           (isActive
@@ -647,12 +727,12 @@ export const LayoutItems = () => {
                         );
                       }}
                     >
-                      <ClipboardCheck onClick={() => setIsCushCatsZ(true)} size={iconSize} />
+                      <ClipboardCheck size={iconSize} />
                       <p className="ml-2 text-sm 2xl:text-base">Corte de Z</p>
                     </NavLink>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </>
             {views.includes('Categoría de gastos') && (
               <NavLink
@@ -694,16 +774,30 @@ export const LayoutItems = () => {
                   };
                 }}
               >
-                <Grid2X2Icon onClick={() => setIsOpenComponentBigZ(true)} size={iconSize} />
+                <Grid2X2Icon size={iconSize} />
                 <p className="ml-2 text-sm 2xl:text-base">Categoría de gastos</p>
               </NavLink>
             )}
+
+            <li>
+              <NavLink
+                to="/actionRol"
+                className={({ isActive }) =>
+                  `group relative flex items-center gap-2.5 rounded-sm py-4 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700 ${
+                    isActive && 'bg-gray-200 dark:bg-gray-700'
+                  }`
+                }
+              >
+                <ShieldHalf />
+                Permisos
+              </NavLink>
+            </li>
           </ul>
         )}
       </>
 
       <>
-        <NavLink
+        {/* <NavLink
           to={'/actionRol'}
           className={({ isActive }) => {
             return (
@@ -722,10 +816,10 @@ export const LayoutItems = () => {
         >
           <ShieldHalf size={iconSize} />
           <p className="ml-2 text-sm 2xl:text-base">Permisos</p>
-        </NavLink>
+        </NavLink> */}
 
         {/* Descuentos */}
-        {views && views.includes('Descuentos') && (
+        {/* {views && views.includes('Descuentos') && (
           <NavLink
             to={'/discounts'}
             className={({ isActive }) => {
@@ -746,9 +840,7 @@ export const LayoutItems = () => {
             <TicketPercent size={iconSize} />
             <p className="ml-2 text-sm 2xl:text-base">Descuentos</p>
           </NavLink>
-        )}
-
-       
+        )} */}
       </>
 
       <div
@@ -767,12 +859,6 @@ export const LayoutItems = () => {
           </p>
         </Switch>
       </div>
-
-      {isOpenComponentBigZ && (
-        <CushCatsBigZ isOpen={isOpenComponentBigZ} onClose={() => setIsOpenComponentBigZ(false)} />
-      )}
-      {isCushCatsX && <CashCutsX isOpen={isCushCatsX} onClose={() => setIsCushCatsX(false)} />}
-      {isCushCatsZ && <CushCatsZ isOpen={isCushCatsZ} onClose={() => setIsCushCatsZ(false)} />}
     </>
   );
 };

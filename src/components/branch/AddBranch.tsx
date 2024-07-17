@@ -41,7 +41,7 @@ function AddBranch(props: Props) {
   };
 
   return (
-    <div className='p-4 dark:text-white'>
+    <div className='py-4 dark:text-white'>
       <Formik
       initialValues={{
         name: props.branch?.name ?? '',
@@ -90,7 +90,7 @@ function AddBranch(props: Props) {
                 label="Dirección"
                 placeholder="Dirección de la sucursal"
                 variant="bordered"
-                classNames={{ label: 'font-semibold text-sm' }}
+                classNames={{ label: 'font-semibold text-sm text-left' }}
                 labelPlacement="outside"
                 className="mb-4"
                 onChange={handleChange('address')}

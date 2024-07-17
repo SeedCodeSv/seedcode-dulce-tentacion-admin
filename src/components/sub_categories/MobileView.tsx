@@ -1,7 +1,7 @@
 import { Button } from '@nextui-org/react';
 import { DataView } from 'primereact/dataview';
 import { classNames } from 'primereact/utils';
-import { EditIcon, RefreshCcw, ScrollIcon, PackageSearch  } from 'lucide-react';
+import { EditIcon, RefreshCcw, ScrollIcon, PackageSearch } from 'lucide-react';
 import { global_styles } from '../../styles/global.styles';
 import { GridProps, MobileViewProps } from './types/mobile_view.types';
 import { useSubCategoryStore } from '../../store/sub-category';
@@ -56,7 +56,7 @@ const GridItem = (props: GridProps) => {
             {subcategory.name}
           </div>
           <div className="flex w-full gap-2 mt-3">
-            <PackageSearch  className="text-[#006d77] dark:text-gray-400" size={20} />
+            <PackageSearch className="text-[#274c77] dark:text-gray-400" size={20} />
             {subcategory.categoryProduct.name}
           </div>
           <div className="flex justify-between mt-5 w-ful">
@@ -111,7 +111,7 @@ const ListItem = (props: GridProps) => {
             {subcategory?.name}
           </div>
           <div className="flex items-center w-full gap-2 mt-2">
-            <PackageSearch  className="text-[#006d77] dark:text-gray-400" size={20} />
+            <PackageSearch className="text-[#006d77] dark:text-gray-400" size={20} />
             {subcategory?.categoryProduct.name}
           </div>
         </div>

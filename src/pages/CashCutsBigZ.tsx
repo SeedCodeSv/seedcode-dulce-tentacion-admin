@@ -4,7 +4,6 @@ import { global_styles } from '../styles/global.styles';
 import { ZCashCutsResponse } from '../types/cashCuts.types';
 import { useAuthStore } from '../store/auth.store';
 import { get_cashCuts } from '../services/facturation/cashCuts.service';
-import HeadlessModal from '../components/global/HeadlessModal';
 import { useBranchesStore } from '../store/branches.store';
 import { fechaActualString } from '../utils/dates';
 import { formatCurrency } from '../utils/dte';
@@ -15,12 +14,16 @@ import { saveAs } from 'file-saver';
 import { PiMicrosoftExcelLogoBold } from 'react-icons/pi';
 import { IoPrintSharp } from 'react-icons/io5';
 import { toast } from 'sonner';
+import Layout from '@/layout/Layout';
+import { useViewsStore } from '@/store/views.store';
 
-interface CashCutsProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-const CushCatsBigZ = (props: CashCutsProps) => {
+const CushCatsBigZ = () => {
+  const { OnGetViewasAction, viewasAction } = useViewsStore();
+  useEffect(() => {
+    OnGetViewasAction();
+  }, []);
+  const bigZ = viewasAction.find((view) => view.view.name === 'Contabilidad');
+  const actions = bigZ?.actions?.name || [];
   const [data, setData] = useState<ZCashCutsResponse | null>(null);
   const { user } = useAuthStore();
 
@@ -264,262 +267,265 @@ const CushCatsBigZ = (props: CashCutsProps) => {
   };
 
   return (
-    <>
-      <HeadlessModal
-        size="h-screen"
-        isFull={true}
-        title=" Corte de Caja Gran Z"
-        isOpen={props.isOpen}
-        onClose={() => props.onClose()}
-      >
-        <div className="flex flex-col items-center p-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 w-full">
-            <Input
-              defaultValue={fechaActualString}
-              label="Fecha Inicio"
-              variant="bordered"
-              labelPlacement="outside"
-              className="mt-4"
-              type="date"
-              onChange={(e) => setInitial(e.target.value)}
-            />
-            <Input
-              label="Fecha Final"
-              defaultValue={fechaActualString}
-              className="mt-4"
-              variant="bordered"
-              labelPlacement="outside"
-              type="date"
-              onChange={(e) => setEnd(e.target.value)}
-            />
-            <Autocomplete
-             
-              labelPlacement="outside"
-              label="Sucursal"
-              placeholder="Selecciona la sucursal"
-              variant="bordered"
-            >
-              {branch_list.map((item) => (
-                <AutocompleteItem
-                  key={item.id}
-                  value={item.id}
-                  onClick={() => {
-                    setBranch(item.id);
-                    setBranchName(item.name);
-                  }}
+    <Layout title="Corte Gran Z">
+      <div className="w-full h-full p-5 bg-gray-100 dark:bg-gray-800">
+        <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
+          <div className="flex flex-col justify-between w-full gap-5 lg:flex-row lg:gap-0">
+            <div className="flex flex-col items-center p-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 w-full">
+                <Input
+                  defaultValue={fechaActualString}
+                  label="Fecha Inicio"
+                  variant="bordered"
+                  labelPlacement="outside"
+                  className="mt-4"
+                  type="date"
+                  onChange={(e) => setInitial(e.target.value)}
+                />
+                <Input
+                  label="Fecha Final"
+                  defaultValue={fechaActualString}
+                  className="mt-4"
+                  variant="bordered"
+                  labelPlacement="outside"
+                  type="date"
+                  onChange={(e) => setEnd(e.target.value)}
+                />
+                <Autocomplete
+                  labelPlacement="outside"
+                  label="Sucursal"
+                  placeholder="Selecciona la sucursal"
+                  variant="bordered"
                 >
-                  {item.name}
-                </AutocompleteItem>
-              ))}
-            </Autocomplete>
-            <Autocomplete
-            
-              labelPlacement="outside"
-              placeholder="Selecciona el punto de venta"
-              variant="bordered"
-              label="Punto de Venta"
-            >
-              {codeSale
-                .filter((item) => item.typeVoucher === 'T')
-                .map((item) => (
-                  <AutocompleteItem onClick={() => setCodeSelected(item.code)} key={item.id}>
-                    {item.code}
-                  </AutocompleteItem>
-                ))}
-            </Autocomplete>
-          </div>
+                  {branch_list.map((item) => (
+                    <AutocompleteItem
+                      key={item.id}
+                      value={item.id}
+                      onClick={() => {
+                        setBranch(item.id);
+                        setBranchName(item.name);
+                      }}
+                    >
+                      {item.name}
+                    </AutocompleteItem>
+                  ))}
+                </Autocomplete>
+                <Autocomplete
+                  labelPlacement="outside"
+                  placeholder="Selecciona el punto de venta"
+                  variant="bordered"
+                  label="Punto de Venta"
+                >
+                  {codeSale
+                    .filter((item) => item.typeVoucher === 'T')
+                    .map((item) => (
+                      <AutocompleteItem onClick={() => setCodeSelected(item.code)} key={item.id}>
+                        {item.code}
+                      </AutocompleteItem>
+                    ))}
+                </Autocomplete>
+              </div>
 
-          <div className="flex flex-col items-center w-full h-full p-4 mt-4 bg-gray-600 rounded-md">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
-              <Button
-                color="success"
-                startContent={<PiMicrosoftExcelLogoBold size={25} />}
-                onClick={exportDataToExcel}
-                className="w-full"
-              >
-                Exportar a excel
-              </Button>
-              <Button
-                className="w-full"
-                style={global_styles().secondaryStyle}
-                onClick={() => printBigZ()}
-                startContent={<IoPrintSharp size={25} />}
-              >
-                Imprimir y cerrar
-              </Button>
-              <Button
-                className="w-full"
-                style={global_styles().dangerStyles}
-                onClick={() => props.onClose()}
-              >
-                Cancelar
-              </Button>
-            </div>
-            <div className="mt-4 bg-white dark:bg-gray-800 w-full max-w-lg h-full overflow-y-auto flex flex-col items-center p-5 rounded-2xl">
-              <h1 className="text-black dark:text-white">MADNESS</h1>
-              <h1 className="text-black dark:text-white">
-                {branchName || user?.correlative.branch.name}
-              </h1>
-              <h1 className="text-black dark:text-white">{user?.correlative.branch.address}</h1>
+              <div className="flex flex-col items-center w-full h-full p-4 mt-4 bg-gray-600 rounded-md">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+                  {actions.includes('Exportar Excel') && (
+                    <Button
+                      color="success"
+                      startContent={<PiMicrosoftExcelLogoBold size={25} />}
+                      onClick={exportDataToExcel}
+                      className="w-full"
+                    >
+                      Exportar a excel
+                    </Button>
+                  )}
+                  {actions.includes('Imprimir') && (
+                    <Button
+                      className="w-full"
+                      style={global_styles().secondaryStyle}
+                      onClick={() => printBigZ()}
+                      startContent={<IoPrintSharp size={25} />}
+                    >
+                      Imprimir y cerrar
+                    </Button>
+                  )}
+                </div>
+                <div className="mt-4 bg-white dark:bg-gray-800 w-full max-w-lg h-full overflow-y-auto flex flex-col items-center p-5 rounded-2xl">
+                  <h1 className="text-black dark:text-white">MADNESS</h1>
+                  <h1 className="text-black dark:text-white">
+                    {branchName || user?.correlative.branch.name}
+                  </h1>
+                  <h1 className="text-black dark:text-white">{user?.correlative.branch.address}</h1>
 
-              <h1 className="text-black dark:text-white">GIRO: VENTA AL POR MENOR DE ROPA</h1>
-              <h1 className="text-black dark:text-white">
-                FECHA: {dateInitial} - {dateEnd}
-              </h1>
-              <h1 className="text-black dark:text-white">
-                PUNTO DE VENTA: {codeSelected ? codeSelected : 'GENERAL'}
-              </h1>
-              <br />
-              <h1 className="text-black dark:text-white">
-                ---------------------------------------------------------------------
-              </h1>
-              <h1 className="text-black dark:text-white">
-                ---------------------------------------------------------------------
-              </h1>
-              <div className="w-full">
-                <h1 className="text-black dark:text-white">VENTAS CON TICKET</h1>
-                <h1 className="text-black dark:text-white">N. INICIAL: {data?.Ticket?.inicio}</h1>
-                <h1 className="text-black dark:text-white">N. FINAL: {data?.Ticket?.fin}</h1>
-                <h1 className="text-black dark:text-white">GRAVADAS: $0.00</h1>
-                <h1 className="text-black dark:text-white">
-                  IVA: {calculateIVA(data?.Ticket?.total || 0).toFixed(2)}
-                </h1>
-                <h1 className="text-black dark:text-white">
-                  SUB_TOTAL: {formatCurrency(Number(data?.Ticket?.total.toFixed(2)))}
-                </h1>
-                <h1 className="text-black dark:text-white">EXENTAS: $0.00</h1>
-                <h1 className="text-black dark:text-white">NO SUJETAS: $0.00</h1>
-                <h1 className="text-black dark:text-white">
-                  TOTAL: {formatCurrency(Number(data?.Ticket?.total.toFixed(2)))}
-                </h1>
-              </div>
-              <br />
-              <h1 className="text-black dark:text-white">
-                ---------------------------------------------------------------------
-              </h1>
-              <h1 className="text-black dark:text-white">
-                ---------------------------------------------------------------------
-              </h1>
-              <div className="w-full">
-                <h1 className="text-black dark:text-white">VENTAS CON FACTURA</h1>
-                <h1 className="text-black dark:text-white">N. INICIAL: {data?.Factura?.inicio}</h1>
-                <h1 className="text-black dark:text-white">N. FINAL: {data?.Factura?.fin}</h1>
-                <h1 className="text-black dark:text-white">GRAVADAS: $0.00</h1>
-                <h1 className="text-black dark:text-white">
-                  IVA: {calculateIVA(data?.Factura?.total || 0).toFixed(2)}
-                </h1>
-                <h1 className="text-black dark:text-white">
-                  SUB_TOTAL: {formatCurrency(Number(data?.Factura?.total))}
-                </h1>
-                <h1 className="text-black dark:text-white">EXENTAS: $0.00</h1>
-                <h1 className="text-black dark:text-white">NO SUJETAS: $0.00</h1>
-                <h1 className="text-black dark:text-white">
-                  TOTAL: {formatCurrency(Number(data?.Factura?.total.toFixed(2)))}
-                </h1>
-              </div>
-              <br />
-              <h1 className="text-black dark:text-white">
-                ---------------------------------------------------------------------
-              </h1>
-              <h1 className="text-black dark:text-white">
-                ---------------------------------------------------------------------
-              </h1>
-              <div className="w-full">
-                <h1 className="text-black dark:text-white">VENTAS CON CRÉDITO FISCAL</h1>
-                <h1 className="text-black dark:text-white">
-                  N. INICIAL: {data?.CreditoFiscal?.inicio}
-                </h1>
-                <h1 className="text-black dark:text-white">N. FINAL: {data?.CreditoFiscal?.fin}</h1>
-                <h1 className="text-black dark:text-white">GRAVADAS: $0.00</h1>
-                <h1 className="text-black dark:text-white">
-                  IVA: {calculateIVA(data?.CreditoFiscal?.total || 0).toFixed(2)}
-                </h1>
-                <h1 className="text-black dark:text-white">
-                  SUB_TOTAL: {formatCurrency(Number(data?.CreditoFiscal?.total))}
-                </h1>
-                <h1 className="text-black dark:text-white">EXENTAS: $0.00</h1>
-                <h1 className="text-black dark:text-white">NO SUJETAS: $0.00</h1>
-                <h1 className="text-black dark:text-white">
-                  TOTAL: {formatCurrency(Number(data?.CreditoFiscal?.total))}
-                </h1>
-              </div>
-              <br />
-              <h1 className="text-black dark:text-white">
-                ---------------------------------------------------------------------
-              </h1>
-              <h1 className="text-black dark:text-white">
-                ---------------------------------------------------------------------
-              </h1>
-              <div className="w-full">
-                <h1 className="text-black dark:text-white">DEVOLUCIONES CON NOTA DE CRÉDITO</h1>
-                <h1 className="text-black dark:text-white">
-                  N. INICIAL: {data?.DevolucionNC?.inicio}
-                </h1>
-                <h1 className="text-black dark:text-white">N. FINAL: {data?.DevolucionNC?.fin}</h1>
-                <h1 className="text-black dark:text-white">GRAVADAS: $0.00</h1>
-                <h1 className="text-black dark:text-white">
-                  IVA: {calculateIVA(data?.DevolucionNC?.total || 0).toFixed(2)}
-                </h1>
-                <h1 className="text-black dark:text-white">
-                  SUB_TOTAL: {formatCurrency(Number(data?.DevolucionNC?.total.toFixed(2)))}
-                </h1>
-                <h1 className="text-black dark:text-white">EXENTAS: $0.00</h1>
-                <h1 className="text-black dark:text-white">NO SUJETAS: $0.00</h1>
-                <h1 className="text-black dark:text-white">
-                  TOTAL: {formatCurrency(Number(data?.DevolucionNC?.total.toFixed(2)))}
-                </h1>
-              </div>
-              <br />
-              <h1 className="text-black dark:text-white">
-                ---------------------------------------------------------------------
-              </h1>
-              <h1 className="text-black dark:text-white">
-                ---------------------------------------------------------------------
-              </h1>
-              <div className="w-full">
-                <h1 className="text-black dark:text-white">DEVOLUCIONES CON TICKET</h1>
-                <h1 className="text-black dark:text-white">
-                  N. INICIAL: {data?.DevolucionT?.inicio}
-                </h1>
-                <h1 className="text-black dark:text-white">N. FINAL: {data?.DevolucionT?.fin}</h1>
-                <h1 className="text-black dark:text-white">GRAVADAS: $0.00</h1>
-                <h1 className="text-black dark:text-white">
-                  IVA: {calculateIVA(data?.DevolucionT?.total || 0)}
-                </h1>
-                <h1 className="text-black dark:text-white">
-                  SUB_TOTAL: {formatCurrency(Number(data?.DevolucionT?.total.toFixed(2)))}
-                </h1>
-                <h1 className="text-black dark:text-white">EXENTAS: $0.00</h1>
-                <h1 className="text-black dark:text-white">NO SUJETAS: $0.00</h1>
-                <h1 className="text-black dark:text-white">
-                  TOTAL: {formatCurrency(Number(data?.DevolucionT?.total.toFixed(2)))}
-                </h1>
-              </div>
-              <br />
-              <br />
-              <div className="w-full">
-                <h1 className="text-black dark:text-white">TOTAL GENERAL</h1>
-                <h1 className="text-black dark:text-white">
-                  GRAVADAS: {formatCurrency(totalGeneral - totalGeneral * 0.13)}
-                </h1>
-                <h1 className="text-black dark:text-white">
-                  IVA: {formatCurrency(totalGeneral * 0.13)}
-                </h1>
-                <h1 className="text-black dark:text-white">
-                  SUB-TOTAL: {formatCurrency(totalGeneral)}
-                </h1>
-                <h1 className="text-black dark:text-white">EXENTAS:</h1>
-                <h1 className="text-black dark:text-white">NO SUJETAS:</h1>
-                <h1 className="text-black dark:text-white">RETENCIONES:</h1>
-                <h1 className="text-black dark:text-white">
-                  TOTAL: {formatCurrency(totalGeneral)}
-                </h1>
+                  <h1 className="text-black dark:text-white">GIRO: VENTA AL POR MENOR DE ROPA</h1>
+                  <h1 className="text-black dark:text-white">
+                    FECHA: {dateInitial} - {dateEnd}
+                  </h1>
+                  <h1 className="text-black dark:text-white">
+                    PUNTO DE VENTA: {codeSelected ? codeSelected : 'GENERAL'}
+                  </h1>
+                  <br />
+                  <h1 className="text-black dark:text-white">
+                    ---------------------------------------------------------------------
+                  </h1>
+                  <h1 className="text-black dark:text-white">
+                    ---------------------------------------------------------------------
+                  </h1>
+                  <div className="w-full">
+                    <h1 className="text-black dark:text-white">VENTAS CON TICKET</h1>
+                    <h1 className="text-black dark:text-white">
+                      N. INICIAL: {data?.Ticket?.inicio}
+                    </h1>
+                    <h1 className="text-black dark:text-white">N. FINAL: {data?.Ticket?.fin}</h1>
+                    <h1 className="text-black dark:text-white">GRAVADAS: $0.00</h1>
+                    <h1 className="text-black dark:text-white">
+                      IVA: {calculateIVA(data?.Ticket?.total || 0).toFixed(2)}
+                    </h1>
+                    <h1 className="text-black dark:text-white">
+                      SUB_TOTAL: {formatCurrency(Number(data?.Ticket?.total.toFixed(2)))}
+                    </h1>
+                    <h1 className="text-black dark:text-white">EXENTAS: $0.00</h1>
+                    <h1 className="text-black dark:text-white">NO SUJETAS: $0.00</h1>
+                    <h1 className="text-black dark:text-white">
+                      TOTAL: {formatCurrency(Number(data?.Ticket?.total.toFixed(2)))}
+                    </h1>
+                  </div>
+                  <br />
+                  <h1 className="text-black dark:text-white">
+                    ---------------------------------------------------------------------
+                  </h1>
+                  <h1 className="text-black dark:text-white">
+                    ---------------------------------------------------------------------
+                  </h1>
+                  <div className="w-full">
+                    <h1 className="text-black dark:text-white">VENTAS CON FACTURA</h1>
+                    <h1 className="text-black dark:text-white">
+                      N. INICIAL: {data?.Factura?.inicio}
+                    </h1>
+                    <h1 className="text-black dark:text-white">N. FINAL: {data?.Factura?.fin}</h1>
+                    <h1 className="text-black dark:text-white">GRAVADAS: $0.00</h1>
+                    <h1 className="text-black dark:text-white">
+                      IVA: {calculateIVA(data?.Factura?.total || 0).toFixed(2)}
+                    </h1>
+                    <h1 className="text-black dark:text-white">
+                      SUB_TOTAL: {formatCurrency(Number(data?.Factura?.total))}
+                    </h1>
+                    <h1 className="text-black dark:text-white">EXENTAS: $0.00</h1>
+                    <h1 className="text-black dark:text-white">NO SUJETAS: $0.00</h1>
+                    <h1 className="text-black dark:text-white">
+                      TOTAL: {formatCurrency(Number(data?.Factura?.total.toFixed(2)))}
+                    </h1>
+                  </div>
+                  <br />
+                  <h1 className="text-black dark:text-white">
+                    ---------------------------------------------------------------------
+                  </h1>
+                  <h1 className="text-black dark:text-white">
+                    ---------------------------------------------------------------------
+                  </h1>
+                  <div className="w-full">
+                    <h1 className="text-black dark:text-white">VENTAS CON CRÉDITO FISCAL</h1>
+                    <h1 className="text-black dark:text-white">
+                      N. INICIAL: {data?.CreditoFiscal?.inicio}
+                    </h1>
+                    <h1 className="text-black dark:text-white">
+                      N. FINAL: {data?.CreditoFiscal?.fin}
+                    </h1>
+                    <h1 className="text-black dark:text-white">GRAVADAS: $0.00</h1>
+                    <h1 className="text-black dark:text-white">
+                      IVA: {calculateIVA(data?.CreditoFiscal?.total || 0).toFixed(2)}
+                    </h1>
+                    <h1 className="text-black dark:text-white">
+                      SUB_TOTAL: {formatCurrency(Number(data?.CreditoFiscal?.total))}
+                    </h1>
+                    <h1 className="text-black dark:text-white">EXENTAS: $0.00</h1>
+                    <h1 className="text-black dark:text-white">NO SUJETAS: $0.00</h1>
+                    <h1 className="text-black dark:text-white">
+                      TOTAL: {formatCurrency(Number(data?.CreditoFiscal?.total))}
+                    </h1>
+                  </div>
+                  <br />
+                  <h1 className="text-black dark:text-white">
+                    ---------------------------------------------------------------------
+                  </h1>
+                  <h1 className="text-black dark:text-white">
+                    ---------------------------------------------------------------------
+                  </h1>
+                  <div className="w-full">
+                    <h1 className="text-black dark:text-white">DEVOLUCIONES CON NOTA DE CRÉDITO</h1>
+                    <h1 className="text-black dark:text-white">
+                      N. INICIAL: {data?.DevolucionNC?.inicio}
+                    </h1>
+                    <h1 className="text-black dark:text-white">
+                      N. FINAL: {data?.DevolucionNC?.fin}
+                    </h1>
+                    <h1 className="text-black dark:text-white">GRAVADAS: $0.00</h1>
+                    <h1 className="text-black dark:text-white">
+                      IVA: {calculateIVA(data?.DevolucionNC?.total || 0).toFixed(2)}
+                    </h1>
+                    <h1 className="text-black dark:text-white">
+                      SUB_TOTAL: {formatCurrency(Number(data?.DevolucionNC?.total.toFixed(2)))}
+                    </h1>
+                    <h1 className="text-black dark:text-white">EXENTAS: $0.00</h1>
+                    <h1 className="text-black dark:text-white">NO SUJETAS: $0.00</h1>
+                    <h1 className="text-black dark:text-white">
+                      TOTAL: {formatCurrency(Number(data?.DevolucionNC?.total.toFixed(2)))}
+                    </h1>
+                  </div>
+                  <br />
+                  <h1 className="text-black dark:text-white">
+                    ---------------------------------------------------------------------
+                  </h1>
+                  <h1 className="text-black dark:text-white">
+                    ---------------------------------------------------------------------
+                  </h1>
+                  <div className="w-full">
+                    <h1 className="text-black dark:text-white">DEVOLUCIONES CON TICKET</h1>
+                    <h1 className="text-black dark:text-white">
+                      N. INICIAL: {data?.DevolucionT?.inicio}
+                    </h1>
+                    <h1 className="text-black dark:text-white">
+                      N. FINAL: {data?.DevolucionT?.fin}
+                    </h1>
+                    <h1 className="text-black dark:text-white">GRAVADAS: $0.00</h1>
+                    <h1 className="text-black dark:text-white">
+                      IVA: {calculateIVA(data?.DevolucionT?.total || 0)}
+                    </h1>
+                    <h1 className="text-black dark:text-white">
+                      SUB_TOTAL: {formatCurrency(Number(data?.DevolucionT?.total.toFixed(2)))}
+                    </h1>
+                    <h1 className="text-black dark:text-white">EXENTAS: $0.00</h1>
+                    <h1 className="text-black dark:text-white">NO SUJETAS: $0.00</h1>
+                    <h1 className="text-black dark:text-white">
+                      TOTAL: {formatCurrency(Number(data?.DevolucionT?.total.toFixed(2)))}
+                    </h1>
+                  </div>
+                  <br />
+                  <br />
+                  <div className="w-full">
+                    <h1 className="text-black dark:text-white">TOTAL GENERAL</h1>
+                    <h1 className="text-black dark:text-white">
+                      GRAVADAS: {formatCurrency(totalGeneral - totalGeneral * 0.13)}
+                    </h1>
+                    <h1 className="text-black dark:text-white">
+                      IVA: {formatCurrency(totalGeneral * 0.13)}
+                    </h1>
+                    <h1 className="text-black dark:text-white">
+                      SUB-TOTAL: {formatCurrency(totalGeneral)}
+                    </h1>
+                    <h1 className="text-black dark:text-white">EXENTAS:</h1>
+                    <h1 className="text-black dark:text-white">NO SUJETAS:</h1>
+                    <h1 className="text-black dark:text-white">RETENCIONES:</h1>
+                    <h1 className="text-black dark:text-white">
+                      TOTAL: {formatCurrency(totalGeneral)}
+                    </h1>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </HeadlessModal>
-    </>
+      </div>
+    </Layout>
   );
 };
 

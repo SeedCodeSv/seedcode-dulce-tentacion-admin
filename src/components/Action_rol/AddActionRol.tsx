@@ -11,16 +11,15 @@ import { useActionsRolStore } from '@/store/actions_rol.store';
 import Layout from '@/layout/Layout';
 import { ThemeContext } from '@/hooks/useTheme';
 import { useAuthStore } from '@/store/auth.store';
-type Permission = 'Mostrar' | 'Agregar' | 'Editar' | 'Eliminar' | 'Cambiar Contraseña';
-
+import viewActions from '../../actions.json'; 
 const PermissionTable: React.FC = () => {
-  const permissions: Permission[] = ['Mostrar', 'Agregar', 'Editar', 'Eliminar'];
   const { OnGetViewasAction, viewasAction } = useViewsStore();
   const [selectedActions, setSelectedActions] = useState<{ [viewId: number]: string[] }>({});
   const [defaultActions, setDefaultActions] = useState<{ [viewId: number]: string[] }>({});
   const { OnGetActionsByRolePage, roleActionsPage } = useActionsRolStore();
   const [dataRoles, setDataRoles] = useState<Role[]>([]);
   const [selectedCustomer, setSelectedCustomer] = useState(1);
+
   useEffect(() => {
     const fetchRoles = async () => {
       try {
@@ -39,9 +38,11 @@ const PermissionTable: React.FC = () => {
     fetchRoles();
     OnGetViewasAction();
   }, [OnGetViewasAction, OnGetActionsByRolePage]);
+
   const selectedCustomerKey = useMemo(() => {
     return selectedCustomer.toString() ?? dataRoles[0].id.toString();
   }, [selectedCustomer]);
+
   useEffect(() => {
     if (selectedCustomer === 0) {
       if (dataRoles.length > 0) {
@@ -49,6 +50,7 @@ const PermissionTable: React.FC = () => {
       }
     }
   }, [dataRoles]);
+
   useEffect(() => {
     if (viewasAction) {
       const initialSelectedActions: { [viewId: number]: string[] } = {};
@@ -67,10 +69,12 @@ const PermissionTable: React.FC = () => {
       setDefaultActions(initialDefaultActions);
     }
   }, [viewasAction, roleActionsPage]);
+
   const handleSelectAllActions = (viewId: number) => {
     setSelectedActions((prev) => {
       const actions = prev[viewId] || [];
-      const allSelected = actions.length === permissions.length;
+      const view = viewasAction.find((v) => v.view.id === viewId);
+      const allSelected = actions.length === (view?.actions ?? 0);
 
       if (allSelected) {
         const defaultActionsSet = new Set(defaultActions[viewId] || []);
@@ -81,9 +85,11 @@ const PermissionTable: React.FC = () => {
           [viewId]: newActions,
         };
       } else {
-        const nonSelectedActions = permissions.filter(
-          (action) => !defaultActions[viewId]?.includes(action)
-        );
+        const nonSelectedActions = view
+          ? viewActions.view_actions
+              .find((va) => va.view === view.name)
+              ?.actions.filter((action) => !defaultActions[viewId]?.includes(action)) ?? []
+          : [];
         const newActions = [...actions, ...nonSelectedActions];
 
         return {
@@ -93,6 +99,8 @@ const PermissionTable: React.FC = () => {
       }
     });
   };
+
+
   const handleSelectAction = (viewId: number, action: string) => {
     setSelectedActions((prev) => {
       const actions = prev[viewId] || [];
@@ -111,9 +119,11 @@ const PermissionTable: React.FC = () => {
       return prev;
     });
   };
+
   const { OnGetActionsByRole } = useActionsRolStore();
   const { user } = useAuthStore();
   const navigate = useNavigate();
+
   const handleSubmit = async () => {
     if (selectedCustomer === 0) {
       toast.error('Selecciona el rol');
@@ -137,10 +147,12 @@ const PermissionTable: React.FC = () => {
             });
         })
         .filter((id) => id !== null);
+
       const payload = {
         actionIds,
         roleId: selectedCustomer,
       };
+
       await create_role_action(payload);
       OnGetActionsByRole(user?.roleId as number);
       toast.success('Acciones asignadas correctamente');
@@ -149,7 +161,9 @@ const PermissionTable: React.FC = () => {
       toast.error('Error al asignar acciones');
     }
   };
+
   const { theme } = useContext(ThemeContext);
+
   const renderSection = (view: { id: number; name: string }) => (
     <div className="w-full sm:w-1/3 p-2" key={view.id}>
       <div className="mb-4 dark:bg-gray-900 bg-white shadow-lg border border-gray-300 rounded-lg overflow-hidden">
@@ -164,7 +178,7 @@ const PermissionTable: React.FC = () => {
               type="checkbox"
               checked={
                 selectedActions[view.id]?.length ===
-                (view.name === 'Usuarios' ? permissions.length + 1 : permissions.length)
+                viewActions.view_actions.find((va) => va.view === view.name)?.actions.length
               }
               onChange={() => handleSelectAllActions(view.id)}
               className="w-5 h-5 ml-2 text-teal-400 bg-teal-700 border-teal-600 rounded form-checkbox focus:ring-teal-500"
@@ -175,9 +189,9 @@ const PermissionTable: React.FC = () => {
         <div className="px-4 py-2 border-t border-teal-600">
           <div className="dark:bg-gray-900 bg-white">
             <div className="grid grid-cols-2 gap-4 ">
-              {permissions
-                .concat(view.name === 'Usuarios' ? (['Cambiar Contraseña'] as Permission[]) : [])
-                .map((permission, index) => (
+              {viewActions.view_actions
+                .find((va) => va.view === view.name)
+                ?.actions.map((permission, index) => (
                   <div
                     key={index}
                     className={`flex items-center justify-center px-4 py-2 border-b dark:border-gray-600 cursor-pointer ${
@@ -205,6 +219,7 @@ const PermissionTable: React.FC = () => {
       </div>
     </div>
   );
+
   return (
     <Layout title="Acciones por rol">
       <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800 relative">
@@ -268,4 +283,5 @@ const PermissionTable: React.FC = () => {
     </Layout>
   );
 };
+
 export default PermissionTable;
