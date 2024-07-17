@@ -11,9 +11,7 @@ function ProductsCategories() {
   const actions = subcategoriasView?.actions?.name || [];
   return (
     <Layout title="Sub Categorias">
-     
-        <ListSubCategory actions={actions} />
-      
+      <ListSubCategory actions={actions} />
     </Layout>
   );
 }
