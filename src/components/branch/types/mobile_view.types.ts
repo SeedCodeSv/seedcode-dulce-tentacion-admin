@@ -1,6 +1,7 @@
 import { Branches } from "../../../types/branches.types";
 
 export interface MobileViewProps {
+    actions: string[],
     layout: 'grid' | 'list';
     deletePopover: ({ branch }: { branch: Branches }) => JSX.Element;
     handleEdit: (branch: Branches) => void;
