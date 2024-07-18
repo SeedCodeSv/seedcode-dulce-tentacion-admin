@@ -11,6 +11,7 @@ export interface UsersStore {
   patchUser: (payload: UserUpdate, id: number) => Promise<boolean>;
   deleteUser: (id: number) => Promise<boolean>;
   updatePassword: (id: number, password: string) => Promise<boolean>;
+  activateUser: (id: number) => Promise<void>;
   getUsersPaginated: (
     page: number,
     limit: number,

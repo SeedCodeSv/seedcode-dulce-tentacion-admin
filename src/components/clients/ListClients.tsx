@@ -72,8 +72,8 @@ const ListClients = ({ actions }: Props) => {
   }, []);
   // const [tipeCustomer, setTypeCustomer] = useState<number | undefined>(undefined);
   useEffect(() => {
-    getCustomersPagination(1, limit, search, email, branch, active ? 1 : 0, tipeCustomer);
-  }, [limit, active, tipeCustomer]);
+    getCustomersPagination(1, limit, search, email, branch, tipeCustomer, active ? 1 : 0);
+  }, [limit, tipeCustomer, active]);
 
   const { windowSize } = useWindowSize();
   const [view, setView] = useState<'table' | 'grid' | 'list'>(
@@ -87,8 +87,8 @@ const ListClients = ({ actions }: Props) => {
       searchParam ?? search,
       searchParam ?? email,
       searchParam ?? branch,
-      active ? 1 : 0,
-      tipeCustomer ?? 0
+      tipeCustomer ?? 0,
+      active ? 1 : 0
     );
   };
 
@@ -155,8 +155,14 @@ const ListClients = ({ actions }: Props) => {
     setSelectedTitle('');
   };
 
+  // const handleActivate = (id: number) => {
+  //   save_active_customer(id);
+  // };
+
   const handleActivate = (id: number) => {
-    save_active_customer(id);
+    save_active_customer(id).then(() => {
+      getCustomersPagination(1, limit, "", "", "", "", active ? 1 : 0);
+    });
   };
 
   return (
@@ -536,7 +542,7 @@ const ListClients = ({ actions }: Props) => {
 
                                 <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                                   <div className="flex w-full gap-5">
-                                    {actions.includes('Editar') && (
+                                    {customer.isActive && actions.includes('Editar') && (
                                       <TooltipGlobal text="Editar">
                                         <Button
                                           onClick={() => {
@@ -613,8 +619,9 @@ const ListClients = ({ actions }: Props) => {
                       search,
                       email,
                       branch,
-                      active ? 1 : 0,
-                      tipeCustomer
+
+                      tipeCustomer,
+                      active ? 1 : 0
                     );
                   }}
                 />
@@ -630,8 +637,9 @@ const ListClients = ({ actions }: Props) => {
                       search,
                       email,
                       branch,
-                      active ? 1 : 0,
-                      tipeCustomer
+
+                      tipeCustomer,
+                      active ? 1 : 0
                     );
                   }}
                   handlePrev={() => {
@@ -642,8 +650,9 @@ const ListClients = ({ actions }: Props) => {
                       search,
                       email,
                       branch,
-                      active ? 1 : 0,
-                      tipeCustomer
+
+                      tipeCustomer,
+                      active ? 1 : 0
                     );
                   }}
                   currentPage={customer_pagination.currentPag}

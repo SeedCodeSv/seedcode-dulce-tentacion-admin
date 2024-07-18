@@ -23,6 +23,7 @@ import {
   List,
   EditIcon,
   Filter,
+  RefreshCcw,
 } from 'lucide-react';
 import UpdatePassword from './UpdatePassword';
 import { ThemeContext } from '../../hooks/useTheme';
@@ -40,7 +41,7 @@ import HeadlessModal from '../global/HeadlessModal';
 import useWindowSize from '@/hooks/useWindowSize';
 import TooltipGlobal from '../global/TooltipGlobal';
 import BottomDrawer from '../global/BottomDrawer';
-import NO_DATA from "@/assets/svg/no_data.svg";
+import NO_DATA from '@/assets/svg/no_data.svg';
 
 interface Props {
   actions: string[];
@@ -49,7 +50,7 @@ interface Props {
 function ListUsers({ actions }: Props) {
   const { theme } = useContext(ThemeContext);
   const [limit, setLimit] = useState(5);
-  const { users_paginated, getUsersPaginated } = useUsersStore();
+  const { users_paginated, getUsersPaginated, activateUser } = useUsersStore();
   const [user, setUser] = useState<User | undefined>();
   const [active, setActive] = useState(true);
   const [page, serPage] = useState(1);
@@ -75,7 +76,7 @@ function ListUsers({ actions }: Props) {
   );
 
   const [userName, setUserName] = useState('');
-  const [rol, setRol] = useState('')
+  const [rol, setRol] = useState('');
 
   const handleSearch = (searchParam: string | undefined) => {
     getUsersPaginated(page, limit, searchParam ?? userName, rol, active ? 1 : 0);
@@ -96,11 +97,16 @@ function ListUsers({ actions }: Props) {
   //   </div>
   // );
 
+  const handleActivate = (id: number) => {
+    activateUser(id).then(() => {
+      getUsersPaginated(1, limit, '', '', active ? 1 : 0);
+    });
+  };
   return (
     <>
       <div className="w-full h-full p-5 bg-gray-100 dark:bg-gray-800">
-      <div className="w-full h-full p-4 overflow-y-auto bg-white shadow custom-scrollbar md:p-8 dark:bg-gray-900">
-      <div className="flex flex-col justify-between w-full gap-5 lg:flex-row lg:gap-0">
+        <div className="w-full h-full p-4 overflow-y-auto bg-white shadow custom-scrollbar md:p-8 dark:bg-gray-900">
+          <div className="flex flex-col justify-between w-full gap-5 lg:flex-row lg:gap-0">
             <div className="hidden w-full gap-5 md:flex">
               <div className="w-1/2">
                 <Input
@@ -196,84 +202,83 @@ function ListUsers({ actions }: Props) {
               </ButtonGroup>
               <div className="flex items-center gap-5">
                 <div className="block md:hidden">
-                
-                    <TooltipGlobal text="Buscar por filtros" color="primary">
-                      <Button
-                        style={global_styles().thirdStyle}
-                        isIconOnly
-                        onClick={() => setOpenVaul(true)}
-                        type="button"
-                      >
-                        <Filter />
-                      </Button>
-                    </TooltipGlobal>
-                    <BottomDrawer
+                  <TooltipGlobal text="Buscar por filtros" color="primary">
+                    <Button
+                      style={global_styles().thirdStyle}
+                      isIconOnly
+                      onClick={() => setOpenVaul(true)}
+                      type="button"
+                    >
+                      <Filter />
+                    </Button>
+                  </TooltipGlobal>
+                  <BottomDrawer
                     title="Filtros disponibles"
                     open={openVaul}
                     onClose={() => setOpenVaul(false)}
                   >
-                          <div className="flex flex-col gap-3">
-                            <div className="w-full">
-                              <Input
-                                startContent={<Search />}
-                                className=" dark:text-white"
-                                variant="bordered"
-                                labelPlacement="outside"
-                                label="Nombre"
-                                classNames={{
-                                  label: 'font-semibold text-gray-700',
-                                  inputWrapper: 'pr-0',
-                                }}
-                                value={userName}
-                                onChange={(e) => setUserName(e.target.value)}
-                                placeholder="Escribe para buscar..."
-                                isClearable
-                                onClear={() => {
-                                  setUserName('');
-                                  handleSearch('');
-                                }}
-                              />
-                            </div>
-                            <div className="w-full">
-                              <Input
-                                startContent={<Search />}
-                                className=" dark:text-white"
-                                variant="bordered"
-                                labelPlacement="outside"
-                                label="Rol"
-                                classNames={{
-                                  label: 'font-semibold text-gray-700',
-                                  inputWrapper: 'pr-0',
-                                }}
-                                value={rol}
-                                onChange={(e) => setRol(e.target.value)}
-                                placeholder="Escribe para buscar..."
-                                isClearable
-                                onClear={() => {
-                                  setRol('');
-                                  handleSearch('');
-                                }}
-                              />
-                            </div>
-                            <Button
-                              style={{
-                                backgroundColor: theme.colors.secondary,
-                                color: theme.colors.primary,
-                                fontSize: '16px', 
-                              }}
-                              className="mb-10 font-semibold"
-                              color="primary"
-                              onClick={() => {
-                                handleSearch(undefined);
-                                setOpenVaul(false);
-                              }}
-                            >
-                              Buscar
-                            </Button>
-                          </div>
-                       </BottomDrawer>
+                    <div className="flex flex-col gap-3">
+                      <div className="w-full">
+                        <Input
+                          startContent={<Search />}
+                          className=" dark:text-white"
+                          variant="bordered"
+                          labelPlacement="outside"
+                          label="Nombre"
+                          classNames={{
+                            label: 'font-semibold text-gray-700',
+                            inputWrapper: 'pr-0',
+                          }}
+                          value={userName}
+                          onChange={(e) => setUserName(e.target.value)}
+                          placeholder="Escribe para buscar..."
+                          isClearable
+                          onClear={() => {
+                            setUserName('');
+                            handleSearch('');
+                          }}
+                        />
+                      </div>
+                      <div className="w-full">
+                        <Input
+                          startContent={<Search />}
+                          className=" dark:text-white"
+                          variant="bordered"
+                          labelPlacement="outside"
+                          label="Rol"
+                          classNames={{
+                            label: 'font-semibold text-gray-700',
+                            inputWrapper: 'pr-0',
+                          }}
+                          value={rol}
+                          onChange={(e) => setRol(e.target.value)}
+                          placeholder="Escribe para buscar..."
+                          isClearable
+                          onClear={() => {
+                            setRol('');
+                            handleSearch('');
+                          }}
+                        />
+                      </div>
+                      <Button
+                        style={{
+                          backgroundColor: theme.colors.secondary,
+                          color: theme.colors.primary,
+                          fontSize: '16px',
+                        }}
+                        className="mb-10 font-semibold"
+                        color="primary"
+                        onClick={() => {
+                          handleSearch(undefined);
+                          setOpenVaul(false);
+                        }}
+                      >
+                        Buscar
+                      </Button>
+                    </div>
+                  </BottomDrawer>
                 </div>
-              {actions.includes('Agregar') && <AddButton onClick={() => modalAdd.onOpen()} />}
+                {actions.includes('Agregar') && <AddButton onClick={() => modalAdd.onOpen()} />}
               </div>
             </div>
           </div>
@@ -299,11 +304,14 @@ function ListUsers({ actions }: Props) {
               ))}
             </Select>
             <div className="flex items-center">
-              <Switch onValueChange={(active) => setActive(active)} isSelected={active}
+              <Switch
+                onValueChange={(active) => setActive(active)}
+                isSelected={active}
                 classNames={{
                   thumb: classNames(active ? 'bg-blue-500' : 'bg-gray-400'),
                   wrapper: classNames(active ? '!bg-blue-300' : 'bg-gray-200'),
-                }}>
+                }}
+              >
                 <span className="text-sm sm:text-base whitespace-nowrap">
                   Mostrar {active ? 'inactivos' : 'activos'}
                 </span>
@@ -323,102 +331,114 @@ function ListUsers({ actions }: Props) {
               }}
               layout={view as 'grid' | 'list'}
               actions={actions}
+              handleActivate={handleActivate}
             />
           )}
           {view === 'table' && (
-               <div className="overflow-x-auto custom-scrollbar mt-4">
-               <table className="w-full">
-                 <thead className="sticky top-0 z-20 bg-white">
-                   <tr>
-                     <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                       No.
-                     </th>
-                     <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                       Nombre de usuario
-                     </th>
-                     <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+            <div className="overflow-x-auto custom-scrollbar mt-4">
+              <table className="w-full">
+                <thead className="sticky top-0 z-20 bg-white">
+                  <tr>
+                    <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                      No.
+                    </th>
+                    <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                      Nombre de usuario
+                    </th>
+                    <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                       Rol
-                     </th>
-                     <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                    </th>
+                    <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                       Acciones
-                     </th>
-                   </tr>
-                 </thead>
-                 <tbody className="max-h-[600px] w-full overflow-y-auto">
-                   
-                       {users_paginated.users.length > 0 ? (
-                         <>
-                           {users_paginated.users.map((item) => (
-                             <tr className="border-b border-slate-200">
-                               <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                 {item.id}
-                               </td>
-                               <td className="p-3 text-sm text-slate-500 dark:text-slate-100  max-w-[350px]">
-                                 {item.userName}
-                               </td>
-                               <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                 {item.role.name}
-                               </td>
-                               <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                 <div className="flex w-full gap-5">
-                                 {actions.includes('Editar') && (
-                        <TooltipGlobal text="Editar">
-                        <Button
-                          onClick={() => {
-                            setUser(item);
-                            modalUpdate.onOpen();
-                          }}
-                          isIconOnly
-                          style={{
-                            backgroundColor: theme.colors.secondary,
-                          }}
-                        >
-                          <EditIcon style={{ color: theme.colors.primary }} size={20} />
-                        </Button>
-                        </TooltipGlobal>
-                      )}
-                      {actions.includes('Cambiar Contraseña') && (
-                         <TooltipGlobal text="Cambiar contraseña">
-                        <Button
-                          onClick={() => {
-                            setSelectedId(item.id);
-                            modalChangePassword.onOpen();
-                          }}
-                          isIconOnly
-                          style={{
-                            backgroundColor: theme.colors.warning,
-                          }}
-                        >
-                          <Key color={theme.colors.primary} size={20} />
-                        </Button></TooltipGlobal>
-                      )}
-                      {actions.includes('Eliminar') && <DeletePopUp user={item} />}
-                                 </div>
-                               </td>
-                             </tr>
-                           ))}
-                         </>
-                       ) : (
-                         <tr>
-                           <td colSpan={5}>
-                             <div className="flex flex-col items-center justify-center w-full">
-                               <img
-                                 src={NO_DATA}
-                                 alt="X"
-                                 className="w-32 h-32"
-                               />
-                               <p className="mt-3 text-xl dark:text-white">
-                               No se encontraron resultados
-                             </p>
-                             </div>
-                             
-                           </td>
-                         </tr>
-                       )}
-                    
-                 </tbody>
-               </table>
-             </div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="max-h-[600px] w-full overflow-y-auto">
+                  {users_paginated.users.length > 0 ? (
+                    <>
+                      {users_paginated.users.map((item) => (
+                        <tr className="border-b border-slate-200">
+                          <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                            {item.id}
+                          </td>
+                          <td className="p-3 text-sm text-slate-500 dark:text-slate-100  max-w-[350px]">
+                            {item.userName}
+                          </td>
+                          <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                            {item.role.name}
+                          </td>
+                          <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                            <div className="flex w-full gap-5">
+                              {item.active && actions.includes('Editar') && (
+                                <TooltipGlobal text="Editar">
+                                  <Button
+                                    onClick={() => {
+                                      setUser(item);
+                                      modalUpdate.onOpen();
+                                    }}
+                                    isIconOnly
+                                    style={{
+                                      backgroundColor: theme.colors.secondary,
+                                    }}
+                                  >
+                                    <EditIcon style={{ color: theme.colors.primary }} size={20} />
+                                  </Button>
+                                </TooltipGlobal>
+                              )}
+                              {item.active && actions.includes('Cambiar Contraseña') && (
+                                <TooltipGlobal text="Cambiar contraseña">
+                                  <Button
+                                    onClick={() => {
+                                      setSelectedId(item.id);
+                                      modalChangePassword.onOpen();
+                                    }}
+                                    isIconOnly
+                                    style={{
+                                      backgroundColor: theme.colors.warning,
+                                    }}
+                                  >
+                                    <Key color={theme.colors.primary} size={20} />
+                                  </Button>
+                                </TooltipGlobal>
+                              )}
+                              {/* {actions.includes('Eliminar') && <DeletePopUp user={item} />} */}
+                              {actions.includes('Eliminar') && (
+                                <>
+                                  {item.active ? (
+                                    <DeletePopUp user={item} />
+                                  ) : (
+                                    <TooltipGlobal text="Activar">
+                                      <Button
+                                        onClick={() => handleActivate(item.id)}
+                                        isIconOnly
+                                        style={global_styles().thirdStyle}
+                                      >
+                                        <RefreshCcw />
+                                      </Button>
+                                    </TooltipGlobal>
+                                  )}
+                                </>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </>
+                  ) : (
+                    <tr>
+                      <td colSpan={5}>
+                        <div className="flex flex-col items-center justify-center w-full">
+                          <img src={NO_DATA} alt="X" className="w-32 h-32" />
+                          <p className="mt-3 text-xl dark:text-white">
+                            No se encontraron resultados
+                          </p>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
             // <DataTable
             //   className="shadow dark:text-white w-full"
             //   emptyMessage={emptyMessage}
@@ -509,7 +529,7 @@ function ListUsers({ actions }: Props) {
                 />
               </div>
               <div className="flex w-full mt-5 md:hidden">
-              <SmPagination
+                <SmPagination
                   handleNext={() => {
                     serPage(users_paginated.nextPag);
                     getUsersPaginated(
@@ -517,7 +537,7 @@ function ListUsers({ actions }: Props) {
                       limit,
                       userName,
                       rol,
-                      active ? 1 : 0,
+                      active ? 1 : 0
                     );
                   }}
                   handlePrev={() => {
@@ -527,7 +547,7 @@ function ListUsers({ actions }: Props) {
                       limit,
                       userName,
                       rol,
-                      active ? 1 : 0,
+                      active ? 1 : 0
                     );
                   }}
                   currentPage={users_paginated.currentPag}
@@ -594,13 +614,13 @@ const DeletePopUp = ({ user }: PopProps) => {
             }}
           >
             <TooltipGlobal text="Eliminar">
-            <TrashIcon
-              style={{
-                color: theme.colors.primary,
-              }}
-              size={20}
-            />
-          </TooltipGlobal>
+              <TrashIcon
+                style={{
+                  color: theme.colors.primary,
+                }}
+                size={20}
+              />
+            </TooltipGlobal>
           </Button>
         </PopoverTrigger>
         <PopoverContent>

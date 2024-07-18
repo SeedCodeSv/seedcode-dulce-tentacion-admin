@@ -6,6 +6,7 @@ export interface IMobileViewProps {
     openEditModal: (user: User) => void;
     openKeyModal: (user: User) => void;
     actions: string[];
+    handleActivate: (id: number) => void;
 }
 
 export interface GridProps extends IMobileViewProps {

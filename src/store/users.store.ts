@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { UsersStore } from './types/users_store.types';
 import {
+  activate_user,
   delete_user,
   get_user_paginated,
   get_users_list,
@@ -101,6 +102,16 @@ export const useUsersStore = create<UsersStore>((set, get) => ({
       .catch(() => {
         toast.warning(messages.error);
         return false;
+      });
+  },
+
+  activateUser(id) {
+    return activate_user(id)
+      .then(() => {
+        toast.success(messages.success);
+      })
+      .catch(() => {
+        toast.error(messages.error);
       });
   },
 }));

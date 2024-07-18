@@ -78,3 +78,17 @@ export const get_roles_list = () => {
     },
   });
 };
+
+
+export const activate_user = (id: number) => {
+  const token = get_token() ?? '';
+  return axios.patch<{ ok: boolean }>(
+    API_URL + '/users/activate/' + id,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};
