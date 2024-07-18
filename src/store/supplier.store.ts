@@ -23,7 +23,7 @@ export const useSupplierStore = create<ISupplierStore>((set, get) => ({
     ok: false,
   },
   supplier_list: [],
-
+  supplier_type: '',
   saveSupplierPagination: (supplier_pagination) => set({ supplier_pagination }),
   getSupplierPagination: (page, limit, name, email, isTransmitter, active) => {
     get_supplier_pagination(page, limit, name, email, isTransmitter, active)
@@ -48,7 +48,7 @@ export const useSupplierStore = create<ISupplierStore>((set, get) => ({
     return await add_supplier(payload)
       .then(({ data }) => {
         if (data) {
-          get().getSupplierPagination(1, 5, '', '', 1);
+          get().getSupplierPagination(1, 5, '', '','', 1);
           toast.success(messages.success);
           return true;
         } else {
@@ -66,7 +66,8 @@ export const useSupplierStore = create<ISupplierStore>((set, get) => ({
     update_supplier(payload, id)
       .then(({ data }) => {
         if (data) {
-          get().getSupplierPagination(1, 5, '', '', 1);
+          const supplier =  get().supplier_type;
+          get().getSupplierPagination(1, 5, '', '',supplier, 1);
           toast.success(messages.success);
         } else {
           toast.warning(messages.error);
@@ -90,7 +91,9 @@ export const useSupplierStore = create<ISupplierStore>((set, get) => ({
   deleteSupplier: async (id) => {
     return await delete_supplier(id)
       .then(({ data }) => {
-        get().getSupplierPagination(1, 5, '', '','', 1);
+        const supplier =  get().supplier_type;
+        get().getSupplierPagination(1, 5, '', '',supplier, 1);
+
         toast.success(messages.success);
         return data.ok;
       })

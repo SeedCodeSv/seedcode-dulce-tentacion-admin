@@ -3,6 +3,7 @@ import { IGetSupplierPagination, PayloadSupplier, Supplier } from '../../types/s
 export interface ISupplierStore {
   supplier_pagination: IGetSupplierPagination;
   supplier_list: Supplier[];
+  supplier_type: string;
   saveSupplierPagination: (supplier_pagination: IGetSupplierPagination) => void;
   getSupplierPagination: (
     page: number,

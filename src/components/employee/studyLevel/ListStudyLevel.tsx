@@ -332,6 +332,8 @@ function ListStudyLevel({ actions }: PProps) {
                               <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                                 <div className="flex w-full gap-5">
                                   {actions.includes('Editar') && (
+                                    <>
+                                    {staudyLevel.isActive &&(
                                     <TooltipGlobal text="Editar">
                                       <Button
                                         onClick={() => {
@@ -352,6 +354,8 @@ function ListStudyLevel({ actions }: PProps) {
                                         />
                                       </Button>
                                     </TooltipGlobal>
+                                    )}
+                                    </>
                                   )}
                                   {actions.includes('Eliminar') && (
                                     <>

@@ -58,10 +58,8 @@ function ListSuppliers() {
   const [selectedSupplierDirection, setSelectedSupplierDirection] = useState<SupplierDirection>();
   const [selectedId, setSelectedId] = useState<number>(0);
   const [active, setActive] = useState(true);
-
-  // const [active, setActive] = useState(true);
   const [tipeSupplier, setTypeSupplier] = useState('');
-
+  const store = useSupplierStore();
   // const style = {
   //   backgroundColor: theme.colors.dark,
   //   color: theme.colors.primary,
@@ -71,6 +69,7 @@ function ListSuppliers() {
   );
   useEffect(() => {
     getSupplierPagination(1, limit, search, email, tipeSupplier, active ? 1 : 0);
+    store.supplier_type = tipeSupplier;
   }, [limit, tipeSupplier, active]);
 
   const handleSearch = (searchParam: string | undefined) => {
@@ -593,21 +592,20 @@ function ListSuppliers() {
                                   </Button>
                                 </TooltipGlobal>
                               )}
-                              
                               </>
                              ):(
                                 <Button
-                          onClick={() => {
-                            handleActivate(item.id);
-                          }}
-                          isIconOnly
-                          style={{
-                            backgroundColor: theme.colors.third,
-                          }}
-                        >
-                          <BadgeCheck style={{ color: theme.colors.primary }} size={20} />
-                        </Button>
-                      )}
+                                 onClick={() => {
+                                   handleActivate(item.id);
+                                 }}
+                                 isIconOnly
+                                 style={{
+                                   backgroundColor: theme.colors.third,
+                                 }}
+                               >
+                                 <BadgeCheck style={{ color: theme.colors.primary }} size={20} />
+                               </Button>
+                             )}
                             </div>
                           </td>
                         </tr>
