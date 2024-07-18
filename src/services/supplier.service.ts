@@ -17,7 +17,8 @@ export const get_supplier_pagination = (
   limit = 5,
   name = '',
   email = '',
-  isTransmitter: number
+  isTransmitter: number | string,
+  active = 1
 ) => {
   const user = get_user();
   const token = get_token() ?? '';
@@ -33,7 +34,9 @@ export const get_supplier_pagination = (
       '&correo=' +
       email +
       '&isTransmitter=' +
-      isTransmitter,
+      isTransmitter +
+      '&active=' +
+      active,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -65,6 +68,19 @@ export const get_supplier = () => {
   const token = get_token() ?? '';
   return axios.get<IGetSuppliers>(
     API_URL + `/suppliers/list-by-transmitter/${user?.correlative.branch.transmitterId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};
+
+export const activate_supplier = (id: number) => {
+  const token = get_token() ?? '';
+  return axios.patch<{ ok: boolean }>(
+    API_URL + '/suppliers/activate/' + id,
+    {},
     {
       headers: {
         Authorization: `Bearer ${token}`,

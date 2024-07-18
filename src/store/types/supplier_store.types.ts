@@ -9,10 +9,12 @@ export interface ISupplierStore {
     limit: number,
     name: string,
     email: string,
-    isTransmitter: number
+    isTransmitter: number | string,
+    active?: number
   ) => void;
   onPostSupplier: (payload: PayloadSupplier) => Promise<boolean>;
   patchSupplier: (payload: PayloadSupplier, id: number) => void;
   getSupplierList: () => void;
   deleteSupplier: (id: number) => Promise<boolean>;
+  activateSupplier: (id: number) => Promise<void>;
 }

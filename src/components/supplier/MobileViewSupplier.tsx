@@ -9,6 +9,7 @@ import {
   EditIcon,
   Repeat,
   MapPin,
+  BadgeCheck,
 } from 'lucide-react';
 import { global_styles } from '../../styles/global.styles';
 import { GridProps, MobileViewProps } from './types/movile-view.types';
@@ -19,7 +20,7 @@ import { DeletePopover } from './ListSuppliers';
 function MobileViewSupplier({
   layout,
   handleChangeSupplier,
-  // handleActive,
+  handleActive,
 }: MobileViewProps) {
   const { supplier_pagination } = useSupplierStore();
 
@@ -41,7 +42,7 @@ function MobileViewSupplier({
             layout={layout}
             supplier={suppliers}
             handleChangeSupplier={handleChangeSupplier}
-            // handleActive={handleActive}
+            handleActive={handleActive}
           />
         )}
         emptyMessage="No se encontraron proveedores"
@@ -51,7 +52,7 @@ function MobileViewSupplier({
 }
 
 const GridItem = (props: GridProps) => {
-  const { layout, supplier, handleChangeSupplier } = props;
+  const { layout, supplier, handleChangeSupplier, handleActive } = props;
   return (
     <>
       {layout === 'grid' ? (
@@ -101,7 +102,7 @@ const GridItem = (props: GridProps) => {
             )}
             {DeletePopover({ supplier: supplier })}
 
-            {/* {supplier.isActive === false && (
+            {supplier.isActive === false && (
               <Button
                 onClick={() => {
                   handleActive(supplier.id);
@@ -111,12 +112,12 @@ const GridItem = (props: GridProps) => {
               >
                 <BadgeCheck size={20} />
               </Button>
-            )} */}
+            )}
           </div>
         </div>
       ) : (
         <ListItem
-          // handleActive={handleActive}
+          handleActive={handleActive}
           supplier={supplier}
           handleChangeSupplier={handleChangeSupplier}
           layout="list"

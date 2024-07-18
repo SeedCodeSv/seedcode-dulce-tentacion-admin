@@ -11,6 +11,7 @@ import {
   PopoverTrigger,
   Select,
   SelectItem,
+  Switch,
   useDisclosure,
 } from '@nextui-org/react';
 import { useSupplierStore } from '../../store/supplier.store';
@@ -32,17 +33,18 @@ import {
 import { global_styles } from '../../styles/global.styles';
 import Pagination from '../global/Pagination';
 import MobileViewSupplier from './MobileViewSupplier';
-import NO_DATA from "@/assets/svg/no_data.svg";
+import NO_DATA from '@/assets/svg/no_data.svg';
 
 import SmPagination from '../global/SmPagination';
 import HeadlessModal from '../global/HeadlessModal';
 import TooltipGlobal from '../global/TooltipGlobal';
 import useWindowSize from '@/hooks/useWindowSize';
 import BottomDrawer from '../global/BottomDrawer';
+import classNames from 'classnames';
 
 function ListSuppliers() {
   const { theme } = useContext(ThemeContext);
-  const { getSupplierPagination, supplier_pagination } = useSupplierStore();
+  const { getSupplierPagination, supplier_pagination, activateSupplier } = useSupplierStore();
   const [limit, setLimit] = useState(5);
   const [search, setSearch] = useState('');
   const [email, setEmail] = useState('');
@@ -54,18 +56,21 @@ function ListSuppliers() {
   const [selectedSupplier, setSelectedSupplier] = useState<PayloadSupplier>();
   const [selectedSupplierDirection, setSelectedSupplierDirection] = useState<SupplierDirection>();
   const [selectedId, setSelectedId] = useState<number>(0);
+  const [active, setActive] = useState(true);
 
   // const [active, setActive] = useState(true);
-  const [tipeSupplier, setTypeSupplier] = useState(1);
+  const [tipeSupplier, setTypeSupplier] = useState('');
 
   // const style = {
   //   backgroundColor: theme.colors.dark,
   //   color: theme.colors.primary,
   // };
-  const [view, setView] = useState<'table' | 'grid' | 'list'>(windowSize.width < 768 ? "grid" : "table");
+  const [view, setView] = useState<'table' | 'grid' | 'list'>(
+    windowSize.width < 768 ? 'grid' : 'table'
+  );
   useEffect(() => {
-    getSupplierPagination(1, limit, search, email, tipeSupplier);
-  }, [limit, tipeSupplier]);
+    getSupplierPagination(1, limit, search, email, tipeSupplier, active ? 1 : 0);
+  }, [limit, tipeSupplier, active]);
 
   const handleSearch = (searchParam: string | undefined) => {
     getSupplierPagination(page, limit, searchParam ?? search, searchParam ?? email, tipeSupplier);
@@ -148,10 +153,16 @@ function ListSuppliers() {
   //   </div>
   // );
 
+  const handleActivate = (id: number) => {
+    activateSupplier(id).then(() => {
+      getSupplierPagination(page, limit, search, email, tipeSupplier, active ? 1 : 0);
+    });
+  };
+
   return (
     <>
       <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
-      <div className="w-full h-full p-4 overflow-y-auto bg-white shadow custom-scrollbar md:p-8 dark:bg-gray-900">
+        <div className="w-full h-full p-4 overflow-y-auto bg-white shadow custom-scrollbar md:p-8 dark:bg-gray-900">
           <div className="flex flex-col justify-between w-full gap-5 mb-5 lg:mb-6 2xl:mb-10 lg:flex-row lg:gap-0">
             <div className="hidden w-full gap-5 md:flex">
               <Input
@@ -247,80 +258,79 @@ function ListSuppliers() {
             <div className="flex items-center gap-5">
               <div className="block md:hidden">
                 <TooltipGlobal text="Buscar por filtros" color="primary">
-                    <Button
-                      style={global_styles().thirdStyle}
-                      isIconOnly
-                      onClick={() => setOpenVaul(true)}
-                      type="button"
-                    >
-                      <Filter />
-                    </Button>
-                 </TooltipGlobal>
-                 <BottomDrawer
-                    title="Filtros disponibles"
-                    open={openVaul}
-                    onClose={() => setOpenVaul(false)}
+                  <Button
+                    style={global_styles().thirdStyle}
+                    isIconOnly
+                    onClick={() => setOpenVaul(true)}
+                    type="button"
                   >
-                        <div className="flex flex-col gap-3">
-                          <Input
-                            startContent={<User />}
-                            className="w-full dark:text-white"
-                            variant="bordered"
-                            labelPlacement="outside"
-                            label="Nombre"
-                            classNames={{
-                              label: 'font-semibold text-gray-700',
-                              inputWrapper: 'pr-0',
-                            }}
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            placeholder="Escribe para buscar..."
-                            isClearable
-                            onClear={() => {
-                              // handleSearch("");
-                              setSearch('');
-                            }}
-                          />
-                          <Input
-                            startContent={<Mail />}
-                            className="w-full dark:text-white"
-                            variant="bordered"
-                            labelPlacement="outside"
-                            label="Correo"
-                            classNames={{
-                              label: 'font-semibold text-gray-700',
-                              inputWrapper: 'pr-0',
-                            }}
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            placeholder="Escribe para buscar..."
-                            isClearable
-                            onClear={() => {
-                              // handleSearch("");
-                              setEmail('');
-                            }}
-                          />
-                          <Button
-                            style={{
-                              backgroundColor: theme.colors.secondary,
-                              color: theme.colors.primary,
-                            }}
-                            className="font-semibold"
-                            color="primary"
-                            onClick={() => {
-                              handleSearch(undefined);
-                              setOpenVaul(false);
-                            }}
-                          >
-                            Buscar
-                          </Button>
-                        </div>
-                      </BottomDrawer>
+                    <Filter />
+                  </Button>
+                </TooltipGlobal>
+                <BottomDrawer
+                  title="Filtros disponibles"
+                  open={openVaul}
+                  onClose={() => setOpenVaul(false)}
+                >
+                  <div className="flex flex-col gap-3">
+                    <Input
+                      startContent={<User />}
+                      className="w-full dark:text-white"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      label="Nombre"
+                      classNames={{
+                        label: 'font-semibold text-gray-700',
+                        inputWrapper: 'pr-0',
+                      }}
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                      placeholder="Escribe para buscar..."
+                      isClearable
+                      onClear={() => {
+                        // handleSearch("");
+                        setSearch('');
+                      }}
+                    />
+                    <Input
+                      startContent={<Mail />}
+                      className="w-full dark:text-white"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      label="Correo"
+                      classNames={{
+                        label: 'font-semibold text-gray-700',
+                        inputWrapper: 'pr-0',
+                      }}
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="Escribe para buscar..."
+                      isClearable
+                      onClear={() => {
+                        // handleSearch("");
+                        setEmail('');
+                      }}
+                    />
+                    <Button
+                      style={{
+                        backgroundColor: theme.colors.secondary,
+                        color: theme.colors.primary,
+                      }}
+                      className="font-semibold"
+                      color="primary"
+                      onClick={() => {
+                        handleSearch(undefined);
+                        setOpenVaul(false);
+                      }}
+                    >
+                      Buscar
+                    </Button>
+                  </div>
+                </BottomDrawer>
               </div>
               <BottomSm setTypeSupplier={setTypeProveedor} openModal={modalAdd.onOpen} />
-               <BottomAdd setTypeSupplier={setTypeProveedor} openModal={modalAdd.onOpen} />
+              <BottomAdd setTypeSupplier={setTypeProveedor} openModal={modalAdd.onOpen} />
             </div>
-             
           </div>
 
           <div className="flex flex-row gap-5 items-center justify-between w-full mb-5 mt-3">
@@ -335,7 +345,7 @@ function ListSuppliers() {
               }}
               value={String(tipeSupplier)}
               onChange={(e) => {
-                setTypeSupplier(e.target.value !== '' ? Number(e.target.value) : 0);
+                setTypeSupplier(e.target.value !== '' ? e.target.value : '');
               }}
             >
               <SelectItem className="dark:text-white" key={'1'}>
@@ -343,6 +353,9 @@ function ListSuppliers() {
               </SelectItem>
               <SelectItem className="dark:text-white" key={'0'}>
                 No Contribuyente
+              </SelectItem>
+              <SelectItem className="dark:text-white" key={''}>
+                Todos
               </SelectItem>
             </Select>
             <Select
@@ -381,12 +394,26 @@ function ListSuppliers() {
                 100
               </SelectItem>
             </Select>
+            <div className="flex items-center">
+              <Switch
+                onValueChange={(active) => setActive(active)}
+                isSelected={active}
+                classNames={{
+                  thumb: classNames(active ? 'bg-blue-500' : 'bg-gray-400'),
+                  wrapper: classNames(active ? '!bg-blue-300' : 'bg-gray-200'),
+                }}
+              >
+                <span className="text-sm sm:text-base whitespace-nowrap">
+                  Mostrar {active ? 'inactivos' : 'activos'}
+                </span>
+              </Switch>
+            </div>
           </div>
 
           <div className="flex items-center justify-center ml-2"></div>
           {(view === 'grid' || view === 'list') && (
             <MobileViewSupplier
-              // handleActive={handleActivate}
+              handleActive={handleActivate}
               handleChangeSupplier={(supplier, type) => {
                 handleChangeSupplier(supplier, type);
               }}
@@ -514,55 +541,55 @@ function ListSuppliers() {
                   </tr>
                 </thead>
                 <tbody className="max-h-[600px] w-full overflow-y-auto">
-                      {supplier_pagination.suppliers.length > 0 ? (
-                        <>
-                          {supplier_pagination.suppliers.map((item) => (
-                            <tr className="border-b border-slate-200">
-                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                {item.id}
-                              </td>
-                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100 max-w-[350px]">
-                                {item.nombre}
-                              </td>
-                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                {item.telefono}
-                              </td>
-                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                {item.correo}
-                              </td>
-                              <td className="p-3 text-sm text-slate-500 whitespace-nowrap dark:text-slate-100">
-                                {item.esContribuyente ? 'Si' : 'No'}
-                              </td>
-                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                <div className="flex w-full gap-5">
-                                <TooltipGlobal text="Editar">
-                      <Button
-                        onClick={() => handleChangeSupplier(item, 'edit')}
-                        isIconOnly
-                        style={{
-                          backgroundColor: theme.colors.secondary,
-                        }}
-                      >
-                        <EditIcon style={{ color: theme.colors.primary }} size={20} />
-                      </Button>
-                      </TooltipGlobal>
-                      {item.esContribuyente === false && (
-                      <TooltipGlobal text="Cambiar el tipo de proveedor">
-                      <Button
-                        onClick={() => {
-                          setSelectedTitle('Cambiar el tipo de proveedor');
-                          handleChangeSupplier(item, 'change');
-                        }}
-                        isIconOnly
-                        style={{
-                          backgroundColor: theme.colors.third,
-                        }}
-                      >
-                        <Repeat style={{ color: theme.colors.primary }} size={20} />
-                      </Button>
-                      </TooltipGlobal>
-                      )}
-                      {/* {item.isActive === false && (
+                  {supplier_pagination.suppliers.length > 0 ? (
+                    <>
+                      {supplier_pagination.suppliers.map((item) => (
+                        <tr className="border-b border-slate-200">
+                          <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                            {item.id}
+                          </td>
+                          <td className="p-3 text-sm text-slate-500 dark:text-slate-100 max-w-[350px]">
+                            {item.nombre}
+                          </td>
+                          <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                            {item.telefono}
+                          </td>
+                          <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                            {item.correo}
+                          </td>
+                          <td className="p-3 text-sm text-slate-500 whitespace-nowrap dark:text-slate-100">
+                            {item.esContribuyente ? 'Si' : 'No'}
+                          </td>
+                          <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                            <div className="flex w-full gap-5">
+                              <TooltipGlobal text="Editar">
+                                <Button
+                                  onClick={() => handleChangeSupplier(item, 'edit')}
+                                  isIconOnly
+                                  style={{
+                                    backgroundColor: theme.colors.secondary,
+                                  }}
+                                >
+                                  <EditIcon style={{ color: theme.colors.primary }} size={20} />
+                                </Button>
+                              </TooltipGlobal>
+                              {item.esContribuyente === false && (
+                                <TooltipGlobal text="Cambiar el tipo de proveedor">
+                                  <Button
+                                    onClick={() => {
+                                      setSelectedTitle('Cambiar el tipo de proveedor');
+                                      handleChangeSupplier(item, 'change');
+                                    }}
+                                    isIconOnly
+                                    style={{
+                                      backgroundColor: theme.colors.third,
+                                    }}
+                                  >
+                                    <Repeat style={{ color: theme.colors.primary }} size={20} />
+                                  </Button>
+                                </TooltipGlobal>
+                              )}
+                              {/* {item.isActive === false && (
                         <Button
                           onClick={() => {
                             handleActivate(item.id);
@@ -575,29 +602,24 @@ function ListSuppliers() {
                           <BadgeCheck style={{ color: theme.colors.primary }} size={20} />
                         </Button>
                       )} */}
-                      <DeletePopover supplier={item} />
-                                </div>
-                              </td>
-                            </tr>
-                          ))}
-                        </>
-                      ) : (
-                        <tr>
-                          <td colSpan={5}>
-                            <div className="flex flex-col items-center justify-center w-full">
-                              <img
-                                src={NO_DATA}
-                                alt="X"
-                                className="w-32 h-32"
-                              />
-                              <p className="mt-3 text-xl dark:text-white">
-                              No se encontraron resultados
-                            </p>
+                              <DeletePopover supplier={item} />
                             </div>
-                            
                           </td>
                         </tr>
-                      )}
+                      ))}
+                    </>
+                  ) : (
+                    <tr>
+                      <td colSpan={5}>
+                        <div className="flex flex-col items-center justify-center w-full">
+                          <img src={NO_DATA} alt="X" className="w-32 h-32" />
+                          <p className="mt-3 text-xl dark:text-white">
+                            No se encontraron resultados
+                          </p>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
@@ -705,7 +727,7 @@ export const DeletePopover = ({ supplier }: PopProps) => {
   };
 
   return (
-    <Popover isOpen={isOpen} onClose={onClose} backdrop="blur" showArrow >
+    <Popover isOpen={isOpen} onClose={onClose} backdrop="blur" showArrow>
       <PopoverTrigger>
         <Button
           onClick={onOpen}
@@ -715,12 +737,13 @@ export const DeletePopover = ({ supplier }: PopProps) => {
           }}
         >
           <TooltipGlobal text="Eliminar">
-          <TrashIcon
-            style={{
-              color: theme.colors.primary,
-            }}
-            size={20}
-          /></TooltipGlobal>
+            <TrashIcon
+              style={{
+                color: theme.colors.primary,
+              }}
+              size={20}
+            />
+          </TooltipGlobal>
         </Button>
       </PopoverTrigger>
       <PopoverContent>
@@ -832,12 +855,12 @@ export const BottomSm = ({ setTypeSupplier, openModal }: PopoverAddProps) => {
           isIconOnly
         >
           <TooltipGlobal text="Agregar nuevo">
-          <PlusIcon />
-        </TooltipGlobal>
+            <PlusIcon />
+          </TooltipGlobal>
         </Button>
       </PopoverTrigger>
       <PopoverContent aria-labelledby="popover-title">
-      <div className="flex flex-col gap-5 p-3 bg-white dark:bg-zinc-900">
+        <div className="flex flex-col gap-5 p-3 bg-white dark:bg-zinc-900">
           <Button
             onClick={() => {
               onClose();

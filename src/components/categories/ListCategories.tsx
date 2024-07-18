@@ -9,8 +9,8 @@ import {
   PopoverTrigger,
   PopoverContent,
   Switch,
-} from "@nextui-org/react";
-import { useContext, useEffect, useState } from "react";
+} from '@nextui-org/react';
+import { useContext, useEffect, useState } from 'react';
 import {
   EditIcon,
   User,
@@ -20,23 +20,23 @@ import {
   List,
   Filter,
   RefreshCcw,
-} from "lucide-react";
-import { useCategoriesStore } from "../../store/categories.store";
-import { ThemeContext } from "../../hooks/useTheme";
-import AddCategory from "./AddCategory";
-import AddButton from "../global/AddButton";
-import MobileView from "./MobileView";
-import Pagination from "../global/Pagination";
-import { CategoryProduct } from "../../types/categories.types";
-import { global_styles } from "../../styles/global.styles";
-import classNames from "classnames";
-import { limit_options } from "../../utils/constants";
-import SmPagination from "../global/SmPagination";
-import HeadlessModal from "../global/HeadlessModal";
-import useWindowSize from "@/hooks/useWindowSize";
-import TooltipGlobal from "../global/TooltipGlobal";
-import BottomDrawer from "../global/BottomDrawer";
-import NO_DATA from "@/assets/svg/no_data.svg";
+} from 'lucide-react';
+import { useCategoriesStore } from '../../store/categories.store';
+import { ThemeContext } from '../../hooks/useTheme';
+import AddCategory from './AddCategory';
+import AddButton from '../global/AddButton';
+import MobileView from './MobileView';
+import Pagination from '../global/Pagination';
+import { CategoryProduct } from '../../types/categories.types';
+import { global_styles } from '../../styles/global.styles';
+import classNames from 'classnames';
+import { limit_options } from '../../utils/constants';
+import SmPagination from '../global/SmPagination';
+import HeadlessModal from '../global/HeadlessModal';
+import useWindowSize from '@/hooks/useWindowSize';
+import TooltipGlobal from '../global/TooltipGlobal';
+import BottomDrawer from '../global/BottomDrawer';
+import NO_DATA from '@/assets/svg/no_data.svg';
 
 interface PProps {
   actions: string[];
@@ -45,18 +45,14 @@ interface PProps {
 function ListCategories({ actions }: PProps) {
   const { theme } = useContext(ThemeContext);
   const [openVaul, setOpenVaul] = useState(false);
-  const {
-    paginated_categories,
-    getPaginatedCategories,
-    activateCategory,
-    loading_categories,
-  } = useCategoriesStore();
+  const { paginated_categories, getPaginatedCategories, activateCategory, loading_categories } =
+    useCategoriesStore();
 
   const [selectedCategory, setSelectedCategory] = useState<
     { id: number; name: string } | undefined
   >();
 
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
   const [limit, setLimit] = useState(5);
   const [active, setActive] = useState(true);
 
@@ -71,8 +67,8 @@ function ListCategories({ actions }: PProps) {
   const modalAdd = useDisclosure();
 
   const { windowSize } = useWindowSize();
-  const [view, setView] = useState<"table" | "grid" | "list">(
-    windowSize.width < 768 ? "grid" : "table"
+  const [view, setView] = useState<'table' | 'grid' | 'list'>(
+    windowSize.width < 768 ? 'grid' : 'table'
   );
 
   const handleEdit = (item: CategoryProduct) => {
@@ -102,16 +98,16 @@ function ListCategories({ actions }: PProps) {
                 labelPlacement="outside"
                 label="Nombre"
                 classNames={{
-                  label: "font-semibold text-gray-700",
-                  inputWrapper: "pr-0",
+                  label: 'font-semibold text-gray-700',
+                  inputWrapper: 'pr-0',
                 }}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Escribe para buscar..."
                 isClearable
                 onClear={() => {
-                  setSearch("");
-                  handleSearch("");
+                  setSearch('');
+                  handleSearch('');
                 }}
               />
               <Button
@@ -133,11 +129,10 @@ function ListCategories({ actions }: PProps) {
                 isIconOnly
                 color="secondary"
                 style={{
-                  backgroundColor:
-                    view === "table" ? theme.colors.third : "#e5e5e5",
-                  color: view === "table" ? theme.colors.primary : "#3e3e3e",
+                  backgroundColor: view === 'table' ? theme.colors.third : '#e5e5e5',
+                  color: view === 'table' ? theme.colors.primary : '#3e3e3e',
                 }}
-                onClick={() => setView("table")}
+                onClick={() => setView('table')}
               >
                 <ITable />
               </Button>
@@ -145,11 +140,10 @@ function ListCategories({ actions }: PProps) {
                 isIconOnly
                 color="default"
                 style={{
-                  backgroundColor:
-                    view === "grid" ? theme.colors.third : "#e5e5e5",
-                  color: view === "grid" ? theme.colors.primary : "#3e3e3e",
+                  backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
+                  color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
                 }}
-                onClick={() => setView("grid")}
+                onClick={() => setView('grid')}
               >
                 <CreditCard />
               </Button>
@@ -157,11 +151,10 @@ function ListCategories({ actions }: PProps) {
                 isIconOnly
                 color="default"
                 style={{
-                  backgroundColor:
-                    view === "list" ? theme.colors.third : "#e5e5e5",
-                  color: view === "list" ? theme.colors.primary : "#3e3e3e",
+                  backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
+                  color: view === 'list' ? theme.colors.primary : '#3e3e3e',
                 }}
-                onClick={() => setView("list")}
+                onClick={() => setView('list')}
               >
                 <List />
               </Button>
@@ -192,16 +185,16 @@ function ListCategories({ actions }: PProps) {
                         labelPlacement="outside"
                         label="Nombre"
                         classNames={{
-                          label: "font-semibold text-gray-700",
-                          inputWrapper: "pr-0",
+                          label: 'font-semibold text-gray-700',
+                          inputWrapper: 'pr-0',
                         }}
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         placeholder="Escribe para buscar..."
                         isClearable
                         onClear={() => {
-                          setSearch("");
-                          handleSearch("");
+                          setSearch('');
+                          handleSearch('');
                         }}
                       />
                       <Button
@@ -218,7 +211,7 @@ function ListCategories({ actions }: PProps) {
                 </BottomDrawer>
               </div>
             </div>
-            {actions.includes("Agregar") && (
+            {actions.includes('Agregar') && (
               <AddButton
                 onClick={() => {
                   setSelectedCategory(undefined);
@@ -235,19 +228,15 @@ function ListCategories({ actions }: PProps) {
             label="Mostrar"
             labelPlacement="outside"
             classNames={{
-              label: "font-semibold",
+              label: 'font-semibold',
             }}
             value={limit}
             onChange={(e) => {
-              setLimit(Number(e.target.value !== "" ? e.target.value : "8"));
+              setLimit(Number(e.target.value !== '' ? e.target.value : '8'));
             }}
           >
             {limit_options.map((option) => (
-              <SelectItem
-                key={option}
-                value={option}
-                className="dark:text-white"
-              >
+              <SelectItem key={option} value={option} className="dark:text-white">
                 {option}
               </SelectItem>
             ))}
@@ -257,26 +246,26 @@ function ListCategories({ actions }: PProps) {
               onValueChange={(active) => setActive(active)}
               isSelected={active}
               classNames={{
-                thumb: classNames(active ? "bg-blue-500" : "bg-gray-400"),
-                wrapper: classNames(active ? "!bg-blue-300" : "bg-gray-200"),
+                thumb: classNames(active ? 'bg-blue-500' : 'bg-gray-400'),
+                wrapper: classNames(active ? '!bg-blue-300' : 'bg-gray-200'),
               }}
             >
               <span className="text-sm sm:text-base whitespace-nowrap">
-                Mostrar {active ? "inactivos" : "activos"}
+                Mostrar {active ? 'inactivos' : 'activos'}
               </span>
             </Switch>
           </div>
         </div>
-        {(view === "grid" || view === "list") && (
+        {(view === 'grid' || view === 'list') && (
           <MobileView
             handleActive={handleActivate}
             deletePopover={DeletePopUp}
-            layout={view as "grid" | "list"}
+            layout={view as 'grid' | 'list'}
             handleEdit={handleEdit}
             actions={actions}
           />
         )}
-        {view === "table" && (
+        {view === 'table' && (
           <>
             <div className="max-h-[400px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
               <table className="w-full">
@@ -294,6 +283,84 @@ function ListCategories({ actions }: PProps) {
                   </tr>
                 </thead>
                 <tbody className="max-h-[600px] w-full overflow-y-auto">
+                  {loading_categories ? (
+                    <tr>
+                      <td colSpan={5} className="p-3 text-sm text-center text-slate-500">
+                        <div className="flex flex-col items-center justify-center w-full h-64">
+                          <div className="loader"></div>
+                          <p className="mt-3 text-xl font-semibold">Cargando...</p>
+                        </div>
+                      </td>
+                    </tr>
+                  ) : (
+                    <>
+                      {paginated_categories.categoryProducts.length > 0 ? (
+                        <>
+                          {paginated_categories.categoryProducts.map((cat) => (
+                            <tr className="border-b border-slate-200" key={cat.id}>
+                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                {cat.id}
+                              </td>
+                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
+                                {cat.name}
+                              </td>
+                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                <div className="flex gap-6">
+                                  {cat.isActive && actions.includes('Editar') && (
+                                    <TooltipGlobal text="Editar el registro" color="primary">
+                                      <Button
+                                        onClick={() => handleEdit(cat)}
+                                        isIconOnly
+                                        style={{
+                                          backgroundColor: theme.colors.secondary,
+                                        }}
+                                      >
+                                        <EditIcon
+                                          style={{
+                                            color: theme.colors.primary,
+                                          }}
+                                          size={20}
+                                        />
+                                      </Button>
+                                    </TooltipGlobal>
+                                  )}
+                                  {actions.includes('Eliminar') && (
+                                    <>
+                                      {cat.isActive ? (
+                                        <DeletePopUp category={cat} />
+                                      ) : (
+                                        <TooltipGlobal text="Activar la categoría" color="primary">
+                                          <Button
+                                            onClick={() => handleActivate(cat.id)}
+                                            isIconOnly
+                                            style={global_styles().thirdStyle}
+                                          >
+                                            <RefreshCcw />
+                                          </Button>
+                                        </TooltipGlobal>
+                                      )}
+                                    </>
+                                  )}
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </>
+                      ) : (
+                        <tr>
+                          <td colSpan={5}>
+                            <div className="flex flex-col items-center justify-center w-full">
+                              <img src={NO_DATA} alt="X" className="w-32 h-32" />
+                              <p className="mt-3 text-xl">No se encontraron resultados</p>
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                    </>
+                  )}
+                </tbody>
+
+                {/* <tbody className="max-h-[600px] w-full overflow-y-auto">
                   {loading_categories ? (
                     <tr>
                       <td
@@ -322,6 +389,7 @@ function ListCategories({ actions }: PProps) {
                               </td>
                               <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                                 <div className="flex gap-6">
+                                  
                                   {actions.includes("Editar") && (
                                     <TooltipGlobal
                                       text="Editar el registro"
@@ -389,7 +457,7 @@ function ListCategories({ actions }: PProps) {
                       )}
                     </>
                   )}
-                </tbody>
+                </tbody> */}
               </table>
             </div>
           </>
@@ -411,18 +479,10 @@ function ListCategories({ actions }: PProps) {
               <div className="flex w-full mt-5 md:hidden">
                 <SmPagination
                   handleNext={() => {
-                    getPaginatedCategories(
-                      paginated_categories.nextPag,
-                      limit,
-                      search
-                    );
+                    getPaginatedCategories(paginated_categories.nextPag, limit, search);
                   }}
                   handlePrev={() => {
-                    getPaginatedCategories(
-                      paginated_categories.prevPag,
-                      limit,
-                      search
-                    );
+                    getPaginatedCategories(paginated_categories.prevPag, limit, search);
                   }}
                   currentPage={paginated_categories.currentPag}
                   totalPages={paginated_categories.totalPag}
@@ -434,14 +494,11 @@ function ListCategories({ actions }: PProps) {
       </div>
       <HeadlessModal
         size="w-[350px] md:w-[500px]"
-        title={selectedCategory ? "Editar categoría" : "Nueva categoría"}
+        title={selectedCategory ? 'Editar categoría' : 'Nueva categoría'}
         isOpen={modalAdd.isOpen}
         onClose={modalAdd.onClose}
       >
-        <AddCategory
-          closeModal={modalAdd.onClose}
-          category={selectedCategory}
-        />
+        <AddCategory closeModal={modalAdd.onClose} category={selectedCategory} />
       </HeadlessModal>
     </div>
   );
@@ -486,9 +543,7 @@ const DeletePopUp = ({ category }: Props) => {
         </PopoverTrigger>
         <PopoverContent>
           <div className="w-full p-5">
-            <p className="font-semibold text-gray-600 dark:text-white">
-              Eliminar {category.name}
-            </p>
+            <p className="font-semibold text-gray-600 dark:text-white">Eliminar {category.name}</p>
             <p className="mt-3 text-center text-gray-600 dark:text-white w-72">
               ¿Estas seguro de eliminar este registro?
             </p>

@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { ISupplierStore } from './types/supplier_store.types';
 import {
+  activate_supplier,
   add_supplier,
   delete_supplier,
   get_supplier,
@@ -24,8 +25,8 @@ export const useSupplierStore = create<ISupplierStore>((set, get) => ({
   supplier_list: [],
 
   saveSupplierPagination: (supplier_pagination) => set({ supplier_pagination }),
-  getSupplierPagination: (page, limit, name, email, isTransmitter) => {
-    get_supplier_pagination(page, limit, name, email, isTransmitter)
+  getSupplierPagination: (page, limit, name, email, isTransmitter, active) => {
+    get_supplier_pagination(page, limit, name, email, isTransmitter, active)
       .then((supplier) => set({ supplier_pagination: supplier.data }))
       .catch(() => {
         set({
@@ -96,6 +97,15 @@ export const useSupplierStore = create<ISupplierStore>((set, get) => ({
       .catch(() => {
         toast.warning(messages.error);
         return false;
+      });
+  },
+  activateSupplier(id) {
+    return activate_supplier(id)
+      .then(() => {
+        toast.success('Se activo la categoría');
+      })
+      .catch(() => {
+        toast.error('Error al activar la categoría');
       });
   },
 }));
