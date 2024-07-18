@@ -9,8 +9,8 @@ export const get_customers_pagination = (
   name = '',
   email = '',
   branchName = '',
-  active: number,
-  isTransmitter: number | string
+  isTransmitter: number | string,
+  active: number = 1
 ) => {
   // const user = get_user();
   const token = get_token() ?? '';
@@ -27,10 +27,10 @@ export const get_customers_pagination = (
       email +
       '&branchName=' +
       branchName +
-      '&active=' +
-      active +
       '&isTransmitter=' +
-      isTransmitter,
+      isTransmitter +
+      '&active=' +
+      active,
     {
       headers: {
         Authorization: `Bearer ${token}`,

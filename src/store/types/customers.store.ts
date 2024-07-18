@@ -11,12 +11,12 @@ export interface IUseCustomersStore {
     name: string,
     email: string,
     branchName: string,
-    active: number,
     isTransmitter: number | string,
+    active?: number
   ) => void;
   postCustomer: (payload: PayloadCustomer) => Promise<boolean>;
   patchCustomer: (payload: PayloadCustomer, id: number) => void;
   getCustomersList: () => void;
-  save_active_customer: (id: number) => void;
+  save_active_customer: (id: number) => Promise<void>;
   deleteCustomer: (id: number) => Promise<boolean>;
 }
