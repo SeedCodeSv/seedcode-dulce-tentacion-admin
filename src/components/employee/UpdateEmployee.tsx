@@ -39,7 +39,7 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
     }
     getCat013Municipios(codeDepartamento);
   }, [codeDepartamento, props.data?.address.departamento]);
-  const { patchEmployee } = useEmployeeStore();
+  const { patchEmployee ,verifyCode} = useEmployeeStore();
   const [dataCreate, setDataCreate] = useState<EmployeePayload>({
     firstName: props.data?.firstName || '',
     secondName: props.data?.secondName || '',
@@ -70,15 +70,24 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
     complement: props.data?.address.complemento || '',
     branchId: props.data?.branchId || 0,
   });
+
+  const [error, setError] = useState(false);
   const createEmployee = async () => {
+    const verify = await verifyCode(dataCreate.code);
+    if (!verify) {
+      toast.error('Ya existe un empleado con este código');
+      return;
+     }
     try {
-      await patchEmployee(dataCreate, props.data?.id || 0);
-      props.id(0);
+     const data = await patchEmployee(dataCreate, props.data?.id || 0);
+      if (data) {
+        props.id(0);
+      }
     } catch (error) {
       toast.error('Error al editar el empleado');
     }
   };
-  const generateCode = () => {
+  const generateCode = async () => {
     const name = dataCreate.firstName;
     const lastName = dataCreate.firstLastName;
     const initials = name.charAt(0).toUpperCase() + lastName.charAt(0).toUpperCase();
@@ -86,6 +95,14 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
     const code = `${initials}-${randomNum}`;
     dataCreate.code = code;
     setCodigoGenerado(code);
+    const verify = await verifyCode(code);
+    if (verify) {
+      toast.success('Código disponible');
+      setError(false);
+    }
+    else {
+      setError(true);
+    }
     return code;
   };
 
@@ -224,13 +241,15 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
                     <Input
                       onChange={(e) => setDataCreate({ ...dataCreate, code: e.target.value })}
                       name="code"
-                      defaultValue={props.data?.code}
+                      value={dataCreate.code}
                       labelPlacement="outside"
                       placeholder="Ingresa el codigo"
                       classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
                       variant="bordered"
                       label="Codigo Empleado"
                     />
+                    {error && (
+                      <p className="text-xs text-red-500">{"Este código ya existe"}</p>)}
                   </div>
                   <div className="mt-3">
                     <Button

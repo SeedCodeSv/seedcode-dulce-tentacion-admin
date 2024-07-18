@@ -90,7 +90,8 @@ function AddEmployee() {
   // });
 
   const createEmployee = async () => {
-    if (error) {
+    const verify = await verifyCode(dataCreate.code);
+    if (!verify) {
       toast.error('Ya existe un empleado con este código');
       return;
      }
@@ -314,7 +315,7 @@ function AddEmployee() {
                         label="Codigo Empleado"
                       />
                       {error && (
-                      <p className="text-xs text-red-500">{"este codigo ya existe"}</p>)}
+                      <p className="text-xs text-red-500">{"Este código ya existe"}</p>)}
                     </div>
                     <div className="mt-3">
                       <Button
