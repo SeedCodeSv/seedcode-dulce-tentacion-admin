@@ -50,11 +50,15 @@ function UpdateProduct({ product, onCloseModal }: Props) {
   const [error, setError] = useState(false);
 
   const handleSave = async () => {
+    const letvalue = dataUpdateProduct.code !== "N/A";
+
+    if (letvalue) {
   const verify = await verifyCode(dataUpdateProduct.code);
    if(!verify){
     toast.error('Codigo en uso');
    return;
    }
+  }
     patchProducts(dataUpdateProduct, product?.id || 0);
     onCloseModal();
   };

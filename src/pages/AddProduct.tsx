@@ -110,13 +110,16 @@ function AddProduct() {
   const navigate = useNavigate();
 
   const handleSave = async (values: ProductPayloadFormik) => {
+    const letvalue = values.code !== "N/A";
+    
+    if (letvalue) {
     const verify = await verifyCode(values.code);
     if(!verify){
     toast.error("Código  en uso");
     setError(true);
     return;
     }
-
+  }
     const send_payload = {
       ...values,
       priceA: values.priceA !== "" ? values.priceA : values.price,
