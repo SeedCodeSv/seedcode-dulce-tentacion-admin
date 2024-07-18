@@ -12,6 +12,7 @@ import Layout from '@/layout/Layout';
 import { ThemeContext } from '@/hooks/useTheme';
 import { useAuthStore } from '@/store/auth.store';
 import viewActions from '../../actions.json';
+
 const PermissionTable: React.FC = () => {
   const { OnGetViewasAction, viewasAction } = useViewsStore();
   const [selectedActions, setSelectedActions] = useState<{ [viewId: number]: string[] }>({});
@@ -70,36 +71,6 @@ const PermissionTable: React.FC = () => {
     }
   }, [viewasAction, roleActionsPage]);
 
-  const handleSelectAllActions = (viewId: number) => {
-    setSelectedActions((prev) => {
-      const actions = prev[viewId] || [];
-      const view = viewasAction.find((v) => v.view.id === viewId);
-      const allSelected = actions.length === (view?.actions ?? 0);
-
-      if (allSelected) {
-        const defaultActionsSet = new Set(defaultActions[viewId] || []);
-        const newActions = actions.filter((action) => defaultActionsSet.has(action));
-
-        return {
-          ...prev,
-          [viewId]: newActions,
-        };
-      } else {
-        const nonSelectedActions = view
-          ? viewActions.view_actions
-              .find((va) => va.view === view.name)
-              ?.actions.filter((action) => !defaultActions[viewId]?.includes(action)) ?? []
-          : [];
-        const newActions = [...actions, ...nonSelectedActions];
-
-        return {
-          ...prev,
-          [viewId]: newActions,
-        };
-      }
-    });
-  };
-
   const handleSelectAction = (viewId: number, action: string) => {
     setSelectedActions((prev) => {
       const actions = prev[viewId] || [];
@@ -133,7 +104,7 @@ const PermissionTable: React.FC = () => {
         .flatMap(([viewId, actions]) => {
           const numericViewId = parseInt(viewId);
           return actions
-            .filter((action) => !defaultActions[numericViewId]?.includes(action)) // Filtrar acciones que no son predeterminadas
+            .filter((action) => !defaultActions[numericViewId]?.includes(action))
             .map((action) => {
               const view = viewasAction.find((va) => va.view.id === numericViewId);
               if (view) {
@@ -161,71 +132,85 @@ const PermissionTable: React.FC = () => {
     }
   };
 
-  const { theme } = useContext(ThemeContext);
-const renderSection = (view: { id: number; name: string }) => {
-  const actions = viewActions.view_actions.find((va) => va.view === view.name)?.actions || [];
+  const toggleSelectAllActions = (viewId: number, actions: string[]) => {
+    setSelectedActions((prev) => {
+      const allSelected = selectedActions[viewId]?.length === actions.length;
+      const newActions = allSelected
+        ? defaultActions[viewId] // Keep default actions if deselecting all
+        : [...new Set([...actions, ...defaultActions[viewId]])]; // Add default actions if selecting all
 
-  return (
-    <div className="w-full sm:w-1/3 p-2" key={view.id}>
-      <div
-        className="mb-4 dark:bg-gray-900 bg-white shadow-lg border border-gray-300 rounded-lg overflow-hidden"
-        style={{ height: '300px', width: '100%' }}
-      >
+      return {
+        ...prev,
+        [viewId]: newActions,
+      };
+    });
+  };
+
+  const { theme } = useContext(ThemeContext);
+  const renderSection = (view: { id: number; name: string }) => {
+    const actions = viewActions.view_actions.find((va) => va.view === view.name)?.actions || [];
+
+    return (
+      <div className="w-full sm:w-1/3 p-2" key={view.id}>
         <div
-          style={{ backgroundColor: theme.colors.dark, color: theme.colors.primary }}
-          className="flex items-center justify-between px-4 py-3 text-white bg-teal-700"
+          className="mb-4 dark:bg-gray-900 bg-white shadow-lg border border-gray-300 rounded-lg overflow-hidden"
+          style={{ height: '300px', width: '100%' }}
         >
-          <p className="font-semibold">{view.name}</p>
-          <div className="flex items-center justify-center">
-            <span className="ml-2">Seleccionar todas</span>
-            <input
-              type="checkbox"
-              checked={selectedActions[view.id]?.length === actions.length}
-              onChange={() => handleSelectAllActions(view.id)}
-              className="w-5 h-5 ml-2 text-teal-400 bg-teal-700 border-teal-600 rounded form-checkbox focus:ring-teal-500"
-            />
+          <div
+            style={{ backgroundColor: theme.colors.dark, color: theme.colors.primary }}
+            className="flex items-center justify-between px-4 py-3 text-white bg-teal-700"
+          >
+            <p className="font-semibold">{view.name}</p>
+            <div className="flex items-center justify-center">
+              <span className="ml-2">Seleccionar todas</span>
+              <input
+                type="checkbox"
+                checked={selectedActions[view.id]?.length === actions.length}
+                onChange={() => toggleSelectAllActions(view.id, actions)}
+                className="w-5 h-5 ml-2 text-teal-400 bg-teal-700 border-teal-600 rounded form-checkbox focus:ring-teal-500"
+              />
+            </div>
           </div>
-        </div>
-        <div className="border-t-2 border-white"></div>
-        <div className="px-4 py-2 border-t border-teal-600">
-          <div className="dark:bg-gray-900 bg-white h-full">
-            <div className="grid grid-cols-2 gap-4 h-full">
-              {actions.length === 0 ? (
-                <div className="col-span-2 text-center py-4">
-                  <span className="dark:text-white">NO HAY ACCIONES ASIGNADAS</span>
-                </div>
-              ) : (
-                actions.map((permission, index) => (
-                  <div
-                    key={index}
-                    className={`flex items-center justify-center px-4 py-2 border-b dark:border-gray-600 cursor-pointer ${
-                      defaultActions[view.id]?.includes(permission) ? 'cursor-not-allowed' : ''
-                    }`}
-                    onClick={() =>
-                      !defaultActions[view.id]?.includes(permission) &&
-                      handleSelectAction(view.id, permission)
-                    }
-                  >
-                    <div className="flex items-center w-full justify-center">
-                      <input
-                        type="checkbox"
-                        checked={selectedActions[view.id]?.includes(permission)}
-                        onChange={() => handleSelectAction(view.id, permission)}
-                        className="form-checkbox h-5 w-5 text-teal-40 rounded focus:ring-teal-500"
-                      />
-                      <span className="dark:text-white flex ml-4 w-12">{permission}</span>
-                    </div>
+          <div className="border-t-2 border-white"></div>
+          <div className="px-4 py-2 border-t border-teal-600">
+            <div className="dark:bg-gray-900 bg-white h-full">
+              <div className="grid grid-cols-2 gap-4 h-full">
+                {actions.length === 0 ? (
+                  <div className="col-span-2 text-center py-4">
+                    <span className="dark:text-white">NO HAY ACCIONES ASIGNADAS</span>
                   </div>
-                ))
-              )}
+                ) : (
+                  actions.map((permission, index) => (
+                    <div
+                      key={index}
+                      className={`flex items-center justify-center px-4 py-2 border-b dark:border-gray-600 cursor-pointer ${
+                        defaultActions[view.id]?.includes(permission) ? 'cursor-not-allowed' : ''
+                      }`}
+                      onClick={() =>
+                        !defaultActions[view.id]?.includes(permission) &&
+                        handleSelectAction(view.id, permission)
+                      }
+                    >
+                      <div className="flex items-center w-full justify-center">
+                        <input
+                          type="checkbox"
+                          checked={selectedActions[view.id]?.includes(permission)}
+                          onChange={() => handleSelectAction(view.id, permission)}
+                          disabled={defaultActions[view.id]?.includes(permission)}
+                          className="form-checkbox h-5 w-5 text-teal-40 rounded focus:ring-teal-500"
+                        />
+                        <span className="dark:text-white flex ml-4 w-12">{permission}</span>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  );
-};
-
+    );
+  };
 
   return (
     <Layout title="Acciones por rol">
