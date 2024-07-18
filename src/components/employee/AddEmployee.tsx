@@ -46,7 +46,8 @@ function AddEmployee() {
     getCat013Municipios(codeDepartamento);
     GetStudyLevel();
   }, [codeDepartamento, codigoGenerado]);
-  const { postEmployee } = useEmployeeStore();
+  const { postEmployee, verifyCode } = useEmployeeStore();
+  const [error, setError] = useState(false);
   const [dataCreate, setDataCreate] = useState<EmployeePayload>({
     firstName: "",
     secondName: "",
@@ -89,18 +90,22 @@ function AddEmployee() {
   // });
 
   const createEmployee = async () => {
+    const verify = await verifyCode(dataCreate.code);
+    if (!verify) {
+      toast.error('Ya existe un empleado con este código');
+      return;
+     }
     try {
       const data = await postEmployee(dataCreate);
       if (data) {
         navigate("/employees");
-      } else {
-        toast.error("Error al crear el empleado");
-      }
+        setError(false);
+      } 
     } catch (error) {
       toast.error("Error al crear el empleado");
     }
   };
-  const generateCode = () => {
+  const generateCode = async () => {
     const name = dataCreate.firstName;
     const lastName = dataCreate.firstLastName;
     const initials =
@@ -109,6 +114,14 @@ function AddEmployee() {
     const code = `${initials}-${randomNum}`;
     dataCreate.code = code;
     setCodigoGenerado(code);
+    const verify = await verifyCode(code);
+    if (verify) {
+      toast.success('Código disponible');
+      setError(false);
+    }
+    else {
+      setError(true);
+    }
     return code;
   };
 
@@ -301,6 +314,8 @@ function AddEmployee() {
                         variant="bordered"
                         label="Codigo Empleado"
                       />
+                      {error && (
+                      <p className="text-xs text-red-500">{"Este código ya existe"}</p>)}
                     </div>
                     <div className="mt-3">
                       <Button

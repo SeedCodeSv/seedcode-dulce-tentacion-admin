@@ -7,6 +7,7 @@ import {
   get_employees_paginated,
   patch_employee,
   save_employee,
+  verify_code,
   
 } from '../services/employess.service';
 import { toast } from 'sonner';
@@ -102,14 +103,13 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
         toast.error('Error al activar el empleado');
       });
   },
-  // verifyCode(code) {
-  //   verify_code(code)
-  //     .then(({ data }) => {
-  //       toast.success('Código disponible');
-  //       return data.ok;
-  //     })
-  //     .catch(() => {
-  //       toast.error('Ya existe un empleado con este código');
-  //       return false;
-  //     });
+  verifyCode(code) {
+    return verify_code(code)
+      .then(() => {
+        return true;
+      })
+      .catch(() => {
+        return false;
+      });
+  }
 }));
