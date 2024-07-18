@@ -76,19 +76,19 @@ export const LayoutItems = () => {
     {
       name: 'Productos',
       path: '/products',
-      show: validateIfArrayContain(views, ['Productos']),
+      show: validateIfArrayContain && validateIfArrayContain(views, ['Productos']),
       icon: () => <Barcode size={15} />,
     },
     {
       name: 'Categorías',
       path: '/categories',
-      show: validateIfArrayContain(views, ['Categorias']),
+      show: validateIfArrayContain && validateIfArrayContain(views, ['Categorias']),
       icon: () => <Boxes size={15} />,
     },
     {
       name: 'Sub Categorías',
       path: '/subCategories',
-      show: validateIfArrayContain(views, ['Sub Categorias']),
+      show: validateIfArrayContain && validateIfArrayContain(views, ['Sub Categorias']),
       icon: () => <List size={15} />,
     },
     {
@@ -103,31 +103,31 @@ export const LayoutItems = () => {
     {
       name: 'Empleados',
       path: '/employees',
-      show: validateIfArrayContain(views, ['Empleados']),
+      show: validateIfArrayContain && validateIfArrayContain(views, ['Empleados']),
       icon: () => <UserCheck size={15} />,
     },
     {
       name: 'Clientes',
       path: '/clients',
-      show: validateIfArrayContain(views, ['Clientes']),
+      show: validateIfArrayContain && validateIfArrayContain(views, ['Clientes']),
       icon: () => <BookUser size={15} />,
     },
     {
       name: 'Usuarios',
       path: '/users',
-      show: validateIfArrayContain(views, ['Usuarios']),
+      show: validateIfArrayContain && validateIfArrayContain(views, ['Usuarios']),
       icon: () => <User size={15} />,
     },
     {
       name: 'Proveedores',
       path: '/suppliers',
-      show: validateIfArrayContain(views, ['Proveedores']),
+      show: validateIfArrayContain && validateIfArrayContain(views, ['Proveedores']),
       icon: () => <Truck size={15} />,
     },
     {
       name: 'Sucursales',
       path: '/branches',
-      show: validateIfArrayContain(views, ['Sucursales']),
+      show: validateIfArrayContain && validateIfArrayContain(views, ['Sucursales']),
       icon: () => <Store size={15} />,
     },
   ];
@@ -135,13 +135,13 @@ export const LayoutItems = () => {
     {
       name: 'Ventas por periodo',
       path: '/reports/sales-by-period',
-      show: validateIfArrayContain(views, ['Reportes']),
+      show: validateIfArrayContain && validateIfArrayContain(views, ['Reportes']),
       icon: () => <Calendar size={15} />,
     },
     {
       name: 'Ventas por productos',
       path: '/reports/sales-by-product',
-      show: validateIfArrayContain(views, ['Reportes']),
+      show: validateIfArrayContain && validateIfArrayContain(views, ['Reportes']),
       icon: () => <List size={15} />,
     },
   ];
@@ -150,19 +150,19 @@ export const LayoutItems = () => {
     {
       name: 'Nivel de Estudio',
       path: '/studyLevel',
-      show: validateIfArrayContain(views, ['Nivel de Estudio']),
+      show: validateIfArrayContain && validateIfArrayContain(views, ['Nivel de Estudio']),
       icon: () => <GraduationCap size={15} />,
     },
     {
       name: 'Estados del Empleado',
       path: '/statusEmployee',
-      show: validateIfArrayContain(views, ['Estados del Empleado']),
+      show: validateIfArrayContain && validateIfArrayContain(views, ['Estados del Empleado']),
       icon: () => <BookUser size={15} />,
     },
     {
       name: 'Tipo de Contratacion',
       path: '/contractTypes',
-      show: validateIfArrayContain(views, ['Tipo de Contratacion']),
+      show: validateIfArrayContain && validateIfArrayContain(views, ['Tipo de Contratacion']),
       icon: () => <Handshake size={15} />,
     },
   ];
@@ -171,19 +171,19 @@ export const LayoutItems = () => {
     {
       name: 'Corte Gran Z',
       path: '/cash-cuts-big-z',
-      show: validateIfArrayContain(views, ['Contabilidad']),
+      show: validateIfArrayContain && validateIfArrayContain(views, ['Contabilidad']),
       icon: () => <ClipboardCheck size={15} />,
     },
     {
       name: 'Corte X',
       path: '/cash-cuts-x',
-      show: validateIfArrayContain(views, ['Contabilidad']),
+      show: validateIfArrayContain && validateIfArrayContain(views, ['Contabilidad']),
       icon: () => <ClipboardCheck size={15} />,
     },
     {
       name: 'Corte Z',
       path: '/cash-cuts-z',
-      show: validateIfArrayContain(views, ['Contabilidad']),
+      show: validateIfArrayContain && validateIfArrayContain(views, ['Contabilidad']),
       icon: () => <ClipboardCheck size={15} />,
     },
   ];
@@ -778,22 +778,21 @@ export const LayoutItems = () => {
                 <p className="ml-2 text-sm 2xl:text-base">Categoría de gastos</p>
               </NavLink>
             )}
-
-            <li>
-              <NavLink
-                to="/actionRol"
-                className={({ isActive }) =>
-                  `group relative flex items-center gap-2.5 rounded-sm py-4 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700 ${
-                    isActive && 'bg-gray-200 dark:bg-gray-700'
-                  }`
-                }
-              >
-                <ShieldHalf />
-                Permisos
-              </NavLink>
-            </li>
           </ul>
         )}
+        <li>
+          <NavLink
+            to="/actionRol"
+            className={({ isActive }) =>
+              `group relative flex items-center gap-2.5 rounded-sm py-4 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700 ${
+                isActive && 'bg-gray-200 dark:bg-gray-700'
+              }`
+            }
+          >
+            <ShieldHalf />
+            Permisos
+          </NavLink>
+        </li>
       </>
 
       <>

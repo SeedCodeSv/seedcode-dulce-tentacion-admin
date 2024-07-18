@@ -89,7 +89,7 @@ export function getRandomColorsArray(): string[] {
 }
 
 export const validateIfArrayContain = (array: string[], items: string[]) => {
-  return array.some((item) => items.includes(item));
+  return array && array.some((item) => items.includes(item));
 }
 
 export const validate_pathname = (pathname: string, array_pathnames: string[]) => {
