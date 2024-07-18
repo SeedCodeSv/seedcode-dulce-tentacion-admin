@@ -47,13 +47,19 @@ function UpdateProduct({ product, onCloseModal }: Props) {
 
   const [dataUpdateProduct, setDataUpdateProduct] = useState<ProductPayload>(initialProductState);
   const [codigo, setCodigo] = useState(product?.code || '');
+  const [error, setError] = useState(false);
 
-  const handleSave = () => {
+  const handleSave = async () => {
+  const verify = await verifyCode(dataUpdateProduct.code);
+   if(!verify){
+    toast.error('Codigo en uso');
+   return;
+   }
     patchProducts(dataUpdateProduct, product?.id || 0);
     onCloseModal();
   };
 
-  const generarCodigo = () => {
+  const generarCodigo = async () => {
     const makeid = (length: number) => {
       let result = '';
       const characters = '0123456789';
@@ -69,6 +75,13 @@ function UpdateProduct({ product, onCloseModal }: Props) {
       ...prev,
       code: codigoGenerado,
     }));
+    const verify = await verifyCode(codigoGenerado);
+    if (verify) {
+      setError(false);
+    }
+    else {
+      setError(true);
+    }
   };
 
   const handleInputChange = (
@@ -83,14 +96,14 @@ function UpdateProduct({ product, onCloseModal }: Props) {
     }));
   };
 
-  const verifyCode = async () => {
+  const verifyCode = async (code: string) => {
     try {
-      const data = await verify_code_product(codigo);
+      const data = await verify_code_product(code);
       if (data.data.ok === true) {
-        toast.success('Codigo no registrado');
+        return true;
       }
     } catch (error) {
-      toast.error('Codigo en uso');
+      return false;
     }
   };
 
@@ -282,6 +295,8 @@ function UpdateProduct({ product, onCloseModal }: Props) {
                 classNames={{ label: 'font-semibold text-sm' }}
                 variant="bordered"
               />
+               {error && (
+                      <p className="text-xs text-red-500 font-semibold mt-1 ml-1">{"Este código ya existe"}</p>)}
             </div>
             <div className="mt-8 w-25">
               <Button
@@ -297,7 +312,7 @@ function UpdateProduct({ product, onCloseModal }: Props) {
                 Generar Código
               </Button>
             </div>
-            <div className="mt-8 w-25">
+            {/* <div className="mt-8 w-25">
               <Button
                 className="w-full text-sm font-semibold"
                 style={{
@@ -305,12 +320,12 @@ function UpdateProduct({ product, onCloseModal }: Props) {
                   color: theme.colors.primary,
                 }}
                 onClick={() => {
-                  verifyCode();
+                  verifyCode(codigo);
                 }}
               >
                 Verificar Código
               </Button>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

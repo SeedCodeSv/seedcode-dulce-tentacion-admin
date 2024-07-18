@@ -338,7 +338,7 @@ function ListSuppliers() {
               className="w-72 sm:w-44 dark:text-white"
               variant="bordered"
               label="Tipo de proveedor"
-              defaultSelectedKeys={['1']}
+              defaultSelectedKeys={['']}
               labelPlacement="outside"
               classNames={{
                 label: 'font-semibold',
@@ -348,14 +348,14 @@ function ListSuppliers() {
                 setTypeSupplier(e.target.value !== '' ? e.target.value : '');
               }}
             >
+              <SelectItem className="dark:text-white" key={''}>
+                Todos
+              </SelectItem>
               <SelectItem className="dark:text-white" key={'1'}>
                 Contribuyente
               </SelectItem>
               <SelectItem className="dark:text-white" key={'0'}>
                 No Contribuyente
-              </SelectItem>
-              <SelectItem className="dark:text-white" key={''}>
-                Todos
               </SelectItem>
             </Select>
             <Select

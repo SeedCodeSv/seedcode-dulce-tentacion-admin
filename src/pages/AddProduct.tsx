@@ -106,9 +106,17 @@ function AddProduct() {
   };
 
   const { postProducts } = useProductsStore();
+  const [error, setError] = useState(false);
   const navigate = useNavigate();
 
-  const handleSave = (values: ProductPayloadFormik) => {
+  const handleSave = async (values: ProductPayloadFormik) => {
+    const verify = await verifyCode(values.code);
+    if(!verify){
+    toast.error("Código  en uso");
+    setError(true);
+    return;
+    }
+
     const send_payload = {
       ...values,
       priceA: values.priceA !== "" ? values.priceA : values.price,
@@ -118,12 +126,12 @@ function AddProduct() {
         return { id: Number(branch) };
       }),
     };
-    postProducts(send_payload).then(() => {
+    await postProducts(send_payload).then(() => {
       navigate("/products");
     });
   };
 
-  const generarCodigo = () => {
+  const generarCodigo = async () => {
     const makeid = (length: number) => {
       let result = "";
       const characters = "0123456789";
@@ -139,7 +147,14 @@ function AddProduct() {
     };
 
     const codigoGenerado = makeid(12);
-
+    const verify = await verifyCode(codigoGenerado);
+    if (verify) {
+      setError(false);
+      // toast.success("Codigo no registrado");
+    }
+    else {
+      setError(true);
+    }
     return codigoGenerado;
   };
 
@@ -148,14 +163,12 @@ function AddProduct() {
       if (codigo !== "N/A") {
         const data = await verify_code_product(codigo);
         if (data.data.ok === true) {
-          toast.success("Codigo no registrado");
+          return true;
         }
         return data.data.ok;
       }
-
       return false;
     } catch (error) {
-      toast.error("Código  en uso");
       return false;
     }
   };
@@ -194,7 +207,7 @@ function AddProduct() {
                       label="Nombre"
                       placeholder="Ingresa el nombre"
                       onChange={handleChange("name")}
-                      onBlur={handleBlur("na me")}
+                      onBlur={handleBlur("name")}
                       value={values.name}
                       isInvalid={touched.name && !!errors.name}
                       errorMessage={touched.name && errors.name}
@@ -269,7 +282,8 @@ function AddProduct() {
                       }}
                     />
                   </div>
-                  <div className="flex items-end gap-5 py-2">
+                  <div >
+                    <div className="flex items-end gap-5 py-2">
                     <Input
                       variant="bordered"
                       labelPlacement="outside"
@@ -287,8 +301,8 @@ function AddProduct() {
                       }}
                     />
                     <Button
-                      onClick={() => {
-                        const code = generarCodigo();
+                      onClick={async() => {
+                        const code = await generarCodigo();
                         handleChange("code")(code);
                       }}
                       className="px-6"
@@ -296,13 +310,16 @@ function AddProduct() {
                     >
                       Generar
                     </Button>
-                    <Button
+                    </div>
+                    {error && (
+                      <p className="text-xs text-red-500 font-semibold ml-1">{"Este código ya existe"}</p>)}
+                    {/* <Button
                       className="px-6"
                       onClick={() => verifyCode(values.code)}
                       style={global_styles().warningStyles}
                     >
                       Verificar
-                    </Button>
+                    </Button> */}
                   </div>
                   <div className="grid grid-cols-2 gap-3 py-2">
                     <Input
