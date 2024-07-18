@@ -33,7 +33,7 @@ function MobileViewSupplier({
         pt={{
           grid: () => ({
             className:
-              "w-full grid dark:bg-transparent pb-10 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5 mt-5",
+              "w-full grid dark:bg-transparent pb-10 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5",
           }),
         }}
         color="surface"
@@ -81,6 +81,8 @@ const GridItem = (props: GridProps) => {
           </div>
           </div>
           <div className="flex justify-between mt-5 w-ful">
+          {supplier.isActive ? (
+           <>
           <TooltipGlobal text="Editar">
             <Button
               onClick={() => handleChangeSupplier(supplier, 'edit')}
@@ -101,8 +103,8 @@ const GridItem = (props: GridProps) => {
             </Button></TooltipGlobal>
             )}
             {DeletePopover({ supplier: supplier })}
-
-            {supplier.isActive === false && (
+</>
+           ): (
               <Button
                 onClick={() => {
                   handleActive(supplier.id);
@@ -128,7 +130,7 @@ const GridItem = (props: GridProps) => {
 };
 
 const ListItem = (props: GridProps) => {
-  const { supplier, handleChangeSupplier } = props;
+  const { supplier, handleChangeSupplier, handleActive } = props;
   return (
     <>
       <div className="flex w-full col-span-1 p-5 border shadow rounded-2xl ">
@@ -151,6 +153,8 @@ const ListItem = (props: GridProps) => {
           </div>
         </div>
         <div className="flex flex-col items-end justify-between w-full">
+        {supplier.isActive ? (
+         <>
         <TooltipGlobal text="Editar">
           <Button
             onClick={() => handleChangeSupplier(supplier, 'edit')}
@@ -171,7 +175,8 @@ const ListItem = (props: GridProps) => {
           </Button></TooltipGlobal>
            )}
           {DeletePopover({ supplier: supplier })}
-          {/* {supplier.isActive === false && (
+          </> 
+         ): (
             <Button
               onClick={() => {
                 handleActive(supplier.id);
@@ -181,7 +186,7 @@ const ListItem = (props: GridProps) => {
             >
               <BadgeCheck size={20} />
             </Button>
-          )} */}
+          )} 
         </div>
       </div>
     </>

@@ -27,6 +27,7 @@ import {
   Table as ITable,
   Mail,
   Filter,
+  BadgeCheck,
 } from 'lucide-react';
 // import { DataTable } from 'primereact/datatable';
 // import { Column } from 'primereact/column';
@@ -136,9 +137,7 @@ function ListSuppliers() {
     setSelectedTitle('');
   };
 
-  // const handeleActive = (id: number) => {
-  //   setActive(!active);
-  // };
+
 
   // const emptyMessage = (
   //   <div className="flex flex-col items-center justify-center w-full">
@@ -333,7 +332,8 @@ function ListSuppliers() {
             </div>
           </div>
 
-          <div className="flex flex-row gap-5 items-center justify-between w-full mb-5 mt-3">
+          <div className="flex flex-col md:flex-row gap-5 justify-between w-full mb-5 mt-3">
+            <div className="flex flex-row gap-5 items-center w-full">
             <Select
               className="w-72 sm:w-44 dark:text-white"
               variant="bordered"
@@ -394,6 +394,7 @@ function ListSuppliers() {
                 100
               </SelectItem>
             </Select>
+            </div>
             <div className="flex items-center">
               <Switch
                 onValueChange={(active) => setActive(active)}
@@ -562,6 +563,8 @@ function ListSuppliers() {
                           </td>
                           <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                             <div className="flex w-full gap-5">
+                            {item.isActive ? (
+                              <>
                               <TooltipGlobal text="Editar">
                                 <Button
                                   onClick={() => handleChangeSupplier(item, 'edit')}
@@ -573,6 +576,7 @@ function ListSuppliers() {
                                   <EditIcon style={{ color: theme.colors.primary }} size={20} />
                                 </Button>
                               </TooltipGlobal>
+                              <DeletePopover supplier={item} />
                               {item.esContribuyente === false && (
                                 <TooltipGlobal text="Cambiar el tipo de proveedor">
                                   <Button
@@ -589,8 +593,10 @@ function ListSuppliers() {
                                   </Button>
                                 </TooltipGlobal>
                               )}
-                              {/* {item.isActive === false && (
-                        <Button
+                              
+                              </>
+                             ):(
+                                <Button
                           onClick={() => {
                             handleActivate(item.id);
                           }}
@@ -601,8 +607,7 @@ function ListSuppliers() {
                         >
                           <BadgeCheck style={{ color: theme.colors.primary }} size={20} />
                         </Button>
-                      )} */}
-                              <DeletePopover supplier={item} />
+                      )}
                             </div>
                           </td>
                         </tr>

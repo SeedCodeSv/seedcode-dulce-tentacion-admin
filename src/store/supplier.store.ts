@@ -90,7 +90,7 @@ export const useSupplierStore = create<ISupplierStore>((set, get) => ({
   deleteSupplier: async (id) => {
     return await delete_supplier(id)
       .then(({ data }) => {
-        get().getSupplierPagination(1, 5, '', '', 1);
+        get().getSupplierPagination(1, 5, '', '','', 1);
         toast.success(messages.success);
         return data.ok;
       })
@@ -102,10 +102,10 @@ export const useSupplierStore = create<ISupplierStore>((set, get) => ({
   activateSupplier(id) {
     return activate_supplier(id)
       .then(() => {
-        toast.success('Se activo la categoría');
+        toast.success('Se activo el proveedor');
       })
       .catch(() => {
-        toast.error('Error al activar la categoría');
+        toast.error('Error al activar el proveedor');
       });
   },
 }));
