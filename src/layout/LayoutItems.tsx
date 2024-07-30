@@ -63,11 +63,6 @@ export const LayoutItems = () => {
       return 22;
     }
   }, [windowSize.width]);
-  // const [isContabilityOpen, setIsContabilityOpen] = useState(false);
-
-  // const toggleDropdowContabilidad = () => {
-  //   setIsContabilityOpen(!isContabilityOpen);
-  // };
 
   const location = useLocation();
   const { pathname } = location;
@@ -594,146 +589,6 @@ export const LayoutItems = () => {
               </>
             )}
 
-            {/* Gestion de planillas ----------------------------------------------------------------- */}
-
-            {/* {views.includes('Tipo de Contratacion') ||
-            (views && views.includes('Estados del Empleado')) ||
-            views.includes('Nivel de Estudio') ? (
-              <div className="flex flex-col items-center justify-start w-full px-6">
-                <button
-                  onClick={toggleDropdownMenu2}
-                  className="flex items-center w-full py-3 space-x-3 text-left text-black focus:outline-none focus:text-black"
-                >
-                  <FolderKanban className="dark:text-white" size={iconSize} />
-                  <p className="text-sm font-semibold dark:text-white 2xl:text-base">
-                    Gestión de planillas
-                  </p>
-                  <ChevronDown className="items-end justify-end dark:text-white" size={iconSize} />
-                </button>
-                <div
-                  id="menu2"
-                  className={`flex flex-col w-full h-[700px] pb-1 overflow-hidden transition-all duration-500 ${
-                    isMenuOpen2 ? 'xl:max-h-36 max-h-36' : 'max-h-0'
-                  }`}
-                >
-                  <div className="py-1">
-                    {views.includes('Nivel de Estudio') && (
-                      <NavLink
-                        to={'/studyLevel'}
-                        className={({ isActive }) =>
-                          (isActive
-                            ? 'font-semibold bg-gray-300 dark:bg-gray-700'
-                            : 'text-coffee-brown font-semibold border-white') +
-                          ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
-                        }
-                      >
-                        <GraduationCap size={iconSize} />
-                        <p className="ml-2 text-sm 2xl:text-base">Nivel de estudio</p>
-                      </NavLink>
-                    )}
-
-                    {views.includes('Estados del Empleado') && (
-                      <NavLink
-                        to={'/statusEmployee'}
-                        className={({ isActive }) =>
-                          (isActive
-                            ? 'font-semibold bg-gray-300 dark:bg-gray-700'
-                            : 'text-coffee-brown font-semibold border-white') +
-                          ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
-                        }
-                      >
-                        <BookUser size={iconSize} />
-                        <p className="ml-2 text-sm 2xl:text-base">Estado del empleado</p>
-                      </NavLink>
-                    )}
-                    {views.includes('Tipo de Contratacion') && (
-                      <NavLink
-                        to={'/contractTypes'}
-                        className={({ isActive }) =>
-                          (isActive
-                            ? 'font-semibold bg-gray-300 dark:bg-gray-700'
-                            : 'text-coffee-brown font-semibold border-white') +
-                          ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
-                        }
-                      >
-                        <Handshake size={iconSize} />
-                        <p className="ml-2 text-sm 2xl:text-base">Tipo de contratacion</p>
-                      </NavLink>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ) : null} */}
-            {/* fin de gestion de planillas -------------------------------------------------------------*/}
-            <>
-              {/* <div className="flex flex-col items-center justify-start w-full px-6 ">
-                <button
-                  onClick={toggleDropdowContabilidad}
-                  className="flex items-center w-full py-3 space-x-3 text-left text-black focus:outline-none focus:text-black"
-                >
-                  <FolderPen className="dark:text-white" size={iconSize} />
-                  <p className="text-sm font-semibold dark:text-white 2xl:text-base whitespace-nowrap">
-                    Contabilidad
-                  </p>
-                  <ChevronDown
-                    className="items-end justify-end dark:text-white h"
-                    size={iconSize}
-                  />
-                </button>
-                <div
-                  id="menuContability"
-                  className={`flex flex-col w-full pb-1 overflow-hidden transition-all duration-500 ${
-                    isContabilityOpen ? 'max-h-52' : 'max-h-0'
-                  }`}
-                >
-                  <div className="py-1">
-                    <NavLink
-                      to={'/cash-cuts-big-z'}
-                      className={({ isActive }) => {
-                        return (
-                          (isActive
-                            ? 'font-semibold bg-gray-white'
-                            : 'text-coffee-brown font-semibold border-white') +
-                          ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
-                        );
-                      }}
-                    >
-                      <ClipboardCheck size={iconSize} />
-                      <p className="ml-2 text-sm 2xl:text-base">Corte Gran Z</p>
-                    </NavLink>
-                    <NavLink
-                      to={'/cash-cuts-x'}
-                      className={({ isActive }) => {
-                        return (
-                          (isActive
-                            ? 'font-semibold bg-gray-white'
-                            : 'text-coffee-brown font-semibold border-white') +
-                          ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
-                        );
-                      }}
-                    >
-                      <ClipboardCheck size={iconSize} />
-                      <p className="ml-2 text-sm 2xl:text-base">Corte de X</p>
-                    </NavLink>
-
-                    <NavLink
-                      to={'/cash-cuts-z'}
-                      className={({ isActive }) => {
-                        return (
-                          (isActive
-                            ? 'font-semibold bg-gray-white'
-                            : 'text-coffee-brown font-semibold border-white') +
-                          ' flex items-center w-full py-3 px-2 cursor-pointer rounded-lg hover:text-coffee-green hover:font-semibold dark:text-white'
-                        );
-                      }}
-                    >
-                      <ClipboardCheck size={iconSize} />
-                      <p className="ml-2 text-sm 2xl:text-base">Corte de Z</p>
-                    </NavLink>
-                  </div>
-                </div>
-              </div> */}
-            </>
             {views.includes('Categoría de gastos') && (
               <NavLink
                 to={'/expensesCategories'}
@@ -778,68 +633,21 @@ export const LayoutItems = () => {
                 <p className="ml-2 text-sm 2xl:text-base">Categoría de gastos</p>
               </NavLink>
             )}
+            <li>
+              <NavLink
+                to="/actionRol"
+                className={({ isActive }) =>
+                  `group relative flex items-center gap-2.5 rounded-sm py-4 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700 ${
+                    isActive && 'bg-gray-200 dark:bg-gray-700'
+                  }`
+                }
+              >
+                <ShieldHalf />
+                Permisos
+              </NavLink>
+            </li>
           </ul>
         )}
-        <li>
-          <NavLink
-            to="/actionRol"
-            className={({ isActive }) =>
-              `group relative flex items-center gap-2.5 rounded-sm py-4 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700 ${
-                isActive && 'bg-gray-200 dark:bg-gray-700'
-              }`
-            }
-          >
-            <ShieldHalf />
-            Permisos
-          </NavLink>
-        </li>
-      </>
-
-      <>
-        {/* <NavLink
-          to={'/actionRol'}
-          className={({ isActive }) => {
-            return (
-              (isActive
-                ? 'text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green'
-                : 'text-coffee-brown font-semibold border-white') +
-              ' flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
-            );
-          }}
-          style={({ isActive }) => {
-            return {
-              borderLeftColor: isActive ? theme.colors.dark : 'transparent',
-              borderLeftWidth: 5,
-            };
-          }}
-        >
-          <ShieldHalf size={iconSize} />
-          <p className="ml-2 text-sm 2xl:text-base">Permisos</p>
-        </NavLink> */}
-
-        {/* Descuentos */}
-        {/* {views && views.includes('Descuentos') && (
-          <NavLink
-            to={'/discounts'}
-            className={({ isActive }) => {
-              return (
-                (isActive
-                  ? 'text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green'
-                  : 'text-coffee-brown font-semibold border-white') +
-                ' flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
-              );
-            }}
-            style={({ isActive }) => {
-              return {
-                borderLeftColor: isActive ? theme.colors.dark : 'transparent',
-                borderLeftWidth: 5,
-              };
-            }}
-          >
-            <TicketPercent size={iconSize} />
-            <p className="ml-2 text-sm 2xl:text-base">Descuentos</p>
-          </NavLink>
-        )} */}
       </>
 
       <div
