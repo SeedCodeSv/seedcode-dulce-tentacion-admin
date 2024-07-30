@@ -161,7 +161,7 @@ const ListClients = ({ actions }: Props) => {
 
   const handleActivate = (id: number) => {
     save_active_customer(id).then(() => {
-      getCustomersPagination(1, limit, "", "", "", "", active ? 1 : 0);
+      getCustomersPagination(1, limit, '', '', '', '', active ? 1 : 0);
     });
   };
 
@@ -849,6 +849,7 @@ export const BottomAdd = ({ setTypeClient, openModal }: PopoverAddProps) => {
       <PopoverContent aria-labelledby="popover-title">
         <div className="flex flex-col gap-5 p-3 bg-white dark:bg-zinc-900">
           <Button
+            type="button"
             onClick={() => {
               onClose();
               openModal();
@@ -859,9 +860,10 @@ export const BottomAdd = ({ setTypeClient, openModal }: PopoverAddProps) => {
               color: theme.colors.primary,
             }}
           >
-            Cliente normal
+            Cliente consumidor final
           </Button>
           <Button
+            type="button"
             onClick={() => {
               onClose();
               openModal();
@@ -910,14 +912,16 @@ export const BottomSm = ({ setTypeClient, openModal }: PopoverAddProps) => {
               openModal();
               setTypeClient('normal');
             }}
+            type="button"
             style={{
               backgroundColor: theme.colors.secondary,
               color: theme.colors.primary,
             }}
           >
-            Cliente normal
+            Cliente consumidor final
           </Button>
           <Button
+            type="button"
             onClick={() => {
               onClose();
               openModal();
