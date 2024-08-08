@@ -43,9 +43,9 @@ export const salesReportStore = create<ISalesReportStore>((set) => ({
   total_sales_product: 0,
   loading_sales_products: false,
   loading_sales_by_subcategory: false,
-  getSalesProducts(startDate, endDate, branch) {
+  getSalesProducts(id, startDate, endDate, branch) {
     set({ loading_sales_products: true, graphic_sub_category_products_for_dates: [] });
-    get_sales_by_product(startDate, endDate, branch)
+    get_sales_by_product(id, startDate, endDate, branch)
       .then(({ data }) => {
         set({
           sales_products: data.sales,
@@ -70,8 +70,8 @@ export const salesReportStore = create<ISalesReportStore>((set) => ({
         set({ graphic_sub_category_products_for_dates: [], loading_sales_by_subcategory: false });
       });
   },
-  getGraphicForCategoryProductsForDates(startDate, endDate, branch) {
-    get_graphic_for_category_products_for_dates(startDate, endDate, branch)
+  getGraphicForCategoryProductsForDates(id,startDate, endDate, branch) {
+    get_graphic_for_category_products_for_dates(id,startDate, endDate, branch)
       .then(({ data }) => {
         set({ graphic_for_category_products_for_dates: data.sales });
       })

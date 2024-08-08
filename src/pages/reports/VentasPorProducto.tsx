@@ -13,6 +13,7 @@ import TooltipGlobal from '@/components/global/TooltipGlobal';
 import { Filter, SearchIcon } from 'lucide-react';
 import BottomDrawer from '@/components/global/BottomDrawer';
 import { ThemeContext } from '@/hooks/useTheme';
+import { useAuthStore } from '@/store/auth.store';
 
 function VentasPorProducto() {
   const [startDate, setStartDate] = useState(formatDate());
@@ -21,6 +22,7 @@ function VentasPorProducto() {
   const [typePayment, setTypePayment] = useState('');
   const { theme } = useContext(ThemeContext);
   const { getBranchesList, branch_list } = useBranchesStore();
+  const { user } = useAuthStore();
 
   const {
     getGraphicForCategoryProductsForDates,
@@ -46,11 +48,17 @@ function VentasPorProducto() {
 
   const handleSearch = (searchParam: string | undefined) => {
     getGraphicForCategoryProductsForDates(
+      Number(user?.correlative.branch.transmitterId),
       searchParam ?? startDate,
       searchParam ?? endDate,
       searchParam ?? typePayment
     );
-    getSalesProducts(startDate, endDate, typePayment);
+    getSalesProducts(
+      Number(user?.correlative.branch.transmitterId),
+      startDate,
+      endDate,
+      typePayment
+    );
   };
   return (
     <Layout title="Ventas por Producto">

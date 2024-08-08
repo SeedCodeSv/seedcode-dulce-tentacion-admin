@@ -14,9 +14,10 @@ export const get_customers_pagination = (
 ) => {
   // const user = get_user();
   const token = get_token() ?? '';
+  const user = get_user();
   return axios.get<IGetCustomerPagination>(
     API_URL +
-      `/customers/all-paginated` +
+      `/customers/all-paginated/${user?.correlative.branch.transmitterId}` +
       '?page=' +
       page +
       '&limit=' +

@@ -67,9 +67,9 @@ export const SideBar = (props: Props) => {
       ) : (
         <LgLayout items={() => <LayoutItems />} />
       )}
-      <div className="flex flex-col w-full xl:ml-64">
+      <div className="flex flex-col w-full xl:ml-80">
         <div
-          className="fixed top-0 z-[30] w-screen left-0 xl:pl-72 shadow h-[70px] flex justify-between items-center lg:flex lg:justify-between sm:grid-cols-1 md:grid-cols-1 sm:px-1 mb:px-1 px-6"
+          className="fixed top-0 z-[30] w-screen left-0 xl:pl-[22rem] shadow h-[70px] flex justify-between items-center lg:flex lg:justify-between sm:grid-cols-1 md:grid-cols-1 sm:px-1 mb:px-1 px-6"
           style={{
             backgroundColor: theme.colors.dark,
             color: theme.colors.primary,

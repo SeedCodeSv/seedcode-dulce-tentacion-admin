@@ -8,10 +8,10 @@ import {
   patch_employee,
   save_employee,
   verify_code,
-  
 } from '../services/employess.service';
 import { toast } from 'sonner';
 import { messages } from '../utils/constants';
+import { get_user } from '@/storage/localStorage';
 
 export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
   employee_paginated: {
@@ -29,9 +29,9 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
   saveEmployeesPaginated(employee_paginated) {
     set({ employee_paginated });
   },
-  getEmployeesPaginated(page, limit, firstName,firstLastName, branch, phone, active = 1) {
+  getEmployeesPaginated(id, page, limit, firstName, firstLastName, branch, phone, active = 1) {
     set({ loading_employees: true });
-    get_employees_paginated(page, limit, firstName,firstLastName, branch, phone, active)
+    get_employees_paginated(id, page, limit, firstName, firstLastName, branch, phone, active)
       .then(({ data }) => set({ employee_paginated: data, loading_employees: false }))
       .catch(() => {
         set({
@@ -52,7 +52,16 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
   postEmployee(payload) {
     return save_employee(payload)
       .then(({ data }) => {
-        get().getEmployeesPaginated(1, 5, '', '','', '');
+        const user = get_user();
+        get().getEmployeesPaginated(
+          Number(user?.correlative.branch.transmitterId),
+          1,
+          5,
+          '',
+          '',
+          '',
+          ''
+        );
         toast.success(messages.success);
         return data.ok;
       })
@@ -64,7 +73,16 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
   patchEmployee(payload, id) {
     return patch_employee(payload, id)
       .then(({ data }) => {
-        get().getEmployeesPaginated(1, 5, '', '','', '');
+        const user = get_user();
+        get().getEmployeesPaginated(
+          Number(user?.correlative.branch.transmitterId),
+          1,
+          5,
+          '',
+          '',
+          '',
+          ''
+        );
         toast.success(messages.success);
         return data.ok;
       })
@@ -76,7 +94,16 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
   deleteEmployee(id) {
     return delete_employee(id)
       .then(({ data }) => {
-        get().getEmployeesPaginated(1, 5, '', '','', '');
+        const user = get_user();
+        get().getEmployeesPaginated(
+          Number(user?.correlative.branch.transmitterId),
+          1,
+          5,
+          '',
+          '',
+          '',
+          ''
+        );
         toast.success(messages.success);
         return data.ok;
       })
@@ -111,5 +138,5 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
       .catch(() => {
         return false;
       });
-  }
+  },
 }));
