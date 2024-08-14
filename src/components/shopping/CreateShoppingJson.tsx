@@ -85,7 +85,7 @@ const JSONMode = () => {
           toast.success('Información guardada correctamente');
           navigate('/shopping');
         } else {
-          if (isErrorSupplier(data)) {
+          if (isErrorSupplier(data as unknown as { supplier: boolean })) {
             toast.error('Proveedor no encontrado');
             setProviderModal(true);
           }

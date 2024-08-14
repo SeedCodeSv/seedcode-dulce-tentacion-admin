@@ -41,6 +41,7 @@ import { JSX } from 'react/jsx-runtime';
 import CushCatsBigZ from '@/pages/CashCutsBigZ';
 import CashCutsX from '@/pages/CashCutsX';
 import CushCatsZ from '@/pages/CashCutsZ';
+import ShoppingBookIVA from '@/pages/iva/ShoppingBookIVA';
 
 const Loading = () => {
   return <div>Cargando...</div>;
@@ -213,6 +214,10 @@ export const router = () => {
     {
       path: '/cash-cuts-z',
       element: checkAuthorization('Contabilidad', <CushCatsZ />),
+    },
+    {
+      path: "iva/shopping-book",
+      element: <ShoppingBookIVA />,
     },
     {
       path: '*',
