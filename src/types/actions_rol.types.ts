@@ -1,17 +1,15 @@
-
-import { IAction } from './actions.types';
+import { Role } from './roles.types';
+import { IAction, View } from './actions.types';
 export interface IActionRol {
   id: number;
   role: Role;
   action: IAction;
   isActive: boolean;
-
 }
 export interface IGetActionRolList {
   ok: boolean;
   roleActions: IActionRol[];
   status: number;
-  role?: Role;
 }
 export interface IAddActionRol {
   roleId: number;
@@ -19,35 +17,11 @@ export interface IAddActionRol {
     id: number;
   }[];
 }
-
-export interface RoleViewAction {
-  name: string;
-  roleId: number;
-  view: { name: string; actions: { name: string }[] }[];
-}
-
-
-
-
-export interface ICreateRol {
-  name : string;
-}
-
-
-
-
-
-
-
-
-
-
 export interface IResponseDataRoleActions {
   ok: boolean;
   roleActions: RoleAction[];
   status: number;
 }
-
 export interface RoleAction {
   id: number;
   isActive: boolean;
@@ -59,19 +33,21 @@ export interface Action {
   id: number;
   name: string;
   isActive: boolean;
-  view: View; 
+  view: View;
   actionId: number;
 }
 
-export interface View {
-  id: number;
+export interface RoleViewAction {
   name: string;
-  type: string;
-  isActive: boolean;
+  roleId: number;
+  view: { name: string; actions: { name: string }[] }[];
 }
 
-export interface Role {
-  id: number;
+export interface IUpdateActions {
   name: string;
-  isActive: boolean;
+  viewId: number;
+}
+
+export interface IUpdateActionDto {
+  actions: IUpdateActions[];
 }

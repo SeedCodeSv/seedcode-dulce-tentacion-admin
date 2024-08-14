@@ -14,7 +14,7 @@ export interface IActionPayload {
 export interface ICreateRoleActionPayload {
   actionIds: { id: number }[];
   roleId: number;
-};
+}
 export interface IGetActionRol {
   ok: boolean;
   actionsId: IAction[];
@@ -34,13 +34,15 @@ export interface GroupedAction {
 }
 
 export interface ICraeteView {
-  name : string 
-  type : string
+  name: string;
+  type: string;
 }
-
+export interface CreateViewDto {
+  views: ICraeteView[];
+}
 export interface Root {
   ok: boolean;
-  view: View;
+  views: View[];
   status: number;
 }
 

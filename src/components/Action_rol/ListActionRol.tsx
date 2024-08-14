@@ -1,329 +1,148 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { Check } from 'lucide-react';
-import { useViewsStore } from '@/store/views.store';
-import { useNavigate } from 'react-router';
-import { create_action_by_view, create_view } from '@/services/actions.service';
 import { toast } from 'sonner';
-import AddButton from '../global/AddButton';
+import { useViewsStore } from '../../store/views.store';
+import { create_view, create_action_by_view } from '../../services/actions.service';
+import permissionss from '../../actions.json';
+import PermissionAddActionRol from './AddActionRol';
+import { useActionsRolStore } from '@/store/actions_rol.store';
+import { IUpdateActions } from '@/types/actions_rol.types';
 import { Button } from '@nextui-org/react';
 import { ThemeContext } from '@/hooks/useTheme';
-import permissionss from '../../actions.json';
 
 const PermissionTable: React.FC = () => {
   const { OnGetViewasAction, viewasAction } = useViewsStore();
-  const [selectedActions, setSelectedActions] = useState<{ [viewId: number]: string[] }>({});
-  const [defaultActions, setDefaultActions] = useState<{ [viewId: number]: string[] }>({});
-  const [selectedViewId, setSelectedViewId] = useState<number | null>(null);
-  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
-  const [selectedViewName, setSelectedViewName] = useState('');
-  const [newViewActions, setNewViewActions] = useState<string[]>([]);
-  const navigate = useNavigate();
+  const { OnUpdateActions } = useActionsRolStore();
+  const hasExecuted = useRef(false);
 
   useEffect(() => {
     OnGetViewasAction();
   }, [OnGetViewasAction]);
 
-  useEffect(() => {
-    if (viewasAction) {
-      const initialSelectedActions: { [viewId: number]: string[] } = {};
-      const initialDefaultActions: { [viewId: number]: string[] } = {};
-      viewasAction.forEach(({ view, actions }) => {
-        initialSelectedActions[view.id] = actions.name;
-        initialDefaultActions[view.id] = actions.name;
+  const handleCreateOrUpdateViewsAndActions = async () => {
+    if (hasExecuted.current) return;
+    hasExecuted.current = true;
+    try {
+      const viewsInStore = new Set(viewasAction.map(({ view }) => view.name));
+      const viewsToCreate = permissionss.view_actions.filter(({ view }) => !viewsInStore.has(view));
+
+      if (viewsToCreate.length > 0) {
+        const response = await create_view({
+          views: viewsToCreate.map(({ view }) => ({
+            name: view,
+            type: 'Drawer',
+          })),
+        });
+
+        if (response.data.ok === true && response.data.views) {
+          await Promise.all(
+            response.data.views.map(async (newView, index) => {
+              const actions = viewsToCreate[index].actions;
+
+              if (newView && newView.id) {
+                try {
+                  await create_action_by_view({
+                    viewId: newView.id,
+                    names: actions.map((name) => ({ name })),
+                  });
+                } catch (error) {
+                  console.error('Error al crear acciones para la vista:', newView.name, error);
+                }
+              } else {
+                console.error('La nueva vista no tiene un ID válido:', newView);
+              }
+            })
+          );
+        
+        } else {
+         
+        }
+      }
+
+      const actionsToUpdate: IUpdateActions[] = [];
+      viewasAction.forEach(({ view }) => {
+        const permissionView = permissionss.view_actions.find(
+          (permission) => permission.view === view.name
+        );
+
+        if (permissionView) {
+          const existingActions = new Set(
+            viewasAction
+              .filter((va) => va.view.id === view.id)
+              .flatMap((va) => va.actions.name)
+          );
+
+          const newActions = permissionView.actions.filter((action) => !existingActions.has(action));
+
+          if (newActions.length > 0) {
+            newActions.forEach((action) => {
+              actionsToUpdate.push({
+                viewId: view.id,
+                name: action,
+              });
+            });
+          }
+        }
       });
-      setSelectedActions(initialSelectedActions);
-      setDefaultActions(initialDefaultActions);
+
+      if (actionsToUpdate.length > 0) {
+        await OnUpdateActions({ actions: actionsToUpdate });
+       
+      } else {
+        
+      }
+    } catch (error) {
+    
+      toast.error('Error al crear o actualizar las vistas y acciones');
+      hasExecuted.current = false; 
+    }
+  };
+
+  useEffect(() => {
+    if (viewasAction.length > 0) {
+      handleCreateOrUpdateViewsAndActions();
     }
   }, [viewasAction]);
 
-const handleSelectAction = (viewId: number, action: string) => {
-  if (defaultActions[viewId]?.includes(action)) {
-    return;
-  }
-  setSelectedActions((prev) => {
-    const actions = prev[viewId] || [];
-    return {
-      ...prev,
-      [viewId]: actions.includes(action)
-        ? actions.filter((a) => a !== action)
-        : [...actions, action],
-    };
-  });
-};
-
-
-  const handleSelectNewViewAction = (action: string) => {
-    setNewViewActions((prev) =>
-      prev.includes(action) ? prev.filter((a) => a !== action) : [...prev, action]
-    );
-  };
-
-  const handleOpenViewModal = () => {
-    setIsViewModalOpen(true);
-  };
-
-  const handleSelectAllActions = (viewId: number) => {
-    const viewName = viewasAction.find((view) => view.view.id === viewId)?.view.name;
-    const allActions = permissionss.view_actions.find((va) => va.view === viewName)?.actions || [];
-    const currentSelectedActions = selectedActions[viewId] || [];
-
-    // Check if all actions are already selected
-    if (currentSelectedActions.length === allActions.length) {
-      setSelectedActions((prev) => ({
-        ...prev,
-        [viewId]: [],
-      }));
-    } else {
-      setSelectedActions((prev) => ({
-        ...prev,
-        [viewId]: allActions,
-      }));
-    }
-  };
-
-
-  const handleSelectView = (viewName: string) => {
-    if (selectedViewName === viewName) {
-      setSelectedViewName('');
-      setNewViewActions([]);
-    } else {
-      setSelectedViewName(viewName);
-      setNewViewActions(
-        permissionss.view_actions.find((va) => va.view === viewName)?.actions || []
-      );
-    }
-  };
-
-  const handleSubmitCreateView = async () => {
-    try {
-      const response = await create_view({
-        name: selectedViewName,
-        type: 'Drawer',
-      });
-
-      const newView = response.data;
-
-      if (newView && newView.view.id) {
-        await create_action_by_view({
-          viewId: newView.view.id,
-          names: newViewActions.map((name) => ({ name })),
-        });
-      }
-      toast.success('Vista creada correctamente con las acciones asignadas');
-      OnGetViewasAction();
-      setIsViewModalOpen(false);
-      setSelectedViewName('');
-      setNewViewActions([]);
-    } catch (error) {
-      toast.error('Error al crear la vista');
-    }
-  };
-
-  const handleSubmit = async () => {
-    const payload = Object.keys(selectedActions).map((viewId) => ({
-      viewId: Number(viewId),
-      names: selectedActions[Number(viewId)] || [],
-    }));
-    try {
-      await Promise.all(
-        payload.map((item) =>
-          create_action_by_view({
-            viewId: item.viewId,
-            names: item.names
-              .filter((name) => !defaultActions[item.viewId]?.includes(name))
-              .map((name) => ({ name })),
-          })
-        )
-      );
-      toast.success('Acciones asignadas correctamente');
-    } catch (error) {
-      toast.error('Error al enviar el payload');
-    }
-  };
   const { theme } = useContext(ThemeContext);
-  const availableViews = permissionss.view_actions.filter(
-    (view) => !(viewasAction ?? []).some((va) => va.view.name === view.view)
-  );
-
-  const renderActions = (viewId: number) => {
-    const view = viewasAction.find((view) => view.view.id === viewId)?.view;
-    const allActions =
-      permissionss.view_actions.find((va) => va.view === view?.name)?.actions || [];
-    return (
-      <div className="w-full p-2" key={viewId}>
-        <div className="mb-4 bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden">
-          <div className="px-4 py-3 bg-blue-900 dark:bg-blue-700 text-white flex justify-between items-center">
-            <p className="font-semibold">{view?.name}</p>
-            <div
-              onClick={() => handleSelectAllActions(viewId)}
-              className={`cursor-pointer ${
-                selectedActions[viewId]?.length === allActions.length
-                  ? 'bg-green-500'
-                  : 'bg-gray-500'
-              } rounded-full h-8 w-8 flex items-center justify-center`}
-            >
-              <Check className="text-white" />
-            </div>
-          </div>
-          <div className="px-4 py-2 border-t border-gray-300 dark:border-gray-700">
-            <div className="bg-white dark:bg-gray-800">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {allActions.map((permission) => (
-                  <div
-                    key={permission}
-                    className={`flex items-center justify-between px-4 py-2 border-b border-gray-200 dark:border-gray-700 cursor-pointer ${
-                      defaultActions[viewId]?.includes(permission) ? 'cursor-not-allowed' : ''
-                    }`}
-                    onClick={() => handleSelectAction(viewId, permission)}
-                  >
-                    <span className="dark:text-white">{permission}</span>
-                    <div
-                      className={`${
-                        selectedActions[viewId]?.includes(permission)
-                          ? 'bg-green-500'
-                          : 'bg-gray-500'
-                      } rounded-full h-8 w-8 flex items-center justify-center`}
-                    >
-                      <Check className="text-white" />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  const renderNewViewActions = () => {
-    return (
-      <div className="w-full p-2">
-        <div className="mb-4 bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden">
-          <div className="px-4 py-3 bg-blue-900 dark:bg-blue-700 text-white flex justify-between items-center">
-            <p className="font-semibold">{selectedViewName}</p>
-          </div>
-          <div className="px-4 py-2 border-t border-gray-300 dark:border-gray-700">
-            <div className="bg-white dark:bg-gray-800">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {newViewActions.map((permission) => (
-                  <div
-                    key={permission}
-                    className={`flex items-center justify-between px-4 py-2 border-b border-gray-200 dark:border-gray-700 cursor-pointer`}
-                    onClick={() => handleSelectNewViewAction(permission)}
-                  >
-                    <span className="dark:text-white">{permission}</span>
-                    <div
-                      className={`${
-                        newViewActions.includes(permission) ? 'bg-green-500' : 'bg-gray-500'
-                      } rounded-full h-8 w-8 flex items-center justify-center`}
-                    >
-                      <Check className="text-white" />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   return (
-    <div className="flex flex-col lg:flex-row h-screen">
-      <div className="w-full lg:w-1/4 bg-gray-100 dark:bg-gray-900 p-4 mt-2">
-        <div className="flex justify-between mb-4 lg:hidden">
-          <AddButton onClick={handleOpenViewModal}></AddButton>
-          <AddButton onClick={() => navigate('/AddActionRol')}></AddButton>
-        </div>
-        <div className="overflow-y-auto h-64 lg:h-full">
-          {viewasAction &&
-            viewasAction.map((view) => (
-              <div key={view.view.id} className="mb-2">
-                <button
-                  className={`w-full text-left bg-white dark:bg-gray-800 py-2 px-4 rounded-lg shadow-md hover:bg-gray-200 dark:hover:bg-gray-700 transition ${
-                    selectedViewId === view.view.id ? 'bg-blue-200 dark:bg-blue-700' : ''
-                  }`}
-                  onClick={() => {
-                    setSelectedViewId(selectedViewId === view.view.id ? null : view.view.id);
-                    setIsViewModalOpen(false);
-                  }}
-                >
-                  <span className="dark:text-white">{view.view.name}</span>
-                </button>
-              </div>
-            ))}
-        </div>
-      </div>
-      <div className="w-full lg:w-3/4 p-5 bg-gray-50 dark:bg-gray-800 flex flex-col">
-        <div className="flex flex-row items-center justify-between mb-4">
-          <AddButton
-            text="Agregar Vistas"
-            onClick={() => {
-              setIsViewModalOpen(true);
-              setSelectedViewId(null);
-            }}
-          />
-          <AddButton text="Agregar Acciones" onClick={() => navigate('/AddActionRol')} />
-        </div>
-        <div className="flex-grow overflow-y-auto p-5 bg-white dark:bg-gray-900 shadow-xl rounded-xl">
-          {isViewModalOpen && (
-            <div className="flex flex-col space-y-2">
-              {availableViews &&
-                availableViews.map((view) => (
-                  <div key={view.view}>
-                    <div
-                      onClick={() => handleSelectView(view.view)}
-                      className="flex items-center justify-between px-4 py-2 border-b border-gray-200 dark:border-gray-700 cursor-pointer"
-                    >
-                      <span className="dark:text-white">{view.view}</span>
-                      <div
-                        className={`${
-                          selectedViewName === view.view
-                            ? 'bg-green-500 w-8 h-8 rounded-full'
-                            : 'rounded-full h-8 w-8 flex items-center border-2 border-green-500 justify-center'
-                        } flex items-center justify-center`}
-                      >
-                        <Check
-                          size={10}
-                          className={`${selectedViewName === view.view ? 'text-white' : 'text-white'}`}
-                        />
-                      </div>
-                    </div>
-                    {selectedViewName === view.view && renderNewViewActions()}
-                  </div>
-                ))}
-            </div>
-          )}
-          <div className={selectedViewId === null ? 'hidden' : ''}>
-            {selectedViewId && renderActions(selectedViewId)}
-          </div>
-        </div>
-        <div className="mt-4 flex justify-end">
-          <div className={selectedViewId === null ? 'hidden' : ''}>
-            {selectedViewId && (
-              <Button
-                style={{ backgroundColor: theme.colors.dark, color: theme.colors.primary }}
-                onClick={handleSubmit}
-                className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition disabled:opacity-50"
-              >
-                Guardar
-              </Button>
-            )}
-          </div>
-          {isViewModalOpen && (
+    <>
+      <div className="flex flex-col lg:flex-row h-screen">
+        <div className="w-full lg:w-1/4 bg-gray-100 dark:bg-gray-900 p-4 mt-2">
+          <div className="p-2 ">
             <Button
               style={{ backgroundColor: theme.colors.dark, color: theme.colors.primary }}
-              onClick={handleSubmitCreateView}
+              onClick={handleCreateOrUpdateViewsAndActions}
               className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition disabled:opacity-50"
             >
-              Guardar Vista
+              Actualizar
             </Button>
-          )}
+          </div>
+          <div className="overflow-y-auto max-h-64 lg:max-h-full">
+            {viewasAction &&
+              viewasAction.map((view) => (
+                <div key={view.view.id}>
+                  <div
+                    onClick={() => {}}
+                    className="flex items-center justify-between px-4 py-2 border-b border-gray-200 dark:border-gray-700 cursor-pointer"
+                  >
+                    <span className="dark:text-white">{view.view.name}</span>
+
+                    <div className="rounded-full h-8 w-8 flex bg-green-500 items-center border-2 border-green-500 justify-center">
+                      <Check size={20} className="text-white" />
+                    </div>
+                  </div>
+                </div>
+              ))}
+          </div>
+        </div>
+        <div className="w-full lg:w-3/4 p-2 bg-gray-50 dark:bg-gray-800 flex flex-col">
+          <div className="flex-grow overflow-y-auto custom-scrollbar p-3 bg-white dark:bg-gray-900 shadow-xl rounded-xl">
+            <PermissionAddActionRol />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
