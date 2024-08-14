@@ -21,6 +21,7 @@ import {
   Truck,
   Store,
   UserCheck,
+  ShoppingBag,
 } from 'lucide-react';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { ThemeContext } from '../hooks/useTheme';
@@ -85,6 +86,12 @@ export const LayoutItems = () => {
       path: '/subCategories',
       show: validateIfArrayContain && validateIfArrayContain(views, ['Sub Categorias']),
       icon: () => <List size={15} />,
+    },
+    {
+      name: 'Compras',
+      path: '/shopping',
+      show: validateIfArrayContain && validateIfArrayContain(views, ['Compras']),
+      icon: () => <ShoppingBag size={15} />,
     },
     {
       name: 'Ordenes de compra',
@@ -238,6 +245,7 @@ export const LayoutItems = () => {
               'Productos',
               'Categorias',
               'Sub Categorias',
+              'Compras',
               'Ordenes de compra',
             ]) && (
               <>
@@ -248,6 +256,7 @@ export const LayoutItems = () => {
                       'categories',
                       'subCategories',
                       'orders',
+                      'compras',
                     ])}
                     isOpen={openGroup === 'productos'}
                     onGroupClick={() => handleGroupClick('productos')}
@@ -261,6 +270,7 @@ export const LayoutItems = () => {
                               'categories',
                               'subCategories',
                               'orders',
+                              'compras',
                             ]) && 'bg-gray-200 dark:bg-gray-700',
                             'group cursor-pointer relative flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
                           )}

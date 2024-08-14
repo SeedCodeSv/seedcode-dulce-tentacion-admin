@@ -385,6 +385,9 @@ function ListEmployee({ actions }: Props) {
                             Nombre
                           </th>
                           <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                            Apellido
+                          </th>
+                          <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                             Teléfono
                           </th>
                           <th className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
@@ -415,7 +418,10 @@ function ListEmployee({ actions }: Props) {
                                       {employee.id}
                                     </td>
                                     <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
-                                      {employee.firstName}
+                                      {employee.firstName} {employee.secondName}
+                                    </td>
+                                    <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
+                                      {employee.firstLastName} {employee.secondLastName}
                                     </td>
                                     <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                                       {employee.phone}
