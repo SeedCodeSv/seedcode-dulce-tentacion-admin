@@ -10,10 +10,8 @@ import { ArrowLeft, CloudUpload, X } from 'lucide-react';
 import { create_shopping, isErrorSupplier } from '@/services/shopping.service';
 import { useAuthStore } from '@/store/auth.store';
 import Layout from '@/layout/Layout';
-
 import useGlobalStyles from '../global/global.styles';
 import { formatCurrency } from '@/utils/dte';
-
 import { IResponseFromDigitalOceanDTE } from '@/store/types/sub_interface_shopping/response_from_digitalocean_DTE_types';
 import AddTributeSupplier from './AddSupplier';
 import CreateShoppingManual from './CreateShoppingManual';
@@ -115,6 +113,11 @@ const JSONMode = () => {
   const MontoDeOperacion = jsonData?.resumen?.totalPagar ?? 0;
   const [isOpen, setIsOpen] = useState(false);
 
+  const clearAllData = () => {
+    setFile(null); // Limpiar el archivo JSON cargado
+    setJsonData(undefined); // Limpiar los datos JSON
+  };
+
   return (
     <>
       <HeadlessModal
@@ -175,7 +178,8 @@ const JSONMode = () => {
               >
                 Cargar Archivo JSON
               </Button>
-              <X className="cursor-pointer" onClick={() => navigate('/shopping')} />
+              {/* <X className="cursor-pointer" onClick={() => navigate('/shopping')} /> */}
+              <X className="cursor-pointer" onClick={clearAllData} />
             </div>
           </div>
 
@@ -359,7 +363,7 @@ const JSONMode = () => {
         size={
           window.innerWidth < 700
             ? 'w-full md:w-[600px]   lg:w-[800px]  xl:w-[7000px] '
-            : 'w-full md:w-[500px] md:h-[250px] lg:w-[700px] xl:w-[500px]'
+            : 'w-full md:w-[500px] md:h-[260px] lg:w-[700px] xl:w-[500px]'
         }
         title=""
         isOpen={isOpen}

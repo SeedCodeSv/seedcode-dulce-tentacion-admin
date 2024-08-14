@@ -21,6 +21,10 @@
       "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
     },
     {
+      "view": "Compras",
+      "actions": ["Mostrar", "Agregar"]
+    },
+    {
       "view": "Categorias",
       "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
     },

@@ -108,7 +108,7 @@ function CreateShoppingManual() {
       porcentajeDescuento: 0,
       totalDescu: 0,
       totalIva: Number(totalIva),
-      subTotal: Number(total),
+      subTotal: Number(afecta),
       montoTotalOperacion: Number(total),
       totalPagar: Number(total),
       totalLetras: convertCurrencyFormat(total),
@@ -128,10 +128,22 @@ function CreateShoppingManual() {
       });
   };
 
+  const clearAllDataManual = () => {
+    setNrc(''); // Limpiar los datos manuales
+    setSupplierSelected(undefined); // Limpiar proveedor seleccionado
+    setNumeroControl(''); // Limpiar número de control
+    setAfecta('');
+    setTotal('');
+    setTotalIva('');
+    setTipoDte(''); // Limpiar el campo de "Tipo"
+    setTipoDocSelected(undefined); // Limpiar el campo de "Nombre comprobante"
+  };
+
   return (
     <div className="w-full h-full">
       <div className="w-full relative top-5 flex justify-end right-5">
-        <X className="cursor-pointer" onClick={() => navigate('/shopping')} />
+        {/* <X className="cursor-pointer" onClick={() => navigate('/shopping')} /> */}
+        <X className="cursor-pointer" onClick={clearAllDataManual} />
       </div>
       <div className="w-full h-full overflow-y-auto p-5 md:p-10">
         <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-5">

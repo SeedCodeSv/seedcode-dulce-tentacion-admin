@@ -22,7 +22,7 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
   const { getChargesList, charges } = useChargesStore();
   const { getCat012Departamento, getCat013Municipios, cat_012_departamento, cat_013_municipios } =
     useBillingStore();
-  const [codeDepartamento, setCodeDepartamento] = useState(props.data?.address.departamento ?? '0');
+  const [codeDepartamento, setCodeDepartamento] = useState(props.data?.address?.departamento ?? '');
   const [codigoGenerado, setCodigoGenerado] = useState('');
   useEffect(() => {
     getBranchesList();
@@ -38,7 +38,7 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
       getCat013Municipios(props.data?.department ?? codeDepartamento);
     }
     getCat013Municipios(codeDepartamento);
-  }, [codeDepartamento, props.data?.address.departamento]);
+  }, [codeDepartamento, props.data?.address?.departamento]);
   const { patchEmployee ,verifyCode} = useEmployeeStore();
   const [dataCreate, setDataCreate] = useState<EmployeePayload>({
     firstName: props.data?.firstName || '',
@@ -63,11 +63,11 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
     studyLevelId: props.data?.studyLevelId || 0,
     // addressId: props.data?.addressId || 0,
     contractTypeId: props.data?.contractTypeId || 0,
-    department: props.data?.address.departamento || '',
-    departmentName: props.data?.address.nombreDepartamento || '',
-    municipality: props.data?.address.municipio || '',
-    municipalityName: props.data?.address.nombreMunicipio || '',
-    complement: props.data?.address.complemento || '',
+    department: props.data?.address?.departamento || '',
+    departmentName: props.data?.address?.nombreDepartamento || '',
+    municipality: props.data?.address?.municipio || '',
+    municipalityName: props.data?.address?.nombreMunicipio || '',
+    complement: props.data?.address?.complemento || '',
     branchId: props.data?.branchId || 0,
   });
 
@@ -491,7 +491,7 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
                     label="Departamento"
                     labelPlacement="outside"
                     placeholder={
-                      props.data?.address.nombreDepartamento ?? ' Selecciona el departamento'
+                      props.data?.address?.nombreDepartamento ?? ' Selecciona el departamento'
                     }
                     variant="bordered"
                     onChange={(e) => setCodeDepartamento(e.target.value)}
@@ -524,7 +524,7 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
                   <Autocomplete
                     label="Municipio"
                     labelPlacement="outside"
-                    placeholder={props.data?.address.nombreMunicipio ?? 'Seleccione el municipio'}
+                    placeholder={props.data?.address?.nombreMunicipio ?? 'Seleccione el municipio'}
                     className="dark:text-white"
                     variant="bordered"
                     onChange={(e) => setDataCreate({ ...dataCreate, municipality: e.target.value })}
@@ -559,7 +559,7 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
                   <Input
                     onChange={(e) => setDataCreate({ ...dataCreate, complement: e.target.value })}
                     label="Complemento de dirección"
-                    defaultValue={props.data?.address.complemento}
+                    defaultValue={props.data?.address?.complemento ?? ''}
                     classNames={{
                       label: 'font-semibold text-gray-500 text-sm',
                     }}
