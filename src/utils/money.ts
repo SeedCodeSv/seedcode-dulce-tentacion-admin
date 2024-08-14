@@ -76,3 +76,12 @@ export function convertCurrencyFormat(input: string) {
 
   return `${amountInWords} ${centsFormatted}/100 DOLARES AMERICANOS`;
 }
+
+
+export const formatCurrencyWithout$ = (value: number) => {
+  return value.toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+};
+

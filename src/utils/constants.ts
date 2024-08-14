@@ -5,7 +5,7 @@ export const FACTURACION_API = 'https://cats-facturacion-43ay7.ondigitalocean.ap
 export const MH_QUERY = 'https://admin.factura.gob.sv/consultaPublica';
 export const ambiente = '00';
 export const version = 2;
-// export const API_URL = 'http://localhost:8080/api';
+
 // export const WS_URL = 'ws://192.168.0.20:8080/sales-gateway';
 export const API_FIRMADOR = 'https://firmadorseedcodesv.online/firmardocumento/';
 export const MH_DTE = 'https://apitest.dtes.mh.gob.sv/fesv/recepciondte';
@@ -20,6 +20,14 @@ export const messages = {
 export const limit_options = ['5', '10', '20', '30', '40', '50', '75', '100'];
 
 export const priority = ['LOW', 'MEDIUM', 'HIGH'];
+
+export const typesDocumento = [
+  { value: 1, name: 'DUI', code: '13' },
+  { value: 2, name: 'PASAPORTE', code: '03' },
+  { value: 3, name: 'NIT', code: '36' },
+  { value: 4, name: 'CARNET DE RESIDENTE', code: '02' },
+  { value: 5, name: 'OTRO', code: '37' },
+];
 
 export const Tipos_Promotions = ['Productos', 'Categorias', 'Sucursales'];
 // export const operadores = ['=', '>', '<', '>=', '<='];
@@ -83,4 +91,19 @@ export const views_seller = [
   'Productos',
   'Reporte de ventas',
   'Creditos de clientes',
+];
+
+export const months = [
+  { value: 1, name: 'Enero' },
+  { value: 2, name: 'Febrero' },
+  { value: 3, name: 'Marzo' },
+  { value: 4, name: 'Abril' },
+  { value: 5, name: 'Mayo' },
+  { value: 6, name: 'Junio' },
+  { value: 7, name: 'Julio' },
+  { value: 8, name: 'Agosto' },
+  { value: 9, name: 'Septiembre' },
+  { value: 10, name: 'Octubre' },
+  { value: 11, name: 'Noviembre' },
+  { value: 12, name: 'Diciembre' },
 ];

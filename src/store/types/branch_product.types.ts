@@ -1,3 +1,4 @@
+import { Branches } from '@/types/branches.types';
 import {
   BranchProduct,
   IBranchProductOrder,
@@ -14,6 +15,7 @@ export interface IBranchProductStore {
   branch_product_order: IBranchProductOrder[];
   order_branch_products: IBranchProductOrderQuantity[];
   orders_by_supplier: SupplierProducts[],
+  branches_list: Branches[]
   getBranchProductOrders: (branch: string, supplier?: string, product?: string, code?: string) => void;
   getPaginatedBranchProducts: (
     branchId: number,
@@ -38,4 +40,5 @@ export interface IBranchProductStore {
   onRemoveProduct: (id: number) => void;
   onUpdateQuantity: (id: number, quantity: number) => void;
   getProductByCode: (transmitter_id: number, code: string) => void;
+  getBranchesList: () => void;
 }

@@ -1,5 +1,5 @@
-import axios from "axios";
-import { API_URL } from "../../utils/constants";
+import axios from 'axios';
+import { API_URL } from '../../utils/constants';
 import {
   IGetMostProductSelled,
   IGetSalesByBranchOfCurrentMonth,
@@ -8,21 +8,20 @@ import {
   IGetSalesByMonthAndYear,
   IGetSalesCount,
   IResponseDataProductGrafic,
-} from "../../types/reports/sales.reports.types";
+} from '../../types/reports/sales.reports.types';
 import {
   IResponseDataSalesGrafic,
   IResponseDataExpenses,
-} from "../../types/reports/branch_product.reports";
+} from '../../types/reports/branch_product.reports';
 import {
   IGetSalesByBranchPointSale,
   IGetSalesByPeriod,
   SalesChartGraphPeriod,
-} from "../../types/reports/sales_by_period.report";
+} from '../../types/reports/sales_by_period.report';
+import { get_user } from '@/storage/localStorage';
 
 export const get_sales_by_branch_and_current_month = (id: number) => {
-  return axios.get<IGetSalesByBranchOfCurrentMonth>(
-    API_URL + `/reports/sales-by-branch/${id}`
-  );
+  return axios.get<IGetSalesByBranchOfCurrentMonth>(API_URL + `/reports/sales-by-branch/${id}`);
 };
 
 export const get_sales_by_month_and_year = (id: number) => {
@@ -58,9 +57,7 @@ export const get_expense_by_dates_transmitter = (
 };
 
 export const get_sales_by_day_table = (id: number) => {
-  return axios.get<IGetSalesByDayTable>(
-    API_URL + `/reports/sales-by-day-table/${id}`
-  );
+  return axios.get<IGetSalesByDayTable>(API_URL + `/reports/sales-by-day-table/${id}`);
 };
 
 export const get_sales_by_branch_and_current_month_table = (
@@ -69,16 +66,11 @@ export const get_sales_by_branch_and_current_month_table = (
   endDate: string
 ) => {
   return axios.get<IResponseDataSalesGrafic>(
-    API_URL +
-      `/reports/sales-by-transmitter/${id}?startDate=${startDate}&endDate=${endDate}`
+    API_URL + `/reports/sales-by-transmitter/${id}?startDate=${startDate}&endDate=${endDate}`
   );
 };
 
-export const get_expenses_by_day = (
-  id: number,
-  startDate: string,
-  endDate: string
-) => {
+export const get_expenses_by_day = (id: number, startDate: string, endDate: string) => {
   return axios.get<IResponseDataExpenses>(
     API_URL +
       `/reports/expenses-by-dates-transmitter/${id}?startDate=${startDate}&endDate=${endDate}`
@@ -101,23 +93,21 @@ export const get_sales_by_period = (
   limit: number,
   startDate: string,
   endDate: string,
-  paymentType: string = "",
-  branch: string = "",
-  correlative: string = ""
+  paymentType: string = '',
+  branch: string = '',
+  correlative: string = ''
 ) => {
+  const user = get_user();
   return axios.get<IGetSalesByPeriod>(
     API_URL +
-      `/sales/get-sales-for-dates?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}&paymentType=${paymentType}&branch=${branch}&correlative=${correlative}`
+      `/sales/get-sales-for-dates/${user?.correlative.branch.transmitterId}?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}&paymentType=${paymentType}&branch=${branch}&correlative=${correlative}`
   );
 };
 
-export const get_sales_by_period_chart = (
-  startDate: string,
-  endDate: string
-) => {
+export const get_sales_by_period_chart = (startDate: string, endDate: string) => {
+  const user = get_user()
   return axios.get<SalesChartGraphPeriod>(
-    API_URL +
-      `/sales/graphic/by-branches?startDate=${startDate}&endDate=${endDate}`
+    API_URL + `/sales/graphic/by-branches/${user?.correlative.branch.transmitterId}?startDate=${startDate}&endDate=${endDate}`
   );
 };
 
@@ -133,5 +123,8 @@ export const get_sales_point_of_sale_by_branch = (
 };
 
 export const get_sales_count = () => {
-  return axios.get<IGetSalesCount>(API_URL + "/reports/count-sales");
+  const user = get_user();
+  return axios.get<IGetSalesCount>(
+    API_URL + `/reports/count-sales/${user?.correlative.branch.transmitterId}`
+  );
 };

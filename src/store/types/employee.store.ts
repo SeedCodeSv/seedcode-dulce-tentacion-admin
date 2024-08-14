@@ -6,6 +6,7 @@ export interface IEmployeeStore {
   loading_employees: boolean;
   saveEmployeesPaginated: (employee_paginated: IGetEmployeesPaginated) => void;
   getEmployeesPaginated: (
+    id: number,
     page: number,
     limit: number,
     firstName: string,

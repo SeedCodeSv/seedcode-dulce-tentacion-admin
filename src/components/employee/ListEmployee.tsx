@@ -1,5 +1,5 @@
-import { useContext, useEffect, useMemo, useState } from "react";
-import { useEmployeeStore } from "../../store/employee.store";
+import { useContext, useEffect, useMemo, useState } from 'react';
+import { useEmployeeStore } from '../../store/employee.store';
 import {
   Button,
   Input,
@@ -13,7 +13,7 @@ import {
   Autocomplete,
   AutocompleteItem,
   Switch,
-} from "@nextui-org/react";
+} from '@nextui-org/react';
 import {
   TrashIcon,
   Table as ITable,
@@ -24,25 +24,26 @@ import {
   Phone,
   Filter,
   RefreshCcw,
-} from "lucide-react";
-import { Employee, EmployeePayload } from "../../types/employees.types";
-import AddButton from "../global/AddButton";
-import Pagination from "../global/Pagination";
-import { ThemeContext } from "../../hooks/useTheme";
-import MobileView from "./MobileView";
-import AddEmployee from "./AddEmployee";
-import { global_styles } from "../../styles/global.styles";
-import classNames from "classnames";
-import { useBranchesStore } from "../../store/branches.store";
-import { limit_options } from "../../utils/constants";
-import SmPagination from "../global/SmPagination";
-import HeadlessModal from "../global/HeadlessModal";
-import { useNavigate } from "react-router";
-import UpdateEmployee from "./UpdateEmployee";
-import TooltipGlobal from "../global/TooltipGlobal";
-import BottomDrawer from "../global/BottomDrawer";
-import NO_DATA from "@/assets/svg/no_data.svg";
-import useWindowSize from "@/hooks/useWindowSize";
+} from 'lucide-react';
+import { Employee, EmployeePayload } from '../../types/employees.types';
+import AddButton from '../global/AddButton';
+import Pagination from '../global/Pagination';
+import { ThemeContext } from '../../hooks/useTheme';
+import MobileView from './MobileView';
+import AddEmployee from './AddEmployee';
+import { global_styles } from '../../styles/global.styles';
+import classNames from 'classnames';
+import { useBranchesStore } from '../../store/branches.store';
+import { limit_options } from '../../utils/constants';
+import SmPagination from '../global/SmPagination';
+import HeadlessModal from '../global/HeadlessModal';
+import { useNavigate } from 'react-router';
+import UpdateEmployee from './UpdateEmployee';
+import TooltipGlobal from '../global/TooltipGlobal';
+import BottomDrawer from '../global/BottomDrawer';
+import NO_DATA from '@/assets/svg/no_data.svg';
+import useWindowSize from '@/hooks/useWindowSize';
+import { useAuthStore } from '@/store/auth.store';
 
 interface Props {
   actions: string[];
@@ -50,21 +51,19 @@ interface Props {
 
 function ListEmployee({ actions }: Props) {
   const { theme } = useContext(ThemeContext);
+  const { user } = useAuthStore();
+  const { getEmployeesPaginated, employee_paginated, activateEmployee, loading_employees } =
+    useEmployeeStore();
 
-  const {
-    getEmployeesPaginated,
-    employee_paginated,
-    activateEmployee,
-    loading_employees,
-  } = useEmployeeStore();
-
-  const [firstName, setFirstName] = useState("");
-  const [firstLastName] = useState("");
-  const [branch, setBranch] = useState("");
-  const [phone, setPhone] = useState("");
+  const [firstName, setFirstName] = useState('');
+  const [firstLastName] = useState('');
+  const [branch, setBranch] = useState('');
+  const [phone, setPhone] = useState('');
   const [limit, setLimit] = useState(5);
   const { windowSize } = useWindowSize();
-  const [view, setView] = useState<"table" | "grid" | "list">( windowSize.width < 768 ? 'grid' : 'table');
+  const [view, setView] = useState<'table' | 'grid' | 'list'>(
+    windowSize.width < 768 ? 'grid' : 'table'
+  );
   const [openVaul, setOpenVaul] = useState(false);
   const [active, setActive] = useState(true);
 
@@ -74,6 +73,7 @@ function ListEmployee({ actions }: Props) {
 
   const changePage = () => {
     getEmployeesPaginated(
+      Number(user?.correlative.branch.transmitterId),
       1,
       limit,
       firstName,
@@ -91,6 +91,7 @@ function ListEmployee({ actions }: Props) {
   useEffect(() => {
     getBranchesList();
     getEmployeesPaginated(
+      Number(user?.correlative.branch.transmitterId),
       1,
       limit,
       firstName,
@@ -103,7 +104,16 @@ function ListEmployee({ actions }: Props) {
 
   const handleActivate = (id: number) => {
     activateEmployee(id).then(() => {
-      getEmployeesPaginated(1, limit, "", "", "", "", active ? 1 : 0);
+      getEmployeesPaginated(
+        Number(user?.correlative.branch.transmitterId),
+        1,
+        limit,
+        '',
+        '',
+        '',
+        '',
+        active ? 1 : 0
+      );
     });
   };
   const navigate = useNavigate();
@@ -112,8 +122,8 @@ function ListEmployee({ actions }: Props) {
       <>
         <Input
           classNames={{
-            label: "font-semibold text-gray-700",
-            inputWrapper: "pr-0",
+            label: 'font-semibold text-gray-700',
+            inputWrapper: 'pr-0',
           }}
           labelPlacement="outside"
           label="Nombre"
@@ -127,12 +137,12 @@ function ListEmployee({ actions }: Props) {
           autoComplete="search"
           onChange={(e) => setFirstName(e.target.value)}
           isClearable
-          onClear={() => setFirstName("")}
+          onClear={() => setFirstName('')}
         />
         <Input
           classNames={{
-            label: "font-semibold text-gray-700",
-            inputWrapper: "pr-0",
+            label: 'font-semibold text-gray-700',
+            inputWrapper: 'pr-0',
           }}
           labelPlacement="outside"
           label="Teléfono"
@@ -145,7 +155,7 @@ function ListEmployee({ actions }: Props) {
           id="searchPhone"
           onChange={(e) => setPhone(e.target.value)}
           isClearable
-          onClear={() => setPhone("")}
+          onClear={() => setPhone('')}
         />
         <Autocomplete
           onSelectionChange={(key) => {
@@ -160,63 +170,51 @@ function ListEmployee({ actions }: Props) {
           variant="bordered"
           defaultSelectedKey={branch}
           classNames={{
-            base: "font-semibold text-gray-500 text-sm",
+            base: 'font-semibold text-gray-500 text-sm',
           }}
           clearButtonProps={{
-            onClick: () => setBranch(""),
+            onClick: () => setBranch(''),
           }}
         >
           {branch_list.map((bra) => (
-            <AutocompleteItem
-              value={bra.name}
-              className="dark:text-white"
-              key={bra.name}
-            >
+            <AutocompleteItem value={bra.name} className="dark:text-white" key={bra.name}>
               {bra.name}
             </AutocompleteItem>
           ))}
         </Autocomplete>
       </>
     );
-  }, [
-    firstName,
-    setFirstName,
-    phone,
-    setPhone,
-    branch,
-    setBranch,
-    branch_list,
-  ]);
+  }, [firstName, setFirstName, phone, setPhone, branch, setBranch, branch_list]);
 
   //estado para capturar ;la data actualizada
   const [dataUpdate, setDataUpdate] = useState<EmployeePayload>({
-    firstName: "",
-    secondName: "",
-    firstLastName: "",
-    secondLastName: "",
-    bankAccount: "",
+    firstName: '',
+    secondName: '',
+    firstLastName: '',
+    secondLastName: '',
+    bankAccount: '',
     chargeId: 0,
-    nit: "",
-    dui: "",
-    isss: "",
-    afp: "",
-    code: "",
-    phone: "",
-    age: "",
-    salary: "",
-    dateOfBirth: "",
-    dateOfEntry: "",
-    dateOfExit: "",
-    responsibleContact: "",
+    nit: '',
+    dui: '',
+    isss: '',
+    afp: '',
+    code: '',
+    phone: '',
+    age: '',
+    salary: '',
+    dateOfBirth: '',
+    dateOfEntry: '',
+    dateOfExit: '',
+    responsibleContact: '',
     statusId: 0,
     // addressId: 0,
     studyLevelId: 0,
     contractTypeId: 0,
-    department: "",
-    departmentName: "",
-    municipality: "",
-    municipalityName: "",
-    complement: "",
+    department: '',
+    departmentName: '',
+    municipality: '',
+    municipalityName: '',
+    complement: '',
     branchId: 0,
   });
 
@@ -225,15 +223,13 @@ function ListEmployee({ actions }: Props) {
       {dataUpdate.id ? (
         <UpdateEmployee
           id={(id) => setDataUpdate({ ...dataUpdate, id: id })}
-          data={(dataUpdate as unknown) as Employee}
+          data={dataUpdate as unknown as Employee}
         />
       ) : (
         <>
           <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
             <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
-              <div className="hidden w-full grid-cols-3 gap-5 mb-4 md:grid">
-                {filters}
-              </div>
+              <div className="hidden w-full grid-cols-3 gap-5 mb-4 md:grid">{filters}</div>
               <div className="grid w-full grid-cols-1 gap-5 mb-4 md:grid-cols-2">
                 <div className="hidden md:flex">
                   <Button
@@ -254,12 +250,10 @@ function ListEmployee({ actions }: Props) {
                       isIconOnly
                       color="secondary"
                       style={{
-                        backgroundColor:
-                          view === "table" ? theme.colors.third : "#e5e5e5",
-                        color:
-                          view === "table" ? theme.colors.primary : "#3e3e3e",
+                        backgroundColor: view === 'table' ? theme.colors.third : '#e5e5e5',
+                        color: view === 'table' ? theme.colors.primary : '#3e3e3e',
                       }}
-                      onClick={() => setView("table")}
+                      onClick={() => setView('table')}
                     >
                       <ITable />
                     </Button>
@@ -267,12 +261,10 @@ function ListEmployee({ actions }: Props) {
                       isIconOnly
                       color="default"
                       style={{
-                        backgroundColor:
-                          view === "grid" ? theme.colors.third : "#e5e5e5",
-                        color:
-                          view === "grid" ? theme.colors.primary : "#3e3e3e",
+                        backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
+                        color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
                       }}
-                      onClick={() => setView("grid")}
+                      onClick={() => setView('grid')}
                     >
                       <CreditCard />
                     </Button>
@@ -280,12 +272,10 @@ function ListEmployee({ actions }: Props) {
                       isIconOnly
                       color="default"
                       style={{
-                        backgroundColor:
-                          view === "list" ? theme.colors.third : "#e5e5e5",
-                        color:
-                          view === "list" ? theme.colors.primary : "#3e3e3e",
+                        backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
+                        color: view === 'list' ? theme.colors.primary : '#3e3e3e',
                       }}
-                      onClick={() => setView("list")}
+                      onClick={() => setView('list')}
                     >
                       <List />
                     </Button>
@@ -317,17 +307,17 @@ function ListEmployee({ actions }: Props) {
                                 setOpenVaul(false);
                               }}
                             >
-                             Buscar
+                              Buscar
                             </Button>
                           </div>
                         </div>
                       </BottomDrawer>
                     </div>
-                    {actions.includes("Agregar") && (
+                    {actions.includes('Agregar') && (
                       <AddButton
                         onClick={() => {
                           modalAdd.onOpen();
-                          navigate("/AddEmployee");
+                          navigate('/AddEmployee');
                           setSelectedEmployee(undefined);
                         }}
                       />
@@ -343,21 +333,15 @@ function ListEmployee({ actions }: Props) {
                   defaultSelectedKeys={['5']}
                   labelPlacement="outside"
                   classNames={{
-                    label: "font-semibold",
+                    label: 'font-semibold',
                   }}
                   value={limit}
                   onChange={(e) => {
-                    setLimit(
-                      Number(e.target.value !== "" ? e.target.value : "5")
-                    );
+                    setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
                   }}
                 >
                   {limit_options.map((option) => (
-                    <SelectItem
-                      key={option}
-                      value={option}
-                      className="dark:text-white"
-                    >
+                    <SelectItem key={option} value={option} className="dark:text-white">
                       {option}
                     </SelectItem>
                   ))}
@@ -367,156 +351,145 @@ function ListEmployee({ actions }: Props) {
                     onValueChange={(active) => setActive(active)}
                     isSelected={active}
                     classNames={{
-                      thumb: classNames(active ? "bg-blue-500" : "bg-gray-400"),
-                      wrapper: classNames(
-                        active ? "!bg-blue-300" : "bg-gray-200"
-                      ),
+                      thumb: classNames(active ? 'bg-blue-500' : 'bg-gray-400'),
+                      wrapper: classNames(active ? '!bg-blue-300' : 'bg-gray-200'),
                     }}
                   >
                     <span className="text-sm sm:text-base whitespace-nowrap">
-                      Mostrar {active ? "inactivos" : "activos"}
+                      Mostrar {active ? 'inactivos' : 'activos'}
                     </span>
                   </Switch>
                 </div>
               </div>
-              {(view === "grid" || view === "list") && (
+              {(view === 'grid' || view === 'list') && (
                 <MobileView
                   deletePopover={DeletePopover}
                   openEditModal={(employee) => {
                     setDataUpdate(employee);
                   }}
-                  layout={view as "grid" | "list"}
+                  layout={view as 'grid' | 'list'}
                   actions={actions}
                   handleActivate={handleActivate}
                 />
               )}
-              {view === "table" && (
+              {view === 'table' && (
                 <>
-                 <div className="max-h-[400px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
-                <table className="w-full">
-                  <thead className="sticky top-0 z-20 bg-white">
-                    <tr>
-                      <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                        No.
-                      </th>
-                      <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                        Nombre
-                      </th>
-                      <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                        Teléfono
-                      </th>
-                      <th className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                        Sucursal
-                      </th>
-                      <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                        Acciones
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="max-h-[600px] w-full overflow-y-auto">
-                    {loading_employees ? (
-                      <tr>
-                        <td
-                          colSpan={5}
-                          className="p-3 text-sm text-center text-slate-500"
-                        >
-                          <div className="flex flex-col items-center justify-center w-full h-64">
-                            <div className="loader"></div>
-                            <p className="mt-3 text-xl font-semibold">
-                              Cargando...
-                            </p>
-                          </div>
-                        </td>
-                      </tr>
-                    ) : (
-                      <>
-                        {employee_paginated.employees.length > 0 ? (
+                  <div className="max-h-[400px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
+                    <table className="w-full">
+                      <thead className="sticky top-0 z-20 bg-white">
+                        <tr>
+                          <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                            No.
+                          </th>
+                          <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                            Nombre
+                          </th>
+                          <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                            Apellido
+                          </th>
+                          <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                            Teléfono
+                          </th>
+                          <th className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                            Sucursal
+                          </th>
+                          <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                            Acciones
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="max-h-[600px] w-full overflow-y-auto">
+                        {loading_employees ? (
+                          <tr>
+                            <td colSpan={5} className="p-3 text-sm text-center text-slate-500">
+                              <div className="flex flex-col items-center justify-center w-full h-64">
+                                <div className="loader"></div>
+                                <p className="mt-3 text-xl font-semibold">Cargando...</p>
+                              </div>
+                            </td>
+                          </tr>
+                        ) : (
                           <>
-                            {employee_paginated.employees.map((employee) => (
-                              <tr className="border-b border-slate-200">
-                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                  {employee.id}
-                                </td>
-                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
-                                  {employee.firstName}
-                                </td>
-                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                  {employee.phone}
-                                </td>
-                                <td className="p-3 text-sm text-slate-500 whitespace-nowrap dark:text-slate-100">
-                                  {employee.branch.name}
-                                </td>
-                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                  <div className="flex w-full gap-5">
-                                    {employee.isActive && actions.includes("Editar") && (
-                                      <TooltipGlobal text="Editar">
-                                        <Button
-                                          onClick={() => {
-                                            setDataUpdate(employee);
-
-                                            // setIsOpenModalUpdate(true);
-                                          }}
-                                          isIconOnly
-                                          style={{
-                                            backgroundColor:
-                                              theme.colors.secondary,
-                                          }}
-                                        >
-                                          <EditIcon
-                                            style={{
-                                              color: theme.colors.primary,
-                                            }}
-                                            size={20}
-                                          />
-                                        </Button>
-                                      </TooltipGlobal>
-                                    )}
-                                    {actions.includes("Eliminar") && (
-                                      <>
-                                        {employee.isActive ? (
-                                          <DeletePopover employee={employee} />
-                                        ) : (
-                                          <TooltipGlobal text="Activar">
+                            {employee_paginated.employees.length > 0 ? (
+                              <>
+                                {employee_paginated.employees.map((employee) => (
+                                  <tr className="border-b border-slate-200">
+                                    <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                      {employee.id}
+                                    </td>
+                                    <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
+                                      {employee.firstName} {employee.secondName}
+                                    </td>
+                                    <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
+                                      {employee.firstLastName} {employee.secondLastName}
+                                    </td>
+                                    <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                      {employee.phone}
+                                    </td>
+                                    <td className="p-3 text-sm text-slate-500 whitespace-nowrap dark:text-slate-100">
+                                      {employee.branch.name}
+                                    </td>
+                                    <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                      <div className="flex w-full gap-5">
+                                        {employee.isActive && actions.includes('Editar') && (
+                                          <TooltipGlobal text="Editar">
                                             <Button
-                                              onClick={() =>
-                                                handleActivate(employee.id)
-                                              }
+                                              onClick={() => {
+                                                setDataUpdate(employee);
+
+                                                // setIsOpenModalUpdate(true);
+                                              }}
                                               isIconOnly
-                                              style={global_styles().thirdStyle}
+                                              style={{
+                                                backgroundColor: theme.colors.secondary,
+                                              }}
                                             >
-                                              <RefreshCcw />
+                                              <EditIcon
+                                                style={{
+                                                  color: theme.colors.primary,
+                                                }}
+                                                size={20}
+                                              />
                                             </Button>
                                           </TooltipGlobal>
                                         )}
-                                      </>
-                                    )}
+                                        {actions.includes('Eliminar') && (
+                                          <>
+                                            {employee.isActive ? (
+                                              <DeletePopover employee={employee} />
+                                            ) : (
+                                              <TooltipGlobal text="Activar">
+                                                <Button
+                                                  onClick={() => handleActivate(employee.id)}
+                                                  isIconOnly
+                                                  style={global_styles().thirdStyle}
+                                                >
+                                                  <RefreshCcw />
+                                                </Button>
+                                              </TooltipGlobal>
+                                            )}
+                                          </>
+                                        )}
+                                      </div>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </>
+                            ) : (
+                              <tr>
+                                <td colSpan={5}>
+                                  <div className="flex flex-col items-center justify-center w-full">
+                                    <img src={NO_DATA} alt="X" className="w-32 h-32" />
+                                    <p className="mt-3 text-xl">No se encontraron resultados</p>
                                   </div>
                                 </td>
                               </tr>
-                            ))}
+                            )}
                           </>
-                        ) : (
-                          <tr>
-                            <td colSpan={5}>
-                              <div className="flex flex-col items-center justify-center w-full">
-                                <img
-                                  src={NO_DATA}
-                                  alt="X"
-                                  className="w-32 h-32"
-                                />
-                                <p className="mt-3 text-xl">
-                                No se encontraron resultados
-                              </p>
-                              </div>
-                              
-                            </td>
-                          </tr>
                         )}
-                      </>
-                    )}
-                  </tbody>
-                </table>
-              </div>
+                      </tbody>
+                    </table>
+                  </div>
                 </>
                 // <DataTable
                 //   className="shadow"
@@ -586,7 +559,7 @@ function ListEmployee({ actions }: Props) {
                 //         {actions.includes("Eliminar") && (
                 //           <>
                 //             {item.isActive ? (
-                              
+
                 //               <DeletePopover employee={item} />
                 //             ) : (
                 //               <Button
@@ -614,6 +587,7 @@ function ListEmployee({ actions }: Props) {
                       totalPages={employee_paginated.totalPag}
                       onPageChange={(page) => {
                         getEmployeesPaginated(
+                          Number(user?.correlative.branch.transmitterId),
                           page,
                           limit,
                           firstName,
@@ -630,6 +604,7 @@ function ListEmployee({ actions }: Props) {
                       <SmPagination
                         handleNext={() => {
                           getEmployeesPaginated(
+                            Number(user?.correlative.branch.transmitterId),
                             employee_paginated.nextPag,
                             limit,
                             firstName,
@@ -641,6 +616,7 @@ function ListEmployee({ actions }: Props) {
                         }}
                         handlePrev={() => {
                           getEmployeesPaginated(
+                            Number(user?.correlative.branch.transmitterId),
                             employee_paginated.prevPag,
                             limit,
                             firstName,
@@ -662,7 +638,7 @@ function ListEmployee({ actions }: Props) {
           <HeadlessModal
             isOpen={modalAdd.isOpen}
             onClose={modalAdd.onClose}
-            title={selectedEmployee ? "Editar Empleado" : "Agregar Empleado"}
+            title={selectedEmployee ? 'Editar Empleado' : 'Agregar Empleado'}
             size="w-[350px] md:w-full"
           >
             <AddEmployee />
@@ -701,13 +677,13 @@ export const DeletePopover = ({ employee }: PopProps) => {
             }}
           >
             <TooltipGlobal text="Eliminar">
-            <TrashIcon
-              style={{
-                color: theme.colors.primary,
-              }}
-              size={20}
-            />
-        </TooltipGlobal>
+              <TrashIcon
+                style={{
+                  color: theme.colors.primary,
+                }}
+                size={20}
+              />
+            </TooltipGlobal>
           </Button>
         </PopoverTrigger>
         <PopoverContent>

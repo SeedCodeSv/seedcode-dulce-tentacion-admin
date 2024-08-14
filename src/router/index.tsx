@@ -41,6 +41,9 @@ import { JSX } from 'react/jsx-runtime';
 import CushCatsBigZ from '@/pages/CashCutsBigZ';
 import CashCutsX from '@/pages/CashCutsX';
 import CushCatsZ from '@/pages/CashCutsZ';
+import ShoppingBookIVA from '@/pages/iva/ShoppingBookIVA';
+import Shopping from '@/pages/Shopping';
+import CreateShopping from '@/components/shopping/CreateShoppingJson';
 
 const Loading = () => {
   return <div>Cargando...</div>;
@@ -89,6 +92,14 @@ export const router = () => {
     {
       path: '/categories',
       element: checkAuthorization('Categorias', <ProductsCategories />),
+    },
+    {
+      path: '/shopping',
+      element: checkAuthorization('Compras', <Shopping />),
+    },
+    {
+      path: '/CreateShopping',
+      element: checkAuthorization('Compras', <CreateShopping />),
     },
     {
       path: '/subCategories',
@@ -213,6 +224,10 @@ export const router = () => {
     {
       path: '/cash-cuts-z',
       element: checkAuthorization('Contabilidad', <CushCatsZ />),
+    },
+    {
+      path: "iva/shopping-book",
+      element: <ShoppingBookIVA />,
     },
     {
       path: '*',

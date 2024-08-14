@@ -123,3 +123,7 @@ export const getInitialAndEndDate = () => {
     end: getFormattedDate(endDate),
   };
 };
+
+export function formatDateToMMDDYYYY(date: string) {
+  return moment.tz(date, "America/El_Salvador").format("MM/DD/YYYY")
+}

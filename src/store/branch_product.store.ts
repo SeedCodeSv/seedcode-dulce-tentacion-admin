@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { IBranchProductStore } from './types/branch_product.types';
-import { get_branch_product, get_branch_product_orders, get_product_by_code } from '../services/branch_product.service';
+import { get_branch_product, get_branch_product_orders, get_branches, get_product_by_code } from '../services/branch_product.service';
 import { toast } from 'sonner';
 import { groupBySupplier } from '../utils/filters';
 // import { totalAPagar } from '../components/new_sales/MainView';
@@ -22,6 +22,7 @@ export const useBranchProductStore = create<IBranchProductStore>((set, get) => (
   // ! purchase orders
   order_branch_products: [],
   orders_by_supplier: [],
+  branches_list: [],
   addProductOrder(product) {
     const products = get().order_branch_products;
     const existProduct = products.find((cp) => cp.id === product.id);
@@ -212,5 +213,14 @@ export const useBranchProductStore = create<IBranchProductStore>((set, get) => (
         cp.id === id ? { ...cp, total: cp.base_price * quantity, quantity } : cp
       ),
     }));
+  },
+  getBranchesList() {
+    get_branches()
+      .then(({ data }) => {
+        set((state) => ({ ...state, branches_list: data.branches }));
+      })
+      .catch(() => {
+        set((state) => ({ ...state, branches_list: [] }));
+      });
   },
 }));
