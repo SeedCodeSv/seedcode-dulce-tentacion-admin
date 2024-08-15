@@ -1,7 +1,12 @@
 import axios from 'axios';
 import { API_URL } from '../utils/constants';
 import { get_token } from '../storage/localStorage';
-import { IGetActionRolList, IAddActionRol, IResponseDataRoleActions, ICreateRol } from '../types/actions_rol.types';
+import {
+  IGetActionRolList,
+  IAddActionRol,
+  IResponseDataRoleActions,
+  IUpdateActionDto,
+} from '../types/actions_rol.types';
 
 export const get_actions_by_rol_and_view = (rolId: number, viewId: number) => {
   const token = get_token() ?? '';
@@ -36,11 +41,6 @@ export const get_actions_by_role = (rol_id: number) => {
   return axios.get<IGetActionRolList>(API_URL + `/role-actions/byRol/${rol_id}`);
 };
 
-export const save_rol = (payload: ICreateRol) => {
-  const token = get_token() ?? '';
-  return axios.post<{ ok: boolean }>(API_URL + '/roles', payload, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+export const update_actions = (actionRol: IUpdateActionDto) => {
+  return axios.patch<IGetActionRolList>(API_URL + '/actions', actionRol);
 };

@@ -1,30 +1,26 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { ArrowLeft } from 'lucide-react';
-import { useViewsStore } from '@/store/views.store';
 import { useNavigate } from 'react-router';
-import { create_role_action } from '@/services/actions.service';
 import { toast } from 'sonner';
 import { Autocomplete, AutocompleteItem, Button } from '@nextui-org/react';
-import { get_roles_list } from '@/services/users.service';
-import { Role } from '@/types/auth.types';
-import { useActionsRolStore } from '@/store/actions_rol.store';
-import Layout from '@/layout/Layout';
-import { ThemeContext } from '@/hooks/useTheme';
-import { useAuthStore } from '@/store/auth.store';
 import viewActions from '../../actions.json';
-
-const PermissionTable: React.FC = () => {
+import { useViewsStore } from '../../store/views.store';
+import { useActionsRolStore } from '../../store/actions_rol.store';
+import { useAuthStore } from '../../store/auth.store';
+import { create_role_action } from '../../services/actions.service';
+import { ThemeContext } from '../../hooks/useTheme';
+import { Role } from '../../types/auth.types';
+import { get_all_roles } from '../../services/roles.service';
+const PermissionAddActionRol: React.FC = () => {
   const { OnGetViewasAction, viewasAction } = useViewsStore();
   const [selectedActions, setSelectedActions] = useState<{ [viewId: number]: string[] }>({});
   const [defaultActions, setDefaultActions] = useState<{ [viewId: number]: string[] }>({});
   const { OnGetActionsByRolePage, roleActionsPage } = useActionsRolStore();
   const [dataRoles, setDataRoles] = useState<Role[]>([]);
   const [selectedCustomer, setSelectedCustomer] = useState(1);
-
   useEffect(() => {
     const fetchRoles = async () => {
       try {
-        const data = await get_roles_list();
+        const data = await get_all_roles();
         if (data) {
           setDataRoles(data.data.roles);
           if (data.data.roles.length > 0) {
@@ -38,12 +34,10 @@ const PermissionTable: React.FC = () => {
     OnGetActionsByRolePage(selectedCustomer);
     fetchRoles();
     OnGetViewasAction();
-  }, [OnGetViewasAction, OnGetActionsByRolePage]);
-
+  }, []);
   const selectedCustomerKey = useMemo(() => {
     return selectedCustomer.toString() ?? dataRoles[0].id.toString();
   }, [selectedCustomer]);
-
   useEffect(() => {
     if (selectedCustomer === 0) {
       if (dataRoles.length > 0) {
@@ -51,7 +45,6 @@ const PermissionTable: React.FC = () => {
       }
     }
   }, [dataRoles]);
-
   useEffect(() => {
     if (viewasAction) {
       const initialSelectedActions: { [viewId: number]: string[] } = {};
@@ -70,12 +63,10 @@ const PermissionTable: React.FC = () => {
       setDefaultActions(initialDefaultActions);
     }
   }, [viewasAction, roleActionsPage]);
-
   const handleSelectAction = (viewId: number, action: string) => {
     setSelectedActions((prev) => {
       const actions = prev[viewId] || [];
       const isDefaultAction = defaultActions[viewId]?.includes(action);
-
       if (!isDefaultAction) {
         const newActions = actions.includes(action)
           ? actions.filter((a) => a !== action)
@@ -89,7 +80,6 @@ const PermissionTable: React.FC = () => {
       return prev;
     });
   };
-
   const { OnGetActionsByRole } = useActionsRolStore();
   const { user } = useAuthStore();
   const navigate = useNavigate();
@@ -102,27 +92,26 @@ const PermissionTable: React.FC = () => {
     try {
       const actionIds = Object.entries(selectedActions)
         .flatMap(([viewId, actions]) => {
+          if (actions.length === 0) return [];
+
           const numericViewId = parseInt(viewId);
-          return actions
-            .filter((action) => !defaultActions[numericViewId]?.includes(action))
-            .map((action) => {
-              const view = viewasAction.find((va) => va.view.id === numericViewId);
-              if (view) {
-                const actionIndex = view.actions.name.indexOf(action);
-                if (actionIndex !== -1) {
-                  return { id: view.actions.id[actionIndex] };
-                }
-              }
-              return null;
-            });
+          const view = viewasAction.find((va) => va.view.id === numericViewId);
+
+          if (view && typeof view.actions === 'object') {
+            return actions
+              .filter((action) => !defaultActions[numericViewId]?.includes(action))
+              .map((action) => {
+                const actionIndex = view.actions.name.findIndex((name) => name === action);
+                return actionIndex !== -1 ? { id: view.actions.id[actionIndex] } : null;
+              });
+          }
+          return [];
         })
         .filter((id) => id !== null);
-
       const payload = {
-        actionIds,
+        actionIds: actionIds as { id: number }[],
         roleId: selectedCustomer,
       };
-
       await create_role_action(payload);
       OnGetActionsByRole(user?.roleId as number);
       toast.success('Acciones asignadas correctamente');
@@ -131,14 +120,12 @@ const PermissionTable: React.FC = () => {
       toast.error('Error al asignar acciones');
     }
   };
-
   const toggleSelectAllActions = (viewId: number, actions: string[]) => {
     setSelectedActions((prev) => {
       const allSelected = selectedActions[viewId]?.length === actions.length;
       const newActions = allSelected
-        ? defaultActions[viewId] // Keep default actions if deselecting all
-        : [...new Set([...actions, ...defaultActions[viewId]])]; // Add default actions if selecting all
-
+        ? defaultActions[viewId]
+        : [...new Set([...actions, ...defaultActions[viewId]])];
       return {
         ...prev,
         [viewId]: newActions,
@@ -149,9 +136,8 @@ const PermissionTable: React.FC = () => {
   const { theme } = useContext(ThemeContext);
   const renderSection = (view: { id: number; name: string }) => {
     const actions = viewActions.view_actions.find((va) => va.view === view.name)?.actions || [];
-
     return (
-      <div className="w-full sm:w-1/3 p-2" key={view.id}>
+      <div className="w-full w-1/3 sm:w-1/2 p-2 " key={view.id}>
         <div
           className="mb-4 dark:bg-gray-900 bg-white shadow-lg border border-gray-300 rounded-lg overflow-hidden"
           style={{ height: '300px', width: '100%' }}
@@ -186,10 +172,14 @@ const PermissionTable: React.FC = () => {
                       className={`flex items-center justify-center px-4 py-2 border-b dark:border-gray-600 cursor-pointer ${
                         defaultActions[view.id]?.includes(permission) ? 'cursor-not-allowed' : ''
                       }`}
-                      onClick={() =>
+                      onClick={() => {
                         !defaultActions[view.id]?.includes(permission) &&
-                        handleSelectAction(view.id, permission)
-                      }
+                          handleSelectAction(view.id, permission);
+                        console.log(
+                          'defaultActions[view.id]?.includes(permission):',
+                          defaultActions[view.id]?.includes(permission)
+                        );
+                      }}
                     >
                       <div className="flex items-center w-full justify-center">
                         <input
@@ -212,67 +202,66 @@ const PermissionTable: React.FC = () => {
     );
   };
 
-  return (
-    <Layout title="Acciones por rol">
-      <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800 relative">
-        <div className="w-full h-full p-5 overflow-y-auto bg-white shadow-xl rounded-xl dark:bg-gray-900">
-          <div className="flex flex-col lg:flex-row justify-between items-center w-full gap-5 mb-5 lg:mb-10 lg:gap-0">
-            <div
-              onClick={() => navigate('/actionRol')}
-              className="flex justify-start w-full lg:w-auto cursor-pointer"
-            >
-              <ArrowLeft
-                onClick={() => navigate('/actionRol')}
-                className="text-gray-500 cursor-pointer hover:text-gray-700"
-              />
-              <h1 className="dark:text-white text-center">Regresar</h1>
-            </div>
+  const sortedViews = useMemo(() => {
+    const withActions = viewasAction.filter(
+      ({ view }) =>
+        (viewActions.view_actions.find((va) => va.view === view.name)?.actions || []).length > 0
+    );
+    const withoutActions = viewasAction.filter(
+      ({ view }) =>
+        (viewActions.view_actions.find((va) => va.view === view.name)?.actions || []).length === 0
+    );
+    return [...withActions, ...withoutActions];
+  }, [viewasAction]);
 
-            <div className="flex w-full lg:w-auto justify-end lg:justify-center">
-              <Autocomplete
-                className="w-full dark:text-white"
-                label="Selecciona el rol"
-                labelPlacement="outside"
-                placeholder="Selecciona el Rol"
-                variant="bordered"
-                defaultSelectedKey={selectedCustomerKey}
-                value={selectedCustomerKey}
-                selectedKey={selectedCustomerKey}
-                onSelectionChange={(key) => setSelectedCustomer(Number(key))}
-              >
-                {dataRoles.map((role) => (
-                  <AutocompleteItem
-                    onClick={() => {
-                      setSelectedCustomer(role.id), OnGetActionsByRolePage(role.id);
-                    }}
-                    value={role.name}
-                    key={role.id}
-                    className="dark:text-white"
-                  >
-                    {role.name}
-                  </AutocompleteItem>
-                ))}
-              </Autocomplete>
-            </div>
-          </div>
-          <div className="flex flex-wrap -mx-2">
-            {viewasAction.map(({ view }) => (
-              <React.Fragment key={view.id}>{renderSection(view)}</React.Fragment>
-            ))}
+  return (
+    <>
+      <div className="w-full h-full p-5 overflow-y-auto bg-white shadow-xl rounded-xl dark:bg-gray-900">
+        <div className="flex flex-col lg:flex-row justify-between items-center w-full gap-5 mb-5 lg:mb-10 lg:gap-0">
+          <div className="flex w-full lg:w-auto justify-end lg:justify-center">
+            <Autocomplete
+              className="w-full dark:text-white"
+              label="Selecciona el rol"
+              labelPlacement="outside"
+              placeholder="Selecciona el Rol"
+              variant="bordered"
+              defaultSelectedKey={selectedCustomerKey}
+              value={selectedCustomerKey}
+              selectedKey={selectedCustomerKey}
+              onSelectionChange={(key) => setSelectedCustomer(Number(key))}
+            >
+              {dataRoles.map((role) => (
+                <AutocompleteItem
+                  onClick={() => {
+                    setSelectedCustomer(role.id), OnGetActionsByRolePage(role.id);
+                  }}
+                  value={role.name}
+                  key={role.id}
+                  className="dark:text-white"
+                >
+                  {role.name}
+                </AutocompleteItem>
+              ))}
+            </Autocomplete>
           </div>
         </div>
-        <div className="fixed bottom-6 right-4">
-          <Button
-            style={{ backgroundColor: theme.colors.dark, color: theme.colors.primary }}
-            onClick={handleSubmit}
-            className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition disabled:opacity-50"
-          >
-            Guardar
-          </Button>
+        <div className="flex flex-wrap -mx-2">
+          {sortedViews.map(({ view }) => (
+            <React.Fragment key={view.id}>{renderSection(view)}</React.Fragment>
+          ))}
         </div>
       </div>
-    </Layout>
+      <div className="fixed bottom-6 right-4">
+        <Button
+          style={{ backgroundColor: theme.colors.dark, color: theme.colors.primary }}
+          onClick={handleSubmit}
+          className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition disabled:opacity-50"
+        >
+          Guardar
+        </Button>
+      </div>
+    </>
   );
 };
 
-export default PermissionTable;
+export default PermissionAddActionRol;

@@ -5,6 +5,7 @@ import {
   get_actions_by_role,
   get_actions_role,
   save_action_rol,
+  update_actions,
 } from '../services/actions_rol.service';
 import { messages } from '../utils/constants';
 import { toast } from 'sonner';
@@ -13,20 +14,20 @@ import { formatActionsRole } from '../utils';
 import { RoleViewAction } from '../types/actions_rol.types';
 import { get_views } from '../services/views.service';
 import { get_rolId } from '../storage/localStorage';
+
 export const useActionsRolStore = create<IActionsRolStore>((set, get) => ({
   actions_by_view_and_rol: [],
   actions_view: [],
   actions_roles_grouped: [],
   role_view_action: {} as RoleViewAction,
   roleActions: [],
-  roleActionsPage : [],
+  roleActionsPage: [],
   loading_actions: false,
   OnGetActionsByRolePage(idRol) {
     get_actions_by_role(idRol)
       .then(({ data }) => {
-       
         set({
-          roleActionsPage : data.roleActions
+          roleActionsPage: data.roleActions,
         });
       })
       .catch(() => {
@@ -202,6 +203,17 @@ export const useActionsRolStore = create<IActionsRolStore>((set, get) => ({
         return new_eval;
       }
       return undefined;
+    });
+  },
+  OnUpdateActions(payload) {
+    return update_actions(payload).then(({ data }) => {
+      if (data.ok) {
+       
+        return true;
+      } else {
+        toast.error(messages.error);
+        return false;
+      }
     });
   },
 }));

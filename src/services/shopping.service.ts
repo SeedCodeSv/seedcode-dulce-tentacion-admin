@@ -40,11 +40,11 @@ export const get_correlative_shopping = (branch_id: number) => {
   return axios.get<IGetCorrelativeShopping>(API_URL + `/shoppings/get-correlative/${branch_id}`);
 };
 
-export function isErrorSupplier(response): response is ErrorSupplier {
+export function isErrorSupplier(response: { supplier: boolean }): response is ErrorSupplier {
   return response && typeof response.supplier === 'boolean';
 }
 
-export function isSuccessSupplier(response): response is SuccessSupplier {
+export function isSuccessSupplier(response: { ok: boolean }): response is SuccessSupplier {
   return response && typeof response.ok === 'boolean';
 }
 
