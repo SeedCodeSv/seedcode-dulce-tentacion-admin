@@ -44,6 +44,8 @@ import CushCatsZ from '@/pages/CashCutsZ';
 import ShoppingBookIVA from '@/pages/iva/ShoppingBookIVA';
 import Shopping from '@/pages/Shopping';
 import CreateShopping from '@/components/shopping/CreateShoppingJson';
+import CFFBookIVA from '@/pages/iva/CFFBookIVA';
+import FEBookIVA from '@/pages/iva/FEBookIVA';
 
 const Loading = () => {
   return <div>Cargando...</div>;
@@ -228,6 +230,14 @@ export const router = () => {
     {
       path: "iva/shopping-book",
       element: <ShoppingBookIVA />,
+    },
+    {
+      path: "iva/cff-book",
+      element: <CFFBookIVA />,
+    },
+    {
+      path: "iva/fe-book",
+      element: <FEBookIVA />,
     },
     {
       path: '*',
