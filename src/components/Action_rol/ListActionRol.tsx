@@ -46,16 +46,13 @@ const PermissionTable: React.FC = () => {
                     names: actions.map((name) => ({ name })),
                   });
                 } catch (error) {
-                  console.error('Error al crear acciones para la vista:', newView.name, error);
+                  return;
                 }
               } else {
-                console.error('La nueva vista no tiene un ID válido:', newView);
+               return;
               }
             })
           );
-        
-        } else {
-         
         }
       }
 
@@ -67,12 +64,12 @@ const PermissionTable: React.FC = () => {
 
         if (permissionView) {
           const existingActions = new Set(
-            viewasAction
-              .filter((va) => va.view.id === view.id)
-              .flatMap((va) => va.actions.name)
+            viewasAction.filter((va) => va.view.id === view.id).flatMap((va) => va.actions.name)
           );
 
-          const newActions = permissionView.actions.filter((action) => !existingActions.has(action));
+          const newActions = permissionView.actions.filter(
+            (action) => !existingActions.has(action)
+          );
 
           if (newActions.length > 0) {
             newActions.forEach((action) => {
@@ -87,14 +84,10 @@ const PermissionTable: React.FC = () => {
 
       if (actionsToUpdate.length > 0) {
         await OnUpdateActions({ actions: actionsToUpdate });
-       
-      } else {
-        
       }
     } catch (error) {
-    
       toast.error('Error al crear o actualizar las vistas y acciones');
-      hasExecuted.current = false; 
+      hasExecuted.current = false;
     }
   };
 

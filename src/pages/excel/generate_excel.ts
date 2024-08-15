@@ -165,7 +165,7 @@ export const generate_shopping_excel = async (
   });
 
   worksheet.mergeCells(`E${nextLine + 5}:F${nextLine + 5}`);
-  worksheet.getCell(`E${nextLine + 5}`).value = 'Oscar Leopoldo Ramirez Garcia';
+  worksheet.getCell(`E${nextLine + 5}`).value = '';
   worksheet.mergeCells(`G${nextLine + 5}:I${nextLine + 5}`);
   worksheet.getCell(`G${nextLine + 5}`).value = '__________________________';
 
@@ -396,7 +396,7 @@ export const export_excel_factura = async (
     `G${nextLine + 12}:I${nextLine + 12}`,
   ];
 
-  worksheet.getCell(`B${nextLine + 11}`).value = 'Oscar Leopoldo Ramírez García';
+  worksheet.getCell(`B${nextLine + 11}`).value = '';
   worksheet.getCell(`B${nextLine + 12}`).value = 'Nombre contador o Contribuyente';
   worksheet.getCell(`B${nextLine + 11}`).font = { size: 11, name: 'Calibri' };
   worksheet.getCell(`B${nextLine + 12}`).font = { size: 11, bold: true, name: 'Calibri' };
@@ -714,7 +714,7 @@ export const export_excel_credito = async (
     worksheet.getCell(cell).numFmt = '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-';
   });
 
-  worksheet.getCell(`D${nextLine + 14}`).value = 'Oscar Leopoldo Ramírez García';
+  worksheet.getCell(`D${nextLine + 14}`).value = '';
   worksheet.getCell(`D${nextLine + 15}`).value = 'Nombre contador o Contribuyente';
   worksheet.getCell(`D${nextLine + 14}`).font = { size: 9, name: 'Calibri' };
   worksheet.getCell(`D${nextLine + 15}`).font = { size: 9, bold: true, name: 'Calibri' };
