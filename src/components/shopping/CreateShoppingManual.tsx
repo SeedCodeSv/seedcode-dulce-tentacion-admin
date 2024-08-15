@@ -10,7 +10,6 @@ import {
   Select,
   SelectItem,
 } from '@nextui-org/react';
-
 import axios from 'axios';
 import { X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
@@ -41,7 +40,6 @@ function CreateShoppingManual() {
   const handleChangeTotal = (e: string) => {
     const sanitizedValue = e.replace(/[^0-9.]/g, '');
     const total = Number(sanitizedValue);
-
     const iva = total / 1.13;
     setAfecta(formatCurrencyWithout$(iva));
     setTotalIva(formatCurrencyWithout$(total - iva));

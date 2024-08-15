@@ -127,3 +127,13 @@ export const getInitialAndEndDate = () => {
 export function formatDateToMMDDYYYY(date: string) {
   return moment.tz(date, "America/El_Salvador").format("MM/DD/YYYY")
 }
+export function formatDateMMDDYYYY(day: number, month: number): string {
+  const date = new Date()
+  const year = date.getFullYear()
+
+  // Asegurar que el día y el mes tengan dos dígitos
+  const formattedDay = day < 10 ? `0${day}` : day.toString()
+  const formattedMonth = month < 10 ? `0${month}` : month.toString()
+
+  return `${formattedMonth}/${formattedDay}/${year}`
+}
