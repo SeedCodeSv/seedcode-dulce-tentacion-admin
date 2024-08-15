@@ -39,7 +39,7 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
     }
     getCat013Municipios(codeDepartamento);
   }, [codeDepartamento, props.data?.address?.departamento]);
-  const { patchEmployee ,verifyCode} = useEmployeeStore();
+  const { patchEmployee, verifyCode } = useEmployeeStore();
   const [dataCreate, setDataCreate] = useState<EmployeePayload>({
     firstName: props.data?.firstName || '',
     secondName: props.data?.secondName || '',
@@ -61,7 +61,6 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
     responsibleContact: props.data?.responsibleContact || '',
     statusId: props.data?.employeeStatusId || 0,
     studyLevelId: props.data?.studyLevelId || 0,
-    // addressId: props.data?.addressId || 0,
     contractTypeId: props.data?.contractTypeId || 0,
     department: props.data?.address?.departamento || '',
     departmentName: props.data?.address?.nombreDepartamento || '',
@@ -71,15 +70,41 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
     branchId: props.data?.branchId || 0,
   });
 
+  const defaultValues = {
+    secondName: 'N/A',
+    secondLastName: 'N/A',
+    bankAccount: '000000000',
+    phone: '0',
+    age: '0',
+    salary: '0',
+    dateOfBirth: '0000-00-00',
+    responsibleContact: 'No Contacto',
+    complement: 'No complemento',
+  };
+
   const [error, setError] = useState(false);
+
+  const filledData = {
+    ...dataCreate,
+    secondName: dataCreate.secondName || defaultValues.secondName,
+    secondLastName: dataCreate.secondLastName || defaultValues.secondLastName,
+    bankAccount: dataCreate.bankAccount || defaultValues.bankAccount,
+    phone: dataCreate.phone || defaultValues.phone,
+    age: dataCreate.age || defaultValues.age,
+    salary: dataCreate.salary || defaultValues.salary,
+    dateOfBirth: dataCreate.dateOfBirth || defaultValues.dateOfBirth,
+    responsibleContact: dataCreate.responsibleContact || defaultValues.responsibleContact,
+    complement: dataCreate.complement || defaultValues.complement,
+  };
+
   const createEmployee = async () => {
-    const verify = await verifyCode(dataCreate.code);
+    const verify = await verifyCode(filledData.code);
     if (!verify) {
       toast.error('Ya existe un empleado con este código');
       return;
-     }
+    }
     try {
-     const data = await patchEmployee(dataCreate, props.data?.id || 0);
+      const data = await patchEmployee(filledData, props.data?.id || 0);
       if (data) {
         props.id(0);
       }
@@ -99,8 +124,7 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
     if (verify) {
       toast.success('Código disponible');
       setError(false);
-    }
-    else {
+    } else {
       setError(true);
     }
     return code;
@@ -248,8 +272,7 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
                       variant="bordered"
                       label="Codigo Empleado"
                     />
-                    {error && (
-                      <p className="text-xs text-red-500">{"Este código ya existe"}</p>)}
+                    {error && <p className="text-xs text-red-500">{'Este código ya existe'}</p>}
                   </div>
                   <div className="mt-3">
                     <Button
