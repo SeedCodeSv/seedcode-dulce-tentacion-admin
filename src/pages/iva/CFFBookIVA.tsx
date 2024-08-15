@@ -7,7 +7,7 @@ import { months } from '@/utils/constants';
 import { formatDateToMMDDYYYY } from '@/utils/dates';
 import { formatCurrency } from '@/utils/dte';
 import { Button, Select, SelectItem } from '@nextui-org/react';
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { PiMicrosoftExcelLogoBold } from 'react-icons/pi';
 import { export_excel_credito } from '../excel/generate_excel';
 import saveAs from 'file-saver';
@@ -33,31 +33,36 @@ function CFFBookIVA() {
 
   const handleExportExcel = async () => {
     const data = creditos_by_month.map((cre, index) => [
-        index + 1,
-        cre.fecEmi,
-        cre.codigoGeneracion,
-        cre.customer.nrc !== "0" ? cre.customer.nrc : "",
-        cre.customer.nombre,
-        Number(cre.totalExenta),
-        Number(cre.totalGravada),
-        Number(cre.totalIva),
-        0,
-        0,
-        0,
-        Number(cre.montoTotalOperacion)
-      ])
-  
-      const month = months.find((month) => month.value === monthSelected)?.name || ""
-  
-      const blob = await export_excel_credito(month, data, {
+      index + 1,
+      cre.fecEmi,
+      cre.codigoGeneracion,
+      cre.customer.nrc !== '0' ? cre.customer.nrc : '',
+      cre.customer.nombre,
+      Number(cre.totalExenta),
+      Number(cre.totalGravada),
+      Number(cre.totalIva),
+      0,
+      0,
+      0,
+      Number(cre.montoTotalOperacion),
+    ]);
+
+    const month = months.find((month) => month.value === monthSelected)?.name || '';
+
+    const blob = await export_excel_credito(
+      month,
+      data,
+      {
         total: factura_totals,
         iva: 0,
         exenta: 0,
         gravada: factura_totals,
-        retencion: 0
-      }, transmitter)
-  
-      saveAs(blob, `Libro_Ventas_CCF_${month}.xlsx`)
+        retencion: 0,
+      },
+      transmitter
+    );
+
+    saveAs(blob, `Libro_Ventas_CCF_${month}.xlsx`);
   };
 
   const totalIva = useMemo(() => {
@@ -151,44 +156,28 @@ function CFFBookIVA() {
                       <table className="w-full">
                         <thead className="sticky top-0 z-20 bg-white">
                           <tr>
-                            <th
-                              className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                            >
+                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                               Fecha
                             </th>
-                            <th
-                              className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                            >
+                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                               No. Comp.
                             </th>
-                            <th
-                              className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                            >
+                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                               No. Reg.
                             </th>
-                            <th
-                              className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                            >
+                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                               Nombre del Cliente
                             </th>
-                            <th
-                              className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                            >
+                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                               Exenta
                             </th>
-                            <th
-                              className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                            >
+                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                               Gravada
                             </th>
-                            <th
-                              className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                            >
+                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                               Iva
                             </th>
-                            <th
-                              className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                            >
+                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                               Total
                             </th>
                           </tr>
@@ -203,7 +192,7 @@ function CFFBookIVA() {
                                 {factura.codigoGeneracion}
                               </td>
                               <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                {factura.customer.nrc !== "0" ? factura.customer.nrc : ""}
+                                {factura.customer.nrc !== '0' ? factura.customer.nrc : ''}
                               </td>
                               <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                                 {factura.customer.nombre}
@@ -227,7 +216,6 @@ function CFFBookIVA() {
                     </>
                   ) : (
                     <div className="w-full h-full flex dark:bg-gray-600 p-10 flex-col justify-center items-center">
-                      
                       <p className="mt-5 dark:text-white text-gray-600 text-xl">
                         No se encontraron resultados
                       </p>
