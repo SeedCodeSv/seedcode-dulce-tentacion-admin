@@ -2,7 +2,7 @@
   "view_actions": [
     {
       "view": "Productos",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Activar Productos"]
     },
     {
       "view": "Categorias de Productos",
@@ -20,7 +20,6 @@
       "view": "Ordenes de Compra",
       "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
     },
-
     {
       "view": "Usuarios",
       "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Cambiar Contraseña"]

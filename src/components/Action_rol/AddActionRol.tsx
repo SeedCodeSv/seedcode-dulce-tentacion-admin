@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
 import { Autocomplete, AutocompleteItem, Button, Input } from '@nextui-org/react';
 import viewActions from '../../actions.json';
@@ -85,7 +84,8 @@ const PermissionAddActionRol: React.FC = () => {
   };
   const { OnGetActionsByRole } = useActionsRolStore();
   const { user } = useAuthStore();
-  const navigate = useNavigate();
+
+  const { OnGetActionsByRol } = useViewsStore();
 
   const handleSubmit = async () => {
     if (selectedCustomer === 0) {
@@ -118,7 +118,7 @@ const PermissionAddActionRol: React.FC = () => {
       await create_role_action(payload);
       OnGetActionsByRole(user?.roleId as number);
       toast.success('Acciones asignadas correctamente');
-      navigate('/actionRol');
+      OnGetActionsByRol(user?.roleId ?? 0);
     } catch (error) {
       toast.error('Error al asignar acciones');
     }

@@ -2,14 +2,13 @@ import { useContext } from 'react';
 import { Button } from '@nextui-org/react';
 import { DataView } from 'primereact/dataview';
 import { classNames } from 'primereact/utils';
-import { EditIcon, ShoppingBag, ClipboardList, Barcode, RefreshCcw } from 'lucide-react';
+import { EditIcon, ShoppingBag, ClipboardList, Barcode, RefreshCcw, Lock } from 'lucide-react';
 import { ThemeContext } from '../../hooks/useTheme';
 import { useProductsStore } from '../../store/products.store';
 import { global_styles } from '../../styles/global.styles';
 import { GridProps, IMobileView } from './types/mobile-view.types';
 import ERROR404 from '../../assets/not-found-error-alert-svgrepo-com.svg';
 import TooltipGlobal from '../global/TooltipGlobal';
-
 function MobileView(props: IMobileView) {
   const { paginated_products } = useProductsStore();
   const { layout, openEditModal, DeletePopover, actions, handleActivate } = props;
@@ -54,8 +53,8 @@ function MobileView(props: IMobileView) {
 }
 
 const GridItem = (props: GridProps) => {
+  const { theme } = useContext(ThemeContext);
   const { product, layout, openEditModal, actions, DeletePopover, handleActivate } = props;
-
   return (
     <>
       {layout === 'grid' ? (
@@ -78,33 +77,42 @@ const GridItem = (props: GridProps) => {
             <p className="w-full dark:text-white">{product.code}</p>
           </div>
           <div className="flex justify-between mt-5 w-ful">
-            {actions.includes('Editar') && (
+            {actions.includes('Editar') && product.isActive ? (
               <TooltipGlobal text="Editar">
                 <Button
                   onClick={() => openEditModal(product)}
                   isIconOnly
-                  style={global_styles().secondaryStyle}
+                  style={{
+                    backgroundColor: theme.colors.secondary,
+                  }}
                 >
-                  <EditIcon size={20} />
+                  <EditIcon style={{ color: theme.colors.primary }} size={20} />
                 </Button>
               </TooltipGlobal>
+            ) : (
+              <Button
+                type="button"
+                disabled
+                style={{ backgroundColor: theme.colors.third, cursor: 'not-allowed' }}
+                className="flex font-semibold "
+                isIconOnly
+              >
+                <Lock />
+              </Button>
             )}
-            {actions.includes('Eliminar') && (
-              <>
-                {product.isActive ? (
-                  DeletePopover({ product: product })
-                ) : (
-                  <TooltipGlobal text="Activar">
-                    <Button
-                      onClick={() => handleActivate(product.id)}
-                      isIconOnly
-                      style={global_styles().thirdStyle}
-                    >
-                      <RefreshCcw />
-                    </Button>
-                  </TooltipGlobal>
-                )}
-              </>
+
+            {product.isActive && actions.includes('Activar Productos') ? (
+              DeletePopover({ product: product })
+            ) : (
+              <TooltipGlobal text="Activar">
+                <Button
+                  onClick={() => handleActivate(product.id)}
+                  isIconOnly
+                  style={global_styles().thirdStyle}
+                >
+                  <RefreshCcw />
+                </Button>
+              </TooltipGlobal>
             )}
           </div>
         </div>

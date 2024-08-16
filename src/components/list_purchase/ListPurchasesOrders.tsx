@@ -22,13 +22,7 @@ import { formatCurrency } from '../../utils/dte';
 import Pagination from '../global/Pagination';
 import EditMode from './EditMode';
 import { PurchaseOrder } from '../../types/purchase_orders.types';
-import {
-  ClipboardCheck,
-  CreditCard,
-  Table as ITable,
-  List,
-  // SearchIcon,
-} from 'lucide-react';
+import { ClipboardCheck, CreditCard, Table as ITable, List } from 'lucide-react';
 import { global_styles } from '../../styles/global.styles';
 import { useSupplierStore } from '../../store/supplier.store';
 import { ArrayAction } from '@/types/view.types';
@@ -43,12 +37,9 @@ function ListPurchasesOrders({ actions }: ArrayAction) {
   const [supplier, setSupplier] = useState('');
   // const [openVaul, setOpenVaul] = useState(false);
   const [showState, setShowState] = useState('todos');
-
   const { getPurchaseOrders, purchase_orders, pagination_purchase_orders } =
     usePurchaseOrdersStore();
-
   const { getSupplierList, supplier_list } = useSupplierStore();
-
   useEffect(() => {
     getPurchaseOrders(startDate, endDate, 1, limit, supplier, showState);
   }, [startDate, endDate, limit, showState, supplier]);
@@ -56,26 +47,20 @@ function ListPurchasesOrders({ actions }: ArrayAction) {
   useEffect(() => {
     getSupplierList();
   }, []);
-
   const { theme } = useContext(ThemeContext);
-
   const style = {
     backgroundColor: theme.colors.dark,
     color: theme.colors.primary,
   };
-
   const reload = () => {
     setLimit(5);
     getPurchaseOrders(startDate, endDate, 1, limit, '');
   };
-
   const [selectedOrder, setSelectedOrder] = useState<PurchaseOrder>();
-
   const handleSelectEdit = (purchase: PurchaseOrder) => {
     setSelectedOrder(purchase);
     setMode('edit');
   };
-
   return (
     <>
       {mode === 'show' && (

@@ -4,7 +4,6 @@ import LOGO from '../assets/MADNESS.png';
 import {
   Home,
   ChevronDown,
-  Book,
   FileText,
   Calendar,
   FolderCog,
@@ -23,19 +22,15 @@ import {
 } from 'lucide-react';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { ThemeContext } from '../hooks/useTheme';
-
 import { useConfigurationStore } from '../store/perzonalitation.store';
 import useWindowSize from '../hooks/useWindowSize';
-import { useViewsStore } from '@/store/views.store';
-import { validate_pathname, validateIfArrayContain } from '@/utils/filters';
+import { validate_pathname } from '@/utils/filters';
 import SidebarLinkGroup from './SidebarLinkGroup';
 import classNames from 'classnames';
 import { motion } from 'framer-motion';
 import { Barcode } from 'lucide-react';
 import SidebarLinkList from '@/components/global/SidebarLinkList ';
 export const LayoutItems = () => {
-  const { OnGetViewasAction, viewasAction } = useViewsStore();
-
   const { theme, toggleContext, context } = useContext(ThemeContext);
   useEffect(() => {
     if (context === 'dark') {
@@ -43,9 +38,8 @@ export const LayoutItems = () => {
     } else {
       document.getElementsByTagName('body')[0].classList.remove('dark');
     }
-    OnGetViewasAction();
   }, [context]);
-  const views = viewasAction && viewasAction.map((r) => r.view.name);
+
   const { personalization } = useConfigurationStore();
   const { windowSize } = useWindowSize();
   const iconSize = useMemo(() => {
@@ -241,347 +235,264 @@ export const LayoutItems = () => {
         </>
       )}
       <>
-        {views && (
-          <ul className="mt-2">
-            <li>
-              <NavLink
-                to="/"
-                className={({ isActive }) =>
-                  `group relative flex items-center gap-2.5 rounded-sm py-4 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700 ${
-                    isActive && 'bg-gray-200 dark:bg-gray-700'
-                  }`
-                }
+        <ul className="mt-2">
+          <li>
+            <NavLink
+              to="/"
+              className={({ isActive }) =>
+                `group relative flex items-center gap-2.5 rounded-sm py-4 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700 ${
+                  isActive && 'bg-gray-200 dark:bg-gray-700'
+                }`
+              }
+            >
+              <Home />
+              Inicio
+            </NavLink>
+          </li>
+
+          <>
+            <ul className="flex flex-col gap-1.5">
+              <SidebarLinkGroup
+                activeCondition={validate_pathname(pathname, [
+                  'products',
+                  'categories',
+                  'subCategories',
+                  'orders',
+                  'compras',
+                ])}
+                isOpen={openGroup === 'productos'}
+                onGroupClick={() => handleGroupClick('productos')}
               >
-                <Home />
-                Inicio
-              </NavLink>
-            </li>
-
-            {validateIfArrayContain(views, [
-              'Productos',
-              'Categorias',
-              'Sub Categorias',
-              'Compras',
-              'Ordenes de compra',
-            ]) && (
-              <>
-                <ul className="flex flex-col gap-1.5">
-                  <SidebarLinkGroup
-                    activeCondition={validate_pathname(pathname, [
-                      'products',
-                      'categories',
-                      'subCategories',
-                      'orders',
-                      'compras',
-                    ])}
-                    isOpen={openGroup === 'productos'}
-                    onGroupClick={() => handleGroupClick('productos')}
-                  >
-                    {(handleClick, open) => (
-                      <>
-                        <div
-                          className={classNames(
-                            validate_pathname(pathname, [
-                              'products',
-                              'categories',
-                              'subCategories',
-                              'orders',
-                              'compras',
-                            ]) && 'bg-gray-200 dark:bg-gray-700',
-                            'group cursor-pointer relative flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
-                          )}
-                          onClick={handleClick}
-                        >
-                          <div className="flex items-center gap-2.5">
-                            <FileText size={iconSize} />
-                            Gestión productos
-                          </div>
-                          <ChevronDown
-                            className={classNames(open && ' rotate-180', 'items-end justify-end ')}
-                            size={iconSize}
-                          />
-                        </div>
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{
-                            opacity: open ? 1 : 0,
-                            height: open ? 'auto' : 0,
-                          }}
-                          transition={{ duration: 0.3 }}
-                          className="overflow-hidden transform translate"
-                        >
-                          <SidebarLinkList links={linksProductManagement} />
-                        </motion.div>
-                      </>
-                    )}
-                  </SidebarLinkGroup>
-                </ul>
-              </>
-            )}
-            {validateIfArrayContain(views, [
-              'Empleados',
-              'Clientes',
-              'Cargos de Empleados',
-              'Usuarios',
-              'Sucursales',
-            ]) && (
-              <>
-                <ul className="flex flex-col gap-1.5">
-                  <SidebarLinkGroup
-                    activeCondition={validate_pathname(pathname, [
-                      'employees',
-                      'clients',
-                      'users',
-                      'branches',
-                      'suppliers',
-                    ])}
-                    isOpen={openGroup === 'administración'}
-                    onGroupClick={() => handleGroupClick('administración')}
-                  >
-                    {(handleClick, open) => (
-                      <>
-                        <div
-                          className={classNames(
-                            validate_pathname(pathname, [
-                              'employees',
-                              'clients',
-                              'users',
-                              'branches',
-                              'suppliers',
-                            ]) && 'bg-gray-200 dark:bg-gray-700',
-                            'group relative cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
-                          )}
-                          onClick={handleClick}
-                        >
-                          <div className="flex items-center gap-2.5">
-                            <FolderCog size={iconSize} />
-                            Administración
-                          </div>
-                          <ChevronDown
-                            className={classNames(open && ' rotate-180', 'items-end justify-end ')}
-                            size={iconSize}
-                          />
-                        </div>
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{
-                            opacity: open ? 1 : 0,
-                            height: open ? 'auto' : 0,
-                          }}
-                          transition={{ duration: 0.3 }}
-                          className="overflow-hidden transform translate"
-                        >
-                          <SidebarLinkList links={linkAdministration} />
-                        </motion.div>
-                      </>
-                    )}
-                  </SidebarLinkGroup>
-                </ul>
-              </>
-            )}
-            {validateIfArrayContain(views, ['Reportes']) && (
-              <>
-                <ul className="flex flex-col gap-1.5">
-                  <SidebarLinkGroup
-                    activeCondition={validate_pathname(pathname, ['reports'])}
-                    isOpen={openGroup === 'reports'}
-                    onGroupClick={() => handleGroupClick('reports')}
-                  >
-                    {(handleClick, open) => (
-                      <>
-                        <div
-                          className={classNames(
-                            validate_pathname(pathname, ['reports']) &&
-                              'bg-gray-200 dark:bg-gray-700',
-                            'group relative cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
-                          )}
-                          onClick={handleClick}
-                        >
-                          <div className="flex items-center gap-2.5">
-                            <FolderCheck size={iconSize} />
-                            Gestión de reportes
-                          </div>
-                          <ChevronDown
-                            className={classNames(open && ' rotate-180', 'items-end justify-end ')}
-                            size={iconSize}
-                          />
-                        </div>
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{
-                            opacity: open ? 1 : 0,
-                            height: open ? 'auto' : 0,
-                          }}
-                          transition={{ duration: 0.3 }}
-                          className="overflow-hidden transform translate"
-                        >
-                          <SidebarLinkList links={linkReports} />
-                        </motion.div>
-                      </>
-                    )}
-                  </SidebarLinkGroup>
-                </ul>
-              </>
-            )}
-
-            {validateIfArrayContain(views, [
-              'Nivel de Estudio',
-              'Estados del Empleado',
-              'Tipo de Contratacion',
-            ]) && (
-              <>
-                <ul className="flex flex-col gap-1.5">
-                  <SidebarLinkGroup
-                    activeCondition={validate_pathname(pathname, [
-                      'Nivel de Estudio',
-                      'Estados del Empleado',
-                      'Tipo de Contratacion',
-                    ])}
-                    isOpen={openGroup === 'planillas'}
-                    onGroupClick={() => handleGroupClick('planillas')}
-                  >
-                    {(handleClick, open) => (
-                      <>
-                        <div
-                          className={classNames(
-                            validate_pathname(pathname, [
-                              'Nivel de Estudio',
-                              'Estados del Empleado',
-                              'Tipo de Contratacion',
-                            ]) && 'bg-gray-200 dark:bg-gray-700',
-                            'group relative cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
-                          )}
-                          onClick={handleClick}
-                        >
-                          <div className="flex items-center gap-2.5">
-                            <FolderCheck size={iconSize} />
-                            Gestión de planillas
-                          </div>
-                          <ChevronDown
-                            className={classNames(open && ' rotate-180', 'items-end justify-end ')}
-                            size={iconSize}
-                          />
-                        </div>
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{
-                            opacity: open ? 1 : 0,
-                            height: open ? 'auto' : 0,
-                          }}
-                          transition={{ duration: 0.3 }}
-                          className="overflow-hidden transform translate"
-                        >
-                          <SidebarLinkList links={linkPlanification} />
-                        </motion.div>
-                      </>
-                    )}
-                  </SidebarLinkGroup>
-                </ul>
-              </>
-            )}
-
-            <>
-              <ul className="flex flex-col gap-1.5">
-                <SidebarLinkGroup
-                  activeCondition={validate_pathname(pathname, ['contabilidad'])}
-                  isOpen={openGroup === 'contabilidad'}
-                  onGroupClick={() => handleGroupClick('contabilidad')}
-                >
-                  {(handleClick, open) => (
-                    <>
-                      <div
-                        className={classNames(
-                          validate_pathname(pathname, ['contabilidad']) &&
-                            'bg-gray-200 dark:bg-gray-700',
-                          'group relative cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
-                        )}
-                        onClick={handleClick}
-                      >
-                        <div className="flex items-center gap-2.5">
-                          <FolderCheck size={iconSize} />
-                          Contabilidad
-                        </div>
-                        <ChevronDown
-                          className={classNames(open && ' rotate-180', 'items-end justify-end ')}
-                          size={iconSize}
-                        />
+                {(handleClick, open) => (
+                  <>
+                    <div
+                      className={classNames(
+                        validate_pathname(pathname, [
+                          'products',
+                          'categories',
+                          'subCategories',
+                          'orders',
+                          'compras',
+                        ]) && 'bg-gray-200 dark:bg-gray-700',
+                        'group cursor-pointer relative flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
+                      )}
+                      onClick={handleClick}
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <FileText size={iconSize} />
+                        Gestión productos
                       </div>
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{
-                          opacity: open ? 1 : 0,
-                          height: open ? 'auto' : 0,
-                        }}
-                        transition={{ duration: 0.3 }}
-                        className="overflow-hidden transform translate"
-                      >
-                        <SidebarLinkList links={linkAccounting} />
-                      </motion.div>
-                    </>
-                  )}
-                </SidebarLinkGroup>
-              </ul>
-            </>
+                      <ChevronDown
+                        className={classNames(open && ' rotate-180', 'items-end justify-end ')}
+                        size={iconSize}
+                      />
+                    </div>
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{
+                        opacity: open ? 1 : 0,
+                        height: open ? 'auto' : 0,
+                      }}
+                      transition={{ duration: 0.3 }}
+                      className="overflow-hidden transform translate"
+                    >
+                      <SidebarLinkList links={linksProductManagement} />
+                    </motion.div>
+                  </>
+                )}
+              </SidebarLinkGroup>
+            </ul>
+          </>
 
-            {views.includes('Categoría de gastos') && (
-              <NavLink
-                to={'/expensesCategories'}
-                className={({ isActive }) => {
-                  return (
-                    (isActive
-                      ? 'text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green'
-                      : 'text-coffee-brown font-semibold border-white') +
-                    ' flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
-                  );
-                }}
-                style={({ isActive }) => {
-                  return {
-                    borderLeftColor: isActive ? theme.colors.dark : 'transparent',
-                    borderLeftWidth: 5,
-                  };
-                }}
+          <>
+            <ul className="flex flex-col gap-1.5">
+              <SidebarLinkGroup
+                activeCondition={validate_pathname(pathname, [
+                  'employees',
+                  'clients',
+                  'users',
+                  'branches',
+                  'suppliers',
+                ])}
+                isOpen={openGroup === 'administración'}
+                onGroupClick={() => handleGroupClick('administración')}
               >
-                <Book size={iconSize} />
-                <p className="ml-2 text-sm 2xl:text-base">Reportes</p>
-              </NavLink>
-            )}
-            {/* {views.includes('Categoría de gastos') && (
-              <NavLink
-                to={'/expensesCategories'}
-                className={({ isActive }) => {
-                  return (
-                    (isActive
-                      ? 'text-coffee-green font-semibold bg-gray-50 dark:bg-gray-700 border-coffee-green'
-                      : 'text-coffee-brown font-semibold border-white') +
-                    ' flex items-center w-full py-4 pl-5 border-l-4 cursor-pointer hover:text-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
-                  );
-                }}
-                style={({ isActive }) => {
-                  return {
-                    borderLeftColor: isActive ? theme.colors.dark : 'transparent',
-                    borderLeftWidth: 5,
-                  };
-                }}
+                {(handleClick, open) => (
+                  <>
+                    <div
+                      className={classNames(
+                        validate_pathname(pathname, [
+                          'employees',
+                          'clients',
+                          'users',
+                          'branches',
+                          'suppliers',
+                        ]) && 'bg-gray-200 dark:bg-gray-700',
+                        'group relative cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
+                      )}
+                      onClick={handleClick}
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <FolderCog size={iconSize} />
+                        Administración
+                      </div>
+                      <ChevronDown
+                        className={classNames(open && ' rotate-180', 'items-end justify-end ')}
+                        size={iconSize}
+                      />
+                    </div>
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{
+                        opacity: open ? 1 : 0,
+                        height: open ? 'auto' : 0,
+                      }}
+                      transition={{ duration: 0.3 }}
+                      className="overflow-hidden transform translate"
+                    >
+                      <SidebarLinkList links={linkAdministration} />
+                    </motion.div>
+                  </>
+                )}
+              </SidebarLinkGroup>
+            </ul>
+          </>
+
+          <>
+            <ul className="flex flex-col gap-1.5">
+              <SidebarLinkGroup
+                activeCondition={validate_pathname(pathname, ['reports'])}
+                isOpen={openGroup === 'reports'}
+                onGroupClick={() => handleGroupClick('reports')}
               >
-                <Grid2X2Icon size={iconSize} />
-                <p className="ml-2 text-sm 2xl:text-base">Categoría de gastos</p>
-              </NavLink>
-            )}
-            <li>
-              <NavLink
-                to="/actionRol"
-                className={({ isActive }) =>
-                  `group relative flex items-center gap-2.5 rounded-sm py-4 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700 ${
-                    isActive && 'bg-gray-200 dark:bg-gray-700'
-                  }`
-                }
+                {(handleClick, open) => (
+                  <>
+                    <div
+                      className={classNames(
+                        validate_pathname(pathname, ['reports']) && 'bg-gray-200 dark:bg-gray-700',
+                        'group relative cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
+                      )}
+                      onClick={handleClick}
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <FolderCheck size={iconSize} />
+                        Gestión de reportes
+                      </div>
+                      <ChevronDown
+                        className={classNames(open && ' rotate-180', 'items-end justify-end ')}
+                        size={iconSize}
+                      />
+                    </div>
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{
+                        opacity: open ? 1 : 0,
+                        height: open ? 'auto' : 0,
+                      }}
+                      transition={{ duration: 0.3 }}
+                      className="overflow-hidden transform translate"
+                    >
+                      <SidebarLinkList links={linkReports} />
+                    </motion.div>
+                  </>
+                )}
+              </SidebarLinkGroup>
+            </ul>
+          </>
+
+          <>
+            <ul className="flex flex-col gap-1.5">
+              <SidebarLinkGroup
+                activeCondition={validate_pathname(pathname, [
+                  'Nivel de Estudio',
+                  'Estados del Empleado',
+                  'Tipo de Contratacion',
+                ])}
+                isOpen={openGroup === 'planillas'}
+                onGroupClick={() => handleGroupClick('planillas')}
               >
-                <ShieldHalf />
-                Permisos
-              </NavLink>
-            </li> */}
-          </ul>
-        )}
+                {(handleClick, open) => (
+                  <>
+                    <div
+                      className={classNames(
+                        validate_pathname(pathname, [
+                          'Nivel de Estudio',
+                          'Estados del Empleado',
+                          'Tipo de Contratacion',
+                        ]) && 'bg-gray-200 dark:bg-gray-700',
+                        'group relative cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
+                      )}
+                      onClick={handleClick}
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <FolderCheck size={iconSize} />
+                        Gestión de planillas
+                      </div>
+                      <ChevronDown
+                        className={classNames(open && ' rotate-180', 'items-end justify-end ')}
+                        size={iconSize}
+                      />
+                    </div>
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{
+                        opacity: open ? 1 : 0,
+                        height: open ? 'auto' : 0,
+                      }}
+                      transition={{ duration: 0.3 }}
+                      className="overflow-hidden transform translate"
+                    >
+                      <SidebarLinkList links={linkPlanification} />
+                    </motion.div>
+                  </>
+                )}
+              </SidebarLinkGroup>
+            </ul>
+          </>
+
+          <>
+            <ul className="flex flex-col gap-1.5">
+              <SidebarLinkGroup
+                activeCondition={validate_pathname(pathname, ['contabilidad'])}
+                isOpen={openGroup === 'contabilidad'}
+                onGroupClick={() => handleGroupClick('contabilidad')}
+              >
+                {(handleClick, open) => (
+                  <>
+                    <div
+                      className={classNames(
+                        validate_pathname(pathname, ['contabilidad']) &&
+                          'bg-gray-200 dark:bg-gray-700',
+                        'group relative cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
+                      )}
+                      onClick={handleClick}
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <FolderCheck size={iconSize} />
+                        Contabilidad
+                      </div>
+                      <ChevronDown
+                        className={classNames(open && ' rotate-180', 'items-end justify-end ')}
+                        size={iconSize}
+                      />
+                    </div>
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{
+                        opacity: open ? 1 : 0,
+                        height: open ? 'auto' : 0,
+                      }}
+                      transition={{ duration: 0.3 }}
+                      className="overflow-hidden transform translate"
+                    >
+                      <SidebarLinkList links={linkAccounting} />
+                    </motion.div>
+                  </>
+                )}
+              </SidebarLinkGroup>
+            </ul>
+          </>
+        </ul>
       </>
 
       <div
