@@ -42,7 +42,6 @@ import useWindowSize from '@/hooks/useWindowSize';
 import TooltipGlobal from '../global/TooltipGlobal';
 import BottomDrawer from '../global/BottomDrawer';
 import NO_DATA from '@/assets/svg/no_data.svg';
-import { useViewsStore } from '@/store/views.store';
 
 interface Props {
   actionss: string[];

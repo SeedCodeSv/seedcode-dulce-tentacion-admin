@@ -1,6 +1,9 @@
 import { ReactNode } from 'react';
 import { IPagination } from './global.types';
 
+export interface ArrayAction {
+  actions: string[];
+}
 export interface IView {
   id: number;
   name: string;
@@ -46,28 +49,24 @@ export interface View {
   isActive: boolean;
 }
 
-
-
-
-
 export interface IRespondeActionsData {
-  ok: boolean
-  views: View[]
-  status: number
+  ok: boolean;
+  views: View[];
+  status: number;
 }
 
 export interface View {
-  view: View2
-  actions: Actions
+  view: View2;
+  actions: Actions;
 }
 
 export interface View2 {
-  name: string
+  name: string;
 }
 
 export interface Actions {
-  id: number[]
-  name: string[]
+  id: number[];
+  name: string[];
 }
 export interface SidebarLinkGroupProps {
   children: (handleClick: () => void, open: boolean) => ReactNode;

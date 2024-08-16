@@ -1021,20 +1021,22 @@ function ListEmployee({ actions }: Props) {
                                         )}
                                         {/* este es el boton que tiene q abrir el pdf */}
 
-                                        <Button
-                                          onClick={() => OpenPdf(employee)}
-                                          isIconOnly
-                                          style={{
-                                            backgroundColor: theme.colors.dark,
-                                          }}
-                                        >
-                                          <FileText
+                                        {actions.includes('Contrato') && (
+                                          <Button
+                                            onClick={() => OpenPdf(employee)}
+                                            isIconOnly
                                             style={{
-                                              color: theme.colors.primary,
+                                              backgroundColor: theme.colors.dark,
                                             }}
-                                            size={20}
-                                          />
-                                        </Button>
+                                          >
+                                            <FileText
+                                              style={{
+                                                color: theme.colors.primary,
+                                              }}
+                                              size={20}
+                                            />
+                                          </Button>
+                                        )}
                                       </div>
                                     </td>
                                   </tr>
