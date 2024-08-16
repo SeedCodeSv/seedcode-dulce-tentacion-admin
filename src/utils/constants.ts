@@ -1,4 +1,4 @@
-export const API_URL = 'http://192.168.1.7:8080/api';
+export const API_URL = 'http://192.168.0.12:8080/api';
 export const WS_URL = 'ws://shark-app-wcoqq.ondigitalocean.app/sales-gateway';
 
 export const FACTURACION_API = 'https://cats-facturacion-43ay7.ondigitalocean.app/api';
@@ -16,11 +16,8 @@ export const messages = {
   error: 'Ocurrió un error al procesar la petición',
   success: 'Petición procesada con éxito',
 };
-
 export const limit_options = ['5', '10', '20', '30', '40', '50', '75', '100'];
-
 export const priority = ['LOW', 'MEDIUM', 'HIGH'];
-
 export const typesDocumento = [
   { value: 1, name: 'DUI', code: '13' },
   { value: 2, name: 'PASAPORTE', code: '03' },

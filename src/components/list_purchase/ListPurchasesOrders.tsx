@@ -8,20 +8,20 @@ import {
   Select,
   SelectItem,
   useDisclosure,
-} from "@nextui-org/react";
-import FullDialog from "../global/FullDialog";
-import AddPurchaseOrders from "./AddPurchaseOrders";
-import AddButton from "../global/AddButton";
-import { formatDate } from "../../utils/dates";
-import { useContext, useEffect, useState } from "react";
-import { usePurchaseOrdersStore } from "../../store/purchase_orders.store";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
-import { ThemeContext } from "../../hooks/useTheme";
-import { formatCurrency } from "../../utils/dte";
-import Pagination from "../global/Pagination";
-import EditMode from "./EditMode";
-import { PurchaseOrder } from "../../types/purchase_orders.types";
+} from '@nextui-org/react';
+import FullDialog from '../global/FullDialog';
+import AddPurchaseOrders from './AddPurchaseOrders';
+import AddButton from '../global/AddButton';
+import { formatDate } from '../../utils/dates';
+import { useContext, useEffect, useState } from 'react';
+import { usePurchaseOrdersStore } from '../../store/purchase_orders.store';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+import { ThemeContext } from '../../hooks/useTheme';
+import { formatCurrency } from '../../utils/dte';
+import Pagination from '../global/Pagination';
+import EditMode from './EditMode';
+import { PurchaseOrder } from '../../types/purchase_orders.types';
 import {
   ClipboardCheck,
   CreditCard,
@@ -30,26 +30,24 @@ import {
   Table as ITable,
   List,
   // SearchIcon,
-} from "lucide-react";
-import { global_styles } from "../../styles/global.styles";
-import { useSupplierStore } from "../../store/supplier.store";
+} from 'lucide-react';
+import { global_styles } from '../../styles/global.styles';
+import { useSupplierStore } from '../../store/supplier.store';
+import { ArrayAction } from '@/types/view.types';
 // import { Drawer } from "vaul";
-function ListPurchasesOrders() {
+function ListPurchasesOrders({ actions }: ArrayAction) {
   const modalAdd = useDisclosure();
   const [startDate, setStartDate] = useState(formatDate());
   const [endDate, setEndDate] = useState(formatDate());
   const [limit, setLimit] = useState(5);
-  const [mode, setMode] = useState("show");
-  const [view, setView] = useState<"table" | "grid" | "list">("table");
-  const [supplier, setSupplier] = useState("");
+  const [mode, setMode] = useState('show');
+  const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
+  const [supplier, setSupplier] = useState('');
   // const [openVaul, setOpenVaul] = useState(false);
-  const [showState, setShowState] = useState("todos");
+  const [showState, setShowState] = useState('todos');
 
-  const {
-    getPurchaseOrders,
-    purchase_orders,
-    pagination_purchase_orders,
-  } = usePurchaseOrdersStore();
+  const { getPurchaseOrders, purchase_orders, pagination_purchase_orders } =
+    usePurchaseOrdersStore();
 
   const { getSupplierList, supplier_list } = useSupplierStore();
 
@@ -70,26 +68,24 @@ function ListPurchasesOrders() {
 
   const reload = () => {
     setLimit(5);
-    getPurchaseOrders(startDate, endDate, 1, limit, "");
+    getPurchaseOrders(startDate, endDate, 1, limit, '');
   };
 
   const [selectedOrder, setSelectedOrder] = useState<PurchaseOrder>();
 
   const handleSelectEdit = (purchase: PurchaseOrder) => {
     setSelectedOrder(purchase);
-    setMode("edit");
+    setMode('edit');
   };
 
   return (
     <>
-      {mode === "show" && (
+      {mode === 'show' && (
         <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
           <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
             <div className="w-full flex justify-between">
-              <p className="text-lg font-semibold dark:text-white">
-                Listado de ordenes de compra
-              </p>
-              <AddButton onClick={modalAdd.onOpen} />
+              <p className="text-lg font-semibold dark:text-white">Listado de ordenes de compra</p>
+              {actions.includes('Agregar') && <AddButton onClick={modalAdd.onOpen} />}
             </div>
             <div className="grid grid-cols-3 gap-5 mt-5">
               <div>
@@ -100,7 +96,7 @@ function ListPurchasesOrders() {
                   labelPlacement="outside"
                   className="dark:text-white"
                   classNames={{
-                    label: "font-semibold",
+                    label: 'font-semibold',
                   }}
                   onChange={(e) => setStartDate(e.target.value)}
                   value={startDate}
@@ -114,7 +110,7 @@ function ListPurchasesOrders() {
                   labelPlacement="outside"
                   className="dark:text-white"
                   classNames={{
-                    label: "font-semibold",
+                    label: 'font-semibold',
                   }}
                   onChange={(e) => setEndDate(e.target.value)}
                   value={endDate}
@@ -149,12 +145,10 @@ function ListPurchasesOrders() {
                     isIconOnly
                     color="secondary"
                     style={{
-                      backgroundColor:
-                        view === "table" ? theme.colors.third : "#e5e5e5",
-                      color:
-                        view === "table" ? theme.colors.primary : "#3e3e3e",
+                      backgroundColor: view === 'table' ? theme.colors.third : '#e5e5e5',
+                      color: view === 'table' ? theme.colors.primary : '#3e3e3e',
                     }}
-                    onClick={() => setView("table")}
+                    onClick={() => setView('table')}
                   >
                     <ITable />
                   </Button>
@@ -162,11 +156,10 @@ function ListPurchasesOrders() {
                     isIconOnly
                     color="default"
                     style={{
-                      backgroundColor:
-                        view === "grid" ? theme.colors.third : "#e5e5e5",
-                      color: view === "grid" ? theme.colors.primary : "#3e3e3e",
+                      backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
+                      color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
                     }}
-                    onClick={() => setView("grid")}
+                    onClick={() => setView('grid')}
                   >
                     <CreditCard />
                   </Button>
@@ -174,11 +167,10 @@ function ListPurchasesOrders() {
                     isIconOnly
                     color="default"
                     style={{
-                      backgroundColor:
-                        view === "list" ? theme.colors.third : "#e5e5e5",
-                      color: view === "list" ? theme.colors.primary : "#3e3e3e",
+                      backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
+                      color: view === 'list' ? theme.colors.primary : '#3e3e3e',
                     }}
-                    onClick={() => setView("list")}
+                    onClick={() => setView('list')}
                   >
                     <List />
                   </Button>
@@ -190,29 +182,15 @@ function ListPurchasesOrders() {
                   labelPlacement="outside"
                   variant="bordered"
                   value={limit}
-                  onChange={(e) =>
-                    setShowState(e.target.value ? e.target.value : "")
-                  }
+                  onChange={(e) => setShowState(e.target.value ? e.target.value : '')}
                 >
-                  <SelectItem
-                    className="dark:text-white"
-                    key={""}
-                    value={"todos"}
-                  >
+                  <SelectItem className="dark:text-white" key={''} value={'todos'}>
                     Mostrar todos
                   </SelectItem>
-                  <SelectItem
-                    className="dark:text-white"
-                    key={"false"}
-                    value={"false"}
-                  >
+                  <SelectItem className="dark:text-white" key={'false'} value={'false'}>
                     Pendientes
                   </SelectItem>
-                  <SelectItem
-                    className="dark:text-white"
-                    key={"true"}
-                    value={"true"}
-                  >
+                  <SelectItem className="dark:text-white" key={'true'} value={'true'}>
                     Completados
                   </SelectItem>
                 </Select>
@@ -234,11 +212,11 @@ function ListPurchasesOrders() {
               value={purchase_orders}
               scrollable
               scrollHeight="40rem"
-              tableStyle={{ minWidth: "50rem" }}
+              tableStyle={{ minWidth: '50rem' }}
             >
               <Column
                 headerClassName="text-sm font-semibold"
-                headerStyle={{ ...style, borderTopLeftRadius: "10px" }}
+                headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
                 field="id"
                 header="No."
               />
@@ -282,20 +260,22 @@ function ListPurchasesOrders() {
               />
               <Column
                 headerClassName="text-sm font-semibold"
-                headerStyle={{ ...style, borderTopRightRadius: "10px" }}
+                headerStyle={{ ...style, borderTopRightRadius: '10px' }}
                 header="Acciones"
                 body={(item) => (
                   <div className="flex gap-5">
-                    <Button isIconOnly style={global_styles().thirdStyle}>
+                    {/* <Button isIconOnly style={global_styles().thirdStyle}>
                       <Eye />
-                    </Button>
-                    <Button
-                      onClick={() => handleSelectEdit(item)}
-                      isIconOnly
-                      style={global_styles().secondaryStyle}
-                    >
-                      <ClipboardCheck />
-                    </Button>
+                    </Button> */}
+                    {actions.includes('Editar') && (
+                      <Button
+                        onClick={() => handleSelectEdit(item)}
+                        isIconOnly
+                        style={global_styles().secondaryStyle}
+                      >
+                        <ClipboardCheck />
+                      </Button>
+                    )}
                   </div>
                 )}
               />
@@ -322,10 +302,10 @@ function ListPurchasesOrders() {
           </FullDialog>
         </div>
       )}
-      {mode === "edit" && selectedOrder && (
+      {mode === 'edit' && selectedOrder && (
         <EditMode
           returnMode={() => {
-            setMode("show");
+            setMode('show');
           }}
           purchase_order={selectedOrder}
         />
