@@ -118,6 +118,8 @@ function AddNormalSupplier(props: Props) {
         initialValues={{ ...initialValues }}
         validationSchema={validationSchema}
         onSubmit={(values) => onSubmit(values)}
+        validateOnMount={false}
+        validateOnBlur={false}
       >
         {({ values, touched, errors, handleBlur, handleChange, handleSubmit }) => (
           <>

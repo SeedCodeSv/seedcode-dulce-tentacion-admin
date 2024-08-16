@@ -27,22 +27,23 @@ const AddClientNormal = (props: Props) => {
     correo: props.customer?.correo ?? 'N/A@gmail.com',
     telefono: props.customer?.telefono ?? '0',
     numDocumento: props.customer?.numDocumento ?? '0',
-    municipio: props.customer_direction?.municipio ?? 'N/A',
+    municipio: props.customer_direction?.municipio || 'N/A',
     tipoDocumento: props.customer?.tipoDocumento ?? '13',
-    nombreMunicipio: props.customer_direction?.nombreMunicipio ?? 'N/A',
-    departamento: props.customer_direction?.departamento ?? 'N/A',
-    nombreDepartamento: props.customer_direction?.nombreDepartamento ?? 'N/A',
-    complemento: props.customer_direction?.complemento ?? 'N/A',
+    nombreMunicipio: props.customer_direction?.nombreMunicipio || 'N/A',
+    departamento: props.customer_direction?.departamento || 'N/A',
+    nombreDepartamento: props.customer_direction?.nombreDepartamento || 'N/A',
+    complemento: props.customer_direction?.complemento || 'N/A',
   };
 
   const validationSchema = yup.object().shape({
     nombre: yup.string().required('El nombre es requerido'),
     correo: yup.string().required('El correo es requerido'),
-    telefono: yup.string(),
-    // .required('Este campo solo permite números sin guiones')
-    // .test('length', 'Debe ser de 8 dígitos', (value) => {
-    //   return value?.length === 8;
-    // }),
+    telefono: yup
+      .string()
+      .required('Este campo solo permite números sin guiones'),
+      // .test('length', 'Debe ser de 8 dígitos', (value) => {
+      //   return value?.length === 8;
+      // }),
     numDocumento: yup
       .string()
       .required('Este campo solo permite números sin guiones')
@@ -61,7 +62,9 @@ const AddClientNormal = (props: Props) => {
     complemento: yup.string().required('**El complemento es requerida**'),
   });
 
-  const [selectedCodeDep, setSelectedCodeDep] = useState( props.customer_direction?.departamento ?? '0');
+  const [selectedCodeDep, setSelectedCodeDep] = useState(
+    props.customer_direction?.departamento ?? '0'
+  );
 
   const {
     getCat012Departamento,
@@ -84,7 +87,6 @@ const AddClientNormal = (props: Props) => {
   }, [selectedCodeDep, props.customer_direction]);
 
   useEffect(() => {
-   
     getCat022TipoDeDocumentoDeIde();
   }, [selectedCodeDep]);
 
@@ -98,7 +100,6 @@ const AddClientNormal = (props: Props) => {
       const values = {
         ...payload,
         esContribuyente: 0,
-        // transmitterId: Number(user?.correlative.branch.transmitterId),
         branchId: Number(user?.correlative.branch.id),
       };
       patchCustomer(values, props.id!);
@@ -106,7 +107,6 @@ const AddClientNormal = (props: Props) => {
       const values = {
         ...payload,
         esContribuyente: 0,
-        // transmitterId: Number(user?.correlative.branch.transmitterId),
         branchId: Number(user?.correlative.branch.id),
       };
       postCustomer(values);
@@ -137,6 +137,8 @@ const AddClientNormal = (props: Props) => {
         initialValues={{ ...initialValues }}
         validationSchema={validationSchema}
         onSubmit={(values) => onSubmit(values)}
+        validateOnMount={false}
+        validateOnBlur={false}
       >
         {({ values, touched, errors, handleBlur, handleChange, handleSubmit }) => (
           <>
@@ -336,18 +338,18 @@ const AddClientNormal = (props: Props) => {
             </div>
 
             <div className="pt-2">
-              <Textarea
-                label="Complemento de dirección"
-                classNames={{
-                  label: 'font-semibold text-gray-500 text-sm',
-                }}
+            <Textarea
+                label="Complemento"
                 labelPlacement="outside"
-                variant="bordered"
-                placeholder="Ingresa el complemento de dirección"
-                name="complemento"
+                name="Complemento"
                 value={values.complemento}
                 onChange={handleChange('complemento')}
                 onBlur={handleBlur('complemento')}
+                placeholder="Ingresa el complemento de la dirección"
+                classNames={{
+                  label: 'font-semibold text-gray-500 text-sm',
+                }}
+                variant="bordered"
               />
               {errors.complemento && touched.complemento && (
                 <span className="text-sm font-semibold text-red-500">{errors.complemento}</span>
