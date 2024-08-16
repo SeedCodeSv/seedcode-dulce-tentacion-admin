@@ -1,4 +1,4 @@
-import { Address } from '../plugins/dexie/entities/address';
+
 import { Branches } from './branches.types';
 import { ICharge } from './charges.types';
 import { ContractType } from './contract_type.types';
@@ -58,35 +58,75 @@ export interface IGetEmployeesPaginated {
 
 export interface EmployeePayload {
   id?: number;
-  firstName: string;
-  secondName: string;
+  branchId: number;
+  chargeId: number;
   firstLastName: string;
   secondLastName: string;
+  firstName: string;
+  secondName: string;
   bankAccount: string;
-  chargeId: number;
   nit: string;
   dui: string;
   isss: string;
-  afp: string;
-  code: string;
   phone: string;
-  age: string;
   salary: string;
+  afp?: string;
   dateOfBirth: string;
   dateOfEntry: string;
-  dateOfExit: string;
-  responsibleContact: string;
+  code: string;
+  age?: string; 
+  responsibleContact?: string;
   statusId: number;
   studyLevelId: number;
   contractTypeId: number;
-  // addressId: number;
   department: string;
   departmentName: string;
   municipality: string;
   municipalityName: string;
-  complement: string;
-  branchId: number;
+  complement?: string;
+  dateOfExit: string;
 }
+
+// export interface EmployeePayload {
+//   id?: number;
+//   firstName: string;
+//   secondName: string;
+//   firstLastName: string;
+//   secondLastName: string;
+//   bankAccount: string;
+//   chargeId: number;
+//   nit: string;
+//   dui: string;
+//   isss: string;
+//   afp: string;
+//   code: string;
+//   phone: string;
+//   age: string;
+//   salary: string;
+//   dateOfBirth: string;
+//   dateOfEntry: string;
+//   dateOfExit: string;
+//   responsibleContact: string;
+//   statusId: number;
+//   studyLevelId: number;
+//   contractTypeId: number;
+//   // addressId: number;
+//   department: string;
+//   departmentName: string;
+//   municipality: string;
+//   municipalityName: string;
+//   complement: string;
+//   branchId: number;
+// }
+
+interface Address {
+  departamento: string;
+  nombreDepartamento: string;
+  municipio: string;
+  nombreMunicipio: string;
+  complemento?: string; 
+}
+
 export interface GetEmployeeList {
   ok: boolean;
   message: string;

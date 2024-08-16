@@ -12,6 +12,7 @@ import { export_excel_factura } from '../excel/generate_excel';
 import saveAs from 'file-saver';
 import { formatDateMMDDYYYY } from '@/utils/dates';
 import { formatCurrency } from '@/utils/dte';
+import { useViewsStore } from '@/store/views.store';
 
 function FEBookIVA() {
   const [monthSelected, setMonthSelected] = useState(new Date().getMonth() + 1);
@@ -75,6 +76,10 @@ function FEBookIVA() {
     return iva_total * 0.13;
   }, [total]);
 
+  const { actions } = useViewsStore();
+  const viewName = actions.find((v) => v.view.name == 'IVA de FE');
+
+  const actionView = viewName?.actions.name || [];
   return (
     <Layout title="IVA - FE">
       <div className="w-full h-full p-4 md:p-10 md:px-12">
@@ -124,15 +129,17 @@ function FEBookIVA() {
               </Select>
             </div>
             <div className="flex justify-end items-end mt-3 md:mt-0">
-              <Button
-                onClick={handleExportExcel}
-                color="success"
-                style={styles.thirdStyle}
-                className="text-white font-semibold"
-              >
-                Exportar a excel
-                <PiMicrosoftExcelLogoBold size={25} />
-              </Button>
+              {actionView.includes('Exportar Excel') && (
+                <Button
+                  onClick={handleExportExcel}
+                  color="success"
+                  style={styles.thirdStyle}
+                  className="text-white font-semibold"
+                >
+                  Exportar a excel
+                  <PiMicrosoftExcelLogoBold size={25} />
+                </Button>
+              )}
             </div>
           </div>
 
@@ -150,34 +157,22 @@ function FEBookIVA() {
                       <table className="w-full">
                         <thead className="sticky top-0 z-20 bg-white">
                           <tr>
-                            <th
-                              className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                            >
+                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                               Fecha
                             </th>
-                            <th
-                              className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                            >
+                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                               Correlativo Inicial
                             </th>
-                            <th
-                              className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                            >
+                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                               Correlativo Final
                             </th>
-                            <th
-                              className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                            >
+                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                               Numero Control Inicial
                             </th>
-                            <th
-                              className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                            >
+                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                               Numero Control Final
                             </th>
-                            <th
-                              className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                            >
+                            <th className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                               Total
                             </th>
                           </tr>

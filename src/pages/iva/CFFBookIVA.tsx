@@ -11,6 +11,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { PiMicrosoftExcelLogoBold } from 'react-icons/pi';
 import { export_excel_credito } from '../excel/generate_excel';
 import saveAs from 'file-saver';
+import { useViewsStore } from '@/store/views.store';
 
 function CFFBookIVA() {
   const [monthSelected, setMonthSelected] = useState(new Date().getMonth() + 1);
@@ -82,6 +83,9 @@ function CFFBookIVA() {
       .reduce((a, b) => a + b, 0);
   }, [creditos_by_month]);
 
+  const { actions } = useViewsStore();
+  const viewName = actions.find((v) => v.view.name == 'IVA de CCF');
+  const actionView = viewName?.actions.name || [];
   return (
     <Layout title="IVA - CFF">
       <div className="w-full h-full p-4 md:p-10 md:px-12">
@@ -131,15 +135,17 @@ function CFFBookIVA() {
               </Select>
             </div>
             <div className="flex justify-end items-end mt-3 md:mt-0">
-              <Button
-                onClick={handleExportExcel}
-                color="success"
-                style={styles.thirdStyle}
-                className="text-white font-semibold"
-              >
-                Exportar a excel
-                <PiMicrosoftExcelLogoBold size={25} />
-              </Button>
+              {actionView.includes('Exportar Excel') && (
+                <Button
+                  onClick={handleExportExcel}
+                  color="success"
+                  style={styles.thirdStyle}
+                  className="text-white font-semibold"
+                >
+                  Exportar a excel
+                  <PiMicrosoftExcelLogoBold size={25} />
+                </Button>
+              )}
             </div>
           </div>
           <div>

@@ -59,10 +59,7 @@ const ListClients = ({ actions }: Props) => {
   const [search, setSearch] = useState('');
   const [email, setEmail] = useState('');
   const [branch, setBranch] = useState('');
-  // const style = {
-  //   backgroundColor: theme.colors.dark,
-  //   color: theme.colors.primary,
-  // };
+
   const [typeClient, setTypeClient] = useState('normal');
   const [active, setActive] = useState(true);
   const [tipeCustomer, setTypeCustomer] = useState('');
@@ -569,20 +566,21 @@ const ListClients = ({ actions }: Props) => {
                                     )}
                                     {actions.includes('Eliminar') && (
                                       <>
-                                        {customer.isActive ? (
+                                        {customer.isActive && (
                                           <DeletePopover customers={customer} />
-                                        ) : (
-                                          <TooltipGlobal text="Activar">
-                                            <Button
-                                              onClick={() => handleActivate(customer.id)}
-                                              isIconOnly
-                                              style={global_styles().thirdStyle}
-                                            >
-                                              <RefreshCcw />
-                                            </Button>
-                                          </TooltipGlobal>
                                         )}
                                       </>
+                                    )}
+                                    {actions.includes('Activar Cliente') && (
+                                      <TooltipGlobal text="Activar">
+                                        <Button
+                                          onClick={() => handleActivate(customer.id)}
+                                          isIconOnly
+                                          style={global_styles().thirdStyle}
+                                        >
+                                          <RefreshCcw />
+                                        </Button>
+                                      </TooltipGlobal>
                                     )}
                                   </div>
                                 </td>

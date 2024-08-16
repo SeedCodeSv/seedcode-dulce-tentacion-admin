@@ -63,18 +63,18 @@ export const LayoutItems = () => {
   }, [windowSize.width]);
 
   const location = useLocation();
-  
+
   const { pathname } = location;
   const linksProductManagement = [
     { viewName: 'Productos', to: '/products', icon: Barcode, label: 'Productos' },
     {
-      viewName: 'Categorías',
+      viewName: 'Categorias de Productos',
       to: '/categories',
       icon: Boxes,
-      label: 'Categorías',
+      label: 'Categorías ',
     },
     {
-      viewName: 'Sub Categorías',
+      viewName: 'Sub Categorias',
       to: '/subCategories',
       icon: List,
       label: 'Sub Categorías',
