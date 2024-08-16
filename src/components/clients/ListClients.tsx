@@ -162,6 +162,7 @@ const ListClients = ({ actions }: Props) => {
     });
   };
 
+  const [typeDocumentCustomer, setTypeDocumentCustomer] = useState('');
   return (
     <>
       <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
@@ -542,8 +543,12 @@ const ListClients = ({ actions }: Props) => {
                                     {customer.isActive && actions.includes('Editar') && (
                                       <TooltipGlobal text="Editar">
                                         <Button
+                                          // onClick={() => {
+                                          //   handleChangeCustomer(customer);
+                                          // }}
                                           onClick={() => {
-                                            handleChangeCustomer(customer);
+                                            handleChangeCustomer(customer),
+                                              setTypeDocumentCustomer(customer.tipoDocumento);
                                           }}
                                           isIconOnly
                                           style={{
@@ -680,6 +685,7 @@ const ListClients = ({ actions }: Props) => {
           <>
             {typeClient === 'normal' && (
               <AddClientNormal
+                typeDocumento={typeDocumentCustomer}
                 closeModal={modalAdd.onClose}
                 customer={selectedCustomer}
                 customer_direction={selectedCustomerDirection}

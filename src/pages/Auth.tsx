@@ -10,29 +10,30 @@ import { Formik } from 'formik';
 import { useAuthStore } from '../store/auth.store';
 import { SessionContext } from '../hooks/useSession';
 import { delete_seller_mode } from '../storage/localStorage';
+import { useViewsStore } from '@/store/views.store';
 
 function Auth() {
   const [showPassword, setShowPassword] = useState(false);
   const { postLogin } = useAuthStore();
-
   const { theme } = useContext(ThemeContext);
   const { setToken, setIsAuth, setRolId } = useContext(SessionContext);
-
   const initialValues = {
     userName: '',
     password: '',
   };
-
   const validationSchema = yup.object().shape({
     userName: yup.string().required('El usuario es requerido'),
     password: yup.string().required('La contraseña es requerida'),
   });
+  const { OnGetActionsByRol } = useViewsStore();
+  const { user } = useAuthStore();
   const handleSubmit = (values: IAuthPayload) => {
     postLogin(values).then((response) => {
       if (response?.ok) {
         setRolId(response?.user?.roleId);
         setIsAuth(true);
         setToken(response.token);
+        OnGetActionsByRol(user?.roleId ?? 0);
       } else {
         setIsAuth(false);
         delete_seller_mode();
@@ -70,7 +71,7 @@ function Auth() {
                     onChange={handleChange('userName')}
                     onBlur={handleBlur('userName')}
                     labelPlacement="outside"
-                    type='text'
+                    type="text"
                     placeholder="Ingresa tu usuario"
                     className="dark:text-white"
                   />
