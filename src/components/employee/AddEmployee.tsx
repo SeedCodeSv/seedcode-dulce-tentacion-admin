@@ -42,6 +42,11 @@ function AddEmployee() {
     code: yup.string().required('**Campo requerido**'),
     phone: yup.string().required('**Campo requerido**'),
     age: yup.string().required('**Campo requerido**'),
+    salary: yup.string().required('**Campo requerido**'),
+    dateOfBirth: yup.string().required('**Campo requerido**'),
+    dateOfEntry: yup.string().required('**Campo requerido**'),
+    dateOfExit: yup.string().required('**Campo requerido**'),
+    responsibleContact: yup.string().required('**Campo requerido**'),
   });
 
   useEffect(() => {
