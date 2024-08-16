@@ -30,7 +30,6 @@ function AddEmployee() {
   const { getCat012Departamento, getCat013Municipios, cat_012_departamento, cat_013_municipios } =
     useBillingStore();
   const [codeDepartamento, setCodeDepartamento] = useState('');
-  const [codigoGenerado, setCodigoGenerado] = useState('');
 
   const validationSchema = yup.object().shape({
     firstName: yup.string().required('**Campo requerido**'),
@@ -42,7 +41,7 @@ function AddEmployee() {
     nit: yup.string().required('**Campo requerido**'),
     isss: yup.string().required('**Campo requerido**'),
     afp: yup.string().required('**Campo requerido**'),
-    code: yup.string().required('**Campo requerido**'),
+    // code: yup.string().required('**Campo requerido**'),
     phone: yup.string().required('**Campo requerido**'),
     age: yup.string().required('**Campo requerido**'),
     salary: yup.string().required('**Campo requerido**'),
@@ -65,7 +64,7 @@ function AddEmployee() {
     GetContractType();
     getCat013Municipios(codeDepartamento);
     GetStudyLevel();
-  }, [codeDepartamento, codigoGenerado]);
+  }, [codeDepartamento]);
   const { postEmployee, verifyCode } = useEmployeeStore();
 
   const [dataCreate, setDataCreate] = useState<EmployeePayload>({
@@ -100,39 +99,41 @@ function AddEmployee() {
   });
 
   const createEmployee = async (values: EmployeePayload) => {
-    const verify = await verifyCode(dataCreate.code);
+    const codigoFinal = values.code || codigo;
+    const verify = await verifyCode(codigoFinal);
     if (!verify) {
-      toast.error('Ya existe un empleado con este código');
+      toast.error('Ya existe un empleado con este código');
       return;
     }
+    const updatedValues = {
+      ...values,
+      code: codigoFinal,
+    };
+
     try {
-      const data = await postEmployee(values);
+      const data = await postEmployee(updatedValues);
       if (data) {
         navigate('/employees');
-        // setError(false);
       }
     } catch (error) {
       toast.error('Error al crear el empleado');
     }
   };
-  const generateCode = async () => {
-    const name = dataCreate.firstName;
-    const lastName = dataCreate.firstLastName;
-    const initials = name.charAt(0).toUpperCase() + lastName.charAt(0).toUpperCase();
-    const randomNum = Math.floor(1000 + Math.random() * 9000);
-    const code = `${initials}-${randomNum}`;
-    dataCreate.code = code;
-    setCodigoGenerado(code);
-    const verify = await verifyCode(code);
-    if (verify) {
-      toast.success('Código disponible');
-      // setError(false);
-    } else {
-      // setError(true);
-    }
-    return code;
-  };
 
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [codigo, setCodigoGenerado] = useState('');
+
+  const generateCode = () => {
+    const firstNameInitial = firstName.charAt(0).toUpperCase();
+    const lastNameInitial = lastName.charAt(0).toUpperCase();
+    const randomNumber = Math.floor(1000 + Math.random() * 9000);
+
+    const generatedCode = `${firstNameInitial}${lastNameInitial}${randomNumber}`;
+    setCodigoGenerado(generatedCode);
+
+    return generatedCode;
+  };
 
   const navigate = useNavigate();
   return (
@@ -156,7 +157,11 @@ function AddEmployee() {
                       <div className="flex flex-col mt-3">
                         <Input
                           value={values.firstName}
-                          onChange={handleChange('firstName')}
+                          onChange={(e) => {
+                            handleChange('firstName')(e);
+                            setFirstName(e.target.value);
+                          }}
+                          // onChange={handleChange('firstName')}
                           onBlur={handleBlur('firstName')}
                           name="firstName"
                           labelPlacement="outside"
@@ -198,7 +203,11 @@ function AddEmployee() {
                       <div className="mt-3">
                         <Input
                           value={values.firstLastName}
-                          onChange={handleChange('firstLastName')}
+                          // onChange={handleChange('firstLastName')}
+                          onChange={(e) => {
+                            handleChange('firstLastName')(e);
+                            setLastName(e.target.value);
+                          }}
                           onBlur={handleBlur('firstLastName')}
                           name="firstLastName"
                           labelPlacement="outside"
@@ -335,23 +344,21 @@ function AddEmployee() {
                       <div className="flex flex-row gap-1 mt-3">
                         <div>
                           <Input
-                            value={values.code}
-                            onChange={handleChange('code')}
+                            value={codigo || dataCreate.code}
                             onBlur={handleBlur('code')}
+                            onChange={(e) => {
+                              handleChange('code')(e);
+                              setCodigoGenerado(e.target.value);
+                            }}
                             name="code"
                             labelPlacement="outside"
                             placeholder="Ingresa el codigo"
                             classNames={{
-                              label: 'font-semibold text-sm  text-gray-600',
+                              label: 'font-semibold text-sm text-gray-600',
                             }}
                             variant="bordered"
                             label="Codigo Empleado"
                           />
-                          {errors.code && touched.code && (
-                            <span className="text-sm font-semibold text-red-500">
-                              {errors.code}
-                            </span>
-                          )}
                         </div>
                         <div className="mt-3">
                           <Button
@@ -368,6 +375,7 @@ function AddEmployee() {
                           </Button>
                         </div>
                       </div>
+
                       <div className="flex flex-col mt-3">
                         <Input
                           value={values.phone}

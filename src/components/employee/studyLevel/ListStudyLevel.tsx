@@ -38,12 +38,9 @@ import { useStatusStudyLevel } from '@/store/studyLevel';
 import { StudyLevel } from '@/types/study_level.types';
 import BottomDrawer from '@/components/global/BottomDrawer';
 import TooltipGlobal from '@/components/global/TooltipGlobal';
+import { ArrayAction } from '@/types/view.types';
 
-interface PProps {
-  actions: string[];
-}
-
-function ListStudyLevel({ actions }: PProps) {
+function ListStudyLevel({ actions }: ArrayAction) {
   const { theme } = useContext(ThemeContext);
   const [openVaul, setOpenVaul] = useState(false);
   const [isActive, setActive] = useState(true);
@@ -395,74 +392,6 @@ function ListStudyLevel({ actions }: PProps) {
               </table>
             </div>
           </>
-          // <DataTable
-          //   className="w-full shadow"
-          //   emptyMessage="No se encontraron resultados"
-          //   value={paginated_study_level.studyLevels}
-          //   tableStyle={{ minWidth: '50rem' }}
-          //   loading={loading_study_level}
-          // >
-          //   <Column
-          //     headerClassName="text-sm font-semibold"
-          //     headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
-          //     field="id"
-          //     bodyClassName={'dark:text-white'}
-          //     header="No."
-          //   />
-          //   <Column
-          //     headerClassName="text-sm font-semibold"
-          //     headerStyle={style}
-          //     field="name"
-          //     bodyClassName={'dark:text-white'}
-          //     header="Nombre"
-          //   />
-          //   <Column
-          //     headerClassName="text-sm font-semibold"
-          //     headerStyle={style}
-          //     field="description"
-          //     bodyClassName={'dark:text-white'}
-          //     header="Descripción"
-          //   />
-          //   <Column
-          //     headerStyle={{ ...style, borderTopRightRadius: '10px' }}
-          //     header="Acciones"
-          //     body={(item) => (
-          //       <div className="flex gap-6">
-          //         {actions.includes('Editar') && (
-          //           <TooltipGlobal text="Editar el registro" color="primary">
-          //             <Button
-          //               onClick={() => handleEdit(item)}
-          //               isIconOnly
-          //               style={{
-          //                 backgroundColor: theme.colors.secondary,
-          //               }}
-          //             >
-          //               <EditIcon style={{ color: theme.colors.primary }} size={20} />
-          //             </Button>
-          //           </TooltipGlobal>
-          //         )}
-          //         {actions.includes('Eliminar') && (
-          //           <>
-          //             {/* <DeletePopUp statusEmployees={item} /> */}
-          //             {item.isActive ? (
-          //               <DeletePopUp studyLevel={item} />
-          //             ) : (
-          //               <TooltipGlobal text="Activar la categoría" color="primary">
-          //                 <Button
-          //                   onClick={() => handleActivate(item.id)}
-          //                   isIconOnly
-          //                   style={global_styles().thirdStyle}
-          //                 >
-          //                   <RefreshCcw />
-          //                 </Button>
-          //               </TooltipGlobal>
-          //             )}
-          //           </>
-          //         )}
-          //       </div>
-          //     )}
-          //   />
-          // </DataTable>
         )}
         {paginated_study_level.totalPag > 1 && (
           <>
