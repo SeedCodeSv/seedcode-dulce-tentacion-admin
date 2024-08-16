@@ -46,11 +46,29 @@ export interface View {
   isActive: boolean;
 }
 
-export interface Actions {
-  id: number[];
-  name: string[];
+
+
+
+
+export interface IRespondeActionsData {
+  ok: boolean
+  views: View[]
+  status: number
 }
 
+export interface View {
+  view: View2
+  actions: Actions
+}
+
+export interface View2 {
+  name: string
+}
+
+export interface Actions {
+  id: number[]
+  name: string[]
+}
 export interface SidebarLinkGroupProps {
   children: (handleClick: () => void, open: boolean) => ReactNode;
   activeCondition: boolean;

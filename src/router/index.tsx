@@ -53,6 +53,7 @@ const Loading = () => {
 
 /* eslint-disable react-hooks/rules-of-hooks */
 export const router = () => {
+ 
   const { role_view_action, OnGetActionsByRole } = useActionsRolStore();
   const { user } = useAuthStore();
   const [loading, setLoading] = useState(true);

@@ -1,6 +1,6 @@
 import { ViewsStore } from './types/views.store.types';
 import { create } from 'zustand';
-import { create_view, delete_views, get_views, get_views_list } from '../services/views.service';
+import { create_view, delete_views, get_actions_by_rol, get_views, get_views_list } from '../services/views.service';
 import { views_enabled } from '../utils/constants';
 import { AxiosError } from 'axios';
 import { IResponseDataViewasAction } from '@/types/view.types';
@@ -17,6 +17,15 @@ export const useViewsStore = create<ViewsStore>((set, get) => ({
     currentPag: 0,
     nextPag: 0,
     prevPag: 0,
+  },
+  actions: [],
+  OnGetActionsByRol(id) {
+    get_actions_by_rol(id).then(({ data }) => {
+      set({
+        actions: data.views
+
+      })
+    })
   },
   OnGetViewasAction: async (
     page?: number,

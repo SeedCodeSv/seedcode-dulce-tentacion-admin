@@ -1,4 +1,4 @@
-export const API_URL = 'http://192.168.0.9:8080/api';
+export const API_URL = 'http://192.168.1.7:8080/api';
 export const WS_URL = 'ws://shark-app-wcoqq.ondigitalocean.app/sales-gateway';
 
 export const FACTURACION_API = 'https://cats-facturacion-43ay7.ondigitalocean.app/api';

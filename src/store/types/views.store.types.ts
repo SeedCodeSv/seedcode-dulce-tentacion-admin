@@ -1,7 +1,9 @@
 import {
+  Actions,
   IResponseDataViewasAction,
   IView,
   IViewPayload,
+  View,
   ViewasAction,
 } from '../../types/view.types';
 export interface ViewsStore {
@@ -17,7 +19,8 @@ export interface ViewsStore {
     name?: string
   ) => Promise<IResponseDataViewasAction>;
   loading_views: boolean;
-
+  actions: View[]
+  OnGetActionsByRol: (id: number) => void
   OnGetViews: () => void;
   OnCreateView: (views: IViewPayload[]) => Promise<boolean>;
   OnDeleteView: (id: number) => Promise<boolean>;
