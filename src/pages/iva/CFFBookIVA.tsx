@@ -7,7 +7,7 @@ import { months } from '@/utils/constants';
 import { formatDateToMMDDYYYY } from '@/utils/dates';
 import { formatCurrency } from '@/utils/dte';
 import { Button, Select, SelectItem } from '@nextui-org/react';
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { PiMicrosoftExcelLogoBold } from 'react-icons/pi';
 import { export_excel_credito } from '../excel/generate_excel';
 import saveAs from 'file-saver';

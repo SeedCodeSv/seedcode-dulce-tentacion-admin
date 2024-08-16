@@ -162,7 +162,7 @@ export const LayoutItems = () => {
       icon: () => <BookUser size={15} />,
     },
     {
-      name: 'Tipo de Contratacion',
+      name: 'Tipo de Contratación',
       path: '/contractTypes',
       show: validateIfArrayContain && validateIfArrayContain(views, ['Tipo de Contratacion']),
       icon: () => <Handshake size={15} />,
@@ -188,7 +188,26 @@ export const LayoutItems = () => {
       show: validateIfArrayContain && validateIfArrayContain(views, ['Contabilidad']),
       icon: () => <ClipboardCheck size={15} />,
     },
+    {
+      name: "IVA - Compras",
+      path: "/iva/shopping-book",
+      show: validateIfArrayContain && validateIfArrayContain(views, ["Contabilidad"]),
+      icon: () => <List size={15} />,
+    },
+    {
+      name: "IVA - CCF",
+      path: "/iva/cff-book",
+      show: validateIfArrayContain && validateIfArrayContain(views, ["Contabilidad"]),
+      icon: () => <Truck size={15} />,
+    },
+    {
+      name: "IVA - Facturas",
+      path: "/iva/fe-book",
+      show: validateIfArrayContain && validateIfArrayContain(views, ["Contabilidad"]),
+      icon: () => <Store size={15} />,
+    },
   ];
+
 
   const [openGroup, setOpenGroup] = useState<string | null>(null);
 

@@ -175,10 +175,6 @@ const PermissionAddActionRol: React.FC = () => {
                       onClick={() => {
                         !defaultActions[view.id]?.includes(permission) &&
                           handleSelectAction(view.id, permission);
-                        console.log(
-                          'defaultActions[view.id]?.includes(permission):',
-                          defaultActions[view.id]?.includes(permission)
-                        );
                       }}
                     >
                       <div className="flex items-center w-full justify-center">
