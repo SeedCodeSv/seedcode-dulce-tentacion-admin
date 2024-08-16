@@ -23,6 +23,8 @@ export const delete_views = async (id: number) => {
   return await axios.delete<IGetViews>(API_URL + `/view/${id}`);
 };
 
-export const get_views_list = () => {
-  return axios.get<IResponseDataViewasAction>(API_URL + '/actions/find-all-actions-by-view');
+export const get_views_list = (page: number, limit: number, name: string) => {
+  return axios.get<IResponseDataViewasAction>(
+    API_URL + '/actions/find-all-actions-by-view?page=' + page + '&limit=' + limit + '&name=' + name
+  );
 };

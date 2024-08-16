@@ -715,7 +715,7 @@ function AddEmployee() {
 
                       <div className="mt-0 md:mt-3">
                         <Button
-                          onClick={handleSubmit}
+                          onClick={() => handleSubmit()}
                           className="w-full mt-3 text-sm font-semibold"
                           style={{
                             backgroundColor: theme.colors.dark,

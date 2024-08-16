@@ -1,11 +1,11 @@
-export const API_URL = 'http://localhost:8080/api';
+export const API_URL = 'http://192.168.0.9:8080/api';
 export const WS_URL = 'ws://shark-app-wcoqq.ondigitalocean.app/sales-gateway';
 
 export const FACTURACION_API = 'https://cats-facturacion-43ay7.ondigitalocean.app/api';
 export const MH_QUERY = 'https://admin.factura.gob.sv/consultaPublica';
 export const ambiente = '00';
 export const version = 2;
- 
+
 // export const WS_URL = 'ws://192.168.0.20:8080/sales-gateway';
 export const API_FIRMADOR = 'https://firmadorseedcodesv.online/firmardocumento/';
 export const MH_DTE = 'https://apitest.dtes.mh.gob.sv/fesv/recepciondte';

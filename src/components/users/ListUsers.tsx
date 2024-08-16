@@ -65,10 +65,6 @@ function ListUsers({ actions }: Props) {
 
   const [selectId, setSelectedId] = useState(0);
 
-  // const style = {
-  //   backgroundColor: theme.colors.dark,
-  //   color: theme.colors.primary,
-  // };
   const { windowSize } = useWindowSize();
 
   const [view, setView] = useState<'table' | 'grid' | 'list'>(

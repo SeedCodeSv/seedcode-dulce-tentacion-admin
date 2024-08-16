@@ -15,10 +15,6 @@ const PermissionTable: React.FC = () => {
   const { OnUpdateActions } = useActionsRolStore();
   const hasExecuted = useRef(false);
 
-  useEffect(() => {
-    OnGetViewasAction();
-  }, [OnGetViewasAction]);
-
   const handleCreateOrUpdateViewsAndActions = async () => {
     if (hasExecuted.current) return;
     hasExecuted.current = true;
@@ -46,14 +42,16 @@ const PermissionTable: React.FC = () => {
                     names: actions.map((name) => ({ name })),
                   });
                 } catch (error) {
-                  error;
+                  return;
                 }
+              } else {
+                return;
               }
             })
           );
+          OnGetViewasAction(1, 5, '');
         }
       }
-
       const actionsToUpdate: IUpdateActions[] = [];
       viewasAction.forEach(({ view }) => {
         const permissionView = permissionss.view_actions.find(
@@ -82,12 +80,28 @@ const PermissionTable: React.FC = () => {
 
       if (actionsToUpdate.length > 0) {
         await OnUpdateActions({ actions: actionsToUpdate });
+        OnGetViewasAction(1, 5, '');
       }
     } catch (error) {
       toast.error('Error al crear o actualizar las vistas y acciones');
       hasExecuted.current = false;
     }
   };
+
+  useEffect(() => {
+    const fetchViews = async () => {
+      try {
+        const result = await OnGetViewasAction(1, 5, '');
+        if (result.ok === false && result.message === 'Error => There are no views') {
+          await handleCreateOrUpdateViewsAndActions();
+        }
+      } catch (error) {
+        console.error('Error fetching views:', error);
+      }
+    };
+
+    fetchViews();
+  }, [OnGetViewasAction]);
 
   useEffect(() => {
     if (viewasAction.length > 0) {

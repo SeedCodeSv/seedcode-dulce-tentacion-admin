@@ -1,7 +1,4 @@
 import { SidebarLinkGroupProps } from '@/types/view.types';
-import { useState } from 'react';
-
-
 
 const SidebarLinkGroup = ({
   children,
@@ -9,14 +6,15 @@ const SidebarLinkGroup = ({
   isOpen,
   onGroupClick,
 }: SidebarLinkGroupProps) => {
-  const [open, setOpen] = useState<boolean>(activeCondition);
-
   const handleClick = () => {
-    setOpen(!open);
     onGroupClick(); 
   };
 
-  return <li>{children(handleClick, isOpen)}</li>;
+  return (
+    <li>
+      {children(handleClick, isOpen || activeCondition)}
+    </li>
+  );
 };
 
 export default SidebarLinkGroup;

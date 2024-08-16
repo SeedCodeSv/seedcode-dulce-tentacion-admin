@@ -21,12 +21,16 @@ export interface IGetViewPaginated extends IPagination {
   views: IView[];
 }
 
-
-
 export interface IResponseDataViewasAction {
-  ok: boolean;
-  viewasAction: ViewasAction[];
-  status: number;
+  ok?: boolean;
+  status?: number;
+  message?: string;
+  totalPag: number;
+  total: number;
+  currentPag: number;
+  nextPag: number;
+  prevPag: number;
+  viewasAction?: ViewasAction[];
 }
 
 export interface ViewasAction {
