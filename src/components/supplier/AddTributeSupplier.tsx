@@ -162,6 +162,8 @@ function AddTributeSupplier(props: Props) {
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={(values) => onSubmit(values)}
+        validateOnMount={false}
+        validateOnBlur={false}
       >
         {({ values, errors, touched, handleBlur, handleChange, handleSubmit }) => (
           <>
