@@ -25,7 +25,6 @@ import { PurchaseOrder } from '../../types/purchase_orders.types';
 import {
   ClipboardCheck,
   CreditCard,
-  // Filter,
   Table as ITable,
   List,
   // SearchIcon,
