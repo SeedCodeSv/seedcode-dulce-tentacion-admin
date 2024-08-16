@@ -18,12 +18,10 @@ import Layout from '@/layout/Layout';
 import { useViewsStore } from '@/store/views.store';
 
 const CushCatsBigZ = () => {
-  const { OnGetViewasAction, viewasAction } = useViewsStore();
-  useEffect(() => {
-    OnGetViewasAction();
-  }, []);
-  const bigZ = viewasAction.find((view) => view.view.name === 'Contabilidad');
-  const actions = bigZ?.actions?.name || [];
+  const { actions } = useViewsStore();
+
+  const bigZ = actions.find((view) => view.view.name === 'Corte Gran Z');
+  const actionsView = bigZ?.actions?.name || [];
   const [data, setData] = useState<ZCashCutsResponse | null>(null);
   const { user } = useAuthStore();
 
@@ -328,7 +326,7 @@ const CushCatsBigZ = () => {
 
               <div className="flex flex-col items-center w-full h-full p-4 mt-4 bg-gray-600 rounded-md">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-                  {actions.includes('Exportar Excel') && (
+                  {actionsView.includes('Exportar Excel') && (
                     <Button
                       color="success"
                       startContent={<PiMicrosoftExcelLogoBold size={25} />}
@@ -338,7 +336,7 @@ const CushCatsBigZ = () => {
                       Exportar a excel
                     </Button>
                   )}
-                  {actions.includes('Imprimir') && (
+                  {actionsView.includes('Imprimir') && (
                     <Button
                       className="w-full"
                       style={global_styles().secondaryStyle}

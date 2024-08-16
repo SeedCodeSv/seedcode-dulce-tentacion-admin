@@ -103,27 +103,27 @@
     },
     {
       "view": "Corte Gran Z",
-      "actions": ["Imprimir", "Descargar Exel"]
+      "actions": ["Imprimir", "Exportar Excel"]
     },
     {
       "view": "Corte Z",
-      "actions": ["Imprimir", "Descargar Exel"]
+      "actions": ["Imprimir", "Exportar Excel"]
     },
     {
       "view": "Corte X",
-      "actions": ["Imprimir", "Descargar Exel"]
+      "actions": ["Imprimir", "Exportar Excel"]
     },
     {
       "view": "IVA de Compras",
-      "actions": ["Imprimir", "Descargar Exel"]
+      "actions": ["Imprimir", "Exportar Excel"]
     },
     {
       "view": "IVA de CCF",
-      "actions": ["Imprimir", "Descargar Exel"]
+      "actions": ["Imprimir", "Exportar Excel"]
     },
     {
       "view": "IVA de FE",
-      "actions": ["Imprimir", "Descargar Exel"]
+      "actions": ["Imprimir", "Exportar Excel"]
     }
   ]
 }
