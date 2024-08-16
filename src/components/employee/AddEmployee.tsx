@@ -17,6 +17,9 @@ import { useEmployeeStore } from '../../store/employee.store';
 import { EmployeePayload } from '../../types/employees.types';
 import { toast } from 'sonner';
 import { Formik } from 'formik';
+import { Branch } from '@/types/auth.types';
+import { Municipio } from '@/types/billing/cat-013-municipio.types';
+import { Departamento } from '@/types/billing/cat-012-departamento.types';
 function AddEmployee() {
   const { theme } = useContext(ThemeContext);
   const { GetEmployeeStatus, employee_status } = useEmployeeStatusStore();
@@ -47,6 +50,11 @@ function AddEmployee() {
     dateOfEntry: yup.string().required('**Campo requerido**'),
     dateOfExit: yup.string().required('**Campo requerido**'),
     responsibleContact: yup.string().required('**Campo requerido**'),
+    studyLevelId: yup.number().required('**Campo requerido**').min(1, '**Campo requerido**'),
+    statusId: yup.number().required('**Campo requerido**').min(1, '**Campo requerido**'),
+    contractTypeId: yup.number().required('**Campo requerido**').min(1, '**Campo requerido**'),
+    chargeId: yup.number().required('**Campo requerido**').min(1, '**Campo requerido**'),
+    branchId: yup.number().required('**Campo requerido**').min(1, '**Campo requerido**'),
   });
 
   useEffect(() => {
@@ -124,6 +132,7 @@ function AddEmployee() {
     }
     return code;
   };
+
 
   const navigate = useNavigate();
   return (
@@ -486,6 +495,15 @@ function AddEmployee() {
                       </div>
                       <div className="flex flex-col mt-3">
                         <Autocomplete
+                          value={values.studyLevelId}
+                          onSelectionChange={(key) => {
+                            if (key) {
+                              const depSelected = JSON.parse(key as string) as EmployeePayload;
+                              handleChange('studyLevelId')(depSelected?.id?.toString() ?? '');
+                            }
+                          }}
+                          onChange={handleChange('studyLevelId')}
+                          onBlur={handleBlur('studyLevelId')}
                           variant="bordered"
                           label="Nivel de Estudio"
                           labelPlacement="outside"
@@ -511,9 +529,23 @@ function AddEmployee() {
                             </AutocompleteItem>
                           ))}
                         </Autocomplete>
+                        {errors.studyLevelId && touched.studyLevelId && (
+                          <span className="text-sm font-semibold text-red-500">
+                            {errors.studyLevelId}
+                          </span>
+                        )}
                       </div>
                       <div className="flex flex-col mt-3">
                         <Autocomplete
+                          value={values.statusId}
+                          onSelectionChange={(key) => {
+                            if (key) {
+                              const depSelected = JSON.parse(key as string) as EmployeePayload;
+                              handleChange('statusId')(depSelected?.id?.toString() ?? '');
+                            }
+                          }}
+                          onChange={handleChange('statusId')}
+                          onBlur={handleBlur('statusId')}
                           variant="bordered"
                           label="Estado del Empleado"
                           labelPlacement="outside"
@@ -534,9 +566,23 @@ function AddEmployee() {
                             </AutocompleteItem>
                           ))}
                         </Autocomplete>
+                        {errors.statusId && touched.statusId && (
+                          <span className="text-sm font-semibold text-red-500">
+                            {errors.statusId}
+                          </span>
+                        )}
                       </div>
                       <div className="flex flex-col mt-3">
                         <Autocomplete
+                          value={values.contractTypeId}
+                          onSelectionChange={(key) => {
+                            if (key) {
+                              const depSelected = JSON.parse(key as string) as EmployeePayload;
+                              handleChange('contractTypeId')(depSelected?.id?.toString() ?? '');
+                            }
+                          }}
+                          onChange={handleChange('contractTypeId')}
+                          onBlur={handleBlur('contractTypeId')}
                           variant="bordered"
                           label="Tipo de contratacion"
                           labelPlacement="outside"
@@ -562,6 +608,11 @@ function AddEmployee() {
                             </AutocompleteItem>
                           ))}
                         </Autocomplete>
+                        {errors.contractTypeId && touched.contractTypeId && (
+                          <span className="text-sm font-semibold text-red-500">
+                            {errors.contractTypeId}
+                          </span>
+                        )}
                       </div>
                       <div className="flex flex-col mt-3">
                         <Input
@@ -588,6 +639,15 @@ function AddEmployee() {
 
                       <div className="flex flex-col mt-3">
                         <Autocomplete
+                          value={values.chargeId}
+                          onSelectionChange={(key) => {
+                            if (key) {
+                              const depSelected = JSON.parse(key as string) as EmployeePayload;
+                              handleChange('chargeId')(depSelected?.id?.toString() ?? '');
+                            }
+                          }}
+                          onChange={handleChange('chargeId')}
+                          onBlur={handleBlur('chargeId')}
                           variant="bordered"
                           label="Cargo"
                           labelPlacement="outside"
@@ -608,9 +668,23 @@ function AddEmployee() {
                             </AutocompleteItem>
                           ))}
                         </Autocomplete>
+                        {errors.chargeId && touched.chargeId && (
+                          <span className="text-sm font-semibold text-red-500">
+                            {errors.chargeId}
+                          </span>
+                        )}
                       </div>
                       <div className="mt-3">
                         <Autocomplete
+                          value={values.branchId}
+                          onSelectionChange={(key) => {
+                            if (key) {
+                              const depSelected = JSON.parse(key as string) as Branch;
+                              handleChange('branchId')(depSelected?.id?.toString() ?? '');
+                            }
+                          }}
+                          onChange={handleChange('branchId')}
+                          onBlur={handleBlur('branchId')}
                           label="Sucursal"
                           labelPlacement="outside"
                           placeholder="Selecciona la sucursal"
@@ -631,9 +705,22 @@ function AddEmployee() {
                             </AutocompleteItem>
                           ))}
                         </Autocomplete>
+                        {errors.branchId && touched.branchId && (
+                          <span className="text-sm font-semibold text-red-500">
+                            {errors.branchId}
+                          </span>
+                        )}
                       </div>
                       <div className="mt-3">
                         <Autocomplete
+                          onSelectionChange={(key) => {
+                            if (key) {
+                              const depSelected = JSON.parse(key as string) as Municipio;
+                              // setSelectedCodeDep(depSelected.codigo);
+                              handleChange('department')(depSelected.codigo);
+                              handleChange('departmentName')(depSelected.valores);
+                            }
+                          }}
                           label="Departamento"
                           labelPlacement="outside"
                           placeholder="Selecciona el departamento"
@@ -665,6 +752,13 @@ function AddEmployee() {
                       </div>
                       <div className="mt-3">
                         <Autocomplete
+                          onSelectionChange={(key) => {
+                            if (key) {
+                              const depSelected = JSON.parse(key as string) as Departamento;
+                              handleChange('municipality')(depSelected.codigo);
+                              handleChange('municipalityName')(depSelected.valores);
+                            }
+                          }}
                           label="Municipio"
                           labelPlacement="outside"
                           placeholder="Municipio"
