@@ -53,7 +53,6 @@ const Loading = () => {
 
 /* eslint-disable react-hooks/rules-of-hooks */
 export const router = () => {
- 
   const { role_view_action, OnGetActionsByRole } = useActionsRolStore();
   const { user } = useAuthStore();
   const [loading, setLoading] = useState(true);
@@ -93,7 +92,6 @@ export const router = () => {
       path: '/subCategories',
       element: checkAuthorization('Sub Categorias', <SubCategories />),
     },
-
     {
       path: '/shopping',
       element: checkAuthorization('Compras', <Shopping />),

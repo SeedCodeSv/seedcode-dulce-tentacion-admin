@@ -42,8 +42,9 @@ import TooltipGlobal from '../global/TooltipGlobal';
 import useWindowSize from '@/hooks/useWindowSize';
 import BottomDrawer from '../global/BottomDrawer';
 import classNames from 'classnames';
+import { ArrayAction } from '@/types/view.types';
 
-function ListSuppliers() {
+function ListSuppliers({ actions }: ArrayAction) {
   const { theme } = useContext(ThemeContext);
   const { getSupplierPagination, supplier_pagination, activateSupplier } = useSupplierStore();
   const [limit, setLimit] = useState(5);
@@ -135,8 +136,6 @@ function ListSuppliers() {
     setSelectedSupplier(undefined);
     setSelectedTitle('');
   };
-
-
 
   // const emptyMessage = (
   //   <div className="flex flex-col items-center justify-center w-full">
@@ -326,73 +325,77 @@ function ListSuppliers() {
                   </div>
                 </BottomDrawer>
               </div>
-              <BottomSm setTypeSupplier={setTypeProveedor} openModal={modalAdd.onOpen} />
-              <BottomAdd setTypeSupplier={setTypeProveedor} openModal={modalAdd.onOpen} />
+              {actions.includes('Agregar') && (
+                <>
+                  <BottomSm setTypeSupplier={setTypeProveedor} openModal={modalAdd.onOpen} />
+                  <BottomAdd setTypeSupplier={setTypeProveedor} openModal={modalAdd.onOpen} />
+                </>
+              )}
             </div>
           </div>
 
           <div className="flex flex-col md:flex-row gap-5 justify-between w-full mb-5 mt-3">
             <div className="flex flex-row gap-5 items-center w-full">
-            <Select
-              className="w-72 sm:w-44 dark:text-white"
-              variant="bordered"
-              label="Tipo de proveedor"
-              defaultSelectedKeys={['']}
-              labelPlacement="outside"
-              classNames={{
-                label: 'font-semibold',
-              }}
-              value={String(tipeSupplier)}
-              onChange={(e) => {
-                setTypeSupplier(e.target.value !== '' ? e.target.value : '');
-              }}
-            >
-              <SelectItem className="dark:text-white" key={''}>
-                Todos
-              </SelectItem>
-              <SelectItem className="dark:text-white" key={'1'}>
-                Contribuyente
-              </SelectItem>
-              <SelectItem className="dark:text-white" key={'0'}>
-                No Contribuyente
-              </SelectItem>
-            </Select>
-            <Select
-              className="w-44 dark:text-white"
-              variant="bordered"
-              label="Mostrar"
-              labelPlacement="outside"
-              defaultSelectedKeys={['5']}
-              classNames={{
-                label: 'font-semibold',
-              }}
-              value={limit}
-              onChange={(e) => {
-                setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
-              }}
-            >
-              <SelectItem className="dark:text-white" key={'5'}>
-                5
-              </SelectItem>
-              <SelectItem className="dark:text-white" key={'10'}>
-                10
-              </SelectItem>
-              <SelectItem className="dark:text-white" key={'20'}>
-                20
-              </SelectItem>
-              <SelectItem className="dark:text-white" key={'30'}>
-                30
-              </SelectItem>
-              <SelectItem className="dark:text-white" key={'40'}>
-                40
-              </SelectItem>
-              <SelectItem className="dark:text-white" key={'50'}>
-                50
-              </SelectItem>
-              <SelectItem className="dark:text-white" key={'100'}>
-                100
-              </SelectItem>
-            </Select>
+              <Select
+                className="w-72 sm:w-44 dark:text-white"
+                variant="bordered"
+                label="Tipo de proveedor"
+                defaultSelectedKeys={['']}
+                labelPlacement="outside"
+                classNames={{
+                  label: 'font-semibold',
+                }}
+                value={String(tipeSupplier)}
+                onChange={(e) => {
+                  setTypeSupplier(e.target.value !== '' ? e.target.value : '');
+                }}
+              >
+                <SelectItem className="dark:text-white" key={''}>
+                  Todos
+                </SelectItem>
+                <SelectItem className="dark:text-white" key={'1'}>
+                  Contribuyente
+                </SelectItem>
+                <SelectItem className="dark:text-white" key={'0'}>
+                  No Contribuyente
+                </SelectItem>
+              </Select>
+              <Select
+                className="w-44 dark:text-white"
+                variant="bordered"
+                label="Mostrar"
+                labelPlacement="outside"
+                defaultSelectedKeys={['5']}
+                classNames={{
+                  label: 'font-semibold',
+                }}
+                value={limit}
+                onChange={(e) => {
+                  setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
+                }}
+              >
+                <SelectItem className="dark:text-white" key={'5'}>
+                  5
+                </SelectItem>
+                <SelectItem className="dark:text-white" key={'10'}>
+                  10
+                </SelectItem>
+                <SelectItem className="dark:text-white" key={'20'}>
+                  20
+                </SelectItem>
+                <SelectItem className="dark:text-white" key={'30'}>
+                  30
+                </SelectItem>
+                <SelectItem className="dark:text-white" key={'40'}>
+                  40
+                </SelectItem>
+                <SelectItem className="dark:text-white" key={'50'}>
+                  50
+                </SelectItem>
+                <SelectItem className="dark:text-white" key={'100'}>
+                  100
+                </SelectItem>
+              </Select>
             </div>
             <div className="flex items-center">
               <Switch
@@ -423,99 +426,6 @@ function ListSuppliers() {
           )}
 
           {view === 'table' && (
-            // <DataTable
-            //   className="shadow dark:text-white custom-datatable-scrollbar"
-            //   emptyMessage={emptyMessage}
-            //   value={supplier_pagination.suppliers}
-            //   tableStyle={{ minWidth: '50rem' }}
-            // >
-            //   <Column
-            //     headerClassName="text-sm font-semibold p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-            //     // headerStyle={{ ...style}}
-            //     field="id"
-            //     header="No."
-            //     className='dark:text-white'
-            //   />
-            //   <Column
-            //     headerClassName="text-sm font-semibold p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-            //     // headerStyle={{ ...style}}
-            //     field="nombre"
-            //     header="Nombre"
-            //     className='dark:text-white'
-            //   />
-            //   <Column
-            //     headerClassName="text-sm font-semibold p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-            //     // headerStyle={{ ...style}}
-            //     field="telefono"
-            //     header="Teléfono"
-            //     className='dark:text-white'
-            //   />
-            //   <Column
-            //     headerClassName="text-sm font-semibold p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-            //     // headerStyle={{ ...style}}
-            //     field="correo"
-            //     header="Correo"
-            //     className='dark:text-white'
-            //   />
-            //   <Column
-            //     headerClassName="text-sm font-semibold p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-            //     // headerStyle={{ ...style}}
-            //     // field="esContribuyente"
-            //     body={(item) => (item.esContribuyente ? 'Si' : 'No')}
-            //     header="Contribuyente"
-            //     className='dark:text-white'
-            //   />
-            //   <Column
-            //     // headerStyle={{ ...style, borderTopRightRadius: '10px' }}
-            //     headerClassName="text-sm font-semibold p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-            //     header="Acciones"
-            //     body={(item) => (
-            //       <div className="flex w-full gap-5">
-            //         <TooltipGlobal text="Editar">
-            //         <Button
-            //           onClick={() => handleChangeSupplier(item, 'edit')}
-            //           isIconOnly
-            //           style={{
-            //             backgroundColor: theme.colors.secondary,
-            //           }}
-            //         >
-            //           <EditIcon style={{ color: theme.colors.primary }} size={20} />
-            //         </Button>
-            //         </TooltipGlobal>
-            //         {item.esContribuyente === false && (
-            //         <TooltipGlobal text="Cambiar el tipo de proveedor">
-            //         <Button
-            //           onClick={() => {
-            //             setSelectedTitle('Cambiar el tipo de proveedor');
-            //             handleChangeSupplier(item, 'change');
-            //           }}
-            //           isIconOnly
-            //           style={{
-            //             backgroundColor: theme.colors.third,
-            //           }}
-            //         >
-            //           <Repeat style={{ color: theme.colors.primary }} size={20} />
-            //         </Button>
-            //         </TooltipGlobal>
-            //         )}
-            //         {/* {item.isActive === false && (
-            //           <Button
-            //             onClick={() => {
-            //               handleActivate(item.id);
-            //             }}
-            //             isIconOnly
-            //             style={{
-            //               backgroundColor: theme.colors.third,
-            //             }}
-            //           >
-            //             <BadgeCheck style={{ color: theme.colors.primary }} size={20} />
-            //           </Button>
-            //         )} */}
-            //         <DeletePopover supplier={item} />
-            //       </div>
-            //     )}
-            //   />
-            // </DataTable>
             <div className="overflow-x-auto custom-scrollbar ">
               <table className="w-full">
                 <thead className="sticky top-0 z-20 bg-white">
@@ -562,50 +472,53 @@ function ListSuppliers() {
                           </td>
                           <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                             <div className="flex w-full gap-5">
-                            {item.isActive ? (
+                              {item.isActive && actions.includes('Editar') && (
+                                <>
+                                  <TooltipGlobal text="Editar">
+                                    <Button
+                                      onClick={() => handleChangeSupplier(item, 'edit')}
+                                      isIconOnly
+                                      style={{
+                                        backgroundColor: theme.colors.secondary,
+                                      }}
+                                    >
+                                      <EditIcon style={{ color: theme.colors.primary }} size={20} />
+                                    </Button>
+                                  </TooltipGlobal>
+                                  <DeletePopover supplier={item} />
+                                  {item.esContribuyente === false && actions.includes('Agrgar') && (
+                                    <TooltipGlobal text="Cambiar el tipo de proveedor">
+                                      <Button
+                                        onClick={() => {
+                                          setSelectedTitle('Cambiar el tipo de proveedor');
+                                          handleChangeSupplier(item, 'change');
+                                        }}
+                                        isIconOnly
+                                        style={{
+                                          backgroundColor: theme.colors.third,
+                                        }}
+                                      >
+                                        <Repeat style={{ color: theme.colors.primary }} size={20} />
+                                      </Button>
+                                    </TooltipGlobal>
+                                  )}
+                                </>
+                              )}
                               <>
-                              <TooltipGlobal text="Editar">
-                                <Button
-                                  onClick={() => handleChangeSupplier(item, 'edit')}
-                                  isIconOnly
-                                  style={{
-                                    backgroundColor: theme.colors.secondary,
-                                  }}
-                                >
-                                  <EditIcon style={{ color: theme.colors.primary }} size={20} />
-                                </Button>
-                              </TooltipGlobal>
-                              <DeletePopover supplier={item} />
-                              {item.esContribuyente === false && (
-                                <TooltipGlobal text="Cambiar el tipo de proveedor">
+                                {actions.includes('Activar Proveedor') && !item.isActive && (
                                   <Button
                                     onClick={() => {
-                                      setSelectedTitle('Cambiar el tipo de proveedor');
-                                      handleChangeSupplier(item, 'change');
+                                      handleActivate(item.id);
                                     }}
                                     isIconOnly
                                     style={{
                                       backgroundColor: theme.colors.third,
                                     }}
                                   >
-                                    <Repeat style={{ color: theme.colors.primary }} size={20} />
+                                    <BadgeCheck style={{ color: theme.colors.primary }} size={20} />
                                   </Button>
-                                </TooltipGlobal>
-                              )}
+                                )}
                               </>
-                             ):(
-                                <Button
-                                 onClick={() => {
-                                   handleActivate(item.id);
-                                 }}
-                                 isIconOnly
-                                 style={{
-                                   backgroundColor: theme.colors.third,
-                                 }}
-                               >
-                                 <BadgeCheck style={{ color: theme.colors.primary }} size={20} />
-                               </Button>
-                             )}
                             </div>
                           </td>
                         </tr>

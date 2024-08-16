@@ -31,11 +31,18 @@
     },
     {
       "view": "Proveedores",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
+      "actions": [
+        "Mostrar",
+        "Agregar",
+        "Editar",
+        "Eliminar",
+        "Cambiar  Tipo de Proveedor",
+        "Activar Proveedor"
+      ]
     },
     {
       "view": "Sucursales",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Ver Productos", "Activar Sucursal"]
     },
     {
       "view": "Clientes",

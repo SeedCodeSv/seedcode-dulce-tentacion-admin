@@ -1,20 +1,15 @@
 import Layout from '../layout/Layout';
 import ListSuppliers from '../components/supplier/ListSuppliers';
-import { useEffect } from 'react';
 
 import { useViewsStore } from '@/store/views.store';
 
 function Supplier() {
-  const { OnGetViewasAction } = useViewsStore();
-
-  // const supplierView = viewasAction.find((view) => view.view.name === 'Proveedores');
-  //const actions = supplierView?.actions?.name || [];
-  useEffect(() => {
-    OnGetViewasAction();
-  }, []);
+  const { actions } = useViewsStore();
+  const supplierView = actions.find((view) => view.view.name === 'Proveedores');
+  const actionsView = supplierView?.actions?.name || [];
   return (
     <Layout title="Proveedores">
-      <ListSuppliers />
+      <ListSuppliers actions={actionsView} />
     </Layout>
   );
 }

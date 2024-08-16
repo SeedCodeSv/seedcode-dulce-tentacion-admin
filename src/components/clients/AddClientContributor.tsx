@@ -112,7 +112,6 @@ function AddClientContributor(props: Props) {
       const values = {
         ...payload,
         esContribuyente: 1,
-        // transmitterId: Number(user?.correlative.branch.transmitterId),
         branchId: Number(user?.correlative.branch.id),
       };
       await patchCustomer(values, props.id!);
@@ -121,7 +120,6 @@ function AddClientContributor(props: Props) {
         ...payload,
         esContribuyente: 1,
         branchId: Number(user?.correlative.branch.id),
-        // transmitterId: Number(user?.correlative.branch.transmitterId),
       };
       await postCustomer(values);
     }
@@ -168,6 +166,8 @@ function AddClientContributor(props: Props) {
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={(values) => onSubmit(values)}
+        validateOnMount={false}
+        validateOnBlur={false}
       >
         {({ values, errors, touched, handleBlur, handleChange, handleSubmit }) => (
           <>
