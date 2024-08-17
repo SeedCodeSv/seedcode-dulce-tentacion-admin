@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo } from 'react';
+import { useCallback, useContext, useEffect, useMemo } from 'react';
 import Layout from '../layout/Layout';
 import { salesReportStore } from '../store/reports/sales_report.store';
 import { useAuthStore } from '../store/auth.store';
@@ -16,9 +16,10 @@ import { ThemeContext } from '../hooks/useTheme';
 // import { Skeleton } from '@nextui-org/react';
 import '../components/home/style.css';
 import { Skeleton } from '@/components/ui/skeleton';
+import { get_theme_by_transmitter } from '@/services/configuration.service';
 
 function Home() {
-  const { theme } = useContext(ThemeContext);
+  const { theme, toggleTheme } = useContext(ThemeContext);
 
   const {
     getSalesByBranchAndMonth,
@@ -92,6 +93,31 @@ function Home() {
     backgroundColor: theme.colors.dark,
     color: theme.colors.primary,
   };
+
+  const fetchThemeData = useCallback(async () => {
+    try {
+      const { data } = await get_theme_by_transmitter();
+      if (data.ok) {
+        const theme = {
+          name: data.personalization.name,
+          context: data.personalization.context === 'light' ? 'light' : 'dark',
+          colors: data.personalization.colors,
+        };
+        toggleTheme({
+          ...theme,
+          context: theme.context === 'light' ? 'light' : 'dark',
+        });
+      } else {
+        throw new Error('No tienes tema seleccionado');
+      }
+    } catch (error) {
+      throw new Error('No tienes tema seleccionado');
+    }
+  }, [toggleTheme]);
+
+  useEffect(() => {
+    fetchThemeData();
+  }, []);
 
   return (
     <Layout title="Inicio">

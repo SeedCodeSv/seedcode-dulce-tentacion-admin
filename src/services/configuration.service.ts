@@ -1,21 +1,22 @@
 import {
   GetByTransmitter,
-  IGetConfiguration,
+  ICreacteConfiguaration,
+  IGetTheme,
   pachConfigurationName,
 } from './../types/configuration.types';
 import axios from 'axios';
 import { API_URL } from '../utils/constants';
-import { get_token } from '../storage/localStorage';
+import { get_token, get_user } from '../storage/localStorage';
 
-export const create_configuration = (configuration: IGetConfiguration) => {
+export const create_configuration = (configuration: ICreacteConfiguaration) => {
   const token = get_token() ?? '';
   const formData = new FormData();
   if (configuration.file) {
     formData.append('file', configuration.file);
   }
   formData.append('name', configuration.name);
-  formData.append('themeName', configuration.theme);
-  formData.append('transmitterId', configuration.transmitterId.toLocaleString());
+  formData.append('themeName', configuration.themeName.toString());
+  formData.append('transmitterId', configuration.transmitterId.toString());
   formData.append('selectedTemplate', configuration.selectedTemplate);
   formData.append('wantPrint', configuration.wantPrint.toString())
   return axios.post<{ ok: boolean; status: number }>(API_URL + '/personalization', formData, {
@@ -50,4 +51,17 @@ export const update_theme = (id: number, name: string) => {
       Authorization: `Bearer ${token}`,
     },
   });
+}
+
+export const get_theme_by_transmitter = () => {
+  const user = get_user()
+  const token = get_token() ?? ""
+  return axios.get<IGetTheme>(
+    `${API_URL}/personalization/theme/${user?.correlative.branch.transmitterId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
+  )
 }

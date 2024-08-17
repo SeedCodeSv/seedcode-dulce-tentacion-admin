@@ -23,6 +23,7 @@ import { login_mh, get_transmitter } from '../services/transmitter.service';
 import { ILoginMHFailed } from '../types/transmitter.types';
 import { AxiosError } from 'axios';
 import { is_admin } from '../utils/filters';
+import { useConfigurationStore } from './perzonalitation.store';
 
 export const useAuthStore = create<IAuthStore>((set, get) => ({
   token: get_token() ?? '',
@@ -54,6 +55,8 @@ export const useAuthStore = create<IAuthStore>((set, get) => ({
               toast.error('Error al conectarse con el servidor');
               return;
             });
+          const { GetConfigurationByTransmitter } = useConfigurationStore.getState();
+          await GetConfigurationByTransmitter(data.user.correlative.branch.transmitterId);
           toast.success('Bienvenido');
         } else {
           toast.error('Datos incorrectos');

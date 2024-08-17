@@ -1,12 +1,10 @@
 import { useContext, useEffect, useState } from 'react';
-import { ButtonGroup, Card, useDisclosure } from '@nextui-org/react';
+import { ButtonGroup, Card, Switch, useDisclosure } from '@nextui-org/react';
 import { useThemeStore } from '../../store/theme.store';
 import { Theme, ThemeContext } from '../../hooks/useTheme';
-import { Check } from 'lucide-react';
+import { Check, Moon, Plus, SunMedium } from 'lucide-react';
 import AddButton from '../global/AddButton';
-import ModalGlobal from '../global/ModalGlobal';
 import CreateConfiguration from './CreateConfiguration';
-import CreateTheme from './CreateTheme';
 import { useConfigurationStore } from '../../store/perzonalitation.store';
 import { useAuthStore } from '../../store/auth.store';
 import UpdateFile from './UpdateFile';
@@ -21,37 +19,46 @@ import { IConfiguration } from '../../types/configuration.types';
 import HeadlessModal from '../global/HeadlessModal';
 import { update_theme } from '../../services/configuration.service';
 import { toast } from 'sonner';
+import { Lock } from 'lucide-react';
+import { useNavigate } from 'react-router';
+import { global_styles } from '@/styles/global.styles';
 
-function ConfigurationList() {
+interface Props {
+  actions: string[];
+}
+
+const ConfigurationList = ({ actions }: Props) => {
   const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
   const { getPaginatedThemes, themes } = useThemeStore();
   const { theme, toggleTheme } = useContext(ThemeContext);
   const [logoId, setLogoId] = useState(0);
   const [selectedTheme, setSelectedTheme] = useState('');
-
   const [selectedConfiguration, setSelectedConfiguration] = useState<IConfiguration>();
-
   const { personalization, GetConfigurationByTransmitter } = useConfigurationStore();
   const { user } = useAuthStore();
+  const navigate = useNavigate();
 
   const idConfig = personalization?.find((config) => config?.id)?.id || 0;
   const tramsiter = user?.correlative.branch.transmitterId;
 
+  // useEffect(() => {
+  //   if (context === 'dark') {
+  //     document.getElementsByTagName('body')[0].classList.add('dark');
+  //   } else {
+  //     document.getElementsByTagName('body')[0].classList.remove('dark');
+  //   }
+  // }, [context]);
+
   useEffect(() => {
     GetConfigurationByTransmitter(tramsiter || 0);
-    getPaginatedThemes(1);
+    getPaginatedThemes(1, 30);
   }, []);
 
   const reloadData = () => {
     GetConfigurationByTransmitter(tramsiter || 0);
   };
 
-  const style = {
-    backgroundColor: theme.colors.dark,
-    color: theme.colors.primary,
-  };
-
-  const modalAdd = useDisclosure();
+  // const modalAdd = useDisclosure();
   const addLogo = useDisclosure();
   const UpdateImgModal = useDisclosure();
   const updateName = useDisclosure();
@@ -70,59 +77,192 @@ function ConfigurationList() {
   return (
     <>
       <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
-        <div className="w-full h-full p-3 mt-2 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
-          <div className="flex items-end justify-between gap-10 mt lg:justify-end mt-5 mr-5">
-            <ButtonGroup>
-              <Button
-                isIconOnly
-                color="secondary"
-                style={{
-                  backgroundColor: view === 'table' ? theme.colors.third : '#e5e5e5',
-                  color: view === 'table' ? theme.colors.primary : '#3e3e3e',
-                }}
-                onClick={() => setView('table')}
+        <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
+          <div className="flex justify-evenly gap-10 mt-5 ml-5 ">
+            {/* <div className="w-full mt-1">
+              <Switch
+                className="relative"
+                onValueChange={(isDark) => toggleContext(isDark ? 'dark' : 'light')}
+                isSelected={context === 'dark'}
+                size="lg"
+                thumbIcon={({ isSelected }) =>
+                  isSelected ? (
+                    <SunMedium className="text-yellow-500" />
+                  ) : (
+                    <Moon className="text-gray-800" />
+                  )
+                }
               >
-                <ITable />
-              </Button>
-              <Button
-                isIconOnly
-                color="default"
-                style={{
-                  backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
-                  color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
-                }}
-                onClick={() => setView('grid')}
-              >
-                <CreditCard />
-              </Button>
-              <Button
-                isIconOnly
-                color="default"
-                style={{
-                  backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
-                  color: view === 'list' ? theme.colors.primary : '#3e3e3e',
-                }}
-                onClick={() => setView('list')}
-              >
-                <List />
-              </Button>
-            </ButtonGroup>
-
-            {personalization.length === 0 && <AddButton onClick={() => addLogo.onOpen()} />}
-            {personalization.length > 0 &&
-              personalization.map((item) => (
-                <AddButton
-                  key={item.id}
-                  onClick={() => {
-                    UpdateImgModal.onOpen();
-                    setLogoId(item.id || 0);
+                <p className="text-sm font-semibold lg:text-base relative">
+                  {context === 'dark' ? 'Modo claro' : 'Modo oscuro'}
+                </p>
+              </Switch>
+            </div> */}
+            <div className="flex gap-4 justify-between">
+              <ButtonGroup>
+                <Button
+                  isIconOnly
+                  color="secondary"
+                  style={{
+                    backgroundColor: view === 'table' ? theme.colors.third : '#e5e5e5',
+                    color: view === 'table' ? theme.colors.primary : '#3e3e3e',
                   }}
-                />
-              ))}
+                  onClick={() => setView('table')}
+                >
+                  <ITable />
+                </Button>
+                <Button
+                  isIconOnly
+                  color="default"
+                  style={{
+                    backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
+                    color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
+                  }}
+                  onClick={() => setView('grid')}
+                >
+                  <CreditCard />
+                </Button>
+                <Button
+                  isIconOnly
+                  color="default"
+                  style={{
+                    backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
+                    color: view === 'list' ? theme.colors.primary : '#3e3e3e',
+                  }}
+                  onClick={() => setView('list')}
+                >
+                  <List />
+                </Button>
+              </ButtonGroup>
+
+              {actions.includes('Agregar') ? (
+                <>
+                  <Button
+                    onClick={() => navigate('/add-theme')}
+                    // onClick={() => modalAdd.onOpen()}
+                    endContent={<Plus size={20} />}
+                    style={global_styles().thirdStyle}
+                    className="hidden font-semibold md:flex"
+                    type="button"
+                  >
+                    Agregar nuevo tema
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={() => navigate('/add-theme')}
+                    style={global_styles().thirdStyle}
+                    className="flex font-semibold md:hidden"
+                    isIconOnly
+                  >
+                    <Plus />
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  className=" lg:flex"
+                  isIconOnly
+                  style={{
+                    backgroundColor: theme.colors.third,
+                    color: theme.colors.primary,
+                    opacity: 0.9,
+                    cursor: 'not-allowed',
+                  }}
+                  endContent={
+                    <Lock
+                      style={{
+                        color: theme.colors.primary,
+                      }}
+                      size={20}
+                    />
+                  }
+                  disabled
+                ></Button>
+              )}
+
+              {actions.includes('Agregar') ? (
+                <>
+                  {personalization.length === 0 && <AddButton onClick={() => addLogo.onOpen()} />}
+                </>
+              ) : (
+                <Button
+                  className=" lg:flex"
+                  isIconOnly
+                  style={{
+                    backgroundColor: theme.colors.third,
+                    color: theme.colors.primary,
+                    opacity: 0.9,
+                    cursor: 'not-allowed',
+                  }}
+                  endContent={
+                    <Lock
+                      style={{
+                        color: theme.colors.primary,
+                      }}
+                      size={20}
+                    />
+                  }
+                  disabled
+                ></Button>
+              )}
+
+              {actions.includes('Editar') ? (
+                <>
+                  {personalization.length > 0 &&
+                    personalization.map((item) => (
+                      <>
+                        <Button
+                          onClick={() => {
+                            UpdateImgModal.onOpen();
+                            setLogoId(item.id || 0);
+                          }}
+                          endContent={<Plus size={20} />}
+                          style={global_styles().thirdStyle}
+                          className="hidden font-semibold md:flex"
+                          type="button"
+                        >
+                          Actualizar logo
+                        </Button>
+                        <Button
+                          type="button"
+                          onClick={() => {
+                            UpdateImgModal.onOpen();
+                            setLogoId(item.id || 0);
+                          }}
+                          style={global_styles().thirdStyle}
+                          className="flex font-semibold md:hidden"
+                          isIconOnly
+                        >
+                          <Plus />
+                        </Button>
+                      </>
+                    ))}
+                </>
+              ) : (
+                <Button
+                  className=" lg:flex"
+                  isIconOnly
+                  style={{
+                    backgroundColor: theme.colors.secondary,
+                    color: theme.colors.primary,
+                    opacity: 0.9,
+                    cursor: 'not-allowed',
+                  }}
+                  endContent={
+                    <Lock
+                      style={{
+                        color: theme.colors.primary,
+                      }}
+                      size={20}
+                    />
+                  }
+                  disabled
+                ></Button>
+              )}
+            </div>
           </div>
 
-          <div className="flex justify-center p-5 bg-gray-50 dark:bg-gray-900">
-            <div className="bg-gray-50 w-full dark:bg-gray-800 dark:text-white">
+          <div className="flex justify-center p-">
+            <div className=" w-full dark:text-white">
               {(view === 'grid' || view === 'list') && (
                 <MobileViewConfi
                   handleEdit={(config) => {
@@ -135,57 +275,79 @@ function ConfigurationList() {
 
               {view == 'table' && (
                 <>
-                  {personalization.length === 0 ? (
-                    <span>no ay datos de logo ni nombre...</span>
-                  ) : (
-                    <DataTable
-                      value={personalization}
-                      className="shadow"
-                      tableStyle={{ minWidth: '50rem' }}
-                    >
-                      <Column
-                        field="logo"
-                        header="Logo"
-                        headerStyle={style}
-                        body={(rowData) => (
-                          <Image
-                            preview
-                            src={rowData.logo}
-                            alt={rowData.name}
-                            style={{ width: '100px' }}
-                          />
-                        )}
-                      />
-                      <Column field="name" header="Nombre" headerStyle={style} />
-                      <Column
-                        headerStyle={style}
-                        header="Actualizar Nombre"
-                        body={(rowData) => (
-                          <Button
-                            onClick={() => {
-                              setSelectedConfiguration(rowData);
-                              updateName.onOpen();
-                            }}
-                            style={style}
-                          >
-                            Actualizar
-                          </Button>
-                        )}
-                      />
-                    </DataTable>
-                  )}
+                  <DataTable
+                    value={personalization}
+                    className="text-slate-600 dark:text-gray-100 mt-5 dark:bg-slate-700 bg-slate-200"
+                    emptyMessage="No se encontraron resultados"
+                    tableStyle={{ minWidth: '50rem' }}
+                  >
+                    <Column
+                      headerClassName="text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
+                      field="logo"
+                      header="Logo"
+                      body={(rowData) => (
+                        <Image
+                          preview
+                          src={rowData.logo}
+                          alt={rowData.name}
+                          style={{ width: '100px' }}
+                        />
+                      )}
+                    />
+                    <Column
+                      headerClassName="text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
+                      field="name"
+                      header="Nombre"
+                    />
+                    <Column
+                      headerClassName="text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
+                      header="Actualizar Nombre"
+                      body={(rowData) => (
+                        <>
+                          {actions.includes('Editar') ? (
+                            <Button
+                              onClick={() => {
+                                setSelectedConfiguration(rowData);
+                                updateName.onOpen();
+                              }}
+                              style={global_styles().secondaryStyle}
+                            >
+                              Actualizar
+                            </Button>
+                          ) : (
+                            <Button
+                              className=" lg:flex"
+                              isIconOnly
+                              style={{
+                                backgroundColor: theme.colors.secondary,
+                                color: theme.colors.primary,
+                                opacity: 0.9,
+                                cursor: 'not-allowed',
+                              }}
+                              endContent={
+                                <Lock
+                                  style={{
+                                    color: theme.colors.primary,
+                                  }}
+                                  size={20}
+                                />
+                              }
+                              disabled
+                            ></Button>
+                          )}
+                        </>
+                      )}
+                    />
+                  </DataTable>
                 </>
               )}
             </div>
           </div>
 
-          <div className="bg-gray-50 dark:bg-gray-900 w-full">
+          <div className="dark:bg-gray-900 w-full">
             <div className="p-4 ">
-              <div className="flex items-end justify-between gap-10 mt lg:justify-end mt-5 mr-5">
-                <AddButton onClick={() => modalAdd.onOpen()} />
-              </div>
-              <div className="p-5 bg-gray-50 dark:bg-gray-900">
-                <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              <div className="p-5 dark:bg-gray-900">
+                <div className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                   {themes.map((themeS, index) => (
                     <Card
                       key={index}
@@ -196,7 +358,7 @@ function ConfigurationList() {
                       }}
                       // onClick={() => toggleTheme(themeS as Theme)}
                     >
-                      {/* <h1>{themeS.name}</h1> */}
+                      <span className="col-span-6 font-semibold">{themeS.name}</span>
                       <div className="absolute top-5 right-5">
                         {themeS.name === theme.name && <Check size={30} color="#fff" />}
                       </div>
@@ -206,7 +368,7 @@ function ConfigurationList() {
                       ></span>
                       <span
                         className="w-full h-44"
-                        style={{ backgroundColor: themeS.colors.warning }}
+                        style={{ backgroundColor: themeS.colors.dark }}
                       ></span>
                       <span
                         className="w-full h-44"
@@ -222,7 +384,7 @@ function ConfigurationList() {
                       ></span>
                       <span
                         className="w-full h-44"
-                        style={{ backgroundColor: themeS.colors.dark }}
+                        style={{ backgroundColor: themeS.colors.warning }}
                       ></span>
                     </Card>
                   ))}
@@ -232,15 +394,6 @@ function ConfigurationList() {
           </div>
         </div>
       </div>
-
-      <ModalGlobal
-        isOpen={modalAdd.isOpen}
-        onClose={modalAdd.onClose}
-        title="Agregar tema"
-        size="w-full lg:w-[600px]"
-      >
-        <CreateTheme />
-      </ModalGlobal>
 
       <HeadlessModal
         isOpen={addLogo.isOpen}
@@ -274,6 +427,6 @@ function ConfigurationList() {
       </HeadlessModal>
     </>
   );
-}
+};
 
 export default ConfigurationList;

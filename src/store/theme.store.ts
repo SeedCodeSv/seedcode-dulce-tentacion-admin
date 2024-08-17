@@ -14,8 +14,8 @@ export const useThemeStore = create<ThemeStore>((set) => ({
     status: 404,
     ok: false,
   },
-  getPaginatedThemes: (page?: number) => {
-    get_themes_paginated(page)
+  getPaginatedThemes: (page?: number, limit?: number) => {
+    get_themes_paginated(page, limit)
       .then(({ data }) => {
         set({
           paginatiom_themes: {

@@ -10,18 +10,6 @@ export interface IConfiguration {
   isActive?: boolean;
 }
 
-export interface ConfigurationPayload {
-  logo: string;
-  ext: string;
-  name: string;
-  themeId: number;
-  transmitterId: number;
-}
-
-export interface IGetConfiguration extends ICreacteConfiguaration {
-  file?: File | Blob | null | undefined;
-}
-
 export interface pachConfigurationName {
   name: string;
   wantPrint: number | boolean;
@@ -29,7 +17,7 @@ export interface pachConfigurationName {
 
 export interface ICreacteConfiguaration {
   name: string;
-  theme: string;
+  themeName: string | number;
   transmitterId: number;
   selectedTemplate: string;
   wantPrint: number;
@@ -40,4 +28,27 @@ export interface GetByTransmitter {
   personalization: IConfiguration;
   ok: boolean;
   messages: string;
+}
+
+// for theme by transmitter
+export interface IGetTheme {
+  ok: boolean
+  personalization: Personalization
+  status: number
+}
+
+interface Personalization {
+  id: number
+  name: string
+  context: string
+  colors: Color
+}
+
+interface Color {
+  danger: string
+  primary: string
+  secondary: string
+  third: string
+  warning: string
+  dark: string
 }

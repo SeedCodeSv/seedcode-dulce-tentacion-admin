@@ -46,6 +46,8 @@ import Shopping from '@/pages/Shopping';
 import CreateShopping from '@/components/shopping/CreateShoppingJson';
 import CFFBookIVA from '@/pages/iva/CFFBookIVA';
 import FEBookIVA from '@/pages/iva/FEBookIVA';
+import CreateTheme from '@/components/configuration/CreateTheme';
+
 
 const Loading = () => {
   return <div>Cargando...</div>;
@@ -257,6 +259,10 @@ export const router = () => {
     {
       path: '*',
       element: <Error404 />,
+    },
+    {
+      path: '/add-theme',
+      element: checkAuthorization('Configuración', <CreateTheme />),
     },
   ]);
 };
