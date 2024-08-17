@@ -240,15 +240,29 @@ function FEBookIVA() {
                           <div>
                             <p className="mt-5">
                               /1.13 = VENTAS NETAS GRAVADAS:{' '}
-                              {formatCurrency(facturas.sales[index].totalSales / 1.13)}
+                              {formatCurrency(
+                                facturas.sales
+                                  .map((factura) => Number(factura.totalSales))
+                                  .reduce((a, b) => a + b, 0) / 1.13
+                              )}
                             </p>
                             <p className="mt-2">
                               POR 13% IMPUESTO (DEBITO FISCAL):{' '}
-                              {formatCurrency((facturas.sales[index].totalSales / 1.13) * 0.13)}
+                              {formatCurrency(
+                                (facturas.sales
+                                  .map((factura) => Number(factura.totalSales))
+                                  .reduce((a, b) => a + b, 0) /
+                                  1.13) *
+                                  0.13
+                              )}
                             </p>
                             <p className="mt-2">
                               TOTAL VENTAS GRAVADAS:{' '}
-                              {formatCurrency(facturas.sales[index].totalSales)}
+                              {formatCurrency(
+                                facturas.sales
+                                  .map((factura) => Number(factura.totalSales))
+                                  .reduce((a, b) => a + b, 0)
+                              )}
                             </p>
                           </div>
                         </>
