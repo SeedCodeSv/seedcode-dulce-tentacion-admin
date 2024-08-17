@@ -5,6 +5,8 @@ export interface FEMonth {
     firstNumeroControl: string
     lastNumeroControl: string
     totalSales: number
+    type: "F" | "T"
+    code: string
   }
   
   export interface IGetFacturasByMonth {

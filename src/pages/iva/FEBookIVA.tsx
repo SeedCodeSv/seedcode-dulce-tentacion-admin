@@ -12,10 +12,13 @@ import { export_excel_factura } from '../excel/generate_excel';
 import saveAs from 'file-saver';
 import { formatDateMMDDYYYY } from '@/utils/dates';
 import { formatCurrency } from '@/utils/dte';
+import { useCorrelativesDteStore } from '@/store/correlatives_dte.store';
+import { FEMonth } from '@/types/factura.types';
 
 function FEBookIVA() {
   const [monthSelected, setMonthSelected] = useState(new Date().getMonth() + 1);
   const [branchId, setBranchId] = useState(0);
+  const [pointOfSalesId, setPointOfSalesId] = useState(0);
   const { transmitter, gettransmitter } = useTransmitterStore();
   const { branch_list, getBranchesList } = useBranchesStore();
 
@@ -24,7 +27,14 @@ function FEBookIVA() {
     getBranchesList();
   }, []);
 
+  useEffect(() => {
+    if (branchId > 0) {
+      getPointOfSales(branchId);
+    }
+  }, [branchId]);
+
   const { facturas_by_month, loading_facturas, getFeMonth } = useSalesStore();
+  const { point_of_sales, getPointOfSales } = useCorrelativesDteStore();
 
   useEffect(() => {
     getFeMonth(branchId, monthSelected);
@@ -37,7 +47,10 @@ function FEBookIVA() {
       toast.warning('No se encontraron facturas para el mes seleccionado');
       return;
     }
-    const data = facturas_by_month.map((factura) => {
+
+    const data_f = facturas_by_month.filter((factura) => factura.type === 'F');
+
+    const data = data_f.map((factura) => {
       return [
         formatDateMMDDYYYY(factura.day, monthSelected),
         factura.firstCorrelative!,
@@ -52,9 +65,40 @@ function FEBookIVA() {
       ];
     });
 
+    const filteredByCode = facturas_by_month
+      .filter((item) => item.type === 'T')
+      .reduce(
+        (acc, item) => {
+          if (!acc[item['code']]) acc[item['code']] = [];
+          acc[item.code].push(item);
+          return acc;
+        },
+        {} as Record<string, FEMonth[]>
+      );
+
+    const arraysByCode = Object.values(filteredByCode);
+    const codesArray = Object.keys(filteredByCode);
+
+    const ticketData = arraysByCode.map((items) => {
+      return items.map((item) => {
+        return [
+          formatDateMMDDYYYY(item.day, monthSelected),
+          item.firstCorrelative!,
+          item.lastCorrelative!,
+          item.firstNumeroControl!.replace('-', ''),
+          item.lastNumeroControl!.replace('-', ''),
+          '',
+          Number(item.totalSales),
+          '',
+          Number(item.totalSales),
+          '',
+        ];
+      });
+    });
+
     const month = months.find((month) => month.value === monthSelected)?.name || '';
 
-    const blob = await export_excel_factura(data, month, transmitter);
+    const blob = await export_excel_factura(data, month, transmitter, ticketData, codesArray);
 
     saveAs(blob, `Libro_Consumidor_Final_${month}.xlsx`);
   };
@@ -123,6 +167,30 @@ function FEBookIVA() {
                 ))}
               </Select>
             </div>
+            <div className="w-full">
+              <Select
+                defaultSelectedKeys={`${pointOfSalesId}`}
+                onSelectionChange={(key) => {
+                  if (key) {
+                    setPointOfSalesId(Number(new Set(key).values().next().value));
+                  }
+                }}
+                className="w-full"
+                placeholder="Selecciona un punto de venta"
+                classNames={{ label: 'font-semibold' }}
+                label="Punto de venta"
+                labelPlacement="outside"
+                variant="bordered"
+              >
+                {point_of_sales
+                  .filter((point) => point.code)
+                  .map((branch) => (
+                    <SelectItem key={branch.id} value={branch.id}>
+                      {branch.code}
+                    </SelectItem>
+                  ))}
+              </Select>
+            </div>
             <div className="flex justify-end items-end mt-3 md:mt-0">
               <Button
                 onClick={handleExportExcel}
@@ -150,34 +218,22 @@ function FEBookIVA() {
                       <table className="w-full">
                         <thead className="sticky top-0 z-20 bg-white">
                           <tr>
-                            <th
-                              className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                            >
+                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                               Fecha
                             </th>
-                            <th
-                              className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                            >
+                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                               Correlativo Inicial
                             </th>
-                            <th
-                              className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                            >
+                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                               Correlativo Final
                             </th>
-                            <th
-                              className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                            >
+                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                               Numero Control Inicial
                             </th>
-                            <th
-                              className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                            >
+                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                               Numero Control Final
                             </th>
-                            <th
-                              className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                            >
+                            <th className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                               Total
                             </th>
                           </tr>
