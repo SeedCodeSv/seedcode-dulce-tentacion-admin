@@ -68,15 +68,15 @@
     },
     {
       "view": "Nivel de Estudio",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Activar"]
     },
     {
       "view": "Tipo de Contratacion",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Activar"]
     },
     {
       "view": "Estados del Empleado",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Activar"]
     },
 
     {

@@ -21,6 +21,7 @@ import {
   Filter,
   RefreshCcw,
   SearchIcon,
+  Lock,
 } from 'lucide-react';
 // import { DataTable } from 'primereact/datatable';
 // import { Column } from 'primereact/column';
@@ -41,12 +42,10 @@ import { ContractType } from '../../../types/contarctType.types';
 import TooltipGlobal from '@/components/global/TooltipGlobal';
 import BottomDrawer from '@/components/global/BottomDrawer';
 import classNames from 'classnames';
+import { ArrayAction } from '@/types/view.types';
+import NotAddButton from '@/components/global/NoAdd';
 
-interface PProps {
-  actions: string[];
-}
-
-function ListContractType({ actions }: PProps) {
+function ListContractType({ actions }: ArrayAction) {
   const { theme } = useContext(ThemeContext);
   const [openVaul, setOpenVaul] = useState(false);
 
@@ -230,13 +229,15 @@ function ListContractType({ actions }: PProps) {
                 </BottomDrawer>
               </div>
             </div>
-            {actions.includes('Agregar') && (
+            {actions.includes('Agregar') ? (
               <AddButton
                 onClick={() => {
                   setContractType(undefined);
                   modalAdd.onOpen();
                 }}
               />
+            ) : (
+              <NotAddButton></NotAddButton>
             )}
           </div>
         </div>
@@ -296,12 +297,6 @@ function ListContractType({ actions }: PProps) {
                     <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                       Nombre
                     </th>
-                    {/* <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                       Código
-                     </th> */}
-                    {/* <th className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                       Sub categoría
-                     </th> */}
                     <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                       Acciones
                     </th>
@@ -329,45 +324,61 @@ function ListContractType({ actions }: PProps) {
                               <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
                                 {contractType.name}
                               </td>
-                              {/* <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                 {contractType.}
-                               </td> */}
-                              {/* <td className="p-3 text-sm text-slate-500 whitespace-nowrap dark:text-slate-100">
-                               {categories.subCategory.name}
-                             </td> */}
                               <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                                 <div className="flex w-full gap-5">
-                                  {actions.includes('Editar') && (
+                                  {actions.includes('Editar') && contractType.isActive ? (
                                     <>
-                                    {contractType.isActive && (
-                                    <TooltipGlobal text="Editar">
-                                      <Button
-                                        onClick={() => {
-                                          handleEdit(contractType);
+                                      <TooltipGlobal text="Editar">
+                                        <Button
+                                          onClick={() => {
+                                            handleEdit(contractType);
 
-                                          modalAdd.onOpen();
-                                        }}
-                                        isIconOnly
-                                        style={{
-                                          backgroundColor: theme.colors.secondary,
-                                        }}
-                                      >
-                                        <EditIcon
-                                          style={{
-                                            color: theme.colors.primary,
+                                            modalAdd.onOpen();
                                           }}
-                                          size={20}
-                                        />
-                                      </Button>
-                                    </TooltipGlobal>
-                                  )}
+                                          isIconOnly
+                                          style={{
+                                            backgroundColor: theme.colors.secondary,
+                                          }}
+                                        >
+                                          <EditIcon
+                                            style={{
+                                              color: theme.colors.primary,
+                                            }}
+                                            size={20}
+                                          />
+                                        </Button>
+                                      </TooltipGlobal>
                                     </>
+                                  ) : (
+                                    <Button
+                                      isIconOnly
+                                      style={{
+                                        backgroundColor: theme.colors.secondary,
+                                        cursor: 'not-allowed',
+                                      }}
+                                    >
+                                      <Lock style={{ color: theme.colors.primary }} size={20} />
+                                    </Button>
                                   )}
-                                  {actions.includes('Eliminar') && (
+                                  {actions.includes('Eliminar') && contractType.isActive ? (
+                                    <DeletePopUp ContractTypes={contractType} />
+                                  ) : (
+                                    <Button
+                                      isIconOnly
+                                      style={{ backgroundColor: theme.colors.danger }}
+                                    >
+                                      <Lock
+                                        style={{
+                                          color: theme.colors.primary,
+                                          cursor: 'not-allowed',
+                                        }}
+                                        size={20}
+                                      />
+                                    </Button>
+                                  )}
+                                  {contractType.isActive === false && (
                                     <>
-                                      {contractType.isActive ? (
-                                        <DeletePopUp ContractTypes={contractType} />
-                                      ) : (
+                                      {actions.includes('Activar') ? (
                                         <TooltipGlobal text="Activar">
                                           <Button
                                             onClick={() => handleActivate(contractType.id)}
@@ -377,6 +388,16 @@ function ListContractType({ actions }: PProps) {
                                             <RefreshCcw />
                                           </Button>
                                         </TooltipGlobal>
+                                      ) : (
+                                        <Button
+                                          isIconOnly
+                                          style={{
+                                            ...global_styles().thirdStyle,
+                                            cursor: 'not-allowed',
+                                          }}
+                                        >
+                                          <Lock />
+                                        </Button>
                                       )}
                                     </>
                                   )}
@@ -401,67 +422,6 @@ function ListContractType({ actions }: PProps) {
               </table>
             </div>
           </>
-          // <DataTable
-          //   className="w-full shadow"
-          //   emptyMessage="No se encontraron resultados"
-          //   value={paginated_contract_type.contractTypes}
-          //   tableStyle={{ minWidth: '50rem' }}
-          //   loading={loading_contract_type}
-          // >
-          //   <Column
-          //     headerClassName="text-sm font-semibold"
-          //     headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
-          //     field="id"
-          //     bodyClassName={'dark:text-white'}
-          //     header="No."
-          //   />
-          //   <Column
-          //     headerClassName="text-sm font-semibold"
-          //     headerStyle={style}
-          //     field="name"
-          //     header="Nombre"
-          //     bodyClassName={'dark:text-white'}
-          //   />
-          //   <Column
-          //     headerStyle={{ ...style, borderTopRightRadius: '10px' }}
-          //     header="Acciones"
-          //     body={(item) => (
-          //       <div className="flex gap-6">
-          //         {actions.includes('Editar') && (
-          //           <TooltipGlobal text="Editar el registro" color="primary">
-          //             <Button
-          //               onClick={() => handleEdit(item)}
-          //               isIconOnly
-          //               style={{
-          //                 backgroundColor: theme.colors.secondary,
-          //               }}
-          //             >
-          //               <EditIcon style={{ color: theme.colors.primary }} size={20} />
-          //             </Button>
-          //           </TooltipGlobal>
-          //         )}
-          //         {actions.includes('Eliminar') && (
-          //           <>
-          //             {/* <DeletePopUp ContractTypes={item} /> */}
-          //             {item.isActive ? (
-          //               <DeletePopUp ContractTypes={item} />
-          //             ) : (
-          //               <TooltipGlobal text="Activar la categoría" color="primary">
-          //                 <Button
-          //                   onClick={() => handleActivate(item.id)}
-          //                   isIconOnly
-          //                   style={global_styles().thirdStyle}
-          //                 >
-          //                   <RefreshCcw />
-          //                 </Button>
-          //               </TooltipGlobal>
-          //             )}
-          //           </>
-          //         )}
-          //       </div>
-          //     )}
-          //   />
-          // </DataTable>
         )}
         {paginated_contract_type.totalPag > 1 && (
           <>

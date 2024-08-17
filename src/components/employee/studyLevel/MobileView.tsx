@@ -1,11 +1,13 @@
 import { Button } from '@nextui-org/react';
 import { DataView } from 'primereact/dataview';
 import { classNames } from 'primereact/utils';
-import { BookText, EditIcon, RefreshCcw, ScrollIcon } from 'lucide-react';
+import { BookText, EditIcon, RefreshCcw, ScrollIcon, Lock } from 'lucide-react';
 
 import { GridProps, MobileViewProps } from './types/mobile_view.types';
 import { global_styles } from '../../../styles/global.styles';
 import { useStatusStudyLevel } from '@/store/studyLevel';
+import { ThemeContext } from '@/hooks/useTheme';
+import { useContext } from 'react';
 
 function MobileView(props: MobileViewProps) {
   const { layout, deletePopover, handleEdit, actions, handleActive } = props;
@@ -45,6 +47,8 @@ export default MobileView;
 
 const GridItem = (props: GridProps) => {
   const { studyLevel, layout, deletePopover, handleEdit, actions, handleActive } = props;
+  const { theme } = useContext(ThemeContext);
+
   return (
     <>
       {layout === 'grid' ? (
@@ -63,7 +67,7 @@ const GridItem = (props: GridProps) => {
             {studyLevel.description}
           </div>
           <div className="flex justify-between mt-5 w-ful">
-            {actions.includes('Editar') && (
+            {actions.includes('Editar') && studyLevel.isActive ? (
               <Button
                 onClick={() => handleEdit(studyLevel)}
                 isIconOnly
@@ -71,19 +75,51 @@ const GridItem = (props: GridProps) => {
               >
                 <EditIcon size={20} />
               </Button>
+            ) : (
+              <Button
+                isIconOnly
+                style={{
+                  backgroundColor: theme.colors.secondary,
+                  cursor: 'not-allowed',
+                }}
+              >
+                <Lock style={{ color: theme.colors.primary }} size={20} />
+              </Button>
             )}
-            {actions.includes('Eliminar') && (
+
+            {actions.includes('Eliminar') && studyLevel.isActive ? (
+              deletePopover({ studyLevel })
+            ) : (
+              <Button isIconOnly style={{ backgroundColor: theme.colors.danger }}>
+                <Lock
+                  style={{
+                    color: theme.colors.primary,
+                    cursor: 'not-allowed',
+                  }}
+                  size={20}
+                />
+              </Button>
+            )}
+
+            {studyLevel.isActive === false && (
               <>
-                {/* {deletePopover({ statusEmployees })} */}
-                {studyLevel.isActive ? (
-                  deletePopover({ studyLevel })
-                ) : (
+                {actions.includes('Activar') ? (
                   <Button
                     onClick={() => handleActive(studyLevel.id)}
                     isIconOnly
                     style={global_styles().thirdStyle}
                   >
                     <RefreshCcw />
+                  </Button>
+                ) : (
+                  <Button
+                    isIconOnly
+                    style={{
+                      ...global_styles().thirdStyle,
+                      cursor: 'not-allowed',
+                    }}
+                  >
+                    <Lock />
                   </Button>
                 )}
               </>
@@ -106,6 +142,8 @@ const GridItem = (props: GridProps) => {
 
 const ListItem = (props: GridProps) => {
   const { studyLevel, deletePopover, handleEdit, actions, handleActive } = props;
+  const { theme } = useContext(ThemeContext);
+
   return (
     <>
       <div className="flex w-full p-5 border shadow dark:border-gray-600 rounded-2xl">
@@ -120,7 +158,7 @@ const ListItem = (props: GridProps) => {
           </div>
         </div>
         <div className="flex flex-col items-end justify-between w-full gap-5">
-          {actions.includes('Editar') && (
+          {actions.includes('Editar') && studyLevel.isActive ? (
             <Button
               onClick={() => handleEdit(studyLevel)}
               isIconOnly
@@ -128,20 +166,51 @@ const ListItem = (props: GridProps) => {
             >
               <EditIcon size={20} />
             </Button>
+          ) : (
+            <Button
+              isIconOnly
+              style={{
+                backgroundColor: theme.colors.secondary,
+                cursor: 'not-allowed',
+              }}
+            >
+              <Lock style={{ color: theme.colors.primary }} size={20} />
+            </Button>
           )}
-          {actions.includes('Eliminar') && (
-            <>
-              {/* {deletePopover({ statusEmployees })} */}
 
-              {studyLevel.isActive ? (
-                deletePopover({ studyLevel })
-              ) : (
+          {actions.includes('Eliminar') && studyLevel.isActive ? (
+            deletePopover({ studyLevel })
+          ) : (
+            <Button isIconOnly style={{ backgroundColor: theme.colors.danger }}>
+              <Lock
+                style={{
+                  color: theme.colors.primary,
+                  cursor: 'not-allowed',
+                }}
+                size={20}
+              />
+            </Button>
+          )}
+
+          {studyLevel.isActive === false && (
+            <>
+              {actions.includes('Activar') ? (
                 <Button
                   onClick={() => handleActive(studyLevel.id)}
                   isIconOnly
                   style={global_styles().thirdStyle}
                 >
                   <RefreshCcw />
+                </Button>
+              ) : (
+                <Button
+                  isIconOnly
+                  style={{
+                    ...global_styles().thirdStyle,
+                    cursor: 'not-allowed',
+                  }}
+                >
+                  <Lock />
                 </Button>
               )}
             </>
