@@ -25,15 +25,16 @@ function Auth() {
     userName: yup.string().required('El usuario es requerido'),
     password: yup.string().required('La contraseña es requerida'),
   });
-  const { OnGetActionsByRol } = useViewsStore();
-  const { user } = useAuthStore();
+  const { OnGetActionsByRol, OnGetViewasAction } = useViewsStore();
+
   const handleSubmit = (values: IAuthPayload) => {
     postLogin(values).then((response) => {
       if (response?.ok) {
         setRolId(response?.user?.roleId);
         setIsAuth(true);
         setToken(response.token);
-        OnGetActionsByRol(user?.roleId ?? 0);
+        OnGetActionsByRol(response.user.roleId);
+        OnGetViewasAction(1, 5, '');
       } else {
         setIsAuth(false);
         delete_seller_mode();

@@ -298,9 +298,6 @@ export const export_excel_factura = async (
     worksheet.getCell(cell).border = borders;
   });
 
-  const totals_rows: string[] = [];
-  const ventas_totales: string[] = [];
-
   factura_data.forEach((item, rowIndex) => {
     const row = rowIndex + 9;
     item.forEach((value, colIndex) => {
@@ -334,14 +331,66 @@ export const export_excel_factura = async (
       '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-';
   });
 
-  totals_rows.push(`G${nextLine}`);
-  ventas_totales.push(`I${nextLine}`);
+  const ventas_gravadas_1 = `G${nextLine}`;
 
   const borders_cells = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
 
   borders_cells.forEach((cell) => {
     worksheet.getCell(`${cell}${nextLine}`).border = borders;
   });
+
+  nextLine += 2;
+
+  worksheet.getCell(`E${nextLine}`).value = `VENTAS LOCALES GRAVADAS`;
+  worksheet.getCell(`F${nextLine}`).value = {
+    formula: `+${ventas_gravadas_1}`,
+  };
+  worksheet.getCell(`G${nextLine}`).value = '/1.13 = VENTAS NETAS GRAVADAS';
+  worksheet.getCell(`I${nextLine}`).value = {
+    formula: `+${ventas_gravadas_1}/1.13`,
+  };
+
+  worksheet.getCell(`E${nextLine}`).font = { name: 'Calibri', size: 9 };
+  worksheet.getCell(`F${nextLine}`).font = { name: 'Calibri', size: 9 };
+  worksheet.getCell(`G${nextLine}`).font = { name: 'Calibri', size: 9 };
+  worksheet.getCell(`I${nextLine}`).font = { name: 'Calibri', size: 9 };
+  worksheet.getCell(`F${nextLine}`).numFmt =
+    '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-';
+  worksheet.getCell(`I${nextLine}`).numFmt =
+    '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-';
+
+  const iva_13 = `I${nextLine}`;
+
+  nextLine += 1;
+
+  worksheet.getCell(`G${nextLine}`).value = `POR 13% IMPUESTO (DÉBITO FISCAL)`;
+  worksheet.getCell(`I${nextLine}`).value = {
+    formula: `+${iva_13}*0.13`,
+  };
+
+  worksheet.getCell(`G${nextLine}`).font = { name: 'Calibri', size: 9 };
+  worksheet.getCell(`I${nextLine}`).font = { name: 'Calibri', size: 9 };
+  worksheet.getCell(`I${nextLine}`).numFmt =
+    '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-';
+
+  const iva_for_13 = `I${nextLine}`;
+
+  const merges1 = [`G${nextLine}:H${nextLine}`];
+  merges1.forEach((range) => worksheet.mergeCells(range));
+
+  nextLine += 1;
+
+  worksheet.getCell(`G${nextLine}`).value = `TOTAL VENTAS GRAVADAS`;
+  worksheet.getCell(`I${nextLine}`).value = {
+    formula: `SUM(${iva_for_13}, ${iva_13})`,
+  };
+
+  worksheet.getCell(`G${nextLine}`).font = { name: 'Calibri', size: 9 };
+  worksheet.getCell(`I${nextLine}`).font = { name: 'Calibri', size: 9 };
+  worksheet.getCell(`I${nextLine}`).numFmt =
+    '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-';
+  const merges2 = [`G${nextLine}:H${nextLine}`];
+  merges2.forEach((range) => worksheet.mergeCells(range));
 
   ticketData.forEach((group, index) => {
     // Recalcular los merges_titles y newHeaders para cada grupo
@@ -409,6 +458,7 @@ export const export_excel_factura = async (
 
     // Agregar fila de "TOTAL"
     nextLine += group.length + 5;
+
     worksheet.getCell(`C${nextLine}`).value = 'TOTAL';
     worksheet.getCell(`C${nextLine}`).font = { name: 'Calibri', size: 8, bold: true };
 
@@ -422,85 +472,105 @@ export const export_excel_factura = async (
         '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-';
     });
 
-    totals_rows.push(`G${nextLine}`);
-    ventas_totales.push(`I${nextLine}`);
+    const total = `G${nextLine}`;
 
     // Aplicar bordes a la fila de "TOTAL"
     const borders_cells = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
     borders_cells.forEach((cell) => {
       worksheet.getCell(`${cell}${nextLine}`).border = borders;
     });
+    nextLine += 2;
+
+    worksheet.getCell(`E${nextLine}`).value = `VENTAS LOCALES GRAVADAS`;
+    worksheet.getCell(`F${nextLine}`).value = {
+      formula: `+${total}`,
+    };
+    worksheet.getCell(`G${nextLine}`).value = '/1.13 = VENTAS NETAS GRAVADAS';
+    worksheet.getCell(`I${nextLine}`).value = {
+      formula: `+${total}/1.13`,
+    };
+    worksheet.getCell(`E${nextLine}`).font = { name: 'Calibri', size: 9 };
+    worksheet.getCell(`F${nextLine}`).font = { name: 'Calibri', size: 9 };
+    worksheet.getCell(`G${nextLine}`).font = { name: 'Calibri', size: 9 };
+    worksheet.getCell(`I${nextLine}`).font = { name: 'Calibri', size: 9 };
+    worksheet.getCell(`F${nextLine}`).numFmt =
+      '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-';
+    worksheet.getCell(`I${nextLine}`).numFmt =
+      '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-';
+
+    const iva_13 = `I${nextLine}`;
+
+    const merges = [`G${nextLine}:H${nextLine}`];
+    merges.forEach((range) => worksheet.mergeCells(range));
+
+    nextLine += 1;
+
+    worksheet.getCell(`G${nextLine}`).value = `POR 13% IMPUESTO (DÉBITO FISCAL)`;
+    worksheet.getCell(`I${nextLine}`).value = {
+      formula: `+${iva_13}*0.13`,
+    };
+
+    worksheet.getCell(`G${nextLine}`).font = { name: 'Calibri', size: 9 };
+    worksheet.getCell(`I${nextLine}`).font = { name: 'Calibri', size: 9 };
+    worksheet.getCell(`I${nextLine}`).numFmt =
+      '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-';
+
+    const iva_for_13 = `I${nextLine}`;
+
+    const merges1 = [`G${nextLine}:H${nextLine}`];
+    merges1.forEach((range) => worksheet.mergeCells(range));
+
+    nextLine += 1;
+
+    worksheet.getCell(`G${nextLine}`).value = `TOTAL VENTAS GRAVADAS`;
+    worksheet.getCell(`I${nextLine}`).value = {
+      formula: `SUM(${iva_for_13}, ${iva_13})`,
+    };
+
+    worksheet.getCell(`G${nextLine}`).font = { name: 'Calibri', size: 9 };
+    worksheet.getCell(`I${nextLine}`).font = { name: 'Calibri', size: 9 };
+    worksheet.getCell(`I${nextLine}`).numFmt =
+      '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-';
+    const merges2 = [`G${nextLine}:H${nextLine}`];
+    merges2.forEach((range) => worksheet.mergeCells(range));
+    // nextLine += 1;
+    // worksheet.getCell(`G${nextLine}`).value = {
+    //   formula: `+${total}/1.13`,
+    // };
+
+    // // Agregar filas adicionales bajo "TOTAL"
+    // const additionalRows = 3; // Define cuántas filas quieres agregar
+    // for (let i = 1; i <= additionalRows; i++) {
+    //   nextLine += 1; // Incrementa el índice de la fila
+
+    //   worksheet.getCell(`A${nextLine}`).value = `Fila adicional ${i}`;
+    //   worksheet.getCell(`A${nextLine}`).font = { name: 'Calibri', size: 9, italic: true };
+
+    //   // Aplicar bordes a las filas adicionales
+    //   borders_cells.forEach((cell) => {
+    //     worksheet.getCell(`${cell}${nextLine}`).border = borders;
+    //   });
+    // }
   });
 
   const finalLine = nextLine + 2;
 
-  worksheet.getCell(`E${finalLine + 3}`).value = 'VENTAS LOCALES GRAVADAS';
-  worksheet.getCell(`F${finalLine + 3}`).value = {
-    formula: `SUM(${totals_rows.join(',')})`, // Ajusta "tickets_data_range" según corresponda
-  };
-
-  worksheet.getCell(`B${finalLine + 3}`).font = { size: 9 };
-  worksheet.getCell(`E${finalLine + 3}`).font = { size: 9 };
-
-  worksheet.getCell(`I${finalLine + 3}`).numFmt =
-    '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-';
-
-  worksheet.getCell(`I${finalLine + 4}`).numFmt =
-    '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-';
-
-  worksheet.getCell(`I${finalLine + 5}`).numFmt =
-    '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-';
-  worksheet.getCell(`F${finalLine + 3}`).numFmt =
-    '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-';
-
-  worksheet.getCell(`I${finalLine + 3}`).value = {
-    formula: `SUM(${ventas_totales.join(',')})/1.13`,
-  };
-  worksheet.getCell(`I${finalLine + 4}`).value = {
-    formula: `+I${finalLine + 3}*13%`,
-  };
-
-  worksheet.getCell(`I${finalLine + 4}`).border = {
-    bottom: {
-      style: 'thin',
-    },
-  };
-
-  worksheet.getCell(`I${finalLine + 5}`).value = {
-    formula: `SUM(I${finalLine + 3}+I${finalLine + 4})`,
-  };
-  worksheet.getCell(`G${finalLine + 3}`).value = '/1.13 = VENTAS NETAS GRAVADAS';
-  worksheet.getCell(`G${finalLine + 4}`).value = 'POR 13% IMPUESTO (DÉBITO FISCAL)';
-  worksheet.getCell(`G${finalLine + 5}`).value = 'TOTAL VENTAS GRAVADAS';
-
-  //font
-  worksheet.getCell(`G${finalLine + 3}`).font = { size: 9 };
-  worksheet.getCell(`G${finalLine + 4}`).font = { size: 9 };
-  worksheet.getCell(`G${finalLine + 5}`).font = { size: 9 };
-  worksheet.getCell(`I${finalLine + 3}`).font = { size: 10 };
-  worksheet.getCell(`I${finalLine + 4}`).font = { size: 10 };
-  worksheet.getCell(`I${finalLine + 5}`).font = { size: 10 };
-
   const merges_final = [
-    `B${finalLine + 3}:C${finalLine + 3}`,
-    `G${finalLine + 3}:H${finalLine + 3}`,
-    `G${finalLine + 4}:H${finalLine + 4}`,
-    `G${finalLine + 5}:H${finalLine + 5}`,
-    `B${finalLine + 11}:C${finalLine + 11}`,
-    `B${finalLine + 12}:C${finalLine + 12}`,
-    `G${finalLine + 11}:I${finalLine + 11}`,
-    `G${finalLine + 12}:I${finalLine + 12}`,
+    `B${finalLine + 1}:C${finalLine + 1}`,
+    `B${finalLine + 2}:C${finalLine + 2}`,
+    `G${finalLine + 1}:I${finalLine + 1}`,
+    `G${finalLine + 2}:I${finalLine + 2}`,
   ];
 
-  worksheet.getCell(`B${finalLine + 11}`).value = '';
-  worksheet.getCell(`B${finalLine + 12}`).value = 'Nombre contador o Contribuyente';
-  worksheet.getCell(`B${finalLine + 11}`).font = { size: 11, name: 'Calibri' };
-  worksheet.getCell(`B${finalLine + 12}`).font = { size: 11, bold: true, name: 'Calibri' };
+  worksheet.getCell(`B${finalLine + 1}`).value = '';
+  worksheet.getCell(`B${finalLine + 2}`).value = 'Nombre contador o Contribuyente';
+  worksheet.getCell(`B${finalLine + 1}`).font = { size: 11, name: 'Calibri' };
+  worksheet.getCell(`B${finalLine + 2}`).font = { size: 11, bold: true, name: 'Calibri' };
 
-  worksheet.getCell(`G${finalLine + 11}`).value = '______________________________________________';
-  worksheet.getCell(`G${finalLine + 12}`).value = 'Firma contador o Contribuyente';
-  worksheet.getCell(`G${finalLine + 11}`).font = { size: 11, name: 'Calibri' };
-  worksheet.getCell(`G${finalLine + 12}`).font = { size: 11, bold: true, name: 'Calibri' };
+  worksheet.getCell(`G${finalLine + 1}`).value = '______________________________________________';
+  worksheet.getCell(`G${finalLine + 2}`).value = 'Firma contador o Contribuyente';
+  worksheet.getCell(`G${finalLine + 1}`).font = { size: 11, name: 'Calibri' };
+  worksheet.getCell(`G${finalLine + 2}`).font = { size: 11, bold: true, name: 'Calibri' };
 
   merges_final.forEach((range) => worksheet.mergeCells(range));
 
@@ -703,7 +773,7 @@ export const export_excel_credito = async (
     worksheet.getCell(`${cell}${nextLine}`).border = borders;
   });
 
-  const colums_final = [
+  const columns_final = [
     `D${nextLine + 5}`,
     `F${nextLine + 5}`,
     `G${nextLine + 5}`,
@@ -721,7 +791,7 @@ export const export_excel_credito = async (
   worksheet.getCell(`I${nextLine + 5}`).value = 'Percibido';
   worksheet.getCell(`J${nextLine + 5}`).value = 'Total';
 
-  colums_final.forEach((col, index) => {
+  columns_final.forEach((col, index) => {
     worksheet.getCell(col).alignment = { horizontal: 'center', wrapText: true };
     worksheet.getCell(col).font = { size: index === 2 ? 10 : 11, name: 'Calibri' };
   });
