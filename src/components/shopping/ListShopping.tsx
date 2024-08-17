@@ -11,8 +11,9 @@ import { useBranchProductStore } from '@/store/branch_product.store';
 import useGlobalStyles from '../global/global.styles';
 import { fechaEnFormatoDeseado } from '@/utils/date';
 import { useShoppingStore } from '@/store/shopping.store';
+import { ArrayAction } from '@/types/view.types';
 
-function ShoppingPage() {
+function ShoppingPage({ actions }: ArrayAction) {
   const { theme } = useContext(ThemeContext);
   const styles = useGlobalStyles();
   const [dateInitial, setDateInitial] = useState(fechaEnFormatoDeseado);
@@ -22,12 +23,26 @@ function ShoppingPage() {
   const { getBranchesList, branches_list } = useBranchProductStore();
   const [branchId, setBranchId] = useState('');
   useEffect(() => {
-    getPaginatedShopping(user?.correlative.branch.transmitterId as number, 1, 5, dateInitial, dateEnd, branchId);
+    getPaginatedShopping(
+      user?.correlative.branch.transmitterId as number,
+      1,
+      5,
+      dateInitial,
+      dateEnd,
+      branchId
+    );
     getBranchesList();
   }, []);
 
   const searchDailyReport = () => {
-    getPaginatedShopping(user?.correlative.branch.transmitterId as number, 1, 5, dateInitial, dateEnd, branchId);
+    getPaginatedShopping(
+      user?.correlative.branch.transmitterId as number,
+      1,
+      5,
+      dateInitial,
+      dateEnd,
+      branchId
+    );
   };
   const style = {
     backgroundColor: theme.colors.dark,
@@ -36,13 +51,15 @@ function ShoppingPage() {
   return (
     <>
       <div className="flex justify-end mt-10">
-        <Link
-          style={styles.darkStyle}
-          to="/CreateShopping"
-          className="py-2 px-4 text-sm rounded-lg mr-8 mt-4"
-        >
-          Nueva compra
-        </Link>
+        {actions.includes('Agregar') && (
+          <Link
+            style={styles.darkStyle}
+            to="/CreateShopping"
+            className="py-2 px-4 text-sm rounded-lg mr-8 mt-4"
+          >
+            Nueva compra
+          </Link>
+        )}
       </div>
       <div className="grid grid-cols-4 m-4 gap-5 px-2">
         <Input

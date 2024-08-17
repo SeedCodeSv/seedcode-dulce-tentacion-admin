@@ -14,6 +14,7 @@ import { formatDateMMDDYYYY } from '@/utils/dates';
 import { formatCurrency } from '@/utils/dte';
 import { useCorrelativesDteStore } from '@/store/correlatives_dte.store';
 import { FEMonth } from '@/types/factura.types';
+import { useViewsStore } from '@/store/views.store';
 
 function FEBookIVA() {
   const [monthSelected, setMonthSelected] = useState(new Date().getMonth() + 1);
@@ -119,6 +120,10 @@ function FEBookIVA() {
     return iva_total * 0.13;
   }, [total]);
 
+  const { actions } = useViewsStore();
+  const viewName = actions.find((v) => v.view.name == 'IVA de FE');
+
+  const actionView = viewName?.actions.name || [];
   return (
     <Layout title="IVA - FE">
       <div className="w-full h-full p-4 md:p-10 md:px-12">
@@ -192,15 +197,17 @@ function FEBookIVA() {
               </Select>
             </div>
             <div className="flex justify-end items-end mt-3 md:mt-0">
-              <Button
-                onClick={handleExportExcel}
-                color="success"
-                style={styles.thirdStyle}
-                className="text-white font-semibold"
-              >
-                Exportar a excel
-                <PiMicrosoftExcelLogoBold size={25} />
-              </Button>
+              {actionView.includes('Exportar Excel') && (
+                <Button
+                  onClick={handleExportExcel}
+                  color="success"
+                  style={styles.thirdStyle}
+                  className="text-white font-semibold"
+                >
+                  Exportar a excel
+                  <PiMicrosoftExcelLogoBold size={25} />
+                </Button>
+              )}
             </div>
           </div>
 

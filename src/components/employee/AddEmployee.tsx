@@ -17,6 +17,9 @@ import { useEmployeeStore } from '../../store/employee.store';
 import { EmployeePayload } from '../../types/employees.types';
 import { toast } from 'sonner';
 import { Formik } from 'formik';
+import { Branch } from '@/types/auth.types';
+import { Municipio } from '@/types/billing/cat-013-municipio.types';
+import { Departamento } from '@/types/billing/cat-012-departamento.types';
 function AddEmployee() {
   const { theme } = useContext(ThemeContext);
   const { GetEmployeeStatus, employee_status } = useEmployeeStatusStore();
@@ -27,7 +30,6 @@ function AddEmployee() {
   const { getCat012Departamento, getCat013Municipios, cat_012_departamento, cat_013_municipios } =
     useBillingStore();
   const [codeDepartamento, setCodeDepartamento] = useState('');
-  const [codigoGenerado, setCodigoGenerado] = useState('');
 
   const validationSchema = yup.object().shape({
     firstName: yup.string().required('**Campo requerido**'),
@@ -39,9 +41,19 @@ function AddEmployee() {
     nit: yup.string().required('**Campo requerido**'),
     isss: yup.string().required('**Campo requerido**'),
     afp: yup.string().required('**Campo requerido**'),
-    code: yup.string().required('**Campo requerido**'),
+    // code: yup.string().required('**Campo requerido**'),
     phone: yup.string().required('**Campo requerido**'),
     age: yup.string().required('**Campo requerido**'),
+    salary: yup.string().required('**Campo requerido**'),
+    dateOfBirth: yup.string().required('**Campo requerido**'),
+    dateOfEntry: yup.string().required('**Campo requerido**'),
+    dateOfExit: yup.string().required('**Campo requerido**'),
+    responsibleContact: yup.string().required('**Campo requerido**'),
+    studyLevelId: yup.number().required('**Campo requerido**').min(1, '**Campo requerido**'),
+    statusId: yup.number().required('**Campo requerido**').min(1, '**Campo requerido**'),
+    contractTypeId: yup.number().required('**Campo requerido**').min(1, '**Campo requerido**'),
+    chargeId: yup.number().required('**Campo requerido**').min(1, '**Campo requerido**'),
+    branchId: yup.number().required('**Campo requerido**').min(1, '**Campo requerido**'),
   });
 
   useEffect(() => {
@@ -52,7 +64,7 @@ function AddEmployee() {
     GetContractType();
     getCat013Municipios(codeDepartamento);
     GetStudyLevel();
-  }, [codeDepartamento, codigoGenerado]);
+  }, [codeDepartamento]);
   const { postEmployee, verifyCode } = useEmployeeStore();
 
   const [dataCreate, setDataCreate] = useState<EmployeePayload>({
@@ -87,37 +99,40 @@ function AddEmployee() {
   });
 
   const createEmployee = async (values: EmployeePayload) => {
-    const verify = await verifyCode(dataCreate.code);
+    const codigoFinal = values.code || codigo;
+    const verify = await verifyCode(codigoFinal);
     if (!verify) {
-      toast.error('Ya existe un empleado con este código');
+      toast.error('Ya existe un empleado con este código');
       return;
     }
+    const updatedValues = {
+      ...values,
+      code: codigoFinal,
+    };
+
     try {
-      const data = await postEmployee(values);
+      const data = await postEmployee(updatedValues);
       if (data) {
         navigate('/employees');
-        // setError(false);
       }
     } catch (error) {
       toast.error('Error al crear el empleado');
     }
   };
-  const generateCode = async () => {
-    const name = dataCreate.firstName;
-    const lastName = dataCreate.firstLastName;
-    const initials = name.charAt(0).toUpperCase() + lastName.charAt(0).toUpperCase();
-    const randomNum = Math.floor(1000 + Math.random() * 9000);
-    const code = `${initials}-${randomNum}`;
-    dataCreate.code = code;
-    setCodigoGenerado(code);
-    const verify = await verifyCode(code);
-    if (verify) {
-      toast.success('Código disponible');
-      // setError(false);
-    } else {
-      // setError(true);
-    }
-    return code;
+
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [codigo, setCodigoGenerado] = useState('');
+
+  const generateCode = () => {
+    const firstNameInitial = firstName.charAt(0).toUpperCase();
+    const lastNameInitial = lastName.charAt(0).toUpperCase();
+    const randomNumber = Math.floor(1000 + Math.random() * 9000);
+
+    const generatedCode = `${firstNameInitial}${lastNameInitial}${randomNumber}`;
+    setCodigoGenerado(generatedCode);
+
+    return generatedCode;
   };
 
   const navigate = useNavigate();
@@ -142,7 +157,11 @@ function AddEmployee() {
                       <div className="flex flex-col mt-3">
                         <Input
                           value={values.firstName}
-                          onChange={handleChange('firstName')}
+                          onChange={(e) => {
+                            handleChange('firstName')(e);
+                            setFirstName(e.target.value);
+                          }}
+                          // onChange={handleChange('firstName')}
                           onBlur={handleBlur('firstName')}
                           name="firstName"
                           labelPlacement="outside"
@@ -184,7 +203,11 @@ function AddEmployee() {
                       <div className="mt-3">
                         <Input
                           value={values.firstLastName}
-                          onChange={handleChange('firstLastName')}
+                          // onChange={handleChange('firstLastName')}
+                          onChange={(e) => {
+                            handleChange('firstLastName')(e);
+                            setLastName(e.target.value);
+                          }}
                           onBlur={handleBlur('firstLastName')}
                           name="firstLastName"
                           labelPlacement="outside"
@@ -321,23 +344,21 @@ function AddEmployee() {
                       <div className="flex flex-row gap-1 mt-3">
                         <div>
                           <Input
-                            value={values.code}
-                            onChange={handleChange('code')}
+                            value={codigo || dataCreate.code}
                             onBlur={handleBlur('code')}
+                            onChange={(e) => {
+                              handleChange('code')(e);
+                              setCodigoGenerado(e.target.value);
+                            }}
                             name="code"
                             labelPlacement="outside"
                             placeholder="Ingresa el codigo"
                             classNames={{
-                              label: 'font-semibold text-sm  text-gray-600',
+                              label: 'font-semibold text-sm text-gray-600',
                             }}
                             variant="bordered"
                             label="Codigo Empleado"
                           />
-                          {errors.code && touched.code && (
-                            <span className="text-sm font-semibold text-red-500">
-                              {errors.code}
-                            </span>
-                          )}
                         </div>
                         <div className="mt-3">
                           <Button
@@ -354,6 +375,7 @@ function AddEmployee() {
                           </Button>
                         </div>
                       </div>
+
                       <div className="flex flex-col mt-3">
                         <Input
                           value={values.phone}
@@ -481,6 +503,15 @@ function AddEmployee() {
                       </div>
                       <div className="flex flex-col mt-3">
                         <Autocomplete
+                          value={values.studyLevelId}
+                          onSelectionChange={(key) => {
+                            if (key) {
+                              const depSelected = JSON.parse(key as string) as EmployeePayload;
+                              handleChange('studyLevelId')(depSelected?.id?.toString() ?? '');
+                            }
+                          }}
+                          onChange={handleChange('studyLevelId')}
+                          onBlur={handleBlur('studyLevelId')}
                           variant="bordered"
                           label="Nivel de Estudio"
                           labelPlacement="outside"
@@ -506,9 +537,23 @@ function AddEmployee() {
                             </AutocompleteItem>
                           ))}
                         </Autocomplete>
+                        {errors.studyLevelId && touched.studyLevelId && (
+                          <span className="text-sm font-semibold text-red-500">
+                            {errors.studyLevelId}
+                          </span>
+                        )}
                       </div>
                       <div className="flex flex-col mt-3">
                         <Autocomplete
+                          value={values.statusId}
+                          onSelectionChange={(key) => {
+                            if (key) {
+                              const depSelected = JSON.parse(key as string) as EmployeePayload;
+                              handleChange('statusId')(depSelected?.id?.toString() ?? '');
+                            }
+                          }}
+                          onChange={handleChange('statusId')}
+                          onBlur={handleBlur('statusId')}
                           variant="bordered"
                           label="Estado del Empleado"
                           labelPlacement="outside"
@@ -529,9 +574,23 @@ function AddEmployee() {
                             </AutocompleteItem>
                           ))}
                         </Autocomplete>
+                        {errors.statusId && touched.statusId && (
+                          <span className="text-sm font-semibold text-red-500">
+                            {errors.statusId}
+                          </span>
+                        )}
                       </div>
                       <div className="flex flex-col mt-3">
                         <Autocomplete
+                          value={values.contractTypeId}
+                          onSelectionChange={(key) => {
+                            if (key) {
+                              const depSelected = JSON.parse(key as string) as EmployeePayload;
+                              handleChange('contractTypeId')(depSelected?.id?.toString() ?? '');
+                            }
+                          }}
+                          onChange={handleChange('contractTypeId')}
+                          onBlur={handleBlur('contractTypeId')}
                           variant="bordered"
                           label="Tipo de contratacion"
                           labelPlacement="outside"
@@ -557,6 +616,11 @@ function AddEmployee() {
                             </AutocompleteItem>
                           ))}
                         </Autocomplete>
+                        {errors.contractTypeId && touched.contractTypeId && (
+                          <span className="text-sm font-semibold text-red-500">
+                            {errors.contractTypeId}
+                          </span>
+                        )}
                       </div>
                       <div className="flex flex-col mt-3">
                         <Input
@@ -583,6 +647,15 @@ function AddEmployee() {
 
                       <div className="flex flex-col mt-3">
                         <Autocomplete
+                          value={values.chargeId}
+                          onSelectionChange={(key) => {
+                            if (key) {
+                              const depSelected = JSON.parse(key as string) as EmployeePayload;
+                              handleChange('chargeId')(depSelected?.id?.toString() ?? '');
+                            }
+                          }}
+                          onChange={handleChange('chargeId')}
+                          onBlur={handleBlur('chargeId')}
                           variant="bordered"
                           label="Cargo"
                           labelPlacement="outside"
@@ -603,9 +676,23 @@ function AddEmployee() {
                             </AutocompleteItem>
                           ))}
                         </Autocomplete>
+                        {errors.chargeId && touched.chargeId && (
+                          <span className="text-sm font-semibold text-red-500">
+                            {errors.chargeId}
+                          </span>
+                        )}
                       </div>
                       <div className="mt-3">
                         <Autocomplete
+                          value={values.branchId}
+                          onSelectionChange={(key) => {
+                            if (key) {
+                              const depSelected = JSON.parse(key as string) as Branch;
+                              handleChange('branchId')(depSelected?.id?.toString() ?? '');
+                            }
+                          }}
+                          onChange={handleChange('branchId')}
+                          onBlur={handleBlur('branchId')}
                           label="Sucursal"
                           labelPlacement="outside"
                           placeholder="Selecciona la sucursal"
@@ -626,9 +713,22 @@ function AddEmployee() {
                             </AutocompleteItem>
                           ))}
                         </Autocomplete>
+                        {errors.branchId && touched.branchId && (
+                          <span className="text-sm font-semibold text-red-500">
+                            {errors.branchId}
+                          </span>
+                        )}
                       </div>
                       <div className="mt-3">
                         <Autocomplete
+                          onSelectionChange={(key) => {
+                            if (key) {
+                              const depSelected = JSON.parse(key as string) as Municipio;
+                              // setSelectedCodeDep(depSelected.codigo);
+                              handleChange('department')(depSelected.codigo);
+                              handleChange('departmentName')(depSelected.valores);
+                            }
+                          }}
                           label="Departamento"
                           labelPlacement="outside"
                           placeholder="Selecciona el departamento"
@@ -660,6 +760,13 @@ function AddEmployee() {
                       </div>
                       <div className="mt-3">
                         <Autocomplete
+                          onSelectionChange={(key) => {
+                            if (key) {
+                              const depSelected = JSON.parse(key as string) as Departamento;
+                              handleChange('municipality')(depSelected.codigo);
+                              handleChange('municipalityName')(depSelected.valores);
+                            }
+                          }}
                           label="Municipio"
                           labelPlacement="outside"
                           placeholder="Municipio"

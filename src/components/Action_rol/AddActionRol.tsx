@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
-import { Autocomplete, AutocompleteItem, Button } from '@nextui-org/react';
+import { Autocomplete, AutocompleteItem, Button, Input } from '@nextui-org/react';
 import viewActions from '../../actions.json';
 import { useViewsStore } from '../../store/views.store';
 import { useActionsRolStore } from '../../store/actions_rol.store';
@@ -10,6 +9,7 @@ import { create_role_action } from '../../services/actions.service';
 import { ThemeContext } from '../../hooks/useTheme';
 import { Role } from '../../types/auth.types';
 import { get_all_roles } from '../../services/roles.service';
+import { Search } from 'lucide-react';
 const PermissionAddActionRol: React.FC = () => {
   const { OnGetViewasAction, viewasAction } = useViewsStore();
   const [selectedActions, setSelectedActions] = useState<{ [viewId: number]: string[] }>({});
@@ -17,6 +17,9 @@ const PermissionAddActionRol: React.FC = () => {
   const { OnGetActionsByRolePage, roleActionsPage } = useActionsRolStore();
   const [dataRoles, setDataRoles] = useState<Role[]>([]);
   const [selectedCustomer, setSelectedCustomer] = useState(1);
+  useEffect(() => {
+    OnGetViewasAction(1, 5, '');
+  }, [OnGetViewasAction]);
   useEffect(() => {
     const fetchRoles = async () => {
       try {
@@ -33,7 +36,6 @@ const PermissionAddActionRol: React.FC = () => {
     };
     OnGetActionsByRolePage(selectedCustomer);
     fetchRoles();
-    OnGetViewasAction();
   }, []);
   const selectedCustomerKey = useMemo(() => {
     return selectedCustomer.toString() ?? dataRoles[0].id.toString();
@@ -82,7 +84,8 @@ const PermissionAddActionRol: React.FC = () => {
   };
   const { OnGetActionsByRole } = useActionsRolStore();
   const { user } = useAuthStore();
-  const navigate = useNavigate();
+
+  const { OnGetActionsByRol } = useViewsStore();
 
   const handleSubmit = async () => {
     if (selectedCustomer === 0) {
@@ -115,7 +118,7 @@ const PermissionAddActionRol: React.FC = () => {
       await create_role_action(payload);
       OnGetActionsByRole(user?.roleId as number);
       toast.success('Acciones asignadas correctamente');
-      navigate('/actionRol');
+      OnGetActionsByRol(user?.roleId ?? 0);
     } catch (error) {
       toast.error('Error al asignar acciones');
     }
@@ -134,6 +137,7 @@ const PermissionAddActionRol: React.FC = () => {
   };
 
   const { theme } = useContext(ThemeContext);
+
   const renderSection = (view: { id: number; name: string }) => {
     const actions = viewActions.view_actions.find((va) => va.view === view.name)?.actions || [];
     return (
@@ -209,12 +213,21 @@ const PermissionAddActionRol: React.FC = () => {
     );
     return [...withActions, ...withoutActions];
   }, [viewasAction]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
 
+  const filteredViews = useMemo(() => {
+    return sortedViews.filter(({ view }) =>
+      view.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [sortedViews, searchTerm]);
   return (
     <>
       <div className="w-full h-full p-5 overflow-y-auto bg-white shadow-xl rounded-xl dark:bg-gray-900">
-        <div className="flex flex-col lg:flex-row justify-between items-center w-full gap-5 mb-5 lg:mb-10 lg:gap-0">
-          <div className="flex w-full lg:w-auto justify-end lg:justify-center">
+        <div className="grid grid-cols-1 lg:flex-row justify-between items-center w-full gap-5 mb-5 lg:mb-10 lg:gap-0">
+          <div className="flex w-full gap-5 lg:w-auto justify-between lg:justify-between">
             <Autocomplete
               className="w-full dark:text-white"
               label="Selecciona el rol"
@@ -239,10 +252,27 @@ const PermissionAddActionRol: React.FC = () => {
                 </AutocompleteItem>
               ))}
             </Autocomplete>
+            <div className="flex w-full mb-4">
+              <Input
+                type="text"
+                variant="bordered"
+                label="Nombre"
+                labelPlacement="outside"
+                placeholder="Escribe ..."
+                value={searchTerm}
+                startContent={<Search />}
+                onChange={handleSearchChange}
+                className="w-full dark:text-white"
+                classNames={{
+                  label: 'font-semibold text-gray-700',
+                  inputWrapper: 'pr-0',
+                }}
+              />
+            </div>
           </div>
         </div>
         <div className="flex flex-wrap -mx-2">
-          {sortedViews.map(({ view }) => (
+          {filteredViews.map(({ view }) => (
             <React.Fragment key={view.id}>{renderSection(view)}</React.Fragment>
           ))}
         </div>

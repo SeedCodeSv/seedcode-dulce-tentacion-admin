@@ -1,21 +1,16 @@
 import Layout from '../layout/Layout';
 import ListBranch from '../components/branch/ListBranch';
-import { useEffect, } from 'react';
 
 import { useViewsStore } from '@/store/views.store';
 
 function Branch() {
-  const { OnGetViewasAction, viewasAction } = useViewsStore()
-  const branchView = viewasAction.find((view) => view.view.name === "Sucursales")
-  const actions = branchView?.actions?.name || []
-  useEffect(() => {
-    OnGetViewasAction();
-  }, []);
+  const { actions } = useViewsStore();
+  const branchView = actions.find((view) => view.view.name === 'Sucursales');
+  const actionsView = branchView?.actions?.name || [];
+
   return (
     <Layout title="Sucursales">
-     
-        <ListBranch actions={actions} />
-     
+      <ListBranch actions={actionsView} />
     </Layout>
   );
 }

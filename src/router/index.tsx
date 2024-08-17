@@ -75,25 +75,22 @@ export const router = () => {
   };
 
   return createBrowserRouter([
+    //Gestion de Productos
     {
-      path: '/',
-      element: <Home />,
+      path: '/products',
+      element: checkAuthorization('Productos', <Product />),
     },
     {
-      path: '/configuration',
-      element: <Configuration />,
-    },
-    {
-      path: '/actionRol',
-      element: <ActionRol />,
-    },
-    {
-      path: '/homeSeller',
-      element: checkAuthorization('Inicio de ventas', <HomeSeller />),
+      path: '/add-product',
+      element: checkAuthorization('Productos', <AddProduct />),
     },
     {
       path: '/categories',
-      element: checkAuthorization('Categorias', <ProductsCategories />),
+      element: checkAuthorization('Categorias de Productos', <ProductsCategories />),
+    },
+    {
+      path: '/subCategories',
+      element: checkAuthorization('Sub Categorias', <SubCategories />),
     },
     {
       path: '/shopping',
@@ -104,9 +101,11 @@ export const router = () => {
       element: checkAuthorization('Compras', <CreateShopping />),
     },
     {
-      path: '/subCategories',
-      element: checkAuthorization('Sub Categorias', <SubCategories />),
+      path: '/purchase-orders',
+      element: checkAuthorization('Ordenes de Compra', <PurchaseOrders />),
     },
+
+    //Administracion
     {
       path: '/users',
       element: checkAuthorization('Usuarios', <Users />),
@@ -116,25 +115,69 @@ export const router = () => {
       element: checkAuthorization('Empleados', <Employees />),
     },
     {
-      path: '/charges',
-      element: checkAuthorization('Cargos de Empleados', <Charges />),
+      path: '/AddEmployee',
+      element: checkAuthorization('Empleados', <AddEmployee />),
     },
     {
-      path: '/clients',
-      element: checkAuthorization('Clientes', <Customers />),
+      path: '/suppliers',
+      element: checkAuthorization('Proveedores', <Supplier />),
     },
     {
       path: '/branches',
       element: checkAuthorization('Sucursales', <Branch />),
     },
     {
-      path: '/products',
-      element: checkAuthorization('Productos', <Product />),
+      path: '/clients',
+      element: checkAuthorization('Clientes', <Customers />),
     },
     {
-      path: '/add-product',
-      element: checkAuthorization('Productos', <AddProduct />),
+      path: '/actionRol',
+      element: <ActionRol />,
     },
+
+    //Gestion de Reportes
+    {
+      path: '/reports/sales-by-period',
+      element: checkAuthorization('Ventas por Periodo', <VentasPorPeriodo />),
+    },
+    {
+      path: '/reports/sales-by-product',
+      element: checkAuthorization('Ventas por Productos', <VentasPorProducto />),
+    },
+    //Gestion de plantillas
+    {
+      path: '/studyLevel',
+      element: checkAuthorization('Nivel de Estudio', <StudyLevel />),
+    },
+    {
+      path: '/contractTypes',
+      element: checkAuthorization('Tipo de Contratacion', <ContratType />),
+    },
+    {
+      path: '/statusEmployee',
+      element: checkAuthorization('Estados del Empleado', <StatusEmployee />),
+    },
+    //Contabilidad
+
+    {
+      path: '/',
+      element: <Home />,
+    },
+    {
+      path: '/configuration',
+      element: <Configuration />,
+    },
+
+    {
+      path: '/homeSeller',
+      element: checkAuthorization('Inicio de ventas', <HomeSeller />),
+    },
+
+    {
+      path: '/charges',
+      element: checkAuthorization('Cargos de Empleados', <Charges />),
+    },
+
     {
       path: '/expensesCategories',
       element: checkAuthorization('Categorias de Gastos', <ExpensesCategories />),
@@ -171,73 +214,45 @@ export const router = () => {
       path: '/sales-reports',
       element: checkAuthorization('Reporte de ventas', <SalesReportContigencePage />),
     },
-    {
-      path: '/suppliers',
-      element: checkAuthorization('Proveedores', <Supplier />),
-    },
-    {
-      path: '/purchase-orders',
-      element: checkAuthorization('Ordenes de Compra', <PurchaseOrders />),
-    },
+
     {
       path: '/discounts',
       element: checkAuthorization('Descuentos', <Discount />),
     },
-    {
-      path: '/statusEmployee',
-      element: checkAuthorization('Estados del Empleado', <StatusEmployee />),
-    },
-    {
-      path: '/contractTypes',
-      element: checkAuthorization('Tipo de Contratacion', <ContratType />),
-    },
-    {
-      path: '/studyLevel',
-      element: checkAuthorization('Nivel de Estudio', <StudyLevel />),
-    },
+
     {
       path: '/AddPromotions',
       element: checkAuthorization('Descuentos', <AddPromotions />),
     },
-    {
-      path: '/AddEmployee',
-      element: checkAuthorization('Empleados', <AddEmployee />),
-    },
+
     {
       path: '/AddActionRol',
       element: <AddActionRol />,
     },
-    {
-      path: '/reports/sales-by-period',
-      element: checkAuthorization('Ventas por Periodo', <VentasPorPeriodo />),
-    },
-    {
-      path: '/reports/sales-by-product',
-      element: checkAuthorization('Ventas por Productos', <VentasPorProducto />),
-    },
+
     {
       path: '/cash-cuts-big-z',
-      element: checkAuthorization('Contabilidad', <CushCatsBigZ />),
+      element: checkAuthorization('Corte Gran Z', <CushCatsBigZ />),
     },
     {
       path: '/cash-cuts-x',
-      element: checkAuthorization('Contabilidad', <CashCutsX />),
+      element: checkAuthorization('Corte X', <CashCutsX />),
     },
     {
       path: '/cash-cuts-z',
-      element: checkAuthorization('Contabilidad', <CushCatsZ />),
+      element: checkAuthorization('Corte Z', <CushCatsZ />),
     },
     {
-      path: "iva/shopping-book",
-      element: <ShoppingBookIVA />,
+      path: 'iva/shopping-book',
+      element: checkAuthorization('IVA de Compras', <ShoppingBookIVA />),
     },
     {
-      path: "iva/cff-book",
-      element: <CFFBookIVA />,
+      path: 'iva/ccf-book',
+      element: checkAuthorization('IVA de CCF', <CFFBookIVA />),
     },
     {
-      path: "iva/fe-book",
-      element: <FEBookIVA />,
+      path: 'iva/fe-book',
+      element: checkAuthorization('IVA de FE', <FEBookIVA />),
     },
     {
       path: '*',

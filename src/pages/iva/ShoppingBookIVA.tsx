@@ -12,6 +12,7 @@ import { useEffect, useState } from 'react';
 import { PiMicrosoftExcelLogoBold } from 'react-icons/pi';
 import { toast } from 'sonner';
 import { generate_shopping_excel } from '../excel/generate_excel';
+import { useViewsStore } from '@/store/views.store';
 
 function ShoppingBookIVA() {
   const [monthSelected, setMonthSelected] = useState(new Date().getMonth() + 1);
@@ -65,6 +66,9 @@ function ShoppingBookIVA() {
     saveAs(blob, `Libro_Compras_${month}.xlsx`);
   };
 
+  const { actions } = useViewsStore();
+  const viewName = actions.find((v) => v.view.name == 'IVA de Compras');
+  const actionView = viewName?.actions.name || [];
   return (
     <Layout title="Iva - Compras">
       <div className="w-full h-full p-4 md:p-10 md:px-12">
@@ -114,15 +118,17 @@ function ShoppingBookIVA() {
               </Select>
             </div>
             <div className="flex justify-end items-end mt-3 md:mt-0">
-              <Button
-                onClick={handleExportExcel}
-                color="success"
-                style={style.thirdStyle}
-                className="text-white font-semibold"
-              >
-                Exportar a excel
-                <PiMicrosoftExcelLogoBold size={25} />
-              </Button>
+              {actionView.includes('Exportar Excel') && (
+                <Button
+                  onClick={handleExportExcel}
+                  color="success"
+                  style={style.thirdStyle}
+                  className="text-white font-semibold"
+                >
+                  Exportar a excel
+                  <PiMicrosoftExcelLogoBold size={25} />
+                </Button>
+              )}
             </div>
           </div>
           <div className="max-h-[400px] md:max-h-[450px] lg:max-h-[500px] xl:max-h-[550px] 2xl:max-h-[600px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">

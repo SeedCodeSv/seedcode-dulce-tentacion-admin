@@ -1,30 +1,17 @@
-import { useContext } from "react";
-import { Button } from "@nextui-org/react";
-import { DataView } from "primereact/dataview";
-import { classNames } from "primereact/utils";
-import {
-  EditIcon,
-  ShoppingBag,
-  ClipboardList,
-  Barcode,
-  RefreshCcw,
-} from "lucide-react";
-import { ThemeContext } from "../../hooks/useTheme";
-import { useProductsStore } from "../../store/products.store";
-import { global_styles } from "../../styles/global.styles";
-import { GridProps, IMobileView } from "./types/mobile-view.types";
-import ERROR404 from "../../assets/not-found-error-alert-svgrepo-com.svg";
-import TooltipGlobal from "../global/TooltipGlobal";
-
+import { useContext } from 'react';
+import { Button } from '@nextui-org/react';
+import { DataView } from 'primereact/dataview';
+import { classNames } from 'primereact/utils';
+import { EditIcon, ShoppingBag, ClipboardList, Barcode, RefreshCcw, Lock } from 'lucide-react';
+import { ThemeContext } from '../../hooks/useTheme';
+import { useProductsStore } from '../../store/products.store';
+import { global_styles } from '../../styles/global.styles';
+import { GridProps, IMobileView } from './types/mobile-view.types';
+import ERROR404 from '../../assets/not-found-error-alert-svgrepo-com.svg';
+import TooltipGlobal from '../global/TooltipGlobal';
 function MobileView(props: IMobileView) {
   const { paginated_products } = useProductsStore();
-  const {
-    layout,
-    openEditModal,
-    DeletePopover,
-    actions,
-    handleActivate,
-  } = props;
+  const { layout, openEditModal, DeletePopover, actions, handleActivate } = props;
   return (
     <div className="w-full pb-10 ">
       {paginated_products.products.length > 0 ? (
@@ -36,7 +23,7 @@ function MobileView(props: IMobileView) {
             pt={{
               grid: () => ({
                 className:
-                  "w-full grid dark:bg-transparent pb-10 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5 mt-5",
+                  'w-full grid dark:bg-transparent pb-10 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5 mt-5',
               }),
             }}
             color="surface"
@@ -66,36 +53,23 @@ function MobileView(props: IMobileView) {
 }
 
 const GridItem = (props: GridProps) => {
-  const {
-    product,
-    layout,
-    openEditModal,
-    actions,
-    DeletePopover,
-    handleActivate,
-  } = props;
-
+  const { theme } = useContext(ThemeContext);
+  const { product, layout, openEditModal, actions, DeletePopover, handleActivate } = props;
   return (
     <>
-      {layout === "grid" ? (
+      {layout === 'grid' ? (
         <div
           className={classNames(
-            "w-full shadow dark:border border-gray-600 hover:shadow-lg p-8 rounded-2xl"
+            'w-full shadow dark:border border-gray-600 hover:shadow-lg p-8 rounded-2xl'
           )}
           key={product.id}
         >
           <div className="flex w-full gap-2">
-            <ShoppingBag
-              className="text-[#274c77] dark:text-gray-400"
-              size={20}
-            />
+            <ShoppingBag className="text-[#274c77] dark:text-gray-400" size={20} />
             <p className="w-full dark:text-white">{product.name}</p>
           </div>
           <div className="flex w-full gap-2 mt-3">
-            <ClipboardList
-              className="text-[#274c77] dark:text-gray-400"
-              size={20}
-            />
+            <ClipboardList className="text-[#274c77] dark:text-gray-400" size={20} />
             <p className="w-full dark:text-white">{product.subCategory.categoryProduct.name}</p>
           </div>
           <div className="flex w-full gap-2 mt-3">
@@ -103,33 +77,42 @@ const GridItem = (props: GridProps) => {
             <p className="w-full dark:text-white">{product.code}</p>
           </div>
           <div className="flex justify-between mt-5 w-ful">
-            {actions.includes("Editar") && (
+            {actions.includes('Editar') && product.isActive ? (
               <TooltipGlobal text="Editar">
                 <Button
                   onClick={() => openEditModal(product)}
                   isIconOnly
-                  style={global_styles().secondaryStyle}
+                  style={{
+                    backgroundColor: theme.colors.secondary,
+                  }}
                 >
-                  <EditIcon size={20} />
+                  <EditIcon style={{ color: theme.colors.primary }} size={20} />
                 </Button>
               </TooltipGlobal>
+            ) : (
+              <Button
+                type="button"
+                disabled
+                style={{ backgroundColor: theme.colors.third, cursor: 'not-allowed' }}
+                className="flex font-semibold "
+                isIconOnly
+              >
+                <Lock />
+              </Button>
             )}
-            {actions.includes("Eliminar") && (
-              <>
-                {product.isActive ? (
-                  DeletePopover({ product: product })
-                ) : (
-                  <TooltipGlobal text="Activar">
-                    <Button
-                      onClick={() => handleActivate(product.id)}
-                      isIconOnly
-                      style={global_styles().thirdStyle}
-                    >
-                      <RefreshCcw />
-                    </Button>
-                  </TooltipGlobal>
-                )}
-              </>
+
+            {product.isActive && actions.includes('Activar Productos') ? (
+              DeletePopover({ product: product })
+            ) : (
+              <TooltipGlobal text="Activar">
+                <Button
+                  onClick={() => handleActivate(product.id)}
+                  isIconOnly
+                  style={global_styles().thirdStyle}
+                >
+                  <RefreshCcw />
+                </Button>
+              </TooltipGlobal>
             )}
           </div>
         </div>
@@ -148,30 +131,18 @@ const GridItem = (props: GridProps) => {
 };
 
 const ListItem = (props: GridProps) => {
-  const {
-    product,
-    openEditModal,
-    DeletePopover,
-    actions,
-    handleActivate,
-  } = props;
+  const { product, openEditModal, DeletePopover, actions, handleActivate } = props;
   const { theme } = useContext(ThemeContext);
   return (
     <>
       <div className="flex w-full col-span-1 p-5 border shadow rounded-2xl ">
         <div className="w-full">
           <div className="flex w-full gap-2">
-            <ShoppingBag
-              className="text-[#274c77] dark:text-gray-400"
-              size={20}
-            />
+            <ShoppingBag className="text-[#274c77] dark:text-gray-400" size={20} />
             <p className="w-full dark:text-white">{product.name}</p>
           </div>
           <div className="flex w-full gap-2 mt-3">
-            <ClipboardList
-              className="text-[#274c77] dark:text-gray-400"
-              size={20}
-            />
+            <ClipboardList className="text-[#274c77] dark:text-gray-400" size={20} />
             <p className="w-full dark:text-white">{product.subCategory.categoryProduct.name}</p>
           </div>
           <div className="flex w-full gap-2 mt-3">
@@ -180,7 +151,7 @@ const ListItem = (props: GridProps) => {
           </div>
         </div>
         <div className="flex flex-col items-end justify-between w-full">
-          {actions.includes("Editar") && (
+          {actions.includes('Editar') && (
             <TooltipGlobal text="Editar">
               <Button
                 onClick={() => openEditModal(product)}
@@ -193,7 +164,7 @@ const ListItem = (props: GridProps) => {
               </Button>
             </TooltipGlobal>
           )}
-          {actions.includes("Eliminar") && (
+          {actions.includes('Eliminar') && (
             <>
               {product.isActive ? (
                 DeletePopover({ product: product })

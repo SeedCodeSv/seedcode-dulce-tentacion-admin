@@ -1,3 +1,4 @@
+import { Transmitter } from './categories.types';
 import { Product } from './products.types';
 export interface Branches {
   id: number;
@@ -7,6 +8,7 @@ export interface Branches {
   next: number;
   prev: number;
   isActive: boolean;
+  transmitter? :Transmitter
 }
 
 export interface IGetBranchesPaginated {

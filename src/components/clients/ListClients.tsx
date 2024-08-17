@@ -59,10 +59,7 @@ const ListClients = ({ actions }: Props) => {
   const [search, setSearch] = useState('');
   const [email, setEmail] = useState('');
   const [branch, setBranch] = useState('');
-  // const style = {
-  //   backgroundColor: theme.colors.dark,
-  //   color: theme.colors.primary,
-  // };
+
   const [typeClient, setTypeClient] = useState('normal');
   const [active, setActive] = useState(true);
   const [tipeCustomer, setTypeCustomer] = useState('');
@@ -165,6 +162,7 @@ const ListClients = ({ actions }: Props) => {
     });
   };
 
+  const [typeDocumentCustomer, setTypeDocumentCustomer] = useState('');
   return (
     <>
       <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
@@ -545,10 +543,12 @@ const ListClients = ({ actions }: Props) => {
                                     {customer.isActive && actions.includes('Editar') && (
                                       <TooltipGlobal text="Editar">
                                         <Button
+                                          // onClick={() => {
+                                          //   handleChangeCustomer(customer);
+                                          // }}
                                           onClick={() => {
-                                            handleChangeCustomer(customer);
-
-                                            // setIsOpenModalUpdate(true);
+                                            handleChangeCustomer(customer),
+                                              setTypeDocumentCustomer(customer.tipoDocumento);
                                           }}
                                           isIconOnly
                                           style={{
@@ -566,20 +566,21 @@ const ListClients = ({ actions }: Props) => {
                                     )}
                                     {actions.includes('Eliminar') && (
                                       <>
-                                        {customer.isActive ? (
+                                        {customer.isActive && (
                                           <DeletePopover customers={customer} />
-                                        ) : (
-                                          <TooltipGlobal text="Activar">
-                                            <Button
-                                              onClick={() => handleActivate(customer.id)}
-                                              isIconOnly
-                                              style={global_styles().thirdStyle}
-                                            >
-                                              <RefreshCcw />
-                                            </Button>
-                                          </TooltipGlobal>
                                         )}
                                       </>
+                                    )}
+                                    {actions.includes('Activar Cliente') && (
+                                      <TooltipGlobal text="Activar">
+                                        <Button
+                                          onClick={() => handleActivate(customer.id)}
+                                          isIconOnly
+                                          style={global_styles().thirdStyle}
+                                        >
+                                          <RefreshCcw />
+                                        </Button>
+                                      </TooltipGlobal>
                                     )}
                                   </div>
                                 </td>
@@ -684,6 +685,7 @@ const ListClients = ({ actions }: Props) => {
           <>
             {typeClient === 'normal' && (
               <AddClientNormal
+                typeDocumento={typeDocumentCustomer}
                 closeModal={modalAdd.onClose}
                 customer={selectedCustomer}
                 customer_direction={selectedCustomerDirection}

@@ -44,10 +44,10 @@ import BottomDrawer from '../global/BottomDrawer';
 import NO_DATA from '@/assets/svg/no_data.svg';
 
 interface Props {
-  actions: string[];
+  actionss: string[];
 }
 
-function ListUsers({ actions }: Props) {
+function ListUsers({ actionss }: Props) {
   const { theme } = useContext(ThemeContext);
   const [limit, setLimit] = useState(5);
   const { users_paginated, getUsersPaginated, activateUser } = useUsersStore();
@@ -65,10 +65,6 @@ function ListUsers({ actions }: Props) {
 
   const [selectId, setSelectedId] = useState(0);
 
-  // const style = {
-  //   backgroundColor: theme.colors.dark,
-  //   color: theme.colors.primary,
-  // };
   const { windowSize } = useWindowSize();
 
   const [view, setView] = useState<'table' | 'grid' | 'list'>(
@@ -83,20 +79,6 @@ function ListUsers({ actions }: Props) {
   };
 
   const [openVaul, setOpenVaul] = useState(false);
-
-  // const emptyMessage = (
-  //   <div className="flex flex-col items-center justify-center w-full">
-  //     <img
-  //       src={NO_DATA}
-  //       alt="No data"
-  //       className="w-32 h-32"
-  //     />
-  //     <p className="mt-3 text-xl dark:text-white">
-  //       No se encontraron resultados
-  //     </p>
-  //   </div>
-  // );
-
   const handleActivate = (id: number) => {
     activateUser(id).then(() => {
       getUsersPaginated(1, limit, '', '', active ? 1 : 0);
@@ -278,7 +260,7 @@ function ListUsers({ actions }: Props) {
                     </div>
                   </BottomDrawer>
                 </div>
-                {actions.includes('Agregar') && <AddButton onClick={() => modalAdd.onOpen()} />}
+                {actionss.includes('Mostrar') && <AddButton onClick={() => modalAdd.onOpen()} />}
               </div>
             </div>
           </div>
@@ -330,7 +312,7 @@ function ListUsers({ actions }: Props) {
                 modalChangePassword.onOpen();
               }}
               layout={view as 'grid' | 'list'}
-              actions={actions}
+              actions={actionss}
               handleActivate={handleActivate}
             />
           )}
@@ -369,7 +351,7 @@ function ListUsers({ actions }: Props) {
                           </td>
                           <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                             <div className="flex w-full gap-5">
-                              {item.active && actions.includes('Editar') && (
+                              {item.active && actionss.includes('Editar') && (
                                 <TooltipGlobal text="Editar">
                                   <Button
                                     onClick={() => {
@@ -385,7 +367,7 @@ function ListUsers({ actions }: Props) {
                                   </Button>
                                 </TooltipGlobal>
                               )}
-                              {item.active && actions.includes('Cambiar Contraseña') && (
+                              {item.active && actionss.includes('Cambiar Contraseña') && (
                                 <TooltipGlobal text="Cambiar contraseña">
                                   <Button
                                     onClick={() => {
@@ -402,7 +384,7 @@ function ListUsers({ actions }: Props) {
                                 </TooltipGlobal>
                               )}
                               {/* {actions.includes('Eliminar') && <DeletePopUp user={item} />} */}
-                              {actions.includes('Eliminar') && (
+                              {actionss.includes('Eliminar') && (
                                 <>
                                   {item.active ? (
                                     <DeletePopUp user={item} />

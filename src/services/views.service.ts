@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { API_URL } from '../utils/constants';
 import { get_token } from '../storage/localStorage';
-import { IGetViews, IResponseDataViewasAction, IViewPayload } from '../types/view.types';
+import { IGetViews, IRespondeActionsData, IResponseDataViewasAction, IViewPayload } from '../types/view.types';
 
 export const get_views = () => {
   const token = get_token() ?? '';
@@ -23,6 +23,13 @@ export const delete_views = async (id: number) => {
   return await axios.delete<IGetViews>(API_URL + `/view/${id}`);
 };
 
-export const get_views_list = () => {
-  return axios.get<IResponseDataViewasAction>(API_URL + '/actions/find-all-actions-by-view');
+export const get_views_list = (page: number, limit: number, name: string) => {
+  return axios.get<IResponseDataViewasAction>(
+    API_URL + '/actions/find-all-actions-by-view?page=' + page + '&limit=' + limit + '&name=' + name
+  );
 };
+
+
+export const get_actions_by_rol = (id : number) => {
+  return axios.get<IRespondeActionsData>(API_URL + "/role-actions/by-rol-and-view/"+id)
+}

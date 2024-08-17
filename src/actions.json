@@ -1,35 +1,11 @@
 {
   "view_actions": [
     {
-      "view": "Usuarios",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Cambiar Contraseña"]
-    },
-    {
-      "view": "Inicio",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
-    },
-    {
-      "view": "Inicio de ventas",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
-    },
-    {
       "view": "Productos",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Activar Productos"]
     },
     {
-      "view": "Permisos",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
-    },
-    {
-      "view": "Compras",
-      "actions": ["Mostrar", "Agregar"]
-    },
-    {
-      "view": "Categorias",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
-    },
-    {
-      "view": "Cargos de Empleados",
+      "view": "Categorias de Productos",
       "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
     },
     {
@@ -37,12 +13,35 @@
       "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
     },
     {
-      "view": "Sucursales",
+      "view": "Compras",
+      "actions": ["Mostrar", "Agregar"]
+    },
+    {
+      "view": "Ordenes de Compra",
       "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
+    },
+    {
+      "view": "Usuarios",
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Cambiar Contraseña"]
     },
     {
       "view": "Empleados",
       "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
+    },
+    {
+      "view": "Proveedores",
+      "actions": [
+        "Mostrar",
+        "Agregar",
+        "Editar",
+        "Eliminar",
+        "Cambiar  Tipo de Proveedor",
+        "Activar Proveedor"
+      ]
+    },
+    {
+      "view": "Sucursales",
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Ver Productos", "Activar Sucursal"]
     },
     {
       "view": "Clientes",
@@ -56,55 +55,7 @@
       ]
     },
     {
-      "view": "Reportes",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
-    },
-    {
-      "view": "Categorias de Gastos",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
-    },
-    {
-      "view": "Gastos",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
-    },
-    {
-      "view": "Ventas",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
-    },
-    {
-      "view": "Reporte de Ventas",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
-    },
-    {
-      "view": "Modulos",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
-    },
-    {
-      "view": "Proveedores",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
-    },
-    {
-      "view": "Ordenes de Compra",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
-    },
-    {
-      "view": "Descuentos",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
-    },
-    {
-      "view": "Creditos de Clientes",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
-    },
-    {
-      "view": "Nivel de Estudio",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
-    },
-    {
-      "view": "Estados del Empleado",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
-    },
-    {
-      "view": "Tipo de Contratacion",
+      "view": "Permisos",
       "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
     },
     {
@@ -116,8 +67,62 @@
       "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
     },
     {
-      "view": "Contabilidad",
-      "actions": ["Mostrar", "Exportar Excel", "Imprimir"]
+      "view": "Nivel de Estudio",
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
+    },
+    {
+      "view": "Tipo de Contratacion",
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
+    },
+    {
+      "view": "Estados del Empleado",
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
+    },
+
+    {
+      "view": "Inicio",
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
+    },
+    {
+      "view": "Inicio de ventas",
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
+    },
+    {
+      "view": "Cargos de Empleados",
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
+    },
+
+    {
+      "view": "Reportes",
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
+    },
+    {
+      "view": "Descuentos",
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
+    },
+    {
+      "view": "Corte Gran Z",
+      "actions": ["Imprimir", "Exportar Excel"]
+    },
+    {
+      "view": "Corte Z",
+      "actions": ["Imprimir", "Exportar Excel"]
+    },
+    {
+      "view": "Corte X",
+      "actions": ["Imprimir", "Exportar Excel"]
+    },
+    {
+      "view": "IVA de Compras",
+      "actions": ["Imprimir", "Exportar Excel"]
+    },
+    {
+      "view": "IVA de CCF",
+      "actions": ["Imprimir", "Exportar Excel"]
+    },
+    {
+      "view": "IVA de FE",
+      "actions": ["Imprimir", "Exportar Excel"]
     }
   ]
 }
