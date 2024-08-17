@@ -9,7 +9,7 @@ import {
   IGraphicSubCategoryProductsForDates,
 } from '@/types/reports/sales.reports.types';
 import { IGetSalesCCF } from '@/types/sales_cff.types';
-import { IGetFacturasByMonth } from '@/types/factura.types';
+import { IGetFeMonth } from '@/types/iva_fe';
 
 export const post_sales = (
   pdf: string,
@@ -162,7 +162,7 @@ export const get_sales_by_ccf = (transmiter: number, month: string) => {
 }
 
 export const get_factura_by_month = (branchId: number, month: number) => {
-  return axios.get<IGetFacturasByMonth>(
+  return axios.get<IGetFeMonth>(
     API_URL + `/reports/get-fe-by-month/${branchId}?month=${month}`
   )
 }
