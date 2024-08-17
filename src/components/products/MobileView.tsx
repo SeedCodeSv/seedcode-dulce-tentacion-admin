@@ -151,7 +151,7 @@ const ListItem = (props: GridProps) => {
           </div>
         </div>
         <div className="flex flex-col items-end justify-between w-full">
-          {actions.includes('Editar') && (
+          {actions.includes('Editar') && product.isActive && (
             <TooltipGlobal text="Editar">
               <Button
                 onClick={() => openEditModal(product)}
