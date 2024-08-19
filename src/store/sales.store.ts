@@ -39,7 +39,7 @@ export const useSalesStore = create<salesStore>((set) => ({
     get_factura_by_month(branchId, month)
       .then((data) => {
         set({
-          facturas_by_month: data.data.salesByDay.filter((day) => day.firstCorrelative !== null),
+          facturas_by_month: data.data.salesByDay,
           loading_facturas: false,
         });
       })

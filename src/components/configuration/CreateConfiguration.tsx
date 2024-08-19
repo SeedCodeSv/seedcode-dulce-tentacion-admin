@@ -22,8 +22,8 @@ function CreateConfiguration(props: Props) {
 
   const [formData, setFormData] = useState<ICreacteConfiguaration>({
     name: '',
-    theme: '',
-    transmitterId: user?.correlative.branch.transmitterId|| 0,
+    themeName: '',
+    transmitterId: user?.correlative.branch.transmitterId || 0,
     selectedTemplate: 'template',
     wantPrint: 0,
     file: null,
@@ -44,11 +44,11 @@ function CreateConfiguration(props: Props) {
       setLoading(true);
       try {
         const compressedImage = await compressImage(file, {
-          maxSizeMB: 0.5,
-          maxWidthOrHeight: 500,
+          maxSizeMB: 0.8,
+          maxWidthOrHeight: 200,
           useWebWorker: true,
           maxIteration: 10,
-          initialQuality: 0.7,
+          initialQuality: 0.85,
         });
         const convertedFile = new File([compressedImage], file.name, {
           type: compressedImage.type,
@@ -93,7 +93,7 @@ function CreateConfiguration(props: Props) {
     await new Promise((resolve) => setTimeout(resolve, 0));
 
     try {
-      await OnCreateConfiguration({ ...formData, theme: props.theme });
+      await OnCreateConfiguration({ ...formData, themeName: props.theme });
     } catch (error) {
       toast.info('Debes de seleccionar un tema para la configuración');
     }

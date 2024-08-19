@@ -30,6 +30,7 @@ import classNames from 'classnames';
 import { motion } from 'framer-motion';
 import { Barcode } from 'lucide-react';
 import SidebarLinkList from '@/components/global/SidebarLinkList ';
+
 export const LayoutItems = () => {
   const { theme, toggleContext, context } = useContext(ThemeContext);
   useEffect(() => {

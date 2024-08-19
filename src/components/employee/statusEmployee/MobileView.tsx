@@ -1,12 +1,14 @@
 import { Button } from '@nextui-org/react';
 import { DataView } from 'primereact/dataview';
 import { classNames } from 'primereact/utils';
-import { EditIcon, RefreshCcw, ScrollIcon } from 'lucide-react';
-
+import { EditIcon, RefreshCcw, ScrollIcon, Lock } from 'lucide-react';
 import { GridProps, MobileViewProps } from './types/mobile_view.types';
 import { global_styles } from '../../../styles/global.styles';
 import { useStatusEmployeeStore } from '../../../store/statusEmployee';
-import ERROR404 from "../../../assets/not-found-error-alert-svgrepo-com.svg";
+import ERROR404 from '../../../assets/not-found-error-alert-svgrepo-com.svg';
+import { ThemeContext } from '@/hooks/useTheme';
+import { useContext } from 'react';
+
 function MobileView(props: MobileViewProps) {
   const { layout, deletePopover, handleEdit, actions, handleActive } = props;
 
@@ -24,7 +26,7 @@ function MobileView(props: MobileViewProps) {
             pt={{
               grid: () => ({
                 className:
-                  'w-full grid dark:bg-transparent pb-10 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5 mt-5',
+                  'grid dark:bg-slate-800 pb-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid-nogutter gap-5 mt-5',
               }),
             }}
             color="surface"
@@ -57,6 +59,8 @@ export default MobileView;
 
 const GridItem = (props: GridProps) => {
   const { statusEmployees, layout, deletePopover, handleEdit, actions, handleActive } = props;
+  const { theme } = useContext(ThemeContext);
+
   return (
     <>
       {layout === 'grid' ? (
@@ -71,7 +75,7 @@ const GridItem = (props: GridProps) => {
             {statusEmployees.name}
           </div>
           <div className="flex justify-between mt-5 w-ful">
-            {actions.includes('Editar') && (
+            {actions.includes('Editar') && statusEmployees.isActive ? (
               <Button
                 onClick={() => handleEdit(statusEmployees)}
                 isIconOnly
@@ -79,19 +83,49 @@ const GridItem = (props: GridProps) => {
               >
                 <EditIcon size={20} />
               </Button>
+            ) : (
+              <Button
+                isIconOnly
+                style={{
+                  backgroundColor: theme.colors.secondary,
+                  cursor: 'not-allowed',
+                }}
+              >
+                <Lock style={{ color: theme.colors.primary }} size={20} />
+              </Button>
             )}
-            {actions.includes('Eliminar') && (
+            {actions.includes('Eliminar') && statusEmployees.isActive ? (
+              <>{deletePopover({ statusEmployees })}</>
+            ) : (
+              <Button isIconOnly style={{ backgroundColor: theme.colors.danger }}>
+                <Lock
+                  style={{
+                    color: theme.colors.primary,
+                    cursor: 'not-allowed',
+                  }}
+                  size={20}
+                />
+              </Button>
+            )}
+            {statusEmployees.isActive === false && (
               <>
-                {/* {deletePopover({ statusEmployees })} */}
-                {statusEmployees.isActive ? (
-                  deletePopover({ statusEmployees })
-                ) : (
+                {actions.includes('Activar') ? (
                   <Button
                     onClick={() => handleActive(statusEmployees.id)}
                     isIconOnly
                     style={global_styles().thirdStyle}
                   >
                     <RefreshCcw />
+                  </Button>
+                ) : (
+                  <Button
+                    isIconOnly
+                    style={{
+                      ...global_styles().thirdStyle,
+                      cursor: 'not-allowed',
+                    }}
+                  >
+                    <Lock />
                   </Button>
                 )}
               </>
@@ -114,6 +148,8 @@ const GridItem = (props: GridProps) => {
 
 const ListItem = (props: GridProps) => {
   const { statusEmployees, deletePopover, handleEdit, actions, handleActive } = props;
+  const { theme } = useContext(ThemeContext);
+
   return (
     <>
       <div className="flex w-full col-span-1 p-5 border shadow rounded-2xl">
@@ -124,7 +160,7 @@ const ListItem = (props: GridProps) => {
           </div>
         </div>
         <div className="flex flex-col items-end justify-between w-full gap-5">
-          {actions.includes('Editar') && (
+          {actions.includes('Editar') && statusEmployees.isActive ? (
             <Button
               onClick={() => handleEdit(statusEmployees)}
               isIconOnly
@@ -132,20 +168,49 @@ const ListItem = (props: GridProps) => {
             >
               <EditIcon size={20} />
             </Button>
+          ) : (
+            <Button
+              isIconOnly
+              style={{
+                backgroundColor: theme.colors.secondary,
+                cursor: 'not-allowed',
+              }}
+            >
+              <Lock style={{ color: theme.colors.primary }} size={20} />
+            </Button>
           )}
-          {actions.includes('Eliminar') && (
+          {actions.includes('Eliminar') && statusEmployees.isActive ? (
+            <>{deletePopover({ statusEmployees })}</>
+          ) : (
+            <Button isIconOnly style={{ backgroundColor: theme.colors.danger }}>
+              <Lock
+                style={{
+                  color: theme.colors.primary,
+                  cursor: 'not-allowed',
+                }}
+                size={20}
+              />
+            </Button>
+          )}
+          {statusEmployees.isActive === false && (
             <>
-              {/* {deletePopover({ statusEmployees })} */}
-
-              {statusEmployees.isActive ? (
-                deletePopover({ statusEmployees })
-              ) : (
+              {actions.includes('Activar') ? (
                 <Button
                   onClick={() => handleActive(statusEmployees.id)}
                   isIconOnly
                   style={global_styles().thirdStyle}
                 >
                   <RefreshCcw />
+                </Button>
+              ) : (
+                <Button
+                  isIconOnly
+                  style={{
+                    ...global_styles().thirdStyle,
+                    cursor: 'not-allowed',
+                  }}
+                >
+                  <Lock />
                 </Button>
               )}
             </>

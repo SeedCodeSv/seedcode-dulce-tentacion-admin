@@ -21,6 +21,7 @@ import {
   Filter,
   RefreshCcw,
   SearchIcon,
+  Lock,
 } from 'lucide-react';
 
 import NO_DATA from '@/assets/svg/no_data.svg';
@@ -39,6 +40,7 @@ import { StudyLevel } from '@/types/study_level.types';
 import BottomDrawer from '@/components/global/BottomDrawer';
 import TooltipGlobal from '@/components/global/TooltipGlobal';
 import { ArrayAction } from '@/types/view.types';
+import NotAddButton from '@/components/global/NoAdd';
 
 function ListStudyLevel({ actions }: ArrayAction) {
   const { theme } = useContext(ThemeContext);
@@ -54,7 +56,6 @@ function ListStudyLevel({ actions }: ArrayAction) {
 
   const [search, setSearch] = useState('');
   const [limit, setLimit] = useState(5);
-  // const [isActive, setActive] = useState(true);
 
   useEffect(() => {
     getPaginatedStudyLevel(1, limit, search, isActive ? 1 : 0);
@@ -65,11 +66,6 @@ function ListStudyLevel({ actions }: ArrayAction) {
   };
 
   const modalAdd = useDisclosure();
-
-  // const style = {
-  //   backgroundColor: theme.colors.dark,
-  //   color: theme.colors.primary,
-  // };
 
   const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
 
@@ -221,13 +217,15 @@ function ListStudyLevel({ actions }: ArrayAction) {
                 </BottomDrawer>
               </div>
             </div>
-            {actions.includes('Agregar') && (
+            {actions.includes('Agregar') ? (
               <AddButton
                 onClick={() => {
                   setSelectedStatusEmployee(undefined);
                   modalAdd.onOpen();
                 }}
               />
+            ) : (
+              <NotAddButton></NotAddButton>
             )}
           </div>
         </div>
@@ -287,9 +285,6 @@ function ListStudyLevel({ actions }: ArrayAction) {
                     <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                       Nombre
                     </th>
-                    {/* <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                        Código
-                      </th> */}
                     <th className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                       Descripción
                     </th>
@@ -323,54 +318,85 @@ function ListStudyLevel({ actions }: ArrayAction) {
                               <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                                 {staudyLevel.description}
                               </td>
-                              {/* <td className="p-3 text-sm text-slate-500 whitespace-nowrap dark:text-slate-100">
-                                {categories.subCategory.name}
-                              </td> */}
                               <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                                 <div className="flex w-full gap-5">
-                                  {actions.includes('Editar') && (
+                                  {actions.includes('Editar') && staudyLevel.isActive ? (
                                     <>
-                                    {staudyLevel.isActive &&(
-                                    <TooltipGlobal text="Editar">
-                                      <Button
-                                        onClick={() => {
-                                          handleEdit(staudyLevel);
-
-                                          modalAdd.onOpen();
-                                        }}
-                                        isIconOnly
-                                        style={{
-                                          backgroundColor: theme.colors.secondary,
-                                        }}
-                                      >
-                                        <EditIcon
-                                          style={{
-                                            color: theme.colors.primary,
-                                          }}
-                                          size={20}
-                                        />
-                                      </Button>
-                                    </TooltipGlobal>
-                                    )}
-                                    </>
-                                  )}
-                                  {actions.includes('Eliminar') && (
-                                    <>
-                                      {staudyLevel.isActive ? (
-                                        <DeletePopUp studyLevel={staudyLevel} />
-                                      ) : (
-                                        <TooltipGlobal text="Activar">
+                                      {staudyLevel.isActive && (
+                                        <TooltipGlobal text="Editar">
                                           <Button
-                                            onClick={() => handleActivate(staudyLevel.id)}
+                                            onClick={() => {
+                                              handleEdit(staudyLevel);
+
+                                              modalAdd.onOpen();
+                                            }}
                                             isIconOnly
-                                            style={global_styles().thirdStyle}
+                                            style={{
+                                              backgroundColor: theme.colors.secondary,
+                                            }}
                                           >
-                                            <RefreshCcw />
+                                            <EditIcon
+                                              style={{
+                                                color: theme.colors.primary,
+                                              }}
+                                              size={20}
+                                            />
                                           </Button>
                                         </TooltipGlobal>
                                       )}
                                     </>
+                                  ) : (
+                                    <Button
+                                      isIconOnly
+                                      style={{
+                                        backgroundColor: theme.colors.secondary,
+                                        cursor: 'not-allowed',
+                                      }}
+                                    >
+                                      <Lock style={{ color: theme.colors.primary }} size={20} />
+                                    </Button>
                                   )}
+                                  {actions.includes('Eliminar') && staudyLevel.isActive ? (
+                                    <DeletePopUp studyLevel={staudyLevel} />
+                                  ) : (
+                                    <Button
+                                      isIconOnly
+                                      style={{ backgroundColor: theme.colors.danger }}
+                                    >
+                                      <Lock
+                                        style={{
+                                          color: theme.colors.primary,
+                                          cursor: 'not-allowed',
+                                        }}
+                                        size={20}
+                                      />
+                                    </Button>
+                                  )}
+                                  {staudyLevel.isActive === false && (
+                                    <>
+                                    {actions.includes('Activar') ? (
+                                      <Button
+                                      onClick={() => handleActivate(staudyLevel.id)}
+                                      isIconOnly
+                                      style={global_styles().thirdStyle}
+                                    >
+                                      <RefreshCcw />
+                                    </Button>
+                                  
+                                    ): (
+                                      <Button
+                                      isIconOnly
+                                      style={{
+                                        ...global_styles().thirdStyle,
+                                        cursor: 'not-allowed',
+                                      }}
+                                    >
+                                      <Lock />
+                                    </Button>
+                                    )}
+                                    </>
+                                  )}
+
                                 </div>
                               </td>
                             </tr>
