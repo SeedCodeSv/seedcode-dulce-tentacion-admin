@@ -46,6 +46,7 @@ import Shopping from '@/pages/Shopping';
 import CreateShopping from '@/components/shopping/CreateShoppingJson';
 import CFFBookIVA from '@/pages/iva/CFFBookIVA';
 import FEBookIVA from '@/pages/iva/FEBookIVA';
+import AddClientContributor from '@/components/clients/AddClientContributor';
 
 const Loading = () => {
   return <div>Cargando...</div>;
@@ -219,6 +220,11 @@ export const router = () => {
       path: '/discounts',
       element: checkAuthorization('Descuentos', <Discount />),
     },
+
+    // {
+    //   path: '/add-client-contributor',
+    //   element: checkAuthorization('Clientes', <AddClientContributor />),
+    // },
 
     {
       path: '/AddPromotions',

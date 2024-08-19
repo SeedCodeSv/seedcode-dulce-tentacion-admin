@@ -23,6 +23,7 @@ interface Props {
 const AddClientNormal = (props: Props) => {
   const { theme } = useContext(ThemeContext);
 
+  
   const initialValues = {
     nombre: props.customer?.nombre ?? '',
     correo: props.customer?.correo ?? 'N/A@gmail.com',
@@ -35,28 +36,6 @@ const AddClientNormal = (props: Props) => {
     nombreDepartamento: props.customer_direction?.nombreDepartamento || 'N/A',
     complemento: props.customer_direction?.complemento || 'N/A',
   };
-
-  // const validationSchema = yup.object().shape({
-  //   nombre: yup.string().required('El nombre es requerido'),
-  //   correo: yup.string().required('El correo es requerido'),
-  //   telefono: yup.string().required('Este campo solo permite números sin guiones'),
-  //   numDocumento: yup
-  //     .string()
-  //     .required('Este campo solo permite números sin guiones')
-  //     .test('no-dashes', 'El campo no permite guiones', (value) => {
-  //       return !value?.includes('-');
-  //     })
-  //     .test('isValidDUI', '**El DUI no es valido**', (value) => {
-  //       if (value && value !== '') {
-  //         return isValidDUI(value);
-  //       } else {
-  //         return true;
-  //       }
-  //     }),
-  //   departamento: yup.string().required('**Debes seleccionar el departamento**'),
-  //   municipio: yup.string().required('**Debes seleccionar el municipio**'),
-  //   complemento: yup.string().required('**El complemento es requerida**'),
-  // });
 
   const validationSchema = yup.object().shape({
     nombre: yup.string().required('El nombre es requerido'),
@@ -323,10 +302,13 @@ const AddClientNormal = (props: Props) => {
                   onBlur={handleBlur('departamento')}
                   label="Departamento"
                   labelPlacement="outside"
+                  // placeholder={
+                  //   values.nombreDepartamento
+                  //     ? values.nombreDepartamento
+                  //     : 'Selecciona el departamento'
+                  // }
                   placeholder={
-                    values.nombreDepartamento
-                      ? values.nombreDepartamento
-                      : 'Selecciona el departamento'
+                    props.customer_direction?.nombreDepartamento || 'Selecciona el departamento'
                   }
                   variant="bordered"
                   classNames={{
@@ -360,17 +342,18 @@ const AddClientNormal = (props: Props) => {
                       handleChange('nombreMunicipio')(depSelected.valores);
                     }
                   }}
-                  onBlur={handleBlur('municipio')}
                   label="Municipio"
                   labelPlacement="outside"
                   className="dark:text-white"
-                  placeholder={
-                    values.nombreMunicipio ? values.nombreMunicipio : 'Selecciona el municipio'
-                  }
                   variant="bordered"
+                  placeholder="Selecciona el municipio"
                   classNames={{
                     base: 'font-semibold text-gray-500 text-sm',
                   }}
+                  // placeholder={
+                  //   values.nombreMunicipio ? values.nombreMunicipio : 'Selecciona el municipio'
+                  // }
+                  onBlur={handleBlur('municipio')}
                   // selectedKey={selectedKeyCity}
                   defaultSelectedKey={props.customer_direction?.municipio}
                   defaultInputValue={props.customer_direction?.nombreMunicipio}

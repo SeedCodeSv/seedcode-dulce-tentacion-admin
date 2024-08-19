@@ -694,6 +694,7 @@ const ListClients = ({ actions }: Props) => {
             )}
             {typeClient === 'contribuyente' && (
               <AddClientContributor
+                typeDocumento={typeDocumentCustomer}
                 closeModal={modalAdd.onClose}
                 customer={selectedCustomer}
                 customer_direction={selectedCustomerDirection}

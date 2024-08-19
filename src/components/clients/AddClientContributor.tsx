@@ -19,6 +19,7 @@ interface Props {
   customer?: PayloadCustomer;
   customer_direction?: CustomerDirection;
   id: number;
+  typeDocumento: string;
 }
 
 function AddClientContributor(props: Props) {
@@ -52,23 +53,38 @@ function AddClientContributor(props: Props) {
       .test('length', 'Debe ser de 8 dígitos', (value) => {
         return value?.length === 8;
       }),
+
     numDocumento: yup
       .string()
-      .required('Este campo solo permite números sin guiones')
-      .test('no-dashes', 'El campo no permite guiones', (value) => {
-        return !value?.includes('-');
-      })
-      .test('isValidDUI', '**El DUI no es valido**', (value) => {
-        if (value && value !== '') {
-          return isValidDUI(value);
-        } else {
-          return true;
+      .required('Este campo es requerido')
+      .when('tipoDocumento', (tipoDocumento, schema) => {
+        const documentType = Array.isArray(tipoDocumento) ? tipoDocumento[0] : tipoDocumento;
+
+        if (documentType === '13') {
+          return schema
+            .matches(/^[0-9]{9}$/, 'El DUI debe tener 9 dígitos sin guiones')
+            .test('isValidDUI', 'El DUI no es válido', (value) => {
+              return value && value !== '' ? isValidDUI(value) : false;
+            });
         }
+
+        if (documentType === '36') {
+          return schema
+            .matches(/^[0-9]{14}$/, 'El NIT debe tener 14 dígitos sin guiones')
+            .test('isValidNIT', 'El NIT no es válido', (value) => {
+              if (!value) return false;
+
+              return value.length === 14;
+            });
+        }
+
+        return schema.required('El número de documento es requerido');
       }),
     nit: yup
       .string()
       .required('**El NIT es requerido **')
-      .matches(/^([0-9]{14}|[0-9]{9})$/, '**El NIT no es valido, 9 caracteres sin giones**'),
+      .matches(/^([0-9]{14}|[0-9]{9})$/, 'El NIT debe tener 14 dígitos sin guiones'),
+
     nrc: yup
       .string()
       .required('**El NRC es requerido**')
@@ -106,7 +122,14 @@ function AddClientContributor(props: Props) {
     getCat013Municipios(selectedCodeDep);
   }, [selectedCodeDep, props.customer_direction]);
   const { postCustomer, patchCustomer } = useCustomerStore();
- const user = get_user();
+  const user = get_user();
+
+  const getDocumentName = (codigo: string) => {
+    const documento = cat_022_tipo_de_documentoDeIde.find((doc) => doc.codigo === codigo);
+
+    return documento ? documento.valores : '';
+  };
+
   const onSubmit = async (payload: PayloadCustomer) => {
     if (props.id || props.id !== 0) {
       const values = {
@@ -161,7 +184,7 @@ function AddClientContributor(props: Props) {
   };
 
   return (
-    <div className='p-4 dark:text-white'>
+    <div className="p-4 dark:text-white">
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -169,7 +192,7 @@ function AddClientContributor(props: Props) {
         validateOnMount={false}
         validateOnBlur={false}
       >
-        {({ values, errors, touched, handleBlur, handleChange, handleSubmit }) => (
+        {({ values, errors, touched, handleBlur, setFieldValue, handleChange, handleSubmit }) => (
           <>
             <div className="grid grid-cols-2 gap-5">
               <div>
@@ -251,7 +274,40 @@ function AddClientContributor(props: Props) {
 
                 {/* Tipo de documento */}
                 <div className="pt-2">
-                  <Autocomplete
+                  <div className="flex flex-col">
+                    <label className="font-semibold text-gray-900 text-sm mb-1">
+                      Tipo de documento
+                    </label>
+                    <Autocomplete
+                      onSelectionChange={(key) => {
+                        if (key) {
+                          const depSelected = JSON.parse(key as string) as ITipoDocumento;
+                          handleChange('tipoDocumento')(depSelected.codigo);
+                        }
+                      }}
+                      onBlur={handleBlur('tipoDocumento')}
+                      placeholder={
+                        getDocumentName(values.tipoDocumento) ?? 'Selecciona el tipo de documento'
+                      }
+                      variant="bordered"
+                      classNames={{
+                        base: 'font-semibold text-gray-500 text-sm',
+                      }}
+                      className="dark:text-white"
+                      defaultSelectedKey={values.tipoDocumento}
+                    >
+                      {cat_022_tipo_de_documentoDeIde.map((dep) => (
+                        <AutocompleteItem
+                          value={dep.codigo}
+                          key={JSON.stringify(dep)}
+                          className="dark:text-white"
+                        >
+                          {dep.valores}
+                        </AutocompleteItem>
+                      ))}
+                    </Autocomplete>
+                  </div>
+                  {/* <Autocomplete
                     onSelectionChange={(key) => {
                       if (key) {
                         const depSelected = JSON.parse(key as string) as ITipoDocumento;
@@ -285,7 +341,7 @@ function AddClientContributor(props: Props) {
                         {dep.valores}
                       </AutocompleteItem>
                     ))}
-                  </Autocomplete>
+                  </Autocomplete> */}
                   {errors.tipoDocumento && touched.tipoDocumento && (
                     <span className="text-sm font-semibold text-red-500">
                       {errors.tipoDocumento}
@@ -466,12 +522,13 @@ function AddClientContributor(props: Props) {
                 </div>
                 <div className="pt-2">
                   <Input
-                    type="number"
                     label="NIT"
                     labelPlacement="outside"
                     name="nit"
                     value={values.nit}
-                    onChange={handleChange('nit')}
+                    onChange={(e) =>
+                      setFieldValue('nit', e.currentTarget.value.replace(/[^0-9]/g, ''))
+                    }
                     onBlur={handleBlur('nit')}
                     placeholder="Ingresa el nit"
                     classNames={{
