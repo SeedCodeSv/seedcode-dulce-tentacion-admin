@@ -2,6 +2,7 @@ import axios from 'axios';
 import { API_URL } from '../utils/constants';
 import { IGetCustomerPagination, IGetCustomers, PayloadCustomer } from '../types/customers.types';
 import { get_token, get_user } from '../storage/localStorage';
+import { IGetUserById } from '@/types/user_by_id.types';
 
 export const get_customers_pagination = (
   page = 1,
@@ -82,3 +83,21 @@ export const get_customer = () => {
 export const activate_customer = (id: number) => {
   return axios.patch<{ ok: boolean }>(API_URL + '/customers/activate/' + id);
 };
+
+
+export const getCustomerById = (id: number) => {
+  const token = get_token() ?? '';
+  return axios.get<IGetUserById>(
+    API_URL + `/customers/${id}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};
+
+
+
+
+

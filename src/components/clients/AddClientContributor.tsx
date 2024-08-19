@@ -12,20 +12,29 @@ import { CustomerDirection, PayloadCustomer } from '../../types/customers.types'
 import { ThemeContext } from '../../hooks/useTheme';
 import { get_user } from '../../storage/localStorage';
 import { ITipoDocumento } from '../../types/DTE/tipo_documento.types';
+import Layout from '@/layout/Layout';
+import { ArrowLeft } from 'lucide-react';
+import { useNavigate, useParams } from 'react-router';
 // import { ITipoDocumento } from '../../types/DTE/tipo_documento.types';
 
 interface Props {
-  closeModal: () => void;
+  // closeModal: () => void;
   customer?: PayloadCustomer;
   customer_direction?: CustomerDirection;
-  id: number;
-  typeDocumento: string;
+  id?: number;
+  typeDocumento?: string;
 }
 
 function AddClientContributor(props: Props) {
   const { theme } = useContext(ThemeContext);
+  const { id } = useParams<{ id: string }>();
+
+  const isEditing = !!id; 
+  const { get_customer_by_id, user_by_id } = useCustomerStore(); // Suponiendo que tienes una función para obtener el cliente por ID
+
+  console.log('user_by_id', user_by_id);
   const initialValues = {
-    nombre: props.customer?.nombre ?? '',
+    nombre: user_by_id?.nombre ?? '',
     nombreComercial: props.customer?.nombreComercial ?? '',
     correo: props.customer?.correo ?? '',
     telefono: props.customer?.telefono ?? '',
@@ -43,6 +52,13 @@ function AddClientContributor(props: Props) {
     nombreDepartamento: props.customer_direction?.nombreDepartamento ?? '',
     complemento: props.customer_direction?.complemento ?? '',
   };
+
+  useEffect(() => {
+    if (isEditing && id) {
+      get_customer_by_id(parseInt(id)); // Cargar datos del cliente
+    }
+  }, [id]);
+
   const validationSchema = yup.object().shape({
     nombre: yup.string().required('**El nombre es requerido**'),
     nombreComercial: yup.string().required('**El nombre comercial es requerido**'),
@@ -121,6 +137,7 @@ function AddClientContributor(props: Props) {
     }
     getCat013Municipios(selectedCodeDep);
   }, [selectedCodeDep, props.customer_direction]);
+
   const { postCustomer, patchCustomer } = useCustomerStore();
   const user = get_user();
 
@@ -131,23 +148,19 @@ function AddClientContributor(props: Props) {
   };
 
   const onSubmit = async (payload: PayloadCustomer) => {
-    if (props.id || props.id !== 0) {
-      const values = {
-        ...payload,
-        esContribuyente: 1,
-        branchId: Number(user?.correlative.branch.id),
-      };
-      await patchCustomer(values, props.id!);
+    const values = {
+      ...payload,
+      esContribuyente: 1,
+      branchId: Number(user?.correlative.branch.id),
+    };
+
+    if (props.id && props.id !== 0) {
+      await patchCustomer(values, props.id);
     } else {
-      const values = {
-        ...payload,
-        esContribuyente: 1,
-        branchId: Number(user?.correlative.branch.id),
-      };
       await postCustomer(values);
     }
-    props.closeModal();
   };
+
   const selectedKeyDepartment = useMemo(() => {
     if (props.customer_direction) {
       const department = cat_012_departamento.find(
@@ -182,132 +195,153 @@ function AddClientContributor(props: Props) {
   const handleFilter = (name = '') => {
     getCat019CodigoActividadEconomica(name);
   };
+  const navigate = useNavigate();
 
   return (
-    <div className="p-4 dark:text-white">
-      <Formik
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-        onSubmit={(values) => onSubmit(values)}
-        validateOnMount={false}
-        validateOnBlur={false}
-      >
-        {({ values, errors, touched, handleBlur, setFieldValue, handleChange, handleSubmit }) => (
-          <>
-            <div className="grid grid-cols-2 gap-5">
-              <div>
-                <div className="mt-10">
-                  <Input
-                    label="Nombre"
-                    labelPlacement="outside"
-                    name="name"
-                    value={values.nombre}
-                    onChange={handleChange('nombre')}
-                    onBlur={handleBlur('nombre')}
-                    placeholder="Ingresa el nombre"
-                    classNames={{
-                      label: 'font-semibold text-gray-500 text-sm',
-                    }}
-                    variant="bordered"
-                  />
-                  {errors.nombre && touched.nombre && (
-                    <span className="text-sm font-semibold text-red-500">{errors.nombre}</span>
-                  )}
-                </div>
-                <div className="pt-2">
-                  <Input
-                    label="Nombre comercial"
-                    labelPlacement="outside"
-                    name="name"
-                    value={values.nombreComercial}
-                    onChange={handleChange('nombreComercial')}
-                    onBlur={handleBlur('nombreComercial')}
-                    placeholder="Ingresa el nombre comercial"
-                    classNames={{
-                      label: 'font-semibold text-gray-500 text-sm',
-                    }}
-                    variant="bordered"
-                  />
-                  {errors.nombreComercial && touched.nombreComercial && (
-                    <span className="text-sm font-semibold text-red-500">
-                      {errors.nombreComercial}
-                    </span>
-                  )}
-                </div>
-                <div className="pt-2">
-                  <Input
-                    label="Correo electrónico"
-                    labelPlacement="outside"
-                    name="correo"
-                    value={values.correo}
-                    onChange={handleChange('correo')}
-                    onBlur={handleBlur('correo')}
-                    placeholder="Ingresa el correo"
-                    classNames={{
-                      label: 'font-semibold text-gray-500 text-sm',
-                    }}
-                    variant="bordered"
-                  />
-                  {errors.correo && touched.correo && (
-                    <span className="text-sm font-semibold text-red-500">{errors.correo}</span>
-                  )}
-                </div>
-                <div className="pt-2">
-                  <Input
-                    type="number"
-                    label="Teléfono"
-                    labelPlacement="outside"
-                    name="telefono"
-                    value={values.telefono}
-                    onChange={handleChange('telefono')}
-                    onBlur={handleBlur('telefono')}
-                    placeholder="Ingresa el telefono"
-                    classNames={{
-                      label: 'font-semibold text-gray-500 text-sm',
-                    }}
-                    variant="bordered"
-                  />
-                  {errors.telefono && touched.telefono && (
-                    <span className="text-xs font-semibold text-red-500">{errors.telefono}</span>
-                  )}
-                </div>
+    <Layout title="Contribuyente">
+      <div className="w-full h-full p-4 md:p-10 md:px-12">
+        <div className="w-full h-full p-4 overflow-y-auto bg-white shadow custom-scrollbar md:p-8 dark:bg-gray-900">
+          <button
+            onClick={() => navigate('/clients')}
+            className="flex items-center gap-2 bg-transparent"
+          >
+            <ArrowLeft />
+            <span>Volver</span>
+          </button>
+          <Formik
+            initialValues={initialValues}
+            validationSchema={validationSchema}
+            onSubmit={(values) => onSubmit(values)}
+            validateOnMount={false}
+            validateOnBlur={false}
+          >
+            {({
+              values,
+              errors,
+              touched,
+              handleBlur,
+              setFieldValue,
+              handleChange,
+              handleSubmit,
+            }) => (
+              <>
+                <div className="grid grid-cols-2 gap-5 p-4">
+                  <div>
+                    <div className="mt-10">
+                      <Input
+                        label="Nombre"
+                        labelPlacement="outside"
+                        name="name"
+                        value={values.nombre}
+                        onChange={handleChange('nombre')}
+                        onBlur={handleBlur('nombre')}
+                        placeholder="Ingresa el nombre"
+                        classNames={{
+                          label: 'font-semibold text-gray-500 text-sm',
+                        }}
+                        variant="bordered"
+                      />
+                      {errors.nombre && touched.nombre && (
+                        <span className="text-sm font-semibold text-red-500">{errors.nombre}</span>
+                      )}
+                    </div>
+                    <div className="pt-2">
+                      <Input
+                        label="Nombre comercial"
+                        labelPlacement="outside"
+                        name="name"
+                        value={values.nombreComercial}
+                        onChange={handleChange('nombreComercial')}
+                        onBlur={handleBlur('nombreComercial')}
+                        placeholder="Ingresa el nombre comercial"
+                        classNames={{
+                          label: 'font-semibold text-gray-500 text-sm',
+                        }}
+                        variant="bordered"
+                      />
+                      {errors.nombreComercial && touched.nombreComercial && (
+                        <span className="text-sm font-semibold text-red-500">
+                          {errors.nombreComercial}
+                        </span>
+                      )}
+                    </div>
+                    <div className="pt-2">
+                      <Input
+                        label="Correo electrónico"
+                        labelPlacement="outside"
+                        name="correo"
+                        value={values.correo}
+                        onChange={handleChange('correo')}
+                        onBlur={handleBlur('correo')}
+                        placeholder="Ingresa el correo"
+                        classNames={{
+                          label: 'font-semibold text-gray-500 text-sm',
+                        }}
+                        variant="bordered"
+                      />
+                      {errors.correo && touched.correo && (
+                        <span className="text-sm font-semibold text-red-500">{errors.correo}</span>
+                      )}
+                    </div>
+                    <div className="pt-2">
+                      <Input
+                        type="number"
+                        label="Teléfono"
+                        labelPlacement="outside"
+                        name="telefono"
+                        value={values.telefono}
+                        onChange={handleChange('telefono')}
+                        onBlur={handleBlur('telefono')}
+                        placeholder="Ingresa el telefono"
+                        classNames={{
+                          label: 'font-semibold text-gray-500 text-sm',
+                        }}
+                        variant="bordered"
+                      />
+                      {errors.telefono && touched.telefono && (
+                        <span className="text-xs font-semibold text-red-500">
+                          {errors.telefono}
+                        </span>
+                      )}
+                    </div>
 
-                {/* Tipo de documento */}
-                <div className="pt-2">
-                  <div className="flex flex-col">
-                    <label className="font-semibold text-gray-900 text-sm mb-1">
-                      Tipo de documento
-                    </label>
-                    <Autocomplete
-                      onSelectionChange={(key) => {
-                        if (key) {
-                          const depSelected = JSON.parse(key as string) as ITipoDocumento;
-                          handleChange('tipoDocumento')(depSelected.codigo);
-                        }
-                      }}
-                      onBlur={handleBlur('tipoDocumento')}
-                      placeholder={
-                        getDocumentName(values.tipoDocumento) ?? 'Selecciona el tipo de documento'
-                      }
-                      variant="bordered"
-                      classNames={{
-                        base: 'font-semibold text-gray-500 text-sm',
-                      }}
-                      className="dark:text-white"
-                      defaultSelectedKey={values.tipoDocumento}
-                    >
-                      {cat_022_tipo_de_documentoDeIde.map((dep) => (
-                        <AutocompleteItem
-                          value={dep.codigo}
-                          key={JSON.stringify(dep)}
+                    {/* Tipo de documento */}
+                    <div className="pt-2">
+                      <div className="flex flex-col">
+                        <label className="font-semibold text-gray-900 text-sm mb-1">
+                          Tipo de documento
+                        </label>
+                        <Autocomplete
+                          onSelectionChange={(key) => {
+                            if (key) {
+                              const depSelected = JSON.parse(key as string) as ITipoDocumento;
+                              handleChange('tipoDocumento')(depSelected.codigo);
+                            }
+                          }}
+                          onBlur={handleBlur('tipoDocumento')}
+                          placeholder={
+                            getDocumentName(values.tipoDocumento) ??
+                            'Selecciona el tipo de documento'
+                          }
+                          variant="bordered"
+                          classNames={{
+                            base: 'font-semibold text-gray-500 text-sm',
+                          }}
                           className="dark:text-white"
+                          defaultSelectedKey={values.tipoDocumento}
                         >
-                          {dep.valores}
-                        </AutocompleteItem>
-                      ))}
-                    </Autocomplete>
-                  </div>
-                  {/* <Autocomplete
+                          {cat_022_tipo_de_documentoDeIde.map((dep) => (
+                            <AutocompleteItem
+                              value={dep.codigo}
+                              key={JSON.stringify(dep)}
+                              className="dark:text-white"
+                            >
+                              {dep.valores}
+                            </AutocompleteItem>
+                          ))}
+                        </Autocomplete>
+                      </div>
+                      {/* <Autocomplete
                     onSelectionChange={(key) => {
                       if (key) {
                         const depSelected = JSON.parse(key as string) as ITipoDocumento;
@@ -342,241 +376,249 @@ function AddClientContributor(props: Props) {
                       </AutocompleteItem>
                     ))}
                   </Autocomplete> */}
-                  {errors.tipoDocumento && touched.tipoDocumento && (
-                    <span className="text-sm font-semibold text-red-500">
-                      {errors.tipoDocumento}
-                    </span>
-                  )}
-                </div>
+                      {errors.tipoDocumento && touched.tipoDocumento && (
+                        <span className="text-sm font-semibold text-red-500">
+                          {errors.tipoDocumento}
+                        </span>
+                      )}
+                    </div>
 
-                {/* Fin de tipio de documento */}
+                    {/* Fin de tipio de documento */}
 
-                <div className="pt-2">
-                  <Input
-                    type="text"
-                    label="Numero documento"
-                    labelPlacement="outside"
-                    name="numDocumento"
-                    value={values.numDocumento}
-                    onChange={handleChange('numDocumento')}
-                    onBlur={handleBlur('numDocumento')}
-                    placeholder="Ingresa el numero documento"
-                    classNames={{
-                      label: 'font-semibold text-gray-500 text-sm',
-                    }}
-                    variant="bordered"
-                  />
-                  {errors.numDocumento && touched.numDocumento && (
-                    <span className="text-sm font-semibold text-red-500">
-                      {errors.numDocumento}
-                    </span>
-                  )}
-                </div>
-                <div className="pt-2">
-                  <Autocomplete
-                    onSelectionChange={(key) => {
-                      if (key) {
-                        const depSelected = JSON.parse(key as string) as CodigoActividadEconomica;
-                        handleChange('codActividad')(depSelected.codigo);
-                        handleChange('descActividad')(depSelected.valores);
-                      }
-                    }}
-                    onBlur={handleBlur('codActividad')}
-                    label="Actividad"
-                    labelPlacement="outside"
-                    placeholder={
-                      props.customer?.descActividad
-                        ? props.customer?.descActividad
-                        : 'Escribe la actividad'
-                    }
-                    variant="bordered"
-                    classNames={{
-                      base: 'font-semibold text-gray-500 text-sm',
-                    }}
-                    className="dark:text-white"
-                    // selectedKey={selectedKeyCodActivity}
-                    defaultSelectedKey={values.descActividad}
-                    value={selectedKeyCodActivity}
-                    onInputChange={(e) => handleFilter(e)}
-                  >
-                    {cat_019_codigo_de_actividad_economica.map((dep) => (
-                      <AutocompleteItem
-                        value={dep.codigo}
-                        key={JSON.stringify(dep)}
+                    <div className="pt-2">
+                      <Input
+                        type="text"
+                        label="Numero documento"
+                        labelPlacement="outside"
+                        name="numDocumento"
+                        value={values.numDocumento}
+                        onChange={handleChange('numDocumento')}
+                        onBlur={handleBlur('numDocumento')}
+                        placeholder="Ingresa el numero documento"
+                        classNames={{
+                          label: 'font-semibold text-gray-500 text-sm',
+                        }}
+                        variant="bordered"
+                      />
+                      {errors.numDocumento && touched.numDocumento && (
+                        <span className="text-sm font-semibold text-red-500">
+                          {errors.numDocumento}
+                        </span>
+                      )}
+                    </div>
+                    <div className="pt-2">
+                      <Autocomplete
+                        onSelectionChange={(key) => {
+                          if (key) {
+                            const depSelected = JSON.parse(
+                              key as string
+                            ) as CodigoActividadEconomica;
+                            handleChange('codActividad')(depSelected.codigo);
+                            handleChange('descActividad')(depSelected.valores);
+                          }
+                        }}
+                        onBlur={handleBlur('codActividad')}
+                        label="Actividad"
+                        labelPlacement="outside"
+                        placeholder={
+                          props.customer?.descActividad
+                            ? props.customer?.descActividad
+                            : 'Escribe la actividad'
+                        }
+                        variant="bordered"
+                        classNames={{
+                          base: 'font-semibold text-gray-500 text-sm',
+                        }}
                         className="dark:text-white"
+                        // selectedKey={selectedKeyCodActivity}
+                        defaultSelectedKey={values.descActividad}
+                        value={selectedKeyCodActivity}
+                        onInputChange={(e) => handleFilter(e)}
                       >
-                        {dep.valores}
-                      </AutocompleteItem>
-                    ))}
-                  </Autocomplete>
-                  {/* {errors.codActividad && touched.codActividad && (
+                        {cat_019_codigo_de_actividad_economica.map((dep) => (
+                          <AutocompleteItem
+                            value={dep.codigo}
+                            key={JSON.stringify(dep)}
+                            className="dark:text-white"
+                          >
+                            {dep.valores}
+                          </AutocompleteItem>
+                        ))}
+                      </Autocomplete>
+                      {/* {errors.codActividad && touched.codActividad && (
                     <span className="text-sm font-semibold text-red-500">
                       {errors.codActividad}
                     </span>
                   )} */}
-                </div>
-              </div>
-              <div>
-                <div className="mt-4">
-                  <Autocomplete
-                    onSelectionChange={(key) => {
-                      if (key) {
-                        const depSelected = JSON.parse(key as string) as Municipio;
-                        setSelectedCodeDep(depSelected.codigo);
-                        handleChange('departamento')(depSelected.codigo);
-                        handleChange('nombreDepartamento')(depSelected.valores);
-                      }
-                    }}
-                    onBlur={handleBlur('departamento')}
-                    label="Departamento"
-                    labelPlacement="outside"
-                    placeholder={
-                      props.customer_direction?.nombreDepartamento
-                        ? props.customer_direction?.nombreDepartamento
-                        : 'Selecciona el departamento'
-                    }
-                    variant="bordered"
-                    classNames={{
-                      base: 'font-semibold text-gray-500 text-sm',
-                    }}
-                    className="dark:text-white"
-                    // selectedKey={selectedKeyDepartment}
-                    defaultSelectedKey={selectedKeyDepartment}
-                    value={selectedKeyDepartment}
-                  >
-                    {cat_012_departamento.map((dep) => (
-                      <AutocompleteItem
-                        value={dep.codigo}
-                        key={JSON.stringify(dep)}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="mt-4">
+                      <Autocomplete
+                        onSelectionChange={(key) => {
+                          if (key) {
+                            const depSelected = JSON.parse(key as string) as Municipio;
+                            setSelectedCodeDep(depSelected.codigo);
+                            handleChange('departamento')(depSelected.codigo);
+                            handleChange('nombreDepartamento')(depSelected.valores);
+                          }
+                        }}
+                        onBlur={handleBlur('departamento')}
+                        label="Departamento"
+                        labelPlacement="outside"
+                        placeholder={
+                          props.customer_direction?.nombreDepartamento
+                            ? props.customer_direction?.nombreDepartamento
+                            : 'Selecciona el departamento'
+                        }
+                        variant="bordered"
+                        classNames={{
+                          base: 'font-semibold text-gray-500 text-sm',
+                        }}
                         className="dark:text-white"
+                        // selectedKey={selectedKeyDepartment}
+                        defaultSelectedKey={selectedKeyDepartment}
+                        value={selectedKeyDepartment}
                       >
-                        {dep.valores}
-                      </AutocompleteItem>
-                    ))}
-                  </Autocomplete>
-                  {errors.departamento && touched.departamento && (
-                    <span className="text-sm font-semibold text-red-500">
-                      {errors.departamento}
-                    </span>
-                  )}
-                </div>
-                <div className="pt-2">
-                  <Autocomplete
-                    onSelectionChange={(key) => {
-                      if (key) {
-                        const depSelected = JSON.parse(key as string) as Departamento;
-                        handleChange('municipio')(depSelected.codigo);
-                        handleChange('nombreMunicipio')(depSelected.valores);
-                      }
-                    }}
-                    onBlur={handleBlur('municipio')}
-                    label="Municipio"
-                    labelPlacement="outside"
-                    placeholder={
-                      props.customer_direction?.nombreMunicipio
-                        ? props.customer_direction?.nombreMunicipio
-                        : 'Selecciona el departamento'
-                    }
-                    variant="bordered"
-                    classNames={{
-                      base: 'font-semibold text-gray-500 text-sm',
-                    }}
-                    className="dark:text-white"
-                    // selectedKey={selectedKeyCity}
-                    defaultSelectedKey={props.customer_direction?.nombreMunicipio}
-                    defaultInputValue={props.customer_direction?.nombreMunicipio}
-                    value={selectedKeyCity}
-                  >
-                    {cat_013_municipios.map((dep) => (
-                      <AutocompleteItem
-                        value={dep.codigo}
-                        key={JSON.stringify(dep)}
+                        {cat_012_departamento.map((dep) => (
+                          <AutocompleteItem
+                            value={dep.codigo}
+                            key={JSON.stringify(dep)}
+                            className="dark:text-white"
+                          >
+                            {dep.valores}
+                          </AutocompleteItem>
+                        ))}
+                      </Autocomplete>
+                      {errors.departamento && touched.departamento && (
+                        <span className="text-sm font-semibold text-red-500">
+                          {errors.departamento}
+                        </span>
+                      )}
+                    </div>
+                    <div className="pt-2">
+                      <Autocomplete
+                        onSelectionChange={(key) => {
+                          if (key) {
+                            const depSelected = JSON.parse(key as string) as Departamento;
+                            handleChange('municipio')(depSelected.codigo);
+                            handleChange('nombreMunicipio')(depSelected.valores);
+                          }
+                        }}
+                        onBlur={handleBlur('municipio')}
+                        label="Municipio"
+                        labelPlacement="outside"
+                        placeholder={
+                          props.customer_direction?.nombreMunicipio
+                            ? props.customer_direction?.nombreMunicipio
+                            : 'Selecciona el departamento'
+                        }
+                        variant="bordered"
+                        classNames={{
+                          base: 'font-semibold text-gray-500 text-sm',
+                        }}
                         className="dark:text-white"
+                        // selectedKey={selectedKeyCity}
+                        defaultSelectedKey={props.customer_direction?.nombreMunicipio}
+                        defaultInputValue={props.customer_direction?.nombreMunicipio}
+                        value={selectedKeyCity}
                       >
-                        {dep.valores}
-                      </AutocompleteItem>
-                    ))}
-                  </Autocomplete>
-                  {errors.municipio && touched.municipio && (
-                    <span className="text-sm font-semibold text-red-500">{errors.municipio}</span>
-                  )}
+                        {cat_013_municipios.map((dep) => (
+                          <AutocompleteItem
+                            value={dep.codigo}
+                            key={JSON.stringify(dep)}
+                            className="dark:text-white"
+                          >
+                            {dep.valores}
+                          </AutocompleteItem>
+                        ))}
+                      </Autocomplete>
+                      {errors.municipio && touched.municipio && (
+                        <span className="text-sm font-semibold text-red-500">
+                          {errors.municipio}
+                        </span>
+                      )}
+                    </div>
+                    <div className="pt-2">
+                      <Textarea
+                        label="Complemento de dirección"
+                        classNames={{
+                          label: 'font-semibold text-gray-500 text-sm',
+                          input: 'min-h-[90px]',
+                        }}
+                        labelPlacement="outside"
+                        variant="bordered"
+                        placeholder="Ingresa el complemento de dirección"
+                        name="complemento"
+                        value={values.complemento}
+                        onChange={handleChange('complemento')}
+                        onBlur={handleBlur('complemento')}
+                      />
+                      {errors.complemento && touched.complemento && (
+                        <span className="text-sm font-semibold text-red-500">
+                          {errors.complemento}
+                        </span>
+                      )}
+                    </div>
+                    <div className="pt-2">
+                      <Input
+                        label="NIT"
+                        labelPlacement="outside"
+                        name="nit"
+                        value={values.nit}
+                        onChange={(e) =>
+                          setFieldValue('nit', e.currentTarget.value.replace(/[^0-9]/g, ''))
+                        }
+                        onBlur={handleBlur('nit')}
+                        placeholder="Ingresa el nit"
+                        classNames={{
+                          label: 'font-semibold text-gray-500 text-sm',
+                        }}
+                        variant="bordered"
+                      />
+                      {errors.nit && touched.nit && (
+                        <span className="text-xs font-semibold text-red-500">{errors.nit}</span>
+                      )}
+                    </div>
+                    <div className="pt-2">
+                      <Input
+                        type="number"
+                        label="NRC"
+                        labelPlacement="outside"
+                        name="nrc"
+                        value={values.nrc}
+                        onChange={handleChange('nrc')}
+                        onBlur={handleBlur('nrc')}
+                        placeholder="Ingresa el nrc"
+                        classNames={{
+                          label: 'font-semibold text-gray-500 text-sm',
+                        }}
+                        variant="bordered"
+                      />
+                      {errors.nrc && touched.nrc && (
+                        <span className="text-xs font-semibold text-red-500">{errors.nrc}</span>
+                      )}
+                    </div>
+                  </div>
                 </div>
-                <div className="pt-2">
-                  <Textarea
-                    label="Complemento de dirección"
-                    classNames={{
-                      label: 'font-semibold text-gray-500 text-sm',
-                      input: 'min-h-[90px]',
+                <div className="pt-4 p-4">
+                  <Button
+                    onClick={() => handleSubmit()}
+                    className="w-full font-semibold"
+                    style={{
+                      backgroundColor: theme.colors.dark,
+                      color: theme.colors.primary,
                     }}
-                    labelPlacement="outside"
-                    variant="bordered"
-                    placeholder="Ingresa el complemento de dirección"
-                    name="complemento"
-                    value={values.complemento}
-                    onChange={handleChange('complemento')}
-                    onBlur={handleBlur('complemento')}
-                  />
-                  {errors.complemento && touched.complemento && (
-                    <span className="text-sm font-semibold text-red-500">{errors.complemento}</span>
-                  )}
+                  >
+                    Guardar
+                  </Button>
                 </div>
-                <div className="pt-2">
-                  <Input
-                    label="NIT"
-                    labelPlacement="outside"
-                    name="nit"
-                    value={values.nit}
-                    onChange={(e) =>
-                      setFieldValue('nit', e.currentTarget.value.replace(/[^0-9]/g, ''))
-                    }
-                    onBlur={handleBlur('nit')}
-                    placeholder="Ingresa el nit"
-                    classNames={{
-                      label: 'font-semibold text-gray-500 text-sm',
-                    }}
-                    variant="bordered"
-                  />
-                  {errors.nit && touched.nit && (
-                    <span className="text-xs font-semibold text-red-500">{errors.nit}</span>
-                  )}
-                </div>
-                <div className="pt-2">
-                  <Input
-                    type="number"
-                    label="NRC"
-                    labelPlacement="outside"
-                    name="nrc"
-                    value={values.nrc}
-                    onChange={handleChange('nrc')}
-                    onBlur={handleBlur('nrc')}
-                    placeholder="Ingresa el nrc"
-                    classNames={{
-                      label: 'font-semibold text-gray-500 text-sm',
-                    }}
-                    variant="bordered"
-                  />
-                  {errors.nrc && touched.nrc && (
-                    <span className="text-xs font-semibold text-red-500">{errors.nrc}</span>
-                  )}
-                </div>
-              </div>
-            </div>
-            <div className="pt-4">
-              <Button
-                onClick={() => handleSubmit()}
-                className="w-full font-semibold"
-                style={{
-                  backgroundColor: theme.colors.dark,
-                  color: theme.colors.primary,
-                }}
-              >
-                Guardar
-              </Button>
-            </div>
-          </>
-        )}
-      </Formik>
-    </div>
+              </>
+            )}
+          </Formik>
+        </div>
+      </div>
+    </Layout>
   );
 }
 

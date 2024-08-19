@@ -47,6 +47,7 @@ import CreateShopping from '@/components/shopping/CreateShoppingJson';
 import CFFBookIVA from '@/pages/iva/CFFBookIVA';
 import FEBookIVA from '@/pages/iva/FEBookIVA';
 import CreateTheme from '@/components/configuration/CreateTheme';
+import AddClientContributor from '@/components/clients/AddClientContributor';
 
 
 const Loading = () => {
@@ -222,10 +223,10 @@ export const router = () => {
       element: checkAuthorization('Descuentos', <Discount />),
     },
 
-    // {
-    //   path: '/add-client-contributor',
-    //   element: checkAuthorization('Clientes', <AddClientContributor />),
-    // },
+    {
+      path: '/add-client-contributor/:id' ,
+      element: checkAuthorization('Clientes', <AddClientContributor />),
+    },
 
     {
       path: '/AddPromotions',
