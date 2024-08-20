@@ -72,6 +72,33 @@ function AddClientContributor(props: Props) {
     complemento: '',
   });
 
+  // useEffect(() => {
+  //   if (isEditing && id && id !== '0') {
+  //     get_customer_by_id(parseInt(id)).then((customer) => {
+  //       if (customer) {
+  //         setInitialValues({
+  //           nombre: customer.nombre ?? '',
+  //           nombreComercial: customer.nombreComercial ?? '',
+  //           correo: customer.correo ?? '',
+  //           telefono: customer.telefono ?? '',
+  //           numDocumento: customer.numDocumento ?? '',
+  //           nrc: customer.nrc ?? '',
+  //           nit: customer.nit ?? '',
+  //           tipoDocumento: customer.tipoDocumento ?? '',
+  //           bienTitulo: '05',
+  //           codActividad: customer.codActividad ?? '',
+  //           esContribuyente: 1,
+  //           descActividad: customer.descActividad ?? '',
+  //           municipio: customer.direccion.municipio ?? '',
+  //           nombreMunicipio: customer.direccion.nombreMunicipio ?? '',
+  //           departamento: customer.direccion.departamento ?? '',
+  //           nombreDepartamento: customer.direccion.nombreDepartamento ?? '',
+  //           complemento: customer.direccion.complemento ?? '',
+  //         });
+  //       }
+  //     });
+  //   }
+  // }, [id, isEditing, get_customer_by_id]);
   useEffect(() => {
     if (isEditing && id && id !== '0') {
       get_customer_by_id(parseInt(id)).then((customer) => {
@@ -96,6 +123,26 @@ function AddClientContributor(props: Props) {
             complemento: customer.direccion.complemento ?? '',
           });
         }
+      });
+    } else {
+      setInitialValues({
+        nombre: '',
+        nombreComercial: '',
+        correo: '',
+        telefono: '',
+        numDocumento: '',
+        nrc: '',
+        nit: '',
+        tipoDocumento: '',
+        bienTitulo: '05',
+        codActividad: '',
+        esContribuyente: 1,
+        descActividad: '',
+        municipio: '',
+        nombreMunicipio: '',
+        departamento: '',
+        nombreDepartamento: '',
+        complemento: '',
       });
     }
   }, [id, isEditing, get_customer_by_id]);
@@ -195,13 +242,15 @@ function AddClientContributor(props: Props) {
       branchId: Number(user?.correlative.branch.id),
     };
 
-    if (props.id && props.id !== 0) {
-      await patchCustomer(values, props.id);
-      navigate('/clients');
+    if (isEditing && id && id !== '0') {
+      // Editar cliente existente
+      await patchCustomer(values, parseInt(id)); // Asegúrate de pasar el `id` correctamente como número
     } else {
+      // Crear nuevo cliente
+      console.log('DATOS DEL CLIENTE A CREAR', values);
       await postCustomer(values);
-      navigate('/clients');
     }
+    navigate('/clients');
   };
 
   const selectedKeyDepartment = useMemo(() => {
@@ -221,6 +270,7 @@ function AddClientContributor(props: Props) {
       return JSON.stringify(city);
     }
   }, [props, props.customer_direction, cat_013_municipios, cat_013_municipios.length]);
+
   const selectedKeyCodActivity = useMemo(() => {
     if (props.customer_direction) {
       const code_activity = cat_019_codigo_de_actividad_economica.find(
@@ -235,6 +285,7 @@ function AddClientContributor(props: Props) {
     cat_019_codigo_de_actividad_economica,
     cat_019_codigo_de_actividad_economica.length,
   ]);
+
   const handleFilter = (name = '') => {
     getCat019CodigoActividadEconomica(name);
   };
@@ -462,18 +513,24 @@ function AddClientContributor(props: Props) {
                         onBlur={handleBlur('codActividad')}
                         label="Actividad"
                         labelPlacement="outside"
+                        // placeholder={
+                        //   props.customer?.descActividad
+                        //     ? props.customer?.descActividad
+                        //     : 'Escribe la actividad'
+                        // }
                         placeholder={
-                          props.customer?.descActividad
-                            ? props.customer?.descActividad
-                            : 'Escribe la actividad'
+                          isEditing && values.descActividad
+                            ? values.descActividad
+                            : 'Selecciona el actividad'
                         }
+                        defaultSelectedKey={isEditing ? values.descActividad : undefined}
                         variant="bordered"
                         classNames={{
                           base: 'font-semibold text-gray-500 text-sm',
                         }}
                         className="dark:text-white"
                         // selectedKey={selectedKeyCodActivity}
-                        defaultSelectedKey={values.descActividad}
+                        // defaultSelectedKey={values.descActividad}
                         value={selectedKeyCodActivity}
                         onInputChange={(e) => handleFilter(e)}
                       >
@@ -509,17 +566,23 @@ function AddClientContributor(props: Props) {
                         label="Departamento"
                         labelPlacement="outside"
                         placeholder={
-                          props.customer_direction?.nombreDepartamento
-                            ? props.customer_direction?.nombreDepartamento
+                          isEditing && values.nombreDepartamento
+                            ? values.nombreDepartamento
                             : 'Selecciona el departamento'
                         }
+                        defaultSelectedKey={isEditing ? values.departamento : undefined}
+                        // placeholder={
+                        //   props.customer_direction?.nombreDepartamento
+                        //     ? props.customer_direction?.nombreDepartamento
+                        //     : 'Selecciona el departamento'
+                        // }
                         variant="bordered"
                         classNames={{
                           base: 'font-semibold text-gray-500 text-sm',
                         }}
                         className="dark:text-white"
                         // selectedKey={selectedKeyDepartment}
-                        defaultSelectedKey={selectedKeyDepartment}
+                        // defaultSelectedKey={selectedKeyDepartment}
                         value={selectedKeyDepartment}
                       >
                         {cat_012_departamento.map((dep) => (
@@ -551,17 +614,23 @@ function AddClientContributor(props: Props) {
                         label="Municipio"
                         labelPlacement="outside"
                         placeholder={
-                          props.customer_direction?.nombreMunicipio
-                            ? props.customer_direction?.nombreMunicipio
-                            : 'Selecciona el departamento'
+                          isEditing && values.nombreMunicipio
+                            ? values.nombreMunicipio
+                            : 'Selecciona el municipio'
                         }
+                        defaultSelectedKey={isEditing ? values.municipio : undefined}
+                        // placeholder={
+                        //   props.customer_direction?.nombreMunicipio
+                        //     ? props.customer_direction?.nombreMunicipio
+                        //     : 'Selecciona el departamento'
+                        // }
                         variant="bordered"
                         classNames={{
                           base: 'font-semibold text-gray-500 text-sm',
                         }}
                         className="dark:text-white"
                         // selectedKey={selectedKeyCity}
-                        defaultSelectedKey={props.customer_direction?.nombreMunicipio}
+                        // defaultSelectedKey={props.customer_direction?.nombreMunicipio}
                         defaultInputValue={props.customer_direction?.nombreMunicipio}
                         value={selectedKeyCity}
                       >
