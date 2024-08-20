@@ -229,12 +229,6 @@ function AddClientContributor(props: Props) {
   const { postCustomer, patchCustomer } = useCustomerStore();
   const user = get_user();
 
-  const getDocumentName = (codigo: string) => {
-    const documento = cat_022_tipo_de_documentoDeIde.find((doc) => doc.codigo === codigo);
-
-    return documento ? documento.valores : '';
-  };
-
   const onSubmit = async (payload: PayloadCustomer) => {
     const values = {
       ...payload,
@@ -412,10 +406,11 @@ function AddClientContributor(props: Props) {
                             }
                           }}
                           onBlur={handleBlur('tipoDocumento')}
-                          placeholder={
-                            getDocumentName(values.tipoDocumento) ??
-                            'Selecciona el tipo de documento'
-                          }
+                          // placeholder={
+                          //   getDocumentName(values.tipoDocumento) ??
+                          //   'Selecciona el tipo de documento'
+                          // }
+                          placeholder="Selecciona el tipo de documento"
                           variant="bordered"
                           classNames={{
                             base: 'font-semibold text-gray-500 text-sm',
@@ -544,11 +539,11 @@ function AddClientContributor(props: Props) {
                           </AutocompleteItem>
                         ))}
                       </Autocomplete>
-                      {/* {errors.codActividad && touched.codActividad && (
-                    <span className="text-sm font-semibold text-red-500">
-                      {errors.codActividad}
-                    </span>
-                  )} */}
+                      {errors.codActividad && touched.codActividad && (
+                        <span className="text-sm font-semibold text-red-500">
+                          {errors.codActividad}
+                        </span>
+                      )}
                     </div>
                   </div>
                   <div>

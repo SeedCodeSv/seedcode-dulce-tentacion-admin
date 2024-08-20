@@ -3,7 +3,6 @@ import { Formik } from 'formik';
 import { CustomerDirection, PayloadCustomer } from '../../types/customers.types';
 import { Autocomplete, AutocompleteItem, Button, Input, Textarea } from '@nextui-org/react';
 import { useCustomerStore } from '../../store/customers.store';
-import { isValidDUI } from '@avalontechsv/idsv';
 import { useBillingStore } from '../../store/facturation/billing.store';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { Municipio } from '../../types/billing/cat-013-municipio.types';
@@ -22,55 +21,87 @@ interface Props {
 
 const AddClientNormal = (props: Props) => {
   const { theme } = useContext(ThemeContext);
-
-  
   const initialValues = {
     nombre: props.customer?.nombre ?? '',
-    correo: props.customer?.correo ?? 'N/A@gmail.com',
-    telefono: props.customer?.telefono ?? '0',
-    numDocumento: props.customer?.numDocumento ?? '0',
-    municipio: props.customer_direction?.municipio || 'N/A',
-    tipoDocumento: props.customer?.tipoDocumento ?? 'N/A',
-    nombreMunicipio: props.customer_direction?.nombreMunicipio || 'N/A',
-    departamento: props.customer_direction?.departamento || 'N/A',
-    nombreDepartamento: props.customer_direction?.nombreDepartamento || 'N/A',
-    complemento: props.customer_direction?.complemento || 'N/A',
+    correo: props.customer?.correo ?? '',
+    telefono: props.customer?.telefono ?? '',
+    numDocumento: props.customer?.numDocumento ?? '',
+    municipio: props.customer_direction?.municipio || '',
+    tipoDocumento: props.customer?.tipoDocumento ?? '',
+    nombreMunicipio: props.customer_direction?.nombreMunicipio || '',
+    departamento: props.customer_direction?.departamento || '',
+    nombreDepartamento: props.customer_direction?.nombreDepartamento || '',
+    complemento: props.customer_direction?.complemento || '',
   };
+  // const validationSchema = yup.object().shape({
+  //   nombre: yup.string().required('El nombre es requerido'),
+  //   correo: yup.string().notRequired().email('El correo es inválido'),
+  //   telefono: yup
+  //     .string()
+  //     .notRequired()
+  //     .matches(/^[0-9]{10}$/, 'El celular debe tener 10 dígitos'),
+
+  //   numDocumento: yup
+  //     .string()
+  //     .notRequired()
+  //     .when('tipoDocumento', (tipoDocumento, schema) => {
+  //       const documentType = Array.isArray(tipoDocumento) ? tipoDocumento[0] : tipoDocumento;
+
+  //       if (documentType === '13') {
+  //         return schema
+  //           .matches(/^[0-9]{9}$/, 'El DUI debe tener 9 dígitos sin guiones')
+  //           .test('isValidDUI', 'El DUI no es válido', (value) => {
+  //             return value && value !== '' ? isValidDUI(value) : false;
+  //           });
+  //       }
+
+  //       if (documentType === '36') {
+  //         return schema
+  //           .matches(/^[0-9]{14}$/, 'El NIT debe tener 14 dígitos sin guiones')
+  //           .test('isValidNIT', 'El NIT no es válido', (value) => {
+  //             if (!value) return false;
+
+  //             return value.length === 14;
+  //           });
+  //       }
+
+  //       return schema.required('El número de documento es requerido');
+  //     }),
+  //   departamento: yup.string().notRequired(),
+  //   municipio: yup.string().notRequired(),
+  //   complemento: yup.string().notRequired(),
+  // });
 
   const validationSchema = yup.object().shape({
     nombre: yup.string().required('El nombre es requerido'),
-    correo: yup.string().required('El correo es requerido'),
-    telefono: yup.string().required('Este campo solo permite números sin guiones'),
-
-    numDocumento: yup
+    correo: yup.string().notRequired().email('El correo es inválido'),
+    telefono: yup
       .string()
-      .required('Este campo es requerido')
-      .when('tipoDocumento', (tipoDocumento, schema) => {
-        const documentType = Array.isArray(tipoDocumento) ? tipoDocumento[0] : tipoDocumento;
+      .notRequired()
+      .matches(/^[0-9]{10}$/, 'El celular debe tener 10 dígitos'),
 
-        if (documentType === '13') {
-          return schema
-            .matches(/^[0-9]{9}$/, 'El DUI debe tener 9 dígitos sin guiones')
-            .test('isValidDUI', 'El DUI no es válido', (value) => {
-              return value && value !== '' ? isValidDUI(value) : false;
-            });
-        }
+    numDocumento: yup.string().when('tipoDocumento', {
+      is: (tipoDocumento: string | undefined) => tipoDocumento === '13' || tipoDocumento === '36',
+      then: (schema) =>
+        schema.required('El número de documento es requerido').test({
+          name: 'documentValidation',
+          message: 'El número de documento no es válido',
+          test: (value, context) => {
+            const { tipoDocumento } = context.parent;
+            if (tipoDocumento === '13') {
+              return /^[0-9]{9}$/.test(value || '');
+            } else if (tipoDocumento === '36') {
+              return /^[0-9]{14}$/.test(value || '');
+            }
+            return true;
+          },
+        }),
+      otherwise: (schema) => schema.notRequired(),
+    }),
 
-        if (documentType === '36') {
-          return schema
-            .matches(/^[0-9]{14}$/, 'El NIT debe tener 14 dígitos sin guiones')
-            .test('isValidNIT', 'El NIT no es válido', (value) => {
-              if (!value) return false;
-
-              return value.length === 14;
-            });
-        }
-
-        return schema.required('El número de documento es requerido');
-      }),
-    departamento: yup.string().required('Debes seleccionar el departamento'),
-    municipio: yup.string().required('Debes seleccionar el municipio'),
-    complemento: yup.string().required('El complemento es requerido'),
+    departamento: yup.string().notRequired(),
+    municipio: yup.string().notRequired(),
+    complemento: yup.string().notRequired(),
   });
 
   const [selectedCodeDep, setSelectedCodeDep] = useState(
@@ -106,27 +137,37 @@ const AddClientNormal = (props: Props) => {
 
   // const [tipoDocument, setTipoDocument] = useState<string>('');
 
-  const getDocumentName = (codigo: string) => {
-    const documento = cat_022_tipo_de_documentoDeIde.find((doc) => doc.codigo === codigo);
+  // const getDocumentName = (codigo: string) => {
+  //   const documento = cat_022_tipo_de_documentoDeIde.find((doc) => doc.codigo === codigo);
 
-    return documento ? documento.valores : '';
-  };
+  //   return documento ? documento.valores : '';
+  // };
 
   const onSubmit = (payload: PayloadCustomer) => {
-    payload.correo = payload.correo || 'N/A@gmail.com';
-    payload.telefono = payload.telefono || '0';
+    // Agrega los valores predeterminados si están vacíos
+    const finalPayload = {
+      ...payload,
+      correo: payload.correo || 'N/A@gmail.com',
+      telefono: payload.telefono || '0',
+      numDocumento: payload.numDocumento || '0',
+      municipio: payload.CustomerDirection?.municipio || 'N/A',
+      tipoDocumento: payload.tipoDocumento || 'N/A',
+      nombreMunicipio: payload.CustomerDirection?.nombreMunicipio || 'N/A',
+      departamento: payload.CustomerDirection?.departamento || 'N/A',
+      nombreDepartamento: payload.CustomerDirection?.nombreDepartamento || 'N/A',
+      complemento: payload.CustomerDirection?.complemento || 'N/A',
+    };
+
     if (props.id || props.id !== 0) {
       const values = {
-        ...payload,
-        // tipoDocumento: typeDocumento,
+        ...finalPayload,
         esContribuyente: 0,
         branchId: Number(user?.correlative.branch.id),
       };
       patchCustomer(values, props.id!);
     } else {
       const values = {
-        ...payload,
-        // tipoDocumento: typeDocumento,
+        ...finalPayload,
         esContribuyente: 0,
         branchId: Number(user?.correlative.branch.id),
       };
@@ -214,9 +255,7 @@ const AddClientNormal = (props: Props) => {
                       }
                     }}
                     onBlur={handleBlur('tipoDocumento')}
-                    placeholder={
-                      getDocumentName(values.tipoDocumento) ?? 'Selecciona el tipo de documento'
-                    }
+                    placeholder="Selecciona el tipo de documento"
                     variant="bordered"
                     classNames={{
                       base: 'font-semibold text-gray-500 text-sm',
@@ -235,37 +274,6 @@ const AddClientNormal = (props: Props) => {
                     ))}
                   </Autocomplete>
                 </div>
-
-                {/* <Autocomplete
-                  onSelectionChange={(key) => {
-                    if (key) {
-                      const depSelected = JSON.parse(key as string) as ITipoDocumento;
-                      handleChange('tipoDocumento')(depSelected.codigo);
-                    }
-                  }}
-                  onBlur={handleBlur('tipoDocumento')}
-                  label="Tipo de documento"
-                  labelPlacement="outside"
-                  placeholder={
-                    getDocumentName(values.tipoDocumento) ?? 'Selecciona el tipo de documento'
-                  }
-                  variant="bordered"
-                  classNames={{
-                    base: 'font-semibold text-gray-500 text-sm',
-                  }}
-                  className="dark:text-white"
-                  defaultSelectedKey={values.tipoDocumento}
-                >
-                  {cat_022_tipo_de_documentoDeIde.map((dep) => (
-                    <AutocompleteItem
-                      value={dep.codigo}
-                      key={JSON.stringify(dep)}
-                      className="dark:text-white"
-                    >
-                      {dep.valores}
-                    </AutocompleteItem>
-                  ))}
-                </Autocomplete> */}
               </div>
               <div className="mt-2">
                 <Input
