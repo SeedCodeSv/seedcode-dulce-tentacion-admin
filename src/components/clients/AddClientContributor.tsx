@@ -18,7 +18,6 @@ import { useNavigate, useParams } from 'react-router';
 // import { ITipoDocumento } from '../../types/DTE/tipo_documento.types';
 
 interface Props {
-  // closeModal: () => void;
   customer?: PayloadCustomer;
   customer_direction?: CustomerDirection;
   id?: number;
@@ -28,36 +27,78 @@ interface Props {
 function AddClientContributor(props: Props) {
   const { theme } = useContext(ThemeContext);
   const { id } = useParams<{ id: string }>();
-
-  const isEditing = !!id; 
+  const isEditing = !!id;
   const { get_customer_by_id, user_by_id } = useCustomerStore(); // Suponiendo que tienes una función para obtener el cliente por ID
 
   console.log('user_by_id', user_by_id);
-  const initialValues = {
-    nombre: user_by_id?.nombre ?? '',
-    nombreComercial: props.customer?.nombreComercial ?? '',
-    correo: props.customer?.correo ?? '',
-    telefono: props.customer?.telefono ?? '',
-    numDocumento: props.customer?.numDocumento ?? '',
-    nrc: props.customer?.nrc ?? '',
-    nit: props.customer?.nit ?? '',
-    tipoDocumento: props.customer?.tipoDocumento ?? '',
+
+  // const initialValues = {
+  //   nombre: props.id && props.id !== 0 ? user_by_id?.nombre ?? '' : '',
+  //   nombreComercial: props.id && props.id !== 0 ? props.customer?.nombreComercial ?? '' : '',
+  //   correo: props.id && props.id !== 0 ? props.customer?.correo ?? '' : '',
+  //   telefono: props.id && props.id !== 0 ? props.customer?.telefono ?? '' : '',
+  //   numDocumento: props.id && props.id !== 0 ? props.customer?.numDocumento ?? '' : '',
+  //   nrc: props.id && props.id !== 0 ? props.customer?.nrc ?? '' : '',
+  //   nit: props.id && props.id !== 0 ? props.customer?.nit ?? '' : '',
+  //   tipoDocumento: props.id && props.id !== 0 ? props.customer?.tipoDocumento ?? '' : '',
+  //   bienTitulo: '05',
+  //   codActividad: props.id && props.id !== 0 ? props.customer?.codActividad ?? '' : '',
+  //   esContribuyente: 1,
+  //   descActividad: props.id && props.id !== 0 ? props.customer?.descActividad ?? '' : '',
+  //   municipio: props.id && props.id !== 0 ? props.customer_direction?.municipio ?? '' : '',
+  //   nombreMunicipio: props.id && props.id !== 0 ? props.customer_direction?.nombreMunicipio ?? '' : '',
+  //   departamento: props.id && props.id !== 0 ? props.customer_direction?.departamento ?? '' : '',
+  //   nombreDepartamento: props.id && props.id !== 0 ? props.customer_direction?.nombreDepartamento ?? '' : '',
+  //   complemento: props.id && props.id !== 0 ? props.customer_direction?.complemento ?? '' : '',
+  // };
+
+  const [initialValues, setInitialValues] = useState({
+    nombre: '',
+    nombreComercial: '',
+    correo: '',
+    telefono: '',
+    numDocumento: '',
+    nrc: '',
+    nit: '',
+    tipoDocumento: '',
     bienTitulo: '05',
-    codActividad: props.customer?.codActividad ?? '',
+    codActividad: '',
     esContribuyente: 1,
-    descActividad: props.customer?.descActividad ?? '',
-    municipio: props.customer_direction?.municipio ?? '',
-    nombreMunicipio: props.customer_direction?.nombreMunicipio ?? '',
-    departamento: props.customer_direction?.departamento ?? '',
-    nombreDepartamento: props.customer_direction?.nombreDepartamento ?? '',
-    complemento: props.customer_direction?.complemento ?? '',
-  };
+    descActividad: '',
+    municipio: '',
+    nombreMunicipio: '',
+    departamento: '',
+    nombreDepartamento: '',
+    complemento: '',
+  });
 
   useEffect(() => {
-    if (isEditing && id) {
-      get_customer_by_id(parseInt(id)); // Cargar datos del cliente
+    if (isEditing && id && id !== '0') {
+      get_customer_by_id(parseInt(id)).then((customer) => {
+        if (customer) {
+          setInitialValues({
+            nombre: customer.nombre ?? '',
+            nombreComercial: customer.nombreComercial ?? '',
+            correo: customer.correo ?? '',
+            telefono: customer.telefono ?? '',
+            numDocumento: customer.numDocumento ?? '',
+            nrc: customer.nrc ?? '',
+            nit: customer.nit ?? '',
+            tipoDocumento: customer.tipoDocumento ?? '',
+            bienTitulo: '05',
+            codActividad: customer.codActividad ?? '',
+            esContribuyente: 1,
+            descActividad: customer.descActividad ?? '',
+            municipio: customer.direccion.municipio ?? '',
+            nombreMunicipio: customer.direccion.nombreMunicipio ?? '',
+            departamento: customer.direccion.departamento ?? '',
+            nombreDepartamento: customer.direccion.nombreDepartamento ?? '',
+            complemento: customer.direccion.complemento ?? '',
+          });
+        }
+      });
     }
-  }, [id]);
+  }, [id, isEditing, get_customer_by_id]);
 
   const validationSchema = yup.object().shape({
     nombre: yup.string().required('**El nombre es requerido**'),
@@ -156,8 +197,10 @@ function AddClientContributor(props: Props) {
 
     if (props.id && props.id !== 0) {
       await patchCustomer(values, props.id);
+      navigate('/clients');
     } else {
       await postCustomer(values);
+      navigate('/clients');
     }
   };
 
@@ -212,8 +255,7 @@ function AddClientContributor(props: Props) {
             initialValues={initialValues}
             validationSchema={validationSchema}
             onSubmit={(values) => onSubmit(values)}
-            validateOnMount={false}
-            validateOnBlur={false}
+            enableReinitialize={true}
           >
             {({
               values,

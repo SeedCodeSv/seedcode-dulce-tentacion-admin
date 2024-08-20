@@ -121,13 +121,14 @@ export const useCustomerStore = create<IUseCustomersStore>((set, get) => ({
   },
 
   get_customer_by_id: (id: number) => {
-  
-    getCustomerById(id)  
+    return getCustomerById(id)
       .then(({ data }) => {
-        set({ user_by_id: data }); 
+        set({ user_by_id: data });
+        return data;
       })
       .catch(() => {
         set({ user_by_id: null });
+        return undefined;
       });
   },
 }));
