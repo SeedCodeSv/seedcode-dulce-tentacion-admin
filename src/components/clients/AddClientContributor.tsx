@@ -10,7 +10,6 @@ import { CodigoActividadEconomica } from '../../types/billing/cat-019-codigo-de-
 import { useCustomerStore } from '../../store/customers.store';
 import { CustomerDirection, PayloadCustomer } from '../../types/customers.types';
 import { ThemeContext } from '../../hooks/useTheme';
-import { get_user } from '../../storage/localStorage';
 import { ITipoDocumento } from '../../types/DTE/tipo_documento.types';
 import Layout from '@/layout/Layout';
 import { ArrowLeft } from 'lucide-react';
@@ -31,7 +30,6 @@ function AddClientContributor(props: Props) {
   const isEditing = !!id;
   const { get_customer_by_id, user_by_id } = useCustomerStore();
   const { getBranchesList, branch_list } = useBranchesStore();
-
 
   useEffect(() => {
     getBranchesList();
@@ -184,7 +182,6 @@ function AddClientContributor(props: Props) {
   }, [selectedCodeDep, props.customer_direction]);
 
   const { postCustomer, patchCustomer } = useCustomerStore();
-  const user = get_user();
 
   const onSubmit = async (payload: PayloadCustomer) => {
     const values = {
@@ -609,6 +606,7 @@ function AddClientContributor(props: Props) {
                             handleChange('branchId')(depSelected?.id?.toString() ?? '');
                           }
                         }}
+                        defaultSelectedKey={isEditing ? values.branchId : undefined}
                         onBlur={handleBlur('branchId')}
                         label="Sucursal"
                         labelPlacement="outside"
