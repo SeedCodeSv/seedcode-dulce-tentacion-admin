@@ -41,7 +41,6 @@ import Pagination from '../global/Pagination';
 import { global_styles } from '../../styles/global.styles';
 import SmPagination from '../global/SmPagination';
 import classNames from 'classnames';
-
 import TooltipGlobal from '../global/TooltipGlobal';
 import BottomDrawer from '../global/BottomDrawer';
 import useWindowSize from '@/hooks/useWindowSize';
@@ -95,8 +94,6 @@ const ListClients = ({ actions }: Props) => {
   const [selectedCustomer, setSelectedCustomer] = useState<PayloadCustomer>();
   const [selectedCustomerDirection, setSelectedCustomerDirection] = useState<CustomerDirection>();
   const [selectedId, setSelectedId] = useState<number>(0);
-  // const [selectedTitle, setSelectedTitle] = useState('');
-  const [selectedTitle, setSelectedTitle] = useState<string>('');
   const navigate = useNavigate();
 
   const handleChangeCustomer = (customer: Customer, type = 'edit') => {
@@ -129,8 +126,6 @@ const ListClients = ({ actions }: Props) => {
     setSelectedCustomerDirection(payload_direction);
     setSelectedId(customer.id);
 
-
-
     if (type === 'edit') {
       if (customer.esContribuyente) {
         navigate(`/add-client-contributor/${customer.id}`);
@@ -160,8 +155,6 @@ const ListClients = ({ actions }: Props) => {
     }
     modalAdd.onOpen();
   };
-
-
 
   const handleActivate = (id: number) => {
     save_active_customer(id).then(() => {
@@ -256,67 +249,71 @@ const ListClients = ({ actions }: Props) => {
             </div>
           </div>
           <div className="flex flex-col sm:flex-row items-end justify-between mt-3">
-            <div className="flex-col gap-2 hidden sm:flex sm:flex-row lg:justify-start items-center w-full">
-              <Select
-                className="w-44 ml-2"
-                variant="bordered"
-                label="Mostrar"
-                defaultSelectedKeys={['5']}
-                labelPlacement="outside"
-                classNames={{
-                  label: 'font-semibold',
-                }}
-                value={limit}
-                onChange={(e) => {
-                  setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
-                }}
-              >
-                <SelectItem className="dark:text-white" key={'5'}>
-                  5
-                </SelectItem>
-                <SelectItem className="dark:text-white" key={'10'}>
-                  10
-                </SelectItem>
-                <SelectItem className="dark:text-white" key={'20'}>
-                  20
-                </SelectItem>
-                <SelectItem className="dark:text-white" key={'30'}>
-                  30
-                </SelectItem>
-                <SelectItem className="dark:text-white" key={'40'}>
-                  40
-                </SelectItem>
-                <SelectItem className="dark:text-white" key={'50'}>
-                  50
-                </SelectItem>
-                <SelectItem className="dark:text-white" key={'100'}>
-                  100
-                </SelectItem>
-              </Select>
-              <Select
-                className="w-44 ml-2 mt-5"
-                variant="bordered"
-                placeholder="-- Seleccione tipo de cliente --"
-                labelPlacement="outside"
-                classNames={{
-                  label: 'font-semibold',
-                }}
-                value={String(tipeCustomer)}
-                onChange={(e) => {
-                  // setTypeCustomer(e.target.value !== '' ? Number(e.target.value) : 0);
-                  setTypeCustomer(e.target.value !== '' ? e.target.value : '');
-                }}
-              >
-                <SelectItem className="dark:text-white" key={'1'}>
-                  Contribuyente
-                </SelectItem>
-                <SelectItem className="dark:text-white" key={'0'}>
-                  No Contribuyente
-                </SelectItem>
-                <SelectItem className="dark:text-white" key={''}>
-                  Todos
-                </SelectItem>
-              </Select>
+            <div className="flex-col gap-2  sm:flex sm:flex-row lg:justify-start items-center w-full">
+              <div className="">
+                <Select
+                  className="w-44 ml-2"
+                  variant="bordered"
+                  label="Mostrar"
+                  defaultSelectedKeys={['5']}
+                  labelPlacement="outside"
+                  classNames={{
+                    label: 'font-semibold',
+                  }}
+                  value={limit}
+                  onChange={(e) => {
+                    setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
+                  }}
+                >
+                  <SelectItem className="dark:text-white" key={'5'}>
+                    5
+                  </SelectItem>
+                  <SelectItem className="dark:text-white" key={'10'}>
+                    10
+                  </SelectItem>
+                  <SelectItem className="dark:text-white" key={'20'}>
+                    20
+                  </SelectItem>
+                  <SelectItem className="dark:text-white" key={'30'}>
+                    30
+                  </SelectItem>
+                  <SelectItem className="dark:text-white" key={'40'}>
+                    40
+                  </SelectItem>
+                  <SelectItem className="dark:text-white" key={'50'}>
+                    50
+                  </SelectItem>
+                  <SelectItem className="dark:text-white" key={'100'}>
+                    100
+                  </SelectItem>
+                </Select>
+              </div>
+              <div className="">
+                <Select
+                  className="w-44 ml-2 mt-5"
+                  variant="bordered"
+                  placeholder="-- Seleccione tipo de cliente --"
+                  labelPlacement="outside"
+                  classNames={{
+                    label: 'font-semibold',
+                  }}
+                  value={String(tipeCustomer)}
+                  onChange={(e) => {
+                    // setTypeCustomer(e.target.value !== '' ? Number(e.target.value) : 0);
+                    setTypeCustomer(e.target.value !== '' ? e.target.value : '');
+                  }}
+                >
+                  <SelectItem className="dark:text-white" key={'1'}>
+                    Contribuyente
+                  </SelectItem>
+                  <SelectItem className="dark:text-white" key={'0'}>
+                    No Contribuyente
+                  </SelectItem>
+                  <SelectItem className="dark:text-white" key={''}>
+                    Todos
+                  </SelectItem>
+                </Select>
+              </div>
             </div>
             {actions.includes('Agregar') && (
               <BottomAdd setTypeClient={setTypeClient} openModal={modalAdd.onOpen} />
@@ -329,6 +326,7 @@ const ListClients = ({ actions }: Props) => {
                     isIconOnly
                     onClick={() => setOpenVaul(true)}
                     type="button"
+                    
                   >
                     <Filter />
                   </Button>
@@ -358,6 +356,35 @@ const ListClients = ({ actions }: Props) => {
                         setSearch('');
                       }}
                     />
+                    <Autocomplete
+                      onSelectionChange={(key) => {
+                        if (key) {
+                          setBranch(key as string);
+                        }
+                      }}
+                      className="w-full dark:text-white"
+                      label="Sucursal"
+                      labelPlacement="outside"
+                      placeholder="Selecciona una sucursal"
+                      variant="bordered"
+                      defaultSelectedKey={branch}
+                      classNames={{
+                        base: 'font-semibold text-gray-500 text-sm',
+                      }}
+                      clearButtonProps={{
+                        onClick: () => setBranch(''),
+                      }}
+                    >
+                      {branch_list.map((bra) => (
+                        <AutocompleteItem
+                          value={bra.name}
+                          className="dark:text-white"
+                          key={bra.name}
+                        >
+                          {bra.name}
+                        </AutocompleteItem>
+                      ))}
+                    </Autocomplete>
                     <Input
                       startContent={<Mail />}
                       className="w-full dark:text-white"
@@ -449,12 +476,12 @@ const ListClients = ({ actions }: Props) => {
               </Button>
             </ButtonGroup>
           </div>
-          <div className="mt-5">
+          {/* <div className="mt-5">
             <div className="xl:hidden">
               <Select
-                className="w-full mt-2"
+                className="w-44 ml-2 mt-5"
                 variant="bordered"
-                placeholder="-- Seleccione el tipo --"
+                placeholder="-- Seleccione tipo de cliente --"
                 labelPlacement="outside"
                 classNames={{
                   label: 'font-semibold',
@@ -462,7 +489,7 @@ const ListClients = ({ actions }: Props) => {
                 value={String(tipeCustomer)}
                 onChange={(e) => {
                   // setTypeCustomer(e.target.value !== '' ? Number(e.target.value) : 0);
-                  setSelectedTitle(e.target.value !== '' ? e.target.value : '0');
+                  setTypeCustomer(e.target.value !== '' ? e.target.value : '');
                 }}
               >
                 <SelectItem className="dark:text-white" key={'1'}>
@@ -471,9 +498,12 @@ const ListClients = ({ actions }: Props) => {
                 <SelectItem className="dark:text-white" key={'0'}>
                   No Contribuyente
                 </SelectItem>
+                <SelectItem className="dark:text-white" key={''}>
+                  Todos
+                </SelectItem>
               </Select>
             </div>
-          </div>
+          </div> */}
           <div className="flex items-center justify-center ml-2"></div>
           {(view === 'grid' || view === 'list') && (
             <MobileView
@@ -845,7 +875,7 @@ interface PopoverAddProps {
   openModal: () => void;
 }
 
-export const BottomAdd = ({ setTypeClient, openModal }: PopoverAddProps) => {
+export const BottomAdd = ({ setTypeClient }: PopoverAddProps) => {
   const { theme } = useContext(ThemeContext);
   const { isOpen, onClose, onOpen } = useDisclosure();
 
