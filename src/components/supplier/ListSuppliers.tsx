@@ -43,6 +43,7 @@ import useWindowSize from '@/hooks/useWindowSize';
 import BottomDrawer from '../global/BottomDrawer';
 import classNames from 'classnames';
 import { ArrayAction } from '@/types/view.types';
+import { useNavigate } from 'react-router';
 
 function ListSuppliers({ actions }: ArrayAction) {
   const { theme } = useContext(ThemeContext);
@@ -582,44 +583,6 @@ function ListSuppliers({ actions }: ArrayAction) {
             </>
           )}
         </div>
-        <HeadlessModal
-          isOpen={modalAdd.isOpen}
-          onClose={() => {
-            clearClose();
-            modalAdd.onClose();
-          }}
-          title={
-            selectedSupplier
-              ? selectedTitle !== ''
-                ? selectedTitle
-                : 'Editar Proveedor'
-              : 'Nuevo Proveedor'
-          }
-          size={
-            typeProveedor === 'contribuyente'
-              ? 'w-full md:w-[600px] lg:w-[800px] xl:w-[1000px]'
-              : 'w-full md:w-[500px] lg:w-[700px] xl:w-[800px]'
-          }
-        >
-          <>
-            {typeProveedor === 'normal' && (
-              <AddNormalSupplier
-                closeModal={modalAdd.onClose}
-                supplier={selectedSupplier}
-                supplier_direction={selectedSupplierDirection}
-                id={selectedId}
-              />
-            )}
-            {typeProveedor === 'contribuyente' && (
-              <AddTributeSupplier
-                closeModal={modalAdd.onClose}
-                supplier={selectedSupplier}
-                supplier_direction={selectedSupplierDirection}
-                id={selectedId}
-              />
-            )}
-          </>
-        </HeadlessModal>
       </div>
     </>
   );
@@ -693,6 +656,7 @@ interface PopoverAddProps {
 }
 
 export const BottomAdd = ({ setTypeSupplier, openModal }: PopoverAddProps) => {
+  const navigate = useNavigate();
   const { theme } = useContext(ThemeContext);
   const { isOpen, onClose, onOpen } = useDisclosure();
   return (
@@ -721,16 +685,14 @@ export const BottomAdd = ({ setTypeSupplier, openModal }: PopoverAddProps) => {
         <div className="flex flex-col gap-5 p-3 bg-white dark:bg-zinc-900">
           <Button
             onClick={() => {
-              onClose();
-              openModal();
-              setTypeSupplier('normal');
+              navigate('/add-supplier-normal');
             }}
             style={{
               backgroundColor: theme.colors.secondary,
               color: theme.colors.primary,
             }}
           >
-            Proveedor normal
+            Proveedor Consumidor Final
           </Button>
           <Button
             onClick={() => {
@@ -743,7 +705,7 @@ export const BottomAdd = ({ setTypeSupplier, openModal }: PopoverAddProps) => {
               color: theme.colors.primary,
             }}
           >
-            Proveedor contribuyente
+            Proveedor Contribuyente
           </Button>
         </div>
       </PopoverContent>
@@ -753,6 +715,7 @@ export const BottomAdd = ({ setTypeSupplier, openModal }: PopoverAddProps) => {
 
 export const BottomSm = ({ setTypeSupplier, openModal }: PopoverAddProps) => {
   const { theme } = useContext(ThemeContext);
+  const navigate = useNavigate();
   const { isOpen, onClose, onOpen } = useDisclosure();
   return (
     <Popover
@@ -779,16 +742,14 @@ export const BottomSm = ({ setTypeSupplier, openModal }: PopoverAddProps) => {
         <div className="flex flex-col gap-5 p-3 bg-white dark:bg-zinc-900">
           <Button
             onClick={() => {
-              onClose();
-              openModal();
-              setTypeSupplier('normal');
+              navigate('/add-supplier-normal');
             }}
             style={{
               backgroundColor: theme.colors.secondary,
               color: theme.colors.primary,
             }}
           >
-            Proveedor normal
+            Proveedor Consumidor Final
           </Button>
           <Button
             onClick={() => {
@@ -801,7 +762,7 @@ export const BottomSm = ({ setTypeSupplier, openModal }: PopoverAddProps) => {
               color: theme.colors.primary,
             }}
           >
-            Proveedor contribuyente
+            Proveedor Contribuyente
           </Button>
         </div>
       </PopoverContent>

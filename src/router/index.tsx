@@ -46,6 +46,7 @@ import Shopping from '@/pages/Shopping';
 import CreateShopping from '@/components/shopping/CreateShoppingJson';
 import CFFBookIVA from '@/pages/iva/CFFBookIVA';
 import FEBookIVA from '@/pages/iva/FEBookIVA';
+import AddNormalSupplier from '@/components/supplier/AddNormalSupplier';
 
 const Loading = () => {
   return <div>Cargando...</div>;
@@ -121,6 +122,10 @@ export const router = () => {
     {
       path: '/suppliers',
       element: checkAuthorization('Proveedores', <Supplier />),
+    },
+    {
+      path: '/add-supplier-normal',
+      element: checkAuthorization('Proveedores', <AddNormalSupplier />),
     },
     {
       path: '/branches',
