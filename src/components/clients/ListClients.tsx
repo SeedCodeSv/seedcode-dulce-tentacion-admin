@@ -326,7 +326,6 @@ const ListClients = ({ actions }: Props) => {
                     isIconOnly
                     onClick={() => setOpenVaul(true)}
                     type="button"
-                    
                   >
                     <Filter />
                   </Button>
@@ -909,7 +908,6 @@ export const BottomAdd = ({ setTypeClient }: PopoverAddProps) => {
             type="button"
             onClick={() => {
               navigate(`/add-client/0`);
-              setTypeClient('normal');
             }}
             style={{
               backgroundColor: theme.colors.secondary,
@@ -927,7 +925,6 @@ export const BottomAdd = ({ setTypeClient }: PopoverAddProps) => {
             // }}
             onClick={() => {
               navigate(`/add-client-contributor/0`);
-              setTypeClient('contribuyente');
             }}
             style={{
               backgroundColor: theme.colors.third,
