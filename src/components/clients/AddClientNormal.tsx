@@ -8,14 +8,14 @@ import { useContext, useEffect, useMemo, useState } from 'react';
 import { Municipio } from '../../types/billing/cat-013-municipio.types';
 import { Departamento } from '../../types/billing/cat-012-departamento.types';
 import { ThemeContext } from '../../hooks/useTheme';
-import { get_user } from '../../storage/localStorage';
 import { ITipoDocumento } from '@/types/DTE/tipo_documento.types';
 import Layout from '@/layout/Layout';
 import { useNavigate, useParams } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
+import { useBranchesStore } from '@/store/branches.store';
+import { Branch } from '@/types/auth.types';
 
 interface Props {
-  // closeModal: () => void;
   customer?: PayloadCustomer;
   customer_direction?: CustomerDirection;
   id?: number;
@@ -27,8 +27,12 @@ const AddClientNormal = (props: Props) => {
   const { id } = useParams<{ id: string }>();
   const isEditing = !!id;
   const { get_customer_by_id, user_by_id } = useCustomerStore(); // Suponiendo que tienes una función para obtener el cliente por ID
-
+  const { getBranchesList, branch_list } = useBranchesStore();
   console.log('user_by_id', user_by_id);
+
+  useEffect(() => {
+    getBranchesList();
+  }, []);
 
   const [initialValues, setInitialValues] = useState({
     nombre: '',
@@ -41,23 +45,13 @@ const AddClientNormal = (props: Props) => {
     departamento: '',
     nombreDepartamento: '',
     complemento: '',
+    branchId: 0,
   });
-  // const initialValues = {
-  //   nombre: props.customer?.nombre ?? '',
-  //   correo: props.customer?.correo ?? '',
-  //   telefono: props.customer?.telefono ?? '',
-  //   numDocumento: props.customer?.numDocumento ?? '',
-  //   municipio: props.customer_direction?.municipio || '',
-  //   tipoDocumento: props.customer?.tipoDocumento ?? '',
-  //   nombreMunicipio: props.customer_direction?.nombreMunicipio || '',
-  //   departamento: props.customer_direction?.departamento || '',
-  //   nombreDepartamento: props.customer_direction?.nombreDepartamento || '',
-  //   complemento: props.customer_direction?.complemento || '',
-  // };
 
   useEffect(() => {
     if (isEditing && id && id !== '0') {
       get_customer_by_id(parseInt(id)).then((customer) => {
+        console.log('Cliente recuperado:', customer);
         if (customer) {
           setInitialValues({
             nombre: customer.nombre ?? '',
@@ -65,12 +59,12 @@ const AddClientNormal = (props: Props) => {
             telefono: customer.telefono ?? '',
             numDocumento: customer.numDocumento ?? '',
             tipoDocumento: customer.tipoDocumento ?? '',
-
             municipio: customer.direccion.municipio ?? '',
             nombreMunicipio: customer.direccion.nombreMunicipio ?? '',
             departamento: customer.direccion.departamento ?? '',
             nombreDepartamento: customer.direccion.nombreDepartamento ?? '',
             complemento: customer.direccion.complemento ?? '',
+            branchId: customer.branchId ?? 0,
           });
         }
       });
@@ -86,55 +80,21 @@ const AddClientNormal = (props: Props) => {
         departamento: '',
         nombreDepartamento: '',
         complemento: '',
+        branchId: 0,
       });
     }
   }, [id, isEditing, get_customer_by_id]);
-  // const validationSchema = yup.object().shape({
-  //   nombre: yup.string().required('El nombre es requerido'),
-  //   correo: yup.string().notRequired().email('El correo es inválido'),
-  //   telefono: yup
-  //     .string()
-  //     .notRequired()
-  //     .matches(/^[0-9]{10}$/, 'El celular debe tener 10 dígitos'),
-
-  //   numDocumento: yup
-  //     .string()
-  //     .notRequired()
-  //     .when('tipoDocumento', (tipoDocumento, schema) => {
-  //       const documentType = Array.isArray(tipoDocumento) ? tipoDocumento[0] : tipoDocumento;
-
-  //       if (documentType === '13') {
-  //         return schema
-  //           .matches(/^[0-9]{9}$/, 'El DUI debe tener 9 dígitos sin guiones')
-  //           .test('isValidDUI', 'El DUI no es válido', (value) => {
-  //             return value && value !== '' ? isValidDUI(value) : false;
-  //           });
-  //       }
-
-  //       if (documentType === '36') {
-  //         return schema
-  //           .matches(/^[0-9]{14}$/, 'El NIT debe tener 14 dígitos sin guiones')
-  //           .test('isValidNIT', 'El NIT no es válido', (value) => {
-  //             if (!value) return false;
-
-  //             return value.length === 14;
-  //           });
-  //       }
-
-  //       return schema.required('El número de documento es requerido');
-  //     }),
-  //   departamento: yup.string().notRequired(),
-  //   municipio: yup.string().notRequired(),
-  //   complemento: yup.string().notRequired(),
-  // });
 
   const validationSchema = yup.object().shape({
+    branchId: yup
+      .number()
+      .typeError('La sucursal es requerida') // Este mensaje se mostrará si no es un número
+      .required('La sucursal es requerida')
+      .min(1, 'Selecciona una sucursal válida'),
     nombre: yup.string().required('El nombre es requerido'),
     correo: yup.string().notRequired().email('El correo es inválido'),
-    telefono: yup
-      .string()
-      .notRequired()
-      .matches(/^[0-9]{10}$/, 'El celular debe tener 10 dígitos'),
+    telefono: yup.string().notRequired(),
+    // .matches(/^[0-9]{8}$/, 'El celular debe tener 8 dígitos sin guiones'),
 
     numDocumento: yup.string().when('tipoDocumento', {
       is: (tipoDocumento: string | undefined) => tipoDocumento === '13' || tipoDocumento === '36',
@@ -189,18 +149,8 @@ const AddClientNormal = (props: Props) => {
   }, [selectedCodeDep]);
 
   const { postCustomer, patchCustomer } = useCustomerStore();
-  const user = get_user();
-
-  // const [tipoDocument, setTipoDocument] = useState<string>('');
-
-  // const getDocumentName = (codigo: string) => {
-  //   const documento = cat_022_tipo_de_documentoDeIde.find((doc) => doc.codigo === codigo);
-
-  //   return documento ? documento.valores : '';
-  // };
 
   const onSubmit = async (payload: PayloadCustomer) => {
-    // Agrega los valores predeterminados si están vacíos
     const finalPayload = {
       ...payload,
       correo: payload.correo || 'N/A@gmail.com',
@@ -212,7 +162,7 @@ const AddClientNormal = (props: Props) => {
       departamento: payload.CustomerDirection?.departamento || 'N/A',
       nombreDepartamento: payload.CustomerDirection?.nombreDepartamento || 'N/A',
       complemento: payload.CustomerDirection?.complemento || 'N/A',
-      branchId: 1,
+      branchId: payload.branchId,
     };
 
     if (isEditing && id && id !== '0') {
@@ -223,7 +173,7 @@ const AddClientNormal = (props: Props) => {
       console.log('DATOS DEL CLIENTE A CREAR', finalPayload);
       await postCustomer(finalPayload);
     }
-    // navigate('/clients');
+    navigate('/clients');
   };
 
   const selectedKeyDepartment = useMemo(() => {
@@ -250,7 +200,7 @@ const AddClientNormal = (props: Props) => {
         <div className="w-full h-full p-4 overflow-y-auto bg-white shadow custom-scrollbar md:p-8 dark:bg-gray-900">
           <button
             onClick={() => navigate('/clients')}
-            className="flex items-center gap-2 bg-transparent"
+            className="flex items-center gap-2 bg-transparent "
           >
             <ArrowLeft />
             <span>Volver</span>
@@ -261,69 +211,132 @@ const AddClientNormal = (props: Props) => {
             onSubmit={(values) => onSubmit(values)}
             validateOnMount={false}
             validateOnBlur={false}
+            enableReinitialize={true}
           >
             {({ values, touched, errors, handleBlur, handleChange, handleSubmit }) => (
               <>
-                <div className="">
-                  <Input
-                    label="Nombre"
-                    labelPlacement="outside"
-                    name="name"
-                    value={values.nombre}
-                    onChange={handleChange('nombre')}
-                    onBlur={handleBlur('nombre')}
-                    placeholder="Ingresa el nombre"
-                    classNames={{
-                      label: 'font-semibold text-gray-500 text-sm',
-                    }}
-                    variant="bordered"
-                  />
-                  {errors.nombre && touched.nombre && (
-                    <span className="text-sm font-semibold text-red-500">{errors.nombre}</span>
-                  )}
-                </div>
-                <div className="pt-3">
-                  <Input
-                    label="Correo electrónico"
-                    labelPlacement="outside"
-                    name="correo"
-                    value={values.correo}
-                    onChange={handleChange('correo')}
-                    onBlur={handleBlur('correo')}
-                    placeholder="Ingresa el correo"
-                    classNames={{
-                      label: 'font-semibold text-gray-500 text-sm',
-                    }}
-                    variant="bordered"
-                  />
-                  {errors.correo && touched.correo && (
-                    <span className="text-sm font-semibold text-red-500">{errors.correo}</span>
-                  )}
-                </div>
-
-                <div className="grid grid-cols-2 gap-5 pt-3">
-                  <div className="pt-2">
-                    <div className="flex flex-col">
-                      <label className="font-semibold text-gray-900 text-sm mb-1">
-                        Tipo de documento
-                      </label>
+                <div className="mt-10">
+                  <div className="">
+                    <Input
+                      label="Nombre"
+                      labelPlacement="outside"
+                      name="name"
+                      value={values.nombre}
+                      onChange={handleChange('nombre')}
+                      onBlur={handleBlur('nombre')}
+                      placeholder="Ingresa el nombre"
+                      classNames={{
+                        label: 'font-semibold text-gray-500 text-sm',
+                      }}
+                      variant="bordered"
+                    />
+                    {errors.nombre && touched.nombre && (
+                      <span className="text-sm font-semibold text-red-500">{errors.nombre}</span>
+                    )}
+                  </div>
+                  <div className="pt-3">
+                    <Input
+                      label="Correo electrónico"
+                      labelPlacement="outside"
+                      name="correo"
+                      value={values.correo}
+                      onChange={handleChange('correo')}
+                      onBlur={handleBlur('correo')}
+                      placeholder="Ingresa el correo"
+                      classNames={{
+                        label: 'font-semibold text-gray-500 text-sm',
+                      }}
+                      variant="bordered"
+                    />
+                    {errors.correo && touched.correo && (
+                      <span className="text-sm font-semibold text-red-500">{errors.correo}</span>
+                    )}
+                  </div>
+                  <div className="grid grid-cols-2 gap-5 pt-3">
+                    <div className="pt-2">
+                      <div className="flex flex-col">
+                        <label className="font-semibold text-gray-900 text-sm mb-1">
+                          Tipo de documento
+                        </label>
+                        <Autocomplete
+                          onSelectionChange={(key) => {
+                            if (key) {
+                              const depSelected = JSON.parse(key as string) as ITipoDocumento;
+                              handleChange('tipoDocumento')(depSelected.codigo);
+                            }
+                          }}
+                          onBlur={handleBlur('tipoDocumento')}
+                          placeholder="Selecciona el tipo de documento"
+                          variant="bordered"
+                          classNames={{
+                            base: 'font-semibold text-gray-500 text-sm',
+                          }}
+                          className="dark:text-white"
+                          defaultSelectedKey={values.tipoDocumento}
+                        >
+                          {cat_022_tipo_de_documentoDeIde.map((dep) => (
+                            <AutocompleteItem
+                              value={dep.codigo}
+                              key={JSON.stringify(dep)}
+                              className="dark:text-white"
+                            >
+                              {dep.valores}
+                            </AutocompleteItem>
+                          ))}
+                        </Autocomplete>
+                      </div>
+                    </div>
+                    <div className="mt-2">
+                      <Input
+                        type="text"
+                        label="Numero documento"
+                        labelPlacement="outside"
+                        name="numDocumento"
+                        value={values.numDocumento}
+                        onChange={handleChange('numDocumento')}
+                        onBlur={handleBlur('numDocumento')}
+                        placeholder="Ingresa el número de documento"
+                        classNames={{
+                          label: 'font-semibold text-gray-500 text-sm',
+                        }}
+                        variant="bordered"
+                      />
+                      {errors.numDocumento && touched.numDocumento && (
+                        <span className="text-sm font-semibold text-red-500">
+                          {errors.numDocumento}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-5 pt-3">
+                    <div>
                       <Autocomplete
                         onSelectionChange={(key) => {
                           if (key) {
-                            const depSelected = JSON.parse(key as string) as ITipoDocumento;
-                            handleChange('tipoDocumento')(depSelected.codigo);
+                            const depSelected = JSON.parse(key as string) as Municipio;
+                            setSelectedCodeDep(depSelected.codigo);
+                            handleChange('departamento')(depSelected.codigo);
+                            handleChange('nombreDepartamento')(depSelected.valores);
                           }
                         }}
-                        onBlur={handleBlur('tipoDocumento')}
-                        placeholder="Selecciona el tipo de documento"
+                        onBlur={handleBlur('departamento')}
+                        label="Departamento"
+                        labelPlacement="outside"
+                        placeholder={
+                          isEditing && values.nombreDepartamento
+                            ? values.nombreDepartamento
+                            : 'Selecciona el departamento'
+                        }
                         variant="bordered"
                         classNames={{
                           base: 'font-semibold text-gray-500 text-sm',
                         }}
                         className="dark:text-white"
-                        defaultSelectedKey={values.tipoDocumento}
+                        // defaultSelectedKey={selectedKeyDepartment}
+                        defaultSelectedKey={isEditing ? values.departamento : undefined}
+                        value={selectedKeyDepartment}
                       >
-                        {cat_022_tipo_de_documentoDeIde.map((dep) => (
+                        {cat_012_departamento.map((dep) => (
                           <AutocompleteItem
                             value={dep.codigo}
                             key={JSON.stringify(dep)}
@@ -333,167 +346,145 @@ const AddClientNormal = (props: Props) => {
                           </AutocompleteItem>
                         ))}
                       </Autocomplete>
+                      {errors.departamento && touched.departamento && (
+                        <span className="text-sm font-semibold text-red-500">
+                          {errors.departamento}
+                        </span>
+                      )}
+                    </div>
+                    <div>
+                      <Autocomplete
+                        onSelectionChange={(key) => {
+                          if (key) {
+                            const depSelected = JSON.parse(key as string) as Departamento;
+                            handleChange('municipio')(depSelected.codigo);
+                            handleChange('nombreMunicipio')(depSelected.valores);
+                          }
+                        }}
+                        label="Municipio"
+                        labelPlacement="outside"
+                        className="dark:text-white"
+                        variant="bordered"
+                        placeholder={
+                          isEditing && values.nombreMunicipio
+                            ? values.nombreMunicipio
+                            : 'Selecciona el municipio'
+                        }
+                        classNames={{
+                          base: 'font-semibold text-gray-500 text-sm',
+                        }}
+                        onBlur={handleBlur('municipio')}
+                        defaultSelectedKey={isEditing ? values.municipio : undefined}
+                        defaultInputValue={props.customer_direction?.nombreMunicipio}
+                        value={selectedKeyCity}
+                      >
+                        {cat_013_municipios.map((dep) => (
+                          <AutocompleteItem
+                            value={dep.codigo}
+                            key={JSON.stringify(dep)}
+                            className="dark:text-white"
+                          >
+                            {dep.valores}
+                          </AutocompleteItem>
+                        ))}
+                      </Autocomplete>
+                      {errors.municipio && touched.municipio && (
+                        <span className="text-sm font-semibold text-red-500">
+                          {errors.municipio}
+                        </span>
+                      )}
                     </div>
                   </div>
-                  <div className="mt-2">
-                    <Input
-                      type="text"
-                      label="Numero documento"
+                  <div className="grid grid-cols-2 gap-5 pt-3">
+                    <div>
+                      <Input
+                        type="number"
+                        label="Teléfono"
+                        labelPlacement="outside"
+                        name="telefono"
+                        value={values.telefono}
+                        onChange={handleChange('telefono')}
+                        onBlur={handleBlur('telefono')}
+                        placeholder="Ingresa el telefono"
+                        classNames={{
+                          label: 'font-semibold text-gray-500 text-sm',
+                        }}
+                        variant="bordered"
+                      />
+                      {errors.telefono && touched.telefono && (
+                        <span className="text-xs font-semibold text-red-500">
+                          {errors.telefono}
+                        </span>
+                      )}
+                    </div>
+                    <div>
+                      <Autocomplete
+                        value={values.branchId}
+                        onSelectionChange={(key) => {
+                          if (key) {
+                            const depSelected = JSON.parse(key as string) as Branch;
+                            handleChange('branchId')(depSelected?.id?.toString() ?? '');
+                          }
+                        }}
+                        onBlur={handleBlur('branchId')}
+                        label="Sucursal"
+                        labelPlacement="outside"
+                        placeholder="Selecciona la sucursal"
+                        variant="bordered"
+                        className="dark:text-white"
+                        classNames={{
+                          base: 'font-semibold text-sm',
+                        }}
+                      >
+                        {branch_list.map((bra) => (
+                          <AutocompleteItem
+                            className="dark:text-white"
+                            value={bra.name}
+                            key={JSON.stringify(bra)}
+                          >
+                            {bra.name}
+                          </AutocompleteItem>
+                        ))}
+                      </Autocomplete>
+
+                      {errors.branchId && touched.branchId && (
+                        <span className="text-sm font-semibold text-red-500">
+                          {errors.branchId}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="pt-2">
+                    <Textarea
+                      label="Complemento"
                       labelPlacement="outside"
-                      name="numDocumento"
-                      value={values.numDocumento}
-                      onChange={handleChange('numDocumento')}
-                      onBlur={handleBlur('numDocumento')}
-                      placeholder="Ingresa el número de documento"
+                      name="Complemento"
+                      value={values.complemento}
+                      onChange={handleChange('complemento')}
+                      onBlur={handleBlur('complemento')}
+                      placeholder="Ingresa el complemento de la dirección"
                       classNames={{
                         label: 'font-semibold text-gray-500 text-sm',
                       }}
                       variant="bordered"
                     />
-                    {errors.numDocumento && touched.numDocumento && (
+                    {errors.complemento && touched.complemento && (
                       <span className="text-sm font-semibold text-red-500">
-                        {errors.numDocumento}
+                        {errors.complemento}
                       </span>
                     )}
                   </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-5 pt-3">
-                  <div>
-                    <Autocomplete
-                      onSelectionChange={(key) => {
-                        if (key) {
-                          const depSelected = JSON.parse(key as string) as Municipio;
-                          setSelectedCodeDep(depSelected.codigo);
-                          handleChange('departamento')(depSelected.codigo);
-                          handleChange('nombreDepartamento')(depSelected.valores);
-                        }
-                      }}
-                      onBlur={handleBlur('departamento')}
-                      label="Departamento"
-                      labelPlacement="outside"
-                      // placeholder={
-                      //   values.nombreDepartamento
-                      //     ? values.nombreDepartamento
-                      //     : 'Selecciona el departamento'
-                      // }
-                      placeholder={
-                        props.customer_direction?.nombreDepartamento || 'Selecciona el departamento'
-                      }
-                      variant="bordered"
-                      classNames={{
-                        base: 'font-semibold text-gray-500 text-sm',
-                      }}
-                      className="dark:text-white"
-                      // selectedKey={selectedKeyDepartment}
-                      defaultSelectedKey={selectedKeyDepartment}
-                      value={selectedKeyDepartment}
-                    >
-                      {cat_012_departamento.map((dep) => (
-                        <AutocompleteItem
-                          value={dep.codigo}
-                          key={JSON.stringify(dep)}
-                          className="dark:text-white"
-                        >
-                          {dep.valores}
-                        </AutocompleteItem>
-                      ))}
-                    </Autocomplete>
-                    {errors.departamento && touched.departamento && (
-                      <span className="text-sm font-semibold text-red-500">
-                        {errors.departamento}
-                      </span>
-                    )}
-                  </div>
-                  <div>
-                    <Autocomplete
-                      onSelectionChange={(key) => {
-                        if (key) {
-                          const depSelected = JSON.parse(key as string) as Departamento;
-                          handleChange('municipio')(depSelected.codigo);
-                          handleChange('nombreMunicipio')(depSelected.valores);
-                        }
-                      }}
-                      label="Municipio"
-                      labelPlacement="outside"
-                      className="dark:text-white"
-                      variant="bordered"
-                      placeholder="Selecciona el municipio"
-                      classNames={{
-                        base: 'font-semibold text-gray-500 text-sm',
-                      }}
-                      // placeholder={
-                      //   values.nombreMunicipio ? values.nombreMunicipio : 'Selecciona el municipio'
-                      // }
-                      onBlur={handleBlur('municipio')}
-                      // selectedKey={selectedKeyCity}
-                      defaultSelectedKey={props.customer_direction?.municipio}
-                      defaultInputValue={props.customer_direction?.nombreMunicipio}
-                      value={selectedKeyCity}
-                    >
-                      {cat_013_municipios.map((dep) => (
-                        <AutocompleteItem
-                          value={dep.codigo}
-                          key={JSON.stringify(dep)}
-                          className="dark:text-white"
-                        >
-                          {dep.valores}
-                        </AutocompleteItem>
-                      ))}
-                    </Autocomplete>
-                    {errors.municipio && touched.municipio && (
-                      <span className="text-sm font-semibold text-red-500">{errors.municipio}</span>
-                    )}
-                  </div>
-                  <div>
-                    <Input
-                      type="number"
-                      label="Teléfono"
-                      labelPlacement="outside"
-                      name="telefono"
-                      value={values.telefono}
-                      onChange={handleChange('telefono')}
-                      onBlur={handleBlur('telefono')}
-                      placeholder="Ingresa el telefono"
-                      classNames={{
-                        label: 'font-semibold text-gray-500 text-sm',
-                      }}
-                      variant="bordered"
-                    />
-                    {errors.telefono && touched.telefono && (
-                      <span className="text-xs font-semibold text-red-500">{errors.telefono}</span>
-                    )}
-                  </div>
-                </div>
-
-                <div className="pt-2">
-                  <Textarea
-                    label="Complemento"
-                    labelPlacement="outside"
-                    name="Complemento"
-                    value={values.complemento}
-                    onChange={handleChange('complemento')}
-                    onBlur={handleBlur('complemento')}
-                    placeholder="Ingresa el complemento de la dirección"
-                    classNames={{
-                      label: 'font-semibold text-gray-500 text-sm',
+                  <Button
+                    onClick={() => handleSubmit()}
+                    className="w-full mt-4 text-sm font-semibold"
+                    style={{
+                      backgroundColor: theme.colors.dark,
+                      color: theme.colors.primary,
                     }}
-                    variant="bordered"
-                  />
-                  {errors.complemento && touched.complemento && (
-                    <span className="text-sm font-semibold text-red-500">{errors.complemento}</span>
-                  )}
+                  >
+                    Guardar
+                  </Button>
                 </div>
-                <Button
-                  onClick={() => handleSubmit()}
-                  className="w-full mt-4 text-sm font-semibold"
-                  style={{
-                    backgroundColor: theme.colors.dark,
-                    color: theme.colors.primary,
-                  }}
-                >
-                  Guardar
-                </Button>
               </>
             )}
           </Formik>

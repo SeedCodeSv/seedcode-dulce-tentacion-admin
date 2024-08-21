@@ -15,7 +15,8 @@ import { ITipoDocumento } from '../../types/DTE/tipo_documento.types';
 import Layout from '@/layout/Layout';
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router';
-// import { ITipoDocumento } from '../../types/DTE/tipo_documento.types';
+import { useBranchesStore } from '@/store/branches.store';
+import { Branch } from '@/types/auth.types';
 
 interface Props {
   customer?: PayloadCustomer;
@@ -28,30 +29,15 @@ function AddClientContributor(props: Props) {
   const { theme } = useContext(ThemeContext);
   const { id } = useParams<{ id: string }>();
   const isEditing = !!id;
-  const { get_customer_by_id, user_by_id } = useCustomerStore(); // Suponiendo que tienes una función para obtener el cliente por ID
+  const { get_customer_by_id, user_by_id } = useCustomerStore();
+  const { getBranchesList, branch_list } = useBranchesStore();
+
+
+  useEffect(() => {
+    getBranchesList();
+  }, []);
 
   console.log('user_by_id', user_by_id);
-
-  // const initialValues = {
-  //   nombre: props.id && props.id !== 0 ? user_by_id?.nombre ?? '' : '',
-  //   nombreComercial: props.id && props.id !== 0 ? props.customer?.nombreComercial ?? '' : '',
-  //   correo: props.id && props.id !== 0 ? props.customer?.correo ?? '' : '',
-  //   telefono: props.id && props.id !== 0 ? props.customer?.telefono ?? '' : '',
-  //   numDocumento: props.id && props.id !== 0 ? props.customer?.numDocumento ?? '' : '',
-  //   nrc: props.id && props.id !== 0 ? props.customer?.nrc ?? '' : '',
-  //   nit: props.id && props.id !== 0 ? props.customer?.nit ?? '' : '',
-  //   tipoDocumento: props.id && props.id !== 0 ? props.customer?.tipoDocumento ?? '' : '',
-  //   bienTitulo: '05',
-  //   codActividad: props.id && props.id !== 0 ? props.customer?.codActividad ?? '' : '',
-  //   esContribuyente: 1,
-  //   descActividad: props.id && props.id !== 0 ? props.customer?.descActividad ?? '' : '',
-  //   municipio: props.id && props.id !== 0 ? props.customer_direction?.municipio ?? '' : '',
-  //   nombreMunicipio: props.id && props.id !== 0 ? props.customer_direction?.nombreMunicipio ?? '' : '',
-  //   departamento: props.id && props.id !== 0 ? props.customer_direction?.departamento ?? '' : '',
-  //   nombreDepartamento: props.id && props.id !== 0 ? props.customer_direction?.nombreDepartamento ?? '' : '',
-  //   complemento: props.id && props.id !== 0 ? props.customer_direction?.complemento ?? '' : '',
-  // };
-
   const [initialValues, setInitialValues] = useState({
     nombre: '',
     nombreComercial: '',
@@ -70,35 +56,9 @@ function AddClientContributor(props: Props) {
     departamento: '',
     nombreDepartamento: '',
     complemento: '',
+    branchId: 0,
   });
 
-  // useEffect(() => {
-  //   if (isEditing && id && id !== '0') {
-  //     get_customer_by_id(parseInt(id)).then((customer) => {
-  //       if (customer) {
-  //         setInitialValues({
-  //           nombre: customer.nombre ?? '',
-  //           nombreComercial: customer.nombreComercial ?? '',
-  //           correo: customer.correo ?? '',
-  //           telefono: customer.telefono ?? '',
-  //           numDocumento: customer.numDocumento ?? '',
-  //           nrc: customer.nrc ?? '',
-  //           nit: customer.nit ?? '',
-  //           tipoDocumento: customer.tipoDocumento ?? '',
-  //           bienTitulo: '05',
-  //           codActividad: customer.codActividad ?? '',
-  //           esContribuyente: 1,
-  //           descActividad: customer.descActividad ?? '',
-  //           municipio: customer.direccion.municipio ?? '',
-  //           nombreMunicipio: customer.direccion.nombreMunicipio ?? '',
-  //           departamento: customer.direccion.departamento ?? '',
-  //           nombreDepartamento: customer.direccion.nombreDepartamento ?? '',
-  //           complemento: customer.direccion.complemento ?? '',
-  //         });
-  //       }
-  //     });
-  //   }
-  // }, [id, isEditing, get_customer_by_id]);
   useEffect(() => {
     if (isEditing && id && id !== '0') {
       get_customer_by_id(parseInt(id)).then((customer) => {
@@ -121,6 +81,7 @@ function AddClientContributor(props: Props) {
             departamento: customer.direccion.departamento ?? '',
             nombreDepartamento: customer.direccion.nombreDepartamento ?? '',
             complemento: customer.direccion.complemento ?? '',
+            branchId: customer.branchId ?? 0,
           });
         }
       });
@@ -143,10 +104,10 @@ function AddClientContributor(props: Props) {
         departamento: '',
         nombreDepartamento: '',
         complemento: '',
+        branchId: 0,
       });
     }
   }, [id, isEditing, get_customer_by_id]);
-
   const validationSchema = yup.object().shape({
     nombre: yup.string().required('**El nombre es requerido**'),
     nombreComercial: yup.string().required('**El nombre comercial es requerido**'),
@@ -157,7 +118,6 @@ function AddClientContributor(props: Props) {
       .test('length', 'Debe ser de 8 dígitos', (value) => {
         return value?.length === 8;
       }),
-
     numDocumento: yup
       .string()
       .required('Este campo es requerido')
@@ -171,17 +131,14 @@ function AddClientContributor(props: Props) {
               return value && value !== '' ? isValidDUI(value) : false;
             });
         }
-
         if (documentType === '36') {
           return schema
             .matches(/^[0-9]{14}$/, 'El NIT debe tener 14 dígitos sin guiones')
             .test('isValidNIT', 'El NIT no es válido', (value) => {
               if (!value) return false;
-
               return value.length === 14;
             });
         }
-
         return schema.required('El número de documento es requerido');
       }),
     nit: yup
@@ -233,7 +190,7 @@ function AddClientContributor(props: Props) {
     const values = {
       ...payload,
       esContribuyente: 1,
-      branchId: Number(user?.correlative.branch.id),
+      // branchId: Number(user?.correlative.branch.id),
     };
 
     if (isEditing && id && id !== '0') {
@@ -406,10 +363,6 @@ function AddClientContributor(props: Props) {
                             }
                           }}
                           onBlur={handleBlur('tipoDocumento')}
-                          // placeholder={
-                          //   getDocumentName(values.tipoDocumento) ??
-                          //   'Selecciona el tipo de documento'
-                          // }
                           placeholder="Selecciona el tipo de documento"
                           variant="bordered"
                           classNames={{
@@ -429,50 +382,13 @@ function AddClientContributor(props: Props) {
                           ))}
                         </Autocomplete>
                       </div>
-                      {/* <Autocomplete
-                    onSelectionChange={(key) => {
-                      if (key) {
-                        const depSelected = JSON.parse(key as string) as ITipoDocumento;
-                        handleChange('tipoDocumento')(depSelected.codigo);
-                        handleChange('tipoDocumento')(depSelected.valores);
-                      }
-                    }}
-                    onBlur={handleBlur('tipoDocumento')}
-                    label="Tipo de documento"
-                    labelPlacement="outside"
-                    placeholder={
-                      props.customer?.tipoDocumento
-                        ? props.customer?.tipoDocumento
-                        : 'Selecciona el tipo de documento'
-                    }
-                    variant="bordered"
-                    classNames={{
-                      base: 'font-semibold text-gray-500 text-sm',
-                    }}
-                    className="dark:text-white"
-                    defaultSelectedKey={values.tipoDocumento}
-                    value={selectedKeyCodActivity}
-                    onInputChange={(e) => handleFilter(e)}
-                  >
-                    {cat_022_tipo_de_documentoDeIde.map((dep) => (
-                      <AutocompleteItem
-                        value={dep.codigo}
-                        key={JSON.stringify(dep)}
-                        className="dark:text-white"
-                      >
-                        {dep.valores}
-                      </AutocompleteItem>
-                    ))}
-                  </Autocomplete> */}
+
                       {errors.tipoDocumento && touched.tipoDocumento && (
                         <span className="text-sm font-semibold text-red-500">
                           {errors.tipoDocumento}
                         </span>
                       )}
                     </div>
-
-                    {/* Fin de tipio de documento */}
-
                     <div className="pt-2">
                       <Input
                         type="text"
@@ -508,11 +424,6 @@ function AddClientContributor(props: Props) {
                         onBlur={handleBlur('codActividad')}
                         label="Actividad"
                         labelPlacement="outside"
-                        // placeholder={
-                        //   props.customer?.descActividad
-                        //     ? props.customer?.descActividad
-                        //     : 'Escribe la actividad'
-                        // }
                         placeholder={
                           isEditing && values.descActividad
                             ? values.descActividad
@@ -524,8 +435,6 @@ function AddClientContributor(props: Props) {
                           base: 'font-semibold text-gray-500 text-sm',
                         }}
                         className="dark:text-white"
-                        // selectedKey={selectedKeyCodActivity}
-                        // defaultSelectedKey={values.descActividad}
                         value={selectedKeyCodActivity}
                         onInputChange={(e) => handleFilter(e)}
                       >
@@ -566,18 +475,11 @@ function AddClientContributor(props: Props) {
                             : 'Selecciona el departamento'
                         }
                         defaultSelectedKey={isEditing ? values.departamento : undefined}
-                        // placeholder={
-                        //   props.customer_direction?.nombreDepartamento
-                        //     ? props.customer_direction?.nombreDepartamento
-                        //     : 'Selecciona el departamento'
-                        // }
                         variant="bordered"
                         classNames={{
                           base: 'font-semibold text-gray-500 text-sm',
                         }}
                         className="dark:text-white"
-                        // selectedKey={selectedKeyDepartment}
-                        // defaultSelectedKey={selectedKeyDepartment}
                         value={selectedKeyDepartment}
                       >
                         {cat_012_departamento.map((dep) => (
@@ -614,18 +516,11 @@ function AddClientContributor(props: Props) {
                             : 'Selecciona el municipio'
                         }
                         defaultSelectedKey={isEditing ? values.municipio : undefined}
-                        // placeholder={
-                        //   props.customer_direction?.nombreMunicipio
-                        //     ? props.customer_direction?.nombreMunicipio
-                        //     : 'Selecciona el departamento'
-                        // }
                         variant="bordered"
                         classNames={{
                           base: 'font-semibold text-gray-500 text-sm',
                         }}
                         className="dark:text-white"
-                        // selectedKey={selectedKeyCity}
-                        // defaultSelectedKey={props.customer_direction?.nombreMunicipio}
                         defaultInputValue={props.customer_direction?.nombreMunicipio}
                         value={selectedKeyCity}
                       >
@@ -703,6 +598,42 @@ function AddClientContributor(props: Props) {
                       />
                       {errors.nrc && touched.nrc && (
                         <span className="text-xs font-semibold text-red-500">{errors.nrc}</span>
+                      )}
+                    </div>
+                    <div className="pt-2">
+                      <Autocomplete
+                        value={values.branchId}
+                        onSelectionChange={(key) => {
+                          if (key) {
+                            const depSelected = JSON.parse(key as string) as Branch;
+                            handleChange('branchId')(depSelected?.id?.toString() ?? '');
+                          }
+                        }}
+                        onBlur={handleBlur('branchId')}
+                        label="Sucursal"
+                        labelPlacement="outside"
+                        placeholder="Selecciona la sucursal"
+                        variant="bordered"
+                        className="dark:text-white"
+                        classNames={{
+                          base: 'font-semibold text-sm',
+                        }}
+                      >
+                        {branch_list.map((bra) => (
+                          <AutocompleteItem
+                            className="dark:text-white"
+                            value={bra.name}
+                            key={JSON.stringify(bra)}
+                          >
+                            {bra.name}
+                          </AutocompleteItem>
+                        ))}
+                      </Autocomplete>
+
+                      {errors.branchId && touched.branchId && (
+                        <span className="text-sm font-semibold text-red-500">
+                          {errors.branchId}
+                        </span>
                       )}
                     </div>
                   </div>

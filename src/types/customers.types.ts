@@ -25,6 +25,7 @@ export interface Customer {
   esContribuyente?: number;
   direccion: CustomerDirection;
   direccionId: number;
+  branchId: number;
 }
 export interface IGetCustomers {
   ok: boolean;

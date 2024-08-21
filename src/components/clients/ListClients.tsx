@@ -135,7 +135,7 @@ const ListClients = ({ actions }: Props) => {
       if (customer.esContribuyente) {
         navigate(`/add-client-contributor/${customer.id}`);
       } else {
-        navigate(`/add-client-normal/${customer.id}`);
+        navigate(`/add-client/${customer.id}`);
       }
       return;
     }
