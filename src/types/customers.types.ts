@@ -22,9 +22,10 @@ export interface Customer {
   telefono: string;
   correo: string;
   isActive: boolean;
-  esContribuyente: boolean;
+  esContribuyente?: number;
   direccion: CustomerDirection;
   direccionId: number;
+  branchId: number;
 }
 export interface IGetCustomers {
   ok: boolean;
@@ -55,6 +56,9 @@ export interface PayloadCustomer {
   correo?: string;
   esContribuyente?: number;
   transmitterId?: number;
+  direccionId?: number;
+  CustomerDirection?: CustomerDirection;
+  branchId?: number;
 }
 
 export interface CustomerDirection {

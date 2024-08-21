@@ -1,21 +1,18 @@
 import Layout from '../layout/Layout';
-import { useEffect } from 'react';
 
 import ListContractType from '../components/employee/typeContract/ListTypeContract';
 import { useViewsStore } from '@/store/views.store';
 
 function ContratType() {
-  const { OnGetViewasAction, viewasAction } = useViewsStore();
+  const { actions } = useViewsStore();
 
-  const contractTypeView = viewasAction.find((view) => view.view.name === 'Tipo de Contratacion');
-  const actions = contractTypeView?.actions?.name || [];
-  useEffect(() => {
-    OnGetViewasAction();
-  }, []);
+  const contractTypeView = actions.find((view) => view.view.name === 'Tipo de Contratacion');
+  const actionsView = contractTypeView?.actions?.name || [];
+
   return (
     <Layout title="Tipo de Contratación">
       {contractTypeView ? (
-        <ListContractType actions={actions} />
+        <ListContractType actions={actionsView} />
       ) : (
         <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
           <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent flex justify-center items-center">

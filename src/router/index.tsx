@@ -46,6 +46,9 @@ import Shopping from '@/pages/Shopping';
 import CreateShopping from '@/components/shopping/CreateShoppingJson';
 import CFFBookIVA from '@/pages/iva/CFFBookIVA';
 import FEBookIVA from '@/pages/iva/FEBookIVA';
+import CreateTheme from '@/components/configuration/CreateTheme';
+import AddClientContributor from '@/components/clients/AddClientContributor';
+import AddClientNormal from '@/components/clients/AddClientNormal';
 import AddNormalSupplier from '@/components/supplier/AddNormalSupplier';
 
 const Loading = () => {
@@ -226,6 +229,15 @@ export const router = () => {
     },
 
     {
+      path: '/add-client-contributor/:id',
+      element: checkAuthorization('Clientes', <AddClientContributor />),
+    },
+    {
+      path: '/add-client/:id',
+      element: checkAuthorization('Clientes', <AddClientNormal />),
+    },
+
+    {
       path: '/AddPromotions',
       element: checkAuthorization('Descuentos', <AddPromotions />),
     },
@@ -262,6 +274,10 @@ export const router = () => {
     {
       path: '*',
       element: <Error404 />,
+    },
+    {
+      path: '/add-theme',
+      element: checkAuthorization('Configuración', <CreateTheme />),
     },
   ]);
 };

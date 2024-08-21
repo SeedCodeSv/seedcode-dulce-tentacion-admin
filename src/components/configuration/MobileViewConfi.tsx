@@ -26,7 +26,7 @@ function MobileViewConfi(props: MovileViewProps) {
         itemTemplate={(cat) => (
           <GridItem configuration={cat} layout={layout} handleEdit={handleEdit} />
         )}
-        emptyMessage="No ay datos de logo ni nombre..."
+        emptyMessage="No se encontraron resultados"
       />
     </div>
   );

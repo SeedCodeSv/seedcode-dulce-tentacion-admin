@@ -39,11 +39,11 @@ function UpdateFile(props: Props) {
       try {
         const file = files[0];
         const compressedImage = await compressImage(file, {
-          maxSizeMB: 0.5,
-          maxWidthOrHeight: 500,
+          maxSizeMB: 0.8,
+          maxWidthOrHeight: 200,
           useWebWorker: true,
           maxIteration: 10,
-          initialQuality: 0.7,
+          initialQuality: 0.85,
         });
 
         const convertedFile = new File([compressedImage], file.name, {

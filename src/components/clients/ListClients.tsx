@@ -41,12 +41,13 @@ import Pagination from '../global/Pagination';
 import { global_styles } from '../../styles/global.styles';
 import SmPagination from '../global/SmPagination';
 import classNames from 'classnames';
-import HeadlessModal from '../global/HeadlessModal';
+
 import TooltipGlobal from '../global/TooltipGlobal';
 import BottomDrawer from '../global/BottomDrawer';
 import useWindowSize from '@/hooks/useWindowSize';
 import NO_DATA from '@/assets/svg/no_data.svg';
 import { useBranchesStore } from '@/store/branches.store';
+import { useNavigate } from 'react-router';
 interface Props {
   actions: string[];
 }
@@ -60,7 +61,7 @@ const ListClients = ({ actions }: Props) => {
   const [email, setEmail] = useState('');
   const [branch, setBranch] = useState('');
 
-  const [typeClient, setTypeClient] = useState('normal');
+  const [typeClient, setTypeClient] = useState('');
   const [active, setActive] = useState(true);
   const [tipeCustomer, setTypeCustomer] = useState('');
   const { getBranchesList, branch_list } = useBranchesStore();
@@ -96,6 +97,7 @@ const ListClients = ({ actions }: Props) => {
   const [selectedId, setSelectedId] = useState<number>(0);
   // const [selectedTitle, setSelectedTitle] = useState('');
   const [selectedTitle, setSelectedTitle] = useState<string>('');
+  const navigate = useNavigate();
 
   const handleChangeCustomer = (customer: Customer, type = 'edit') => {
     const payload_customer: PayloadCustomer = {
@@ -127,6 +129,21 @@ const ListClients = ({ actions }: Props) => {
     setSelectedCustomerDirection(payload_direction);
     setSelectedId(customer.id);
 
+
+
+    if (type === 'edit') {
+      if (customer.esContribuyente) {
+        navigate(`/add-client-contributor/${customer.id}`);
+      } else {
+        navigate(`/add-client/${customer.id}`);
+      }
+      return;
+    }
+
+    // if (type === 'edit') {
+    //   navigate(`/add-client-contributor/${customer.id}`);
+    // }
+
     if (type === 'edit') {
       if (customer.esContribuyente) {
         setTypeClient('contribuyente');
@@ -143,18 +160,8 @@ const ListClients = ({ actions }: Props) => {
     }
     modalAdd.onOpen();
   };
-  const clearClose = () => {
-    modalAdd.onClose();
-    handleChangeCustomer({} as Customer, '');
-    setTypeClient('normal');
-    setSelectedId(0);
-    setSelectedCustomer(undefined);
-    setSelectedTitle('');
-  };
 
-  // const handleActivate = (id: number) => {
-  //   save_active_customer(id);
-  // };
+
 
   const handleActivate = (id: number) => {
     save_active_customer(id).then(() => {
@@ -620,7 +627,6 @@ const ListClients = ({ actions }: Props) => {
                       search,
                       email,
                       branch,
-
                       tipeCustomer,
                       active ? 1 : 0
                     );
@@ -663,45 +669,61 @@ const ListClients = ({ actions }: Props) => {
             </>
           )}
         </div>
-        <HeadlessModal
-          isOpen={modalAdd.isOpen}
-          onClose={() => {
-            clearClose();
-            modalAdd.onClose();
-          }}
-          title={
-            selectedCustomer
-              ? selectedTitle !== ''
-                ? selectedTitle
-                : 'Editar cliente'
-              : 'Nuevo cliente'
-          }
-          size={
-            typeClient === 'contribuyente'
-              ? 'w-full md:w-[600px] lg:w-[800px] xl:w-[1000px]'
-              : 'w-full md:w-[500px] lg:w-[700px] xl:w-[800px]'
-          }
-        >
-          <>
-            {typeClient === 'normal' && (
-              <AddClientNormal
-                typeDocumento={typeDocumentCustomer}
-                closeModal={modalAdd.onClose}
-                customer={selectedCustomer}
-                customer_direction={selectedCustomerDirection}
-                id={selectedId}
-              />
-            )}
-            {typeClient === 'contribuyente' && (
+
+        <>
+          {/* <HeadlessModal
+            isOpen={modalAdd.isOpen}
+            onClose={() => {
+              clearClose();
+              modalAdd.onClose();
+            }}
+            title={
+              selectedCustomer
+                ? selectedTitle !== ''
+                  ? selectedTitle
+                  : 'Editar cliente'
+                : 'Nuevo cliente'
+            }
+            size={
+              typeClient === 'contribuyente'
+                ? 'w-full md:w-[600px] lg:w-[800px] xl:w-[1000px]'
+                : 'w-full md:w-[500px] lg:w-[700px] xl:w-[800px]'
+            }
+          >
+            <>
+              {typeClient === 'normal' && (
+                <AddClientNormal
+                  typeDocumento={typeDocumentCustomer}
+                  // closeModal={modalAdd.onClose}
+                  customer={selectedCustomer}
+                  customer_direction={selectedCustomerDirection}
+                  id={selectedId}
+                />
+              )}
+            </>
+          </HeadlessModal> */}
+
+          {typeClient === 'normal' && (
+            <AddClientNormal
+              typeDocumento={typeDocumentCustomer}
+              // closeModal={modalAdd.onClose}
+              customer={selectedCustomer}
+              customer_direction={selectedCustomerDirection}
+              id={selectedId}
+            />
+          )}
+
+          {typeClient === 'contribuyente' && (
+            <div className="w-full h-full p-5 bg-white shadow rounded-xl dark:bg-gray-900">
               <AddClientContributor
-                closeModal={modalAdd.onClose}
+                typeDocumento={typeDocumentCustomer}
                 customer={selectedCustomer}
                 customer_direction={selectedCustomerDirection}
                 id={selectedId}
               />
-            )}
-          </>
-        </HeadlessModal>
+            </div>
+          )}
+        </>
       </div>
     </>
   );
@@ -826,6 +848,9 @@ interface PopoverAddProps {
 export const BottomAdd = ({ setTypeClient, openModal }: PopoverAddProps) => {
   const { theme } = useContext(ThemeContext);
   const { isOpen, onClose, onOpen } = useDisclosure();
+
+  const navigate = useNavigate();
+
   return (
     <Popover
       aria-labelledby="popover-title"
@@ -853,8 +878,7 @@ export const BottomAdd = ({ setTypeClient, openModal }: PopoverAddProps) => {
           <Button
             type="button"
             onClick={() => {
-              onClose();
-              openModal();
+              navigate(`/add-client/0`);
               setTypeClient('normal');
             }}
             style={{
@@ -866,9 +890,13 @@ export const BottomAdd = ({ setTypeClient, openModal }: PopoverAddProps) => {
           </Button>
           <Button
             type="button"
+            // onClick={() => {
+            //   onClose();
+            //   openModal();
+            //   setTypeClient('contribuyente');
+            // }}
             onClick={() => {
-              onClose();
-              openModal();
+              navigate(`/add-client-contributor/0`);
               setTypeClient('contribuyente');
             }}
             style={{

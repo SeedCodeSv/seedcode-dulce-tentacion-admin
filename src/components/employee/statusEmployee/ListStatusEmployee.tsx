@@ -21,6 +21,7 @@ import {
   Filter,
   RefreshCcw,
   SearchIcon,
+  Lock,
 } from 'lucide-react';
 import classNames from 'classnames';
 import NO_DATA from '@/assets/svg/no_data.svg';
@@ -37,12 +38,10 @@ import { statusEmployee } from '../../../types/statusEmployee.types';
 import MobileView from './MobileView';
 import BottomDrawer from '@/components/global/BottomDrawer';
 import TooltipGlobal from '@/components/global/TooltipGlobal';
+import { ArrayAction } from '@/types/view.types';
+import NotAddButton from '@/components/global/NoAdd';
 
-interface PProps {
-  actions: string[];
-}
-
-function ListStatusEmployee({ actions }: PProps) {
+function ListStatusEmployee({ actions }: ArrayAction) {
   const { theme } = useContext(ThemeContext);
   const [openVaul, setOpenVaul] = useState(false);
 
@@ -70,11 +69,6 @@ function ListStatusEmployee({ actions }: PProps) {
   };
 
   const modalAdd = useDisclosure();
-
-  // const style = {
-  //   backgroundColor: theme.colors.dark,
-  //   color: theme.colors.primary,
-  // };
 
   const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
 
@@ -226,13 +220,15 @@ function ListStatusEmployee({ actions }: PProps) {
                 </BottomDrawer>
               </div>
             </div>
-            {actions.includes('Agregar') && (
+            {actions.includes('Agregar') ? (
               <AddButton
                 onClick={() => {
                   setSelectedStatusEmployee(undefined);
                   modalAdd.onOpen();
                 }}
               />
+            ) : (
+              <NotAddButton></NotAddButton>
             )}
           </div>
         </div>
@@ -292,12 +288,6 @@ function ListStatusEmployee({ actions }: PProps) {
                     <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                       Nombre
                     </th>
-                    {/* <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                      Código
-                    </th> */}
-                    {/* <th className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                    Descripción
-                  </th> */}
                     <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                       Acciones
                     </th>
@@ -325,17 +315,9 @@ function ListStatusEmployee({ actions }: PProps) {
                               <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
                                 {employeeStatus.name}
                               </td>
-                              {/* <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                              {employeeStatus.}
-                            </td> */}
-                              {/* <td className="p-3 text-sm text-slate-500 whitespace-nowrap dark:text-slate-100">
-                              {categories.subCategory.name}
-                            </td> */}
                               <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                                 <div className="flex w-full gap-5">
-                                  {actions.includes('Editar') && (
-                                    <>
-                                    {employeeStatus.isActive && (
+                                  {actions.includes('Editar') && employeeStatus.isActive ? (
                                     <TooltipGlobal text="Editar">
                                       <Button
                                         onClick={() => {
@@ -356,14 +338,36 @@ function ListStatusEmployee({ actions }: PProps) {
                                         />
                                       </Button>
                                     </TooltipGlobal>
+                                  ) : (
+                                    <Button
+                                      isIconOnly
+                                      style={{
+                                        backgroundColor: theme.colors.secondary,
+                                        cursor: 'not-allowed',
+                                      }}
+                                    >
+                                      <Lock style={{ color: theme.colors.primary }} size={20} />
+                                    </Button>
                                   )}
-                                    </>
+                                  {actions.includes('Eliminar') && employeeStatus.isActive ? (
+                                    <DeletePopUp statusEmployees={employeeStatus} />
+                                  ) : (
+                                    <Button
+                                      isIconOnly
+                                      style={{ backgroundColor: theme.colors.danger }}
+                                    >
+                                      <Lock
+                                        style={{
+                                          color: theme.colors.primary,
+                                          cursor: 'not-allowed',
+                                        }}
+                                        size={20}
+                                      />
+                                    </Button>
                                   )}
-                                  {actions.includes('Eliminar') && (
+                                  {employeeStatus.isActive === false && (
                                     <>
-                                      {employeeStatus.isActive ? (
-                                        <DeletePopUp statusEmployees={employeeStatus} />
-                                      ) : (
+                                      {actions.includes('Activar') ? (
                                         <TooltipGlobal text="Activar">
                                           <Button
                                             onClick={() => handleActivate(employeeStatus.id)}
@@ -373,6 +377,16 @@ function ListStatusEmployee({ actions }: PProps) {
                                             <RefreshCcw />
                                           </Button>
                                         </TooltipGlobal>
+                                      ) : (
+                                        <Button
+                                          isIconOnly
+                                          style={{
+                                            ...global_styles().thirdStyle,
+                                            cursor: 'not-allowed',
+                                          }}
+                                        >
+                                          <Lock />
+                                        </Button>
                                       )}
                                     </>
                                   )}
@@ -397,67 +411,6 @@ function ListStatusEmployee({ actions }: PProps) {
               </table>
             </div>
           </>
-          // <DataTable
-          //   className="w-full dark:text-whit"
-          //   emptyMessage="No se encontraron resultados"
-          //   value={paginated_status_employee.employeeStatus}
-          //   tableStyle={{ minWidth: '50rem' }}
-          //   loading={loading_status_employee}
-          // >
-          //   <Column
-          //     headerClassName="text-sm font-semibold"
-          //     headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
-          //     field="id"
-          //     bodyClassName={'dark:text-white'}
-          //     header="No."
-          //   />
-          //   <Column
-          //     headerClassName="text-sm font-semibold"
-          //     headerStyle={style}
-          //     field="name"
-          //     bodyClassName={'dark:text-white'}
-          //     header="Nombre"
-          //   />
-          //   <Column
-          //     headerStyle={{ ...style, borderTopRightRadius: '10px' }}
-          //     header="Acciones"
-          //     body={(item) => (
-          //       <div className="flex gap-6">
-          //         {actions.includes('Editar') && (
-          //           <TooltipGlobal text="Editar el registro" color="primary">
-          //             <Button
-          //               onClick={() => handleEdit(item)}
-          //               isIconOnly
-          //               style={{
-          //                 backgroundColor: theme.colors.secondary,
-          //               }}
-          //             >
-          //               <EditIcon style={{ color: theme.colors.primary }} size={20} />
-          //             </Button>
-          //           </TooltipGlobal>
-          //         )}
-          //         {actions.includes('Eliminar') && (
-          //           <>
-          //             {/* <DeletePopUp statusEmployees={item} /> */}
-          //             {item.isActive ? (
-          //               <DeletePopUp statusEmployees={item} />
-          //             ) : (
-          //               <TooltipGlobal text="Activar la categoría" color="primary">
-          //                 <Button
-          //                   onClick={() => handleActivate(item.id)}
-          //                   isIconOnly
-          //                   style={global_styles().thirdStyle}
-          //                 >
-          //                   <RefreshCcw />
-          //                 </Button>
-          //               </TooltipGlobal>
-          //             )}
-          //           </>
-          //         )}
-          //       </div>
-          //     )}
-          //   />
-          // </DataTable>
         )}
         {paginated_status_employee.totalPag > 1 && (
           <>

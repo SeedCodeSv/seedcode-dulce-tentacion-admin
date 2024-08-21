@@ -1,10 +1,12 @@
 import { Button } from '@nextui-org/react';
 import { DataView } from 'primereact/dataview';
 import { classNames } from 'primereact/utils';
-import { EditIcon, RefreshCcw, ScrollIcon } from 'lucide-react';
+import { EditIcon, RefreshCcw, ScrollIcon, Lock } from 'lucide-react';
 import { GridProps, MobileViewProps } from './types/mobile_view.types';
 import { global_styles } from '../../../styles/global.styles';
 import { useContractTypeStore } from '../../../store/contractType';
+import { useContext } from 'react';
+import { ThemeContext } from '@/hooks/useTheme';
 
 function MobileView(props: MobileViewProps) {
   const { layout, deletePopover, handleEdit, actions, handleActive } = props;
@@ -43,6 +45,7 @@ function MobileView(props: MobileViewProps) {
 export default MobileView;
 
 const GridItem = (props: GridProps) => {
+  const { theme } = useContext(ThemeContext);
   const { ContractTypes, layout, deletePopover, handleEdit, actions, handleActive } = props;
   return (
     <>
@@ -58,7 +61,7 @@ const GridItem = (props: GridProps) => {
             {ContractTypes.name}
           </div>
           <div className="flex justify-between mt-5 w-ful">
-            {actions.includes('Editar') && (
+            {actions.includes('Editar') && ContractTypes.isActive ? (
               <Button
                 onClick={() => handleEdit(ContractTypes)}
                 isIconOnly
@@ -66,19 +69,49 @@ const GridItem = (props: GridProps) => {
               >
                 <EditIcon size={20} />
               </Button>
+            ) : (
+              <Button
+                isIconOnly
+                style={{
+                  backgroundColor: theme.colors.secondary,
+                  cursor: 'not-allowed',
+                }}
+              >
+                <Lock style={{ color: theme.colors.primary }} size={20} />
+              </Button>
             )}
-            {actions.includes('Eliminar') && (
+            {actions.includes('Eliminar') && ContractTypes.isActive ? (
+              deletePopover({ ContractTypes })
+            ) : (
+              <Button isIconOnly style={{ backgroundColor: theme.colors.danger }}>
+                <Lock
+                  style={{
+                    color: theme.colors.primary,
+                    cursor: 'not-allowed',
+                  }}
+                  size={20}
+                />
+              </Button>
+            )}
+            {ContractTypes.isActive === false && (
               <>
-                {/* {deletePopover({ ContractTypes })} */}
-                {ContractTypes.isActive ? (
-                  deletePopover({ ContractTypes })
-                ) : (
+                {actions.includes('Activar') ? (
                   <Button
                     onClick={() => handleActive(ContractTypes.id)}
                     isIconOnly
                     style={global_styles().thirdStyle}
                   >
                     <RefreshCcw />
+                  </Button>
+                ) : (
+                  <Button
+                    isIconOnly
+                    style={{
+                      ...global_styles().thirdStyle,
+                      cursor: 'not-allowed',
+                    }}
+                  >
+                    <Lock />
                   </Button>
                 )}
               </>
@@ -100,7 +133,8 @@ const GridItem = (props: GridProps) => {
 };
 
 const ListItem = (props: GridProps) => {
-  const { ContractTypes, deletePopover, handleEdit, actions } = props;
+  const { theme } = useContext(ThemeContext);
+  const { ContractTypes, deletePopover, handleEdit, actions, handleActive } = props;
   return (
     <>
       <div className="flex w-full p-5 border shadow dark:border-gray-600 rounded-2xl">
@@ -111,7 +145,7 @@ const ListItem = (props: GridProps) => {
           </div>
         </div>
         <div className="flex flex-col items-end justify-between w-full gap-5">
-          {actions.includes('Editar') && (
+          {actions.includes('Editar') && ContractTypes.isActive ? (
             <Button
               onClick={() => handleEdit(ContractTypes)}
               isIconOnly
@@ -119,22 +153,51 @@ const ListItem = (props: GridProps) => {
             >
               <EditIcon size={20} />
             </Button>
+          ) : (
+            <Button
+              isIconOnly
+              style={{
+                backgroundColor: theme.colors.secondary,
+                cursor: 'not-allowed',
+              }}
+            >
+              <Lock style={{ color: theme.colors.primary }} size={20} />
+            </Button>
           )}
-          {actions.includes('Eliminar') && (
+          {actions.includes('Eliminar') && ContractTypes.isActive ? (
+            deletePopover({ ContractTypes })
+          ) : (
+            <Button isIconOnly style={{ backgroundColor: theme.colors.danger }}>
+              <Lock
+                style={{
+                  color: theme.colors.primary,
+                  cursor: 'not-allowed',
+                }}
+                size={20}
+              />
+            </Button>
+          )}
+          {ContractTypes.isActive === false && (
             <>
-              {deletePopover({ ContractTypes })}
-
-              {/* {statusEmployees.isActive ? (
-                deletePopover({ statusEmployees })
-              ) : (
+              {actions.includes('Activar') ? (
                 <Button
-                  onClick={() => handleActive(statusEmployees.id)}
+                  onClick={() => handleActive(ContractTypes.id)}
                   isIconOnly
                   style={global_styles().thirdStyle}
                 >
                   <RefreshCcw />
                 </Button>
-              )} */}
+              ) : (
+                <Button
+                  isIconOnly
+                  style={{
+                    ...global_styles().thirdStyle,
+                    cursor: 'not-allowed',
+                  }}
+                >
+                  <Lock />
+                </Button>
+              )}
             </>
           )}
         </div>
