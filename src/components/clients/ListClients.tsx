@@ -41,7 +41,7 @@ import Pagination from '../global/Pagination';
 import { global_styles } from '../../styles/global.styles';
 import SmPagination from '../global/SmPagination';
 import classNames from 'classnames';
-import HeadlessModal from '../global/HeadlessModal';
+
 import TooltipGlobal from '../global/TooltipGlobal';
 import BottomDrawer from '../global/BottomDrawer';
 import useWindowSize from '@/hooks/useWindowSize';
@@ -61,7 +61,7 @@ const ListClients = ({ actions }: Props) => {
   const [email, setEmail] = useState('');
   const [branch, setBranch] = useState('');
 
-  const [typeClient, setTypeClient] = useState('normal');
+  const [typeClient, setTypeClient] = useState('');
   const [active, setActive] = useState(true);
   const [tipeCustomer, setTypeCustomer] = useState('');
   const { getBranchesList, branch_list } = useBranchesStore();
@@ -129,9 +129,20 @@ const ListClients = ({ actions }: Props) => {
     setSelectedCustomerDirection(payload_direction);
     setSelectedId(customer.id);
 
+
+
     if (type === 'edit') {
-      navigate(`/add-client-contributor/${customer.id}`);
+      if (customer.esContribuyente) {
+        navigate(`/add-client-contributor/${customer.id}`);
+      } else {
+        navigate(`/add-client-normal/${customer.id}`);
+      }
+      return;
     }
+
+    // if (type === 'edit') {
+    //   navigate(`/add-client-contributor/${customer.id}`);
+    // }
 
     if (type === 'edit') {
       if (customer.esContribuyente) {
@@ -149,26 +160,14 @@ const ListClients = ({ actions }: Props) => {
     }
     modalAdd.onOpen();
   };
-  const clearClose = () => {
-    modalAdd.onClose();
-    handleChangeCustomer({} as Customer, '');
-    setTypeClient('normal');
-    setSelectedId(0);
-    setSelectedCustomer(undefined);
-    setSelectedTitle('');
-  };
 
-  // const handleActivate = (id: number) => {
-  //   save_active_customer(id);
-  // };
+
 
   const handleActivate = (id: number) => {
     save_active_customer(id).then(() => {
       getCustomersPagination(1, limit, '', '', '', '', active ? 1 : 0);
     });
   };
-
-  const [showForm, setShowForm] = useState(false); // Estado para controlar si se muestra el formulario
 
   const [typeDocumentCustomer, setTypeDocumentCustomer] = useState('');
   return (
@@ -628,7 +627,6 @@ const ListClients = ({ actions }: Props) => {
                       search,
                       email,
                       branch,
-
                       tipeCustomer,
                       active ? 1 : 0
                     );
@@ -673,7 +671,7 @@ const ListClients = ({ actions }: Props) => {
         </div>
 
         <>
-          <HeadlessModal
+          {/* <HeadlessModal
             isOpen={modalAdd.isOpen}
             onClose={() => {
               clearClose();
@@ -696,16 +694,26 @@ const ListClients = ({ actions }: Props) => {
               {typeClient === 'normal' && (
                 <AddClientNormal
                   typeDocumento={typeDocumentCustomer}
-                  closeModal={modalAdd.onClose}
+                  // closeModal={modalAdd.onClose}
                   customer={selectedCustomer}
                   customer_direction={selectedCustomerDirection}
                   id={selectedId}
                 />
               )}
             </>
-          </HeadlessModal>
+          </HeadlessModal> */}
 
-          { typeClient === 'contribuyente' && (
+          {typeClient === 'normal' && (
+            <AddClientNormal
+              typeDocumento={typeDocumentCustomer}
+              // closeModal={modalAdd.onClose}
+              customer={selectedCustomer}
+              customer_direction={selectedCustomerDirection}
+              id={selectedId}
+            />
+          )}
+
+          {typeClient === 'contribuyente' && (
             <div className="w-full h-full p-5 bg-white shadow rounded-xl dark:bg-gray-900">
               <AddClientContributor
                 typeDocumento={typeDocumentCustomer}
@@ -870,8 +878,7 @@ export const BottomAdd = ({ setTypeClient, openModal }: PopoverAddProps) => {
           <Button
             type="button"
             onClick={() => {
-              onClose();
-              openModal();
+              navigate(`/add-client/0`);
               setTypeClient('normal');
             }}
             style={{

@@ -57,6 +57,7 @@ export interface PayloadCustomer {
   transmitterId?: number;
   direccionId?: number;
   CustomerDirection?: CustomerDirection;
+  branchId?: number;
 }
 
 export interface CustomerDirection {

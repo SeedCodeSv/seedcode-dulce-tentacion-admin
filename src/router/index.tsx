@@ -48,6 +48,7 @@ import CFFBookIVA from '@/pages/iva/CFFBookIVA';
 import FEBookIVA from '@/pages/iva/FEBookIVA';
 import CreateTheme from '@/components/configuration/CreateTheme';
 import AddClientContributor from '@/components/clients/AddClientContributor';
+import AddClientNormal from '@/components/clients/AddClientNormal';
 
 
 const Loading = () => {
@@ -226,6 +227,10 @@ export const router = () => {
     {
       path: '/add-client-contributor/:id' ,
       element: checkAuthorization('Clientes', <AddClientContributor />),
+    },
+    {
+      path: '/add-client/:id' ,
+      element: checkAuthorization('Clientes', <AddClientNormal />),
     },
 
     {
