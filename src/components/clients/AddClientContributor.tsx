@@ -30,11 +30,9 @@ function AddClientContributor(props: Props) {
   const isEditing = !!id;
   const { get_customer_by_id, user_by_id } = useCustomerStore();
   const { getBranchesList, branch_list } = useBranchesStore();
-
   useEffect(() => {
     getBranchesList();
   }, []);
-
   console.log('user_by_id', user_by_id);
   const [initialValues, setInitialValues] = useState({
     nombre: '',

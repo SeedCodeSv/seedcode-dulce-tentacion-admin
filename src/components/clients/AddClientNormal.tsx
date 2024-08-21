@@ -46,6 +46,10 @@ const AddClientNormal = (props: Props) => {
     nombreDepartamento: '',
     complemento: '',
     branchId: 0,
+    branch: {
+      id: 0,
+      nombre: '',
+    },
   });
 
   useEffect(() => {
@@ -65,6 +69,10 @@ const AddClientNormal = (props: Props) => {
             nombreDepartamento: customer.direccion.nombreDepartamento ?? '',
             complemento: customer.direccion.complemento ?? '',
             branchId: customer.branchId ?? 0,
+            branch: {
+              id: customer.branchId ?? 0,
+              nombre: customer.branch?.name ?? '',
+            },
           });
         }
       });
@@ -81,6 +89,10 @@ const AddClientNormal = (props: Props) => {
         nombreDepartamento: '',
         complemento: '',
         branchId: 0,
+        branch: {
+          id: 0,
+          nombre: '',
+        },
       });
     }
   }, [id, isEditing, get_customer_by_id]);
@@ -114,7 +126,6 @@ const AddClientNormal = (props: Props) => {
         }),
       otherwise: (schema) => schema.notRequired(),
     }),
-
     departamento: yup.string().notRequired(),
     municipio: yup.string().notRequired(),
     complemento: yup.string().notRequired(),
@@ -143,13 +154,10 @@ const AddClientNormal = (props: Props) => {
     }
     getCat013Municipios(selectedCodeDep);
   }, [selectedCodeDep, props.customer_direction]);
-
   useEffect(() => {
     getCat022TipoDeDocumentoDeIde();
   }, [selectedCodeDep]);
-
   const { postCustomer, patchCustomer } = useCustomerStore();
-
   const onSubmit = async (payload: PayloadCustomer) => {
     const finalPayload = {
       ...payload,
@@ -167,10 +175,8 @@ const AddClientNormal = (props: Props) => {
 
     if (isEditing && id && id !== '0') {
       // Editar cliente existente
-      await patchCustomer(finalPayload, parseInt(id)); // Asegúrate de pasar el `id` correctamente como número
+      patchCustomer(finalPayload, parseInt(id)); // Asegúrate de pasar el `id` correctamente como número
     } else {
-      // Crear nuevo cliente
-      console.log('DATOS DEL CLIENTE A CREAR', finalPayload);
       await postCustomer(finalPayload);
     }
     navigate('/clients');
@@ -194,6 +200,18 @@ const AddClientNormal = (props: Props) => {
     }
   }, [props, props.customer_direction, cat_013_municipios, cat_013_municipios.length]);
   const navigate = useNavigate();
+
+  const selectedDefaultBranch = useMemo(() => {
+    return props.customer?.branchId;
+  }, [props.customer?.branchId]);
+  useEffect(() => {
+    if (selectedDefaultBranch) {
+      setInitialValues({
+        ...initialValues,
+        branchId: props.customer?.branchId || 0,
+      });
+    }
+  }, [props.customer?.branchId, selectedDefaultBranch]);
   return (
     <Layout title="Cliente">
       <div className="w-full h-full p-4 md:p-10 md:px-12">
@@ -419,14 +437,16 @@ const AddClientNormal = (props: Props) => {
                     </div>
                     <div>
                       <Autocomplete
-                        defaultSelectedKey={user_by_id?.branchId}
-                        selectedKey={user_by_id?.branchId}
                         onSelectionChange={(key) => {
                           if (key) {
                             const depSelected = JSON.parse(key as string) as Branch;
                             handleChange('branchId')(depSelected?.id?.toString() ?? '');
                           }
+                          console.log(initialValues);
                         }}
+                        defaultSelectedKey={selectedDefaultBranch}
+                        selectedKey={selectedDefaultBranch}
+                        value={selectedDefaultBranch}
                         onBlur={handleBlur('branchId')}
                         label="Sucursal"
                         labelPlacement="outside"
@@ -442,7 +462,6 @@ const AddClientNormal = (props: Props) => {
                             className="dark:text-white"
                             value={bra.name}
                             key={bra.id}
-                            textValue={props.customer_direction?.complemento}
                           >
                             {bra.name}
                           </AutocompleteItem>

@@ -901,10 +901,7 @@ export const BottomAdd = () => {
             type="button"
             onClick={() => {
               navigate(`/add-client/0`);
-<<<<<<< HEAD
-=======
               // setTypeClient('normal');
->>>>>>> afd53da2c202a42ddc4021cf316c144999adcda8
             }}
             style={{
               backgroundColor: theme.colors.secondary,
@@ -922,10 +919,7 @@ export const BottomAdd = () => {
             // }}
             onClick={() => {
               navigate(`/add-client-contributor/0`);
-<<<<<<< HEAD
-=======
               // setTypeClient('contribuyente');
->>>>>>> afd53da2c202a42ddc4021cf316c144999adcda8
             }}
             style={{
               backgroundColor: theme.colors.third,
