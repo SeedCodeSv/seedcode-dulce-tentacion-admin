@@ -621,7 +621,7 @@ function AddClientContributor(props: Props) {
                           <AutocompleteItem
                             className="dark:text-white"
                             value={bra.name}
-                            key={JSON.stringify(bra)}
+                            key={bra.id}
                           >
                             {bra.name}
                           </AutocompleteItem>
