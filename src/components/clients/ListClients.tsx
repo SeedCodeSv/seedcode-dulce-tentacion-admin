@@ -15,7 +15,7 @@ import {
   AutocompleteItem,
 } from '@nextui-org/react';
 import { useCustomerStore } from '../../store/customers.store';
-import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import {
   EditIcon,
   User,
@@ -315,9 +315,7 @@ const ListClients = ({ actions }: Props) => {
                 </Select>
               </div>
             </div>
-            {actions.includes('Agregar') && (
-              <BottomAdd setTypeClient={setTypeClient} openModal={modalAdd.onOpen} />
-            )}
+            {actions.includes('Agregar') && <BottomAdd />}
             <div className="flex items-center gap-5">
               <div className="block md:hidden">
                 <TooltipGlobal text="Buscar por filtros" color="primary">
@@ -421,7 +419,7 @@ const ListClients = ({ actions }: Props) => {
                   </div>
                 </BottomDrawer>
               </div>
-              <BottomSm setTypeClient={setTypeClient} openModal={modalAdd.onOpen} />
+              <BottomSm />
             </div>
           </div>
           <div className="flex justify-between mt-4">
@@ -869,12 +867,7 @@ export const CardItem = ({ customer, handleChange }: CardProps) => {
   );
 };
 
-interface PopoverAddProps {
-  setTypeClient: Dispatch<SetStateAction<string>>;
-  openModal: () => void;
-}
-
-export const BottomAdd = ({ setTypeClient }: PopoverAddProps) => {
+export const BottomAdd = () => {
   const { theme } = useContext(ThemeContext);
   const { isOpen, onClose, onOpen } = useDisclosure();
 
@@ -908,6 +901,10 @@ export const BottomAdd = ({ setTypeClient }: PopoverAddProps) => {
             type="button"
             onClick={() => {
               navigate(`/add-client/0`);
+<<<<<<< HEAD
+=======
+              // setTypeClient('normal');
+>>>>>>> afd53da2c202a42ddc4021cf316c144999adcda8
             }}
             style={{
               backgroundColor: theme.colors.secondary,
@@ -925,6 +922,10 @@ export const BottomAdd = ({ setTypeClient }: PopoverAddProps) => {
             // }}
             onClick={() => {
               navigate(`/add-client-contributor/0`);
+<<<<<<< HEAD
+=======
+              // setTypeClient('contribuyente');
+>>>>>>> afd53da2c202a42ddc4021cf316c144999adcda8
             }}
             style={{
               backgroundColor: theme.colors.third,
@@ -939,9 +940,11 @@ export const BottomAdd = ({ setTypeClient }: PopoverAddProps) => {
   );
 };
 
-export const BottomSm = ({ setTypeClient, openModal }: PopoverAddProps) => {
+export const BottomSm = () => {
   const { theme } = useContext(ThemeContext);
   const { isOpen, onClose, onOpen } = useDisclosure();
+
+  const navigate = useNavigate();
   return (
     <Popover
       aria-labelledby="popover-title"
@@ -964,6 +967,19 @@ export const BottomSm = ({ setTypeClient, openModal }: PopoverAddProps) => {
       <PopoverContent aria-labelledby="popover-title">
         <div className="flex flex-col gap-5 p-3 bg-white">
           <Button
+            type="button"
+            onClick={() => {
+              navigate(`/add-client/0`);
+              // setTypeClient('normal');
+            }}
+            style={{
+              backgroundColor: theme.colors.secondary,
+              color: theme.colors.primary,
+            }}
+          >
+            Cliente consumidor final
+          </Button>
+          {/* <Button
             onClick={() => {
               onClose();
               openModal();
@@ -976,8 +992,26 @@ export const BottomSm = ({ setTypeClient, openModal }: PopoverAddProps) => {
             }}
           >
             Cliente consumidor final
-          </Button>
+          </Button> */}
           <Button
+            type="button"
+            // onClick={() => {
+            //   onClose();
+            //   openModal();
+            //   setTypeClient('contribuyente');
+            // }}
+            onClick={() => {
+              navigate(`/add-client-contributor/0`);
+              // setTypeClient('contribuyente');
+            }}
+            style={{
+              backgroundColor: theme.colors.third,
+              color: theme.colors.primary,
+            }}
+          >
+            Cliente contribuyente
+          </Button>
+          {/* <Button
             type="button"
             onClick={() => {
               onClose();
@@ -990,7 +1024,7 @@ export const BottomSm = ({ setTypeClient, openModal }: PopoverAddProps) => {
             }}
           >
             Cliente contribuyente
-          </Button>
+          </Button> */}
         </div>
       </PopoverContent>
     </Popover>
