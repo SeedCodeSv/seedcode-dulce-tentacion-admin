@@ -13,6 +13,7 @@ import Layout from '@/layout/Layout';
 import { useNavigate, useParams } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
 import { useBranchesStore } from '@/store/branches.store';
+import { Branch } from '@/types/auth.types';
 
 interface Props {
   customer?: PayloadCustomer;
@@ -27,7 +28,7 @@ const UpdateClientNormal = (props: Props) => {
   const { theme } = useContext(ThemeContext);
   const { id } = useParams<{ id: string }>();
   const isEditing = !!id;
-  const { get_customer_by_id} = useCustomerStore();
+  const { get_customer_by_id, user_by_id } = useCustomerStore();
   const { getBranchesList, branch_list } = useBranchesStore();
 
   useEffect(() => {
@@ -119,12 +120,21 @@ const UpdateClientNormal = (props: Props) => {
     getCat012Departamento();
   }, []);
 
-  useEffect(() => {
-    if (selectedCodeDep !== '0') {
-      getCat013Municipios(props.customer_direction?.departamento ?? selectedCodeDep);
+  const selectedKeyDepartment = useMemo(() => {
+    if (user_by_id) {
+      const department = cat_012_departamento.find(
+        (department) => department.codigo === user_by_id.direccion.departamento
+      );
+      return department?.codigo;
     }
-    getCat013Municipios(selectedCodeDep);
-  }, [selectedCodeDep, props.customer_direction]);
+    return;
+  }, [user_by_id, cat_012_departamento.length]);
+
+  useEffect(() => {
+    if (selectedKeyDepartment) {
+      getCat013Municipios(selectedKeyDepartment);
+    }
+  }, [selectedKeyDepartment]);
 
   useEffect(() => {
     getCat022TipoDeDocumentoDeIde();
@@ -154,23 +164,29 @@ const UpdateClientNormal = (props: Props) => {
     navigate('/clients');
   };
 
-  const selectedKeyDepartment = useMemo(() => {
-    if (props.customer_direction) {
-      const department = cat_012_departamento.find(
-        (department) => department.codigo === props.customer_direction?.departamento
-      );
-      return JSON.stringify(department);
-    }
-  }, [props, props.customer_direction, cat_012_departamento, cat_012_departamento.length]);
+  console.log(selectedKeyDepartment);
 
   const selectedKeyCity = useMemo(() => {
-    if (props.customer_direction) {
+    if (user_by_id) {
       const city = cat_013_municipios.find(
-        (department) => department.codigo === props.customer_direction?.municipio
+        (department) => department.codigo === user_by_id.direccion.municipio
       );
-      return JSON.stringify(city);
+      return city?.codigo;
     }
-  }, [props, props.customer_direction, cat_013_municipios, cat_013_municipios.length]);
+  }, [user_by_id, cat_013_municipios.length, selectedKeyDepartment]);
+
+  console.log(selectedKeyCity);
+
+  const selectedKeyTypeOfDocument = useMemo(() => {
+    if (user_by_id) {
+      const typeOfDocument = cat_022_tipo_de_documentoDeIde.find(
+        (typeOfDocument) => typeOfDocument.codigo === user_by_id.tipoDocumento
+      );
+      return typeOfDocument?.codigo;
+    }
+  }, [user_by_id, cat_022_tipo_de_documentoDeIde.length]);
+
+  console.log(selectedKeyTypeOfDocument);
 
   const navigate = useNavigate();
 
@@ -185,59 +201,56 @@ const UpdateClientNormal = (props: Props) => {
             <ArrowLeft />
             <span>Volver</span>
           </button>
-          <Formik
-            initialValues={{ ...initialValues }}
-            validationSchema={validationSchema}
-            onSubmit={(values) => onSubmit(values)}
-            // validateOnMount={false}
-            // validateOnBlur={false}
-            enableReinitialize={true}
-          >
-            {({ values, touched, errors, handleBlur, handleChange, handleSubmit }) => (
-              <>
-                <div className="mt-10">
-                  <div className="">
-                    <Input
-                      label="Nombre"
-                      labelPlacement="outside"
-                      name="name"
-                      value={values.nombre}
-                      onChange={handleChange('nombre')}
-                      onBlur={handleBlur('nombre')}
-                      placeholder="Ingresa el nombre"
-                      classNames={{
-                        label: 'font-semibold text-gray-500 text-sm',
-                      }}
-                      variant="bordered"
-                    />
-                    {errors.nombre && touched.nombre && (
-                      <span className="text-sm font-semibold text-red-500">{errors.nombre}</span>
-                    )}
-                  </div>
-                  <div className="pt-3">
-                    <Input
-                      label="Correo electrónico"
-                      labelPlacement="outside"
-                      name="correo"
-                      value={values.correo}
-                      onChange={handleChange('correo')}
-                      onBlur={handleBlur('correo')}
-                      placeholder="Ingresa el correo"
-                      classNames={{
-                        label: 'font-semibold text-gray-500 text-sm',
-                      }}
-                      variant="bordered"
-                    />
-                    {errors.correo && touched.correo && (
-                      <span className="text-sm font-semibold text-red-500">{errors.correo}</span>
-                    )}
-                  </div>
-                  <div className="grid grid-cols-2 gap-5 pt-3">
-                    <div className="pt-2">
-                      <div className="flex flex-col">
-                        <label className="font-semibold text-gray-900 text-sm mb-1">
-                          Tipo de documento
-                        </label>
+          {user_by_id && (
+            <Formik
+              initialValues={{ ...initialValues }}
+              validationSchema={validationSchema}
+              onSubmit={(values) => onSubmit(values)}
+              // validateOnMount={false}
+              // validateOnBlur={false}
+              enableReinitialize={true}
+            >
+              {({ values, touched, errors, handleBlur, handleChange, handleSubmit }) => (
+                <>
+                  <div className="mt-10">
+                    <div className="">
+                      <Input
+                        label="Nombre"
+                        labelPlacement="outside"
+                        name="name"
+                        value={values.nombre}
+                        onChange={handleChange('nombre')}
+                        onBlur={handleBlur('nombre')}
+                        placeholder="Ingresa el nombre"
+                        classNames={{
+                          label: 'font-semibold text-gray-500 text-sm',
+                        }}
+                        variant="bordered"
+                      />
+                      {errors.nombre && touched.nombre && (
+                        <span className="text-sm font-semibold text-red-500">{errors.nombre}</span>
+                      )}
+                    </div>
+                    <div className="pt-3">
+                      <Input
+                        label="Correo electrónico"
+                        labelPlacement="outside"
+                        name="correo"
+                        value={values.correo}
+                        onChange={handleChange('correo')}
+                        onBlur={handleBlur('correo')}
+                        placeholder="Ingresa el correo"
+                        classNames={{
+                          label: 'font-semibold text-gray-500 text-sm',
+                        }}
+                        variant="bordered"
+                      />
+                      {errors.correo && touched.correo && (
+                        <span className="text-sm font-semibold text-red-500">{errors.correo}</span>
+                      )}
+                    </div>
+                    <div className="grid grid-cols-2 gap-5 pt-3">
+                      <div className="pt-2">
                         <Autocomplete
                           onSelectionChange={(key) => {
                             if (key) {
@@ -246,19 +259,20 @@ const UpdateClientNormal = (props: Props) => {
                             }
                           }}
                           onBlur={handleBlur('tipoDocumento')}
+                          label="Tipo de documento"
                           placeholder="Selecciona el tipo de documento"
                           variant="bordered"
+                          labelPlacement="outside"
                           classNames={{
                             base: 'font-semibold text-gray-500 text-sm',
                           }}
                           className="dark:text-white"
-                          defaultSelectedKey={values.tipoDocumento}
-                          value={values.tipoDocumento}
+                          defaultSelectedKey={`${selectedKeyTypeOfDocument}`}
                         >
                           {cat_022_tipo_de_documentoDeIde.map((dep) => (
                             <AutocompleteItem
                               value={dep.codigo}
-                              key={dep.id}
+                              key={dep.codigo}
                               className="dark:text-white"
                             >
                               {dep.valores}
@@ -266,234 +280,200 @@ const UpdateClientNormal = (props: Props) => {
                           ))}
                         </Autocomplete>
                       </div>
+                      <div className="mt-2">
+                        <Input
+                          type="text"
+                          label="Numero documento"
+                          labelPlacement="outside"
+                          name="numDocumento"
+                          value={values.numDocumento}
+                          onChange={handleChange('numDocumento')}
+                          onBlur={handleBlur('numDocumento')}
+                          placeholder="Ingresa el número de documento"
+                          classNames={{
+                            label: 'font-semibold text-gray-500 text-sm',
+                          }}
+                          variant="bordered"
+                        />
+                        {errors.numDocumento && touched.numDocumento && (
+                          <span className="text-sm font-semibold text-red-500">
+                            {errors.numDocumento}
+                          </span>
+                        )}
+                      </div>
                     </div>
-                    <div className="mt-2">
-                      <Input
-                        type="text"
-                        label="Numero documento"
+                    <div className="grid grid-cols-2 gap-5 pt-3">
+                      <div>
+                        <Autocomplete
+                          onSelectionChange={(key) => {
+                            if (key) {
+                              const depSelected = JSON.parse(key as string) as Municipio;
+                              setSelectedCodeDep(depSelected.codigo);
+                              handleChange('departamento')(depSelected.codigo);
+                              handleChange('nombreDepartamento')(depSelected.valores);
+                            }
+                          }}
+                          onBlur={handleBlur('departamento')}
+                          label="Departamento"
+                          labelPlacement="outside"
+                          placeholder="Selecciona el departamento"
+                          variant="bordered"
+                          classNames={{
+                            base: 'font-semibold text-gray-500 text-sm',
+                          }}
+                          className="dark:text-white"
+                          defaultSelectedKey={`${selectedKeyDepartment}`}
+                        >
+                          {cat_012_departamento.map((dep) => (
+                            <AutocompleteItem
+                              value={dep.codigo}
+                              key={dep.codigo}
+                              className="dark:text-white"
+                            >
+                              {dep.valores}
+                            </AutocompleteItem>
+                          ))}
+                        </Autocomplete>
+                        {errors.departamento && touched.departamento && (
+                          <span className="text-sm font-semibold text-red-500">
+                            {errors.departamento}
+                          </span>
+                        )}
+                      </div>
+                      <div>
+                        {selectedKeyCity && (
+                          <Autocomplete
+                            onSelectionChange={(key) => {
+                              if (key) {
+                                const depSelected = JSON.parse(key as string) as Departamento;
+                                handleChange('municipio')(depSelected.codigo);
+                                handleChange('nombreMunicipio')(depSelected.valores);
+                              }
+                            }}
+                            label="Municipio"
+                            labelPlacement="outside"
+                            className="dark:text-white"
+                            variant="bordered"
+                            placeholder="Selecciona el municipio"
+                            classNames={{
+                              base: 'font-semibold text-gray-500 text-sm',
+                            }}
+                            onBlur={handleBlur('municipio')}
+                            defaultSelectedKey={`${selectedKeyCity}`}
+                          >
+                            {cat_013_municipios.map((dep) => (
+                              <AutocompleteItem
+                                value={dep.id}
+                                key={dep.codigo}
+                                className="dark:text-white"
+                              >
+                                {dep.valores}
+                              </AutocompleteItem>
+                            ))}
+                          </Autocomplete>
+                        )}
+                        {errors.municipio && touched.municipio && (
+                          <span className="text-sm font-semibold text-red-500">
+                            {errors.municipio}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-5 pt-3">
+                      <div>
+                        <Input
+                          type="number"
+                          label="Teléfono"
+                          labelPlacement="outside"
+                          name="telefono"
+                          value={values.telefono}
+                          onChange={handleChange('telefono')}
+                          onBlur={handleBlur('telefono')}
+                          placeholder="Ingresa el telefono"
+                          classNames={{
+                            label: 'font-semibold text-gray-500 text-sm',
+                          }}
+                          variant="bordered"
+                        />
+                        {errors.telefono && touched.telefono && (
+                          <span className="text-xs font-semibold text-red-500">
+                            {errors.telefono}
+                          </span>
+                        )}
+                      </div>
+                      <div>
+                        <Autocomplete
+                          value={values.branchId}
+                          onSelectionChange={(key) => {
+                            if (key) {
+                              const depSelected = JSON.parse(key as string) as Branch;
+                              handleChange('branchId')(depSelected?.id?.toString() ?? '');
+                            }
+                          }}
+                          onBlur={handleBlur('branchId')}
+                          label="Sucursal"
+                          labelPlacement="outside"
+                          placeholder="Selecciona la sucursal"
+                          variant="bordered"
+                          className="dark:text-white"
+                          classNames={{
+                            base: 'font-semibold text-sm',
+                          }}
+                          defaultSelectedKey={user_by_id.branch.id.toString()}
+                        >
+                          {branch_list.map((bra) => (
+                            <AutocompleteItem
+                              className="dark:text-white"
+                              value={bra.name}
+                              key={bra.id}
+                            >
+                              {bra.name}
+                            </AutocompleteItem>
+                          ))}
+                        </Autocomplete>
+
+                        {errors.branchId && touched.branchId && (
+                          <span className="text-sm font-semibold text-red-500">
+                            {errors.branchId}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="pt-2">
+                      <Textarea
+                        label="Complemento"
                         labelPlacement="outside"
-                        name="numDocumento"
-                        value={values.numDocumento}
-                        onChange={handleChange('numDocumento')}
-                        onBlur={handleBlur('numDocumento')}
-                        placeholder="Ingresa el número de documento"
+                        name="Complemento"
+                        value={values.complemento}
+                        onChange={handleChange('complemento')}
+                        onBlur={handleBlur('complemento')}
+                        placeholder="Ingresa el complemento de la dirección"
                         classNames={{
                           label: 'font-semibold text-gray-500 text-sm',
                         }}
                         variant="bordered"
                       />
-                      {errors.numDocumento && touched.numDocumento && (
+                      {errors.complemento && touched.complemento && (
                         <span className="text-sm font-semibold text-red-500">
-                          {errors.numDocumento}
+                          {errors.complemento}
                         </span>
                       )}
                     </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-5 pt-3">
-                    <div>
-                      <Autocomplete
-                        onSelectionChange={(key) => {
-                          if (key) {
-                            const depSelected = JSON.parse(key as string) as Municipio;
-                            setSelectedCodeDep(depSelected.codigo);
-                            handleChange('departamento')(depSelected.codigo);
-                            handleChange('nombreDepartamento')(depSelected.valores);
-                          }
-                        }}
-                        onBlur={handleBlur('departamento')}
-                        label="Departamento"
-                        labelPlacement="outside"
-                        placeholder="Selecciona el departamento"
-                        variant="bordered"
-                        classNames={{
-                          base: 'font-semibold text-gray-500 text-sm',
-                        }}
-                        className="dark:text-white"
-                        defaultSelectedKey={values.departamento}
-                        value={selectedKeyDepartment}
-                      >
-                        {cat_012_departamento.map((dep) => (
-                          <AutocompleteItem
-                            value={dep.codigo}
-                            key={dep.codigo}
-                            className="dark:text-white"
-                          >
-                            {dep.valores}
-                          </AutocompleteItem>
-                        ))}
-                      </Autocomplete>
-                      {errors.departamento && touched.departamento && (
-                        <span className="text-sm font-semibold text-red-500">
-                          {errors.departamento}
-                        </span>
-                      )}
-                    </div>
-                    <div>
-                      <Autocomplete
-                        onSelectionChange={(key) => {
-                          if (key) {
-                            const depSelected = JSON.parse(key as string) as Departamento;
-                            handleChange('municipio')(depSelected.codigo);
-                            handleChange('nombreMunicipio')(depSelected.valores);
-                          }
-                        }}
-                        label="Municipio"
-                        labelPlacement="outside"
-                        className="dark:text-white"
-                        variant="bordered"
-                        placeholder={
-                          isEditing && values.nombreMunicipio
-                            ? values.nombreMunicipio
-                            : 'Selecciona el municipio'
-                        }
-                        classNames={{
-                          base: 'font-semibold text-gray-500 text-sm',
-                        }}
-                        onBlur={handleBlur('municipio')}
-                        defaultSelectedKey={isEditing ? values.municipio : undefined}
-                        defaultInputValue={props.customer_direction?.nombreMunicipio}
-                        value={selectedKeyCity}
-                      >
-                        {cat_013_municipios.map((dep) => (
-                          <AutocompleteItem
-                            value={dep.codigo}
-                            key={JSON.stringify(dep)}
-                            className="dark:text-white"
-                          >
-                            {dep.valores}
-                          </AutocompleteItem>
-                        ))}
-                      </Autocomplete>
-                      {errors.municipio && touched.municipio && (
-                        <span className="text-sm font-semibold text-red-500">
-                          {errors.municipio}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-5 pt-3">
-                    <div>
-                      <Input
-                        type="number"
-                        label="Teléfono"
-                        labelPlacement="outside"
-                        name="telefono"
-                        value={values.telefono}
-                        onChange={handleChange('telefono')}
-                        onBlur={handleBlur('telefono')}
-                        placeholder="Ingresa el telefono"
-                        classNames={{
-                          label: 'font-semibold text-gray-500 text-sm',
-                        }}
-                        variant="bordered"
-                      />
-                      {errors.telefono && touched.telefono && (
-                        <span className="text-xs font-semibold text-red-500">
-                          {errors.telefono}
-                        </span>
-                      )}
-                    </div>
-                    <div>
-                      {/* <Autocomplete
-                        value={values.branchId}
-                        onSelectionChange={(key) => {
-                          if (key) {
-                            const depSelected = JSON.parse(key as string) as Branch;
-                            handleChange('branchId')(depSelected?.id?.toString() ?? '');
-                          }
-                        }}
-                        onBlur={handleBlur('branchId')}
-                        label="Sucursal"
-                        labelPlacement="outside"
-                        placeholder="Selecciona la sucursal"
-                        variant="bordered"
-                        className="dark:text-white"
-                        classNames={{
-                          base: 'font-semibold text-sm',
-                        }}
-                      >
-                        {branch_list.map((bra) => (
-                          <AutocompleteItem
-                            className="dark:text-white"
-                            value={bra.name}
-                            key={JSON.stringify(bra)}
-                          >
-                            {bra.name}
-                          </AutocompleteItem>
-                        ))}
-                      </Autocomplete> */}
-
-                      <Autocomplete
-                        value={values.branchId?.toString() || ''}
-                        onSelectionChange={(key) => {
-                          const selectedBranch = branch_list.find(
-                            (branch) => branch.id.toString() === key
-                          );
-                          handleChange('branchId')(selectedBranch?.id?.toString() || '');
-                        }}
-                        onBlur={handleBlur('branchId')}
-                        label="Sucursal"
-                        labelPlacement="outside"
-                        placeholder="Selecciona la sucursal"
-                        variant="bordered"
-                        className="dark:text-white"
-                        defaultSelectedKey={initialValues.branchId?.toString()}
-                        classNames={{
-                          base: 'font-semibold text-sm',
-                        }}
-                      >
-                        {branch_list.map((branch) => (
-                          <AutocompleteItem
-                            className="dark:text-white"
-                            value={branch.id.toString()}
-                            key={branch.id.toString()}
-                          >
-                            {branch.name}
-                          </AutocompleteItem>
-                        ))}
-                      </Autocomplete>
-
-                      {errors.branchId && touched.branchId && (
-                        <span className="text-sm font-semibold text-red-500">
-                          {errors.branchId}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  <div className="pt-2">
-                    <Textarea
-                      label="Complemento"
-                      labelPlacement="outside"
-                      name="Complemento"
-                      value={values.complemento}
-                      onChange={handleChange('complemento')}
-                      onBlur={handleBlur('complemento')}
-                      placeholder="Ingresa el complemento de la dirección"
-                      classNames={{
-                        label: 'font-semibold text-gray-500 text-sm',
+                    <Button
+                      onClick={() => handleSubmit()}
+                      className="w-full mt-4 text-sm font-semibold"
+                      style={{
+                        backgroundColor: theme.colors.dark,
+                        color: theme.colors.primary,
                       }}
-                      variant="bordered"
-                    />
-                    {errors.complemento && touched.complemento && (
-                      <span className="text-sm font-semibold text-red-500">
-                        {errors.complemento}
-                      </span>
-                    )}
+                    >
+                      Guardar
+                    </Button>
                   </div>
-                  <Button
-                    onClick={() => handleSubmit()}
-                    className="w-full mt-4 text-sm font-semibold"
-                    style={{
-                      backgroundColor: theme.colors.dark,
-                      color: theme.colors.primary,
-                    }}
-                  >
-                    Guardar
-                  </Button>
-                </div>
-              </>
-            )}
-          </Formik>
+                </>
+              )}
+            </Formik>
+          )}
         </div>
       </div>
     </Layout>
