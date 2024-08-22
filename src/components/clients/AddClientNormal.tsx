@@ -26,7 +26,7 @@ const AddClientNormal = (props: Props) => {
   const { theme } = useContext(ThemeContext);
   const { id } = useParams<{ id: string }>();
   const isEditing = !!id;
-  const { get_customer_by_id, user_by_id } = useCustomerStore(); // Suponiendo que tienes una función para obtener el cliente por ID
+  const { get_customer_by_id, user_by_id } = useCustomerStore();
   const { getBranchesList, branch_list } = useBranchesStore();
   console.log('user_by_id', user_by_id);
 
