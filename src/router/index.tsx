@@ -50,6 +50,8 @@ import CreateTheme from '@/components/configuration/CreateTheme';
 import AddClientContributor from '@/components/clients/AddClientContributor';
 import AddClientNormal from '@/components/clients/AddClientNormal';
 import AddNormalSupplier from '@/components/supplier/AddNormalSupplier';
+import AddTributeSupplier from '@/components/supplier/AddTributeSupplier';
+import UpdateNormalSupplier from '@/components/supplier/UpdateNormalSupplier';
 
 const Loading = () => {
   return <div>Cargando...</div>;
@@ -126,14 +128,24 @@ export const router = () => {
       path: '/suppliers',
       element: checkAuthorization('Proveedores', <Supplier />),
     },
+
     {
       path: '/add-supplier-normal',
       element: checkAuthorization('Proveedores', <AddNormalSupplier />),
     },
     {
+      path: '/add-supplier-tribute',
+      element: checkAuthorization('Proveedores', <AddTributeSupplier />),
+    },
+    {
+      path: '/update-supplier-normal/:id',
+      element: checkAuthorization('Proveedores', <UpdateNormalSupplier />),
+    },
+    {
       path: '/branches',
       element: checkAuthorization('Sucursales', <Branch />),
     },
+
     {
       path: '/clients',
       element: checkAuthorization('Clientes', <Customers />),

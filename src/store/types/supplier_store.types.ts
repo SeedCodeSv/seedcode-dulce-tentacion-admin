@@ -13,8 +13,10 @@ export interface ISupplierStore {
     isTransmitter: number | string,
     active?: number
   ) => void;
+  supplier: Supplier;
+  OnGetBySupplier: (id: number) => void;
   onPostSupplier: (payload: PayloadSupplier) => Promise<boolean>;
-  patchSupplier: (payload: PayloadSupplier, id: number) => void;
+  patchSupplier: (payload: Supplier, id: number) => void;
   getSupplierList: () => void;
   deleteSupplier: (id: number) => Promise<boolean>;
   activateSupplier: (id: number) => Promise<void>;

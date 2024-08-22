@@ -5,11 +5,13 @@ import {
   add_supplier,
   delete_supplier,
   get_supplier,
+  get_supplier_by_id,
   get_supplier_pagination,
   update_supplier,
 } from '../services/supplier.service';
 import { toast } from 'sonner';
 import { messages } from '../utils/constants';
+import { Supplier } from '@/types/supplier.types';
 
 export const useSupplierStore = create<ISupplierStore>((set, get) => ({
   supplier_pagination: {
@@ -22,8 +24,10 @@ export const useSupplierStore = create<ISupplierStore>((set, get) => ({
     status: 404,
     ok: false,
   },
+
   supplier_list: [],
   supplier_type: '',
+  supplier: {} as Supplier,
   saveSupplierPagination: (supplier_pagination) => set({ supplier_pagination }),
   getSupplierPagination: (page, limit, name, email, isTransmitter, active) => {
     get_supplier_pagination(page, limit, name, email, isTransmitter, active)
@@ -48,7 +52,7 @@ export const useSupplierStore = create<ISupplierStore>((set, get) => ({
     return await add_supplier(payload)
       .then(({ data }) => {
         if (data) {
-          get().getSupplierPagination(1, 5, '', '','', 1);
+          get().getSupplierPagination(1, 5, '', '', '', 1);
           toast.success(messages.success);
           return true;
         } else {
@@ -66,8 +70,8 @@ export const useSupplierStore = create<ISupplierStore>((set, get) => ({
     update_supplier(payload, id)
       .then(({ data }) => {
         if (data) {
-          const supplier =  get().supplier_type;
-          get().getSupplierPagination(1, 5, '', '',supplier, 1);
+          const supplier = get().supplier_type;
+          get().getSupplierPagination(1, 5, '', '', supplier, 1);
           toast.success(messages.success);
         } else {
           toast.warning(messages.error);
@@ -91,8 +95,8 @@ export const useSupplierStore = create<ISupplierStore>((set, get) => ({
   deleteSupplier: async (id) => {
     return await delete_supplier(id)
       .then(({ data }) => {
-        const supplier =  get().supplier_type;
-        get().getSupplierPagination(1, 5, '', '',supplier, 1);
+        const supplier = get().supplier_type;
+        get().getSupplierPagination(1, 5, '', '', supplier, 1);
 
         toast.success(messages.success);
         return data.ok;
@@ -110,5 +114,12 @@ export const useSupplierStore = create<ISupplierStore>((set, get) => ({
       .catch(() => {
         toast.error('Error al activar el proveedor');
       });
+  },
+  OnGetBySupplier: (supplier) => {
+    return get_supplier_by_id(supplier).then(({ data }) => {
+      set({
+        supplier: data.supplier,
+      });
+    });
   },
 }));

@@ -129,34 +129,15 @@ function ListSuppliers({ actions }: ArrayAction) {
     modalAdd.onOpen();
   };
 
-  const clearClose = () => {
-    modalAdd.onClose();
-    handleChangeSupplier({} as Supplier, '');
-    setTypeProveedor('normal');
-    setSelectedId(0);
-    setSelectedSupplier(undefined);
-    setSelectedTitle('');
-  };
-
-  // const emptyMessage = (
-  //   <div className="flex flex-col items-center justify-center w-full">
-  //     <img
-  //       src={NO_DATA}
-  //       alt="No data"
-  //       className="w-32 h-32"
-  //     />
-  //     <p className="mt-3 text-xl dark:text-white">
-  //       No se encontraron resultados
-  //     </p>
-  //   </div>
-  // );
-
   const handleActivate = (id: number) => {
     activateSupplier(id).then(() => {
       getSupplierPagination(page, limit, search, email, tipeSupplier, active ? 1 : 0);
     });
   };
 
+  const { supplier, OnGetBySupplier } = useSupplierStore();
+
+  const navigate = useNavigate();
   return (
     <>
       <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
@@ -328,8 +309,8 @@ function ListSuppliers({ actions }: ArrayAction) {
               </div>
               {actions.includes('Agregar') && (
                 <>
-                  <BottomSm setTypeSupplier={setTypeProveedor} openModal={modalAdd.onOpen} />
-                  <BottomAdd setTypeSupplier={setTypeProveedor} openModal={modalAdd.onOpen} />
+                  <BottomSm />
+                  <BottomAdd />
                 </>
               )}
             </div>
@@ -477,7 +458,10 @@ function ListSuppliers({ actions }: ArrayAction) {
                                 <>
                                   <TooltipGlobal text="Editar">
                                     <Button
-                                      onClick={() => handleChangeSupplier(item, 'edit')}
+                                      onClick={() => {
+                                        OnGetBySupplier(item.id),
+                                          navigate(`/update-supplier-normal/${item.id}`);
+                                      }}
                                       isIconOnly
                                       style={{
                                         backgroundColor: theme.colors.secondary,
@@ -655,7 +639,7 @@ interface PopoverAddProps {
   openModal: () => void;
 }
 
-export const BottomAdd = ({ setTypeSupplier, openModal }: PopoverAddProps) => {
+export const BottomAdd = () => {
   const navigate = useNavigate();
   const { theme } = useContext(ThemeContext);
   const { isOpen, onClose, onOpen } = useDisclosure();
@@ -696,9 +680,7 @@ export const BottomAdd = ({ setTypeSupplier, openModal }: PopoverAddProps) => {
           </Button>
           <Button
             onClick={() => {
-              onClose();
-              openModal();
-              setTypeSupplier('contribuyente');
+              navigate('/add-supplier-tribute');
             }}
             style={{
               backgroundColor: theme.colors.third,
@@ -713,7 +695,7 @@ export const BottomAdd = ({ setTypeSupplier, openModal }: PopoverAddProps) => {
   );
 };
 
-export const BottomSm = ({ setTypeSupplier, openModal }: PopoverAddProps) => {
+export const BottomSm = () => {
   const { theme } = useContext(ThemeContext);
   const navigate = useNavigate();
   const { isOpen, onClose, onOpen } = useDisclosure();
@@ -753,9 +735,7 @@ export const BottomSm = ({ setTypeSupplier, openModal }: PopoverAddProps) => {
           </Button>
           <Button
             onClick={() => {
-              onClose();
-              openModal();
-              setTypeSupplier('contribuyente');
+              navigate('/add-supplier-tribute');
             }}
             style={{
               backgroundColor: theme.colors.third,

@@ -1,5 +1,11 @@
 import axios from 'axios';
-import { IGetSupplierPagination, IGetSuppliers, PayloadSupplier } from '../types/supplier.types';
+import {
+  IGetSupplierPagination,
+  IGetSuppliers,
+  IGetSuppliersById,
+  PayloadSupplier,
+  Supplier,
+} from '../types/supplier.types';
 import { API_URL } from '../utils/constants';
 import { get_token, get_user } from '../storage/localStorage';
 
@@ -45,7 +51,11 @@ export const get_supplier_pagination = (
   );
 };
 
-export const update_supplier = (payload: PayloadSupplier, id: number) => {
+export const update_supplier = (payload: Supplier, id: number) => {
+  delete payload.id;
+  delete payload.isActive;
+  delete payload.direccion;
+  delete payload.direccionId;
   const token = get_token() ?? '';
   return axios.patch<{ ok: boolean }>(API_URL + '/suppliers/' + id, payload, {
     headers: {
@@ -87,4 +97,13 @@ export const activate_supplier = (id: number) => {
       },
     }
   );
+};
+
+export const get_supplier_by_id = (id: number) => {
+  const token = get_token() ?? '';
+  return axios.get<IGetSuppliersById>(API_URL + `/suppliers/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 };
