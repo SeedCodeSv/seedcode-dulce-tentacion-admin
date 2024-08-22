@@ -50,6 +50,7 @@ import CreateTheme from '@/components/configuration/CreateTheme';
 import AddClientContributor from '@/components/clients/AddClientContributor';
 import AddClientNormal from '@/components/clients/AddClientNormal';
 import AddNormalSupplier from '@/components/supplier/AddNormalSupplier';
+import UpdateClientNormal from '@/components/clients/UpdateClientNormal';
 import AddTributeSupplier from '@/components/supplier/AddTributeSupplier';
 import UpdateNormalSupplier from '@/components/supplier/UpdateNormalSupplier';
 
@@ -245,8 +246,12 @@ export const router = () => {
       element: checkAuthorization('Clientes', <AddClientContributor />),
     },
     {
-      path: '/add-client/:id',
+      path: '/add-client',
       element: checkAuthorization('Clientes', <AddClientNormal />),
+    },
+    {
+      path: '/update-client/:id',
+      element: checkAuthorization('Clientes', <UpdateClientNormal />),
     },
 
     {

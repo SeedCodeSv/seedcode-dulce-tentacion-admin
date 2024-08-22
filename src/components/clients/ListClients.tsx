@@ -67,7 +67,6 @@ const ListClients = ({ actions }: Props) => {
   useEffect(() => {
     getBranchesList();
   }, []);
-  // const [tipeCustomer, setTypeCustomer] = useState<number | undefined>(undefined);
   useEffect(() => {
     getCustomersPagination(1, limit, search, email, branch, tipeCustomer, active ? 1 : 0);
   }, [limit, tipeCustomer, active]);
@@ -130,14 +129,10 @@ const ListClients = ({ actions }: Props) => {
       if (customer.esContribuyente) {
         navigate(`/add-client-contributor/${customer.id}`);
       } else {
-        navigate(`/add-client/${customer.id}`);
+        navigate(`/update-client/${customer.id}`);
       }
       return;
     }
-
-    // if (type === 'edit') {
-    //   navigate(`/add-client-contributor/${customer.id}`);
-    // }
 
     if (type === 'edit') {
       if (customer.esContribuyente) {
@@ -163,6 +158,7 @@ const ListClients = ({ actions }: Props) => {
   };
 
   const [typeDocumentCustomer, setTypeDocumentCustomer] = useState('');
+
   return (
     <>
       <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
@@ -473,34 +469,6 @@ const ListClients = ({ actions }: Props) => {
               </Button>
             </ButtonGroup>
           </div>
-          {/* <div className="mt-5">
-            <div className="xl:hidden">
-              <Select
-                className="w-44 ml-2 mt-5"
-                variant="bordered"
-                placeholder="-- Seleccione tipo de cliente --"
-                labelPlacement="outside"
-                classNames={{
-                  label: 'font-semibold',
-                }}
-                value={String(tipeCustomer)}
-                onChange={(e) => {
-                  // setTypeCustomer(e.target.value !== '' ? Number(e.target.value) : 0);
-                  setTypeCustomer(e.target.value !== '' ? e.target.value : '');
-                }}
-              >
-                <SelectItem className="dark:text-white" key={'1'}>
-                  Contribuyente
-                </SelectItem>
-                <SelectItem className="dark:text-white" key={'0'}>
-                  No Contribuyente
-                </SelectItem>
-                <SelectItem className="dark:text-white" key={''}>
-                  Todos
-                </SelectItem>
-              </Select>
-            </div>
-          </div> */}
           <div className="flex items-center justify-center ml-2"></div>
           {(view === 'grid' || view === 'list') && (
             <MobileView
@@ -577,9 +545,7 @@ const ListClients = ({ actions }: Props) => {
                                     {customer.isActive && actions.includes('Editar') && (
                                       <TooltipGlobal text="Editar">
                                         <Button
-                                          // onClick={() => {
-                                          //   handleChangeCustomer(customer);
-                                          // }}
+                               
                                           onClick={() => {
                                             handleChangeCustomer(customer),
                                               setTypeDocumentCustomer(customer.tipoDocumento);
@@ -698,45 +664,12 @@ const ListClients = ({ actions }: Props) => {
         </div>
 
         <>
-          {/* <HeadlessModal
-            isOpen={modalAdd.isOpen}
-            onClose={() => {
-              clearClose();
-              modalAdd.onClose();
-            }}
-            title={
-              selectedCustomer
-                ? selectedTitle !== ''
-                  ? selectedTitle
-                  : 'Editar cliente'
-                : 'Nuevo cliente'
-            }
-            size={
-              typeClient === 'contribuyente'
-                ? 'w-full md:w-[600px] lg:w-[800px] xl:w-[1000px]'
-                : 'w-full md:w-[500px] lg:w-[700px] xl:w-[800px]'
-            }
-          >
-            <>
-              {typeClient === 'normal' && (
-                <AddClientNormal
-                  typeDocumento={typeDocumentCustomer}
-                  // closeModal={modalAdd.onClose}
-                  customer={selectedCustomer}
-                  customer_direction={selectedCustomerDirection}
-                  id={selectedId}
-                />
-              )}
-            </>
-          </HeadlessModal> */}
-
           {typeClient === 'normal' && (
             <AddClientNormal
               typeDocumento={typeDocumentCustomer}
               // closeModal={modalAdd.onClose}
               customer={selectedCustomer}
               customer_direction={selectedCustomerDirection}
-              id={selectedId}
             />
           )}
 
@@ -900,8 +833,7 @@ export const BottomAdd = () => {
           <Button
             type="button"
             onClick={() => {
-              navigate(`/add-client/0`);
-              // setTypeClient('normal');
+              navigate(`/add-client`);
             }}
             style={{
               backgroundColor: theme.colors.secondary,
@@ -912,14 +844,8 @@ export const BottomAdd = () => {
           </Button>
           <Button
             type="button"
-            // onClick={() => {
-            //   onClose();
-            //   openModal();
-            //   setTypeClient('contribuyente');
-            // }}
             onClick={() => {
               navigate(`/add-client-contributor/0`);
-              // setTypeClient('contribuyente');
             }}
             style={{
               backgroundColor: theme.colors.third,
@@ -963,8 +889,7 @@ export const BottomSm = () => {
           <Button
             type="button"
             onClick={() => {
-              navigate(`/add-client/0`);
-              // setTypeClient('normal');
+              navigate(`/add-client`);
             }}
             style={{
               backgroundColor: theme.colors.secondary,
@@ -973,30 +898,10 @@ export const BottomSm = () => {
           >
             Cliente consumidor final
           </Button>
-          {/* <Button
-            onClick={() => {
-              onClose();
-              openModal();
-              setTypeClient('normal');
-            }}
-            type="button"
-            style={{
-              backgroundColor: theme.colors.secondary,
-              color: theme.colors.primary,
-            }}
-          >
-            Cliente consumidor final
-          </Button> */}
           <Button
             type="button"
-            // onClick={() => {
-            //   onClose();
-            //   openModal();
-            //   setTypeClient('contribuyente');
-            // }}
             onClick={() => {
               navigate(`/add-client-contributor/0`);
-              // setTypeClient('contribuyente');
             }}
             style={{
               backgroundColor: theme.colors.third,
@@ -1005,20 +910,6 @@ export const BottomSm = () => {
           >
             Cliente contribuyente
           </Button>
-          {/* <Button
-            type="button"
-            onClick={() => {
-              onClose();
-              openModal();
-              setTypeClient('contribuyente');
-            }}
-            style={{
-              backgroundColor: theme.colors.third,
-              color: theme.colors.primary,
-            }}
-          >
-            Cliente contribuyente
-          </Button> */}
         </div>
       </PopoverContent>
     </Popover>
