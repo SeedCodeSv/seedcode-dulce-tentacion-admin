@@ -238,7 +238,7 @@ export const router = () => {
       element: checkAuthorization('Clientes', <AddClientNormal />),
     },
     {
-      path: '/update-client',
+      path: '/update-client/:id',
       element: checkAuthorization('Clientes', <UpdateClientNormal />),
     },
 

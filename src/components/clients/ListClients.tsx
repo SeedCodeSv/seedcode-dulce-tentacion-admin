@@ -67,7 +67,6 @@ const ListClients = ({ actions }: Props) => {
   useEffect(() => {
     getBranchesList();
   }, []);
-  // const [tipeCustomer, setTypeCustomer] = useState<number | undefined>(undefined);
   useEffect(() => {
     getCustomersPagination(1, limit, search, email, branch, tipeCustomer, active ? 1 : 0);
   }, [limit, tipeCustomer, active]);
@@ -130,7 +129,7 @@ const ListClients = ({ actions }: Props) => {
       if (customer.esContribuyente) {
         navigate(`/add-client-contributor/${customer.id}`);
       } else {
-        navigate(`/update-client`);
+        navigate(`/update-client/${customer.id}`);
       }
       return;
     }
@@ -159,7 +158,6 @@ const ListClients = ({ actions }: Props) => {
   };
 
   const [typeDocumentCustomer, setTypeDocumentCustomer] = useState('');
-  
 
   return (
     <>
@@ -547,9 +545,7 @@ const ListClients = ({ actions }: Props) => {
                                     {customer.isActive && actions.includes('Editar') && (
                                       <TooltipGlobal text="Editar">
                                         <Button
-                                          // onClick={() => {
-                                          //   handleChangeCustomer(customer);
-                                          // }}
+                               
                                           onClick={() => {
                                             handleChangeCustomer(customer),
                                               setTypeDocumentCustomer(customer.tipoDocumento);
@@ -838,7 +834,6 @@ export const BottomAdd = () => {
             type="button"
             onClick={() => {
               navigate(`/add-client`);
-              // setTypeClient('normal');
             }}
             style={{
               backgroundColor: theme.colors.secondary,
@@ -849,14 +844,8 @@ export const BottomAdd = () => {
           </Button>
           <Button
             type="button"
-            // onClick={() => {
-            //   onClose();
-            //   openModal();
-            //   setTypeClient('contribuyente');
-            // }}
             onClick={() => {
               navigate(`/add-client-contributor/0`);
-              // setTypeClient('contribuyente');
             }}
             style={{
               backgroundColor: theme.colors.third,
@@ -900,8 +889,7 @@ export const BottomSm = () => {
           <Button
             type="button"
             onClick={() => {
-              navigate(`/add-clienT`);
-              // setTypeClient('normal');
+              navigate(`/add-client`);
             }}
             style={{
               backgroundColor: theme.colors.secondary,
@@ -910,30 +898,10 @@ export const BottomSm = () => {
           >
             Cliente consumidor final
           </Button>
-          {/* <Button
-            onClick={() => {
-              onClose();
-              openModal();
-              setTypeClient('normal');
-            }}
-            type="button"
-            style={{
-              backgroundColor: theme.colors.secondary,
-              color: theme.colors.primary,
-            }}
-          >
-            Cliente consumidor final
-          </Button> */}
           <Button
             type="button"
-            // onClick={() => {
-            //   onClose();
-            //   openModal();
-            //   setTypeClient('contribuyente');
-            // }}
             onClick={() => {
               navigate(`/add-client-contributor/0`);
-              // setTypeClient('contribuyente');
             }}
             style={{
               backgroundColor: theme.colors.third,
@@ -942,20 +910,6 @@ export const BottomSm = () => {
           >
             Cliente contribuyente
           </Button>
-          {/* <Button
-            type="button"
-            onClick={() => {
-              onClose();
-              openModal();
-              setTypeClient('contribuyente');
-            }}
-            style={{
-              backgroundColor: theme.colors.third,
-              color: theme.colors.primary,
-            }}
-          >
-            Cliente contribuyente
-          </Button> */}
         </div>
       </PopoverContent>
     </Popover>
