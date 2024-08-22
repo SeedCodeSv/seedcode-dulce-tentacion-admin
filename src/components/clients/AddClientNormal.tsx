@@ -46,10 +46,6 @@ const AddClientNormal = (props: Props) => {
     nombreDepartamento: '',
     complemento: '',
     branchId: 0,
-    branch: {
-      id: 0,
-      nombre: '',
-    },
   });
 
   useEffect(() => {
@@ -69,10 +65,6 @@ const AddClientNormal = (props: Props) => {
             nombreDepartamento: customer.direccion.nombreDepartamento ?? '',
             complemento: customer.direccion.complemento ?? '',
             branchId: customer.branchId ?? 0,
-            branch: {
-              id: customer.branchId ?? 0,
-              nombre: customer.branch?.name ?? '',
-            },
           });
         }
       });
@@ -89,10 +81,6 @@ const AddClientNormal = (props: Props) => {
         nombreDepartamento: '',
         complemento: '',
         branchId: 0,
-        branch: {
-          id: 0,
-          nombre: '',
-        },
       });
     }
   }, [id, isEditing, get_customer_by_id]);
@@ -442,15 +430,19 @@ const AddClientNormal = (props: Props) => {
                             const depSelected = JSON.parse(key as string) as Branch;
                             handleChange('branchId')(depSelected?.id?.toString() ?? '');
                           }
-                          console.log(initialValues);
                         }}
-                        defaultSelectedKey={selectedDefaultBranch}
-                        selectedKey={selectedDefaultBranch}
-                        value={selectedDefaultBranch}
+                        // defaultSelectedKey={selectedDefaultBranch}
+                        // selectedKey={selectedDefaultBranch}
+                        value={values.branchId}
                         onBlur={handleBlur('branchId')}
                         label="Sucursal"
                         labelPlacement="outside"
-                        placeholder="Selecciona la sucursal"
+                        // placeholder="Selecciona la sucursal"
+                        placeholder={
+                          isEditing && user_by_id?.branch.name
+                            ? user_by_id?.branch?.name
+                            : 'Selecciona el departamento'
+                        }
                         variant="bordered"
                         className="dark:text-white"
                         classNames={{
@@ -461,7 +453,7 @@ const AddClientNormal = (props: Props) => {
                           <AutocompleteItem
                             className="dark:text-white"
                             value={bra.name}
-                            key={bra.id}
+                            key={JSON.stringify(bra)}
                           >
                             {bra.name}
                           </AutocompleteItem>
