@@ -5,30 +5,25 @@ import { Autocomplete, AutocompleteItem, Button, Input, Textarea } from '@nextui
 import { useCustomerStore } from '../../store/customers.store';
 import { useBillingStore } from '../../store/facturation/billing.store';
 import { useContext, useEffect, useMemo, useState } from 'react';
-import { Municipio } from '../../types/billing/cat-013-municipio.types';
-import { Departamento } from '../../types/billing/cat-012-departamento.types';
 import { ThemeContext } from '../../hooks/useTheme';
-import { ITipoDocumento } from '@/types/DTE/tipo_documento.types';
 import Layout from '@/layout/Layout';
-import { useNavigate, useParams } from 'react-router';
+import { useNavigate } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
 import { useBranchesStore } from '@/store/branches.store';
 import { Branch } from '@/types/auth.types';
+import { Departamento } from '@/types/billing/cat-012-departamento.types';
+import { Municipio } from '@/types/billing/cat-013-municipio.types';
+import { ITipoDocumento } from '@/types/DTE/tipo_documento.types';
 
 interface Props {
   customer?: PayloadCustomer;
   customer_direction?: CustomerDirection;
-  id?: number;
   typeDocumento?: string;
 }
 
 const AddClientNormal = (props: Props) => {
   const { theme } = useContext(ThemeContext);
-  const { id } = useParams<{ id: string }>();
-  const isEditing = !!id;
-  const { get_customer_by_id, user_by_id } = useCustomerStore(); // Suponiendo que tienes una función para obtener el cliente por ID
   const { getBranchesList, branch_list } = useBranchesStore();
-  console.log('user_by_id', user_by_id);
 
   useEffect(() => {
     getBranchesList();
@@ -48,54 +43,15 @@ const AddClientNormal = (props: Props) => {
     branchId: 0,
   });
 
-  useEffect(() => {
-    if (isEditing && id && id !== '0') {
-      get_customer_by_id(parseInt(id)).then((customer) => {
-        console.log('Cliente recuperado:', customer);
-        if (customer) {
-          setInitialValues({
-            nombre: customer.nombre ?? '',
-            correo: customer.correo ?? '',
-            telefono: customer.telefono ?? '',
-            numDocumento: customer.numDocumento ?? '',
-            tipoDocumento: customer.tipoDocumento ?? '',
-            municipio: customer.direccion.municipio ?? '',
-            nombreMunicipio: customer.direccion.nombreMunicipio ?? '',
-            departamento: customer.direccion.departamento ?? '',
-            nombreDepartamento: customer.direccion.nombreDepartamento ?? '',
-            complemento: customer.direccion.complemento ?? '',
-            branchId: customer.branchId ?? 0,
-          });
-        }
-      });
-    } else {
-      setInitialValues({
-        nombre: '',
-        correo: '',
-        telefono: '',
-        numDocumento: '',
-        tipoDocumento: '',
-        municipio: '',
-        nombreMunicipio: '',
-        departamento: '',
-        nombreDepartamento: '',
-        complemento: '',
-        branchId: 0,
-      });
-    }
-  }, [id, isEditing, get_customer_by_id]);
-
   const validationSchema = yup.object().shape({
     branchId: yup
       .number()
-      .typeError('La sucursal es requerida') // Este mensaje se mostrará si no es un número
+      .typeError('La sucursal es requerida')
       .required('La sucursal es requerida')
       .min(1, 'Selecciona una sucursal válida'),
     nombre: yup.string().required('El nombre es requerido'),
     correo: yup.string().notRequired().email('El correo es inválido'),
     telefono: yup.string().notRequired(),
-    // .matches(/^[0-9]{8}$/, 'El celular debe tener 8 dígitos sin guiones'),
-
     numDocumento: yup.string().when('tipoDocumento', {
       is: (tipoDocumento: string | undefined) => tipoDocumento === '13' || tipoDocumento === '36',
       then: (schema) =>
@@ -142,10 +98,14 @@ const AddClientNormal = (props: Props) => {
     }
     getCat013Municipios(selectedCodeDep);
   }, [selectedCodeDep, props.customer_direction]);
+
   useEffect(() => {
     getCat022TipoDeDocumentoDeIde();
   }, [selectedCodeDep]);
-  const { postCustomer, patchCustomer } = useCustomerStore();
+
+  const { postCustomer } = useCustomerStore();
+  const navigate = useNavigate();
+
   const onSubmit = async (payload: PayloadCustomer) => {
     const finalPayload = {
       ...payload,
@@ -161,12 +121,7 @@ const AddClientNormal = (props: Props) => {
       branchId: payload.branchId,
     };
 
-    if (isEditing && id && id !== '0') {
-      // Editar cliente existente
-      patchCustomer(finalPayload, parseInt(id)); // Asegúrate de pasar el `id` correctamente como número
-    } else {
-      await postCustomer(finalPayload);
-    }
+    await postCustomer(finalPayload);
     navigate('/clients');
   };
 
@@ -187,7 +142,6 @@ const AddClientNormal = (props: Props) => {
       return JSON.stringify(city);
     }
   }, [props, props.customer_direction, cat_013_municipios, cat_013_municipios.length]);
-  const navigate = useNavigate();
 
   const selectedDefaultBranch = useMemo(() => {
     return props.customer?.branchId;
@@ -200,6 +154,7 @@ const AddClientNormal = (props: Props) => {
       });
     }
   }, [props.customer?.branchId, selectedDefaultBranch]);
+
   return (
     <Layout title="Cliente">
       <div className="w-full h-full p-4 md:p-10 md:px-12">
@@ -328,18 +283,12 @@ const AddClientNormal = (props: Props) => {
                         onBlur={handleBlur('departamento')}
                         label="Departamento"
                         labelPlacement="outside"
-                        placeholder={
-                          isEditing && values.nombreDepartamento
-                            ? values.nombreDepartamento
-                            : 'Selecciona el departamento'
-                        }
+                        placeholder="Selecciona el departamento"
                         variant="bordered"
                         classNames={{
                           base: 'font-semibold text-gray-500 text-sm',
                         }}
                         className="dark:text-white"
-                        // defaultSelectedKey={selectedKeyDepartment}
-                        defaultSelectedKey={isEditing ? values.departamento : undefined}
                         value={selectedKeyDepartment}
                       >
                         {cat_012_departamento.map((dep) => (
@@ -371,16 +320,11 @@ const AddClientNormal = (props: Props) => {
                         labelPlacement="outside"
                         className="dark:text-white"
                         variant="bordered"
-                        placeholder={
-                          isEditing && values.nombreMunicipio
-                            ? values.nombreMunicipio
-                            : 'Selecciona el municipio'
-                        }
+                        placeholder="Selecciona el municipio"
                         classNames={{
                           base: 'font-semibold text-gray-500 text-sm',
                         }}
                         onBlur={handleBlur('municipio')}
-                        defaultSelectedKey={isEditing ? values.municipio : undefined}
                         defaultInputValue={props.customer_direction?.nombreMunicipio}
                         value={selectedKeyCity}
                       >
@@ -438,11 +382,7 @@ const AddClientNormal = (props: Props) => {
                         label="Sucursal"
                         labelPlacement="outside"
                         // placeholder="Selecciona la sucursal"
-                        placeholder={
-                          isEditing && user_by_id?.branch.name
-                            ? user_by_id?.branch?.name
-                            : 'Selecciona el departamento'
-                        }
+                        placeholder="Selecciona el departamento"
                         variant="bordered"
                         className="dark:text-white"
                         classNames={{
