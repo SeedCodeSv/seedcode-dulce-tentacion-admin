@@ -545,7 +545,6 @@ const ListClients = ({ actions }: Props) => {
                                     {customer.isActive && actions.includes('Editar') && (
                                       <TooltipGlobal text="Editar">
                                         <Button
-                               
                                           onClick={() => {
                                             handleChangeCustomer(customer),
                                               setTypeDocumentCustomer(customer.tipoDocumento);
@@ -669,7 +668,7 @@ const ListClients = ({ actions }: Props) => {
               typeDocumento={typeDocumentCustomer}
               // closeModal={modalAdd.onClose}
               customer={selectedCustomer}
-              customer_direction={selectedCustomerDirection}
+              // customer_direction={selectedCustomerDirection}
             />
           )}
 

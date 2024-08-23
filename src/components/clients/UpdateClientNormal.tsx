@@ -5,8 +5,6 @@ import { Autocomplete, AutocompleteItem, Button, Input, Textarea } from '@nextui
 import { useCustomerStore } from '../../store/customers.store';
 import { useBillingStore } from '../../store/facturation/billing.store';
 import { useContext, useEffect, useMemo, useState } from 'react';
-import { Municipio } from '../../types/billing/cat-013-municipio.types';
-import { Departamento } from '../../types/billing/cat-012-departamento.types';
 import { ThemeContext } from '../../hooks/useTheme';
 import { ITipoDocumento } from '@/types/DTE/tipo_documento.types';
 import Layout from '@/layout/Layout';
@@ -23,8 +21,6 @@ interface Props {
 }
 
 const UpdateClientNormal = (props: Props) => {
-  console.log('props', props.customer_direction);
-  console.log('props', props.typeDocumento);
   const { theme } = useContext(ThemeContext);
   const { id } = useParams<{ id: string }>();
   const isEditing = !!id;
@@ -106,7 +102,6 @@ const UpdateClientNormal = (props: Props) => {
   const [selectedCodeDep, setSelectedCodeDep] = useState(
     props.customer_direction?.departamento ?? '0'
   );
-
   const {
     getCat012Departamento,
     cat_012_departamento,
@@ -118,6 +113,7 @@ const UpdateClientNormal = (props: Props) => {
 
   useEffect(() => {
     getCat012Departamento();
+    getCat022TipoDeDocumentoDeIde();
   }, []);
 
   const selectedKeyDepartment = useMemo(() => {
@@ -131,13 +127,11 @@ const UpdateClientNormal = (props: Props) => {
   }, [user_by_id, cat_012_departamento.length]);
 
   useEffect(() => {
-    if (selectedKeyDepartment) {
-      getCat013Municipios(selectedKeyDepartment);
-    }
-  }, [selectedKeyDepartment]);
+    getCat013Municipios(user_by_id?.direccion.departamento || '0');
+  }, [user_by_id]);
 
   useEffect(() => {
-    getCat022TipoDeDocumentoDeIde();
+    getCat013Municipios(selectedCodeDep);
   }, [selectedCodeDep]);
 
   const { patchCustomer } = useCustomerStore();
@@ -148,34 +142,14 @@ const UpdateClientNormal = (props: Props) => {
       correo: payload.correo || 'N/A@gmail.com',
       telefono: payload.telefono || '0',
       numDocumento: payload.numDocumento || '0',
-      municipio: payload.CustomerDirection?.municipio || 'N/A',
       tipoDocumento: payload.tipoDocumento || 'N/A',
-      nombreMunicipio: payload.CustomerDirection?.nombreMunicipio || 'N/A',
-      departamento: payload.CustomerDirection?.departamento || 'N/A',
-      nombreDepartamento: payload.CustomerDirection?.nombreDepartamento || 'N/A',
-      complemento: payload.CustomerDirection?.complemento || 'N/A',
       branchId: payload.branchId,
     };
-
     if (isEditing && id && id !== '0') {
       await patchCustomer(finalPayload, parseInt(id));
     }
-
     navigate('/clients');
   };
-
-  console.log(selectedKeyDepartment);
-
-  const selectedKeyCity = useMemo(() => {
-    if (user_by_id) {
-      const city = cat_013_municipios.find(
-        (department) => department.codigo === user_by_id.direccion.municipio
-      );
-      return city?.codigo;
-    }
-  }, [user_by_id, cat_013_municipios.length, selectedKeyDepartment]);
-
-  console.log(selectedKeyCity);
 
   const selectedKeyTypeOfDocument = useMemo(() => {
     if (user_by_id) {
@@ -186,10 +160,7 @@ const UpdateClientNormal = (props: Props) => {
     }
   }, [user_by_id, cat_022_tipo_de_documentoDeIde.length]);
 
-  console.log(selectedKeyTypeOfDocument);
-
   const navigate = useNavigate();
-
   return (
     <Layout title="Cliente">
       <div className="w-full h-full p-4 md:p-10 md:px-12">
@@ -206,11 +177,17 @@ const UpdateClientNormal = (props: Props) => {
               initialValues={{ ...initialValues }}
               validationSchema={validationSchema}
               onSubmit={(values) => onSubmit(values)}
-              // validateOnMount={false}
-              // validateOnBlur={false}
               enableReinitialize={true}
             >
-              {({ values, touched, errors, handleBlur, handleChange, handleSubmit }) => (
+              {({
+                values,
+                touched,
+                errors,
+                handleBlur,
+                handleChange,
+                handleSubmit,
+                setFieldValue,
+              }) => (
                 <>
                   <div className="mt-10">
                     <div className="">
@@ -307,10 +284,14 @@ const UpdateClientNormal = (props: Props) => {
                         <Autocomplete
                           onSelectionChange={(key) => {
                             if (key) {
-                              const depSelected = JSON.parse(key as string) as Municipio;
-                              setSelectedCodeDep(depSelected.codigo);
-                              handleChange('departamento')(depSelected.codigo);
-                              handleChange('nombreDepartamento')(depSelected.valores);
+                              const depSelected = cat_012_departamento.find(
+                                (dep) => dep.codigo === key
+                              );
+                              console.log('Departamento seleccionado:', depSelected);
+                              setSelectedCodeDep(depSelected?.codigo as string);
+                              handleChange('departamento')(depSelected?.codigo as string);
+                              handleChange('nombreDepartamento')(depSelected?.valores || '');
+                              setFieldValue('municipio', '01');
                             }
                           }}
                           onBlur={handleBlur('departamento')}
@@ -341,37 +322,39 @@ const UpdateClientNormal = (props: Props) => {
                         )}
                       </div>
                       <div>
-                        {selectedKeyCity && (
-                          <Autocomplete
-                            onSelectionChange={(key) => {
-                              if (key) {
-                                const depSelected = JSON.parse(key as string) as Departamento;
-                                handleChange('municipio')(depSelected.codigo);
-                                handleChange('nombreMunicipio')(depSelected.valores);
-                              }
-                            }}
-                            label="Municipio"
-                            labelPlacement="outside"
-                            className="dark:text-white"
-                            variant="bordered"
-                            placeholder="Selecciona el municipio"
-                            classNames={{
-                              base: 'font-semibold text-gray-500 text-sm',
-                            }}
-                            onBlur={handleBlur('municipio')}
-                            defaultSelectedKey={`${selectedKeyCity}`}
-                          >
-                            {cat_013_municipios.map((dep) => (
-                              <AutocompleteItem
-                                value={dep.id}
-                                key={dep.codigo}
-                                className="dark:text-white"
-                              >
-                                {dep.valores}
-                              </AutocompleteItem>
-                            ))}
-                          </Autocomplete>
-                        )}
+                        <Autocomplete
+                          onSelectionChange={(key) => {
+                            if (key) {
+                              const munSelected = cat_013_municipios.find(
+                                (mun) => mun.codigo === key
+                              );
+                              console.log('Municipio seleccionado:', munSelected);
+                              setFieldValue('municipio', munSelected?.codigo);
+                              setFieldValue('nombreMunicipio', munSelected?.valores);
+                            }
+                          }}
+                          label="Municipio"
+                          labelPlacement="outside"
+                          className="dark:text-white"
+                          variant="bordered"
+                          placeholder="Selecciona el municipio"
+                          classNames={{
+                            base: 'font-semibold text-gray-500 text-sm',
+                          }}
+                          onBlur={handleBlur('municipio')}
+                          selectedKey={`${values.municipio}`}
+                        >
+                          {cat_013_municipios.map((dep) => (
+                            <AutocompleteItem
+                              value={dep.id}
+                              key={dep.codigo}
+                              className="dark:text-white"
+                            >
+                              {dep.valores}
+                            </AutocompleteItem>
+                          ))}
+                        </Autocomplete>
+
                         {errors.municipio && touched.municipio && (
                           <span className="text-sm font-semibold text-red-500">
                             {errors.municipio}

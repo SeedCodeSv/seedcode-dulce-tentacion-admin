@@ -57,7 +57,11 @@ export interface PayloadCustomer {
   esContribuyente?: number;
   transmitterId?: number;
   direccionId?: number;
-  CustomerDirection?: CustomerDirection;
+  municipio?: string;
+  nombreMunicipio?: string;
+  departamento?: string;
+  nombreDepartamento?: string;
+  complemento?: string;
   branchId?: number;
 }
 

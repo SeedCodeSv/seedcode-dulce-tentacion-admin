@@ -101,7 +101,7 @@ const GridItem = (props: GridProps) => {
                 <>
                   {actions.includes('Cambiar Tipo de Cliente') && (
                     <>
-                      {' '}
+
                       {customers.esContribuyente === false && (
                         <TooltipGlobal text="Cambiar tipo de cliente">
                           <Button
