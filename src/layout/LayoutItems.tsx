@@ -170,6 +170,12 @@ export const LayoutItems = () => {
       label: 'Corte Gran Z',
     },
     {
+      viewName: 'Correlativos',
+      to: '/correlative',
+      icon: ClipboardCheck,
+      label: 'Correlativos',
+    },
+    {
       viewName: 'Corte X',
       to: '/cash-cuts-x',
       icon: ClipboardCheck,

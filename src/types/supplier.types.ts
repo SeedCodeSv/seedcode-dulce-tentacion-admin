@@ -1,3 +1,5 @@
+import { ITransmitter } from './transmitter.types';
+
 export interface SupplierDirection {
   id?: number;
   departamento: string;
@@ -23,6 +25,7 @@ export interface Supplier {
   correo: string;
   isActive?: boolean;
   esContribuyente: boolean;
+  transmitter?: ITransmitter;
   direccion?: SupplierDirection;
   direccionId?: number;
 }

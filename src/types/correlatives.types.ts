@@ -1,5 +1,4 @@
 export interface Correlatives {
-  id: number;
   code: string;
   typeVoucher: string;
   resolution: string;
@@ -9,14 +8,7 @@ export interface Correlatives {
   prev: number;
   next: number;
   isActive: boolean;
-  branch: {
-    id: number;
-    name: string;
-    address: string;
-    phone: string;
-    isActive: boolean;
-    transmitterId: number;
-  };
+
   branchId: number;
 }
 

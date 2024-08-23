@@ -53,6 +53,7 @@ import AddNormalSupplier from '@/components/supplier/AddNormalSupplier';
 import UpdateClientNormal from '@/components/clients/UpdateClientNormal';
 import AddTributeSupplier from '@/components/supplier/AddTributeSupplier';
 import UpdateNormalSupplier from '@/components/supplier/UpdateNormalSupplier';
+import CorrelativePage from '@/pages/CorrelativePage';
 
 const Loading = () => {
   return <div>Cargando...</div>;
@@ -187,6 +188,10 @@ export const router = () => {
     {
       path: '/configuration',
       element: <Configuration />,
+    },
+    {
+      path: '/correlative',
+      element: checkAuthorization('Correlativos', <CorrelativePage />),
     },
 
     {

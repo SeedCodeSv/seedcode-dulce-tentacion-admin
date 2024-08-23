@@ -77,11 +77,6 @@ function AddUsers(props: Props) {
     return branchCorrelative ? JSON.stringify(branchCorrelative) : null;
   }, [branch_list, selectedIdBranch]);
 
-  // const selectedKeyCorrelative = useMemo(() => {
-  //   const correlativeBranch = list_correlatives.find((correlativesB) => correlativesB.id);
-  //   return correlativeBranch ? JSON.stringify(correlativeBranch) : null;
-  // }, [list_correlatives]);
-
   return (
     <div className="dark:text-white ">
       <Formik

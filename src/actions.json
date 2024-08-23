@@ -5,6 +5,10 @@
       "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Activar Productos"]
     },
     {
+      "view": "Correlativos",
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Activar Productos"]
+    },
+    {
       "view": "Categorias de Productos",
       "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
     },

@@ -56,6 +56,7 @@ export const update_supplier = (payload: Supplier, id: number) => {
   delete payload.isActive;
   delete payload.direccion;
   delete payload.direccionId;
+  delete payload.transmitter;
   const token = get_token() ?? '';
   return axios.patch<{ ok: boolean }>(API_URL + '/suppliers/' + id, payload, {
     headers: {
