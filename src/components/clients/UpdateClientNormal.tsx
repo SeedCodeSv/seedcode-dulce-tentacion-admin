@@ -6,7 +6,6 @@ import { useCustomerStore } from '../../store/customers.store';
 import { useBillingStore } from '../../store/facturation/billing.store';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { ThemeContext } from '../../hooks/useTheme';
-import { ITipoDocumento } from '@/types/DTE/tipo_documento.types';
 import Layout from '@/layout/Layout';
 import { useNavigate, useParams } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
@@ -137,17 +136,19 @@ const UpdateClientNormal = (props: Props) => {
   const { patchCustomer } = useCustomerStore();
 
   const onSubmit = async (payload: PayloadCustomer) => {
+    console.log('Tipo dedocumento seleccionado:', payload.tipoDocumento);
     const finalPayload = {
       ...payload,
       correo: payload.correo || 'N/A@gmail.com',
       telefono: payload.telefono || '0',
-      numDocumento: payload.numDocumento || '0',
-      tipoDocumento: payload.tipoDocumento || 'N/A',
+      // numDocumento: payload.numDocumento || '0',
+      // tipoDocumento: payload.tipoDocumento || 'N/A',
       branchId: payload.branchId,
     };
     if (isEditing && id && id !== '0') {
       await patchCustomer(finalPayload, parseInt(id));
     }
+
     navigate('/clients');
   };
 
@@ -228,11 +229,45 @@ const UpdateClientNormal = (props: Props) => {
                     </div>
                     <div className="grid grid-cols-2 gap-5 pt-3">
                       <div className="pt-2">
-                        <Autocomplete
+                        {/* <Autocomplete
                           onSelectionChange={(key) => {
                             if (key) {
                               const depSelected = JSON.parse(key as string) as ITipoDocumento;
+                              console.log(depSelected);
                               handleChange('tipoDocumento')(depSelected.codigo);
+                            }
+                          }}
+                          onBlur={handleBlur('tipoDocumento')}
+                          label="Tipo de documento"
+                          placeholder="Selecciona el tipo de documento"
+                          variant="bordered"
+                          labelPlacement="outside"
+                          classNames={{
+                            base: 'font-semibold text-gray-500 text-sm',
+                          }}
+                          className="dark:text-white"
+                          defaultSelectedKey={`${selectedKeyTypeOfDocument}`}
+                        >
+                          {cat_022_tipo_de_documentoDeIde.map((dep) => (
+                            <AutocompleteItem
+                              value={dep.codigo}
+                              key={dep.codigo}
+                              className="dark:text-white"
+                            >
+                              {dep.valores}
+                            </AutocompleteItem>
+                          ))}
+                        </Autocomplete> */}
+                        <Autocomplete
+                          onSelectionChange={(key) => {
+                            if (key) {
+                              const depSelected = cat_022_tipo_de_documentoDeIde.find(
+                                (dep) => dep.codigo === key
+                              );
+                              if (depSelected) {
+                                setFieldValue('tipoDocumento', depSelected.codigo); // Actualiza el valor de tipoDocumento
+                                console.log('Tipo de documento seleccionado:', depSelected.codigo); // Verifica el valor
+                              }
                             }
                           }}
                           onBlur={handleBlur('tipoDocumento')}
