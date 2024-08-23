@@ -1,23 +1,23 @@
 import * as yup from 'yup';
 import { Formik } from 'formik';
-import { CustomerDirection, PayloadCustomer } from '../../types/customers.types';
+import { PayloadCustomer } from '../../types/customers.types';
 import { Autocomplete, AutocompleteItem, Button, Input, Textarea } from '@nextui-org/react';
 import { useCustomerStore } from '../../store/customers.store';
 import { useBillingStore } from '../../store/facturation/billing.store';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { ThemeContext } from '../../hooks/useTheme';
 import Layout from '@/layout/Layout';
 import { useNavigate } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
 import { useBranchesStore } from '@/store/branches.store';
 import { Branch } from '@/types/auth.types';
-import { Departamento } from '@/types/billing/cat-012-departamento.types';
-import { Municipio } from '@/types/billing/cat-013-municipio.types';
+// import { Departamento } from '@/types/billing/cat-012-departamento.types';
+// import { Municipio } from '@/types/billing/cat-013-municipio.types';
 import { ITipoDocumento } from '@/types/DTE/tipo_documento.types';
 
 interface Props {
   customer?: PayloadCustomer;
-  customer_direction?: CustomerDirection;
+
   typeDocumento?: string;
 }
 
@@ -29,19 +29,19 @@ const AddClientNormal = (props: Props) => {
     getBranchesList();
   }, []);
 
-  const [initialValues, setInitialValues] = useState({
-    nombre: '',
-    correo: '',
-    telefono: '',
-    numDocumento: '',
-    municipio: '',
-    tipoDocumento: '',
-    nombreMunicipio: '',
-    departamento: '',
-    nombreDepartamento: '',
-    complemento: '',
-    branchId: 0,
-  });
+  const initialValues = {
+    nombre: props.customer?.nombre || '',
+    correo: props.customer?.correo || '',
+    telefono: props.customer?.telefono || '',
+    numDocumento: props.customer?.numDocumento || '',
+    municipio: props.customer?.municipio || '',
+    tipoDocumento: props.typeDocumento || '',
+    nombreMunicipio: props.customer?.nombreMunicipio || '',
+    departamento: props.customer?.departamento || '',
+    nombreDepartamento: props.customer?.nombreDepartamento || '',
+    complemento: props.customer?.complemento || '',
+    branchId: props.customer?.branchId || 0,
+  };
 
   const validationSchema = yup.object().shape({
     branchId: yup
@@ -70,14 +70,12 @@ const AddClientNormal = (props: Props) => {
         }),
       otherwise: (schema) => schema.notRequired(),
     }),
-    departamento: yup.string().notRequired(),
-    municipio: yup.string().notRequired(),
+    departamento: yup.string().required('El departamento es requerido'),
+    municipio: yup.string().required('El municipio es requerido'),
     complemento: yup.string().notRequired(),
   });
 
-  const [selectedCodeDep, setSelectedCodeDep] = useState(
-    props.customer_direction?.departamento ?? '0'
-  );
+  const [selectedCodeDep, setSelectedCodeDep] = useState(props.customer?.departamento ?? '0');
 
   const {
     getCat012Departamento,
@@ -94,10 +92,9 @@ const AddClientNormal = (props: Props) => {
 
   useEffect(() => {
     if (selectedCodeDep !== '0') {
-      getCat013Municipios(props.customer_direction?.departamento ?? selectedCodeDep);
+      getCat013Municipios(selectedCodeDep);
     }
-    getCat013Municipios(selectedCodeDep);
-  }, [selectedCodeDep, props.customer_direction]);
+  }, [selectedCodeDep]);
 
   useEffect(() => {
     getCat022TipoDeDocumentoDeIde();
@@ -107,53 +104,27 @@ const AddClientNormal = (props: Props) => {
   const navigate = useNavigate();
 
   const onSubmit = async (payload: PayloadCustomer) => {
+    console.log('Departamento seleccionado:', payload.departamento);
+    console.log('Municipio seleccionado:', payload.municipio);
     const finalPayload = {
       ...payload,
+
       correo: payload.correo || 'N/A@gmail.com',
       telefono: payload.telefono || '0',
       numDocumento: payload.numDocumento || '0',
-      municipio: payload.CustomerDirection?.municipio || 'N/A',
+      // municipio: payload.municipio || 'N/A',
       tipoDocumento: payload.tipoDocumento || 'N/A',
-      nombreMunicipio: payload.CustomerDirection?.nombreMunicipio || 'N/A',
-      departamento: payload.CustomerDirection?.departamento || 'N/A',
-      nombreDepartamento: payload.CustomerDirection?.nombreDepartamento || 'N/A',
-      complemento: payload.CustomerDirection?.complemento || 'N/A',
+      // nombreMunicipio: payload.nombreMunicipio,
+      // departamento: payload.departamento || 'N/A',
+      // nombreDepartamento: payload.nombreDepartamento || 'N/A',
+      complemento: payload.complemento || 'N/A',
       branchId: payload.branchId,
     };
 
     await postCustomer(finalPayload);
+
     navigate('/clients');
   };
-
-  const selectedKeyDepartment = useMemo(() => {
-    if (props.customer_direction) {
-      const department = cat_012_departamento.find(
-        (department) => department.codigo === props.customer_direction?.departamento
-      );
-
-      return JSON.stringify(department);
-    }
-  }, [props, props.customer_direction, cat_012_departamento, cat_012_departamento.length]);
-  const selectedKeyCity = useMemo(() => {
-    if (props.customer_direction) {
-      const city = cat_013_municipios.find(
-        (department) => department.codigo === props.customer_direction?.municipio
-      );
-      return JSON.stringify(city);
-    }
-  }, [props, props.customer_direction, cat_013_municipios, cat_013_municipios.length]);
-
-  const selectedDefaultBranch = useMemo(() => {
-    return props.customer?.branchId;
-  }, [props.customer?.branchId]);
-  useEffect(() => {
-    if (selectedDefaultBranch) {
-      setInitialValues({
-        ...initialValues,
-        branchId: props.customer?.branchId || 0,
-      });
-    }
-  }, [props.customer?.branchId, selectedDefaultBranch]);
 
   return (
     <Layout title="Cliente">
@@ -274,12 +245,45 @@ const AddClientNormal = (props: Props) => {
                       <Autocomplete
                         onSelectionChange={(key) => {
                           if (key) {
-                            const depSelected = JSON.parse(key as string) as Municipio;
-                            setSelectedCodeDep(depSelected.codigo);
-                            handleChange('departamento')(depSelected.codigo);
-                            handleChange('nombreDepartamento')(depSelected.valores);
+                            const depSelected = cat_012_departamento.find(
+                              (dep) => dep.codigo === new Set([key]).values().next().value
+                            );
+                            console.log('Departamento seleccionado:', depSelected);
+                            setSelectedCodeDep(depSelected?.codigo as string);
+                            handleChange('departamento')(depSelected?.codigo as string);
+                            handleChange('nombreDepartamento')(depSelected?.valores || '');
                           }
                         }}
+                        onBlur={handleBlur('departamento')}
+                        label="Departamento"
+                        labelPlacement="outside"
+                        placeholder="Selecciona el departamento"
+                        variant="bordered"
+                        className="dark:text-white"
+                        value={values.departamento}
+                      >
+                        {cat_012_departamento.map((dep) => (
+                          <AutocompleteItem
+                            value={dep.codigo}
+                            key={dep.codigo}
+                            className="dark:text-white"
+                          >
+                            {dep.valores}
+                          </AutocompleteItem>
+                        ))}
+                      </Autocomplete>
+                      {/* <Autocomplete
+                        onSelectionChange={(key) => {
+                          if (key) {
+                            const depSelected = cat_012_departamento.find(
+                              (dep) => dep.codigo === new Set([key]).values().next().value
+                            );
+                            setSelectedCodeDep(depSelected?.codigo as string);
+                            handleChange('departamento')(depSelected?.codigo as string);
+                          }
+                        }}
+          
+                        
                         onBlur={handleBlur('departamento')}
                         label="Departamento"
                         labelPlacement="outside"
@@ -289,18 +293,18 @@ const AddClientNormal = (props: Props) => {
                           base: 'font-semibold text-gray-500 text-sm',
                         }}
                         className="dark:text-white"
-                        value={selectedKeyDepartment}
+                        value={values.departamento}
                       >
                         {cat_012_departamento.map((dep) => (
                           <AutocompleteItem
                             value={dep.codigo}
-                            key={JSON.stringify(dep)}
+                            key={dep.codigo}
                             className="dark:text-white"
                           >
                             {dep.valores}
                           </AutocompleteItem>
                         ))}
-                      </Autocomplete>
+                      </Autocomplete> */}
                       {errors.departamento && touched.departamento && (
                         <span className="text-sm font-semibold text-red-500">
                           {errors.departamento}
@@ -308,7 +312,7 @@ const AddClientNormal = (props: Props) => {
                       )}
                     </div>
                     <div>
-                      <Autocomplete
+                      {/* <Autocomplete
                         onSelectionChange={(key) => {
                           if (key) {
                             const depSelected = JSON.parse(key as string) as Departamento;
@@ -325,8 +329,8 @@ const AddClientNormal = (props: Props) => {
                           base: 'font-semibold text-gray-500 text-sm',
                         }}
                         onBlur={handleBlur('municipio')}
-                        defaultInputValue={props.customer_direction?.nombreMunicipio}
-                        value={selectedKeyCity}
+
+                        value={values.municipio}
                       >
                         {cat_013_municipios.map((dep) => (
                           <AutocompleteItem
@@ -335,6 +339,35 @@ const AddClientNormal = (props: Props) => {
                             className="dark:text-white"
                           >
                             {dep.valores}
+                          </AutocompleteItem>
+                        ))}
+                      </Autocomplete> */}
+                      <Autocomplete
+                        onSelectionChange={(key) => {
+                          if (key) {
+                            const munSelected = cat_013_municipios.find(
+                              (mun) => mun.codigo === key
+                            );
+                            console.log('Municipio seleccionado:', munSelected);
+                            handleChange('municipio')(munSelected?.codigo || '');
+                            handleChange('nombreMunicipio')(munSelected?.valores || '');
+                          }
+                        }}
+                        onBlur={handleBlur('municipio')}
+                        label="Municipio"
+                        labelPlacement="outside"
+                        placeholder="Selecciona el municipio"
+                        variant="bordered"
+                        className="dark:text-white"
+                        value={values.municipio}
+                      >
+                        {cat_013_municipios.map((mun) => (
+                          <AutocompleteItem
+                            value={mun.codigo}
+                            key={mun.codigo}
+                            className="dark:text-white"
+                          >
+                            {mun.valores}
                           </AutocompleteItem>
                         ))}
                       </Autocomplete>
@@ -375,14 +408,11 @@ const AddClientNormal = (props: Props) => {
                             handleChange('branchId')(depSelected?.id?.toString() ?? '');
                           }
                         }}
-                        // defaultSelectedKey={selectedDefaultBranch}
-                        // selectedKey={selectedDefaultBranch}
                         value={values.branchId}
                         onBlur={handleBlur('branchId')}
                         label="Sucursal"
                         labelPlacement="outside"
-                        // placeholder="Selecciona la sucursal"
-                        placeholder="Selecciona el departamento"
+                        placeholder="Selecciona la sucursal"
                         variant="bordered"
                         className="dark:text-white"
                         classNames={{

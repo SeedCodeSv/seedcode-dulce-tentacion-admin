@@ -5,8 +5,6 @@ import { Autocomplete, AutocompleteItem, Button, Input, Textarea } from '@nextui
 import { useCustomerStore } from '../../store/customers.store';
 import { useBillingStore } from '../../store/facturation/billing.store';
 import { useContext, useEffect, useMemo, useState } from 'react';
-import { Municipio } from '../../types/billing/cat-013-municipio.types';
-import { Departamento } from '../../types/billing/cat-012-departamento.types';
 import { ThemeContext } from '../../hooks/useTheme';
 import { ITipoDocumento } from '@/types/DTE/tipo_documento.types';
 import Layout from '@/layout/Layout';
@@ -106,7 +104,6 @@ const UpdateClientNormal = (props: Props) => {
   const [selectedCodeDep, setSelectedCodeDep] = useState(
     props.customer_direction?.departamento ?? '0'
   );
-
   const {
     getCat012Departamento,
     cat_012_departamento,
@@ -148,12 +145,7 @@ const UpdateClientNormal = (props: Props) => {
       correo: payload.correo || 'N/A@gmail.com',
       telefono: payload.telefono || '0',
       numDocumento: payload.numDocumento || '0',
-      municipio: payload.CustomerDirection?.municipio || 'N/A',
       tipoDocumento: payload.tipoDocumento || 'N/A',
-      nombreMunicipio: payload.CustomerDirection?.nombreMunicipio || 'N/A',
-      departamento: payload.CustomerDirection?.departamento || 'N/A',
-      nombreDepartamento: payload.CustomerDirection?.nombreDepartamento || 'N/A',
-      complemento: payload.CustomerDirection?.complemento || 'N/A',
       branchId: payload.branchId,
     };
 
@@ -171,7 +163,10 @@ const UpdateClientNormal = (props: Props) => {
       const city = cat_013_municipios.find(
         (department) => department.codigo === user_by_id.direccion.municipio
       );
+
       return city?.codigo;
+    } else {
+      return cat_013_municipios.length > 0 ? cat_013_municipios[0].codigo : '';
     }
   }, [user_by_id, cat_013_municipios.length, selectedKeyDepartment]);
 
@@ -305,12 +300,26 @@ const UpdateClientNormal = (props: Props) => {
                     <div className="grid grid-cols-2 gap-5 pt-3">
                       <div>
                         <Autocomplete
+                          // onSelectionChange={(key) => {
+                          //   if (key) {
+                          //     const depSelected = cat_012_departamento.find(
+                          //       (dep) => dep.codigo === new Set([key]).values().next().value
+                          //     );
+                          //     console.log('Departamento seleccionado:', depSelected);
+                          //     setSelectedCodeDep(depSelected?.codigo as string);
+                          //     handleChange('departamento')(depSelected?.codigo as string);
+                          //     handleChange('nombreDepartamento')(depSelected?.valores || '');
+                          //   }
+                          // }}
                           onSelectionChange={(key) => {
                             if (key) {
-                              const depSelected = JSON.parse(key as string) as Municipio;
-                              setSelectedCodeDep(depSelected.codigo);
-                              handleChange('departamento')(depSelected.codigo);
-                              handleChange('nombreDepartamento')(depSelected.valores);
+                              const depSelected = cat_012_departamento.find(
+                                (dep) => dep.codigo === key
+                              );
+                              console.log('Departamento seleccionado:', depSelected);
+                              setSelectedCodeDep(depSelected?.codigo as string);
+                              handleChange('departamento')(depSelected?.codigo as string);
+                              handleChange('nombreDepartamento')(depSelected?.valores || '');
                             }
                           }}
                           onBlur={handleBlur('departamento')}
@@ -343,11 +352,22 @@ const UpdateClientNormal = (props: Props) => {
                       <div>
                         {selectedKeyCity && (
                           <Autocomplete
+                            // onSelectionChange={(key) => {
+                            //   if (key) {
+                            //     const depSelected = JSON.parse(key as string) as Departamento;
+                            //     handleChange('municipio')(depSelected.codigo);
+                            //     handleChange('nombreMunicipio')(depSelected.valores);
+                            //   }
+                            // }}
+
                             onSelectionChange={(key) => {
                               if (key) {
-                                const depSelected = JSON.parse(key as string) as Departamento;
-                                handleChange('municipio')(depSelected.codigo);
-                                handleChange('nombreMunicipio')(depSelected.valores);
+                                const munSelected = cat_013_municipios.find(
+                                  (mun) => mun.codigo === key
+                                );
+                                console.log('Municipio seleccionado:', munSelected);
+                                handleChange('municipio')(munSelected?.codigo || '');
+                                handleChange('nombreMunicipio')(munSelected?.valores || '');
                               }
                             }}
                             label="Municipio"
