@@ -21,8 +21,6 @@ interface Props {
 }
 
 const UpdateClientNormal = (props: Props) => {
-  console.log('props', props.customer_direction);
-  console.log('props', props.typeDocumento);
   const { theme } = useContext(ThemeContext);
   const { id } = useParams<{ id: string }>();
   const isEditing = !!id;
@@ -115,6 +113,7 @@ const UpdateClientNormal = (props: Props) => {
 
   useEffect(() => {
     getCat012Departamento();
+    getCat022TipoDeDocumentoDeIde();
   }, []);
 
   const selectedKeyDepartment = useMemo(() => {
@@ -128,13 +127,11 @@ const UpdateClientNormal = (props: Props) => {
   }, [user_by_id, cat_012_departamento.length]);
 
   useEffect(() => {
-    if (selectedKeyDepartment) {
-      getCat013Municipios(selectedKeyDepartment);
-    }
-  }, [selectedKeyDepartment]);
+    getCat013Municipios(user_by_id?.direccion.departamento || '0');
+  }, [user_by_id]);
 
   useEffect(() => {
-    getCat022TipoDeDocumentoDeIde();
+    getCat013Municipios(selectedCodeDep);
   }, [selectedCodeDep]);
 
   const { patchCustomer } = useCustomerStore();
@@ -148,29 +145,11 @@ const UpdateClientNormal = (props: Props) => {
       tipoDocumento: payload.tipoDocumento || 'N/A',
       branchId: payload.branchId,
     };
-
     if (isEditing && id && id !== '0') {
       await patchCustomer(finalPayload, parseInt(id));
     }
-
     navigate('/clients');
   };
-
-  console.log(selectedKeyDepartment);
-
-  const selectedKeyCity = useMemo(() => {
-    if (user_by_id) {
-      const city = cat_013_municipios.find(
-        (department) => department.codigo === user_by_id.direccion.municipio
-      );
-
-      return city?.codigo;
-    } else {
-      return cat_013_municipios.length > 0 ? cat_013_municipios[0].codigo : '';
-    }
-  }, [user_by_id, cat_013_municipios.length, selectedKeyDepartment]);
-
-  console.log(selectedKeyCity);
 
   const selectedKeyTypeOfDocument = useMemo(() => {
     if (user_by_id) {
@@ -181,10 +160,7 @@ const UpdateClientNormal = (props: Props) => {
     }
   }, [user_by_id, cat_022_tipo_de_documentoDeIde.length]);
 
-  console.log(selectedKeyTypeOfDocument);
-
   const navigate = useNavigate();
-
   return (
     <Layout title="Cliente">
       <div className="w-full h-full p-4 md:p-10 md:px-12">
@@ -201,11 +177,17 @@ const UpdateClientNormal = (props: Props) => {
               initialValues={{ ...initialValues }}
               validationSchema={validationSchema}
               onSubmit={(values) => onSubmit(values)}
-              // validateOnMount={false}
-              // validateOnBlur={false}
               enableReinitialize={true}
             >
-              {({ values, touched, errors, handleBlur, handleChange, handleSubmit }) => (
+              {({
+                values,
+                touched,
+                errors,
+                handleBlur,
+                handleChange,
+                handleSubmit,
+                setFieldValue,
+              }) => (
                 <>
                   <div className="mt-10">
                     <div className="">
@@ -300,17 +282,6 @@ const UpdateClientNormal = (props: Props) => {
                     <div className="grid grid-cols-2 gap-5 pt-3">
                       <div>
                         <Autocomplete
-                          // onSelectionChange={(key) => {
-                          //   if (key) {
-                          //     const depSelected = cat_012_departamento.find(
-                          //       (dep) => dep.codigo === new Set([key]).values().next().value
-                          //     );
-                          //     console.log('Departamento seleccionado:', depSelected);
-                          //     setSelectedCodeDep(depSelected?.codigo as string);
-                          //     handleChange('departamento')(depSelected?.codigo as string);
-                          //     handleChange('nombreDepartamento')(depSelected?.valores || '');
-                          //   }
-                          // }}
                           onSelectionChange={(key) => {
                             if (key) {
                               const depSelected = cat_012_departamento.find(
@@ -320,6 +291,7 @@ const UpdateClientNormal = (props: Props) => {
                               setSelectedCodeDep(depSelected?.codigo as string);
                               handleChange('departamento')(depSelected?.codigo as string);
                               handleChange('nombreDepartamento')(depSelected?.valores || '');
+                              setFieldValue('municipio', '01');
                             }
                           }}
                           onBlur={handleBlur('departamento')}
@@ -350,48 +322,39 @@ const UpdateClientNormal = (props: Props) => {
                         )}
                       </div>
                       <div>
-                        {selectedKeyCity && (
-                          <Autocomplete
-                            // onSelectionChange={(key) => {
-                            //   if (key) {
-                            //     const depSelected = JSON.parse(key as string) as Departamento;
-                            //     handleChange('municipio')(depSelected.codigo);
-                            //     handleChange('nombreMunicipio')(depSelected.valores);
-                            //   }
-                            // }}
+                        <Autocomplete
+                          onSelectionChange={(key) => {
+                            if (key) {
+                              const munSelected = cat_013_municipios.find(
+                                (mun) => mun.codigo === key
+                              );
+                              console.log('Municipio seleccionado:', munSelected);
+                              setFieldValue('municipio', munSelected?.codigo);
+                              setFieldValue('nombreMunicipio', munSelected?.valores);
+                            }
+                          }}
+                          label="Municipio"
+                          labelPlacement="outside"
+                          className="dark:text-white"
+                          variant="bordered"
+                          placeholder="Selecciona el municipio"
+                          classNames={{
+                            base: 'font-semibold text-gray-500 text-sm',
+                          }}
+                          onBlur={handleBlur('municipio')}
+                          selectedKey={`${values.municipio}`}
+                        >
+                          {cat_013_municipios.map((dep) => (
+                            <AutocompleteItem
+                              value={dep.id}
+                              key={dep.codigo}
+                              className="dark:text-white"
+                            >
+                              {dep.valores}
+                            </AutocompleteItem>
+                          ))}
+                        </Autocomplete>
 
-                            onSelectionChange={(key) => {
-                              if (key) {
-                                const munSelected = cat_013_municipios.find(
-                                  (mun) => mun.codigo === key
-                                );
-                                console.log('Municipio seleccionado:', munSelected);
-                                handleChange('municipio')(munSelected?.codigo || '');
-                                handleChange('nombreMunicipio')(munSelected?.valores || '');
-                              }
-                            }}
-                            label="Municipio"
-                            labelPlacement="outside"
-                            className="dark:text-white"
-                            variant="bordered"
-                            placeholder="Selecciona el municipio"
-                            classNames={{
-                              base: 'font-semibold text-gray-500 text-sm',
-                            }}
-                            onBlur={handleBlur('municipio')}
-                            defaultSelectedKey={`${selectedKeyCity}`}
-                          >
-                            {cat_013_municipios.map((dep) => (
-                              <AutocompleteItem
-                                value={dep.id}
-                                key={dep.codigo}
-                                className="dark:text-white"
-                              >
-                                {dep.valores}
-                              </AutocompleteItem>
-                            ))}
-                          </Autocomplete>
-                        )}
                         {errors.municipio && touched.municipio && (
                           <span className="text-sm font-semibold text-red-500">
                             {errors.municipio}
