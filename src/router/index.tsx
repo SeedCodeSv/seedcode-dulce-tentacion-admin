@@ -54,6 +54,7 @@ import UpdateClientNormal from '@/components/clients/UpdateClientNormal';
 import AddTributeSupplier from '@/components/supplier/AddTributeSupplier';
 import UpdateNormalSupplier from '@/components/supplier/UpdateNormalSupplier';
 import CorrelativePage from '@/pages/CorrelativePage';
+import UpdateTributeSupplier from '@/components/supplier/UpdateTributeSupplier';
 
 const Loading = () => {
   return <div>Cargando...</div>;
@@ -142,6 +143,10 @@ export const router = () => {
     {
       path: '/update-supplier-normal/:id',
       element: checkAuthorization('Proveedores', <UpdateNormalSupplier />),
+    },
+    {
+      path: '/update-supplier-tribute/:id',
+      element: checkAuthorization('Proveedores', <UpdateTributeSupplier />),
     },
     {
       path: '/branches',

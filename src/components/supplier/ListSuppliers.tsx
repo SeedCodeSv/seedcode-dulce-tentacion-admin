@@ -37,7 +37,6 @@ import MobileViewSupplier from './MobileViewSupplier';
 import NO_DATA from '@/assets/svg/no_data.svg';
 
 import SmPagination from '../global/SmPagination';
-import HeadlessModal from '../global/HeadlessModal';
 import TooltipGlobal from '../global/TooltipGlobal';
 import useWindowSize from '@/hooks/useWindowSize';
 import BottomDrawer from '../global/BottomDrawer';
@@ -459,8 +458,13 @@ function ListSuppliers({ actions }: ArrayAction) {
                                   <TooltipGlobal text="Editar">
                                     <Button
                                       onClick={() => {
-                                        OnGetBySupplier(item.id),
+                                        if (item.esContribuyente === true) {
+                                          navigate(`/update-supplier-tribute/${item.id}`);
+                                          OnGetBySupplier(item.id);
+                                        } else {
                                           navigate(`/update-supplier-normal/${item.id}`);
+                                          OnGetBySupplier(item.id);
+                                        }
                                       }}
                                       isIconOnly
                                       style={{

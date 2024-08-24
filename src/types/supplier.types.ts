@@ -11,7 +11,7 @@ export interface SupplierDirection {
 }
 
 export interface Supplier {
-  id?: number;
+  id: number;
   nombre: string;
   nombreComercial: string;
   nrc: string;

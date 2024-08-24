@@ -24,6 +24,7 @@ function UpdateNormalSupplier() {
   useEffect(() => {
     getCat022TipoDeDocumentoDeIde();
     getCat012Departamento();
+    setDataCreateSupplier(supplier);
 
     getCat013Municipios(selectedCodeDep);
   }, [
@@ -60,14 +61,13 @@ function UpdateNormalSupplier() {
       console.error('Error updating supplier:', error);
     }
   };
-
   const selectedTipoDocumento = useMemo(() => {
     return cat_022_tipo_de_documentoDeIde.find(
       (dep) => dep.codigo === dataCreateSupplier?.tipoDocumento
     );
   }, [cat_022_tipo_de_documentoDeIde, dataCreateSupplier?.tipoDocumento]);
   return (
-    <Layout title="">
+    <Layout title="Actualizar Proveedor Consumidor Final">
       <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
         <div className="w-full h-full p-4 overflow-y-auto bg-white shadow custom-scrollbar md:p-8 dark:bg-gray-900">
           <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
@@ -180,18 +180,33 @@ function UpdateNormalSupplier() {
                 <Autocomplete
                   labelPlacement="outside"
                   variant="bordered"
+                  name="departamento"
                   label="Departamento"
                   onSelectionChange={(value) => {
                     const selectedDepartment = cat_012_departamento.find(
-                      (dep) => dep.codigo === value
+                      (dep) => dep.codigo === new Set([value]).values().next().value
                     );
                     if (selectedDepartment) {
-                      setSelectedCodeDep(selectedDepartment.codigo); // Actualiza el estado con el código seleccionado
-                      handleAutocomplete('departamento', selectedDepartment.codigo); // Enviar solo el código
-                      handleAutocomplete('nombreDepartamento', selectedDepartment.valores); // Enviar solo el nombre
+                      handleAutocomplete('departamento', selectedDepartment.codigo);
+                      handleAutocomplete('nombreDepartamento', selectedDepartment.valores);
+                    }
+                    if (selectedDepartment) {
+                      setDataCreateSupplier((prev) => ({
+                        ...prev,
+                        direccion: {
+                          ...prev?.direccion,
+                          departamento: selectedDepartment?.codigo,
+                          nombreDepartamento: selectedDepartment?.valores,
+                          municipio: prev.direccion?.municipio ?? '',
+                          nombreMunicipio: prev.direccion?.nombreMunicipio ?? '',
+                          complemento: prev.direccion?.complemento ?? '',
+                          active: prev.direccion?.active ?? true,
+                        },
+                      }));
+                      setSelectedCodeDep(selectedDepartment?.codigo);
                     }
                   }}
-                  selectedKey={selectedCodeDep} // Usa el valor de selectedCodeDep
+                  selectedKey={selectedCodeDep}
                   defaultItems={cat_012_departamento}
                   placeholder="Selecciona el departamento"
                   className="dark:text-white"
