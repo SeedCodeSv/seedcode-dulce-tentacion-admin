@@ -107,7 +107,7 @@ function ListSuppliers({ actions }: ArrayAction) {
 
     setSelectedSupplier(payload_supplier);
     setSelectedSupplierDirection(payload_direction);
-    setSelectedId(supplier.id);
+    setSelectedId(supplier.id ?? 0);
 
     if (type === 'edit') {
       if (supplier.esContribuyente) {
@@ -134,7 +134,7 @@ function ListSuppliers({ actions }: ArrayAction) {
     });
   };
 
-  const { supplier, OnGetBySupplier } = useSupplierStore();
+  const {  OnGetBySupplier } = useSupplierStore();
 
   const navigate = useNavigate();
   return (
@@ -460,10 +460,10 @@ function ListSuppliers({ actions }: ArrayAction) {
                                       onClick={() => {
                                         if (item.esContribuyente === true) {
                                           navigate(`/update-supplier-tribute/${item.id}`);
-                                          OnGetBySupplier(item.id);
+                                          OnGetBySupplier(item.id ?? 0);
                                         } else {
                                           navigate(`/update-supplier-normal/${item.id}`);
-                                          OnGetBySupplier(item.id);
+                                          OnGetBySupplier(item.id ?? 0);
                                         }
                                       }}
                                       isIconOnly
@@ -497,7 +497,7 @@ function ListSuppliers({ actions }: ArrayAction) {
                                 {actions.includes('Activar Proveedor') && !item.isActive && (
                                   <Button
                                     onClick={() => {
-                                      handleActivate(item.id);
+                                      handleActivate(item.id ?? 0);
                                     }}
                                     isIconOnly
                                     style={{
@@ -622,7 +622,7 @@ export const DeletePopover = ({ supplier }: PopProps) => {
           <div className="flex justify-center mt-4">
             <Button onClick={onClose}>No, cancelar</Button>
             <Button
-              onClick={() => handleDelete(supplier.id)}
+              onClick={() => handleDelete(supplier.id ?? 0)}
               className="ml-5"
               style={{
                 backgroundColor: theme.colors.danger,

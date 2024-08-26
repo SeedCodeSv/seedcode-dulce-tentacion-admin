@@ -13,4 +13,6 @@ export interface GridProps {
     layout: 'grid' | 'list',
     handleChangeSupplier: (Supplier: Supplier, type: string) => void,
     handleActive: (id: number) => void
+    reloadData : (id : number) => void
+    onNavigate: (supplier: Supplier) => void; 
 }

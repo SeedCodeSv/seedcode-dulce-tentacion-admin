@@ -1,5 +1,5 @@
 import { useBillingStore } from '../../store/facturation/billing.store';
-import { useEffect, useMemo, useState } from 'react';
+import { Key, useEffect, useMemo, useState } from 'react';
 import { Autocomplete, AutocompleteItem, Button, Input, Textarea } from '@nextui-org/react';
 import { global_styles } from '../../styles/global.styles';
 import { Supplier } from '@/types/supplier.types';
@@ -14,8 +14,8 @@ function UpdateTributeSupplier() {
   const { supplier, patchSupplier, OnGetBySupplier } = useSupplierStore();
   const navigate = useNavigate();
   const [dataCreateSupplier, setDataCreateSupplier] = useState<Supplier>(supplier || {});
-  const [selectedCodeDep, setSelectedCodeDep] = useState(supplier?.direccion?.departamento ?? '0');
-  const {
+  const [selectedDepartment, setSelectedDepartment] = useState(supplier?.direccion?.departamento);
+  const [selectedMunicipio, setSelectedMunicipio] = useState(supplier?.direccion?.municipio); const {
     getCat012Departamento,
     getCat022TipoDeDocumentoDeIde,
     getCat013Municipios,
@@ -29,28 +29,72 @@ function UpdateTributeSupplier() {
     getCat022TipoDeDocumentoDeIde();
     getCat012Departamento();
     setDataCreateSupplier(supplier);
-    getCat013Municipios(selectedCodeDep);
+
     getCat019CodigoActividadEconomica();
+
   }, [
     getCat012Departamento,
     getCat022TipoDeDocumentoDeIde,
     getCat013Municipios,
-    selectedCodeDep,
-    supplier,
-  ]);
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setDataCreateSupplier((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value || '',
-    }));
-  };
-  const handleChangeAutocomplete = (name: string, value: string) => {
-    setDataCreateSupplier((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
 
+    supplier,
+
+  ]);
+  useEffect(() => {
+    if (id) {
+      OnGetBySupplier(Number(id));
+    }
+  }, [id]);
+  useEffect(() => {
+    if (supplier.direccion) {
+      setSelectedDepartment(supplier.direccion.departamento);
+      setSelectedMunicipio(supplier.direccion.municipio);
+
+      getCat013Municipios(supplier?.direccion?.departamento ?? "");
+    }
+  }, [supplier.direccion]);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    if (name === 'complemento') {
+      setDataCreateSupplier(prev => ({
+        ...prev,
+        direccion: {
+          ...prev.direccion,
+          complemento: value
+        },
+        complemento: value
+      }));
+    } else {
+      setDataCreateSupplier(prev => ({ ...prev, [name]: value }));
+    }
+  };
+  
+  const handleChangeAutocomplete = (name: string, value: string) => {
+    setDataCreateSupplier(prev => ({ ...prev, [name]: value }));
+  };
+  const handleDepartmentSelect = (key: Key | null) => {
+    const selected = cat_012_departamento.find(dep => dep.codigo === key);
+    if (selected) {
+      setSelectedDepartment(selected.codigo);
+      setDataCreateSupplier(prev => ({
+        ...prev,
+        departamento: selected.codigo,
+        nombreDepartamento: selected.valores,
+      }));
+      getCat013Municipios(selected.codigo);
+    }
+  };
+  const handleMunicipioSelect = (key: Key | null) => {
+    const selected = cat_013_municipios.find(mun => mun.codigo === key);
+    if (selected) {
+      setSelectedMunicipio(selected.codigo);
+      setDataCreateSupplier(prev => ({
+        ...prev,
+        municipio: selected.codigo,
+        nombreMunicipio: selected.valores,
+      }));
+    }
+  };
   const handleUpdateSupplier = () => {
     try {
       if (dataCreateSupplier) {
@@ -258,102 +302,65 @@ function UpdateTributeSupplier() {
                   </Autocomplete>
                 </div>
                 <div className="pt-2">
-                  <Autocomplete
-                    labelPlacement="outside"
-                    variant="bordered"
-                    label="Departamento"
-                    onSelectionChange={(value) => {
-                      const selectedDepartment = cat_012_departamento.find(
-                        (dep) => dep.codigo === value
-                      );
-                      if (selectedDepartment) {
-                        setSelectedCodeDep(selectedDepartment.codigo); // Actualiza el estado con el código seleccionado
-                        handleChangeAutocomplete('departamento', selectedDepartment.codigo); // Enviar solo el código
-                        handleChangeAutocomplete('nombreDepartamento', selectedDepartment.valores); // Enviar solo el nombre
-                      }
-                    }}
-                    selectedKey={selectedCodeDep} // Usa el valor de selectedCodeDep
-                    defaultItems={cat_012_departamento}
-                    placeholder="Selecciona el departamento"
-                    className="dark:text-white"
-                    classNames={{
-                      base: 'font-semibold text-gray-500 text-sm',
-                    }}
-                  >
-                    {cat_012_departamento.map((dep) => (
-                      <AutocompleteItem
-                        value={dep.codigo}
-                        key={dep.codigo}
-                        className="dark:text-white"
-                      >
-                        {dep.valores}
-                      </AutocompleteItem>
-                    ))}
-                  </Autocomplete>
+                <Autocomplete
+                  label="Departamento"
+                  labelPlacement="outside"
+                  name="departamento"
+                  className="dark:text-white"
+                  variant="bordered"
+                  selectedKey={selectedDepartment}
+                  onSelectionChange={handleDepartmentSelect}
+                >
+                  {cat_012_departamento.map((dep) => (
+                    <AutocompleteItem
+                      key={dep.codigo}
+                      value={dep.codigo}
+                      className="dark:text-white"
+                    >
+                      {dep.valores}
+                    </AutocompleteItem>
+                  ))}
+                </Autocomplete>
                 </div>
                 <div className="pt-2">
-                  <Autocomplete
-                    label="Municipio"
-                    labelPlacement="outside"
-                    name="municipio"
+                <Autocomplete
+                label="Municipio"
+                labelPlacement="outside"
+                name="municipio"
+                className="dark:text-white"
+                variant="bordered"
+                selectedKey={selectedMunicipio}
+                onSelectionChange={handleMunicipioSelect}
+              >
+                {cat_013_municipios.map((mun) => (
+                  <AutocompleteItem
+                    key={mun.codigo}
+                    value={mun.codigo}
                     className="dark:text-white"
-                    defaultItems={cat_013_municipios}
-                    selectedKey={dataCreateSupplier?.direccion?.municipio}
-                    onSelectionChange={(value) => {
-                      const selectedMun = cat_013_municipios.find((mun) => mun.codigo === value);
-                      if (selectedMun) {
-                        handleChangeAutocomplete('municipio', selectedMun.codigo);
-                        handleChangeAutocomplete('nombreMunicipio', selectedMun.valores);
-                      }
-                      if (selectedMun) {
-                        setDataCreateSupplier((prev) => ({
-                          ...prev,
-                          direccion: {
-                            ...prev.direccion,
-                            municipio: selectedMun.codigo,
-                            nombreMunicipio: selectedMun.valores,
-                            departamento: prev.direccion?.departamento ?? '',
-                            nombreDepartamento: prev.direccion?.nombreDepartamento ?? '',
-                            complemento: prev.direccion?.complemento ?? '',
-                            active: prev.direccion?.active ?? true,
-                          },
-                        }));
-                      }
-                    }}
-                    variant="bordered"
-                    placeholder="Ingresa el municipio"
-                    classNames={{
-                      base: 'font-semibold text-gray-500 text-sm',
-                    }}
                   >
-                    {cat_013_municipios.map((mun) => (
-                      <AutocompleteItem
-                        value={mun.codigo}
-                        key={mun.codigo}
-                        className="dark:text-white"
-                      >
-                        {mun.valores}
-                      </AutocompleteItem>
-                    ))}
-                  </Autocomplete>
+                    {mun.valores}
+                  </AutocompleteItem>
+                ))}
+              </Autocomplete>
                 </div>
               </div>
             </div>
 
             <div className="pt-2">
-              <Textarea
-                value={dataCreateSupplier?.direccion?.complemento}
-                className="dark:text-white"
+            <Textarea
+                name="complemento"
                 onChange={handleChange}
+                value={dataCreateSupplier.direccion?.complemento || ""}
                 label="Complemento de dirección"
-                classNames={{
-                  label: 'font-semibold text-gray-500 text-sm',
-                  input: 'max-h-[90px]',
-                }}
+                className="dark:text-white"
                 labelPlacement="outside"
+                defaultValue={dataCreateSupplier.direccion?.complemento}
                 variant="bordered"
                 placeholder="Ingresa el complemento de dirección"
-                name="complemento"
+
+                classNames={{
+                  label: 'font-semibold text-gray-500 text-sm',
+                }}
               />
             </div>
             <div className="pt-4">
