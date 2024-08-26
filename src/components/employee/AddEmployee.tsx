@@ -31,29 +31,49 @@ function AddEmployee() {
     useBillingStore();
   const [codeDepartamento, setCodeDepartamento] = useState('');
 
+  // afp, nit y iss no obligatorio
+
   const validationSchema = yup.object().shape({
-    firstName: yup.string().required('**Campo requerido**'),
-    secondName: yup.string().required('**Campo requerido**'),
-    firstLastName: yup.string().required('**Campo requerido**'),
-    secondLastName: yup.string().required('**Campo requerido**'),
-    bankAccount: yup.string().required('**Campo requerido**'),
-    dui: yup.string().required('**Campo requerido**'),
-    nit: yup.string().required('**Campo requerido**'),
-    isss: yup.string().required('**Campo requerido**'),
-    afp: yup.string().required('**Campo requerido**'),
+    firstName: yup.string().required('**Primer nombre es requerido**'),
+    secondName: yup.string().required('**Segundo nombre es requerido**'),
+    firstLastName: yup.string().required('**Primer apellido es requerido**'),
+    secondLastName: yup.string().required('**Segundo apellido es requerido**'),
+    bankAccount: yup.string().required('**Número de cuenta es requerido**'),
+    dui: yup
+      .string()
+      .required('**Número de DUI es requerido**')
+      .matches(/^\d{9}$/, '**Formato de DUI incorrecto**'),
+    nit: yup
+      .string()
+      .notRequired()
+      .matches(/^[0-9]{14}$/, '**Formato de NIT incorrecto**'),
+    // isss: yup.string().required('**Número de ISSS es requerido**'),
+    afp: yup.string().notRequired(),
     // code: yup.string().required('**Campo requerido**'),
-    phone: yup.string().required('**Campo requerido**'),
-    age: yup.string().required('**Campo requerido**'),
-    salary: yup.string().required('**Campo requerido**'),
-    dateOfBirth: yup.string().required('**Campo requerido**'),
-    dateOfEntry: yup.string().required('**Campo requerido**'),
-    dateOfExit: yup.string().required('**Campo requerido**'),
-    responsibleContact: yup.string().required('**Campo requerido**'),
-    studyLevelId: yup.number().required('**Campo requerido**').min(1, '**Campo requerido**'),
-    statusId: yup.number().required('**Campo requerido**').min(1, '**Campo requerido**'),
-    contractTypeId: yup.number().required('**Campo requerido**').min(1, '**Campo requerido**'),
-    chargeId: yup.number().required('**Campo requerido**').min(1, '**Campo requerido**'),
-    branchId: yup.number().required('**Campo requerido**').min(1, '**Campo requerido**'),
+    phone: yup.string().required('**Número de telefono es requerido**'),
+    age: yup.string().required('**Edad es requerida**'),
+    salary: yup.string().required('**Salario es requerido**'),
+    dateOfBirth: yup.string().required('**Fecha de nacimiento es requerida**'),
+    dateOfEntry: yup.string().required('**Fecha de ingreso es requerida**'),
+    code: yup.string().required('**Campo requerido**'),
+    // dateOfExit: yup.string().required('**Fecha de egreso es requerida**'),
+    responsibleContact: yup.string().required('**Contacto responsable es requerido**'),
+    studyLevelId: yup
+      .number()
+      .required('**Nivel de estudios es requerido**')
+      .min(1, '**Nivel de estudios es requerido**'),
+    statusId: yup.number().required('**Estatus es requerido**').min(1, '**Estatus es requerido**'),
+    contractTypeId: yup
+      .number()
+      .required('**Tipo de contrato es requerido**')
+      .min(1, '**Tipo de contrato es requerido**'),
+    chargeId: yup.number().required('**Cargo es requerido**').min(1, '**Cargo es requerido**'),
+    branchId: yup
+      .number()
+      .required('**Sucursal es requerida**')
+      .min(1, '**Sucursal es requerida**'),
+    department: yup.string().required('El departamento es requerido'),
+    municipality: yup.string().required('El municipio es requerido'),
   });
 
   useEffect(() => {
@@ -107,6 +127,9 @@ function AddEmployee() {
     }
     const updatedValues = {
       ...values,
+      isss: values.isss || '0',
+      afp: values.afp || '0',
+      nit: values.nit || '0',
       code: codigoFinal,
     };
 
@@ -124,15 +147,22 @@ function AddEmployee() {
   const [lastName, setLastName] = useState('');
   const [codigo, setCodigoGenerado] = useState('');
 
-  const generateCode = () => {
+  const generateCode = (setFieldValue: any) => {
+    if (!firstName || !lastName) {
+      toast.error(
+        'Necesitas ingresar el primer nombre y el primer apellido para generar el código.'
+      );
+      return;
+    }
     const firstNameInitial = firstName.charAt(0).toUpperCase();
     const lastNameInitial = lastName.charAt(0).toUpperCase();
-    const randomNumber = Math.floor(1000 + Math.random() * 9000);
+    const randomNumber = Math.floor(10 + Math.random() * 90);
 
     const generatedCode = `${firstNameInitial}${lastNameInitial}${randomNumber}`;
     setCodigoGenerado(generatedCode);
 
-    return generatedCode;
+    setFieldValue('code', generatedCode);
+    // return generatedCode;
   };
 
   const navigate = useNavigate();
@@ -151,7 +181,15 @@ function AddEmployee() {
                 validationSchema={validationSchema}
                 onSubmit={createEmployee}
               >
-                {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
+                {({
+                  values,
+                  errors,
+                  touched,
+                  handleChange,
+                  handleBlur,
+                  handleSubmit,
+                  setFieldValue,
+                }) => (
                   <>
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
                       <div className="flex flex-col mt-3">
@@ -253,12 +291,12 @@ function AddEmployee() {
                           onBlur={handleBlur('bankAccount')}
                           name="bankAccount"
                           labelPlacement="outside"
-                          placeholder="Ingresa el numero de cuenta"
+                          placeholder="Ingresa el número de cuenta"
                           classNames={{
                             label: 'font-semibold text-sm  text-gray-600',
                           }}
                           variant="bordered"
-                          label="Numero de cuenta bancaria"
+                          label="Número de cuenta bancaria"
                           autoComplete="off"
                         />
                         {errors.bankAccount && touched.bankAccount && (
@@ -274,7 +312,7 @@ function AddEmployee() {
                           onBlur={handleBlur('dui')}
                           name="dui"
                           labelPlacement="outside"
-                          placeholder="Ingresa el numero de DUI"
+                          placeholder="Ingresa el número de DUI"
                           classNames={{
                             label: 'font-semibold text-sm  text-gray-600',
                           }}
@@ -293,7 +331,7 @@ function AddEmployee() {
                           onBlur={handleBlur('nit')}
                           name="nit"
                           labelPlacement="outside"
-                          placeholder="Ingresa el numero de NIT"
+                          placeholder="Ingresa el número de NIT"
                           classNames={{
                             label: 'font-semibold text-sm  text-gray-600',
                           }}
@@ -312,16 +350,16 @@ function AddEmployee() {
                           onBlur={handleBlur('isss')}
                           name="isss"
                           labelPlacement="outside"
-                          placeholder="Ingresa el numero de ISSS"
+                          placeholder="Ingresa el número de ISSS"
                           classNames={{
                             label: 'font-semibold text-sm  text-gray-600',
                           }}
                           variant="bordered"
                           label="ISSS"
                         />
-                        {errors.isss && touched.isss && (
+                        {/* {errors.isss && touched.isss && (
                           <span className="text-sm font-semibold text-red-500">{errors.isss}</span>
-                        )}
+                        )} */}
                       </div>
                       <div className="flex flex-col mt-3">
                         <Input
@@ -330,7 +368,7 @@ function AddEmployee() {
                           onBlur={handleBlur('afp')}
                           name="afp"
                           labelPlacement="outside"
-                          placeholder="Ingresa el numero de AFP"
+                          placeholder="Ingresa el número de AFP"
                           classNames={{
                             label: 'font-semibold text-sm  text-gray-600',
                           }}
@@ -352,19 +390,22 @@ function AddEmployee() {
                             }}
                             name="code"
                             labelPlacement="outside"
-                            placeholder="Ingresa el codigo"
+                            placeholder="Ingresa el código"
                             classNames={{
                               label: 'font-semibold text-sm text-gray-600',
                             }}
                             variant="bordered"
-                            label="Codigo Empleado"
+                            label="Código Empleado"
                           />
+                          {errors.code && touched.code && (
+                            <span className="text-sm font-semibold text-red-500">
+                              {errors.code}
+                            </span>
+                          )}
                         </div>
                         <div className="mt-3">
                           <Button
-                            onClick={() => {
-                              generateCode();
-                            }}
+                            onClick={() => generateCode(setFieldValue)}
                             className="w-full mt-3 text-sm font-semibold bg-blue-400"
                             style={{
                               backgroundColor: theme.colors.dark,
@@ -384,7 +425,7 @@ function AddEmployee() {
                           type="number"
                           name="phone"
                           labelPlacement="outside"
-                          placeholder="Ingresa el numero de teléfono"
+                          placeholder="Ingresa el número de teléfono"
                           classNames={{
                             label: 'font-semibold text-sm  text-gray-600',
                           }}
@@ -482,6 +523,26 @@ function AddEmployee() {
                       </div>
                       <div className="flex flex-col mt-3">
                         <Input
+                          value={values.complement}
+                          onChange={handleChange('complement')}
+                          onBlur={handleBlur('complement')}
+                          label="Complemento de dirección"
+                          classNames={{
+                            label: 'font-semibold text-gray-500 text-sm',
+                          }}
+                          labelPlacement="outside"
+                          variant="bordered"
+                          placeholder="Ingresa el complemento de dirección"
+                          name="complement"
+                        />
+                        {errors.complement && touched.complement && (
+                          <span className="text-sm font-semibold text-red-500">
+                            {errors.complement}
+                          </span>
+                        )}
+                      </div>
+                      {/* <div className="flex flex-col mt-3">
+                        <Input
                           value={values.dateOfExit}
                           onChange={handleChange('dateOfExit')}
                           onBlur={handleBlur('dateOfExit')}
@@ -500,7 +561,7 @@ function AddEmployee() {
                             {errors.dateOfExit}
                           </span>
                         )}
-                      </div>
+                      </div> */}
                       <div className="flex flex-col mt-3">
                         <Autocomplete
                           value={values.studyLevelId}
@@ -682,43 +743,7 @@ function AddEmployee() {
                           </span>
                         )}
                       </div>
-                      <div className="mt-3">
-                        <Autocomplete
-                          value={values.branchId}
-                          onSelectionChange={(key) => {
-                            if (key) {
-                              const depSelected = JSON.parse(key as string) as Branch;
-                              handleChange('branchId')(depSelected?.id?.toString() ?? '');
-                            }
-                          }}
-                          onChange={handleChange('branchId')}
-                          onBlur={handleBlur('branchId')}
-                          label="Sucursal"
-                          labelPlacement="outside"
-                          placeholder="Selecciona la sucursal"
-                          variant="bordered"
-                          className="dark:text-white"
-                          classNames={{
-                            base: 'font-semibold text-sm',
-                          }}
-                        >
-                          {branch_list.map((bra) => (
-                            <AutocompleteItem
-                              onClick={() => setDataCreate({ ...dataCreate, branchId: bra.id })}
-                              className="dark:text-white"
-                              value={bra.name}
-                              key={JSON.stringify(bra)}
-                            >
-                              {bra.name}
-                            </AutocompleteItem>
-                          ))}
-                        </Autocomplete>
-                        {errors.branchId && touched.branchId && (
-                          <span className="text-sm font-semibold text-red-500">
-                            {errors.branchId}
-                          </span>
-                        )}
-                      </div>
+
                       <div className="mt-3">
                         <Autocomplete
                           onSelectionChange={(key) => {
@@ -757,6 +782,11 @@ function AddEmployee() {
                             </AutocompleteItem>
                           ))}
                         </Autocomplete>
+                        {errors.department && touched.department && (
+                          <span className="text-sm font-semibold text-red-500">
+                            {errors.department}
+                          </span>
+                        )}
                       </div>
                       <div className="mt-3">
                         <Autocomplete
@@ -794,12 +824,54 @@ function AddEmployee() {
                             </AutocompleteItem>
                           ))}
                         </Autocomplete>
+                        {errors.municipality && touched.municipality && (
+                          <span className="text-sm font-semibold text-red-500">
+                            {errors.municipality}
+                          </span>
+                        )}
+                      </div>
+                      <div className="mt-3">
+                        <Autocomplete
+                          value={values.branchId}
+                          onSelectionChange={(key) => {
+                            if (key) {
+                              const depSelected = JSON.parse(key as string) as Branch;
+                              handleChange('branchId')(depSelected?.id?.toString() ?? '');
+                            }
+                          }}
+                          onChange={handleChange('branchId')}
+                          onBlur={handleBlur('branchId')}
+                          label="Sucursal"
+                          labelPlacement="outside"
+                          placeholder="Selecciona la sucursal"
+                          variant="bordered"
+                          className="dark:text-white"
+                          classNames={{
+                            base: 'font-semibold text-sm',
+                          }}
+                        >
+                          {branch_list.map((bra) => (
+                            <AutocompleteItem
+                              onClick={() => setDataCreate({ ...dataCreate, branchId: bra.id })}
+                              className="dark:text-white"
+                              value={bra.name}
+                              key={JSON.stringify(bra)}
+                            >
+                              {bra.name}
+                            </AutocompleteItem>
+                          ))}
+                        </Autocomplete>
+                        {errors.branchId && touched.branchId && (
+                          <span className="text-sm font-semibold text-red-500">
+                            {errors.branchId}
+                          </span>
+                        )}
                       </div>
                     </div>
 
                     {/* <span className="flex flex-col mt-4">-- Dirección --</span> */}
                     <div className="grid grid-cols-1 gap-4 mt-3 md:grid-cols-2">
-                      <div>
+                      {/* <div>
                         <Input
                           value={values.complement}
                           onChange={handleChange('complement')}
@@ -818,7 +890,7 @@ function AddEmployee() {
                             {errors.complement}
                           </span>
                         )}
-                      </div>
+                      </div> */}
 
                       <div className="mt-0 md:mt-3">
                         <Button

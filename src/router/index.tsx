@@ -55,6 +55,7 @@ import AddTributeSupplier from '@/components/supplier/AddTributeSupplier';
 import UpdateNormalSupplier from '@/components/supplier/UpdateNormalSupplier';
 import CorrelativePage from '@/pages/CorrelativePage';
 import UpdateTributeSupplier from '@/components/supplier/UpdateTributeSupplier';
+import UpdateClientContributor from '@/components/clients/UpdateClientContributor';
 
 const Loading = () => {
   return <div>Cargando...</div>;
@@ -137,13 +138,15 @@ export const router = () => {
       element: checkAuthorization('Proveedores', <AddNormalSupplier />),
     },
     {
-      path: '/add-supplier-tribute',
-      element: checkAuthorization('Proveedores', <AddTributeSupplier />),
-    },
-    {
       path: '/update-supplier-normal/:id',
       element: checkAuthorization('Proveedores', <UpdateNormalSupplier />),
     },
+
+    {
+      path: '/add-supplier-tribute',
+      element: checkAuthorization('Proveedores', <AddTributeSupplier />),
+    },
+
     {
       path: '/update-supplier-tribute/:id',
       element: checkAuthorization('Proveedores', <UpdateTributeSupplier />),
@@ -262,6 +265,15 @@ export const router = () => {
     {
       path: '/update-client/:id',
       element: checkAuthorization('Clientes', <UpdateClientNormal />),
+    },
+
+    {
+      path: '/add-client-contributor',
+      element: checkAuthorization('Proveedores', <AddClientContributor />),
+    },
+    {
+      path: '/update-client-contributor/:id',
+      element: checkAuthorization('Proveedores', <UpdateClientContributor />),
     },
 
     {

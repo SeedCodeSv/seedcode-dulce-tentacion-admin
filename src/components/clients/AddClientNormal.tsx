@@ -11,13 +11,10 @@ import { useNavigate } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
 import { useBranchesStore } from '@/store/branches.store';
 import { Branch } from '@/types/auth.types';
-// import { Departamento } from '@/types/billing/cat-012-departamento.types';
-// import { Municipio } from '@/types/billing/cat-013-municipio.types';
 import { ITipoDocumento } from '@/types/DTE/tipo_documento.types';
 
 interface Props {
   customer?: PayloadCustomer;
-
   typeDocumento?: string;
 }
 
@@ -101,6 +98,10 @@ const AddClientNormal = (props: Props) => {
   }, [selectedCodeDep]);
 
   const { postCustomer } = useCustomerStore();
+  const { getCustomersPagination } = useCustomerStore();
+  useEffect(() => {
+    getCustomersPagination(1, 5, '', '', '', '', 1);
+  }, []);
   const navigate = useNavigate();
 
   const onSubmit = async (payload: PayloadCustomer) => {
@@ -112,18 +113,14 @@ const AddClientNormal = (props: Props) => {
       correo: payload.correo || 'N/A@gmail.com',
       telefono: payload.telefono || '0',
       numDocumento: payload.numDocumento || '0',
-      // municipio: payload.municipio || 'N/A',
       tipoDocumento: payload.tipoDocumento || 'N/A',
-      // nombreMunicipio: payload.nombreMunicipio,
-      // departamento: payload.departamento || 'N/A',
-      // nombreDepartamento: payload.nombreDepartamento || 'N/A',
       complemento: payload.complemento || 'N/A',
       branchId: payload.branchId,
     };
-
     await postCustomer(finalPayload);
 
     navigate('/clients');
+    getCustomersPagination(1, 5, '', '', '', '', 1);
   };
 
   return (
@@ -272,39 +269,7 @@ const AddClientNormal = (props: Props) => {
                           </AutocompleteItem>
                         ))}
                       </Autocomplete>
-                      {/* <Autocomplete
-                        onSelectionChange={(key) => {
-                          if (key) {
-                            const depSelected = cat_012_departamento.find(
-                              (dep) => dep.codigo === new Set([key]).values().next().value
-                            );
-                            setSelectedCodeDep(depSelected?.codigo as string);
-                            handleChange('departamento')(depSelected?.codigo as string);
-                          }
-                        }}
-          
-                        
-                        onBlur={handleBlur('departamento')}
-                        label="Departamento"
-                        labelPlacement="outside"
-                        placeholder="Selecciona el departamento"
-                        variant="bordered"
-                        classNames={{
-                          base: 'font-semibold text-gray-500 text-sm',
-                        }}
-                        className="dark:text-white"
-                        value={values.departamento}
-                      >
-                        {cat_012_departamento.map((dep) => (
-                          <AutocompleteItem
-                            value={dep.codigo}
-                            key={dep.codigo}
-                            className="dark:text-white"
-                          >
-                            {dep.valores}
-                          </AutocompleteItem>
-                        ))}
-                      </Autocomplete> */}
+
                       {errors.departamento && touched.departamento && (
                         <span className="text-sm font-semibold text-red-500">
                           {errors.departamento}
@@ -312,36 +277,6 @@ const AddClientNormal = (props: Props) => {
                       )}
                     </div>
                     <div>
-                      {/* <Autocomplete
-                        onSelectionChange={(key) => {
-                          if (key) {
-                            const depSelected = JSON.parse(key as string) as Departamento;
-                            handleChange('municipio')(depSelected.codigo);
-                            handleChange('nombreMunicipio')(depSelected.valores);
-                          }
-                        }}
-                        label="Municipio"
-                        labelPlacement="outside"
-                        className="dark:text-white"
-                        variant="bordered"
-                        placeholder="Selecciona el municipio"
-                        classNames={{
-                          base: 'font-semibold text-gray-500 text-sm',
-                        }}
-                        onBlur={handleBlur('municipio')}
-
-                        value={values.municipio}
-                      >
-                        {cat_013_municipios.map((dep) => (
-                          <AutocompleteItem
-                            value={dep.codigo}
-                            key={JSON.stringify(dep)}
-                            className="dark:text-white"
-                          >
-                            {dep.valores}
-                          </AutocompleteItem>
-                        ))}
-                      </Autocomplete> */}
                       <Autocomplete
                         onSelectionChange={(key) => {
                           if (key) {

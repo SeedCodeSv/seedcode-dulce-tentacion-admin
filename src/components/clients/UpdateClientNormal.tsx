@@ -10,7 +10,7 @@ import Layout from '@/layout/Layout';
 import { useNavigate, useParams } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
 import { useBranchesStore } from '@/store/branches.store';
-import { Branch } from '@/types/auth.types';
+// import { Branch } from '@/types/auth.types';
 
 interface Props {
   customer?: PayloadCustomer;
@@ -23,7 +23,7 @@ const UpdateClientNormal = (props: Props) => {
   const { theme } = useContext(ThemeContext);
   const { id } = useParams<{ id: string }>();
   const isEditing = !!id;
-  const { get_customer_by_id, user_by_id } = useCustomerStore();
+  const { get_customer_by_id, user_by_id, getCustomersPagination } = useCustomerStore();
   const { getBranchesList, branch_list } = useBranchesStore();
 
   useEffect(() => {
@@ -43,6 +43,13 @@ const UpdateClientNormal = (props: Props) => {
     complemento: '',
     branchId: 0,
   });
+
+  useEffect(() => {
+    if (initialValues.departamento) {
+      setSelectedCodeDep(initialValues.departamento); // Asegura que se setea el código del departamento correcto al cargar los valores
+      getCat013Municipios(initialValues.departamento); // Obtén los municipios correspondientes al departamento inicial
+    }
+  }, [initialValues.departamento]);
 
   useEffect(() => {
     if (isEditing && id && id !== '0') {
@@ -67,11 +74,7 @@ const UpdateClientNormal = (props: Props) => {
   }, [id, isEditing, get_customer_by_id]);
 
   const validationSchema = yup.object().shape({
-    branchId: yup
-      .number()
-      .typeError('La sucursal es requerida')
-      .required('La sucursal es requerida')
-      .min(1, 'Selecciona una sucursal válida'),
+    // branchId: yup.number().required('**Campo requerido**').min(1, '**Campo requerido**'),
     nombre: yup.string().required('El nombre es requerido'),
     correo: yup.string().notRequired().email('El correo es inválido'),
     telefono: yup.string().notRequired(),
@@ -135,14 +138,16 @@ const UpdateClientNormal = (props: Props) => {
 
   const { patchCustomer } = useCustomerStore();
 
+  useEffect(() => {
+    getCustomersPagination(1, 5, '', '', '', '', 1);
+  }, []);
+
   const onSubmit = async (payload: PayloadCustomer) => {
     console.log('Tipo dedocumento seleccionado:', payload.tipoDocumento);
     const finalPayload = {
       ...payload,
       correo: payload.correo || 'N/A@gmail.com',
       telefono: payload.telefono || '0',
-      // numDocumento: payload.numDocumento || '0',
-      // tipoDocumento: payload.tipoDocumento || 'N/A',
       branchId: payload.branchId,
     };
     if (isEditing && id && id !== '0') {
@@ -150,6 +155,7 @@ const UpdateClientNormal = (props: Props) => {
     }
 
     navigate('/clients');
+    await get_customer_by_id(parseInt(id || ''));
   };
 
   const selectedKeyTypeOfDocument = useMemo(() => {
@@ -229,35 +235,6 @@ const UpdateClientNormal = (props: Props) => {
                     </div>
                     <div className="grid grid-cols-2 gap-5 pt-3">
                       <div className="pt-2">
-                        {/* <Autocomplete
-                          onSelectionChange={(key) => {
-                            if (key) {
-                              const depSelected = JSON.parse(key as string) as ITipoDocumento;
-                              console.log(depSelected);
-                              handleChange('tipoDocumento')(depSelected.codigo);
-                            }
-                          }}
-                          onBlur={handleBlur('tipoDocumento')}
-                          label="Tipo de documento"
-                          placeholder="Selecciona el tipo de documento"
-                          variant="bordered"
-                          labelPlacement="outside"
-                          classNames={{
-                            base: 'font-semibold text-gray-500 text-sm',
-                          }}
-                          className="dark:text-white"
-                          defaultSelectedKey={`${selectedKeyTypeOfDocument}`}
-                        >
-                          {cat_022_tipo_de_documentoDeIde.map((dep) => (
-                            <AutocompleteItem
-                              value={dep.codigo}
-                              key={dep.codigo}
-                              className="dark:text-white"
-                            >
-                              {dep.valores}
-                            </AutocompleteItem>
-                          ))}
-                        </Autocomplete> */}
                         <Autocomplete
                           onSelectionChange={(key) => {
                             if (key) {
@@ -420,12 +397,13 @@ const UpdateClientNormal = (props: Props) => {
                         )}
                       </div>
                       <div>
-                        <Autocomplete
-                          value={values.branchId}
+                        {/* <Autocomplete
+
                           onSelectionChange={(key) => {
                             if (key) {
                               const depSelected = JSON.parse(key as string) as Branch;
                               handleChange('branchId')(depSelected?.id?.toString() ?? '');
+                              console.log('Sucursal seleccionada:', depSelected);
                             }
                           }}
                           onBlur={handleBlur('branchId')}
@@ -442,7 +420,39 @@ const UpdateClientNormal = (props: Props) => {
                           {branch_list.map((bra) => (
                             <AutocompleteItem
                               className="dark:text-white"
-                              value={bra.name}
+                              value={bra.id}
+                              key={bra.id}
+                            >
+                              {bra.name}
+                            </AutocompleteItem>
+                          ))}
+                        </Autocomplete> */}
+
+                        <Autocomplete
+                          onSelectionChange={(key) => {
+                            const selectedBranch = branch_list.find(
+                              (branch) => branch.id.toString() === key
+                            );
+                            if (selectedBranch) {
+                              console.log('Sucursal seleccionada:', selectedBranch.id); // Verifica el ID seleccionado
+                              setFieldValue('branchId', selectedBranch.id); // Actualiza branchId directamente con el ID numérico
+                            }
+                          }}
+                          onBlur={handleBlur('branchId')}
+                          label="Sucursal"
+                          labelPlacement="outside"
+                          placeholder="Selecciona la sucursal"
+                          variant="bordered"
+                          className="dark:text-white"
+                          classNames={{
+                            base: 'font-semibold text-sm',
+                          }}
+                          defaultSelectedKey={user_by_id?.branch?.id.toString()}
+                        >
+                          {branch_list.map((bra) => (
+                            <AutocompleteItem
+                              className="dark:text-white"
+                              value={bra.id.toString()}
                               key={bra.id}
                             >
                               {bra.name}

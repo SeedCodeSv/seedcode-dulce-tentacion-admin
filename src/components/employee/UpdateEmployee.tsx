@@ -14,6 +14,7 @@ import { toast } from 'sonner';
 import { PropsUpdateEmployee } from '@/types/sub_categories.types';
 
 function UpdateEmployee(props: PropsUpdateEmployee) {
+  console.log('props', props.data);
   const { theme } = useContext(ThemeContext);
   const { GetEmployeeStatus, employee_status } = useEmployeeStatusStore();
   const { GetContractType, contract_type } = useContractTypeStore();
@@ -98,11 +99,11 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
   };
 
   const createEmployee = async () => {
-    const verify = await verifyCode(filledData.code);
-    if (!verify) {
-      toast.error('Ya existe un empleado con este código');
-      return;
-    }
+    // const verify = await verifyCode(filledData.code);
+    // if (!verify) {
+    //   toast.error('Ya existe un empleado con este código');
+    //   return;
+    // }
     try {
       const data = await patchEmployee(filledData, props.data?.id || 0);
       if (data) {
