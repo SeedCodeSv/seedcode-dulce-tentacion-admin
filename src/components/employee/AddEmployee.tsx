@@ -147,7 +147,7 @@ function AddEmployee() {
   const [lastName, setLastName] = useState('');
   const [codigo, setCodigoGenerado] = useState('');
 
-  const generateCode = () => {
+  const generateCode = (setFieldValue: any) => {
     if (!firstName || !lastName) {
       toast.error(
         'Necesitas ingresar el primer nombre y el primer apellido para generar el código.'
@@ -161,7 +161,8 @@ function AddEmployee() {
     const generatedCode = `${firstNameInitial}${lastNameInitial}${randomNumber}`;
     setCodigoGenerado(generatedCode);
 
-    return generatedCode;
+    setFieldValue('code', generatedCode);
+    // return generatedCode;
   };
 
   const navigate = useNavigate();
@@ -180,7 +181,15 @@ function AddEmployee() {
                 validationSchema={validationSchema}
                 onSubmit={createEmployee}
               >
-                {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
+                {({
+                  values,
+                  errors,
+                  touched,
+                  handleChange,
+                  handleBlur,
+                  handleSubmit,
+                  setFieldValue,
+                }) => (
                   <>
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
                       <div className="flex flex-col mt-3">
@@ -396,9 +405,7 @@ function AddEmployee() {
                         </div>
                         <div className="mt-3">
                           <Button
-                            onClick={() => {
-                              generateCode();
-                            }}
+                            onClick={() => generateCode(setFieldValue)}
                             className="w-full mt-3 text-sm font-semibold bg-blue-400"
                             style={{
                               backgroundColor: theme.colors.dark,
