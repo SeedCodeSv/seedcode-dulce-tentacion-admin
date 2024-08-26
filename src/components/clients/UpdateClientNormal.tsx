@@ -23,7 +23,7 @@ const UpdateClientNormal = (props: Props) => {
   const { theme } = useContext(ThemeContext);
   const { id } = useParams<{ id: string }>();
   const isEditing = !!id;
-  const { get_customer_by_id, user_by_id } = useCustomerStore();
+  const { get_customer_by_id, user_by_id, getCustomersPagination } = useCustomerStore();
   const { getBranchesList, branch_list } = useBranchesStore();
 
   useEffect(() => {
@@ -43,6 +43,13 @@ const UpdateClientNormal = (props: Props) => {
     complemento: '',
     branchId: 0,
   });
+
+  useEffect(() => {
+    if (initialValues.departamento) {
+      setSelectedCodeDep(initialValues.departamento); // Asegura que se setea el código del departamento correcto al cargar los valores
+      getCat013Municipios(initialValues.departamento); // Obtén los municipios correspondientes al departamento inicial
+    }
+  }, [initialValues.departamento]);
 
   useEffect(() => {
     if (isEditing && id && id !== '0') {
@@ -135,6 +142,10 @@ const UpdateClientNormal = (props: Props) => {
 
   const { patchCustomer } = useCustomerStore();
 
+  useEffect(() => {
+    getCustomersPagination(1, 5, '', '', '', '', 1);
+  }, []);
+
   const onSubmit = async (payload: PayloadCustomer) => {
     console.log('Tipo dedocumento seleccionado:', payload.tipoDocumento);
     const finalPayload = {
@@ -150,6 +161,7 @@ const UpdateClientNormal = (props: Props) => {
     }
 
     navigate('/clients');
+    await get_customer_by_id(parseInt(id || ''));
   };
 
   const selectedKeyTypeOfDocument = useMemo(() => {

@@ -153,6 +153,7 @@ function AddClientContributor(props: Props) {
     departamento: yup.string().required('**Debes seleccionar el departamento**'),
     municipio: yup.string().required('**Debes seleccionar el municipio**'),
     complemento: yup.string().required('**El complemento es requerida**'),
+    // branchId: yup.number().required('**Debes seleccionar la sucursal**'),
   });
   const {
     getCat012Departamento,
