@@ -330,8 +330,8 @@ function AddClientContributor(props: Props) {
                                 (dep) => dep.codigo === key
                               );
                               if (depSelected) {
-                                setFieldValue('tipoDocumento', depSelected.codigo); // Actualiza el valor de tipoDocumento
-                                console.log('Tipo de documento seleccionado:', depSelected.codigo); // Verifica el valor
+                                setFieldValue('tipoDocumento', depSelected.codigo);
+                                console.log('Tipo de documento seleccionado:', depSelected.codigo);
                               }
                             }
                           }}
@@ -617,8 +617,8 @@ function AddClientContributor(props: Props) {
                             (branch) => branch.id.toString() === key
                           );
                           if (selectedBranch) {
-                            console.log('Sucursal seleccionada:', selectedBranch.id); // Verifica el ID seleccionado
-                            setFieldValue('branchId', selectedBranch.id); // Actualiza branchId directamente con el ID numérico
+                            console.log('Sucursal seleccionada:', selectedBranch.id);
+                            setFieldValue('branchId', selectedBranch.id);
                           }
                         }}
                         onBlur={handleBlur('branchId')}

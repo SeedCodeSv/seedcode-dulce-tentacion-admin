@@ -96,7 +96,7 @@ function AddClientContributor(props: Props) {
     departamento: yup.string().required('**Debes seleccionar el departamento**'),
     municipio: yup.string().required('**Debes seleccionar el municipio**'),
     complemento: yup.string().required('**El complemento es requerida**'),
-    // branchId: yup.number().required('**Debes seleccionar la sucursal**'),
+    branchId: yup.number().required('**Debes seleccionar la sucursal**'),
   });
   const {
     getCat012Departamento,
@@ -258,7 +258,6 @@ function AddClientContributor(props: Props) {
                             if (key) {
                               const depSelected = JSON.parse(key as string) as ITipoDocumento;
                               handleChange('tipoDocumento')(depSelected.codigo);
-                            
                             }
                           }}
                           onBlur={handleBlur('tipoDocumento')}

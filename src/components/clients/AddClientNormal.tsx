@@ -269,7 +269,7 @@ const AddClientNormal = (props: Props) => {
                           </AutocompleteItem>
                         ))}
                       </Autocomplete>
-    
+
                       {errors.departamento && touched.departamento && (
                         <span className="text-sm font-semibold text-red-500">
                           {errors.departamento}
@@ -277,7 +277,6 @@ const AddClientNormal = (props: Props) => {
                       )}
                     </div>
                     <div>
-   
                       <Autocomplete
                         onSelectionChange={(key) => {
                           if (key) {
