@@ -14,8 +14,8 @@ function ContratType() {
       {contractTypeView ? (
         <ListContractType actions={actionsView} />
       ) : (
-        <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
-          <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent flex justify-center items-center">
+        <div className=" w-full h-full p-5 bg-gray-50 dark:bg-gray-900">
+          <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
             <p className="text-lg font-semibold dark:text-white">
               No tiene permisos para ver este modulo
             </p>

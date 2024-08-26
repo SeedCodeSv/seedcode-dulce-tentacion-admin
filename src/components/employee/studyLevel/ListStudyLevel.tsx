@@ -85,8 +85,8 @@ function ListStudyLevel({ actions }: ArrayAction) {
   };
 
   return (
-    <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
-      <div className="flex flex-col w-full p-5 rounded">
+    <div className=" w-full h-full p-5 bg-gray-50 dark:bg-gray-900">
+      <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
         <div className="flex flex-col justify-between w-full gap-5 mb-5 lg:mb-5 lg:flex-row lg:gap-0">
           <div className="flex items-end gap-3">
             <div className="hidden w-full md:flex gap-3">
@@ -374,29 +374,27 @@ function ListStudyLevel({ actions }: ArrayAction) {
                                   )}
                                   {staudyLevel.isActive === false && (
                                     <>
-                                    {actions.includes('Activar') ? (
-                                      <Button
-                                      onClick={() => handleActivate(staudyLevel.id)}
-                                      isIconOnly
-                                      style={global_styles().thirdStyle}
-                                    >
-                                      <RefreshCcw />
-                                    </Button>
-                                  
-                                    ): (
-                                      <Button
-                                      isIconOnly
-                                      style={{
-                                        ...global_styles().thirdStyle,
-                                        cursor: 'not-allowed',
-                                      }}
-                                    >
-                                      <Lock />
-                                    </Button>
-                                    )}
+                                      {actions.includes('Activar') ? (
+                                        <Button
+                                          onClick={() => handleActivate(staudyLevel.id)}
+                                          isIconOnly
+                                          style={global_styles().thirdStyle}
+                                        >
+                                          <RefreshCcw />
+                                        </Button>
+                                      ) : (
+                                        <Button
+                                          isIconOnly
+                                          style={{
+                                            ...global_styles().thirdStyle,
+                                            cursor: 'not-allowed',
+                                          }}
+                                        >
+                                          <Lock />
+                                        </Button>
+                                      )}
                                     </>
                                   )}
-
                                 </div>
                               </td>
                             </tr>

@@ -25,6 +25,7 @@ import {
   Filter,
   RefreshCcw,
   FileText,
+  Lock,
 } from 'lucide-react';
 import { Employee, EmployeePayload } from '../../types/employees.types';
 import AddButton from '../global/AddButton';
@@ -54,6 +55,10 @@ interface Props {
 
 function ListEmployee({ actions }: Props) {
   const { theme } = useContext(ThemeContext);
+  const style = {
+    backgroundColor: theme.colors.dark,
+    color: theme.colors.primary,
+  };
   const { user } = useAuthStore();
   const { getEmployeesPaginated, employee_paginated, activateEmployee, loading_employees } =
     useEmployeeStore();
@@ -776,8 +781,8 @@ function ListEmployee({ actions }: Props) {
         />
       ) : (
         <>
-          <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
-            <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
+          <div className=" w-full h-full p-5 bg-gray-50 dark:bg-gray-900">
+            <div className="w-full h-full border-white border border-white p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
               <div className="hidden w-full grid-cols-3 gap-5 mb-4 md:grid">{filters}</div>
               <div className="grid w-full grid-cols-1 gap-5 mb-4 md:grid-cols-2">
                 <div className="hidden md:flex">
@@ -1021,7 +1026,7 @@ function ListEmployee({ actions }: Props) {
                                         )}
                                         {/* este es el boton que tiene q abrir el pdf */}
 
-                                        {actions.includes('Contrato') && (
+                                        {actions.includes('Contrato') ? (
                                           <Button
                                             onClick={() => OpenPdf(employee)}
                                             isIconOnly
@@ -1036,6 +1041,18 @@ function ListEmployee({ actions }: Props) {
                                               size={20}
                                             />
                                           </Button>
+                                        ) : (
+                                          <>
+                                            <Button
+                                              type="button"
+                                              disabled
+                                              style={{ ...style, cursor: 'not-allowed' }}
+                                              className="flex font-semibold "
+                                              isIconOnly
+                                            >
+                                              <Lock />
+                                            </Button>
+                                          </>
                                         )}
                                       </div>
                                     </td>

@@ -10,7 +10,7 @@ import { Theme, ThemeContext } from '../../hooks/useTheme';
 import Layout from '@/layout/Layout';
 import { useNavigate } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
-import Table from '../Table'
+import Table from '../Table';
 
 function CreateTheme() {
   const [color, setColor] = useState(defaultTheme);
@@ -70,180 +70,182 @@ function CreateTheme() {
     <>
       <Layout title="Agregar tema">
         <>
-          <div className="p-10">
-            <div className="flex cursor-pointer" onClick={() => navigate('/configuration')}>
-              <ArrowLeft className="mr-2 dark:text-white" />
-              <p className="text-lg font-semibold dark:text-white"> Regresar </p>
-            </div>
-            <div className="flex items-center justify-center">
-              <ColorPicker
-                format="hex"
-                pt={{
-                  input: () => {
-                    return {
-                      className: '!h-44 !w-12',
-                    };
-                  },
-                }}
-                value={color.colors.danger}
-                onChange={(e) => {
-                  setColor({
-                    ...color,
-                    colors: {
-                      ...color.colors,
-                      danger: ('#' + e.value) as string,
+          <div className=" w-full h-full p-5 bg-gray-50 dark:bg-gray-900">
+            <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+              <div className="flex cursor-pointer" onClick={() => navigate('/configuration')}>
+                <ArrowLeft className="mr-2 dark:text-white" />
+                <p className="text-lg font-semibold dark:text-white"> Regresar </p>
+              </div>
+              <div className="flex items-center justify-center">
+                <ColorPicker
+                  format="hex"
+                  pt={{
+                    input: () => {
+                      return {
+                        className: '!h-44 !w-12',
+                      };
                     },
-                  });
-                }}
-              />
-              <ColorPicker
-                format="hex"
-                pt={{
-                  input: () => {
-                    return {
-                      className: '!h-44 !w-12',
-                    };
-                  },
-                }}
-                value={color.colors.dark}
-                onChange={(e) => {
-                  setColor({
-                    ...color,
-                    colors: {
-                      ...color.colors,
-                      dark: ('#' + e.value) as string,
-                    },
-                  });
-                }}
-              />
-              <ColorPicker
-                format="hex"
-                pt={{
-                  input: () => {
-                    return {
-                      className: '!h-44 !w-12',
-                    };
-                  },
-                }}
-                value={color.colors.primary}
-                onChange={(e) => {
-                  setColor({
-                    ...color,
-                    colors: {
-                      ...color.colors,
-                      primary: ('#' + e.value) as string,
-                    },
-                  });
-                }}
-              />
-              <ColorPicker
-                format="hex"
-                pt={{
-                  input: () => {
-                    return {
-                      className: '!h-44 !w-12',
-                    };
-                  },
-                }}
-                value={color.colors.secondary}
-                onChange={(e) => {
-                  setColor({
-                    ...color,
-                    colors: {
-                      ...color.colors,
-                      secondary: ('#' + e.value) as string,
-                    },
-                  });
-                }}
-              />
-              <ColorPicker
-                format="hex"
-                pt={{
-                  input: () => {
-                    return {
-                      className: '!h-44 !w-12',
-                    };
-                  },
-                }}
-                value={color.colors.third}
-                onChange={(e) => {
-                  setColor({
-                    ...color,
-                    colors: {
-                      ...color.colors,
-                      third: ('#' + e.value) as string,
-                    },
-                  });
-                }}
-              />
-              <ColorPicker
-                format="hex"
-                pt={{
-                  input: () => {
-                    return {
-                      className: '!h-44 !w-12',
-                    };
-                  },
-                }}
-                value={color.colors.warning}
-                onChange={(e) => {
-                  setColor({
-                    ...color,
-                    colors: {
-                      ...color.colors,
-                      warning: ('#' + e.value) as string,
-                    },
-                  });
-                }}
-              />
-
-              <div className="flex flex-col gap-5 mt-5 justify-center items-center ml-5">
-                <Input
-                  label="Nombre"
-                  variant="bordered"
-                  className="w-64"
-                  labelPlacement="outside"
-                  placeholder="Ingrese un nombre"
-                  //   value={color.name}
+                  }}
+                  value={color.colors.danger}
                   onChange={(e) => {
-                    setColor({ ...color, name: e.target.value });
+                    setColor({
+                      ...color,
+                      colors: {
+                        ...color.colors,
+                        danger: ('#' + e.value) as string,
+                      },
+                    });
                   }}
                 />
-                <Select
-                  label="Tema"
-                  placeholder="Seleccione un tema"
-                  labelPlacement="outside"
-                  variant="bordered"
-                  className="w-64"
-                  value={color.context}
+                <ColorPicker
+                  format="hex"
+                  pt={{
+                    input: () => {
+                      return {
+                        className: '!h-44 !w-12',
+                      };
+                    },
+                  }}
+                  value={color.colors.dark}
                   onChange={(e) => {
-                    setColor({ ...color, context: e.target.value });
+                    setColor({
+                      ...color,
+                      colors: {
+                        ...color.colors,
+                        dark: ('#' + e.value) as string,
+                      },
+                    });
+                  }}
+                />
+                <ColorPicker
+                  format="hex"
+                  pt={{
+                    input: () => {
+                      return {
+                        className: '!h-44 !w-12',
+                      };
+                    },
+                  }}
+                  value={color.colors.primary}
+                  onChange={(e) => {
+                    setColor({
+                      ...color,
+                      colors: {
+                        ...color.colors,
+                        primary: ('#' + e.value) as string,
+                      },
+                    });
+                  }}
+                />
+                <ColorPicker
+                  format="hex"
+                  pt={{
+                    input: () => {
+                      return {
+                        className: '!h-44 !w-12',
+                      };
+                    },
+                  }}
+                  value={color.colors.secondary}
+                  onChange={(e) => {
+                    setColor({
+                      ...color,
+                      colors: {
+                        ...color.colors,
+                        secondary: ('#' + e.value) as string,
+                      },
+                    });
+                  }}
+                />
+                <ColorPicker
+                  format="hex"
+                  pt={{
+                    input: () => {
+                      return {
+                        className: '!h-44 !w-12',
+                      };
+                    },
+                  }}
+                  value={color.colors.third}
+                  onChange={(e) => {
+                    setColor({
+                      ...color,
+                      colors: {
+                        ...color.colors,
+                        third: ('#' + e.value) as string,
+                      },
+                    });
+                  }}
+                />
+                <ColorPicker
+                  format="hex"
+                  pt={{
+                    input: () => {
+                      return {
+                        className: '!h-44 !w-12',
+                      };
+                    },
+                  }}
+                  value={color.colors.warning}
+                  onChange={(e) => {
+                    setColor({
+                      ...color,
+                      colors: {
+                        ...color.colors,
+                        warning: ('#' + e.value) as string,
+                      },
+                    });
+                  }}
+                />
+
+                <div className="flex flex-col gap-5 mt-5 justify-center items-center ml-5">
+                  <Input
+                    label="Nombre"
+                    variant="bordered"
+                    className="w-64"
+                    labelPlacement="outside"
+                    placeholder="Ingrese un nombre"
+                    //   value={color.name}
+                    onChange={(e) => {
+                      setColor({ ...color, name: e.target.value });
+                    }}
+                  />
+                  <Select
+                    label="Tema"
+                    placeholder="Seleccione un tema"
+                    labelPlacement="outside"
+                    variant="bordered"
+                    className="w-64"
+                    value={color.context}
+                    onChange={(e) => {
+                      setColor({ ...color, context: e.target.value });
+                    }}
+                  >
+                    <SelectItem value={'light'} key={'light'} className="dark:text-white">
+                      Claro
+                    </SelectItem>
+                    <SelectItem value={'dark'} key={'dark'} className="dark:text-white">
+                      Oscuro
+                    </SelectItem>
+                  </Select>
+                </div>
+              </div>
+              <div className="mt-5">
+                {/* <Button theme={color as Theme} /> */}
+                <Table theme={color as Theme} />
+              </div>
+              <div className="mt-5">
+                <NButton
+                  className="w-full text-sm font-semibold"
+                  onClick={handleSave}
+                  style={{
+                    backgroundColor: theme.colors.third,
+                    color: theme.colors.primary,
                   }}
                 >
-                  <SelectItem value={'light'} key={'light'} className="dark:text-white">
-                    Claro
-                  </SelectItem>
-                  <SelectItem value={'dark'} key={'dark'} className="dark:text-white">
-                    Oscuro
-                  </SelectItem>
-                </Select>
+                  Guardar
+                </NButton>
               </div>
-            </div>
-            <div className="mt-5">
-              {/* <Button theme={color as Theme} /> */}
-              <Table theme={color as Theme} />
-            </div>
-            <div className="mt-5">
-              <NButton
-                className="w-full text-sm font-semibold"
-                onClick={handleSave}
-                style={{
-                  backgroundColor: theme.colors.third,
-                  color: theme.colors.primary,
-                }}
-              >
-                Guardar
-              </NButton>
             </div>
           </div>
         </>

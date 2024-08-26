@@ -1,3 +1,5 @@
+import { Branch } from './branch_products.types';
+
 export interface Correlatives {
   code: string;
   typeVoucher: string;
@@ -8,7 +10,7 @@ export interface Correlatives {
   prev: number;
   next: number;
   isActive: boolean;
-
+  branch: Branch;
   branchId: number;
 }
 

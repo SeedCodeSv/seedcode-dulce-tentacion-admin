@@ -64,8 +64,8 @@ function ListPurchasesOrders({ actions }: ArrayAction) {
   return (
     <>
       {mode === 'show' && (
-        <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
-          <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
+        <div className=" w-full h-full p-5 bg-gray-50 dark:bg-gray-900">
+          <div className="w-full h-full border-white border border-white p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
             <div className="w-full flex justify-between">
               <p className="text-lg font-semibold dark:text-white">Listado de ordenes de compra</p>
               {actions.includes('Agregar') && <AddButton onClick={modalAdd.onOpen} />}
@@ -112,7 +112,7 @@ function ListPurchasesOrders({ actions }: ArrayAction) {
                   {supplier_list.map((branch) => (
                     <AutocompleteItem
                       className="dark:text-white"
-                      key={branch.id}
+                      key={branch.id ?? 0}
                       value={branch.nombre}
                     >
                       {branch.nombre}

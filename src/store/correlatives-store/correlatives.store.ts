@@ -1,9 +1,11 @@
 import {
+  create_correlatives,
   get_by_branch_and_typeVoucher,
   update_correlatives,
 } from '@/services/correlatives/correlative.service';
 
 import {
+  CreateCorrelativesDto,
   ICorrelativeStore,
   ResponseDataCorrelative,
 } from '@/types/correlatives/correlatives_types';
@@ -37,9 +39,13 @@ export const useCorrelativesStore = create<ICorrelativeStore>((set) => ({
       });
     });
   },
-  OnUpdateCorrelative: (id, correlative): Promise<ResponseDataCorrelative> => {
-    return update_correlatives(id, correlative).then(({ data }) => {
-      return data;
-    });
+  OnUpdateCorrelative: async (id, correlative): Promise<ResponseDataCorrelative> => {
+    const { data } = await update_correlatives(id, correlative);
+    return data;
+  },
+
+  OnCreateCorrelatives: async (payload): Promise<CreateCorrelativesDto> => {
+    const { data } = await create_correlatives(payload);
+    return data;
   },
 }));

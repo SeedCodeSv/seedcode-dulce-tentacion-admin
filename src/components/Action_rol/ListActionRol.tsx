@@ -106,10 +106,11 @@ const PermissionTable: React.FC = () => {
   }, [viewasAction]);
 
   const { theme } = useContext(ThemeContext);
+
   return (
     <>
       <div className="flex flex-col lg:flex-row h-screen">
-        <div className="w-full lg:w-1/4 bg-gray-100 dark:bg-gray-900 p-4 mt-2">
+        <div className="w-full lg:w-1/4  border border-slate-200 rounded-xl dark:bg-gray-900 p-4 mt-2">
           <div className="p-2 ">
             <Button
               style={{ backgroundColor: theme.colors.dark, color: theme.colors.primary }}
@@ -119,7 +120,7 @@ const PermissionTable: React.FC = () => {
               Actualizar
             </Button>
           </div>
-          <div className="overflow-y-auto max-h-64 lg:max-h-full">
+          <div className="overflow-y-auto custom-scrollbar1 max-h-64 lg:max-h-[calc(100vh-100px)]">
             {viewasAction &&
               viewasAction.map((view) => (
                 <div key={view.view.id}>
@@ -137,8 +138,8 @@ const PermissionTable: React.FC = () => {
               ))}
           </div>
         </div>
-        <div className="w-full lg:w-3/4 p-2 bg-gray-50 dark:bg-gray-800 flex flex-col">
-          <div className="flex-grow overflow-y-auto custom-scrollbar p-3 bg-white dark:bg-gray-900 shadow-xl rounded-xl">
+        <div className="w-full lg:w-3/4 p-2  flex flex-col">
+          <div className="flex-grow overflow-y-auto border border-slate-200  custom-scrollbar1 dark:bg-gray-900 shadow-xl rounded-xl">
             <PermissionAddActionRol />
           </div>
         </div>

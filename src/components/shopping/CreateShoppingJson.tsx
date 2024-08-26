@@ -27,33 +27,35 @@ function CreateShopping() {
     <>
       {actionView.includes('Agregar') ? (
         <Layout title="Agregar">
-          <div className="flex flex-col  p-4 mt-4 overflow-x-hidden dark:bg-gray-800">
-            <div
-              className="flex items-center cursor-pointer mb-4"
-              onClick={() => navigate('/shopping')}
-            >
-              <ArrowLeft onClick={() => navigate('/shopping')} className="mr-2" />
-              <p>Regresar</p>
+          <div className=" w-full h-full p-5 bg-gray-50 dark:bg-gray-900">
+            <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+              <div
+                className="flex w-24 items-center cursor-pointer mb-4"
+                onClick={() => navigate('/shopping')}
+              >
+                <ArrowLeft onClick={() => navigate('/shopping')} className="mr-2" />
+                <p>Regresar</p>
+              </div>
+              <Tabs
+                aria-label="Dynamic tabs"
+                items={[
+                  {
+                    id: 1,
+                    label: 'Manual',
+                    content: <CreateShoppingManual />,
+                  },
+                  { id: 2, label: 'Archivo JSON', content: <JSONMode /> },
+                ]}
+              >
+                {(item) => (
+                  <Tab key={item.id} title={item.label}>
+                    <Card className="bg-white border border-white dark:bg-gray-900">
+                      <CardBody>{item.content}</CardBody>
+                    </Card>
+                  </Tab>
+                )}
+              </Tabs>
             </div>
-            <Tabs
-              aria-label="Dynamic tabs"
-              items={[
-                {
-                  id: 1,
-                  label: 'Manual',
-                  content: <CreateShoppingManual />,
-                },
-                { id: 2, label: 'Archivo JSON', content: <JSONMode /> },
-              ]}
-            >
-              {(item) => (
-                <Tab key={item.id} title={item.label}>
-                  <Card>
-                    <CardBody>{item.content}</CardBody>
-                  </Card>
-                </Tab>
-              )}
-            </Tabs>
           </div>
         </Layout>
       ) : (
@@ -63,7 +65,6 @@ function CreateShopping() {
   );
 }
 export default CreateShopping;
-
 const JSONMode = () => {
   const { actions } = useViewsStore();
   const viewName = actions.find((v) => v.view.name == 'Compras');
@@ -83,7 +84,6 @@ const JSONMode = () => {
   };
   const [providerModal, setProviderModal] = useState(false);
   const navigate = useNavigate();
-
   const handleSubmit = () => {
     const formData = new FormData();
     formData.append('branchId', user?.correlative.branchId.toString() ?? '0');
@@ -106,7 +106,6 @@ const JSONMode = () => {
       toast.error('Ocurrió un error al guardar la información');
     }
   };
-
   useEffect(() => {
     if (file) {
       const reader = new FileReader();
@@ -127,8 +126,8 @@ const JSONMode = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const clearAllData = () => {
-    setFile(null); // Limpiar el archivo JSON cargado
-    setJsonData(undefined); // Limpiar los datos JSON
+    setFile(null);
+    setJsonData(undefined);
   };
 
   return (
@@ -193,12 +192,11 @@ const JSONMode = () => {
                   >
                     Cargar Archivo JSON
                   </Button>
-                  {/* <X className="cursor-pointer" onClick={() => navigate('/shopping')} /> */}
+
                   <X className="cursor-pointer" onClick={clearAllData} />
                 </div>
               </div>
-
-              <div className="flex flex-col mt-4 gap-4 p-6 border rounded-lg shadow-lg  text-white">
+              <div className="flex flex-col mt-4 gap-4 p-6 border border-white rounded-lg shadow-lg  text-white">
                 <div className="mt-4">
                   <p className="dark:text-white  text-black">DATOS OBTENIDOS DE LA COMPRA</p>
                   <div className="grid grid-cols-2 gap-6 mt-2">
@@ -387,10 +385,10 @@ const JSONMode = () => {
           >
             <label
               htmlFor="uploadFile1"
-              className="bg-white text-gray-500 font-semibold text-base rounded max-w-md h-52 flex flex-col items-center justify-center cursor-pointer border-2 border-gray-300 border-dashed mx-auto font-[sans-serif]"
+              className=" text-gray-500 font-semibold text-base rounded  mt-1 h-52 flex flex-col items-center justify-center cursor-pointer border dark:border-white mx-auto font-[sans-serif]"
             >
-              <CloudUpload size={40} />
-              Selecciona un archivo JSON
+              <CloudUpload className="dark:text-white" size={40} />
+              <p className="dark:text-white"> Selecciona un archivo JSON</p>
               <input onChange={handleFileChange} type="file" id="uploadFile1" className="hidden" />
             </label>
           </HeadlessModal>

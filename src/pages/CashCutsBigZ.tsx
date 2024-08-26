@@ -266,11 +266,11 @@ const CushCatsBigZ = () => {
 
   return (
     <Layout title="Corte Gran Z">
-      <div className="w-full h-full p-5 bg-gray-100 dark:bg-gray-800">
-        <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
-          <div className="flex flex-col justify-between w-full gap-5 lg:flex-row lg:gap-0">
+      <div className=" w-full h-full p-5">
+        <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+          <div className="flex flex-col justify-between w-full gap-5 flex-row lg:gap-0">
             <div className="flex flex-col items-center p-4">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 w-full">
+              <div className="grid grid-cols-1 md:grid-cols-4  gap-4 w-full">
                 <Input
                   defaultValue={fechaActualString}
                   label="Fecha Inicio"
@@ -317,14 +317,14 @@ const CushCatsBigZ = () => {
                   {codeSale
                     .filter((item) => item.typeVoucher === 'T')
                     .map((item) => (
-                      <AutocompleteItem onClick={() => setCodeSelected(item.code)} key={item.id}>
+                      <AutocompleteItem onClick={() => setCodeSelected(item.code)} key={item.code}>
                         {item.code}
                       </AutocompleteItem>
                     ))}
                 </Autocomplete>
               </div>
 
-              <div className="flex flex-col items-center w-full h-full p-4 mt-4 bg-gray-600 rounded-md">
+              <div className="flex flex-col items-center w-full h-full p-4 mt-4 rounded-md">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
                   {actionsView.includes('Exportar Excel') && (
                     <Button

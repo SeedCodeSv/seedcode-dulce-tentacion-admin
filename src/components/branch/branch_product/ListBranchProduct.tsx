@@ -54,12 +54,11 @@ function ListEmployee({ id, onclick }: Props) {
   }, []);
   return (
     <>
-      <div className="w-full h-full p-4 md:p-10 md:px-12">
-        <div className="w-full h-full p-4 overflow-y-auto bg-white shadow custom-scrollbar md:p-8 dark:bg-gray-900">
-          <div className="mb-4 ">
-            <Button onClick={onclick}>
-              <ArrowLeft />
-            </Button>
+      <div className=" w-full h-full p-5 bg-gray-50 dark:bg-gray-900">
+        <div className="w-full h-full border-white border border-white p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
+          <div onClick={onclick} className="mb-4  w-24 cursor-pointer flex">
+            <ArrowLeft className="dark:text-white mr-2" />
+            <p className="dark:text-white">Regresar</p>
           </div>
           <div className="hidden w-full   gap-2 mb-4 md:grid">
             <div className="flex gap-5 ">
@@ -223,7 +222,7 @@ function ListEmployee({ id, onclick }: Props) {
                           startContent={<Search />}
                           variant="bordered"
                           label="Nombre"
-                          labelPlacement='outside'
+                          labelPlacement="outside"
                           name="searchName"
                           id="searchName"
                           value={name}
@@ -243,7 +242,7 @@ function ListEmployee({ id, onclick }: Props) {
                           variant="bordered"
                           name="searCode"
                           label="Código"
-                          labelPlacement='outside'
+                          labelPlacement="outside"
                           id="searCode"
                           value={code}
                           autoComplete="search"

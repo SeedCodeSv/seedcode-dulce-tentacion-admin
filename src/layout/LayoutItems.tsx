@@ -19,6 +19,7 @@ import {
   Store,
   UserCheck,
   ShoppingBag,
+  BookCheck,
 } from 'lucide-react';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { ThemeContext } from '../hooks/useTheme';
@@ -169,12 +170,7 @@ export const LayoutItems = () => {
       icon: ClipboardCheck,
       label: 'Corte Gran Z',
     },
-    {
-      viewName: 'Correlativos',
-      to: '/correlative',
-      icon: ClipboardCheck,
-      label: 'Correlativos',
-    },
+
     {
       viewName: 'Corte X',
       to: '/cash-cuts-x',
@@ -187,6 +183,12 @@ export const LayoutItems = () => {
       to: '/cash-cuts-z',
       icon: ClipboardCheck,
       label: 'Corte Z',
+    },
+    {
+      viewName: 'Correlativos',
+      to: '/correlative',
+      icon: BookCheck,
+      label: 'Correlativos',
     },
     {
       viewName: 'IVA de Compras',
@@ -260,15 +262,9 @@ export const LayoutItems = () => {
           <>
             <ul className="flex flex-col gap-1.5">
               <SidebarLinkGroup
-                activeCondition={validate_pathname(pathname, [
-                  'products',
-                  'categories',
-                  'subCategories',
-                  'orders',
-                  'compras',
-                ])}
-                isOpen={openGroup === 'productos'}
-                onGroupClick={() => handleGroupClick('productos')}
+                activeCondition={validate_pathname(pathname, ['gestion-productos'])}
+                isOpen={openGroup === 'gestion-productos'}
+                onGroupClick={() => handleGroupClick('gestion-productos')}
               >
                 {(handleClick, open) => (
                   <>
@@ -314,13 +310,7 @@ export const LayoutItems = () => {
           <>
             <ul className="flex flex-col gap-1.5">
               <SidebarLinkGroup
-                activeCondition={validate_pathname(pathname, [
-                  'employees',
-                  'clients',
-                  'users',
-                  'branches',
-                  'suppliers',
-                ])}
+                activeCondition={validate_pathname(pathname, ['administración'])}
                 isOpen={openGroup === 'administración'}
                 onGroupClick={() => handleGroupClick('administración')}
               >
@@ -368,15 +358,16 @@ export const LayoutItems = () => {
           <>
             <ul className="flex flex-col gap-1.5">
               <SidebarLinkGroup
-                activeCondition={validate_pathname(pathname, ['reports'])}
-                isOpen={openGroup === 'reports'}
-                onGroupClick={() => handleGroupClick('reports')}
+                activeCondition={validate_pathname(pathname, ['getion-reports'])}
+                isOpen={openGroup === 'getion-reports'}
+                onGroupClick={() => handleGroupClick('getion-reports')}
               >
                 {(handleClick, open) => (
                   <>
                     <div
                       className={classNames(
-                        validate_pathname(pathname, ['reports']) && 'bg-gray-200 dark:bg-gray-700',
+                        validate_pathname(pathname, ['getion-reports']) &&
+                          'bg-gray-200 dark:bg-gray-700',
                         'group relative cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
                       )}
                       onClick={handleClick}

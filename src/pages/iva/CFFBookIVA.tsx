@@ -88,8 +88,8 @@ function CFFBookIVA() {
   const actionView = viewName?.actions.name || [];
   return (
     <Layout title="IVA - CFF">
-      <div className="w-full h-full p-4 md:p-10 md:px-12">
-        <div className="w-full h-full p-4 overflow-y-auto bg-white shadow custom-scrollbar md:p-8 dark:bg-gray-900">
+      <div className=" w-full h-full p-5 bg-gray-50 dark:bg-gray-900">
+        <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <div className="w-full flex flex-col lg:flex-row gap-5">
             <div className="w-full">
               <Select
@@ -160,7 +160,7 @@ function CFFBookIVA() {
                   {creditos_by_month.length > 0 ? (
                     <>
                       <table className="w-full">
-                        <thead className="sticky top-0 z-20 bg-white">
+                        <thead className="sticky top-0 z-20 dark:bg-black bg-white">
                           <tr>
                             <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                               Fecha
@@ -230,7 +230,7 @@ function CFFBookIVA() {
                 </>
               )}
             </div>
-            <div className="w-full overflow-x-auto custom-scrollbar mt-10 p-5 bg-white border">
+            <div className="w-full overflow-x-auto custom-scrollbar mt-10 p-5 dark:bg-gray-800 bg-white border">
               <div className="min-w-[950px]">
                 <div className="grid grid-cols-8 w-full">
                   <span className="border p-1 font-semibold"></span>

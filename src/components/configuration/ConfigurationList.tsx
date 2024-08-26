@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from 'react';
-import { ButtonGroup, Card, Switch, useDisclosure } from '@nextui-org/react';
+import { ButtonGroup, Card, useDisclosure } from '@nextui-org/react';
 import { useThemeStore } from '../../store/theme.store';
 import { Theme, ThemeContext } from '../../hooks/useTheme';
-import { Check, Moon, Plus, SunMedium } from 'lucide-react';
+import { Check, Plus } from 'lucide-react';
 import AddButton from '../global/AddButton';
 import CreateConfiguration from './CreateConfiguration';
 import { useConfigurationStore } from '../../store/perzonalitation.store';
@@ -76,8 +76,8 @@ const ConfigurationList = ({ actions }: Props) => {
 
   return (
     <>
-      <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
-        <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
+      <div className=" w-full h-full p-5 bg-gray-50 dark:bg-gray-900">
+        <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <div className="flex justify-evenly gap-10 mt-5 ml-5 ">
             {/* <div className="w-full mt-1">
               <Switch

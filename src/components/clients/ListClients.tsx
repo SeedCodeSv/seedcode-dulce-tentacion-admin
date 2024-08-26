@@ -161,8 +161,8 @@ const ListClients = ({ actions }: Props) => {
 
   return (
     <>
-      <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
-        <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
+      <div className=" w-full h-full p-5 bg-gray-50 dark:bg-gray-900">
+        <div className="w-full h-full border-white border border-white p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
           <div className="w-full hidden gap-5 md:flex">
             <div className="flex w-full justify-between items-end gap-3">
               <Input

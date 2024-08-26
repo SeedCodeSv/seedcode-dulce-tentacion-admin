@@ -1,6 +1,7 @@
 import { get_token } from '@/storage/localStorage';
 import {
   Correlatives,
+  CreateCorrelativesDto,
   IResponseDataCorrelatives,
   ResponseDataCorrelative,
 } from '@/types/correlatives/correlatives_types';
@@ -28,4 +29,8 @@ export const update_correlatives = (id: number, data: Correlatives) => {
       Authorization: `Bearer ${token}`,
     },
   });
+};
+
+export const create_correlatives = (data: CreateCorrelativesDto) => {
+  return axios.post<CreateCorrelativesDto>(`${API_URL}/correlatives`, data);
 };

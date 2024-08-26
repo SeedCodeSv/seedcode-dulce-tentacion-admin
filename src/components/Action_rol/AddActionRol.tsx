@@ -143,12 +143,12 @@ const PermissionAddActionRol: React.FC = () => {
     return (
       <div className="w-full w-1/3 sm:w-1/2 p-2 " key={view.id}>
         <div
-          className="mb-4 dark:bg-gray-900 bg-white shadow-lg border border-gray-300 rounded-lg overflow-hidden"
+          className="mb-4 dark:bg-gray-900  shadow-lg border border-gray-300 rounded-lg overflow-hidden"
           style={{ height: '300px', width: '100%' }}
         >
           <div
             style={{ backgroundColor: theme.colors.dark, color: theme.colors.primary }}
-            className="flex items-center justify-between px-4 py-3 text-white bg-teal-700"
+            className="flex items-center justify-between px-4 py-3 text-white "
           >
             <p className="font-semibold">{view.name}</p>
             <div className="flex items-center justify-center">
@@ -225,7 +225,7 @@ const PermissionAddActionRol: React.FC = () => {
   }, [sortedViews, searchTerm]);
   return (
     <>
-      <div className="w-full h-full p-5 overflow-y-auto bg-white shadow-xl rounded-xl dark:bg-gray-900">
+      <div className="w-full h-full p-5 overflow-y-auto custom-scrollbar1  shadow-xl rounded-xl dark:bg-gray-900">
         <div className="grid grid-cols-1 lg:flex-row justify-between items-center w-full gap-5 mb-5 lg:mb-10 lg:gap-0">
           <div className="flex w-full gap-5 lg:w-auto justify-between lg:justify-between">
             <Autocomplete
@@ -277,7 +277,7 @@ const PermissionAddActionRol: React.FC = () => {
           ))}
         </div>
       </div>
-      <div className="fixed bottom-6 right-4">
+      <div className="fixed bottom-8 right-8">
         <Button
           style={{ backgroundColor: theme.colors.dark, color: theme.colors.primary }}
           onClick={handleSubmit}

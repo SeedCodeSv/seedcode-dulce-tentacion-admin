@@ -124,8 +124,8 @@ function ListProducts({ actions }: Props) {
   };
   return (
     <>
-      <div className="w-full h-full p-4 md:p-10 md:px-12">
-        <div className="w-full h-full p-4 overflow-y-auto bg-white shadow custom-scrollbar md:p-8 dark:bg-gray-900">
+      <div className=" w-full h-full p-5 bg-gray-50 dark:bg-gray-900">
+        <div className="w-full h-full border-white border border-white p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
           <div className="hidden w-full gap-5 md:flex">
             <div className="grid w-full grid-cols-4 gap-3">
               <Input

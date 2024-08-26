@@ -30,7 +30,7 @@
     },
     {
       "view": "Empleados",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Contrato"]
     },
     {
       "view": "Proveedores",

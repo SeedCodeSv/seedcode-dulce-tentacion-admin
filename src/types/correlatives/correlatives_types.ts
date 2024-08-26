@@ -25,9 +25,22 @@ export interface Correlatives {
   branch?: Branch;
 }
 
+export interface CreateCorrelativesDto {
+  code: string;
+  typeVoucher: string;
+  resolution: string;
+  serie: string;
+  from: string;
+  to: string;
+  prev: number;
+  next: number;
+  branchId: number | string;
+}
+
 export interface ICorrelativeStore {
   pagination_correlatives: IResponseDataCorrelatives;
   correlatives: Correlatives[];
+  OnCreateCorrelatives: (correlative: CreateCorrelativesDto) => Promise<CreateCorrelativesDto>;
   OnUpdateCorrelative: (id: number, correlative: Correlatives) => Promise<ResponseDataCorrelative>;
   OnGetByBranchAndTypeVoucherCorrelatives: (
     page: number,
@@ -45,6 +58,6 @@ export interface ResponseDataCorrelative {
 export interface IPropsCorrelativeUpdate {
   onClose: () => void;
   reload: () => void;
-  correlative: Correlatives;
+  correlative?: Correlatives;
   id?: number;
 }

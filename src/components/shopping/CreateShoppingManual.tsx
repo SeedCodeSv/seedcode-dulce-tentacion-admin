@@ -99,7 +99,7 @@ function CreateShoppingManual() {
 
     const values: CreateShoppingDto = {
       branchId: user?.correlative.branchId as number,
-      supplierId: supplierSelected.id,
+      supplierId: supplierSelected.id ?? 0,
       tipoDte: tipoDte,
       totalExenta: 0,
       totalGravada: Number(afecta),
@@ -111,7 +111,7 @@ function CreateShoppingManual() {
       totalPagar: Number(total),
       totalLetras: convertCurrencyFormat(total),
       fecEmi: currentDate,
-      // numeroControl: "34344-dsddsds",
+
       correlative: correlative,
     };
 
@@ -138,8 +138,8 @@ function CreateShoppingManual() {
   };
 
   return (
-    <div className="w-full h-full">
-      <div className="w-full relative top-5 flex justify-end right-5">
+    <>
+      <div className="w-full relative  top-5 flex justify-end right-5">
         {/* <X className="cursor-pointer" onClick={() => navigate('/shopping')} /> */}
         <X className="cursor-pointer" onClick={clearAllDataManual} />
       </div>
@@ -176,7 +176,7 @@ function CreateShoppingManual() {
               }}
             >
               {supplier_pagination.suppliers.map((supp) => (
-                <AutocompleteItem key={supp.id}>
+                <AutocompleteItem key={supp.id ?? 0}>
                   {supp.nombre + ' - ' + supp.nombreComercial}
                 </AutocompleteItem>
               ))}
@@ -270,18 +270,9 @@ function CreateShoppingManual() {
             label="Numero"
             labelPlacement="outside"
           />
-          {/* <Input
-            readOnly
-            variant="bordered"
-            label="Sucursal"
-            labelPlacement="outside"
-            placeholder="Sucursal"
-            classNames={{ label: 'font-semibold' }}
-            defaultValue={user?.employee?.branch.name ?? ''}
-          /> */}
         </div>
         <p className="py-5 text-xl font-semibold">Resumen</p>
-        <div className="rounded border shadow bg-white p-5 md:p-10">
+        <div className="rounded border shadow dark:border-gray-700 p-5 md:p-10">
           <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
               <Input
@@ -375,7 +366,7 @@ function CreateShoppingManual() {
           </Button>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
