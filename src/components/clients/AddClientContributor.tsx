@@ -1,40 +1,32 @@
 import { isValidDUI } from '@avalontechsv/idsv';
 import { Input, Autocomplete, AutocompleteItem, Textarea, Button } from '@nextui-org/react';
 import { Formik } from 'formik';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import * as yup from 'yup';
 import { useBillingStore } from '../../store/facturation/billing.store';
-import { Departamento } from '../../types/billing/cat-012-departamento.types';
-import { Municipio } from '../../types/billing/cat-013-municipio.types';
-import { CodigoActividadEconomica } from '../../types/billing/cat-019-codigo-de-actividad-economica.types';
 import { useCustomerStore } from '../../store/customers.store';
-import { CustomerDirection, PayloadCustomer } from '../../types/customers.types';
+import { PayloadCustomer } from '../../types/customers.types';
 import { ThemeContext } from '../../hooks/useTheme';
 import { ITipoDocumento } from '../../types/DTE/tipo_documento.types';
 import Layout from '@/layout/Layout';
 import { ArrowLeft } from 'lucide-react';
-import { useNavigate, useParams } from 'react-router';
+import { useNavigate } from 'react-router';
 import { useBranchesStore } from '@/store/branches.store';
 import { Branch } from '@/types/auth.types';
 
 interface Props {
   customer?: PayloadCustomer;
-  customer_direction?: CustomerDirection;
   id?: number;
-  typeDocumento?: string;
 }
 
 function AddClientContributor(props: Props) {
   const { theme } = useContext(ThemeContext);
-  const { id } = useParams<{ id: string }>();
-  const isEditing = !!id;
-  const { get_customer_by_id, user_by_id } = useCustomerStore();
   const { getBranchesList, branch_list } = useBranchesStore();
   useEffect(() => {
     getBranchesList();
   }, []);
-  console.log('user_by_id', user_by_id);
-  const [initialValues, setInitialValues] = useState({
+
+  const initialValues = {
     nombre: '',
     nombreComercial: '',
     correo: '',
@@ -53,57 +45,8 @@ function AddClientContributor(props: Props) {
     nombreDepartamento: '',
     complemento: '',
     branchId: 0,
-  });
+  };
 
-  useEffect(() => {
-    if (isEditing && id && id !== '0') {
-      get_customer_by_id(parseInt(id)).then((customer) => {
-        if (customer) {
-          setInitialValues({
-            nombre: customer.nombre ?? '',
-            nombreComercial: customer.nombreComercial ?? '',
-            correo: customer.correo ?? '',
-            telefono: customer.telefono ?? '',
-            numDocumento: customer.numDocumento ?? '',
-            nrc: customer.nrc ?? '',
-            nit: customer.nit ?? '',
-            tipoDocumento: customer.tipoDocumento ?? '',
-            bienTitulo: '05',
-            codActividad: customer.codActividad ?? '',
-            esContribuyente: 1,
-            descActividad: customer.descActividad ?? '',
-            municipio: customer.direccion.municipio ?? '',
-            nombreMunicipio: customer.direccion.nombreMunicipio ?? '',
-            departamento: customer.direccion.departamento ?? '',
-            nombreDepartamento: customer.direccion.nombreDepartamento ?? '',
-            complemento: customer.direccion.complemento ?? '',
-            branchId: customer.branchId ?? 0,
-          });
-        }
-      });
-    } else {
-      setInitialValues({
-        nombre: '',
-        nombreComercial: '',
-        correo: '',
-        telefono: '',
-        numDocumento: '',
-        nrc: '',
-        nit: '',
-        tipoDocumento: '',
-        bienTitulo: '05',
-        codActividad: '',
-        esContribuyente: 1,
-        descActividad: '',
-        municipio: '',
-        nombreMunicipio: '',
-        departamento: '',
-        nombreDepartamento: '',
-        complemento: '',
-        branchId: 0,
-      });
-    }
-  }, [id, isEditing, get_customer_by_id]);
   const validationSchema = yup.object().shape({
     nombre: yup.string().required('**El nombre es requerido**'),
     nombreComercial: yup.string().required('**El nombre comercial es requerido**'),
@@ -165,77 +108,36 @@ function AddClientContributor(props: Props) {
     getCat022TipoDeDocumentoDeIde,
     cat_022_tipo_de_documentoDeIde,
   } = useBillingStore();
-  const [selectedCodeDep, setSelectedCodeDep] = useState(
-    props.customer_direction?.departamento ?? '0'
-  );
+
+  const [selectedCodeDep, setSelectedCodeDep] = useState(props.customer?.departamento ?? '0');
+
   useEffect(() => {
     getCat012Departamento();
-    getCat022TipoDeDocumentoDeIde();
     getCat019CodigoActividadEconomica();
   }, []);
+
   useEffect(() => {
     if (selectedCodeDep !== '0') {
-      getCat013Municipios(props.customer_direction?.departamento ?? selectedCodeDep);
+      getCat013Municipios(selectedCodeDep);
     }
-    getCat013Municipios(selectedCodeDep);
-  }, [selectedCodeDep, props.customer_direction]);
+  }, [selectedCodeDep]);
 
-  const { postCustomer, patchCustomer } = useCustomerStore();
+  useEffect(() => {
+    getCat022TipoDeDocumentoDeIde();
+  }, [selectedCodeDep]);
+  const { postCustomer } = useCustomerStore();
 
   const onSubmit = async (payload: PayloadCustomer) => {
     const values = {
       ...payload,
       esContribuyente: 1,
-      // branchId: Number(user?.correlative.branch.id),
     };
 
-    if (isEditing && id && id !== '0') {
-      // Editar cliente existente
-      await patchCustomer(values, parseInt(id)); // Asegúrate de pasar el `id` correctamente como número
-    } else {
-      // Crear nuevo cliente
-      console.log('DATOS DEL CLIENTE A CREAR', values);
-      await postCustomer(values);
-    }
+    await postCustomer(values);
+
     navigate('/clients');
   };
 
-  const selectedKeyDepartment = useMemo(() => {
-    if (props.customer_direction) {
-      const department = cat_012_departamento.find(
-        (department) => department.codigo === props.customer_direction?.departamento
-      );
-
-      return JSON.stringify(department);
-    }
-  }, [props, props.customer_direction, cat_012_departamento, cat_012_departamento.length]);
-  const selectedKeyCity = useMemo(() => {
-    if (props.customer_direction) {
-      const city = cat_013_municipios.find(
-        (department) => department.codigo === props.customer_direction?.municipio
-      );
-      return JSON.stringify(city);
-    }
-  }, [props, props.customer_direction, cat_013_municipios, cat_013_municipios.length]);
-
-  const selectedKeyCodActivity = useMemo(() => {
-    if (props.customer_direction) {
-      const code_activity = cat_019_codigo_de_actividad_economica.find(
-        (department) => department.codigo === props.customer?.codActividad
-      );
-
-      return JSON.stringify(code_activity);
-    }
-  }, [
-    props,
-    props.customer,
-    cat_019_codigo_de_actividad_economica,
-    cat_019_codigo_de_actividad_economica.length,
-  ]);
-
-  const handleFilter = (name = '') => {
-    getCat019CodigoActividadEconomica(name);
-  };
   const navigate = useNavigate();
 
   return (
@@ -356,6 +258,7 @@ function AddClientContributor(props: Props) {
                             if (key) {
                               const depSelected = JSON.parse(key as string) as ITipoDocumento;
                               handleChange('tipoDocumento')(depSelected.codigo);
+                            
                             }
                           }}
                           onBlur={handleBlur('tipoDocumento')}
@@ -408,36 +311,29 @@ function AddClientContributor(props: Props) {
                     </div>
                     <div className="pt-2">
                       <Autocomplete
-                        onSelectionChange={(key) => {
-                          if (key) {
-                            const depSelected = JSON.parse(
-                              key as string
-                            ) as CodigoActividadEconomica;
-                            handleChange('codActividad')(depSelected.codigo);
-                            handleChange('descActividad')(depSelected.valores);
-                          }
-                        }}
-                        onBlur={handleBlur('codActividad')}
                         label="Actividad"
                         labelPlacement="outside"
-                        placeholder={
-                          isEditing && values.descActividad
-                            ? values.descActividad
-                            : 'Selecciona el actividad'
-                        }
-                        defaultSelectedKey={isEditing ? values.descActividad : undefined}
+                        placeholder="Ingresa la actividad"
                         variant="bordered"
+                        onSelectionChange={(key) => {
+                          if (key) {
+                            const depSelected = cat_019_codigo_de_actividad_economica.find(
+                              (dep) => dep.codigo === new Set([key]).values().next().value
+                            );
+
+                            handleChange('codActividad')(depSelected?.codigo as string);
+                            handleChange('descActividad')(depSelected?.valores || '');
+                          }
+                        }}
                         classNames={{
                           base: 'font-semibold text-gray-500 text-sm',
                         }}
                         className="dark:text-white"
-                        value={selectedKeyCodActivity}
-                        onInputChange={(e) => handleFilter(e)}
                       >
                         {cat_019_codigo_de_actividad_economica.map((dep) => (
                           <AutocompleteItem
+                            key={dep.codigo}
                             value={dep.codigo}
-                            key={JSON.stringify(dep)}
                             className="dark:text-white"
                           >
                             {dep.valores}
@@ -456,32 +352,27 @@ function AddClientContributor(props: Props) {
                       <Autocomplete
                         onSelectionChange={(key) => {
                           if (key) {
-                            const depSelected = JSON.parse(key as string) as Municipio;
-                            setSelectedCodeDep(depSelected.codigo);
-                            handleChange('departamento')(depSelected.codigo);
-                            handleChange('nombreDepartamento')(depSelected.valores);
+                            const depSelected = cat_012_departamento.find(
+                              (dep) => dep.codigo === new Set([key]).values().next().value
+                            );
+                            console.log('Departamento seleccionado:', depSelected);
+                            setSelectedCodeDep(depSelected?.codigo as string);
+                            handleChange('departamento')(depSelected?.codigo as string);
+                            handleChange('nombreDepartamento')(depSelected?.valores || '');
                           }
                         }}
                         onBlur={handleBlur('departamento')}
                         label="Departamento"
                         labelPlacement="outside"
-                        placeholder={
-                          isEditing && values.nombreDepartamento
-                            ? values.nombreDepartamento
-                            : 'Selecciona el departamento'
-                        }
-                        defaultSelectedKey={isEditing ? values.departamento : undefined}
+                        placeholder="Selecciona el departamento"
                         variant="bordered"
-                        classNames={{
-                          base: 'font-semibold text-gray-500 text-sm',
-                        }}
                         className="dark:text-white"
-                        value={selectedKeyDepartment}
+                        value={values.departamento}
                       >
                         {cat_012_departamento.map((dep) => (
                           <AutocompleteItem
                             value={dep.codigo}
-                            key={JSON.stringify(dep)}
+                            key={dep.codigo}
                             className="dark:text-white"
                           >
                             {dep.valores}
@@ -498,35 +389,29 @@ function AddClientContributor(props: Props) {
                       <Autocomplete
                         onSelectionChange={(key) => {
                           if (key) {
-                            const depSelected = JSON.parse(key as string) as Departamento;
-                            handleChange('municipio')(depSelected.codigo);
-                            handleChange('nombreMunicipio')(depSelected.valores);
+                            const munSelected = cat_013_municipios.find(
+                              (mun) => mun.codigo === key
+                            );
+                            console.log('Municipio seleccionado:', munSelected);
+                            handleChange('municipio')(munSelected?.codigo || '');
+                            handleChange('nombreMunicipio')(munSelected?.valores || '');
                           }
                         }}
                         onBlur={handleBlur('municipio')}
                         label="Municipio"
                         labelPlacement="outside"
-                        placeholder={
-                          isEditing && values.nombreMunicipio
-                            ? values.nombreMunicipio
-                            : 'Selecciona el municipio'
-                        }
-                        defaultSelectedKey={isEditing ? values.municipio : undefined}
+                        placeholder="Selecciona el municipio"
                         variant="bordered"
-                        classNames={{
-                          base: 'font-semibold text-gray-500 text-sm',
-                        }}
                         className="dark:text-white"
-                        defaultInputValue={props.customer_direction?.nombreMunicipio}
-                        value={selectedKeyCity}
+                        value={values.municipio}
                       >
-                        {cat_013_municipios.map((dep) => (
+                        {cat_013_municipios.map((mun) => (
                           <AutocompleteItem
-                            value={dep.codigo}
-                            key={JSON.stringify(dep)}
+                            value={mun.codigo}
+                            key={mun.codigo}
                             className="dark:text-white"
                           >
-                            {dep.valores}
+                            {mun.valores}
                           </AutocompleteItem>
                         ))}
                       </Autocomplete>

@@ -269,39 +269,7 @@ const AddClientNormal = (props: Props) => {
                           </AutocompleteItem>
                         ))}
                       </Autocomplete>
-                      {/* <Autocomplete
-                        onSelectionChange={(key) => {
-                          if (key) {
-                            const depSelected = cat_012_departamento.find(
-                              (dep) => dep.codigo === new Set([key]).values().next().value
-                            );
-                            setSelectedCodeDep(depSelected?.codigo as string);
-                            handleChange('departamento')(depSelected?.codigo as string);
-                          }
-                        }}
-          
-                        
-                        onBlur={handleBlur('departamento')}
-                        label="Departamento"
-                        labelPlacement="outside"
-                        placeholder="Selecciona el departamento"
-                        variant="bordered"
-                        classNames={{
-                          base: 'font-semibold text-gray-500 text-sm',
-                        }}
-                        className="dark:text-white"
-                        value={values.departamento}
-                      >
-                        {cat_012_departamento.map((dep) => (
-                          <AutocompleteItem
-                            value={dep.codigo}
-                            key={dep.codigo}
-                            className="dark:text-white"
-                          >
-                            {dep.valores}
-                          </AutocompleteItem>
-                        ))}
-                      </Autocomplete> */}
+    
                       {errors.departamento && touched.departamento && (
                         <span className="text-sm font-semibold text-red-500">
                           {errors.departamento}
@@ -309,36 +277,7 @@ const AddClientNormal = (props: Props) => {
                       )}
                     </div>
                     <div>
-                      {/* <Autocomplete
-                        onSelectionChange={(key) => {
-                          if (key) {
-                            const depSelected = JSON.parse(key as string) as Departamento;
-                            handleChange('municipio')(depSelected.codigo);
-                            handleChange('nombreMunicipio')(depSelected.valores);
-                          }
-                        }}
-                        label="Municipio"
-                        labelPlacement="outside"
-                        className="dark:text-white"
-                        variant="bordered"
-                        placeholder="Selecciona el municipio"
-                        classNames={{
-                          base: 'font-semibold text-gray-500 text-sm',
-                        }}
-                        onBlur={handleBlur('municipio')}
-
-                        value={values.municipio}
-                      >
-                        {cat_013_municipios.map((dep) => (
-                          <AutocompleteItem
-                            value={dep.codigo}
-                            key={JSON.stringify(dep)}
-                            className="dark:text-white"
-                          >
-                            {dep.valores}
-                          </AutocompleteItem>
-                        ))}
-                      </Autocomplete> */}
+   
                       <Autocomplete
                         onSelectionChange={(key) => {
                           if (key) {

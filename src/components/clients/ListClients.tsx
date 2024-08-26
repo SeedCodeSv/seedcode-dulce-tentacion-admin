@@ -34,7 +34,7 @@ import {
 import AddClientNormal from './AddClientNormal';
 import AddClientContributor from './AddClientContributor';
 import { ButtonGroup } from '@nextui-org/react';
-import { Customer, CustomerDirection, PayloadCustomer } from '../../types/customers.types';
+import { Customer, PayloadCustomer } from '../../types/customers.types';
 import { ThemeContext } from '../../hooks/useTheme';
 import MobileView from './MobileView';
 import Pagination from '../global/Pagination';
@@ -91,7 +91,6 @@ const ListClients = ({ actions }: Props) => {
   const [openVaul, setOpenVaul] = useState(false);
   const modalAdd = useDisclosure();
   const [selectedCustomer, setSelectedCustomer] = useState<PayloadCustomer>();
-  const [selectedCustomerDirection, setSelectedCustomerDirection] = useState<CustomerDirection>();
   const [selectedId, setSelectedId] = useState<number>(0);
   const navigate = useNavigate();
 
@@ -111,23 +110,13 @@ const ListClients = ({ actions }: Props) => {
       esContribuyente: customer.esContribuyente ? 1 : 0,
     };
 
-    const payload_direction: CustomerDirection = {
-      id: customer.direccion?.id ?? 0,
-      municipio: customer.direccion?.municipio ?? '',
-      nombreMunicipio: customer.direccion?.nombreMunicipio ?? '',
-      departamento: customer.direccion?.departamento ?? '',
-      nombreDepartamento: customer.direccion?.nombreDepartamento ?? '',
-      complemento: customer.direccion?.complemento ?? '',
-      active: customer.direccion?.active ?? false,
-    };
-
     setSelectedCustomer(payload_customer);
-    setSelectedCustomerDirection(payload_direction);
+
     setSelectedId(customer.id);
 
     if (type === 'edit') {
       if (customer.esContribuyente) {
-        navigate(`/add-client-contributor/${customer.id}`);
+        navigate(`/update-client-contributor/${customer.id}`);
       } else {
         navigate(`/update-client/${customer.id}`);
       }
@@ -674,12 +663,7 @@ const ListClients = ({ actions }: Props) => {
 
           {typeClient === 'contribuyente' && (
             <div className="w-full h-full p-5 bg-white shadow rounded-xl dark:bg-gray-900">
-              <AddClientContributor
-                typeDocumento={typeDocumentCustomer}
-                customer={selectedCustomer}
-                customer_direction={selectedCustomerDirection}
-                id={selectedId}
-              />
+              <AddClientContributor customer={selectedCustomer} id={selectedId} />
             </div>
           )}
         </>
