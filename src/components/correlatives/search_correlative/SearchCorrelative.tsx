@@ -8,7 +8,9 @@ import { correlativesTypes } from '@/types/correlatives/correlatives_data.types'
 import { Autocomplete, AutocompleteItem, Button } from '@nextui-org/react';
 import { Filter } from 'lucide-react';
 import React, { useContext, useEffect, useState } from 'react';
-function SearchCorrelative() {
+import { IPropsSearchCorrelative } from '../types/mobile_correlatives_types';
+
+function SearchCorrelative(props: IPropsSearchCorrelative) {
   const { theme } = useContext(ThemeContext);
   const [openVaul, setOpenVaul] = React.useState(false);
   const [filter, setFilter] = useState({
@@ -46,6 +48,7 @@ function SearchCorrelative() {
                     (bra) => bra.name === new Set([e]).values().next().value
                   );
                   setFilter({ ...filter, branchName: selectNameBranch?.name || '' });
+                  props.branchName(selectNameBranch?.name || '');
                 }}
                 label="Sucursal"
                 labelPlacement="outside"
@@ -70,6 +73,7 @@ function SearchCorrelative() {
                     (dep) => dep.value === new Set([e]).values().next().value
                   );
                   setFilter({ ...filter, correlativeType: selectCorrelativeType?.value || '' });
+                  props.typeVoucher(selectCorrelativeType?.value || '');
                 }}
                 label="Tipo de Factura"
                 labelPlacement="outside"

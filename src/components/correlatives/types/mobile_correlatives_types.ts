@@ -11,3 +11,8 @@ export interface IMobileViewProps {
 export interface GridProps extends IMobileViewProps {
   correlative: Correlatives;
 }
+
+export interface IPropsSearchCorrelative {
+  typeVoucher: (name: string) => void;
+  branchName: (name: string) => void;
+}

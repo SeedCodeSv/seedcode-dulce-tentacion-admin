@@ -52,7 +52,14 @@ function CorrelativesList({ actions }: { actions: string[] }) {
     <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
       <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
         <div className="flex justify-between items-end ">
-          <SearchCorrelative></SearchCorrelative>
+          <SearchCorrelative
+            branchName={(name) => {
+              setFilter({ ...filter, branchName: name });
+            }}
+            typeVoucher={(name) => {
+              setFilter({ ...filter, correlativeType: name });
+            }}
+          ></SearchCorrelative>
           {actions.includes('Agregar') ? (
             <AddButton onClick={() => setModalOpenCreate(true)} />
           ) : (
@@ -314,7 +321,12 @@ function CorrelativesList({ actions }: { actions: string[] }) {
                   currentPage={pagination_correlatives.currentPag}
                   totalPages={pagination_correlatives.totalPag}
                   onPageChange={(page) => {
-                    OnGetByBranchAndTypeVoucherCorrelatives(page, 5, '', '');
+                    OnGetByBranchAndTypeVoucherCorrelatives(
+                      page,
+                      5,
+                      filter.branchName,
+                      filter.correlativeType
+                    );
                   }}
                 />
               </div>
@@ -324,16 +336,16 @@ function CorrelativesList({ actions }: { actions: string[] }) {
                     OnGetByBranchAndTypeVoucherCorrelatives(
                       pagination_correlatives.nextPag,
                       5,
-                      '',
-                      ''
+                      filter.branchName,
+                      filter.correlativeType
                     );
                   }}
                   handlePrev={() => {
                     OnGetByBranchAndTypeVoucherCorrelatives(
                       pagination_correlatives.prevPag,
                       5,
-                      '',
-                      ''
+                      filter.branchName,
+                      filter.correlativeType
                     );
                   }}
                   currentPage={pagination_correlatives.currentPag}

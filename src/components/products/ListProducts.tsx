@@ -11,7 +11,7 @@ import {
   AutocompleteItem,
   Switch,
 } from '@nextui-org/react';
-import { useEffect, useState, useContext, useMemo } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import {
   EditIcon,
   SearchIcon,
@@ -19,7 +19,6 @@ import {
   List,
   CreditCard,
   Table as ITable,
-  Filter,
   RefreshCcw,
   Lock,
 } from 'lucide-react';
@@ -34,7 +33,7 @@ import { ButtonGroup } from '@nextui-org/react';
 import { CategoryProduct } from '../../types/categories.types';
 import MobileView from './MobileView';
 // import { Drawer } from "vaul";
-import { global_styles } from '../../styles/global.styles';
+
 import UpdateProduct from './UpdateProduct';
 import { limit_options } from '../../utils/constants';
 import SmPagination from '../global/SmPagination';
@@ -44,7 +43,7 @@ import classNames from 'classnames';
 import TooltipGlobal from '../global/TooltipGlobal';
 import { useSubCategoryStore } from '@/store/sub-category';
 import { useNavigate } from 'react-router';
-import BottomDrawer from '../global/BottomDrawer';
+
 import { useSubCategoriesStore } from '@/store/sub-categories.store';
 import NO_DATA from '@/assets/svg/no_data.svg';
 import NotAddButton from '../global/NoAdd';
@@ -124,7 +123,12 @@ function ListProducts({ actions }: Props) {
       <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
         <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <div className="flex justify-between items-end ">
-            <SearchProduct></SearchProduct>
+            <SearchProduct
+              categoryProduct={(category: string) => setCategory(category)}
+              subCategoryProduct={(subCategory: string) => setSubCategory(subCategory)}
+              codeProduct={(code: string) => setCode(code)}
+              nameProduct={(name: string) => setSearch(name)}
+            ></SearchProduct>
             {actions.includes('Agregar') ? (
               <AddButton
                 onClick={() => {
@@ -152,7 +156,6 @@ function ListProducts({ actions }: Props) {
                 placeholder="Escribe para buscar..."
                 isClearable
                 onClear={() => {
-                  // handleSearch("");
                   setSearch('');
                 }}
               />
@@ -184,7 +187,7 @@ function ListProducts({ actions }: Props) {
                   }
                 }}
                 className="w-full dark:text-white"
-                label="Categoría producto"
+                label="Categoría"
                 labelPlacement="outside"
                 placeholder="Selecciona la categoría"
                 variant="bordered"
@@ -250,7 +253,7 @@ function ListProducts({ actions }: Props) {
                 }}
                 className="hidden mt-6 font-semibold md:flex"
                 color="primary"
-                endContent={<SearchIcon size={15} />}
+                startContent={<SearchIcon size={15} />}
                 onClick={() => {
                   handleSearch(undefined);
                 }}
