@@ -9,28 +9,23 @@ interface Props {
     series: {
       name: string;
       data: number[];
-  
     }[];
-
   };
 }
 
 function SalesMonthBranches({ sales }: Props) {
-
-  
   return (
     <>
       <div
-        className="border dark:border-gray-700 shadow flex flex-col rounded-lg min-h-52 h-full dark:bg-gray-900"
+        className="border dark:border-white dark:border-gray-700 shadow flex flex-col rounded-lg min-h-52 h-full dark:bg-gray-900"
         style={{
           backgroundImage: `linear-gradient(to right, #4361ee, #7678ed)`,
         }}
       >
         <p className="text-base tracking-wide px-[10px] pt-[10px] font-bold text-white uppercase">
           {sales.title}
-  
         </p>
-     
+
         <p className="text-sm tracking-wide px-[10px] font-bold text-white uppercase">
           {sales.total}
         </p>
@@ -72,7 +67,6 @@ function SalesMonthBranches({ sales }: Props) {
               },
             },
 
-            
             // tooltip: {
             //   shared: false,
             //   y: {
@@ -94,7 +88,7 @@ function SalesMonthBranches({ sales }: Props) {
             //           </p>
             //           <span class="ml-2 font-semibold">Total: </span><span>$${total}</span>
             //           </p>
-                     
+
             //       </div>
             //     </div>
             //   `;
@@ -107,7 +101,7 @@ function SalesMonthBranches({ sales }: Props) {
                   return `${value}`;
                 },
               },
-      
+
               custom: ({ dataPointIndex }) => {
                 const producto = sales.labels[dataPointIndex];
                 const branch = sales.branch[dataPointIndex];

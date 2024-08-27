@@ -6,17 +6,17 @@ import { Autocomplete, AutocompleteItem, Button, Input } from '@nextui-org/react
 import { useContext, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-function UpdateCorrelative({ correlative, id, onClose, reload }: IPropsCorrelativeUpdate) {
+function UpdateCorrelative({ correlative, onClose, reload }: IPropsCorrelativeUpdate) {
   const { theme } = useContext(ThemeContext);
   const [datUpdateCorrelative, setDatUpdateCorrelative] = useState<Correlatives>({
-    code: correlative.code,
-    typeVoucher: correlative.typeVoucher,
-    resolution: correlative.resolution,
-    from: correlative.from,
-    to: correlative.to,
-    next: correlative.next,
-    prev: correlative.prev,
-    serie: correlative.serie,
+    code: correlative?.code,
+    typeVoucher: correlative?.typeVoucher,
+    resolution: correlative?.resolution,
+    from: correlative?.from,
+    to: correlative?.to,
+    next: correlative?.next,
+    prev: correlative?.prev,
+    serie: correlative?.serie,
   });
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDatUpdateCorrelative({
@@ -27,7 +27,7 @@ function UpdateCorrelative({ correlative, id, onClose, reload }: IPropsCorrelati
   const { OnUpdateCorrelative } = useCorrelativesStore();
   const handleUpdateCorrelative = async () => {
     try {
-      await OnUpdateCorrelative(id ?? 0, datUpdateCorrelative).then(() => {
+      await OnUpdateCorrelative(correlative?.id ?? 0, datUpdateCorrelative).then(() => {
         toast.success('Se actualizo el correlativo');
         onClose();
         reload();
@@ -37,7 +37,7 @@ function UpdateCorrelative({ correlative, id, onClose, reload }: IPropsCorrelati
     }
   };
   useEffect(() => {
-    setDatUpdateCorrelative(correlative);
+    setDatUpdateCorrelative(correlative as Correlatives);
   }, [correlative]);
   return (
     <div className="dark:text-white ">
@@ -45,7 +45,7 @@ function UpdateCorrelative({ correlative, id, onClose, reload }: IPropsCorrelati
         <div className="pt-2">
           <Input
             onChange={handleChange}
-            defaultValue={correlative.code}
+            defaultValue={correlative?.code}
             value={datUpdateCorrelative.code?.trim() !== '' ? datUpdateCorrelative.code : 'N/A'}
             label="Código"
             labelPlacement="outside"
@@ -93,7 +93,7 @@ function UpdateCorrelative({ correlative, id, onClose, reload }: IPropsCorrelati
             value={datUpdateCorrelative.resolution}
             labelPlacement="outside"
             name="resolution"
-            placeholder="Ingresa el nombre de usuario"
+            placeholder="Ingresa la resolución"
             classNames={{
               label: 'text-gray-500 text-sm',
             }}
@@ -107,7 +107,7 @@ function UpdateCorrelative({ correlative, id, onClose, reload }: IPropsCorrelati
             labelPlacement="outside"
             name="serie"
             value={datUpdateCorrelative.serie?.toString()}
-            placeholder="Ingresa la Contraseña"
+            placeholder="Ingresa la serie"
             classNames={{
               label: 'text-gray-500 text-sm',
             }}
@@ -121,7 +121,7 @@ function UpdateCorrelative({ correlative, id, onClose, reload }: IPropsCorrelati
             value={datUpdateCorrelative.from}
             labelPlacement="outside"
             name="from"
-            placeholder="Ingresa la Contraseña"
+            placeholder="Ingresa el inicio"
             classNames={{
               label: 'text-gray-500 text-sm',
             }}
@@ -148,7 +148,7 @@ function UpdateCorrelative({ correlative, id, onClose, reload }: IPropsCorrelati
             label="Anterior"
             labelPlacement="outside"
             name="prev"
-            placeholder="Ingresa la Contraseña"
+            placeholder="Ingresa el anterior"
             type="number"
             value={datUpdateCorrelative.prev?.toString()}
             classNames={{
@@ -164,7 +164,7 @@ function UpdateCorrelative({ correlative, id, onClose, reload }: IPropsCorrelati
             labelPlacement="outside"
             name="next"
             value={datUpdateCorrelative.next?.toString()}
-            placeholder="Ingresa el nombre de usuario"
+            placeholder="Ingresa el siguiente"
             classNames={{
               label: 'text-gray-500 text-sm',
             }}

@@ -17,7 +17,7 @@ function SalesMonthBranches({ sales }: Props) {
   return (
     <>
       <div
-        className="border dark:border-gray-700 shadow flex flex-col rounded-lg min-h-52 h-full dark:bg-gray-900"
+        className="border dark:border-white dark:border-gray-700 shadow flex flex-col rounded-lg min-h-52 h-full dark:bg-gray-900"
         style={{
           backgroundImage: `linear-gradient(to right, #00509d, #003f88)`,
         }}

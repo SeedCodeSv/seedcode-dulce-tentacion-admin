@@ -86,7 +86,7 @@ function ListCategories({ actions }: PProps) {
   };
 
   return (
-    <div className=" w-full h-full p-5 bg-gray-50 dark:bg-gray-900">
+    <div className=" w-full h-full p-10 bg-gray-50 dark:bg-gray-900">
       <div className="w-full h-full border-white border border-white p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
         <div className="flex flex-col justify-between w-full gap-5 mb-5 lg:mb-10 lg:flex-row lg:gap-0">
           <div className="flex items-end gap-3">

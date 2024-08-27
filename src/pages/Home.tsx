@@ -219,7 +219,6 @@ function Home() {
           <div>
             {loading_sales_month_year ? (
               <>
-      
                 <div className="flex flex-col space-y-3 ">
                   <Skeleton className="h-[150px] w-full  rounded-xl" />
                   <div className="space-y-2">
@@ -250,24 +249,24 @@ function Home() {
         </div>
         <div className="grid w-full grid-cols-1 pt-10 md:grid-cols-2 xl:grid-cols-4 xl:gap-10 lg:gap-10 sm:gap-10 mb:gap-10">
           <div className="flex flex-col w-full gap-10">
-            <div className="flex flex-col items-center justify-center w-full h-32 border rounded-lg shadow dark:bg-gray-900 dark:border-gray-700">
+            <div className="flex flex-col items-center dark:border-white justify-center w-full h-32 border rounded-lg shadow dark:bg-gray-900 dark:border-gray-700">
               <p className="text-2xl font-semibold dark:text-white">No. de ventas</p>
               <p className="text-2xl font-semibold dark:text-white animated-count">{sales_count}</p>
             </div>
-            <div className="flex flex-col items-center justify-center w-full h-32 border rounded-lg shadow dark:bg-gray-900 dark:border-gray-700">
+            <div className="flex flex-col items-center dark:border-white justify-center w-full h-32 border rounded-lg shadow dark:bg-gray-900 dark:border-gray-700">
               <p className="text-2xl font-semibold dark:text-white">Ventas del dia</p>
               <p className="text-lg font-semibold dark:text-white">
                 {formatCurrency(sales_by_day)}
               </p>
             </div>
-            <div className="flex flex-col items-center justify-center w-full h-32 border rounded-lg shadow dark:bg-gray-900 dark:border-gray-700">
+            <div className="flex dark:border-white flex-col items-center justify-center w-full h-32 border rounded-lg shadow dark:bg-gray-900 dark:border-gray-700">
               <p className="text-2xl font-semibold dark:text-white">Gastos del dia</p>
               <p className="text-lg font-semibold dark:text-white">
                 {formatCurrency(expenses_by_day)}
               </p>
             </div>
           </div>
-          <div className="col-span-3 p-5 mt-10 bg-gray-100 rounded-lg dark:bg-gray-900 xl:mt-0 lg:mt-0 mb:mt-0 sm:mt-0">
+          <div className="col-span-3 dark:border-white border p-5 mt-10 bg-gray-100 rounded-lg dark:bg-gray-900 xl:mt-0 lg:mt-0 mb:mt-0 sm:mt-0">
             <p className="pb-4 text-lg font-semibold dark:text-white">Ventas del dia</p>
 
             {loading_sales_by_table_date ? (

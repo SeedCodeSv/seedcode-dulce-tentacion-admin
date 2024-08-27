@@ -42,7 +42,7 @@ function AddProduct({ isOpen, onClose, supplierName, branchName }: Props) {
       title="Nueva orden de compra"
       size="w-screen h-screen pb-20 md:pb-0 p-5 overflow-y-auto xl:w-[80vw]"
     >
-      <div className="w-full bg-white dark:bg-gray-800">
+      <div className="w-full bg-white dark:bg-gray-900">
         <div className="grid grid-cols-1">
           <div>
             <Input

@@ -8,11 +8,9 @@ import {
   Columns3,
   Diff,
   EditIcon,
-  User as IUser,
   Minus,
   Proportions,
   ScrollText,
-  ShieldCheck,
   Store,
 } from 'lucide-react';
 
@@ -60,18 +58,18 @@ const GridItem = (props: GridProps) => {
       {layout === 'grid' ? (
         <div
           className={classNames(
-            'w-full shadow flex flex-col justify-between hover:shadow-lg p-5 dark:border dark:border-gray-600 rounded-2xl'
+            'w-full shadow flex flex-col justify-between hover:shadow-lg p-5 border border-white  rounded-2xl'
           )}
         >
           <div>
             <div className="flex w-full gap-2">
-              <Barcode className="text-[#274c77] dark:text-gray-400" size={20} />
+              <Barcode className=" dark:text-blue-300" size={20} />
               <p className="w-full dark:text-white">
                 Codigo : {correlative.code.trim() !== '' ? correlative.code : 'N/A'}
               </p>
             </div>
             <div className="flex w-full gap-2">
-              <ScrollText className="text-[#274c77] dark:text-gray-400" size={20} />
+              <ScrollText className=" dark:text-blue-300" size={20} />
               <p className="w-full dark:text-white">
                 Tipo de Factura :{' '}
                 {correlativesTypes.find((t) => t.value === correlative.typeVoucher)
@@ -80,32 +78,34 @@ const GridItem = (props: GridProps) => {
               </p>
             </div>
             <div className="flex w-full gap-2">
-              <Proportions className="text-[#274c77] dark:text-gray-400" size={20} />
+              <Proportions className=" dark:text-blue-300" size={20} />
               <p className="w-full dark:text-white">Resolucion : {correlative.resolution}</p>
             </div>
             <div className="flex w-full gap-2">
-              <Columns3 className="text-[#274c77] dark:text-gray-400" size={20} />
+              <Columns3 className=" dark:text-blue-300" size={20} />
               <p className="w-full dark:text-white">Serie : {correlative.serie}</p>
             </div>
             <div className="flex w-full gap-2">
-              <Minus className="text-[#274c77] dark:text-gray-400" size={20} />
+              <Minus className=" dark:text-blue-300" />
               <p className="w-full dark:text-white">Inicio : {correlative.from}</p>
             </div>
             <div className="flex w-full gap-2">
-              <Diff className="text-[#274c77] dark:text-gray-400" size={20} />
+              <Diff className=" dark:text-blue-300" size={20} />
               <p className="w-full dark:text-white">Fin : {correlative.to}</p>
             </div>
             <div className="flex w-full gap-2">
-              <ArrowLeft className="text-[#274c77] dark:text-gray-400" size={20} />
+              <ArrowLeft className=" dark:text-blue-300" size={20} />
               <p className="w-full dark:text-white">Anterior : {correlative.prev}</p>
             </div>
             <div className="flex w-full gap-2">
-              <ArrowRight className="text-[#274c77] dark:text-gray-400" size={20} />
+              <ArrowRight className=" dark:text-blue-300" size={20} />
               <p className="w-full dark:text-white">Siguiente : {correlative.next}</p>
             </div>
             <div className="flex w-full gap-2">
-              <Store className="text-[#274c77] dark:text-gray-400" size={20} />
-              <p className="w-full dark:text-white">Sucursal : {correlative.branch.name}</p>
+              <Store className=" dark:text-blue-300" size={20} />
+              <p className="w-full dark:text-white">
+                Sucursal : {correlative?.branch?.name ?? 'N/A'}
+              </p>
             </div>
           </div>
           <div className="flex justify-between mt-5 w-ful">
@@ -138,18 +138,52 @@ const ListItem = (props: GridProps) => {
   const { correlative, openEditModal, actions } = props;
   return (
     <>
-      <div className="flex w-full col-span-1 p-5 border shadow rounded-2xl ">
+      <div className="flex w-full col-span-1 p-5  border border-white shadow rounded-2xl ">
         <div className="w-full">
-          <div className="flex items-center w-full gap-2">
-            <IUser className="text-[#274c77] dark:text-gray-400" size={20} />
+          <div className="flex w-full gap-2">
+            <Barcode className=" dark:text-blue-300" size={20} />
             <p className="w-full dark:text-white">
-              {correlative.code.trim() !== '' ? correlative.code : 'N/A'}
+              Codigo : {correlative.code.trim() !== '' ? correlative.code : 'N/A'}
             </p>
           </div>
-
-          <div className="flex items-center w-full gap-2 mt-3">
-            <ShieldCheck className="text-[#274c77] dark:text-gray-400" size={20} />
-            <p className="w-full dark:text-white">{correlative.resolution}</p>
+          <div className="flex w-full gap-2">
+            <ScrollText className=" dark:text-blue-300" size={20} />
+            <p className="w-full dark:text-white">
+              Tipo de Factura :{' '}
+              {correlativesTypes.find((t) => t.value === correlative.typeVoucher)
+                ? `${correlativesTypes.find((t) => t.value === correlative.typeVoucher)?.value} - ${correlativesTypes.find((t) => t.value === correlative.typeVoucher)?.label}`
+                : 'Tipo no encontrado'}
+            </p>
+          </div>
+          <div className="flex w-full gap-2">
+            <Proportions className=" dark:text-blue-300" size={20} />
+            <p className="w-full dark:text-white">Resolucion : {correlative.resolution}</p>
+          </div>
+          <div className="flex w-full gap-2">
+            <Columns3 className=" dark:text-blue-300" size={20} />
+            <p className="w-full dark:text-white">Serie : {correlative.serie}</p>
+          </div>
+          <div className="flex w-full gap-2">
+            <Minus className=" dark:text-blue-300" />
+            <p className="w-full dark:text-white">Inicio : {correlative.from}</p>
+          </div>
+          <div className="flex w-full gap-2">
+            <Diff className=" dark:text-blue-300" size={20} />
+            <p className="w-full dark:text-white">Fin : {correlative.to}</p>
+          </div>
+          <div className="flex w-full gap-2">
+            <ArrowLeft className=" dark:text-blue-300" size={20} />
+            <p className="w-full dark:text-white">Anterior : {correlative.prev}</p>
+          </div>
+          <div className="flex w-full gap-2">
+            <ArrowRight className=" dark:text-blue-300" size={20} />
+            <p className="w-full dark:text-white">Siguiente : {correlative.next}</p>
+          </div>
+          <div className="flex w-full gap-2">
+            <Store className=" dark:text-blue-300" size={20} />
+            <p className="w-full dark:text-white">
+              Sucursal : {correlative?.branch?.name ?? 'N/A'}
+            </p>
           </div>
         </div>
         <div className="flex flex-col items-end justify-between w-full gap-4">

@@ -6,35 +6,24 @@ import {
   Select,
   SelectItem,
   useDisclosure,
-} from "@nextui-org/react";
-import {
-  DollarSign,
-  Plus,
-  Printer,
-  ScrollText,
-  Search,
-  Trash,
-  Truck,
-} from "lucide-react";
-import { useContext, useEffect, useState } from "react";
-import { useBranchProductStore } from "../../store/branch_product.store";
-import { Branches } from "../../types/branches.types";
-import { useBranchesStore } from "../../store/branches.store";
-import { useSupplierStore } from "../../store/supplier.store";
-import { global_styles } from "../../styles/global.styles";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
-import { ThemeContext } from "../../hooks/useTheme";
-import { IBranchProductOrderQuantity } from "../../types/branch_products.types";
-import HeadlessModal from "../global/HeadlessModal";
-import {
-  IBranchProductOrder,
-  PurchaseOrderPayload,
-} from "../../types/purchase_orders.types";
-import { usePurchaseOrdersStore } from "../../store/purchase_orders.store";
-import PurchaseOrders from "../invoice/PurchaseOrders";
-import { pdf } from "@react-pdf/renderer";
-import print from "print-js";
+} from '@nextui-org/react';
+import { DollarSign, Plus, Printer, ScrollText, Search, Trash, Truck } from 'lucide-react';
+import { useContext, useEffect, useState } from 'react';
+import { useBranchProductStore } from '../../store/branch_product.store';
+import { Branches } from '../../types/branches.types';
+import { useBranchesStore } from '../../store/branches.store';
+import { useSupplierStore } from '../../store/supplier.store';
+import { global_styles } from '../../styles/global.styles';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+import { ThemeContext } from '../../hooks/useTheme';
+import { IBranchProductOrderQuantity } from '../../types/branch_products.types';
+import HeadlessModal from '../global/HeadlessModal';
+import { IBranchProductOrder, PurchaseOrderPayload } from '../../types/purchase_orders.types';
+import { usePurchaseOrdersStore } from '../../store/purchase_orders.store';
+import PurchaseOrders from '../invoice/PurchaseOrders';
+import { pdf } from '@react-pdf/renderer';
+import print from 'print-js';
 
 interface Props {
   closeModal: () => void;
@@ -51,18 +40,18 @@ function AddPurchaseOrders(props: Props) {
     deleteProductOrder,
     orders_by_supplier,
     clearProductOrders,
-    updatePriceOrders
+    updatePriceOrders,
   } = useBranchProductStore();
 
   const { getSupplierList, supplier_list } = useSupplierStore();
 
   const { branch_list, getBranchesList } = useBranchesStore();
 
-  const [branch, setBranch] = useState("");
-  const [supplier, setSupplier] = useState("");
+  const [branch, setBranch] = useState('');
+  const [supplier, setSupplier] = useState('');
 
   useEffect(() => {
-    getBranchProductOrders(branch, supplier, "", "");
+    getBranchProductOrders(branch, supplier, '', '');
   }, [branch, supplier]);
 
   useEffect(() => {
@@ -76,13 +65,8 @@ function AddPurchaseOrders(props: Props) {
     color: theme.colors.primary,
   };
 
-  const handlePrint = async (
-    products: IBranchProductOrderQuantity[],
-    supplierName: string
-  ) => {
-    const total = products
-      .map((p) => Number(p.price) * p.quantity)
-      .reduce((a, b) => a + b, 0);
+  const handlePrint = async (products: IBranchProductOrderQuantity[], supplierName: string) => {
+    const total = products.map((p) => Number(p.price) * p.quantity).reduce((a, b) => a + b, 0);
     const blob = await pdf(
       <PurchaseOrders
         supplier={supplierName}
@@ -102,7 +86,7 @@ function AddPurchaseOrders(props: Props) {
 
     print({
       printable: URL_PDF,
-      type: "pdf",
+      type: 'pdf',
       showModal: false,
     });
   };
@@ -111,9 +95,7 @@ function AddPurchaseOrders(props: Props) {
 
   const handleSaveOrder = async () => {
     for (let i = 0; i < orders_by_supplier.length; i++) {
-      const products: IBranchProductOrder[] = orders_by_supplier[
-        i
-      ].products.map((prd) => ({
+      const products: IBranchProductOrder[] = orders_by_supplier[i].products.map((prd) => ({
         productId: prd.id,
         quantity: prd.quantity,
         unitPrice: Number(prd.price),
@@ -140,17 +122,11 @@ function AddPurchaseOrders(props: Props) {
   };
 
   return (
-    <div className="w-full">
-      <div className="w-full flex flex-col justify-between">
+    <div className="w-full ">
+      <div className="w-full bg- flex flex-col justify-between">
         <div className="w-full flex justify-between">
-          <p className="text-xl dark:text-white font-semibold">
-            Lista de productos
-          </p>
-          <Button
-            onClick={vaul.onOpen}
-            isIconOnly
-            style={global_styles().thirdStyle}
-          >
+          <p className="text-xl dark:text-white font-semibold">Lista de productos</p>
+          <Button onClick={vaul.onOpen} isIconOnly style={global_styles().thirdStyle}>
             <Plus />
           </Button>
         </div>
@@ -163,36 +139,35 @@ function AddPurchaseOrders(props: Props) {
               <div className="bg-gray-600 dark:bg-gray-200"></div>
               <div className="bg-gray-600 dark:bg-gray-200"></div>
             </div>
-            <p className="dark:text-white text-xl pb-10">
-              Aun no agregas productos
-            </p>
+            <p className="dark:text-white text-xl pb-10">Aun no agregas productos</p>
           </div>
         )}
 
         {orders_by_supplier.map((supplier, index) => (
           <div key={index} className="w-full">
-            <p className="dark:text-white">
-              Proveedor: {supplier.supplier.nombre}
-            </p>
+            <p className="dark:text-white">Proveedor: {supplier.supplier.nombre}</p>
             <DataTable
               className="shadow mt-5"
               emptyMessage="No se encontraron resultados"
               value={supplier.products}
-              tableStyle={{ minWidth: "50rem" }}
+              tableStyle={{ minWidth: '50rem' }}
             >
               <Column
+                className="dark:text-white"
                 headerClassName="text-sm font-semibold"
-                headerStyle={{ ...style, borderTopLeftRadius: "10px" }}
+                headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
                 field="id"
                 header="No."
               />
               <Column
+                className="dark:text-white"
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
                 field="product.name"
                 header="Nombre"
               />
               <Column
+                className="dark:text-white"
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
                 field="quantity"
@@ -211,12 +186,14 @@ function AddPurchaseOrders(props: Props) {
                 )}
               />
               <Column
+                className="dark:text-white"
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
                 field="product.code"
                 header="Código"
               />
               <Column
+                className="dark:text-white"
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
                 field="price"
@@ -236,7 +213,7 @@ function AddPurchaseOrders(props: Props) {
                 )}
               />
               <Column
-                headerStyle={{ ...style, borderTopRightRadius: "10px" }}
+                headerStyle={{ ...style, borderTopRightRadius: '10px' }}
                 header="Acciones"
                 body={(item) => (
                   <div className="flex w-full gap-5">
@@ -253,9 +230,7 @@ function AddPurchaseOrders(props: Props) {
             </DataTable>
             <div className="w-full py-5 flex justify-start">
               <Button
-                onClick={() =>
-                  handlePrint(supplier.products, supplier.supplier.nombre)
-                }
+                onClick={() => handlePrint(supplier.products, supplier.supplier.nombre)}
                 style={global_styles().warningStyles}
               >
                 <Printer />
@@ -278,16 +253,16 @@ function AddPurchaseOrders(props: Props) {
         isOpen={vaul.isOpen}
         onClose={vaul.onClose}
         title="Nueva orden de compra"
-        size="w-screen h-screen pb-20 md:pb-0 p-5 overflow-y-auto xl:w-[80vw]"
+        size="w-screen dark:bg-gray-900 h-screen pb-20 md:pb-0 p-5 overflow-y-auto xl:w-[80vw]"
       >
-        <div className="w-full bg-white dark:bg-gray-800">
+        <div className="w-full  dark:bg-gray-900">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             <div>
               <Select
                 label="Sucursal"
                 value={branch}
                 onSelectionChange={(e) => {
-                  const setkeys = new Set((e as unknown) as string[]);
+                  const setkeys = new Set(e as unknown as string[]);
                   const keysArray = Array.from(setkeys);
                   if (keysArray.length > 0) {
                     setBranch(keysArray[0]);
@@ -299,11 +274,7 @@ function AddPurchaseOrders(props: Props) {
                 className="w-full dark:text-white"
               >
                 {branch_list.map((branch: Branches) => (
-                  <SelectItem
-                    className="dark:text-white"
-                    key={branch.name}
-                    value={branch.name}
-                  >
+                  <SelectItem className="dark:text-white" key={branch.name} value={branch.name}>
                     {branch.name}
                   </SelectItem>
                 ))}
@@ -323,7 +294,7 @@ function AddPurchaseOrders(props: Props) {
                 {supplier_list.map((branch) => (
                   <AutocompleteItem
                     className="dark:text-white"
-                    key={branch.id}
+                    key={branch.id ?? 0}
                     value={branch.id}
                   >
                     {branch.nombre}
@@ -343,11 +314,7 @@ function AddPurchaseOrders(props: Props) {
             </div>
           </div>
           <div className="w-full flex justify-end py-5">
-            <Button
-              onClick={vaul.onClose}
-              style={global_styles().secondaryStyle}
-              className="px-10"
-            >
+            <Button onClick={vaul.onClose} style={global_styles().secondaryStyle} className="px-10">
               Aceptar
             </Button>
           </div>
@@ -357,20 +324,14 @@ function AddPurchaseOrders(props: Props) {
                 key={branch_product.id}
                 className="shadow border p-4 rounded-lg dark:border-gray-500"
               >
-                <p className="font-semibold dark:text-white">
-                  {branch_product.product.name}
-                </p>
+                <p className="font-semibold dark:text-white">{branch_product.product.name}</p>
                 <p className="dark:text-white">Stock: {branch_product.stock}</p>
                 <p className="mt-2 flex gap-3 dark:text-white">
                   <Truck /> {branch_product.supplier.nombre}
                 </p>
-                {/* <p className="mt-2 flex gap-3 dark:text-white">
-                  <ScrollText /> {branch_product.product.categoryProduct.name}
-                </p> */}
 
                 <p className="mt-2 flex gap-3 dark:text-white">
                   <ScrollText /> {branch_product.product.subCategory.categoryProduct.name}
-                
                 </p>
                 <p className="mt-2 flex gap-3 dark:text-white">
                   <DollarSign /> ${branch_product.price}

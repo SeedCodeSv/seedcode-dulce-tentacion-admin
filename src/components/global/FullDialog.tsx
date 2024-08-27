@@ -1,5 +1,5 @@
-import { Dialog, Transition } from "@headlessui/react";
-import { X } from "lucide-react";
+import { Dialog, Transition } from '@headlessui/react';
+import { X } from 'lucide-react';
 interface Props {
   isOpen: boolean;
   onClose: () => void;
@@ -13,13 +13,11 @@ export default function FullDialog(props: Props) {
   return (
     <>
       <Transition appear show={isOpen}>
-        <Dialog
-          as="div"
-          className="relative z-[1140] focus:outline-none"
-          onClose={onClose}
-        >
-          <div className="fixed inset-0 z-[1150] w-screen h-screen overflow-hidden
-          ">
+        <Dialog as="div" className="relative z-[1140] focus:outline-none" onClose={onClose}>
+          <div
+            className="fixed inset-0 z-[1150] w-screen h-screen overflow-hidden
+          "
+          >
             <div className="flex min-h-full items-center justify-center">
               <Transition.Child
                 enter="ease-out duration-300"
@@ -29,12 +27,9 @@ export default function FullDialog(props: Props) {
                 leaveFrom="opacity-100 transform-[scale(100%)]"
                 leaveTo="opacity-0 transform-[scale(95%)]"
               >
-                <Dialog.Panel className="w-screen h-screen overflow-y-auto bg-white dark:bg-gray-800 p-8 backdrop-blur-2xl">
+                <Dialog.Panel className="w-screen h-screen border border-white rounded-2xl overflow-y-auto bg-white dark:bg-gray-900 p-8 backdrop-blur-2xl">
                   <div className="w-full flex justify-between mb-5">
-                    <Dialog.Title
-                      as="h3"
-                      className="text-base/7 font-medium dark:text-white"
-                    >
+                    <Dialog.Title as="h3" className="text-base/7 font-medium dark:text-white">
                       {title}
                     </Dialog.Title>
                     <button onClick={onClose} className="bg-transparent border-0 outline-none">

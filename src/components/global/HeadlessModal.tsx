@@ -29,7 +29,7 @@ function HeadlessModal(props: Props) {
           }
         }}
       >
-        <div className="fixed inset-0 z-[1151] w-screen h-screen overflow-hidden">
+        <div className="fixed backdrop-blur-sm inset-0 z-[1151] w-screen h-screen overflow-hidden">
           <div className="flex items-center justify-center w-screen h-screen overflow-hidden">
             <Transition.Child
               enter="ease-out duration-300"
@@ -55,7 +55,7 @@ function HeadlessModal(props: Props) {
                   'relative transform bg-white z-[100] text-left shadow-xl transition-all'
                 )}
               >
-                <div className="w-full h-full p-3 overflow-y-auto bg-white dark:bg-gray-800">
+                <div className="w-full border border-white h-full p-3  rounded-lg overflow-y-auto bg-white dark:bg-gray-900">
                   <div>
                     <div className="mt-3 text-center sm:mx-4 sm:mt-0 sm:text-left">
                       <div className="flex justify-between w-full">

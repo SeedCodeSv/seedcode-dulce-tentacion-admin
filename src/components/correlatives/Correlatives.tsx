@@ -11,12 +11,13 @@ import { useBranchesStore } from '@/store/branches.store';
 import HeadlessModal from '../global/HeadlessModal';
 import UpdateCorrelative from './UpdateCorrelative';
 import { Correlatives } from '@/types/correlatives/correlatives_types';
-import { CreditCard, EditIcon, Lock, List, Table as ITable } from 'lucide-react';
+import { CreditCard, EditIcon, Lock, List, Table as ITable, Search } from 'lucide-react';
 import CreateCorrelative from './CreateCorrelatives';
 import AddButton from '../global/AddButton';
 import NotAddButton from '../global/NoAdd';
 import useWindowSize from '@/hooks/useWindowSize';
 import MobileView from './mode_correlative/MobileView';
+import SearchCorrelative from './search_correlative/SearchCorrelative';
 
 function CorrelativesList({ actions }: { actions: string[] }) {
   const { theme } = useContext(ThemeContext);
@@ -24,7 +25,6 @@ function CorrelativesList({ actions }: { actions: string[] }) {
     backgroundColor: theme.colors.dark,
     color: theme.colors.primary,
   };
-
   const { getBranchesList, branch_list } = useBranchesStore();
   const { correlatives, OnGetByBranchAndTypeVoucherCorrelatives, pagination_correlatives } =
     useCorrelativesStore();
@@ -35,8 +35,7 @@ function CorrelativesList({ actions }: { actions: string[] }) {
   useEffect(() => {
     getBranchesList();
     OnGetByBranchAndTypeVoucherCorrelatives(1, 5, filter.branchName, filter.correlativeType);
-  }, [filter]);
-
+  }, []);
   const [correlative, setCorrelative] = useState<Correlatives>();
   const [modalOpen, setModalOpen] = useState(false);
   const [modalOpenCreate, setModalOpenCreate] = useState(false);
@@ -46,72 +45,101 @@ function CorrelativesList({ actions }: { actions: string[] }) {
     setModalOpen(true);
   };
   const { windowSize } = useWindowSize();
-
   const [view, setView] = useState<'table' | 'grid' | 'list'>(
     windowSize.width < 768 ? 'grid' : 'table'
   );
-
   return (
-    <div className=" w-full h-full p-5 bg-gray-50 dark:bg-gray-900">
+    <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
       <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
-        <div className="flex justify-end items-end mb-3">
+        <div className="flex justify-between items-end ">
+          <SearchCorrelative></SearchCorrelative>
           {actions.includes('Agregar') ? (
             <AddButton onClick={() => setModalOpenCreate(true)} />
           ) : (
             <NotAddButton></NotAddButton>
           )}
         </div>
-        <div className="grid grid-cols-2 gap-5 mb-3">
-          <Autocomplete
-            onSelectionChange={(e) => {
-              const selectNameBranch = branch_list.find(
-                (bra) => bra.name === new Set([e]).values().next().value
-              );
-              setFilter({ ...filter, branchName: selectNameBranch?.name || '' });
+
+        <div className="grid grid-cols-3 gap-5  mb-3 hidden md:grid">
+          <div className="w-full">
+            <Autocomplete
+              onSelectionChange={(e) => {
+                const selectNameBranch = branch_list.find(
+                  (bra) => bra.name === new Set([e]).values().next().value
+                );
+                setFilter({ ...filter, branchName: selectNameBranch?.name || '' });
+              }}
+              label="Sucursal"
+              labelPlacement="outside"
+              placeholder="Selecciona la sucursal"
+              variant="bordered"
+              className="dark:text-white"
+              onClear={() => {
+                setFilter({ ...filter, branchName: '' });
+              }}
+              classNames={{
+                base: 'font-semibold text-sm',
+              }}
+            >
+              {branch_list.map((bra) => (
+                <AutocompleteItem className="dark:text-white" value={bra.name} key={bra.name}>
+                  {bra.name}
+                </AutocompleteItem>
+              ))}
+            </Autocomplete>
+          </div>
+
+          <div className="w-full">
+            <Autocomplete
+              onSelectionChange={(e) => {
+                const selectCorrelativeType = correlativesTypes.find(
+                  (dep) => dep.value === new Set([e]).values().next().value
+                );
+                setFilter({ ...filter, correlativeType: selectCorrelativeType?.value || '' });
+              }}
+              label="Tipo de Factura"
+              labelPlacement="outside"
+              placeholder="Selecciona el Tipo de Factura"
+              variant="bordered"
+              className="dark:text-white"
+              classNames={{
+                base: 'text-gray-500 text-sm',
+              }}
+            >
+              {correlativesTypes.map((dep) => (
+                <AutocompleteItem className="dark:text-white" value={dep.label} key={dep.value}>
+                  {dep.value + ' - ' + dep.label}
+                </AutocompleteItem>
+              ))}
+            </Autocomplete>
+          </div>
+
+          <Button
+            startContent={<Search />}
+            style={{
+              backgroundColor: theme.colors.secondary,
+              color: theme.colors.primary,
             }}
-            label="Sucursal"
-            labelPlacement="outside"
-            placeholder="Selecciona la sucursal"
-            variant="bordered"
-            className="dark:text-white"
-            classNames={{
-              base: 'font-semibold text-sm',
-            }}
+            onClick={() =>
+              OnGetByBranchAndTypeVoucherCorrelatives(
+                1,
+                5,
+                filter.branchName,
+                filter.correlativeType
+              )
+            }
+            className="w-full mt-5"
           >
-            {branch_list.map((bra) => (
-              <AutocompleteItem className="dark:text-white" value={bra.name} key={bra.name}>
-                {bra.name}
-              </AutocompleteItem>
-            ))}
-          </Autocomplete>
-          <Autocomplete
-            onSelectionChange={(e) => {
-              const selectCorrelativeType = correlativesTypes.find(
-                (dep) => dep.value === new Set([e]).values().next().value
-              );
-              setFilter({ ...filter, correlativeType: selectCorrelativeType?.value || '' });
-            }}
-            label="Tipo de Factura"
-            labelPlacement="outside"
-            placeholder="Selecciona el Tipo de Factura"
-            variant="bordered"
-            className="dark:text-white"
-            classNames={{
-              base: 'text-gray-500 text-sm',
-            }}
-          >
-            {correlativesTypes.map((dep) => (
-              <AutocompleteItem className="dark:text-white" value={dep.label} key={dep.value}>
-                {dep.value + ' - ' + dep.label}
-              </AutocompleteItem>
-            ))}
-          </Autocomplete>
+            Buscar
+          </Button>
         </div>
-        <div className="flex items-end justify-end gap-10 mb-3 lg:justify-end">
+
+        <div className="flex items-end justify-end gap-10 mt-3   lg:justify-end">
           <ButtonGroup>
             <Button
               isIconOnly
               color="secondary"
+              className="hidden md:inline-flex"
               style={{
                 backgroundColor: view === 'table' ? theme.colors.third : '#e5e5e5',
                 color: view === 'table' ? theme.colors.primary : '#3e3e3e',
@@ -120,6 +148,7 @@ function CorrelativesList({ actions }: { actions: string[] }) {
             >
               <ITable />
             </Button>
+
             <Button
               isIconOnly
               color="default"
@@ -145,7 +174,7 @@ function CorrelativesList({ actions }: { actions: string[] }) {
           </ButtonGroup>
         </div>
 
-        <div className="flex flex-col justify-between w-full gap-5 lg:flex-row lg:gap-0">
+        <div className="flex flex-col justify-between  xl:mt-5 w-full gap-5 lg:flex-row lg:gap-0">
           {(view === 'grid' || view === 'list') && (
             <MobileView
               openEditModal={(correlative) => handleUpdate(correlative)}
@@ -289,7 +318,7 @@ function CorrelativesList({ actions }: { actions: string[] }) {
                   }}
                 />
               </div>
-              <div className="flex w-full mt-5 md:hidden">
+              <div className="flex w-full md:hidden fixed bottom-0 left-0 bg-white dark:bg-gray-900 z-20 shadow-lg p-3">
                 <SmPagination
                   handleNext={() => {
                     OnGetByBranchAndTypeVoucherCorrelatives(

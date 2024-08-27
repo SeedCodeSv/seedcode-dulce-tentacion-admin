@@ -1,7 +1,7 @@
-import { ThemeContext } from "@/hooks/useTheme";
-import classNames from "classnames";
-import { AnimatePresence, motion } from "framer-motion";
-import { useContext } from "react";
+import { ThemeContext } from '@/hooks/useTheme';
+import classNames from 'classnames';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useContext } from 'react';
 
 interface BottomDrawerProps {
   children: React.ReactNode;
@@ -25,19 +25,19 @@ export default function BottomDrawer(props: BottomDrawerProps) {
             onClick={props.onClose}
           />
           <motion.div
-            initial={{ y: "100%" }}
-            animate={{ y: props.open ? 0 : "100%" }}
-            exit={{ y: "100%" }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            initial={{ y: '100%' }}
+            animate={{ y: props.open ? 0 : '100%' }}
+            exit={{ y: '100%' }}
+            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
             drag="y"
             dragConstraints={{ top: 0, bottom: 0 }}
             onDragEnd={(_, info) => {
               if (info.offset.y > 100) props.onClose();
             }}
             className={classNames(
-              context ,
-              "fixed bottom-0 dark:bg-gray-800 left-0 z-[60] right-0 p-4 bg-white shadow-xl rounded-t-2xl"
-            )} //"fixed bottom-0 left-0 z-[60] right-0 p-4 bg-white shadow-xl rounded-t-2xl"}
+              context,
+              'fixed bottom-0 dark:bg-gray-800 left-0 z-[60] right-0 p-4 bg-white shadow-xl rounded-t-2xl border dark:border-white'
+            )}
           >
             <div className="flex items-center justify-center w-full">
               <span className="w-16 h-2 bg-gray-300 border rounded dark:bg-gray-400"></span>
