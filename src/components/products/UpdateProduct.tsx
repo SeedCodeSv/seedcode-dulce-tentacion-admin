@@ -7,8 +7,8 @@ import { CategoryProduct } from '../../types/categories.types';
 import { ThemeContext } from '../../hooks/useTheme';
 import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
 import { useSubCategoriesStore } from '../../store/sub-categories.store';
-import { toast } from 'sonner';
-import { verify_code_product } from '../../services/products.service';
+// import { toast } from 'sonner';
+// import { verify_code_product } from '../../services/products.service';
 
 interface Props {
   product?: Product;
@@ -33,59 +33,27 @@ function UpdateProduct({ product, onCloseModal }: Props) {
   const initialProductState: ProductPayload = {
     name: product?.name || '',
     description: product?.description || '',
-    // price: product?.price || "",
-    // costoUnitario: product?.costoUnitario || "",
     subCategoryId: product?.subCategoryId || 0,
     tipoDeItem: product?.tipoDeItem || '',
     unidaDeMedida: product?.unidaDeMedida || '',
     tipoItem: product?.tipoItem || '',
     uniMedida: product?.uniMedida || '',
     code: product?.code || '',
-    // branch: [],
-    // supplierId: 0,
   };
 
   const [dataUpdateProduct, setDataUpdateProduct] = useState<ProductPayload>(initialProductState);
-  const [codigo, setCodigo] = useState(product?.code || '');
-  const [error, setError] = useState(false);
 
   const handleSave = async () => {
-    const letvalue = dataUpdateProduct.code !== "N/A";
-
-    if (letvalue) {
-  const verify = await verifyCode(dataUpdateProduct.code);
-   if(!verify){
-    toast.error('Codigo en uso');
-   return;
-   }
-  }
+    // const letvalue = dataUpdateProduct.code !== 'N/A';
+    // if (letvalue) {
+    //   const verify = await verifyCode(dataUpdateProduct.code);
+    //   if (!verify) {
+    //     toast.error('Codigo en uso');
+    //     return;
+    //   }
+    // }
     patchProducts(dataUpdateProduct, product?.id || 0);
     onCloseModal();
-  };
-
-  const generarCodigo = async () => {
-    const makeid = (length: number) => {
-      let result = '';
-      const characters = '0123456789';
-      const charactersLength = characters.length;
-      for (let i = 0; i < length; i++) {
-        result += characters.charAt(Math.floor(Math.random() * charactersLength));
-      }
-      return result;
-    };
-    const codigoGenerado = makeid(12);
-    setCodigo(codigoGenerado);
-    setDataUpdateProduct((prev) => ({
-      ...prev,
-      code: codigoGenerado,
-    }));
-    const verify = await verifyCode(codigoGenerado);
-    if (verify) {
-      setError(false);
-    }
-    else {
-      setError(true);
-    }
   };
 
   const handleInputChange = (
@@ -98,17 +66,6 @@ function UpdateProduct({ product, onCloseModal }: Props) {
       ...prev,
       [field]: value,
     }));
-  };
-
-  const verifyCode = async (code: string) => {
-    try {
-      const data = await verify_code_product(code);
-      if (data.data.ok === true) {
-        return true;
-      }
-    } catch (error) {
-      return false;
-    }
   };
 
   return (
@@ -141,34 +98,6 @@ function UpdateProduct({ product, onCloseModal }: Props) {
               variant="bordered"
             />
           </div>
-          {/* <div className="pt-2">
-            <Input
-              onChange={(e) => handleInputChange(e, "price")}
-              label="Precio"
-              defaultValue={product?.price}
-              labelPlacement="outside"
-              name="price"
-              placeholder="00.00"
-              classNames={{ label: "font-semibold text-gray-500 text-sm" }}
-              variant="bordered"
-              type="number"
-              startContent="$"
-            />
-          </div>
-          <div className="pt-2">
-            <Input
-              onChange={(e) => handleInputChange(e, "costoUnitario")}
-              label="Costo unitario"
-              labelPlacement="outside"
-              defaultValue={product?.costoUnitario}
-              name="costoUnitario"
-              placeholder="00.00"
-              classNames={{ label: "font-semibold text-gray-500 text-sm" }}
-              variant="bordered"
-              type="number"
-              startContent="$"
-            />
-          </div> */}
           <div className="mt-2">
             <Autocomplete
               onSelectionChange={(key) => {
@@ -294,15 +223,19 @@ function UpdateProduct({ product, onCloseModal }: Props) {
                 labelPlacement="outside"
                 name="code"
                 defaultValue={product?.code}
-                value={codigo}
+                // value={code}
+                onChange={(e) => handleInputChange(e, 'code')}
                 placeholder="Ingresa o genera el código"
                 classNames={{ label: 'font-semibold text-sm' }}
                 variant="bordered"
               />
-               {error && (
-                      <p className="text-xs text-red-500 font-semibold mt-1 ml-1">{"Este código ya existe"}</p>)}
+              {/* {error && (
+                <p className="text-xs text-red-500 font-semibold mt-1 ml-1">
+                  {'Este código ya existe'}
+                </p>
+              )} */}
             </div>
-            <div className="mt-8 w-25">
+            {/* <div className="mt-8 w-25">
               <Button
                 className="w-full text-sm font-semibold"
                 style={{
@@ -315,7 +248,7 @@ function UpdateProduct({ product, onCloseModal }: Props) {
               >
                 Generar Código
               </Button>
-            </div>
+            </div> */}
             {/* <div className="mt-8 w-25">
               <Button
                 className="w-full text-sm font-semibold"
