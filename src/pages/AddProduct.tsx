@@ -186,7 +186,6 @@ function AddProduct() {
     return codigoGenerado;
   };
 
-
   const verifyCode = async (codigo: string) => {
     try {
       if (codigo !== 'N/A') {
@@ -235,10 +234,8 @@ function AddProduct() {
                       labelPlacement="outside"
                       label="Nombre"
                       placeholder="Ingresa el nombre"
-                      // onChange={handleChange('name')}
                       onChange={(e) => {
                         handleChange('name')(e);
-                        // setName(e.target.value);
                       }}
                       onBlur={handleBlur('name')}
                       value={values.name}

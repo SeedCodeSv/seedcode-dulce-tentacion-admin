@@ -1,6 +1,11 @@
 import { create } from 'zustand';
 import { IBranchProductStore } from './types/branch_product.types';
-import { get_branch_product, get_branch_product_orders, get_branches, get_product_by_code } from '../services/branch_product.service';
+import {
+  get_branch_product,
+  get_branch_product_orders,
+  get_branches,
+  get_product_by_code,
+} from '../services/branch_product.service';
 import { toast } from 'sonner';
 import { groupBySupplier } from '../utils/filters';
 // import { totalAPagar } from '../components/new_sales/MainView';
@@ -23,6 +28,17 @@ export const useBranchProductStore = create<IBranchProductStore>((set, get) => (
   order_branch_products: [],
   orders_by_supplier: [],
   branches_list: [],
+  branch_product_order_paginated: {
+    branchProducts: [],
+    total: 0,
+    totalPag: 0,
+    currentPag: 0,
+    nextPag: 0,
+    prevPag: 0,
+    status: 200,
+    ok: true,
+  },
+  branch_product_order_paginated_loading: false,
   addProductOrder(product) {
     const products = get().order_branch_products;
     const existProduct = products.find((cp) => cp.id === product.id);
@@ -34,14 +50,14 @@ export const useBranchProductStore = create<IBranchProductStore>((set, get) => (
           ...products,
           {
             ...product,
-            quantity: 1
+            quantity: 1,
           },
         ],
       });
       toast.success('Se agrego el producto a la orden');
     }
 
-    set({ orders_by_supplier: groupBySupplier(get().order_branch_products) })
+    set({ orders_by_supplier: groupBySupplier(get().order_branch_products) });
   },
   deleteProductOrder(id) {
     const find = get().order_branch_products.find((cp) => cp.id === id);
@@ -49,7 +65,7 @@ export const useBranchProductStore = create<IBranchProductStore>((set, get) => (
       const products = get().order_branch_products.filter((cp) => cp.id !== id);
       set({ order_branch_products: products });
     }
-    set({ orders_by_supplier: groupBySupplier(get().order_branch_products) })
+    set({ orders_by_supplier: groupBySupplier(get().order_branch_products) });
   },
   updateQuantityOrders(id, quantity) {
     set((state) => ({
@@ -58,7 +74,7 @@ export const useBranchProductStore = create<IBranchProductStore>((set, get) => (
       ),
     }));
 
-    set({ orders_by_supplier: groupBySupplier(get().order_branch_products) })
+    set({ orders_by_supplier: groupBySupplier(get().order_branch_products) });
   },
   updatePriceOrders(id, price) {
     set((state) => ({
@@ -67,28 +83,30 @@ export const useBranchProductStore = create<IBranchProductStore>((set, get) => (
       ),
     }));
 
-    set({ orders_by_supplier: groupBySupplier(get().order_branch_products) })
+    set({ orders_by_supplier: groupBySupplier(get().order_branch_products) });
   },
   getProductByCodeOrders(branch, supplier, product, code) {
-    get_branch_product_orders(branch, supplier, product, code).then(({ data }) => {
-      if (data.branchProducts.length > 0) {
-        get().addProductOrder(data.branchProducts[0])
-      }
-    }).catch(() => {
-      set({ branch_product_order: [] });
-    });
+    get_branch_product_orders(branch, supplier, product, code)
+      .then(({ data }) => {
+        if (data.branchProducts.length > 0) {
+          get().addProductOrder(data.branchProducts[0]);
+        }
+      })
+      .catch(() => {
+        set({ branch_product_order: [] });
+      });
   },
   clearProductOrders() {
     set({ order_branch_products: [] });
-    set({ orders_by_supplier: [] })
+    set({ orders_by_supplier: [] });
   },
-  getBranchProductOrders(branch, supplier, product, code) {
-    get_branch_product_orders(branch, supplier, product, code).then(({ data }) => {
-      set({ branch_product_order: data.branchProducts })
-    }).catch(() => {
-      set({ branch_product_order: [] });
-    });
-  },
+  // getBranchProductOrders(branch, supplier, product, code) {
+  //   get_branch_product_orders(branch, supplier, product, code).then(({ data }) => {
+  //     set({ branch_product_order: data.branchProducts })
+  //   }).catch(() => {
+  //     set({ branch_product_order: [] });
+  //   });
+  // },
   getPaginatedBranchProducts(branchId, page = 1, limit = 5, name, code) {
     get_branch_product(branchId, page, limit, name, code)
       .then(({ data }) => {
@@ -122,6 +140,43 @@ export const useBranchProductStore = create<IBranchProductStore>((set, get) => (
         });
       });
   },
+
+  getBranchProductOrders(branch, supplier, product, code, page = 1, limit = 5) {
+    set({ branch_product_order_paginated_loading: true });
+    get_branch_product_orders(branch, supplier, product, code, page, limit)
+      .then(({ data }) => {
+        set({
+          branch_product_order_paginated_loading: false,
+          branch_product_order_paginated: {
+            branchProducts: data.branchProducts,
+            total: data.total,
+            totalPag: data.totalPag,
+            currentPag: data.currentPag,
+            nextPag: data.nextPag,
+            prevPag: data.prevPag,
+            status: data.status,
+            ok: data.ok,
+          },
+        });
+      })
+      .catch(() => {
+        set({
+          branch_product_order_paginated_loading: false,
+          branch_product_order: [],
+          branch_product_order_paginated: {
+            branchProducts: [],
+            total: 0,
+            totalPag: 0,
+            currentPag: 0,
+            nextPag: 0,
+            prevPag: 0,
+            status: 404,
+            ok: false,
+          },
+        });
+      });
+  },
+
   getProductByCode(transmitter_id, code) {
     get_product_by_code(transmitter_id, code).then(({ data }) => {
       const { cart_products } = get();
@@ -159,7 +214,7 @@ export const useBranchProductStore = create<IBranchProductStore>((set, get) => (
             quantity: 1,
             base_price: Number(product.price),
             discount: 0,
-            total: 0,// poner totalAPagar
+            total: 0, // poner totalAPagar
             porcentaje: 0,
           },
         ],
