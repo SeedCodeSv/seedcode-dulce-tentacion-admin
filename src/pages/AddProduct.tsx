@@ -130,7 +130,38 @@ function AddProduct() {
     });
   };
 
-  const generarCodigo = async () => {
+  const [codigo, setCodigoGenerado] = useState('');
+
+  // const generarCodigo = async () => {
+  //   const makeid = (length: number) => {
+  //     let result = '';
+  //     const characters = '0123456789';
+  //     const charactersLength = characters.length;
+  //     let counter = 0;
+  //     while (counter < length) {
+  //       result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  //       counter += 1;
+  //     }
+  //     return result;
+  //   };
+
+  //   const codigoGenerado = makeid(12);
+  //   const verify = await verifyCode(codigoGenerado);
+  //   if (verify) {
+  //     setError(false);
+  //     // toast.success("Codigo no registrado");
+  //   } else {
+  //     setError(true);
+  //   }
+  //   return codigoGenerado;
+  // };
+  const generarCodigo = async (name: string) => {
+    if (!name) {
+      toast.error('Necesitas ingresar el nombre del producto para generar el código.');
+      return '';
+    }
+
+    const productNameInitials = name.slice(0, 2).toUpperCase();
     const makeid = (length: number) => {
       let result = '';
       const characters = '0123456789';
@@ -143,16 +174,18 @@ function AddProduct() {
       return result;
     };
 
-    const codigoGenerado = makeid(12);
+    const randomNumber = makeid(2);
+    const codigoGenerado = `${productNameInitials}${randomNumber}`;
     const verify = await verifyCode(codigoGenerado);
     if (verify) {
       setError(false);
-      // toast.success("Codigo no registrado");
     } else {
       setError(true);
     }
+
     return codigoGenerado;
   };
+
 
   const verifyCode = async (codigo: string) => {
     try {
@@ -172,7 +205,7 @@ function AddProduct() {
   return (
     <Layout title="Nuevo producto">
       <div className=" w-full h-full p-5 bg-gray-50 dark:bg-gray-900">
-        <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+        <div className="w-full h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <button
             onClick={() => navigate('/products')}
             className="flex items-center gap-2 bg-transparent"
@@ -202,7 +235,11 @@ function AddProduct() {
                       labelPlacement="outside"
                       label="Nombre"
                       placeholder="Ingresa el nombre"
-                      onChange={handleChange('name')}
+                      // onChange={handleChange('name')}
+                      onChange={(e) => {
+                        handleChange('name')(e);
+                        // setName(e.target.value);
+                      }}
                       onBlur={handleBlur('name')}
                       value={values.name}
                       isInvalid={touched.name && !!errors.name}
@@ -273,24 +310,27 @@ function AddProduct() {
                   <div>
                     <div className="flex items-end gap-5 py-2">
                       <Input
-                        variant="bordered"
-                        labelPlacement="outside"
-                        label="Código"
-                        placeholder="Ingresa el codigo"
-                        className="dark:text-white"
-                        onChange={handleChange('code')}
+                        value={codigo || values.code}
                         onBlur={handleBlur('code')}
-                        value={values.code}
-                        isInvalid={touched.code && !!errors.code}
-                        errorMessage={touched.code && errors.code}
-                        classNames={{
-                          label: 'font-semibold dark:text-white text-gray-500 text-sm',
+                        onChange={(e) => {
+                          handleChange('code')(e);
+                          setCodigoGenerado(e.target.value);
                         }}
+                        name="code"
+                        labelPlacement="outside"
+                        placeholder="Ingresa el código"
+                        classNames={{
+                          label: 'font-semibold text-sm text-gray-600',
+                        }}
+                        variant="bordered"
+                        label="Código de producto"
                       />
                       <Button
                         onClick={async () => {
-                          const code = await generarCodigo();
-                          handleChange('code')(code);
+                          const code = await generarCodigo(values.name);
+                          if (code) {
+                            handleChange('code')(code);
+                          }
                         }}
                         className="px-6"
                         style={global_styles().thirdStyle}
@@ -303,13 +343,6 @@ function AddProduct() {
                         {'Este código ya existe'}
                       </p>
                     )}
-                    {/* <Button
-                      className="px-6"
-                      onClick={() => verifyCode(values.code)}
-                      style={global_styles().warningStyles}
-                    >
-                      Verificar
-                    </Button> */}
                   </div>
                   <div className="grid grid-cols-2 gap-3 py-2">
                     <Input
