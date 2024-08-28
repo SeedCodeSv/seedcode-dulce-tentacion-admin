@@ -16,3 +16,7 @@ export interface GridProps {
     actions: string[],
     handleActive: (id: number) => void
 }
+
+export interface IPropsSearchCategoryProduct {
+     nameCategoryProduct: (name : string ) => void
+}

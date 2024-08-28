@@ -79,7 +79,7 @@ function ListSubCategory({ actions }: PProps) {
   };
 
   return (
-    <div className=" w-full h-full p-10 bg-gray-50 dark:bg-gray-900">
+    <div className=" w-full h-full xl:p-10  p-5 bg-gray-50 dark:bg-gray-900">
       <div className="w-full h-full border-white border border-white p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
         <div className="flex flex-col justify-between w-full gap-5 mb-5 lg:mb-10 lg:flex-row lg:gap-0">
           <div className="flex items-end gap-3">
@@ -388,72 +388,6 @@ function ListSubCategory({ actions }: PProps) {
             </div>
           </>
 
-          // <DataTable
-          //   className="w-full shadow"
-          //   emptyMessage="No se encontraron resultados"
-          //   value={sub_categories_paginated.SubCategories}
-          //   tableStyle={{ minWidth: '50rem' }}
-          // >
-          //   <Column
-          //     headerClassName="text-sm font-semibold"
-          //     headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
-          //     bodyClassName={'dark:text-white'}
-          //     field="id"
-          //     header="No."
-          //   />
-          //   <Column
-          //     headerClassName="text-sm font-semibold"
-          //     bodyClassName={'dark:text-white'}
-          //     headerStyle={style}
-          //     field="name"
-          //     header="Nombre"
-          //   />
-          //   <Column
-          //     headerClassName="text-sm font-semibold"
-          //     bodyClassName={'dark:text-white'}
-          //     headerStyle={style}
-          //     field="categoryProduct.name"
-          //     header="Categoría de producto"
-          //   />
-          //   <Column
-          //     headerStyle={{ ...style, borderTopRightRadius: '10px' }}
-          //     header="Acciones"
-          //     body={(item) => (
-          //       <div className="flex gap-6">
-          //         {actions.includes('Editar') && (
-          //           <Button
-          //             onClick={() => {
-          //               setSelectedCategory(item);
-          //               4;
-          //               modalAdd.onOpen();
-          //             }}
-          //             isIconOnly
-          //             style={{
-          //               backgroundColor: theme.colors.secondary,
-          //             }}
-          //           >
-          //             <EditIcon style={{ color: theme.colors.primary }} size={20} />
-          //           </Button>
-          //         )}
-          //         {actions.includes('Eliminar') && (
-          //           <>
-          //             {item.isActive ? (
-          //               <DeletePopUp subcategory={item} />
-          //             ) : (
-          //               <Button
-          //                 // onClick={() => handleActivate(item.id)}
-          //                 isIconOnly
-          //                 style={global_styles().thirdStyle}
-          //               >
-          //                 <RefreshCcw />
-          //               </Button>
-          //             )}
-          //           </>
-          //         )}
-          //       </div>
-          //     )}
-          //   />
-          // </DataTable>
         )}
         {sub_categories_paginated.totalPag > 1 && (
           <>
@@ -468,8 +402,8 @@ function ListSubCategory({ actions }: PProps) {
                 }}
               />
             </div>
-            <div className="flex w-full mt-5 md:hidden">
-              <div className="flex w-full mt-5 md:hidden">
+            <div className="flex w-full md:hidden fixed bottom-0 left-0 bg-white dark:bg-gray-900 z-20 shadow-lg p-3">
+
                 <SmPagination
                   handleNext={() => {
                     getSubCategoriesPaginated(sub_categories_paginated.nextPag, limit, search);
@@ -480,7 +414,7 @@ function ListSubCategory({ actions }: PProps) {
                   currentPage={sub_categories_paginated.currentPag}
                   totalPages={sub_categories_paginated.totalPag}
                 />
-              </div>
+            
             </div>
           </>
         )}

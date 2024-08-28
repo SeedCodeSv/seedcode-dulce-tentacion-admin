@@ -263,6 +263,9 @@ function ListProducts({ actions }: Props) {
             </div>
           </div>
 
+
+
+
           <div className="flex flex-col gap-3 mt-3 lg:flex-row lg:justify-between lg:gap-10">
             <div className="flex justify-between justify-start order-2 lg:order-1">
               <Switch
@@ -338,9 +341,7 @@ function ListProducts({ actions }: Props) {
             </div>
           </div>
 
-          <div className="flex items-end justify-between w-full gap-5 pt-4 mb-5">
-            <div className="flex items-center"></div>
-          </div>
+         
           {(view === 'grid' || view === 'list') && (
             <MobileView
               DeletePopover={DeletePopover}
