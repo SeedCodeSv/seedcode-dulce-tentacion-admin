@@ -56,6 +56,8 @@ import UpdateNormalSupplier from '@/components/supplier/UpdateNormalSupplier';
 import CorrelativePage from '@/pages/CorrelativePage';
 import UpdateTributeSupplier from '@/components/supplier/UpdateTributeSupplier';
 import UpdateClientContributor from '@/components/clients/UpdateClientContributor';
+import AddPurchaseOrders from '@/components/list_purchase/AddPurchaseOrders';
+import PurchaseOrderForm from '@/components/list_purchase/PurchaseOrderForm';
 
 const Loading = () => {
   return <div>Cargando...</div>;
@@ -113,6 +115,14 @@ export const router = () => {
     {
       path: '/purchase-orders',
       element: checkAuthorization('Ordenes de Compra', <PurchaseOrders />),
+    },
+    {
+      path: '/add-purchase-order',
+      element: checkAuthorization('Ordenes de Compra', <AddPurchaseOrders />),
+    },
+    {
+      path: '/add-product-purchase-order',
+      element: checkAuthorization('Ordenes de Compra', <PurchaseOrderForm />),
     },
 
     //Administracion

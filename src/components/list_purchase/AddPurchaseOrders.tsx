@@ -7,7 +7,16 @@ import {
   SelectItem,
   useDisclosure,
 } from '@nextui-org/react';
-import { DollarSign, Plus, Printer, ScrollText, Search, Trash, Truck } from 'lucide-react';
+import {
+  ArrowLeft,
+  DollarSign,
+  Plus,
+  Printer,
+  ScrollText,
+  Search,
+  Trash,
+  Truck,
+} from 'lucide-react';
 import { useContext, useEffect, useState } from 'react';
 import { useBranchProductStore } from '../../store/branch_product.store';
 import { Branches } from '../../types/branches.types';
@@ -24,13 +33,17 @@ import { usePurchaseOrdersStore } from '../../store/purchase_orders.store';
 import PurchaseOrders from '../invoice/PurchaseOrders';
 import { pdf } from '@react-pdf/renderer';
 import print from 'print-js';
+import { useNavigate } from 'react-router';
+import AddButton from '../global/AddButton';
+import Layout from '@/layout/Layout';
+import NoData from '../global/NoData';
 
-interface Props {
-  closeModal: () => void;
-  reload: () => void;
-}
+// interface Props {
+//   closeModal: () => void;
+//   reload: () => void;
+// }
 
-function AddPurchaseOrders(props: Props) {
+function AddPurchaseOrders() {
   const vaul = useDisclosure();
   const {
     getBranchProductOrders,
@@ -56,7 +69,7 @@ function AddPurchaseOrders(props: Props) {
 
   useEffect(() => {
     getBranchesList();
-    getSupplierList();
+    getSupplierList('');
   }, []);
 
   const { theme } = useContext(ThemeContext);
@@ -115,240 +128,261 @@ function AddPurchaseOrders(props: Props) {
       };
 
       await postPurchaseOrder(payload);
+      navigate('/purchase-orders');
     }
     clearProductOrders();
-    props.reload();
-    props.closeModal();
+    // props.reload();
+    // props.closeModal();
   };
+  const navigate = useNavigate();
 
   return (
-    <div className="w-full ">
-      <div className="w-full bg- flex flex-col justify-between">
-        <div className="w-full flex justify-between">
-          <p className="text-xl dark:text-white font-semibold">Lista de productos</p>
-          <Button onClick={vaul.onOpen} isIconOnly style={global_styles().thirdStyle}>
-            <Plus />
-          </Button>
-        </div>
-
-        {orders_by_supplier.length === 0 && (
-          <div className="w-full h-full flex flex-col items-center">
-            <div className="lds-ellipsis">
-              <div className="bg-gray-600 dark:bg-gray-200"></div>
-              <div className="bg-gray-600 dark:bg-gray-200"></div>
-              <div className="bg-gray-600 dark:bg-gray-200"></div>
-              <div className="bg-gray-600 dark:bg-gray-200"></div>
-            </div>
-            <p className="dark:text-white text-xl pb-10">Aun no agregas productos</p>
-          </div>
-        )}
-
-        {orders_by_supplier.map((supplier, index) => (
-          <div key={index} className="w-full">
-            <p className="dark:text-white">Proveedor: {supplier.supplier.nombre}</p>
-            <DataTable
-              className="shadow mt-5"
-              emptyMessage="No se encontraron resultados"
-              value={supplier.products}
-              tableStyle={{ minWidth: '50rem' }}
+    <Layout title="Lista de productos">
+      <>
+        <div className="w-full h-full p-4 md:p-10 bg-gray-50 dark:bg-gray-800">
+          <div className="w-full h-full p-5 md:p-10 mt-2 overflow-y-auto bg-white custom-scrollbar shadow border dark:bg-gray-900">
+            <div
+              className="flex items-center cursor-pointer"
+              onClick={() => navigate('/purchase-orders')}
             >
-              <Column
-                className="dark:text-white"
-                headerClassName="text-sm font-semibold"
-                headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
-                field="id"
-                header="No."
+              <ArrowLeft onClick={() => navigate('/purchase-orders')} className="mr-2" />
+              <p>Regresar</p>
+            </div>
+            <div className="flex justify-between items-center w-full mt-3">
+              <p className="text-xl dark:text-white font-semibold">Lista de productos</p>
+
+              <AddButton
+                onClick={() => {
+                  navigate('/add-product-purchase-order');
+                }}
               />
-              <Column
-                className="dark:text-white"
-                headerClassName="text-sm font-semibold"
-                headerStyle={style}
-                field="product.name"
-                header="Nombre"
-              />
-              <Column
-                className="dark:text-white"
-                headerClassName="text-sm font-semibold"
-                headerStyle={style}
-                field="quantity"
-                header="Cantidad"
-                body={(item) => (
-                  <Input
-                    className="w-32"
-                    variant="bordered"
-                    defaultValue={item.quantity.toString()}
-                    type="number"
-                    lang="es"
-                    onChange={(e) => {
-                      updateQuantityOrders(item.id, Number(e.target.value));
-                    }}
+            </div>
+
+            {orders_by_supplier.length === 0 && (
+              <div className="w-full h-full flex flex-col items-center">
+                <div className="lds-ellipsis">
+                  <div className="bg-gray-600 dark:bg-gray-200"></div>
+                  <div className="bg-gray-600 dark:bg-gray-200"></div>
+                  <div className="bg-gray-600 dark:bg-gray-200"></div>
+                  <div className="bg-gray-600 dark:bg-gray-200"></div>
+                </div>
+                {/* <p className="dark:text-white text-xl pb-10">Aun no agregas productos</p> */}
+                <NoData />
+              </div>
+            )}
+
+            {orders_by_supplier.map((supplier, index) => (
+              <div key={index} className="w-full">
+                <p className="dark:text-white">Proveedor: {supplier.supplier.nombre}</p>
+                <DataTable
+                  className="shadow mt-5"
+                  emptyMessage="No se encontraron resultados"
+                  value={supplier.products}
+                  tableStyle={{ minWidth: '50rem' }}
+                >
+                  <Column
+                    className="dark:text-white"
+                    headerClassName="text-sm font-semibold"
+                    headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
+                    field="id"
+                    header="No."
                   />
-                )}
-              />
-              <Column
-                className="dark:text-white"
-                headerClassName="text-sm font-semibold"
-                headerStyle={style}
-                field="product.code"
-                header="Código"
-              />
-              <Column
-                className="dark:text-white"
-                headerClassName="text-sm font-semibold"
-                headerStyle={style}
-                field="price"
-                header="Precio"
-                body={(item) => (
-                  <Input
-                    className="w-32"
-                    variant="bordered"
-                    defaultValue={item.price.toString()}
-                    type="number"
-                    startContent="$"
-                    lang="es"
-                    onChange={(e) => {
-                      updatePriceOrders(item.id, Number(e.target.value));
-                    }}
+                  <Column
+                    className="dark:text-white"
+                    headerClassName="text-sm font-semibold"
+                    headerStyle={style}
+                    field="product.name"
+                    header="Nombre"
                   />
-                )}
-              />
-              <Column
-                headerStyle={{ ...style, borderTopRightRadius: '10px' }}
-                header="Acciones"
-                body={(item) => (
-                  <div className="flex w-full gap-5">
-                    <Button
-                      style={global_styles().dangerStyles}
-                      isIconOnly
-                      onClick={() => deleteProductOrder(item.id)}
-                    >
-                      <Trash size={18} />
-                    </Button>
-                  </div>
-                )}
-              />
-            </DataTable>
-            <div className="w-full py-5 flex justify-start">
+                  <Column
+                    className="dark:text-white"
+                    headerClassName="text-sm font-semibold"
+                    headerStyle={style}
+                    field="quantity"
+                    header="Cantidad"
+                    body={(item) => (
+                      <Input
+                        className="w-32"
+                        variant="bordered"
+                        defaultValue={item.quantity.toString()}
+                        type="number"
+                        lang="es"
+                        onChange={(e) => {
+                          updateQuantityOrders(item.id, Number(e.target.value));
+                        }}
+                      />
+                    )}
+                  />
+                  <Column
+                    className="dark:text-white"
+                    headerClassName="text-sm font-semibold"
+                    headerStyle={style}
+                    field="product.code"
+                    header="Código"
+                  />
+                  <Column
+                    className="dark:text-white"
+                    headerClassName="text-sm font-semibold"
+                    headerStyle={style}
+                    field="price"
+                    header="Precio"
+                    body={(item) => (
+                      <Input
+                        className="w-32"
+                        variant="bordered"
+                        defaultValue={item.price.toString()}
+                        type="number"
+                        startContent="$"
+                        lang="es"
+                        onChange={(e) => {
+                          updatePriceOrders(item.id, Number(e.target.value));
+                        }}
+                      />
+                    )}
+                  />
+                  <Column
+                    headerStyle={{ ...style, borderTopRightRadius: '10px' }}
+                    header="Acciones"
+                    body={(item) => (
+                      <div className="flex w-full gap-5">
+                        <Button
+                          style={global_styles().dangerStyles}
+                          isIconOnly
+                          onClick={() => deleteProductOrder(item.id)}
+                        >
+                          <Trash size={18} />
+                        </Button>
+                      </div>
+                    )}
+                  />
+                </DataTable>
+                <div className="w-full py-5 flex justify-start">
+                  <Button
+                    onClick={() => handlePrint(supplier.products, supplier.supplier.nombre)}
+                    style={global_styles().warningStyles}
+                  >
+                    <Printer />
+                  </Button>
+                </div>
+              </div>
+            ))}
+
+            <div className="w-full flex justify-end mt-4">
               <Button
-                onClick={() => handlePrint(supplier.products, supplier.supplier.nombre)}
-                style={global_styles().warningStyles}
+                onClick={handleSaveOrder}
+                style={global_styles().secondaryStyle}
+                className="px-16"
               >
-                <Printer />
+                Guardar
               </Button>
             </div>
           </div>
-        ))}
-
-        <div className="w-full flex justify-end mt-4">
-          <Button
-            onClick={handleSaveOrder}
-            style={global_styles().secondaryStyle}
-            className="px-16"
+          <HeadlessModal
+            isOpen={vaul.isOpen}
+            onClose={vaul.onClose}
+            title="Nueva orden de compra"
+            size="w-screen dark:bg-gray-900 h-screen pb-20 md:pb-0 p-5 overflow-y-auto xl:w-[80vw]"
           >
-            Guardar
-          </Button>
-        </div>
-      </div>
-      <HeadlessModal
-        isOpen={vaul.isOpen}
-        onClose={vaul.onClose}
-        title="Nueva orden de compra"
-        size="w-screen dark:bg-gray-900 h-screen pb-20 md:pb-0 p-5 overflow-y-auto xl:w-[80vw]"
-      >
-        <div className="w-full  dark:bg-gray-900">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            <div>
-              <Select
-                label="Sucursal"
-                value={branch}
-                onSelectionChange={(e) => {
-                  const setkeys = new Set(e as unknown as string[]);
-                  const keysArray = Array.from(setkeys);
-                  if (keysArray.length > 0) {
-                    setBranch(keysArray[0]);
-                  }
-                }}
-                placeholder="Selecciona una sucursal"
-                labelPlacement="outside"
-                variant="bordered"
-                className="w-full dark:text-white"
-              >
-                {branch_list.map((branch: Branches) => (
-                  <SelectItem className="dark:text-white" key={branch.name} value={branch.name}>
-                    {branch.name}
-                  </SelectItem>
-                ))}
-              </Select>
-            </div>
-            <div>
-              <Autocomplete
-                label="Proveedor"
-                value={branch}
-                onSelect={(e) => {
-                  setSupplier(e.currentTarget.value);
-                }}
-                placeholder="Selecciona un proveedor"
-                labelPlacement="outside"
-                variant="bordered"
-              >
-                {supplier_list.map((branch) => (
-                  <AutocompleteItem
-                    className="dark:text-white"
-                    key={branch.id ?? 0}
-                    value={branch.id}
+            <div className="w-full  dark:bg-gray-900">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <div>
+                  <Select
+                    label="Sucursal"
+                    value={branch}
+                    onSelectionChange={(e) => {
+                      const setkeys = new Set(e as unknown as string[]);
+                      const keysArray = Array.from(setkeys);
+                      if (keysArray.length > 0) {
+                        setBranch(keysArray[0]);
+                      }
+                    }}
+                    placeholder="Selecciona una sucursal"
+                    labelPlacement="outside"
+                    variant="bordered"
+                    className="w-full dark:text-white"
                   >
-                    {branch.nombre}
-                  </AutocompleteItem>
-                ))}
-              </Autocomplete>
-            </div>
-            <div>
-              <Input
-                label="Nombre"
-                placeholder="Escribe el nombre del producto"
-                labelPlacement="outside"
-                variant="bordered"
-                startContent={<Search />}
-                className="w-full dark:text-white"
-              />
-            </div>
-          </div>
-          <div className="w-full flex justify-end py-5">
-            <Button onClick={vaul.onClose} style={global_styles().secondaryStyle} className="px-10">
-              Aceptar
-            </Button>
-          </div>
-          <div className="w-full mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {branch_product_order.map((branch_product) => (
-              <div
-                key={branch_product.id}
-                className="shadow border p-4 rounded-lg dark:border-gray-500"
-              >
-                <p className="font-semibold dark:text-white">{branch_product.product.name}</p>
-                <p className="dark:text-white">Stock: {branch_product.stock}</p>
-                <p className="mt-2 flex gap-3 dark:text-white">
-                  <Truck /> {branch_product.supplier.nombre}
-                </p>
-
-                <p className="mt-2 flex gap-3 dark:text-white">
-                  <ScrollText /> {branch_product.product.subCategory.categoryProduct.name}
-                </p>
-                <p className="mt-2 flex gap-3 dark:text-white">
-                  <DollarSign /> ${branch_product.price}
-                </p>
+                    {branch_list.map((branch: Branches) => (
+                      <SelectItem className="dark:text-white" key={branch.name} value={branch.name}>
+                        {branch.name}
+                      </SelectItem>
+                    ))}
+                  </Select>
+                </div>
+                <div>
+                  <Autocomplete
+                    label="Proveedor"
+                    value={branch}
+                    onSelect={(e) => {
+                      setSupplier(e.currentTarget.value);
+                    }}
+                    placeholder="Selecciona un proveedor"
+                    labelPlacement="outside"
+                    variant="bordered"
+                  >
+                    {supplier_list.map((branch) => (
+                      <AutocompleteItem
+                        className="dark:text-white"
+                        key={branch.id ?? 0}
+                        value={branch.id}
+                      >
+                        {branch.nombre}
+                      </AutocompleteItem>
+                    ))}
+                  </Autocomplete>
+                </div>
+                <div>
+                  <Input
+                    label="Nombre"
+                    placeholder="Escribe el nombre del producto"
+                    labelPlacement="outside"
+                    variant="bordered"
+                    startContent={<Search />}
+                    className="w-full dark:text-white"
+                  />
+                </div>
+              </div>
+              <div className="w-full flex justify-end py-5">
                 <Button
-                  className="px-10 mt-3"
-                  style={global_styles().thirdStyle}
-                  onPress={() => addProductOrder(branch_product)}
+                  onClick={vaul.onClose}
+                  style={global_styles().secondaryStyle}
+                  className="px-16"
                 >
-                  Agregar
+                  Aceptar
                 </Button>
               </div>
-            ))}
-          </div>
+              <div className="w-full mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                {branch_product_order.map((branch_product) => (
+                  <div
+                    key={branch_product.id}
+                    className="shadow border p-4 rounded-lg dark:border-gray-500"
+                  >
+                    <p className="font-semibold dark:text-white">{branch_product.product.name}</p>
+                    <p className="dark:text-white">Stock: {branch_product.stock}</p>
+                    <p className="mt-2 flex gap-3 dark:text-white">
+                      <Truck /> {branch_product.supplier.nombre}
+                    </p>
+
+                    <p className="mt-2 flex gap-3 dark:text-white">
+                      <ScrollText /> {branch_product.product.subCategory.categoryProduct.name}
+                    </p>
+                    <p className="mt-2 flex gap-3 dark:text-white">
+                      <DollarSign /> ${branch_product.price}
+                    </p>
+                    <Button
+                      className="px-10 mt-3"
+                      style={global_styles().thirdStyle}
+                      onPress={() => addProductOrder(branch_product)}
+                    >
+                      Agregar
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </HeadlessModal>
         </div>
-      </HeadlessModal>
-    </div>
+      </>
+    </Layout>
   );
 }
 

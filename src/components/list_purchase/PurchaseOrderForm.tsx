@@ -7,7 +7,7 @@ import {
   Select,
   SelectItem,
 } from '@nextui-org/react';
-import { Building2, Search, Truck, DollarSign, User, ScrollText } from 'lucide-react';
+import { Building2, Search, Truck, DollarSign, User, ScrollText, ArrowLeft } from 'lucide-react';
 import { useBranchProductStore } from '../../store/branch_product.store';
 import { useSupplierStore } from '../../store/supplier.store';
 import { useBranchesStore } from '../../store/branches.store';
@@ -27,21 +27,17 @@ const PurchaseOrderForm = () => {
   const [productName, setProductName] = useState('');
   const [code, setCode] = useState('');
   const [limit, setLimit] = useState(5);
-
   const {
     getBranchProductOrders,
     branch_product_order_paginated,
     branch_product_order_paginated_loading,
   } = useBranchProductStore();
-
   const { branch_list, getBranchesList } = useBranchesStore();
   const { getSupplierList, supplier_list } = useSupplierStore();
 
-  console.log;
-
   useEffect(() => {
     getBranchesList();
-    getSupplierList();
+    getSupplierList('');
   }, []);
 
   useEffect(() => {
@@ -55,7 +51,14 @@ const PurchaseOrderForm = () => {
     <Layout title="Ordenes de Compra">
       <>
         <div className="w-full h-full p-4 md:p-10 bg-gray-50 dark:bg-gray-800">
-          <div className="w-full h-full p-5 md:p-10 mt-2 overflow-y-auto bg-white custom-scrollbar shadow border dark:bg-gray-900">
+          <div className="w-full h-full p-5 md:p-10 mt-0 overflow-y-auto bg-white custom-scrollbar shadow border dark:bg-gray-900">
+            <div
+              className="flex items-center cursor-pointer mb-4"
+              onClick={() => navigate('/add-purchase-order')}
+            >
+              <ArrowLeft onClick={() => navigate('/add-purchase-order')} className="mr-2" />
+              <p>Regresar</p>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
               <div>
                 <Autocomplete
@@ -218,7 +221,7 @@ const PurchaseOrderForm = () => {
                               </p>
                               <p className="mt-2 flex gap-3 dark:text-white">
                                 <ScrollText />
-                                {branch_product.product.class.categoryProduct.name ?? ''}
+                                {branch_product.product.subCategory.categoryProduct.name ?? ''}
                               </p>
                               <p className="mt-2 flex gap-3 dark:text-white">
                                 <DollarSign /> ${branch_product.price}

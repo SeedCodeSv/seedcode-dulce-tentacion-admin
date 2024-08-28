@@ -1,17 +1,17 @@
-import { useContext, useEffect, useMemo } from "react";
-import { usePurchaseOrdersStore } from "../../store/purchase_orders.store";
-import { PurchaseOrder } from "../../types/purchase_orders.types";
-import { formatCurrency } from "../../utils/dte";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
-import { ThemeContext } from "../../hooks/useTheme";
-import PurchaseOrders from "../invoice/PurchaseOrders";
-import { pdf } from "@react-pdf/renderer";
-import print from "print-js";
-import { Button, Input, Switch, useDisclosure } from "@nextui-org/react";
-import { ArrowLeft, Plus, Printer, Trash } from "lucide-react";
-import { global_styles } from "../../styles/global.styles";
-import AddProduct from "./AddProduct";
+import { useContext, useEffect, useMemo } from 'react';
+import { usePurchaseOrdersStore } from '../../store/purchase_orders.store';
+import { PurchaseOrder } from '../../types/purchase_orders.types';
+import { formatCurrency } from '../../utils/dte';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+import { ThemeContext } from '../../hooks/useTheme';
+import PurchaseOrders from '../invoice/PurchaseOrders';
+import { pdf } from '@react-pdf/renderer';
+import print from 'print-js';
+import { Button, Input, useDisclosure } from '@nextui-org/react';
+import { ArrowLeft, Plus, Printer, Trash } from 'lucide-react';
+import { global_styles } from '../../styles/global.styles';
+import AddProduct from './AddProduct';
 
 interface Props {
   purchase_order: PurchaseOrder;
@@ -26,7 +26,6 @@ function EditMode(props: Props) {
     updatePurchaseOrder,
     updateQuantityOrder,
     updatePriceOrder,
-    updateIvaOrder
   } = usePurchaseOrdersStore();
 
   useEffect(() => {
@@ -41,9 +40,7 @@ function EditMode(props: Props) {
   };
 
   const handlePrint = async (supplierName: string) => {
-    const total = details_order_purchase
-      .map((p) => Number(p.total))
-      .reduce((a, b) => a + b, 0);
+    const total = details_order_purchase.map((p) => Number(p.total)).reduce((a, b) => a + b, 0);
     const blob = await pdf(
       <PurchaseOrders
         supplier={supplierName}
@@ -63,22 +60,20 @@ function EditMode(props: Props) {
 
     print({
       printable: URL_PDF,
-      type: "pdf",
+      type: 'pdf',
       showModal: false,
     });
   };
 
   const total = useMemo(() => {
-    return details_order_purchase
-      .map((p) => Number(p.total))
-      .reduce((a, b) => a + b, 0);
+    return details_order_purchase.map((p) => Number(p.total)).reduce((a, b) => a + b, 0);
   }, [details_order_purchase]);
 
   const modalAddProduct = useDisclosure();
 
   const handleUpdate = () => {
     const items = details_order_purchase.map((p) => ({
-      productId: p.isNew ? p.productId : p.orderId,
+      productId: p.isNew ? p.productId : p.productId,
       quantity: p.quantity,
       unitPrice: p.price,
       isNew: p.isNew,
@@ -98,27 +93,20 @@ function EditMode(props: Props) {
           >
             <ArrowLeft /> Atrás
           </button>
-          <p className="text-xl mt-5 font-semibold dark:text-white">
-            Completar orden
-          </p>
+          <p className="text-xl mt-5 font-semibold dark:text-white">Completar orden</p>
         </div>
         <div className="w-full grid grid-cols-2 mt-4">
           <p className="text-lg font-semibold">
-            Proveedor:{" "}
-            <span className="font-normal">
-              {props.purchase_order.supplier.nombre}
-            </span>
+            Proveedor: <span className="font-normal">{props.purchase_order.supplier.nombre}</span>
           </p>
           <p className="text-lg font-semibold">
             Total: <span className="font-normal">{formatCurrency(total)}</span>
           </p>
           <p className="text-lg font-semibold">
-            Fecha:{" "}
-            <span className="font-normal">{props.purchase_order.date}</span>
+            Fecha: <span className="font-normal">{props.purchase_order.date}</span>
           </p>
           <p className="text-lg font-semibold">
-            Hora:{" "}
-            <span className="font-normal">{props.purchase_order.time}</span>
+            Hora: <span className="font-normal">{props.purchase_order.time}</span>
           </p>
         </div>
         <div className="mt-5">
@@ -151,11 +139,11 @@ function EditMode(props: Props) {
             value={details_order_purchase}
             scrollable
             scrollHeight="40rem"
-            tableStyle={{ minWidth: "50rem" }}
+            tableStyle={{ minWidth: '50rem' }}
           >
             <Column
               headerClassName="text-sm font-semibold"
-              headerStyle={{ ...style, borderTopLeftRadius: "10px" }}
+              headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
               field="orderId"
               header="No."
               body={(_, row_props) => {
@@ -182,11 +170,7 @@ function EditMode(props: Props) {
                     if (item.isNew) {
                       updatePriceOrder(item.productId, Number(e.target.value));
                     } else {
-                      updateOrderProduct(
-                        item.orderId,
-                        Number(e.target.value),
-                        ""
-                      );
+                      updateOrderProduct(item.orderId, Number(e.target.value), '');
                     }
                   }}
                 />
@@ -206,16 +190,9 @@ function EditMode(props: Props) {
                   lang="es"
                   onChange={(e) => {
                     if (item.isNew) {
-                      updateQuantityOrder(
-                        item.productId,
-                        Number(e.target.value)
-                      );
+                      updateQuantityOrder(item.productId, Number(e.target.value));
                     } else {
-                      updateOrderProduct(
-                        item.orderId,
-                        "",
-                        Number(e.target.value)
-                      );
+                      updateOrderProduct(item.orderId, '', Number(e.target.value));
                     }
                   }}
                 />
@@ -228,7 +205,7 @@ function EditMode(props: Props) {
               header="Total"
               body={(item) => formatCurrency(Number(item.total))}
             />
-            <Column
+            {/* <Column
               headerClassName="text-sm font-semibold"
               headerStyle={style}
               header="IVA incluido"
@@ -237,10 +214,10 @@ function EditMode(props: Props) {
                   <Switch defaultChecked={item.iva} onValueChange={() => updateIvaOrder(item.orderId, !item.iva)}>{item.iva ? "Incluido" : "No incluido"}</Switch>
                 </>
               )}
-            />
+            /> */}
             <Column
               headerClassName="text-sm font-semibold"
-              headerStyle={{ ...style, borderTopRightRadius: "10px" }}
+              headerStyle={{ ...style, borderTopRightRadius: '10px' }}
               header="Acciones"
               body={() => (
                 <div className="flex gap-5">
@@ -253,11 +230,7 @@ function EditMode(props: Props) {
           </DataTable>
         </div>
         <div className="mt-5 w-full">
-          <Button
-            className="px-16"
-            style={global_styles().thirdStyle}
-            onClick={handleUpdate}
-          >
+          <Button className="px-16" style={global_styles().thirdStyle} onClick={handleUpdate}>
             Completar orden
           </Button>
         </div>
