@@ -168,8 +168,8 @@ function AddEmployee() {
   const navigate = useNavigate();
   return (
     <Layout title="Agregar Empleado">
-      <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
-        <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
+      <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
+        <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <Button onClick={() => navigate('/employees')} className="bg-transparent dark:text-white">
             <ArrowLeft className="dark:text-white" />
             Atrás
@@ -506,6 +506,7 @@ function AddEmployee() {
                           onChange={handleChange('dateOfEntry')}
                           onBlur={handleBlur('dateOfEntry')}
                           type="date"
+                          className="dark:text-white"
                           name="dateOfEntry"
                           labelPlacement="outside"
                           classNames={{

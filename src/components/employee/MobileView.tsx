@@ -48,20 +48,20 @@ const GridItem = (props: GridProps) => {
       {layout === 'grid' ? (
         <div
           className={classNames(
-            'w-full shadow-sm hover:shadow-lg border dark:border-gray-600 p-8 rounded-2xl flex flex-col justify-between'
+            'w-full shadow-sm border dark:border-white hover:shadow-lg border dark:border-gray-600 p-8 rounded-2xl flex flex-col justify-between'
           )}
           key={employee.id}
         >
           <div className="flex w-full gap-2">
-            <IUser className="text-[#274c77] dark:text-gray-400" size={20} />
+            <IUser className="text-blue-500 dark:text-blue-300" size={20} />
             <p className="w-full dark:text-white">{`${employee.firstName} ${employee.firstLastName}`}</p>
           </div>
           <div className="flex w-full gap-2 mt-3">
-            <Phone size={20} className="text-[#274c77] dark:text-gray-400" />
+            <Phone size={20} className="text-blue-500 dark:text-blue-300" />
             <p className="w-full dark:text-white">{employee.phone}</p>
           </div>
           <div className="flex w-full gap-2 mt-3">
-            <Truck className="text-[#274c77] dark:text-gray-400" size={20} />
+            <Truck className="text-blue-500 dark:text-blue-300" size={20} />
             <p className="w-full dark:text-white">{employee.branch.name}</p>
           </div>
           <div className="flex justify-between mt-5 w-ful">
@@ -118,20 +118,20 @@ const ListItem = (props: GridProps) => {
       <div className="flex w-full p-5 border shadow dark:border-gray-600 rounded-2xl">
         <div className="w-full">
           <div className="flex w-full gap-2">
-            <IUser className="text-[#274c77] dark:text-gray-400" size={20} />
+            <IUser className="text-blue-500 dark:text-blue-300" size={20} />
             <p className="w-full dark:text-white">{`${employee.firstName} ${employee.firstLastName}`}</p>
           </div>
           <div className="flex w-full gap-2 mt-3">
-            <Phone size={20} className="text-[#274c77] dark:text-gray-400" />
+            <Phone size={20} className="text-blue-500 dark:text-blue-300" />
             <p className="w-full dark:text-white">{employee.phone}</p>
           </div>
           <div className="flex w-full gap-2 mt-3">
-            <Truck className="text-[#274c77] dark:text-gray-400" size={20} />
+            <Truck className="text-blue-500 dark:text-blue-300" size={20} />
             <p className="w-full dark:text-white">{employee.branch.name}</p>
           </div>
         </div>
         <div className="flex flex-col items-end justify-between w-full">
-          { actions.includes('Editar') && (
+          {actions.includes('Editar') && (
             <>
               {employee.isActive && (
                 <TooltipGlobal text="Editar">

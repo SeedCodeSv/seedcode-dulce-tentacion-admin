@@ -1,18 +1,18 @@
 import BottomDrawer from '@/components/global/BottomDrawer';
 import TooltipGlobal from '@/components/global/TooltipGlobal';
-import { useCategoriesStore } from '@/store/categories.store';
+import { ThemeContext } from '@/hooks/useTheme';
 import { global_styles } from '@/styles/global.styles';
 import { Button, Input } from '@nextui-org/react';
 import { Filter, User } from 'lucide-react';
-import { useContext, useState } from 'react';
-import { IPropsSearchCategoryProduct } from '../types/mobile_view.types';
-import { ThemeContext } from '@/hooks/useTheme';
+import React, { useContext, useState } from 'react';
+import { IPropsSearchSubCategoryProduct } from '../types/mobile_view.types';
+import { useSubCategoryStore } from '@/store/sub-category';
 
-function SearchCategoryProduct(props: IPropsSearchCategoryProduct) {
-  const { getPaginatedCategories } = useCategoriesStore();
-  const [nameCategoryProduct, setNameCategoryProduct] = useState('');
+function SearchSubCategories(props: IPropsSearchSubCategoryProduct) {
   const { theme } = useContext(ThemeContext);
-  const [openVaul, setOpenVaul] = useState(false);
+  const [openVaul, setOpenVaul] = React.useState(false);
+  const { getSubCategoriesPaginated } = useSubCategoryStore();
+  const [nameSubCategoryProduct, setNameSubCategoryProduct] = useState('');
   return (
     <div className="flex items-center gap-5">
       <div className="block md:hidden">
@@ -33,14 +33,15 @@ function SearchCategoryProduct(props: IPropsSearchCategoryProduct) {
         >
           <div className="flex flex-col  gap-2">
             <Input
+              onChange={(e) => {
+                setNameSubCategoryProduct(e.target.value),
+                  props.nameSubCategoryProduct(e.target.value);
+              }}
               startContent={<User />}
               className="w-full border dark:border-white rounded-xl  dark:text-white"
               variant="bordered"
               labelPlacement="outside"
               label="Nombre"
-              onChange={(e) => {
-                setNameCategoryProduct(e.target.value), props.nameCategoryProduct(e.target.value);
-              }}
               classNames={{
                 label: 'font-semibold text-gray-700',
                 inputWrapper: 'pr-0',
@@ -48,7 +49,9 @@ function SearchCategoryProduct(props: IPropsSearchCategoryProduct) {
               placeholder="Escribe para buscar..."
               isClearable
               onClear={() => {
-                setNameCategoryProduct('');
+                setNameSubCategoryProduct('');
+                props.nameSubCategoryProduct('');
+                getSubCategoriesPaginated(1, 5, nameSubCategoryProduct, 1);
               }}
             />
             <Button
@@ -59,7 +62,9 @@ function SearchCategoryProduct(props: IPropsSearchCategoryProduct) {
               }}
               className=" font-semibold"
               onClick={() => {
-                getPaginatedCategories(1, 5, nameCategoryProduct, 1);
+                props.nameSubCategoryProduct('');
+                setNameSubCategoryProduct('');
+                getSubCategoriesPaginated(1, 5, nameSubCategoryProduct, 1);
                 setOpenVaul(false);
               }}
             >
@@ -72,4 +77,4 @@ function SearchCategoryProduct(props: IPropsSearchCategoryProduct) {
   );
 }
 
-export default SearchCategoryProduct;
+export default SearchSubCategories;

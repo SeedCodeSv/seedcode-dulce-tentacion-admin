@@ -19,17 +19,15 @@ import { DeletePopover } from './ListSuppliers';
 import { useNavigate } from 'react-router';
 import { Supplier } from '@/types/supplier.types';
 
-function MobileViewSupplier({
-  layout,
-  handleChangeSupplier,
-  handleActive,
-}: MobileViewProps) {
+function MobileViewSupplier({ layout, handleChangeSupplier, handleActive }: MobileViewProps) {
   const { supplier_pagination } = useSupplierStore();
   const { OnGetBySupplier } = useSupplierStore();
   const navigate = useNavigate();
 
-  const handleNavigate = (supplier : Supplier ) => {
-    const path = supplier.esContribuyente ? `/update-supplier-tribute/${supplier.id}` : `/update-supplier-normal/${supplier.id}`;
+  const handleNavigate = (supplier: Supplier) => {
+    const path = supplier.esContribuyente
+      ? `/update-supplier-tribute/${supplier.id}`
+      : `/update-supplier-normal/${supplier.id}`;
     navigate(path);
     OnGetBySupplier(supplier.id ?? 0);
   };
@@ -42,7 +40,7 @@ function MobileViewSupplier({
         pt={{
           grid: () => ({
             className:
-              "w-full grid dark:bg-transparent pb-10 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5",
+              'w-full grid dark:bg-transparent pb-10 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5',
           }),
         }}
         color="surface"
@@ -63,35 +61,38 @@ function MobileViewSupplier({
 }
 
 const GridItem = (props: GridProps) => {
-
-
-
-  const { layout, supplier, handleChangeSupplier, handleActive, reloadData ,onNavigate} = props;
+  const { layout, supplier, handleChangeSupplier, handleActive, reloadData, onNavigate } = props;
   return (
     <>
       {layout === 'grid' ? (
         <div
           className={classNames(
-            "w-full shadow flex flex-col justify-between hover:shadow-lg p-5 dark:border dark:border-gray-600 rounded-2xl"
+            'w-full shadow flex border dark:border-white flex-col justify-between hover:shadow-lg p-5 dark:border dark:border-gray-600 rounded-2xl'
           )}
           key={supplier.id}
         >
           <div>
             <div className="flex w-full gap-2">
-              <IUser className="dark:text-gray-400 text-[#274c77]" size={35} />
+              <IUser className="dark:text-blue-300 text-blue-500" size={20} />
               <p className="w-full dark:text-white"> {supplier.nombre}</p>
             </div>
             <div className="flex w-full gap-2 mt-3">
-              <Phone className="dark:text-gray-400 text-[#274c77]" size={33} />
+              <Phone className="dark:text-blue-300 text-blue-500" size={20} />
               <p className="w-full dark:text-white">{supplier.telefono}</p>
             </div>
             <div className="flex w-full gap-2 mt-3">
-              <MapPin className="dark:text-gray-400 text-[#274c77]" size={33} />
-              <p className="w-full dark:text-white"> {supplier.direccion?.nombreDepartamento} ,{supplier.direccion?.municipio} ,{supplier.direccion?.complemento}</p>
+              <MapPin className="dark:text-blue-300 text-blue-500" size={20} />
+              <p className="w-full dark:text-white">
+                {' '}
+                {supplier.direccion?.nombreDepartamento} ,{supplier.direccion?.municipio} ,
+                {supplier.direccion?.complemento}
+              </p>
             </div>
             <div className="flex w-full gap-2 mt-3">
-              <Users2Icon className="dark:text-gray-400 text-[#274c77]" size={35} />
-              <p className="w-full dark:text-white">{supplier.esContribuyente ? "Contribuyente" : "No Contribuyente"}</p>
+              <Users2Icon className="dark:text-blue-300 text-[#274c77]" size={20} />
+              <p className="w-full dark:text-white">
+                {supplier.esContribuyente ? 'Contribuyente' : 'No Contribuyente'}
+              </p>
             </div>
           </div>
           <div className="flex justify-between mt-5 w-ful">
@@ -114,7 +115,8 @@ const GridItem = (props: GridProps) => {
                       style={global_styles().thirdStyle}
                     >
                       <Repeat size={20} />
-                    </Button></TooltipGlobal>
+                    </Button>
+                  </TooltipGlobal>
                 )}
                 {DeletePopover({ supplier: supplier })}
               </>
@@ -133,7 +135,7 @@ const GridItem = (props: GridProps) => {
         </div>
       ) : (
         <ListItem
-        onNavigate={onNavigate}
+          onNavigate={onNavigate}
           reloadData={reloadData}
           handleActive={handleActive}
           supplier={supplier}
@@ -146,27 +148,29 @@ const GridItem = (props: GridProps) => {
 };
 
 const ListItem = (props: GridProps) => {
-  const { supplier, handleChangeSupplier, handleActive,onNavigate } = props;
+  const { supplier, handleChangeSupplier, handleActive, onNavigate } = props;
 
   return (
     <>
-      <div className="flex w-full col-span-1 p-5 border shadow rounded-2xl ">
+      <div className="flex w-full border border-white col-span-1 p-5 border shadow rounded-2xl ">
         <div className="w-full">
           <div className="flex items-center w-full gap-2">
-            <IUser className="dark:text-gray-400 text-[#274c77]" size={35} />
+            <IUser className="dark:text-blue-300 text-blue-500" size={20} />
             <p className="w-full dark:text-white"> {supplier.nombre}</p>
           </div>
           <div className="flex items-center w-full gap-2 mt-3">
-            <Phone className="dark:text-gray-400 text-[#274c77]" size={35} />
+            <Phone className="dark:text-blue-300 text-blue-500" size={20} />
             <p className="w-full dark:text-white">{supplier.telefono}</p>
           </div>
           <div className="flex items-center w-full gap-2 mt-3">
-            <Mail className="dark:text-gray-400 text-[#274c77]" size={35} />
+            <Mail className="dark:text-blue-300 text-blue-500" size={20} />
             <p className="w-full dark:text-white">{supplier.correo}</p>
           </div>
           <div className="flex items-center w-full gap-2 mt-3">
-            <Users2Icon className="dark:text-gray-400 text-[#274c77]" size={35} />
-            <p className="w-full dark:text-white">{supplier.esContribuyente ? "Contribuyente" : "No Contribuyente"}</p>
+            <Users2Icon className="dark:text-blue-300 text-blue-500" size={20} />
+            <p className="w-full dark:text-white">
+              {supplier.esContribuyente ? 'Contribuyente' : 'No Contribuyente'}
+            </p>
           </div>
         </div>
         <div className="flex flex-col items-end justify-between w-full">
@@ -189,7 +193,8 @@ const ListItem = (props: GridProps) => {
                     style={global_styles().thirdStyle}
                   >
                     <Repeat size={20} />
-                  </Button></TooltipGlobal>
+                  </Button>
+                </TooltipGlobal>
               )}
               {DeletePopover({ supplier: supplier })}
             </>

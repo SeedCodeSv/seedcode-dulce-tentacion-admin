@@ -18,7 +18,6 @@ import {
   Table as ITable,
   CreditCard,
   List,
-  Filter,
   RefreshCcw,
 } from 'lucide-react';
 import { ThemeContext } from '../../hooks/useTheme';
@@ -33,9 +32,10 @@ import HeadlessModal from '../global/HeadlessModal';
 import { ISubCategory } from '../../types/sub_categories.types';
 import { useSubCategoryStore } from '../../store/sub-category';
 import TooltipGlobal from '../global/TooltipGlobal';
-import BottomDrawer from '../global/BottomDrawer';
 import NO_DATA from '@/assets/svg/no_data.svg';
 import classNames from 'classnames';
+import SearchSubCategories from './search_sub_categories_product/SearchSubCategories';
+import useWindowSize from '@/hooks/useWindowSize';
 
 interface PProps {
   actions: string[];
@@ -43,7 +43,6 @@ interface PProps {
 
 function ListSubCategory({ actions }: PProps) {
   const { theme } = useContext(ThemeContext);
-  const [openVaul, setOpenVaul] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<ISubCategory>();
   const {
     sub_categories_paginated,
@@ -64,14 +63,11 @@ function ListSubCategory({ actions }: PProps) {
   const handleSearch = (name: string | undefined) => {
     getSubCategoriesPaginated(1, limit, name ?? search);
   };
+  const { windowSize } = useWindowSize();
 
-  // const style = {
-  //   backgroundColor: theme.colors.dark,
-  //   color: theme.colors.primary,
-  // };
-
-  const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
-
+  const [view, setView] = useState<'table' | 'grid' | 'list'>(
+    windowSize.width < 768 ? 'grid' : 'table'
+  );
   const handleActivate = (id: number) => {
     activateSubCategories(id).then(() => {
       getSubCategoriesPaginated(1, limit, search, isActive ? 1 : 0);
@@ -79,46 +75,94 @@ function ListSubCategory({ actions }: PProps) {
   };
 
   return (
-    <div className=" w-full h-full xl:p-10  p-5 bg-gray-50 dark:bg-gray-900">
-      <div className="w-full h-full border-white border border-white p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
-        <div className="flex flex-col justify-between w-full gap-5 mb-5 lg:mb-10 lg:flex-row lg:gap-0">
-          <div className="flex items-end gap-3">
-            <div className="hidden w-full gap-3 md:flex">
-              <Input
-                startContent={<User />}
-                className="w-full xl:w-96 dark:text-white"
-                variant="bordered"
-                labelPlacement="outside"
-                label="Nombre"
-                classNames={{
-                  label: 'font-semibold text-gray-700',
-                  inputWrapper: 'pr-0',
-                }}
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Escribe para buscar..."
-                isClearable
-                onClear={() => {
-                  setSearch('');
-                  handleSearch('');
-                }}
-              />
-              <Button
-                style={{
-                  backgroundColor: theme.colors.secondary,
-                  color: theme.colors.primary,
-                }}
-                className="mt-6 font-semibold"
-                color="primary"
-                onClick={() => handleSearch(undefined)}
-              >
-                Buscar
-              </Button>
-            </div>
+    <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
+      <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+        <div className="flex justify-between items-end ">
+          <SearchSubCategories
+            nameSubCategoryProduct={(name: string) => setSearch(name)}
+          ></SearchSubCategories>
+          {actions.includes('Agregar') && (
+            <AddButton
+              onClick={() => {
+                setSelectedCategory(undefined);
+                modalAdd.onOpen();
+              }}
+            />
+          )}
+        </div>
+
+        <div className="hidden flex  grid w-full grid-cols-2 gap-5 md:flex">
+          <Input
+            startContent={<User />}
+            className="w-full xl:w-96 dark:text-white"
+            variant="bordered"
+            labelPlacement="outside"
+            label="Nombre"
+            classNames={{
+              label: 'font-semibold text-gray-700',
+              inputWrapper: 'pr-0',
+            }}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Escribe para buscar..."
+            isClearable
+            onClear={() => {
+              setSearch('');
+              handleSearch('');
+            }}
+          />
+          <Button
+            style={{
+              backgroundColor: theme.colors.secondary,
+              color: theme.colors.primary,
+            }}
+            className="mt-6 font-semibold"
+            color="primary"
+            onClick={() => handleSearch(undefined)}
+          >
+            Buscar
+          </Button>
+        </div>
+
+        <div className="flex flex-col gap-3 mt-3 lg:flex-row lg:justify-between lg:gap-10">
+          <div className="flex justify-between justify-start order-2 lg:order-1">
+            <Switch
+              onValueChange={(isActive) => setActive(isActive)}
+              isSelected={isActive}
+              classNames={{
+                thumb: classNames(isActive ? 'bg-blue-500' : 'bg-gray-400'),
+                wrapper: classNames(isActive ? '!bg-blue-300' : 'bg-gray-200'),
+              }}
+            >
+              <span className="text-sm sm:text-base whitespace-nowrap">
+                Mostrar {isActive ? 'inactivos' : 'activos'}
+              </span>
+            </Switch>
           </div>
-          <div className="flex items-end justify-between w-full gap-10 lg:justify-end">
-            <ButtonGroup>
+          <div className="flex gap-10 w-full justify-between items-center lg:justify-end order-1 lg:order-2">
+            <Select
+              className="w-44 dark:text-white"
+              variant="bordered"
+              defaultSelectedKeys={'5'}
+              label="Mostrar"
+              labelPlacement="outside"
+              classNames={{
+                label: 'font-semibold',
+              }}
+              value={limit}
+              onChange={(e) => {
+                setLimit(Number(e.target.value !== '' ? e.target.value : '8'));
+              }}
+            >
+              {limit_options.map((option) => (
+                <SelectItem key={option} value={option} className="dark:text-white">
+                  {option}
+                </SelectItem>
+              ))}
+            </Select>
+            <ButtonGroup className="mt-4">
               <Button
+                className="hidden md:inline-flex"
                 isIconOnly
                 color="secondary"
                 style={{
@@ -152,116 +196,9 @@ function ListSubCategory({ actions }: PProps) {
                 <List />
               </Button>
             </ButtonGroup>
-            <div className="flex items-center gap-5">
-              <div className="block md:hidden">
-                <TooltipGlobal text="Filtrar">
-                  <Button
-                    style={global_styles().thirdStyle}
-                    isIconOnly
-                    onClick={() => setOpenVaul(true)}
-                    type="button"
-                  >
-                    <Filter />
-                  </Button>
-                </TooltipGlobal>
-                <BottomDrawer
-                  open={openVaul}
-                  onClose={() => setOpenVaul(false)}
-                  title="Filtros disponibles"
-                >
-                  <div className="p-4 bg-white dark:bg-gray-800 rounded-t-[10px] flex-1">
-                    <div className="flex flex-col gap-3">
-                      <Input
-                        startContent={<User />}
-                        className="w-full xl:w-96 dark:text-white"
-                        variant="bordered"
-                        labelPlacement="outside"
-                        label="Nombre"
-                        classNames={{
-                          label: 'font-semibold text-gray-700',
-                          inputWrapper: 'pr-0',
-                        }}
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        placeholder="Escribe para buscar..."
-                        isClearable
-                        onClear={() => {
-                          setSearch('');
-                          handleSearch('');
-                        }}
-                      />
-                      <Button
-                        // style={{
-                        //   backgroundColor: theme.colors.secondary,
-                        //   color: theme.colors.primary,
-                        // }}
-                        className="mt-6 font-semibold"
-                        // color="primary"
-                        onClick={() => {
-                          handleSearch(undefined);
-                          setOpenVaul(false);
-                        }}
-                      >
-                        Buscar
-                      </Button>
-                    </div>
-                  </div>
-                </BottomDrawer>
-              </div>
-            </div>
-            {actions.includes('Agregar') && (
-              <AddButton
-                onClick={() => {
-                  setSelectedCategory(undefined);
-                  modalAdd.onOpen();
-                }}
-              />
-            )}
           </div>
         </div>
-        <div className="flex items-end justify-end w-full gap-5 mb-5">
-          <Select
-            className="w-44 dark:text-white"
-            variant="bordered"
-            defaultSelectedKeys={'5'}
-            label="Mostrar"
-            labelPlacement="outside"
-            classNames={{
-              label: 'font-semibold',
-            }}
-            value={limit}
-            onChange={(e) => {
-              setLimit(Number(e.target.value !== '' ? e.target.value : '8'));
-            }}
-          >
-            {limit_options.map((option) => (
-              <SelectItem key={option} value={option} className="dark:text-white">
-                {option}
-              </SelectItem>
-            ))}
-          </Select>
-          <div className="flex items-center">
-            <Switch
-              onValueChange={(isActive) => setActive(isActive)}
-              isSelected={isActive}
-              classNames={{
-                thumb: classNames(isActive ? 'bg-blue-500' : 'bg-gray-400'),
-                wrapper: classNames(isActive ? '!bg-blue-300' : 'bg-gray-200'),
-              }}
-            >
-              <span className="text-sm sm:text-base whitespace-nowrap">
-                Mostrar {isActive ? 'inactivos' : 'activos'}
-              </span>
-            </Switch>
-          </div>
-          {/* <div className="items-center hidden">
-            <Switch onValueChange={(active) => setActive(active)} isSelected={active}>
-              <span className="text-sm sm:text-base whitespace-nowrap">
-                Mostrar {active ? 'inactivos' : 'activos'}
-              </span>
-            </Switch>
-          </div> */}
-        </div>
+
         {(view === 'grid' || view === 'list') && (
           <MobileView
             handleActive={handleActivate}
@@ -387,7 +324,6 @@ function ListSubCategory({ actions }: PProps) {
               </table>
             </div>
           </>
-
         )}
         {sub_categories_paginated.totalPag > 1 && (
           <>
@@ -403,18 +339,16 @@ function ListSubCategory({ actions }: PProps) {
               />
             </div>
             <div className="flex w-full md:hidden fixed bottom-0 left-0 bg-white dark:bg-gray-900 z-20 shadow-lg p-3">
-
-                <SmPagination
-                  handleNext={() => {
-                    getSubCategoriesPaginated(sub_categories_paginated.nextPag, limit, search);
-                  }}
-                  handlePrev={() => {
-                    getSubCategoriesPaginated(sub_categories_paginated.prevPag, limit, search);
-                  }}
-                  currentPage={sub_categories_paginated.currentPag}
-                  totalPages={sub_categories_paginated.totalPag}
-                />
-            
+              <SmPagination
+                handleNext={() => {
+                  getSubCategoriesPaginated(sub_categories_paginated.nextPag, limit, search);
+                }}
+                handlePrev={() => {
+                  getSubCategoriesPaginated(sub_categories_paginated.prevPag, limit, search);
+                }}
+                currentPage={sub_categories_paginated.currentPag}
+                totalPages={sub_categories_paginated.totalPag}
+              />
             </div>
           </>
         )}

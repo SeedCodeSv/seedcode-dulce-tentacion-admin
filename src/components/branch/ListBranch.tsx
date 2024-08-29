@@ -40,113 +40,42 @@ import BoxBranch from './BoxBranch';
 import classNames from 'classnames';
 import HeadlessModal from '../global/HeadlessModal';
 import TooltipGlobal from '../global/TooltipGlobal';
-import BottomDrawer from '../global/BottomDrawer';
+
 import SmPagination from '../global/SmPagination';
 import { ArrayAction } from '@/types/view.types';
-
+import useWindowSize from '@/hooks/useWindowSize';
+import SearchBranch from './search_branch/SearchBranch';
 function ListBranch({ actions }: ArrayAction) {
   const { theme } = useContext(ThemeContext);
-
   const { getBranchesPaginated, branches_paginated, disableBranch } = useBranchesStore();
-
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
   const [limit, setLimit] = useState(5);
   const [active, setActive] = useState<1 | 0>(1);
   const [BranchId, setBranchId] = useState(0);
-  const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
-
+  const { windowSize } = useWindowSize();
+  const [view, setView] = useState<'table' | 'grid' | 'list'>(
+    windowSize.width < 768 ? 'grid' : 'table'
+  );
   useEffect(() => {
     getBranchesPaginated(1, limit, name, phone, address, active);
   }, [limit, active]);
-
   const changePage = (page: number) => {
     getBranchesPaginated(page, limit, name, phone, address, active);
   };
-
   const modalAdd = useDisclosure();
   const modalBranchProduct = useDisclosure();
   const modalBoxBranch = useDisclosure();
   const filters = useMemo(() => {
-    return (
-      <>
-        <div>
-          <Input
-            startContent={<User />}
-            className="w-full dark:text-white"
-            variant="bordered"
-            labelPlacement="outside"
-            label="Nombre"
-            classNames={{
-              label: 'font-semibold text-gray-700',
-              inputWrapper: 'pr-0',
-            }}
-            isClearable
-            value={name}
-            placeholder="Escribe para buscar..."
-            onChange={(e) => setName(e.target.value)}
-            onClear={() => {
-              setName('');
-              getBranchesPaginated(1, limit, '', phone, address, active);
-            }}
-          />
-        </div>
-        <div>
-          <Input
-            labelPlacement="outside"
-            label="Teléfono"
-            placeholder="Escribe para buscar..."
-            startContent={<PhoneIcon />}
-            className="w-full dark:text-white"
-            classNames={{
-              label: 'font-semibold text-gray-700',
-              inputWrapper: 'pr-0',
-            }}
-            variant="bordered"
-            isClearable
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            onClear={() => {
-              setPhone('');
-              getBranchesPaginated(1, limit, name, '', address, active);
-            }}
-          />
-        </div>
-        <div>
-          <Input
-            placeholder="Escribe para buscar..."
-            startContent={<MapPinIcon />}
-            className="w-full dark:text-white"
-            variant="bordered"
-            isClearable
-            labelPlacement="outside"
-            label="Dirección"
-            classNames={{
-              label: 'font-semibold text-gray-700',
-              inputWrapper: 'pr-0',
-            }}
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            onClear={() => {
-              setAddress('');
-              getBranchesPaginated(1, limit, name, phone, '', active);
-            }}
-          />
-        </div>
-      </>
-    );
+    return <></>;
   }, [name, setName, phone, setPhone, address, setAddress]);
-
   const [openVaul, setOpenVaul] = useState(false);
-
   const handleSearch = () => {
     getBranchesPaginated(1, limit, name, phone, address);
   };
-
   const [selectedBranch, setSelectedBranch] = useState<Branches>();
   const [Branch, setBranch] = useState<Branches>();
-
   const handleEdit = (item: Branches) => {
     setSelectedBranch(item);
     modalAdd.onOpen();
@@ -159,7 +88,6 @@ function ListBranch({ actions }: ArrayAction) {
     setBranchId(id);
     modalBranchProduct.onOpen();
   };
-
   const handleInactive = (item: Branches) => {
     disableBranch(item.id, !item.isActive);
   };
@@ -171,23 +99,130 @@ function ListBranch({ actions }: ArrayAction) {
       {BranchId >= 1 ? (
         <ListBranchProduct onclick={() => setBranchId(0)} id={BranchId} />
       ) : (
-        <div className=" w-full h-full p-10 bg-gray-50 dark:bg-gray-900">
-          <div className="w-full h-full border-white border border-white p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
-            <div className="hidden w-full grid-cols-3 gap-5 mb-4 md:grid ">{filters}</div>
-            <div className="grid w-full grid-cols-1 gap-5 mb-4 md:flex md:justify-between lg:grid-cols-2">
-              <div className="hidden md:flex">
+        <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
+          <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+            <div className="flex justify-between items-end ">
+              <SearchBranch
+                nameBranch={setName}
+                phoneBranch={setPhone}
+                addressBranch={setAddress}
+              ></SearchBranch>
+              {actions.includes('Agregar') && <AddButton onClick={() => modalAdd.onOpen()} />}
+            </div>
+            <div className="hidden w-full gap-5 md:flex">
+              <div className="grid w-full grid-cols-5 gap-3">
+                <Input
+                  startContent={<User />}
+                  className="w-full dark:text-white"
+                  variant="bordered"
+                  labelPlacement="outside"
+                  label="Nombre"
+                  classNames={{
+                    label: 'font-semibold text-gray-700',
+                    inputWrapper: 'pr-0',
+                  }}
+                  isClearable
+                  value={name}
+                  placeholder="Escribe para buscar..."
+                  onChange={(e) => setName(e.target.value)}
+                  onClear={() => {
+                    setName('');
+                    getBranchesPaginated(1, limit, '', phone, address, active);
+                  }}
+                />
+
+                <Input
+                  labelPlacement="outside"
+                  label="Teléfono"
+                  placeholder="Escribe para buscar..."
+                  startContent={<PhoneIcon />}
+                  className="w-full dark:text-white"
+                  classNames={{
+                    label: 'font-semibold text-gray-700',
+                    inputWrapper: 'pr-0',
+                  }}
+                  variant="bordered"
+                  isClearable
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  onClear={() => {
+                    setPhone('');
+                    getBranchesPaginated(1, limit, name, '', address, active);
+                  }}
+                />
+
+                <Input
+                  placeholder="Escribe para buscar..."
+                  startContent={<MapPinIcon />}
+                  className="w-full dark:text-white"
+                  variant="bordered"
+                  isClearable
+                  labelPlacement="outside"
+                  label="Dirección"
+                  classNames={{
+                    label: 'font-semibold text-gray-700',
+                    inputWrapper: 'pr-0',
+                  }}
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  onClear={() => {
+                    setAddress('');
+                    getBranchesPaginated(1, limit, name, phone, '', active);
+                  }}
+                />
                 <Button
-                  style={global_styles().secondaryStyle}
-                  className="px-12 font-semibold max-w-72"
+                  style={{
+                    backgroundColor: theme.colors.secondary,
+                    color: theme.colors.primary,
+                  }}
+                  className="hidden mt-6 font-semibold md:flex"
+                  color="primary"
                   onClick={() => handleSearch()}
                   type="button"
                 >
                   Buscar
                 </Button>
               </div>
-              <div className="flex items-end justify-between gap-10 mt lg:justify-end">
-                <ButtonGroup>
+            </div>
+
+            <div className="flex flex-col gap-3 mt-3 lg:flex-row lg:justify-between lg:gap-10">
+              <div className="flex justify-between justify-start order-2 lg:order-1">
+                <Switch
+                  classNames={{
+                    thumb: classNames(active ? 'bg-blue-500' : 'bg-gray-400'),
+                    wrapper: classNames(active ? '!bg-blue-300' : 'bg-gray-200'),
+                  }}
+                  onValueChange={(isSelected) => setActive(isSelected ? 1 : 0)}
+                >
+                  <span className="text-sm sm:text-base whitespace-nowrap">
+                    Mostrar {active ? 'inactivos' : 'activos'}
+                  </span>
+                </Switch>
+              </div>
+              <div className="flex gap-10 w-full justify-between items-center lg:justify-end order-1 lg:order-2">
+                <Select
+                  className="w-44 dark:text-white"
+                  variant="bordered"
+                  label="Mostrar"
+                  labelPlacement="outside"
+                  classNames={{
+                    label: 'font-semibold',
+                  }}
+                  defaultSelectedKeys={['5']}
+                  value={limit}
+                  onChange={(e) => {
+                    setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
+                  }}
+                >
+                  {limit_options.map((option) => (
+                    <SelectItem className="w-full dark:text-white" key={option} value={option}>
+                      {option}
+                    </SelectItem>
+                  ))}
+                </Select>
+                <ButtonGroup className="mt-4">
                   <Button
+                    className="hidden md:inline-flex"
                     isIconOnly
                     color="secondary"
                     style={{
@@ -224,76 +259,9 @@ function ListBranch({ actions }: ArrayAction) {
                     <List />
                   </Button>
                 </ButtonGroup>
-                <div className="flex items-center gap-5">
-                  <div className="block md:hidden">
-                    <TooltipGlobal text="Filtros">
-                      <Button
-                        style={global_styles().thirdStyle}
-                        isIconOnly
-                        onClick={() => setOpenVaul(true)}
-                        type="button"
-                      >
-                        <Filter />
-                      </Button>
-                    </TooltipGlobal>
-                    <BottomDrawer
-                      title="Filtros disponibles"
-                      open={openVaul}
-                      onClose={() => setOpenVaul(false)}
-                    >
-                      <div className="p-4 bg-white dark:bg-gray-800 rounded-t-[10px] flex-1">
-                        <div className="flex flex-col gap-3">
-                          {filters}
-                          <Button
-                            className="mb-10 font-semibold"
-                            onClick={() => {
-                              handleSearch();
-                              setOpenVaul(false);
-                            }}
-                            type="button"
-                          >
-                            Aplicar
-                          </Button>
-                        </div>
-                      </div>
-                    </BottomDrawer>
-                  </div>
-                  {actions.includes('Agregar') && <AddButton onClick={() => modalAdd.onOpen()} />}
-                </div>
               </div>
             </div>
-            <div className="flex flex-col justify-between w-full gap-5 mb-5 sm:flex-row sm:items-center">
-              <Switch
-                defaultSelected
-                classNames={{
-                  thumb: classNames(active ? 'bg-blue-500' : 'bg-gray-400'),
-                  wrapper: classNames(active ? '!bg-blue-300' : 'bg-gray-200'),
-                }}
-                onValueChange={(isSelected) => setActive(isSelected ? 1 : 0)}
-              >
-                {active === 1 ? 'Mostrar inactivos' : 'Mostrar activos'}
-              </Switch>
-              <Select
-                className="w-44 dark:text-white"
-                variant="bordered"
-                label="Mostrar"
-                labelPlacement="outside"
-                classNames={{
-                  label: 'font-semibold',
-                }}
-                defaultSelectedKeys={['5']}
-                value={limit}
-                onChange={(e) => {
-                  setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
-                }}
-              >
-                {limit_options.map((option) => (
-                  <SelectItem className="w-full dark:text-white" key={option} value={option}>
-                    {option}
-                  </SelectItem>
-                ))}
-              </Select>
-            </div>
+
             {view === 'table' && (
               <TableBranch
                 actionsElement={(item) => (
@@ -373,19 +341,33 @@ function ListBranch({ actions }: ArrayAction) {
                     }}
                   />
                 </div>
-                <div className="flex w-full mt-5 md:hidden">
-                  <div className="flex w-full mt-5 md:hidden">
-                    <SmPagination
-                      handleNext={() => {
-                        changePage(branches_paginated.nextPag);
-                      }}
-                      handlePrev={() => {
-                        changePage(branches_paginated.prevPag);
-                      }}
-                      currentPage={branches_paginated.currentPag}
-                      totalPages={branches_paginated.totalPag}
-                    />
-                  </div>
+                <div className="flex w-full md:hidden fixed bottom-0 left-0 bg-white dark:bg-gray-900 z-20 shadow-lg p-3">
+                  <SmPagination
+                    handleNext={() => {
+                      changePage(branches_paginated.nextPag);
+                      getBranchesPaginated(
+                        branches_paginated.nextPag,
+                        limit,
+                        name,
+                        phone,
+                        address,
+                        active
+                      );
+                    }}
+                    handlePrev={() => {
+                      changePage(branches_paginated.prevPag);
+                      getBranchesPaginated(
+                        branches_paginated.prevPag,
+                        limit,
+                        name,
+                        phone,
+                        address,
+                        active
+                      );
+                    }}
+                    currentPage={branches_paginated.currentPag}
+                    totalPages={branches_paginated.totalPag}
+                  />
                 </div>
               </>
             )}

@@ -1,6 +1,8 @@
 import { useContext, useEffect, useState } from 'react';
 import { useUsersStore } from '../../store/users.store';
 import {
+  Autocomplete,
+  AutocompleteItem,
   Button,
   Input,
   Popover,
@@ -11,8 +13,7 @@ import {
   Switch,
   useDisclosure,
 } from '@nextui-org/react';
-// import { DataTable } from 'primereact/datatable';
-// import { Column } from 'primereact/column';
+
 import AddUsers from './AddUsers';
 import UpdateUsers from './UpdateUsers';
 import {
@@ -22,7 +23,6 @@ import {
   TrashIcon,
   List,
   EditIcon,
-  Filter,
   RefreshCcw,
 } from 'lucide-react';
 import UpdatePassword from './UpdatePassword';
@@ -40,13 +40,12 @@ import { Search } from 'lucide-react';
 import HeadlessModal from '../global/HeadlessModal';
 import useWindowSize from '@/hooks/useWindowSize';
 import TooltipGlobal from '../global/TooltipGlobal';
-import BottomDrawer from '../global/BottomDrawer';
 import NO_DATA from '@/assets/svg/no_data.svg';
-
+import SearchUser from './search_user/SearchUser';
+import { useRolesStore } from '@/store/roles.store';
 interface Props {
   actionss: string[];
 }
-
 function ListUsers({ actionss }: Props) {
   const { theme } = useContext(ThemeContext);
   const [limit, setLimit] = useState(5);
@@ -54,9 +53,11 @@ function ListUsers({ actionss }: Props) {
   const [user, setUser] = useState<User | undefined>();
   const [active, setActive] = useState(true);
   const [page, serPage] = useState(1);
+  const { roles_list, getRolesList } = useRolesStore();
 
   useEffect(() => {
     getUsersPaginated(1, limit, '', '', active ? 1 : 0);
+    getRolesList();
   }, [limit, active]);
 
   const modalAdd = useDisclosure();
@@ -78,7 +79,6 @@ function ListUsers({ actionss }: Props) {
     getUsersPaginated(page, limit, searchParam ?? userName, rol, active ? 1 : 0);
   };
 
-  const [openVaul, setOpenVaul] = useState(false);
   const handleActivate = (id: number) => {
     activateUser(id).then(() => {
       getUsersPaginated(1, limit, '', '', active ? 1 : 0);
@@ -86,69 +86,120 @@ function ListUsers({ actionss }: Props) {
   };
   return (
     <>
-      <div className=" w-full h-full p-10 bg-gray-50 dark:bg-gray-900">
-        <div className="w-full h-full border-white border border-white p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
-          <div className="flex flex-col justify-between w-full gap-5 lg:flex-row lg:gap-0">
-            <div className="hidden w-full gap-5 md:flex">
-              <div className="w-1/2">
-                <Input
-                  startContent={<Search />}
-                  className=" dark:text-white"
-                  variant="bordered"
-                  labelPlacement="outside"
-                  label="Nombre"
-                  classNames={{
-                    label: 'font-semibold text-gray-700',
-                    inputWrapper: 'pr-0',
-                  }}
-                  value={userName}
-                  onChange={(e) => setUserName(e.target.value)}
-                  placeholder="Escribe para buscar..."
-                  isClearable
-                  onClear={() => {
-                    setUserName('');
-                    handleSearch('');
-                  }}
-                />
-              </div>
-              <div className="w-1/2">
-                <Input
-                  startContent={<Search />}
-                  className=" dark:text-white"
-                  variant="bordered"
-                  labelPlacement="outside"
-                  label="Rol"
-                  classNames={{
-                    label: 'font-semibold text-gray-700',
-                    inputWrapper: 'pr-0',
-                  }}
-                  value={rol}
-                  onChange={(e) => setRol(e.target.value)}
-                  placeholder="Escribe para buscar..."
-                  isClearable
-                  onClear={() => {
+      <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
+        <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+          <div className="flex justify-between items-end ">
+            <SearchUser
+              nameUser={(userName) => setUserName(userName)}
+              nameRol={(rol) => setRol(rol)}
+            ></SearchUser>
+            {actionss.includes('Agregar') && <AddButton onClick={() => modalAdd.onOpen()} />}
+          </div>
+          <div className="hidden w-full gap-5 md:flex">
+            <div className="grid w-full grid-cols-5 gap-3">
+              <Input
+                startContent={<Search />}
+                className=" dark:text-white"
+                variant="bordered"
+                labelPlacement="outside"
+                label="Nombre"
+                classNames={{
+                  label: 'font-semibold text-gray-700',
+                  inputWrapper: 'pr-0',
+                }}
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
+                placeholder="Escribe para buscar..."
+                isClearable
+                onClear={() => {
+                  setUserName('');
+                  handleSearch('');
+                }}
+              />
+
+              <Autocomplete
+                onSelectionChange={(value) => {
+                  const selectRol = roles_list.find((rol) => rol.name === value);
+                  setRol(selectRol?.name ?? '');
+                }}
+                onClear={() => {
+                  setRol('');
+                  handleSearch('');
+                }}
+                clearButtonProps={{
+                  onClick: () => {
                     setRol('');
                     handleSearch('');
-                  }}
-                />
-              </div>
-              <div className="w-1/2 mt-6">
-                <Button
-                  style={{
-                    backgroundColor: theme.colors.secondary,
-                    color: theme.colors.primary,
-                  }}
-                  className="font-semibold"
-                  color="primary"
-                  onClick={() => handleSearch(undefined)}
-                >
-                  Buscar
-                </Button>
-              </div>
+                  },
+                }}
+                label="Rol"
+                labelPlacement="outside"
+                placeholder="Selecciona el rol"
+                variant="bordered"
+                className="dark:text-white"
+                classNames={{
+                  base: 'text-gray-500 text-sm',
+                }}
+              >
+                {roles_list.map((dep) => (
+                  <AutocompleteItem className="dark:text-white" value={dep.id} key={dep.name}>
+                    {dep.name}
+                  </AutocompleteItem>
+                ))}
+              </Autocomplete>
+              <Button
+                style={{
+                  backgroundColor: theme.colors.secondary,
+                  color: theme.colors.primary,
+                }}
+                className="hidden mt-6 font-semibold md:flex"
+                color="primary"
+                onClick={() => handleSearch(undefined)}
+              >
+                Buscar
+              </Button>
             </div>
-            <div className="flex items-end justify-between gap-10 lg:justify-end">
-              <ButtonGroup>
+          </div>
+
+          <div className="flex flex-col gap-3 mt-3 lg:flex-row lg:justify-between lg:gap-10">
+            <div className="flex justify-between justify-start order-2 lg:order-1">
+              <Switch
+                onValueChange={(active) => setActive(active)}
+                isSelected={active}
+                classNames={{
+                  thumb: classNames(active ? 'bg-blue-500' : 'bg-gray-400'),
+                  wrapper: classNames(active ? '!bg-blue-300' : 'bg-gray-200'),
+                }}
+              >
+                <span className="text-sm sm:text-base whitespace-nowrap">
+                  Mostrar {active ? 'inactivos' : 'activos'}
+                </span>
+              </Switch>
+            </div>
+            <div className="flex gap-10 w-full justify-between items-center lg:justify-end order-1 lg:order-2">
+              <Select
+                className="w-44 dark:text-white"
+                variant="bordered"
+                label="Mostrar"
+                labelPlacement="outside"
+                defaultSelectedKeys={['5']}
+                classNames={{
+                  label: 'font-semibold',
+                }}
+                value={limit}
+                onChange={(e) => {
+                  setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
+                }}
+              >
+                {limit_options.map((limit) => (
+                  <SelectItem className="dark:text-white" key={limit} value={limit}>
+                    {limit}
+                  </SelectItem>
+                ))}
+              </Select>
+              <ButtonGroup className="mt-4">
                 <Button
+                  className="hidden md:inline-flex"
                   isIconOnly
                   color="secondary"
                   style={{
@@ -182,124 +233,9 @@ function ListUsers({ actionss }: Props) {
                   <List />
                 </Button>
               </ButtonGroup>
-              <div className="flex items-center gap-5">
-                <div className="block md:hidden">
-                  <TooltipGlobal text="Buscar por filtros" color="primary">
-                    <Button
-                      style={global_styles().thirdStyle}
-                      isIconOnly
-                      onClick={() => setOpenVaul(true)}
-                      type="button"
-                    >
-                      <Filter />
-                    </Button>
-                  </TooltipGlobal>
-                  <BottomDrawer
-                    title="Filtros disponibles"
-                    open={openVaul}
-                    onClose={() => setOpenVaul(false)}
-                  >
-                    <div className="flex flex-col gap-3">
-                      <div className="w-full">
-                        <Input
-                          startContent={<Search />}
-                          className=" dark:text-white"
-                          variant="bordered"
-                          labelPlacement="outside"
-                          label="Nombre"
-                          classNames={{
-                            label: 'font-semibold text-gray-700',
-                            inputWrapper: 'pr-0',
-                          }}
-                          value={userName}
-                          onChange={(e) => setUserName(e.target.value)}
-                          placeholder="Escribe para buscar..."
-                          isClearable
-                          onClear={() => {
-                            setUserName('');
-                            handleSearch('');
-                          }}
-                        />
-                      </div>
-                      <div className="w-full">
-                        <Input
-                          startContent={<Search />}
-                          className=" dark:text-white"
-                          variant="bordered"
-                          labelPlacement="outside"
-                          label="Rol"
-                          classNames={{
-                            label: 'font-semibold text-gray-700',
-                            inputWrapper: 'pr-0',
-                          }}
-                          value={rol}
-                          onChange={(e) => setRol(e.target.value)}
-                          placeholder="Escribe para buscar..."
-                          isClearable
-                          onClear={() => {
-                            setRol('');
-                            handleSearch('');
-                          }}
-                        />
-                      </div>
-                      <Button
-                        style={{
-                          backgroundColor: theme.colors.secondary,
-                          color: theme.colors.primary,
-                          fontSize: '16px',
-                        }}
-                        className="mb-10 font-semibold"
-                        color="primary"
-                        onClick={() => {
-                          handleSearch(undefined);
-                          setOpenVaul(false);
-                        }}
-                      >
-                        Buscar
-                      </Button>
-                    </div>
-                  </BottomDrawer>
-                </div>
-                {actionss.includes('Mostrar') && <AddButton onClick={() => modalAdd.onOpen()} />}
-              </div>
             </div>
           </div>
-          <div className="flex justify-between md:justify-end items-end gap-5 w-full pt-4 mb-5">
-            <Select
-              className="w-44 dark:text-white"
-              variant="bordered"
-              label="Mostrar"
-              labelPlacement="outside"
-              defaultSelectedKeys={['5']}
-              classNames={{
-                label: 'font-semibold',
-              }}
-              value={limit}
-              onChange={(e) => {
-                setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
-              }}
-            >
-              {limit_options.map((limit) => (
-                <SelectItem className="dark:text-white" key={limit} value={limit}>
-                  {limit}
-                </SelectItem>
-              ))}
-            </Select>
-            <div className="flex items-center">
-              <Switch
-                onValueChange={(active) => setActive(active)}
-                isSelected={active}
-                classNames={{
-                  thumb: classNames(active ? 'bg-blue-500' : 'bg-gray-400'),
-                  wrapper: classNames(active ? '!bg-blue-300' : 'bg-gray-200'),
-                }}
-              >
-                <span className="text-sm sm:text-base whitespace-nowrap">
-                  Mostrar {active ? 'inactivos' : 'activos'}
-                </span>
-              </Switch>
-            </div>
-          </div>
+
           {(view === 'grid' || view === 'list') && (
             <MobileView
               deletePopover={DeletePopUp}
@@ -435,7 +371,7 @@ function ListUsers({ actionss }: Props) {
                   }}
                 />
               </div>
-              <div className="flex w-full mt-5 md:hidden">
+              <div className="flex w-full md:hidden fixed bottom-0 left-0 bg-white dark:bg-gray-900 z-20 shadow-lg p-3">
                 <SmPagination
                   handleNext={() => {
                     serPage(users_paginated.nextPag);

@@ -34,7 +34,7 @@ function AddTributeSupplier() {
   const navigate = useNavigate();
 
   return (
-    <Layout title="Nuevo Proveedor Contribuyente">
+    <Layout title="Nuevo Contribuyente">
       <Formik
         initialValues={{
           nombre: '',

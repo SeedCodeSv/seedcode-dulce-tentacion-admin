@@ -36,7 +36,7 @@ export default function BottomDrawer(props: BottomDrawerProps) {
             }}
             className={classNames(
               context,
-              'fixed bottom-0 dark:bg-gray-800 left-0 z-[60] right-0 p-4 bg-white shadow-xl rounded-t-2xl border dark:border-white'
+              'fixed bottom-0 dark:bg-gray-800 left-1 z-[60] right-1 p-5 bg-white shadow-xl rounded-t-2xl border dark:border-white'
             )}
           >
             <div className="flex items-center justify-center w-full">

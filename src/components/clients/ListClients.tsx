@@ -47,6 +47,7 @@ import useWindowSize from '@/hooks/useWindowSize';
 import NO_DATA from '@/assets/svg/no_data.svg';
 import { useBranchesStore } from '@/store/branches.store';
 import { useNavigate } from 'react-router';
+import SearchClient from './search_client/SearchClient';
 interface Props {
   actions: string[];
 }
@@ -150,10 +151,20 @@ const ListClients = ({ actions }: Props) => {
 
   return (
     <>
-      <div className=" w-full h-full p-10 bg-gray-50 dark:bg-gray-900">
+      <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
         <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
-          <div className="w-full hidden gap-5 md:flex">
-            <div className="flex w-full justify-between items-end gap-3">
+          <div className="flex justify-between items-end ">
+            <SearchClient></SearchClient>
+            {actions.includes('Agregar') && (
+              <>
+                <BottomAdd />
+                <BottomSm />
+              </>
+            )}
+          </div>
+
+          <div className="hidden w-full gap-5 md:flex">
+            <div className="grid w-full grid-cols-4 gap-3">
               <Input
                 startContent={<User />}
                 className="w-full dark:text-white"
@@ -218,198 +229,25 @@ const ListClients = ({ actions }: Props) => {
                   </AutocompleteItem>
                 ))}
               </Autocomplete>
-              <div className="mt-6">
-                <Button
-                  style={{
-                    backgroundColor: theme.colors.secondary,
-                    color: theme.colors.primary,
-                  }}
-                  className="font-semibold"
-                  color="primary"
-                  onClick={() => handleSearch(undefined)}
-                >
-                  Buscar
-                </Button>
-              </div>
-            </div>
-          </div>
-          <div className="flex flex-col sm:flex-row items-end justify-between mt-3">
-            <div className="flex-col gap-2  sm:flex sm:flex-row lg:justify-start items-center w-full">
-              <div className="">
-                <Select
-                  className="w-44 ml-2"
-                  variant="bordered"
-                  label="Mostrar"
-                  defaultSelectedKeys={['5']}
-                  labelPlacement="outside"
-                  classNames={{
-                    label: 'font-semibold',
-                  }}
-                  value={limit}
-                  onChange={(e) => {
-                    setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
-                  }}
-                >
-                  <SelectItem className="dark:text-white" key={'5'}>
-                    5
-                  </SelectItem>
-                  <SelectItem className="dark:text-white" key={'10'}>
-                    10
-                  </SelectItem>
-                  <SelectItem className="dark:text-white" key={'20'}>
-                    20
-                  </SelectItem>
-                  <SelectItem className="dark:text-white" key={'30'}>
-                    30
-                  </SelectItem>
-                  <SelectItem className="dark:text-white" key={'40'}>
-                    40
-                  </SelectItem>
-                  <SelectItem className="dark:text-white" key={'50'}>
-                    50
-                  </SelectItem>
-                  <SelectItem className="dark:text-white" key={'100'}>
-                    100
-                  </SelectItem>
-                </Select>
-              </div>
-              <div className="">
-                <Select
-                  className="w-44 ml-2 mt-5"
-                  variant="bordered"
-                  placeholder="-- Seleccione tipo de cliente --"
-                  labelPlacement="outside"
-                  classNames={{
-                    label: 'font-semibold',
-                  }}
-                  value={String(tipeCustomer)}
-                  onChange={(e) => {
-                    // setTypeCustomer(e.target.value !== '' ? Number(e.target.value) : 0);
-                    setTypeCustomer(e.target.value !== '' ? e.target.value : '');
-                  }}
-                >
-                  <SelectItem className="dark:text-white" key={'1'}>
-                    Contribuyente
-                  </SelectItem>
-                  <SelectItem className="dark:text-white" key={'0'}>
-                    No Contribuyente
-                  </SelectItem>
-                  <SelectItem className="dark:text-white" key={''}>
-                    Todos
-                  </SelectItem>
-                </Select>
-              </div>
-            </div>
-            {actions.includes('Agregar') && <BottomAdd />}
-            <div className="flex items-center gap-5">
-              <div className="block md:hidden">
-                <TooltipGlobal text="Buscar por filtros" color="primary">
-                  <Button
-                    style={global_styles().thirdStyle}
-                    isIconOnly
-                    onClick={() => setOpenVaul(true)}
-                    type="button"
-                  >
-                    <Filter />
-                  </Button>
-                </TooltipGlobal>
-                <BottomDrawer
-                  title="Filtros disponibles"
-                  open={openVaul}
-                  onClose={() => setOpenVaul(false)}
-                >
-                  <div className="flex flex-col gap-3">
-                    <Input
-                      startContent={<User />}
-                      className="w-full dark:text-white"
-                      variant="bordered"
-                      labelPlacement="outside"
-                      label="Nombre"
-                      classNames={{
-                        label: 'font-semibold text-gray-700',
-                        inputWrapper: 'pr-0',
-                      }}
-                      value={search}
-                      onChange={(e) => setSearch(e.target.value)}
-                      placeholder="Escribe para buscar..."
-                      isClearable
-                      onClear={() => {
-                        // handleSearch("");
-                        setSearch('');
-                      }}
-                    />
-                    <Autocomplete
-                      onSelectionChange={(key) => {
-                        if (key) {
-                          setBranch(key as string);
-                        }
-                      }}
-                      className="w-full dark:text-white"
-                      label="Sucursal"
-                      labelPlacement="outside"
-                      placeholder="Selecciona una sucursal"
-                      variant="bordered"
-                      defaultSelectedKey={branch}
-                      classNames={{
-                        base: 'font-semibold text-gray-500 text-sm',
-                      }}
-                      clearButtonProps={{
-                        onClick: () => setBranch(''),
-                      }}
-                    >
-                      {branch_list.map((bra) => (
-                        <AutocompleteItem
-                          value={bra.name}
-                          className="dark:text-white"
-                          key={bra.name}
-                        >
-                          {bra.name}
-                        </AutocompleteItem>
-                      ))}
-                    </Autocomplete>
-                    <Input
-                      startContent={<Mail />}
-                      className="w-full dark:text-white"
-                      variant="bordered"
-                      labelPlacement="outside"
-                      label="Correo"
-                      classNames={{
-                        label: 'font-semibold text-gray-700',
-                        inputWrapper: 'pr-0',
-                      }}
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="Escribe para buscar..."
-                      isClearable
-                      onClear={() => {
-                        // handleSearch("");
-                        setEmail('');
-                      }}
-                    />
 
-                    <Button
-                      style={{
-                        backgroundColor: theme.colors.secondary,
-                        color: theme.colors.primary,
-                      }}
-                      className="font-semibold"
-                      color="primary"
-                      onClick={() => {
-                        handleSearch(undefined);
-                        setOpenVaul(false);
-                      }}
-                    >
-                      Buscar
-                    </Button>
-                  </div>
-                </BottomDrawer>
-              </div>
-              <BottomSm />
+              <Button
+                style={{
+                  backgroundColor: theme.colors.secondary,
+                  color: theme.colors.primary,
+                }}
+                className="hidden mt-6 font-semibold md:flex"
+                color="primary"
+                onClick={() => handleSearch(undefined)}
+              >
+                Buscar
+              </Button>
             </div>
           </div>
-          <div className="flex justify-between mt-4">
-            <div className="w-full flex justify-start">
+
+          <div className="flex flex-col gap-3 mt-3 lg:flex-row lg:justify-between lg:gap-10">
+            <div className="flex justify-between justify-start order-2 lg:order-1">
               <Switch
+                className="hidden md:inline-flex"
                 onValueChange={(active) => setActive(active)}
                 isSelected={active}
                 classNames={{
@@ -422,8 +260,87 @@ const ListClients = ({ actions }: Props) => {
                 </span>
               </Switch>
             </div>
+            <div className="flex xl:gap-10 gap-3 w-full  lg:justify-end order-1 lg:order-2">
+              <Select
+                className="xl:w-44 w-36 dark:text-white"
+                variant="bordered"
+                label="Tipo de cliente"
+                placeholder="-- Seleccione tipo de cliente --"
+                labelPlacement="outside"
+                classNames={{
+                  label: 'font-semibold',
+                }}
+                value={String(tipeCustomer)}
+                onChange={(e) => {
+                  setTypeCustomer(e.target.value !== '' ? e.target.value : '');
+                }}
+              >
+                <SelectItem className="dark:text-white" key={'1'}>
+                  Contribuyente
+                </SelectItem>
+                <SelectItem className="dark:text-white" key={'0'}>
+                  No Contribuyente
+                </SelectItem>
+                <SelectItem className="dark:text-white" key={''}>
+                  Todos
+                </SelectItem>
+              </Select>
+              <Select
+                className="xl:w-44 w-36 dark:text-white"
+                variant="bordered"
+                label="Mostrar"
+                defaultSelectedKeys={['5']}
+                labelPlacement="outside"
+                classNames={{
+                  label: 'font-semibold',
+                }}
+                value={limit}
+                onChange={(e) => {
+                  setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
+                }}
+              >
+                <SelectItem className="dark:text-white" key={'5'}>
+                  5
+                </SelectItem>
+                <SelectItem className="dark:text-white" key={'10'}>
+                  10
+                </SelectItem>
+                <SelectItem className="dark:text-white" key={'20'}>
+                  20
+                </SelectItem>
+                <SelectItem className="dark:text-white" key={'30'}>
+                  30
+                </SelectItem>
+                <SelectItem className="dark:text-white" key={'40'}>
+                  40
+                </SelectItem>
+                <SelectItem className="dark:text-white" key={'50'}>
+                  50
+                </SelectItem>
+                <SelectItem className="dark:text-white" key={'100'}>
+                  100
+                </SelectItem>
+              </Select>
+            </div>
+          </div>
+
+          <div className="flex items-end justify-end xl:mt-2 gap-12">
+            <Switch
+              className="xl:hidden md:inline-flex"
+              onValueChange={(active) => setActive(active)}
+              isSelected={active}
+              classNames={{
+                thumb: classNames(active ? 'bg-blue-500' : 'bg-gray-400'),
+                wrapper: classNames(active ? '!bg-blue-300' : 'bg-gray-200'),
+              }}
+            >
+              <span className="text-sm sm:text-base whitespace-nowrap">
+                Mostrar {active ? 'inactivos' : 'activos'}
+              </span>
+            </Switch>
             <ButtonGroup>
               <Button
+                className="hidden md:inline-flex"
                 isIconOnly
                 color="secondary"
                 style={{
@@ -614,7 +531,7 @@ const ListClients = ({ actions }: Props) => {
                   }}
                 />
               </div>
-              <div className="flex w-full mt-5 md:hidden">
+              <div className="flex w-full md:hidden fixed bottom-0 left-0 bg-white dark:bg-gray-900 z-20 shadow-lg p-3">
                 <SmPagination
                   handleNext={() => {
                     serPage(customer_pagination.nextPag);

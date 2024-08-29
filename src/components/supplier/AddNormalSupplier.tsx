@@ -33,7 +33,7 @@ function AddNormalSupplier() {
   const { onPostSupplier } = useSupplierStore();
   const navigate = useNavigate();
   return (
-    <Layout title="Nuevo Proveedor Consumidor Final">
+    <Layout title="Nuevo Consumidor Final">
       <Formik
         initialValues={{
           nombre: '',

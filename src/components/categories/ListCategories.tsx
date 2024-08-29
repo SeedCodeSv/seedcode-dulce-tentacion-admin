@@ -78,9 +78,10 @@ function ListCategories({ actions }: PProps) {
     <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
       <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
         <div className="flex justify-between items-end ">
-          <SearchCategoryProduct nameCategoryProduct={(name) => setSearch(name)}></SearchCategoryProduct>
+          <SearchCategoryProduct
+            nameCategoryProduct={(name) => setSearch(name)}
+          ></SearchCategoryProduct>
           {actions.includes('Agregar') && (
-
             <AddButton
               onClick={() => {
                 setSelectedCategory(undefined);
@@ -90,7 +91,6 @@ function ListCategories({ actions }: PProps) {
           )}
         </div>
         <div className="hidden flex  grid w-full grid-cols-2 gap-5 md:flex">
-
           <Input
             startContent={<User />}
             className="w-full xl:w-96 dark:text-white"
@@ -123,9 +123,6 @@ function ListCategories({ actions }: PProps) {
             Buscar
           </Button>
         </div>
-
-
-
 
         <div className="flex flex-col gap-3 mt-3 lg:flex-row lg:justify-between lg:gap-10">
           <div className="flex justify-between justify-start order-2 lg:order-1">
@@ -163,9 +160,7 @@ function ListCategories({ actions }: PProps) {
               ))}
             </Select>
 
-
-
-            <ButtonGroup className='mt-4'>
+            <ButtonGroup className="mt-4">
               <Button
                 className="hidden md:inline-flex"
                 isIconOnly
@@ -202,9 +197,7 @@ function ListCategories({ actions }: PProps) {
               </Button>
             </ButtonGroup>
           </div>
-
         </div>
-
 
         {(view === 'grid' || view === 'list') && (
           <MobileView
@@ -327,17 +320,16 @@ function ListCategories({ actions }: PProps) {
               />
             </div>
             <div className="flex w-full md:hidden fixed bottom-0 left-0 bg-white dark:bg-gray-900 z-20 shadow-lg p-3">
-                <SmPagination
-                  handleNext={() => {
-                    getPaginatedCategories(paginated_categories.nextPag, limit, search);
-                  }}
-                  handlePrev={() => {
-                    getPaginatedCategories(paginated_categories.prevPag, limit, search);
-                  }}
-                  currentPage={paginated_categories.currentPag}
-                  totalPages={paginated_categories.totalPag}
-                />
-             
+              <SmPagination
+                handleNext={() => {
+                  getPaginatedCategories(paginated_categories.nextPag, limit, search);
+                }}
+                handlePrev={() => {
+                  getPaginatedCategories(paginated_categories.prevPag, limit, search);
+                }}
+                currentPage={paginated_categories.currentPag}
+                totalPages={paginated_categories.totalPag}
+              />
             </div>
           </>
         )}

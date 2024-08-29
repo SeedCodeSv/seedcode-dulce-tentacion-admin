@@ -47,17 +47,17 @@ const GridItem = (props: GridProps) => {
       {layout === 'grid' ? (
         <div
           className={classNames(
-            'w-full shadow hover:shadow-lg p-8 dark:border dark:border-gray-600 rounded-2xl'
+            'w-full shadow border dark:border-white hover:shadow-lg p-8 dark:border dark:border-gray-600 rounded-2xl'
           )}
           key={subcategory.id}
         >
           <div className="flex w-full gap-2">
-            <ScrollIcon className="text-[#274c77] dark:text-gray-400" size={20} />
-            {subcategory.name}
+            <ScrollIcon className="text-blue-500 dark:text-blue-300" size={20} />
+            <p className="w-full dark:text-white">{subcategory.name}</p>
           </div>
           <div className="flex w-full gap-2 mt-3">
-            <PackageSearch className="text-[#274c77] dark:text-gray-400" size={20} />
-            {subcategory.categoryProduct.name}
+            <PackageSearch className="text-blue-500 dark:text-blue-300" size={20} />
+            <p className="w-full dark:text-white">{subcategory.categoryProduct.name}</p>
           </div>
           <div className="flex justify-between mt-5 w-ful">
             {actions.includes('Editar') && (
@@ -104,15 +104,15 @@ const ListItem = (props: GridProps) => {
   const { subcategory, deletePopover, handleEdit, actions, handleActive } = props;
   return (
     <>
-      <div className="flex w-full p-5 border shadow dark:border-gray-600 rounded-2xl">
+      <div className="flex border dark:border-white w-full p-5 border shadow dark:border-gray-600 rounded-2xl">
         <div className="w-full">
           <div className="flex items-center w-full gap-2">
-            <ScrollIcon className="text-[#274c77] dark:text-gray-400" size={20} />
-            {subcategory?.name}
+            <ScrollIcon className="text-blue-500 dark:text-blue-300" size={20} />
+            <p className="w-full dark:text-white">{subcategory?.name}</p>
           </div>
           <div className="flex items-center w-full gap-2 mt-2">
-            <PackageSearch className="text-[#006d77] dark:text-gray-400" size={20} />
-            {subcategory?.categoryProduct.name}
+            <PackageSearch className="text-blue-500 dark:text-blue-300" size={20} />
+            <p className="w-full dark:text-white"> {subcategory?.categoryProduct.name}</p>
           </div>
         </div>
         <div className="flex flex-col items-end justify-between w-full gap-5">

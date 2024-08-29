@@ -48,6 +48,7 @@ import useWindowSize from '@/hooks/useWindowSize';
 import { useAuthStore } from '@/store/auth.store';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import SearchEmployee from './search_employee/SearchEmployee';
 
 interface Props {
   actions: string[];
@@ -72,7 +73,6 @@ function ListEmployee({ actions }: Props) {
   const [view, setView] = useState<'table' | 'grid' | 'list'>(
     windowSize.width < 768 ? 'grid' : 'table'
   );
-  const [openVaul, setOpenVaul] = useState(false);
   const [active, setActive] = useState(true);
 
   const { getBranchesList, branch_list } = useBranchesStore();
@@ -91,10 +91,6 @@ function ListEmployee({ actions }: Props) {
       active ? 1 : 0
     );
   };
-  // const style = {
-  //   backgroundColor: theme.colors.dark,
-  //   color: theme.colors.primary,
-  // };
 
   useEffect(() => {
     getBranchesList();
@@ -672,72 +668,7 @@ function ListEmployee({ actions }: Props) {
   };
 
   const filters = useMemo(() => {
-    return (
-      <>
-        <Input
-          classNames={{
-            label: 'font-semibold text-gray-700',
-            inputWrapper: 'pr-0',
-          }}
-          labelPlacement="outside"
-          label="Nombre"
-          className="w-full dark:text-white"
-          placeholder="Buscar por nombre..."
-          startContent={<User />}
-          variant="bordered"
-          name="searchName"
-          id="searchName"
-          value={firstName}
-          autoComplete="search"
-          onChange={(e) => setFirstName(e.target.value)}
-          isClearable
-          onClear={() => setFirstName('')}
-        />
-        <Input
-          classNames={{
-            label: 'font-semibold text-gray-700',
-            inputWrapper: 'pr-0',
-          }}
-          labelPlacement="outside"
-          label="Teléfono"
-          placeholder="Buscar por teléfono..."
-          startContent={<Phone size={20} />}
-          className="w-full dark:text-white"
-          variant="bordered"
-          name="searchPhone"
-          value={phone}
-          id="searchPhone"
-          onChange={(e) => setPhone(e.target.value)}
-          isClearable
-          onClear={() => setPhone('')}
-        />
-        <Autocomplete
-          onSelectionChange={(key) => {
-            if (key) {
-              setBranch(key as string);
-            }
-          }}
-          className="w-full dark:text-white"
-          label="Sucursal"
-          labelPlacement="outside"
-          placeholder="Selecciona una sucursal"
-          variant="bordered"
-          defaultSelectedKey={branch}
-          classNames={{
-            base: 'font-semibold text-gray-500 text-sm',
-          }}
-          clearButtonProps={{
-            onClick: () => setBranch(''),
-          }}
-        >
-          {branch_list.map((bra) => (
-            <AutocompleteItem value={bra.name} className="dark:text-white" key={bra.name}>
-              {bra.name}
-            </AutocompleteItem>
-          ))}
-        </Autocomplete>
-      </>
-    );
+    return <></>;
   }, [firstName, setFirstName, phone, setPhone, branch, setBranch, branch_list]);
 
   //estado para capturar ;la data actualizada
@@ -781,26 +712,141 @@ function ListEmployee({ actions }: Props) {
         />
       ) : (
         <>
-          <div className=" w-full h-full p-10 bg-gray-50 dark:bg-gray-900">
-            <div className="w-full h-full border-white border border-white p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
-              <div className="hidden w-full grid-cols-3 gap-5 mb-4 md:grid">{filters}</div>
-              <div className="grid w-full grid-cols-1 gap-5 mb-4 md:grid-cols-2">
-                <div className="hidden md:flex">
+          <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
+            <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+              <div className="flex justify-between items-end ">
+                <SearchEmployee
+                  branchName={(e) => setBranch(e)}
+                  phoneEmployee={(e) => setPhone(e)}
+                  nameEmployee={(e) => setFirstName(e)}
+                ></SearchEmployee>
+                {actions.includes('Agregar') && (
+                  <AddButton
+                    onClick={() => {
+                      modalAdd.onOpen();
+                      navigate('/AddEmployee');
+                      setSelectedEmployee(undefined);
+                    }}
+                  />
+                )}
+              </div>
+              <div className="hidden w-full gap-5 md:flex">
+                <div className="grid w-full grid-cols-5 gap-3">
+                  <Input
+                    classNames={{
+                      label: 'font-semibold text-gray-700',
+                      inputWrapper: 'pr-0',
+                    }}
+                    labelPlacement="outside"
+                    label="Nombre"
+                    className="w-full dark:text-white"
+                    placeholder="Buscar por nombre..."
+                    startContent={<User />}
+                    variant="bordered"
+                    name="searchName"
+                    id="searchName"
+                    value={firstName}
+                    autoComplete="search"
+                    onChange={(e) => setFirstName(e.target.value)}
+                    isClearable
+                    onClear={() => setFirstName('')}
+                  />
+                  <Input
+                    classNames={{
+                      label: 'font-semibold text-gray-700',
+                      inputWrapper: 'pr-0',
+                    }}
+                    labelPlacement="outside"
+                    label="Teléfono"
+                    placeholder="Buscar por teléfono..."
+                    startContent={<Phone size={20} />}
+                    className="w-full dark:text-white"
+                    variant="bordered"
+                    name="searchPhone"
+                    value={phone}
+                    id="searchPhone"
+                    onChange={(e) => setPhone(e.target.value)}
+                    isClearable
+                    onClear={() => setPhone('')}
+                  />
+                  <Autocomplete
+                    onSelectionChange={(key) => {
+                      if (key) {
+                        setBranch(key as string);
+                      }
+                    }}
+                    className="w-full dark:text-white"
+                    label="Sucursal"
+                    labelPlacement="outside"
+                    placeholder="Selecciona una sucursal"
+                    variant="bordered"
+                    defaultSelectedKey={branch}
+                    classNames={{
+                      base: 'font-semibold text-gray-500 text-sm',
+                    }}
+                    clearButtonProps={{
+                      onClick: () => setBranch(''),
+                    }}
+                  >
+                    {branch_list.map((bra) => (
+                      <AutocompleteItem value={bra.name} className="dark:text-white" key={bra.name}>
+                        {bra.name}
+                      </AutocompleteItem>
+                    ))}
+                  </Autocomplete>
                   <Button
                     style={{
                       backgroundColor: theme.colors.secondary,
                       color: theme.colors.primary,
                     }}
-                    className="px-10"
+                    className="hidden mt-6 font-semibold md:flex"
                     color="primary"
                     onClick={() => changePage()}
                   >
                     Buscar
                   </Button>
                 </div>
-                <div className="flex items-end justify-between gap-10 mt-4 lg:justify-end">
-                  <ButtonGroup>
+              </div>
+
+              <div className="flex flex-col gap-3 mt-3 lg:flex-row lg:justify-between lg:gap-10">
+                <div className="flex justify-between justify-start order-2 lg:order-1">
+                  <Switch
+                    onValueChange={(active) => setActive(active)}
+                    isSelected={active}
+                    classNames={{
+                      thumb: classNames(active ? 'bg-blue-500' : 'bg-gray-400'),
+                      wrapper: classNames(active ? '!bg-blue-300' : 'bg-gray-200'),
+                    }}
+                  >
+                    <span className="text-sm sm:text-base whitespace-nowrap">
+                      Mostrar {active ? 'inactivos' : 'activos'}
+                    </span>
+                  </Switch>
+                </div>
+                <div className="flex gap-10 w-full justify-between items-center lg:justify-end order-1 lg:order-2">
+                  <Select
+                    className="w-44 dark:text-white"
+                    variant="bordered"
+                    label="Mostrar"
+                    defaultSelectedKeys={['5']}
+                    labelPlacement="outside"
+                    classNames={{
+                      label: 'font-semibold',
+                    }}
+                    value={limit}
+                    onChange={(e) => {
+                      setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
+                    }}
+                  >
+                    {limit_options.map((option) => (
+                      <SelectItem key={option} value={option} className="dark:text-white">
+                        {option}
+                      </SelectItem>
+                    ))}
+                  </Select>
+                  <ButtonGroup className="mt-4">
                     <Button
+                      className="hidden md:inline-flex"
                       isIconOnly
                       color="secondary"
                       style={{
@@ -834,87 +880,9 @@ function ListEmployee({ actions }: Props) {
                       <List />
                     </Button>
                   </ButtonGroup>
-                  <div className="flex items-center gap-5">
-                    <div className="block md:hidden">
-                      <TooltipGlobal text="Buscar por filtros">
-                        <Button
-                          style={global_styles().thirdStyle}
-                          isIconOnly
-                          onClick={() => setOpenVaul(true)}
-                        >
-                          <Filter />
-                        </Button>
-                      </TooltipGlobal>
-                      <BottomDrawer
-                        open={openVaul}
-                        title="Filtros disponibles"
-                        onClose={() => setOpenVaul(false)}
-                      >
-                        <div className="p-4 bg-white dark:bg-gray-800 rounded-t-[10px] flex-1">
-                          <div className="flex flex-col gap-3">
-                            {filters}
-                            <Button
-                              style={global_styles().secondaryStyle}
-                              className="mt-5 font-semibold"
-                              onClick={() => {
-                                changePage();
-                                setOpenVaul(false);
-                              }}
-                            >
-                              Buscar
-                            </Button>
-                          </div>
-                        </div>
-                      </BottomDrawer>
-                    </div>
-                    {actions.includes('Agregar') && (
-                      <AddButton
-                        onClick={() => {
-                          modalAdd.onOpen();
-                          navigate('/AddEmployee');
-                          setSelectedEmployee(undefined);
-                        }}
-                      />
-                    )}
-                  </div>
                 </div>
               </div>
-              <div className="flex items-end justify-between w-full gap-5 mb-5">
-                <Select
-                  className="w-44 dark:text-white"
-                  variant="bordered"
-                  label="Mostrar"
-                  defaultSelectedKeys={['5']}
-                  labelPlacement="outside"
-                  classNames={{
-                    label: 'font-semibold',
-                  }}
-                  value={limit}
-                  onChange={(e) => {
-                    setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
-                  }}
-                >
-                  {limit_options.map((option) => (
-                    <SelectItem key={option} value={option} className="dark:text-white">
-                      {option}
-                    </SelectItem>
-                  ))}
-                </Select>
-                <div className="flex items-center">
-                  <Switch
-                    onValueChange={(active) => setActive(active)}
-                    isSelected={active}
-                    classNames={{
-                      thumb: classNames(active ? 'bg-blue-500' : 'bg-gray-400'),
-                      wrapper: classNames(active ? '!bg-blue-300' : 'bg-gray-200'),
-                    }}
-                  >
-                    <span className="text-sm sm:text-base whitespace-nowrap">
-                      Mostrar {active ? 'inactivos' : 'activos'}
-                    </span>
-                  </Switch>
-                </div>
-              </div>
+
               {(view === 'grid' || view === 'list') && (
                 <MobileView
                   deletePopover={DeletePopover}
@@ -1098,37 +1066,35 @@ function ListEmployee({ actions }: Props) {
                       }}
                     />
                   </div>
-                  <div className="flex w-full mt-5 md:hidden">
-                    <div className="flex w-full mt-5 md:hidden">
-                      <SmPagination
-                        handleNext={() => {
-                          getEmployeesPaginated(
-                            Number(user?.correlative.branch.transmitterId),
-                            employee_paginated.nextPag,
-                            limit,
-                            firstName,
-                            firstLastName,
-                            branch,
-                            phone,
-                            active ? 1 : 0
-                          );
-                        }}
-                        handlePrev={() => {
-                          getEmployeesPaginated(
-                            Number(user?.correlative.branch.transmitterId),
-                            employee_paginated.prevPag,
-                            limit,
-                            firstName,
-                            firstLastName,
-                            branch,
-                            phone,
-                            active ? 1 : 0
-                          );
-                        }}
-                        currentPage={employee_paginated.currentPag}
-                        totalPages={employee_paginated.totalPag}
-                      />
-                    </div>
+                  <div className="flex w-full md:hidden fixed bottom-0 left-0 bg-white dark:bg-gray-900 z-20 shadow-lg p-3">
+                    <SmPagination
+                      handleNext={() => {
+                        getEmployeesPaginated(
+                          Number(user?.correlative.branch.transmitterId),
+                          employee_paginated.nextPag,
+                          limit,
+                          firstName,
+                          firstLastName,
+                          branch,
+                          phone,
+                          active ? 1 : 0
+                        );
+                      }}
+                      handlePrev={() => {
+                        getEmployeesPaginated(
+                          Number(user?.correlative.branch.transmitterId),
+                          employee_paginated.prevPag,
+                          limit,
+                          firstName,
+                          firstLastName,
+                          branch,
+                          phone,
+                          active ? 1 : 0
+                        );
+                      }}
+                      currentPage={employee_paginated.currentPag}
+                      totalPages={employee_paginated.totalPag}
+                    />
                   </div>
                 </>
               )}

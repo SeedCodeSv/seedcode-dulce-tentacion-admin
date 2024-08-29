@@ -55,24 +55,18 @@ const GridItem = (props: GridProps) => {
       {layout === 'grid' ? (
         <div
           className={classNames(
-            'w-full shadow flex flex-col justify-between hover:shadow-lg p-5 dark:border dark:border-gray-600 rounded-2xl'
+            'w-full border dark:border-white shadow flex flex-col justify-between hover:shadow-lg p-5 dark:border dark:border-gray-600 rounded-2xl'
           )}
           key={user.id}
         >
           <div>
             <div className="flex w-full gap-2">
-              <IUser className="text-[#274c77] dark:text-gray-400" size={20} />
+              <IUser className="text-blue-500 dark:text-blue-300" size={20} />
               <p className="w-full dark:text-white">{user.userName}</p>
             </div>
-            {/* <div className="flex w-full gap-2 mt-3">
-            <SquareUserRound
-              className="text-[#00bbf9] dark:text-gray-400"
-              size={35}
-            />
-            {user.}
-          </div> */}
+
             <div className="flex w-full gap-2 mt-3">
-              <ShieldCheck className="text-[#274c77] dark:text-gray-400" size={20} />
+              <ShieldCheck className="text-blue-500 dark:text-blue-300" size={20} />
               <p className="w-full dark:text-white">{user.role.name}</p>
             </div>
           </div>
@@ -138,18 +132,15 @@ const ListItem = (props: GridProps) => {
   const { user, deletePopover, openEditModal, openKeyModal, actions, handleActivate } = props;
   return (
     <>
-      <div className="flex w-full col-span-1 p-5 border shadow rounded-2xl ">
+      <div className="flex w-full border dark:border-white col-span-1 p-5 border shadow rounded-2xl ">
         <div className="w-full">
           <div className="flex items-center w-full gap-2">
-            <IUser className="text-[#274c77] dark:text-gray-400" size={20} />
+            <IUser className="text-blue-500 dark:text-blue-300" size={20} />
             <p className="w-full dark:text-white">{user.userName}</p>
           </div>
-          {/* <div className="flex items-center w-full gap-2 mt-3">
-            <SquareUserRound color="#00bbf9" size={35} />
-            {user.employee.fullName}
-          </div> */}
+
           <div className="flex items-center w-full gap-2 mt-3">
-            <ShieldCheck className="text-[#274c77] dark:text-gray-400" size={20} />
+            <ShieldCheck className="text-blue-500 dark:text-blue-300" size={20} />
             <p className="w-full dark:text-white">{user.role.name}</p>
           </div>
         </div>
@@ -182,17 +173,17 @@ const ListItem = (props: GridProps) => {
               )}
             </>
           )}
-            {user.active && actions.includes('Cambiar Contraseña') && (
-              <TooltipGlobal text="Cambiar Contraseña ">
-                <Button
-                  onClick={() => openKeyModal(user)}
-                  isIconOnly
-                  style={global_styles().warningStyles}
-                >
-                  <Key size={20} />
-                </Button>
-              </TooltipGlobal>
-            )}
+          {user.active && actions.includes('Cambiar Contraseña') && (
+            <TooltipGlobal text="Cambiar Contraseña ">
+              <Button
+                onClick={() => openKeyModal(user)}
+                isIconOnly
+                style={global_styles().warningStyles}
+              >
+                <Key size={20} />
+              </Button>
+            </TooltipGlobal>
+          )}
           {/* {deletePopover({ user: user })} */}
         </div>
       </div>

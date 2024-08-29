@@ -221,7 +221,7 @@ export const LayoutItems = () => {
         <div
           className="flex items-center pl-5 w-full border-b shadow h-[70px]"
           style={{
-            // backgroundColor: theme.colors.dark,
+            backgroundColor: theme.colors.dark,
             color: theme.colors.primary,
           }}
         >
