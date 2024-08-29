@@ -17,7 +17,7 @@ export interface ISupplierStore {
   OnGetBySupplier: (id: number) => void;
   onPostSupplier: (payload: PayloadSupplier) => Promise<boolean>;
   patchSupplier: (payload: Supplier, id: number) => void;
-  getSupplierList: () => void;
+  getSupplierList: (nombre: string) => void;
   deleteSupplier: (id: number) => Promise<boolean>;
   activateSupplier: (id: number) => Promise<void>;
 }

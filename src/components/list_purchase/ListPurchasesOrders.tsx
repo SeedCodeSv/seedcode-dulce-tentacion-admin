@@ -26,6 +26,7 @@ import { ClipboardCheck, CreditCard, Table as ITable, List } from 'lucide-react'
 import { global_styles } from '../../styles/global.styles';
 import { useSupplierStore } from '../../store/supplier.store';
 import { ArrayAction } from '@/types/view.types';
+import { useNavigate } from 'react-router';
 // import { Drawer } from "vaul";
 function ListPurchasesOrders({ actions }: ArrayAction) {
   const modalAdd = useDisclosure();
@@ -45,30 +46,38 @@ function ListPurchasesOrders({ actions }: ArrayAction) {
   }, [startDate, endDate, limit, showState, supplier]);
 
   useEffect(() => {
-    getSupplierList();
+    getSupplierList('');
   }, []);
   const { theme } = useContext(ThemeContext);
   const style = {
     backgroundColor: theme.colors.dark,
     color: theme.colors.primary,
   };
-  const reload = () => {
-    setLimit(5);
-    getPurchaseOrders(startDate, endDate, 1, limit, '');
-  };
+  // const reload = () => {
+  //   setLimit(5);
+  //   getPurchaseOrders(startDate, endDate, 1, limit, '');
+  // };
   const [selectedOrder, setSelectedOrder] = useState<PurchaseOrder>();
   const handleSelectEdit = (purchase: PurchaseOrder) => {
     setSelectedOrder(purchase);
     setMode('edit');
   };
+
+  const navigate = useNavigate();
   return (
     <>
       {mode === 'show' && (
-        <div className=" w-full h-full p-10 bg-gray-50 dark:bg-gray-900">
-          <div className="w-full h-full border-white border border-white p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
+        <div className=" w-full h-full p-5 bg-gray-50 dark:bg-gray-900">
+          <div className="w-full h-full border border-white p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
             <div className="w-full flex justify-between">
               <p className="text-lg font-semibold dark:text-white">Listado de ordenes de compra</p>
-              {actions.includes('Agregar') && <AddButton onClick={modalAdd.onOpen} />}
+              <div className="flex justify-end mt-3 ">
+                <AddButton
+                  onClick={() => {
+                    navigate('/add-purchase-order');
+                  }}
+                />
+              </div>
             </div>
             <div className="grid grid-cols-3 gap-5 mt-5">
               <div>
@@ -281,7 +290,7 @@ function ListPurchasesOrders({ actions }: ArrayAction) {
             onClose={modalAdd.onClose}
             title="Nueva orden de compra"
           >
-            <AddPurchaseOrders reload={reload} closeModal={modalAdd.onClose} />
+            <AddPurchaseOrders />
           </FullDialog>
         </div>
       )}
