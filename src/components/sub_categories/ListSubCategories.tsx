@@ -19,6 +19,7 @@ import {
   CreditCard,
   List,
   RefreshCcw,
+  Lock,
 } from 'lucide-react';
 import { ThemeContext } from '../../hooks/useTheme';
 import AddSubCategory from './AddSubCategory';
@@ -94,7 +95,7 @@ function ListSubCategory({ actions }: PProps) {
         <div className="hidden flex  grid w-full grid-cols-2 gap-5 md:flex">
           <Input
             startContent={<User />}
-            className="w-full xl:w-96 dark:text-white"
+            className="w-full xl:w-96 dark:text-white border border-white rounded-xl"
             variant="bordered"
             labelPlacement="outside"
             label="Nombre"
@@ -116,7 +117,7 @@ function ListSubCategory({ actions }: PProps) {
               backgroundColor: theme.colors.secondary,
               color: theme.colors.primary,
             }}
-            className="mt-6 font-semibold"
+            className="mt-6 font-semibold border border-white rounded-xl"
             color="primary"
             onClick={() => handleSearch(undefined)}
           >
@@ -126,41 +127,46 @@ function ListSubCategory({ actions }: PProps) {
 
         <div className="flex flex-col gap-3 mt-3 lg:flex-row lg:justify-between lg:gap-10">
           <div className="flex justify-between justify-start order-2 lg:order-1">
-            <Switch
-              onValueChange={(isActive) => setActive(isActive)}
-              isSelected={isActive}
-              classNames={{
-                thumb: classNames(isActive ? 'bg-blue-500' : 'bg-gray-400'),
-                wrapper: classNames(isActive ? '!bg-blue-300' : 'bg-gray-200'),
-              }}
-            >
-              <span className="text-sm sm:text-base whitespace-nowrap">
-                Mostrar {isActive ? 'inactivos' : 'activos'}
-              </span>
-            </Switch>
+            <div className="xl:mt-10">
+              <Switch
+                onValueChange={(isActive) => setActive(isActive)}
+                isSelected={isActive}
+                classNames={{
+                  thumb: classNames(isActive ? 'bg-blue-500' : 'bg-gray-400'),
+                  wrapper: classNames(isActive ? '!bg-blue-300' : 'bg-gray-200'),
+                }}
+              >
+                <span className="text-sm sm:text-base whitespace-nowrap">
+                  Mostrar {isActive ? 'inactivos' : 'activos'}
+                </span>
+              </Switch>
+            </div>
           </div>
           <div className="flex gap-10 w-full justify-between items-center lg:justify-end order-1 lg:order-2">
-            <Select
-              className="w-44 dark:text-white"
-              variant="bordered"
-              defaultSelectedKeys={'5'}
-              label="Mostrar"
-              labelPlacement="outside"
-              classNames={{
-                label: 'font-semibold',
-              }}
-              value={limit}
-              onChange={(e) => {
-                setLimit(Number(e.target.value !== '' ? e.target.value : '8'));
-              }}
-            >
-              {limit_options.map((option) => (
-                <SelectItem key={option} value={option} className="dark:text-white">
-                  {option}
-                </SelectItem>
-              ))}
-            </Select>
-            <ButtonGroup className="mt-4">
+            <div className="w-44">
+              <span className="font-semibold text-sm ">Mostrar</span>
+              <Select
+                className="w-44 dark:text-white border border-white rounded-xl"
+                variant="bordered"
+                defaultSelectedKeys={'5'}
+                labelPlacement="outside"
+                classNames={{
+                  label: 'font-semibold',
+                }}
+                value={limit}
+                onChange={(e) => {
+                  setLimit(Number(e.target.value !== '' ? e.target.value : '8'));
+                }}
+              >
+                {limit_options.map((option) => (
+                  <SelectItem key={option} value={option} className="dark:text-white">
+                    {option}
+                  </SelectItem>
+                ))}
+              </Select>
+            </div>
+
+            <ButtonGroup className="mt-4 xl:flex hidden border border-white rounded-xl">
               <Button
                 className="hidden md:inline-flex"
                 isIconOnly
@@ -173,6 +179,30 @@ function ListSubCategory({ actions }: PProps) {
               >
                 <ITable />
               </Button>
+              <Button
+                isIconOnly
+                color="default"
+                style={{
+                  backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
+                  color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
+                }}
+                onClick={() => setView('grid')}
+              >
+                <CreditCard />
+              </Button>
+              <Button
+                isIconOnly
+                color="default"
+                style={{
+                  backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
+                  color: view === 'list' ? theme.colors.primary : '#3e3e3e',
+                }}
+                onClick={() => setView('list')}
+              >
+                <List />
+              </Button>
+            </ButtonGroup>
+            <ButtonGroup className="xl:hidden mt-4 border border-white rounded-xl">
               <Button
                 isIconOnly
                 color="default"
@@ -264,9 +294,10 @@ function ListSubCategory({ actions }: PProps) {
                             </td> */}
                               <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                                 <div className="flex w-full gap-5">
-                                  {actions.includes('Editar') && (
+                                  {categories.isActive && actions.includes('Editar') ? (
                                     <TooltipGlobal text="Editar">
                                       <Button
+                                        className="border border-white rounded-xl"
                                         onClick={() => {
                                           setSelectedCategory(categories);
 
@@ -285,14 +316,40 @@ function ListSubCategory({ actions }: PProps) {
                                         />
                                       </Button>
                                     </TooltipGlobal>
+                                  ) : (
+                                    <Button
+                                      type="button"
+                                      disabled
+                                      style={{
+                                        backgroundColor: theme.colors.secondary,
+                                      }}
+                                      className="flex font-semibold border border-white  cursor-not-allowed"
+                                      isIconOnly
+                                    >
+                                      <Lock />
+                                    </Button>
                                   )}
-                                  {actions.includes('Eliminar') && (
+                                  {categories.isActive && actions.includes('Eliminar') ? (
+                                    <DeletePopUp subcategory={categories} />
+                                  ) : (
+                                    <Button
+                                      type="button"
+                                      disabled
+                                      style={{
+                                        backgroundColor: theme.colors.danger,
+                                      }}
+                                      className="flex font-semibold border border-white  cursor-not-allowed"
+                                      isIconOnly
+                                    >
+                                      <Lock />
+                                    </Button>
+                                  )}
+                                  {!categories.isActive && (
                                     <>
-                                      {categories.isActive ? (
-                                        <DeletePopUp subcategory={categories} />
-                                      ) : (
+                                      {actions.includes('Activar') ? (
                                         <TooltipGlobal text="Activar">
                                           <Button
+                                            className="border border-white rounded-xl"
                                             onClick={() => handleActivate(categories.id)}
                                             isIconOnly
                                             style={global_styles().thirdStyle}
@@ -300,9 +357,21 @@ function ListSubCategory({ actions }: PProps) {
                                             <RefreshCcw />
                                           </Button>
                                         </TooltipGlobal>
+                                      ) : (
+                                        <Button
+                                          type="button"
+                                          disabled
+                                          style={global_styles().thirdStyle}
+                                          className="flex font-semibold  cursor-not-allowed border border-white"
+                                          isIconOnly
+                                        >
+                                          <Lock />
+                                        </Button>
                                       )}
                                     </>
                                   )}
+
+                                  {/*  */}
                                 </div>
                               </td>
                             </tr>
@@ -370,7 +439,7 @@ interface Props {
   subcategory: ISubCategory;
 }
 
-const DeletePopUp = ({ subcategory }: Props) => {
+export const DeletePopUp = ({ subcategory }: Props) => {
   const { theme } = useContext(ThemeContext);
 
   const { deleteSubCategory } = useSubCategoryStore();
@@ -383,9 +452,16 @@ const DeletePopUp = ({ subcategory }: Props) => {
 
   return (
     <>
-      <Popover isOpen={isOpen} onClose={onClose} backdrop="blur" showArrow>
+      <Popover
+        className="border border-white rounded-2xl"
+        isOpen={isOpen}
+        onClose={onClose}
+        backdrop="blur"
+        showArrow
+      >
         <PopoverTrigger>
           <Button
+            className="border border-white rounded-xl"
             onClick={onOpen}
             isIconOnly
             style={{
@@ -409,10 +485,12 @@ const DeletePopUp = ({ subcategory }: Props) => {
               ¿Estas seguro de eliminar este registro?
             </p>
             <div className="mt-4">
-              <Button onClick={onClose}>No, cancelar</Button>
+              <Button className="border border-white" onClick={onClose}>
+                No, cancelar
+              </Button>
               <Button
                 onClick={() => handleDelete()}
-                className="ml-5"
+                className="ml-5 border border-white"
                 style={{
                   backgroundColor: theme.colors.danger,
                   color: theme.colors.primary,

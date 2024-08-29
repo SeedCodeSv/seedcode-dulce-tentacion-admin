@@ -99,11 +99,6 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
   };
 
   const createEmployee = async () => {
-    // const verify = await verifyCode(filledData.code);
-    // if (!verify) {
-    //   toast.error('Ya existe un empleado con este código');
-    //   return;
-    // }
     try {
       const data = await patchEmployee(filledData, props.data?.id || 0);
       if (data) {
@@ -133,15 +128,15 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
 
   return (
     <div className=" w-full h-full xl:p-10 p-5 bg-gray-50 dark:bg-gray-900">
-      <div className="w-full h-full border-white border border-white p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
+      <div className="w-full h-full border-white border border-white p-2 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
         <Button onClick={() => props.id(0)} className="bg-transparent dark:text-white">
           <ArrowLeft className="dark:text-white" />
           Atras
         </Button>
-        <div className="p-2 overflow-y-auto dark:text-white">
-          <div className="w-full h-full p-5 overflow-y-auto bg-white rounded-xl dark:bg-transparent">
+        <div className=" overflow-y-auto dark:text-white">
+          <div className="w-full h-full p-5 overflow-y-auto custom-scrollbar1 bg-white rounded-xl dark:bg-transparent">
             <>
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
                 <div className="flex flex-col mt-3">
                   <Input
                     onChange={(e) => setDataCreate({ ...dataCreate, firstName: e.target.value })}
@@ -265,13 +260,14 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
                   <div>
                     <Input
                       onChange={(e) => setDataCreate({ ...dataCreate, code: e.target.value })}
+                      className="w-[150px] xl:w-full"
                       name="code"
                       value={dataCreate.code}
                       labelPlacement="outside"
                       placeholder="Ingresa el codigo"
                       classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
                       variant="bordered"
-                      label="Codigo Empleado"
+                      label="Codigo"
                     />
                     {error && <p className="text-xs text-red-500">{'Este código ya existe'}</p>}
                   </div>
@@ -280,7 +276,7 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
                       onClick={() => {
                         generateCode();
                       }}
-                      className="w-full mt-3 text-sm font-semibold bg-blue-400"
+                      className="xl:w-full w-[140px] mt-3 text-sm font-semibold bg-blue-400"
                       style={{
                         backgroundColor: theme.colors.dark,
                         color: theme.colors.primary,
@@ -578,7 +574,7 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
               </div>
 
               {/* <span className="flex flex-col mt-4">-- Dirección --</span> */}
-              <div className="grid grid-cols-2 gap-4 mt-3">
+              <div className="grid xl:grid-cols-2 gap-4 mt-5">
                 <div>
                   <Input
                     onChange={(e) => setDataCreate({ ...dataCreate, complement: e.target.value })}

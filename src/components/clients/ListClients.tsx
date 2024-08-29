@@ -28,7 +28,6 @@ import {
   CreditCard,
   Table as ITable,
   Mail,
-  Filter,
   RefreshCcw,
 } from 'lucide-react';
 import AddClientNormal from './AddClientNormal';
@@ -42,7 +41,6 @@ import { global_styles } from '../../styles/global.styles';
 import SmPagination from '../global/SmPagination';
 import classNames from 'classnames';
 import TooltipGlobal from '../global/TooltipGlobal';
-import BottomDrawer from '../global/BottomDrawer';
 import useWindowSize from '@/hooks/useWindowSize';
 import NO_DATA from '@/assets/svg/no_data.svg';
 import { useBranchesStore } from '@/store/branches.store';
@@ -88,8 +86,6 @@ const ListClients = ({ actions }: Props) => {
       active ? 1 : 0
     );
   };
-
-  const [openVaul, setOpenVaul] = useState(false);
   const modalAdd = useDisclosure();
   const [selectedCustomer, setSelectedCustomer] = useState<PayloadCustomer>();
   const [selectedId, setSelectedId] = useState<number>(0);
@@ -154,7 +150,11 @@ const ListClients = ({ actions }: Props) => {
       <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
         <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <div className="flex justify-between items-end ">
-            <SearchClient></SearchClient>
+            <SearchClient
+              nameBranch={(name: string) => setBranch(name)}
+              nameCustomer={(name: string) => setSearch(name)}
+              emailCustomer={(email: string) => setEmail(email)}
+            ></SearchClient>
             {actions.includes('Agregar') && (
               <>
                 <BottomAdd />

@@ -25,6 +25,8 @@ import {
   Table as ITable,
   Mail,
   BadgeCheck,
+  Lock,
+  Check,
 } from 'lucide-react';
 import { global_styles } from '../../styles/global.styles';
 import Pagination from '../global/Pagination';
@@ -72,7 +74,7 @@ function ListSuppliers({ actions }: ArrayAction) {
   return (
     <>
       <div className=" w-full h-full xl:p-10 p-5 bg-gray-50 dark:bg-gray-900">
-        <div className="w-full h-full border-white border border-white p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
+        <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <div className="flex justify-between items-end ">
             <SearchSupplier
               nameSupplier={(name: string) => handleSearch(name)}
@@ -88,7 +90,7 @@ function ListSuppliers({ actions }: ArrayAction) {
           </div>
 
           <div className="hidden w-full gap-5 md:flex">
-            <div className="grid w-full grid-cols-5 gap-3">
+            <div className="grid w-full grid-cols-3 gap-3">
               <Input
                 startContent={<User />}
                 className="w-full dark:text-white"
@@ -282,6 +284,7 @@ function ListSuppliers({ actions }: ArrayAction) {
           <div className="flex items-center justify-center ml-2"></div>
           {(view === 'grid' || view === 'list') && (
             <MobileViewSupplier
+              actions={actions}
               handleActive={handleActivate}
               handleChangeSupplier={(_supplier) => {}}
               deletePopover={DeletePopover}
@@ -358,10 +361,14 @@ function ListSuppliers({ actions }: ArrayAction) {
                                     </Button>
                                   </TooltipGlobal>
                                   <DeletePopover supplier={item} />
-                                  {item.esContribuyente === false &&
-                                    actions.includes('Cambiar Tipo de Proveedor') && (
+                                  {item.esContribuyente === false ? (
+                                    actions.includes('Cambiar Tipo de Proveedor') ? (
                                       <TooltipGlobal text="Cambiar el tipo de proveedor">
                                         <Button
+                                          onClick={() => {
+                                            navigate(`/update-supplier-tribute/${item.id}`);
+                                            OnGetBySupplier(item.id ?? 0);
+                                          }}
                                           isIconOnly
                                           style={{
                                             backgroundColor: theme.colors.third,
@@ -373,7 +380,34 @@ function ListSuppliers({ actions }: ArrayAction) {
                                           />
                                         </Button>
                                       </TooltipGlobal>
-                                    )}
+                                    ) : (
+                                      <Button
+                                        type="button"
+                                        disabled
+                                        style={{
+                                          backgroundColor: theme.colors.third,
+                                          cursor: 'not-allowed',
+                                        }}
+                                        className="flex font-semibold"
+                                        isIconOnly
+                                      >
+                                        <Lock />
+                                      </Button>
+                                    )
+                                  ) : (
+                                    <Button
+                                      type="button"
+                                      disabled
+                                      style={{
+                                        backgroundColor: theme.colors.third,
+                                        cursor: 'not-allowed',
+                                      }}
+                                      className="flex font-semibold"
+                                      isIconOnly
+                                    >
+                                      <Check />
+                                    </Button>
+                                  )}
                                 </>
                               )}
                               <>
@@ -480,6 +514,7 @@ export const DeletePopover = ({ supplier }: PopProps) => {
     <Popover isOpen={isOpen} onClose={onClose} backdrop="blur" showArrow>
       <PopoverTrigger>
         <Button
+          className="border border-white "
           onClick={onOpen}
           isIconOnly
           style={{

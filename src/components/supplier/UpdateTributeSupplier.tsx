@@ -91,7 +91,10 @@ function UpdateTributeSupplier() {
   const handleUpdateSupplier = () => {
     try {
       if (dataCreateSupplier) {
-        patchSupplier(dataCreateSupplier, dataCreateSupplier?.id ?? 0);
+        patchSupplier(
+          { ...dataCreateSupplier, esContribuyente: true },
+          dataCreateSupplier?.id ?? 0
+        );
         navigate(-1);
 
         if (id) {
@@ -109,14 +112,14 @@ function UpdateTributeSupplier() {
     );
   }, [cat_022_tipo_de_documentoDeIde, dataCreateSupplier?.tipoDocumento]);
   return (
-    <Layout title="Actualizar Proveedor Contribuyente">
+    <Layout title="Actualizar  Contribuyente">
       <div className=" w-full h-full p-5 bg-gray-50 dark:bg-gray-900">
         <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <div onClick={() => navigate(-1)} className="w-32  flex gap-2 mb-4 cursor-pointer">
             <ArrowLeft className="dark:text-white" size={20} />
             <p className="dark:text-white">Regresar</p>
           </div>
-          <div className="grid grid-cols-2 gap-5">
+          <div className="grid xl:grid-cols-2 gap-5">
             <div>
               <div className="mt-10">
                 <Input
@@ -216,7 +219,7 @@ function UpdateTributeSupplier() {
               </div>
             </div>
             <div>
-              <div className="mt-10">
+              <div className="xl:mt-10">
                 <Input
                   value={dataCreateSupplier?.nombreComercial}
                   onChange={handleChange}

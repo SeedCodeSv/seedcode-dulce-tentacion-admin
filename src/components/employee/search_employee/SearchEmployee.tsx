@@ -30,6 +30,7 @@ function SearchEmployee(props: IPropsSearchEmployee) {
       <div className="block md:hidden">
         <TooltipGlobal text="Buscar por filtros" color="primary">
           <Button
+            className="border border-white rounded-xl"
             style={global_styles().thirdStyle}
             isIconOnly
             onClick={() => setOpenVaul(true)}

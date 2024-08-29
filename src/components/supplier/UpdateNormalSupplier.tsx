@@ -100,8 +100,8 @@ function UpdateNormalSupplier() {
   }, [dataCreateSupplier?.tipoDocumento]);
 
   return (
-    <Layout title="Actualizar Proveedor Consumidor Final">
-      <div className=" w-full h-full p-5 bg-gray-50 dark:bg-gray-900">
+    <Layout title="Actualizar Consumidor Final">
+      <div className=" w-full h-full xl:p-10 p-5 bg-gray-50 dark:bg-gray-900">
         <div className="w-full h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <div
             onClick={() => {
@@ -113,7 +113,7 @@ function UpdateNormalSupplier() {
             <p className="dark:text-white">Regresar</p>
           </div>
 
-          <div className="grid grid-cols-2 gap-5 pt-3">
+          <div className="grid xl:grid-cols-2 gap-5 pt-3">
             <div className="pt-3">
               <Input
                 onChange={handleOnChange}
@@ -203,7 +203,7 @@ function UpdateNormalSupplier() {
               />
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-5 pt-3">
+          <div className="grid xl:grid-cols-2 gap-5 pt-3">
             <div>
               <Autocomplete
                 label="Departamento"

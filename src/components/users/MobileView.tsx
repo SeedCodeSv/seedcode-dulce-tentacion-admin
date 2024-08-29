@@ -8,11 +8,13 @@ import {
   Key,
   RefreshCcw,
   ShieldCheck,
+  Lock,
   // SquareUserRound,
 } from 'lucide-react';
 import { global_styles } from '../../styles/global.styles';
 import { GridProps, IMobileViewProps } from './types/mobile-view.types';
 import TooltipGlobal from '../global/TooltipGlobal';
+import { DeletePopUp } from './ListUsers';
 
 function MobileView(props: IMobileViewProps) {
   const { users_paginated } = useUsersStore();
@@ -71,46 +73,95 @@ const GridItem = (props: GridProps) => {
             </div>
           </div>
           <div className="flex justify-between mt-5 w-ful">
-            {user.active && actions.includes('Editar') && (
+            {user.active && actions.includes('Editar') ? (
               <TooltipGlobal text="Editar">
                 <Button
-                  onClick={() => openEditModal(user)}
+                  className="border border-white"
+                  onClick={() => {
+                    openEditModal(user);
+                  }}
                   isIconOnly
                   style={global_styles().secondaryStyle}
                 >
-                  <EditIcon size={20} />
+                  <EditIcon className="dark:text-white" size={20} />
                 </Button>
               </TooltipGlobal>
+            ) : (
+              <Button
+                type="button"
+                disabled
+                style={global_styles().secondaryStyle}
+                className="flex font-semibold border border-white  cursor-not-allowed"
+                isIconOnly
+              >
+                <Lock />
+              </Button>
+            )}
+            {user.active && actions.includes('Cambiar Contraseña') ? (
+              <TooltipGlobal text="Cambiar contraseña">
+                <Button
+                  className="border border-white"
+                  onClick={() => {
+                    openKeyModal(user);
+                  }}
+                  isIconOnly
+                  style={global_styles().warningStyles}
+                >
+                  <Key className="dark:text-white" size={20} />
+                </Button>
+              </TooltipGlobal>
+            ) : (
+              <Button
+                type="button"
+                disabled
+                style={global_styles().warningStyles}
+                className="flex font-semibold border border-white  cursor-not-allowed"
+                isIconOnly
+              >
+                <Lock />
+              </Button>
             )}
 
-            {actions.includes('Eliminar') && (
+            {user.active && actions.includes('Eliminar') ? (
               <>
-                {user.active ? (
-                  deletePopover({ user })
+                <DeletePopUp user={user} />
+              </>
+            ) : (
+              <Button
+                type="button"
+                disabled
+                style={global_styles().dangerStyles}
+                className="flex font-semibold border border-white  cursor-not-allowed"
+                isIconOnly
+              >
+                <Lock />
+              </Button>
+            )}
+            {!user.active && (
+              <>
+                {actions.includes('Activar') ? (
+                  <TooltipGlobal text="Activar">
+                    <Button
+                      onClick={() => handleActivate(user.id)}
+                      isIconOnly
+                      style={global_styles().thirdStyle}
+                    >
+                      <RefreshCcw />
+                    </Button>
+                  </TooltipGlobal>
                 ) : (
                   <Button
-                    onClick={() => handleActivate(user.id)}
-                    isIconOnly
+                    type="button"
+                    disabled
                     style={global_styles().thirdStyle}
+                    className="flex font-semibold border border-white  cursor-not-allowed"
+                    isIconOnly
                   >
-                    <RefreshCcw />
+                    <Lock />
                   </Button>
                 )}
               </>
             )}
-
-            {user.active && actions.includes('Cambiar Contraseña') && (
-              <TooltipGlobal text="Cambiar Contraseña ">
-                <Button
-                  onClick={() => openKeyModal(user)}
-                  isIconOnly
-                  style={global_styles().warningStyles}
-                >
-                  <Key size={20} />
-                </Button>
-              </TooltipGlobal>
-            )}
-            {/* {deletePopover({ user: user })} */}
           </div>
         </div>
       ) : (
@@ -129,7 +180,7 @@ const GridItem = (props: GridProps) => {
 };
 
 const ListItem = (props: GridProps) => {
-  const { user, deletePopover, openEditModal, openKeyModal, actions, handleActivate } = props;
+  const { user, openEditModal, openKeyModal, actions, handleActivate } = props;
   return (
     <>
       <div className="flex w-full border dark:border-white col-span-1 p-5 border shadow rounded-2xl ">
@@ -145,46 +196,95 @@ const ListItem = (props: GridProps) => {
           </div>
         </div>
         <div className="flex flex-col items-end justify-between w-full gap-4">
-          {user.active && actions.includes('Editar') && (
+          {user.active && actions.includes('Editar') ? (
             <TooltipGlobal text="Editar">
               <Button
-                isIconOnly
-                style={global_styles().secondaryStyle}
+                className="border border-white"
                 onClick={() => {
                   openEditModal(user);
                 }}
+                isIconOnly
+                style={global_styles().secondaryStyle}
               >
-                <EditIcon size={20} />
+                <EditIcon className="dark:text-white" size={20} />
               </Button>
             </TooltipGlobal>
+          ) : (
+            <Button
+              type="button"
+              disabled
+              style={global_styles().secondaryStyle}
+              className="flex font-semibold border border-white  cursor-not-allowed"
+              isIconOnly
+            >
+              <Lock />
+            </Button>
           )}
-          {actions.includes('Eliminar') && (
+          {user.active && actions.includes('Cambiar Contraseña') ? (
+            <TooltipGlobal text="Cambiar contraseña">
+              <Button
+                className="border border-white"
+                onClick={() => {
+                  openKeyModal(user);
+                }}
+                isIconOnly
+                style={global_styles().warningStyles}
+              >
+                <Key className="dark:text-white" size={20} />
+              </Button>
+            </TooltipGlobal>
+          ) : (
+            <Button
+              type="button"
+              disabled
+              style={global_styles().warningStyles}
+              className="flex font-semibold border border-white  cursor-not-allowed"
+              isIconOnly
+            >
+              <Lock />
+            </Button>
+          )}
+
+          {user.active && actions.includes('Eliminar') ? (
             <>
-              {user.active ? (
-                deletePopover({ user })
+              <DeletePopUp user={user} />
+            </>
+          ) : (
+            <Button
+              type="button"
+              disabled
+              style={global_styles().dangerStyles}
+              className="flex font-semibold border border-white  cursor-not-allowed"
+              isIconOnly
+            >
+              <Lock />
+            </Button>
+          )}
+          {!user.active && (
+            <>
+              {actions.includes('Activar') ? (
+                <TooltipGlobal text="Activar">
+                  <Button
+                    onClick={() => handleActivate(user.id)}
+                    isIconOnly
+                    style={global_styles().thirdStyle}
+                  >
+                    <RefreshCcw />
+                  </Button>
+                </TooltipGlobal>
               ) : (
                 <Button
-                  onClick={() => handleActivate(user.id)}
-                  isIconOnly
+                  type="button"
+                  disabled
                   style={global_styles().thirdStyle}
+                  className="flex font-semibold border border-white  cursor-not-allowed"
+                  isIconOnly
                 >
-                  <RefreshCcw />
+                  <Lock />
                 </Button>
               )}
             </>
           )}
-          {user.active && actions.includes('Cambiar Contraseña') && (
-            <TooltipGlobal text="Cambiar Contraseña ">
-              <Button
-                onClick={() => openKeyModal(user)}
-                isIconOnly
-                style={global_styles().warningStyles}
-              >
-                <Key size={20} />
-              </Button>
-            </TooltipGlobal>
-          )}
-          {/* {deletePopover({ user: user })} */}
         </div>
       </div>
     </>

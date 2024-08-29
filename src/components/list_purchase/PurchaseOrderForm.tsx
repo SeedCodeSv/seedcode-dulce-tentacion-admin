@@ -50,8 +50,8 @@ const PurchaseOrderForm = () => {
   return (
     <Layout title="Ordenes de Compra">
       <>
-        <div className="w-full h-full p-4 md:p-10 bg-gray-50 dark:bg-gray-800">
-          <div className="w-full h-full p-5 md:p-10 mt-0 overflow-y-auto bg-white custom-scrollbar shadow border dark:bg-gray-900">
+        <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
+          <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
             <div
               className="flex items-center cursor-pointer mb-4"
               onClick={() => navigate('/add-purchase-order')}

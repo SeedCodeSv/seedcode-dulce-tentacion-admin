@@ -98,7 +98,7 @@ function AddProducts(props: Props) {
   const { list_categories, getListCategories } = useCategoriesStore();
   useEffect(() => {
     getListCategories();
-    getSupplierList();
+    getSupplierList('');
   }, []);
 
   const { postProducts, patchProducts, getCat011TipoDeItem } = useProductsStore();
@@ -110,36 +110,11 @@ function AddProducts(props: Props) {
 
   const { theme } = useContext(ThemeContext);
 
-  // const verifyCode = async () => {
-  //   try {
-  //     const data = await verify_code_product(codigo);
-  //     if (data.data.ok === true) {
-  //       toast.success('Codigo no registrado');
-  //     }
-  //   } catch (error) {
-  //     toast.error('Codigo en uso');
-  //   }
-  // };
-
-  // const verifyCode = async (code: string) => {
-  //   try {
-  //     const data = await verify_code_product(code);
-  //     return data.data.ok;
-  //   } catch (error) {
-  //     return false;
-  //   }
-  // };
   const handleSave = (values: ProductPayloadFormik) => {
     const payload = {
       ...values,
       branch: selectedBranches.map((branch) => ({ id: Number(branch) })),
     };
-    // const isCodeAvailable = await verifyCode(values.code);
-    // if (!isCodeAvailable) {
-    //   toast.error('Código en uso, por favor intente con otro código');
-    //   return;
-    // }
-
     if (props.product) {
       patchProducts(payload, props.product.id);
     } else {

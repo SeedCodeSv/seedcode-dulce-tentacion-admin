@@ -19,6 +19,7 @@ import {
   CreditCard,
   List,
   RefreshCcw,
+  Lock,
   SearchIcon,
 } from 'lucide-react';
 import { useCategoriesStore } from '../../store/categories.store';
@@ -93,7 +94,7 @@ function ListCategories({ actions }: PProps) {
         <div className="hidden flex  grid w-full grid-cols-2 gap-5 md:flex">
           <Input
             startContent={<User />}
-            className="w-full xl:w-96 dark:text-white"
+            className="w-full xl:w-96 dark:text-white border border-white rounded-xl "
             variant="bordered"
             labelPlacement="outside"
             label="Nombre"
@@ -115,9 +116,9 @@ function ListCategories({ actions }: PProps) {
               backgroundColor: theme.colors.secondary,
               color: theme.colors.primary,
             }}
-            className="hidden mt-6 font-semibold md:flex"
+            className="hidden mt-6 font-semibold md:flex border border-white rounded-xl"
             color="primary"
-            startContent={<SearchIcon size={15} />}
+            startContent={<SearchIcon className="w-10" />}
             onClick={() => handleSearch(undefined)}
           >
             Buscar
@@ -126,41 +127,46 @@ function ListCategories({ actions }: PProps) {
 
         <div className="flex flex-col gap-3 mt-3 lg:flex-row lg:justify-between lg:gap-10">
           <div className="flex justify-between justify-start order-2 lg:order-1">
-            <Switch
-              onValueChange={(active) => setActive(active)}
-              isSelected={active}
-              classNames={{
-                thumb: classNames(active ? 'bg-blue-500' : 'bg-gray-400'),
-                wrapper: classNames(active ? '!bg-blue-300' : 'bg-gray-200'),
-              }}
-            >
-              <span className="text-sm sm:text-base whitespace-nowrap">
-                Mostrar {active ? 'inactivos' : 'activos'}
-              </span>
-            </Switch>
+            <div className="xl:mt-10">
+              <Switch
+                onValueChange={(active) => setActive(active)}
+                isSelected={active}
+                classNames={{
+                  thumb: classNames(active ? 'bg-blue-500' : 'bg-gray-400'),
+                  wrapper: classNames(active ? '!bg-blue-300' : 'bg-gray-200'),
+                }}
+              >
+                <span className="text-sm sm:text-base whitespace-nowrap">
+                  Mostrar {active ? 'inactivos' : 'activos'}
+                </span>
+              </Switch>
+            </div>
           </div>
           <div className="flex gap-10 w-full justify-between items-center lg:justify-end order-1 lg:order-2">
-            <Select
-              className="w-44 dark:text-white"
-              variant="bordered"
-              label="Mostrar"
-              labelPlacement="outside"
-              classNames={{
-                label: 'font-semibold',
-              }}
-              value={limit}
-              onChange={(e) => {
-                setLimit(Number(e.target.value !== '' ? e.target.value : '8'));
-              }}
-            >
-              {limit_options.map((option) => (
-                <SelectItem key={option} value={option} className="dark:text-white">
-                  {option}
-                </SelectItem>
-              ))}
-            </Select>
+            <div className="w-[150px]">
+              <label className="  font-semibold text-white text-sm">Mostrar</label>
+              <Select
+                className="max-w-44 dark:text-white border border-white rounded-xl "
+                variant="bordered"
+                labelPlacement="outside"
+                defaultSelectedKeys={['5']}
+                classNames={{
+                  label: 'font-semibold',
+                }}
+                value={limit}
+                onChange={(e) => {
+                  setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
+                }}
+              >
+                {limit_options.map((limit) => (
+                  <SelectItem key={limit} value={limit} className="dark:text-white">
+                    {limit}
+                  </SelectItem>
+                ))}
+              </Select>
+            </div>
 
-            <ButtonGroup className="mt-4">
+            <ButtonGroup className="xl:flex hidden mt-4 border border-white rounded-xl ">
               <Button
                 className="hidden md:inline-flex"
                 isIconOnly
@@ -173,6 +179,30 @@ function ListCategories({ actions }: PProps) {
               >
                 <ITable />
               </Button>
+              <Button
+                isIconOnly
+                color="default"
+                style={{
+                  backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
+                  color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
+                }}
+                onClick={() => setView('grid')}
+              >
+                <CreditCard />
+              </Button>
+              <Button
+                isIconOnly
+                color="default"
+                style={{
+                  backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
+                  color: view === 'list' ? theme.colors.primary : '#3e3e3e',
+                }}
+                onClick={() => setView('list')}
+              >
+                <List />
+              </Button>
+            </ButtonGroup>
+            <ButtonGroup className=" xl:hidden mt-4 border border-white rounded-xl ">
               <Button
                 isIconOnly
                 color="default"
@@ -249,9 +279,10 @@ function ListCategories({ actions }: PProps) {
                               </td>
                               <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                                 <div className="flex gap-6">
-                                  {cat.isActive && actions.includes('Editar') && (
+                                  {cat.isActive && actions.includes('Editar') ? (
                                     <TooltipGlobal text="Editar el registro" color="primary">
                                       <Button
+                                        className="border border-white"
                                         onClick={() => handleEdit(cat)}
                                         isIconOnly
                                         style={{
@@ -266,14 +297,41 @@ function ListCategories({ actions }: PProps) {
                                         />
                                       </Button>
                                     </TooltipGlobal>
+                                  ) : (
+                                    <Button
+                                      type="button"
+                                      disabled
+                                      style={{
+                                        backgroundColor: theme.colors.secondary,
+                                      }}
+                                      className="flex font-semibold border border-white  cursor-not-allowed"
+                                      isIconOnly
+                                    >
+                                      <Lock />
+                                    </Button>
                                   )}
-                                  {actions.includes('Eliminar') && (
+                                  {cat.isActive && actions.includes('Eliminar') ? (
+                                    <DeletePopUp category={cat} />
+                                  ) : (
+                                    <Button
+                                      type="button"
+                                      disabled
+                                      style={{
+                                        backgroundColor: theme.colors.danger,
+                                      }}
+                                      className="flex font-semibold border border-white  cursor-not-allowed"
+                                      isIconOnly
+                                    >
+                                      <Lock />
+                                    </Button>
+                                  )}
+
+                                  {cat.isActive === false && (
                                     <>
-                                      {cat.isActive ? (
-                                        <DeletePopUp category={cat} />
-                                      ) : (
+                                      {actions.includes('Activar') ? (
                                         <TooltipGlobal text="Activar la categoría" color="primary">
                                           <Button
+                                            className="border border-white"
                                             onClick={() => handleActivate(cat.id)}
                                             isIconOnly
                                             style={global_styles().thirdStyle}
@@ -281,6 +339,16 @@ function ListCategories({ actions }: PProps) {
                                             <RefreshCcw />
                                           </Button>
                                         </TooltipGlobal>
+                                      ) : (
+                                        <Button
+                                          type="button"
+                                          disabled
+                                          style={global_styles().thirdStyle}
+                                          className="flex font-semibold  cursor-not-allowed"
+                                          isIconOnly
+                                        >
+                                          <Lock />
+                                        </Button>
                                       )}
                                     </>
                                   )}
@@ -351,7 +419,7 @@ interface Props {
   category: CategoryProduct;
 }
 
-const DeletePopUp = ({ category }: Props) => {
+export const DeletePopUp = ({ category }: Props) => {
   const { theme } = useContext(ThemeContext);
 
   const { deleteCategory } = useCategoriesStore();
@@ -364,9 +432,16 @@ const DeletePopUp = ({ category }: Props) => {
 
   return (
     <>
-      <Popover isOpen={isOpen} onClose={onClose} backdrop="blur" showArrow>
+      <Popover
+        className="border border-white rounded-2xl"
+        isOpen={isOpen}
+        onClose={onClose}
+        backdrop="blur"
+        showArrow
+      >
         <PopoverTrigger>
           <Button
+            className="border border-white"
             onClick={onOpen}
             isIconOnly
             style={{
@@ -389,11 +464,13 @@ const DeletePopUp = ({ category }: Props) => {
             <p className="mt-3 text-center text-gray-600 dark:text-white w-72">
               ¿Estas seguro de eliminar este registro?
             </p>
-            <div className="mt-4">
-              <Button onClick={onClose}>No, cancelar</Button>
+            <div className="flex justify-center mt-4">
+              <Button className="border border-white" onClick={onClose}>
+                No, cancelar
+              </Button>
               <Button
                 onClick={() => handleDelete()}
-                className="ml-5"
+                className="ml-5 border border-white"
                 style={{
                   backgroundColor: theme.colors.danger,
                   color: theme.colors.primary,

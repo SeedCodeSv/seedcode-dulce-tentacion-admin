@@ -1,10 +1,12 @@
 import { Button } from '@nextui-org/react';
 import { DataView } from 'primereact/dataview';
 import { classNames } from 'primereact/utils';
-import { EditIcon, RefreshCcw, ScrollIcon, PackageSearch } from 'lucide-react';
+import { EditIcon, RefreshCcw, ScrollIcon, PackageSearch, Lock } from 'lucide-react';
 import { global_styles } from '../../styles/global.styles';
 import { GridProps, MobileViewProps } from './types/mobile_view.types';
 import { useSubCategoryStore } from '../../store/sub-category';
+import TooltipGlobal from '../global/TooltipGlobal';
+import { DeletePopUp } from './ListSubCategories';
 
 function MobileView(props: MobileViewProps) {
   const { layout, deletePopover, handleEdit, actions, handleActive } = props;
@@ -60,26 +62,65 @@ const GridItem = (props: GridProps) => {
             <p className="w-full dark:text-white">{subcategory.categoryProduct.name}</p>
           </div>
           <div className="flex justify-between mt-5 w-ful">
-            {actions.includes('Editar') && (
+            {subcategory.isActive && actions.includes('Editar') ? (
+              <TooltipGlobal text="Editar">
+                <Button
+                  className="border border-white rounded-xl"
+                  onClick={() => {
+                    handleEdit(subcategory);
+                  }}
+                  isIconOnly
+                  style={global_styles().secondaryStyle}
+                >
+                  <EditIcon className="tex-white" size={20} />
+                </Button>
+              </TooltipGlobal>
+            ) : (
               <Button
-                onClick={() => handleEdit(subcategory)}
-                isIconOnly
+                type="button"
+                disabled
                 style={global_styles().secondaryStyle}
+                className="flex font-semibold border border-white  cursor-not-allowed"
+                isIconOnly
               >
-                <EditIcon size={20} />
+                <Lock />
               </Button>
             )}
-            {actions.includes('Eliminar') && (
+            {subcategory.isActive && actions.includes('Eliminar') ? (
+              <DeletePopUp subcategory={subcategory} />
+            ) : (
+              <Button
+                type="button"
+                disabled
+                style={global_styles().dangerStyles}
+                className="flex font-semibold  border border-white cursor-not-allowed"
+                isIconOnly
+              >
+                <Lock />
+              </Button>
+            )}
+            {!subcategory.isActive && (
               <>
-                {subcategory.isActive ? (
-                  deletePopover({ subcategory })
+                {actions.includes('Activar') ? (
+                  <TooltipGlobal text="Activar">
+                    <Button
+                      className="border border-white rounded-xl"
+                      onClick={() => handleActive(subcategory.id)}
+                      isIconOnly
+                      style={global_styles().thirdStyle}
+                    >
+                      <RefreshCcw />
+                    </Button>
+                  </TooltipGlobal>
                 ) : (
                   <Button
-                    onClick={() => handleActive(subcategory.id)}
-                    isIconOnly
+                    type="button"
+                    disabled
                     style={global_styles().thirdStyle}
+                    className="flex font-semibold border border-white  cursor-not-allowed"
+                    isIconOnly
                   >
-                    <RefreshCcw />
+                    <Lock />
                   </Button>
                 )}
               </>
@@ -101,7 +142,7 @@ const GridItem = (props: GridProps) => {
 };
 
 const ListItem = (props: GridProps) => {
-  const { subcategory, deletePopover, handleEdit, actions, handleActive } = props;
+  const { subcategory, handleEdit, actions, handleActive } = props;
   return (
     <>
       <div className="flex border dark:border-white w-full p-5 border shadow dark:border-gray-600 rounded-2xl">
@@ -116,26 +157,65 @@ const ListItem = (props: GridProps) => {
           </div>
         </div>
         <div className="flex flex-col items-end justify-between w-full gap-5">
-          {actions.includes('Editar') && (
+          {subcategory.isActive && actions.includes('Editar') ? (
+            <TooltipGlobal text="Editar">
+              <Button
+                className="border border-white rounded-xl"
+                onClick={() => {
+                  handleEdit(subcategory);
+                }}
+                isIconOnly
+                style={global_styles().secondaryStyle}
+              >
+                <EditIcon className="tex-white" size={20} />
+              </Button>
+            </TooltipGlobal>
+          ) : (
             <Button
-              onClick={() => handleEdit(subcategory)}
-              isIconOnly
+              type="button"
+              disabled
               style={global_styles().secondaryStyle}
+              className="flex font-semibold border border-white  cursor-not-allowed"
+              isIconOnly
             >
-              <EditIcon size={20} />
+              <Lock />
             </Button>
           )}
-          {actions.includes('Eliminar') && (
+          {subcategory.isActive && actions.includes('Eliminar') ? (
+            <DeletePopUp subcategory={subcategory} />
+          ) : (
+            <Button
+              type="button"
+              disabled
+              style={global_styles().dangerStyles}
+              className="flex font-semibold  border border-white cursor-not-allowed"
+              isIconOnly
+            >
+              <Lock />
+            </Button>
+          )}
+          {!subcategory.isActive && (
             <>
-              {subcategory.isActive ? (
-                deletePopover({ subcategory })
+              {actions.includes('Activar') ? (
+                <TooltipGlobal text="Activar">
+                  <Button
+                    className="border border-white rounded-xl"
+                    onClick={() => handleActive(subcategory.id)}
+                    isIconOnly
+                    style={global_styles().thirdStyle}
+                  >
+                    <RefreshCcw />
+                  </Button>
+                </TooltipGlobal>
               ) : (
                 <Button
-                  onClick={() => handleActive(subcategory.id)}
-                  isIconOnly
+                  type="button"
+                  disabled
                   style={global_styles().thirdStyle}
+                  className="flex font-semibold border border-white  cursor-not-allowed"
+                  isIconOnly
                 >
-                  <RefreshCcw />
+                  <Lock />
                 </Button>
               )}
             </>

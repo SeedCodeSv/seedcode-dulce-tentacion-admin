@@ -56,7 +56,7 @@ function AddPurchaseOrders(props: Props) {
 
   useEffect(() => {
     getBranchesList();
-    getSupplierList();
+    getSupplierList('');
   }, []);
 
   const { theme } = useContext(ThemeContext);

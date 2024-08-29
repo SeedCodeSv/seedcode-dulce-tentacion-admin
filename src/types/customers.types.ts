@@ -22,7 +22,7 @@ export interface Customer {
   telefono: string;
   correo: string;
   isActive: boolean;
-  esContribuyente?: number;
+  esContribuyente?: number | boolean;
   direccion: CustomerDirection;
   direccionId: number;
   branchId: number;

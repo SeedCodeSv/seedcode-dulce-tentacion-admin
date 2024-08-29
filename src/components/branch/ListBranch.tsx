@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, useMemo } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useBranchesStore } from '../../store/branches.store';
 import {
   Button,
@@ -22,7 +22,6 @@ import {
   Table as ITable,
   CreditCard,
   List,
-  Filter,
   RefreshCcw,
 } from 'lucide-react';
 import { ThemeContext } from '../../hooks/useTheme';
@@ -67,10 +66,7 @@ function ListBranch({ actions }: ArrayAction) {
   const modalAdd = useDisclosure();
   const modalBranchProduct = useDisclosure();
   const modalBoxBranch = useDisclosure();
-  const filters = useMemo(() => {
-    return <></>;
-  }, [name, setName, phone, setPhone, address, setAddress]);
-  const [openVaul, setOpenVaul] = useState(false);
+
   const handleSearch = () => {
     getBranchesPaginated(1, limit, name, phone, address);
   };

@@ -27,6 +27,7 @@ function SearchUser(props: IPropsSearchUser) {
       <div className="block md:hidden">
         <TooltipGlobal text="Buscar por filtros" color="primary">
           <Button
+            className="border border-white rounded-xl"
             style={global_styles().thirdStyle}
             isIconOnly
             onClick={() => setOpenVaul(true)}
@@ -64,7 +65,7 @@ function SearchUser(props: IPropsSearchUser) {
               }}
               placeholder="Escribe para buscar..."
             />
-            <label className="font-semibold dark:text-white">Rol</label>
+            <label className="font-semibold dark:text-white text-sm">Rol</label>
             <Autocomplete
               onSelectionChange={(value) => {
                 const selectRol = roles_list.find((rol) => rol.name === value);

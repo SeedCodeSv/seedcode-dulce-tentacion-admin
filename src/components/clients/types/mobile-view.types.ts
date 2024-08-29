@@ -1,17 +1,23 @@
-import { Customer } from "../../../types/customers.types";
+import { Customer } from '../../../types/customers.types';
 
 export interface MobileViewProps {
-    layout: 'grid' | 'list';
-    actions : string[]
-    deletePopover: ({ customers }: { customers: Customer }) => JSX.Element;
-    handleChangeCustomer: (customer: Customer, type: string) => void;
-    handleActive: (id: number) => void;
+  layout: 'grid' | 'list';
+  actions: string[];
+  deletePopover: ({ customers }: { customers: Customer }) => JSX.Element;
+  handleChangeCustomer: (customer: Customer, type: string) => void;
+  handleActive: (id: number) => void;
 }
 
 export interface GridProps {
-    customers: Customer,
-    layout: 'grid' | 'list',
-    handleChangeCustomer: (customer: Customer, type: string) => void,
-    handleActive: (id: number) => void
-    actions : string[]
+  customers: Customer;
+  layout: 'grid' | 'list';
+  handleChangeCustomer: (customer: Customer, type: string) => void;
+  handleActive: (id: number) => void;
+  actions: string[];
+}
+
+export interface IPropsSearchCustomer {
+  nameCustomer: (name: string) => void;
+  emailCustomer: (email: string) => void;
+  nameBranch: (name: string) => void;
 }

@@ -2,7 +2,7 @@
   "view_actions": [
     {
       "view": "Productos",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Activar Productos"]
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Activar"]
     },
     {
       "view": "Correlativos",
@@ -10,11 +10,11 @@
     },
     {
       "view": "Categorias de Productos",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Activar"]
     },
     {
       "view": "Sub Categorias",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Activar"]
     },
     {
       "view": "Compras",

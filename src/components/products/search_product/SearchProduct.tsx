@@ -45,6 +45,7 @@ function SearchProduct(props: IPropsSearchProduct) {
       <div className="block md:hidden">
         <TooltipGlobal text="Filtros disponibles" color="primary">
           <Button
+            className="border border-white"
             style={global_styles().thirdStyle}
             isIconOnly
             type="button"

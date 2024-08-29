@@ -37,7 +37,7 @@ function AddProduct() {
   useEffect(() => {
     getBranchesList();
     getListCategories();
-    getSupplierList();
+    getSupplierList('');
   }, []);
 
   const validationSchema = yup.object().shape({
@@ -209,8 +209,8 @@ function AddProduct() {
             onClick={() => navigate('/products')}
             className="flex items-center gap-2 bg-transparent"
           >
-            <ArrowLeft />
-            <span>Volver</span>
+            <ArrowLeft className="text-white" />
+            <span>Regresar</span>
           </button>
           <Formik
             validationSchema={validationSchema}

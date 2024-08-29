@@ -18,6 +18,7 @@ function SearchCategoryProduct(props: IPropsSearchCategoryProduct) {
       <div className="block md:hidden">
         <TooltipGlobal text="Filtrar">
           <Button
+            className="border border-white rounded-xl"
             style={global_styles().thirdStyle}
             isIconOnly
             onClick={() => setOpenVaul(true)}

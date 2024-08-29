@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useEmployeeStore } from '../../store/employee.store';
 import {
   Button,
@@ -22,7 +22,6 @@ import {
   EditIcon,
   User,
   Phone,
-  Filter,
   RefreshCcw,
   FileText,
   Lock,
@@ -42,7 +41,7 @@ import HeadlessModal from '../global/HeadlessModal';
 import { useNavigate } from 'react-router';
 import UpdateEmployee from './UpdateEmployee';
 import TooltipGlobal from '../global/TooltipGlobal';
-import BottomDrawer from '../global/BottomDrawer';
+
 import NO_DATA from '@/assets/svg/no_data.svg';
 import useWindowSize from '@/hooks/useWindowSize';
 import { useAuthStore } from '@/store/auth.store';
@@ -667,10 +666,6 @@ function ListEmployee({ actions }: Props) {
     window.open(doc.output('bloburl'), '_blank');
   };
 
-  const filters = useMemo(() => {
-    return <></>;
-  }, [firstName, setFirstName, phone, setPhone, branch, setBranch, branch_list]);
-
   //estado para capturar ;la data actualizada
   const [dataUpdate, setDataUpdate] = useState<EmployeePayload>({
     firstName: '',
@@ -731,7 +726,7 @@ function ListEmployee({ actions }: Props) {
                 )}
               </div>
               <div className="hidden w-full gap-5 md:flex">
-                <div className="grid w-full grid-cols-5 gap-3">
+                <div className="grid w-full grid-cols-4 gap-3">
                   <Input
                     classNames={{
                       label: 'font-semibold text-gray-700',
@@ -739,7 +734,7 @@ function ListEmployee({ actions }: Props) {
                     }}
                     labelPlacement="outside"
                     label="Nombre"
-                    className="w-full dark:text-white"
+                    className="w-full dark:text-white border border-white rounded-xl"
                     placeholder="Buscar por nombre..."
                     startContent={<User />}
                     variant="bordered"
@@ -760,7 +755,7 @@ function ListEmployee({ actions }: Props) {
                     label="Teléfono"
                     placeholder="Buscar por teléfono..."
                     startContent={<Phone size={20} />}
-                    className="w-full dark:text-white"
+                    className="w-full dark:text-white border border-white rounded-xl"
                     variant="bordered"
                     name="searchPhone"
                     value={phone}
@@ -769,37 +764,43 @@ function ListEmployee({ actions }: Props) {
                     isClearable
                     onClear={() => setPhone('')}
                   />
-                  <Autocomplete
-                    onSelectionChange={(key) => {
-                      if (key) {
-                        setBranch(key as string);
-                      }
-                    }}
-                    className="w-full dark:text-white"
-                    label="Sucursal"
-                    labelPlacement="outside"
-                    placeholder="Selecciona una sucursal"
-                    variant="bordered"
-                    defaultSelectedKey={branch}
-                    classNames={{
-                      base: 'font-semibold text-gray-500 text-sm',
-                    }}
-                    clearButtonProps={{
-                      onClick: () => setBranch(''),
-                    }}
-                  >
-                    {branch_list.map((bra) => (
-                      <AutocompleteItem value={bra.name} className="dark:text-white" key={bra.name}>
-                        {bra.name}
-                      </AutocompleteItem>
-                    ))}
-                  </Autocomplete>
+                  <div className="w-full">
+                    <label className="font-semibold dark:text-white text-sm">Sucursal</label>
+                    <Autocomplete
+                      onSelectionChange={(key) => {
+                        if (key) {
+                          setBranch(key as string);
+                        }
+                      }}
+                      className="w-full dark:text-white border border-white rounded-xl"
+                      labelPlacement="outside"
+                      placeholder="Selecciona una sucursal"
+                      variant="bordered"
+                      defaultSelectedKey={branch}
+                      classNames={{
+                        base: 'font-semibold text-gray-500 text-sm',
+                      }}
+                      clearButtonProps={{
+                        onClick: () => setBranch(''),
+                      }}
+                    >
+                      {branch_list.map((bra) => (
+                        <AutocompleteItem
+                          value={bra.name}
+                          className="dark:text-white"
+                          key={bra.name}
+                        >
+                          {bra.name}
+                        </AutocompleteItem>
+                      ))}
+                    </Autocomplete>
+                  </div>
                   <Button
                     style={{
                       backgroundColor: theme.colors.secondary,
                       color: theme.colors.primary,
                     }}
-                    className="hidden mt-6 font-semibold md:flex"
+                    className="hidden mt-6 font-semibold md:flex border border-white"
                     color="primary"
                     onClick={() => changePage()}
                   >
@@ -810,41 +811,45 @@ function ListEmployee({ actions }: Props) {
 
               <div className="flex flex-col gap-3 mt-3 lg:flex-row lg:justify-between lg:gap-10">
                 <div className="flex justify-between justify-start order-2 lg:order-1">
-                  <Switch
-                    onValueChange={(active) => setActive(active)}
-                    isSelected={active}
-                    classNames={{
-                      thumb: classNames(active ? 'bg-blue-500' : 'bg-gray-400'),
-                      wrapper: classNames(active ? '!bg-blue-300' : 'bg-gray-200'),
-                    }}
-                  >
-                    <span className="text-sm sm:text-base whitespace-nowrap">
-                      Mostrar {active ? 'inactivos' : 'activos'}
-                    </span>
-                  </Switch>
+                  <div className="xl:mt-10">
+                    <Switch
+                      onValueChange={(active) => setActive(active)}
+                      isSelected={active}
+                      classNames={{
+                        thumb: classNames(active ? 'bg-blue-500' : 'bg-gray-400'),
+                        wrapper: classNames(active ? '!bg-blue-300' : 'bg-gray-200'),
+                      }}
+                    >
+                      <span className="text-sm sm:text-base whitespace-nowrap">
+                        Mostrar {active ? 'inactivos' : 'activos'}
+                      </span>
+                    </Switch>
+                  </div>
                 </div>
                 <div className="flex gap-10 w-full justify-between items-center lg:justify-end order-1 lg:order-2">
-                  <Select
-                    className="w-44 dark:text-white"
-                    variant="bordered"
-                    label="Mostrar"
-                    defaultSelectedKeys={['5']}
-                    labelPlacement="outside"
-                    classNames={{
-                      label: 'font-semibold',
-                    }}
-                    value={limit}
-                    onChange={(e) => {
-                      setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
-                    }}
-                  >
-                    {limit_options.map((option) => (
-                      <SelectItem key={option} value={option} className="dark:text-white">
-                        {option}
-                      </SelectItem>
-                    ))}
-                  </Select>
-                  <ButtonGroup className="mt-4">
+                  <div className="w-44">
+                    <label className="font-semibold dark:text-white text-sm">Mostrar</label>
+                    <Select
+                      className="w-44 dark:text-white"
+                      variant="bordered"
+                      defaultSelectedKeys={['5']}
+                      labelPlacement="outside"
+                      classNames={{
+                        label: 'font-semibold',
+                      }}
+                      value={limit}
+                      onChange={(e) => {
+                        setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
+                      }}
+                    >
+                      {limit_options.map((option) => (
+                        <SelectItem key={option} value={option} className="dark:text-white">
+                          {option}
+                        </SelectItem>
+                      ))}
+                    </Select>
+                  </div>
+                  <ButtonGroup className="mt-4 border border-white rounded-xl">
                     <Button
                       className="hidden md:inline-flex"
                       isIconOnly

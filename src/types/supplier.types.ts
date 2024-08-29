@@ -1,15 +1,14 @@
 import { ITransmitter } from './transmitter.types';
 
 export interface SupplierDirection {
-  id?: number
-  departamento?: string
-  nombreDepartamento?: string
-  municipio?: string
-  nombreMunicipio?: string
-  complemento?: string
-  active?: boolean
+  id?: number;
+  departamento?: string;
+  nombreDepartamento?: string;
+  municipio?: string;
+  nombreMunicipio?: string;
+  complemento?: string;
+  active?: boolean;
 }
-
 
 export interface Supplier {
   id: number;
@@ -25,14 +24,14 @@ export interface Supplier {
   telefono: string;
   correo: string;
   isActive?: boolean;
-  esContribuyente: boolean;
+  esContribuyente: boolean | number;
   transmitter?: ITransmitter;
   direccion?: SupplierDirection;
-  departamento?: string
-  nombreDepartamento?: string
-  municipio?: string
-  nombreMunicipio?: string
-  complemento?: string
+  departamento?: string;
+  nombreDepartamento?: string;
+  municipio?: string;
+  nombreMunicipio?: string;
+  complemento?: string;
   direccionId?: number;
 }
 export interface IGetSuppliers {
@@ -68,12 +67,11 @@ export interface PayloadSupplier {
   bienTitulo?: string;
   telefono?: string;
   correo?: string;
-  departamento?: string
-  nombreDepartamento?: string
-  municipio?: string
-  nombreMunicipio?: string
-  complemento?: string
+  departamento?: string;
+  nombreDepartamento?: string;
+  municipio?: string;
+  nombreMunicipio?: string;
+  complemento?: string;
   esContribuyente?: number | boolean;
   transmitterId?: number;
 }
-

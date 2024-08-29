@@ -169,7 +169,7 @@ function AddEmployee() {
   return (
     <Layout title="Agregar Empleado">
       <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
-        <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+        <div className="w-full h-full border-white border border-white p-2 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <Button onClick={() => navigate('/employees')} className="bg-transparent dark:text-white">
             <ArrowLeft className="dark:text-white" />
             Atrás
@@ -382,6 +382,7 @@ function AddEmployee() {
                       <div className="flex flex-row gap-1 mt-3">
                         <div>
                           <Input
+                            className="xl:w-full w-[150px]"
                             value={codigo || dataCreate.code}
                             onBlur={handleBlur('code')}
                             onChange={(e) => {
@@ -395,7 +396,7 @@ function AddEmployee() {
                               label: 'font-semibold text-sm text-gray-600',
                             }}
                             variant="bordered"
-                            label="Código Empleado"
+                            label="Código "
                           />
                           {errors.code && touched.code && (
                             <span className="text-sm font-semibold text-red-500">
@@ -406,7 +407,7 @@ function AddEmployee() {
                         <div className="mt-3">
                           <Button
                             onClick={() => generateCode(setFieldValue)}
-                            className="w-full mt-3 text-sm font-semibold bg-blue-400"
+                            className="xl:w-full w-[140px] mt-3 text-sm font-semibold bg-blue-400"
                             style={{
                               backgroundColor: theme.colors.dark,
                               color: theme.colors.primary,

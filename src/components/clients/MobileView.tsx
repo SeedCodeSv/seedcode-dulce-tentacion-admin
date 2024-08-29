@@ -56,21 +56,21 @@ const GridItem = (props: GridProps) => {
       {layout === 'grid' ? (
         <div
           className={classNames(
-            'w-full shadow dark:border border-gray-600 hover:shadow-lg p-8 rounded-2xl'
+            'w-full shadow border dark:border-white dark:border border-gray-600 hover:shadow-lg p-8 rounded-2xl'
           )}
           key={customers.id}
         >
           <div className="flex w-full gap-2">
-            <IUser className="text-[#274c77] dark:text-gray-400" size={20} />
+            <IUser className="text-blue-300 dark:text-blue-300" size={20} />
             <p className="w-full dark:text-white">{customers.nombre}</p>
           </div>
           <div className="flex w-full gap-2 mt-3">
-            <Phone className="text-[#274c77] dark:text-gray-400" size={20} />
+            <Phone className="text-blue-300 dark:text-blue-300" size={20} />
             <p className="w-full dark:text-white"> {customers.telefono}</p>
           </div>
           <div className="flex w-full gap-2 mt-3">
             <div>
-              <MapPin className="text-[#274c77] dark:text-gray-400" size={20} />
+              <MapPin className="text-blue-300 dark:text-blue-300" size={20} />
             </div>
             <div className="w-full dark:text-white">
               {customers.direccion.nombreDepartamento} ,{customers.direccion.municipio} ,
@@ -78,7 +78,7 @@ const GridItem = (props: GridProps) => {
             </div>
           </div>
           <div className="flex w-full gap-2 mt-3">
-            <Users2Icon className="text-[#274c77] dark:text-gray-400" size={20} />
+            <Users2Icon className="text-blue-300 dark:text-blue-300" size={20} />
             <p className="w-full dark:text-white">
               {' '}
               {customers.esContribuyente ? 'Contribuyente' : 'No Contribuyente'}
@@ -101,7 +101,6 @@ const GridItem = (props: GridProps) => {
                 <>
                   {actions.includes('Cambiar Tipo de Cliente') && (
                     <>
-
                       {customers.esContribuyente === false && (
                         <TooltipGlobal text="Cambiar tipo de cliente">
                           <Button
@@ -122,20 +121,6 @@ const GridItem = (props: GridProps) => {
               </>
             ) : (
               <>
-                {/* {actions.includes('Cambiar Tipo de Cliente') && (
-                  <TooltipGlobal text="Activar">
-                    <Button
-                      onClick={() => {
-                        handleActive(customers.id);
-                      }}
-                      isIconOnly
-                      style={global_styles().secondaryStyle}
-                    >
-                      <BadgeCheck size={20} />
-                    </Button>
-                  </TooltipGlobal>
-                )} */}
-
                 {actions.includes('Eliminar') && (
                   <TooltipGlobal text="Activar">
                     <Button
@@ -170,22 +155,22 @@ const ListItem = (props: GridProps) => {
   const { customers, handleChangeCustomer, handleActive, actions } = props;
   return (
     <>
-      <div className="flex w-full col-span-1 p-5 border shadow rounded-2xl ">
+      <div className="flex w-full border dark:border-white col-span-1 p-5 border shadow rounded-2xl ">
         <div className="w-full">
           <div className="flex items-center w-full gap-2">
-            <IUser className="text-[#274c77] dark:text-gray-400" size={20} />
+            <IUser className="text-blue-300 dark:text-blue-300" size={20} />
             <p className="w-full dark:text-white">{customers.nombre}</p>
           </div>
           <div className="flex items-center w-full gap-2 mt-3">
-            <Phone className="text-[#274c77] dark:text-gray-400" size={20} />
+            <Phone className="text-blue-300 dark:text-blue-300" size={20} />
             <p className="w-full dark:text-white">{customers.telefono}</p>
           </div>
           <div className="flex items-center w-full gap-2 mt-3">
-            <Mail className="text-[#274c77] dark:text-gray-400" size={20} />
+            <Mail className="text-blue-300 dark:text-blue-300" size={20} />
             <p className="w-full dark:text-white">{customers.correo}</p>
           </div>
           <div className="flex items-center w-full gap-2 mt-3">
-            <Users2Icon className="text-[#274c77] dark:text-gray-400" size={20} />
+            <Users2Icon className="text-blue-300 dark:text-blue-300" size={20} />
             <p className="w-full dark:text-white">
               {customers.esContribuyente ? 'Contribuyente' : 'No Contribuyente'}
             </p>

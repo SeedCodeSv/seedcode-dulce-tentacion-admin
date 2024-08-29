@@ -24,6 +24,7 @@ import {
   List,
   EditIcon,
   RefreshCcw,
+  Lock,
 } from 'lucide-react';
 import UpdatePassword from './UpdatePassword';
 import { ThemeContext } from '../../hooks/useTheme';
@@ -96,10 +97,10 @@ function ListUsers({ actionss }: Props) {
             {actionss.includes('Agregar') && <AddButton onClick={() => modalAdd.onOpen()} />}
           </div>
           <div className="hidden w-full gap-5 md:flex">
-            <div className="grid w-full grid-cols-5 gap-3">
+            <div className="grid w-full grid-cols-3 gap-3">
               <Input
                 startContent={<Search />}
-                className=" dark:text-white"
+                className=" dark:text-white border border-white rounded-xl"
                 variant="bordered"
                 labelPlacement="outside"
                 label="Nombre"
@@ -117,42 +118,44 @@ function ListUsers({ actionss }: Props) {
                 }}
               />
 
-              <Autocomplete
-                onSelectionChange={(value) => {
-                  const selectRol = roles_list.find((rol) => rol.name === value);
-                  setRol(selectRol?.name ?? '');
-                }}
-                onClear={() => {
-                  setRol('');
-                  handleSearch('');
-                }}
-                clearButtonProps={{
-                  onClick: () => {
+              <div className="w-full">
+                <label className="dark:text-white text-sm font-semibold">Rol</label>
+                <Autocomplete
+                  onSelectionChange={(value) => {
+                    const selectRol = roles_list.find((rol) => rol.name === value);
+                    setRol(selectRol?.name ?? '');
+                  }}
+                  onClear={() => {
                     setRol('');
                     handleSearch('');
-                  },
-                }}
-                label="Rol"
-                labelPlacement="outside"
-                placeholder="Selecciona el rol"
-                variant="bordered"
-                className="dark:text-white"
-                classNames={{
-                  base: 'text-gray-500 text-sm',
-                }}
-              >
-                {roles_list.map((dep) => (
-                  <AutocompleteItem className="dark:text-white" value={dep.id} key={dep.name}>
-                    {dep.name}
-                  </AutocompleteItem>
-                ))}
-              </Autocomplete>
+                  }}
+                  clearButtonProps={{
+                    onClick: () => {
+                      setRol('');
+                      handleSearch('');
+                    },
+                  }}
+                  labelPlacement="outside"
+                  placeholder="Selecciona el rol"
+                  variant="bordered"
+                  className="dark:text-white border border-white rounded-xl"
+                  classNames={{
+                    base: 'text-gray-500 text-sm',
+                  }}
+                >
+                  {roles_list.map((dep) => (
+                    <AutocompleteItem className="dark:text-white" value={dep.id} key={dep.name}>
+                      {dep.name}
+                    </AutocompleteItem>
+                  ))}
+                </Autocomplete>
+              </div>
               <Button
                 style={{
                   backgroundColor: theme.colors.secondary,
                   color: theme.colors.primary,
                 }}
-                className="hidden mt-6 font-semibold md:flex"
+                className="hidden mt-6 font-semibold md:flex border border-white"
                 color="primary"
                 onClick={() => handleSearch(undefined)}
               >
@@ -163,41 +166,45 @@ function ListUsers({ actionss }: Props) {
 
           <div className="flex flex-col gap-3 mt-3 lg:flex-row lg:justify-between lg:gap-10">
             <div className="flex justify-between justify-start order-2 lg:order-1">
-              <Switch
-                onValueChange={(active) => setActive(active)}
-                isSelected={active}
-                classNames={{
-                  thumb: classNames(active ? 'bg-blue-500' : 'bg-gray-400'),
-                  wrapper: classNames(active ? '!bg-blue-300' : 'bg-gray-200'),
-                }}
-              >
-                <span className="text-sm sm:text-base whitespace-nowrap">
-                  Mostrar {active ? 'inactivos' : 'activos'}
-                </span>
-              </Switch>
+              <div className="xl:mt-10">
+                <Switch
+                  onValueChange={(active) => setActive(active)}
+                  isSelected={active}
+                  classNames={{
+                    thumb: classNames(active ? 'bg-blue-500' : 'bg-gray-400'),
+                    wrapper: classNames(active ? '!bg-blue-300' : 'bg-gray-200'),
+                  }}
+                >
+                  <span className="text-sm sm:text-base whitespace-nowrap">
+                    Mostrar {active ? 'inactivos' : 'activos'}
+                  </span>
+                </Switch>
+              </div>
             </div>
             <div className="flex gap-10 w-full justify-between items-center lg:justify-end order-1 lg:order-2">
-              <Select
-                className="w-44 dark:text-white"
-                variant="bordered"
-                label="Mostrar"
-                labelPlacement="outside"
-                defaultSelectedKeys={['5']}
-                classNames={{
-                  label: 'font-semibold',
-                }}
-                value={limit}
-                onChange={(e) => {
-                  setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
-                }}
-              >
-                {limit_options.map((limit) => (
-                  <SelectItem className="dark:text-white" key={limit} value={limit}>
-                    {limit}
-                  </SelectItem>
-                ))}
-              </Select>
-              <ButtonGroup className="mt-4">
+              <div className="w-44">
+                <label className="dark:text-white text-sm font-semibold">Mostrar</label>
+                <Select
+                  className="w-44 dark:text-white border border-white rounded-xl"
+                  variant="bordered"
+                  labelPlacement="outside"
+                  defaultSelectedKeys={['5']}
+                  classNames={{
+                    label: 'font-semibold',
+                  }}
+                  value={limit}
+                  onChange={(e) => {
+                    setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
+                  }}
+                >
+                  {limit_options.map((limit) => (
+                    <SelectItem className="dark:text-white" key={limit} value={limit}>
+                      {limit}
+                    </SelectItem>
+                  ))}
+                </Select>
+              </div>
+              <ButtonGroup className="mt-4  xl:flex hidden border border-white rounded-xl">
                 <Button
                   className="hidden md:inline-flex"
                   isIconOnly
@@ -210,6 +217,30 @@ function ListUsers({ actionss }: Props) {
                 >
                   <ITable />
                 </Button>
+                <Button
+                  isIconOnly
+                  color="default"
+                  style={{
+                    backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
+                    color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
+                  }}
+                  onClick={() => setView('grid')}
+                >
+                  <CreditCard />
+                </Button>
+                <Button
+                  isIconOnly
+                  color="default"
+                  style={{
+                    backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
+                    color: view === 'list' ? theme.colors.primary : '#3e3e3e',
+                  }}
+                  onClick={() => setView('list')}
+                >
+                  <List />
+                </Button>
+              </ButtonGroup>
+              <ButtonGroup className="mt-4 xl:hidden border border-white rounded-xl ">
                 <Button
                   isIconOnly
                   color="default"
@@ -287,9 +318,10 @@ function ListUsers({ actionss }: Props) {
                           </td>
                           <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                             <div className="flex w-full gap-5">
-                              {item.active && actionss.includes('Editar') && (
+                              {item.active && actionss.includes('Editar') ? (
                                 <TooltipGlobal text="Editar">
                                   <Button
+                                    className="border border-white"
                                     onClick={() => {
                                       setUser(item);
                                       modalUpdate.onOpen();
@@ -302,10 +334,23 @@ function ListUsers({ actionss }: Props) {
                                     <EditIcon style={{ color: theme.colors.primary }} size={20} />
                                   </Button>
                                 </TooltipGlobal>
+                              ) : (
+                                <Button
+                                  type="button"
+                                  disabled
+                                  style={{
+                                    backgroundColor: theme.colors.secondary,
+                                  }}
+                                  className="flex font-semibold border border-white  cursor-not-allowed"
+                                  isIconOnly
+                                >
+                                  <Lock />
+                                </Button>
                               )}
-                              {item.active && actionss.includes('Cambiar Contraseña') && (
+                              {item.active && actionss.includes('Cambiar Contraseña') ? (
                                 <TooltipGlobal text="Cambiar contraseña">
                                   <Button
+                                    className="border border-white"
                                     onClick={() => {
                                       setSelectedId(item.id);
                                       modalChangePassword.onOpen();
@@ -318,13 +363,40 @@ function ListUsers({ actionss }: Props) {
                                     <Key color={theme.colors.primary} size={20} />
                                   </Button>
                                 </TooltipGlobal>
+                              ) : (
+                                <Button
+                                  type="button"
+                                  disabled
+                                  style={{
+                                    backgroundColor: theme.colors.warning,
+                                  }}
+                                  className="flex font-semibold border border-white  cursor-not-allowed"
+                                  isIconOnly
+                                >
+                                  <Lock />
+                                </Button>
                               )}
-                              {/* {actions.includes('Eliminar') && <DeletePopUp user={item} />} */}
-                              {actionss.includes('Eliminar') && (
+
+                              {item.active && actionss.includes('Eliminar') ? (
                                 <>
-                                  {item.active ? (
-                                    <DeletePopUp user={item} />
-                                  ) : (
+                                  <DeletePopUp user={item} />
+                                </>
+                              ) : (
+                                <Button
+                                  type="button"
+                                  disabled
+                                  style={{
+                                    backgroundColor: theme.colors.danger,
+                                  }}
+                                  className="flex font-semibold border border-white  cursor-not-allowed"
+                                  isIconOnly
+                                >
+                                  <Lock />
+                                </Button>
+                              )}
+                              {!item.active && (
+                                <>
+                                  {actionss.includes('Activar') ? (
                                     <TooltipGlobal text="Activar">
                                       <Button
                                         onClick={() => handleActivate(item.id)}
@@ -334,6 +406,16 @@ function ListUsers({ actionss }: Props) {
                                         <RefreshCcw />
                                       </Button>
                                     </TooltipGlobal>
+                                  ) : (
+                                    <Button
+                                      type="button"
+                                      disabled
+                                      style={global_styles().thirdStyle}
+                                      className="flex font-semibold border border-white  cursor-not-allowed"
+                                      isIconOnly
+                                    >
+                                      <Lock />
+                                    </Button>
                                   )}
                                 </>
                               )}
@@ -435,7 +517,7 @@ interface PopProps {
   user: User;
 }
 
-const DeletePopUp = ({ user }: PopProps) => {
+export const DeletePopUp = ({ user }: PopProps) => {
   const { theme } = useContext(ThemeContext);
   const { deleteUser } = useUsersStore();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -447,9 +529,16 @@ const DeletePopUp = ({ user }: PopProps) => {
 
   return (
     <>
-      <Popover isOpen={isOpen} onClose={onClose} backdrop="blur" showArrow>
+      <Popover
+        className="border border-white rounded-2xl"
+        isOpen={isOpen}
+        onClose={onClose}
+        backdrop="blur"
+        showArrow
+      >
         <PopoverTrigger>
           <Button
+            className="border border-white"
             onClick={onOpen}
             isIconOnly
             style={{
@@ -473,10 +562,12 @@ const DeletePopUp = ({ user }: PopProps) => {
               ¿Estas seguro de eliminar este registro?
             </p>
             <div className="flex justify-center mt-4">
-              <Button onClick={onClose}>No, cancelar</Button>
+              <Button className="border border-white" onClick={onClose}>
+                No, cancelar
+              </Button>
               <Button
                 onClick={() => handleDelete()}
-                className="ml-5"
+                className="ml-5 border border-white"
                 style={{
                   backgroundColor: theme.colors.danger,
                   color: theme.colors.primary,

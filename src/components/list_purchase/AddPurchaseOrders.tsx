@@ -7,16 +7,7 @@ import {
   SelectItem,
   useDisclosure,
 } from '@nextui-org/react';
-import {
-  ArrowLeft,
-  DollarSign,
-  Plus,
-  Printer,
-  ScrollText,
-  Search,
-  Trash,
-  Truck,
-} from 'lucide-react';
+import { ArrowLeft, DollarSign, Printer, ScrollText, Search, Trash, Truck } from 'lucide-react';
 import { useContext, useEffect, useState } from 'react';
 import { useBranchProductStore } from '../../store/branch_product.store';
 import { Branches } from '../../types/branches.types';
@@ -139,8 +130,8 @@ function AddPurchaseOrders() {
   return (
     <Layout title="Lista de productos">
       <>
-        <div className="w-full h-full p-4 md:p-10 bg-gray-50 dark:bg-gray-800">
-          <div className="w-full h-full p-5 md:p-10 mt-2 overflow-y-auto bg-white custom-scrollbar shadow border dark:bg-gray-900">
+        <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
+          <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
             <div
               className="flex items-center cursor-pointer"
               onClick={() => navigate('/purchase-orders')}

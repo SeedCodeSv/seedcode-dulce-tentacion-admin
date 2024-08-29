@@ -10,6 +10,8 @@ import {
   Repeat,
   MapPin,
   BadgeCheck,
+  Check,
+  Lock,
 } from 'lucide-react';
 import { global_styles } from '../../styles/global.styles';
 import { GridProps, MobileViewProps } from './types/movile-view.types';
@@ -19,7 +21,12 @@ import { DeletePopover } from './ListSuppliers';
 import { useNavigate } from 'react-router';
 import { Supplier } from '@/types/supplier.types';
 
-function MobileViewSupplier({ layout, handleChangeSupplier, handleActive }: MobileViewProps) {
+function MobileViewSupplier({
+  layout,
+  handleChangeSupplier,
+  handleActive,
+  actions,
+}: MobileViewProps) {
   const { supplier_pagination } = useSupplierStore();
   const { OnGetBySupplier } = useSupplierStore();
   const navigate = useNavigate();
@@ -31,6 +38,7 @@ function MobileViewSupplier({ layout, handleChangeSupplier, handleActive }: Mobi
     navigate(path);
     OnGetBySupplier(supplier.id ?? 0);
   };
+
   return (
     <div className="w-full pb-10">
       <DataView
@@ -46,6 +54,7 @@ function MobileViewSupplier({ layout, handleChangeSupplier, handleActive }: Mobi
         color="surface"
         itemTemplate={(suppliers) => (
           <GridItem
+            actions={actions}
             onNavigate={handleNavigate}
             reloadData={OnGetBySupplier}
             layout={layout}
@@ -61,7 +70,8 @@ function MobileViewSupplier({ layout, handleChangeSupplier, handleActive }: Mobi
 }
 
 const GridItem = (props: GridProps) => {
-  const { layout, supplier, handleChangeSupplier, handleActive, reloadData, onNavigate } = props;
+  const { layout, supplier, handleChangeSupplier, handleActive, reloadData, onNavigate, actions } =
+    props;
   return (
     <>
       {layout === 'grid' ? (
@@ -96,10 +106,11 @@ const GridItem = (props: GridProps) => {
             </div>
           </div>
           <div className="flex justify-between mt-5 w-ful">
-            {supplier.isActive ? (
-              <>
+            <>
+              {actions.includes('Editar') ? (
                 <TooltipGlobal text="Editar">
                   <Button
+                    className="border border-white"
                     onClick={() => onNavigate(supplier)}
                     isIconOnly
                     style={global_styles().secondaryStyle}
@@ -107,34 +118,59 @@ const GridItem = (props: GridProps) => {
                     <EditIcon size={20} />
                   </Button>
                 </TooltipGlobal>
-                {supplier.esContribuyente === false && (
-                  <TooltipGlobal text="Cambiar tipo de proveedor">
-                    <Button
-                      onClick={() => handleChangeSupplier(supplier, 'change')}
-                      isIconOnly
-                      style={global_styles().thirdStyle}
-                    >
-                      <Repeat size={20} />
-                    </Button>
-                  </TooltipGlobal>
-                )}
-                {DeletePopover({ supplier: supplier })}
-              </>
-            ) : (
-              <Button
-                onClick={() => {
-                  handleActive(supplier.id ?? 0);
-                }}
-                isIconOnly
-                style={global_styles().secondaryStyle}
-              >
-                <BadgeCheck size={20} />
-              </Button>
-            )}
+              ) : (
+                <Button
+                  type="button"
+                  disabled
+                  className="flex font-semibold cursor-not-allowed border border-white"
+                  isIconOnly
+                >
+                  <Lock className="text-white" />
+                </Button>
+              )}
+
+              {supplier.esContribuyente === false ? (
+                <TooltipGlobal text="Cambiar tipo de proveedor">
+                  <Button
+                    className="border border-white"
+                    onClick={() => {
+                      supplier.esContribuyente = true;
+                      onNavigate(supplier);
+                    }}
+                    isIconOnly
+                    style={global_styles().thirdStyle}
+                  >
+                    <Repeat size={20} />
+                  </Button>
+                </TooltipGlobal>
+              ) : (
+                <Button
+                  type="button"
+                  disabled
+                  style={global_styles().thirdStyle}
+                  className="flex border border-white font-semibold cursor-not-allowed"
+                  isIconOnly
+                >
+                  <Check />
+                </Button>
+              )}
+              {DeletePopover({ supplier: supplier })}
+            </>
+
+            {/* <Button
+              onClick={() => {
+                handleActive(supplier.id ?? 0);
+              }}
+              isIconOnly
+              style={global_styles().secondaryStyle}
+            >
+              <BadgeCheck size={20} />
+            </Button> */}
           </div>
         </div>
       ) : (
         <ListItem
+          actions={actions}
           onNavigate={onNavigate}
           reloadData={reloadData}
           handleActive={handleActive}
@@ -148,8 +184,7 @@ const GridItem = (props: GridProps) => {
 };
 
 const ListItem = (props: GridProps) => {
-  const { supplier, handleChangeSupplier, handleActive, onNavigate } = props;
-
+  const { supplier, handleActive, onNavigate } = props;
   return (
     <>
       <div className="flex w-full border border-white col-span-1 p-5 border shadow rounded-2xl ">
@@ -185,16 +220,29 @@ const ListItem = (props: GridProps) => {
                   <EditIcon size={20} />
                 </Button>
               </TooltipGlobal>
-              {supplier.esContribuyente === false && (
+              {supplier.esContribuyente === false ? (
                 <TooltipGlobal text="Cambiar tipo de proveedor">
                   <Button
-                    onClick={() => handleChangeSupplier(supplier, 'change')}
+                    onClick={() => {
+                      supplier.esContribuyente = true;
+                      onNavigate(supplier);
+                    }}
                     isIconOnly
                     style={global_styles().thirdStyle}
                   >
                     <Repeat size={20} />
                   </Button>
                 </TooltipGlobal>
+              ) : (
+                <Button
+                  type="button"
+                  disabled
+                  style={global_styles().thirdStyle}
+                  className="flex font-semibold cursor-not-allowed"
+                  isIconOnly
+                >
+                  <Check />
+                </Button>
               )}
               {DeletePopover({ supplier: supplier })}
             </>
