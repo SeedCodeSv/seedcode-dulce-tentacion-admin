@@ -556,7 +556,7 @@ export const DeletePopUp = ({ user }: PopProps) => {
           </Button>
         </PopoverTrigger>
         <PopoverContent>
-          <div className="w-full p-5">
+        <div className="flex flex-col items-center justify-center w-full p-5">
             <p className="font-semibold text-gray-600 dark:text-white">Eliminar {user.userName}</p>
             <p className="mt-3 text-center text-gray-600 dark:text-white w-72">
               ¿Estas seguro de eliminar este registro?

@@ -830,7 +830,7 @@ function ListEmployee({ actions }: Props) {
                   <div className="w-44">
                     <label className="font-semibold dark:text-white text-sm">Mostrar</label>
                     <Select
-                      className="w-44 dark:text-white"
+                      className="w-44 dark:text-white border border-white rounded-xl"
                       variant="bordered"
                       defaultSelectedKeys={['5']}
                       labelPlacement="outside"
@@ -958,10 +958,12 @@ function ListEmployee({ actions }: Props) {
                                     </td>
                                     <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                                       <div className="flex w-full gap-5">
-                                        {employee.isActive && actions.includes('Editar') && (
+                                        {employee.isActive && actions.includes('Editar') ? (
                                           <TooltipGlobal text="Editar">
                                             <Button
+                                              className='border border-white'
                                               onClick={() => {
+
                                                 setDataUpdate(employee);
 
                                                 // setIsOpenModalUpdate(true);
@@ -979,28 +981,39 @@ function ListEmployee({ actions }: Props) {
                                               />
                                             </Button>
                                           </TooltipGlobal>
-                                        )}
-                                        {actions.includes('Eliminar') && (
-                                          <>
-                                            {employee.isActive ? (
-                                              <DeletePopover employee={employee} />
-                                            ) : (
-                                              <TooltipGlobal text="Activar">
-                                                <Button
-                                                  onClick={() => handleActivate(employee.id)}
-                                                  isIconOnly
-                                                  style={global_styles().thirdStyle}
-                                                >
-                                                  <RefreshCcw />
-                                                </Button>
-                                              </TooltipGlobal>
-                                            )}
-                                          </>
-                                        )}
-                                        {/* este es el boton que tiene q abrir el pdf */}
-
-                                        {actions.includes('Contrato') ? (
+                                        ) : (
                                           <Button
+                                            type="button"
+                                            disabled
+                                            style={{
+                                              backgroundColor: theme.colors.secondary,
+                                            }}
+                                            className="flex font-semibold border border-white  cursor-not-allowed"
+                                            isIconOnly
+                                          >
+                                            <Lock />
+                                          </Button>
+                                        )}
+
+
+                                        {actions.includes("Eliminar") && employee.isActive ? (
+                                          <DeletePopover employee={employee} />
+                                        ) : (
+                                          <Button
+                                            type="button"
+                                            disabled
+                                            style={{
+                                              backgroundColor: theme.colors.danger,
+                                            }}
+                                            className="flex font-semibold border border-white  cursor-not-allowed"
+                                            isIconOnly
+                                          >
+                                            <Lock />
+                                          </Button>
+                                        )}
+                                        {actions.includes('Contrato') && employee.isActive ? (
+                                          <Button
+                                            className='border border-white'
                                             onClick={() => OpenPdf(employee)}
                                             isIconOnly
                                             style={{
@@ -1020,13 +1033,44 @@ function ListEmployee({ actions }: Props) {
                                               type="button"
                                               disabled
                                               style={{ ...style, cursor: 'not-allowed' }}
-                                              className="flex font-semibold "
+                                              className="flex font-semibold border border-white "
                                               isIconOnly
                                             >
                                               <Lock />
                                             </Button>
                                           </>
                                         )}
+
+                                        {!employee.isActive && (
+                                          <>
+                                            {
+                                              actions.includes("Activar") ? (
+                                                <TooltipGlobal text="Activar">
+                                                  <Button
+                                                    className='border border-white'
+                                                    onClick={() => handleActivate(employee.id)}
+                                                    isIconOnly
+                                                    style={global_styles().thirdStyle}
+                                                  >
+                                                    <RefreshCcw />
+                                                  </Button>
+                                                </TooltipGlobal>
+                                              ) : (
+                                                <Button
+                                                  type="button"
+                                                  disabled
+                                                  style={global_styles().thirdStyle}
+                                                  className="flex font-semibold border border-white  cursor-not-allowed"
+                                                  isIconOnly
+                                                >
+                                                  <Lock />
+                                                </Button>
+                                              )
+                                            }</>
+
+                                        )}
+
+
                                       </div>
                                     </td>
                                   </tr>
@@ -1137,9 +1181,10 @@ export const DeletePopover = ({ employee }: PopProps) => {
 
   return (
     <>
-      <Popover isOpen={isOpen} onClose={onClose} backdrop="blur" showArrow>
+      <Popover className='border border-white rounded-2xl' isOpen={isOpen} onClose={onClose} backdrop="blur" showArrow>
         <PopoverTrigger>
           <Button
+            className='border border-white'
             onClick={onOpen}
             isIconOnly
             style={{
@@ -1157,7 +1202,7 @@ export const DeletePopover = ({ employee }: PopProps) => {
           </Button>
         </PopoverTrigger>
         <PopoverContent>
-          <div className="w-full p-5">
+          <div className="flex flex-col items-center justify-center w-full p-5">
             <p className="font-semibold text-gray-600 dark:text-white">
               Eliminar {employee.firstName}
             </p>
@@ -1165,10 +1210,10 @@ export const DeletePopover = ({ employee }: PopProps) => {
               ¿Estas seguro de eliminar este registro?
             </p>
             <div className="mt-4">
-              <Button onClick={onClose}>No, cancelar</Button>
+              <Button className='border border-white' onClick={onClose}>No, cancelar</Button>
               <Button
                 onClick={() => handleDelete()}
-                className="ml-5"
+                className="ml-5 border border-white"
                 style={{
                   backgroundColor: theme.colors.danger,
                   color: theme.colors.primary,

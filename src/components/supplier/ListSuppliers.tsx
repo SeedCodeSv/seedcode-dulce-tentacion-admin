@@ -93,7 +93,7 @@ function ListSuppliers({ actions }: ArrayAction) {
             <div className="grid w-full grid-cols-3 gap-3">
               <Input
                 startContent={<User />}
-                className="w-full dark:text-white"
+                className="w-full dark:text-white border  border-white rounded-xl"
                 variant="bordered"
                 labelPlacement="outside"
                 label="Nombre"
@@ -112,7 +112,7 @@ function ListSuppliers({ actions }: ArrayAction) {
               />
               <Input
                 startContent={<Mail />}
-                className="w-full dark:text-white"
+                className="w-full dark:text-white  border  border-white rounded-xl"
                 variant="bordered"
                 labelPlacement="outside"
                 label="Correo"
@@ -135,7 +135,7 @@ function ListSuppliers({ actions }: ArrayAction) {
                   backgroundColor: theme.colors.secondary,
                   color: theme.colors.primary,
                 }}
-                className="hidden mt-6 font-semibold md:flex"
+                className="hidden mt-6 font-semibold md:flex  border  border-white rounded-xl"
                 color="primary"
                 onClick={() => handleSearch(undefined)}
               >
@@ -146,23 +146,25 @@ function ListSuppliers({ actions }: ArrayAction) {
 
           <div className="flex flex-col gap-3 mt-3 lg:flex-row lg:justify-between lg:gap-10">
             <div className="flex justify-between justify-start order-2 lg:order-1">
-              <Switch
-                className="hidden md:inline-flex"
-                onValueChange={(active) => setActive(active)}
-                isSelected={active}
-                classNames={{
-                  thumb: classNames(active ? 'bg-blue-500' : 'bg-gray-400'),
-                  wrapper: classNames(active ? '!bg-blue-300' : 'bg-gray-200'),
-                }}
-              >
-                <span className="text-sm sm:text-base whitespace-nowrap">
-                  Mostrar {active ? 'inactivos' : 'activos'}
-                </span>
-              </Switch>
+              <div className='xl:mt-10'>
+                <Switch
+                  className="hidden xl:inline-flex"
+                  onValueChange={(active) => setActive(active)}
+                  isSelected={active}
+                  classNames={{
+                    thumb: classNames(active ? 'bg-blue-500' : 'bg-gray-400'),
+                    wrapper: classNames(active ? '!bg-blue-300' : 'bg-gray-200'),
+                  }}
+                >
+                  <span className="text-sm sm:text-base whitespace-nowrap">
+                    Mostrar {active ? 'inactivos' : 'activos'}
+                  </span>
+                </Switch>
+              </div>
             </div>
             <div className="flex xl:gap-10 gap-3 w-full  lg:justify-end order-1 lg:order-2">
               <Select
-                className="w-72 sm:w-44 dark:text-white"
+                className="w-72 sm:w-44 dark:text-white border border-white rounded-xl"
                 variant="bordered"
                 label="Tipo de proveedor"
                 defaultSelectedKeys={['']}
@@ -186,7 +188,7 @@ function ListSuppliers({ actions }: ArrayAction) {
                 </SelectItem>
               </Select>
               <Select
-                className="w-72 sm:w-44 dark:text-white"
+                className="w-72 sm:w-44 dark:text-white border-white border rounded-xl"
                 variant="bordered"
                 label="Mostrar"
                 labelPlacement="outside"
@@ -224,20 +226,8 @@ function ListSuppliers({ actions }: ArrayAction) {
             </div>
           </div>
 
-          <div className="flex items-end justify-end xl:mt-2 gap-12">
-            <Switch
-              className="xl:hidden md:inline-flex"
-              onValueChange={(active) => setActive(active)}
-              isSelected={active}
-              classNames={{
-                thumb: classNames(active ? 'bg-blue-500' : 'bg-gray-400'),
-                wrapper: classNames(active ? '!bg-blue-300' : 'bg-gray-200'),
-              }}
-            >
-              <span className="text-sm sm:text-base whitespace-nowrap">
-                Mostrar {active ? 'inactivos' : 'activos'}
-              </span>
-            </Switch>
+          <div className="xl:flex justify-end hidden items-center xl:mt-2 mb-4">
+           
             <ButtonGroup>
               <Button
                 className="hidden md:inline-flex"
@@ -275,18 +265,57 @@ function ListSuppliers({ actions }: ArrayAction) {
               </Button>
             </ButtonGroup>
           </div>
+          <div className="flex xl:hidden justify-between items-center xl:mt-2 gap-12 mb-4">
 
-          <div className="flex flex-col md:flex-row gap-5 justify-between w-full mb-5 mt-3">
-            <div className="flex flex-row gap-5 items-center w-full"></div>
-            <div className="flex items-center"></div>
+            <Switch
+              className="xl:hidden md:inline-flex mt-5"
+              onValueChange={(active) => setActive(active)}
+              isSelected={active}
+              classNames={{
+                thumb: classNames(active ? 'bg-blue-500' : 'bg-gray-400'),
+                wrapper: classNames(active ? '!bg-blue-300' : 'bg-gray-200'),
+              }}
+            >
+              <span className="text-sm sm:text-base whitespace-nowrap">
+                Mostrar {active ? 'inactivos' : 'activos'}
+              </span>
+            </Switch>
+
+            <ButtonGroup className='border border-white rounded-xl'>
+              
+              <Button
+                isIconOnly
+                color="default"
+                style={{
+                  backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
+                  color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
+                }}
+                onClick={() => setView('grid')}
+              >
+                <CreditCard />
+              </Button>
+              <Button
+                isIconOnly
+                color="default"
+                style={{
+                  backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
+                  color: view === 'list' ? theme.colors.primary : '#3e3e3e',
+                }}
+                onClick={() => setView('list')}
+              >
+                <List />
+              </Button>
+            </ButtonGroup>
           </div>
+
+        
 
           <div className="flex items-center justify-center ml-2"></div>
           {(view === 'grid' || view === 'list') && (
             <MobileViewSupplier
               actions={actions}
               handleActive={handleActivate}
-              handleChangeSupplier={(_supplier) => {}}
+              handleChangeSupplier={(_supplier) => { }}
               deletePopover={DeletePopover}
               layout={view as 'grid' | 'list'}
             />

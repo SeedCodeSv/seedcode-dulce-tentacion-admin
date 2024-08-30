@@ -1,18 +1,19 @@
 import { Button } from '@nextui-org/react';
 import { DataView } from 'primereact/dataview';
 import { classNames } from 'primereact/utils';
-import { User as IUser, Truck, Phone, Edit, RefreshCcw } from 'lucide-react';
+import { User as IUser, Truck, Phone, RefreshCcw, EditIcon, Lock, FileText } from 'lucide-react';
 import { useEmployeeStore } from '../../store/employee.store';
 import { global_styles } from '../../styles/global.styles';
 import { GridProps, IMobileView } from './types/mobile-view.types';
 import TooltipGlobal from '../global/TooltipGlobal';
+import { DeletePopover } from './ListEmployee';
 
 function MobileView(props: IMobileView) {
   const { layout, openEditModal, deletePopover, actions, handleActivate } = props;
   const { employee_paginated, loading_employees } = useEmployeeStore();
 
   return (
-    <div className="w-full pb-10">
+    <div className="w-full ">
       <DataView
         value={employee_paginated.employees}
         gutter
@@ -21,7 +22,7 @@ function MobileView(props: IMobileView) {
         pt={{
           grid: () => ({
             className:
-              'grid dark:bg-transparent pb-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid-nogutter gap-5 mt-5',
+              'grid dark:bg-transparent  grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid-nogutter gap-5 mt-5',
           }),
         }}
         color="surface"
@@ -65,35 +66,104 @@ const GridItem = (props: GridProps) => {
             <p className="w-full dark:text-white">{employee.branch.name}</p>
           </div>
           <div className="flex justify-between mt-5 w-ful">
-            {actions.includes('Editar') && (
+            {employee.isActive && actions.includes('Editar') ? (
+              <TooltipGlobal text="Editar">
+                <Button
+                  className='border border-white'
+                  onClick={() => {
+
+                    openEditModal(employee);
+
+                    // setIsOpenModalUpdate(true);
+                  }}
+                  isIconOnly
+                  style={global_styles().secondaryStyle}
+                >
+                  <EditIcon
+                    className='text-white'
+                    size={20}
+                  />
+                </Button>
+              </TooltipGlobal>
+            ) : (
+              <Button
+                type="button"
+                disabled
+                style={global_styles().secondaryStyle}
+                className="flex font-semibold border border-white  cursor-not-allowed"
+                isIconOnly
+              >
+                <Lock />
+              </Button>
+            )}
+
+
+            {actions.includes("Eliminar") && employee.isActive ? (
+              <DeletePopover employee={employee} />
+            ) : (
+              <Button
+                type="button"
+                disabled
+                style={global_styles().dangerStyles}
+                className="flex font-semibold border border-white  cursor-not-allowed"
+                isIconOnly
+              >
+                <Lock />
+              </Button>
+            )}
+            {actions.includes('Contrato') && employee.isActive ? (
+              <Button
+                className='border border-white'
+                // onClick={() => OpenPdf(employee)}
+                isIconOnly
+                style={global_styles().darkStyle}
+              >
+                <FileText
+                  className='text-white'
+                  size={20}
+                />
+              </Button>
+            ) : (
               <>
-                {employee.isActive && (
-                  <TooltipGlobal text="Editar">
-                    <Button
-                      onClick={() => openEditModal(employee)}
-                      isIconOnly
-                      style={global_styles().secondaryStyle}
-                    >
-                      <Edit size={15} />
-                    </Button>
-                  </TooltipGlobal>
-                )}
+                <Button
+                  type="button"
+                  disabled
+                  style={global_styles().darkStyle}
+                  className="flex font-semibold border border-white "
+                  isIconOnly
+                >
+                  <Lock />
+                </Button>
               </>
             )}
-            {actions.includes('Eliminar') && (
+
+            {!employee.isActive && (
               <>
-                {employee.isActive ? (
-                  deletePopover({ employee })
-                ) : (
-                  <Button
-                    onClick={() => handleActivate(employee.id)}
-                    isIconOnly
-                    style={global_styles().thirdStyle}
-                  >
-                    <RefreshCcw />
-                  </Button>
-                )}
-              </>
+                {
+                  actions.includes("Activar") ? (
+                    <TooltipGlobal text="Activar">
+                      <Button
+                        className='border border-white'
+                        onClick={() => handleActivate(employee.id)}
+                        isIconOnly
+                        style={global_styles().thirdStyle}
+                      >
+                        <RefreshCcw />
+                      </Button>
+                    </TooltipGlobal>
+                  ) : (
+                    <Button
+                      type="button"
+                      disabled
+                      style={global_styles().thirdStyle}
+                      className="flex font-semibold border border-white  cursor-not-allowed"
+                      isIconOnly
+                    >
+                      <Lock />
+                    </Button>
+                  )
+                }</>
+
             )}
           </div>
         </div>
@@ -112,10 +182,10 @@ const GridItem = (props: GridProps) => {
 };
 
 const ListItem = (props: GridProps) => {
-  const { employee, actions, openEditModal, deletePopover, handleActivate } = props;
+  const { employee, actions, openEditModal, handleActivate } = props;
   return (
     <>
-      <div className="flex w-full p-5 border shadow dark:border-gray-600 rounded-2xl">
+      <div className="flex w-full border border-white p-5 border shadow  rounded-2xl">
         <div className="w-full">
           <div className="flex w-full gap-2">
             <IUser className="text-blue-500 dark:text-blue-300" size={20} />
@@ -130,36 +200,105 @@ const ListItem = (props: GridProps) => {
             <p className="w-full dark:text-white">{employee.branch.name}</p>
           </div>
         </div>
-        <div className="flex flex-col items-end justify-between w-full">
-          {actions.includes('Editar') && (
+        <div className="flex flex-col items-end justify-between gap-5 w-full">
+          {employee.isActive && actions.includes('Editar') ? (
+            <TooltipGlobal text="Editar">
+              <Button
+                className='border border-white'
+                onClick={() => {
+
+                  openEditModal(employee);
+
+                  // setIsOpenModalUpdate(true);
+                }}
+                isIconOnly
+                style={global_styles().secondaryStyle}
+              >
+                <EditIcon
+                  className='text-white'
+                  size={20}
+                />
+              </Button>
+            </TooltipGlobal>
+          ) : (
+            <Button
+              type="button"
+              disabled
+              style={global_styles().secondaryStyle}
+              className="flex font-semibold border border-white  cursor-not-allowed"
+              isIconOnly
+            >
+              <Lock />
+            </Button>
+          )}
+
+
+          {actions.includes("Eliminar") && employee.isActive ? (
+            <DeletePopover employee={employee} />
+          ) : (
+            <Button
+              type="button"
+              disabled
+              style={global_styles().dangerStyles}
+              className="flex font-semibold border border-white  cursor-not-allowed"
+              isIconOnly
+            >
+              <Lock />
+            </Button>
+          )}
+          {actions.includes('Contrato') && employee.isActive ? (
+            <Button
+              className='border border-white'
+              // onClick={() => OpenPdf(employee)}
+              isIconOnly
+              style={global_styles().darkStyle}
+            >
+              <FileText
+                className='text-white'
+                size={20}
+              />
+            </Button>
+          ) : (
             <>
-              {employee.isActive && (
-                <TooltipGlobal text="Editar">
-                  <Button
-                    onClick={() => openEditModal(employee)}
-                    isIconOnly
-                    style={global_styles().secondaryStyle}
-                  >
-                    <Edit size={15} />
-                  </Button>
-                </TooltipGlobal>
-              )}
+              <Button
+                type="button"
+                disabled
+                style={global_styles().darkStyle}
+                className="flex font-semibold border border-white "
+                isIconOnly
+              >
+                <Lock />
+              </Button>
             </>
           )}
-          {actions.includes('Eliminar') && (
+
+          {!employee.isActive && (
             <>
-              {employee.isActive ? (
-                deletePopover({ employee })
-              ) : (
-                <Button
-                  onClick={() => handleActivate(employee.id)}
-                  isIconOnly
-                  style={global_styles().thirdStyle}
-                >
-                  <RefreshCcw />
-                </Button>
-              )}
-            </>
+              {
+                actions.includes("Activar") ? (
+                  <TooltipGlobal text="Activar">
+                    <Button
+                      className='border border-white'
+                      onClick={() => handleActivate(employee.id)}
+                      isIconOnly
+                      style={global_styles().thirdStyle}
+                    >
+                      <RefreshCcw />
+                    </Button>
+                  </TooltipGlobal>
+                ) : (
+                  <Button
+                    type="button"
+                    disabled
+                    style={global_styles().thirdStyle}
+                    className="flex font-semibold border border-white  cursor-not-allowed"
+                    isIconOnly
+                  >
+                    <Lock />
+                  </Button>
+                )
+              }</>
+
           )}
         </div>
       </div>
