@@ -13,7 +13,7 @@ function MobileView(props: MobileViewProps) {
 
   const { loading_contract_type, paginated_contract_type } = useContractTypeStore();
   return (
-    <div className="w-full pb-10">
+    <div className="w-full ">
       <DataView
         value={paginated_contract_type.contractTypes}
         gutter
@@ -22,7 +22,7 @@ function MobileView(props: MobileViewProps) {
         pt={{
           grid: () => ({
             className:
-              'grid dark:bg-slate-800 pb-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid-nogutter gap-5 mt-5',
+              'grid   grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid-nogutter gap-5 mt-5',
           }),
         }}
         color="surface"
@@ -57,7 +57,7 @@ const GridItem = (props: GridProps) => {
           key={ContractTypes.id}
         >
           <div className="flex w-full gap-2">
-            <ScrollIcon className="text-[#274c77] dark:text-gray-400" size={20} />
+            <ScrollIcon className="text-blue-500 dark:text-blue-300" size={20} />
             {ContractTypes.name}
           </div>
           <div className="flex justify-between mt-5 w-ful">
@@ -140,7 +140,7 @@ const ListItem = (props: GridProps) => {
       <div className="flex w-full p-5 border shadow dark:border-gray-600 rounded-2xl">
         <div className="w-full">
           <div className="flex items-center w-full gap-2">
-            <ScrollIcon className="text-[#274c77] dark:text-gray-400" size={20} />
+            <ScrollIcon className="text-blue-500 dark:text-blue-300" size={20} />
             {ContractTypes.name}
           </div>
         </div>

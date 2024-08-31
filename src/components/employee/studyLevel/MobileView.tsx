@@ -14,7 +14,7 @@ function MobileView(props: MobileViewProps) {
 
   const { paginated_study_level, loading_study_level } = useStatusStudyLevel();
   return (
-    <div className="w-full pb-10">
+    <div className="w-full ">
       <DataView
         value={paginated_study_level.studyLevels}
         gutter
@@ -23,7 +23,7 @@ function MobileView(props: MobileViewProps) {
         pt={{
           grid: () => ({
             className:
-              'grid dark:bg-slate-800 pb-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid-nogutter gap-5 mt-5',
+              'w-full grid dark:bg-transparent pb-10 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5 mt-5',
           }),
         }}
         color="surface"
@@ -54,17 +54,17 @@ const GridItem = (props: GridProps) => {
       {layout === 'grid' ? (
         <div
           className={classNames(
-            'w-full shadow-sm hover:shadow-lg p-8 dark:border dark:border-gray-600 rounded-2xl'
+            'w-full border dark:border-white shadow flex flex-col justify-between hover:shadow-lg p-5 dark:border dark:border-gray-600 rounded-2xl'
           )}
           key={studyLevel.id}
         >
           <div className="flex w-full gap-2">
-            <BookText className="text-[#274c77] dark:text-gray-400" size={20} />
-            {studyLevel.name}
+            <BookText className="text-blue-500 dark:text-blue-300" size={20} />
+            <p className="w-full dark:text-white"> {studyLevel.name}</p>
           </div>
           <div className="flex w-full gap-2 mt-3">
-            <ScrollIcon className="text-[#274c77] dark:text-gray-400" size={20} />
-            {studyLevel.description}
+            <ScrollIcon className="text-blue-500 dark:text-blue-300" size={20} />
+            <p className="w-full dark:text-white"> {studyLevel.description}</p>
           </div>
           <div className="flex justify-between mt-5 w-ful">
             {actions.includes('Editar') && studyLevel.isActive ? (
@@ -146,15 +146,15 @@ const ListItem = (props: GridProps) => {
 
   return (
     <>
-      <div className="flex w-full p-5 border shadow dark:border-gray-600 rounded-2xl">
+      <div className="flex w-full border dark:border-white col-span-1 p-5 border shadow rounded-2xl ">
         <div className="w-full">
           <div className="flex items-center w-full gap-2">
-            <BookText className="text-[#274c77] dark:text-gray-400" size={20} />
-            {studyLevel.name}
+            <BookText className="text-blue-500 dark:text-blue-300" size={20} />
+            <p className="w-full dark:text-white"> {studyLevel.name}</p>
           </div>
           <div className="flex items-center w-full gap-2 mt-3">
-            <ScrollIcon className="text-[#274c77]  dark:text-gray-400" size={20} />
-            {studyLevel.description}
+            <ScrollIcon className="text-blue-500 dark:text-blue-300" size={20} />
+            <p className="w-full dark:text-white"> {studyLevel.description}</p>
           </div>
         </div>
         <div className="flex flex-col items-end justify-between w-full gap-5">

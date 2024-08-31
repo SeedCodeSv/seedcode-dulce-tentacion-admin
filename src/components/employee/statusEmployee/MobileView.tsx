@@ -14,7 +14,7 @@ function MobileView(props: MobileViewProps) {
 
   const { paginated_status_employee, loading_status_employee } = useStatusEmployeeStore();
   return (
-    <div className="w-full pb-10">
+    <div className="w-full ">
       {paginated_status_employee.employeeStatus.length > 0 ? (
         <>
           {' '}
@@ -26,7 +26,7 @@ function MobileView(props: MobileViewProps) {
             pt={{
               grid: () => ({
                 className:
-                  'grid dark:bg-slate-800 pb-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid-nogutter gap-5 mt-5',
+                  'grid dark:bg-transparent   grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid-nogutter gap-5 mt-5',
               }),
             }}
             color="surface"
@@ -66,12 +66,12 @@ const GridItem = (props: GridProps) => {
       {layout === 'grid' ? (
         <div
           className={classNames(
-            'w-full shadow dark:border border-gray-600 hover:shadow-lg p-8 rounded-2xl'
+            'w-full shadow hover:shadow-lg border dark:border-white p-8 dark:border dark:border-gray-600 rounded-2xl'
           )}
           key={statusEmployees.id}
         >
           <div className="flex w-full gap-2">
-            <ScrollIcon className="text-[#274c77] dark:text-gray-400" size={20} />
+            <ScrollIcon className="text-blue-500 dark:text-blue-300" size={20} />
             {statusEmployees.name}
           </div>
           <div className="flex justify-between mt-5 w-ful">
@@ -152,10 +152,10 @@ const ListItem = (props: GridProps) => {
 
   return (
     <>
-      <div className="flex w-full col-span-1 p-5 border shadow rounded-2xl">
+      <div className="flex w-full border border-white col-span-1 p-5 border shadow rounded-2xl">
         <div className="w-full">
           <div className="flex items-center w-full gap-2">
-            <ScrollIcon className="text-[#274c77] dark:text-gray-400" size={20} />
+            <ScrollIcon className="text-blue-500 dark:text-blue-300" size={20} />
             {statusEmployees.name}
           </div>
         </div>

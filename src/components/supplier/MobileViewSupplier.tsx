@@ -9,9 +9,9 @@ import {
   EditIcon,
   Repeat,
   MapPin,
-  BadgeCheck,
   Check,
   Lock,
+  RefreshCcw,
 } from 'lucide-react';
 import { global_styles } from '../../styles/global.styles';
 import { GridProps, MobileViewProps } from './types/movile-view.types';
@@ -40,7 +40,7 @@ function MobileViewSupplier({
   };
 
   return (
-    <div className="w-full pb-10">
+    <div className="w-full ">
       <DataView
         value={supplier_pagination.suppliers}
         gutter
@@ -48,7 +48,7 @@ function MobileViewSupplier({
         pt={{
           grid: () => ({
             className:
-              'w-full grid dark:bg-transparent pb-10 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5',
+              'w-full grid dark:bg-transparent  grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5',
           }),
         }}
         color="surface"
@@ -92,80 +92,127 @@ const GridItem = (props: GridProps) => {
             </div>
             <div className="flex w-full gap-2 mt-3">
               <MapPin className="dark:text-blue-300 text-blue-500" size={20} />
-              <p className="w-full dark:text-white">
-                {' '}
-                {supplier.direccion?.nombreDepartamento} ,{supplier.direccion?.municipio} ,
-                {supplier.direccion?.complemento}
-              </p>
+              {supplier.direccion?.nombreDepartamento} ,{supplier.direccion?.municipio} ,
+              {supplier.direccion?.complemento}
             </div>
             <div className="flex w-full gap-2 mt-3">
               <Users2Icon className="dark:text-blue-300 text-[#274c77]" size={20} />
-              <p className="w-full dark:text-white">
-                {supplier.esContribuyente ? 'Contribuyente' : 'No Contribuyente'}
-              </p>
+              <span
+                className={`px-2 text-white rounded-lg ${
+                  supplier.esContribuyente ? 'bg-green-500' : 'bg-red-500'
+                }`}
+              >
+                {supplier.esContribuyente ? 'CONTRIBUYENTE' : 'CONSUMIDOR FINAL'}
+              </span>
             </div>
           </div>
-          <div className="flex justify-between mt-5 w-ful">
-            <>
-              {actions.includes('Editar') ? (
-                <TooltipGlobal text="Editar">
-                  <Button
-                    className="border border-white"
-                    onClick={() => onNavigate(supplier)}
-                    isIconOnly
-                    style={global_styles().secondaryStyle}
-                  >
-                    <EditIcon size={20} />
-                  </Button>
-                </TooltipGlobal>
-              ) : (
+          <div className="flex justify-between mt-5 w-full">
+            {supplier.isActive && actions.includes('Editar') ? (
+              <TooltipGlobal text="Editar">
                 <Button
-                  type="button"
-                  disabled
-                  className="flex font-semibold cursor-not-allowed border border-white"
+                  className="border border-white"
+                  onClick={() => onNavigate(supplier)}
                   isIconOnly
+                  style={global_styles().secondaryStyle}
                 >
-                  <Lock className="text-white" />
+                  <EditIcon className="text-white" size={20} />
                 </Button>
-              )}
+              </TooltipGlobal>
+            ) : (
+              <Button
+                type="button"
+                disabled
+                style={global_styles().secondaryStyle}
+                className="flex font-semibold border border-white"
+                isIconOnly
+              >
+                <Lock />
+              </Button>
+            )}
+            {supplier.isActive && actions.includes('Eliminar') ? (
+              <DeletePopover supplier={supplier} />
+            ) : (
+              <Button
+                type="button"
+                disabled
+                style={global_styles().dangerStyles}
+                className="flex font-semibold border border-white"
+                isIconOnly
+              >
+                <Lock />
+              </Button>
+            )}
 
-              {supplier.esContribuyente === false ? (
-                <TooltipGlobal text="Cambiar tipo de proveedor">
+            {supplier.isActive ? (
+              supplier.esContribuyente === false ? (
+                actions.includes('Cambiar Tipo de Proveedor') ? (
+                  <TooltipGlobal text="Cambiar el tipo de proveedor">
+                    <Button
+                      className="border border-white"
+                      onClick={() => {
+                        supplier.esContribuyente = true;
+                        onNavigate(supplier);
+                      }}
+                      isIconOnly
+                      style={global_styles().thirdStyle}
+                    >
+                      <Repeat className="text-white" size={20} />
+                    </Button>
+                  </TooltipGlobal>
+                ) : (
                   <Button
-                    className="border border-white"
-                    onClick={() => {
-                      supplier.esContribuyente = true;
-                      onNavigate(supplier);
-                    }}
-                    isIconOnly
+                    type="button"
+                    disabled
                     style={global_styles().thirdStyle}
+                    className="flex font-semibold border border-white"
+                    isIconOnly
                   >
-                    <Repeat size={20} />
+                    <Lock />
                   </Button>
-                </TooltipGlobal>
+                )
               ) : (
                 <Button
                   type="button"
                   disabled
                   style={global_styles().thirdStyle}
-                  className="flex border border-white font-semibold cursor-not-allowed"
+                  className="flex font-semibold border border-white"
                   isIconOnly
                 >
                   <Check />
                 </Button>
-              )}
-              {DeletePopover({ supplier: supplier })}
-            </>
+              )
+            ) : (
+              <Button
+                type="button"
+                disabled
+                style={global_styles().thirdStyle}
+                className="flex font-semibold border border-white cursor-not-allowed"
+                isIconOnly
+              >
+                <Lock />
+              </Button>
+            )}
 
-            {/* <Button
-              onClick={() => {
-                handleActive(supplier.id ?? 0);
-              }}
-              isIconOnly
-              style={global_styles().secondaryStyle}
-            >
-              <BadgeCheck size={20} />
-            </Button> */}
+            {!supplier.isActive &&
+              (actions.includes('Activar') ? (
+                <Button
+                  onClick={() => handleActive(supplier.id ?? 0)}
+                  isIconOnly
+                  style={global_styles().thirdStyle}
+                >
+                  <RefreshCcw />
+                </Button>
+              ) : (
+                <Button
+                  type="button"
+                  disabled
+                  style={global_styles().thirdStyle}
+                  className="flex font-semibold border border-white cursor-not-allowed"
+                  isIconOnly
+                >
+                  <Lock />
+                </Button>
+              ))}
           </div>
         </div>
       ) : (
@@ -184,10 +231,10 @@ const GridItem = (props: GridProps) => {
 };
 
 const ListItem = (props: GridProps) => {
-  const { supplier, handleActive, onNavigate } = props;
+  const { supplier, handleActive, onNavigate, actions } = props;
   return (
     <>
-      <div className="flex w-full border border-white col-span-1 p-5 border shadow rounded-2xl ">
+      <div className="flex w-full border border-white col-span-1 p-5 shadow rounded-2xl">
         <div className="w-full">
           <div className="flex items-center w-full gap-2">
             <IUser className="dark:text-blue-300 text-blue-500" size={20} />
@@ -203,26 +250,57 @@ const ListItem = (props: GridProps) => {
           </div>
           <div className="flex items-center w-full gap-2 mt-3">
             <Users2Icon className="dark:text-blue-300 text-blue-500" size={20} />
-            <p className="w-full dark:text-white">
-              {supplier.esContribuyente ? 'Contribuyente' : 'No Contribuyente'}
-            </p>
+            <span
+              className={`px-2  text-white rounded-lg ${
+                supplier.esContribuyente ? 'bg-green-500' : 'bg-red-500'
+              }`}
+            >
+              {supplier.esContribuyente ? 'CONTRIBUYENTE' : 'CONSUMIDOR FINAL'}
+            </span>
           </div>
         </div>
-        <div className="flex flex-col items-end justify-between w-full">
+        <div className="flex flex-col items-end justify-between">
+          {supplier.isActive && actions.includes('Editar') ? (
+            <TooltipGlobal text="Editar">
+              <Button
+                className="border border-white"
+                onClick={() => onNavigate(supplier)}
+                isIconOnly
+                style={global_styles().secondaryStyle}
+              >
+                <EditIcon className="text-white" size={20} />
+              </Button>
+            </TooltipGlobal>
+          ) : (
+            <Button
+              type="button"
+              disabled
+              style={global_styles().secondaryStyle}
+              className="flex font-semibold border border-white"
+              isIconOnly
+            >
+              <Lock />
+            </Button>
+          )}
+          {supplier.isActive && actions.includes('Eliminar') ? (
+            <DeletePopover supplier={supplier} />
+          ) : (
+            <Button
+              type="button"
+              disabled
+              style={global_styles().dangerStyles}
+              className="flex font-semibold border border-white"
+              isIconOnly
+            >
+              <Lock />
+            </Button>
+          )}
           {supplier.isActive ? (
-            <>
-              <TooltipGlobal text="Editar">
-                <Button
-                  onClick={() => onNavigate(supplier)}
-                  isIconOnly
-                  style={global_styles().secondaryStyle}
-                >
-                  <EditIcon size={20} />
-                </Button>
-              </TooltipGlobal>
-              {supplier.esContribuyente === false ? (
-                <TooltipGlobal text="Cambiar tipo de proveedor">
+            supplier.esContribuyente === false ? (
+              actions.includes('Cambiar Tipo de Proveedor') ? (
+                <TooltipGlobal text="Cambiar el tipo de proveedor">
                   <Button
+                    className="border border-white"
                     onClick={() => {
                       supplier.esContribuyente = true;
                       onNavigate(supplier);
@@ -230,7 +308,7 @@ const ListItem = (props: GridProps) => {
                     isIconOnly
                     style={global_styles().thirdStyle}
                   >
-                    <Repeat size={20} />
+                    <Repeat className="text-white" size={20} />
                   </Button>
                 </TooltipGlobal>
               ) : (
@@ -238,25 +316,54 @@ const ListItem = (props: GridProps) => {
                   type="button"
                   disabled
                   style={global_styles().thirdStyle}
-                  className="flex font-semibold cursor-not-allowed"
+                  className="flex font-semibold border border-white"
                   isIconOnly
                 >
-                  <Check />
+                  <Lock />
                 </Button>
-              )}
-              {DeletePopover({ supplier: supplier })}
-            </>
+              )
+            ) : (
+              <Button
+                type="button"
+                disabled
+                style={global_styles().thirdStyle}
+                className="flex font-semibold border border-white"
+                isIconOnly
+              >
+                <Check />
+              </Button>
+            )
           ) : (
             <Button
-              onClick={() => {
-                handleActive(supplier.id ?? 0);
-              }}
+              type="button"
+              disabled
+              style={global_styles().thirdStyle}
+              className="flex font-semibold border border-white cursor-not-allowed"
               isIconOnly
-              style={global_styles().secondaryStyle}
             >
-              <BadgeCheck size={20} />
+              <Lock />
             </Button>
           )}
+          {!supplier.isActive &&
+            (actions.includes('Activar') ? (
+              <Button
+                onClick={() => handleActive(supplier.id ?? 0)}
+                isIconOnly
+                style={global_styles().thirdStyle}
+              >
+                <RefreshCcw />
+              </Button>
+            ) : (
+              <Button
+                type="button"
+                disabled
+                style={global_styles().thirdStyle}
+                className="flex font-semibold border border-white cursor-not-allowed"
+                isIconOnly
+              >
+                <Lock />
+              </Button>
+            ))}
         </div>
       </div>
     </>

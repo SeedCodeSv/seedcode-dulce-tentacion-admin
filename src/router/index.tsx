@@ -58,6 +58,7 @@ import UpdateTributeSupplier from '@/components/supplier/UpdateTributeSupplier';
 import UpdateClientContributor from '@/components/clients/UpdateClientContributor';
 import AddPurchaseOrders from '@/components/list_purchase/AddPurchaseOrders';
 import PurchaseOrderForm from '@/components/list_purchase/PurchaseOrderForm';
+import SalesInvalidationPage from '@/components/sales/SalesInvalidationPage';
 
 const Loading = () => {
   return <div>Cargando...</div>;
@@ -179,6 +180,10 @@ export const router = () => {
     {
       path: '/reports/sales-by-period',
       element: checkAuthorization('Ventas por Periodo', <VentasPorPeriodo />),
+    },
+    {
+      path: '/reports/sales-invalidation',
+      element: checkAuthorization('Ventas por Periodo', <SalesInvalidationPage />),
     },
     {
       path: '/reports/sales-by-product',

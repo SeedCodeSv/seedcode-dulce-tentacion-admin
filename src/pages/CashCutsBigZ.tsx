@@ -329,11 +329,11 @@ const CushCatsBigZ = () => {
                   {actionsView.includes('Exportar Excel') && (
                     <Button
                       color="success"
-                      startContent={<PiMicrosoftExcelLogoBold size={25} />}
+                      startContent={<PiMicrosoftExcelLogoBold className="text-white" size={25} />}
                       onClick={exportDataToExcel}
-                      className="w-full"
+                      className="w-full "
                     >
-                      Exportar a excel
+                      <p className="text-white">Exportar a excel</p>
                     </Button>
                   )}
                   {actionsView.includes('Imprimir') && (
@@ -343,11 +343,11 @@ const CushCatsBigZ = () => {
                       onClick={() => printBigZ()}
                       startContent={<IoPrintSharp size={25} />}
                     >
-                      Imprimir y cerrar
+                      <p className="text-white">Imprimir y Cerrar</p>
                     </Button>
                   )}
                 </div>
-                <div className="mt-4 bg-white dark:bg-gray-800 w-full max-w-lg h-full overflow-y-auto flex flex-col items-center p-5 rounded-2xl">
+                <div className="mt-4 bg-white border  border-black border-white dark:bg-gray-800 w-full max-w-lg h-full overflow-y-auto flex flex-col items-center p-5 rounded-2xl">
                   <h1 className="text-black dark:text-white">MADNESS</h1>
                   <h1 className="text-black dark:text-white">
                     {branchName || user?.correlative.branch.name}

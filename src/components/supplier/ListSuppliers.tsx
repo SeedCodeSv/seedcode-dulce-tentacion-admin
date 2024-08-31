@@ -24,9 +24,9 @@ import {
   CreditCard,
   Table as ITable,
   Mail,
-  BadgeCheck,
   Lock,
   Check,
+  RefreshCcw,
 } from 'lucide-react';
 import { global_styles } from '../../styles/global.styles';
 import Pagination from '../global/Pagination';
@@ -146,7 +146,7 @@ function ListSuppliers({ actions }: ArrayAction) {
 
           <div className="flex flex-col gap-3 mt-3 lg:flex-row lg:justify-between lg:gap-10">
             <div className="flex justify-between justify-start order-2 lg:order-1">
-              <div className='xl:mt-10'>
+              <div className="xl:mt-10">
                 <Switch
                   className="hidden xl:inline-flex"
                   onValueChange={(active) => setActive(active)}
@@ -163,72 +163,76 @@ function ListSuppliers({ actions }: ArrayAction) {
               </div>
             </div>
             <div className="flex xl:gap-10 gap-3 w-full  lg:justify-end order-1 lg:order-2">
-              <Select
-                className="w-72 sm:w-44 dark:text-white border border-white rounded-xl"
-                variant="bordered"
-                label="Tipo de proveedor"
-                defaultSelectedKeys={['']}
-                labelPlacement="outside"
-                classNames={{
-                  label: 'font-semibold',
-                }}
-                value={String(tipeSupplier)}
-                onChange={(e) => {
-                  setTypeSupplier(e.target.value !== '' ? e.target.value : '');
-                }}
-              >
-                <SelectItem className="dark:text-white" key={''}>
-                  Todos
-                </SelectItem>
-                <SelectItem className="dark:text-white" key={'1'}>
-                  Contribuyente
-                </SelectItem>
-                <SelectItem className="dark:text-white" key={'0'}>
-                  No Contribuyente
-                </SelectItem>
-              </Select>
-              <Select
-                className="w-72 sm:w-44 dark:text-white border-white border rounded-xl"
-                variant="bordered"
-                label="Mostrar"
-                labelPlacement="outside"
-                defaultSelectedKeys={['5']}
-                classNames={{
-                  label: 'font-semibold',
-                }}
-                value={limit}
-                onChange={(e) => {
-                  setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
-                }}
-              >
-                <SelectItem className="dark:text-white" key={'5'}>
-                  5
-                </SelectItem>
-                <SelectItem className="dark:text-white" key={'10'}>
-                  10
-                </SelectItem>
-                <SelectItem className="dark:text-white" key={'20'}>
-                  20
-                </SelectItem>
-                <SelectItem className="dark:text-white" key={'30'}>
-                  30
-                </SelectItem>
-                <SelectItem className="dark:text-white" key={'40'}>
-                  40
-                </SelectItem>
-                <SelectItem className="dark:text-white" key={'50'}>
-                  50
-                </SelectItem>
-                <SelectItem className="dark:text-white" key={'100'}>
-                  100
-                </SelectItem>
-              </Select>
+              <div className="w-72 sm:w-44">
+                <label className="font-semibold dark:text-white  text-sm"> Tipo de proveedor</label>
+                <Select
+                  className="w-72 sm:w-44 dark:text-white border border-white rounded-xl"
+                  variant="bordered"
+                  defaultSelectedKeys={['']}
+                  labelPlacement="outside"
+                  classNames={{
+                    label: 'font-semibold',
+                  }}
+                  value={String(tipeSupplier)}
+                  onChange={(e) => {
+                    setTypeSupplier(e.target.value !== '' ? e.target.value : '');
+                  }}
+                >
+                  <SelectItem className="dark:text-white" key={''}>
+                    Todos
+                  </SelectItem>
+                  <SelectItem className="dark:text-white" key={'1'}>
+                    Contribuyente
+                  </SelectItem>
+                  <SelectItem className="dark:text-white" key={'0'}>
+                    No Contribuyente
+                  </SelectItem>
+                </Select>
+              </div>
+
+              <div>
+                <label className="font-semibold dark:text-white  text-sm"> Mostrar</label>
+                <Select
+                  className="w-72 sm:w-44 dark:text-white border-white border rounded-xl"
+                  variant="bordered"
+                  labelPlacement="outside"
+                  defaultSelectedKeys={['5']}
+                  classNames={{
+                    label: 'font-semibold',
+                  }}
+                  value={limit}
+                  onChange={(e) => {
+                    setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
+                  }}
+                >
+                  <SelectItem className="dark:text-white" key={'5'}>
+                    5
+                  </SelectItem>
+                  <SelectItem className="dark:text-white" key={'10'}>
+                    10
+                  </SelectItem>
+                  <SelectItem className="dark:text-white" key={'20'}>
+                    20
+                  </SelectItem>
+                  <SelectItem className="dark:text-white" key={'30'}>
+                    30
+                  </SelectItem>
+                  <SelectItem className="dark:text-white" key={'40'}>
+                    40
+                  </SelectItem>
+                  <SelectItem className="dark:text-white" key={'50'}>
+                    50
+                  </SelectItem>
+                  <SelectItem className="dark:text-white" key={'100'}>
+                    100
+                  </SelectItem>
+                </Select>
+              </div>
             </div>
           </div>
 
           <div className="xl:flex justify-end hidden items-center xl:mt-2 mb-4">
-           
-            <ButtonGroup>
+            <ButtonGroup className="border border-white rounded-xl">
               <Button
                 className="hidden md:inline-flex"
                 isIconOnly
@@ -266,7 +270,6 @@ function ListSuppliers({ actions }: ArrayAction) {
             </ButtonGroup>
           </div>
           <div className="flex xl:hidden justify-between items-center xl:mt-2 gap-12 mb-4">
-
             <Switch
               className="xl:hidden md:inline-flex mt-5"
               onValueChange={(active) => setActive(active)}
@@ -281,8 +284,7 @@ function ListSuppliers({ actions }: ArrayAction) {
               </span>
             </Switch>
 
-            <ButtonGroup className='border border-white rounded-xl'>
-              
+            <ButtonGroup className="border border-white rounded-xl">
               <Button
                 isIconOnly
                 color="default"
@@ -308,14 +310,12 @@ function ListSuppliers({ actions }: ArrayAction) {
             </ButtonGroup>
           </div>
 
-        
-
           <div className="flex items-center justify-center ml-2"></div>
           {(view === 'grid' || view === 'list') && (
             <MobileViewSupplier
               actions={actions}
               handleActive={handleActivate}
-              handleChangeSupplier={(_supplier) => { }}
+              handleChangeSupplier={(_supplier) => {}}
               deletePopover={DeletePopover}
               layout={view as 'grid' | 'list'}
             />
@@ -339,7 +339,7 @@ function ListSuppliers({ actions }: ArrayAction) {
                       Correo
                     </th>
                     <th className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                      Contribuyente
+                      Tipo de Proveedor
                     </th>
                     <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                       Acciones
@@ -364,36 +364,74 @@ function ListSuppliers({ actions }: ArrayAction) {
                             {item.correo}
                           </td>
                           <td className="p-3 text-sm text-slate-500 whitespace-nowrap dark:text-slate-100">
-                            {item.esContribuyente ? 'Si' : 'No'}
+                            <span
+                              className={`px-2 py-1 text-white rounded-lg ${
+                                item.esContribuyente ? 'bg-green-500' : 'bg-red-500'
+                              }`}
+                            >
+                              {item.esContribuyente ? 'CONTRIBUYENTE' : 'CONSUMIDOR FINAL'}
+                            </span>
                           </td>
+
                           <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                             <div className="flex w-full gap-5">
-                              {item.isActive && actions.includes('Editar') && (
-                                <>
-                                  <TooltipGlobal text="Editar">
-                                    <Button
-                                      onClick={() => {
-                                        if (item.esContribuyente === true) {
-                                          navigate(`/update-supplier-tribute/${item.id}`);
-                                          OnGetBySupplier(item.id ?? 0);
-                                        } else {
-                                          navigate(`/update-supplier-normal/${item.id}`);
-                                          OnGetBySupplier(item.id ?? 0);
-                                        }
-                                      }}
-                                      isIconOnly
-                                      style={{
-                                        backgroundColor: theme.colors.secondary,
-                                      }}
-                                    >
-                                      <EditIcon style={{ color: theme.colors.primary }} size={20} />
-                                    </Button>
-                                  </TooltipGlobal>
-                                  <DeletePopover supplier={item} />
-                                  {item.esContribuyente === false ? (
+                              {item.isActive && actions.includes('Editar') ? (
+                                <TooltipGlobal text="Editar">
+                                  <Button
+                                    className="border border-white"
+                                    onClick={() => {
+                                      if (item.esContribuyente === true) {
+                                        navigate(`/update-supplier-tribute/${item.id}`);
+                                        OnGetBySupplier(item.id ?? 0);
+                                      } else {
+                                        navigate(`/update-supplier-normal/${item.id}`);
+                                        OnGetBySupplier(item.id ?? 0);
+                                      }
+                                    }}
+                                    isIconOnly
+                                    style={{
+                                      backgroundColor: theme.colors.secondary,
+                                    }}
+                                  >
+                                    <EditIcon style={{ color: theme.colors.primary }} size={20} />
+                                  </Button>
+                                </TooltipGlobal>
+                              ) : (
+                                <Button
+                                  type="button"
+                                  disabled
+                                  style={{
+                                    backgroundColor: theme.colors.secondary,
+                                  }}
+                                  className="flex font-semibold border border-white"
+                                  isIconOnly
+                                >
+                                  <Lock />
+                                </Button>
+                              )}
+                              {item.isActive && actions.includes('Eliminar') ? (
+                                <DeletePopover supplier={item} />
+                              ) : (
+                                <Button
+                                  type="button"
+                                  disabled
+                                  style={{
+                                    backgroundColor: theme.colors.danger,
+                                  }}
+                                  className="flex font-semibold border border-white"
+                                  isIconOnly
+                                >
+                                  <Lock />
+                                </Button>
+                              )}
+
+                              <>
+                                {item.isActive ? (
+                                  item.esContribuyente === false ? (
                                     actions.includes('Cambiar Tipo de Proveedor') ? (
                                       <TooltipGlobal text="Cambiar el tipo de proveedor">
                                         <Button
+                                          className="border border-white"
                                           onClick={() => {
                                             navigate(`/update-supplier-tribute/${item.id}`);
                                             OnGetBySupplier(item.id ?? 0);
@@ -417,7 +455,7 @@ function ListSuppliers({ actions }: ArrayAction) {
                                           backgroundColor: theme.colors.third,
                                           cursor: 'not-allowed',
                                         }}
-                                        className="flex font-semibold"
+                                        className="flex font-semibold border border-white"
                                         isIconOnly
                                       >
                                         <Lock />
@@ -431,27 +469,58 @@ function ListSuppliers({ actions }: ArrayAction) {
                                         backgroundColor: theme.colors.third,
                                         cursor: 'not-allowed',
                                       }}
-                                      className="flex font-semibold"
+                                      className="flex font-semibold border border-white"
                                       isIconOnly
                                     >
                                       <Check />
                                     </Button>
-                                  )}
-                                </>
-                              )}
-                              <>
-                                {actions.includes('Activar Proveedor') && !item.isActive && (
+                                  )
+                                ) : (
                                   <Button
-                                    onClick={() => {
-                                      handleActivate(item.id ?? 0);
-                                    }}
-                                    isIconOnly
+                                    type="button"
+                                    disabled
                                     style={{
                                       backgroundColor: theme.colors.third,
+                                      cursor: 'not-allowed',
                                     }}
+                                    className="flex font-semibold border border-white"
+                                    isIconOnly
                                   >
-                                    <BadgeCheck style={{ color: theme.colors.primary }} size={20} />
+                                    <Lock />
                                   </Button>
+                                )}
+                              </>
+
+                              <>
+                                {!item.isActive && (
+                                  <>
+                                    {actions.includes('Activar') ? (
+                                      <Button
+                                        onClick={() => {
+                                          handleActivate(item.id ?? 0);
+                                        }}
+                                        isIconOnly
+                                        style={{
+                                          backgroundColor: theme.colors.third,
+                                        }}
+                                      >
+                                        <RefreshCcw />
+                                      </Button>
+                                    ) : (
+                                      <Button
+                                        type="button"
+                                        disabled
+                                        style={{
+                                          backgroundColor: theme.colors.third,
+                                          cursor: 'not-allowed',
+                                        }}
+                                        className="flex font-semibold border border-white"
+                                        isIconOnly
+                                      >
+                                        <Lock />
+                                      </Button>
+                                    )}
+                                  </>
                                 )}
                               </>
                             </div>
@@ -540,7 +609,13 @@ export const DeletePopover = ({ supplier }: PopProps) => {
   };
 
   return (
-    <Popover isOpen={isOpen} onClose={onClose} backdrop="blur" showArrow>
+    <Popover
+      className="border border-white rounded-xl"
+      isOpen={isOpen}
+      onClose={onClose}
+      backdrop="blur"
+      showArrow
+    >
       <PopoverTrigger>
         <Button
           className="border border-white "
@@ -561,16 +636,18 @@ export const DeletePopover = ({ supplier }: PopProps) => {
         </Button>
       </PopoverTrigger>
       <PopoverContent>
-        <div className="w-full p-5 dark:text-white">
+        <div className="w-full p-5 dark:text-white ">
           <p className="font-semibold text-gray-600 dark:text-white">Eliminar {supplier.nombre}</p>
           <p className="mt-3 text-center text-gray-600 w-72 dark:text-white">
             ¿Estas seguro de eliminar este registro?
           </p>
           <div className="flex justify-center mt-4">
-            <Button onClick={onClose}>No, cancelar</Button>
+            <Button className="border border-white" onClick={onClose}>
+              No, cancelar
+            </Button>
             <Button
               onClick={() => handleDelete(supplier.id ?? 0)}
-              className="ml-5"
+              className="ml-5 border border-white"
               style={{
                 backgroundColor: theme.colors.danger,
                 color: theme.colors.primary,
@@ -600,7 +677,7 @@ export const BottomAdd = () => {
     >
       <PopoverTrigger>
         <Button
-          className="hidden lg:flex"
+          className="hidden lg:flex border border-white"
           style={{
             backgroundColor: theme.colors.third,
             color: theme.colors.primary,
@@ -611,9 +688,10 @@ export const BottomAdd = () => {
           Agregar nuevo
         </Button>
       </PopoverTrigger>
-      <PopoverContent aria-labelledby="popover-title">
+      <PopoverContent className="border border-white" aria-labelledby="popover-title">
         <div className="flex flex-col gap-5 p-3 bg-white dark:bg-zinc-900">
           <Button
+            className="border border-white"
             onClick={() => {
               navigate('/add-supplier-normal');
             }}
@@ -625,6 +703,7 @@ export const BottomAdd = () => {
             Proveedor Consumidor Final
           </Button>
           <Button
+            className="border border-white"
             onClick={() => {
               navigate('/add-supplier-tribute');
             }}
@@ -656,7 +735,7 @@ export const BottomSm = () => {
     >
       <PopoverTrigger>
         <Button
-          className="flex lg:hidden"
+          className="flex lg:hidden  border border-white"
           style={global_styles().thirdStyle}
           onClick={() => (isOpen ? onClose() : onOpen())}
           isIconOnly
@@ -666,9 +745,10 @@ export const BottomSm = () => {
           </TooltipGlobal>
         </Button>
       </PopoverTrigger>
-      <PopoverContent aria-labelledby="popover-title">
-        <div className="flex flex-col gap-5 p-3 bg-white dark:bg-zinc-900">
+      <PopoverContent className="border border-white" aria-labelledby="popover-title">
+        <div className="flex flex-col  gap-5 p-3 bg-white dark:bg-zinc-900">
           <Button
+            className="border border-white"
             onClick={() => {
               navigate('/add-supplier-normal');
             }}
@@ -680,6 +760,7 @@ export const BottomSm = () => {
             Proveedor Consumidor Final
           </Button>
           <Button
+            className="border border-white"
             onClick={() => {
               navigate('/add-supplier-tribute');
             }}

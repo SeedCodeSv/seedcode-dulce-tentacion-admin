@@ -45,3 +45,9 @@ export const documentsTypeReceipt = [
     valores: 'Carnet de Residente',
   },
 ];
+export const formatCurrencySales = (value: number | bigint) => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  }).format(value);
+};

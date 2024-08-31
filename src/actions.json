@@ -30,7 +30,7 @@
     },
     {
       "view": "Empleados",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Contrato","Activar"]
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Contrato", "Activar"]
     },
     {
       "view": "Proveedores",
@@ -40,7 +40,7 @@
         "Editar",
         "Eliminar",
         "Cambiar Tipo de Proveedor",
-        "Activar Proveedor"
+        "Activar"
       ]
     },
     {

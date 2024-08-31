@@ -106,10 +106,10 @@ function ListBranch({ actions }: ArrayAction) {
               {actions.includes('Agregar') && <AddButton onClick={() => modalAdd.onOpen()} />}
             </div>
             <div className="hidden w-full gap-5 md:flex">
-              <div className="grid w-full grid-cols-5 gap-3">
+              <div className="grid w-full grid-cols-4 gap-3">
                 <Input
                   startContent={<User />}
-                  className="w-full dark:text-white"
+                  className="w-full dark:text-white border border-white rounded-xl"
                   variant="bordered"
                   labelPlacement="outside"
                   label="Nombre"
@@ -132,7 +132,7 @@ function ListBranch({ actions }: ArrayAction) {
                   label="Teléfono"
                   placeholder="Escribe para buscar..."
                   startContent={<PhoneIcon />}
-                  className="w-full dark:text-white"
+                  className="w-full dark:text-white border border-white rounded-xl"
                   classNames={{
                     label: 'font-semibold text-gray-700',
                     inputWrapper: 'pr-0',
@@ -150,7 +150,7 @@ function ListBranch({ actions }: ArrayAction) {
                 <Input
                   placeholder="Escribe para buscar..."
                   startContent={<MapPinIcon />}
-                  className="w-full dark:text-white"
+                  className="w-full dark:text-white border border-white rounded-xl"
                   variant="bordered"
                   isClearable
                   labelPlacement="outside"
@@ -171,7 +171,7 @@ function ListBranch({ actions }: ArrayAction) {
                     backgroundColor: theme.colors.secondary,
                     color: theme.colors.primary,
                   }}
-                  className="hidden mt-6 font-semibold md:flex"
+                  className="hidden mt-6 font-semibold md:flex border border-white rounded-xl"
                   color="primary"
                   onClick={() => handleSearch()}
                   type="button"
@@ -196,27 +196,29 @@ function ListBranch({ actions }: ArrayAction) {
                 </Switch>
               </div>
               <div className="flex gap-10 w-full justify-between items-center lg:justify-end order-1 lg:order-2">
-                <Select
-                  className="w-44 dark:text-white"
-                  variant="bordered"
-                  label="Mostrar"
-                  labelPlacement="outside"
-                  classNames={{
-                    label: 'font-semibold',
-                  }}
-                  defaultSelectedKeys={['5']}
-                  value={limit}
-                  onChange={(e) => {
-                    setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
-                  }}
-                >
-                  {limit_options.map((option) => (
-                    <SelectItem className="w-full dark:text-white" key={option} value={option}>
-                      {option}
-                    </SelectItem>
-                  ))}
-                </Select>
-                <ButtonGroup className="mt-4">
+                <div>
+                  <label className="dark:text-white font-semibold text-sm">Mostrar</label>
+                  <Select
+                    className="w-44 dark:text-white border border-white rounded-xl"
+                    variant="bordered"
+                    labelPlacement="outside"
+                    classNames={{
+                      label: 'font-semibold',
+                    }}
+                    defaultSelectedKeys={['5']}
+                    value={limit}
+                    onChange={(e) => {
+                      setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
+                    }}
+                  >
+                    {limit_options.map((option) => (
+                      <SelectItem className="w-full dark:text-white" key={option} value={option}>
+                        {option}
+                      </SelectItem>
+                    ))}
+                  </Select>
+                </div>
+                <ButtonGroup className="xl:flex hidden mt-4 border border-white rounded-xl">
                   <Button
                     className="hidden md:inline-flex"
                     isIconOnly
@@ -230,6 +232,33 @@ function ListBranch({ actions }: ArrayAction) {
                   >
                     <ITable />
                   </Button>
+                  <Button
+                    isIconOnly
+                    color="default"
+                    style={{
+                      backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
+                      color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
+                    }}
+                    onClick={() => setView('grid')}
+                    type="button"
+                  >
+                    <CreditCard />
+                  </Button>
+                  <Button
+                    isIconOnly
+                    color="default"
+                    style={{
+                      backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
+                      color: view === 'list' ? theme.colors.primary : '#3e3e3e',
+                    }}
+                    onClick={() => setView('list')}
+                    type="button"
+                  >
+                    <List />
+                  </Button>
+                </ButtonGroup>
+
+                <ButtonGroup className="mt-4 xl:hidden border border-white rounded-xl">
                   <Button
                     isIconOnly
                     color="default"
