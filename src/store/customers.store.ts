@@ -11,6 +11,7 @@ import {
 } from '../services/customers.service';
 import { toast } from 'sonner';
 import { messages } from '../utils/constants';
+import { IGetUserById } from '@/types/user_by_id.types';
 
 export const useCustomerStore = create<IUseCustomersStore>((set, get) => ({
   customer_pagination: {
@@ -25,7 +26,7 @@ export const useCustomerStore = create<IUseCustomersStore>((set, get) => ({
   },
   loading_customer: false,
   customer_list: [],
-  user_by_id: null,
+  user_by_id: {} as IGetUserById,
   saveCustomersPagination: (customer_pagination) => set({ customer_pagination }),
   getCustomersPagination: (page, limit, name, email, branchName, isTransmitter, isActive = 1) => {
     set({ loading_customer: true });
@@ -121,14 +122,9 @@ export const useCustomerStore = create<IUseCustomersStore>((set, get) => ({
   },
 
   get_customer_by_id: (id: number) => {
-    return getCustomerById(id)
-      .then(({ data }) => {
-        set({ user_by_id: data });
-        return data;
-      })
-      .catch(() => {
-        set({ user_by_id: null });
-        return undefined;
-      });
+    return getCustomerById(id).then(({ data }) => {
+      set({ user_by_id: data });
+      return data;
+    });
   },
 }));

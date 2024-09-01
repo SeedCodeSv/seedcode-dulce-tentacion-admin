@@ -9,11 +9,12 @@ export const get_sales_invalidation_table = (
   startDate: string,
   endDate: string,
   typeVoucher: string,
-  pointSale: string
+  pointSale: string,
+  status: number
 ) => {
   return axios.get<IResponseDataSaleInvalidation>(
     API_URL +
-      `/sales/sales-by-dates-paginated/${id}?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}&typeVoucher=${typeVoucher}&posCode=${pointSale}`
+      `/sales/sales-by-dates-paginated/${id}?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}&typeVoucher=${typeVoucher}&posCode=${pointSale}&status=${status}`
   );
 };
 

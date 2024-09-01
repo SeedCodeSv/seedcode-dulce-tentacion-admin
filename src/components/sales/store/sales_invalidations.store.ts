@@ -1,6 +1,11 @@
 import { create } from 'zustand';
-import { ISalesInvalidationStore } from '../types/sales_types';
-import { get_sales_invalidation_table } from '../services/sales_invalidations.service';
+import { IResponseInvalidation, ISalesInvalidationStore } from '../types/sales_types';
+import {
+  get_sales_invalidation_table,
+  invalidation_sale,
+} from '../services/sales_invalidations.service';
+import { IGetSaleDetails, SaleDetails } from '@/types/sales.types';
+import { get_sale_details } from '@/services/sales.service';
 
 export const useSalesInvalidation = create<ISalesInvalidationStore>((set) => ({
   sales: [],
@@ -14,6 +19,8 @@ export const useSalesInvalidation = create<ISalesInvalidationStore>((set) => ({
     prevPag: 0,
     status: 0,
   },
+
+  sale: {} as SaleDetails,
   OnGetSalesInvalidations: async (
     id: number,
     page: number,
@@ -21,7 +28,8 @@ export const useSalesInvalidation = create<ISalesInvalidationStore>((set) => ({
     startDate: string,
     endDate: string,
     typeVoucher: string,
-    pointSale: string
+    pointSale: string,
+    status: number
   ) => {
     const response = await get_sales_invalidation_table(
       id,
@@ -30,9 +38,23 @@ export const useSalesInvalidation = create<ISalesInvalidationStore>((set) => ({
       startDate,
       endDate,
       typeVoucher,
-      pointSale
+      pointSale,
+      status
     );
     set({ sales: response.data.sales });
     set({ pagination_sales_invalidations: response.data });
+  },
+  OnGetDetails: async (id: number): Promise<IGetSaleDetails> => {
+    const response = await get_sale_details(id);
+    set({ sale: response.data.sale });
+    return response.data;
+  },
+  OnInvalidation: async (id: number): Promise<IResponseInvalidation> => {
+    const response = await invalidation_sale(id);
+    return {
+      ok: response.data.ok,
+      message: response.data.message,
+      status: response.data.status,
+    };
   },
 }));

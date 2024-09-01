@@ -64,24 +64,24 @@ function AddClientContributor(props: Props) {
       get_customer_by_id(parseInt(id)).then((customer) => {
         if (customer) {
           setInitialValues({
-            nombre: customer.nombre ?? '',
-            nombreComercial: customer.nombreComercial ?? '',
-            correo: customer.correo ?? '',
-            telefono: customer.telefono ?? '',
-            numDocumento: customer.numDocumento ?? '',
-            nrc: customer.nrc ?? '',
-            nit: customer.nit ?? '',
-            tipoDocumento: customer.tipoDocumento ?? '',
+            nombre: customer.customer.nombre ?? '',
+            nombreComercial: customer.customer.nombreComercial ?? '',
+            correo: customer.customer.correo ?? '',
+            telefono: customer.customer.telefono ?? '',
+            numDocumento: customer.customer.numDocumento ?? '',
+            nrc: customer.customer.nrc ?? '',
+            nit: customer.customer.nit ?? '',
+            tipoDocumento: customer.customer.tipoDocumento ?? '',
             bienTitulo: '05',
-            codActividad: customer.codActividad ?? '',
+            codActividad: customer.customer.codActividad ?? '',
             esContribuyente: 1,
-            descActividad: customer.descActividad ?? '',
-            municipio: customer.direccion.municipio ?? '',
-            nombreMunicipio: customer.direccion.nombreMunicipio ?? '',
-            departamento: customer.direccion.departamento ?? '',
-            nombreDepartamento: customer.direccion.nombreDepartamento ?? '',
-            complemento: customer.direccion.complemento ?? '',
-            branchId: customer.branchId ?? 0,
+            descActividad: customer.customer.descActividad ?? '',
+            municipio: customer.customer.direccion.municipio ?? '',
+            nombreMunicipio: customer.customer.direccion.nombreMunicipio ?? '',
+            departamento: customer.customer.direccion.departamento ?? '',
+            nombreDepartamento: customer.customer.direccion.nombreDepartamento ?? '',
+            complemento: customer.customer.direccion.complemento ?? '',
+            branchId: customer.customer.branchId ?? 0,
           });
         }
       });
@@ -163,7 +163,7 @@ function AddClientContributor(props: Props) {
   const selectedKeyDepartment = useMemo(() => {
     if (user_by_id) {
       const department = cat_012_departamento.find(
-        (department) => department.codigo === user_by_id.direccion.departamento
+        (department) => department.codigo === user_by_id.customer.direccion.departamento
       );
       return department?.codigo;
     }
@@ -171,7 +171,7 @@ function AddClientContributor(props: Props) {
   }, [user_by_id, cat_012_departamento.length]);
 
   useEffect(() => {
-    getCat013Municipios(user_by_id?.direccion.departamento || '0');
+    getCat013Municipios(user_by_id?.customer.direccion.departamento || '0');
   }, [user_by_id]);
 
   useEffect(() => {
@@ -196,7 +196,7 @@ function AddClientContributor(props: Props) {
   const selectedKeyTypeOfDocument = useMemo(() => {
     if (user_by_id) {
       const typeOfDocument = cat_022_tipo_de_documentoDeIde.find(
-        (typeOfDocument) => typeOfDocument.codigo === user_by_id.tipoDocumento
+        (typeOfDocument) => typeOfDocument.codigo === user_by_id.customer.tipoDocumento
       );
       return typeOfDocument?.codigo;
     }
@@ -205,7 +205,7 @@ function AddClientContributor(props: Props) {
   const selectedKeyCodActivity = useMemo(() => {
     if (user_by_id) {
       const codActivity = cat_019_codigo_de_actividad_economica.find(
-        (codActivity) => codActivity.codigo === user_by_id.codActividad
+        (codActivity) => codActivity.codigo === user_by_id.customer.codActividad
       );
       return codActivity?.codigo;
     }
@@ -215,8 +215,8 @@ function AddClientContributor(props: Props) {
 
   return (
     <Layout title="Contribuyente">
-      <div className="w-full h-full p-4 md:p-10 md:px-12">
-        <div className="w-full h-full p-4 overflow-y-auto bg-white shadow custom-scrollbar md:p-8 dark:bg-gray-900">
+      <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
+        <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <button
             onClick={() => navigate('/clients')}
             className="flex items-center gap-2 bg-transparent"
@@ -386,42 +386,6 @@ function AddClientContributor(props: Props) {
                       )}
                     </div>
                     <div className="pt-2">
-                      {/* <Autocomplete
-                        onSelectionChange={(key) => {
-                          if (key) {
-                            const depSelected = cat_019_codigo_de_actividad_economica.find(
-                              (dep) => dep.codigo === key
-                            );
-                            if (depSelected) {
-                              setFieldValue('codActividad', depSelected.codigo); // Actualiza el valor de tipoDocumento
-
-                              console.log('Tipo de documento seleccionado:', depSelected.codigo); // Verifica el valor
-                            }
-                          }
-                        }}
-                        onBlur={handleBlur('codActividad')}
-                        label="Actividad"
-                        labelPlacement="outside"
-                        placeholder="Selecciona el actividad"
-                        defaultSelectedKey={`${selectedKeyCodActivity}`}
-                        variant="bordered"
-                        classNames={{
-                          base: 'font-semibold text-gray-500 text-sm',
-                        }}
-                        className="dark:text-white"
-                        // value={selectedKeyCodActivity}
-                      >
-                        {cat_019_codigo_de_actividad_economica.map((dep) => (
-                          <AutocompleteItem
-                            value={dep.codigo}
-                            key={dep.codigo}
-                            className="dark:text-white"
-                          >
-                            {dep.valores}
-                          </AutocompleteItem>
-                        ))}
-                      </Autocomplete> */}
-
                       <Autocomplete
                         onSelectionChange={(key) => {
                           if (key) {
@@ -630,7 +594,7 @@ function AddClientContributor(props: Props) {
                         classNames={{
                           base: 'font-semibold text-sm',
                         }}
-                        defaultSelectedKey={user_by_id?.branch?.id.toString()}
+                        defaultSelectedKey={user_by_id?.customer.branch?.id.toString()}
                       >
                         {branch_list.map((bra) => (
                           <AutocompleteItem

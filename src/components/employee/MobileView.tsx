@@ -9,7 +9,7 @@ import TooltipGlobal from '../global/TooltipGlobal';
 import { DeletePopover } from './ListEmployee';
 
 function MobileView(props: IMobileView) {
-  const { layout, openEditModal, deletePopover, actions, handleActivate } = props;
+  const { layout, openEditModal, deletePopover, actions, handleActivate, OpenPdf } = props;
   const { employee_paginated, loading_employees } = useEmployeeStore();
 
   return (
@@ -28,6 +28,7 @@ function MobileView(props: IMobileView) {
         color="surface"
         itemTemplate={(employee) => (
           <GridItem
+            OpenPdf={OpenPdf}
             employee={employee}
             layout={layout}
             openEditModal={openEditModal}
@@ -43,7 +44,8 @@ function MobileView(props: IMobileView) {
 }
 
 const GridItem = (props: GridProps) => {
-  const { employee, layout, openEditModal, deletePopover, actions, handleActivate } = props;
+  const { employee, layout, openEditModal, deletePopover, OpenPdf, actions, handleActivate } =
+    props;
   return (
     <>
       {layout === 'grid' ? (
@@ -69,9 +71,8 @@ const GridItem = (props: GridProps) => {
             {employee.isActive && actions.includes('Editar') ? (
               <TooltipGlobal text="Editar">
                 <Button
-                  className='border border-white'
+                  className="border border-white"
                   onClick={() => {
-
                     openEditModal(employee);
 
                     // setIsOpenModalUpdate(true);
@@ -79,10 +80,7 @@ const GridItem = (props: GridProps) => {
                   isIconOnly
                   style={global_styles().secondaryStyle}
                 >
-                  <EditIcon
-                    className='text-white'
-                    size={20}
-                  />
+                  <EditIcon className="text-white" size={20} />
                 </Button>
               </TooltipGlobal>
             ) : (
@@ -97,8 +95,7 @@ const GridItem = (props: GridProps) => {
               </Button>
             )}
 
-
-            {actions.includes("Eliminar") && employee.isActive ? (
+            {actions.includes('Eliminar') && employee.isActive ? (
               <DeletePopover employee={employee} />
             ) : (
               <Button
@@ -113,15 +110,12 @@ const GridItem = (props: GridProps) => {
             )}
             {actions.includes('Contrato') && employee.isActive ? (
               <Button
-                className='border border-white'
-                // onClick={() => OpenPdf(employee)}
+                className="border border-white"
+                onClick={() => OpenPdf(employee)}
                 isIconOnly
                 style={global_styles().darkStyle}
               >
-                <FileText
-                  className='text-white'
-                  size={20}
-                />
+                <FileText className="text-white" size={20} />
               </Button>
             ) : (
               <>
@@ -139,37 +133,36 @@ const GridItem = (props: GridProps) => {
 
             {!employee.isActive && (
               <>
-                {
-                  actions.includes("Activar") ? (
-                    <TooltipGlobal text="Activar">
-                      <Button
-                        className='border border-white'
-                        onClick={() => handleActivate(employee.id)}
-                        isIconOnly
-                        style={global_styles().thirdStyle}
-                      >
-                        <RefreshCcw />
-                      </Button>
-                    </TooltipGlobal>
-                  ) : (
+                {actions.includes('Activar') ? (
+                  <TooltipGlobal text="Activar">
                     <Button
-                      type="button"
-                      disabled
-                      style={global_styles().thirdStyle}
-                      className="flex font-semibold border border-white  cursor-not-allowed"
+                      className="border border-white"
+                      onClick={() => handleActivate(employee.id)}
                       isIconOnly
+                      style={global_styles().thirdStyle}
                     >
-                      <Lock />
+                      <RefreshCcw />
                     </Button>
-                  )
-                }</>
-
+                  </TooltipGlobal>
+                ) : (
+                  <Button
+                    type="button"
+                    disabled
+                    style={global_styles().thirdStyle}
+                    className="flex font-semibold border border-white  cursor-not-allowed"
+                    isIconOnly
+                  >
+                    <Lock />
+                  </Button>
+                )}
+              </>
             )}
           </div>
         </div>
       ) : (
         <ListItem
           actions={actions}
+          OpenPdf={OpenPdf}
           layout="list"
           employee={employee}
           openEditModal={openEditModal}
@@ -182,7 +175,7 @@ const GridItem = (props: GridProps) => {
 };
 
 const ListItem = (props: GridProps) => {
-  const { employee, actions, openEditModal, handleActivate } = props;
+  const { employee, actions, openEditModal, handleActivate, OpenPdf } = props;
   return (
     <>
       <div className="flex w-full border border-white p-5 border shadow  rounded-2xl">
@@ -204,9 +197,8 @@ const ListItem = (props: GridProps) => {
           {employee.isActive && actions.includes('Editar') ? (
             <TooltipGlobal text="Editar">
               <Button
-                className='border border-white'
+                className="border border-white"
                 onClick={() => {
-
                   openEditModal(employee);
 
                   // setIsOpenModalUpdate(true);
@@ -214,10 +206,7 @@ const ListItem = (props: GridProps) => {
                 isIconOnly
                 style={global_styles().secondaryStyle}
               >
-                <EditIcon
-                  className='text-white'
-                  size={20}
-                />
+                <EditIcon className="text-white" size={20} />
               </Button>
             </TooltipGlobal>
           ) : (
@@ -232,8 +221,7 @@ const ListItem = (props: GridProps) => {
             </Button>
           )}
 
-
-          {actions.includes("Eliminar") && employee.isActive ? (
+          {actions.includes('Eliminar') && employee.isActive ? (
             <DeletePopover employee={employee} />
           ) : (
             <Button
@@ -248,15 +236,12 @@ const ListItem = (props: GridProps) => {
           )}
           {actions.includes('Contrato') && employee.isActive ? (
             <Button
-              className='border border-white'
-              // onClick={() => OpenPdf(employee)}
+              className="border border-white"
+              onClick={() => OpenPdf(employee)}
               isIconOnly
               style={global_styles().darkStyle}
             >
-              <FileText
-                className='text-white'
-                size={20}
-              />
+              <FileText className="text-white" size={20} />
             </Button>
           ) : (
             <>
@@ -274,31 +259,29 @@ const ListItem = (props: GridProps) => {
 
           {!employee.isActive && (
             <>
-              {
-                actions.includes("Activar") ? (
-                  <TooltipGlobal text="Activar">
-                    <Button
-                      className='border border-white'
-                      onClick={() => handleActivate(employee.id)}
-                      isIconOnly
-                      style={global_styles().thirdStyle}
-                    >
-                      <RefreshCcw />
-                    </Button>
-                  </TooltipGlobal>
-                ) : (
+              {actions.includes('Activar') ? (
+                <TooltipGlobal text="Activar">
                   <Button
-                    type="button"
-                    disabled
-                    style={global_styles().thirdStyle}
-                    className="flex font-semibold border border-white  cursor-not-allowed"
+                    className="border border-white"
+                    onClick={() => handleActivate(employee.id)}
                     isIconOnly
+                    style={global_styles().thirdStyle}
                   >
-                    <Lock />
+                    <RefreshCcw />
                   </Button>
-                )
-              }</>
-
+                </TooltipGlobal>
+              ) : (
+                <Button
+                  type="button"
+                  disabled
+                  style={global_styles().thirdStyle}
+                  className="flex font-semibold border border-white  cursor-not-allowed"
+                  isIconOnly
+                >
+                  <Lock />
+                </Button>
+              )}
+            </>
           )}
         </div>
       </div>

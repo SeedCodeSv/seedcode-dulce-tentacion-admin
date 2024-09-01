@@ -1,3 +1,5 @@
+import { IGetSaleDetails, SaleDetails } from '@/types/sales.types';
+
 export interface IResponseDataSaleInvalidation {
   ok: boolean;
   sales?: Sale[];
@@ -150,6 +152,8 @@ export interface IResponseInvalidation {
 }
 export interface ISalesInvalidationStore {
   sales?: Sale[];
+  sale: SaleDetails;
+  OnGetDetails: (id: number) => Promise<IGetSaleDetails>;
   pagination_sales_invalidations: IResponseDataSaleInvalidation;
   OnGetSalesInvalidations: (
     id: number,
@@ -158,7 +162,8 @@ export interface ISalesInvalidationStore {
     startDate: string,
     endDate: string,
     typeVoucher: string,
-    pointSale: string
+    pointSale: string,
+    status: number
   ) => Promise<void>;
-  // OnInvalidation: (id: number) => Promise<IResponseInvalidation>;
+  OnInvalidation: (id: number) => Promise<IResponseInvalidation>;
 }

@@ -890,6 +890,9 @@ function ListEmployee({ actions }: Props) {
 
               {(view === 'grid' || view === 'list') && (
                 <MobileView
+                  OpenPdf={(employee) => {
+                    OpenPdf(employee);
+                  }}
                   deletePopover={DeletePopover}
                   openEditModal={(employee) => {
                     setDataUpdate(employee);
@@ -961,9 +964,8 @@ function ListEmployee({ actions }: Props) {
                                         {employee.isActive && actions.includes('Editar') ? (
                                           <TooltipGlobal text="Editar">
                                             <Button
-                                              className='border border-white'
+                                              className="border border-white"
                                               onClick={() => {
-
                                                 setDataUpdate(employee);
 
                                                 // setIsOpenModalUpdate(true);
@@ -995,8 +997,7 @@ function ListEmployee({ actions }: Props) {
                                           </Button>
                                         )}
 
-
-                                        {actions.includes("Eliminar") && employee.isActive ? (
+                                        {actions.includes('Eliminar') && employee.isActive ? (
                                           <DeletePopover employee={employee} />
                                         ) : (
                                           <Button
@@ -1013,7 +1014,7 @@ function ListEmployee({ actions }: Props) {
                                         )}
                                         {actions.includes('Contrato') && employee.isActive ? (
                                           <Button
-                                            className='border border-white'
+                                            className="border border-white"
                                             onClick={() => OpenPdf(employee)}
                                             isIconOnly
                                             style={{
@@ -1043,34 +1044,30 @@ function ListEmployee({ actions }: Props) {
 
                                         {!employee.isActive && (
                                           <>
-                                            {
-                                              actions.includes("Activar") ? (
-                                                <TooltipGlobal text="Activar">
-                                                  <Button
-                                                    className='border border-white'
-                                                    onClick={() => handleActivate(employee.id)}
-                                                    isIconOnly
-                                                    style={global_styles().thirdStyle}
-                                                  >
-                                                    <RefreshCcw />
-                                                  </Button>
-                                                </TooltipGlobal>
-                                              ) : (
+                                            {actions.includes('Activar') ? (
+                                              <TooltipGlobal text="Activar">
                                                 <Button
-                                                  type="button"
-                                                  disabled
-                                                  style={global_styles().thirdStyle}
-                                                  className="flex font-semibold border border-white  cursor-not-allowed"
+                                                  className="border border-white"
+                                                  onClick={() => handleActivate(employee.id)}
                                                   isIconOnly
+                                                  style={global_styles().thirdStyle}
                                                 >
-                                                  <Lock />
+                                                  <RefreshCcw />
                                                 </Button>
-                                              )
-                                            }</>
-
+                                              </TooltipGlobal>
+                                            ) : (
+                                              <Button
+                                                type="button"
+                                                disabled
+                                                style={global_styles().thirdStyle}
+                                                className="flex font-semibold border border-white  cursor-not-allowed"
+                                                isIconOnly
+                                              >
+                                                <Lock />
+                                              </Button>
+                                            )}
+                                          </>
                                         )}
-
-
                                       </div>
                                     </td>
                                   </tr>
@@ -1181,10 +1178,16 @@ export const DeletePopover = ({ employee }: PopProps) => {
 
   return (
     <>
-      <Popover className='border border-white rounded-2xl' isOpen={isOpen} onClose={onClose} backdrop="blur" showArrow>
+      <Popover
+        className="border border-white rounded-2xl"
+        isOpen={isOpen}
+        onClose={onClose}
+        backdrop="blur"
+        showArrow
+      >
         <PopoverTrigger>
           <Button
-            className='border border-white'
+            className="border border-white"
             onClick={onOpen}
             isIconOnly
             style={{
@@ -1210,7 +1213,9 @@ export const DeletePopover = ({ employee }: PopProps) => {
               ¿Estas seguro de eliminar este registro?
             </p>
             <div className="mt-4">
-              <Button className='border border-white' onClick={onClose}>No, cancelar</Button>
+              <Button className="border border-white" onClick={onClose}>
+                No, cancelar
+              </Button>
               <Button
                 onClick={() => handleDelete()}
                 className="ml-5 border border-white"

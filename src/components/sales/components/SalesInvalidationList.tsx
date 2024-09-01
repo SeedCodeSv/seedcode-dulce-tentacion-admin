@@ -4,18 +4,22 @@ import { DataTable } from 'primereact/datatable';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { useSalesInvalidation } from '../store/sales_invalidations.store';
 import { fechaActualString } from '@/utils/dates';
-import { Autocomplete, AutocompleteItem, Button, Input } from '@nextui-org/react';
+import { Autocomplete, AutocompleteItem, Button, Input, Switch } from '@nextui-org/react';
 import { correlativesTypes } from '@/types/correlatives/correlatives_data.types';
-import { Search } from 'lucide-react';
+import { Eye, Search } from 'lucide-react';
 import { useBranchesStore } from '@/store/branches.store';
 import Pagination from '@/components/global/Pagination';
 import SmPagination from '@/components/global/SmPagination';
 import { formatCurrencySales } from '@/utils/dte';
+import HeadlessModal from '@/components/global/HeadlessModal';
+import { toast } from 'sonner';
+import DetailSale from './DetailSale';
 
 function SalesInvalidationList() {
   const [startDate, setStartDate] = useState(fechaActualString);
   const [endDate, setEndDate] = useState(fechaActualString);
-  const { sales, OnGetSalesInvalidations, pagination_sales_invalidations } = useSalesInvalidation();
+  const { sales, OnGetSalesInvalidations, OnInvalidation, pagination_sales_invalidations } =
+    useSalesInvalidation();
   const { getBranchesList, branch_list } = useBranchesStore();
 
   const [filter, setFilter] = useState({
@@ -34,18 +38,50 @@ function SalesInvalidationList() {
       setBranchId(branch_list[0].id);
     }
   }, [branch_list]);
-  useEffect(() => {
-    OnGetSalesInvalidations(branchId, 1, 5, startDate, endDate, '', '');
-  }, []);
-  const { theme } = useContext(ThemeContext);
+  const [status, setStatus] = useState(1);
 
+  const toggleStatus = () => {
+    setStatus((prevStatus) => (prevStatus === 1 ? 2 : 1));
+  };
+  useEffect(() => {
+    OnGetSalesInvalidations(branchId, 1, 5, startDate, endDate, '', '', status);
+  }, [status]);
+  const { theme } = useContext(ThemeContext);
   const handleSearch = () => {
-    OnGetSalesInvalidations(branchId, 1, 5, startDate, endDate, filter.typeVoucher, '');
+    OnGetSalesInvalidations(branchId, 1, 5, startDate, endDate, filter.typeVoucher, '', status);
   };
   const style = {
     backgroundColor: theme.colors.dark,
     color: theme.colors.primary,
   };
+  const [invalidationSale, setInvalidationSale] = useState({
+    isOpenModalInvalidation: false,
+    isOpenModalDetail: false,
+    saleId: 0,
+  });
+  const handleInvalidationSale = async () => {
+    try {
+      const data = await OnInvalidation(invalidationSale.saleId);
+      if (data.ok) {
+        setInvalidationSale({
+          isOpenModalInvalidation: false,
+          saleId: 0,
+          isOpenModalDetail: false,
+        });
+        toast.success('Venta invalidada');
+        OnGetSalesInvalidations(branchId, 1, 5, startDate, endDate, filter.typeVoucher, '', status);
+      }
+    } catch (e) {
+      toast.error('No se pudo invalidar la venta');
+      setInvalidationSale({
+        isOpenModalInvalidation: false,
+        saleId: 0,
+        isOpenModalDetail: false,
+      });
+    }
+  };
+  const [id, setId] = useState(0);
+  const [openModalDetail, setOpenModalDetail] = useState(false);
   return (
     <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
       <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
@@ -84,7 +120,7 @@ function SalesInvalidationList() {
                 const selectCorrelativeType = correlativesTypes.find(
                   (dep) => dep.value === new Set([e]).values().next().value
                 );
-                setFilter({ ...filter, typeVoucher: selectCorrelativeType?.label || '' });
+                setFilter({ ...filter, typeVoucher: selectCorrelativeType?.value || '' });
               }}
               label="Tipo de Factura"
               labelPlacement="outside"
@@ -95,11 +131,13 @@ function SalesInvalidationList() {
                 base: 'text-gray-500 text-sm',
               }}
             >
-              {correlativesTypes.map((dep) => (
-                <AutocompleteItem className="dark:text-white" value={dep.label} key={dep.value}>
-                  {dep.value + ' - ' + dep.label}
-                </AutocompleteItem>
-              ))}
+              {correlativesTypes
+                .filter((dep) => ['F', 'CCF', 'T'].includes(dep.value)) // Filtra solo "F", "CCF", "T"
+                .map((dep) => (
+                  <AutocompleteItem className="dark:text-white" value={dep.label} key={dep.value}>
+                    {dep.value + ' - ' + dep.label}
+                  </AutocompleteItem>
+                ))}
             </Autocomplete>
           </div>
           <Input
@@ -107,7 +145,7 @@ function SalesInvalidationList() {
             labelPlacement="outside"
             classNames={{ label: 'font-semibold' }}
             variant="bordered"
-            className="w-full"
+            className="w-full dark:text-white"
             type="date"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
@@ -117,7 +155,7 @@ function SalesInvalidationList() {
             labelPlacement="outside"
             classNames={{ label: 'font-semibold' }}
             variant="bordered"
-            className="w-full"
+            className="w-full dark:text-white"
             type="date"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
@@ -133,6 +171,17 @@ function SalesInvalidationList() {
           >
             Buscar
           </Button>
+        </div>
+        <div className="flex justify-end p-3">
+          <span className="mr-3 dark:text-white">
+            {status === 1 ? 'Invalidadas ' : 'Procesadas'}
+          </span>
+          <Switch
+            checked={status === 2}
+            onChange={toggleStatus}
+            className={`${status === 2 ? 'bg-red-500' : 'bg-green-500'} 
+                    relative inline-flex items-center h-6 rounded-full w-11 transition-colors`}
+          ></Switch>
         </div>
         <DataTable
           emptyMessage="No se encontraron resultados"
@@ -159,7 +208,12 @@ function SalesInvalidationList() {
           <Column
             headerClassName="text-sm font-semibold"
             headerStyle={style}
-            field="tipoDte"
+            body={(rowData) => {
+              const voucherType = correlativesTypes.find(
+                (dep) => dep.value === rowData.typeVoucher
+              );
+              return voucherType ? `${voucherType.value} - ${voucherType.label} ` : 'Boleta';
+            }}
             header="Tipo de Factura"
             className="dark:text-white"
           />
@@ -170,7 +224,6 @@ function SalesInvalidationList() {
             header="Fecha y Hora"
             className="dark:text-white"
           />
-
           <Column
             headerClassName="text-sm font-semibold"
             headerStyle={style}
@@ -181,7 +234,7 @@ function SalesInvalidationList() {
           <Column
             headerClassName="text-sm font-semibold"
             headerStyle={style}
-            field="totalPagar"
+            body={(rowData) => formatCurrencySales(rowData.totalPagar)}
             header="Total"
             className="dark:text-white"
           />
@@ -190,7 +243,64 @@ function SalesInvalidationList() {
             headerStyle={style}
             body={(rowData) => (
               <>
-                <Button> Invalidar </Button>
+                <div
+                  onClick={
+                    rowData.salesStatusId !== 2
+                      ? () => {
+                          setInvalidationSale({
+                            saleId: rowData.id,
+                            isOpenModalInvalidation: true,
+                            isOpenModalDetail: false,
+                          });
+                        }
+                      : undefined
+                  }
+                  className={`w-24 cursor-pointer h-5 rounded-xl text-center justify-center flex ${
+                    rowData.salesStatusId === 1
+                      ? 'bg-green-500'
+                      : rowData.salesStatusId === 2
+                        ? 'bg-red-500'
+                        : 'bg-yellow-500'
+                  }`}
+                >
+                  <div className="flex items-center justify-center">
+                    <p className="text-white text-center">
+                      {rowData.salesStatusId === 1
+                        ? 'Procesada'
+                        : rowData.salesStatusId === 2
+                          ? 'Invalidada'
+                          : 'Contingencia'}
+                    </p>
+                  </div>
+                </div>
+              </>
+            )}
+            header="Estado"
+            className="dark:text-white"
+          />
+
+          <Column
+            headerClassName="text-sm font-semibold"
+            headerStyle={style}
+            body={(rowData) => (
+              <>
+                <Button
+                  onClick={() => {
+                    setInvalidationSale({
+                      saleId: rowData.id,
+                      isOpenModalInvalidation: false,
+                      isOpenModalDetail: true,
+                    });
+                    setId(rowData.id);
+                    setOpenModalDetail(true);
+                  }}
+                  isIconOnly
+                  style={{
+                    backgroundColor: theme.colors.secondary,
+                  }}
+                >
+                  <Eye style={{ color: theme.colors.primary }} size={20} />
+                </Button>
               </>
             )}
             header="Acciones"
@@ -207,7 +317,7 @@ function SalesInvalidationList() {
                   currentPage={pagination_sales_invalidations.currentPag}
                   totalPages={pagination_sales_invalidations.totalPag}
                   onPageChange={(page) => {
-                    OnGetSalesInvalidations(branchId, page, 5, startDate, endDate, '', '');
+                    OnGetSalesInvalidations(branchId, page, 5, startDate, endDate, '', '', status);
                   }}
                 />
               </div>
@@ -221,7 +331,8 @@ function SalesInvalidationList() {
                       startDate,
                       endDate,
                       '',
-                      ''
+                      '',
+                      status
                     );
                   }}
                   handlePrev={() => {
@@ -232,7 +343,8 @@ function SalesInvalidationList() {
                       startDate,
                       endDate,
                       '',
-                      ''
+                      '',
+                      status
                     );
                   }}
                   currentPage={pagination_sales_invalidations.currentPag}
@@ -242,6 +354,69 @@ function SalesInvalidationList() {
             </>
           )}
         </div>
+
+        <HeadlessModal
+          size="w-[350px] md:w-[500px]"
+          isOpen={invalidationSale.isOpenModalInvalidation}
+          onClose={() =>
+            setInvalidationSale({
+              saleId: 0,
+              isOpenModalDetail: false,
+              isOpenModalInvalidation: false,
+            })
+          }
+          title="Invalidar Venta"
+        >
+          <div className="w-full h-full flex flex-col mt-3">
+            <h1 className="text-center ">¿Deseas invalidar esta venta?</h1>
+
+            <div className="w-full flex justify-between mt-5">
+              <Button
+                style={{
+                  backgroundColor: theme.colors.danger,
+                  color: theme.colors.primary,
+                }}
+                onClick={() => handleInvalidationSale()}
+              >
+                Invalidar
+              </Button>
+              <Button
+                style={{
+                  backgroundColor: theme.colors.third,
+                  color: theme.colors.primary,
+                }}
+                onClick={() =>
+                  setInvalidationSale({
+                    saleId: 0,
+                    isOpenModalDetail: false,
+                    isOpenModalInvalidation: false,
+                  })
+                }
+              >
+                Cancelar
+              </Button>
+            </div>
+          </div>
+        </HeadlessModal>
+
+        {id > 0 && (
+          <HeadlessModal
+            size="w-[350px] md:w-[500px]"
+            isOpen={openModalDetail}
+            onClose={() => {
+              setInvalidationSale({
+                saleId: 0,
+                isOpenModalInvalidation: false,
+                isOpenModalDetail: false,
+              }),
+                setId(0);
+              setOpenModalDetail(false);
+            }}
+            title=""
+          >
+            <DetailSale id={id}></DetailSale>
+          </HeadlessModal>
+        )}
       </div>
     </div>
   );

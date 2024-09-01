@@ -6,6 +6,7 @@ export interface IMobileView {
   openEditModal: (employee: Employee) => void;
   actions: string[];
   handleActivate: (id: number) => void;
+  OpenPdf: (employee: Employee) => void;
 }
 
 export interface GridProps extends IMobileView {

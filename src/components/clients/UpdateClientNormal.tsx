@@ -27,6 +27,7 @@ const UpdateClientNormal = (props: Props) => {
   const { getBranchesList, branch_list } = useBranchesStore();
 
   useEffect(() => {
+    console.log('id:', user_by_id);
     getBranchesList();
   }, []);
 
@@ -56,17 +57,17 @@ const UpdateClientNormal = (props: Props) => {
       get_customer_by_id(parseInt(id)).then((customer) => {
         if (customer) {
           setInitialValues({
-            nombre: customer.nombre ?? '',
-            correo: customer.correo ?? '',
-            telefono: customer.telefono ?? '',
-            numDocumento: customer.numDocumento ?? '',
-            tipoDocumento: customer.tipoDocumento ?? '',
-            municipio: customer.direccion.municipio ?? '',
-            nombreMunicipio: customer.direccion.nombreMunicipio ?? '',
-            departamento: customer.direccion.departamento ?? '',
-            nombreDepartamento: customer.direccion.nombreDepartamento ?? '',
-            complemento: customer.direccion.complemento ?? '',
-            branchId: customer.branchId ?? 0,
+            nombre: customer.customer.nombre ?? '',
+            correo: customer.customer.correo ?? '',
+            telefono: customer.customer.telefono ?? '',
+            numDocumento: customer.customer.numDocumento ?? '',
+            tipoDocumento: customer.customer.tipoDocumento ?? '',
+            municipio: customer.customer.direccion.municipio ?? '',
+            nombreMunicipio: customer.customer.direccion.nombreMunicipio ?? '',
+            departamento: customer.customer.direccion.departamento ?? '',
+            nombreDepartamento: customer.customer.direccion.nombreDepartamento ?? '',
+            complemento: customer.customer.direccion.complemento ?? '',
+            branchId: customer.customer.branchId ?? 0,
           });
         }
       });
@@ -121,7 +122,7 @@ const UpdateClientNormal = (props: Props) => {
   const selectedKeyDepartment = useMemo(() => {
     if (user_by_id) {
       const department = cat_012_departamento.find(
-        (department) => department.codigo === user_by_id.direccion.departamento
+        (department) => department.codigo === user_by_id.customer.direccion.departamento
       );
       return department?.codigo;
     }
@@ -129,7 +130,7 @@ const UpdateClientNormal = (props: Props) => {
   }, [user_by_id, cat_012_departamento.length]);
 
   useEffect(() => {
-    getCat013Municipios(user_by_id?.direccion.departamento || '0');
+    getCat013Municipios(user_by_id?.customer.direccion.departamento || '0');
   }, [user_by_id]);
 
   useEffect(() => {
@@ -161,7 +162,7 @@ const UpdateClientNormal = (props: Props) => {
   const selectedKeyTypeOfDocument = useMemo(() => {
     if (user_by_id) {
       const typeOfDocument = cat_022_tipo_de_documentoDeIde.find(
-        (typeOfDocument) => typeOfDocument.codigo === user_by_id.tipoDocumento
+        (typeOfDocument) => typeOfDocument.codigo === user_by_id.customer.tipoDocumento
       );
       return typeOfDocument?.codigo;
     }
@@ -170,8 +171,8 @@ const UpdateClientNormal = (props: Props) => {
   const navigate = useNavigate();
   return (
     <Layout title="Cliente">
-      <div className="w-full h-full p-4 md:p-10 md:px-12">
-        <div className="w-full h-full p-4 overflow-y-auto bg-white shadow custom-scrollbar md:p-8 dark:bg-gray-900">
+      <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
+        <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <button
             onClick={() => navigate('/clients')}
             className="flex items-center gap-2 bg-transparent"
@@ -199,6 +200,7 @@ const UpdateClientNormal = (props: Props) => {
                   <div className="mt-10">
                     <div className="">
                       <Input
+                        className="dark:text-white"
                         label="Nombre"
                         labelPlacement="outside"
                         name="name"
@@ -217,6 +219,7 @@ const UpdateClientNormal = (props: Props) => {
                     </div>
                     <div className="pt-3">
                       <Input
+                        className="dark:text-white"
                         label="Correo electrónico"
                         labelPlacement="outside"
                         name="correo"
@@ -271,6 +274,7 @@ const UpdateClientNormal = (props: Props) => {
                       </div>
                       <div className="mt-2">
                         <Input
+                          className="dark:text-white"
                           type="text"
                           label="Numero documento"
                           labelPlacement="outside"
@@ -378,6 +382,7 @@ const UpdateClientNormal = (props: Props) => {
                       <div>
                         <Input
                           type="number"
+                          className="dark:text-white"
                           label="Teléfono"
                           labelPlacement="outside"
                           name="telefono"
@@ -397,37 +402,6 @@ const UpdateClientNormal = (props: Props) => {
                         )}
                       </div>
                       <div>
-                        {/* <Autocomplete
-
-                          onSelectionChange={(key) => {
-                            if (key) {
-                              const depSelected = JSON.parse(key as string) as Branch;
-                              handleChange('branchId')(depSelected?.id?.toString() ?? '');
-                              console.log('Sucursal seleccionada:', depSelected);
-                            }
-                          }}
-                          onBlur={handleBlur('branchId')}
-                          label="Sucursal"
-                          labelPlacement="outside"
-                          placeholder="Selecciona la sucursal"
-                          variant="bordered"
-                          className="dark:text-white"
-                          classNames={{
-                            base: 'font-semibold text-sm',
-                          }}
-                          defaultSelectedKey={user_by_id.branch.id.toString()}
-                        >
-                          {branch_list.map((bra) => (
-                            <AutocompleteItem
-                              className="dark:text-white"
-                              value={bra.id}
-                              key={bra.id}
-                            >
-                              {bra.name}
-                            </AutocompleteItem>
-                          ))}
-                        </Autocomplete> */}
-
                         <Autocomplete
                           onSelectionChange={(key) => {
                             const selectedBranch = branch_list.find(
@@ -447,7 +421,7 @@ const UpdateClientNormal = (props: Props) => {
                           classNames={{
                             base: 'font-semibold text-sm',
                           }}
-                          defaultSelectedKey={user_by_id?.branch?.id.toString()}
+                          defaultSelectedKey={user_by_id?.customer.branch?.id.toString()}
                         >
                           {branch_list.map((bra) => (
                             <AutocompleteItem
@@ -469,6 +443,7 @@ const UpdateClientNormal = (props: Props) => {
                     </div>
                     <div className="pt-2">
                       <Textarea
+                        className="dark:text-white"
                         label="Complemento"
                         labelPlacement="outside"
                         name="Complemento"

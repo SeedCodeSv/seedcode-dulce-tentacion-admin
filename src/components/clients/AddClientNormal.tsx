@@ -184,9 +184,6 @@ const AddClientNormal = (props: Props) => {
                   <div className="grid grid-cols-2 gap-5 pt-3">
                     <div className="pt-2">
                       <div className="flex flex-col">
-                        <label className="font-semibold text-gray-900 text-sm mb-1">
-                          Tipo de documento
-                        </label>
                         <Autocomplete
                           onSelectionChange={(key) => {
                             if (key) {
@@ -195,6 +192,8 @@ const AddClientNormal = (props: Props) => {
                             }
                           }}
                           onBlur={handleBlur('tipoDocumento')}
+                          label="Tipo de documento"
+                          labelPlacement="outside"
                           placeholder="Selecciona el tipo de documento"
                           variant="bordered"
                           classNames={{
