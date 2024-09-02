@@ -132,29 +132,6 @@ function AddProduct() {
 
   const [codigo, setCodigoGenerado] = useState('');
 
-  // const generarCodigo = async () => {
-  //   const makeid = (length: number) => {
-  //     let result = '';
-  //     const characters = '0123456789';
-  //     const charactersLength = characters.length;
-  //     let counter = 0;
-  //     while (counter < length) {
-  //       result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  //       counter += 1;
-  //     }
-  //     return result;
-  //   };
-
-  //   const codigoGenerado = makeid(12);
-  //   const verify = await verifyCode(codigoGenerado);
-  //   if (verify) {
-  //     setError(false);
-  //     // toast.success("Codigo no registrado");
-  //   } else {
-  //     setError(true);
-  //   }
-  //   return codigoGenerado;
-  // };
   const generarCodigo = async (name: string) => {
     if (!name) {
       toast.error('Necesitas ingresar el nombre del producto para generar el código.');

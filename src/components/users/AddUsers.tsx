@@ -10,7 +10,6 @@ import { ThemeContext } from '../../hooks/useTheme';
 import { useBranchesStore } from '../../store/branches.store';
 import { useCorrelativesStore } from '../../store/correlatives.store';
 import { Branches } from '../../types/branches.types';
-// import { Correlatives } from '../../types/correlatives.types';
 
 interface Props {
   onClose: () => void;
@@ -32,22 +31,14 @@ function AddUsers(props: Props) {
     }
   }, [selectedIdBranch, get_correlativesByBranch]);
 
-  // useEffect(() => {
-  //   getBranchesList();
-  //   if (selectedIdBranch !== 0) {
-  //     get_correlativesByBranch(Number(selectedIdBranch));
-  //   }
-  // }, [selectedIdBranch]);
   const validationSchema = yup.object().shape({
-    userName: yup.string().required('El usuario es requerido'),
-    password: yup.string().required('La contraseña es requerida'),
-    // correlativeId: yup.number().nullable(),
-    // correlativeId: yup.number().required('El correlativo es requerido'),
-    roleId: yup.number().required('El rol es requerido').min(1, 'El rol es requerido'),
+    userName: yup.string().required('**El usuario es requerido**'),
+    password: yup.string().required('**La contraseña es requerida**'),
+    roleId: yup.number().required('**El rol es requerido**').min(1, '**El rol es requerido**'),
     correlativeId: yup
       .number()
-      .required('El Correlativo es requerido, antes debes seleccionar una sucursal')
-      .min(1, 'El Correlativo es requerido, antes debes seleccionar una sucursal.'),
+      .required('**El Correlativo es requerido, antes debes seleccionar una sucursal**')
+      .min(1, '**El Correlativo es requerido, antes debes seleccionar una sucursal**'),
   });
 
   const initialValues = {
@@ -58,7 +49,6 @@ function AddUsers(props: Props) {
   };
 
   const { roles_list, getRolesList } = useRolesStore();
-
   const { postUser } = useUsersStore();
 
   useEffect(() => {
@@ -82,9 +72,6 @@ function AddUsers(props: Props) {
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
-        // onSubmit={(values) => {
-        //   handleSubmit(values);
-        // }}
         onSubmit={(values, { resetForm }) => {
           handleSubmit(values, resetForm);
         }}
@@ -100,34 +87,38 @@ function AddUsers(props: Props) {
                   value={values.userName}
                   onChange={handleChange('userName')}
                   onBlur={handleBlur('userName')}
+                  isInvalid={touched.userName && !!errors.userName}
+                  errorMessage={touched.userName && errors.userName}
                   placeholder="Ingresa el nombre de usuario"
                   classNames={{
-                    label: 'text-gray-500 text-sm',
+                    base: 'text-gray-500 text-sm font-semibold',
                   }}
                   variant="bordered"
                 />
-                {errors.userName && touched.userName && (
-                  <span className="text-sm font-semibold text-red-500">{errors.userName}</span>
-                )}
+                {/* {errors.userName && touched.userName && (
+                  <span className="text-sm  font-normal text-red-500">{errors.userName}</span>
+                )} */}
               </div>
               <div className="pt-2">
                 <Input
                   label="Contraseña"
                   labelPlacement="outside"
-                  name="userName"
+                  name="password"
                   value={values.password}
                   onChange={handleChange('password')}
                   onBlur={handleBlur('password')}
                   placeholder="Ingresa la Contraseña"
+                  isInvalid={touched.password && !!errors.password}
+                  errorMessage={touched.password && errors.password}
                   type="password"
                   classNames={{
-                    label: 'text-gray-500 text-sm',
+                    base: 'text-gray-500 text-sm font-semibold',
                   }}
                   variant="bordered"
                 />
-                {errors.password && touched.password && (
-                  <span className="text-sm font-semibold text-red-500">{errors.password}</span>
-                )}
+                {/* {errors.password && touched.password && (
+                  <span className="text-sm  font-normal text-red-500">{errors.password}</span>
+                )} */}
               </div>
 
               <div className="pt-2">
@@ -143,9 +134,11 @@ function AddUsers(props: Props) {
                   labelPlacement="outside"
                   placeholder="Selecciona el rol"
                   variant="bordered"
+                  isInvalid={touched.roleId && !!errors.roleId}
+                  errorMessage={touched.roleId && errors.roleId}
                   className="dark:text-white"
                   classNames={{
-                    base: 'text-gray-500 text-sm',
+                    base: 'text-gray-500 text-sm font-semibold',
                   }}
                 >
                   {roles_list.map((dep) => (
@@ -158,9 +151,9 @@ function AddUsers(props: Props) {
                     </AutocompleteItem>
                   ))}
                 </Autocomplete>
-                {errors.roleId && touched.roleId && (
-                  <span className="text-sm font-semibold text-red-500">{errors.roleId}</span>
-                )}
+                {/* {errors.roleId && touched.roleId && (
+                  <span className="text-sm  font-normal text-red-500">{errors.roleId}</span>
+                )} */}
               </div>
               {/* Seleccionar sucursal */}
               <div className="pt-2">
@@ -176,7 +169,7 @@ function AddUsers(props: Props) {
                   labelPlacement="outside"
                   placeholder="Selecciona la sucursal"
                   variant="bordered"
-                  className="dark:text-white text-sm"
+                  className="dark:text-white text-sm font-semibold"
                   defaultSelectedKey={selectedKeyBranch!}
                   value={selectedKeyBranch!}
                 >
@@ -201,11 +194,13 @@ function AddUsers(props: Props) {
                   label="Correlativo"
                   placeholder="Selecciona el correlativo"
                   labelPlacement="outside"
-                  className="dark:text-white"
+                  className="dark:text-white font-semibold"
                   variant="bordered"
                   classNames={{
-                    base: ' text-gray-500 text-sm',
+                    base: ' text-gray-500 text-sm font-semibold',
                   }}
+                  isInvalid={touched.correlativeId && !!errors.correlativeId}
+                  errorMessage={touched.correlativeId && errors.correlativeId}
                   // defaultSelectedKey={selectedKeyCorrelative!}
                   // value={selectedKeyCorrelative!}
                 >
@@ -221,14 +216,14 @@ function AddUsers(props: Props) {
                   ))}
                 </Autocomplete>
 
-                {errors.correlativeId && touched.correlativeId && (
-                  <span className="text-sm font-semibold text-red-500">{errors.correlativeId}</span>
-                )}
+                {/* {errors.correlativeId && touched.correlativeId && (
+                  <span className="text-sm font-normal text-red-500">{errors.correlativeId}</span>
+                )} */}
               </div>
 
               <Button
                 onClick={() => handleSubmit()}
-                className="w-full mt-4 text-sm font-semibold"
+                className="w-full mt-4 text-sm font-semibold mb-3"
                 style={{
                   backgroundColor: theme.colors.third,
                   color: theme.colors.primary,
