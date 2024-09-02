@@ -26,7 +26,7 @@
     },
     {
       "view": "Usuarios",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Cambiar Contraseña"]
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Cambiar Contraseña", "Activar"]
     },
     {
       "view": "Empleados",

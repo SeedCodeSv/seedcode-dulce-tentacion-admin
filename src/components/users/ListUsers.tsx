@@ -88,7 +88,7 @@ function ListUsers({ actionss }: Props) {
   return (
     <>
       <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
-        <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+        <div className="w-full h-full border-white border p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <div className="flex justify-between items-end ">
             <SearchUser
               nameUser={(userName) => setUserName(userName)}
@@ -165,7 +165,7 @@ function ListUsers({ actionss }: Props) {
           </div>
 
           <div className="flex flex-col gap-3 mt-3 lg:flex-row lg:justify-between lg:gap-10">
-            <div className="flex justify-between justify-start order-2 lg:order-1">
+            <div className="flex  justify-start order-2 lg:order-1">
               <div className="xl:mt-10">
                 <Switch
                   onValueChange={(active) => setActive(active)}
@@ -486,7 +486,7 @@ function ListUsers({ actionss }: Props) {
           isOpen={modalAdd.isOpen}
           onClose={modalAdd.onClose}
           title="Agregar usuario"
-          size="w-[350px] md:w-[500px]"
+          size="w-[350px] md:w-[550px]"
         >
           <AddUsers onClose={modalAdd.onClose} />
         </HeadlessModal>
@@ -494,7 +494,7 @@ function ListUsers({ actionss }: Props) {
           isOpen={modalChangePassword.isOpen}
           onClose={modalChangePassword.onClose}
           title="Actualizar contraseña"
-          size="w-[350px] md:w-[500px]"
+          size="w-[350px] md:w-[550px]"
         >
           <UpdatePassword id={selectId} closeModal={modalChangePassword.onClose} />
         </HeadlessModal>
@@ -502,7 +502,7 @@ function ListUsers({ actionss }: Props) {
           isOpen={modalUpdate.isOpen}
           onClose={modalUpdate.onClose}
           title="Editar usuario"
-          size="w-[350px] md:w-[500px]"
+          size="w-[350px] md:w-[550px]"
         >
           <UpdateUsers onClose={modalUpdate.onClose} user={user} />
         </HeadlessModal>
@@ -556,7 +556,7 @@ export const DeletePopUp = ({ user }: PopProps) => {
           </Button>
         </PopoverTrigger>
         <PopoverContent>
-        <div className="flex flex-col items-center justify-center w-full p-5">
+          <div className="flex flex-col items-center justify-center w-full p-5">
             <p className="font-semibold text-gray-600 dark:text-white">Eliminar {user.userName}</p>
             <p className="mt-3 text-center text-gray-600 dark:text-white w-72">
               ¿Estas seguro de eliminar este registro?

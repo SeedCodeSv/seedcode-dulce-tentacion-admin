@@ -128,7 +128,7 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
 
   return (
     <div className=" w-full h-full xl:p-10 p-5 bg-gray-50 dark:bg-gray-900">
-      <div className="w-full h-full border-white border border-white p-2 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+      <div className="w-full h-full  border border-white p-2 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
         <Button onClick={() => props.id(0)} className="bg-transparent dark:text-white">
           <ArrowLeft className="dark:text-white" />
           Atras
