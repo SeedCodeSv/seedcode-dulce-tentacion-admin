@@ -20,6 +20,7 @@ import {
   UserCheck,
   ShoppingBag,
   BookCheck,
+  BadgeDollarSign,
 } from 'lucide-react';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { ThemeContext } from '../hooks/useTheme';
@@ -126,6 +127,12 @@ export const LayoutItems = () => {
       icon: FolderCheck,
       label: 'Permisos',
     },
+    {
+      viewName: 'Ventas',
+      to: '/reports/sales-invalidation',
+      icon: BadgeDollarSign,
+      label: 'Ventas',
+    },
   ];
   const linkReports = [
     {
@@ -162,7 +169,6 @@ export const LayoutItems = () => {
       label: 'Estados del Empleado',
     },
   ];
-
   const linkAccounting = [
     {
       viewName: 'Corte Gran Z',
@@ -210,7 +216,6 @@ export const LayoutItems = () => {
       label: 'IVA - Facturas',
     },
   ];
-
   const [openGroup, setOpenGroup] = useState<string | null>(null);
   const handleGroupClick = (group: string) => {
     setOpenGroup(openGroup === group ? null : group);

@@ -84,14 +84,14 @@ function EditMode(props: Props) {
   };
 
   return (
-    <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
-      <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
+    <div className=" w-full h-full p-5 bg-gray-50 dark:bg-gray-900">
+      <div className="w-full h-full border border-white p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
         <div>
           <button
             onClick={props.returnMode}
             className="flex bg-transparent border-0  items-center gap-2"
           >
-            <ArrowLeft /> Atrás
+            <ArrowLeft className="dark:text-white" /> <p className="dark:text-white">Regresar</p>
           </button>
           <p className="text-xl mt-5 font-semibold dark:text-white">Completar orden</p>
         </div>
@@ -142,6 +142,7 @@ function EditMode(props: Props) {
             tableStyle={{ minWidth: '50rem' }}
           >
             <Column
+              className="dark:text-white"
               headerClassName="text-sm font-semibold"
               headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
               field="orderId"
@@ -151,6 +152,7 @@ function EditMode(props: Props) {
               }}
             />
             <Column
+              className="dark:text-white"
               headerClassName="text-sm font-semibold"
               headerStyle={style}
               header="Precio"
@@ -162,7 +164,7 @@ function EditMode(props: Props) {
                   type="number"
                   startContent={
                     <div className="pointer-events-none flex items-center">
-                      <span className="text-default-400 text-small">$</span>
+                      <span className="text-default-400 text-small dark:text-white">$</span>
                     </div>
                   }
                   step={0.01}
@@ -180,6 +182,7 @@ function EditMode(props: Props) {
               headerClassName="text-sm font-semibold"
               headerStyle={style}
               field="quantity"
+              className="dark:text-white"
               header="Cantidad"
               body={(item) => (
                 <Input
@@ -199,6 +202,7 @@ function EditMode(props: Props) {
               )}
             />
             <Column
+              className="dark:text-white"
               headerClassName="text-sm font-semibold"
               headerStyle={style}
               field="total"

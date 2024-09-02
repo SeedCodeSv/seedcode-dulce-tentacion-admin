@@ -13,7 +13,6 @@ interface Props {
 }
 
 const AddCategory = (props: Props) => {
-
   const validationSchema = yup.object().shape({
     name: yup.string().required('**Debes especificar el nombre de la categoría**'),
   });
@@ -43,16 +42,18 @@ const AddCategory = (props: Props) => {
               <Input
                 name="name"
                 labelPlacement="outside"
-                className='dark:text-white'
+                className="dark:text-white"
                 value={values.name}
                 onChange={handleChange('name')}
                 onBlur={handleBlur('name')}
                 placeholder="Ingresa el nombre de la categoría"
-                classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
+                classNames={{
+                  base: 'text-sm font-semibold text-gray-600',
+                }}
                 variant="bordered"
                 label="Nombre"
                 isInvalid={!!errors.name && touched.name}
-                errorMessage={errors.name}
+                errorMessage={touched.name && errors.name}
               />
             </div>
             <Button

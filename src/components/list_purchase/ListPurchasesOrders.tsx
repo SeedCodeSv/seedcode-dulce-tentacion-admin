@@ -207,30 +207,35 @@ function ListPurchasesOrders({ actions }: ArrayAction) {
               tableStyle={{ minWidth: '50rem' }}
             >
               <Column
+                className="dark:text-white"
                 headerClassName="text-sm font-semibold"
                 headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
                 field="id"
                 header="No."
               />
               <Column
+                className="dark:text-white"
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
                 field="date"
                 header="Fecha"
               />
               <Column
+                className="dark:text-white"
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
                 field="supplier.nombre"
                 header="Proveedor"
               />
               <Column
+                className="dark:text-white"
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
                 field="branch.name"
                 header="Sucursal"
               />
               <Column
+                className="dark:text-white"
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
                 field="state"
@@ -244,6 +249,7 @@ function ListPurchasesOrders({ actions }: ArrayAction) {
                 }
               />
               <Column
+                className="dark:text-white"
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
                 field="branch.name"

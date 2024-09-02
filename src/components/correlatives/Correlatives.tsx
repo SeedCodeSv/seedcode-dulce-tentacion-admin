@@ -69,6 +69,7 @@ function CorrelativesList({ actions }: { actions: string[] }) {
 
         <div className="grid grid-cols-3 gap-5  mb-3 hidden md:grid">
           <div className="w-full">
+            <label className="dark:text-white font-semibold text-sm">Sucursal</label>
             <Autocomplete
               onSelectionChange={(e) => {
                 const selectNameBranch = branch_list.find(
@@ -76,11 +77,9 @@ function CorrelativesList({ actions }: { actions: string[] }) {
                 );
                 setFilter({ ...filter, branchName: selectNameBranch?.name || '' });
               }}
-              label="Sucursal"
-              labelPlacement="outside"
               placeholder="Selecciona la sucursal"
               variant="bordered"
-              className="dark:text-white"
+              className="dark:text-white border border-white rounded-xl"
               onClear={() => {
                 setFilter({ ...filter, branchName: '' });
               }}
@@ -97,6 +96,7 @@ function CorrelativesList({ actions }: { actions: string[] }) {
           </div>
 
           <div className="w-full">
+            <label className="dark:text-white font-semibold text-sm">Tipo de Factura</label>
             <Autocomplete
               onSelectionChange={(e) => {
                 const selectCorrelativeType = correlativesTypes.find(
@@ -104,11 +104,10 @@ function CorrelativesList({ actions }: { actions: string[] }) {
                 );
                 setFilter({ ...filter, correlativeType: selectCorrelativeType?.value || '' });
               }}
-              label="Tipo de Factura"
               labelPlacement="outside"
               placeholder="Selecciona el Tipo de Factura"
               variant="bordered"
-              className="dark:text-white"
+              className="dark:text-white border border-white rounded-xl"
               classNames={{
                 base: 'text-gray-500 text-sm',
               }}
@@ -135,14 +134,14 @@ function CorrelativesList({ actions }: { actions: string[] }) {
                 filter.correlativeType
               )
             }
-            className="w-full mt-5"
+            className="w-full mt-5 border border-white rounded-xl"
           >
             Buscar
           </Button>
         </div>
 
         <div className="flex items-end justify-end gap-10 mt-3   lg:justify-end">
-          <ButtonGroup>
+          <ButtonGroup className="border xl:flex hidden border-white  rounded-xl">
             <Button
               isIconOnly
               color="secondary"
@@ -156,6 +155,30 @@ function CorrelativesList({ actions }: { actions: string[] }) {
               <ITable />
             </Button>
 
+            <Button
+              isIconOnly
+              color="default"
+              style={{
+                backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
+                color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
+              }}
+              onClick={() => setView('grid')}
+            >
+              <CreditCard />
+            </Button>
+            <Button
+              isIconOnly
+              color="default"
+              style={{
+                backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
+                color: view === 'list' ? theme.colors.primary : '#3e3e3e',
+              }}
+              onClick={() => setView('list')}
+            >
+              <List />
+            </Button>
+          </ButtonGroup>{' '}
+          <ButtonGroup className="border border-white xl:hidden  rounded-xl">
             <Button
               isIconOnly
               color="default"

@@ -6,7 +6,7 @@ import { useSalesInvalidation } from '../store/sales_invalidations.store';
 import { fechaActualString } from '@/utils/dates';
 import { Autocomplete, AutocompleteItem, Button, Input, Switch } from '@nextui-org/react';
 import { correlativesTypes } from '@/types/correlatives/correlatives_data.types';
-import { Eye, Search } from 'lucide-react';
+import { CircleX, Eye, Lock, Search } from 'lucide-react';
 import { useBranchesStore } from '@/store/branches.store';
 import Pagination from '@/components/global/Pagination';
 import SmPagination from '@/components/global/SmPagination';
@@ -14,9 +14,14 @@ import { formatCurrencySales } from '@/utils/dte';
 import HeadlessModal from '@/components/global/HeadlessModal';
 import { toast } from 'sonner';
 import DetailSale from './DetailSale';
+import { Correlatives } from '@/types/correlatives/correlatives_types';
+import { get_correlatives } from '@/services/correlatives.service';
 
-function SalesInvalidationList() {
+function SalesInvalidationList({ actions }: { actions: string[] }) {
   const [startDate, setStartDate] = useState(fechaActualString);
+  const [codeSale, setCodeSale] = useState<Correlatives[]>([]);
+  const [codeSelected, setCodeSelected] = useState('');
+
   const [endDate, setEndDate] = useState(fechaActualString);
   const { sales, OnGetSalesInvalidations, OnInvalidation, pagination_sales_invalidations } =
     useSalesInvalidation();
@@ -44,11 +49,38 @@ function SalesInvalidationList() {
     setStatus((prevStatus) => (prevStatus === 1 ? 2 : 1));
   };
   useEffect(() => {
-    OnGetSalesInvalidations(branchId, 1, 5, startDate, endDate, '', '', status);
-  }, [status]);
+    OnGetSalesInvalidations(
+      branchId,
+      1,
+      5,
+      startDate,
+      endDate,
+      filter.typeVoucher,
+      codeSelected,
+      status
+    );
+
+    const getIdBranch = async () => {
+      if (branchId > 0) {
+        const data = await get_correlatives(branchId);
+        setCodeSale(data.data.correlatives);
+      }
+    };
+
+    getIdBranch();
+  }, [status, branchId]);
   const { theme } = useContext(ThemeContext);
   const handleSearch = () => {
-    OnGetSalesInvalidations(branchId, 1, 5, startDate, endDate, filter.typeVoucher, '', status);
+    OnGetSalesInvalidations(
+      branchId,
+      1,
+      5,
+      startDate,
+      endDate,
+      filter.typeVoucher,
+      codeSelected,
+      status
+    );
   };
   const style = {
     backgroundColor: theme.colors.dark,
@@ -113,7 +145,25 @@ function SalesInvalidationList() {
               ))}
             </Autocomplete>
           </div>
-
+          <div>
+            <Autocomplete
+              labelPlacement="outside"
+              placeholder="Selecciona el punto de venta"
+              variant="bordered"
+              label="Punto de Venta"
+            >
+              {codeSale
+                .filter((item) => item.typeVoucher === 'T')
+                .map((item) => (
+                  <AutocompleteItem
+                    onClick={() => setCodeSelected(item.code || '')}
+                    key={item.code || ''}
+                  >
+                    {item.code}
+                  </AutocompleteItem>
+                ))}
+            </Autocomplete>
+          </div>
           <div className="w-full">
             <Autocomplete
               onSelectionChange={(e) => {
@@ -244,17 +294,6 @@ function SalesInvalidationList() {
             body={(rowData) => (
               <>
                 <div
-                  onClick={
-                    rowData.salesStatusId !== 2
-                      ? () => {
-                          setInvalidationSale({
-                            saleId: rowData.id,
-                            isOpenModalInvalidation: true,
-                            isOpenModalDetail: false,
-                          });
-                        }
-                      : undefined
-                  }
                   className={`w-24 cursor-pointer h-5 rounded-xl text-center justify-center flex ${
                     rowData.salesStatusId === 1
                       ? 'bg-green-500'
@@ -284,23 +323,67 @@ function SalesInvalidationList() {
             headerStyle={style}
             body={(rowData) => (
               <>
-                <Button
-                  onClick={() => {
-                    setInvalidationSale({
-                      saleId: rowData.id,
-                      isOpenModalInvalidation: false,
-                      isOpenModalDetail: true,
-                    });
-                    setId(rowData.id);
-                    setOpenModalDetail(true);
-                  }}
-                  isIconOnly
-                  style={{
-                    backgroundColor: theme.colors.secondary,
-                  }}
-                >
-                  <Eye style={{ color: theme.colors.primary }} size={20} />
-                </Button>
+                <div className="flex gap-3">
+                  {actions.includes('Ver Detalle') ? (
+                    <Button
+                      onClick={() => {
+                        setInvalidationSale({
+                          saleId: rowData.id,
+                          isOpenModalInvalidation: false,
+                          isOpenModalDetail: true,
+                        });
+                        setId(rowData.id);
+                        setOpenModalDetail(true);
+                      }}
+                      isIconOnly
+                      style={{
+                        backgroundColor: theme.colors.secondary,
+                      }}
+                    >
+                      <Eye style={{ color: theme.colors.primary }} size={20} />
+                    </Button>
+                  ) : (
+                    <Button
+                      isIconOnly
+                      style={{
+                        backgroundColor: theme.colors.secondary,
+                      }}
+                    >
+                      <Lock style={{ color: theme.colors.primary }} size={20} />
+                    </Button>
+                  )}
+
+                  {rowData.isActivated && (
+                    <>
+                      {actions.includes('Invalidar') ? (
+                        <Button
+                          onClick={() => {
+                            setInvalidationSale({
+                              saleId: rowData.id,
+                              isOpenModalInvalidation: true,
+                              isOpenModalDetail: false,
+                            });
+                          }}
+                          isIconOnly
+                          style={{
+                            backgroundColor: theme.colors.danger,
+                          }}
+                        >
+                          <CircleX style={{ color: theme.colors.primary }} size={20} />
+                        </Button>
+                      ) : (
+                        <Button
+                          isIconOnly
+                          style={{
+                            backgroundColor: theme.colors.danger,
+                          }}
+                        >
+                          <Lock style={{ color: theme.colors.primary }} size={20} />
+                        </Button>
+                      )}
+                    </>
+                  )}
+                </div>
               </>
             )}
             header="Acciones"
@@ -330,8 +413,8 @@ function SalesInvalidationList() {
                       5,
                       startDate,
                       endDate,
-                      '',
-                      '',
+                      filter.typeVoucher,
+                      codeSelected,
                       status
                     );
                   }}
@@ -342,8 +425,8 @@ function SalesInvalidationList() {
                       5,
                       startDate,
                       endDate,
-                      '',
-                      '',
+                      filter.typeVoucher,
+                      codeSelected,
                       status
                     );
                   }}

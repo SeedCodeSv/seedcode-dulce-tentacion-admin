@@ -183,7 +183,7 @@ export const router = () => {
     },
     {
       path: '/reports/sales-invalidation',
-      element: checkAuthorization('Ventas por Periodo', <SalesInvalidationPage />),
+      element: checkAuthorization('Ventas', <SalesInvalidationPage />),
     },
     {
       path: '/reports/sales-by-product',

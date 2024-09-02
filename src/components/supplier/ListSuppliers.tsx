@@ -393,7 +393,11 @@ function ListSuppliers({ actions }: ArrayAction) {
                                       backgroundColor: theme.colors.secondary,
                                     }}
                                   >
-                                    <EditIcon style={{ color: theme.colors.primary }} size={20} />
+                                    <EditIcon
+                                      className="text-white"
+                                      style={{ color: theme.colors.primary }}
+                                      size={20}
+                                    />
                                   </Button>
                                 </TooltipGlobal>
                               ) : (
@@ -406,7 +410,7 @@ function ListSuppliers({ actions }: ArrayAction) {
                                   className="flex font-semibold border border-white"
                                   isIconOnly
                                 >
-                                  <Lock />
+                                  <Lock className="text-white" />
                                 </Button>
                               )}
                               {item.isActive && actions.includes('Eliminar') ? (
@@ -421,7 +425,7 @@ function ListSuppliers({ actions }: ArrayAction) {
                                   className="flex font-semibold border border-white"
                                   isIconOnly
                                 >
-                                  <Lock />
+                                  <Lock className="text-white" />
                                 </Button>
                               )}
 
@@ -458,7 +462,7 @@ function ListSuppliers({ actions }: ArrayAction) {
                                         className="flex font-semibold border border-white"
                                         isIconOnly
                                       >
-                                        <Lock />
+                                        <Lock className="text-white" />
                                       </Button>
                                     )
                                   ) : (
@@ -472,7 +476,7 @@ function ListSuppliers({ actions }: ArrayAction) {
                                       className="flex font-semibold border border-white"
                                       isIconOnly
                                     >
-                                      <Check />
+                                      <Check className="text-white" />
                                     </Button>
                                   )
                                 ) : (

@@ -8,7 +8,6 @@ import { useSubCategoryStore } from '../../store/sub-category';
 import { useCategoriesStore } from '../../store/categories.store';
 import { CategoryProduct } from '../../types/branch_products.types';
 
-
 interface Props {
   closeModal: () => void;
   subCategory: ISubCategory | undefined;
@@ -64,7 +63,7 @@ const AddSubCategory = (props: Props) => {
           <>
             <div className="flex flex-col w-full dark:text-white">
               <Input
-               label="Nombre"
+                label="Nombre"
                 name="name"
                 labelPlacement="outside"
                 value={values.name}
@@ -73,7 +72,6 @@ const AddSubCategory = (props: Props) => {
                 placeholder="Ingresa el nombre de la categoría"
                 classNames={{ label: 'font-semibold dark:text-gray-200 text-sm' }}
                 variant="bordered"
-               
               />
               {errors.name && touched.name && (
                 <>
