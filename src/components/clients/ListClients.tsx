@@ -167,7 +167,7 @@ const ListClients = ({ actions }: Props) => {
             <div className="grid w-full grid-cols-4 gap-3">
               <Input
                 startContent={<User />}
-                className="w-full dark:text-white"
+                className="w-full dark:text-white border border-white rounded-xl"
                 variant="bordered"
                 labelPlacement="outside"
                 label="Nombre"
@@ -186,7 +186,7 @@ const ListClients = ({ actions }: Props) => {
               />
               <Input
                 startContent={<Mail />}
-                className="w-full dark:text-white"
+                className="w-full dark:text-white border border-white rounded-xl"
                 variant="bordered"
                 labelPlacement="outside"
                 label="correo"
@@ -203,33 +203,32 @@ const ListClients = ({ actions }: Props) => {
                   setEmail('');
                 }}
               />
-
-              <Autocomplete
-                onSelectionChange={(key) => {
-                  if (key) {
-                    setBranch(key as string);
-                  }
-                }}
-                className="w-full dark:text-white"
-                label="Sucursal"
-                labelPlacement="outside"
-                placeholder="Selecciona una sucursal"
-                variant="bordered"
-                defaultSelectedKey={branch}
-                classNames={{
-                  base: 'font-semibold text-gray-500 text-sm',
-                }}
-                clearButtonProps={{
-                  onClick: () => setBranch(''),
-                }}
-              >
-                {branch_list.map((bra) => (
-                  <AutocompleteItem value={bra.name} className="dark:text-white" key={bra.name}>
-                    {bra.name}
-                  </AutocompleteItem>
-                ))}
-              </Autocomplete>
-
+              <div>
+                <label className="font-semibold dark:text-white text-sm"> Sucursal</label>
+                <Autocomplete
+                  onSelectionChange={(key) => {
+                    if (key) {
+                      setBranch(key as string);
+                    }
+                  }}
+                  className="w-full dark:text-white border border-white rounded-xl"
+                  placeholder="Selecciona una sucursal"
+                  variant="bordered"
+                  defaultSelectedKey={branch}
+                  classNames={{
+                    base: 'font-semibold text-gray-500 text-sm',
+                  }}
+                  clearButtonProps={{
+                    onClick: () => setBranch(''),
+                  }}
+                >
+                  {branch_list.map((bra) => (
+                    <AutocompleteItem value={bra.name} className="dark:text-white" key={bra.name}>
+                      {bra.name}
+                    </AutocompleteItem>
+                  ))}
+                </Autocomplete>
+              </div>
               <Button
                 style={{
                   backgroundColor: theme.colors.secondary,
@@ -247,7 +246,7 @@ const ListClients = ({ actions }: Props) => {
           <div className="flex flex-col gap-3 mt-3 lg:flex-row lg:justify-between lg:gap-10">
             <div className="flex justify-between justify-start order-2 lg:order-1">
               <Switch
-                className="hidden md:inline-flex"
+                className="hidden xl:flex"
                 onValueChange={(active) => setActive(active)}
                 isSelected={active}
                 classNames={{
@@ -261,72 +260,76 @@ const ListClients = ({ actions }: Props) => {
               </Switch>
             </div>
             <div className="flex xl:gap-10 gap-3 w-full  lg:justify-end order-1 lg:order-2">
-              <Select
-                className="xl:w-44 w-36 dark:text-white"
-                variant="bordered"
-                label="Tipo de cliente"
-                placeholder="-- Seleccione tipo de cliente --"
-                labelPlacement="outside"
-                classNames={{
-                  label: 'font-semibold',
-                }}
-                value={String(tipeCustomer)}
-                onChange={(e) => {
-                  setTypeCustomer(e.target.value !== '' ? e.target.value : '');
-                }}
-              >
-                <SelectItem className="dark:text-white" key={'1'}>
-                  Contribuyente
-                </SelectItem>
-                <SelectItem className="dark:text-white" key={'0'}>
-                  No Contribuyente
-                </SelectItem>
-                <SelectItem className="dark:text-white" key={''}>
-                  Todos
-                </SelectItem>
-              </Select>
-              <Select
-                className="xl:w-44 w-36 dark:text-white"
-                variant="bordered"
-                label="Mostrar"
-                defaultSelectedKeys={['5']}
-                labelPlacement="outside"
-                classNames={{
-                  label: 'font-semibold',
-                }}
-                value={limit}
-                onChange={(e) => {
-                  setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
-                }}
-              >
-                <SelectItem className="dark:text-white" key={'5'}>
-                  5
-                </SelectItem>
-                <SelectItem className="dark:text-white" key={'10'}>
-                  10
-                </SelectItem>
-                <SelectItem className="dark:text-white" key={'20'}>
-                  20
-                </SelectItem>
-                <SelectItem className="dark:text-white" key={'30'}>
-                  30
-                </SelectItem>
-                <SelectItem className="dark:text-white" key={'40'}>
-                  40
-                </SelectItem>
-                <SelectItem className="dark:text-white" key={'50'}>
-                  50
-                </SelectItem>
-                <SelectItem className="dark:text-white" key={'100'}>
-                  100
-                </SelectItem>
-              </Select>
+              <div>
+                <label className="font-semibold text-sm dark:text-white"> Tipo de Cliente</label>
+                <Select
+                  className="xl:w-44 w-36 dark:text-white border border-white rounded-xl"
+                  variant="bordered"
+                  placeholder="-- Seleccione tipo de cliente --"
+                  labelPlacement="outside"
+                  classNames={{
+                    label: 'font-semibold',
+                  }}
+                  value={String(tipeCustomer)}
+                  onChange={(e) => {
+                    setTypeCustomer(e.target.value !== '' ? e.target.value : '');
+                  }}
+                >
+                  <SelectItem className="dark:text-white" key={'1'}>
+                    Contribuyente
+                  </SelectItem>
+                  <SelectItem className="dark:text-white" key={'0'}>
+                    No Contribuyente
+                  </SelectItem>
+                  <SelectItem className="dark:text-white" key={''}>
+                    Todos
+                  </SelectItem>
+                </Select>
+              </div>
+              <div>
+                <label className="font-semibold dark:text-white text-sm">Mostrar</label>
+                <Select
+                  className="xl:w-44 w-36 dark:text-white border border-white rounded-xl"
+                  variant="bordered"
+                  defaultSelectedKeys={['5']}
+                  labelPlacement="outside"
+                  classNames={{
+                    label: 'font-semibold',
+                  }}
+                  value={limit}
+                  onChange={(e) => {
+                    setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
+                  }}
+                >
+                  <SelectItem className="dark:text-white" key={'5'}>
+                    5
+                  </SelectItem>
+                  <SelectItem className="dark:text-white" key={'10'}>
+                    10
+                  </SelectItem>
+                  <SelectItem className="dark:text-white" key={'20'}>
+                    20
+                  </SelectItem>
+                  <SelectItem className="dark:text-white" key={'30'}>
+                    30
+                  </SelectItem>
+                  <SelectItem className="dark:text-white" key={'40'}>
+                    40
+                  </SelectItem>
+                  <SelectItem className="dark:text-white" key={'50'}>
+                    50
+                  </SelectItem>
+                  <SelectItem className="dark:text-white" key={'100'}>
+                    100
+                  </SelectItem>
+                </Select>
+              </div>
             </div>
           </div>
 
           <div className="flex items-end justify-end xl:mt-2 gap-12">
             <Switch
-              className="xl:hidden md:inline-flex"
+              className="xl:hidden flex"
               onValueChange={(active) => setActive(active)}
               isSelected={active}
               classNames={{
@@ -338,7 +341,7 @@ const ListClients = ({ actions }: Props) => {
                 Mostrar {active ? 'inactivos' : 'activos'}
               </span>
             </Switch>
-            <ButtonGroup>
+            <ButtonGroup className=" xl:flex  hidden border border-white rounded-xl">
               <Button
                 className="hidden md:inline-flex"
                 isIconOnly
@@ -351,6 +354,30 @@ const ListClients = ({ actions }: Props) => {
               >
                 <ITable />
               </Button>
+              <Button
+                isIconOnly
+                color="default"
+                style={{
+                  backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
+                  color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
+                }}
+                onClick={() => setView('grid')}
+              >
+                <CreditCard />
+              </Button>
+              <Button
+                isIconOnly
+                color="default"
+                style={{
+                  backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
+                  color: view === 'list' ? theme.colors.primary : '#3e3e3e',
+                }}
+                onClick={() => setView('list')}
+              >
+                <List />
+              </Button>
+            </ButtonGroup>
+            <ButtonGroup className=" xl:hidden  flex border border-white rounded-xl">
               <Button
                 isIconOnly
                 color="default"

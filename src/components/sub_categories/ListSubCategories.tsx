@@ -251,9 +251,7 @@ function ListSubCategory({ actions }: PProps) {
                     <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                       Nombre
                     </th>
-                    {/* <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                      Código
-                    </th> */}
+
                     <th className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                       Sub categoría
                     </th>
@@ -287,9 +285,7 @@ function ListSubCategory({ actions }: PProps) {
                               <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                                 {categories.categoryProduct.name}
                               </td>
-                              {/* <td className="p-3 text-sm text-slate-500 whitespace-nowrap dark:text-slate-100">
-                              {categories.subCategory.name}
-                            </td> */}
+
                               <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                                 <div className="flex w-full gap-5">
                                   {categories.isActive && actions.includes('Editar') ? (

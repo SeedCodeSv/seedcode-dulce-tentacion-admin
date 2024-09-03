@@ -4,7 +4,6 @@ import * as yup from 'yup';
 import { useContext } from 'react';
 import { ThemeContext } from '../../../hooks/useTheme';
 import { useContractTypeStore } from '../../../store/contractType';
-
 interface Props {
   closeModal: () => void;
   ContractTypes?: {
@@ -12,16 +11,12 @@ interface Props {
     name: string;
   };
 }
-
 const AddStatusEmployee = (props: Props) => {
   const { theme } = useContext(ThemeContext);
-
   const validationSchema = yup.object().shape({
     name: yup.string().required('**Campo requerido**'),
   });
-
   const { postContractType, patchContratType } = useContractTypeStore();
-
   const handleSave = ({ name }: { name: string }) => {
     if (props.ContractTypes) {
       patchContratType(name, props.ContractTypes.id);
@@ -31,7 +26,6 @@ const AddStatusEmployee = (props: Props) => {
       props.closeModal();
     }
   };
-
   return (
     <div className="p-5 w-full">
       <Formik
@@ -46,18 +40,16 @@ const AddStatusEmployee = (props: Props) => {
                 name="name"
                 labelPlacement="outside"
                 value={values.name}
+                className="dark:text-white"
                 onChange={handleChange('name')}
                 onBlur={handleBlur('name')}
                 placeholder="Ingresa el nombre de la categoría"
-                classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
+                classNames={{ base: 'font-semibold text-sm' }}
                 variant="bordered"
                 label="Nombre"
+                isInvalid={!!errors.name && touched.name}
+                errorMessage={errors.name}
               />
-              {errors.name && touched.name && (
-                <>
-                  <span className="text-sm font-semibold text-red-600">{errors.name}</span>
-                </>
-              )}
             </div>
             <Button
               onClick={() => handleSubmit()}

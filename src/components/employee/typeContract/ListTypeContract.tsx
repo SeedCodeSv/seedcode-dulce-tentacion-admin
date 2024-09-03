@@ -139,7 +139,7 @@ function ListContractType({ actions }: ArrayAction) {
                       color: theme.colors.primary,
                       fontSize: '16px',
                     }}
-                    className="mt-6 font-semibold"
+                    className="mt-6 font-semibold border border-white rounded-xl"
                     onClick={() => {
                       handleSearch(undefined);
                       setOpenVaul(false);
@@ -188,7 +188,7 @@ function ListContractType({ actions }: ArrayAction) {
               backgroundColor: theme.colors.secondary,
               color: theme.colors.primary,
             }}
-            className="mt-6 font-semibold md:flex"
+            className="mt-6 font-semibold md:flex border border-white rounded-xl"
             color="primary"
             startContent={<SearchIcon size={25} />}
             onClick={() => handleSearch(undefined)}
