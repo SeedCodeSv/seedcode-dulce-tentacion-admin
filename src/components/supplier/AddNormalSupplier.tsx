@@ -65,7 +65,7 @@ function AddNormalSupplier() {
       >
         {({ errors, touched, handleChange, handleBlur, setFieldValue }) => (
           <Form className=" w-full h-full p-5 bg-gray-50 dark:bg-gray-900">
-            <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+            <div className="w-full h-full border-white border p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
               <div onClick={() => navigate(-1)} className="w-32  flex gap-2 mb-4 cursor-pointer">
                 <ArrowLeft className="dark:text-white" size={20} />
                 <p className="dark:text-white">Regresar</p>
@@ -79,34 +79,38 @@ function AddNormalSupplier() {
                     onChange={handleChange}
                     labelPlacement="outside"
                     name="nombre"
-                    className="dark:text-white"
+                    className="dark:text-white font-semibold"
                     placeholder="Ingresa el nombre"
                     classNames={{
-                      label: 'font-semibold  text-sm',
+                      label: 'text-gray-500 text-sm font-semibold',
                     }}
+                    isInvalid={touched.nombre && !!errors.nombre}
+                    errorMessage={touched.nombre && errors.nombre}
                     variant="bordered"
                   />
-                  {errors.nombre && touched.nombre && (
+                  {/* {errors.nombre && touched.nombre && (
                     <span className="text-sm font-semibold text-red-500">{errors.nombre}</span>
-                  )}{' '}
+                  )}{' '} */}
                 </div>
                 <div>
                   <Input
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    className="dark:text-white"
+                    className="dark:text-white font-semibold"
                     label="Correo electrónico"
                     labelPlacement="outside"
                     name="correo"
+                    isInvalid={touched.correo && !!errors.correo}
+                    errorMessage={touched.correo && errors.correo}
                     placeholder="Ingresa el correo"
                     classNames={{
-                      label: 'font-semibold text-gray-500 text-sm',
+                      label: 'text-gray-500 text-sm font-semibold',
                     }}
                     variant="bordered"
                   />
-                  {errors.correo && touched.correo && (
+                  {/* {errors.correo && touched.correo && (
                     <span className="text-sm font-semibold text-red-500">{errors.correo}</span>
-                  )}
+                  )} */}
                 </div>
 
                 <div>
@@ -114,19 +118,21 @@ function AddNormalSupplier() {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     type="number"
-                    className="dark:text-white"
+                    className="dark:text-white font-semibold"
                     label="Teléfono"
                     labelPlacement="outside"
                     name="telefono"
                     placeholder="Ingresa el telefono"
                     classNames={{
-                      label: 'font-semibold text-gray-500 text-sm',
+                      label: 'text-gray-500 text-sm font-semibold',
                     }}
+                    isInvalid={touched.telefono && !!errors.telefono}
+                    errorMessage={touched.telefono && errors.telefono}
                     variant="bordered"
                   />
-                  {errors.telefono && touched.telefono && (
+                  {/* {errors.telefono && touched.telefono && (
                     <span className="text-sm font-semibold text-red-500">{errors.telefono}</span>
-                  )}{' '}
+                  )}{' '} */}
                 </div>
               </div>
               <div className="grid xl:grid-cols-2 gap-5 pt-3">
@@ -148,7 +154,9 @@ function AddNormalSupplier() {
                     classNames={{
                       base: 'font-semibold text-gray-500 text-sm',
                     }}
-                    className="dark:text-white"
+                    isInvalid={touched.tipoDocumento && !!errors.tipoDocumento}
+                    errorMessage={touched.tipoDocumento && errors.tipoDocumento}
+                    className="dark:text-white font-semibold"
                   >
                     {cat_022_tipo_de_documentoDeIde.map((dep) => (
                       <AutocompleteItem
@@ -160,11 +168,11 @@ function AddNormalSupplier() {
                       </AutocompleteItem>
                     ))}
                   </Autocomplete>
-                  {errors.tipoDocumento && touched.tipoDocumento && (
+                  {/* {errors.tipoDocumento && touched.tipoDocumento && (
                     <span className="text-sm font-semibold text-red-500">
                       {errors.tipoDocumento}
                     </span>
-                  )}{' '}
+                  )}{' '} */}
                 </div>
 
                 <div>
@@ -209,7 +217,9 @@ function AddNormalSupplier() {
                     classNames={{
                       base: 'font-semibold text-gray-500 text-sm',
                     }}
-                    className="dark:text-white"
+                    isInvalid={touched.departamento && !!errors.departamento}
+                    errorMessage={touched.departamento && errors.departamento}
+                    className="dark:text-white font-semibold"
                   >
                     {cat_012_departamento.map((dep) => (
                       <AutocompleteItem
@@ -221,11 +231,11 @@ function AddNormalSupplier() {
                       </AutocompleteItem>
                     ))}
                   </Autocomplete>
-                  {errors.departamento && touched.departamento && (
+                  {/* {errors.departamento && touched.departamento && (
                     <span className="text-sm font-semibold text-red-500">
                       {errors.departamento}
                     </span>
-                  )}
+                  )} */}
                 </div>
                 <div>
                   <Autocomplete
@@ -243,11 +253,13 @@ function AddNormalSupplier() {
                     label="Municipio"
                     labelPlacement="outside"
                     placeholder="Selecciona el municipio"
-                    className="dark:text-white"
+                    className="dark:text-white font-semibold"
                     variant="bordered"
                     classNames={{
                       base: 'font-semibold text-gray-500 text-sm',
                     }}
+                    isInvalid={touched.municipio && !!errors.municipio}
+                    errorMessage={touched.municipio && errors.municipio}
                   >
                     {cat_013_municipios.map((dep) => (
                       <AutocompleteItem
@@ -259,9 +271,9 @@ function AddNormalSupplier() {
                       </AutocompleteItem>
                     ))}
                   </Autocomplete>
-                  {errors.municipio && touched.municipio && (
+                  {/* {errors.municipio && touched.municipio && (
                     <span className="text-sm font-semibold text-red-500">{errors.municipio}</span>
-                  )}{' '}
+                  )}{' '} */}
                 </div>
               </div>
 
