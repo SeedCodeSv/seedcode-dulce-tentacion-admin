@@ -313,3 +313,31 @@
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
+
+.loaderButton {
+  width: 28px;
+  height: 28px;
+  border: 5px solid #0a0a0a;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+
+/* Modo oscuro */
+@media (prefers-color-scheme: dark) {
+  .loaderButton {
+    border-color: #ffffff;
+    border-bottom-color: transparent;
+  }
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

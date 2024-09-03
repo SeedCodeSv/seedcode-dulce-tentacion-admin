@@ -46,24 +46,29 @@ export const useContractTypeStore = create<IContractTypeStore>((set, get) => ({
         });
       });
   },
-  postContractType(name) {
-    create_contract_type({ name })
+  postContractType(name: string): Promise<{ ok: boolean }> {
+    return create_contract_type({ name })
       .then(() => {
         get().getPaginatedContractType(1, get().limit_filter, '');
         toast.success(messages.success);
+        return { ok: true }; // Devuelve el objeto esperado
       })
       .catch(() => {
         toast.error(messages.error);
+        return { ok: false }; // Devuelve el objeto esperado en caso de error
       });
   },
-  patchContratType(name, id) {
-    update_contract_type({ name }, id)
+
+  patchContratType(name: string, id: number): Promise<{ ok: boolean }> {
+    return update_contract_type({ name }, id)
       .then(() => {
         get().getPaginatedContractType(1, get().limit_filter, '');
         toast.success(messages.success);
+        return { ok: true };
       })
       .catch(() => {
         toast.error(messages.success);
+        return { ok: false };
       });
   },
   deleteContractType: async (id) => {

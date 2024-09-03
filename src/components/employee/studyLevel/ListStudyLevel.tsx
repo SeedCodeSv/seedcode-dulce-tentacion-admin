@@ -354,6 +354,7 @@ function ListStudyLevel({ actions }: ArrayAction) {
                                       {staudyLevel.isActive && (
                                         <TooltipGlobal text="Editar">
                                           <Button
+                                            className="border border-white"
                                             onClick={() => {
                                               handleEdit(staudyLevel);
 
@@ -376,6 +377,7 @@ function ListStudyLevel({ actions }: ArrayAction) {
                                     </>
                                   ) : (
                                     <Button
+                                      className="border border-white"
                                       isIconOnly
                                       style={{
                                         backgroundColor: theme.colors.secondary,
@@ -389,6 +391,7 @@ function ListStudyLevel({ actions }: ArrayAction) {
                                     <DeletePopUp studyLevel={staudyLevel} />
                                   ) : (
                                     <Button
+                                      className="border border-white"
                                       isIconOnly
                                       style={{ backgroundColor: theme.colors.danger }}
                                     >
@@ -405,6 +408,7 @@ function ListStudyLevel({ actions }: ArrayAction) {
                                     <>
                                       {actions.includes('Activar') ? (
                                         <Button
+                                          className="border border-white"
                                           onClick={() => handleActivate(staudyLevel.id)}
                                           isIconOnly
                                           style={global_styles().thirdStyle}
@@ -413,6 +417,7 @@ function ListStudyLevel({ actions }: ArrayAction) {
                                         </Button>
                                       ) : (
                                         <Button
+                                          className="border border-white"
                                           isIconOnly
                                           style={{
                                             ...global_styles().thirdStyle,
@@ -506,9 +511,16 @@ const DeletePopUp = ({ studyLevel }: Props) => {
 
   return (
     <>
-      <Popover isOpen={isOpen} onClose={onClose} backdrop="blur" showArrow>
+      <Popover
+        isOpen={isOpen}
+        className="border border-white rounded-xl"
+        onClose={onClose}
+        backdrop="blur"
+        showArrow
+      >
         <PopoverTrigger>
           <Button
+            className="border border-white"
             onClick={onOpen}
             isIconOnly
             style={{
@@ -532,10 +544,12 @@ const DeletePopUp = ({ studyLevel }: Props) => {
               ¿Estas seguro de eliminar este registro?
             </p>
             <div className="mt-4 flex justify-center">
-              <Button onClick={onClose}>No, cancelar</Button>
+              <Button className="border border-white " onClick={onClose}>
+                No, cancelar
+              </Button>
               <Button
                 onClick={() => handleDelete()}
-                className="ml-5"
+                className="ml-5 border border-white"
                 style={{
                   backgroundColor: theme.colors.danger,
                   color: theme.colors.primary,
