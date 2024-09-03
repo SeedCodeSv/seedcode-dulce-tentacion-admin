@@ -88,9 +88,6 @@ function AddNormalSupplier() {
                     errorMessage={touched.nombre && errors.nombre}
                     variant="bordered"
                   />
-                  {/* {errors.nombre && touched.nombre && (
-                    <span className="text-sm font-semibold text-red-500">{errors.nombre}</span>
-                  )}{' '} */}
                 </div>
                 <div>
                   <Input
@@ -108,9 +105,6 @@ function AddNormalSupplier() {
                     }}
                     variant="bordered"
                   />
-                  {/* {errors.correo && touched.correo && (
-                    <span className="text-sm font-semibold text-red-500">{errors.correo}</span>
-                  )} */}
                 </div>
 
                 <div>
@@ -130,9 +124,6 @@ function AddNormalSupplier() {
                     errorMessage={touched.telefono && errors.telefono}
                     variant="bordered"
                   />
-                  {/* {errors.telefono && touched.telefono && (
-                    <span className="text-sm font-semibold text-red-500">{errors.telefono}</span>
-                  )}{' '} */}
                 </div>
               </div>
               <div className="grid xl:grid-cols-2 gap-5 pt-3">
@@ -168,33 +159,28 @@ function AddNormalSupplier() {
                       </AutocompleteItem>
                     ))}
                   </Autocomplete>
-                  {/* {errors.tipoDocumento && touched.tipoDocumento && (
-                    <span className="text-sm font-semibold text-red-500">
-                      {errors.tipoDocumento}
-                    </span>
-                  )}{' '} */}
                 </div>
 
                 <div>
                   <Input
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    type="number"
+                    type="text"
                     label="Numero documento"
                     labelPlacement="outside"
-                    className="dark:text-white"
                     name="numDocumento"
+                    onChange={({ currentTarget }) => {
+                      setFieldValue('numDocumento', currentTarget.value.replace(/[^0-9]/g, ''));
+                    }}
+                    onBlur={handleBlur('numDocumento')}
                     placeholder="Ingresa el numero documento"
                     classNames={{
                       label: 'font-semibold text-gray-500 text-sm',
+                      input: 'dark:text-white',
+                      base: 'font-semibold',
                     }}
                     variant="bordered"
+                    errorMessage={errors.numDocumento}
+                    isInvalid={!!errors.numDocumento && !!touched.numDocumento}
                   />
-                  {errors.numDocumento && touched.numDocumento && (
-                    <span className="text-sm font-semibold text-red-500">
-                      {errors.numDocumento}
-                    </span>
-                  )}{' '}
                 </div>
                 <div>
                   <Autocomplete
@@ -231,11 +217,6 @@ function AddNormalSupplier() {
                       </AutocompleteItem>
                     ))}
                   </Autocomplete>
-                  {/* {errors.departamento && touched.departamento && (
-                    <span className="text-sm font-semibold text-red-500">
-                      {errors.departamento}
-                    </span>
-                  )} */}
                 </div>
                 <div>
                   <Autocomplete
@@ -271,9 +252,6 @@ function AddNormalSupplier() {
                       </AutocompleteItem>
                     ))}
                   </Autocomplete>
-                  {/* {errors.municipio && touched.municipio && (
-                    <span className="text-sm font-semibold text-red-500">{errors.municipio}</span>
-                  )}{' '} */}
                 </div>
               </div>
 
@@ -282,17 +260,16 @@ function AddNormalSupplier() {
                   onChange={handleChange}
                   label="Complemento de dirección"
                   classNames={{
-                    label: 'font-semibold text-gray-500 text-sm',
+                    base: 'font-semibold text-gray-500 text-sm',
                   }}
+                  errorMessage={errors.complemento}
+                  isInvalid={!!errors.complemento && !!touched.complemento}
                   labelPlacement="outside"
                   variant="bordered"
                   placeholder="Ingresa el complemento de dirección"
                   name="complemento"
-                  className="dark:text-white"
+                  className="dark:text-white font-semibold"
                 />
-                {errors.complemento && touched.complemento && (
-                  <span className="text-sm font-semibold text-red-500">{errors.complemento}</span>
-                )}{' '}
               </div>
               <Button
                 type="submit"

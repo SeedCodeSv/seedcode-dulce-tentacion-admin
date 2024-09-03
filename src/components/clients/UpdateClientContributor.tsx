@@ -163,7 +163,7 @@ function AddClientContributor(props: Props) {
   const selectedKeyDepartment = useMemo(() => {
     if (user_by_id) {
       const department = cat_012_departamento.find(
-        (department) => department.codigo === user_by_id.customer.direccion.departamento
+        (department) => department.codigo === user_by_id?.customer?.direccion?.departamento
       );
       return department?.codigo;
     }
@@ -171,7 +171,7 @@ function AddClientContributor(props: Props) {
   }, [user_by_id, cat_012_departamento.length]);
 
   useEffect(() => {
-    getCat013Municipios(user_by_id?.customer.direccion.departamento || '0');
+    getCat013Municipios(user_by_id?.customer?.direccion?.departamento || '0');
   }, [user_by_id]);
 
   useEffect(() => {

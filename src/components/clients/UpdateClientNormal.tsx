@@ -122,7 +122,7 @@ const UpdateClientNormal = (props: Props) => {
   const selectedKeyDepartment = useMemo(() => {
     if (user_by_id) {
       const department = cat_012_departamento.find(
-        (department) => department.codigo === user_by_id.customer.direccion.departamento
+        (department) => department.codigo === user_by_id?.customer?.direccion?.departamento
       );
       return department?.codigo;
     }
@@ -130,7 +130,7 @@ const UpdateClientNormal = (props: Props) => {
   }, [user_by_id, cat_012_departamento.length]);
 
   useEffect(() => {
-    getCat013Municipios(user_by_id?.customer.direccion.departamento || '0');
+    getCat013Municipios(user_by_id?.customer?.direccion?.departamento || '0');
   }, [user_by_id]);
 
   useEffect(() => {
@@ -162,7 +162,7 @@ const UpdateClientNormal = (props: Props) => {
   const selectedKeyTypeOfDocument = useMemo(() => {
     if (user_by_id) {
       const typeOfDocument = cat_022_tipo_de_documentoDeIde.find(
-        (typeOfDocument) => typeOfDocument.codigo === user_by_id.customer.tipoDocumento
+        (typeOfDocument) => typeOfDocument.codigo === user_by_id?.customer?.tipoDocumento
       );
       return typeOfDocument?.codigo;
     }
@@ -172,7 +172,7 @@ const UpdateClientNormal = (props: Props) => {
   return (
     <Layout title="Cliente">
       <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
-        <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+        <div className="w-full h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <button
             onClick={() => navigate('/clients')}
             className="flex items-center gap-2 bg-transparent"
@@ -421,7 +421,7 @@ const UpdateClientNormal = (props: Props) => {
                           classNames={{
                             base: 'font-semibold text-sm',
                           }}
-                          defaultSelectedKey={user_by_id?.customer.branch?.id.toString()}
+                          defaultSelectedKey={user_by_id?.customer?.branch?.id.toString()}
                         >
                           {branch_list.map((bra) => (
                             <AutocompleteItem
