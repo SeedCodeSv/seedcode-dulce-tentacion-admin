@@ -96,7 +96,7 @@ function ListBranch({ actions }: ArrayAction) {
         <ListBranchProduct onclick={() => setBranchId(0)} id={BranchId} />
       ) : (
         <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
-          <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+          <div className="w-full h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
             <div className="flex justify-between items-end ">
               <SearchBranch
                 nameBranch={setName}
@@ -182,7 +182,7 @@ function ListBranch({ actions }: ArrayAction) {
             </div>
 
             <div className="flex flex-col gap-3 mt-3 lg:flex-row lg:justify-between lg:gap-10">
-              <div className="flex justify-between justify-start order-2 lg:order-1">
+              <div className="flex justify-start order-2 lg:order-1">
                 <Switch
                   classNames={{
                     thumb: classNames(active ? 'bg-blue-500' : 'bg-gray-400'),
@@ -482,12 +482,12 @@ const DeletePopUp = ({ branch }: Props) => {
           </Button>
         </PopoverTrigger>
         <PopoverContent>
-          <div className="w-full p-5">
+          <div className="w-full p-5 text-center">
             <p className="font-semibold text-gray-600 dark:text-white">Eliminar {branch.name}</p>
-            <p className="mt-3 text-center text-gray-600 dark:text-white w-72">
-              ¿Estas seguro de eliminar este registro?
+            <p className="mt-3 text-gray-600 dark:text-white w-72 mx-auto">
+              ¿Estás seguro de que deseas eliminar este registro?
             </p>
-            <div className="mt-4">
+            <div className="mt-4 flex justify-center">
               <Button onClick={onClose}>No, cancelar</Button>
               <Button
                 onClick={() => handleDelete()}
@@ -497,7 +497,7 @@ const DeletePopUp = ({ branch }: Props) => {
                   color: theme.colors.primary,
                 }}
               >
-                Si, eliminar
+                Sí, eliminar
               </Button>
             </div>
           </div>

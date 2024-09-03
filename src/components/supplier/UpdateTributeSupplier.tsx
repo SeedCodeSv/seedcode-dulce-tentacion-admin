@@ -114,7 +114,7 @@ function UpdateTributeSupplier() {
   return (
     <Layout title="Actualizar  Contribuyente">
       <div className=" w-full h-full p-5 bg-gray-50 dark:bg-gray-900">
-        <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+        <div className="w-full h-full  border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <div onClick={() => navigate(-1)} className="w-32  flex gap-2 mb-4 cursor-pointer">
             <ArrowLeft className="dark:text-white" size={20} />
             <p className="dark:text-white">Regresar</p>
@@ -169,44 +169,46 @@ function UpdateTributeSupplier() {
               </div>
 
               <div className="pt-2">
-                <Input
-                  value={dataCreateSupplier?.numDocumento}
-                  onChange={handleChange}
-                  type="number"
-                  className="dark:text-white"
-                  label="Numero documento"
-                  labelPlacement="outside"
-                  name="numDocumento"
-                  placeholder="Ingresa el numero documento"
-                  classNames={{
-                    label: 'font-semibold text-gray-500 text-sm',
-                  }}
-                  variant="bordered"
-                />
-              </div>
-              <div className="pt-2">
                 <Autocomplete
-                  label="Actividad"
+                  label="Tipo de documento"
                   labelPlacement="outside"
-                  placeholder="Ingresa la actividad"
-                  variant="bordered"
-                  onSelectionChange={(e) => {
-                    const selectActividad = cat_019_codigo_de_actividad_economica.find(
-                      (dep) => dep.codigo.trim() === e
+                  onSelectionChange={(value) => {
+                    const selected = cat_022_tipo_de_documentoDeIde.find(
+                      (dep) => dep.codigo === value
                     );
-                    if (selectActividad) {
-                      handleChangeAutocomplete('codActividad', selectActividad.codigo);
-                      handleChangeAutocomplete('descActividad', selectActividad.valores);
-                    }
+                    handleChangeAutocomplete('tipoDocumento', selected?.codigo ?? '');
                   }}
+                  defaultItems={cat_022_tipo_de_documentoDeIde}
+                  selectedKey={selectedTipoDocumento?.codigo ?? dataCreateSupplier?.tipoDocumento}
+                  placeholder="Selecciona el tipo de documento"
+                  variant="bordered"
                   classNames={{
                     base: 'font-semibold text-gray-500 text-sm',
                   }}
-                  defaultItems={cat_019_codigo_de_actividad_economica}
-                  selectedKey={dataCreateSupplier?.codActividad}
                   className="dark:text-white"
                 >
-                  {cat_019_codigo_de_actividad_economica.map((dep) => (
+                  {cat_022_tipo_de_documentoDeIde.map((dep) => (
+                    <AutocompleteItem
+                      key={dep.codigo}
+                      value={dep.codigo}
+                      className="dark:text-white"
+                    >
+                      {dep.valores}
+                    </AutocompleteItem>
+                  ))}
+                </Autocomplete>
+              </div>
+              <div className="pt-2">
+                <Autocomplete
+                  label="Departamento"
+                  labelPlacement="outside"
+                  name="departamento"
+                  className="dark:text-white font-semibold"
+                  variant="bordered"
+                  selectedKey={selectedDepartment}
+                  onSelectionChange={handleDepartmentSelect}
+                >
+                  {cat_012_departamento.map((dep) => (
                     <AutocompleteItem
                       key={dep.codigo}
                       value={dep.codigo}
@@ -243,7 +245,7 @@ function UpdateTributeSupplier() {
                   label="Nit"
                   labelPlacement="outside"
                   name="nit"
-                  placeholder="Ingresa su numero de nit"
+                  placeholder="Ingresa su número de nit"
                   classNames={{
                     label: 'font-semibold text-gray-500 text-sm',
                   }}
@@ -256,10 +258,10 @@ function UpdateTributeSupplier() {
                   className="dark:text-white"
                   onChange={handleChange}
                   type="number"
-                  label="Nrc"
+                  label="NRC"
                   labelPlacement="outside"
-                  name="numDocumento"
-                  placeholder="Ingresa el numero de NRC"
+                  name="nrc"
+                  placeholder="Ingresa el número de NRC"
                   classNames={{
                     label: 'font-semibold text-gray-500 text-sm',
                   }}
@@ -267,62 +269,29 @@ function UpdateTributeSupplier() {
                 />
               </div>
               <div className="pt-2">
-                <Autocomplete
-                  label="Tipo de documento"
+                <Input
+                  value={dataCreateSupplier?.numDocumento}
+                  onChange={handleChange}
+                  type="number"
+                  className="dark:text-white"
+                  label="Número documento"
                   labelPlacement="outside"
-                  onSelectionChange={(value) => {
-                    const selected = cat_022_tipo_de_documentoDeIde.find(
-                      (dep) => dep.codigo === value
-                    );
-                    handleChangeAutocomplete('tipoDocumento', selected?.codigo ?? '');
-                  }}
-                  defaultItems={cat_022_tipo_de_documentoDeIde}
-                  selectedKey={selectedTipoDocumento?.codigo ?? dataCreateSupplier?.tipoDocumento}
-                  placeholder="Selecciona el tipo de documento"
-                  variant="bordered"
+                  name="numDocumento"
+                  placeholder="Ingresa el número de documento"
                   classNames={{
-                    base: 'font-semibold text-gray-500 text-sm',
+                    label: 'font-semibold text-gray-500 text-sm',
                   }}
-                  className="dark:text-white"
-                >
-                  {cat_022_tipo_de_documentoDeIde.map((dep) => (
-                    <AutocompleteItem
-                      key={dep.codigo}
-                      value={dep.codigo}
-                      className="dark:text-white"
-                    >
-                      {dep.valores}
-                    </AutocompleteItem>
-                  ))}
-                </Autocomplete>
-              </div>
-              <div className="pt-2">
-                <Autocomplete
-                  label="Departamento"
-                  labelPlacement="outside"
-                  name="departamento"
-                  className="dark:text-white"
                   variant="bordered"
-                  selectedKey={selectedDepartment}
-                  onSelectionChange={handleDepartmentSelect}
-                >
-                  {cat_012_departamento.map((dep) => (
-                    <AutocompleteItem
-                      key={dep.codigo}
-                      value={dep.codigo}
-                      className="dark:text-white"
-                    >
-                      {dep.valores}
-                    </AutocompleteItem>
-                  ))}
-                </Autocomplete>
+                />
               </div>
+
+
               <div className="pt-2">
                 <Autocomplete
                   label="Municipio"
                   labelPlacement="outside"
                   name="municipio"
-                  className="dark:text-white"
+                  className="dark:text-white font-semibold"
                   variant="bordered"
                   selectedKey={selectedMunicipio}
                   onSelectionChange={handleMunicipioSelect}
@@ -340,6 +309,40 @@ function UpdateTributeSupplier() {
               </div>
             </div>
           </div>
+
+          <div className="pt-2">
+                <Autocomplete
+                  label="Actividad"
+                  labelPlacement="outside"
+                  placeholder="Ingresa la actividad"
+                  variant="bordered"
+                  onSelectionChange={(e) => {
+                    const selectActividad = cat_019_codigo_de_actividad_economica.find(
+                      (dep) => dep.codigo.trim() === e
+                    );
+                    if (selectActividad) {
+                      handleChangeAutocomplete('codActividad', selectActividad.codigo);
+                      handleChangeAutocomplete('descActividad', selectActividad.valores);
+                    }
+                  }}
+                  classNames={{
+                    base: 'font-semibold text-gray-500 text-sm',
+                  }}
+                  defaultItems={cat_019_codigo_de_actividad_economica}
+                  selectedKey={dataCreateSupplier?.codActividad}
+                  className="dark:text-white"
+                >
+                  {cat_019_codigo_de_actividad_economica.map((dep) => (
+                    <AutocompleteItem
+                      key={dep.codigo}
+                      value={dep.codigo}
+                      className="dark:text-white"
+                    >
+                      {dep.valores}
+                    </AutocompleteItem>
+                  ))}
+                </Autocomplete>
+              </div>
 
           <div className="pt-2">
             <Textarea

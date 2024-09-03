@@ -49,24 +49,26 @@ const AddClientNormal = (props: Props) => {
     nombre: yup.string().required('El nombre es requerido'),
     correo: yup.string().notRequired().email('El correo es inválido'),
     telefono: yup.string().notRequired(),
-    numDocumento: yup.string().when('tipoDocumento', {
-      is: (tipoDocumento: string | undefined) => tipoDocumento === '13' || tipoDocumento === '36',
-      then: (schema) =>
-        schema.required('El número de documento es requerido').test({
-          name: 'documentValidation',
-          message: 'El número de documento no es válido',
-          test: (value, context) => {
-            const { tipoDocumento } = context.parent;
-            if (tipoDocumento === '13') {
-              return /^[0-9]{9}$/.test(value || '');
-            } else if (tipoDocumento === '36') {
-              return /^[0-9]{14}$/.test(value || '');
-            }
-            return true;
-          },
-        }),
-      otherwise: (schema) => schema.notRequired(),
-    }),
+    // numDocumento: yup
+    //   .string()
+    //   .required('**Número de documento es requerido**')
+    //   .test('noSelectedTypeDocument', '**Debe seleccionar un tipo de documento**', function () {
+    //     const { tipoDocumento } = this.parent;
+    //     return tipoDocumento !== '' ? true : false;
+    //   })
+    //   .test('validar-documento', '**Número de documento no válido**', function (value) {
+    //     const { tipoDocumento } = this.parent;
+    //     if (tipoDocumento === '13') {
+    //       return /^([0-9]{9})$/.test(value);
+    //     }
+    //     if (tipoDocumento === '36') {
+    //       return value.length >= 9 && /^([0-9]{9}|[0-9]{14})$/.test(value);
+    //     }
+    //     return true;
+    //   }),
+
+  
+
     departamento: yup.string().required('El departamento es requerido'),
     municipio: yup.string().required('El municipio es requerido'),
     complemento: yup.string().notRequired(),
@@ -147,6 +149,7 @@ const AddClientNormal = (props: Props) => {
                 <div className="mt-10">
                   <div className="">
                     <Input
+                      className="dark:text-white font-semibold"
                       label="Nombre"
                       labelPlacement="outside"
                       name="name"
@@ -154,14 +157,16 @@ const AddClientNormal = (props: Props) => {
                       onChange={handleChange('nombre')}
                       onBlur={handleBlur('nombre')}
                       placeholder="Ingresa el nombre"
+                      isInvalid={touched.nombre && !!errors.nombre}
+                      errorMessage={touched.nombre && errors.nombre}
                       classNames={{
                         label: 'font-semibold text-gray-500 text-sm',
                       }}
                       variant="bordered"
                     />
-                    {errors.nombre && touched.nombre && (
+                    {/* {errors.nombre && touched.nombre && (
                       <span className="text-sm font-semibold text-red-500">{errors.nombre}</span>
-                    )}
+                    )} */}
                   </div>
                   <div className="pt-3">
                     <Input
@@ -255,8 +260,10 @@ const AddClientNormal = (props: Props) => {
                         labelPlacement="outside"
                         placeholder="Selecciona el departamento"
                         variant="bordered"
-                        className="dark:text-white"
+                        className="dark:text-white font-semibold"
                         value={values.departamento}
+                        isInvalid={touched.departamento && !!errors.departamento}
+                        errorMessage={touched.departamento && errors.departamento}
                       >
                         {cat_012_departamento.map((dep) => (
                           <AutocompleteItem
@@ -268,12 +275,12 @@ const AddClientNormal = (props: Props) => {
                           </AutocompleteItem>
                         ))}
                       </Autocomplete>
-
+                      {/* 
                       {errors.departamento && touched.departamento && (
                         <span className="text-sm font-semibold text-red-500">
                           {errors.departamento}
                         </span>
-                      )}
+                      )} */}
                     </div>
                     <div>
                       <Autocomplete
@@ -292,8 +299,10 @@ const AddClientNormal = (props: Props) => {
                         labelPlacement="outside"
                         placeholder="Selecciona el municipio"
                         variant="bordered"
-                        className="dark:text-white"
+                        className="dark:text-white font-semibold"
                         value={values.municipio}
+                        isInvalid={touched.municipio && !!errors.municipio}
+                        errorMessage={touched.municipio && errors.municipio}
                       >
                         {cat_013_municipios.map((mun) => (
                           <AutocompleteItem
@@ -305,11 +314,11 @@ const AddClientNormal = (props: Props) => {
                           </AutocompleteItem>
                         ))}
                       </Autocomplete>
-                      {errors.municipio && touched.municipio && (
+                      {/* {errors.municipio && touched.municipio && (
                         <span className="text-sm font-semibold text-red-500">
                           {errors.municipio}
                         </span>
-                      )}
+                      )} */}
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-5 pt-3">
@@ -352,6 +361,8 @@ const AddClientNormal = (props: Props) => {
                         classNames={{
                           base: 'font-semibold text-sm',
                         }}
+                        isInvalid={touched.branchId && !!errors.branchId}
+                        errorMessage={touched.branchId && errors.branchId}
                       >
                         {branch_list.map((bra) => (
                           <AutocompleteItem
@@ -364,11 +375,11 @@ const AddClientNormal = (props: Props) => {
                         ))}
                       </Autocomplete>
 
-                      {errors.branchId && touched.branchId && (
+                      {/* {errors.branchId && touched.branchId && (
                         <span className="text-sm font-semibold text-red-500">
                           {errors.branchId}
                         </span>
-                      )}
+                      )} */}
                     </div>
                   </div>
                   <div className="pt-2">

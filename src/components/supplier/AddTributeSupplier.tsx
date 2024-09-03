@@ -67,7 +67,7 @@ function AddTributeSupplier() {
       >
         {({ errors, touched, handleChange, handleBlur, setFieldValue }) => (
           <Form className=" w-full h-full p-5 bg-gray-50 dark:bg-gray-900">
-            <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+            <div className="w-full h-full border-white border p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
               <div onClick={() => navigate(-1)} className="w-32  flex gap-2 mb-4 cursor-pointer">
                 <ArrowLeft className="dark:text-white" size={20} />
                 <p className="dark:text-white">Regresar</p>
@@ -78,52 +78,59 @@ function AddTributeSupplier() {
                     onChange={handleChange}
                     label="Nombre"
                     labelPlacement="outside"
-                    className="dark:text-white"
+                    className="dark:text-white font-bold"
                     name="nombre"
                     placeholder="Ingresa el nombre"
+                    isInvalid={touched.nombre && !!errors.nombre}
+                    errorMessage={touched.nombre && errors.nombre}
                     classNames={{
-                      label: 'font-semibold text-gray-500 text-sm',
+                      label: 'text-gray-500 text-sm font-semibold',
                     }}
                     variant="bordered"
                   />
-                  {errors.nombre && touched.nombre && (
+                  {/* {errors.nombre && touched.nombre && (
                     <span className="text-sm font-semibold text-red-500">{errors.nombre}</span>
-                  )}
+                  )} */}
                 </div>
                 <div>
                   <Input
                     onChange={handleChange}
+                    onBlur={handleBlur}
                     label="Correo electrónico"
-                    className="dark:text-white"
+                    className="dark:text-white font-semibold"
                     labelPlacement="outside"
                     name="correo"
+                    isInvalid={touched.correo && !!errors.correo}
+                    errorMessage={touched.correo && errors.correo}
                     placeholder="Ingresa el correo"
                     classNames={{
                       label: 'font-semibold text-gray-500 text-sm',
                     }}
                     variant="bordered"
                   />
-                  {errors.correo && touched.correo && (
+                  {/* {errors.correo && touched.correo && (
                     <span className="text-sm font-semibold text-red-500">{errors.correo}</span>
-                  )}
+                  )} */}
                 </div>
                 <div>
                   <Input
-                    className="dark:text-white"
+                    className="dark:text-white font-semibold"
                     onChange={handleChange}
                     type="number"
                     label="Teléfono"
                     labelPlacement="outside"
                     name="telefono"
                     placeholder="Ingresa el telefono"
+                    isInvalid={touched.telefono && !!errors.telefono}
+                    errorMessage={touched.telefono && errors.telefono}
                     classNames={{
-                      label: 'font-semibold text-gray-500 text-sm',
+                      label: 'text-gray-500 text-sm font-semibold',
                     }}
                     variant="bordered"
                   />
-                  {errors.telefono && touched.telefono && (
+                  {/* {errors.telefono && touched.telefono && (
                     <span className="text-sm font-semibold text-red-500">{errors.telefono}</span>
-                  )}
+                  )} */}
                 </div>
                 <div>
                   <Autocomplete
@@ -139,11 +146,13 @@ function AddTributeSupplier() {
                       }
                     }}
                     placeholder={'Selecciona el tipo de documento'}
+                    isInvalid={touched.tipoDocumento && !!errors.tipoDocumento}
+                    errorMessage={touched.tipoDocumento && errors.tipoDocumento}
                     variant="bordered"
                     classNames={{
                       base: 'font-semibold text-gray-500 text-sm',
                     }}
-                    className="dark:text-white"
+                    className="dark:text-white font-semibold"
                   >
                     {cat_022_tipo_de_documentoDeIde.map((dep) => (
                       <AutocompleteItem
@@ -156,32 +165,54 @@ function AddTributeSupplier() {
                     ))}
                   </Autocomplete>
 
-                  {errors.tipoDocumento && touched.tipoDocumento && (
+                  {/* {errors.tipoDocumento && touched.tipoDocumento && (
                     <span className="text-sm font-semibold text-red-500">
                       {errors.tipoDocumento}
                     </span>
-                  )}
+                  )} */}
                 </div>
                 <div>
-                  <Input
+                  {/* <Input
                     onChange={handleChange}
                     onBlur={handleBlur}
                     type="number"
                     label="Numero documento"
                     labelPlacement="outside"
-                    className="dark:text-white"
+                    className="dark:text-white font-semibold"
                     name="numDocumento"
                     placeholder="Ingresa el numero documento"
                     classNames={{
                       label: 'font-semibold text-gray-500 text-sm',
                     }}
                     variant="bordered"
+                    errorMessage={errors.numDocumento}
+                    isInvalid={!!errors.numDocumento && !!touched.numDocumento}
+                  /> */}
+                  <Input
+                    type="text"
+                    label="Número documento"
+                    labelPlacement="outside"
+                    name="numDocumento"
+                    // value={values.numDocumento}
+                    onChange={({ currentTarget }) => {
+                      setFieldValue('numDocumento', currentTarget.value.replace(/[^0-9]/g, ''));
+                    }}
+                    onBlur={handleBlur('numDocumento')}
+                    placeholder="Ingresa el número documento"
+                    classNames={{
+                      label: 'font-semibold text-gray-500 text-sm',
+                      input: 'dark:text-white',
+                      base: 'font-semibold',
+                    }}
+                    variant="bordered"
+                    errorMessage={errors.numDocumento}
+                    isInvalid={!!errors.numDocumento && !!touched.numDocumento}
                   />
-                  {errors.numDocumento && touched.numDocumento && (
+                  {/* {errors.numDocumento && touched.numDocumento && (
                     <span className="text-sm font-semibold text-red-500">
                       {errors.numDocumento}
                     </span>
-                  )}
+                  )} */}
                 </div>
 
                 <div>
@@ -189,55 +220,61 @@ function AddTributeSupplier() {
                     onChange={handleChange}
                     label="Nombre comercial"
                     labelPlacement="outside"
-                    className="dark:text-white"
+                    className="dark:text-white font-semibold"
                     name="nombreComercial"
                     placeholder="Ingresa el nombre comercial"
                     classNames={{
                       label: 'font-semibold text-gray-500 text-sm',
                     }}
                     variant="bordered"
+                    isInvalid={touched.nombreComercial && !!errors.nombreComercial}
+                    errorMessage={touched.nombreComercial && errors.nombreComercial}
                   />
-                  {errors.nombreComercial && touched.nombreComercial && (
+                  {/* {errors.nombreComercial && touched.nombreComercial && (
                     <span className="text-sm font-semibold text-red-500">
                       {errors.nombreComercial}
                     </span>
-                  )}
+                  )} */}
                 </div>
                 <div>
                   <Input
-                    className="dark:text-white"
+                    className="dark:text-white font-semibold"
                     onChange={handleChange}
                     type="number"
-                    label="Nit"
+                    label="NIT"
                     labelPlacement="outside"
                     name="nit"
-                    placeholder="Ingresa su numero de nit"
+                    placeholder="Ingresa su número de nit sin guiones"
                     classNames={{
                       label: 'font-semibold text-gray-500 text-sm',
                     }}
                     variant="bordered"
+                    isInvalid={touched.nit && !!errors.nit}
+                    errorMessage={touched.nit && errors.nit}
                   />
-                  {errors.nit && touched.nit && (
+                  {/* {errors.nit && touched.nit && (
                     <span className="text-sm font-semibold text-red-500">{errors.nit}</span>
-                  )}
+                  )} */}
                 </div>
                 <div>
                   <Input
-                    className="dark:text-white"
+                    className="dark:text-white font-semibold"
                     onChange={handleChange}
                     type="number"
-                    label="Nrc"
+                    label="NRC"
                     labelPlacement="outside"
                     name="nrc"
-                    placeholder="Ingresa el numero de NRC"
+                    placeholder="Ingresa el número de NRC"
                     classNames={{
                       label: 'font-semibold text-gray-500 text-sm',
                     }}
                     variant="bordered"
+                    isInvalid={touched.nrc && !!errors.nrc}
+                    errorMessage={touched.nrc && errors.nrc}
                   />
-                  {errors.nrc && touched.nrc && (
+                  {/* {errors.nrc && touched.nrc && (
                     <span className="text-sm font-semibold text-red-500">{errors.nrc}</span>
-                  )}
+                  )} */}
                 </div>
 
                 <div>
@@ -260,6 +297,8 @@ function AddTributeSupplier() {
                       base: 'font-semibold text-gray-500 text-sm',
                     }}
                     className="dark:text-white"
+                    isInvalid={touched.descActividad && !!errors.descActividad}
+                    errorMessage={touched.descActividad && errors.descActividad}
                   >
                     {cat_019_codigo_de_actividad_economica.map((dep) => (
                       <AutocompleteItem
@@ -271,11 +310,11 @@ function AddTributeSupplier() {
                       </AutocompleteItem>
                     ))}
                   </Autocomplete>
-                  {errors.descActividad && touched.descActividad && (
+                  {/* {errors.descActividad && touched.descActividad && (
                     <span className="text-sm font-semibold text-red-500">
                       {errors.descActividad}
                     </span>
-                  )}
+                  )} */}
                 </div>
 
                 <div>
@@ -300,6 +339,8 @@ function AddTributeSupplier() {
                       base: 'font-semibold text-gray-500 text-sm',
                     }}
                     className="dark:text-white"
+                    isInvalid={touched.departamento && !!errors.departamento}
+                    errorMessage={touched.departamento && errors.departamento}
                   >
                     {cat_012_departamento.map((dep) => (
                       <AutocompleteItem
@@ -311,11 +352,11 @@ function AddTributeSupplier() {
                       </AutocompleteItem>
                     ))}
                   </Autocomplete>
-                  {errors.departamento && touched.departamento && (
+                  {/* {errors.departamento && touched.departamento && (
                     <span className="text-sm font-semibold text-red-500">
                       {errors.departamento}
                     </span>
-                  )}
+                  )} */}
                 </div>
                 <div>
                   <Autocomplete
@@ -330,6 +371,8 @@ function AddTributeSupplier() {
                         handleChange('nombreMunicipio')(depSelected?.valores || '');
                       }
                     }}
+                    isInvalid={touched.municipio && !!errors.municipio}
+                    errorMessage={touched.municipio && errors.municipio}
                     label="Municipio"
                     labelPlacement="outside"
                     placeholder="Selecciona el municipio"
@@ -349,9 +392,9 @@ function AddTributeSupplier() {
                       </AutocompleteItem>
                     ))}
                   </Autocomplete>
-                  {errors.municipio && touched.municipio && (
+                  {/* {errors.municipio && touched.municipio && (
                     <span className="text-sm font-semibold text-red-500">{errors.municipio}</span>
-                  )}
+                  )} */}
                 </div>
               </div>
               <div></div>
@@ -369,10 +412,12 @@ function AddTributeSupplier() {
                   variant="bordered"
                   placeholder="Ingresa el complemento de dirección"
                   name="complemento"
+                  errorMessage={errors.complemento}
+                  isInvalid={!!errors.complemento && !!touched.complemento}
                 />
-                {errors.complemento && touched.complemento && (
+                {/* {errors.complemento && touched.complemento && (
                   <span className="text-sm font-semibold text-red-500">{errors.complemento}</span>
-                )}
+                )} */}
               </div>
               <div className="pt-4">
                 <Button

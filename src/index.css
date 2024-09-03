@@ -80,6 +80,19 @@
   animation: l15 1s infinite linear;
 }
 
+/* HTML: <div class="loader"></div> */
+.loaderBranch {
+  width: 50px; /* Ajusta el tamaño del loader */
+  height: 50px; /* Ajusta el tamaño del loader */
+  aspect-ratio: 1;
+  display: grid;
+  border: 4px solid transparent; /* Cambia el color de la frontera según sea necesario */
+  border-radius: 50%;
+  border-right-color: #25b09b;
+  animation: l15 1s infinite linear;
+}
+@keyframes l3 {to{transform: rotate(1turn)}}
+
 .loader2 {
   width: 60px;
   aspect-ratio: 4;
