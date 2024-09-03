@@ -43,7 +43,7 @@ export const SideBar = (props: Props) => {
     setToken('');
     delete_RVA();
     navigation('/');
-    setMode("")
+    setMode('');
   };
   useEffect(() => {
     const handleResize = () => {

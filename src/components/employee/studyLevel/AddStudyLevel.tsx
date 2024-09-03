@@ -19,6 +19,7 @@ const AddStatusEmployee = (props: Props) => {
 
   const validationSchema = yup.object().shape({
     name: yup.string().required('**Campo requerido**'),
+    description: yup.string().required('**Campo requerido**'),
   });
 
   const { postStudyLevel, patchStudyLevel } = useStatusStudyLevel();
@@ -53,15 +54,12 @@ const AddStatusEmployee = (props: Props) => {
                 onChange={handleChange('name')}
                 onBlur={handleBlur('name')}
                 placeholder="Ingresa el nombre de la categoría"
-                classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
+                classNames={{ base: 'font-semibold text-sm  ' }}
                 variant="bordered"
+                isInvalid={!!errors.name && touched.name}
+                errorMessage={errors.name}
                 label="Nombre"
               />
-              {errors.name && touched.name && (
-                <>
-                  <span className="text-sm font-semibold text-red-600">{errors.name}</span>
-                </>
-              )}
             </div>
             <div className="mt-2 ">
               <Textarea
@@ -71,15 +69,14 @@ const AddStatusEmployee = (props: Props) => {
                 value={values.description}
                 onChange={handleChange('description')}
                 onBlur={handleBlur('description')}
+                isInvalid={!!errors.description && touched.description}
+                errorMessage={errors.description}
                 placeholder="Ingresa la descripción"
                 classNames={{
                   label: 'font-semibold text-sm ',
                 }}
                 variant="bordered"
               />
-              {errors.description && touched.description && (
-                <span className="text-sm font-semibold text-red-500">{errors.description}</span>
-              )}
             </div>
             <Button
               onClick={() => handleSubmit()}

@@ -16,9 +16,9 @@ function AddBranch(props: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const validationSchema = yup.object().shape({
-    name: yup.string().required('El nombre es requerido'),
-    address: yup.string().required('La dirección es requerida'),
-    phone: yup.string().required('El teléfono es requerido'),
+    name: yup.string().required('** El nombre es requerido **'),
+    address: yup.string().required('** La dirección es requerida **'),
+    phone: yup.string().required('** El teléfono es requerido **'),
   });
 
   const { user } = useAuthStore();

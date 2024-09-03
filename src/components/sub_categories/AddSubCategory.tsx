@@ -18,7 +18,11 @@ const AddSubCategory = (props: Props) => {
 
   const validationSchema = yup.object().shape({
     name: yup.string().required('**Debes especificar el nombre de la categoría**'),
-    categoryProductId: yup.number().required('**Debes especificar el nombre de la categoría**'),
+
+    categoryProductId: yup
+      .number()
+      .required('**Estatus es requerido**')
+      .min(1, '**Categoria es requerida**'),
   });
 
   const initialValues = {
@@ -70,14 +74,11 @@ const AddSubCategory = (props: Props) => {
                 onChange={handleChange('name')}
                 onBlur={handleBlur('name')}
                 placeholder="Ingresa el nombre de la categoría"
-                classNames={{ label: 'font-semibold dark:text-gray-200 text-sm' }}
+                classNames={{ base: 'font-semibold dark:text-gray-200 text-sm' }}
                 variant="bordered"
+                isInvalid={!!errors.name && touched.name}
+                errorMessage={errors.name}
               />
-              {errors.name && touched.name && (
-                <>
-                  <span className="text-sm  text-red-500">{errors.name}</span>
-                </>
-              )}
 
               <Autocomplete
                 onSelectionChange={(key) => {
@@ -99,6 +100,8 @@ const AddSubCategory = (props: Props) => {
                 defaultSelectedKey={selectedKeyCategory}
                 value={selectedKeyCategory}
                 name="categoryProductId"
+                isInvalid={!!errors.categoryProductId && touched.name}
+                errorMessage={errors.categoryProductId}
               >
                 {list_categories.map((bra) => (
                   <AutocompleteItem
@@ -110,13 +113,6 @@ const AddSubCategory = (props: Props) => {
                   </AutocompleteItem>
                 ))}
               </Autocomplete>
-              {errors.categoryProductId && touched.categoryProductId && (
-                <>
-                  <span className="text-sm font-semibold text-red-600">
-                    {errors.categoryProductId}
-                  </span>
-                </>
-              )}
             </div>
             <Button
               onClick={() => handleSubmit()}
