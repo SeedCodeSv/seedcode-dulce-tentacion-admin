@@ -29,6 +29,10 @@
       "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Cambiar Contraseña", "Activar"]
     },
     {
+      "view": "Ventas",
+      "actions": ["Mostrar", "Ver Detalle", "Invalidar"]
+    },
+    {
       "view": "Empleados",
       "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Contrato", "Activar"]
     },

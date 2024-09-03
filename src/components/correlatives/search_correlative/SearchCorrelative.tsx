@@ -42,6 +42,7 @@ function SearchCorrelative(props: IPropsSearchCorrelative) {
         >
           <div className="flex flex-col  gap-3">
             <div className="w-full">
+              <label className="text-sm font-semibold dark:text-white">Sucursal</label>
               <Autocomplete
                 onSelectionChange={(e) => {
                   const selectNameBranch = branch_list.find(
@@ -50,11 +51,10 @@ function SearchCorrelative(props: IPropsSearchCorrelative) {
                   setFilter({ ...filter, branchName: selectNameBranch?.name || '' });
                   props.branchName(selectNameBranch?.name || '');
                 }}
-                label="Sucursal"
                 labelPlacement="outside"
                 placeholder="Selecciona la sucursal"
                 variant="bordered"
-                className="dark:text-white"
+                className="dark:text-white border border-white rounded-xl"
                 classNames={{
                   base: 'font-semibold text-sm',
                 }}
@@ -67,6 +67,7 @@ function SearchCorrelative(props: IPropsSearchCorrelative) {
               </Autocomplete>
             </div>
             <div className="w-full">
+              <label className="text-sm font-semibold dark:text-white">Tipo de Factura</label>
               <Autocomplete
                 onSelectionChange={(e) => {
                   const selectCorrelativeType = correlativesTypes.find(
@@ -75,11 +76,10 @@ function SearchCorrelative(props: IPropsSearchCorrelative) {
                   setFilter({ ...filter, correlativeType: selectCorrelativeType?.value || '' });
                   props.typeVoucher(selectCorrelativeType?.value || '');
                 }}
-                label="Tipo de Factura"
                 labelPlacement="outside"
                 placeholder="Selecciona el Tipo de Factura"
                 variant="bordered"
-                className="dark:text-white"
+                className="dark:text-white border border-white rounded-xl"
                 classNames={{
                   base: 'text-gray-500 text-sm',
                 }}
@@ -97,7 +97,7 @@ function SearchCorrelative(props: IPropsSearchCorrelative) {
                 color: theme.colors.primary,
                 fontSize: '16px',
               }}
-              className="mb-10 font-semibold"
+              className="mb-10 font-semibold border border-white rounded-xl"
               color="primary"
               onClick={() => {
                 OnGetByBranchAndTypeVoucherCorrelatives(

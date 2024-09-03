@@ -65,7 +65,6 @@ function ListSubCategory({ actions }: PProps) {
     getSubCategoriesPaginated(1, limit, name ?? search);
   };
   const { windowSize } = useWindowSize();
-
   const [view, setView] = useState<'table' | 'grid' | 'list'>(
     windowSize.width < 768 ? 'grid' : 'table'
   );
@@ -74,7 +73,6 @@ function ListSubCategory({ actions }: PProps) {
       getSubCategoriesPaginated(1, limit, search, isActive ? 1 : 0);
     });
   };
-
   return (
     <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
       <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
@@ -326,7 +324,7 @@ function ListSubCategory({ actions }: PProps) {
                                       className="flex font-semibold border border-white  cursor-not-allowed"
                                       isIconOnly
                                     >
-                                      <Lock />
+                                      <Lock className="text-white" />
                                     </Button>
                                   )}
                                   {categories.isActive && actions.includes('Eliminar') ? (
@@ -341,7 +339,7 @@ function ListSubCategory({ actions }: PProps) {
                                       className="flex font-semibold border border-white  cursor-not-allowed"
                                       isIconOnly
                                     >
-                                      <Lock />
+                                      <Lock className="text-white" />
                                     </Button>
                                   )}
                                   {!categories.isActive && (

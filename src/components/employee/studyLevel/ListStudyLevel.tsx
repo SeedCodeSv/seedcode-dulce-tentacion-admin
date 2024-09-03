@@ -92,6 +92,7 @@ function ListStudyLevel({ actions }: ArrayAction) {
             <div className="block md:hidden">
               <TooltipGlobal text="Filtrar">
                 <Button
+                  className="border border-white rounded-xl"
                   style={global_styles().thirdStyle}
                   isIconOnly
                   onClick={() => setOpenVaul(true)}
@@ -158,7 +159,7 @@ function ListStudyLevel({ actions }: ArrayAction) {
         <div className="hidden flex  grid w-full grid-cols-2 gap-5 md:flex">
           <Input
             startContent={<User />}
-            className="w-full xl:w-96 dark:text-white"
+            className="w-full xl:w-96 dark:text-white border border-white rounded-xl"
             variant="bordered"
             labelPlacement="outside"
             label="Nombre"
@@ -180,9 +181,9 @@ function ListStudyLevel({ actions }: ArrayAction) {
               backgroundColor: theme.colors.secondary,
               color: theme.colors.primary,
             }}
-            className="hidden mt-6 font-semibold md:flex"
+            className="hidden mt-6 font-semibold md:flex border border-white rounded-xl"
             color="primary"
-            endContent={<SearchIcon size={15} />}
+            startContent={<SearchIcon size={23} />}
             onClick={() => handleSearch(undefined)}
           >
             Buscar
@@ -210,7 +211,7 @@ function ListStudyLevel({ actions }: ArrayAction) {
             <div className="w-[150px]">
               <label className="  font-semibold text-white text-sm">Mostrar</label>
               <Select
-                className="w-44 dark:text-white"
+                className="w-44 dark:text-white border border-white rounded-xl"
                 variant="bordered"
                 labelPlacement="outside"
                 defaultSelectedKeys={['5']}
