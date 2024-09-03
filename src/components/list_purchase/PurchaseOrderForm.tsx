@@ -111,7 +111,7 @@ const PurchaseOrderForm = () => {
                     <AutocompleteItem
                       className="dark:text-white"
                       onClick={() => setSupplier(branch.nombre)}
-                      key={branch.id}
+                      key={branch.id ?? 0}
                     >
                       {branch.nombre}
                     </AutocompleteItem>

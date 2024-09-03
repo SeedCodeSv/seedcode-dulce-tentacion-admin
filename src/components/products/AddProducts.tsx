@@ -560,7 +560,7 @@ function AddProducts(props: Props) {
                     onSelectionChange={(key) => {
                       if (key) {
                         const branchSelected = JSON.parse(key as string) as Supplier;
-                        handleChange('supplierId')(branchSelected.id.toString());
+                        handleChange('supplierId')(branchSelected?.id?.toString() as string);
                       }
                     }}
                     onBlur={handleBlur('supplierId')}

@@ -32,7 +32,7 @@ function ListPurchasesOrders({ actions }: ArrayAction) {
   const modalAdd = useDisclosure();
   const [startDate, setStartDate] = useState(formatDate());
   const [endDate, setEndDate] = useState(formatDate());
-  const [limit, setLimit] = useState(5);
+  const [limit] = useState(5);
   const [mode, setMode] = useState('show');
   const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
   const [supplier, setSupplier] = useState('');

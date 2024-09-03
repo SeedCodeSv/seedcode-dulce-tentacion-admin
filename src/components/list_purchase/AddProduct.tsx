@@ -28,7 +28,7 @@ function AddProduct({ isOpen, onClose, supplierName, branchName }: Props) {
 
   useEffect(() => {
     getBranchesList();
-    getSupplierList();
+    getSupplierList('');
   }, []);
 
   useEffect(() => {

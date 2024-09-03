@@ -55,7 +55,7 @@ function AddPromotionsByProducts() {
   const { getSupplierList, supplier_list } = useSupplierStore();
   const { getBranchProductOrders, branch_product_order } = useBranchProductStore();
   useEffect(() => {
-    getSupplierList();
+    getSupplierList('');
     getBranchProductOrders(branch, supplier, product, productCode);
   }, [branch, supplier, product, productCode]);
   const [endDate, setEndDate] = useState(formatDate());
@@ -528,7 +528,11 @@ function AddPromotionsByProducts() {
                 variant="bordered"
               >
                 {supplier_list.map((branch) => (
-                  <AutocompleteItem className="dark:text-white" key={branch.id} value={branch.id}>
+                  <AutocompleteItem
+                    className="dark:text-white"
+                    key={branch.id ?? 0}
+                    value={branch.id}
+                  >
                     {branch.nombre}
                   </AutocompleteItem>
                 ))}
