@@ -74,7 +74,7 @@ function ListSuppliers({ actions }: ArrayAction) {
   return (
     <>
       <div className=" w-full h-full xl:p-10 p-5 bg-gray-50 dark:bg-gray-900">
-        <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+        <div className="w-full h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <div className="flex justify-between items-end ">
             <SearchSupplier
               nameSupplier={(name: string) => handleSearch(name)}
@@ -145,7 +145,7 @@ function ListSuppliers({ actions }: ArrayAction) {
           </div>
 
           <div className="flex flex-col gap-3 mt-3 lg:flex-row lg:justify-between lg:gap-10">
-            <div className="flex justify-between justify-start order-2 lg:order-1">
+            <div className="flex  justify-start order-2 lg:order-1">
               <div className="xl:mt-10">
                 <Switch
                   className="hidden xl:inline-flex"

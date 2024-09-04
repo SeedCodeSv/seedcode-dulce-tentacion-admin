@@ -429,14 +429,16 @@ function AddClientContributor() {
                       onBlur={handleBlur('branchId')}
                       label="Sucursal"
                       labelPlacement="outside"
-                      placeholder="Selecciona la sucursal"
+                      // placeholder="Selecciona la sucursal"
+                      placeholder={customer?.branch?.name ?? 'Selecciona la sucursal'}
                       variant="bordered"
                       className="dark:text-white font-semibold"
                       classNames={{
                         base: 'font-semibold text-gray-500 text-sm',
                       }}
                       // selectedKey={}
-                      defaultSelectedKey={values.branchId}
+                      // defaultSelectedKey={values.branchId}
+                      defaultSelectedKey={customer?.branch?.name}
                       errorMessage={errors.branchId}
                       isInvalid={!!errors.branchId && !!touched.branchId}
                     >

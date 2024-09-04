@@ -421,7 +421,16 @@ const ListClients = ({ actions }: Props) => {
                                         {customer.correo}
                                       </td>
                                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                        {customer.esContribuyente ? 'Si' : 'No'}
+                                        {/* {customer.esContribuyente ? 'Si' : 'No'} */}
+                                        <span
+                                          className={`px-2 py-1 text-white rounded-lg ${
+                                            customer.esContribuyente ? 'bg-green-500' : 'bg-red-500'
+                                          }`}
+                                        >
+                                          {customer.esContribuyente
+                                            ? 'CONTRIBUYENTE'
+                                            : 'CONSUMIDOR FINAL'}
+                                        </span>
                                       </td>
 
                                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100">

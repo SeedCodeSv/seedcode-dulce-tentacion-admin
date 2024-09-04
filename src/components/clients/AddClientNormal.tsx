@@ -15,7 +15,6 @@ import { useBranchesStore } from '@/store/branches.store';
 
 const AddClientNormal = () => {
   const { getBranchesList, branch_list } = useBranchesStore();
-
   useEffect(() => {
     getBranchesList();
   }, []);
@@ -24,7 +23,6 @@ const AddClientNormal = () => {
   const { id } = useParams();
   const styles = useGlobalStyles();
   const [selectedCodeDep, setSelectedCodeDep] = useState('0');
-
   const {
     getCat012Departamento,
     cat_012_departamento,
@@ -43,9 +41,6 @@ const AddClientNormal = () => {
     customer && getCat013Municipios(customer.direccion.departamento);
   }, [customer]);
 
-
-  console.log('customer:', customer);
-
   useEffect(() => {
     getCat013Municipios(selectedCodeDep);
     getCat022TipoDeDocumentoDeIde();
@@ -63,14 +58,11 @@ const AddClientNormal = () => {
     nombreDepartamento: customer?.direccion?.nombreDepartamento ?? '',
     complemento: customer?.direccion?.complemento ?? '',
     branchId: customer?.branch?.id,
-    
-    // tipoContribuyente: customer?.tipoContribuyente ?? 'N/A',
   };
 
   const validationSchema = yup.object().shape({
     nombre: yup.string().required('**El nombre es requerido**'),
     correo: yup.string().required('**El correo es requerido**').email('**El correo es invalido**'),
-    // telefono: yup.string().matches(/^[0-9]{0,10}$/, '**El telefono es invalido**'),
     tipoDocumento: yup.string(),
     numDocumento: yup
       .string()
@@ -378,21 +370,20 @@ const AddClientNormal = () => {
                           onBlur={handleBlur('branchId')}
                           label="Sucursal"
                           labelPlacement="outside"
-                          placeholder="Selecciona la sucursal"
+                          placeholder={customer?.branch?.name ?? 'Selecciona la sucursal'}
                           variant="bordered"
                           className="dark:text-white font-semibold"
                           classNames={{
                             base: 'font-semibold text-gray-500 text-sm',
                           }}
-                          // selectedKey={}
-                          defaultSelectedKey={values.branchId}
                           errorMessage={errors.branchId}
+                          defaultSelectedKey={customer?.branch?.name}
                           isInvalid={!!errors.branchId && !!touched.branchId}
                         >
                           {branch_list.map((bra) => (
                             <AutocompleteItem
                               className="dark:text-white"
-                              value={bra.id.toString()}
+                              value={bra.name}
                               key={bra.id.toString()}
                             >
                               {bra.name}
