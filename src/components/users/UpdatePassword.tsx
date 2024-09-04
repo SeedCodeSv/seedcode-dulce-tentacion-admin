@@ -44,6 +44,7 @@ function UpdatePassword(props: Props) {
               <Input
                 label="Contraseña"
                 labelPlacement="outside"
+                className="dark:text-white font-semibold"
                 name="password"
                 value={values.password}
                 onChange={handleChange('password')}
@@ -53,10 +54,12 @@ function UpdatePassword(props: Props) {
                   label: 'font-semibold text-gray-500 text-sm',
                 }}
                 variant="bordered"
+                isInvalid={touched.password && !!errors.password}
+                errorMessage={touched.password && errors.password}
               />
-              {errors.password && touched.password && (
+              {/* {errors.password && touched.password && (
                 <span className="text-sm font-semibold text-red-500">{errors.password}</span>
-              )}
+              )} */}
             </div>
             <Button
               onClick={() => handleSubmit()}

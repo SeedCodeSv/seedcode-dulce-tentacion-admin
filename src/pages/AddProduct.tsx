@@ -141,7 +141,7 @@ function AddProduct() {
       return '';
     }
 
-    const productNameInitials = name.slice(0, 2).toUpperCase();
+    const productNameInitials = name.slice(0, 4).toUpperCase();
     const makeid = (length: number) => {
       let result = '';
       const characters = '0123456789';
@@ -154,7 +154,7 @@ function AddProduct() {
       return result;
     };
 
-    const randomNumber = makeid(2);
+    const randomNumber = makeid(4);
     const codigoGenerado = `${productNameInitials}${randomNumber}`;
     const verify = await verifyCode(codigoGenerado);
     if (verify) {
@@ -212,6 +212,7 @@ function AddProduct() {
                     <Input
                       variant="bordered"
                       labelPlacement="outside"
+                      
                       label="Nombre"
                       placeholder="Ingresa el nombre"
                       onChange={(e) => {
@@ -221,7 +222,7 @@ function AddProduct() {
                       value={values.name}
                       isInvalid={touched.name && !!errors.name}
                       errorMessage={touched.name && errors.name}
-                      className="dark:text-white"
+                      className="dark:text-white font-semibold"
                       classNames={{
                         label: 'font-semibold dark:text-white text-gray-500 text-sm',
                       }}
@@ -236,7 +237,7 @@ function AddProduct() {
                       step="0.01"
                       placeholder="Ingresa el costo unitario"
                       startContent="$"
-                      className="dark:text-white"
+                      className="dark:text-white font-semibold"
                       onChange={handleChange('costoUnitario')}
                       onBlur={handleBlur('costoUnitario')}
                       value={values.costoUnitario}
@@ -295,6 +296,7 @@ function AddProduct() {
                         }}
                         name="code"
                         labelPlacement="outside"
+                        className="dark:text-white font-semibold"
                         placeholder="Ingresa el código"
                         classNames={{
                           label: 'font-semibold text-sm text-gray-600',
