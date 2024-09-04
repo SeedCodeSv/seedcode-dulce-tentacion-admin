@@ -216,7 +216,7 @@ function AddClientContributor(props: Props) {
   return (
     <Layout title="Contribuyente">
       <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
-        <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+        <div className="w-full h-full border-white border  p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <button
             onClick={() => navigate('/clients')}
             className="flex items-center gap-2 bg-transparent"

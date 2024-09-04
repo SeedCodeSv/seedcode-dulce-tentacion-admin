@@ -1,8 +1,5 @@
 import {
   Button,
-  Card,
-  CardHeader,
-  CardBody,
   Input,
   Popover,
   PopoverContent,
@@ -19,23 +16,16 @@ import { useContext, useEffect, useState } from 'react';
 import {
   EditIcon,
   User,
-  MailIcon,
-  Phone,
   PlusIcon,
-  Repeat,
-  TrashIcon,
   List,
   CreditCard,
   Table as ITable,
   Mail,
   RefreshCcw,
 } from 'lucide-react';
-import AddClientNormal from './AddClientNormal';
-import AddClientContributor from './AddClientContributor';
+
 import { ButtonGroup } from '@nextui-org/react';
-import { Customer, PayloadCustomer } from '../../types/customers.types';
 import { ThemeContext } from '../../hooks/useTheme';
-import MobileView from './MobileView';
 import Pagination from '../global/Pagination';
 import { global_styles } from '../../styles/global.styles';
 import SmPagination from '../global/SmPagination';
@@ -46,6 +36,12 @@ import NO_DATA from '@/assets/svg/no_data.svg';
 import { useBranchesStore } from '@/store/branches.store';
 import { useNavigate } from 'react-router';
 import SearchClient from './search_client/SearchClient';
+import AddButton from '../global/AddButton';
+import ModeGridClients from './view-modes/ModeGridClients';
+import ModeListClients from './view-modes/ModeListClients';
+import Lottie from 'lottie-react';
+import EMPTY from '@/assets/animations/Animation - 1724269736818.json';
+import { DeletePopover } from './view-modes/DeleteClients';
 interface Props {
   actions: string[];
 }
@@ -59,7 +55,6 @@ const ListClients = ({ actions }: Props) => {
   const [email, setEmail] = useState('');
   const [branch, setBranch] = useState('');
 
-  const [typeClient, setTypeClient] = useState('');
   const [active, setActive] = useState(true);
   const [tipeCustomer, setTypeCustomer] = useState('');
   const { getBranchesList, branch_list } = useBranchesStore();
@@ -86,56 +81,8 @@ const ListClients = ({ actions }: Props) => {
       active ? 1 : 0
     );
   };
-  const modalAdd = useDisclosure();
-  const [selectedCustomer, setSelectedCustomer] = useState<PayloadCustomer>();
-  const [selectedId, setSelectedId] = useState<number>(0);
+
   const navigate = useNavigate();
-
-  const handleChangeCustomer = (customer: Customer, type = 'edit') => {
-    const payload_customer: PayloadCustomer = {
-      nombre: customer.nombre,
-      correo: customer.correo,
-      telefono: customer.telefono,
-      numDocumento: customer.numDocumento,
-      nombreComercial: customer.nombreComercial,
-      nrc: customer.nrc,
-      nit: customer.nit,
-      tipoDocumento: '13',
-      bienTitulo: '05',
-      codActividad: customer.codActividad,
-      descActividad: customer.descActividad,
-      esContribuyente: customer.esContribuyente ? 1 : 0,
-    };
-
-    setSelectedCustomer(payload_customer);
-
-    setSelectedId(customer.id);
-
-    if (type === 'edit') {
-      if (customer.esContribuyente) {
-        navigate(`/update-client-contributor/${customer.id}`);
-      } else {
-        navigate(`/update-client/${customer.id}`);
-      }
-      return;
-    }
-
-    if (type === 'edit') {
-      if (customer.esContribuyente) {
-        setTypeClient('contribuyente');
-      } else {
-        setTypeClient('normal');
-      }
-      modalAdd.onOpen();
-      return;
-    }
-    if (customer.esContribuyente) {
-      setTypeClient('normal');
-    } else {
-      setTypeClient('contribuyente');
-    }
-    modalAdd.onOpen();
-  };
 
   const handleActivate = (id: number) => {
     save_active_customer(id).then(() => {
@@ -143,12 +90,10 @@ const ListClients = ({ actions }: Props) => {
     });
   };
 
-  const [typeDocumentCustomer, setTypeDocumentCustomer] = useState('');
-
   return (
     <>
       <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
-        <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+        <div className="w-full h-full  border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <div className="flex justify-between items-end ">
             <SearchClient
               nameBranch={(name: string) => setBranch(name)}
@@ -157,7 +102,9 @@ const ListClients = ({ actions }: Props) => {
             ></SearchClient>
             {actions.includes('Agregar') && (
               <>
-                <BottomAdd />
+                <>
+                  <AddButton onClick={() => navigate('/add-customer/0/0')} />
+                </>
                 <BottomSm />
               </>
             )}
@@ -244,7 +191,7 @@ const ListClients = ({ actions }: Props) => {
           </div>
 
           <div className="flex flex-col gap-3 mt-3 lg:flex-row lg:justify-between lg:gap-10">
-            <div className="flex justify-between justify-start order-2 lg:order-1">
+            <div className="flex  justify-start order-2 lg:order-1">
               <Switch
                 className="hidden xl:flex"
                 onValueChange={(active) => setActive(active)}
@@ -259,6 +206,7 @@ const ListClients = ({ actions }: Props) => {
                 </span>
               </Switch>
             </div>
+
             <div className="flex xl:gap-10 gap-3 w-full  lg:justify-end order-1 lg:order-2">
               <div>
                 <label className="font-semibold text-sm dark:text-white"> Tipo de Cliente</label>
@@ -403,139 +351,154 @@ const ListClients = ({ actions }: Props) => {
             </ButtonGroup>
           </div>
           <div className="flex items-center justify-center ml-2"></div>
-          {(view === 'grid' || view === 'list') && (
-            <MobileView
-              actions={actions}
-              handleActive={handleActivate}
-              handleChangeCustomer={(customer, type) => {
-                handleChangeCustomer(customer, type);
-              }}
-              deletePopover={DeletePopover}
-              layout={view as 'grid' | 'list'}
-            />
-          )}
-          <div className="flex justify-end w-full py-3 md:py-0 bg-first-300"></div>
-          {view === 'table' && (
-            <>
-              <div className="max-h-[400px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
-                <table className="w-full">
-                  <thead className="sticky top-0 z-20 bg-white">
-                    <tr>
-                      <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                        No.
-                      </th>
-                      <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                        Nombre
-                      </th>
-                      <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                        Teléfono
-                      </th>
-                      <th className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                        Correo
-                      </th>
-                      <th className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                        Contribuyente
-                      </th>
-                      <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                        Acciones
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="max-h-[600px] w-full overflow-y-auto">
-                    {loading_customer ? (
-                      <tr>
-                        <td colSpan={5} className="p-3 text-sm text-center text-slate-500">
-                          <div className="flex flex-col items-center justify-center w-full h-64">
-                            <div className="loader"></div>
-                            <p className="mt-3 text-xl font-semibold">Cargando...</p>
-                          </div>
-                        </td>
-                      </tr>
-                    ) : (
-                      <>
-                        {customer_pagination.customers.length > 0 ? (
-                          <>
-                            {customer_pagination.customers.map((customer) => (
-                              <tr className="border-b border-slate-200">
-                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                  {customer.id}
-                                </td>
-                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
-                                  {customer.nombre}
-                                </td>
-                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                  {customer.telefono}
-                                </td>
-                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                  {customer.correo}
-                                </td>
-                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                  {customer.esContribuyente ? 'Si' : 'No'}
-                                </td>
 
-                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                  <div className="flex w-full gap-5">
-                                    {customer.isActive && actions.includes('Editar') && (
-                                      <TooltipGlobal text="Editar">
-                                        <Button
-                                          onClick={() => {
-                                            handleChangeCustomer(customer),
-                                              setTypeDocumentCustomer(customer.tipoDocumento);
-                                          }}
-                                          isIconOnly
-                                          style={{
-                                            backgroundColor: theme.colors.secondary,
-                                          }}
-                                        >
-                                          <EditIcon
-                                            style={{
-                                              color: theme.colors.primary,
-                                            }}
-                                            size={20}
-                                          />
-                                        </Button>
-                                      </TooltipGlobal>
-                                    )}
-                                    {actions.includes('Eliminar') && (
-                                      <>
-                                        {customer.isActive && (
-                                          <DeletePopover customers={customer} />
-                                        )}
-                                      </>
-                                    )}
-                                    {actions.includes('Activar Cliente') && (
-                                      <TooltipGlobal text="Activar">
-                                        <Button
-                                          onClick={() => handleActivate(customer.id)}
-                                          isIconOnly
-                                          style={global_styles().thirdStyle}
-                                        >
-                                          <RefreshCcw />
-                                        </Button>
-                                      </TooltipGlobal>
-                                    )}
-                                  </div>
-                                </td>
-                              </tr>
-                            ))}
-                          </>
-                        ) : (
+          <>
+            {customer_pagination.customers.length > 0 ? (
+              <>
+                {view === 'grid' && (
+                  <ModeGridClients
+                    handleActivate={(id) => handleActivate(id)}
+                    customers={customer_pagination.customers}
+                    actions={actions}
+                  ></ModeGridClients>
+                )}
+                {view === 'list' && (
+                  <ModeListClients
+                    handleActivate={(id) => handleActivate(id)}
+                    actions={actions}
+                    customers={customer_pagination.customers}
+                  ></ModeListClients>
+                )}
+                <div className="flex justify-end w-full py-3 md:py-0 bg-first-300"></div>
+                {view === 'table' && (
+                  <>
+                    <div className="max-h-[400px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
+                      <table className="w-full">
+                        <thead className="sticky top-0 z-20 bg-white">
                           <tr>
-                            <td colSpan={5}>
-                              <div className="flex flex-col items-center justify-center w-full">
-                                <img src={NO_DATA} alt="X" className="w-32 h-32" />
-                                <p className="mt-3 text-xl">No se encontraron resultados</p>
-                              </div>
-                            </td>
+                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                              No.
+                            </th>
+                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                              Nombre
+                            </th>
+                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                              Teléfono
+                            </th>
+                            <th className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                              Correo
+                            </th>
+                            <th className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                              Contribuyente
+                            </th>
+                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                              Acciones
+                            </th>
                           </tr>
-                        )}
-                      </>
-                    )}
-                  </tbody>
-                </table>
+                        </thead>
+                        <tbody className="max-h-[600px] w-full overflow-y-auto">
+                          {loading_customer ? (
+                            <tr>
+                              <td colSpan={5} className="p-3 text-sm text-center text-slate-500">
+                                <div className="flex flex-col items-center justify-center w-full h-64">
+                                  <div className="loader"></div>
+                                  <p className="mt-3 text-xl font-semibold">Cargando...</p>
+                                </div>
+                              </td>
+                            </tr>
+                          ) : (
+                            <>
+                              {customer_pagination.customers.length > 0 ? (
+                                <>
+                                  {customer_pagination.customers.map((customer) => (
+                                    <tr className="border-b border-slate-200">
+                                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                        {customer.id}
+                                      </td>
+                                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
+                                        {customer.nombre}
+                                      </td>
+                                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                        {customer.telefono}
+                                      </td>
+                                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                        {customer.correo}
+                                      </td>
+                                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                        {customer.esContribuyente ? 'Si' : 'No'}
+                                      </td>
+
+                                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                        <div className="flex w-full gap-5">
+                                          {customer.isActive && actions.includes('Editar') && (
+                                            <TooltipGlobal text="Editar">
+                                              <Button
+                                                isIconOnly
+                                                onClick={() =>
+                                                  navigate(
+                                                    `/add-customer/${customer.id}/${customer.esContribuyente ? 'tribute' : 'normal'}`
+                                                  )
+                                                }
+                                                style={global_styles().secondaryStyle}
+                                              >
+                                                <EditIcon
+                                                  style={{
+                                                    color: theme.colors.primary,
+                                                  }}
+                                                  size={20}
+                                                />
+                                              </Button>
+                                            </TooltipGlobal>
+                                          )}
+                                          {actions.includes('Eliminar') && (
+                                            <>
+                                              {customer.isActive && (
+                                                <DeletePopover customers={customer} />
+                                              )}
+                                            </>
+                                          )}
+                                          {actions.includes('Activar Cliente') && (
+                                            <TooltipGlobal text="Activar">
+                                              <Button
+                                                onClick={() => handleActivate(customer.id)}
+                                                isIconOnly
+                                                style={global_styles().thirdStyle}
+                                              >
+                                                <RefreshCcw />
+                                              </Button>
+                                            </TooltipGlobal>
+                                          )}
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </>
+                              ) : (
+                                <tr>
+                                  <td colSpan={5}>
+                                    <div className="flex flex-col items-center justify-center w-full">
+                                      <img src={NO_DATA} alt="X" className="w-32 h-32" />
+                                      <p className="mt-3 text-xl">No se encontraron resultados</p>
+                                    </div>
+                                  </td>
+                                </tr>
+                              )}
+                            </>
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                  </>
+                )}
+              </>
+            ) : (
+              <div className="flex flex-col justify-center items-center">
+                <Lottie animationData={EMPTY} className="w-96"></Lottie>
+                <p className="text-2xl">No se encontraron resultados</p>
               </div>
-            </>
-          )}
+            )}
+          </>
+
           {customer_pagination.totalPag > 1 && (
             <>
               <div className="hidden w-full mt-5 md:flex">
@@ -594,138 +557,11 @@ const ListClients = ({ actions }: Props) => {
             </>
           )}
         </div>
-
-        <>
-          {typeClient === 'normal' && (
-            <AddClientNormal
-              typeDocumento={typeDocumentCustomer}
-              // closeModal={modalAdd.onClose}
-              customer={selectedCustomer}
-              // customer_direction={selectedCustomerDirection}
-            />
-          )}
-
-          {typeClient === 'contribuyente' && (
-            <div className="w-full h-full p-5 bg-white shadow rounded-xl dark:bg-gray-900">
-              <AddClientContributor customer={selectedCustomer} id={selectedId} />
-            </div>
-          )}
-        </>
       </div>
     </>
   );
 };
 export default ListClients;
-
-interface PopProps {
-  customers: Customer;
-}
-
-export const DeletePopover = ({ customers }: PopProps) => {
-  const { theme } = useContext(ThemeContext);
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
-  const { deleteCustomer } = useCustomerStore();
-
-  const handleDelete = async (id: number) => {
-    await deleteCustomer(id);
-    onClose();
-  };
-
-  return (
-    <Popover isOpen={isOpen} onClose={onClose} backdrop="blur" showArrow>
-      <PopoverTrigger>
-        <Button
-          onClick={onOpen}
-          isIconOnly
-          style={{
-            backgroundColor: theme.colors.danger,
-          }}
-        >
-          <TooltipGlobal text="Eliminar">
-            <TrashIcon
-              style={{
-                color: theme.colors.primary,
-              }}
-              size={20}
-            />
-          </TooltipGlobal>
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent>
-        <div className="flex flex-col items-center justify-center w-full p-5">
-          <p className="font-semibold text-gray-600 dark:text-white">Eliminar {customers.nombre}</p>
-          <p className="mt-3 text-center text-gray-600 dark:text-white w-72">
-            ¿Estas seguro de eliminar este registro?
-          </p>
-          <div className="mt-4">
-            <Button onClick={onClose}>No, cancelar</Button>
-            <Button
-              onClick={() => handleDelete(customers.id)}
-              className="ml-5"
-              style={{
-                backgroundColor: theme.colors.danger,
-                color: theme.colors.primary,
-              }}
-            >
-              Si, eliminar
-            </Button>
-          </div>
-        </div>
-      </PopoverContent>
-    </Popover>
-  );
-};
-
-/* eslint-disable no-unused-vars */
-interface CardProps {
-  customer: Customer;
-  handleChange: (item: Customer, type: string) => void;
-}
-/* eslint-enable no-unused-vars */
-
-export const CardItem = ({ customer, handleChange }: CardProps) => {
-  return (
-    <Card isBlurred isPressable>
-      <CardHeader>
-        <div className="flex">
-          <div className="flex flex-col">
-            <p className="ml-3 text-sm font-semibold text-gray-600">{customer.nombre}</p>
-          </div>
-        </div>
-      </CardHeader>
-      <CardBody>
-        <p className="flex ml-3 text-sm font-semibold text-gray-700">
-          <MailIcon size={25} className="text-default-400" />
-          <p className="ml-3">{customer.correo}</p>
-        </p>
-        <p className="flex mt-3 ml-3 text-sm font-semibold text-gray-700">
-          <Phone size={25} className="text-default-400" />
-          <p className="ml-3">{customer.telefono}</p>
-        </p>
-      </CardBody>
-      <CardHeader>
-        <div className="flex gap-3">
-          <Button
-            onClick={() => handleChange(customer, 'edit')}
-            isIconOnly
-            className="bg-coffee-green"
-          >
-            <EditIcon className="text-white" size={20} />
-          </Button>
-          <Button
-            onClick={() => handleChange(customer, 'change')}
-            isIconOnly
-            className="bg-[#E8751A]"
-          >
-            <Repeat className="text-white" size={20} />
-          </Button>
-          <DeletePopover customers={customer} />
-        </div>
-      </CardHeader>
-    </Card>
-  );
-};
 
 export const BottomAdd = () => {
   const { theme } = useContext(ThemeContext);
