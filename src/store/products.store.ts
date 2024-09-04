@@ -80,14 +80,16 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
         toast.error(messages.error);
       });
   },
-  patchProducts(payload, id) {
-    update_products(payload, id)
+  patchProducts(payload, id): Promise<{ ok: boolean }> {
+    return update_products(payload, id)
       .then(() => {
         get().getPaginatedProducts(1, 5, '', '', '', '');
         toast.success(messages.success);
+        return { ok: true };
       })
       .catch(() => {
         toast.error(messages.error);
+        return { ok: false };
       });
   },
   async deleteProducts(id) {

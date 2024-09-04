@@ -1,7 +1,6 @@
 import {
   CategoryProduct,
   CategoryProductList,
-
   IGetCategoriesPaginated,
 } from '../../types/categories.types';
 export interface ICategoriesStore {
@@ -13,8 +12,8 @@ export interface ICategoriesStore {
   getListCategories: () => void;
   getPaginatedCategories: (page: number, limit: number, name: string, active?: number) => void;
   getListCategoriesList: () => void;
-  postCategories: (name: string) => void;
-  patchCategory: (name: string, id: number) => void;
+  postCategories: (name: string) => Promise<{ ok: boolean }>;
+  patchCategory: (name: string, id: number) => Promise<{ ok: boolean }>;
   deleteCategory: (id: number) => Promise<boolean>;
   activateCategory: (id: number) => Promise<void>;
 }

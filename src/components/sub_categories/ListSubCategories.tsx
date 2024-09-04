@@ -134,7 +134,7 @@ function ListSubCategory({ actions }: PProps) {
                   wrapper: classNames(isActive ? '!bg-blue-300' : 'bg-gray-200'),
                 }}
               >
-                <span className="text-sm sm:text-base whitespace-nowrap">
+                <span className="text-sm sm:text-base whitespace-nowrap dark:text-white">
                   Mostrar {isActive ? 'inactivos' : 'activos'}
                 </span>
               </Switch>
@@ -142,7 +142,7 @@ function ListSubCategory({ actions }: PProps) {
           </div>
           <div className="flex gap-10 w-full justify-between items-center lg:justify-end order-1 lg:order-2">
             <div className="w-44">
-              <span className="font-semibold text-sm ">Mostrar</span>
+              <span className="font-semibold text-sm  dark:text-white">Mostrar</span>
               <Select
                 className="w-44 dark:text-white border border-white rounded-xl"
                 variant="bordered"

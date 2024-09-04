@@ -2,7 +2,7 @@ import { Input, Button, Autocomplete, AutocompleteItem } from '@nextui-org/react
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { ThemeContext } from '../../hooks/useTheme';
-import { useContext, useEffect, useMemo } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { ISubCategory, ISubCategoryPayload } from '../../types/sub_categories.types';
 import { useSubCategoryStore } from '../../store/sub-category';
 import { useCategoriesStore } from '../../store/categories.store';
@@ -37,13 +37,25 @@ const AddSubCategory = (props: Props) => {
     getListCategories();
   }, []);
 
-  const handleSave = (payload: ISubCategoryPayload) => {
-    if (props.subCategory) {
-      patchSubCategory(payload, props.subCategory.id);
-      props.closeModal();
-    } else {
-      postSubCategory(payload);
-      props.closeModal();
+  const [loading, setLoging] = useState(false);
+  const handleSave = async (payload: ISubCategoryPayload) => {
+    setLoging(true);
+    try {
+      if (props.subCategory) {
+        const data = await patchSubCategory(payload, props.subCategory.id);
+        if (data.ok === true) {
+          props.closeModal();
+          setLoging(true);
+        }
+      } else {
+        const data = await postSubCategory(payload);
+        if (data.ok === true) {
+          props.closeModal();
+          setLoging(true);
+        }
+      }
+    } catch (error) {
+      return;
     }
   };
 
@@ -114,16 +126,23 @@ const AddSubCategory = (props: Props) => {
                 ))}
               </Autocomplete>
             </div>
-            <Button
-              onClick={() => handleSubmit()}
-              className="w-full mt-4 text-sm font-semibold"
-              style={{
-                backgroundColor: theme.colors.third,
-                color: theme.colors.primary,
-              }}
-            >
-              Guardar
-            </Button>
+            {!loading ? (
+              <Button
+                onClick={() => handleSubmit()}
+                className="w-full mt-4 text-sm font-semibold"
+                style={{
+                  backgroundColor: theme.colors.third,
+                  color: theme.colors.primary,
+                }}
+              >
+                Guardar
+              </Button>
+            ) : (
+              <div className="flex flex-col items-center justify-center w-full">
+                <div className="loaderBranch w-2 h-2 mt-2"></div>
+                <p className="mt-3 text-sm font-semibold">Cargando...</p>
+              </div>
+            )}
           </>
         )}
       </Formik>

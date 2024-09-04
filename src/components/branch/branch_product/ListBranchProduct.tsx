@@ -9,10 +9,9 @@ import {
   AutocompleteItem,
   ButtonGroup,
 } from '@nextui-org/react';
-import { Search, Filter, ArrowLeft, CreditCard, Table as ITable } from 'lucide-react';
+import { Search, ArrowLeft, CreditCard, Table as ITable } from 'lucide-react';
 import { ThemeContext } from '../../../hooks/useTheme';
 import MobileView from './MobileView';
-import { global_styles } from '../../../styles/global.styles';
 import { CategoryProduct } from '../../../types/categories.types';
 import { useCategoriesStore } from '../../../store/categories.store';
 import Pagination from '../../global/Pagination';
@@ -21,6 +20,7 @@ import { limit_options } from '@/utils/constants';
 import NO_DATA from '@/assets/svg/no_data.svg';
 import { formatCurrency } from '@/utils/dte';
 import BottomDrawer from '@/components/global/BottomDrawer';
+import SearchBranchProduct from '../search_branch_product/SearchBranchProduct';
 interface Props {
   id: number;
   onclick: () => void;
@@ -55,7 +55,7 @@ function ListEmployee({ id, onclick }: Props) {
   return (
     <>
       <div className=" w-full h-full p-10 bg-gray-50 dark:bg-gray-900">
-        <div className="w-full h-full border-white border border-white p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
+        <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <div onClick={onclick} className="mb-4  w-24 cursor-pointer flex">
             <ArrowLeft className="dark:text-white mr-2" />
             <p className="dark:text-white">Regresar</p>
@@ -133,6 +133,7 @@ function ListEmployee({ id, onclick }: Props) {
               </Autocomplete>
             </div>
           </div>
+          <SearchBranchProduct></SearchBranchProduct>
           <div className="w-full flex items-end justify-between">
             <ButtonGroup>
               <Button
@@ -160,9 +161,7 @@ function ListEmployee({ id, onclick }: Props) {
                 <CreditCard />
               </Button>
             </ButtonGroup>
-            <Button style={global_styles().thirdStyle} isIconOnly onClick={() => setOpenVaul(true)}>
-              <Filter />
-            </Button>
+
             <div className="flex items-end gap-5">
               <div>
                 <Select
@@ -380,7 +379,7 @@ function ListEmployee({ id, onclick }: Props) {
                   }}
                 />
               </div>
-              <div className="flex w-full mt-5 md:hidden">
+              <div className="flex w-full md:hidden fixed bottom-0 left-0 bg-white dark:bg-gray-900 z-20 shadow-lg p-3">
                 <SmPagination
                   handleNext={() => {
                     serPage(branch_product_Paginated.nextPag);

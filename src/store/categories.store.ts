@@ -64,24 +64,28 @@ export const useCategoriesStore = create<ICategoriesStore>((set, get) => ({
         });
       });
   },
-  postCategories(name) {
-    create_category({ name })
+  postCategories(name): Promise<{ ok: boolean }> {
+    return create_category({ name })
       .then(() => {
         get().getPaginatedCategories(1, get().limit_filter, '');
         toast.success(messages.success);
+        return { ok: true };
       })
       .catch(() => {
         toast.error(messages.error);
+        return { ok: false };
       });
   },
-  patchCategory(name, id) {
-    update_category({ name }, id)
+  patchCategory(name, id): Promise<{ ok: boolean }> {
+    return update_category({ name }, id)
       .then(() => {
         get().getPaginatedCategories(1, get().limit_filter, '');
         toast.success(messages.success);
+        return { ok: true };
       })
       .catch(() => {
         toast.error(messages.success);
+        return { ok: false };
       });
   },
   deleteCategory: async (id) => {

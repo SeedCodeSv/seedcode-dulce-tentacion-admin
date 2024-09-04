@@ -59,26 +59,28 @@ export const useSubCategoryStore = create<SubCategoryStore>((set, get) => ({
         });
       });
   },
-  postSubCategory(payload: ISubCategoryPayload) {
-    create_sub_category(payload)
+  postSubCategory(payload: ISubCategoryPayload): Promise<{ ok: boolean }> {
+    return create_sub_category(payload)
       .then(() => {
         get().getSubCategoriesPaginated(1, 5, '');
         toast.success(messages.success);
+        return { ok: true };
       })
       .catch(() => {
         toast.error(messages.error);
+        return { ok: false };
       });
   },
-  patchSubCategory(payload, id) {
+  patchSubCategory(payload, id): Promise<{ ok: boolean }> {
     return update_sub_category(payload, id)
-      .then(({ data }) => {
+      .then(() => {
         get().getSubCategoriesPaginated(1, 5, '');
         toast.success(messages.success);
-        return data.ok;
+        return { ok: true };
       })
       .catch(() => {
         toast.error(messages.error);
-        return false;
+        return { ok: false };
       });
   },
   deleteSubCategory: (id) => {

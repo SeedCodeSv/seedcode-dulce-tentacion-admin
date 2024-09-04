@@ -3,6 +3,7 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import { useCategoriesStore } from '../../store/categories.store';
 import { global_styles } from '@/styles/global.styles';
+import { useState } from 'react';
 
 interface Props {
   closeModal: () => void;
@@ -19,13 +20,21 @@ const AddCategory = (props: Props) => {
 
   const { postCategories, patchCategory } = useCategoriesStore();
 
-  const handleSave = ({ name }: { name: string }) => {
+  const [loading, setLoading] = useState(false);
+  const handleSave = async ({ name }: { name: string }) => {
+    setLoading(true);
     if (props.category) {
-      patchCategory(name, props.category.id);
-      props.closeModal();
+      const data = await patchCategory(name, props.category.id);
+      if (data.ok === true) {
+        props.closeModal();
+        setLoading(false);
+      }
     } else {
-      postCategories(name);
-      props.closeModal();
+      const data = await postCategories(name);
+      if (data.ok === true) {
+        props.closeModal();
+        setLoading(false);
+      }
     }
   };
 
@@ -56,13 +65,20 @@ const AddCategory = (props: Props) => {
                 errorMessage={touched.name && errors.name}
               />
             </div>
-            <Button
-              onClick={() => handleSubmit()}
-              className="w-full mt-4 text-sm font-semibold"
-              style={global_styles().thirdStyle}
-            >
-              Guardar
-            </Button>
+            {loading ? (
+              <div className="flex flex-col items-center justify-center w-full">
+                <div className="loaderBranch w-2 h-2 mt-2"></div>
+                <p className="mt-3 text-sm font-semibold">Cargando...</p>
+              </div>
+            ) : (
+              <Button
+                onClick={() => handleSubmit()}
+                className="w-full mt-4 text-sm font-semibold"
+                style={global_styles().thirdStyle}
+              >
+                Guardar
+              </Button>
+            )}
           </>
         )}
       </Formik>

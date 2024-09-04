@@ -105,6 +105,7 @@ function AddProduct() {
   const [error, setError] = useState(false);
   const navigate = useNavigate();
 
+  const [loading, setLoading] = useState(false);
   const handleSave = async (values: ProductPayloadFormik) => {
     const letvalue = values.code !== 'N/A';
 
@@ -125,8 +126,10 @@ function AddProduct() {
         return { id: Number(branch) };
       }),
     };
+    setLoading(true);
     await postProducts(send_payload).then(() => {
       navigate('/products');
+      setLoading(false);
     });
   };
 
@@ -186,8 +189,8 @@ function AddProduct() {
             onClick={() => navigate('/products')}
             className="flex items-center gap-2 bg-transparent"
           >
-            <ArrowLeft className="text-white" />
-            <span>Regresar</span>
+            <ArrowLeft className=" dark:text-white" />
+            <span className="dark:text-white">Regresar</span>
           </button>
           <Formik
             validationSchema={validationSchema}
@@ -592,7 +595,7 @@ function AddProduct() {
                       ))}
                     </Autocomplete>
                   </div>
-                  <div>
+                  {!loading ? (
                     <Button
                       onClick={() => handleSubmit()}
                       className="w-full mt-4 text-sm font-semibold "
@@ -600,7 +603,12 @@ function AddProduct() {
                     >
                       Guardar
                     </Button>
-                  </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center w-full">
+                      <div className="loaderBranch w-2 h-2 mt-2"></div>
+                      <p className="mt-3 text-sm font-semibold">Cargando...</p>
+                    </div>
+                  )}
                 </div>
               </div>
             )}

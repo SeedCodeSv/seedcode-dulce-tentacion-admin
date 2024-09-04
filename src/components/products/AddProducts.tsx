@@ -8,6 +8,7 @@ import {
   SelectItem,
 } from '@nextui-org/react';
 import { Formik } from 'formik';
+import { Icon } from '@iconify/react';
 import { useContext, useEffect, useState } from 'react';
 import * as yup from 'yup';
 import { useCategoriesStore } from '../../store/categories.store';
@@ -144,7 +145,6 @@ function AddProducts(props: Props) {
 
     return codigoGenerado;
   };
-
   const verifyCode = async () => {
     try {
       const data = await verify_code_product(codigo);
@@ -155,7 +155,6 @@ function AddProducts(props: Props) {
       toast.error('Codigo en uso');
     }
   };
-
   return (
     <div className="w-full h-full">
       <Formik
@@ -185,6 +184,7 @@ function AddProducts(props: Props) {
                     <span className="text-sm font-semibold text-red-500">{errors.name}</span>
                   )}
                 </div>
+
                 <div className="grid grid-cols-2  gap-5">
                   <div className="font-semibold">
                     <Autocomplete

@@ -43,17 +43,18 @@ function UpdateProduct({ product, onCloseModal }: Props) {
 
   const [dataUpdateProduct, setDataUpdateProduct] = useState<ProductPayload>(initialProductState);
 
+  const [loading, sertLoging] = useState(false);
   const handleSave = async () => {
-    // const letvalue = dataUpdateProduct.code !== 'N/A';
-    // if (letvalue) {
-    //   const verify = await verifyCode(dataUpdateProduct.code);
-    //   if (!verify) {
-    //     toast.error('Codigo en uso');
-    //     return;
-    //   }
-    // }
-    patchProducts(dataUpdateProduct, product?.id || 0);
-    onCloseModal();
+    sertLoging(true);
+    try {
+      const response = await patchProducts(dataUpdateProduct, product?.id || 0);
+      if (response.ok === true) {
+        sertLoging(false);
+        onCloseModal();
+      }
+    } catch (error) {
+      console.error('Error updating product:', error);
+    }
   };
 
   const handleInputChange = (
@@ -223,59 +224,32 @@ function UpdateProduct({ product, onCloseModal }: Props) {
                 labelPlacement="outside"
                 name="code"
                 defaultValue={product?.code}
-                // value={code}
                 onChange={(e) => handleInputChange(e, 'code')}
                 placeholder="Ingresa o genera el código"
                 classNames={{ label: 'font-semibold text-sm' }}
                 variant="bordered"
               />
-              {/* {error && (
-                <p className="text-xs text-red-500 font-semibold mt-1 ml-1">
-                  {'Este código ya existe'}
-                </p>
-              )} */}
             </div>
-            {/* <div className="mt-8 w-25">
-              <Button
-                className="w-full text-sm font-semibold"
-                style={{
-                  backgroundColor: theme.colors.third,
-                  color: theme.colors.primary,
-                }}
-                onClick={() => {
-                  generarCodigo();
-                }}
-              >
-                Generar Código
-              </Button>
-            </div> */}
-            {/* <div className="mt-8 w-25">
-              <Button
-                className="w-full text-sm font-semibold"
-                style={{
-                  backgroundColor: theme.colors.warning,
-                  color: theme.colors.primary,
-                }}
-                onClick={() => {
-                  verifyCode(codigo);
-                }}
-              >
-                Verificar Código
-              </Button>
-            </div> */}
           </div>
         </div>
       </div>
-      <Button
-        onClick={handleSave}
-        className="w-full mt-4 text-sm font-semibold"
-        style={{
-          backgroundColor: theme.colors.third,
-          color: theme.colors.primary,
-        }}
-      >
-        Guardar
-      </Button>
+      {!loading ? (
+        <Button
+          onClick={handleSave}
+          className="w-full mt-4 text-sm font-semibold"
+          style={{
+            backgroundColor: theme.colors.third,
+            color: theme.colors.primary,
+          }}
+        >
+          Guardar
+        </Button>
+      ) : (
+        <div className="flex flex-col items-center justify-center w-full">
+          <div className="loaderBranch w-2 h-2 mt-2"></div>
+          <p className="mt-3 text-sm font-semibold">Cargando...</p>
+        </div>
+      )}
     </div>
   );
 }

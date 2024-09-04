@@ -3,14 +3,11 @@ import { classNames } from 'primereact/utils';
 import { Truck, ShoppingBag, Barcode, FileSpreadsheet } from 'lucide-react';
 import { useBranchesStore } from '../../../store/branches.store';
 import { IGetBranchProduct } from '../../../types/branches.types';
-
 interface Props {
   layout: 'grid' | 'list';
 }
-
 function MobileView({ layout }: Props) {
   const { branch_products_list } = useBranchesStore();
-
   return (
     <div className="w-full pb-10">
       <DataView
@@ -20,7 +17,7 @@ function MobileView({ layout }: Props) {
         pt={{
           grid: () => ({
             className:
-              'grid dark:bg-slate-800 pb-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid-nogutter gap-5 mt-5',
+              'grid  pb-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid-nogutter gap-5 mt-5',
           }),
         }}
         color="surface"
@@ -30,32 +27,31 @@ function MobileView({ layout }: Props) {
     </div>
   );
 }
-
 const gridItem = (branchProduct: IGetBranchProduct, layout: 'grid' | 'list') => {
   return (
     <>
       {layout === 'grid' ? (
         <div
           className={classNames(
-            'w-full shadow hover:shadow-lg dark:border dar:border-gray-600 p-6 rounded-2xl'
+            'w-full shadow border border-white hover:shadow-lg dark:border dar:border-gray-600 p-6 rounded-2xl'
           )}
           key={branchProduct.id}
         >
           <div className="flex w-full gap-2">
-            <Truck className="text-[#274c77] dark:text-gray-400" size={20} />
-            {branchProduct.branch.name}
+            <Truck className="text-blue-500 dark:text-blue-300" size={20} />
+            <p className="dark:text-white"> {branchProduct.branch.name}</p>
           </div>
           <div className="flex w-full gap-2 mt-3">
-            <ShoppingBag className="text-[#274c77] dark:text-gray-400" size={20} />
-            {branchProduct.product.name}
+            <ShoppingBag className="text-blue-500 dark:text-blue-300" size={20} />
+            <p className="dark:text-white"> {branchProduct.product.name}</p>{' '}
           </div>
           <div className="flex w-full gap-2 mt-3">
-            <Barcode className="text-[#274c77] dark:text-gray-400" size={20} />
-            {branchProduct.product.code}
+            <Barcode className="text-blue-500 dark:text-blue-300" size={20} />
+            <p className="dark:text-white">{branchProduct.product.code}</p>
           </div>
           <div className="flex w-full gap-2 mt-3">
-            <FileSpreadsheet className="text-[#274c77] dark:text-gray-400" size={20} />
-            {branchProduct.product.description}
+            <FileSpreadsheet className="text-blue-500 dark:text-blue-300" size={20} />
+            <p className="dark:text-white"> {branchProduct.product.description}</p>{' '}
           </div>
         </div>
       ) : (

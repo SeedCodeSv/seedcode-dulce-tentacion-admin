@@ -1,9 +1,10 @@
 import { Input, Button } from '@nextui-org/react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import { useContext, useState } from 'react';
-import { ThemeContext } from '../../../hooks/useTheme';
+import { useState } from 'react';
+
 import { useContractTypeStore } from '../../../store/contractType';
+import { global_styles } from '@/styles/global.styles';
 
 interface Props {
   closeModal: () => void;
@@ -14,7 +15,6 @@ interface Props {
 }
 
 const AddStatusEmployee = (props: Props) => {
-  const { theme } = useContext(ThemeContext);
   const validationSchema = yup.object().shape({
     name: yup.string().required('**Campo requerido**'),
   });
@@ -73,18 +73,16 @@ const AddStatusEmployee = (props: Props) => {
                   onClick={() => {
                     handleSubmit();
                   }}
+                  style={global_styles().thirdStyle}
                   className="w-full mt-4 text-sm font-semibold"
-                  style={{
-                    backgroundColor: theme.colors.third,
-                    color: theme.colors.primary,
-                  }}
                 >
                   Guardar
                 </Button>
               </>
             ) : (
-              <div className="flex justify-center mt-4">
-                <span className="loaderButton"></span>
+              <div className="flex flex-col items-center justify-center w-full">
+                <div className="loaderBranch w-2 h-2 mt-2"></div>
+                <p className="mt-3 text-sm font-semibold">Cargando...</p>
               </div>
             )}
           </>
