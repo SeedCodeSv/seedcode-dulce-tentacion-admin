@@ -12,7 +12,6 @@ import { Departamento } from '@/types/billing/cat-012-departamento.types';
 import { Loader } from 'lucide-react';
 import useGlobalStyles from '@/components/global/global.styles';
 import { useBranchesStore } from '@/store/branches.store';
-import { Branch } from '@/types/auth.types';
 
 const AddClientNormal = () => {
   const { getBranchesList, branch_list } = useBranchesStore();
@@ -44,6 +43,9 @@ const AddClientNormal = () => {
     customer && getCat013Municipios(customer.direccion.departamento);
   }, [customer]);
 
+
+  console.log('customer:', customer);
+
   useEffect(() => {
     getCat013Municipios(selectedCodeDep);
     getCat022TipoDeDocumentoDeIde();
@@ -60,38 +62,41 @@ const AddClientNormal = () => {
     departamento: customer?.direccion?.departamento ?? '',
     nombreDepartamento: customer?.direccion?.nombreDepartamento ?? '',
     complemento: customer?.direccion?.complemento ?? '',
-    branchId: customer?.branchId ?? 0,
+    branchId: customer?.branch?.id,
+    
     // tipoContribuyente: customer?.tipoContribuyente ?? 'N/A',
   };
 
   const validationSchema = yup.object().shape({
     nombre: yup.string().required('**El nombre es requerido**'),
     correo: yup.string().required('**El correo es requerido**').email('**El correo es invalido**'),
-    telefono: yup
-      .string()
-      .required('**El telefono es requerido**')
-      .matches(/^[0-9]{8}$/, '**El telefono es invalido**'),
-    tipoDocumento: yup.string().required('**Tipo de documento es requerido**'),
+    // telefono: yup.string().matches(/^[0-9]{0,10}$/, '**El telefono es invalido**'),
+    tipoDocumento: yup.string(),
     numDocumento: yup
       .string()
-      .required('**Número de documento es requerido**')
+      .notRequired()
       .test('noSelectedTypeDocument', '**Debe seleccionar un tipo de documento**', function () {
         const { tipoDocumento } = this.parent;
-        return tipoDocumento !== '' ? true : false;
+        return tipoDocumento !== '';
       })
       .test('validar-documento', '**Número de documento no válido**', function (value) {
         const { tipoDocumento } = this.parent;
+
         if (tipoDocumento === '13') {
-          return /^([0-9]{9})$/.test(value);
+          return /^([0-9]{9})$/.test(value || '');
         }
+
         if (tipoDocumento === '36') {
-          return value.length >= 9 && /^([0-9]{9}|[0-9]{14})$/.test(value);
+          return value ? value.length >= 9 && /^([0-9]{9}|[0-9]{14})$/.test(value) : false;
         }
-        return true; // Si tipoDocumento no es relevante para validación, se considera válido
+
+        return true;
       }),
+
     departamento: yup.string().required('**Debes seleccionar el departamento**'),
     municipio: yup.string().required('**Debes seleccionar el municipio**'),
-    complemento: yup.string().required('**El complemento es requerido**'),
+    complemento: yup.string(),
+    branchId: yup.number().required('**Debes seleccionar la sucursal**'),
   });
 
   const [isClicked, setIsClicked] = useState(false);
@@ -102,7 +107,6 @@ const AddClientNormal = () => {
       const values = {
         ...payload,
         esContribuyente: 0,
-        // branchId: Number(user?.correlative.branchId),
       };
       patchCustomer(values, Number(id))
         .then((res) => {
@@ -116,8 +120,10 @@ const AddClientNormal = () => {
     } else {
       const values = {
         ...payload,
+        tipoDocumento: payload.tipoDocumento || 'N/A',
+        numDocumento: payload.numDocumento || 'N/A',
+        telefono: payload.telefono || 0,
         esContribuyente: 0,
-        // branchId: Number(user?.correlative.branchId),
       };
       postCustomer(values)
         .then((res) => {
@@ -366,27 +372,28 @@ const AddClientNormal = () => {
                           value={values.branchId}
                           onSelectionChange={(key) => {
                             if (key) {
-                              const depSelected = JSON.parse(key as string) as Branch;
-                              handleChange('branchId')(depSelected?.id?.toString() ?? '');
+                              handleChange('branchId')(key as string);
                             }
                           }}
-                          // defaultSelectedKey={isEditing ? values.branchId : undefined}
                           onBlur={handleBlur('branchId')}
                           label="Sucursal"
                           labelPlacement="outside"
                           placeholder="Selecciona la sucursal"
                           variant="bordered"
-                          className="dark:text-white"
-                         
+                          className="dark:text-white font-semibold"
                           classNames={{
-                            base: 'font-semibold text-sm',
+                            base: 'font-semibold text-gray-500 text-sm',
                           }}
+                          // selectedKey={}
+                          defaultSelectedKey={values.branchId}
+                          errorMessage={errors.branchId}
+                          isInvalid={!!errors.branchId && !!touched.branchId}
                         >
                           {branch_list.map((bra) => (
                             <AutocompleteItem
                               className="dark:text-white"
-                              value={bra.name}
-                              key={JSON.stringify(bra)}
+                              value={bra.id.toString()}
+                              key={bra.id.toString()}
                             >
                               {bra.name}
                             </AutocompleteItem>
@@ -461,4 +468,3 @@ const AddClientNormal = () => {
 };
 
 export default AddClientNormal;
-

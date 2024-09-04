@@ -25,7 +25,13 @@ export interface Customer {
   esContribuyente?: number | boolean;
   direccion: CustomerDirection;
   direccionId: number;
+  branch?: Branch;
   branchId: number;
+}
+
+export interface Branch {
+  id: number;
+  name: string;
 }
 export interface IGetCustomers {
   ok: boolean;
@@ -52,7 +58,7 @@ export interface PayloadCustomer {
   codActividad?: string;
   descActividad?: string;
   bienTitulo?: string;
-  telefono?: string;
+  telefono?: string | number;
   correo?: string;
   esContribuyente?: number;
   transmitterId?: number;

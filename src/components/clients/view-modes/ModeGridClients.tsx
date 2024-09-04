@@ -84,7 +84,7 @@ function ModeGridClients(props: PropsCustomersModes) {
 
             {c.isActive === false && (
               <>
-                {props.actions.includes('Activar') && !c.isActive && (
+                {props.actions.includes('Activar Cliente') && (
                   <TooltipGlobal text="Activar">
                     <Button
                       onClick={() => {

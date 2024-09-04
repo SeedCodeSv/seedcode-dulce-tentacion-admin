@@ -1,10 +1,6 @@
 import {
   Button,
   Input,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-  useDisclosure,
   Select,
   SelectItem,
   Switch,
@@ -16,12 +12,12 @@ import { useContext, useEffect, useState } from 'react';
 import {
   EditIcon,
   User,
-  PlusIcon,
   List,
   CreditCard,
   Table as ITable,
   Mail,
   RefreshCcw,
+  Repeat,
 } from 'lucide-react';
 
 import { ButtonGroup } from '@nextui-org/react';
@@ -105,7 +101,7 @@ const ListClients = ({ actions }: Props) => {
                 <>
                   <AddButton onClick={() => navigate('/add-customer/0/0')} />
                 </>
-                <BottomSm />
+                {/* <BottomSm /> */}
               </>
             )}
           </div>
@@ -457,16 +453,43 @@ const ListClients = ({ actions }: Props) => {
                                               )}
                                             </>
                                           )}
-                                          {actions.includes('Activar Cliente') && (
-                                            <TooltipGlobal text="Activar">
-                                              <Button
-                                                onClick={() => handleActivate(customer.id)}
-                                                isIconOnly
-                                                style={global_styles().thirdStyle}
-                                              >
-                                                <RefreshCcw />
-                                              </Button>
-                                            </TooltipGlobal>
+                                          {customer.isActive &&
+                                            actions.includes('Cambiar Tipo de Cliente') && (
+                                              <>
+                                                {customer.esContribuyente === false && (
+                                                  <TooltipGlobal text="Cambiar tipo de Cliente">
+                                                    <Button
+                                                      onClick={() =>
+                                                        navigate(
+                                                          `/add-customer/${customer.id}/tribute`
+                                                        )
+                                                      }
+                                                      isIconOnly
+                                                      style={global_styles().thirdStyle}
+                                                    >
+                                                      <Repeat
+                                                        style={{ color: theme.colors.primary }}
+                                                        size={20}
+                                                      />
+                                                    </Button>
+                                                  </TooltipGlobal>
+                                                )}
+                                              </>
+                                            )}
+                                          {customer.isActive === false && (
+                                            <>
+                                              {actions.includes('Activar Cliente') && (
+                                                <TooltipGlobal text="Activar">
+                                                  <Button
+                                                    onClick={() => handleActivate(customer.id)}
+                                                    isIconOnly
+                                                    style={global_styles().thirdStyle}
+                                                  >
+                                                    <RefreshCcw />
+                                                  </Button>
+                                                </TooltipGlobal>
+                                              )}
+                                            </>
                                           )}
                                         </div>
                                       </td>
@@ -563,118 +586,118 @@ const ListClients = ({ actions }: Props) => {
 };
 export default ListClients;
 
-export const BottomAdd = () => {
-  const { theme } = useContext(ThemeContext);
-  const { isOpen, onClose, onOpen } = useDisclosure();
+// export const BottomAdd = () => {
+//   const { theme } = useContext(ThemeContext);
+//   const { isOpen, onClose, onOpen } = useDisclosure();
 
-  const navigate = useNavigate();
+//   const navigate = useNavigate();
 
-  return (
-    <Popover
-      aria-labelledby="popover-title"
-      aria-describedby="popover-id"
-      showArrow
-      onClose={onClose}
-      isOpen={isOpen}
-      backdrop="blur"
-    >
-      <PopoverTrigger>
-        <Button
-          className="hidden lg:flex"
-          style={{
-            backgroundColor: theme.colors.third,
-            color: theme.colors.primary,
-          }}
-          endContent={<PlusIcon size={35} />}
-          onClick={() => (isOpen ? onClose() : onOpen())}
-        >
-          Agregar nuevo
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent aria-labelledby="popover-title">
-        <div className="flex flex-col gap-5 p-3 bg-white dark:bg-zinc-900">
-          <Button
-            type="button"
-            onClick={() => {
-              navigate(`/add-client`);
-            }}
-            style={{
-              backgroundColor: theme.colors.secondary,
-              color: theme.colors.primary,
-            }}
-          >
-            Cliente consumidor final
-          </Button>
-          <Button
-            type="button"
-            onClick={() => {
-              navigate(`/add-client-contributor/0`);
-            }}
-            style={{
-              backgroundColor: theme.colors.third,
-              color: theme.colors.primary,
-            }}
-          >
-            Cliente contribuyente
-          </Button>
-        </div>
-      </PopoverContent>
-    </Popover>
-  );
-};
+//   return (
+//     <Popover
+//       aria-labelledby="popover-title"
+//       aria-describedby="popover-id"
+//       showArrow
+//       onClose={onClose}
+//       isOpen={isOpen}
+//       backdrop="blur"
+//     >
+//       <PopoverTrigger>
+//         <Button
+//           className="hidden lg:flex"
+//           style={{
+//             backgroundColor: theme.colors.third,
+//             color: theme.colors.primary,
+//           }}
+//           endContent={<PlusIcon size={35} />}
+//           onClick={() => (isOpen ? onClose() : onOpen())}
+//         >
+//           Agregar nuevo
+//         </Button>
+//       </PopoverTrigger>
+//       <PopoverContent aria-labelledby="popover-title">
+//         <div className="flex flex-col gap-5 p-3 bg-white dark:bg-zinc-900">
+//           <Button
+//             type="button"
+//             onClick={() => {
+//               navigate(`/add-client`);
+//             }}
+//             style={{
+//               backgroundColor: theme.colors.secondary,
+//               color: theme.colors.primary,
+//             }}
+//           >
+//             Cliente consumidor final
+//           </Button>
+//           <Button
+//             type="button"
+//             onClick={() => {
+//               navigate(`/add-client-contributor/0`);
+//             }}
+//             style={{
+//               backgroundColor: theme.colors.third,
+//               color: theme.colors.primary,
+//             }}
+//           >
+//             Cliente contribuyente
+//           </Button>
+//         </div>
+//       </PopoverContent>
+//     </Popover>
+//   );
+// };
 
-export const BottomSm = () => {
-  const { theme } = useContext(ThemeContext);
-  const { isOpen, onClose, onOpen } = useDisclosure();
+// export const BottomSm = () => {
+//   const { theme } = useContext(ThemeContext);
+//   const { isOpen, onClose, onOpen } = useDisclosure();
 
-  const navigate = useNavigate();
-  return (
-    <Popover
-      aria-labelledby="popover-title"
-      aria-describedby="popover-id"
-      showArrow
-      onClose={onClose}
-      isOpen={isOpen}
-      backdrop="blur"
-    >
-      <PopoverTrigger>
-        <Button
-          className="flex lg:hidden"
-          style={global_styles().thirdStyle}
-          onClick={() => (isOpen ? onClose() : onOpen())}
-          isIconOnly
-        >
-          <PlusIcon />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent aria-labelledby="popover-title">
-        <div className="flex flex-col gap-5 p-3 bg-white">
-          <Button
-            type="button"
-            onClick={() => {
-              navigate(`/add-client`);
-            }}
-            style={{
-              backgroundColor: theme.colors.secondary,
-              color: theme.colors.primary,
-            }}
-          >
-            Cliente consumidor final
-          </Button>
-          <Button
-            type="button"
-            onClick={() => {
-              navigate(`/add-client-contributor/0`);
-            }}
-            style={{
-              backgroundColor: theme.colors.third,
-              color: theme.colors.primary,
-            }}
-          >
-            Cliente contribuyente
-          </Button>
-        </div>
-      </PopoverContent>
-    </Popover>
-  );
-};
+//   const navigate = useNavigate();
+//   return (
+//     <Popover
+//       aria-labelledby="popover-title"
+//       aria-describedby="popover-id"
+//       showArrow
+//       onClose={onClose}
+//       isOpen={isOpen}
+//       backdrop="blur"
+//     >
+//       <PopoverTrigger>
+//         <Button
+//           className="flex lg:hidden"
+//           style={global_styles().thirdStyle}
+//           onClick={() => (isOpen ? onClose() : onOpen())}
+//           isIconOnly
+//         >
+//           <PlusIcon />
+//         </Button>
+//       </PopoverTrigger>
+//       <PopoverContent aria-labelledby="popover-title">
+//         <div className="flex flex-col gap-5 p-3 bg-white">
+//           <Button
+//             type="button"
+//             onClick={() => {
+//               navigate(`/add-client`);
+//             }}
+//             style={{
+//               backgroundColor: theme.colors.secondary,
+//               color: theme.colors.primary,
+//             }}
+//           >
+//             Cliente consumidor final
+//           </Button>
+//           <Button
+//             type="button"
+//             onClick={() => {
+//               navigate(`/add-client-contributor/0`);
+//             }}
+//             style={{
+//               backgroundColor: theme.colors.third,
+//               color: theme.colors.primary,
+//             }}
+//           >
+//             Cliente contribuyente
+//           </Button>
+//         </div>
+//       </PopoverContent>
+//     </Popover>
+//   );
+// };
