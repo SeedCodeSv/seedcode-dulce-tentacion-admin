@@ -59,6 +59,7 @@ import UpdateClientContributor from '@/components/clients/UpdateClientContributo
 import AddPurchaseOrders from '@/components/list_purchase/AddPurchaseOrders';
 import PurchaseOrderForm from '@/components/list_purchase/PurchaseOrderForm';
 import SalesInvalidationPage from '@/components/sales/SalesInvalidationPage';
+import AddCustomer from '@/pages/AddCustomer';
 
 const Loading = () => {
   return <div>Cargando...</div>;
@@ -278,9 +279,13 @@ export const router = () => {
       element: checkAuthorization('Clientes', <AddClientNormal />),
     },
     {
-      path: '/update-client/:id',
-      element: checkAuthorization('Clientes', <UpdateClientNormal />),
+      path: '/add-customer/:id/:type',
+      element: checkAuthorization('Clientes', <AddCustomer />),
     },
+    // {
+    //   path: '/update-client/:id',
+    //   element: checkAuthorization('Clientes', <UpdateClientNormal />),
+    // },
 
     {
       path: '/add-client-contributor',

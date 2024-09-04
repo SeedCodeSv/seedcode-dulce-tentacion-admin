@@ -1,80 +1,30 @@
+import { Autocomplete, AutocompleteItem, Button, Input, Textarea } from '@nextui-org/react';
+import { useCustomerStore } from '@/store/customers.store';
+import { useBillingStore } from '@/store/facturation/billing.store';
+import { useEffect, useRef, useState } from 'react';
+import { PayloadCustomer } from '@/types/customers.types';
+import { useNavigate, useParams } from 'react-router';
+import { useViewsStore } from '@/store/views.store';
 import * as yup from 'yup';
 import { Formik } from 'formik';
-import { PayloadCustomer } from '../../types/customers.types';
-import { Autocomplete, AutocompleteItem, Button, Input, Textarea } from '@nextui-org/react';
-import { useCustomerStore } from '../../store/customers.store';
-import { useBillingStore } from '../../store/facturation/billing.store';
-import { useContext, useEffect, useState } from 'react';
-import { ThemeContext } from '../../hooks/useTheme';
-import Layout from '@/layout/Layout';
-import { useNavigate } from 'react-router';
-import { ArrowLeft } from 'lucide-react';
+import { Municipio } from '@/types/billing/cat-013-municipio.types';
+import { Departamento } from '@/types/billing/cat-012-departamento.types';
+import { Loader } from 'lucide-react';
+import useGlobalStyles from '@/components/global/global.styles';
 import { useBranchesStore } from '@/store/branches.store';
 import { Branch } from '@/types/auth.types';
-import { ITipoDocumento } from '@/types/DTE/tipo_documento.types';
 
-interface Props {
-  customer?: PayloadCustomer;
-  typeDocumento?: string;
-}
-
-const AddClientNormal = (props: Props) => {
-  const { theme } = useContext(ThemeContext);
+const AddClientNormal = () => {
   const { getBranchesList, branch_list } = useBranchesStore();
 
   useEffect(() => {
     getBranchesList();
   }, []);
-
-  const initialValues = {
-    nombre: props.customer?.nombre || '',
-    correo: props.customer?.correo || '',
-    telefono: props.customer?.telefono || '',
-    numDocumento: props.customer?.numDocumento || '',
-    municipio: props.customer?.municipio || '',
-    tipoDocumento: props.typeDocumento || '',
-    nombreMunicipio: props.customer?.nombreMunicipio || '',
-    departamento: props.customer?.departamento || '',
-    nombreDepartamento: props.customer?.nombreDepartamento || '',
-    complemento: props.customer?.complemento || '',
-    branchId: props.customer?.branchId || 0,
-  };
-
-  const validationSchema = yup.object().shape({
-    branchId: yup
-      .number()
-      .typeError('La sucursal es requerida')
-      .required('La sucursal es requerida')
-      .min(1, 'Selecciona una sucursal válida'),
-    nombre: yup.string().required('El nombre es requerido'),
-    correo: yup.string().notRequired().email('El correo es inválido'),
-    telefono: yup.string().notRequired(),
-    // numDocumento: yup
-    //   .string()
-    //   .required('**Número de documento es requerido**')
-    //   .test('noSelectedTypeDocument', '**Debe seleccionar un tipo de documento**', function () {
-    //     const { tipoDocumento } = this.parent;
-    //     return tipoDocumento !== '' ? true : false;
-    //   })
-    //   .test('validar-documento', '**Número de documento no válido**', function (value) {
-    //     const { tipoDocumento } = this.parent;
-    //     if (tipoDocumento === '13') {
-    //       return /^([0-9]{9})$/.test(value);
-    //     }
-    //     if (tipoDocumento === '36') {
-    //       return value.length >= 9 && /^([0-9]{9}|[0-9]{14})$/.test(value);
-    //     }
-    //     return true;
-    //   }),
-
-  
-
-    departamento: yup.string().required('El departamento es requerido'),
-    municipio: yup.string().required('El municipio es requerido'),
-    complemento: yup.string().notRequired(),
-  });
-
-  const [selectedCodeDep, setSelectedCodeDep] = useState(props.customer?.departamento ?? '0');
+  const { postCustomer, getCustomerById, customer, loading, patchCustomer } = useCustomerStore();
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const styles = useGlobalStyles();
+  const [selectedCodeDep, setSelectedCodeDep] = useState('0');
 
   const {
     getCat012Departamento,
@@ -86,131 +36,191 @@ const AddClientNormal = (props: Props) => {
   } = useBillingStore();
 
   useEffect(() => {
+    getCustomerById(Number(id));
     getCat012Departamento();
   }, []);
 
   useEffect(() => {
-    if (selectedCodeDep !== '0') {
-      getCat013Municipios(selectedCodeDep);
-    }
-  }, [selectedCodeDep]);
+    customer && getCat013Municipios(customer.direccion.departamento);
+  }, [customer]);
 
   useEffect(() => {
+    getCat013Municipios(selectedCodeDep);
     getCat022TipoDeDocumentoDeIde();
   }, [selectedCodeDep]);
 
-  const { postCustomer } = useCustomerStore();
-  const { getCustomersPagination } = useCustomerStore();
-  useEffect(() => {
-    getCustomersPagination(1, 5, '', '', '', '', 1);
-  }, []);
-  const navigate = useNavigate();
-
-  const onSubmit = async (payload: PayloadCustomer) => {
-    console.log('Departamento seleccionado:', payload.departamento);
-    console.log('Municipio seleccionado:', payload.municipio);
-    const finalPayload = {
-      ...payload,
-
-      correo: payload.correo || 'N/A@gmail.com',
-      telefono: payload.telefono || '0',
-      numDocumento: payload.numDocumento || '0',
-      tipoDocumento: payload.tipoDocumento || 'N/A',
-      complemento: payload.complemento || 'N/A',
-      branchId: payload.branchId,
-    };
-    await postCustomer(finalPayload);
-
-    navigate('/clients');
-    getCustomersPagination(1, 5, '', '', '', '', 1);
+  const initialValues = {
+    nombre: customer?.nombre ?? '',
+    correo: customer?.correo ?? '',
+    telefono: customer?.telefono ?? '',
+    numDocumento: customer?.numDocumento ?? '',
+    municipio: customer?.direccion?.municipio ?? '',
+    tipoDocumento: customer?.tipoDocumento ?? '',
+    nombreMunicipio: customer?.direccion?.nombreMunicipio ?? '',
+    departamento: customer?.direccion?.departamento ?? '',
+    nombreDepartamento: customer?.direccion?.nombreDepartamento ?? '',
+    complemento: customer?.direccion?.complemento ?? '',
+    branchId: customer?.branchId ?? 0,
+    // tipoContribuyente: customer?.tipoContribuyente ?? 'N/A',
   };
 
+  const validationSchema = yup.object().shape({
+    nombre: yup.string().required('**El nombre es requerido**'),
+    correo: yup.string().required('**El correo es requerido**').email('**El correo es invalido**'),
+    telefono: yup
+      .string()
+      .required('**El telefono es requerido**')
+      .matches(/^[0-9]{8}$/, '**El telefono es invalido**'),
+    tipoDocumento: yup.string().required('**Tipo de documento es requerido**'),
+    numDocumento: yup
+      .string()
+      .required('**Número de documento es requerido**')
+      .test('noSelectedTypeDocument', '**Debe seleccionar un tipo de documento**', function () {
+        const { tipoDocumento } = this.parent;
+        return tipoDocumento !== '' ? true : false;
+      })
+      .test('validar-documento', '**Número de documento no válido**', function (value) {
+        const { tipoDocumento } = this.parent;
+        if (tipoDocumento === '13') {
+          return /^([0-9]{9})$/.test(value);
+        }
+        if (tipoDocumento === '36') {
+          return value.length >= 9 && /^([0-9]{9}|[0-9]{14})$/.test(value);
+        }
+        return true; // Si tipoDocumento no es relevante para validación, se considera válido
+      }),
+    departamento: yup.string().required('**Debes seleccionar el departamento**'),
+    municipio: yup.string().required('**Debes seleccionar el municipio**'),
+    complemento: yup.string().required('**El complemento es requerido**'),
+  });
+
+  const [isClicked, setIsClicked] = useState(false);
+  const button = useRef<HTMLButtonElement>(null);
+
+  const onSubmit = (payload: PayloadCustomer) => {
+    if (Number(id) > 0 || Number(id) !== 0) {
+      const values = {
+        ...payload,
+        esContribuyente: 0,
+        // branchId: Number(user?.correlative.branchId),
+      };
+      patchCustomer(values, Number(id))
+        .then((res) => {
+          setIsClicked(false);
+          res && navigate('/clients');
+          if (button.current) button.current.disabled = false;
+        })
+        .catch(() => {
+          if (button.current) button.current.disabled = false;
+        });
+    } else {
+      const values = {
+        ...payload,
+        esContribuyente: 0,
+        // branchId: Number(user?.correlative.branchId),
+      };
+      postCustomer(values)
+        .then((res) => {
+          setIsClicked(false);
+          res && navigate('/clients');
+          if (button.current) button.current.disabled = false;
+        })
+        .catch(() => {
+          if (button.current) button.current.disabled = false;
+        });
+    }
+  };
+  const { viewasAction } = useViewsStore();
+  const viewClientNormal = viewasAction.find((action) => action.view.name === 'Clientes');
+  const actions = viewClientNormal?.actions.name || ['Agregar'];
   return (
-    <Layout title="Cliente">
-      <div className=" w-full h-full p-5 bg-gray-50 dark:bg-gray-900">
-        <div className="w-full h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
-          <button
-            onClick={() => navigate('/clients')}
-            className="flex items-center gap-2 bg-transparent "
-          >
-            <ArrowLeft />
-            <span>Volver</span>
-          </button>
-          <Formik
-            initialValues={{ ...initialValues }}
-            validationSchema={validationSchema}
-            onSubmit={(values) => onSubmit(values)}
-            validateOnMount={false}
-            validateOnBlur={false}
-            enableReinitialize={true}
-          >
-            {({ values, touched, errors, handleBlur, handleChange, handleSubmit }) => (
-              <>
-                <div className="mt-10">
+    <>
+      {actions.includes('Agregar') ? (
+        <div className=" dark:bg-gray-900">
+          {loading ? (
+            <strong>Cargando...</strong>
+          ) : (
+            <Formik
+              initialValues={initialValues}
+              validationSchema={validationSchema}
+              onSubmit={(values) => onSubmit(values)}
+            >
+              {({
+                values,
+                touched,
+                errors,
+                handleBlur,
+                handleChange,
+                handleSubmit,
+                setFieldValue,
+                validateForm,
+              }) => (
+                <>
                   <div className="">
-                    <Input
-                      className="dark:text-white font-semibold"
-                      label="Nombre"
-                      labelPlacement="outside"
-                      name="name"
-                      value={values.nombre}
-                      onChange={handleChange('nombre')}
-                      onBlur={handleBlur('nombre')}
-                      placeholder="Ingresa el nombre"
-                      isInvalid={touched.nombre && !!errors.nombre}
-                      errorMessage={touched.nombre && errors.nombre}
-                      classNames={{
-                        label: 'font-semibold text-gray-500 text-sm',
-                      }}
-                      variant="bordered"
-                    />
-                    {/* {errors.nombre && touched.nombre && (
-                      <span className="text-sm font-semibold text-red-500">{errors.nombre}</span>
-                    )} */}
-                  </div>
-                  <div className="pt-3">
-                    <Input
-                      label="Correo electrónico"
-                      labelPlacement="outside"
-                      name="correo"
-                      value={values.correo}
-                      onChange={handleChange('correo')}
-                      onBlur={handleBlur('correo')}
-                      placeholder="Ingresa el correo"
-                      classNames={{
-                        label: 'font-semibold text-gray-500 text-sm',
-                      }}
-                      variant="bordered"
-                    />
-                    {errors.correo && touched.correo && (
-                      <span className="text-sm font-semibold text-red-500">{errors.correo}</span>
-                    )}
-                  </div>
-                  <div className="grid grid-cols-2 gap-5 pt-3">
                     <div className="pt-2">
-                      <div className="flex flex-col">
+                      <Input
+                        label="Nombre"
+                        labelPlacement="outside"
+                        name="nombre"
+                        value={values.nombre}
+                        onChange={handleChange('nombre')}
+                        onBlur={handleBlur('nombre')}
+                        placeholder="Ingresa el nombre"
+                        classNames={{
+                          label: 'font-semibold text-gray-500 text-sm',
+                          input: 'dark:text-white',
+                          base: 'font-semibold',
+                        }}
+                        variant="bordered"
+                        errorMessage={errors.nombre}
+                        isInvalid={!!errors.nombre && !!touched.nombre}
+                      />
+                    </div>
+                    <div className="pt-3">
+                      <Input
+                        label="Correo electrónico"
+                        labelPlacement="outside"
+                        name="correo"
+                        value={values.correo}
+                        onChange={handleChange('correo')}
+                        onBlur={handleBlur('correo')}
+                        placeholder="Ingresa el correo"
+                        classNames={{
+                          label: 'font-semibold text-gray-500 text-sm',
+                          input: 'dark:text-white',
+                          base: 'font-semibold',
+                        }}
+                        variant="bordered"
+                        errorMessage={errors.correo}
+                        isInvalid={!!errors.correo && !!touched.correo}
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-5 pt-3">
+                      <div>
                         <Autocomplete
                           onSelectionChange={(key) => {
                             if (key) {
-                              const depSelected = JSON.parse(key as string) as ITipoDocumento;
-                              handleChange('tipoDocumento')(depSelected.codigo);
+                              setFieldValue('tipoDocumento', key as string);
                             }
                           }}
+                          placeholder="Selecciona el tipo de documento"
                           onBlur={handleBlur('tipoDocumento')}
                           label="Tipo de documento"
                           labelPlacement="outside"
-                          placeholder="Selecciona el tipo de documento"
                           variant="bordered"
                           classNames={{
                             base: 'font-semibold text-gray-500 text-sm',
                           }}
                           className="dark:text-white"
-                          defaultSelectedKey={values.tipoDocumento}
+                          selectedKey={values.tipoDocumento}
+                          errorMessage={errors.tipoDocumento}
+                          isInvalid={!!errors.tipoDocumento && !!touched.tipoDocumento}
                         >
                           {cat_022_tipo_de_documentoDeIde.map((dep) => (
                             <AutocompleteItem
                               value={dep.codigo}
-                              key={JSON.stringify(dep)}
+                              key={dep.codigo}
                               className="dark:text-white"
                             >
                               {dep.valores}
@@ -218,208 +228,237 @@ const AddClientNormal = (props: Props) => {
                           ))}
                         </Autocomplete>
                       </div>
-                    </div>
-                    <div className="mt-2">
-                      <Input
-                        type="text"
-                        label="Numero documento"
-                        labelPlacement="outside"
-                        name="numDocumento"
-                        value={values.numDocumento}
-                        onChange={handleChange('numDocumento')}
-                        onBlur={handleBlur('numDocumento')}
-                        placeholder="Ingresa el número de documento"
-                        classNames={{
-                          label: 'font-semibold text-gray-500 text-sm',
-                        }}
-                        variant="bordered"
-                      />
-                      {errors.numDocumento && touched.numDocumento && (
-                        <span className="text-sm font-semibold text-red-500">
-                          {errors.numDocumento}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-5 pt-3">
-                    <div>
-                      <Autocomplete
-                        onSelectionChange={(key) => {
-                          if (key) {
-                            const depSelected = cat_012_departamento.find(
-                              (dep) => dep.codigo === new Set([key]).values().next().value
+                      <div>
+                        <Input
+                          type="text"
+                          label="Numero documento"
+                          labelPlacement="outside"
+                          name="numDocumento"
+                          value={values.numDocumento}
+                          onChange={({ currentTarget }) => {
+                            setFieldValue(
+                              'numDocumento',
+                              currentTarget.value.replace(/[^0-9]/g, '')
                             );
-                            console.log('Departamento seleccionado:', depSelected);
-                            setSelectedCodeDep(depSelected?.codigo as string);
-                            handleChange('departamento')(depSelected?.codigo as string);
-                            handleChange('nombreDepartamento')(depSelected?.valores || '');
-                          }
-                        }}
-                        onBlur={handleBlur('departamento')}
-                        label="Departamento"
-                        labelPlacement="outside"
-                        placeholder="Selecciona el departamento"
-                        variant="bordered"
-                        className="dark:text-white font-semibold"
-                        value={values.departamento}
-                        isInvalid={touched.departamento && !!errors.departamento}
-                        errorMessage={touched.departamento && errors.departamento}
-                      >
-                        {cat_012_departamento.map((dep) => (
-                          <AutocompleteItem
-                            value={dep.codigo}
-                            key={dep.codigo}
-                            className="dark:text-white"
-                          >
-                            {dep.valores}
-                          </AutocompleteItem>
-                        ))}
-                      </Autocomplete>
-                      {/* 
-                      {errors.departamento && touched.departamento && (
-                        <span className="text-sm font-semibold text-red-500">
-                          {errors.departamento}
-                        </span>
-                      )} */}
+                          }}
+                          onBlur={handleBlur('numDocumento')}
+                          placeholder="Ingresa el numero documento"
+                          classNames={{
+                            label: 'font-semibold text-gray-500 text-sm',
+                            input: 'dark:text-white',
+                            base: 'font-semibold',
+                          }}
+                          variant="bordered"
+                          errorMessage={errors.numDocumento}
+                          isInvalid={!!errors.numDocumento && !!touched.numDocumento}
+                        />
+                      </div>
                     </div>
-                    <div>
-                      <Autocomplete
-                        onSelectionChange={(key) => {
-                          if (key) {
-                            const munSelected = cat_013_municipios.find(
-                              (mun) => mun.codigo === key
-                            );
-                            console.log('Municipio seleccionado:', munSelected);
-                            handleChange('municipio')(munSelected?.codigo || '');
-                            handleChange('nombreMunicipio')(munSelected?.valores || '');
-                          }
-                        }}
-                        onBlur={handleBlur('municipio')}
-                        label="Municipio"
-                        labelPlacement="outside"
-                        placeholder="Selecciona el municipio"
-                        variant="bordered"
-                        className="dark:text-white font-semibold"
-                        value={values.municipio}
-                        isInvalid={touched.municipio && !!errors.municipio}
-                        errorMessage={touched.municipio && errors.municipio}
-                      >
-                        {cat_013_municipios.map((mun) => (
-                          <AutocompleteItem
-                            value={mun.codigo}
-                            key={mun.codigo}
-                            className="dark:text-white"
-                          >
-                            {mun.valores}
-                          </AutocompleteItem>
-                        ))}
-                      </Autocomplete>
-                      {/* {errors.municipio && touched.municipio && (
-                        <span className="text-sm font-semibold text-red-500">
-                          {errors.municipio}
-                        </span>
-                      )} */}
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-5 pt-3">
-                    <div>
-                      <Input
-                        type="number"
-                        label="Teléfono"
-                        labelPlacement="outside"
-                        name="telefono"
-                        value={values.telefono}
-                        onChange={handleChange('telefono')}
-                        onBlur={handleBlur('telefono')}
-                        placeholder="Ingresa el telefono"
-                        classNames={{
-                          label: 'font-semibold text-gray-500 text-sm',
-                        }}
-                        variant="bordered"
-                      />
-                      {errors.telefono && touched.telefono && (
-                        <span className="text-xs font-semibold text-red-500">
-                          {errors.telefono}
-                        </span>
-                      )}
-                    </div>
-                    <div>
-                      <Autocomplete
-                        onSelectionChange={(key) => {
-                          if (key) {
-                            const depSelected = JSON.parse(key as string) as Branch;
-                            handleChange('branchId')(depSelected?.id?.toString() ?? '');
-                          }
-                        }}
-                        value={values.branchId}
-                        onBlur={handleBlur('branchId')}
-                        label="Sucursal"
-                        labelPlacement="outside"
-                        placeholder="Selecciona la sucursal"
-                        variant="bordered"
-                        className="dark:text-white"
-                        classNames={{
-                          base: 'font-semibold text-sm',
-                        }}
-                        isInvalid={touched.branchId && !!errors.branchId}
-                        errorMessage={touched.branchId && errors.branchId}
-                      >
-                        {branch_list.map((bra) => (
-                          <AutocompleteItem
-                            className="dark:text-white"
-                            value={bra.name}
-                            key={JSON.stringify(bra)}
-                          >
-                            {bra.name}
-                          </AutocompleteItem>
-                        ))}
-                      </Autocomplete>
+                    <div className="grid grid-cols-2 gap-5 pt-3">
+                      <div>
+                        <Autocomplete
+                          onSelectionChange={(key) => {
+                            if (key) {
+                              const depSelected = cat_012_departamento.find(
+                                (dep) => dep.codigo === key
+                              ) as Departamento;
+                              setSelectedCodeDep(depSelected.codigo);
+                              handleChange('departamento')(depSelected.codigo);
+                              handleChange('nombreDepartamento')(depSelected.valores);
 
-                      {/* {errors.branchId && touched.branchId && (
-                        <span className="text-sm font-semibold text-red-500">
-                          {errors.branchId}
-                        </span>
-                      )} */}
+                              if (key === customer?.direccion.departamento) {
+                                setFieldValue('municipio', customer?.direccion.municipio);
+                                setFieldValue(
+                                  'nombreMunicipio',
+                                  customer?.direccion.nombreMunicipio
+                                );
+                              } else {
+                                setFieldValue('municipio', cat_013_municipios[0].codigo);
+                                setFieldValue('nombreMunicipio', cat_013_municipios[0].valores);
+                              }
+                            }
+                          }}
+                          onBlur={handleBlur('departamento')}
+                          label="Departamento"
+                          labelPlacement="outside"
+                          placeholder={'Selecciona el departamento'}
+                          variant="bordered"
+                          classNames={{
+                            base: 'font-semibold text-gray-500 text-sm',
+                          }}
+                          className="dark:text-white"
+                          selectedKey={values.departamento}
+                          errorMessage={errors.departamento}
+                          isInvalid={!!errors.departamento && !!touched.departamento}
+                        >
+                          {cat_012_departamento.map((dep) => (
+                            <AutocompleteItem
+                              value={dep.codigo}
+                              key={dep.codigo}
+                              className="dark:text-white"
+                            >
+                              {dep.valores}
+                            </AutocompleteItem>
+                          ))}
+                        </Autocomplete>
+                      </div>
+                      <div>
+                        <Autocomplete
+                          onSelectionChange={(key) => {
+                            if (key) {
+                              const depSelected = cat_013_municipios.find(
+                                (dep) => dep.codigo === key
+                              ) as Municipio;
+                              handleChange('municipio')(depSelected.codigo);
+                              handleChange('nombreMunicipio')(depSelected.valores);
+                            }
+                          }}
+                          onBlur={handleBlur('municipio')}
+                          label="Municipio"
+                          labelPlacement="outside"
+                          className="dark:text-white"
+                          placeholder={'Selecciona el municipio'}
+                          variant="bordered"
+                          classNames={{
+                            base: 'font-semibold text-gray-500 text-sm',
+                          }}
+                          defaultSelectedKey={customer?.direccion?.municipio}
+                          value={values.municipio}
+                          errorMessage={errors.municipio}
+                          isInvalid={!!errors.municipio && !!touched.municipio}
+                        >
+                          {cat_013_municipios.map((dep) => (
+                            <AutocompleteItem
+                              value={dep.codigo}
+                              key={dep.codigo}
+                              className="dark:text-white"
+                            >
+                              {dep.valores}
+                            </AutocompleteItem>
+                          ))}
+                        </Autocomplete>
+                      </div>
+                      <div>
+                        <Input
+                          type="number"
+                          label="Teléfono"
+                          labelPlacement="outside"
+                          name="telefono"
+                          value={values.telefono}
+                          onChange={({ currentTarget }) => {
+                            setFieldValue('telefono', currentTarget.value.replace(/[^0-9]/g, ''));
+                          }}
+                          onBlur={handleBlur('telefono')}
+                          placeholder="Ingresa el telefono"
+                          classNames={{
+                            label: 'font-semibold text-gray-500 text-sm',
+                            input: 'dark:text-white',
+                            base: 'font-semibold',
+                          }}
+                          variant="bordered"
+                          errorMessage={errors.telefono}
+                          isInvalid={!!errors.telefono && !!touched.telefono}
+                        />
+                      </div>
+
+                      <div>
+                        <Autocomplete
+                          value={values.branchId}
+                          onSelectionChange={(key) => {
+                            if (key) {
+                              const depSelected = JSON.parse(key as string) as Branch;
+                              handleChange('branchId')(depSelected?.id?.toString() ?? '');
+                            }
+                          }}
+                          // defaultSelectedKey={isEditing ? values.branchId : undefined}
+                          onBlur={handleBlur('branchId')}
+                          label="Sucursal"
+                          labelPlacement="outside"
+                          placeholder="Selecciona la sucursal"
+                          variant="bordered"
+                          className="dark:text-white"
+                         
+                          classNames={{
+                            base: 'font-semibold text-sm',
+                          }}
+                        >
+                          {branch_list.map((bra) => (
+                            <AutocompleteItem
+                              className="dark:text-white"
+                              value={bra.name}
+                              key={JSON.stringify(bra)}
+                            >
+                              {bra.name}
+                            </AutocompleteItem>
+                          ))}
+                        </Autocomplete>
+                      </div>
+                    </div>
+
+                    <div className="pt-2">
+                      <Textarea
+                        label="Complemento de dirección"
+                        classNames={{
+                          label: 'font-semibold text-gray-500 text-sm',
+                          input: 'dark:text-white',
+                          base: 'font-semibold',
+                        }}
+                        labelPlacement="outside"
+                        variant="bordered"
+                        placeholder="Ingresa el complemento de dirección"
+                        name="complemento"
+                        value={values.complemento}
+                        onChange={handleChange('complemento')}
+                        onBlur={handleBlur('complemento')}
+                        errorMessage={errors.complemento}
+                        isInvalid={!!errors.complemento && !!touched.complemento}
+                      />
                     </div>
                   </div>
-                  <div className="pt-2">
-                    <Textarea
-                      label="Complemento"
-                      labelPlacement="outside"
-                      name="Complemento"
-                      value={values.complemento}
-                      onChange={handleChange('complemento')}
-                      onBlur={handleBlur('complemento')}
-                      placeholder="Ingresa el complemento de la dirección"
-                      classNames={{
-                        label: 'font-semibold text-gray-500 text-sm',
-                      }}
-                      variant="bordered"
-                    />
-                    {errors.complemento && touched.complemento && (
-                      <span className="text-sm font-semibold text-red-500">
-                        {errors.complemento}
-                      </span>
-                    )}
+                  <div className="w-full flex justify-end mt-5">
+                    <div className="pt-4 w-full flex justify-end">
+                      {isClicked ? (
+                        <div className="mt-4 flex justify-center items-center">
+                          <Loader size={35} className="animate-spin dark:text-white" />
+                        </div>
+                      ) : (
+                        <Button
+                          onClick={async (e) => {
+                            e.preventDefault();
+                            const valid = await validateForm().then((error) => {
+                              return !error;
+                            });
+                            if (valid) {
+                              setIsClicked(true);
+                            }
+                            handleSubmit();
+                          }}
+                          className="w-full md:w-96 font-semibold"
+                          ref={button}
+                          style={styles.darkStyle}
+                        >
+                          Guardar
+                        </Button>
+                      )}
+                    </div>
                   </div>
-                  <Button
-                    onClick={() => handleSubmit()}
-                    className="w-full mt-4 text-sm font-semibold"
-                    style={{
-                      backgroundColor: theme.colors.dark,
-                      color: theme.colors.primary,
-                    }}
-                  >
-                    Guardar
-                  </Button>
-                </div>
-              </>
-            )}
-          </Formik>
+                </>
+              )}
+            </Formik>
+          )}
         </div>
-      </div>
-    </Layout>
+      ) : (
+        <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
+          <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent flex justify-center items-center">
+            <p className="text-lg font-semibold dark:text-white">
+              No tiene permisos para ver este modulo
+            </p>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
 export default AddClientNormal;
+

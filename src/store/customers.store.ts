@@ -8,12 +8,14 @@ import {
   activate_customer,
   delete_customer,
   getCustomerById,
+  get_customer_by_id,
 } from '../services/customers.service';
 import { toast } from 'sonner';
 import { messages } from '../utils/constants';
 import { IGetUserById } from '@/types/user_by_id.types';
 
 export const useCustomerStore = create<IUseCustomersStore>((set, get) => ({
+  loading: false,
   customer_pagination: {
     customers: [],
     total: 0,
@@ -24,9 +26,12 @@ export const useCustomerStore = create<IUseCustomersStore>((set, get) => ({
     status: 404,
     ok: false,
   },
+  customer: undefined,
   loading_customer: false,
   customer_list: [],
   user_by_id: {} as IGetUserById,
+  loading_save: false,
+  customer_type: '',
   saveCustomersPagination: (customer_pagination) => set({ customer_pagination }),
   getCustomersPagination: (page, limit, name, email, branchName, isTransmitter, isActive = 1) => {
     set({ loading_customer: true });
@@ -48,35 +53,78 @@ export const useCustomerStore = create<IUseCustomersStore>((set, get) => ({
         });
       });
   },
+  // postCustomer: (payload) => {
+  //   return save_customers(payload)
+  //     .then(({ data }) => {
+  //       if (data) {
+  //         get().getCustomersPagination(1, 5, '', '', '', '');
+  //         toast.success(messages.success);
+  //         return true;
+  //       } else {
+  //         toast.warning(messages.error);
+  //         return false;
+  //       }
+  //     })
+  //     .catch(() => {
+  //       toast.warning(messages.error);
+  //       return false;
+  //     });
+  // },
   postCustomer: (payload) => {
+    set({ loading_save: true });
     return save_customers(payload)
       .then(({ data }) => {
         if (data) {
           get().getCustomersPagination(1, 5, '', '', '', '');
           toast.success(messages.success);
+          set({ loading_save: false });
           return true;
         } else {
           toast.warning(messages.error);
+          set({ loading_save: false });
           return false;
         }
       })
       .catch(() => {
         toast.warning(messages.error);
+        set({ loading_save: false });
         return false;
       });
   },
+  // patchCustomer: (payload, id) => {
+  //   update_customers(payload, id)
+  //     .then(({ data }) => {
+  //       if (data) {
+  //         get().getCustomersPagination(1, 5, '', '', '', '');
+  //         toast.success(messages.success);
+  //       } else {
+  //         toast.warning(messages.error);
+  //       }
+  //     })
+  //     .catch(() => {
+  //       toast.warning(messages.error);
+  //     });
+  // },
   patchCustomer: (payload, id) => {
-    update_customers(payload, id)
+    set({ loading_save: true });
+    return update_customers(payload, id)
       .then(({ data }) => {
         if (data) {
-          get().getCustomersPagination(1, 5, '', '', '', '');
+          const customer = get().customer_type
+          get().getCustomersPagination(1, 5, '', '', '', customer);
+          set({ loading_save: false });
           toast.success(messages.success);
+          return true;
         } else {
           toast.warning(messages.error);
+          set({ loading_save: false });
+          return false;
         }
       })
       .catch(() => {
         toast.warning(messages.error);
+        set({ loading_save: false });
+        return false;
       });
   },
   getCustomersList() {
@@ -126,5 +174,20 @@ export const useCustomerStore = create<IUseCustomersStore>((set, get) => ({
       set({ user_by_id: data });
       return data;
     });
+  },
+
+  getCustomerById(id: number) {
+    set((state) => ({ ...state, loading: true}))
+    get_customer_by_id(id)
+      .then(({data}) => {
+        if (data.ok) {
+          set((state) => ({...state, customer: data.customer, loading: false}))
+        } else {
+          set((state) => ({...state, customer: undefined, loading: false}))
+        }
+      })
+      .catch(() => {
+        set((state) => ({...state, customer: undefined, loading: false}))
+      })
   },
 }));
