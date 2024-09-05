@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { Formik } from 'formik';
 import { Autocomplete, AutocompleteItem, Button, Input, Textarea } from '@nextui-org/react';
 import { CodigoActividadEconomica } from '../../types/billing/cat-019-codigo-de-actividad-economica.types';
-import { Municipio } from '../../types/billing/cat-013-municipio.types';
 import { Departamento } from '../../types/billing/cat-012-departamento.types';
 import { useSupplierStore } from '../../store/supplier.store';
 import useGlobalStyles from '../global/global.styles';
@@ -42,10 +41,6 @@ function AddTributeSupplier(props: Props) {
   const { actions } = useViewsStore();
   const viewName = actions.find((v) => v.view.name == 'Proveedores');
   const actionView = viewName?.actions.name || [];
-  const [selectTypeDocumento, setSelectTypeDocumento] = useState<string>(
-    props.supplier?.tipoDocumento ?? ''
-  );
-  const [numDocumento, setNumDocumento] = useState<string>(props.supplier?.numDocumento ?? '');
   const [nrc, setNrc] = useState<string>(props.supplier?.nrc ?? '');
   const initialValues = {
     nombre: props.supplier?.nombre ?? '',
@@ -55,7 +50,7 @@ function AddTributeSupplier(props: Props) {
     numDocumento: props.supplier?.numDocumento ?? '',
     nrc: props.supplier?.nrc ?? '',
     nit: props.supplier?.nit ?? '',
-    tipoDocumento: props.supplier?.tipoDocumento ?? '',
+    tipoDocumento: props.supplier?.tipoDocumento ?? '36',
     bienTitulo: '05',
     codActividad: props.supplier?.codActividad ?? '',
     esContribuyente: 1,
@@ -66,6 +61,8 @@ function AddTributeSupplier(props: Props) {
     nombreDepartamento: '',
     complemento: props.supplier_direction?.complemento,
   };
+
+  console.log('initialValues', initialValues);
 
   const styles = useGlobalStyles();
 
@@ -87,6 +84,24 @@ function AddTributeSupplier(props: Props) {
     departamento: yup.string().required('**Debes seleccionar el departamento**'),
     municipio: yup.string().required('**Debes seleccionar el municipio**'),
     complemento: yup.string().required('**El complemento es requerida**'),
+    tipoDocumento: yup.string().required('**Tipo de documento es requerido**'),
+    numDocumento: yup
+      .string()
+      .required('**Número de documento es requerido**')
+      .test('noSelectedTypeDocument', '**Debe seleccionar un tipo de documento**', function () {
+        const { tipoDocumento } = this.parent;
+        return tipoDocumento !== '' ? true : false;
+      })
+      .test('validar-documento', '**Número de documento no válido**', function (value) {
+        const { tipoDocumento } = this.parent;
+        if (tipoDocumento === '13') {
+          return /^([0-9]{9})$/.test(value);
+        }
+        if (tipoDocumento === '36') {
+          return value.length >= 9 && /^([0-9]{9}|[0-9]{14})$/.test(value);
+        }
+        return true; // Si tipoDocumento no es relevante para validación, se considera válido
+      }),
   });
 
   const {
@@ -112,27 +127,12 @@ function AddTributeSupplier(props: Props) {
     getCat013Municipios(selectedCodeDep);
   }, [selectedCodeDep]);
 
-  const selectedKeyDepartment = useMemo(() => {
-    if (props.supplier_direction) {
-      const department = cat_012_departamento.find(
-        (department) => department.codigo === props.supplier_direction?.departamento
-      );
-
-      return JSON.stringify(department);
+  useEffect(() => {
+    if (props.supplier) {
+      getCat019CodigoActividadEconomica(props.supplier.descActividad);
+      getCat013Municipios(props.supplier_direction?.departamento ?? '');
     }
-    return undefined;
-  }, [props, cat_012_departamento, cat_012_departamento.length]);
-
-  const selectedKeyCity = useMemo(() => {
-    if (props.supplier_direction) {
-      const city = cat_013_municipios.find(
-        (department) => department.codigo === props.supplier_direction?.municipio
-      );
-
-      return JSON.stringify(city);
-    }
-    return undefined;
-  }, [props, cat_013_municipios, cat_013_municipios.length]);
+  }, [props.supplier, props.supplier_direction]);
 
   const selectedKeyCodActivity = useMemo(() => {
     if (props.supplier_direction) {
@@ -161,8 +161,8 @@ function AddTributeSupplier(props: Props) {
   const onSubmit = async (payload: PayloadSupplier) => {
     const values = {
       ...payload,
-      tipoDocumento: selectTypeDocumento,
-      numDocumento: numDocumento,
+      // tipoDocumento: selectTypeDocumento,
+      // numDocumento: numDocumento,
       nrc: nrc,
       esContribuyente: 1,
       transmitterId: transmiter,
@@ -180,7 +180,7 @@ function AddTributeSupplier(props: Props) {
           validationSchema={validationSchema}
           onSubmit={(values) => onSubmit(values)}
         >
-          {({ values, errors, touched, handleBlur, handleChange, handleSubmit }) => (
+          {({ values, errors, touched, handleBlur, setFieldValue, handleChange, handleSubmit }) => (
             <>
               <div className="grid grid-cols-2 gap-5">
                 <div>
@@ -242,25 +242,58 @@ function AddTributeSupplier(props: Props) {
                   </div>
                   <div className="pt-2">
                     <Input
-                      type="number"
                       label="Teléfono"
                       labelPlacement="outside"
                       name="telefono"
                       value={values.telefono}
-                      onChange={handleChange('telefono')}
+                      // onChange={handleChange('telefono')}
+                      onChange={(e) => setFieldValue('telefono', e.currentTarget.value)}
                       onBlur={handleBlur('telefono')}
                       placeholder="Ingresa el teléfono"
                       classNames={{
                         label: 'font-semibold text-gray-500 text-sm',
                       }}
                       variant="bordered"
+                      errorMessage={errors.telefono}
+                      isInvalid={!!errors.telefono && !!touched.telefono}
+                      disabled={false}
                     />
-                    {errors.telefono && touched.telefono && (
+                    {/* {errors.telefono && touched.telefono && (
                       <span className="text-sm font-semibold text-red-500">{errors.telefono}</span>
-                    )}
+                    )} */}
                   </div>
                   <div className="pt-2">
                     <Autocomplete
+                      label="Tipo de documento"
+                      labelPlacement="outside"
+                      placeholder={'Selecciona el tipo de documento'}
+                      onSelectionChange={(key) => {
+                        if (key) {
+                          setFieldValue('tipoDocumento', key as string);
+                        }
+                      }}
+                      onBlur={handleBlur('tipoDocumento')}
+                      variant="bordered"
+                      classNames={{
+                        base: 'font-semibold text-gray-500 text-sm',
+                      }}
+                      value={values.tipoDocumento}
+                      className="dark:text-white"
+                      isInvalid={!!errors.tipoDocumento && !!touched.tipoDocumento}
+                      errorMessage={errors.tipoDocumento}
+                      selectedKey={values.tipoDocumento}
+                    >
+                      {typesDocumento.map((dep) => (
+                        <AutocompleteItem
+                          value={dep.code}
+                          key={dep.code}
+                          className="dark:text-white"
+                        >
+                          {dep.name}
+                        </AutocompleteItem>
+                      ))}
+                    </Autocomplete>
+                    {/* <Autocomplete
                       label="Tipo de documento"
                       labelPlacement="outside"
                       placeholder={'Selecciona el tipo de documento'}
@@ -281,15 +314,15 @@ function AddTributeSupplier(props: Props) {
                           {dep.name}
                         </AutocompleteItem>
                       ))}
-                    </Autocomplete>
-                    {errors.codActividad && touched.codActividad && (
+                    </Autocomplete> */}
+                    {/* {errors.codActividad && touched.codActividad && (
                       <span className="text-sm font-semibold text-red-500">
                         {errors.codActividad}
                       </span>
-                    )}
+                    )} */}
                   </div>
                   <div className="pt-2">
-                    <Input
+                    {/* <Input
                       type="number"
                       label="Número documento"
                       labelPlacement="outside"
@@ -306,10 +339,59 @@ function AddTributeSupplier(props: Props) {
                       <span className="text-sm font-semibold text-red-500">
                         {errors.numDocumento}
                       </span>
-                    )}
+                    )} */}
+                    <Input
+                      type="number"
+                      label="Número documento"
+                      labelPlacement="outside"
+                      value={values.numDocumento}
+                      onBlur={handleBlur('numDocumento')}
+                      onChange={handleChange('numDocumento')}
+                      placeholder="Ingresa el número documento"
+                      classNames={{
+                        label: 'font-semibold text-gray-500 text-sm',
+                        base: 'font-semibold',
+                      }}
+                      variant="bordered"
+                      errorMessage={errors.numDocumento}
+                      isInvalid={!!errors.numDocumento && !!touched.numDocumento}
+                    />
                   </div>
                   <div className="pt-2">
                     <Autocomplete
+                      onSelectionChange={(key) => {
+                        if (key) {
+                          const depSelected = JSON.parse(key as string) as CodigoActividadEconomica;
+                          setFieldValue('codActividad', depSelected.codigo);
+                          setFieldValue('descActividad', depSelected.valores);
+                        }
+                      }}
+                      onBlur={handleBlur('codActividad')}
+                      label="Actividad"
+                      labelPlacement="outside"
+                      placeholder={'Selecciona la actividad'}
+                      variant="bordered"
+                      classNames={{
+                        base: 'font-semibold text-gray-500 text-sm',
+                      }}
+                      className="dark:text-white"
+                      value={selectedKeyCodActivity}
+                      selectedKey={values.codActividad}
+                      onInputChange={(e) => handleFilter(e)}
+                      isInvalid={!!errors.codActividad && !!touched.codActividad}
+                      errorMessage={errors.codActividad}
+                    >
+                      {cat_019_codigo_de_actividad_economica.map((dep) => (
+                        <AutocompleteItem
+                          value={dep.codigo}
+                          key={dep.codigo}
+                          className="dark:text-white"
+                        >
+                          {dep.valores}
+                        </AutocompleteItem>
+                      ))}
+                    </Autocomplete>
+                    {/* <Autocomplete
                       onSelectionChange={(key) => {
                         if (key) {
                           const depSelected = JSON.parse(key as string) as CodigoActividadEconomica;
@@ -344,7 +426,7 @@ function AddTributeSupplier(props: Props) {
                       <span className="text-sm font-semibold text-red-500">
                         {errors.codActividad}
                       </span>
-                    )}
+                    )} */}
                   </div>
                 </div>
                 <div>
@@ -352,10 +434,12 @@ function AddTributeSupplier(props: Props) {
                     <Autocomplete
                       onSelectionChange={(key) => {
                         if (key) {
-                          const depSelected = JSON.parse(key as string) as Municipio;
+                          const depSelected = cat_012_departamento.find(
+                            (dep) => dep.codigo === key
+                          ) as CodigoActividadEconomica;
                           setSelectedCodeDep(depSelected.codigo);
-                          handleChange('departamento')(depSelected.codigo);
-                          handleChange('nombreDepartamento')(depSelected.valores);
+                          setFieldValue('departamento', depSelected.valores);
+                          setFieldValue('nombreDepartamento', depSelected.valores);
                         }
                       }}
                       onBlur={handleBlur('departamento')}
@@ -367,28 +451,28 @@ function AddTributeSupplier(props: Props) {
                         base: 'font-semibold text-gray-500 text-sm',
                       }}
                       className="dark:text-white"
-                      // selectedKey={selectedKeyDepartment}
-                      defaultSelectedKey={selectedKeyDepartment}
-                      value={selectedKeyDepartment}
+                      selectedKey={values.departamento}
+                      isInvalid={!!errors.departamento && !!touched.departamento}
+                      errorMessage={errors.departamento}
                     >
                       {cat_012_departamento.map((dep) => (
                         <AutocompleteItem
                           value={dep.codigo}
-                          key={JSON.stringify(dep)}
+                          key={dep.codigo}
                           className="dark:text-white"
                         >
                           {dep.valores}
                         </AutocompleteItem>
                       ))}
                     </Autocomplete>
-                    {errors.departamento && touched.departamento && (
+                    {/* {errors.departamento && touched.departamento && (
                       <span className="text-sm font-semibold text-red-500">
                         {errors.departamento}
                       </span>
-                    )}
+                    )} */}
                   </div>
                   <div className="pt-2">
-                    <Autocomplete
+                    {/* <Autocomplete
                       onSelectionChange={(key) => {
                         if (key) {
                           const depSelected = JSON.parse(key as string) as Departamento;
@@ -418,10 +502,43 @@ function AddTributeSupplier(props: Props) {
                           {dep.valores}
                         </AutocompleteItem>
                       ))}
-                    </Autocomplete>
-                    {errors.municipio && touched.municipio && (
+                    </Autocomplete> */}
+                    {/* {errors.municipio && touched.municipio && (
                       <span className="text-sm font-semibold text-red-500">{errors.municipio}</span>
-                    )}
+                    )} */}
+                    <Autocomplete
+                      onSelectionChange={(key) => {
+                        if (key) {
+                          const depSelected = cat_013_municipios.find(
+                            (dep) => dep.codigo === key
+                          ) as Departamento;
+                          handleChange('municipio')(depSelected.codigo);
+                          handleChange('nombreMunicipio')(depSelected.valores);
+                        }
+                      }}
+                      onBlur={handleBlur('municipio')}
+                      label="Municipio"
+                      labelPlacement="outside"
+                      placeholder={'Selecciona el municipio'}
+                      variant="bordered"
+                      classNames={{
+                        base: 'font-semibold text-gray-500 text-sm',
+                      }}
+                      className="dark:text-white"
+                      selectedKey={values.municipio}
+                      isInvalid={!!errors.municipio && !!touched.municipio}
+                      errorMessage={errors.municipio}
+                    >
+                      {cat_013_municipios.map((dep) => (
+                        <AutocompleteItem
+                          value={dep.codigo}
+                          key={dep.codigo}
+                          className="dark:text-white"
+                        >
+                          {dep.valores}
+                        </AutocompleteItem>
+                      ))}
+                    </Autocomplete>
                   </div>
                   <div className="pt-2">
                     <Textarea
@@ -463,7 +580,7 @@ function AddTributeSupplier(props: Props) {
                     )}
                   </div>
                   <div className="pt-2">
-                    <Input
+                    {/* <Input
                       type="number"
                       label="NRC"
                       labelPlacement="outside"
@@ -474,6 +591,21 @@ function AddTributeSupplier(props: Props) {
                         label: 'font-semibold text-gray-500 text-sm',
                       }}
                       variant="bordered"
+                    /> */}
+                    <Input
+                      type="number"
+                      label="NRC"
+                      labelPlacement="outside"
+                      name="nrc"
+                      value={values.nrc}
+                      onChange={(e) => setNrc(e.target.value)}
+                      placeholder="Ingresa el número de NRC"
+                      classNames={{
+                        label: 'font-semibold text-gray-500 text-sm',
+                      }}
+                      variant="bordered"
+                      isInvalid={!!errors.nrc && !!touched.nrc}
+                      errorMessage={errors.nrc}
                     />
                   </div>
                 </div>

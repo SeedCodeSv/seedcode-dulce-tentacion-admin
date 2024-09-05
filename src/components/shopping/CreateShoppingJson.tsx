@@ -28,7 +28,7 @@ function CreateShopping() {
       {actionView.includes('Agregar') ? (
         <Layout title="Agregar">
           <div className=" w-full h-full p-5 bg-gray-50 dark:bg-gray-900">
-            <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+            <div className="w-full h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
               <div
                 className="flex w-24 items-center cursor-pointer mb-4"
                 onClick={() => navigate('/shopping')}
@@ -66,15 +66,36 @@ function CreateShopping() {
 }
 export default CreateShopping;
 const JSONMode = () => {
+  const [isDragging, setIsDragging] = useState(false);
   const { actions } = useViewsStore();
   const viewName = actions.find((v) => v.view.name == 'Compras');
   const actionView = viewName?.actions.name || [];
   const [file, setFile] = useState<File | null>(null);
   const [jsonData, setJsonData] = useState<IResponseFromDigitalOceanDTE>();
+  console.log("al leer json", jsonData);
   const { user } = useAuthStore();
 
   const styles = useGlobalStyles();
   const [modalSupplier, setModalSupplier] = useState(false);
+
+  const handleDragOver = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault();
+    setIsDragging(false);
+
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      setFile(e.dataTransfer.files[0]);
+      setJsonData(undefined);
+    }
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -138,7 +159,7 @@ const JSONMode = () => {
             title="Registrar proveedor"
             isOpen={modalSupplier}
             onClose={() => setModalSupplier(false)}
-            size="w-full md:w-[200px] lg:w-[400px] xl:w-[6000px]"
+            size="w-screen custom-scrollbar overflow-y-auto h-screen lg:h-full  md:w-screen lg:w-[900px] xl:w-[90vw] p-5"
           >
             <AddTributeSupplier
               closeModal={() => setModalSupplier(false)}
@@ -175,7 +196,16 @@ const JSONMode = () => {
                 <Button onClick={() => setProviderModal(false)} style={styles.dangerStyles}>
                   Aceptar
                 </Button>
-                <Button onClick={() => setModalSupplier(true)} style={styles.thirdStyle}>
+                {/* <Button onClick={() => setModalSupplier(true)} style={styles.thirdStyle}>
+                  Registrar
+                </Button> */}
+                <Button
+                  onClick={() => {
+                    setProviderModal(false); // Cierra el modal actual
+                    setModalSupplier(true); // Abre el modal de registrar proveedor
+                  }}
+                  style={styles.thirdStyle}
+                >
                   Registrar
                 </Button>
               </div>
@@ -373,7 +403,7 @@ const JSONMode = () => {
               </div>
             )}
           </div>
-          <HeadlessModal
+          {/* <HeadlessModal
             size={
               window.innerWidth < 700
                 ? 'w-full md:w-[600px]   lg:w-[800px]  xl:w-[7000px] '
@@ -389,6 +419,32 @@ const JSONMode = () => {
             >
               <CloudUpload className="dark:text-white" size={40} />
               <p className="dark:text-white"> Selecciona un archivo JSON</p>
+              <input onChange={handleFileChange} type="file" id="uploadFile1" className="hidden" />
+            </label>
+            
+          </HeadlessModal> */}
+
+          <HeadlessModal
+            size={
+              window.innerWidth < 700
+                ? 'w-full md:w-[600px]  lg:w-[800px] xl:w-[7000px] '
+                : 'w-full md:w-[500px] md:h-[260px] lg:w-[700px] xl:w-[500px]'
+            }
+            title=""
+            isOpen={isOpen}
+            onClose={() => setIsOpen(false)}
+          >
+            <label
+              htmlFor="uploadFile1"
+              className={`bg-white  text-gray-500 font-semibold text-base rounded max-w-md h-52 flex flex-col items-center justify-center cursor-pointer border-2 border-gray-300 border-dashed mx-auto font-[sans-serif] ${
+                isDragging ? 'border-blue-500' : 'border-gray-300'
+              }`}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+            >
+              <CloudUpload size={40} />
+              {isDragging ? 'Suelta el archivo aquí' : 'Selecciona o arrastra un archivo JSON'}
               <input onChange={handleFileChange} type="file" id="uploadFile1" className="hidden" />
             </label>
           </HeadlessModal>
