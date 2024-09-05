@@ -212,7 +212,6 @@ function AddProduct() {
                     <Input
                       variant="bordered"
                       labelPlacement="outside"
-                      
                       label="Nombre"
                       placeholder="Ingresa el nombre"
                       onChange={(e) => {
@@ -257,7 +256,7 @@ function AddProduct() {
                       type="number"
                       step="0.01"
                       startContent="$"
-                      className="dark:text-white"
+                      className="dark:text-white font-semibold"
                       onChange={handleChange('price')}
                       onBlur={handleBlur('price')}
                       value={values.price}
@@ -275,7 +274,7 @@ function AddProduct() {
                       label="Cantidad minima"
                       placeholder="Ingresa la cantidad minima"
                       onChange={handleChange('minimumStock')}
-                      className="dark:text-white"
+                      className="dark:text-white font-semibold"
                       onBlur={handleBlur('minimumStock')}
                       value={values.minimumStock}
                       isInvalid={touched.minimumStock && !!errors.minimumStock}
@@ -383,7 +382,7 @@ function AddProduct() {
                     <Select
                       multiple
                       variant="bordered"
-                      className="dark:text-white"
+                      className="dark:text-white font-semibold"
                       placeholder="Selecciona la sucursal"
                       selectedKeys={selectedBranches}
                       label="Sucursales"
@@ -426,7 +425,7 @@ function AddProduct() {
                   <div>
                     <Autocomplete
                       variant="bordered"
-                      className="dark:text-white"
+                      className="dark:text-white font-semibold"
                       label="Tipo de item"
                       labelPlacement="outside"
                       placeholder={'Ingresa el tipo de item'}
@@ -458,7 +457,7 @@ function AddProduct() {
                   </div>
                   <div className="py-2">
                     <Autocomplete
-                      className="dark:text-white"
+                      className="dark:text-white font-semibold"
                       variant="bordered"
                       name="unidaDeMedida"
                       label="Unidad de medida"

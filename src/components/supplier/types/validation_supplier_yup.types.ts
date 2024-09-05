@@ -7,12 +7,12 @@ export const supplierSchemaNormal = yup.object().shape({
 
   numDocumento: yup
     .string()
-    .required('**Número de documento es requerido**')
+    .required('**Número de documento es requerido, no debe tener guiones**')
     .test('noSelectedTypeDocument', '**Debe seleccionar un tipo de documento**', function () {
       const { tipoDocumento } = this.parent;
       return tipoDocumento !== '' ? true : false;
     })
-    .test('validar-documento', '**Número de documento no válido**', function (value) {
+    .test('validar-documento', '**Número de documento no válido, no debe tener guiones**', function (value) {
       const { tipoDocumento } = this.parent;
       if (tipoDocumento === '13') {
         return /^([0-9]{9})$/.test(value);

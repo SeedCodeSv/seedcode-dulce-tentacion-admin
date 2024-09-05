@@ -71,7 +71,7 @@ const AddClientNormal = () => {
         const { tipoDocumento } = this.parent;
         return tipoDocumento !== '';
       })
-      .test('validar-documento', '**Número de documento no válido**', function (value) {
+      .test('validar-documento', '**Número de documento no válido, no debe contener guiones**', function (value) {
         const { tipoDocumento } = this.parent;
 
         if (tipoDocumento === '13') {

@@ -23,8 +23,6 @@ import {
   SearchIcon,
   Lock,
 } from 'lucide-react';
-// import { DataTable } from 'primereact/datatable';
-// import { Column } from 'primereact/column';
 import { ThemeContext } from '../../../hooks/useTheme';
 import { global_styles } from '../../../styles/global.styles';
 import AddButton from '../../global/AddButton';
@@ -33,7 +31,6 @@ import HeadlessModal from '../../global/HeadlessModal';
 import SmPagination from '../../global/SmPagination';
 import { limit_options } from '../../../utils/constants';
 import NO_DATA from '@/assets/svg/no_data.svg';
-
 import { statusEmployee } from '../../../types/statusEmployee.types';
 import MobileView from './MobileView';
 import AddTypeContract from './AddTypeContract';
@@ -93,7 +90,7 @@ function ListContractType({ actions }: ArrayAction) {
   };
   return (
     <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
-      <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+      <div className="w-full h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
         <div className="flex justify-between items-end ">
           <div className="flex items-center gap-5">
             <div className="block md:hidden">
@@ -151,19 +148,57 @@ function ListContractType({ actions }: ArrayAction) {
               </BottomDrawer>
             </div>
           </div>
-          {actions.includes('Agregar') ? (
-            <AddButton
-              onClick={() => {
-                setContractType(undefined);
-                modalAdd.onOpen();
-              }}
-            />
-          ) : (
-            <NotAddButton></NotAddButton>
-          )}
+
+          <div className="grid w-full grid-cols-2 gap-5 md:flex ">
+            <div className="w-full flex gap-4">
+              <Input
+                startContent={<User />}
+                className="w-full xl:w-96 dark:text-white border border-white rounded-xl"
+                variant="bordered"
+                labelPlacement="outside"
+                label="Nombre"
+                classNames={{
+                  label: 'font-semibold text-gray-700',
+                  inputWrapper: 'pr-0',
+                }}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Escribe para buscar..."
+                isClearable
+                onClear={() => {
+                  setSearch('');
+                  handleSearch('');
+                }}
+              />
+              <Button
+                style={{
+                  backgroundColor: theme.colors.secondary,
+                  color: theme.colors.primary,
+                }}
+                className="mt-6 font-semibold md:flex border border-white rounded-xl"
+                color="primary"
+                startContent={<SearchIcon size={25} />}
+                onClick={() => handleSearch(undefined)}
+              >
+                Buscar
+              </Button>
+            </div>
+            <div className="flex w-full justify-end mt-6">
+              {actions.includes('Agregar') ? (
+                <AddButton
+                  onClick={() => {
+                    setContractType(undefined);
+                    modalAdd.onOpen();
+                  }}
+                />
+              ) : (
+                <NotAddButton></NotAddButton>
+              )}
+            </div>
+          </div>
         </div>
 
-        <div className="hidden flex  grid w-full grid-cols-2 gap-5 md:flex">
+        {/* <div className="grid w-full grid-cols-2 gap-5 md:flex">
           <Input
             startContent={<User />}
             className="w-full xl:w-96 dark:text-white border border-white rounded-xl"
@@ -195,10 +230,10 @@ function ListContractType({ actions }: ArrayAction) {
           >
             Buscar
           </Button>
-        </div>
+        </div> */}
 
         <div className="flex flex-col gap-3 mt-3 lg:flex-row lg:justify-between lg:gap-10">
-          <div className="flex justify-between justify-start order-2 lg:order-1">
+          <div className="flex justify-start order-2 lg:order-1">
             <div className="xl:mt-10">
               <Switch
                 onValueChange={(isActive) => setActive(isActive)}

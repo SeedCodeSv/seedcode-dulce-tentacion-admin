@@ -35,7 +35,7 @@ const AddStatusEmployee = (props: Props) => {
   };
 
   return (
-    <div className="p-5 w-full">
+    <div className="mt-4 w-full">
       <Formik
         validationSchema={validationSchema}
         initialValues={{
@@ -64,6 +64,7 @@ const AddStatusEmployee = (props: Props) => {
             <div className="mt-2 ">
               <Textarea
                 label="Descripción"
+                className="dark:text-white font-semibold"
                 labelPlacement="outside"
                 name="description"
                 value={values.description}
