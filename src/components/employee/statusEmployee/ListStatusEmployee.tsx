@@ -40,6 +40,7 @@ import BottomDrawer from '@/components/global/BottomDrawer';
 import TooltipGlobal from '@/components/global/TooltipGlobal';
 import { ArrayAction } from '@/types/view.types';
 import NotAddButton from '@/components/global/NoAdd';
+import useWindowSize from '@/hooks/useWindowSize';
 
 function ListStatusEmployee({ actions }: ArrayAction) {
   const { theme } = useContext(ThemeContext);
@@ -70,7 +71,11 @@ function ListStatusEmployee({ actions }: ArrayAction) {
 
   const modalAdd = useDisclosure();
 
-  const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
+  const { windowSize } = useWindowSize();
+  const [view, setView] = useState<'table' | 'grid' | 'list'>(
+    windowSize.width < 768 ? 'grid' : 'table'
+  );
+  // const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
 
   const handleEdit = (item: statusEmployee) => {
     setSelectedStatusEmployee({
@@ -88,10 +93,44 @@ function ListStatusEmployee({ actions }: ArrayAction) {
 
   return (
     <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
-      <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
-        <div className="flex justify-between items-end ">
-          <div className="flex items-center gap-5">
-            <div className="block md:hidden">
+      <div className="w-full h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+        <div className="grid w-full grid-cols-2 gap-5 md:flex">
+          <div className="w-full flex gap-4">
+            <Input
+              startContent={<User />}
+              className="w-full xl:w-96 dark:text-white hidden md:flex"
+              variant="bordered"
+              labelPlacement="outside"
+              label="Nombre"
+              classNames={{
+                label: 'font-semibold text-gray-700',
+                inputWrapper: 'pr-0',
+              }}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Escribe para buscar..."
+              isClearable
+              onClear={() => {
+                setSearch('');
+                handleSearch('');
+              }}
+            />
+            <Button
+              style={{
+                backgroundColor: theme.colors.secondary,
+                color: theme.colors.primary,
+              }}
+              className="mt-6 font-semibold hidden md:flex"
+              color="primary"
+              startContent={<SearchIcon size={15} />}
+              onClick={() => handleSearch(undefined)}
+            >
+              Buscar
+            </Button>
+          </div>
+
+          <div className="flex mt-6 justify-between">
+            <div className="md:hidden justify-start">
               <TooltipGlobal text="Filtrar">
                 <Button
                   className="border border-white"
@@ -145,55 +184,23 @@ function ListStatusEmployee({ actions }: ArrayAction) {
                 </div>
               </BottomDrawer>
             </div>
+            <div className="justify-end">
+              {actions.includes('Agregar') ? (
+                <AddButton
+                  onClick={() => {
+                    setSelectedStatusEmployee(undefined);
+                    modalAdd.onOpen();
+                  }}
+                />
+              ) : (
+                <NotAddButton></NotAddButton>
+              )}
+            </div>
           </div>
-          {actions.includes('Agregar') ? (
-            <AddButton
-              onClick={() => {
-                setSelectedStatusEmployee(undefined);
-                modalAdd.onOpen();
-              }}
-            />
-          ) : (
-            <NotAddButton></NotAddButton>
-          )}
-        </div>
-
-        <div className="hidden flex  grid w-full grid-cols-2 gap-5 md:flex">
-          <Input
-            startContent={<User />}
-            className="w-full xl:w-96 dark:text-white"
-            variant="bordered"
-            labelPlacement="outside"
-            label="Nombre"
-            classNames={{
-              label: 'font-semibold text-gray-700',
-              inputWrapper: 'pr-0',
-            }}
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Escribe para buscar..."
-            isClearable
-            onClear={() => {
-              setSearch('');
-              handleSearch('');
-            }}
-          />
-          <Button
-            style={{
-              backgroundColor: theme.colors.secondary,
-              color: theme.colors.primary,
-            }}
-            className="mt-6 font-semibold md:flex"
-            color="primary"
-            startContent={<SearchIcon size={15} />}
-            onClick={() => handleSearch(undefined)}
-          >
-            Buscar
-          </Button>
         </div>
 
         <div className="flex flex-col gap-3 mt-3 lg:flex-row lg:justify-between lg:gap-10">
-          <div className="flex justify-between justify-start order-2 lg:order-1">
+          <div className="flex justify-start order-2 lg:order-1">
             <div className="xl:mt-10">
               <Switch
                 onValueChange={(isActive) => setActive(isActive)}

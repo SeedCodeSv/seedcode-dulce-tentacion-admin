@@ -54,7 +54,7 @@ const GridItem = (props: GridProps) => {
       {layout === 'grid' ? (
         <div
           className={classNames(
-            'w-full border dark:border-white shadow flex flex-col justify-between hover:shadow-lg p-5 dark:border dark:border-gray-600 rounded-2xl'
+            'w-full border shadow flex flex-col justify-between hover:shadow-lg p-5 dark:border dark:border-gray-600 rounded-2xl'
           )}
           key={studyLevel.id}
         >
@@ -146,7 +146,7 @@ const ListItem = (props: GridProps) => {
 
   return (
     <>
-      <div className="flex w-full border dark:border-white col-span-1 p-5 border shadow rounded-2xl ">
+      <div className="flex w-full dark:border-white col-span-1 p-5 border shadow rounded-2xl ">
         <div className="w-full">
           <div className="flex items-center w-full gap-2">
             <BookText className="text-blue-500 dark:text-blue-300" size={20} />

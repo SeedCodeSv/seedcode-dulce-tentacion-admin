@@ -41,6 +41,7 @@ import BottomDrawer from '@/components/global/BottomDrawer';
 import TooltipGlobal from '@/components/global/TooltipGlobal';
 import { ArrayAction } from '@/types/view.types';
 import NotAddButton from '@/components/global/NoAdd';
+import useWindowSize from '@/hooks/useWindowSize';
 
 function ListStudyLevel({ actions }: ArrayAction) {
   const { theme } = useContext(ThemeContext);
@@ -67,7 +68,11 @@ function ListStudyLevel({ actions }: ArrayAction) {
 
   const modalAdd = useDisclosure();
 
-  const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
+  // const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
+  const { windowSize } = useWindowSize();
+  const [view, setView] = useState<'table' | 'grid' | 'list'>(
+    windowSize.width < 768 ? 'grid' : 'table'
+  );
 
   const handleEdit = (item: StudyLevel) => {
     setSelectedStatusEmployee({
@@ -87,9 +92,55 @@ function ListStudyLevel({ actions }: ArrayAction) {
   return (
     <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
       <div className="w-full h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
-        <div className="flex justify-between items-end ">
-          <div className="flex items-center gap-5">
-            <div className="block md:hidden">
+        <div className="grid w-full grid-cols-2 gap-5 md:flex">
+          <div className="w-full flex gap-4">
+            <Input
+              startContent={<User />}
+              className="w-full xl:w-96 dark:text-white border border-white rounded-xl font-semibold hidden md:flex"
+              variant="bordered"
+              labelPlacement="outside"
+              label="Nombre"
+              classNames={{
+                label: 'font-semibold text-gray-700',
+                inputWrapper: 'pr-0',
+              }}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Escribe para buscar..."
+              isClearable
+              onClear={() => {
+                setSearch('');
+                handleSearch('');
+              }}
+            />
+            <Button
+              style={{
+                backgroundColor: theme.colors.secondary,
+                color: theme.colors.primary,
+              }}
+              className="hidden mt-6 font-semibold md:flex border border-white rounded-xl"
+              color="primary"
+              startContent={<SearchIcon size={23} />}
+              onClick={() => handleSearch(undefined)}
+            >
+              Buscar
+            </Button>
+          </div>
+
+          <div className="flex  mt-6">
+            <div className="justify-end w-full">
+              {actions.includes('Agregar') ? (
+                <AddButton
+                  onClick={() => {
+                    setSelectedStatusEmployee(undefined);
+                    modalAdd.onOpen();
+                  }}
+                />
+              ) : (
+                <NotAddButton></NotAddButton>
+              )}
+            </div>
+            <div className="md:hidden justify-start ">
               <TooltipGlobal text="Filtrar">
                 <Button
                   className="border border-white rounded-xl"
@@ -143,103 +194,6 @@ function ListStudyLevel({ actions }: ArrayAction) {
                 </div>
               </BottomDrawer>
             </div>
-          </div>
-        </div>
-
-        {/* <div className="grid w-full grid-cols-2 gap-5 md:flex">
-          <div className=''>
-            <Input
-              startContent={<User />}
-              className="w-full xl:w-96 dark:text-white border border-white rounded-xl font-semibold"
-              variant="bordered"
-              labelPlacement="outside"
-              label="Nombre"
-              classNames={{
-                label: 'font-semibold text-gray-700',
-                inputWrapper: 'pr-0',
-              }}
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Escribe para buscar..."
-              isClearable
-              onClear={() => {
-                setSearch('');
-                handleSearch('');
-              }}
-            />
-            <Button
-              style={{
-                backgroundColor: theme.colors.secondary,
-                color: theme.colors.primary,
-              }}
-              className="hidden mt-6 font-semibold md:flex border border-white rounded-xl"
-              color="primary"
-              startContent={<SearchIcon size={23} />}
-              onClick={() => handleSearch(undefined)}
-            >
-              Buscar
-            </Button>
-          </div>
-
-          <div className="flex justify-end mt-6">
-            {actions.includes('Agregar') ? (
-              <AddButton
-                onClick={() => {
-                  setSelectedStatusEmployee(undefined);
-                  modalAdd.onOpen();
-                }}
-              />
-            ) : (
-              <NotAddButton></NotAddButton>
-            )}
-          </div>
-        </div> */}
-        <div className="grid w-full grid-cols-2 gap-5 md:flex">
-          <div className="w-full flex gap-4">
-            <Input
-              startContent={<User />}
-              className="w-full xl:w-96 dark:text-white border border-white rounded-xl font-semibold"
-              variant="bordered"
-              labelPlacement="outside"
-              label="Nombre"
-              classNames={{
-                label: 'font-semibold text-gray-700',
-                inputWrapper: 'pr-0',
-              }}
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Escribe para buscar..."
-              isClearable
-              onClear={() => {
-                setSearch('');
-                handleSearch('');
-              }}
-            />
-            <Button
-              style={{
-                backgroundColor: theme.colors.secondary,
-                color: theme.colors.primary,
-              }}
-              className="hidden mt-6 font-semibold md:flex border border-white rounded-xl"
-              color="primary"
-              startContent={<SearchIcon size={23} />}
-              onClick={() => handleSearch(undefined)}
-            >
-              Buscar
-            </Button>
-          </div>
-
-          <div className="flex w-full justify-end mt-6">
-            {actions.includes('Agregar') ? (
-              <AddButton
-                onClick={() => {
-                  setSelectedStatusEmployee(undefined);
-                  modalAdd.onOpen();
-                }}
-              />
-            ) : (
-              <NotAddButton></NotAddButton>
-            )}
           </div>
         </div>
 

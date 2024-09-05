@@ -92,7 +92,7 @@ function ListContractType({ actions }: ArrayAction) {
     <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
       <div className="w-full h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
         <div className="flex justify-between items-end ">
-          <div className="flex items-center gap-5">
+          {/* <div className="flex items-center gap-5">
             <div className="block md:hidden">
               <TooltipGlobal text="Filtrar">
                 <Button
@@ -147,13 +147,13 @@ function ListContractType({ actions }: ArrayAction) {
                 </div>
               </BottomDrawer>
             </div>
-          </div>
+          </div> */}
 
           <div className="grid w-full grid-cols-2 gap-5 md:flex ">
             <div className="w-full flex gap-4">
               <Input
                 startContent={<User />}
-                className="w-full xl:w-96 dark:text-white border border-white rounded-xl"
+                className="w-full xl:w-96 dark:text-white border border-white rounded-xl hidden md:flex"
                 variant="bordered"
                 labelPlacement="outside"
                 label="Nombre"
@@ -175,7 +175,7 @@ function ListContractType({ actions }: ArrayAction) {
                   backgroundColor: theme.colors.secondary,
                   color: theme.colors.primary,
                 }}
-                className="mt-6 font-semibold md:flex border border-white rounded-xl"
+                className="mt-6 font-semibold border border-white rounded-xl hidden md:flex"
                 color="primary"
                 startContent={<SearchIcon size={25} />}
                 onClick={() => handleSearch(undefined)}
@@ -183,17 +183,74 @@ function ListContractType({ actions }: ArrayAction) {
                 Buscar
               </Button>
             </div>
-            <div className="flex w-full justify-end mt-6">
-              {actions.includes('Agregar') ? (
-                <AddButton
-                  onClick={() => {
-                    setContractType(undefined);
-                    modalAdd.onOpen();
-                  }}
-                />
-              ) : (
-                <NotAddButton></NotAddButton>
-              )}
+
+            <div className="flex mt-6">
+              <div className="w-full justify-end">
+                {actions.includes('Agregar') ? (
+                  <AddButton
+                    onClick={() => {
+                      setContractType(undefined);
+                      modalAdd.onOpen();
+                    }}
+                  />
+                ) : (
+                  <NotAddButton></NotAddButton>
+                )}
+              </div>
+              <div className="block md:hidden">
+                <TooltipGlobal text="Filtrar">
+                  <Button
+                    className="border border-white rounded-xl"
+                    style={global_styles().thirdStyle}
+                    isIconOnly
+                    onClick={() => setOpenVaul(true)}
+                    type="button"
+                  >
+                    <Filter />
+                  </Button>
+                </TooltipGlobal>
+                <BottomDrawer
+                  open={openVaul}
+                  onClose={() => setOpenVaul(false)}
+                  title="Filtros disponibles"
+                >
+                  <div className="flex flex-col  gap-2">
+                    <Input
+                      startContent={<User />}
+                      className="w-full xl:w-96 dark:text-white border border-white rounded-xl"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      label="Nombre"
+                      classNames={{
+                        label: 'font-semibold text-gray-700',
+                        inputWrapper: 'pr-0',
+                      }}
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                      placeholder="Escribe para buscar..."
+                      isClearable
+                      onClear={() => {
+                        setSearch('');
+                        handleSearch('');
+                      }}
+                    />
+                    <Button
+                      style={{
+                        backgroundColor: theme.colors.secondary,
+                        color: theme.colors.primary,
+                        fontSize: '16px',
+                      }}
+                      className="mt-6 font-semibold border border-white rounded-xl"
+                      onClick={() => {
+                        handleSearch(undefined);
+                        setOpenVaul(false);
+                      }}
+                    >
+                      Buscar
+                    </Button>
+                  </div>
+                </BottomDrawer>
+              </div>
             </div>
           </div>
         </div>
