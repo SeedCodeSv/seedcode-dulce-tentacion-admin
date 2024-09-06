@@ -302,29 +302,7 @@ const CushCatsZ = () => {
               </div>
 
               <div className="flex flex-col items-center w-full h-full p-4 mt-4 rounded-md">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-                  {actionsViews.includes('Exportar Excel') && (
-                    <Button
-                      color="success"
-                      startContent={<PiMicrosoftExcelLogoBold size={25} />}
-                      onClick={exportDataToExcel}
-                      className="w-full"
-                    >
-                      Exportar a excel
-                    </Button>
-                  )}
-                  {actionsViews.includes('Imprimir') && (
-                    <Button
-                      className="w-full"
-                      style={global_styles().secondaryStyle}
-                      onClick={() => printEstheticService()}
-                      startContent={<IoPrintSharp size={25} />}
-                    >
-                      Imprimir y cerrar
-                    </Button>
-                  )}
-                </div>
-                <div className="mt-4 bg-white dark:bg-gray-800 w-full max-w-lg h-full overflow-y-auto flex flex-col items-center p-5 rounded-2xl">
+                <div className="mt-4 bg-white border border-gray-200 dark:bg-gray-800 w-full max-w-lg h-full overflow-y-auto flex flex-col items-center p-5 rounded-2xl">
                   <h1 className="text-black dark:text-white">MADNESS</h1>
                   <h1 className="text-black dark:text-white">
                     {branchName || user?.correlative.branch.name}
@@ -493,6 +471,28 @@ const CushCatsZ = () => {
                     <h1 className="text-black dark:text-white">
                       TOTAL: {formatCurrency(totalGeneral)}
                     </h1>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 mt-4 gap-4 w-full">
+                    {actionsViews.includes('Exportar Excel') && (
+                      <Button
+                        color="success"
+                        startContent={<PiMicrosoftExcelLogoBold className="text-white" size={25} />}
+                        onClick={exportDataToExcel}
+                        className="w-full"
+                      >
+                        <p className="text-white"> Exportar a excel</p>
+                      </Button>
+                    )}
+                    {actionsViews.includes('Imprimir') && (
+                      <Button
+                        className="w-full"
+                        style={global_styles().secondaryStyle}
+                        onClick={() => printEstheticService()}
+                        startContent={<IoPrintSharp size={25} />}
+                      >
+                        Imprimir y cerrar
+                      </Button>
+                    )}
                   </div>
                 </div>
               </div>

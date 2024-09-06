@@ -4,7 +4,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
 import { useContext, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Pagination from '../global/Pagination';
 import { useAuthStore } from '@/store/auth.store';
 import { useBranchProductStore } from '@/store/branch_product.store';
@@ -12,6 +12,7 @@ import useGlobalStyles from '../global/global.styles';
 import { fechaEnFormatoDeseado } from '@/utils/date';
 import { useShoppingStore } from '@/store/shopping.store';
 import { ArrayAction } from '@/types/view.types';
+import AddButton from '../global/AddButton';
 
 function ShoppingPage({ actions }: ArrayAction) {
   const { theme } = useContext(ThemeContext);
@@ -48,24 +49,19 @@ function ShoppingPage({ actions }: ArrayAction) {
     backgroundColor: theme.colors.dark,
     color: theme.colors.primary,
   };
+  const navigate = useNavigate();
   return (
     <>
       <div className=" w-full h-full p-10 bg-gray-50 dark:bg-gray-900">
         <div className="w-full h-full border-white border border-white p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
           <div className="flex justify-end">
             {actions.includes('Agregar') && (
-              <Link
-                style={styles.darkStyle}
-                to="/CreateShopping"
-                className="py-2 px-4 text-sm rounded-lg mr-8 mt-4"
-              >
-                Nueva compra
-              </Link>
+              <AddButton onClick={() => navigate('/CreateShopping')} />
             )}
           </div>
           <div className="grid grid-cols-4 m-4 gap-5 px-2">
             <Input
-              className="dark:text-white"
+              className="dark:text-white border border-white rounded-xl"
               onChange={(e) => {
                 setDateInitial(e.target.value);
               }}
@@ -80,7 +76,7 @@ function ShoppingPage({ actions }: ArrayAction) {
               }}
             />
             <Input
-              className="dark:text-white"
+              className="dark:text-white border border-white rounded-xl"
               onChange={(e) => {
                 setDateEnd(e.target.value);
               }}
@@ -95,28 +91,34 @@ function ShoppingPage({ actions }: ArrayAction) {
               }}
             />
 
-            <Autocomplete
-              className="dark:text-white font-semibold"
-              variant="bordered"
-              label="Sucursal"
-              labelPlacement="outside"
-              placeholder="Selecciona la sucursal"
-              clearButtonProps={{ onClick: () => setBranchId('') }}
-            >
-              {branches_list.map((item) => (
-                <AutocompleteItem
-                  key={JSON.stringify(item)}
-                  onClick={() => setBranchId(item.name)}
-                  value={item.name}
-                  className="dark:text-white"
-                >
-                  {item.name}
-                </AutocompleteItem>
-              ))}
-            </Autocomplete>
+            <div className="w-full">
+              <label className="text-sm font-semibold dark:text-white ">Sucursal</label>
+              <Autocomplete
+                className="dark:text-white font-semibold border border-white rounded-xl"
+                variant="bordered"
+                labelPlacement="outside"
+                placeholder="Selecciona la sucursal"
+                clearButtonProps={{ onClick: () => setBranchId('') }}
+              >
+                {branches_list.map((item) => (
+                  <AutocompleteItem
+                    key={JSON.stringify(item)}
+                    onClick={() => setBranchId(item.name)}
+                    value={item.name}
+                    className="dark:text-white"
+                  >
+                    {item.name}
+                  </AutocompleteItem>
+                ))}
+              </Autocomplete>
+            </div>
 
             <div>
-              <Button className="mt-6" onClick={searchDailyReport} style={styles.secondaryStyle}>
+              <Button
+                className="mt-6 border border-white"
+                onClick={searchDailyReport}
+                style={styles.secondaryStyle}
+              >
                 Buscar
               </Button>
             </div>
@@ -129,7 +131,7 @@ function ShoppingPage({ actions }: ArrayAction) {
               tableStyle={{ minWidth: '10rem' }}
             >
               <Column
-                className="dark:text-gray-400"
+                className="dark:text-white"
                 headerClassName="text-sm font-semibold"
                 bodyClassName="text-sm"
                 headerStyle={{ ...style, borderTopLeftRadius: '5px' }}
@@ -137,7 +139,7 @@ function ShoppingPage({ actions }: ArrayAction) {
                 header="No."
               />
               <Column
-                className="dark:text-gray-400"
+                className="dark:text-white"
                 headerClassName="text-sm font-semibold"
                 bodyClassName="text-sm"
                 headerStyle={style}
@@ -145,7 +147,7 @@ function ShoppingPage({ actions }: ArrayAction) {
                 header="Número de control"
               />
               <Column
-                className="dark:text-gray-400"
+                className="dark:text-white"
                 headerClassName="text-sm font-semibold"
                 bodyClassName="text-sm"
                 headerStyle={style}
@@ -153,7 +155,7 @@ function ShoppingPage({ actions }: ArrayAction) {
                 header="Código de generación"
               />
               <Column
-                className="dark:text-gray-400"
+                className="dark:text-white"
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
                 bodyClassName="text-sm"
@@ -166,7 +168,7 @@ function ShoppingPage({ actions }: ArrayAction) {
               />
 
               <Column
-                className="dark:text-gray-400"
+                className="dark:text-white"
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
                 bodyClassName="text-sm"
@@ -174,7 +176,7 @@ function ShoppingPage({ actions }: ArrayAction) {
                 header="Subtotal"
               />
               <Column
-                className="dark:text-gray-400"
+                className="dark:text-white"
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
                 bodyClassName="text-sm"
@@ -182,7 +184,7 @@ function ShoppingPage({ actions }: ArrayAction) {
                 header="IVA"
               />
               <Column
-                className="dark:text-gray-400"
+                className="dark:text-white"
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
                 bodyClassName="text-sm"

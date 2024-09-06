@@ -21,7 +21,7 @@ const SidebarNavLink = ({ viewName, to, icon: Icon, label }: SidebarNavLinkProps
       className={({ isActive }) =>
         `group relative flex items-center gap-2.5 font-normal rounded-sm px-3 duration-300 ease-in-out dark:hover:bg-gray-700 ${
           isActive
-            ? 'text-white dark:text-blue-300 font-semibold border-l-4 border-blue-300 bg-gray-800'
+            ? 'text-white dark:text-blue-300 font-semibold border-l-8 border-red-500 bg-gray-600 dark:bg-gray-700'
             : ''
         }`
       }

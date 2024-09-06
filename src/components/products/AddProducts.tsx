@@ -8,7 +8,6 @@ import {
   SelectItem,
 } from '@nextui-org/react';
 import { Formik } from 'formik';
-import { Icon } from '@iconify/react';
 import { useContext, useEffect, useState } from 'react';
 import * as yup from 'yup';
 import { useCategoriesStore } from '../../store/categories.store';

@@ -152,7 +152,7 @@ const CushCatsBigZ = () => {
         <span>------------------------------------</span><br />
         <span>------------------------------------</span<br />
         <div class="w-full">
-          <span>VspanTAS CON CRÉDITO FISCAL</span><br />
+          <span>VENTAS CON CRÉDITO FISCAL</span><br />
           <span>N. INICIAL: ${data?.CreditoFiscal?.inicio}</span><br />
           <span>N. FINAL: ${data?.CreditoFiscal?.fin}</span><br />
           <span>GRAVADAS: $0.00</span><br />
@@ -325,29 +325,7 @@ const CushCatsBigZ = () => {
               </div>
 
               <div className="flex flex-col items-center w-full h-full p-4 mt-4 rounded-md">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-                  {actionsView.includes('Exportar Excel') && (
-                    <Button
-                      color="success"
-                      startContent={<PiMicrosoftExcelLogoBold className="text-white" size={25} />}
-                      onClick={exportDataToExcel}
-                      className="w-full "
-                    >
-                      <p className="text-white">Exportar a excel</p>
-                    </Button>
-                  )}
-                  {actionsView.includes('Imprimir') && (
-                    <Button
-                      className="w-full"
-                      style={global_styles().secondaryStyle}
-                      onClick={() => printBigZ()}
-                      startContent={<IoPrintSharp size={25} />}
-                    >
-                      <p className="text-white">Imprimir y Cerrar</p>
-                    </Button>
-                  )}
-                </div>
-                <div className="mt-4 bg-white border  border-black border-white dark:bg-gray-800 w-full max-w-lg h-full overflow-y-auto flex flex-col items-center p-5 rounded-2xl">
+                <div className="mt-4 bg-white border border-gray-200 dark:bg-gray-800 w-full max-w-lg h-full overflow-y-auto flex flex-col items-center p-5 rounded-2xl">
                   <h1 className="text-black dark:text-white">MADNESS</h1>
                   <h1 className="text-black dark:text-white">
                     {branchName || user?.correlative.branch.name}
@@ -516,6 +494,28 @@ const CushCatsBigZ = () => {
                     <h1 className="text-black dark:text-white">
                       TOTAL: {formatCurrency(totalGeneral)}
                     </h1>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 w-full">
+                    {actionsView.includes('Exportar Excel') && (
+                      <Button
+                        color="success"
+                        startContent={<PiMicrosoftExcelLogoBold className="text-white" size={25} />}
+                        onClick={exportDataToExcel}
+                        className="w-full "
+                      >
+                        <p className="text-white">Exportar a excel</p>
+                      </Button>
+                    )}
+                    {actionsView.includes('Imprimir') && (
+                      <Button
+                        className="w-full"
+                        style={global_styles().secondaryStyle}
+                        onClick={() => printBigZ()}
+                        startContent={<IoPrintSharp size={25} />}
+                      >
+                        <p className="text-white">Imprimir y Cerrar</p>
+                      </Button>
+                    )}
                   </div>
                 </div>
               </div>

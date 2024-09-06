@@ -344,7 +344,7 @@ function ListUsers({ actionss }: Props) {
                                   className="flex font-semibold border border-white  cursor-not-allowed"
                                   isIconOnly
                                 >
-                                  <Lock />
+                                  <Lock className="text-white" />
                                 </Button>
                               )}
                               {item.active && actionss.includes('Cambiar Contraseña') ? (
@@ -373,7 +373,7 @@ function ListUsers({ actionss }: Props) {
                                   className="flex font-semibold border border-white  cursor-not-allowed"
                                   isIconOnly
                                 >
-                                  <Lock />
+                                  <Lock className="text-white" />
                                 </Button>
                               )}
 
@@ -391,7 +391,7 @@ function ListUsers({ actionss }: Props) {
                                   className="flex font-semibold border border-white  cursor-not-allowed"
                                   isIconOnly
                                 >
-                                  <Lock />
+                                  <Lock className="text-white" />
                                 </Button>
                               )}
                               {!item.active && (
