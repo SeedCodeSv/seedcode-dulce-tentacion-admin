@@ -40,9 +40,10 @@ function CreateShoppingManual() {
   const handleChangeTotal = (e: string) => {
     const sanitizedValue = e.replace(/[^0-9.]/g, '');
     const total = Number(sanitizedValue);
+
     const iva = total / 1.13;
-    setAfecta(formatCurrencyWithout$(iva));
-    setTotalIva(formatCurrencyWithout$(total - iva));
+    setAfecta(iva.toFixed(2));
+    setTotalIva((total - iva).toFixed(2));
     setTotal(sanitizedValue);
   };
 
