@@ -29,7 +29,8 @@ export const useSalesInvalidation = create<ISalesInvalidationStore>((set) => ({
     endDate: string,
     typeVoucher: string,
     pointSale: string,
-    status: number
+    status: number,
+    correlative: string
   ) => {
     const response = await get_sales_invalidation_table(
       id,
@@ -39,7 +40,8 @@ export const useSalesInvalidation = create<ISalesInvalidationStore>((set) => ({
       endDate,
       typeVoucher,
       pointSale,
-      status
+      status,
+      correlative
     );
     set({ sales: response.data.sales });
     set({ pagination_sales_invalidations: response.data });

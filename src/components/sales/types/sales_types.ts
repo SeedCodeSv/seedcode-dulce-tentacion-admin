@@ -163,7 +163,8 @@ export interface ISalesInvalidationStore {
     endDate: string,
     typeVoucher: string,
     pointSale: string,
-    status: number
+    status: number,
+    correlative: string
   ) => Promise<void>;
   OnInvalidation: (id: number) => Promise<IResponseInvalidation>;
 }

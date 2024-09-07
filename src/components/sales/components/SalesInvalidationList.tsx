@@ -6,7 +6,7 @@ import { useSalesInvalidation } from '../store/sales_invalidations.store';
 import { fechaActualString } from '@/utils/dates';
 import { Autocomplete, AutocompleteItem, Button, Input, Switch } from '@nextui-org/react';
 import { correlativesTypes } from '@/types/correlatives/correlatives_data.types';
-import { CircleX, Eye, Lock, Search } from 'lucide-react';
+import { CheckCircle, CircleX, Eye, Lock, Search, XCircle } from 'lucide-react';
 import { useBranchesStore } from '@/store/branches.store';
 import Pagination from '@/components/global/Pagination';
 import SmPagination from '@/components/global/SmPagination';
@@ -21,6 +21,7 @@ function SalesInvalidationList({ actions }: { actions: string[] }) {
   const [startDate, setStartDate] = useState(fechaActualString);
   const [codeSale, setCodeSale] = useState<Correlatives[]>([]);
   const [codeSelected, setCodeSelected] = useState('');
+  const [correlative, setCorrelative] = useState('');
 
   const [endDate, setEndDate] = useState(fechaActualString);
   const { sales, OnGetSalesInvalidations, OnInvalidation, pagination_sales_invalidations } =
@@ -57,7 +58,8 @@ function SalesInvalidationList({ actions }: { actions: string[] }) {
       endDate,
       filter.typeVoucher,
       codeSelected,
-      status
+      status,
+      correlative
     );
 
     const getIdBranch = async () => {
@@ -79,7 +81,8 @@ function SalesInvalidationList({ actions }: { actions: string[] }) {
       endDate,
       filter.typeVoucher,
       codeSelected,
-      status
+      status,
+      correlative
     );
   };
   const style = {
@@ -101,7 +104,17 @@ function SalesInvalidationList({ actions }: { actions: string[] }) {
           isOpenModalDetail: false,
         });
         toast.success('Venta invalidada');
-        OnGetSalesInvalidations(branchId, 1, 5, startDate, endDate, filter.typeVoucher, '', status);
+        OnGetSalesInvalidations(
+          branchId,
+          1,
+          5,
+          startDate,
+          endDate,
+          filter.typeVoucher,
+          '',
+          status,
+          correlative
+        );
       }
     } catch (e) {
       toast.error('No se pudo invalidar la venta');
@@ -116,7 +129,7 @@ function SalesInvalidationList({ actions }: { actions: string[] }) {
   const [openModalDetail, setOpenModalDetail] = useState(false);
   return (
     <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
-      <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+      <div className="w-full h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
         <div className="grid grid-cols-3 gap-5  mb-3  md:grid">
           <div className="w-full">
             <Autocomplete
@@ -148,6 +161,7 @@ function SalesInvalidationList({ actions }: { actions: string[] }) {
           <div>
             <Autocomplete
               labelPlacement="outside"
+              className="dark:text-white font-semibold text-sm"
               placeholder="Selecciona el punto de venta"
               variant="bordered"
               label="Punto de Venta"
@@ -176,7 +190,7 @@ function SalesInvalidationList({ actions }: { actions: string[] }) {
               labelPlacement="outside"
               placeholder="Selecciona el Tipo de Factura"
               variant="bordered"
-              className="dark:text-white"
+              className="dark:text-white font-semibold text-sm"
               classNames={{
                 base: 'text-gray-500 text-sm',
               }}
@@ -190,6 +204,8 @@ function SalesInvalidationList({ actions }: { actions: string[] }) {
                 ))}
             </Autocomplete>
           </div>
+        </div>
+        <div className="flex w-full gap-5">
           <Input
             label="Fecha inicial"
             labelPlacement="outside"
@@ -210,6 +226,27 @@ function SalesInvalidationList({ actions }: { actions: string[] }) {
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
           />
+
+          <Input
+            // startContent={<FileCode2 />}
+            className="w-full dark:text-white border border-white rounded-xl "
+            variant="bordered"
+            labelPlacement="outside"
+            label="Correlativo"
+            classNames={{
+              label: 'font-semibold text-gray-700',
+              inputWrapper: 'pr-0',
+            }}
+            value={correlative}
+            onChange={(e) => setCorrelative(e.target.value)}
+            placeholder="Escribe para buscar..."
+            isClearable
+            onClear={() => {
+              setCorrelative('');
+              // handleSearch('');
+            }}
+          />
+
           <Button
             startContent={<Search />}
             style={{
@@ -217,7 +254,7 @@ function SalesInvalidationList({ actions }: { actions: string[] }) {
               color: theme.colors.primary,
             }}
             onClick={() => handleSearch()}
-            className="w-full mt-5"
+            className="mt-6 w-full"
           >
             Buscar
           </Button>
@@ -400,7 +437,17 @@ function SalesInvalidationList({ actions }: { actions: string[] }) {
                   currentPage={pagination_sales_invalidations.currentPag}
                   totalPages={pagination_sales_invalidations.totalPag}
                   onPageChange={(page) => {
-                    OnGetSalesInvalidations(branchId, page, 5, startDate, endDate, '', '', status);
+                    OnGetSalesInvalidations(
+                      branchId,
+                      page,
+                      5,
+                      startDate,
+                      endDate,
+                      '',
+                      '',
+                      status,
+                      correlative
+                    );
                   }}
                 />
               </div>
@@ -415,7 +462,8 @@ function SalesInvalidationList({ actions }: { actions: string[] }) {
                       endDate,
                       filter.typeVoucher,
                       codeSelected,
-                      status
+                      status,
+                      correlative
                     );
                   }}
                   handlePrev={() => {
@@ -427,7 +475,8 @@ function SalesInvalidationList({ actions }: { actions: string[] }) {
                       endDate,
                       filter.typeVoucher,
                       codeSelected,
-                      status
+                      status,
+                      correlative
                     );
                   }}
                   currentPage={pagination_sales_invalidations.currentPag}
@@ -450,8 +499,11 @@ function SalesInvalidationList({ actions }: { actions: string[] }) {
           }
           title="Invalidar Venta"
         >
-          <div className="w-full h-full flex flex-col mt-3">
-            <h1 className="text-center ">¿Deseas invalidar esta venta?</h1>
+          <div className="w-full h-full flex flex-col mt-3 p-2">
+            <h1 className="text-center p-5 dark:text-white text-lg">
+              ¿Está seguro de que desea invalidar esta venta? Esta acción es irreversible y afectará
+              los registros en el sistema.
+            </h1>
 
             <div className="w-full flex justify-between mt-5">
               <Button
@@ -460,9 +512,11 @@ function SalesInvalidationList({ actions }: { actions: string[] }) {
                   color: theme.colors.primary,
                 }}
                 onClick={() => handleInvalidationSale()}
+                className="flex items-center"
               >
-                Invalidar
+                <XCircle className="mr-2" /> Invalidar Venta
               </Button>
+
               <Button
                 style={{
                   backgroundColor: theme.colors.third,
@@ -475,8 +529,9 @@ function SalesInvalidationList({ actions }: { actions: string[] }) {
                     isOpenModalInvalidation: false,
                   })
                 }
+                className="flex items-center"
               >
-                Cancelar
+                <CheckCircle className="mr-2" /> Cancelar
               </Button>
             </div>
           </div>

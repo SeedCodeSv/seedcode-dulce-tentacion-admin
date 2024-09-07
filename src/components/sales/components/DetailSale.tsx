@@ -47,10 +47,7 @@ function DetailSale({ id }: { id: number }) {
           <span>${sale.totalPagar}</span>
         </div>
       </div>
-      <div className="text-center mt-6">
-        <p className="text-sm text-black dark:text-white">Gracias por su compra</p>
-        <p className="text-sm text-black dark:text-white">Visítenos nuevamente</p>
-      </div>
+
     </div>
   );
 }

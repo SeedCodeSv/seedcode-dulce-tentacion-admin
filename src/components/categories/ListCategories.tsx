@@ -77,7 +77,7 @@ function ListCategories({ actions }: PProps) {
 
   return (
     <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
-      <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+      <div className="w-full h-full  border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
         <div className="flex justify-between items-end ">
           <SearchCategoryProduct
             nameCategoryProduct={(name) => setSearch(name)}
@@ -91,7 +91,7 @@ function ListCategories({ actions }: PProps) {
             />
           )}
         </div>
-        <div className="hidden flex  grid w-full grid-cols-2 gap-5 md:flex">
+        <div className="grid w-full grid-cols-2 gap-5 md:flex">
           <Input
             startContent={<User />}
             className="w-full xl:w-96 dark:text-white border border-white rounded-xl "
@@ -126,7 +126,7 @@ function ListCategories({ actions }: PProps) {
         </div>
 
         <div className="flex flex-col gap-3 mt-3 lg:flex-row lg:justify-between lg:gap-10">
-          <div className="flex justify-between justify-start order-2 lg:order-1">
+          <div className="flex justify-start order-2 lg:order-1">
             <div className="xl:mt-10">
               <Switch
                 onValueChange={(active) => setActive(active)}
