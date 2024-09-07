@@ -14,6 +14,7 @@ export const useShoppingStore = create<IShoppingStore>((set) => ({
     status: 200,
     ok: true,
   },
+  loading_shopping: false,
   getPaginatedShopping: (
     id,
     page = 1,
@@ -22,6 +23,7 @@ export const useShoppingStore = create<IShoppingStore>((set) => ({
     segundaFecha = '',
     branchId = ''
   ): void => {
+    set({ loading_shopping: true });
     get_shoppings_paginated(id, page, limit, fecha, segundaFecha, branchId)
       .then(({ data }) => {
         set({
@@ -35,10 +37,12 @@ export const useShoppingStore = create<IShoppingStore>((set) => ({
             status: data.status,
             ok: data.ok,
           },
+          loading_shopping: false,
         });
       })
       .catch(() => {
         set({
+          loading_shopping: false,
           shoppingList: [],
           pagination_shopping: {
             total: 0,

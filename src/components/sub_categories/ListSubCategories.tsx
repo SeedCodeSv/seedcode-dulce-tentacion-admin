@@ -20,6 +20,7 @@ import {
   List,
   RefreshCcw,
   Lock,
+  SearchIcon,
 } from 'lucide-react';
 import { ThemeContext } from '../../hooks/useTheme';
 import AddSubCategory from './AddSubCategory';
@@ -75,56 +76,61 @@ function ListSubCategory({ actions }: PProps) {
   };
   return (
     <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
-      <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+      <div className="w-full h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
         <div className="flex justify-between items-end ">
           <SearchSubCategories
             nameSubCategoryProduct={(name: string) => setSearch(name)}
           ></SearchSubCategories>
-          {actions.includes('Agregar') && (
-            <AddButton
-              onClick={() => {
-                setSelectedCategory(undefined);
-                modalAdd.onOpen();
-              }}
-            />
-          )}
         </div>
 
-        <div className="hidden flex  grid w-full grid-cols-2 gap-5 md:flex">
-          <Input
-            startContent={<User />}
-            className="w-full xl:w-96 dark:text-white border border-white rounded-xl"
-            variant="bordered"
-            labelPlacement="outside"
-            label="Nombre"
-            classNames={{
-              label: 'font-semibold text-gray-700',
-              inputWrapper: 'pr-0',
-            }}
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Escribe para buscar..."
-            isClearable
-            onClear={() => {
-              setSearch('');
-              handleSearch('');
-            }}
-          />
-          <Button
-            style={{
-              backgroundColor: theme.colors.secondary,
-              color: theme.colors.primary,
-            }}
-            className="mt-6 font-semibold border border-white rounded-xl"
-            color="primary"
-            onClick={() => handleSearch(undefined)}
-          >
-            Buscar
-          </Button>
+        <div className="w-full flex justify-between  md:flex">
+          <div className="flex gap-5">
+            <Input
+              startContent={<User />}
+              className="w-full xl:w-96 dark:text-white border border-white rounded-xl hidden md:flex"
+              variant="bordered"
+              labelPlacement="outside"
+              label="Nombre"
+              classNames={{
+                label: 'font-semibold text-gray-700',
+                inputWrapper: 'pr-0',
+              }}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Escribe para buscar..."
+              isClearable
+              onClear={() => {
+                setSearch('');
+                handleSearch('');
+              }}
+            />
+            <Button
+              style={{
+                backgroundColor: theme.colors.secondary,
+                color: theme.colors.primary,
+              }}
+              className="mt-6 font-semibold border border-white rounded-xl hidden md:flex"
+              color="primary"
+              startContent={<SearchIcon className="w-10" />}
+              onClick={() => handleSearch(undefined)}
+            >
+              Buscar
+            </Button>
+          </div>
+          <div className="flex gap-5 mt-6">
+            {actions.includes('Agregar') && (
+              <AddButton
+                onClick={() => {
+                  setSelectedCategory(undefined);
+                  modalAdd.onOpen();
+                }}
+              />
+            )}
+          </div>
         </div>
 
         <div className="flex flex-col gap-3 mt-3 lg:flex-row lg:justify-between lg:gap-10">
-          <div className="flex justify-between justify-start order-2 lg:order-1">
+          <div className="flex justify-start order-2 lg:order-1">
             <div className="xl:mt-10">
               <Switch
                 onValueChange={(isActive) => setActive(isActive)}

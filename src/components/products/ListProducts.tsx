@@ -115,7 +115,7 @@ function ListProducts({ actions }: Props) {
   return (
     <>
       <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
-        <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+        <div className="w-full h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <div className="flex justify-between items-end ">
             <SearchProduct
               categoryProduct={(category: string) => setCategory(category)}
@@ -151,6 +151,7 @@ function ListProducts({ actions }: Props) {
                 isClearable
                 onClear={() => {
                   setSearch('');
+                  handleSearch('');
                 }}
               />
               <Input
@@ -170,11 +171,12 @@ function ListProducts({ actions }: Props) {
                 onClear={() => {
                   // handleSearch("");
                   setCode('');
+                  handleSearch('');
                 }}
               />
 
               <div className="w-full">
-                <label className="  font-semibold text-white text-sm">Categoría</label>
+                <label className="font-semibold dark:text:white text-sm">Categoría</label>
                 <Autocomplete
                   onSelectionChange={(key) => {
                     if (key) {
@@ -193,7 +195,8 @@ function ListProducts({ actions }: Props) {
                   clearButtonProps={{
                     onClick: () => {
                       setCategory('');
-                      setCategoryId(0);
+                      handleSearch('');
+                      // setCategoryId(0);
                     },
                   }}
                 >
@@ -210,7 +213,7 @@ function ListProducts({ actions }: Props) {
               </div>
 
               <div className="w-full">
-                <label className="  font-semibold text-white text-sm">Sub Categoría</label>
+                <label className="font-semibold dark:text-white text-sm">Sub Categoría</label>
                 <Autocomplete
                   onSelectionChange={(key) => {
                     if (key) {
@@ -231,6 +234,7 @@ function ListProducts({ actions }: Props) {
                   clearButtonProps={{
                     onClick: () => {
                       setSubCategory('');
+                      handleSearch('');
                     },
                   }}
                 >
@@ -263,7 +267,7 @@ function ListProducts({ actions }: Props) {
           </div>
 
           <div className="flex flex-col gap-3 mt-3 lg:flex-row lg:justify-between lg:gap-10">
-            <div className="flex justify-between justify-start order-2 lg:order-1">
+            <div className="flex justify-start order-2 lg:order-1">
               <div className="xl:mt-10">
                 <Switch
                   onValueChange={(active) => setActive(active)}

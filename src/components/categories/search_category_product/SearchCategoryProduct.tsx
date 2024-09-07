@@ -32,10 +32,10 @@ function SearchCategoryProduct(props: IPropsSearchCategoryProduct) {
           onClose={() => setOpenVaul(false)}
           title="Filtros disponibles"
         >
-          <div className="flex flex-col  gap-2">
+          <div className="flex flex-col gap-2">
             <Input
               startContent={<User />}
-              className="w-full border dark:border-white rounded-xl  dark:text-white"
+              className="w-full border dark:border-white rounded-xl  dark:text-white "
               variant="bordered"
               labelPlacement="outside"
               label="Nombre"
