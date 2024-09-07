@@ -161,13 +161,15 @@ export const usePurchaseOrdersStore = create<PurchaseOrderStore>((set, get) => (
     const oldest_products = get().details_order_purchase.filter((cp) => !cp.isNew);
     set({ details_order_purchase: oldest_products });
   },
-  updatePurchaseOrder(id, details) {
-    update_order(id, details)
+  updatePurchaseOrder(id, details): Promise<{ ok: boolean }> {
+    return update_order(id, details)
       .then(() => {
         toast.success('Orden de compra actualizada correctamente');
+        return { ok: true };
       })
       .catch(() => {
         toast.error('Error al actualizar la orden');
+        return { ok: false };
       });
   },
   updateIvaOrder(id, iva) {

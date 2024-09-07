@@ -16,6 +16,7 @@ import AddProduct from './AddProduct';
 interface Props {
   purchase_order: PurchaseOrder;
   returnMode: () => void;
+  reload: () => void;
 }
 
 function EditMode(props: Props) {
@@ -71,15 +72,17 @@ function EditMode(props: Props) {
 
   const modalAddProduct = useDisclosure();
 
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
     const items = details_order_purchase.map((p) => ({
       productId: p.isNew ? p.productId : p.productId,
       quantity: p.quantity,
       unitPrice: p.price,
       isNew: p.isNew,
     }));
-    updatePurchaseOrder(props.purchase_order.id, items);
-
+    const data = await updatePurchaseOrder(props.purchase_order.id, items);
+    if (data.ok === true) {
+      props.reload();
+    }
     props.returnMode();
   };
 

@@ -20,7 +20,7 @@ import useGlobalStyles from '../global/global.styles';
 import { useAuthStore } from '@/store/auth.store';
 import { Supplier } from '@/types/supplier.types';
 import { useSupplierStore } from '@/store/supplier.store';
-import { convertCurrencyFormat, formatCurrencyWithout$ } from '@/utils/money';
+import { convertCurrencyFormat } from '@/utils/money';
 
 function CreateShoppingManual() {
   const { getSupplierPagination, supplier_pagination } = useSupplierStore();
@@ -37,15 +37,8 @@ function CreateShoppingManual() {
   const [correlative, setCorrelative] = useState(0);
   const [numeroControl, setNumeroControl] = useState('');
 
-  const handleChangeTotal = (e: string) => {
-    const sanitizedValue = e.replace(/[^0-9.]/g, '');
-    const total = Number(sanitizedValue);
-
-    const iva = total / 1.13;
-    setAfecta(iva.toFixed(2));
-    setTotalIva((total - iva).toFixed(2));
-    setTotal(sanitizedValue);
-  };
+  const [afectaModified, setAfectaModified] = useState(false);
+  const [totalModified, setTotalModified] = useState(false);
 
   useEffect(() => {
     getSupplierPagination(1, 15, searchNRC, '', '', 1);
@@ -71,6 +64,54 @@ function CreateShoppingManual() {
   const [tipoDocSelected, setTipoDocSelected] = useState<{ codigo: string; valores: string }>();
 
   const tiposDoc = services.get002TipoDeDocumento();
+
+  const handleChangeAfecta = (e: string) => {
+    const sanitizedValue = e.replace(/[^0-9.]/g, '');
+    const totalAfecta = Number(sanitizedValue);
+
+    setAfecta(sanitizedValue);
+    setAfectaModified(true);
+    setTotalModified(false);
+
+    if (tipoDte === '01') {
+      const ivaIncluido = totalAfecta - totalAfecta / 1.13;
+      setTotalIva(ivaIncluido.toFixed(2));
+      setTotal(totalAfecta.toFixed(2));
+    } else {
+      const ivaCalculado = totalAfecta * 0.13;
+      setTotalIva(ivaCalculado.toFixed(2));
+      setTotal((totalAfecta + ivaCalculado).toFixed(2));
+    }
+  };
+
+  const handleChangeTotal = (e: string) => {
+    const sanitizedValue = e.replace(/[^0-9.]/g, '');
+    const totalValue = Number(sanitizedValue);
+
+    setTotal(sanitizedValue);
+    setTotalModified(true);
+    setAfectaModified(false);
+
+    if (tipoDte) {
+      const ivaIncluido = totalValue - totalValue / 1.13;
+      const afectaSinIva = totalValue - ivaIncluido;
+      setAfecta(afectaSinIva.toFixed(2));
+      setTotalIva(ivaIncluido.toFixed(2));
+    } else {
+      const ivaCalculado = totalValue * 0.13;
+      const afectaConIva = totalValue - ivaCalculado;
+      setAfecta(afectaConIva.toFixed(2));
+      setTotalIva(ivaCalculado.toFixed(2));
+    }
+  };
+
+  useEffect(() => {
+    if (afectaModified && total !== '') {
+      handleChangeAfecta(afecta);
+    } else if (totalModified && afecta !== '') {
+      handleChangeTotal(total);
+    }
+  }, [tipoDte]);
 
   const filteredTipoDoc = useMemo(() => {
     return tiposDoc.filter((item) => ['01', '03', '06', '05'].includes(item.codigo));
@@ -141,7 +182,6 @@ function CreateShoppingManual() {
   return (
     <>
       <div className="w-full relative  top-5 flex justify-end right-5">
-        {/* <X className="cursor-pointer" onClick={() => navigate('/shopping')} /> */}
         <X className="cursor-pointer" onClick={clearAllDataManual} />
       </div>
       <div className="w-full h-full overflow-y-auto p-5 md:p-10">
@@ -155,25 +195,46 @@ function CreateShoppingManual() {
               classNames={{ label: 'font-semibold' }}
               className="w-full md:w-44"
               value={nrc}
-              onChange={(e) => setNrc(e.currentTarget.value)}
+              onChange={(e) => {
+                setNrc(e.currentTarget.value);
+                const foundSupplier = supplier_pagination.suppliers.find(
+                  (supp) => supp.nrc === e.currentTarget.value
+                );
+                if (foundSupplier) {
+                  setSupplierSelected(foundSupplier);
+                } else {
+                  setSupplierSelected(undefined);
+                }
+              }}
             />
+
             <Autocomplete
               label="Nombre de proveedor"
               labelPlacement="outside"
               variant="bordered"
               placeholder="Selecciona el proveedor"
-              selectedKey={`${supplierSelected?.id}`}
+              selectedKey={`${supplierSelected?.id ?? ''}`}
               classNames={{ base: 'font-semibold' }}
-              onInputChange={(text) => setSearchNRC(text)}
+              onInputChange={(text) => {
+                setSearchNRC(text);
+              }}
               onSelectionChange={(key) => {
                 if (key) {
                   const id = Number(new Set([key]).values().next().value);
-                  const fnd = supplier_pagination.suppliers.find((spp) => spp.id === id);
-                  if (fnd) {
-                    setSupplierSelected(fnd);
-                    setNrc(fnd?.nrc);
-                  } else setSupplierSelected(undefined);
-                } else setSupplierSelected(undefined);
+                  const foundSupplier = supplier_pagination.suppliers.find(
+                    (supp) => supp.id === id
+                  );
+                  if (foundSupplier) {
+                    setSupplierSelected(foundSupplier);
+                    setNrc(foundSupplier.nrc); // Actualiza el NRC cuando se selecciona el proveedor
+                  } else {
+                    setSupplierSelected(undefined);
+                    setNrc(''); // Limpia NRC si no se encuentra el proveedor
+                  }
+                } else {
+                  setSupplierSelected(undefined);
+                  setNrc(''); // Limpia NRC si no se selecciona ningún proveedor
+                }
               }}
             >
               {supplier_pagination.suppliers.map((supp) => (
@@ -284,13 +345,7 @@ function CreateShoppingManual() {
                 classNames={{ label: 'font-semibold', input: 'text-red-600 text-lg font-bold' }}
                 startContent={<span className="text-red-600 font-bold text-lg">$</span>}
                 value={afecta}
-                onChange={({ currentTarget }) => {
-                  const sanitizedValue = currentTarget.value.replace(/[^0-9.]/g, '');
-                  const IVA = Number(sanitizedValue) * 0.13;
-                  setAfecta(sanitizedValue);
-                  setTotalIva(formatCurrencyWithout$(IVA));
-                  setTotal(formatCurrencyWithout$(Number(sanitizedValue) + IVA));
-                }}
+                onChange={({ currentTarget }) => handleChangeAfecta(currentTarget.value)}
               />
             </div>
             <div>
@@ -303,11 +358,6 @@ function CreateShoppingManual() {
                 classNames={{ label: 'font-semibold', input: 'text-red-600 text-lg font-bold' }}
                 startContent={<span className="text-red-600 font-bold text-lg">$</span>}
                 value={totalIva}
-                onChange={({ currentTarget }) => {
-                  const sanitizedValue = currentTarget.value.replace(/[^0-9.]/g, '');
-                  setTotalIva(sanitizedValue);
-                  setTotal(formatCurrencyWithout$(Number(sanitizedValue) + Number(afecta)));
-                }}
               />
             </div>
             <div>

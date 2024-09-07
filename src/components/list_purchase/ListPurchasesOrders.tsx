@@ -37,7 +37,7 @@ function ListPurchasesOrders({ actions }: ArrayAction) {
   const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
   const [supplier, setSupplier] = useState('');
   // const [openVaul, setOpenVaul] = useState(false);
-  const [showState, setShowState] = useState('todos');
+  const [showState, setShowState] = useState('');
   const { getPurchaseOrders, purchase_orders, pagination_purchase_orders } =
     usePurchaseOrdersStore();
   const { getSupplierList, supplier_list } = useSupplierStore();
@@ -302,6 +302,9 @@ function ListPurchasesOrders({ actions }: ArrayAction) {
       )}
       {mode === 'edit' && selectedOrder && (
         <EditMode
+          reload={() => {
+            getPurchaseOrders(startDate, endDate, 1, limit, supplier, showState);
+          }}
           returnMode={() => {
             setMode('show');
           }}

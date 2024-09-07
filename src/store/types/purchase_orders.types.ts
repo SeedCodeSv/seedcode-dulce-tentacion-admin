@@ -1,11 +1,11 @@
-import { BranchProduct } from "../../types/branch_products.types";
-import { IPagination } from "../../types/global.types";
+import { BranchProduct } from '../../types/branch_products.types';
+import { IPagination } from '../../types/global.types';
 import {
   DetailOrderItems,
   PurchaseOrder,
   PurchaseOrderPayload,
   UpdatePurchaseItems,
-} from "../../types/purchase_orders.types";
+} from '../../types/purchase_orders.types';
 
 export interface PurchaseOrderStore {
   purchase_orders: PurchaseOrder[];
@@ -21,11 +21,7 @@ export interface PurchaseOrderStore {
     state?: string
   ) => Promise<void>;
   postPurchaseOrder: (data: PurchaseOrderPayload) => Promise<void>;
-  updateOrderProduct: (
-    id: number,
-    price: number | string,
-    quantity: number | string
-  ) => void;
+  updateOrderProduct: (id: number, price: number | string, quantity: number | string) => void;
   updateIvaOrder: (id: number, iva: boolean) => void;
   deleteProductDetail: (id: number) => void;
   addProductToOrder: (product: BranchProduct) => void;
@@ -33,5 +29,5 @@ export interface PurchaseOrderStore {
   updateQuantityOrder: (id: number, quantity: number) => void;
   updatePriceOrder: (id: number, price: number) => void;
   clearProductOrder: () => void;
-  updatePurchaseOrder: (id: number, details: UpdatePurchaseItems[]) => void;
+  updatePurchaseOrder: (id: number, details: UpdatePurchaseItems[]) => Promise<{ ok: boolean }>;
 }
