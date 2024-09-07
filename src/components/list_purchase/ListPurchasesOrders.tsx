@@ -242,9 +242,13 @@ function ListPurchasesOrders({ actions }: ArrayAction) {
                 header="Estado"
                 body={(item) =>
                   item.state ? (
-                    <Chip color="success">Completado</Chip>
+                    <Chip className="text-white" color="success">
+                      Completado
+                    </Chip>
                   ) : (
-                    <Chip color="danger">Pendiente</Chip>
+                    <Chip className="text-white" color="danger">
+                      Pendiente
+                    </Chip>
                   )
                 }
               />
