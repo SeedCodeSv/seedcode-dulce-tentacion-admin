@@ -12,7 +12,7 @@ import Layout from '../../layout/Layout';
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { useEmployeeStore } from '../../store/employee.store';
-import { EmployeePayload } from '../../types/employees.types';
+import { Employee, EmployeePayload } from '../../types/employees.types';
 import { toast } from 'sonner';
 import { Formik } from 'formik';
 import { Branch } from '@/types/auth.types';
@@ -140,21 +140,48 @@ function AddEmployee() {
   const [lastName, setLastName] = useState('');
   const [codigo, setCodigoGenerado] = useState('');
 
-  const generateCode = (setFieldValue: any) => {
+  // const generateCode = (setFieldValue: IEmployee) => {
+  //   if (!firstName || !lastName) {
+  //     toast.error(
+  //       'Necesitas ingresar el primer nombre y el primer apellido para generar el código.'
+  //     );
+  //     return;
+  //   }
+  //   const firstNameInitial = firstName.charAt(0).toUpperCase();
+  //   const lastNameInitial = lastName.charAt(0).toUpperCase();
+  //   const randomNumber = Math.floor(10 + Math.random() * 90);
+
+  //   const generatedCode = `${firstNameInitial}${lastNameInitial}${randomNumber}`;
+  //   setCodigoGenerado(generatedCode);
+
+  //   setFieldValue('code', generatedCode);
+  // };
+  const generateCode = (
+    setFieldValue: (field: keyof Employee, value: string) => void,
+    firstName: string,
+    lastName: string,
+    setCodigoGenerado: (codigo: string) => void
+  ) => {
     if (!firstName || !lastName) {
       toast.error(
         'Necesitas ingresar el primer nombre y el primer apellido para generar el código.'
       );
       return;
     }
-    const firstNameInitial = firstName.charAt(0).toUpperCase();
-    const lastNameInitial = lastName.charAt(0).toUpperCase();
-    const randomNumber = Math.floor(10 + Math.random() * 90);
 
-    const generatedCode = `${firstNameInitial}${lastNameInitial}${randomNumber}`;
+    // Tomar las dos primeras letras del primer nombre y primer apellido
+    const firstNamePart = firstName.slice(0, 2).toUpperCase();
+    const lastNamePart = lastName.slice(0, 2).toUpperCase();
+
+    // Generar 4 números aleatorios
+    const randomNumber = Math.floor(1000 + Math.random() * 9000);
+
+    // Generar el código con las dos primeras letras del nombre, apellido y los 4 números aleatorios
+    const generatedCode = `${firstNamePart}${lastNamePart}${randomNumber}`;
+
+    // Guardar el código generado
     setCodigoGenerado(generatedCode);
-
-    setFieldValue('code', generatedCode);
+    setFieldValue('code', generatedCode); // Aquí el tipo 'setFieldValue' es una función que asigna valores.
   };
 
   const navigate = useNavigate();
@@ -414,8 +441,25 @@ function AddEmployee() {
                           />
                         </div>
                         <div className="mt-3">
-                          <Button
+                          {/* <Button
                             onClick={() => generateCode(setFieldValue)}
+                            className="xl:w-full w-[140px] mt-3 text-sm font-semibold bg-blue-400"
+                            style={{
+                              backgroundColor: theme.colors.dark,
+                              color: theme.colors.primary,
+                            }}
+                          >
+                            Generar
+                          </Button> */}
+                          <Button
+                            onClick={() =>
+                              generateCode(
+                                setFieldValue,
+                                firstName, // Aquí debes pasar el valor del primer nombre
+                                lastName, // Aquí debes pasar el valor del primer apellido
+                                setCodigoGenerado // Aquí debes pasar la función para generar el código
+                              )
+                            }
                             className="xl:w-full w-[140px] mt-3 text-sm font-semibold bg-blue-400"
                             style={{
                               backgroundColor: theme.colors.dark,
