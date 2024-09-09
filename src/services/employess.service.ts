@@ -11,6 +11,7 @@ export const get_employees_paginated = (
   firstLastName: string,
   branch: string,
   phone: string,
+  codeEmployee: string,
   active: number = 1
 ) => {
   const token = get_token() ?? '';
@@ -28,6 +29,8 @@ export const get_employees_paginated = (
       branch +
       '&phone=' +
       phone +
+      '&codeEmployee=' +
+      codeEmployee +
       '&active=' +
       active,
     {

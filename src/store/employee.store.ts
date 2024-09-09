@@ -29,9 +29,29 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
   saveEmployeesPaginated(employee_paginated) {
     set({ employee_paginated });
   },
-  getEmployeesPaginated(id, page, limit, firstName, firstLastName, branch, phone, active = 1) {
+  getEmployeesPaginated(
+    id,
+    page,
+    limit,
+    firstName,
+    firstLastName,
+    branch,
+    phone,
+    codeEmployee,
+    active = 1
+  ) {
     set({ loading_employees: true });
-    get_employees_paginated(id, page, limit, firstName, firstLastName, branch, phone, active)
+    get_employees_paginated(
+      id,
+      page,
+      limit,
+      firstName,
+      firstLastName,
+      branch,
+      phone,
+      codeEmployee,
+      active
+    )
       .then(({ data }) => set({ employee_paginated: data, loading_employees: false }))
       .catch(() => {
         set({
@@ -60,6 +80,7 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
           '',
           '',
           '',
+          '',
           ''
         );
         toast.success(messages.success);
@@ -81,6 +102,7 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
           '',
           '',
           '',
+          '',
           ''
         );
         toast.success(messages.success);
@@ -99,6 +121,7 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
           Number(user?.correlative.branch.transmitterId),
           1,
           5,
+          '',
           '',
           '',
           '',

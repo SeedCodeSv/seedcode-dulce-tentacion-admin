@@ -13,6 +13,7 @@ export interface IEmployeeStore {
     firstLastName: string,
     branch: string,
     phone: string,
+    codeEmployee: string,
     active?: number
   ) => void;
   postEmployee: (payload: EmployeePayload) => Promise<boolean>;

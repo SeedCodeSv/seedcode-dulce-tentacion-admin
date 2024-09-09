@@ -41,7 +41,6 @@ import HeadlessModal from '../global/HeadlessModal';
 import { useNavigate } from 'react-router';
 import UpdateEmployee from './UpdateEmployee';
 import TooltipGlobal from '../global/TooltipGlobal';
-
 import NO_DATA from '@/assets/svg/no_data.svg';
 import useWindowSize from '@/hooks/useWindowSize';
 import { useAuthStore } from '@/store/auth.store';
@@ -68,6 +67,7 @@ function ListEmployee({ actions }: Props) {
   const [branch, setBranch] = useState('');
   const [phone, setPhone] = useState('');
   const [limit, setLimit] = useState(5);
+  const [codeEmployee, setCodeEmployee] = useState('');
   const { windowSize } = useWindowSize();
   const [view, setView] = useState<'table' | 'grid' | 'list'>(
     windowSize.width < 768 ? 'grid' : 'table'
@@ -87,6 +87,7 @@ function ListEmployee({ actions }: Props) {
       firstLastName,
       branch,
       phone,
+      codeEmployee,
       active ? 1 : 0
     );
   };
@@ -101,6 +102,7 @@ function ListEmployee({ actions }: Props) {
       firstLastName,
       branch,
       phone,
+      codeEmployee,
       active ? 1 : 0
     );
   }, [limit, active]);
@@ -111,6 +113,7 @@ function ListEmployee({ actions }: Props) {
         Number(user?.correlative.branch.transmitterId),
         1,
         limit,
+        '',
         '',
         '',
         '',
@@ -708,7 +711,7 @@ function ListEmployee({ actions }: Props) {
       ) : (
         <>
           <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
-            <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+            <div className="w-full h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
               <div className="flex justify-between items-end ">
                 <SearchEmployee
                   branchName={(e) => setBranch(e)}
@@ -745,6 +748,26 @@ function ListEmployee({ actions }: Props) {
                     onChange={(e) => setFirstName(e.target.value)}
                     isClearable
                     onClear={() => setFirstName('')}
+                  />
+
+                  <Input
+                    classNames={{
+                      label: 'font-semibold text-gray-700',
+                      inputWrapper: 'pr-0',
+                    }}
+                    labelPlacement="outside"
+                    label="Código"
+                    className="w-full dark:text-white border border-white rounded-xl"
+                    placeholder="Buscar por código..."
+                    startContent={<User />}
+                    variant="bordered"
+                    name="searchCodeEmployee"
+                    id="searchNameCodeEmployee"
+                    value={codeEmployee}
+                    autoComplete="search"
+                    onChange={(e) => setCodeEmployee(e.target.value)}
+                    isClearable
+                    onClear={() => setCodeEmployee('')}
                   />
                   <Input
                     classNames={{
@@ -810,7 +833,7 @@ function ListEmployee({ actions }: Props) {
               </div>
 
               <div className="flex flex-col gap-3 mt-3 lg:flex-row lg:justify-between lg:gap-10">
-                <div className="flex justify-between justify-start order-2 lg:order-1">
+                <div className="flex justify-start order-2 lg:order-1">
                   <div className="xl:mt-10">
                     <Switch
                       onValueChange={(active) => setActive(active)}
@@ -1107,6 +1130,7 @@ function ListEmployee({ actions }: Props) {
                           firstLastName,
                           branch,
                           phone,
+                          codeEmployee,
                           active ? 1 : 0
                         );
                       }}
@@ -1123,6 +1147,7 @@ function ListEmployee({ actions }: Props) {
                           firstLastName,
                           branch,
                           phone,
+                          codeEmployee,
                           active ? 1 : 0
                         );
                       }}
@@ -1135,6 +1160,7 @@ function ListEmployee({ actions }: Props) {
                           firstLastName,
                           branch,
                           phone,
+                          codeEmployee,
                           active ? 1 : 0
                         );
                       }}
