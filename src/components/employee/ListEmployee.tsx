@@ -47,6 +47,7 @@ import { useAuthStore } from '@/store/auth.store';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import SearchEmployee from './search_employee/SearchEmployee';
+import ProofSalary from './employees-pdfs/ProofSalary';
 
 interface Props {
   actions: string[];
@@ -985,27 +986,29 @@ function ListEmployee({ actions }: Props) {
                                     <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                                       <div className="flex w-full gap-5">
                                         {employee.isActive && actions.includes('Editar') ? (
-                                          <TooltipGlobal text="Editar">
-                                            <Button
-                                              className="border border-white"
-                                              onClick={() => {
-                                                setDataUpdate(employee);
+                                          <>
+                                            <TooltipGlobal text="Editar">
+                                              <Button
+                                                className="border border-white"
+                                                onClick={() => {
+                                                  setDataUpdate(employee);
 
-                                                // setIsOpenModalUpdate(true);
-                                              }}
-                                              isIconOnly
-                                              style={{
-                                                backgroundColor: theme.colors.secondary,
-                                              }}
-                                            >
-                                              <EditIcon
-                                                style={{
-                                                  color: theme.colors.primary,
+                                                  // setIsOpenModalUpdate(true);
                                                 }}
-                                                size={20}
-                                              />
-                                            </Button>
-                                          </TooltipGlobal>
+                                                isIconOnly
+                                                style={{
+                                                  backgroundColor: theme.colors.secondary,
+                                                }}
+                                              >
+                                                <EditIcon
+                                                  style={{
+                                                    color: theme.colors.primary,
+                                                  }}
+                                                  size={20}
+                                                />
+                                              </Button>
+                                            </TooltipGlobal>
+                                          </>
                                         ) : (
                                           <Button
                                             type="button"
@@ -1091,6 +1094,7 @@ function ListEmployee({ actions }: Props) {
                                             )}
                                           </>
                                         )}
+                                        <ProofSalary></ProofSalary>
                                       </div>
                                     </td>
                                   </tr>

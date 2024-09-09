@@ -50,7 +50,6 @@ import CreateTheme from '@/components/configuration/CreateTheme';
 import AddClientContributor from '@/components/clients/AddClientContributor';
 import AddClientNormal from '@/components/clients/AddClientNormal';
 import AddNormalSupplier from '@/components/supplier/AddNormalSupplier';
-import UpdateClientNormal from '@/components/clients/UpdateClientNormal';
 import AddTributeSupplier from '@/components/supplier/AddTributeSupplier';
 import UpdateNormalSupplier from '@/components/supplier/UpdateNormalSupplier';
 import CorrelativePage from '@/pages/CorrelativePage';
@@ -60,6 +59,7 @@ import AddPurchaseOrders from '@/components/list_purchase/AddPurchaseOrders';
 import PurchaseOrderForm from '@/components/list_purchase/PurchaseOrderForm';
 import SalesInvalidationPage from '@/components/sales/SalesInvalidationPage';
 import AddCustomer from '@/pages/AddCustomer';
+import BirthdayCalendar from '@/components/employee/BirthdayCalendar';
 
 const Loading = () => {
   return <div>Cargando...</div>;
@@ -175,6 +175,11 @@ export const router = () => {
     {
       path: '/actionRol',
       element: <ActionRol />,
+    },
+
+    {
+      path: '/birthday-calendar',
+      element: checkAuthorization('Empleados', <BirthdayCalendar />),
     },
 
     //Gestion de Reportes
