@@ -306,95 +306,93 @@ function SalesChartPeriod(props: Props) {
         )}
       </div> */}
 
-      <div className="mt-10">
-        {loading_sales_by_point_of_sale_branch ? (
-          <div className="flex flex-col items-center justify-center w-full h-64">
-            <div className="loader"></div>
-            <p className="mt-3 text-xl font-semibold">Cargando...</p>
-          </div>
-        ) : (
-          <>
-            {sales_by_point_of_sale_branch && (
-              <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
-                <div className="w-full p-4 border shadow dark:border-gray-600 rounded-2xl">
-                  <ApexChart
-                    height={windowSize.width < 600 ? 300 : 300}
-                    type="donut"
-                    series={[...sales_by_point_of_sale_branch.salesMap.map((el) => el.total)]}
-                    options={{
-                      labels: [...sales_by_point_of_sale_branch.salesMap.map((el) => el.code)],
-                      title: {
-                        text: 'Ventas por punto de venta',
-                        style: {
-                          color: context === 'light' ? '#000' : '#fff',
-                        },
+      {loading_sales_by_point_of_sale_branch ? (
+        <div className="flex flex-col items-center justify-center w-full h-64">
+          <div className="loader"></div>
+          <p className="mt-3 text-xl font-semibold">Cargando...</p>
+        </div>
+      ) : (
+        <>
+          {sales_by_point_of_sale_branch && (
+            <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+              <div className="w-full p-4 border shadow dark:border-gray-600 rounded-2xl">
+                <ApexChart
+                  height={windowSize.width < 600 ? 300 : 300}
+                  type="donut"
+                  series={[...sales_by_point_of_sale_branch.salesMap.map((el) => el.total)]}
+                  options={{
+                    labels: [...sales_by_point_of_sale_branch.salesMap.map((el) => el.code)],
+                    title: {
+                      text: 'Ventas por punto de venta',
+                      style: {
+                        color: context === 'light' ? '#000' : '#fff',
                       },
-                      fill: {
-                        opacity: 1,
-                        type: 'gradient',
-                        gradient: {
-                          type: 'vertical',
-                          shadeIntensity: 1,
-                          inverseColors: false,
-                          opacityFrom: 1,
-                          opacityTo: 1,
-                          stops: [100, 100],
-                        },
+                    },
+                    fill: {
+                      opacity: 1,
+                      type: 'gradient',
+                      gradient: {
+                        type: 'vertical',
+                        shadeIntensity: 1,
+                        inverseColors: false,
+                        opacityFrom: 1,
+                        opacityTo: 1,
+                        stops: [100, 100],
                       },
-                      colors: [...getRandomColorsArray()],
-                      plotOptions: {
-                        pie: {
-                          customScale: 1,
-                          donut: {
-                            size: '55%',
-                            labels: {
+                    },
+                    colors: [...getRandomColorsArray()],
+                    plotOptions: {
+                      pie: {
+                        customScale: 1,
+                        donut: {
+                          size: '55%',
+                          labels: {
+                            show: true,
+                            name: {
                               show: true,
-                              name: {
-                                show: true,
-                                color: context === 'light' ? '#000' : '#fff',
-                                fontSize: '16px',
-                              },
-                              value: {
-                                show: true,
-                                color: context === 'light' ? '#000' : '#fff',
-                                fontSize: '14px',
-                                formatter(val) {
-                                  return formatCurrency(Number(val));
-                                },
+                              color: context === 'light' ? '#000' : '#fff',
+                              fontSize: '16px',
+                            },
+                            value: {
+                              show: true,
+                              color: context === 'light' ? '#000' : '#fff',
+                              fontSize: '14px',
+                              formatter(val) {
+                                return formatCurrency(Number(val));
                               },
                             },
                           },
-                          offsetY: 20,
                         },
+                        offsetY: 20,
                       },
-                      legend: {
-                        show: true,
-                        position: windowSize.width < 600 ? 'bottom' : 'left',
-                        offsetY: windowSize.width < 600 ? 0 : 80,
-                        labels: {
-                          colors: context === 'light' ? '#000' : '#fff',
-                        },
+                    },
+                    legend: {
+                      show: true,
+                      position: windowSize.width < 600 ? 'bottom' : 'left',
+                      offsetY: windowSize.width < 600 ? 0 : 80,
+                      labels: {
+                        colors: context === 'light' ? '#000' : '#fff',
                       },
-                    }}
-                  />
-                </div>
-                <div className="flex flex-col items-center justify-center w-full p-4 border shadow dark:border-gray-600 rounded-2xl">
-                  <p className="py-2 text-xl font-semibold md:text-2xl">{branchSelected?.branch}</p>
-                  <p className="py-2 text-xl font-semibold md:text-2xl ">
-                    No de ventas: {branchSelected?.quantity}
-                  </p>
-                  <p className="py-2 text-xl font-semibold md:text-2xl ">
-                    Total:{' '}
-                    <span className="font-bold text-green-500">
-                      {formatCurrency(Number(branchSelected?.total ?? 0))}
-                    </span>
-                  </p>
-                </div>
+                    },
+                  }}
+                />
               </div>
-            )}
-          </>
-        )}
-      </div>
+              <div className="flex flex-col items-center justify-center w-full p-4 border shadow dark:border-gray-600 rounded-2xl">
+                <p className="py-2 text-xl font-semibold md:text-2xl">{branchSelected?.branch}</p>
+                <p className="py-2 text-xl font-semibold md:text-2xl ">
+                  No de ventas: {branchSelected?.quantity}
+                </p>
+                <p className="py-2 text-xl font-semibold md:text-2xl ">
+                  Total:{' '}
+                  <span className="font-bold text-green-500">
+                    {formatCurrency(Number(branchSelected?.total ?? 0))}
+                  </span>
+                </p>
+              </div>
+            </div>
+          )}
+        </>
+      )}
     </>
   );
 }
