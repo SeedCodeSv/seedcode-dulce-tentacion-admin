@@ -1,4 +1,3 @@
-
 import { Branches } from './branches.types';
 import { ICharge } from './charges.types';
 import { ContractType } from './contract_type.types';
@@ -45,8 +44,6 @@ export interface Employee {
   isActive: boolean;
 }
 
-
-
 export interface IGetEmployeesPaginated {
   ok: boolean;
   employees: Employee[];
@@ -76,7 +73,7 @@ export interface EmployeePayload {
   dateOfBirth: string;
   dateOfEntry: string;
   code: string;
-  age?: string; 
+  age?: string;
   responsibleContact?: string;
   statusId: number;
   studyLevelId: number;
@@ -126,11 +123,30 @@ interface Address {
   nombreDepartamento: string;
   municipio: string;
   nombreMunicipio: string;
-  complemento?: string; 
+  complemento?: string;
 }
 
 export interface GetEmployeeList {
   ok: boolean;
   message: string;
   employees: Employee[];
+}
+
+export interface Person {
+  id: number;
+  firstName: string;
+  secondName: string;
+  firstLastName: string;
+  secondLastName: string;
+}
+
+export interface Attendance {
+  [date: string]: Person[];
+}
+
+export interface MonthsAttendance {
+  Enero?: Attendance;
+  Junio?: Attendance;
+  Julio?: Attendance;
+  [key: string]: Attendance | undefined;
 }

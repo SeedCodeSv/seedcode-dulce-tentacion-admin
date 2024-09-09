@@ -1,6 +1,11 @@
 import axios from 'axios';
 import { API_URL } from '../utils/constants';
-import { EmployeePayload, GetEmployeeList, IGetEmployeesPaginated } from '../types/employees.types';
+import {
+  EmployeePayload,
+  GetEmployeeList,
+  IGetEmployeesPaginated,
+  Person,
+} from '../types/employees.types';
 import { get_token } from '../storage/localStorage';
 
 export const get_employees_paginated = (
@@ -100,6 +105,15 @@ export const activate_employee = (id: number) => {
 export const verify_code = (code: string) => {
   const token = get_token() ?? '';
   return axios.get<{ ok: boolean }>(API_URL + '/employees/verify-code?code=' + code, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+export const get_birthday_employees = () => {
+  const token = get_token() ?? '';
+  return axios.get<Person[]>(API_URL + '/employees/get-birthday-employee', {
     headers: {
       Authorization: `Bearer ${token}`,
     },
