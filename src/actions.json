@@ -135,15 +135,6 @@
     {
       "view": "Configuración",
       "actions": ["Mostrar", "Agregar", "Editar"]
-    },
-
-    {
-      "view": "Contrato de Trabajo",
-      "actions": ["Mostrar"]
-    },
-    {
-      "view": "Constancia de Trabajo",
-      "actions": ["Mostrar"]
     }
   ]
 }
