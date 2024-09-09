@@ -1,13 +1,18 @@
 import Layout from '@/layout/Layout';
 import { Button } from '@nextui-org/react';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
-import { SetStateAction, useState } from 'react';
+import { SetStateAction, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import globo from '../../assets/globo.png';
+import { Person } from '@/types/employees.types';
+import { get_birthday_employees } from '@/services/employess.service';
+
 function BirthdayCalendar() {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [birthdayEmployees, setBirthdayEmployees] = useState<Person[]>([]); // Estado para los cumpleaños
+
   const months = [
     'Enero',
     'Febrero',
@@ -22,38 +27,29 @@ function BirthdayCalendar() {
     'Noviembre',
     'Diciembre',
   ];
+
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
   const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
   const daysArray = Array.from({ length: daysInMonth }, (_, i) => i + 1);
-  const events = [
-    {
-      title: 'Project Continue',
-      date: '2024-09-09',
-      time: '09:00 - 11:00',
-      color: 'bg-green-100',
-      borderColor: 'border-green-400',
-      participants: ['avatar1', 'avatar2'],
-    },
-    {
-      title: 'Finishing Project',
-      date: '2024-09-12',
-      time: '08:30 - 09:30',
-      color: 'bg-red-100',
-      borderColor: 'border-red-400',
-      participants: ['avatar1', 'avatar2', 'avatar3'],
-    },
-    {
-      title: 'Consultation Project',
-      date: '2024-09-16',
-      time: '11:30 - 12:30',
-      color: 'bg-blue-100',
-      borderColor: 'border-blue-400',
-      participants: ['avatar1', 'avatar2', 'avatar3', 'avatar4'],
-    },
-  ];
+
+  // Cargar los empleados que cumplen años
+  useEffect(() => {
+    const fetchBirthdayEmployees = async () => {
+      try {
+        const response = await get_birthday_employees();
+        setBirthdayEmployees(response.data); // Asigna los empleados al estado
+      } catch (error) {
+        console.error('Error fetching birthday employees:', error);
+      }
+    };
+
+    fetchBirthdayEmployees();
+  }, []); // Ejecuta solo una vez al cargar el componente
+
   const handleEventClick = (event: SetStateAction<null>) => {
     setSelectedEvent(event);
   };
+
   const handleNextMonth = () => {
     if (currentMonth === 11) {
       setCurrentMonth(0);
@@ -62,6 +58,7 @@ function BirthdayCalendar() {
       setCurrentMonth(currentMonth + 1);
     }
   };
+
   const handlePrevMonth = () => {
     if (currentMonth === 0) {
       setCurrentMonth(11);
@@ -70,7 +67,9 @@ function BirthdayCalendar() {
       setCurrentMonth(currentMonth - 1);
     }
   };
+
   const navigate = useNavigate();
+
   return (
     <Layout title="Calendar">
       <div className="w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
@@ -101,7 +100,6 @@ function BirthdayCalendar() {
                 </button>
               </div>
             </div>
-
             <div className="grid grid-cols-7 w-full gap-4 text-center font-semibold mb-4">
               {['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'].map((day) => (
                 <div key={day} className="uppercase text-sm tracking-wider">
@@ -115,41 +113,30 @@ function BirthdayCalendar() {
                 <div key={index} className="bg-transparent" />
               ))}
               {daysArray.map((day, index) => {
-                const event = events.find((event) => {
-                  const eventDate = new Date(event.date); // Convertir el string a un objeto Date
+                const birthdayEvent = birthdayEmployees.find((employee) => {
+                  const employeeBirthday = new Date(employee as never);
                   return (
-                    eventDate.getDate() === day &&
-                    eventDate.getMonth() === currentMonth &&
-                    eventDate.getFullYear() === currentYear
+                    employeeBirthday.getDate() === day &&
+                    employeeBirthday.getMonth() === currentMonth &&
+                    employeeBirthday.getFullYear() === currentYear
                   );
                 });
 
-                return event ? (
+                return birthdayEvent ? (
                   <div
                     key={index}
-                    className={`${event.color} border-l-4 ${event.borderColor} rounded-lg p-4 shadow hover:shadow-lg transition-shadow duration-300 cursor-pointer relative h-32 flex flex-col justify-between`}
-                    onClick={() => handleEventClick(event as never)}
+                    className="bg-green-100 border-l-4 border-green-400 rounded-lg p-4 shadow hover:shadow-lg transition-shadow duration-300 cursor-pointer relative h-32 flex flex-col justify-between"
+                    onClick={() => handleEventClick(birthdayEvent as never)}
                   >
                     <div className="flex justify-between items-center">
                       <div className="font-bold text-gray-800 dark:text-green-400">
-                        {event.title}
+                        {birthdayEvent.firstName} {birthdayEvent.firstLastName}
                       </div>
                       <img
                         src={globo}
                         className="w-12 h-12 object-contain text-xs text-gray-600 dark:text-white"
                         alt="balloon"
                       />
-                    </div>
-
-                    <div className="text-xs text-right text-gray-600 flex items-center space-x-2">
-                      {event.participants.map((participant, idx) => (
-                        <img
-                          key={idx}
-                          className="w-6 h-6 rounded-full border border-white -ml-2"
-                          src={`https://i.pravatar.cc/150?img=${idx + 1}`}
-                          alt="avatar"
-                        />
-                      ))}
                     </div>
                   </div>
                 ) : (
