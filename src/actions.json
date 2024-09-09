@@ -34,7 +34,16 @@
     },
     {
       "view": "Empleados",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Contrato", "Activar"]
+      "actions": [
+        "Mostrar",
+        "Agregar",
+        "Editar",
+        "Eliminar",
+        "Constancia de Trabajo",
+        "Contrato de Trabajo",
+        "Constancia de salario",
+        "Activar"
+      ]
     },
     {
       "view": "Proveedores",
