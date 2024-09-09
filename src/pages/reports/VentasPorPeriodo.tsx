@@ -181,7 +181,7 @@ function VentasPorPeriodo() {
                   );
                   setFilter({ ...filter, typeVoucher: selectCorrelativeType?.value || '' });
                 }}
-                label="Tipo de Factura"
+                label="Tipo de Voucher"
                 labelPlacement="outside"
                 placeholder="Selecciona el Tipo de Factura"
                 variant="bordered"
@@ -202,10 +202,10 @@ function VentasPorPeriodo() {
 
             <Select
               classNames={{ label: 'font-semibold' }}
-              label="Tipo de Voucher"
+              label="Correlativo"
               labelPlacement="outside"
               variant="bordered"
-              placeholder="Selecciona la sucursal"
+              placeholder="Selecciona la correlativo"
               onSelectionChange={(key) => {
                 if (key) {
                   const corr = new Set(key).values().next().value;
@@ -224,7 +224,7 @@ function VentasPorPeriodo() {
 
             <div className="grid grid-cols-2 w-full gap-4">
               <Select
-                label="Limite"
+                label="Límite"
                 variant="bordered"
                 labelPlacement="outside"
                 classNames={{ label: 'font-semibold' }}
@@ -361,12 +361,42 @@ function VentasPorPeriodo() {
                 </div>
 
                 <div className="pt-4">
+                  <Autocomplete
+                    onSelectionChange={(e) => {
+                      const selectCorrelativeType = correlativesTypes.find(
+                        (dep) => dep.value === new Set([e]).values().next().value
+                      );
+                      setFilter({ ...filter, typeVoucher: selectCorrelativeType?.value || '' });
+                    }}
+                    label="Tipo de Voucher"
+                    labelPlacement="outside"
+                    placeholder="Selecciona el Tipo de Factura"
+                    variant="bordered"
+                    className="dark:text-white font-semibold text-sm"
+                    classNames={{
+                      base: 'text-gray-500 text-sm',
+                    }}
+                  >
+                    {correlativesTypes
+                      .filter((dep) => ['F', 'CCF', 'T'].includes(dep.value)) // Filtra solo "F", "CCF", "T"
+                      .map((dep) => (
+                        <AutocompleteItem
+                          className="dark:text-white"
+                          value={dep.label}
+                          key={dep.value}
+                        >
+                          {dep.value + ' - ' + dep.label}
+                        </AutocompleteItem>
+                      ))}
+                  </Autocomplete>
+                </div>
+                <div className="pt-4">
                   <Select
                     classNames={{ label: 'font-semibold' }}
-                    label="Punto de venta"
+                    label="Correlativo"
                     labelPlacement="outside"
                     variant="bordered"
-                    placeholder="Selecciona la sucursal"
+                    placeholder="Selecciona la correlativo"
                     onSelectionChange={(key) => {
                       if (key) {
                         const corr = new Set(key).values().next().value;
@@ -374,11 +404,13 @@ function VentasPorPeriodo() {
                       }
                     }}
                   >
-                    {list_correlatives.map((corr) => (
-                      <SelectItem key={corr.code} value={corr.code} className="dark:text-white">
-                        {corr.code}
-                      </SelectItem>
-                    ))}
+                    {list_correlatives
+                      .filter((corr) => corr.typeVoucher === 'T') // Filtrar por tipoVoucher "T"
+                      .map((corr) => (
+                        <SelectItem key={corr.code} value={corr.code} className="dark:text-white">
+                          {corr.code}
+                        </SelectItem>
+                      ))}
                   </Select>
                 </div>
                 <Button
