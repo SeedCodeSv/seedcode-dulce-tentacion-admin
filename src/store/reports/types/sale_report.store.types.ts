@@ -28,6 +28,7 @@ export interface ISalesReportStore {
   loading_sales_by_branch_and_month: boolean;
   sales_by_period_graph: SalesChartGraphPeriod | undefined;
   sales_by_point_of_sale_branch: IGetSalesByBranchPointSale | undefined;
+  loading_sales_by_point_of_sale_branch: boolean;
   sales_count: number;
   graphic_for_category_products_for_dates: ISaleCategoryProduct[];
   graphic_sub_category_products_for_dates: GraphicSubCategory[];
@@ -58,7 +59,8 @@ export interface ISalesReportStore {
     endDate: string,
     paymentType?: string,
     branch?: string,
-    correlative?: string
+    correlative?: string,
+    typeVoucher?: string
   ) => void;
   getSalesByPeriodChart: (startDate: string, endDate: string) => void;
   getSalesByDay: (id: number) => void;

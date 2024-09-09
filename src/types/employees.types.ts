@@ -45,6 +45,8 @@ export interface Employee {
   isActive: boolean;
 }
 
+
+
 export interface IGetEmployeesPaginated {
   ok: boolean;
   employees: Employee[];

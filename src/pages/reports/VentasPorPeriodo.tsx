@@ -1,4 +1,11 @@
-import { Button, Input, Select, SelectItem } from '@nextui-org/react';
+import {
+  Autocomplete,
+  AutocompleteItem,
+  Button,
+  Input,
+  Select,
+  SelectItem,
+} from '@nextui-org/react';
 import Layout from '../../layout/Layout';
 import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
 import { useContext, useEffect, useState } from 'react';
@@ -18,8 +25,13 @@ import TooltipGlobal from '@/components/global/TooltipGlobal';
 import { Filter, SearchIcon } from 'lucide-react';
 import BottomDrawer from '@/components/global/BottomDrawer';
 import { ThemeContext } from '@/hooks/useTheme';
+import { correlativesTypes } from '@/types/correlatives/correlatives_data.types';
 
 function VentasPorPeriodo() {
+  const [filter, setFilter] = useState({
+    typeVoucher: '',
+    correlativeType: '',
+  });
   const service = new SeedcodeCatalogosMhService();
   const { theme } = useContext(ThemeContext);
   const typeSales = service.get017FormaDePago();
@@ -64,7 +76,8 @@ function VentasPorPeriodo() {
       searchParam ?? endDate,
       searchParam ?? typePayment,
       searchParam ?? selectedBranch?.name,
-      searchParam ?? code
+      searchParam ?? code,
+      searchParam ?? filter.typeVoucher
     );
     getSalesByPeriodChart(startDate, endDate);
     getBranchesList();
@@ -73,8 +86,8 @@ function VentasPorPeriodo() {
   return (
     <Layout title="Ventas por Periodo">
       <div className=" w-full h-full p-10 bg-gray-50 dark:bg-gray-900">
-        <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
-          <div className="hidden md:grid w-full grid-cols-1 gap-5 md:grid-cols-3">
+        <div className="w-full h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+          <div className="hidden md:grid w-full grid-cols-1 gap-5 md:grid-cols-4">
             <Input
               label="Fecha inicial"
               labelPlacement="outside"
@@ -141,7 +154,7 @@ function VentasPorPeriodo() {
                 </SelectItem>
               ))}
             </Select>
-            <Select
+            {/* <Select
               classNames={{ label: 'font-semibold' }}
               label="Punto de venta"
               labelPlacement="outside"
@@ -157,13 +170,61 @@ function VentasPorPeriodo() {
               {list_correlatives.map((corr) => (
                 <SelectItem key={corr.code} value={corr.code} className="dark:text-white">
                   {corr.code}
-                  {/* {corr.code ? corr.code : corr.id} */}
                 </SelectItem>
               ))}
+            </Select> */}
+            <div className="w-full">
+              <Autocomplete
+                onSelectionChange={(e) => {
+                  const selectCorrelativeType = correlativesTypes.find(
+                    (dep) => dep.value === new Set([e]).values().next().value
+                  );
+                  setFilter({ ...filter, typeVoucher: selectCorrelativeType?.value || '' });
+                }}
+                label="Tipo de Voucher"
+                labelPlacement="outside"
+                placeholder="Selecciona el Tipo de Factura"
+                variant="bordered"
+                className="dark:text-white font-semibold text-sm"
+                classNames={{
+                  base: 'text-gray-500 text-sm',
+                }}
+              >
+                {correlativesTypes
+                  .filter((dep) => ['F', 'CCF', 'T'].includes(dep.value)) // Filtra solo "F", "CCF", "T"
+                  .map((dep) => (
+                    <AutocompleteItem className="dark:text-white" value={dep.label} key={dep.value}>
+                      {dep.value + ' - ' + dep.label}
+                    </AutocompleteItem>
+                  ))}
+              </Autocomplete>
+            </div>
+
+            <Select
+              classNames={{ label: 'font-semibold' }}
+              label="Correlativo"
+              labelPlacement="outside"
+              variant="bordered"
+              placeholder="Selecciona la correlativo"
+              onSelectionChange={(key) => {
+                if (key) {
+                  const corr = new Set(key).values().next().value;
+                  setCode(corr);
+                }
+              }}
+            >
+              {list_correlatives
+                .filter((corr) => corr.typeVoucher === 'T') // Filtrar por tipoVoucher "T"
+                .map((corr) => (
+                  <SelectItem key={corr.code} value={corr.code} className="dark:text-white">
+                    {corr.code}
+                  </SelectItem>
+                ))}
             </Select>
+
             <div className="grid grid-cols-2 w-full gap-4">
               <Select
-                label="Limite"
+                label="Límite"
                 variant="bordered"
                 labelPlacement="outside"
                 classNames={{ label: 'font-semibold' }}
@@ -300,12 +361,42 @@ function VentasPorPeriodo() {
                 </div>
 
                 <div className="pt-4">
+                  <Autocomplete
+                    onSelectionChange={(e) => {
+                      const selectCorrelativeType = correlativesTypes.find(
+                        (dep) => dep.value === new Set([e]).values().next().value
+                      );
+                      setFilter({ ...filter, typeVoucher: selectCorrelativeType?.value || '' });
+                    }}
+                    label="Tipo de Voucher"
+                    labelPlacement="outside"
+                    placeholder="Selecciona el Tipo de Factura"
+                    variant="bordered"
+                    className="dark:text-white font-semibold text-sm"
+                    classNames={{
+                      base: 'text-gray-500 text-sm',
+                    }}
+                  >
+                    {correlativesTypes
+                      .filter((dep) => ['F', 'CCF', 'T'].includes(dep.value)) // Filtra solo "F", "CCF", "T"
+                      .map((dep) => (
+                        <AutocompleteItem
+                          className="dark:text-white"
+                          value={dep.label}
+                          key={dep.value}
+                        >
+                          {dep.value + ' - ' + dep.label}
+                        </AutocompleteItem>
+                      ))}
+                  </Autocomplete>
+                </div>
+                <div className="pt-4">
                   <Select
                     classNames={{ label: 'font-semibold' }}
-                    label="Punto de venta"
+                    label="Correlativo"
                     labelPlacement="outside"
                     variant="bordered"
-                    placeholder="Selecciona la sucursal"
+                    placeholder="Selecciona la correlativo"
                     onSelectionChange={(key) => {
                       if (key) {
                         const corr = new Set(key).values().next().value;
@@ -313,11 +404,13 @@ function VentasPorPeriodo() {
                       }
                     }}
                   >
-                    {list_correlatives.map((corr) => (
-                      <SelectItem key={corr.code} value={corr.code} className="dark:text-white">
-                        {corr.code}
-                      </SelectItem>
-                    ))}
+                    {list_correlatives
+                      .filter((corr) => corr.typeVoucher === 'T') // Filtrar por tipoVoucher "T"
+                      .map((corr) => (
+                        <SelectItem key={corr.code} value={corr.code} className="dark:text-white">
+                          {corr.code}
+                        </SelectItem>
+                      ))}
                   </Select>
                 </div>
                 <Button
@@ -422,13 +515,17 @@ function VentasPorPeriodo() {
                         body={(field) => field.date}
                         header="Fecha"
                       />
-                      <Column
+                      {/* <Column
                         headerClassName="text-sm font-semibold"
                         bodyClassName={'dark:text-white'}
-                        headerStyle={{ ...global_styles().darkStyle }}
-                        body={(field) => formatCurrency(Number(field.totalSales))}
-                        header="Total en ventas"
-                      />
+                        headerStyle={{
+                          ...global_styles().darkStyle,
+                          borderTopLeftRadius: '10px',
+                        }}
+                        body={(field) => field.date}
+                        header="Tipo de Voucher"
+                      /> */}
+
                       <Column
                         headerClassName="text-sm font-semibold"
                         bodyClassName={'dark:text-white'}
