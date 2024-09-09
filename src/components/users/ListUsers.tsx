@@ -44,6 +44,7 @@ import TooltipGlobal from '../global/TooltipGlobal';
 import NO_DATA from '@/assets/svg/no_data.svg';
 import SearchUser from './search_user/SearchUser';
 import { useRolesStore } from '@/store/roles.store';
+import { useAuthStore } from '@/store/auth.store';
 interface Props {
   actionss: string[];
 }
@@ -51,13 +52,20 @@ function ListUsers({ actionss }: Props) {
   const { theme } = useContext(ThemeContext);
   const [limit, setLimit] = useState(5);
   const { users_paginated, getUsersPaginated, activateUser } = useUsersStore();
-  const [user, setUser] = useState<User | undefined>();
+  const [users, setUser] = useState<User | undefined>();
   const [active, setActive] = useState(true);
   const [page, serPage] = useState(1);
   const { roles_list, getRolesList } = useRolesStore();
-
+  const { user } = useAuthStore();
   useEffect(() => {
-    getUsersPaginated(1, limit, '', '', active ? 1 : 0);
+    getUsersPaginated(
+      user?.correlative.branch.transmitterId ?? 0,
+      1,
+      limit,
+      '',
+      '',
+      active ? 1 : 0
+    );
     getRolesList();
   }, [limit, active]);
 
@@ -77,12 +85,26 @@ function ListUsers({ actionss }: Props) {
   const [rol, setRol] = useState('');
 
   const handleSearch = (searchParam: string | undefined) => {
-    getUsersPaginated(page, limit, searchParam ?? userName, rol, active ? 1 : 0);
+    getUsersPaginated(
+      user?.correlative.branch.transmitterId ?? 0,
+      page,
+      limit,
+      searchParam ?? userName,
+      rol,
+      active ? 1 : 0
+    );
   };
 
   const handleActivate = (id: number) => {
     activateUser(id).then(() => {
-      getUsersPaginated(1, limit, '', '', active ? 1 : 0);
+      getUsersPaginated(
+        user?.correlative.branch.transmitterId ?? 0,
+        1,
+        limit,
+        '',
+        '',
+        active ? 1 : 0
+      );
     });
   };
   return (
@@ -449,7 +471,14 @@ function ListUsers({ actionss }: Props) {
                   currentPage={users_paginated.currentPag}
                   totalPages={users_paginated.totalPag}
                   onPageChange={(page) => {
-                    getUsersPaginated(page, limit, userName, rol, active ? 1 : 0);
+                    getUsersPaginated(
+                      user?.correlative.branch.transmitterId ?? 0,
+                      page,
+                      limit,
+                      userName,
+                      rol,
+                      active ? 1 : 0
+                    );
                   }}
                 />
               </div>
@@ -458,6 +487,7 @@ function ListUsers({ actionss }: Props) {
                   handleNext={() => {
                     serPage(users_paginated.nextPag);
                     getUsersPaginated(
+                      user?.correlative.branch.transmitterId ?? 0,
                       users_paginated.nextPag,
                       limit,
                       userName,
@@ -468,6 +498,7 @@ function ListUsers({ actionss }: Props) {
                   handlePrev={() => {
                     serPage(users_paginated.prevPag);
                     getUsersPaginated(
+                      user?.correlative.branch.transmitterId ?? 0,
                       users_paginated.prevPag,
                       limit,
                       userName,
@@ -504,7 +535,7 @@ function ListUsers({ actionss }: Props) {
           title="Editar usuario"
           size="w-[350px] md:w-[550px]"
         >
-          <UpdateUsers onClose={modalUpdate.onClose} user={user} />
+          <UpdateUsers onClose={modalUpdate.onClose} user={users} />
         </HeadlessModal>
       </div>
     </>

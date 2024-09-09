@@ -1,7 +1,13 @@
 import axios from 'axios';
 import { API_URL } from '../utils/constants';
-import { IGetUserPaginated, IGetUsers, IResponseRoles, UserPayload, UserUpdate } from '../types/users.types';
-import { get_token, get_user } from '../storage/localStorage';
+import {
+  IGetUserPaginated,
+  IGetUsers,
+  IResponseRoles,
+  UserPayload,
+  UserUpdate,
+} from '../types/users.types';
+import { get_token } from '../storage/localStorage';
 
 export const get_users_list = () => {
   const token = get_token() ?? '';
@@ -12,14 +18,21 @@ export const get_users_list = () => {
   });
 };
 
-export const get_user_paginated = (page = 1, limit = 5, userName = '', role = '', active: number = 1) => {
+export const get_user_paginated = (
+  transmitterId: number,
+  page = 1,
+  limit = 5,
+  userName = '',
+  role = '',
+  active: number = 1
+) => {
   const token = get_token() ?? '';
-  const user = get_user();
+
   return axios.get<IGetUserPaginated>(
     API_URL +
       '/users/paginated/' +
-      user?.correlative.branch.transmitterId +
-      `?page=${page}&limit=${limit}&userName=${userName}&role=${role}&active=${active}`,
+      transmitterId +
+      `?&page=${page}&limit=${limit}&userName=${userName}&role=${role}&active=${active}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -78,7 +91,6 @@ export const get_roles_list = () => {
     },
   });
 };
-
 
 export const activate_user = (id: number) => {
   const token = get_token() ?? '';

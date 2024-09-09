@@ -730,6 +730,9 @@ function ListEmployee({ actions }: Props) {
                   branchName={(e) => setBranch(e)}
                   phoneEmployee={(e) => setPhone(e)}
                   nameEmployee={(e) => setFirstName(e)}
+                  codeEmpleyee={(e) => setCodeEmployee(e)}
+                  startDate={(e) => setStartDate(e)}
+                  endDate={(e) => setEndDate(e)}
                 ></SearchEmployee>
                 {actions.includes('Agregar') && (
                   <AddButton
@@ -800,6 +803,7 @@ function ListEmployee({ actions }: Props) {
                     isClearable
                     onClear={() => setPhone('')}
                   />
+
                   <div className="w-full">
                     <label className="font-semibold dark:text-white text-sm">Sucursal</label>
                     <Autocomplete
@@ -878,7 +882,7 @@ function ListEmployee({ actions }: Props) {
               </div>
 
               <div className="flex flex-col gap-3 mt-3 lg:flex-row lg:justify-between lg:gap-10">
-                <div className="flex justify-start order-2 lg:order-1">
+                <div className="flex justify-between order-2 lg:order-1">
                   <div className="xl:mt-10">
                     <Switch
                       onValueChange={(active) => setActive(active)}
@@ -893,8 +897,22 @@ function ListEmployee({ actions }: Props) {
                       </span>
                     </Switch>
                   </div>
+                  <Button
+                    onClick={() => navigate('/birthday-calendar')}
+                    style={global_styles().thirdStyle}
+                    className="xl:hidden border border-white"
+                  >
+                    <p className="text-sm sm:text-base">Cumpleaños</p>
+                  </Button>
                 </div>
                 <div className="flex gap-10 w-full justify-between items-center lg:justify-end order-1 lg:order-2">
+                  <Button
+                    onClick={() => navigate('/birthday-calendar')}
+                    style={global_styles().thirdStyle}
+                    className=" xl:flex hidden border mt-7 border-white"
+                  >
+                    <p className="text-sm sm:text-base">Cumpleaños</p>
+                  </Button>
                   <div className="w-44">
                     <label className="font-semibold dark:text-white text-sm">Mostrar</label>
                     <Select
@@ -941,6 +959,7 @@ function ListEmployee({ actions }: Props) {
                       <List />
                     </Button>
                   </ButtonGroup>
+
                   <ButtonGroup className="mt-4 border xl:flex hidden border-white rounded-xl">
                     <Button
                       className=""
@@ -1015,6 +1034,9 @@ function ListEmployee({ actions }: Props) {
                           <th className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                             Sucursal
                           </th>
+                          <th className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                            Codigo
+                          </th>
                           <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                             Acciones
                           </th>
@@ -1051,6 +1073,9 @@ function ListEmployee({ actions }: Props) {
                                     <td className="p-3 text-sm text-slate-500 whitespace-nowrap dark:text-slate-100">
                                       {employee.branch.name}
                                     </td>
+                                    <td className="p-3 text-sm text-slate-500 whitespace-nowrap dark:text-slate-100">
+                                      {employee.code}
+                                    </td>
                                     <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                                       <div className="flex w-full gap-5">
                                         {employee.isActive && actions.includes('Editar') ? (
@@ -1060,8 +1085,6 @@ function ListEmployee({ actions }: Props) {
                                                 className="border border-white"
                                                 onClick={() => {
                                                   setDataUpdate(employee);
-
-                                                  // setIsOpenModalUpdate(true);
                                                 }}
                                                 isIconOnly
                                                 style={{

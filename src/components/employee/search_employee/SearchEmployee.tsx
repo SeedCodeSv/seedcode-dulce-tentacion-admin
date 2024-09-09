@@ -10,6 +10,7 @@ import { IPropsSearchEmployee } from '../types/mobile-view.types';
 import { useBranchesStore } from '@/store/branches.store';
 import { useEmployeeStore } from '@/store/employee.store';
 import { useAuthStore } from '@/store/auth.store';
+import { fechaActualString } from '@/utils/dates';
 function SearchEmployee(props: IPropsSearchEmployee) {
   const [openVaul, setOpenVaul] = useState(false);
   const { theme } = useContext(ThemeContext);
@@ -24,6 +25,9 @@ function SearchEmployee(props: IPropsSearchEmployee) {
     nameEmployee: '',
     phoneEmployee: '',
     nameBranchEmployee: '',
+    codeEmployee: '',
+    startDate: fechaActualString,
+    endDate: fechaActualString,
   });
   return (
     <div className="flex items-center gap-5">
@@ -59,7 +63,9 @@ function SearchEmployee(props: IPropsSearchEmployee) {
                   filter.nameBranchEmployee,
                   filter.phoneEmployee,
                   '',
-                  1
+                  1,
+                  filter.startDate,
+                  filter.endDate
                 );
               }}
               isClearable
@@ -99,6 +105,63 @@ function SearchEmployee(props: IPropsSearchEmployee) {
               }}
               placeholder="Escribe para buscar..."
             />
+            <Input
+              value={filter.codeEmployee}
+              onClear={() => {
+                setFilter({ ...filter, codeEmployee: '' });
+              }}
+              isClearable
+              onChange={(e) => {
+                setFilter({ ...filter, codeEmployee: e.target.value });
+                props.codeEmpleyee(e.target.value);
+              }}
+              startContent={<Search />}
+              className="w-full border dark:border-white rounded-xl  dark:text-white"
+              variant="bordered"
+              labelPlacement="outside"
+              label="Codigo"
+              classNames={{
+                label: 'font-semibold text-gray-700',
+                inputWrapper: 'pr-0',
+              }}
+              placeholder="Escribe para buscar..."
+            />
+            <div>
+              <label className="font-semibold dark:text-white text-sm">Fecha Inicial</label>
+
+              <Input
+                type="date"
+                onChange={(e) => {
+                  props.startDate(e.target.value),
+                    setFilter({ ...filter, startDate: e.target.value });
+                }}
+                defaultValue={filter.startDate}
+                variant="bordered"
+                labelPlacement="outside"
+                classNames={{
+                  base: 'font-semibold dark:text-white text-sm',
+                  label: 'font-semibold dark:text-white text-sm',
+                }}
+                className="w-full dark:text-white  rounded-xl border border-white"
+              />
+            </div>
+            <div>
+              <label className="font-semibold dark:text-white text-sm">Fecha Final</label>
+              <Input
+                type="date"
+                onChange={(e) => {
+                  props.endDate(e.target.value), setFilter({ ...filter, endDate: e.target.value });
+                }}
+                defaultValue={filter.endDate}
+                variant="bordered"
+                labelPlacement="outside"
+                classNames={{
+                  base: 'font-semibold dark:text-white text-sm',
+                  label: 'font-semibold dark:text-white text-sm',
+                }}
+                className="w-full dark:text-white  rounded-xl border border-white"
+              />
+            </div>
             <label className="dark:text-white">Sucursal </label>
             <Autocomplete
               onSelectionChange={(value) => {
@@ -106,6 +169,9 @@ function SearchEmployee(props: IPropsSearchEmployee) {
                 setFilter({
                   nameEmployee: '',
                   phoneEmployee: '',
+                  codeEmployee: '',
+                  startDate: fechaActualString,
+                  endDate: fechaActualString,
                   nameBranchEmployee: selectRol?.name || '',
                 });
                 props.branchName(selectRol?.name ?? '');
@@ -114,7 +180,14 @@ function SearchEmployee(props: IPropsSearchEmployee) {
               defaultSelectedKey={filter.nameBranchEmployee}
               clearButtonProps={{
                 onClick: () => {
-                  setFilter({ nameEmployee: '', phoneEmployee: '', nameBranchEmployee: '' });
+                  setFilter({
+                    nameEmployee: '',
+                    phoneEmployee: '',
+                    nameBranchEmployee: '',
+                    startDate: fechaActualString,
+                    endDate: fechaActualString,
+                    codeEmployee: '',
+                  });
                 },
               }}
               labelPlacement="outside"
@@ -150,7 +223,9 @@ function SearchEmployee(props: IPropsSearchEmployee) {
                   filter.nameBranchEmployee,
                   filter.phoneEmployee,
                   '',
-                  1
+                  1,
+                  filter.startDate,
+                  filter.endDate
                 );
                 setOpenVaul(false);
               }}

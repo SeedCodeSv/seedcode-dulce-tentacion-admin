@@ -101,7 +101,7 @@ function ProofSalary({ employee, actions }: Props) {
   };
   return (
     <>
-      {actions.includes('Generar Constancia de Salario') && employee.isActive ? (
+      {actions.includes('Constancia de Salario') && employee.isActive ? (
         <TooltipGlobal text="Generar Constancia de Salario">
           <Button
             className="border border-white"

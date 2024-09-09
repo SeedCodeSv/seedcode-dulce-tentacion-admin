@@ -141,10 +141,10 @@ const PermissionAddActionRol: React.FC = () => {
   const renderSection = (view: { id: number; name: string }) => {
     const actions = viewActions.view_actions.find((va) => va.view === view.name)?.actions || [];
     return (
-      <div className="w-full w-1/3 sm:w-1/2 p-2 " key={view.id}>
+      <div className="w-full w-1/3 sm:w-1/2 p-2" key={view.id}>
         <div
           className="mb-4 dark:bg-gray-900  shadow-lg border border-gray-300 rounded-lg overflow-hidden"
-          style={{ height: '300px', width: '100%' }}
+          style={{ height: '400px', width: '100%' }}
         >
           <div
             style={{ backgroundColor: theme.colors.dark, color: theme.colors.primary }}
@@ -201,7 +201,6 @@ const PermissionAddActionRol: React.FC = () => {
       </div>
     );
   };
-
   const sortedViews = useMemo(() => {
     const withActions = viewasAction.filter(
       ({ view }) =>
@@ -217,7 +216,6 @@ const PermissionAddActionRol: React.FC = () => {
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
-
   const filteredViews = useMemo(() => {
     return sortedViews.filter(({ view }) =>
       view.name.toLowerCase().includes(searchTerm.toLowerCase())

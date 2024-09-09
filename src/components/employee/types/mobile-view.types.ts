@@ -17,4 +17,7 @@ export interface IPropsSearchEmployee {
   nameEmployee: (name: string) => void;
   phoneEmployee: (phone: string) => void;
   branchName: (name: string) => void;
+  codeEmpleyee: (code: string) => void;
+  startDate: (date: string) => void;
+  endDate: (date: string) => void;
 }

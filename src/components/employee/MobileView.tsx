@@ -1,12 +1,23 @@
 import { Button } from '@nextui-org/react';
 import { DataView } from 'primereact/dataview';
 import { classNames } from 'primereact/utils';
-import { User as IUser, Truck, Phone, RefreshCcw, EditIcon, Lock, FileText } from 'lucide-react';
+import {
+  User as IUser,
+  Truck,
+  Phone,
+  RefreshCcw,
+  EditIcon,
+  Lock,
+  FileText,
+  ScanBarcode,
+} from 'lucide-react';
 import { useEmployeeStore } from '../../store/employee.store';
 import { global_styles } from '../../styles/global.styles';
 import { GridProps, IMobileView } from './types/mobile-view.types';
 import TooltipGlobal from '../global/TooltipGlobal';
 import { DeletePopover } from './ListEmployee';
+import ProofSalary from './employees-pdfs/ProofSalary';
+import ProofeOfEmployment from './employees-pdfs/ProofeOfEmployment';
 
 function MobileView(props: IMobileView) {
   const { layout, openEditModal, deletePopover, actions, handleActivate, OpenPdf } = props;
@@ -66,6 +77,10 @@ const GridItem = (props: GridProps) => {
           <div className="flex w-full gap-2 mt-3">
             <Truck className="text-blue-500 dark:text-blue-300" size={20} />
             <p className="w-full dark:text-white">{employee.branch.name}</p>
+          </div>
+          <div className="flex w-full gap-2 mt-3">
+            <ScanBarcode className="text-blue-500 dark:text-blue-300" size={20} />
+            <p className="w-full dark:text-white">{employee.code}</p>
           </div>
           <div className="flex justify-between mt-5 w-ful">
             {employee.isActive && actions.includes('Editar') ? (
@@ -130,6 +145,9 @@ const GridItem = (props: GridProps) => {
                 </Button>
               </>
             )}
+            <ProofSalary employee={employee} actions={actions}></ProofSalary>
+
+            <ProofeOfEmployment employee={employee} actions={actions}></ProofeOfEmployment>
 
             {!employee.isActive && (
               <>
@@ -191,6 +209,10 @@ const ListItem = (props: GridProps) => {
           <div className="flex w-full gap-2 mt-3">
             <Truck className="text-blue-500 dark:text-blue-300" size={20} />
             <p className="w-full dark:text-white">{employee.branch.name}</p>
+          </div>
+          <div className="flex w-full gap-2 mt-3">
+            <ScanBarcode className="text-blue-500 dark:text-blue-300" size={20} />
+            <p className="w-full dark:text-white">{employee.code}</p>
           </div>
         </div>
         <div className="flex flex-col items-end justify-between gap-5 w-full">
@@ -256,7 +278,9 @@ const ListItem = (props: GridProps) => {
               </Button>
             </>
           )}
+          <ProofSalary employee={employee} actions={actions}></ProofSalary>
 
+          <ProofeOfEmployment employee={employee} actions={actions}></ProofeOfEmployment>
           {!employee.isActive && (
             <>
               {actions.includes('Activar') ? (
