@@ -23,6 +23,7 @@ import {
   CreditCard,
   List,
   RefreshCcw,
+  Store,
 } from 'lucide-react';
 import { ThemeContext } from '../../hooks/useTheme';
 import AddButton from '../global/AddButton';
@@ -44,10 +45,13 @@ import SmPagination from '../global/SmPagination';
 import { ArrayAction } from '@/types/view.types';
 import useWindowSize from '@/hooks/useWindowSize';
 import SearchBranch from './search_branch/SearchBranch';
+import AddPointOfSales from './AddPointOfSales';
 function ListBranch({ actions }: ArrayAction) {
   const { theme } = useContext(ThemeContext);
   const { getBranchesPaginated, branches_paginated, disableBranch } = useBranchesStore();
   const [name, setName] = useState('');
+  const modalAddPointOfSales = useDisclosure();
+  const [selectedBranchId, setSelectedBranchId] = useState<number>(0);
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
   const [limit, setLimit] = useState(5);
@@ -66,6 +70,11 @@ function ListBranch({ actions }: ArrayAction) {
   const modalAdd = useDisclosure();
   const modalBranchProduct = useDisclosure();
   const modalBoxBranch = useDisclosure();
+
+  const handlePointOfSales = (id: number) => {
+    setSelectedBranchId(id);
+    modalAddPointOfSales.onOpen();
+  };
 
   const handleSearch = () => {
     getBranchesPaginated(1, limit, name, phone, address);
@@ -320,6 +329,18 @@ function ListBranch({ actions }: ArrayAction) {
                       {actions.includes('Eliminar') && (
                         <>{item.isActive && <DeletePopUp branch={item} />}</>
                       )}
+
+                      <TooltipGlobal text="Asignar punto de venta">
+                        <Button
+                          onClick={() => {
+                            handlePointOfSales(item.id);
+                          }}
+                          isIconOnly
+                          style={global_styles().darkStyle}
+                        >
+                          <Store />
+                        </Button>
+                      </TooltipGlobal>
                       {actions.includes('Activar Sucursal') && !item.isActive && (
                         <TooltipGlobal text="Activar la sucursal">
                           <Button
@@ -420,6 +441,18 @@ function ListBranch({ actions }: ArrayAction) {
           >
             <BoxBranch branch={Branch} closeModal={modalBoxBranch.onClose} setBranch={setBranch} />
           </HeadlessModal>
+          <HeadlessModal
+          isOpen={modalAddPointOfSales.isOpen}
+          onClose={modalAddPointOfSales.onClose}
+          title="Agregar punto de venta"
+          size="w-[380px] md:w-[600px] p-5"
+        >
+          <AddPointOfSales
+            onClose={modalAddPointOfSales.onClose}
+            // branchPointOfSales={selectedBranchPointOfSales}
+            branchId={selectedBranchId}
+          />
+        </HeadlessModal>
         </div>
       )}
     </>
