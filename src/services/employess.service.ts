@@ -29,7 +29,7 @@ export const get_employees_paginated = (
       branch +
       '&phone=' +
       phone +
-      '&codeEmployee=' +
+      '&code=' +
       codeEmployee +
       '&active=' +
       active,
