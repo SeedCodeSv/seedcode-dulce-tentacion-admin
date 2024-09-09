@@ -76,7 +76,8 @@ function VentasPorPeriodo() {
       searchParam ?? endDate,
       searchParam ?? typePayment,
       searchParam ?? selectedBranch?.name,
-      searchParam ?? code
+      searchParam ?? code,
+      searchParam ?? filter.typeVoucher
     );
     getSalesByPeriodChart(startDate, endDate);
     getBranchesList();
@@ -172,7 +173,7 @@ function VentasPorPeriodo() {
                 </SelectItem>
               ))}
             </Select> */}
-            {/* <div className="w-full">
+            <div className="w-full">
               <Autocomplete
                 onSelectionChange={(e) => {
                   const selectCorrelativeType = correlativesTypes.find(
@@ -197,7 +198,7 @@ function VentasPorPeriodo() {
                     </AutocompleteItem>
                   ))}
               </Autocomplete>
-            </div> */}
+            </div>
 
             <Select
               classNames={{ label: 'font-semibold' }}
@@ -482,7 +483,7 @@ function VentasPorPeriodo() {
                         body={(field) => field.date}
                         header="Fecha"
                       />
-                      <Column
+                      {/* <Column
                         headerClassName="text-sm font-semibold"
                         bodyClassName={'dark:text-white'}
                         headerStyle={{
@@ -491,7 +492,7 @@ function VentasPorPeriodo() {
                         }}
                         body={(field) => field.date}
                         header="Tipo de Voucher"
-                      />
+                      /> */}
 
                       <Column
                         headerClassName="text-sm font-semibold"

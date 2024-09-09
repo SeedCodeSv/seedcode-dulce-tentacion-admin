@@ -95,12 +95,13 @@ export const get_sales_by_period = (
   endDate: string,
   paymentType: string = '',
   branch: string = '',
-  correlative: string = ''
+  correlative: string = '',
+  typeVoucher: string = '',
 ) => {
   const user = get_user();
   return axios.get<IGetSalesByPeriod>(
     API_URL +
-      `/sales/get-sales-for-dates/${user?.correlative.branch.transmitterId}?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}&paymentType=${paymentType}&branch=${branch}&correlative=${correlative}`
+      `/sales/get-sales-for-dates/${user?.correlative.branch.transmitterId}?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}&paymentType=${paymentType}&branch=${branch}&correlative=${correlative}&typeVoucher=${typeVoucher}`
   );
 };
 
