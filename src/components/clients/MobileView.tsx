@@ -15,7 +15,7 @@ import {
 import { global_styles } from '../../styles/global.styles';
 import { GridProps, MobileViewProps } from './types/mobile-view.types';
 import TooltipGlobal from '../global/TooltipGlobal';
-import { DeletePopover } from './ListClients';
+import { DeletePopover } from './view-modes/DeleteClients';
 
 function MobileView({ actions, layout, handleChangeCustomer, handleActive }: MobileViewProps) {
   const { customer_pagination } = useCustomerStore();
@@ -155,7 +155,7 @@ const ListItem = (props: GridProps) => {
   const { customers, handleChangeCustomer, handleActive, actions } = props;
   return (
     <>
-      <div className="flex w-full border dark:border-white col-span-1 p-5 border shadow rounded-2xl ">
+      <div className="flex w-full dark:border-white col-span-1 p-5 border shadow rounded-2xl ">
         <div className="w-full">
           <div className="flex items-center w-full gap-2">
             <IUser className="text-blue-300 dark:text-blue-300" size={20} />
