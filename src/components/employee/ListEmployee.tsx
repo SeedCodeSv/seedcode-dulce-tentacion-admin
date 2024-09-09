@@ -48,6 +48,7 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import SearchEmployee from './search_employee/SearchEmployee';
 import ProofSalary from './employees-pdfs/ProofSalary';
+import ProofeOfEmployment from './employees-pdfs/ProofeOfEmployment';
 
 interface Props {
   actions: string[];
@@ -1095,6 +1096,10 @@ function ListEmployee({ actions }: Props) {
                                           </>
                                         )}
                                         <ProofSalary></ProofSalary>
+
+                                        <ProofeOfEmployment
+                                          employee={employee}
+                                        ></ProofeOfEmployment>
                                       </div>
                                     </td>
                                   </tr>
