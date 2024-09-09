@@ -1039,22 +1039,25 @@ function ListEmployee({ actions }: Props) {
                                             <Lock />
                                           </Button>
                                         )}
-                                        {actions.includes('Contrato') && employee.isActive ? (
-                                          <Button
-                                            className="border border-white"
-                                            onClick={() => OpenPdf(employee)}
-                                            isIconOnly
-                                            style={{
-                                              backgroundColor: theme.colors.dark,
-                                            }}
-                                          >
-                                            <FileText
+                                        {actions.includes('Contrato de Trabajo') &&
+                                        employee.isActive ? (
+                                          <TooltipGlobal text="Generar Contrato de Trabajo">
+                                            <Button
+                                              className="border border-white"
+                                              onClick={() => OpenPdf(employee)}
+                                              isIconOnly
                                               style={{
-                                                color: theme.colors.primary,
+                                                backgroundColor: theme.colors.dark,
                                               }}
-                                              size={20}
-                                            />
-                                          </Button>
+                                            >
+                                              <FileText
+                                                style={{
+                                                  color: theme.colors.primary,
+                                                }}
+                                                size={20}
+                                              />
+                                            </Button>
+                                          </TooltipGlobal>
                                         ) : (
                                           <>
                                             <Button
@@ -1098,7 +1101,7 @@ function ListEmployee({ actions }: Props) {
                                         <ProofSalary></ProofSalary>
 
                                         <ProofeOfEmployment
-                                          employee={employee}
+                                          employee={employee} actions={actions}
                                         ></ProofeOfEmployment>
                                       </div>
                                     </td>
