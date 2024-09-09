@@ -4,7 +4,12 @@ import jsPDF from 'jspdf';
 import { Wallet } from 'lucide-react';
 import { useContext } from 'react';
 import logo from '../../../assets/MADNESS.png';
-function ProofSalary() {
+import { Employee } from '@/types/employees.types';
+
+export interface Props {
+  employee: Employee;
+}
+function ProofSalary({ employee }: Props) {
   const { theme } = useContext(ThemeContext);
   const img = new Image();
   img.src = logo;
@@ -12,12 +17,13 @@ function ProofSalary() {
     const doc = new jsPDF();
     doc.setFontSize(18);
     doc.setFont('helvetica', 'bold');
-    doc.addImage(img, 'PNG', 10, 10, 60, 30);
-
+    doc.addImage(img, 'PNG', 10, 10, 40, 20);
+    doc.setFontSize(10);
+    doc.text('CONTRATO INDIVIDUAL DE TRABAJO', 105, 20, { align: 'center' });
     doc.setFontSize(12);
 
     doc.setFont('helvetica', 'bold');
-    doc.text('CONTRATO INDIVIDUAL DE TRABAJO', 105, 24, { align: 'center' });
+
     doc.text('REPRESENTANTE PATRONAL', 20, 40);
     doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
@@ -50,7 +56,7 @@ function ProofSalary() {
     doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
     doc.text('Nombre:', 20, 125);
-    doc.text('MARIA JOSEFINA MARTINEZ DE LOPEZ', 110, 125);
+    doc.text(`${employee.firstName} ${employee.secondName}`, 110, 125);
     doc.text('Edad:', 20, 130);
     doc.text('19 AÑOS', 110, 130);
     doc.text('Sexo:', 20, 135);
@@ -58,7 +64,7 @@ function ProofSalary() {
     doc.text('Estado civil:', 20, 140);
     doc.text('CASADA', 110, 140);
     doc.text('Profesión u oficio:', 20, 145);
-    doc.text('BACHILLER EN COMERCIO Y ADMINISTRACION', 110, 145);
+    doc.text(`${employee.studyLevel.description}`, 110, 145);
     doc.text('Domicilio y residencia:', 20, 150);
     doc.text('CALLE PRINCIPAL N° 100, SAN SALVADOR', 110, 150);
     doc.text('Nacionalidad:', 20, 155);
@@ -66,7 +72,7 @@ function ProofSalary() {
     doc.text('Tipo de documento de identidad:', 20, 160);
     doc.text('DUI', 110, 160);
     doc.text('Número de documento de identidad:', 20, 165);
-    doc.text('00332211-4', 110, 165);
+    doc.text(`${employee.dui}`, 110, 165);
     doc.text('Expedido en:', 20, 170);
     doc.text('SAN SALVADOR', 110, 170);
     doc.text('Fecha de expedición:', 20, 175);
