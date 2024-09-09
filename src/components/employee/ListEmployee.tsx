@@ -95,7 +95,9 @@ function ListEmployee({ actions }: Props) {
       branch,
       phone,
       codeEmployee,
-      active ? 1 : 0
+      active ? 1 : 0,
+      startDate,
+      endDate
     );
   };
 
@@ -110,7 +112,9 @@ function ListEmployee({ actions }: Props) {
       branch,
       phone,
       codeEmployee,
-      active ? 1 : 0
+      active ? 1 : 0,
+      startDate,
+      endDate
     );
   }, [limit, active]);
 
@@ -125,7 +129,9 @@ function ListEmployee({ actions }: Props) {
         '',
         '',
         '',
-        active ? 1 : 0
+        active ? 1 : 0,
+        startDate,
+        endDate
       );
     });
   };
@@ -827,6 +833,8 @@ function ListEmployee({ actions }: Props) {
                     </Autocomplete>
                   </div>
                   <div>
+                    <label className="font-semibold dark:text-white text-sm">Fecha Inicial</label>
+
                     <Input
                       type="date"
                       onChange={(e) => setStartDate(e.target.value)}
@@ -837,11 +845,11 @@ function ListEmployee({ actions }: Props) {
                         base: 'font-semibold dark:text-white text-sm',
                         label: 'font-semibold dark:text-white text-sm',
                       }}
-                      label="Fecha Inicial"
-                      className="w-full dark:text-white  rounded-xl"
+                      className="w-full dark:text-white  rounded-xl border border-white"
                     />
                   </div>
                   <div>
+                    <label className="font-semibold dark:text-white text-sm">Fecha Final</label>
                     <Input
                       type="date"
                       onChange={(e) => setEndDate(e.target.value)}
@@ -852,8 +860,7 @@ function ListEmployee({ actions }: Props) {
                         base: 'font-semibold dark:text-white text-sm',
                         label: 'font-semibold dark:text-white text-sm',
                       }}
-                      label="Fecha Final"
-                      className="w-full dark:text-white  rounded-xl"
+                      className="w-full dark:text-white  rounded-xl border border-white"
                     />
                   </div>
                   <Button
@@ -1161,7 +1168,8 @@ function ListEmployee({ actions }: Props) {
                                         <ProofSalary employee={employee}></ProofSalary>
 
                                         <ProofeOfEmployment
-                                          employee={employee} actions={actions}
+                                          employee={employee}
+                                          actions={actions}
                                         ></ProofeOfEmployment>
                                       </div>
                                     </td>
@@ -1203,7 +1211,9 @@ function ListEmployee({ actions }: Props) {
                           branch,
                           phone,
                           codeEmployee,
-                          active ? 1 : 0
+                          active ? 1 : 0,
+                          startDate,
+                          endDate
                         );
                       }}
                     />
@@ -1220,7 +1230,9 @@ function ListEmployee({ actions }: Props) {
                           branch,
                           phone,
                           codeEmployee,
-                          active ? 1 : 0
+                          active ? 1 : 0,
+                          startDate,
+                          endDate
                         );
                       }}
                       handlePrev={() => {
@@ -1233,7 +1245,9 @@ function ListEmployee({ actions }: Props) {
                           branch,
                           phone,
                           codeEmployee,
-                          active ? 1 : 0
+                          active ? 1 : 0,
+                          startDate,
+                          endDate
                         );
                       }}
                       currentPage={employee_paginated.currentPag}

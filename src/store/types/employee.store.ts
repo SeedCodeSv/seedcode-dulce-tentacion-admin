@@ -14,7 +14,9 @@ export interface IEmployeeStore {
     branch: string,
     phone: string,
     codeEmployee: string,
-    active?: number
+    active: number,
+    startDate: string,
+    endDate: string
   ) => void;
   postEmployee: (payload: EmployeePayload) => Promise<boolean>;
   patchEmployee: (payload: EmployeePayload, id: number) => Promise<boolean>;

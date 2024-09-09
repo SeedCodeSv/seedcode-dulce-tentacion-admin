@@ -12,7 +12,9 @@ export const get_employees_paginated = (
   branch: string,
   phone: string,
   codeEmployee: string,
-  active: number = 1
+  active: number = 1,
+  startDate: string,
+  endDate: string
 ) => {
   const token = get_token() ?? '';
   return axios.get<IGetEmployeesPaginated>(
@@ -32,7 +34,12 @@ export const get_employees_paginated = (
       '&code=' +
       codeEmployee +
       '&active=' +
-      active,
+      active +
+      '&startDate=' +
+      startDate +
+      '&endDate=' +
+      endDate,
+
     {
       headers: {
         Authorization: `Bearer ${token}`,

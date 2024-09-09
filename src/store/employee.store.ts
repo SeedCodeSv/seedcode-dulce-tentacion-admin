@@ -38,7 +38,9 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
     branch,
     phone,
     codeEmployee,
-    active = 1
+    active = 1,
+    startDate,
+    endDate
   ) {
     set({ loading_employees: true });
     get_employees_paginated(
@@ -50,7 +52,9 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
       branch,
       phone,
       codeEmployee,
-      active
+      active,
+      startDate,
+      endDate
     )
       .then(({ data }) => set({ employee_paginated: data, loading_employees: false }))
       .catch(() => {
@@ -81,6 +85,9 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
           '',
           '',
           '',
+          '',
+          1,
+          ``,
           ''
         );
         toast.success(messages.success);
@@ -103,6 +110,9 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
           '',
           '',
           '',
+          '',
+          1,
+          '',
           ''
         );
         toast.success(messages.success);
@@ -124,6 +134,9 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
           '',
           '',
           '',
+          '',
+          '',
+          1,
           '',
           ''
         );
