@@ -6,6 +6,7 @@ import { Notebook } from 'lucide-react';
 import { useContext } from 'react';
 import logo from '@/assets/MADNESS.png';
 import TooltipGlobal from '@/components/global/TooltipGlobal';
+import { Lock } from 'lucide-react';
 
 interface Props {
   employee: Employee;
@@ -147,7 +148,7 @@ function ProofSalary({ employee, actions }: Props) {
             className="flex font-semibold border border-white "
             isIconOnly
           >
-            {/* <Lock /> */}
+            <Lock />
           </Button>
         </>
       )}

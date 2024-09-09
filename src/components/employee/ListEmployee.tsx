@@ -1158,10 +1158,14 @@ function ListEmployee({ actions }: Props) {
                                             )}
                                           </>
                                         )}
-                                        <ProofSalary employee={employee}></ProofSalary>
+                                        <ProofSalary
+                                          employee={employee}
+                                          actions={actions}
+                                        ></ProofSalary>
 
                                         <ProofeOfEmployment
-                                          employee={employee} actions={actions}
+                                          employee={employee}
+                                          actions={actions}
                                         ></ProofeOfEmployment>
                                       </div>
                                     </td>

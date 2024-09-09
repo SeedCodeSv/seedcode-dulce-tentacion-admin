@@ -5,12 +5,20 @@ import { Wallet } from 'lucide-react';
 import { useContext } from 'react';
 import logo from '../../../assets/MADNESS.png';
 import { Employee } from '@/types/employees.types';
+import TooltipGlobal from '@/components/global/TooltipGlobal';
+import { Lock } from 'lucide-react';
 
 export interface Props {
   employee: Employee;
+  actions: string[];
 }
-function ProofSalary({ employee }: Props) {
+function ProofSalary({ employee, actions }: Props) {
   const { theme } = useContext(ThemeContext);
+  const style = {
+    backgroundColor: theme.colors.dark,
+    color: theme.colors.primary,
+  };
+
   const img = new Image();
   img.src = logo;
   const generatePDF = () => {
@@ -92,23 +100,41 @@ function ProofSalary({ employee }: Props) {
     window.open(pdfBlobUrl, '_blank');
   };
   return (
-    <Button
-      className="border border-white"
-      onClick={() => {
-        generatePDF();
-      }}
-      isIconOnly
-      style={{
-        backgroundColor: theme.colors.secondary,
-      }}
-    >
-      <Wallet
-        style={{
-          color: theme.colors.primary,
-        }}
-        size={20}
-      />
-    </Button>
+    <>
+      {actions.includes('Generar Constancia de Salario') && employee.isActive ? (
+        <TooltipGlobal text="Generar Constancia de Salario">
+          <Button
+            className="border border-white"
+            onClick={() => {
+              generatePDF();
+            }}
+            isIconOnly
+            style={{
+              backgroundColor: theme.colors.secondary,
+            }}
+          >
+            <Wallet
+              style={{
+                color: theme.colors.primary,
+              }}
+              size={20}
+            />
+          </Button>
+        </TooltipGlobal>
+      ) : (
+        <>
+          <Button
+            type="button"
+            disabled
+            style={{ ...style, cursor: 'not-allowed' }}
+            className="flex font-semibold border border-white "
+            isIconOnly
+          >
+            <Lock />
+          </Button>
+        </>
+      )}
+    </>
   );
 }
 export default ProofSalary;
