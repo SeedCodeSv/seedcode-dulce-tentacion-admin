@@ -51,7 +51,7 @@ const GridItem = (props: GridProps) => {
       {layout === 'grid' ? (
         <div
           className={classNames(
-            'w-full shadow-sm border dark:border-white hover:shadow-lg border dark:border-gray-600 p-8 rounded-2xl flex flex-col justify-between'
+            'w-full shadow-sm  hover:shadow-lg border dark:border-gray-600 p-8 rounded-2xl flex flex-col justify-between'
           )}
           key={employee.id}
         >
@@ -178,7 +178,7 @@ const ListItem = (props: GridProps) => {
   const { employee, actions, openEditModal, handleActivate, OpenPdf } = props;
   return (
     <>
-      <div className="flex w-full border border-white p-5 border shadow  rounded-2xl">
+      <div className="flex w-full border-white p-5 border shadow  rounded-2xl">
         <div className="w-full">
           <div className="flex w-full gap-2">
             <IUser className="text-blue-500 dark:text-blue-300" size={20} />
