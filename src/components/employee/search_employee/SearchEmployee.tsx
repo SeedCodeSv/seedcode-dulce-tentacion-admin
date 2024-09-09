@@ -58,6 +58,7 @@ function SearchEmployee(props: IPropsSearchEmployee) {
                   '',
                   filter.nameBranchEmployee,
                   filter.phoneEmployee,
+                  '',
                   1
                 );
               }}
@@ -148,6 +149,7 @@ function SearchEmployee(props: IPropsSearchEmployee) {
                   '',
                   filter.nameBranchEmployee,
                   filter.phoneEmployee,
+                  '',
                   1
                 );
                 setOpenVaul(false);

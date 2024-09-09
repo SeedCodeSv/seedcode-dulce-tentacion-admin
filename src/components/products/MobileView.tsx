@@ -56,7 +56,7 @@ const GridItem = (props: GridProps) => {
       {layout === 'grid' ? (
         <div
           className={classNames(
-            'w-full shadow border border-white dark:border border-gray-600 hover:shadow-lg p-4 rounded-2xl'
+            'w-full shadow border  dark:border border-gray-600 hover:shadow-lg p-4 rounded-2xl'
           )}
           key={product.id}
         >
@@ -151,7 +151,7 @@ const ListItem = (props: GridProps) => {
   const { product, openEditModal, DeletePopover, actions, handleActivate } = props;
   return (
     <>
-      <div className="flex w-full border border-white col-span-1 p-5 border shadow rounded-2xl ">
+      <div className="flex w-full border-white col-span-1 p-5 border shadow rounded-2xl ">
         <div className="w-full">
           <div className="flex w-full gap-2">
             <ShoppingBag className="tex-blue-500 dark:text-blue-300" size={20} />
