@@ -25,7 +25,10 @@ import {
   RefreshCcw,
   FileText,
   Lock,
+  ScanBarcode,
+  Store,
 } from 'lucide-react';
+
 import { Employee, EmployeePayload } from '../../types/employees.types';
 import AddButton from '../global/AddButton';
 import Pagination from '../global/Pagination';
@@ -48,6 +51,7 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import SearchEmployee from './search_employee/SearchEmployee';
 import ProofSalary from './employees-pdfs/ProofSalary';
+import { fechaActualString } from '@/utils/dates';
 
 interface Props {
   actions: string[];
@@ -62,7 +66,8 @@ function ListEmployee({ actions }: Props) {
   const { user } = useAuthStore();
   const { getEmployeesPaginated, employee_paginated, activateEmployee, loading_employees } =
     useEmployeeStore();
-
+  const [startDate, setStartDate] = useState(fechaActualString);
+  const [endDate, setEndDate] = useState(fechaActualString);
   const [firstName, setFirstName] = useState('');
   const [firstLastName] = useState('');
   const [branch, setBranch] = useState('');
@@ -760,7 +765,7 @@ function ListEmployee({ actions }: Props) {
                     label="Código"
                     className="w-full dark:text-white border border-white rounded-xl"
                     placeholder="Buscar por código..."
-                    startContent={<User />}
+                    startContent={<ScanBarcode />}
                     variant="bordered"
                     name="searchCodeEmployee"
                     id="searchNameCodeEmployee"
@@ -796,6 +801,7 @@ function ListEmployee({ actions }: Props) {
                           setBranch(key as string);
                         }
                       }}
+                      startContent={<Store />}
                       className="w-full dark:text-white border border-white rounded-xl"
                       labelPlacement="outside"
                       placeholder="Selecciona una sucursal"
@@ -818,6 +824,36 @@ function ListEmployee({ actions }: Props) {
                         </AutocompleteItem>
                       ))}
                     </Autocomplete>
+                  </div>
+                  <div>
+                    <Input
+                      type="date"
+                      onChange={(e) => setStartDate(e.target.value)}
+                      defaultValue={startDate}
+                      variant="bordered"
+                      labelPlacement="outside"
+                      classNames={{
+                        base: 'font-semibold dark:text-white text-sm',
+                        label: 'font-semibold dark:text-white text-sm',
+                      }}
+                      label="Fecha Inicial"
+                      className="w-full dark:text-white  rounded-xl"
+                    />
+                  </div>
+                  <div>
+                    <Input
+                      type="date"
+                      onChange={(e) => setEndDate(e.target.value)}
+                      defaultValue={endDate}
+                      variant="bordered"
+                      labelPlacement="outside"
+                      classNames={{
+                        base: 'font-semibold dark:text-white text-sm',
+                        label: 'font-semibold dark:text-white text-sm',
+                      }}
+                      label="Fecha Final"
+                      className="w-full dark:text-white  rounded-xl"
+                    />
                   </div>
                   <Button
                     style={{
@@ -873,9 +909,33 @@ function ListEmployee({ actions }: Props) {
                       ))}
                     </Select>
                   </div>
-                  <ButtonGroup className="mt-4 border border-white rounded-xl">
+                  <ButtonGroup className="mt-4 border xl:hidden border-white rounded-xl">
                     <Button
-                      className="hidden md:inline-flex"
+                      isIconOnly
+                      color="default"
+                      style={{
+                        backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
+                        color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
+                      }}
+                      onClick={() => setView('grid')}
+                    >
+                      <CreditCard />
+                    </Button>
+                    <Button
+                      isIconOnly
+                      color="default"
+                      style={{
+                        backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
+                        color: view === 'list' ? theme.colors.primary : '#3e3e3e',
+                      }}
+                      onClick={() => setView('list')}
+                    >
+                      <List />
+                    </Button>
+                  </ButtonGroup>
+                  <ButtonGroup className="mt-4 border xl:flex hidden border-white rounded-xl">
+                    <Button
+                      className=""
                       isIconOnly
                       color="secondary"
                       style={{
