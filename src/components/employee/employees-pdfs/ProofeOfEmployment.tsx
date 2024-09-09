@@ -5,13 +5,19 @@ import jsPDF from 'jspdf';
 import { Notebook } from 'lucide-react';
 import { useContext } from 'react';
 import logo from '@/assets/MADNESS.png';
+import TooltipGlobal from '@/components/global/TooltipGlobal';
 
 interface Props {
   employee: Employee;
+  actions: string[];
 }
 
-function ProofSalary({ employee }: Props) {
+function ProofSalary({ employee, actions }: Props) {
   const { theme } = useContext(ThemeContext);
+  const style = {
+    backgroundColor: theme.colors.dark,
+    color: theme.colors.primary,
+  };
 
   const convertImageToBase64 = (url: string): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -76,7 +82,7 @@ function ProofSalary({ employee }: Props) {
 
     const employeeFullName = `${employee.firstName} ${employee.secondName || ''} ${employee.firstLastName} ${employee.secondLastName || ''}`;
 
-    const paragraph1 = `La ${employee.branch.transmitter?.nombreComercial}, hace constar que el(la) señor(a) ${employeeFullName}, identificado(a) con el Documento Único de Identidad (DUI) número ${employee.dui}, ha laborado en nuestra empresa desde el ${employee.dateOfEntry}, desempeñándose en el cargo de ${employee.charge.name}.`;
+    const paragraph1 = `${employee.branch.transmitter?.nombreComercial}, hace constar que el(la) señor(a) ${employeeFullName}, identificado(a) con el Documento Único de Identidad (DUI) número ${employee.dui}, ha laborado en nuestra empresa desde el ${employee.dateOfEntry}, desempeñándose en el cargo de ${employee.charge.name}.`;
 
     const paragraph2 = `Durante su tiempo en la empresa, el(la) señor(a) ${employeeFullName} ha demostrado un alto nivel de compromiso, responsabilidad y profesionalismo en el desarrollo de sus labores.`;
 
@@ -97,11 +103,13 @@ function ProofSalary({ employee }: Props) {
 
     // Información de contacto centrada al final del documento
     doc.setFontSize(10); // Ajusta el tamaño del texto
-    doc.text('Dirección: Calle Falsa 123, San Salvador, El Salvador', 105, 260, {
+    doc.text(`Dirección: Calle Falsa 123, San Salvador, El Salvador`, 105, 260, {
       align: 'center',
     });
-    doc.text('Teléfono: +503 1234-5678', 105, 265, { align: 'center' });
-    doc.text('Correo: contacto@empresa.com', 105, 270, { align: 'center' });
+    doc.text(`Teléfono: +503 ${employee.branch.transmitter?.telefono}`, 105, 265, {
+      align: 'center',
+    });
+    doc.text(`Correo: ${employee.branch.transmitter?.correo}`, 105, 270, { align: 'center' });
 
     // Abrir el PDF en una nueva pestaña
     const pdfBlobUrl = doc.output('bloburl');
@@ -109,23 +117,41 @@ function ProofSalary({ employee }: Props) {
   };
 
   return (
-    <Button
-      className="border border-white"
-      onClick={() => {
-        generatePDF();
-      }}
-      isIconOnly
-      style={{
-        backgroundColor: theme.colors.third,
-      }}
-    >
-      <Notebook
-        style={{
-          color: theme.colors.primary,
-        }}
-        size={20}
-      />
-    </Button>
+    <>
+      {actions.includes('Constancia de Trabajo') && employee.isActive ? (
+        <TooltipGlobal text="Generar Constancia de Trabajo">
+          <Button
+            className="border border-white"
+            onClick={() => {
+              generatePDF();
+            }}
+            isIconOnly
+            style={{
+              backgroundColor: theme.colors.third,
+            }}
+          >
+            <Notebook
+              style={{
+                color: theme.colors.primary,
+              }}
+              size={20}
+            />
+          </Button>
+        </TooltipGlobal>
+      ) : (
+        <>
+          <Button
+            type="button"
+            disabled
+            style={{ ...style, cursor: 'not-allowed' }}
+            className="flex font-semibold border border-white "
+            isIconOnly
+          >
+            {/* <Lock /> */}
+          </Button>
+        </>
+      )}
+    </>
   );
 }
 
