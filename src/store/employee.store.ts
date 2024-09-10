@@ -3,6 +3,7 @@ import { IEmployeeStore } from './types/employee.store';
 import {
   activate_employee,
   delete_employee,
+  get_birthday_employees,
   get_employee_list,
   get_employees_paginated,
   patch_employee,
@@ -14,6 +15,7 @@ import { messages } from '../utils/constants';
 import { get_user } from '@/storage/localStorage';
 
 export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
+  birthdays : [],
   employee_paginated: {
     employees: [],
     total: 0,
@@ -175,4 +177,11 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
         return false;
       });
   },
+  OnGetBirthDays(){
+    get_birthday_employees().then(({data})=> {
+       set({
+         birthdays : data.birthdays
+       })
+    })
+  }
 }));

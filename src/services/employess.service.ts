@@ -113,7 +113,7 @@ export const verify_code = (code: string) => {
 
 export const get_birthday_employees = () => {
   const token = get_token() ?? '';
-  return axios.get<Person[]>(API_URL + '/employees/get-birthday-employee', {
+  return axios.get<Person>(API_URL + '/employees/get-birthday-employee', {
     headers: {
       Authorization: `Bearer ${token}`,
     },

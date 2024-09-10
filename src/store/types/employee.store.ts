@@ -1,8 +1,9 @@
-import { Employee, EmployeePayload, IGetEmployeesPaginated } from '../../types/employees.types';
+import { Employee, EmployeePayload, IGetEmployeesPaginated, MonthsAttendance } from '../../types/employees.types';
 
 export interface IEmployeeStore {
   employee_paginated: IGetEmployeesPaginated;
   employee_list: Employee[];
+  birthdays : MonthsAttendance[]
   loading_employees: boolean;
   saveEmployeesPaginated: (employee_paginated: IGetEmployeesPaginated) => void;
   getEmployeesPaginated: (
@@ -24,4 +25,6 @@ export interface IEmployeeStore {
   getEmployeesList: () => void;
   activateEmployee: (id: number) => Promise<void>;
   verifyCode: (code: string) => Promise<boolean>;
+  OnGetBirthDays: () => void;
+
 }

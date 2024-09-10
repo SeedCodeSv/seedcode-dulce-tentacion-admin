@@ -1,18 +1,15 @@
 import Layout from '@/layout/Layout';
 import { Button } from '@nextui-org/react';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
-import { SetStateAction, useEffect, useState } from 'react';
+import {  useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import globo from '../../assets/globo.png';
-import { Person } from '@/types/employees.types';
-import { get_birthday_employees } from '@/services/employess.service';
+import { useEmployeeStore } from '@/store/employee.store';
 
 function BirthdayCalendar() {
-  const [selectedEvent, setSelectedEvent] = useState(null);
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
-  const [birthdayEmployees, setBirthdayEmployees] = useState<Person[]>([]); // Estado para los cumpleaños
-
+  const {OnGetBirthDays , birthdays} =useEmployeeStore();
   const months = [
     'Enero',
     'Febrero',
@@ -27,28 +24,14 @@ function BirthdayCalendar() {
     'Noviembre',
     'Diciembre',
   ];
-
+useEffect(() => {
+  OnGetBirthDays()
+},[])
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
   const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
   const daysArray = Array.from({ length: daysInMonth }, (_, i) => i + 1);
 
-  // Cargar los empleados que cumplen años
-  useEffect(() => {
-    const fetchBirthdayEmployees = async () => {
-      try {
-        const response = await get_birthday_employees();
-        setBirthdayEmployees(response.data); // Asigna los empleados al estado
-      } catch (error) {
-        console.error('Error fetching birthday employees:', error);
-      }
-    };
-
-    fetchBirthdayEmployees();
-  }, []); // Ejecuta solo una vez al cargar el componente
-
-  const handleEventClick = (event: SetStateAction<null>) => {
-    setSelectedEvent(event);
-  };
+ 
 
   const handleNextMonth = () => {
     if (currentMonth === 11) {
@@ -113,8 +96,8 @@ function BirthdayCalendar() {
                 <div key={index} className="bg-transparent" />
               ))}
               {daysArray.map((day, index) => {
-                const birthdayEvent = birthdayEmployees.find((employee) => {
-                  const employeeBirthday = new Date(employee as never);
+                const birthdayEvent = birthdays.find((employee) => {
+                  const employeeBirthday = new Date(employee.dateOfBirth);
                   return (
                     employeeBirthday.getDate() === day &&
                     employeeBirthday.getMonth() === currentMonth &&
@@ -126,7 +109,7 @@ function BirthdayCalendar() {
                   <div
                     key={index}
                     className="bg-green-100 border-l-4 border-green-400 rounded-lg p-4 shadow hover:shadow-lg transition-shadow duration-300 cursor-pointer relative h-32 flex flex-col justify-between"
-                    onClick={() => handleEventClick(birthdayEvent as never)}
+                    
                   >
                     <div className="flex justify-between items-center">
                       <div className="font-bold text-gray-800 dark:text-green-400">

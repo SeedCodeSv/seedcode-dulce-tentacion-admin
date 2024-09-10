@@ -133,20 +133,13 @@ export interface GetEmployeeList {
 }
 
 export interface Person {
+  birthdays : MonthsAttendance[]
+}
+export interface MonthsAttendance {
   id: number;
   firstName: string;
   secondName: string;
   firstLastName: string;
   secondLastName: string;
-}
-
-export interface Attendance {
-  [date: string]: Person[];
-}
-
-export interface MonthsAttendance {
-  Enero?: Attendance;
-  Junio?: Attendance;
-  Julio?: Attendance;
-  [key: string]: Attendance | undefined;
+  dateOfBirth : string
 }
