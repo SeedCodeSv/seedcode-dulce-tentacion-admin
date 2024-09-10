@@ -96,19 +96,20 @@ export const get_sales_by_period = (
   paymentType: string = '',
   branch: string = '',
   correlative: string = '',
-  typeVoucher: string = '',
+  typeVoucher: string = ''
 ) => {
   const user = get_user();
   return axios.get<IGetSalesByPeriod>(
     API_URL +
-      `/sales/get-sales-for-dates/${user?.correlative.branch.transmitterId}?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}&paymentType=${paymentType}&branch=${branch}&correlative=${correlative}&typeVoucher=${typeVoucher}`
+      `/sales/get-sales-for-dates/${user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0}?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}&paymentType=${paymentType}&branch=${branch}&correlative=${correlative}&typeVoucher=${typeVoucher}`
   );
 };
 
 export const get_sales_by_period_chart = (startDate: string, endDate: string) => {
-  const user = get_user()
+  const user = get_user();
   return axios.get<SalesChartGraphPeriod>(
-    API_URL + `/sales/graphic/by-branches/${user?.correlative.branch.transmitterId}?startDate=${startDate}&endDate=${endDate}`
+    API_URL +
+      `/sales/graphic/by-branches/${user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0}?startDate=${startDate}&endDate=${endDate}`
   );
 };
 
@@ -126,6 +127,7 @@ export const get_sales_point_of_sale_by_branch = (
 export const get_sales_count = () => {
   const user = get_user();
   return axios.get<IGetSalesCount>(
-    API_URL + `/reports/count-sales/${user?.correlative.branch.transmitterId}`
+    API_URL +
+      `/reports/count-sales/${user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0}`
   );
 };

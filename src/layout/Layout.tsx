@@ -1,15 +1,15 @@
-import { useContext, useEffect, useState } from "react";
-import { ThemeContext } from "../hooks/useTheme";
-import NavBar from "./NavBar";
-import { SideBar } from "./SideBar";
-import classNames from "classnames";
-import { useConfigurationStore } from "../store/perzonalitation.store";
-import { useAuthStore } from "../store/auth.store";
-import { Helmet } from "react-helmet-async";
-import { ActionsContext } from "../hooks/useActions";
-import { useActionsRolStore } from "../store/actions_rol.store";
-import { encryptData } from "../plugins/crypto";
-import { useLocation } from "react-router";
+import { useContext, useEffect, useState } from 'react';
+import { ThemeContext } from '../hooks/useTheme';
+import NavBar from './NavBar';
+import { SideBar } from './SideBar';
+import classNames from 'classnames';
+import { useConfigurationStore } from '../store/perzonalitation.store';
+import { useAuthStore } from '../store/auth.store';
+import { Helmet } from 'react-helmet-async';
+import { ActionsContext } from '../hooks/useActions';
+import { useActionsRolStore } from '../store/actions_rol.store';
+import { encryptData } from '../plugins/crypto';
+import { useLocation } from 'react-router';
 
 interface Props {
   children: JSX.Element;
@@ -27,11 +27,13 @@ function Layout(props: Props) {
   const { OnGetActionsByRole } = useActionsRolStore();
 
   useEffect(() => {
-    GetConfigurationByTransmitter(user?.correlative.branch.transmitterId ?? 0);
+    GetConfigurationByTransmitter(
+      user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0
+    );
     if (!roleActions) {
       OnGetActionsByRole(user?.roleId ?? 0).then((data) => {
         if (data) {
-          localStorage.setItem("_RVA", encryptData(data));
+          localStorage.setItem('_RVA', encryptData(data));
           setRoleActions(data);
         }
       });
@@ -41,10 +43,10 @@ function Layout(props: Props) {
   const location = useLocation();
 
   const [displayLocation, setDisplayLocation] = useState(location);
-  const [transitionStage, setTransistionStage] = useState("fadeIn");
+  const [transitionStage, setTransistionStage] = useState('fadeIn');
 
   useEffect(() => {
-    if (location !== displayLocation) setTransistionStage("fadeOut");
+    if (location !== displayLocation) setTransistionStage('fadeOut');
   }, [location, displayLocation]);
 
   return (
@@ -53,13 +55,8 @@ function Layout(props: Props) {
         <title>{props.title.toUpperCase()}</title>
       </Helmet>
 
-      <div
-        className={classNames(
-          "w-full h-full satoshi",
-          context === "dark" ? "dark" : ""
-        )}
-      >
-        {navbar === "topbar" && (
+      <div className={classNames('w-full h-full satoshi', context === 'dark' ? 'dark' : '')}>
+        {navbar === 'topbar' && (
           <>
             <div className="flex flex-col w-screen h-screen">
               <NavBar />
@@ -69,21 +66,21 @@ function Layout(props: Props) {
             </div>
           </>
         )}
-        {navbar === "sidebar" && (
+        {navbar === 'sidebar' && (
           <>
             <SideBar title={props.title}>
               <div
                 className={classNames(
                   transitionStage,
-                  "w-full h-full overflow-y-auto bg-gray-50 dark:bg-gray-800"
+                  'w-full h-full overflow-y-auto bg-gray-50 dark:bg-gray-800'
                 )}
                 onAnimationEnd={() => {
-                  if (transitionStage === "fadeOut") {
-                    setTransistionStage("fadeIn");
+                  if (transitionStage === 'fadeOut') {
+                    setTransistionStage('fadeIn');
                     setDisplayLocation(location);
-                  }else{
+                  } else {
                     setDisplayLocation(location);
-                    setTransistionStage("fadeIn");
+                    setTransistionStage('fadeIn');
                   }
                 }}
               >

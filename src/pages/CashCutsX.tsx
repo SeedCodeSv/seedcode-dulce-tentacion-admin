@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Autocomplete, AutocompleteItem, Button } from '@nextui-org/react';
 import { ZCashCutsResponse } from '../types/cashCuts.types';
-import { useAuthStore } from '../store/auth.store';
 import { fechaActualString } from '../utils/dates';
 import { get_cashCuts_x } from '../services/facturation/cashCuts.service';
 
@@ -24,7 +23,6 @@ const CashCutsX = () => {
   const x = actions.find((view) => view.view.name === 'Corte X');
   const actionsView = x?.actions?.name || [];
   const [data, setData] = useState<ZCashCutsResponse | null>(null);
-  const { user } = useAuthStore();
   const [dateInitial] = useState(fechaActualString);
   const [dateEnd] = useState(fechaActualString);
   const [branchId, setBranchId] = useState(0);
@@ -116,9 +114,8 @@ const CashCutsX = () => {
          <span style="text-align: right:30px;">Reporte de Ventas</span><br />
          <span>------------------------------------</span><br />
           <span>MADNESS</span><br />
-          <span>${branchName || user?.correlative.branch.name}</span><br /><br />
-          <span>${branchAdress || user?.correlative.branch.address}</span><br />
-          <span>Creado por: ${user?.userName}</span><br />
+           <span>${branchName}</span><br />
+        <span>${branchAdress}</span><br />
           <span>GIRO: VENTA AL POR MENOR DE ROPA</span><br />
           <span>
             FECHA: ${date} - ${time} ${Am}
@@ -622,11 +619,9 @@ const CashCutsX = () => {
               <div className="flex flex-col items-center w-full h-full p-4 mt-4  rounded-md">
                 <div className="mt-4 bg-white border border-gray-200 dark:bg-gray-800 w-full max-w-lg h-full overflow-y-auto flex flex-col items-center p-5 rounded-2xl">
                   <h1 className="text-black dark:text-white">MADNESS</h1>
-                  <h1 className="text-black dark:text-white">
-                    {branchName || user?.correlative.branch.name}
-                  </h1>
-                  <h1 className="text-black dark:text-white">{user?.correlative.branch.address}</h1>
+                  <h1 className="text-black dark:text-white">{branchName}</h1>
 
+                  <h1 className="text-black dark:text-white">{branchAdress}</h1>
                   <h1 className="text-black dark:text-white">GIRO: VENTA AL POR MENOR DE ROPA</h1>
                   <h1 className="text-black dark:text-white">
                     FECHA: {dateInitial} - {dateEnd}

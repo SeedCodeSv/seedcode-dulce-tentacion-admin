@@ -85,9 +85,12 @@ function ListEmployee({ actions }: Props) {
   const modalAdd = useDisclosure();
   const [selectedEmployee, setSelectedEmployee] = useState<Employee>();
 
+  const [isDate, setDate] = useState(false);
   const changePage = () => {
     getEmployeesPaginated(
-      Number(user?.correlative.branch.transmitterId),
+      Number(
+        user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0
+      ),
       1,
       limit,
       firstName,
@@ -96,15 +99,17 @@ function ListEmployee({ actions }: Props) {
       phone,
       codeEmployee,
       active ? 1 : 0,
-      startDate,
-      endDate
+      isDate ? startDate : '',
+      isDate ? endDate : ''
     );
   };
 
   useEffect(() => {
     getBranchesList();
     getEmployeesPaginated(
-      Number(user?.correlative.branch.transmitterId),
+      Number(
+        user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0
+      ),
       1,
       limit,
       firstName,
@@ -113,15 +118,17 @@ function ListEmployee({ actions }: Props) {
       phone,
       codeEmployee,
       active ? 1 : 0,
-      startDate,
-      endDate
+      '',
+      ''
     );
   }, [limit, active]);
 
   const handleActivate = (id: number) => {
     activateEmployee(id).then(() => {
       getEmployeesPaginated(
-        Number(user?.correlative.branch.transmitterId),
+        Number(
+          user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0
+        ),
         1,
         limit,
         '',
@@ -836,37 +843,43 @@ function ListEmployee({ actions }: Props) {
                       ))}
                     </Autocomplete>
                   </div>
-                  <div>
-                    <label className="font-semibold dark:text-white text-sm">Fecha Inicial</label>
+                  {isDate && (
+                    <>
+                      <div>
+                        <label className="font-semibold dark:text-white text-sm">
+                          Fecha Inicial
+                        </label>
 
-                    <Input
-                      type="date"
-                      onChange={(e) => setStartDate(e.target.value)}
-                      defaultValue={startDate}
-                      variant="bordered"
-                      labelPlacement="outside"
-                      classNames={{
-                        base: 'font-semibold dark:text-white text-sm',
-                        label: 'font-semibold dark:text-white text-sm',
-                      }}
-                      className="w-full dark:text-white  rounded-xl border border-white"
-                    />
-                  </div>
-                  <div>
-                    <label className="font-semibold dark:text-white text-sm">Fecha Final</label>
-                    <Input
-                      type="date"
-                      onChange={(e) => setEndDate(e.target.value)}
-                      defaultValue={endDate}
-                      variant="bordered"
-                      labelPlacement="outside"
-                      classNames={{
-                        base: 'font-semibold dark:text-white text-sm',
-                        label: 'font-semibold dark:text-white text-sm',
-                      }}
-                      className="w-full dark:text-white  rounded-xl border border-white"
-                    />
-                  </div>
+                        <Input
+                          type="date"
+                          onChange={(e) => setStartDate(e.target.value)}
+                          defaultValue={startDate}
+                          variant="bordered"
+                          labelPlacement="outside"
+                          classNames={{
+                            base: 'font-semibold dark:text-white text-sm',
+                            label: 'font-semibold dark:text-white text-sm',
+                          }}
+                          className="w-full dark:text-white  rounded-xl border border-white"
+                        />
+                      </div>
+                      <div>
+                        <label className="font-semibold dark:text-white text-sm">Fecha Final</label>
+                        <Input
+                          type="date"
+                          onChange={(e) => setEndDate(e.target.value)}
+                          defaultValue={endDate}
+                          variant="bordered"
+                          labelPlacement="outside"
+                          classNames={{
+                            base: 'font-semibold dark:text-white text-sm',
+                            label: 'font-semibold dark:text-white text-sm',
+                          }}
+                          className="w-full dark:text-white  rounded-xl border border-white"
+                        />
+                      </div>
+                    </>
+                  )}
                   <Button
                     style={{
                       backgroundColor: theme.colors.secondary,
@@ -877,6 +890,18 @@ function ListEmployee({ actions }: Props) {
                     onClick={() => changePage()}
                   >
                     Buscar
+                  </Button>
+
+                  <Button
+                    style={{
+                      backgroundColor: theme.colors.secondary,
+                      color: theme.colors.primary,
+                    }}
+                    className="hidden mt-6 font-semibold md:flex border border-white"
+                    color="primary"
+                    onClick={() => setDate(!isDate)}
+                  >
+                    Filtrar Fechas
                   </Button>
                 </div>
               </div>
@@ -900,7 +925,7 @@ function ListEmployee({ actions }: Props) {
                   <Button
                     onClick={() => navigate('/birthday-calendar')}
                     style={global_styles().thirdStyle}
-                    className="xl:hidden border border-white"
+                    className="xl:hidden md:hidden border border-white"
                   >
                     <p className="text-sm sm:text-base">Cumpleaños</p>
                   </Button>
@@ -909,7 +934,7 @@ function ListEmployee({ actions }: Props) {
                   <Button
                     onClick={() => navigate('/birthday-calendar')}
                     style={global_styles().thirdStyle}
-                    className=" xl:flex hidden border mt-7 border-white"
+                    className=" xl:flex md:flex hidden border mt-7 border-white"
                   >
                     <p className="text-sm sm:text-base">Cumpleaños</p>
                   </Button>
@@ -1229,7 +1254,11 @@ function ListEmployee({ actions }: Props) {
                       totalPages={employee_paginated.totalPag}
                       onPageChange={(page) => {
                         getEmployeesPaginated(
-                          Number(user?.correlative.branch.transmitterId),
+                          Number(
+                            user?.correlative?.branch.transmitterId ??
+                              user?.pointOfSale?.branch.transmitterId ??
+                              0
+                          ),
                           page,
                           limit,
                           firstName,
@@ -1248,7 +1277,11 @@ function ListEmployee({ actions }: Props) {
                     <SmPagination
                       handleNext={() => {
                         getEmployeesPaginated(
-                          Number(user?.correlative.branch.transmitterId),
+                          Number(
+                            user?.correlative?.branch.transmitterId ??
+                              user?.pointOfSale?.branch.transmitterId ??
+                              0
+                          ),
                           employee_paginated.nextPag,
                           limit,
                           firstName,
@@ -1263,7 +1296,11 @@ function ListEmployee({ actions }: Props) {
                       }}
                       handlePrev={() => {
                         getEmployeesPaginated(
-                          Number(user?.correlative.branch.transmitterId),
+                          Number(
+                            user?.correlative?.branch.transmitterId ??
+                              user?.pointOfSale?.branch.transmitterId ??
+                              0
+                          ),
                           employee_paginated.prevPag,
                           limit,
                           firstName,

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Autocomplete, AutocompleteItem, Button, Input } from '@nextui-org/react';
 import { global_styles } from '../styles/global.styles';
 import { ZCashCutsResponse } from '../types/cashCuts.types';
-import { useAuthStore } from '../store/auth.store';
+
 import { get_cashCuts } from '../services/facturation/cashCuts.service';
 import { useBranchesStore } from '../store/branches.store';
 import { fechaActualString } from '../utils/dates';
@@ -23,14 +23,13 @@ const CushCatsBigZ = () => {
   const bigZ = actions.find((view) => view.view.name === 'Corte Gran Z');
   const actionsView = bigZ?.actions?.name || [];
   const [data, setData] = useState<ZCashCutsResponse | null>(null);
-  const { user } = useAuthStore();
-
   const [dateInitial, setInitial] = useState(fechaActualString);
   const [dateEnd, setEnd] = useState(fechaActualString);
   const [branchId, setBranch] = useState(0);
   const [codeSale, setCodeSale] = useState<Correlatives[]>([]);
   const [codeSelected, setCodeSelected] = useState('');
   const [branchName, setBranchName] = useState('');
+  const [branchAddress, setBranchAddress] = useState('');
 
   useEffect(() => {
     const getIdBranch = async () => {
@@ -107,8 +106,8 @@ const CushCatsBigZ = () => {
         <span style="text-align: right:30px;">Reporte de Ventas</span><br />
         <span>------------------------------------</span><br />
         <span>MADNESS</span<br />
-        <span>${branchName || user?.correlative.branch.name}</span><br />
-        <span>${user?.correlative.branch.address}</span><br />
+        <span>${branchName}</span><br />
+        <span>${branchAddress}</span><br />
        
         <span>GIRO: VENTA AL POR MENOR DE ROPA</span><br />
         <span>
@@ -302,6 +301,7 @@ const CushCatsBigZ = () => {
                       onClick={() => {
                         setBranch(item.id);
                         setBranchName(item.name);
+                        setBranchAddress(item.address);
                       }}
                     >
                       {item.name}
@@ -327,10 +327,9 @@ const CushCatsBigZ = () => {
               <div className="flex flex-col items-center w-full h-full p-4 mt-4 rounded-md">
                 <div className="mt-4 bg-white border border-gray-200 dark:bg-gray-800 w-full max-w-lg h-full overflow-y-auto flex flex-col items-center p-5 rounded-2xl">
                   <h1 className="text-black dark:text-white">MADNESS</h1>
-                  <h1 className="text-black dark:text-white">
-                    {branchName || user?.correlative.branch.name}
-                  </h1>
-                  <h1 className="text-black dark:text-white">{user?.correlative.branch.address}</h1>
+                  <h1 className="text-black dark:text-white">{branchName}</h1>
+
+                  <h1 className="text-black dark:text-white">{branchAddress}</h1>
 
                   <h1 className="text-black dark:text-white">GIRO: VENTA AL POR MENOR DE ROPA</h1>
                   <h1 className="text-black dark:text-white">

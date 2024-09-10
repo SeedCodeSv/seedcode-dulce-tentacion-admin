@@ -42,7 +42,9 @@ function CreateShoppingManual() {
 
   useEffect(() => {
     getSupplierPagination(1, 15, searchNRC, '', '', 1);
-    get_correlative_shopping(Number(user?.correlative.branchId))
+    get_correlative_shopping(
+      Number(user?.correlative?.branch.id ?? user?.pointOfSale?.branch.id ?? 0)
+    )
       .then(({ data }) => {
         setCorrelative(data.correlative + 1);
       })
@@ -140,7 +142,7 @@ function CreateShoppingManual() {
     }
 
     const values: CreateShoppingDto = {
-      branchId: user?.correlative.branchId as number,
+      branchId: user?.correlative?.branch.id ?? user?.pointOfSale?.branch.id ?? 0,
       supplierId: supplierSelected.id ?? 0,
       tipoDte: tipoDte,
       totalExenta: 0,

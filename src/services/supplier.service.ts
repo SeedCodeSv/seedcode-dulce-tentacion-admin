@@ -30,7 +30,7 @@ export const get_supplier_pagination = (
   const token = get_token() ?? '';
   return axios.get<IGetSupplierPagination>(
     API_URL +
-      `/suppliers/list/${user?.correlative.branch.transmitterId}` +
+      `/suppliers/list/${user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0}` +
       '?page=' +
       page +
       '&limit=' +
@@ -78,7 +78,8 @@ export const get_supplier = () => {
   const user = get_user();
   const token = get_token() ?? '';
   return axios.get<IGetSuppliers>(
-    API_URL + `/suppliers/list-by-transmitter/${user?.correlative.branch.transmitterId}`,
+    API_URL +
+      `/suppliers/list-by-transmitter/${user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,

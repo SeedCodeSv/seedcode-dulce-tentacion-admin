@@ -29,7 +29,7 @@ function ShoppingPage({ actions }: ArrayAction) {
   const [branchId, setBranchId] = useState('');
   useEffect(() => {
     getPaginatedShopping(
-      user?.correlative.branch.transmitterId as number,
+      user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
       1,
       5,
       dateInitial,
@@ -41,7 +41,7 @@ function ShoppingPage({ actions }: ArrayAction) {
 
   const searchDailyReport = () => {
     getPaginatedShopping(
-      user?.correlative.branch.transmitterId as number,
+      user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
       1,
       5,
       dateInitial,
@@ -108,25 +108,28 @@ function ShoppingPage({ actions }: ArrayAction) {
                       label: 'text-sm font-semibold',
                     }}
                   />
-                  <Autocomplete
-                    className="dark:text-white font-semibold border border-white rounded-xl"
-                    variant="bordered"
-                    labelPlacement="outside"
-                    label="Sucursal"
-                    placeholder="Selecciona la sucursal"
-                    clearButtonProps={{ onClick: () => setBranchId('') }}
-                  >
-                    {branches_list.map((item) => (
-                      <AutocompleteItem
-                        key={JSON.stringify(item)}
-                        onClick={() => setBranchId(item.name)}
-                        value={item.name}
-                        className="dark:text-white"
-                      >
-                        {item.name}
-                      </AutocompleteItem>
-                    ))}
-                  </Autocomplete>
+                  <div className="w-full">
+                    <p className="text-sm font-semibold dark:text-white">Sucursal</p>
+                    <Autocomplete
+                      className="dark:text-white font-semibold border border-white rounded-xl"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      placeholder="Selecciona la sucursal"
+                      clearButtonProps={{ onClick: () => setBranchId('') }}
+                    >
+                      {branches_list.map((item) => (
+                        <AutocompleteItem
+                          key={JSON.stringify(item)}
+                          onClick={() => setBranchId(item.name)}
+                          value={item.name}
+                          className="dark:text-white"
+                        >
+                          {item.name}
+                        </AutocompleteItem>
+                      ))}
+                    </Autocomplete>
+                  </div>
+
                   <Button
                     style={{
                       backgroundColor: theme.colors.secondary,
@@ -183,10 +186,10 @@ function ShoppingPage({ actions }: ArrayAction) {
             />
 
             <div className="w-full ">
+              <p className="text-sm font-semibold dark:text-white">Sucursal</p>
               <Autocomplete
                 className="dark:text-white font-semibold border border-white rounded-xl hidden md:flex"
                 variant="bordered"
-                label="Sucursal"
                 labelPlacement="outside"
                 placeholder="Selecciona la sucursal"
                 clearButtonProps={{ onClick: () => setBranchId('') }}
@@ -299,74 +302,6 @@ function ShoppingPage({ actions }: ArrayAction) {
                 </tbody>
               </table>
             </div>
-            {/* <DataTable
-              className="shadow dark:text-white"
-              emptyMessage="No se encontraron resultados"
-              value={shoppingList}
-              tableStyle={{ minWidth: '10rem' }}
-            >
-              <Column
-                className="dark:text-white"
-                headerClassName="text-sm font-semibold"
-                bodyClassName="text-sm"
-                headerStyle={{ ...style, borderTopLeftRadius: '5px' }}
-                field="id"
-                header="No."
-              />
-              <Column
-                className="dark:text-white"
-                headerClassName="text-sm font-semibold"
-                bodyClassName="text-sm"
-                headerStyle={style}
-                field="controlNumber"
-                header="Número de control"
-              />
-              <Column
-                className="dark:text-white"
-                headerClassName="text-sm font-semibold"
-                bodyClassName="text-sm"
-                headerStyle={style}
-                field="generationCode"
-                header="Código de generación"
-              />
-              <Column
-                className="dark:text-white"
-                headerClassName="text-sm font-semibold"
-                headerStyle={style}
-                bodyClassName="text-sm"
-                header="Fecha/Hora emision"
-                body={(rowData) => (
-                  <>
-                    {rowData.fecEmi} {rowData.horEmi}
-                  </>
-                )}
-              />
-
-              <Column
-                className="dark:text-white"
-                headerClassName="text-sm font-semibold"
-                headerStyle={style}
-                bodyClassName="text-sm"
-                field="subTotal"
-                header="Subtotal"
-              />
-              <Column
-                className="dark:text-white"
-                headerClassName="text-sm font-semibold"
-                headerStyle={style}
-                bodyClassName="text-sm"
-                field="totalIva"
-                header="IVA"
-              />
-              <Column
-                className="dark:text-white"
-                headerClassName="text-sm font-semibold"
-                headerStyle={style}
-                bodyClassName="text-sm"
-                field="montoTotalOperacion"
-                header="Monto total"
-              />
-            </DataTable> */}
 
             {pagination_shopping.totalPag > 1 && (
               <>
@@ -378,7 +313,9 @@ function ShoppingPage({ actions }: ArrayAction) {
                     totalPages={pagination_shopping.totalPag}
                     onPageChange={(page) => {
                       getPaginatedShopping(
-                        user?.correlative.branch.transmitterId as number,
+                        user?.correlative?.branch.transmitterId ??
+                          user?.pointOfSale?.branch.transmitterId ??
+                          0,
                         page,
 
                         5,
@@ -395,7 +332,9 @@ function ShoppingPage({ actions }: ArrayAction) {
                   <Button
                     onClick={() => {
                       getPaginatedShopping(
-                        user?.correlative.branch.transmitterId as number,
+                        user?.correlative?.branch.transmitterId ??
+                          user?.pointOfSale?.branch.transmitterId ??
+                          0,
                         pagination_shopping.prevPag,
 
                         5,
@@ -415,7 +354,9 @@ function ShoppingPage({ actions }: ArrayAction) {
                   <Button
                     onClick={() => {
                       getPaginatedShopping(
-                        user?.correlative.branch.transmitterId as number,
+                        user?.correlative?.branch.transmitterId ??
+                          user?.pointOfSale?.branch.transmitterId ??
+                          0,
                         pagination_shopping.prevPag,
 
                         5,

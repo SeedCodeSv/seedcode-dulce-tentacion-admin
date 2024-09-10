@@ -99,8 +99,8 @@ const CushCatsZ = () => {
          <span style="text-align: right:30px;"> Reporte de Ventas</span><br />
          <span>------------------------------------</span><br />
           <span>MADNESS</span><br />
-          <span>${branchName || user?.correlative.branch.name}</span><br />
-          <span>${branchAddress || user?.correlative.branch.address}</span><br />
+           <span>${branchName}</span><br />
+        <span>${branchAddress}</span><br />
           <span>Creado por: ${user?.userName}</span><br />
           <span>GIRO: VENTA AL POR MENOR DE ROPA</span><br />
           <span>
@@ -304,10 +304,8 @@ const CushCatsZ = () => {
               <div className="flex flex-col items-center w-full h-full p-4 mt-4 rounded-md">
                 <div className="mt-4 bg-white border border-gray-200 dark:bg-gray-800 w-full max-w-lg h-full overflow-y-auto flex flex-col items-center p-5 rounded-2xl">
                   <h1 className="text-black dark:text-white">MADNESS</h1>
-                  <h1 className="text-black dark:text-white">
-                    {branchName || user?.correlative.branch.name}
-                  </h1>
-                  <h1 className="text-black dark:text-white">{user?.correlative.branch.address}</h1>
+                  <h1 className="text-black dark:text-white">{branchName}</h1>
+                  <h1 className="text-black dark:text-white">{branchAddress}</h1>
 
                   <h1 className="text-black dark:text-white">GIRO: VENTA AL POR MENOR DE ROPA</h1>
                   <h1 className="text-black dark:text-white">

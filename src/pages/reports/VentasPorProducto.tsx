@@ -48,13 +48,17 @@ function VentasPorProducto() {
 
   const handleSearch = (searchParam: string | undefined) => {
     getGraphicForCategoryProductsForDates(
-      Number(user?.correlative.branch.transmitterId),
+      Number(
+        user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0
+      ),
       searchParam ?? startDate,
       searchParam ?? endDate,
       searchParam ?? typePayment
     );
     getSalesProducts(
-      Number(user?.correlative.branch.transmitterId),
+      Number(
+        user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0
+      ),
       startDate,
       endDate,
       typePayment

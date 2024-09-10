@@ -72,7 +72,7 @@ const JSONMode = () => {
   const actionView = viewName?.actions.name || [];
   const [file, setFile] = useState<File | null>(null);
   const [jsonData, setJsonData] = useState<IResponseFromDigitalOceanDTE>();
-  console.log("al leer json", jsonData);
+  console.log('al leer json', jsonData);
   const { user } = useAuthStore();
 
   const styles = useGlobalStyles();
@@ -107,7 +107,10 @@ const JSONMode = () => {
   const navigate = useNavigate();
   const handleSubmit = () => {
     const formData = new FormData();
-    formData.append('branchId', user?.correlative.branchId.toString() ?? '0');
+    formData.append(
+      'branchId',
+      user?.correlative?.branch.id.toString() ?? user?.pointOfSale?.branch.id.toString() ?? '0'
+    );
     if (file) {
       formData.append('dte', file);
     }

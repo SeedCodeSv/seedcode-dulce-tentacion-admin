@@ -52,7 +52,8 @@ function AddTributeSupplier() {
           municipio: '',
           departamento: '',
           complemento: '',
-          transmitterId: user?.correlative.branch.transmitterId ?? 0,
+          transmitterId:
+            user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
         }}
         validationSchema={supplierSchemaContribuyente}
         onSubmit={(values, { setSubmitting }) => {

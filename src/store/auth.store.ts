@@ -13,9 +13,6 @@ import {
   delete_mh_token,
   save_branch_id,
   delete_branch_id,
-  post_box,
-  return_seller_mode,
-  delete_seller_mode,
 } from '../storage/localStorage';
 import { post_login } from '../services/auth.service';
 import { toast } from 'sonner';
@@ -33,30 +30,22 @@ export const useAuthStore = create<IAuthStore>((set, get) => ({
   postLogin: async (payload) => {
     return await post_login(payload)
       .then(async ({ data }) => {
-        const mode = return_seller_mode() ?? null;
         if (data.ok) {
           set_token(data.token);
           save_user(data.user);
           set({ user: data.user });
-          if (mode === 'vendedor') {
-            post_box(data.box.id.toString());
-            save_branch_id(data.user.correlative.branchId.toString());
-          } else {
-            delete_seller_mode();
+          if (is_admin(data.user.role.name) && data.user.correlative?.branch) {
+            save_branch_id(String(data.user.correlative.branch.id));
           }
-          if (is_admin(data.user.role.name)) {
-            // await save_branch_id(String(data.user.employee.branch.id));
-             save_branch_id(String(data.user.correlative.branch.id));
+          try {
+            const transmitterId = data.user.correlative?.branch?.transmitterId ?? 0;
+            await get().OnLoginMH(transmitterId, data.token);
+          } catch (error) {
+            toast.error('Error al conectarse con el servidor');
           }
-
-          await get()
-            .OnLoginMH(data.user.correlative.branch.transmitterId, data.token)
-            .catch(() => {
-              toast.error('Error al conectarse con el servidor');
-              return;
-            });
           const { GetConfigurationByTransmitter } = useConfigurationStore.getState();
-          await GetConfigurationByTransmitter(data.user.correlative.branch.transmitterId);
+          const transmitterId = data.user.correlative?.branch?.transmitterId ?? 0;
+          await GetConfigurationByTransmitter(transmitterId);
           toast.success('Bienvenido');
         } else {
           toast.error('Datos incorrectos');
@@ -70,6 +59,7 @@ export const useAuthStore = create<IAuthStore>((set, get) => ({
         return null;
       });
   },
+
   async OnLoginMH(id, token) {
     await get_transmitter(id, token)
       .then(({ data }) => {
@@ -78,8 +68,6 @@ export const useAuthStore = create<IAuthStore>((set, get) => ({
             if (login_mh.data.status === 'OK') {
               await save_mh_token(login_mh.data.body.token);
             } else {
-              // const data = login_mh as unknown as ILoginMHFailed;
-              // toast.error(`Error ${data}`);
               return;
             }
           })

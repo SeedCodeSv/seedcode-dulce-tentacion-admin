@@ -59,7 +59,7 @@ function ListUsers({ actionss }: Props) {
   const { user } = useAuthStore();
   useEffect(() => {
     getUsersPaginated(
-      user?.correlative.branch.transmitterId ?? 0,
+      user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
       1,
       limit,
       '',
@@ -86,7 +86,7 @@ function ListUsers({ actionss }: Props) {
 
   const handleSearch = (searchParam: string | undefined) => {
     getUsersPaginated(
-      user?.correlative.branch.transmitterId ?? 0,
+      user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
       page,
       limit,
       searchParam ?? userName,
@@ -98,7 +98,7 @@ function ListUsers({ actionss }: Props) {
   const handleActivate = (id: number) => {
     activateUser(id).then(() => {
       getUsersPaginated(
-        user?.correlative.branch.transmitterId ?? 0,
+        user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
         1,
         limit,
         '',
@@ -472,7 +472,9 @@ function ListUsers({ actionss }: Props) {
                   totalPages={users_paginated.totalPag}
                   onPageChange={(page) => {
                     getUsersPaginated(
-                      user?.correlative.branch.transmitterId ?? 0,
+                      user?.correlative?.branch.transmitterId ??
+                        user?.pointOfSale?.branch.transmitterId ??
+                        0,
                       page,
                       limit,
                       userName,
@@ -487,7 +489,9 @@ function ListUsers({ actionss }: Props) {
                   handleNext={() => {
                     serPage(users_paginated.nextPag);
                     getUsersPaginated(
-                      user?.correlative.branch.transmitterId ?? 0,
+                      user?.correlative?.branch.transmitterId ??
+                        user?.pointOfSale?.branch.transmitterId ??
+                        0,
                       users_paginated.nextPag,
                       limit,
                       userName,
@@ -498,7 +502,9 @@ function ListUsers({ actionss }: Props) {
                   handlePrev={() => {
                     serPage(users_paginated.prevPag);
                     getUsersPaginated(
-                      user?.correlative.branch.transmitterId ?? 0,
+                      user?.correlative?.branch.transmitterId ??
+                        user?.pointOfSale?.branch.transmitterId ??
+                        0,
                       users_paginated.prevPag,
                       limit,
                       userName,
@@ -519,7 +525,21 @@ function ListUsers({ actionss }: Props) {
           title="Agregar usuario"
           size="w-[350px] md:w-[550px]"
         >
-          <AddUsers onClose={modalAdd.onClose} />
+          <AddUsers
+            reload={() =>
+              getUsersPaginated(
+                user?.correlative?.branch.transmitterId ??
+                  user?.pointOfSale?.branch.transmitterId ??
+                  0,
+                1,
+                limit,
+                '',
+                '',
+                active ? 1 : 0
+              )
+            }
+            onClose={modalAdd.onClose}
+          />
         </HeadlessModal>
         <HeadlessModal
           isOpen={modalChangePassword.isOpen}
@@ -535,19 +555,31 @@ function ListUsers({ actionss }: Props) {
           title="Editar usuario"
           size="w-[350px] md:w-[550px]"
         >
-          <UpdateUsers onClose={modalUpdate.onClose} user={users} />
+          <UpdateUsers
+            reload={() =>
+              getUsersPaginated(
+                user?.correlative?.branch.transmitterId ??
+                  user?.pointOfSale?.branch.transmitterId ??
+                  0,
+                1,
+                limit,
+                '',
+                '',
+                active ? 1 : 0
+              )
+            }
+            onClose={modalUpdate.onClose}
+            user={users}
+          />
         </HeadlessModal>
       </div>
     </>
   );
 }
-
 export default ListUsers;
-
 interface PopProps {
   user: User;
 }
-
 export const DeletePopUp = ({ user }: PopProps) => {
   const { theme } = useContext(ThemeContext);
   const { deleteUser } = useUsersStore();

@@ -19,7 +19,7 @@ export const get_customers_pagination = (
   const user = get_user();
   return axios.get<IGetCustomerPagination>(
     API_URL +
-      `/customers/all-paginated/${user?.correlative.branch.transmitterId}` +
+      `/customers/all-paginated/${user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0}` +
       '?page=' +
       page +
       '&limit=' +
@@ -73,7 +73,8 @@ export const get_customer = () => {
 
   const token = get_token() ?? '';
   return axios.get<IGetCustomers>(
-    API_URL + `/customers/list-by-transmitter/${user?.correlative.branch.transmitterId}`,
+    API_URL +
+      `/customers/list-by-transmitter/${user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,

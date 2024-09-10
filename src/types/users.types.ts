@@ -1,4 +1,4 @@
-import { Correlatives } from "./correlatives.types";
+import { Correlatives } from './correlatives.types';
 
 export interface IGetUsers {
   ok: boolean;
@@ -10,14 +10,11 @@ export interface UserPayload {
   userName: string;
   password: string;
   roleId: number;
-  // employeeId: number;
-  correlativeId: number;
+  userId?: number;
 }
 export interface UserUpdate {
   userName: string;
   roleId: number;
-  // employeeId: number;
-  correlativeId: number;
 }
 export interface Role {
   id: number;
@@ -36,30 +33,30 @@ export interface Branch {
 
 export interface Employee {
   addressId: number;
-  afp: string
-  age:number
-  bankAccount: string
-  branchId:number
-  chargeId:number
-  code: string
-  contractTypeId:number
-  dateOfBirth: string
-  dateOfEntry: string
+  afp: string;
+  age: number;
+  bankAccount: string;
+  branchId: number;
+  chargeId: number;
+  code: string;
+  contractTypeId: number;
+  dateOfBirth: string;
+  dateOfEntry: string;
   dateOfExit: null;
-  dui: string
-  employeeStatusId: string
-  firstLastName: string
-  firstName: string
-  id:number
+  dui: string;
+  employeeStatusId: string;
+  firstLastName: string;
+  firstName: string;
+  id: number;
   isActive: boolean;
-  isss: string
-  nit: string
-  phone: string
-  responsibleContact: string
-  salary: string
-  secondLastName: string
-  secondName: string
-  studyLevelId:number
+  isss: string;
+  nit: string;
+  phone: string;
+  responsibleContact: string;
+  salary: string;
+  secondLastName: string;
+  secondName: string;
+  studyLevelId: number;
 }
 
 export interface User {
@@ -91,10 +88,9 @@ export interface IGetUserPaginated {
   status: number;
 }
 
-
-export interface IResponseRoles  {
+export interface IResponseRoles {
   ok: boolean;
   message: string;
   status: number;
   roles: Role[];
-};
+}

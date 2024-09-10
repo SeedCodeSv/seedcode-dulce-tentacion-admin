@@ -55,18 +55,18 @@ export const get_branch_product_orders = (
     `${API_URL}/branch-products/get-products?branch=${branch}&supplier=${supplier}&name=${name}&code=${code}&page=${page}&limit=${limit}`,
     {
       headers: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     }
-  )
-}
-
+  );
+};
 
 export const get_branches = () => {
   const user = get_user();
   const token = get_token() ?? '';
   return axios.get<IGetBranchesList>(
-    API_URL + `/branches/list-by-transmitter/${user?.correlative.branch.transmitterId}`,
+    API_URL +
+      `/branches/list-by-transmitter/${user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,

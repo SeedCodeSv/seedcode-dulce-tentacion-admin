@@ -19,21 +19,21 @@ export const get_branches_pagination = (
   const token = get_token() ?? '';
   const user = get_user();
   return axios.get<IGetBranchesPaginated>(
-    API_URL +
-      '/branches/list-paginated/' +
-      user?.correlative.branch.transmitterId +
-      '?page=' +
-      page +
-      '&limit=' +
-      limit +
-      '&name=' +
-      name +
-      '&phone=' +
-      phone +
-      '&address=' +
-      address +
-      '&active=' +
-      active,
+    API_URL + '/branches/list-paginated/' + user?.correlative?.branch.transmitterId ??
+      user?.pointOfSale?.branch.transmitterId ??
+      0 +
+        '?page=' +
+        page +
+        '&limit=' +
+        limit +
+        '&name=' +
+        name +
+        '&phone=' +
+        phone +
+        '&address=' +
+        address +
+        '&active=' +
+        active,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -46,7 +46,8 @@ export const get_branches_list = () => {
   const user = get_user();
   const token = get_token() ?? '';
   return axios.get<IGetBranchesList>(
-    API_URL + `/branches/list-by-transmitter/${user?.correlative.branch.transmitterId}`,
+    API_URL +
+      `/branches/list-by-transmitter/${user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -94,7 +95,14 @@ export const delete_branch = (id: number) => {
     },
   });
 };
-export const get_branch_products = (id: number,page : number , limit : number, name: string, category: string,code : string) => {
+export const get_branch_products = (
+  id: number,
+  page: number,
+  limit: number,
+  name: string,
+  category: string,
+  code: string
+) => {
   const token = get_token() ?? '';
   return axios.get<IGetBranchProductList>(
     API_URL +
