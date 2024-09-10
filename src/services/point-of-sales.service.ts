@@ -2,6 +2,8 @@ import { get_token } from '@/storage/localStorage';
 import {
   IGetPointOfSalePaginated,
   IGetPointOfSales,
+  IGetPointOfSalesByBranch,
+  PayloadPointOfSales,
   PointOfSalePayload,
 } from '@/types/point-of-sales.types';
 import { API_URL } from '@/utils/constants';
@@ -47,6 +49,26 @@ export const get_point_of_sale = (
       },
     }
   );
+};
+
+
+//Listado de puntos de venta
+export const get_point_of_sale_list = (branchId: number) => {
+  const token = get_token() ?? '';
+  return axios.get<IGetPointOfSalesByBranch>(API_URL + `/branches/by-point-of-sale/${branchId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+export const patch_point_of_sale = (payload: PayloadPointOfSales, id: number) => {
+  const token = get_token() ?? '';
+  return axios.patch<{ ok: boolean }>(API_URL + '/point-of-sale/update-point-of-sale/' + id, payload, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 };
 
 export const verify_code_correlatives = (BranchId: number, posCode: string) => {

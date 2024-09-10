@@ -37,6 +37,7 @@ export const useBranchesStore = create<IBranchStore>((set, get) => ({
   branch_list: [],
   limit: 5,
   loading: false,
+  
   active: 1 as 1 | 0,
   branch_products_list: [],
   loading_branch_product: false,

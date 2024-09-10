@@ -20,7 +20,7 @@ import {
   UserCheck,
   ShoppingBag,
   BookCheck,
-  BadgeDollarSign,
+  BadgeDollarSign,MapPinned,
 } from 'lucide-react';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { ThemeContext } from '../hooks/useTheme';
@@ -132,6 +132,12 @@ export const LayoutItems = () => {
       to: '/reports/sales-invalidation',
       icon: BadgeDollarSign,
       label: 'Ventas',
+    },
+    {
+      viewName: 'Puntos de Venta',
+      to: '/pointsOfSale',
+      icon: MapPinned,
+      label: 'Puntos de Venta',
     },
   ];
   const linkReports = [
@@ -329,6 +335,7 @@ export const LayoutItems = () => {
                           'users',
                           'branches',
                           'suppliers',
+                          'pointsOfSale',
                         ]) && 'bg-gray-200 dark:bg-gray-700',
                         'group relative cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
                       )}
