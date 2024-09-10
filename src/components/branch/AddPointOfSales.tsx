@@ -3,15 +3,12 @@ import { Formik, FormikHelpers } from 'formik';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { ThemeContext } from '../../hooks/useTheme';
 import { useBranchesStore } from '@/store/branches.store';
-
 import { toast } from 'sonner';
 import * as yup from 'yup';
 import { PointOfSalePayload, BranchPointOfSale } from '@/types/point-of-sales.types';
 import { verify_code_correlatives } from '@/services/point-of-sales.service';
 import { usePointOfSales } from '@/store/point-of-sales.store';
-import { UserPayload } from '@/types/users.types';
-import { useUsersStore } from '@/store/users.store';
-import { useAuthStore } from '@/store/auth.store';
+import { Eye, EyeOff } from 'lucide-react';
 
 interface Props {
   onClose: () => void;
@@ -28,6 +25,8 @@ function AddPointOfSales(props: Props) {
     branchId: props.branchId,
     code: '',
     codPuntoVenta: '',
+    userName: '',
+    password: '',
   };
 
   const validationSchema = yup.object().shape({
@@ -48,63 +47,52 @@ function AddPointOfSales(props: Props) {
       getPointOfSales(selectedIdBranch);
     }
   }, [selectedIdBranch]);
-  const { postUser } = useUsersStore();
-  const { user } = useAuthStore();
 
-  //   const { postPointOfSales } = usePointOfSales();
-
-//   const handleSubmit = (values: PointOfSalePayload) => {
-//     const payload: PointOfSalePayload = {
-//       ...values,
-//       branchId: selectedIdBranch,
-//     };
-//     postPointOfSales(payload);
-//     setLastCode(lastCode + 1);
-//     props.onClose();
-//   };
-
-//   const handleSubmit = async (values: UserPayload, resetForm: () => void) => {
-//     await postUser(values);
-
-//     resetForm();
-//     props.onClose();
-//   };
-const handleSubmit = async (
-    values: PointOfSalePayload & UserPayload, 
-    formikHelpers: FormikHelpers<any>
-  ) => {
-    const payloadPointOfSale: PointOfSalePayload = {
+  const handleSubmit = (values: PointOfSalePayload) => {
+    const payload: PointOfSalePayload = {
+      ...values,
       branchId: selectedIdBranch,
-      code: values.code,
-      codPuntoVenta: values.codPuntoVenta,
     };
-  
-    const payloadUser: UserPayload = {
-      userName: values.userName,
-      password: values.password,
-      roleId: Number(user?.roleId),
-      correlativeId: Number(user?.correlativeId),
-    };
-  
-    try {
-      // Crear punto de venta
-      await postPointOfSales(payloadPointOfSale);
-  
-      // Crear usuario
-      await postUser(payloadUser);
-  
-      // Mensaje de éxito
-      toast.success('Punto de venta y usuario creados con éxito.');
-  
-      // Cerrar el formulario y reiniciar el formulario
-      formikHelpers.resetForm();
-      props.onClose();
-    } catch (error) {
-      // Manejar errores
-      toast.error('Ocurrió un error al guardar los datos.');
-    }
+    postPointOfSales(payload);
+    setLastCode(lastCode + 1);
+    props.onClose();
   };
-  
+
+  // const handleSubmit = async (
+  //   values: PointOfSalePayload & UserPayload,
+  //   formikHelpers: FormikHelpers<any>
+  // ) => {
+  //   const payloadPointOfSale: PointOfSalePayload = {
+  //     branchId: selectedIdBranch,
+  //     code: values.code,
+  //     codPuntoVenta: values.codPuntoVenta,
+  //   };
+
+  //   const payloadUser: UserPayload = {
+  //     userName: values.userName,
+  //     password: values.password,
+  //     roleId: Number(user?.roleId),
+  //     correlativeId: Number(user?.correlativeId),
+  //   };
+
+  //   try {
+  //     // Crear punto de venta
+  //     await postPointOfSales(payloadPointOfSale);
+
+  //     // Crear usuario
+  //     await postUser(payloadUser);
+
+  //     // Mensaje de éxito
+  //     toast.success('Punto de venta y usuario creados con éxito.');
+
+  //     // Cerrar el formulario y reiniciar el formulario
+  //     formikHelpers.resetForm();
+  //     props.onClose();
+  //   } catch (error) {
+  //     // Manejar errores
+  //     toast.error('Ocurrió un error al guardar los datos.');
+  //   }
+  // };
 
   const selectedBranch = useMemo(() => {
     return branch_list.find((branch) => branch.id === selectedIdBranch);
@@ -138,6 +126,12 @@ const handleSubmit = async (
     }
   };
 
+  const [showPassword, setShowPassword] = useState(false);
+
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
     <div className="p-4">
       <Formik
@@ -147,44 +141,6 @@ const handleSubmit = async (
       >
         {({ values, errors, touched, handleBlur, handleChange, setFieldValue, handleSubmit }) => (
           <>
-            <div className="pt-2">
-              <Input
-                label="Nombre de usuario"
-                labelPlacement="outside"
-                name="userName"
-                // value={values.userName}
-                onChange={handleChange('userName')}
-                onBlur={handleBlur('userName')}
-                // isInvalid={touched.userName && !!errors.userName}
-                // errorMessage={touched.userName && errors.userName}
-                placeholder="Ingresa el nombre de usuario"
-                classNames={{
-                  base: 'text-gray-500 text-sm font-semibold',
-                }}
-                variant="bordered"
-              />
-            </div>
-            <div className="pt-2">
-              <Input
-                label="Contraseña"
-                labelPlacement="outside"
-                name="password"
-                // value={values.password}
-                onChange={handleChange('password')}
-                onBlur={handleBlur('password')}
-                placeholder="Ingresa la Contraseña"
-                // isInvalid={touched.password && !!errors.password}
-                // errorMessage={touched.password && errors.password}
-                type="password"
-                classNames={{
-                  base: 'text-gray-500 text-sm font-semibold',
-                }}
-                variant="bordered"
-              />
-              {/* {errors.password && touched.password && (
-                  <span className="text-sm  font-normal text-red-500">{errors.password}</span>
-                )} */}
-            </div>
             <div className="pt-2">
               <Input
                 label="Sucursal"
@@ -222,8 +178,8 @@ const handleSubmit = async (
               />
             </div>
 
-            <div className="w-full pt-3 flex items-end space-x-2">
-              <div className="flex-1">
+            <div className="w-full pt-3 flex flex-col sm:flex-row items-end space-y-2 sm:space-y-0 sm:space-x-2">
+              <div className="flex-1 w-full">
                 <Input
                   label="Código"
                   placeholder="Código"
@@ -240,28 +196,92 @@ const handleSubmit = async (
                   errorMessage={errors.code}
                 />
               </div>
-              <Button
-                onClick={() => generateCode(setFieldValue, values.codPuntoVenta)}
-                className="text-sm font-semibold"
-                style={{
-                  backgroundColor: theme.colors.third,
-                  color: theme.colors.primary,
+              <div className="grid grid-cols-2 gap-2 mt-2 mb-2">
+                <Button
+                  onClick={() => generateCode(setFieldValue, values.codPuntoVenta)}
+                  className="text-sm font-semibold"
+                  style={{
+                    backgroundColor: theme.colors.third,
+                    color: theme.colors.primary,
+                  }}
+                >
+                  Generar Código
+                </Button>
+                <Button
+                  className="text-sm font-semibold"
+                  style={{
+                    backgroundColor: theme.colors.warning,
+                    color: theme.colors.primary,
+                  }}
+                  onClick={() => {
+                    verifyCode(selectedIdBranch, values.code);
+                  }}
+                >
+                  Verificar Código
+                </Button>
+              </div>
+            </div>
+
+            <div className="pt-2">
+              <Input
+                label="Nombre de usuario"
+                labelPlacement="outside"
+                name="userName"
+                // value={values.userName}
+                onChange={handleChange('userName')}
+                onBlur={handleBlur('userName')}
+                // isInvalid={touched.userName && !!errors.userName}
+                // errorMessage={touched.userName && errors.userName}
+                placeholder="Ingresa el nombre de usuario"
+                classNames={{
+                  base: 'text-gray-500 text-sm font-semibold',
                 }}
-              >
-                Generar Código
-              </Button>
-              <Button
-                className="text-sm font-semibold"
-                style={{
-                  backgroundColor: theme.colors.warning,
-                  color: theme.colors.primary,
+                variant="bordered"
+              />
+            </div>
+            {/* <div className="pt-2">
+              <Input
+                label="Contraseña"
+                labelPlacement="outside"
+                name="password"
+                // value={values.password}
+                onChange={handleChange('password')}
+                onBlur={handleBlur('password')}
+                placeholder="Ingresa la Contraseña"
+                // isInvalid={touched.password && !!errors.password}
+                // errorMessage={touched.password && errors.password}
+                type="password"
+                classNames={{
+                  base: 'text-gray-500 text-sm font-semibold',
                 }}
-                onClick={() => {
-                  verifyCode(selectedIdBranch, values.code);
+                variant="bordered"
+              />
+            </div> */}
+
+            <div className="pt-2">
+              <Input
+                endContent={
+                  <button type="button" className="px-4 text-gray-600" onClick={toggleShowPassword}>
+                    {showPassword ? <EyeOff size={22} /> : <Eye size={22} />}
+                  </button>
+                }
+                className="w-full dark:text-white border border-white rounded-xl"
+                variant="bordered"
+                labelPlacement="outside"
+                label="Contraseña"
+                classNames={{
+                  label: 'font-semibold text-gray-700',
+                  inputWrapper: 'pr-0',
                 }}
-              >
-                Verificar Código
-              </Button>
+                isClearable={false}
+                type={showPassword ? 'text' : 'password'}
+                // value={values.password}
+                placeholder="Ingresa la Contraseña"
+                onChange={handleChange('password')}
+                onBlur={handleBlur('password')}
+                // isInvalid={touched.password && !!errors.password}
+                // errorMessage={touched.password && errors.password}
+              />
             </div>
 
             <Button

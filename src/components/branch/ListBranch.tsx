@@ -445,11 +445,10 @@ function ListBranch({ actions }: ArrayAction) {
           isOpen={modalAddPointOfSales.isOpen}
           onClose={modalAddPointOfSales.onClose}
           title="Agregar punto de venta"
-          size="w-[380px] md:w-[600px] p-5"
+          size="w-[380px] md:w-[700px] p-1"
         >
           <AddPointOfSales
             onClose={modalAddPointOfSales.onClose}
-            // branchPointOfSales={selectedBranchPointOfSales}
             branchId={selectedBranchId}
           />
         </HeadlessModal>

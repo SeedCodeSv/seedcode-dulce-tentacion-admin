@@ -22,9 +22,10 @@ export interface IGetPointOfSales {
   
   export interface PointOfSalePayload {
     code: string;
-    // typeVoucher: string;
     codPuntoVenta: string;
     branchId: number;
+    userName: string;
+    password: string;
   }
   
   

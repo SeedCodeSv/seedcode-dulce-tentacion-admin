@@ -4,21 +4,25 @@ import {
   IGetPointOfSales,
   PointOfSalePayload,
 } from '@/types/point-of-sales.types';
+import { API_URL } from '@/utils/constants';
 
 import axios from 'axios';
 
 export const get_point_of_sales = (branchId: number) => {
   const token = get_token() ?? '';
-  return axios.get<IGetPointOfSales>(`${import.meta.env.VITE_API_URL}/point-of-sale/by-branch/${branchId}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  return axios.get<IGetPointOfSales>(
+    `${import.meta.env.VITE_API_URL}/point-of-sale/by-branch/${branchId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 };
 
 export const save_point_of_sales = (payload: PointOfSalePayload) => {
   const token = get_token() ?? '';
-  return axios.post<{ ok: boolean }>(import.meta.env.VITE_API_URL + '/point-of-sale', payload, {
+  return axios.post<{ ok: boolean }>(API_URL + '/point-of-sale/with-user', payload, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -47,11 +51,12 @@ export const get_point_of_sale = (
 
 export const verify_code_correlatives = (BranchId: number, posCode: string) => {
   const toke = get_token() ?? '';
-  return axios.get<{ ok: boolean }>(import.meta.env.VITE_API_URL + `/point-of-sale/verify-code/${BranchId}?posCode=${posCode}`, {
-    headers: {
-      Authorization: `Bearer ${toke}`,
-    },
-  });
+  return axios.get<{ ok: boolean }>(
+    import.meta.env.VITE_API_URL + `/point-of-sale/verify-code/${BranchId}?posCode=${posCode}`,
+    {
+      headers: {
+        Authorization: `Bearer ${toke}`,
+      },
+    }
+  );
 };
-
-
