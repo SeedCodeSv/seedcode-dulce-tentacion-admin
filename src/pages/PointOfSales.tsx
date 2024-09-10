@@ -1,0 +1,16 @@
+import Layout from '../layout/Layout';
+import { useViewsStore } from '@/store/views.store';
+import ListPointOfSales from '@/components/point-of-sales/ListPointOfSales';
+function Employees() {
+  const { actions } = useViewsStore();
+
+  const pointOfSalesView = actions.find((view) => view.view.name === 'Punto de Venta');
+  const actionsView = pointOfSalesView?.actions?.name || [];
+  return (
+    <Layout title="Puntos de Venta">
+      <ListPointOfSales actions={actionsView} />
+    </Layout>
+  );
+}
+
+export default Employees;

@@ -60,6 +60,7 @@ import PurchaseOrderForm from '@/components/list_purchase/PurchaseOrderForm';
 import SalesInvalidationPage from '@/components/sales/SalesInvalidationPage';
 import AddCustomer from '@/pages/AddCustomer';
 import BirthdayCalendar from '@/components/employee/BirthdayCalendar';
+import PointOfSales from '@/pages/PointOfSales';
 
 const Loading = () => {
   return <div>Cargando...</div>;
@@ -171,6 +172,10 @@ export const router = () => {
     {
       path: '/clients',
       element: checkAuthorization('Clientes', <Customers />),
+    },
+    {
+      path: '/pointsOfSale',
+      element: checkAuthorization('Clientes', <PointOfSales />),
     },
     {
       path: '/actionRol',

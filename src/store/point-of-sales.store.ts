@@ -2,16 +2,20 @@ import { create } from 'zustand';
 
 import {
   get_point_of_sale,
+  get_point_of_sale_list,
   get_point_of_sales,
+  patch_point_of_sale,
   save_point_of_sales,
 } from '@/services/point-of-sales.service';
 import { toast } from 'sonner';
 import { messages } from '@/utils/constants';
 import { PointOfSalesStore } from './types/point-of-sales.store.types';
+import { BranchPointOfSale } from '@/types/point-of-sales.types';
 
 export const usePointOfSales = create<PointOfSalesStore>((set) => ({
   point_of_sales: [],
   loading_point_of_sales: false,
+  loading_point_of_sales_list: false,
   paginated_point_of_sales: {
     correlatives: [],
     total: 0,
@@ -22,6 +26,7 @@ export const usePointOfSales = create<PointOfSalesStore>((set) => ({
     status: 404,
     ok: false,
   },
+  point_of_sales_list: {} as BranchPointOfSale,
 
   getPointOfSales(branchId) {
     get_point_of_sales(branchId)
@@ -32,13 +37,41 @@ export const usePointOfSales = create<PointOfSalesStore>((set) => ({
         set({ point_of_sales: [] });
       });
   },
+  //Metodo listado de puntos de venta
+  getPointOfSalesList(branchId) {
+    set({ loading_point_of_sales_list: true });
+    return get_point_of_sale_list(branchId)
+      .then(({ data }) => {
+        set((state) => ({
+          ...state,
+          point_of_sales_list: data.branch,
+          loading_point_of_sales_list: false,
+        }));
+      })
+      .catch(() => {
+        set((state) => ({
+          ...state,
+          point_of_sales_list: {} as BranchPointOfSale,
+          loading_point_of_sales_list: false,
+        }));
+      });
+  },
+
+  patchPointOfSales(payload, id) {
+    return patch_point_of_sale(payload, id)
+      .then(({ data }) => {
+        toast.success(messages.success);
+        return data.ok;
+      })
+      .catch(() => {
+        toast.error(messages.error);
+        return false;
+      });
+  },
 
   postPointOfSales(payload) {
     return save_point_of_sales(payload)
       .then((result) => {
-        // get().getBranchesPaginated(1, get().limit, '', '', '', get().active);
-        // get().getPaginatedPointOfSales(user?.transmitterId ?? 0, 1, 5, '', '', '');
-
         toast.success(messages.success);
         return result.data.ok;
       })
