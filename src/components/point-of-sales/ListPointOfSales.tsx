@@ -1,9 +1,8 @@
 import { useContext, useEffect, useState } from 'react';
-import { Autocomplete, AutocompleteItem, Button, Switch } from '@nextui-org/react';
-import { Table as Filter, Building2, EditIcon } from 'lucide-react';
+import { Autocomplete, AutocompleteItem, Button, ButtonGroup } from '@nextui-org/react';
+import { Table as Filter, Building2, EditIcon,  List } from 'lucide-react';
 import { ThemeContext } from '../../hooks/useTheme';
 import { global_styles } from '../../styles/global.styles';
-import classNames from 'classnames';
 import TooltipGlobal from '../global/TooltipGlobal';
 import BottomDrawer from '../global/BottomDrawer';
 import { usePointOfSales } from '@/store/point-of-sales.store';
@@ -13,11 +12,10 @@ import { PayloadPointOfSales, PointOfSales } from '@/types/point-of-sales.types'
 import LoadingTable from '../global/LoadingTable';
 import NoData from './noData';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-
+import useWindowSize from '@/hooks/useWindowSize';
 interface Props {
   actions: string[];
 }
-
 function ListPointOfSales({ actions }: Props) {
   const [editableSales, setEditableSales] = useState<PointOfSales[]>([]);
   const { theme } = useContext(ThemeContext);
@@ -29,7 +27,6 @@ function ListPointOfSales({ actions }: Props) {
     loading_point_of_sales_list,
     patchPointOfSales,
   } = usePointOfSales();
-  const [active, setActive] = useState(true);
 
   useEffect(() => {
     getBranchesList();
@@ -78,12 +75,12 @@ function ListPointOfSales({ actions }: Props) {
       )
     );
   };
+  const { windowSize } = useWindowSize();
+  const [view, setView] = useState<'table' | 'list'>(windowSize.width < 768 ? 'list' : 'table');
 
-  const [openIndex, setOpenIndex] = useState<number | null>(null); // Agregué estado para controlar el índice abierto
-
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
   const toggleOpen = (i: number) => {
-    // Función para expandir/contraer el punto de venta
-    setOpenIndex(openIndex === i ? null : i); // Si el índice es el mismo, contraer; si no, expandir
+    setOpenIndex(openIndex === i ? null : i);
   };
 
   return (
@@ -92,7 +89,7 @@ function ListPointOfSales({ actions }: Props) {
         <div className="w-full h-full flex flex-col p-8 mt-2 rounded-xl overflow-y-auto bg-white custom-scrollbar shadow border dark:border-gray-700 dark:bg-gray-900">
           <div className="flex flex-col justify-between w-full gap-5 lg:flex-row lg:gap-0">
             <div className="hidden  w-full gap-5 md:flex">
-              <div className="w-full">
+              <div className="w-80">
                 <Autocomplete
                   onSelectionChange={(key) => {
                     if (key) {
@@ -167,7 +164,7 @@ function ListPointOfSales({ actions }: Props) {
                           setBranch(branchSelected.id);
                         }
                       }}
-                      className="w-full dark:text-white hidden md:flex"
+                      className="w-full dark:text-white "
                       label="Sucursal"
                       startContent={<Building2 size={20} />}
                       labelPlacement="outside"
@@ -204,24 +201,34 @@ function ListPointOfSales({ actions }: Props) {
                     </Button>
                   </div>
                 </BottomDrawer>
-              </div>
-            </div>
-          </div>
 
-          <div className="md:hidden flex justify-between items-end gap-4 mb-3">
-            <div className="md:hidden items-center">
-              <Switch
-                onValueChange={(active) => setActive(active)}
-                classNames={{
-                  thumb: classNames(active ? 'bg-blue-500' : 'bg-gray-400'),
-                  wrapper: classNames(active ? '!bg-blue-300' : 'bg-gray-200'),
-                }}
-                isSelected={active}
-              >
-                <span className="text-sm sm:text-base whitespace-nowrap">
-                  Mostrar {active ? 'inactivos' : 'activos'}
-                </span>
-              </Switch>
+                <ButtonGroup className="xl:flex hidden mt-4 border border-white rounded-xl ">
+                  <Button
+                    className="hidden md:inline-flex"
+                    isIconOnly
+                    color="secondary"
+                    style={{
+                      backgroundColor: view === 'table' ? theme.colors.third : '#e5e5e5',
+                      color: view === 'table' ? theme.colors.primary : '#3e3e3e',
+                    }}
+                    onClick={() => setView('table')}
+                  >
+                    {/* <ITable /> */}
+                  </Button>
+
+                  <Button
+                    isIconOnly
+                    color="default"
+                    style={{
+                      backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
+                      color: view === 'list' ? theme.colors.primary : '#3e3e3e',
+                    }}
+                    onClick={() => setView('list')}
+                  >
+                    <List />
+                  </Button>
+                </ButtonGroup>
+              </div>
             </div>
           </div>
 
@@ -377,7 +384,6 @@ function ListPointOfSales({ actions }: Props) {
                               colSpan={5}
                               className="p-3 text-center bg-[#1D3557] text-lg font-semibold dark:text-gray-100 dark:bg-slate-700 text-white border border-gray-200 sticky top-0 z-30 w-full"
                             >
-
                               <div className="flex justify-between items-center w-full">
                                 <span className="mx-auto">
                                   {point_of_sales_list.name || 'Nombre de la Sucursal'} -
@@ -399,7 +405,6 @@ function ListPointOfSales({ actions }: Props) {
                           </tr>
                         </thead>
 
-                      
                         <tbody
                           className={`transition-all duration-500 ease-in-out overflow-hidden ${
                             openIndex === index ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'
@@ -526,3 +531,43 @@ function ListPointOfSales({ actions }: Props) {
 }
 
 export default ListPointOfSales;
+
+// const ListItem = (props: GridProps) => {
+//   const { category, handleEdit, actions } = props;
+//   return (
+//     <>
+//       <div className="flex w-full p-5 border shadow dark:border-gray-600 rounded-2xl">
+//         <div className="w-full">
+//           <div className="flex items-center w-full gap-2">
+//             <ScrollIcon className=" dark:text-blue-300" size={20} />
+//             <p className="w-full dark:text-white">{category.name}</p>
+//           </div>
+//         </div>
+//         <div className="flex flex-col items-end justify-between w-full gap-5">
+//           {category.isActive && actions.includes('Editar') ? (
+//             <TooltipGlobal text="Editar el registro" color="primary">
+//               <Button
+//                 className="border border-white"
+//                 onClick={() => handleEdit(category)}
+//                 isIconOnly
+//                 style={global_styles().secondaryStyle}
+//               >
+//                 <EditIcon style={global_styles().secondaryStyle} size={20} />
+//               </Button>
+//             </TooltipGlobal>
+//           ) : (
+//             <Button
+//               type="button"
+//               disabled
+//               style={global_styles().secondaryStyle}
+//               className="flex font-semibold border border-white  cursor-not-allowed"
+//               isIconOnly
+//             >
+//               {/* <Lock /> */}
+//             </Button>
+//           )}
+//         </div>
+//       </div>
+//     </>
+//   );
+// };

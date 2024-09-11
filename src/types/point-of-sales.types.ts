@@ -69,22 +69,22 @@ export interface Branch {
   transmitterId: number;
 }
 
-export interface BranchPointOfSale {
-  id: number;
-  code: string;
-  typeVoucher: string;
-  description: string;
-  resolution: string;
-  serie: string;
-  from: string;
-  to: string;
-  prev: number;
-  next: number;
-  codPuntoVentaMH: string;
-  codPuntoVenta: string;
-  isActive: boolean;
-  branchId: number;
-}
+// export interface BranchPointOfSale {
+//   id: number;
+//   code: string;
+//   typeVoucher: string;
+//   description: string;
+//   resolution: string;
+//   serie: string;
+//   from: string;
+//   to: string;
+//   prev: number;
+//   next: number;
+//   codPuntoVentaMH: string;
+//   codPuntoVenta: string;
+//   isActive: boolean;
+//   branchId: number;
+// }
 
 // listado de puntos de venta por sucursal ---------------------
 export interface IGetPointOfSalesByBranch {
