@@ -4,16 +4,16 @@ import { useContext, useEffect, useState } from 'react';
 import { Switch } from '@nextui-org/react';
 import { ThemeContext } from '../../hooks/useTheme';
 import { useReportContigenceStore } from '../../store/report_contigence.store';
-import { get_user } from '../../storage/localStorage';
+
 import { formatDate } from '../../utils/dates';
+import { useAuthStore } from '@/store/auth.store';
 function SalesReportNotContigence() {
   const [branchId, setBranchId] = useState(0);
-
+  const { user } = useAuthStore();
   const { saless, OnGetSalesNotContigence } = useReportContigenceStore();
   useEffect(() => {
     const getSalesContigence = () => {
-      const data = get_user();
-      setBranchId(data?.correlative.branchId || 0);
+      setBranchId(user?.correlative?.branch.id ?? user?.pointOfSale?.branch.id ?? 0);
     };
     getSalesContigence();
 

@@ -20,7 +20,9 @@ export const get_categories_expenses_paginated = (page: number, limit: number, n
   const user = get_user();
   return axios.get<IGetCategoryExpensesPaginated>(
     API_URL +
-      `/category-expenses/paginated/${user?.correlative.branch.transmitterId}?page=${page}&limit=${limit}&name=${name}`,
+      `/category-expenses/paginated/${
+        user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0
+      }?page=${page}&limit=${limit}&name=${name}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,

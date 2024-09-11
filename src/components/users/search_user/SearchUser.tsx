@@ -8,6 +8,7 @@ import { Autocomplete, AutocompleteItem, Button, Input } from '@nextui-org/react
 import { Filter, Search } from 'lucide-react';
 import { useContext, useEffect, useState } from 'react';
 import { IPropsSearchUser } from '../types/mobile-view.types';
+import { useAuthStore } from '@/store/auth.store';
 function SearchUser(props: IPropsSearchUser) {
   const [openVaul, setOpenVaul] = useState(false);
   const { theme } = useContext(ThemeContext);
@@ -22,6 +23,7 @@ function SearchUser(props: IPropsSearchUser) {
     nameUser: '',
     nameRol: '',
   });
+  const { user } = useAuthStore();
   return (
     <div className="flex items-center gap-5">
       <div className="block md:hidden">
@@ -47,7 +49,15 @@ function SearchUser(props: IPropsSearchUser) {
               onClear={() => {
                 setFilter({ ...filter, nameUser: '' });
                 props.nameUser('');
-                getUsersPaginated(1, 5, filter.nameUser, filter.nameRol);
+                getUsersPaginated(
+                  user?.correlative?.branch.transmitterId ??
+                    user?.pointOfSale?.branch.transmitterId ??
+                    0,
+                  1,
+                  5,
+                  filter.nameUser,
+                  filter.nameRol
+                );
               }}
               isClearable
               onChange={(e) => {
@@ -76,7 +86,15 @@ function SearchUser(props: IPropsSearchUser) {
               clearButtonProps={{
                 onClick: () => {
                   setFilter({ nameUser: '', nameRol: '' });
-                  getUsersPaginated(1, 5, filter.nameUser, filter.nameRol);
+                  getUsersPaginated(
+                    user?.correlative?.branch.transmitterId ??
+                      user?.pointOfSale?.branch.transmitterId ??
+                      0,
+                    1,
+                    5,
+                    filter.nameUser,
+                    filter.nameRol
+                  );
                 },
               }}
               labelPlacement="outside"
@@ -103,7 +121,16 @@ function SearchUser(props: IPropsSearchUser) {
               className="mb-10 font-semibold"
               color="primary"
               onClick={() => {
-                getUsersPaginated(1, 5, filter.nameUser, filter.nameRol);
+                getUsersPaginated(
+                  user?.correlative?.branch.transmitterId ??
+                    user?.pointOfSale?.branch.transmitterId ??
+                    0,
+                  1,
+                  5,
+                  filter.nameUser,
+                  filter.nameRol,
+                  1
+                );
                 setOpenVaul(false);
               }}
             >

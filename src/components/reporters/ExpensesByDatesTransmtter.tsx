@@ -29,7 +29,11 @@ function ExpensesByDatesTransmitter() {
   const fetchInitialData = useCallback(() => {
     getBranchesList();
     OnGetReportExpenseByBranch(branchId, startDate, endDate);
-    getExpensesByTransmitter(user?.correlative.branch.transmitterId || 0, startDate, endDate);
+    getExpensesByTransmitter(
+      user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
+      startDate,
+      endDate
+    );
   }, []);
 
   useEffect(() => {
@@ -38,7 +42,11 @@ function ExpensesByDatesTransmitter() {
 
   const handleSearch = () => {
     OnGetReportExpenseByBranch(branchId, startDate, endDate);
-    getExpensesByTransmitter(user?.correlative.branch.transmitterId || 0, startDate, endDate);
+    getExpensesByTransmitter(
+      user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
+      startDate,
+      endDate
+    );
   };
   const series = [
     {

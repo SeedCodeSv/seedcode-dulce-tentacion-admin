@@ -15,7 +15,7 @@ import { messages } from '../utils/constants';
 import { get_user } from '@/storage/localStorage';
 
 export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
-  birthdays : [],
+  birthdays: [],
   employee_paginated: {
     employees: [],
     total: 0,
@@ -80,7 +80,7 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
       .then(({ data }) => {
         const user = get_user();
         get().getEmployeesPaginated(
-          Number(user?.correlative.branch.transmitterId),
+          user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
           1,
           5,
           '',
@@ -105,7 +105,7 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
       .then(({ data }) => {
         const user = get_user();
         get().getEmployeesPaginated(
-          Number(user?.correlative.branch.transmitterId),
+          user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
           1,
           5,
           '',
@@ -130,7 +130,7 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
       .then(({ data }) => {
         const user = get_user();
         get().getEmployeesPaginated(
-          Number(user?.correlative.branch.transmitterId),
+          user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
           1,
           5,
           '',
@@ -177,11 +177,11 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
         return false;
       });
   },
-  OnGetBirthDays(){
-    get_birthday_employees().then(({data})=> {
-       set({
-         birthdays : data.birthdays
-       })
-    })
-  }
+  OnGetBirthDays() {
+    get_birthday_employees().then(({ data }) => {
+      set({
+        birthdays: data.birthdays,
+      });
+    });
+  },
 }));

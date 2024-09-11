@@ -21,20 +21,21 @@ const MostProductTransmitterSelled = () => {
   };
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const {
-    getProductMostSelledTable,
-    products_most_selled,
-  } = salesReportStore();
-  const { data, getProductMostSelledGrafic } = useBranchProductReportStore()
+  const { getProductMostSelledTable, products_most_selled } = salesReportStore();
+  const { data, getProductMostSelledGrafic } = useBranchProductReportStore();
   const { user } = useAuthStore();
   const [branchId, setBranchId] = useState(0);
   const { branch_list, getBranchesList } = useBranchesStore();
   useEffect(() => {
     return_branch_id();
     getBranchesList();
-    getProductMostSelledGrafic(user?.correlative.branch.transmitterId || 0, startDate, endDate);
+    getProductMostSelledGrafic(
+      user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
+      startDate,
+      endDate
+    );
     getProductMostSelledTable(
-      user?.correlative.branch.transmitterId ?? 0,
+      user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
       fechaActualString,
       fechaActualString,
       branchId
@@ -43,16 +44,15 @@ const MostProductTransmitterSelled = () => {
 
   const search = () => {
     getProductMostSelledTable(
-      user?.correlative.branch.transmitterId ?? 0,
+      user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
       startDate,
       endDate,
       branchId
     );
     getProductMostSelledGrafic(
-      user?.correlative.branch.transmitterId ?? 0,
+      user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
       startDate,
-      endDate,
-
+      endDate
     );
   };
   const series = [

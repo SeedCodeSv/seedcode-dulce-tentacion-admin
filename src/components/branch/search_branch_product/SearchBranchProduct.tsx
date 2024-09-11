@@ -1,6 +1,7 @@
 import BottomDrawer from '@/components/global/BottomDrawer';
 import TooltipGlobal from '@/components/global/TooltipGlobal';
 import { ThemeContext } from '@/hooks/useTheme';
+import { useAuthStore } from '@/store/auth.store';
 import { useCategoriesStore } from '@/store/categories.store';
 import { useUsersStore } from '@/store/users.store';
 import { global_styles } from '@/styles/global.styles';
@@ -20,6 +21,7 @@ function SearchBranchProduct() {
     codeProduct: '',
     categoryProduct: 0,
   });
+  const { user } = useAuthStore();
   return (
     <div className="flex items-center gap-5">
       <div className="block md:hidden">
@@ -101,7 +103,15 @@ function SearchBranchProduct() {
               className="font-semibold order-last mt-4"
               color="primary"
               onClick={() => {
-                getUsersPaginated(1, 5, filter.nameProduct, filter.codeProduct);
+                getUsersPaginated(
+                  user?.correlative?.branch.transmitterId ??
+                    user?.pointOfSale?.branch.transmitterId ??
+                    0,
+                  1,
+                  5,
+                  filter.nameProduct,
+                  filter.codeProduct
+                );
                 setOpenVaul(false);
               }}
             >

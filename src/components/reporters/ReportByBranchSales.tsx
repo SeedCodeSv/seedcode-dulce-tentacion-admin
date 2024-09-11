@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState, useCallback, useMemo } from "react";
+import { useContext, useEffect, useState, useCallback, useMemo } from 'react';
 import {
   Autocomplete,
   AutocompleteItem,
@@ -13,25 +13,25 @@ import {
   TableHeader,
   TableRow,
   useDisclosure,
-} from "@nextui-org/react";
-import Chart from "react-apexcharts";
-import { ApexOptions } from "apexcharts";
-import { ThemeContext } from "../../hooks/useTheme";
-import { fechaActualString, formatDateShort } from "../../utils/dates";
-import { useBranchesStore } from "../../store/branches.store";
-import { useReportsByBranch } from "../../store/reports/report_store";
-import { useAuthStore } from "../../store/auth.store";
-import { salesReportStore } from "../../store/reports/sales_report.store";
-import { formatCurrency } from "../../utils/dte";
-import { global_styles } from "../../styles/global.styles";
-import useWindowSize from "@/hooks/useWindowSize";
-import { ChevronLeft, ChevronRight, Filter } from "lucide-react";
-import TooltipGlobal from "../global/TooltipGlobal";
-import BottomDrawer from "../global/BottomDrawer";
+} from '@nextui-org/react';
+import Chart from 'react-apexcharts';
+import { ApexOptions } from 'apexcharts';
+import { ThemeContext } from '../../hooks/useTheme';
+import { fechaActualString, formatDateShort } from '../../utils/dates';
+import { useBranchesStore } from '../../store/branches.store';
+import { useReportsByBranch } from '../../store/reports/report_store';
+import { useAuthStore } from '../../store/auth.store';
+import { salesReportStore } from '../../store/reports/sales_report.store';
+import { formatCurrency } from '../../utils/dte';
+import { global_styles } from '../../styles/global.styles';
+import useWindowSize from '@/hooks/useWindowSize';
+import { ChevronLeft, ChevronRight, Filter } from 'lucide-react';
+import TooltipGlobal from '../global/TooltipGlobal';
+import BottomDrawer from '../global/BottomDrawer';
 
 function ReportSalesByBranch() {
   const { theme } = useContext(ThemeContext);
-  const [startDate, setStartDate] = useState("2024-01-01");
+  const [startDate, setStartDate] = useState('2024-01-01');
   const [endDate, setEndDate] = useState(fechaActualString);
   const { branch_list, getBranchesList } = useBranchesStore();
   const { sales, OnGetReportByBranchSales } = useReportsByBranch();
@@ -43,7 +43,7 @@ function ReportSalesByBranch() {
     getBranchesList();
     OnGetReportByBranchSales(branchId, startDate, endDate);
     getSalesByTransmitter(
-      user?.correlative.branch.transmitterId || 0,
+      user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
       startDate,
       endDate
     );
@@ -57,7 +57,7 @@ function ReportSalesByBranch() {
     filterDrawer.onClose();
     OnGetReportByBranchSales(branchId, startDate, endDate);
     getSalesByTransmitter(
-      user?.correlative.branch.transmitterId || 0,
+      user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
       startDate,
       endDate
     );
@@ -81,7 +81,7 @@ function ReportSalesByBranch() {
     if (windowSize.width < 768) {
       return [
         {
-          name: "Total",
+          name: 'Total',
           data: data
             .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
             .map((d) => Number(d.total))
@@ -92,7 +92,7 @@ function ReportSalesByBranch() {
 
     return [
       {
-        name: "Total",
+        name: 'Total',
         data: data.map((d) => Number(d.total)).sort((a, b) => b - a),
       },
     ];
@@ -106,9 +106,7 @@ function ReportSalesByBranch() {
         .map((d) => d.branch);
     }
 
-    return data
-      .sort((a, b) => Number(b.total) - Number(a.total))
-      .map((d) => d.branch);
+    return data.sort((a, b) => Number(b.total) - Number(a.total)).map((d) => d.branch);
   }, [windowSize.width, data, currentPage, itemsPerPage]);
 
   const handleNextPage = () => {
@@ -124,23 +122,22 @@ function ReportSalesByBranch() {
   };
 
   const chartOptions: ApexOptions = {
-   
     labels: labels,
     plotOptions: {
       bar: {
         borderRadius: 10,
         dataLabels: {
-          position: "top", // top, center, bottom
+          position: 'top', // top, center, bottom
         },
       },
     },
     grid: {
       show: true,
-      borderColor: "#D8E3F0",
+      borderColor: '#D8E3F0',
 
       strokeDashArray: 5,
     },
-    colors: ["#219ebc"],
+    colors: ['#219ebc'],
     dataLabels: {
       enabled: true,
       formatter: function (val) {
@@ -148,8 +145,8 @@ function ReportSalesByBranch() {
       },
       offsetY: -20,
       style: {
-        fontSize: "12px",
-        colors: ["#304758"],
+        fontSize: '12px',
+        colors: ['#304758'],
       },
     },
     yaxis: {
@@ -157,7 +154,7 @@ function ReportSalesByBranch() {
         show: true,
         stroke: {
           width: 1,
-          color: "#fb6f92",
+          color: '#fb6f92',
           dashArray: 3,
         },
       },
@@ -165,10 +162,10 @@ function ReportSalesByBranch() {
     xaxis: {
       crosshairs: {
         fill: {
-          type: "gradient",
+          type: 'gradient',
           gradient: {
-            colorFrom: "#D8E3F0",
-            colorTo: "#BED1E6",
+            colorFrom: '#D8E3F0',
+            colorTo: '#BED1E6',
             stops: [0, 100],
             opacityFrom: 0.4,
             opacityTo: 0.5,
@@ -302,14 +299,12 @@ function ReportSalesByBranch() {
             <div className="max-h-[600px] overflow-y-scroll flex flex-col gap-5 md:hidden">
               {sales.map((sale) => (
                 <div className="w-full p-5 border shadow rounded-2xl">
-                   <p className="font-semibold">
-                    Numero de control: 
-                    <span className="font-normal">
-                      {sale.numeroControl}
-                    </span>
+                  <p className="font-semibold">
+                    Numero de control:
+                    <span className="font-normal">{sale.numeroControl}</span>
                   </p>
                   <p className="font-semibold">
-                    Fecha:{" "}
+                    Fecha:{' '}
                     <span className="font-normal">
                       {formatDateShort(sale.fecEmi)} - {sale.horEmi}
                     </span>
@@ -318,20 +313,18 @@ function ReportSalesByBranch() {
                     Cajero:
                     <span className="font-normal">
                       {sale.employee.firstName +
-                        " " +
+                        ' ' +
                         sale.employee.secondName +
-                        " " +
+                        ' ' +
                         sale.employee.firstLastName}
                     </span>
                   </p>
                   <p className="font-semibold">
-                    Descuento:{" "}
-                    <span className="font-normal">
-                      {formatCurrency(Number(sale.totalDescu))}
-                    </span>
+                    Descuento:{' '}
+                    <span className="font-normal">{formatCurrency(Number(sale.totalDescu))}</span>
                   </p>
                   <p className="font-semibold">
-                    Total:{" "}
+                    Total:{' '}
                     <span className="font-bold text-red-600">
                       {formatCurrency(Number(sale.montoTotalOperacion))}
                     </span>
@@ -339,16 +332,14 @@ function ReportSalesByBranch() {
                 </div>
               ))}
               {sales.length === 0 && (
-                <p className="py-10 text-lg text-center">
-                  No se encontraron ventas para mostrar
-                </p>
+                <p className="py-10 text-lg text-center">No se encontraron ventas para mostrar</p>
               )}
             </div>
             <div className="hidden w-full md:flex">
               <Table
                 classNames={{
-                  base: "max-h-[520px]",
-                  table: "min-h-[400px] overflow-y-scroll",
+                  base: 'max-h-[520px]',
+                  table: 'min-h-[400px] overflow-y-scroll',
                 }}
                 isHeaderSticky
                 border={1}
@@ -360,9 +351,7 @@ function ReportSalesByBranch() {
                   <TableColumn width={200} style={global_styles().darkStyle}>
                     HORA
                   </TableColumn>
-                  <TableColumn style={global_styles().darkStyle}>
-                    CAJERO
-                  </TableColumn>
+                  <TableColumn style={global_styles().darkStyle}>CAJERO</TableColumn>
                   <TableColumn width={200} style={global_styles().darkStyle}>
                     DESCUENTO
                   </TableColumn>
@@ -379,16 +368,10 @@ function ReportSalesByBranch() {
                       <TableCell>{formatDateShort(sale.fecEmi)}</TableCell>
                       <TableCell>{sale.horEmi}</TableCell>
                       <TableCell>
-                        {sale.employee.firstLastName +
-                          " " +
-                          sale.employee.secondLastName}
+                        {sale.employee.firstLastName + ' ' + sale.employee.secondLastName}
                       </TableCell>
-                      <TableCell>
-                        {formatCurrency(Number(sale.totalDescu))}
-                      </TableCell>
-                      <TableCell>
-                        {formatCurrency(Number(sale.montoTotalOperacion))}
-                      </TableCell>
+                      <TableCell>{formatCurrency(Number(sale.totalDescu))}</TableCell>
+                      <TableCell>{formatCurrency(Number(sale.montoTotalOperacion))}</TableCell>
                       <TableCell>{sale.numeroControl}</TableCell>
                     </TableRow>
                   ))}
@@ -398,9 +381,7 @@ function ReportSalesByBranch() {
           </div>
           <div className="col-span-3 p-5 mt-3 bg-white border shadow rounded-2xl">
             <div className="flex items-center justify-between">
-              <p className="pb-4 text-lg font-semibold dark:text-white">
-                Ventas
-              </p>
+              <p className="pb-4 text-lg font-semibold dark:text-white">Ventas</p>
               {windowSize.width < 768 && (
                 <>
                   <div className="flex gap-3">
@@ -414,12 +395,7 @@ function ReportSalesByBranch() {
                 </>
               )}
             </div>
-            <Chart
-              options={chartOptions}
-              series={series}
-              type="bar"
-              height={500}
-            />
+            <Chart options={chartOptions} series={series} type="bar" height={500} />
           </div>
         </div>
       </div>

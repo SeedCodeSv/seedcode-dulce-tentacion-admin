@@ -30,14 +30,21 @@ function AddBranch(props: Props) {
     try {
       if (props.branch) {
         const res = await patchBranch(
-          { ...values, transmitterId: user?.correlative.branch.transmitterId ?? 0 },
+          {
+            ...values,
+            transmitterId:
+              user?.correlative?.branch.transmitterId ??
+              user?.pointOfSale?.branch.transmitterId ??
+              0,
+          },
           props.branch.id
         );
         if (res) props.closeModal();
       } else {
         const res = await postBranch({
           ...values,
-          transmitterId: user?.correlative.branch.transmitterId ?? 0,
+          transmitterId:
+            user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
         });
         if (res) props.closeModal();
       }
