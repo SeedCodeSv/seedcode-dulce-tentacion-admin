@@ -5,12 +5,12 @@ import { ThemeContext } from '../../hooks/useTheme';
 import { global_styles } from '../../styles/global.styles';
 import classNames from 'classnames';
 import TooltipGlobal from '../global/TooltipGlobal';
-import LoadingTable from '../global/LoadingTable';
 import BottomDrawer from '../global/BottomDrawer';
 import { usePointOfSales } from '@/store/point-of-sales.store';
 import { Branches } from '@/types/branches.types';
 import { useBranchesStore } from '@/store/branches.store';
 import { PayloadPointOfSales, PointOfSales } from '@/types/point-of-sales.types';
+import LoadingTable from '../global/LoadingTable';
 
 interface Props {
   actions: string[];
@@ -226,77 +226,63 @@ function ListPointOfSales({ actions }: Props) {
           </div>
 
           <>
-            <div className="h-full overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
-              <table className="w-full border-collapse border border-gray-200 rounded-lg">
-                {/* Mapeo de los puntos de venta por cada sucursal */}
-                {point_of_sales_list?.pointOfSales &&
-                  Object.entries(point_of_sales_list.pointOfSales).map(
-                    (
-                      [branchKey, salePointArray]: [string, PointOfSales[]],
-                      branchIndex: number
-                    ) => (
-                      <tbody key={branchIndex}>
-                        {/* Encabezado con el botón para el acordeón */}
+
+            <div className="mt-4">
+              {point_of_sales_list?.pointOfSales &&
+                Object.entries(point_of_sales_list.pointOfSales).map(
+                  ([locationKey, salePointArray], index) => (
+                    <div
+                      key={index}
+                      className="max-h-[400px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4"
+                    >
+                      <table className="w-full border-collapse border border-gray-200 rounded-lg">
+                        {/* Encabezado por punto de venta */}
                         <thead>
                           <tr>
                             <th
                               colSpan={5}
                               className="p-3 text-center bg-[#1D3557] text-lg font-semibold dark:text-gray-100 dark:bg-slate-700 text-white border border-gray-200 sticky top-0 z-30 rounded-t-lg"
                             >
-                              <div className="flex justify-between items-center">
-                                {`Sucursal - ${salePointArray[0]?.branchId} - P${branchIndex + 1}`}
-                                <button
-                                  onClick={() => toggleSection(branchIndex)}
-                                  className="text-white bg-blue-500 p-1 rounded-md"
-                                >
-                                  {expandedSections[branchIndex] ? 'Contraer' : 'Desplegar'}
-                                </button>
-                              </div>
+                              {locationKey} - M001 - P001
                             </th>
                           </tr>
                         </thead>
 
-                        {/* Encabezado de las columnas de la tabla para cada punto de venta */}
-                        {expandedSections[branchIndex] && (
-                          <>
-                            <thead className="sticky top-[48px] z-20 bg-white border border-gray-200">
-                              <tr>
-                                <th
-                                  style={global_styles().darkStyle}
-                                  className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200 border border-gray-200"
-                                >
-                                  Tipo
-                                </th>
-                                <th
-                                  style={global_styles().darkStyle}
-                                  className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200 border border-gray-200"
-                                >
-                                  Descripción
-                                </th>
-                                <th
-                                  style={global_styles().darkStyle}
-                                  className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200 border border-gray-200"
-                                >
-                                  Anterior
-                                </th>
-                                <th
-                                  style={global_styles().darkStyle}
-                                  className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200 border border-gray-200"
-                                >
-                                  Siguiente
-                                </th>
-                                <th
-                                  style={global_styles().darkStyle}
-                                  className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200 border border-gray-200"
-                                >
-                                  Acciones
-                                </th>
-                              </tr>
-                            </thead>
+                        {/* Encabezado de columnas */}
+                        <thead className="sticky top-[48px] z-20 bg-white border border-gray-200">
+                          <tr>
+                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200 border border-gray-200">
+                              Tipo
+                            </th>
+                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200 border border-gray-200">
+                              Descripción
+                            </th>
+                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200 border border-gray-200">
+                              Anterior
+                            </th>
+                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200 border border-gray-200">
+                              Siguiente
+                            </th>
+                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200 border border-gray-200">
+                              Acciones
+                            </th>
+                          </tr>
+                        </thead>
 
-                            {/* Cuerpo de la tabla para cada punto de venta */}
-                            {salePointArray.map((salePoint: PointOfSales, index: number) => (
-                              <tr className="border border-gray-400 h-16" key={index}>
+                        {/* Cuerpo de la tabla */}
+                        <tbody className="max-h-[600px] w-full overflow-y-auto border border-gray-200">
+                          {salePointArray.length === 0 ? (
+                            <tr>
+                              <td
+                                colSpan={5}
+                                className="p-3 text-sm text-center text-slate-500 border border-gray-200"
+                              >
+                                No hay datos disponibles.
+                              </td>
+                            </tr>
+                          ) : (
+                            salePointArray.map((salePoint: PointOfSales, idx: number) => (
+                              <tr className="border border-gray-400 h-16" key={idx}>
                                 <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap border border-gray-200">
                                   {salePoint.typeVoucher}
                                 </td>
@@ -339,27 +325,20 @@ function ListPointOfSales({ actions }: Props) {
                                         handleEdit(salePoint);
                                       }}
                                       isIconOnly
-                                      style={{
-                                        backgroundColor: theme.colors.secondary,
-                                      }}
+                                      style={{ backgroundColor: theme.colors.secondary }}
                                     >
-                                      <EditIcon
-                                        style={{
-                                          color: theme.colors.primary,
-                                        }}
-                                        size={20}
-                                      />
+                                      <EditIcon style={{ color: theme.colors.primary }} size={20} />
                                     </Button>
                                   </TooltipGlobal>
                                 </td>
                               </tr>
-                            ))}
-                          </>
-                        )}
-                      </tbody>
-                    )
-                  )}
-              </table>
+                            ))
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                  )
+                )}
             </div>
 
             {/* --Propio si arruino otro usar este--------------------- */}
