@@ -15,7 +15,7 @@ import Pagination from '../../components/global/Pagination';
 import SalesChartPeriod from './Period/SalesChartPeriod';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import { formatCurrency } from '@/utils/dte';
+import { formatCurrency, formatCurrencySales } from '@/utils/dte';
 import { global_styles } from '@/styles/global.styles';
 import { limit_options } from '@/utils/constants';
 import { useBranchesStore } from '@/store/branches.store';
@@ -515,16 +515,15 @@ function VentasPorPeriodo() {
                         body={(field) => field.date}
                         header="Fecha"
                       />
-                      {/* <Column
+                      <Column
                         headerClassName="text-sm font-semibold"
                         bodyClassName={'dark:text-white'}
                         headerStyle={{
                           ...global_styles().darkStyle,
-                          borderTopLeftRadius: '10px',
                         }}
-                        body={(field) => field.date}
-                        header="Tipo de Voucher"
-                      /> */}
+                        header="Total en Ventas"
+                        body={(field) => formatCurrencySales(field.totalSales)}
+                      />
 
                       <Column
                         headerClassName="text-sm font-semibold"
