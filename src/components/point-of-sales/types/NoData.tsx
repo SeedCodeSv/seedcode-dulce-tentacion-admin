@@ -1,6 +1,6 @@
 import Lottie from 'lottie-react';
 // import NO_DATA from '../../assets/svg/NoSelectProduct.json';
-import NO_DATA from '../../assets/svg/NoSelectProduct.json';
+import NO_DATA from '../../../assets/svg/NoSelectProduct.json';
 function NoData() {
   return (
     <div className="flex flex-col items-center justify-center w-full">

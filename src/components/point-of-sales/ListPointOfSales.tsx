@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import { Autocomplete, AutocompleteItem, Button, ButtonGroup } from '@nextui-org/react';
-import { Table as Filter, Building2, EditIcon,  List } from 'lucide-react';
+import { Table as Filter, Building2, EditIcon, List } from 'lucide-react';
 import { ThemeContext } from '../../hooks/useTheme';
 import { global_styles } from '../../styles/global.styles';
 import TooltipGlobal from '../global/TooltipGlobal';
@@ -10,7 +10,7 @@ import { Branches } from '@/types/branches.types';
 import { useBranchesStore } from '@/store/branches.store';
 import { PayloadPointOfSales, PointOfSales } from '@/types/point-of-sales.types';
 import LoadingTable from '../global/LoadingTable';
-import NoData from './noData';
+import NoData from './types/NoData';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import useWindowSize from '@/hooks/useWindowSize';
 interface Props {
