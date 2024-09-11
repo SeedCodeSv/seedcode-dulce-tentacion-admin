@@ -922,22 +922,51 @@ function ListEmployee({ actions }: Props) {
                       </span>
                     </Switch>
                   </div>
-                  <Button
-                    onClick={() => navigate('/birthday-calendar')}
-                    style={global_styles().thirdStyle}
-                    className="xl:hidden md:hidden border border-white"
-                  >
-                    <p className="text-sm sm:text-base">Cumpleaños</p>
-                  </Button>
+                  {actions.includes('Cumpleaños') ? (
+                    <Button
+                      onClick={() => navigate('/birthday-calendar')}
+                      style={global_styles().thirdStyle}
+                      className="xl:hidden md:hidden border border-white"
+                    >
+                      <p className="text-sm sm:text-base">Cumpleaños</p>
+                    </Button>
+                  ) : (
+                    <Button
+                      type="button"
+                      disabled
+                      style={{
+                        backgroundColor: theme.colors.secondary,
+                      }}
+                      className="flex xl:hidden md:hidden font-semibold border border-white  cursor-not-allowed"
+                      isIconOnly
+                    >
+                      <Lock className="text-white" />
+                    </Button>
+                  )}
                 </div>
                 <div className="flex gap-10 w-full justify-between items-center lg:justify-end order-1 lg:order-2">
-                  <Button
-                    onClick={() => navigate('/birthday-calendar')}
-                    style={global_styles().thirdStyle}
-                    className=" xl:flex md:flex hidden border mt-7 border-white"
-                  >
-                    <p className="text-sm sm:text-base">Cumpleaños</p>
-                  </Button>
+                  {actions.includes('Cumpleaños') ? (
+                    <Button
+                      onClick={() => navigate('/birthday-calendar')}
+                      style={global_styles().thirdStyle}
+                      className=" xl:flex md:flex hidden border mt-7 border-white"
+                    >
+                      <p className="text-sm sm:text-base">Cumpleaños</p>
+                    </Button>
+                  ) : (
+                    <Button
+                      type="button"
+                      disabled
+                      style={{
+                        backgroundColor: theme.colors.secondary,
+                      }}
+                      className="flex xl:flex md:flex hidden  font-semibold border border-white  cursor-not-allowed"
+                      isIconOnly
+                    >
+                      <Lock className="text-white" />
+                    </Button>
+                  )}
+
                   <div className="w-44">
                     <label className="font-semibold dark:text-white text-sm">Mostrar</label>
                     <Select

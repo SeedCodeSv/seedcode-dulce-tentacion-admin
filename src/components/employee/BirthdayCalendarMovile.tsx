@@ -1,14 +1,11 @@
 import { Button } from '@nextui-org/react';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
-
 import { useEmployeeStore } from '@/store/employee.store';
-
 function BirthdayCalendarMobile() {
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const { OnGetBirthDays, birthdays } = useEmployeeStore();
-
   const months = [
     'Enero',
     'Febrero',
@@ -23,11 +20,9 @@ function BirthdayCalendarMobile() {
     'Noviembre',
     'Diciembre',
   ];
-
   useEffect(() => {
     OnGetBirthDays();
   }, [OnGetBirthDays]);
-
   const handleNextMonth = () => {
     if (currentMonth === 11) {
       setCurrentMonth(0);
@@ -36,7 +31,6 @@ function BirthdayCalendarMobile() {
       setCurrentMonth(currentMonth + 1);
     }
   };
-
   const handlePrevMonth = () => {
     if (currentMonth === 0) {
       setCurrentMonth(11);
@@ -45,11 +39,8 @@ function BirthdayCalendarMobile() {
       setCurrentMonth(currentMonth - 1);
     }
   };
-
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-
   const daysArray = Array.from({ length: daysInMonth }, (_, i) => i + 1);
-
   const isBirthday = (day: number) => {
     return birthdays.some((employee) => {
       const employeeBirthday = new Date(employee.dateOfBirth);

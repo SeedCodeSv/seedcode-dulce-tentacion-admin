@@ -1,4 +1,4 @@
-import { Employee } from '../../../types/employees.types';
+import { Employee, MonthsAttendance } from '../../../types/employees.types';
 
 export interface IMobileView {
   layout: 'grid' | 'list';
@@ -20,4 +20,8 @@ export interface IPropsSearchEmployee {
   codeEmpleyee: (code: string) => void;
   startDate: (date: string) => void;
   endDate: (date: string) => void;
+}
+
+export interface IContentBirthday {
+  employee: MonthsAttendance[];
 }
