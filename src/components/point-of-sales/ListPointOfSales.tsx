@@ -77,14 +77,6 @@ function ListPointOfSales({ actions }: Props) {
     );
   };
 
-  const [expandedSections, setExpandedSections] = useState<Record<number, boolean>>({});
-
-  const toggleSection = (branchIndex: number) => {
-    setExpandedSections((prevSections) => ({
-      ...prevSections,
-      [branchIndex]: !prevSections[branchIndex],
-    }));
-  };
 
   return (
     <>
@@ -226,8 +218,7 @@ function ListPointOfSales({ actions }: Props) {
           </div>
 
           <>
-
-            <div className="mt-4">
+            {/* <div className="mt-4">
               {point_of_sales_list?.pointOfSales &&
                 Object.entries(point_of_sales_list.pointOfSales).map(
                   ([locationKey, salePointArray], index) => (
@@ -236,7 +227,6 @@ function ListPointOfSales({ actions }: Props) {
                       className="max-h-[400px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4"
                     >
                       <table className="w-full border-collapse border border-gray-200 rounded-lg">
-                        {/* Encabezado por punto de venta */}
                         <thead>
                           <tr>
                             <th
@@ -248,7 +238,6 @@ function ListPointOfSales({ actions }: Props) {
                           </tr>
                         </thead>
 
-                        {/* Encabezado de columnas */}
                         <thead className="sticky top-[48px] z-20 bg-white border border-gray-200">
                           <tr>
                             <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200 border border-gray-200">
@@ -269,7 +258,121 @@ function ListPointOfSales({ actions }: Props) {
                           </tr>
                         </thead>
 
-                        {/* Cuerpo de la tabla */}
+                        <tbody className="max-h-[600px] w-full overflow-y-auto border border-gray-200">
+                          {salePointArray.length === 0 ? (
+                            <tr>
+                              <td
+                                colSpan={5}
+                                className="p-3 text-sm text-center text-slate-500 border border-gray-200"
+                              >
+                                No hay datos disponibles.
+                              </td>
+                            </tr>
+                          ) : (
+                            salePointArray.map((salePoint: PointOfSales, idx: number) => (
+                              <tr className="border border-gray-400 h-16" key={idx}>
+                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap border border-gray-200">
+                                  {salePoint.typeVoucher}
+                                </td>
+                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100 border border-gray-200">
+                                  {salePoint.description}
+                                </td>
+                                <td className="p-3 text-sm text-slate-500 whitespace-nowrap dark:text-slate-100 border border-gray-200">
+                                  <input
+                                    type="number"
+                                    value={
+                                      editableSales.find((item) => item.id === salePoint.id)
+                                        ?.prev ?? salePoint.prev
+                                    }
+                                    onInput={(e) =>
+                                      handleChange(salePoint.id, 'prev', e.currentTarget.value)
+                                    }
+                                    className="border p-2 rounded-md text-sm"
+                                    placeholder="Anterior"
+                                  />
+                                </td>
+                                <td className="p-3 text-sm text-slate-500 whitespace-nowrap dark:text-slate-100 border border-gray-200">
+                                  <input
+                                    type="number"
+                                    value={
+                                      editableSales.find((item) => item.id === salePoint.id)
+                                        ?.next ?? salePoint.next
+                                    }
+                                    onInput={(e) =>
+                                      handleChange(salePoint.id, 'next', e.currentTarget.value)
+                                    }
+                                    className="border p-2 rounded-md text-sm"
+                                    placeholder="Siguiente"
+                                  />
+                                </td>
+                                <td className="p-3 text-sm text-slate-500 whitespace-nowrap dark:text-slate-100 border border-gray-200">
+                                  <TooltipGlobal text="Editar">
+                                    <Button
+                                      className="border border-white"
+                                      onClick={() => {
+                                        handleEdit(salePoint);
+                                      }}
+                                      isIconOnly
+                                      style={{ backgroundColor: theme.colors.secondary }}
+                                    >
+                                      <EditIcon style={{ color: theme.colors.primary }} size={20} />
+                                    </Button>
+                                  </TooltipGlobal>
+                                </td>
+                              </tr>
+                            ))
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                  )
+                )}
+            </div> */}
+
+            <div className="mt-4">
+              {point_of_sales_list?.pointOfSales &&
+                Object.entries(point_of_sales_list.pointOfSales).map(
+                  ([_locationKey, salePointArray], index) => (
+                    <div
+                      key={index}
+                      className="max-h-[400px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4"
+                    >
+                      <table className="w-full border-collapse border border-gray-200 rounded-lg">
+                        {/* Aquí accedemos a los datos de la sucursal desde `point_of_sales_list.branch` */}
+                        <thead>
+                          <tr>
+                            <th
+                              colSpan={5}
+                              className="p-3 text-center bg-[#1D3557] text-lg font-semibold dark:text-gray-100 dark:bg-slate-700 text-white border border-gray-200 sticky top-0 z-30 rounded-t-lg"
+                            >
+                              {/* Mostramos el nombre de la sucursal, código y código MH */}
+                              {point_of_sales_list.name || 'Nombre de la Sucursal'} -
+                              {salePointArray[0]?.code || 'Código'} -
+                              {salePointArray[0]?.codPuntoVenta || 'Código Punto de Venta'}
+                            </th>
+                          </tr>
+                        </thead>
+
+                        <thead className="sticky top-[48px] z-20 bg-white border border-gray-200">
+                          <tr>
+                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200 border border-gray-200">
+                              Tipo
+                            </th>
+                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200 border border-gray-200">
+                              Descripción
+                            </th>
+                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200 border border-gray-200">
+                              Anterior
+                            </th>
+                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200 border border-gray-200">
+                              Siguiente
+                            </th>
+                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200 border border-gray-200">
+                              Acciones
+                            </th>
+                          </tr>
+                        </thead>
+
                         <tbody className="max-h-[600px] w-full overflow-y-auto border border-gray-200">
                           {salePointArray.length === 0 ? (
                             <tr>
@@ -340,136 +443,6 @@ function ListPointOfSales({ actions }: Props) {
                   )
                 )}
             </div>
-
-            {/* --Propio si arruino otro usar este--------------------- */}
-            {/* <div className="max-h-[400px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
-              <table className="w-full border-collapse border border-gray-200 rounded-lg">
-                <thead>
-                  <tr>
-                    <th
-                      colSpan={5}
-                      className="p-3 text-center bg-[#1D3557] text-lg font-semibold  dark:text-gray-100 dark:bg-slate-700 text-white border border-gray-200 sticky top-0 z-30 rounded-t-lg"
-                    >
-                      Sonsonate - M001 - P001
-                    </th>
-                  </tr>
-                </thead>
-
-                <thead className="sticky top-[48px] z-20 bg-white border border-gray-200">
-                  <tr>
-                    <th
-                      style={global_styles().darkStyle}
-                      className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200 border border-gray-200"
-                    >
-                      Tipo
-                    </th>
-                    <th
-                      style={global_styles().darkStyle}
-                      className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200 border border-gray-200"
-                    >
-                      Descripción
-                    </th>
-                    <th
-                      style={global_styles().darkStyle}
-                      className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200 border border-gray-200"
-                    >
-                      Anterior
-                    </th>
-                    <th
-                      style={global_styles().darkStyle}
-                      className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200 border border-gray-200"
-                    >
-                      Siguiente
-                    </th>
-                    <th
-                      style={global_styles().darkStyle}
-                      className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200 border border-gray-200"
-                    >
-                      Acciones
-                    </th>
-                  </tr>
-                </thead>
-
-                <tbody className="max-h-[600px] w-full overflow-y-auto border border-gray-200">
-                  {loading_point_of_sales_list ? (
-                    <tr>
-                      <td
-                        colSpan={5}
-                        className="p-3 text-sm text-center text-slate-500 border border-gray-200"
-                      >
-                        <LoadingTable />
-                      </td>
-                    </tr>
-                  ) : (
-                    <>
-                      {point_of_sales_list?.pointOfSales &&
-                        Object.values(point_of_sales_list.pointOfSales).map(
-                          (salePointArray: PointOfSales[]) =>
-                            salePointArray.map((salePoint: PointOfSales, index: number) => (
-                              <tr className="border border-gray-400 h-16" key={index}>
-                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap border border-gray-200">
-                                  {salePoint.typeVoucher}
-                                </td>
-                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100 border border-gray-200">
-                                  {salePoint.description}
-                                </td>
-                                <td className="p-3 text-sm text-slate-500 whitespace-nowrap dark:text-slate-100 border border-gray-200">
-                                  <input
-                                    type="number"
-                                    value={
-                                      editableSales.find((item) => item.id === salePoint.id)
-                                        ?.prev ?? salePoint.prev
-                                    }
-                                    onInput={(e) =>
-                                      handleChange(salePoint.id, 'prev', e.currentTarget.value)
-                                    }
-                                    className="border p-2 rounded-md text-sm"
-                                    placeholder="Anterior"
-                                  />
-                                </td>
-                                <td className="p-3 text-sm text-slate-500 whitespace-nowrap dark:text-slate-100 border border-gray-200">
-                                  <input
-                                    type="number"
-                                    value={
-                                      editableSales.find((item) => item.id === salePoint.id)
-                                        ?.next ?? salePoint.next
-                                    }
-                                    onInput={(e) =>
-                                      handleChange(salePoint.id, 'next', e.currentTarget.value)
-                                    }
-                                    className="border p-2 rounded-md text-sm"
-                                    placeholder="Siguiente"
-                                  />
-                                </td>
-                                <td className="p-3 text-sm text-slate-500 whitespace-nowrap dark:text-slate-100 border border-gray-200">
-                                  <TooltipGlobal text="Editar">
-                                    <Button
-                                      className="border border-white"
-                                      onClick={() => {
-                                        handleEdit(salePoint);
-                                      }}
-                                      isIconOnly
-                                      style={{
-                                        backgroundColor: theme.colors.secondary,
-                                      }}
-                                    >
-                                      <EditIcon
-                                        style={{
-                                          color: theme.colors.primary,
-                                        }}
-                                        size={20}
-                                      />
-                                    </Button>
-                                  </TooltipGlobal>
-                                </td>
-                              </tr>
-                            ))
-                        )}
-                    </>
-                  )}
-                </tbody>
-              </table>
-            </div> */}
 
             {/* estes no ---------------------------------------------- -----------------------*/}
             {/* <div className="max-h-[400px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
