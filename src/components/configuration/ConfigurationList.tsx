@@ -39,7 +39,8 @@ const ConfigurationList = ({ actions }: Props) => {
   const navigate = useNavigate();
 
   const idConfig = personalization?.find((config) => config?.id)?.id || 0;
-  const tramsiter = user?.correlative.branch.transmitterId;
+  const tramsiter =
+    user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0;
 
   // useEffect(() => {
   //   if (context === 'dark') {
@@ -77,7 +78,7 @@ const ConfigurationList = ({ actions }: Props) => {
   return (
     <>
       <div className=" w-full h-full p-5 bg-gray-50 dark:bg-gray-900">
-        <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+        <div className="w-full h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <div className="flex justify-evenly gap-10 mt-5 ml-5 ">
             {/* <div className="w-full mt-1">
               <Switch
