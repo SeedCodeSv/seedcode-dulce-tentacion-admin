@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import { Autocomplete, AutocompleteItem, Button, ButtonGroup } from '@nextui-org/react';
-import { Table as Filter, Building2, EditIcon, List } from 'lucide-react';
+import { Filter, Building2, EditIcon, List } from 'lucide-react';
 import { ThemeContext } from '../../hooks/useTheme';
 import { global_styles } from '../../styles/global.styles';
 import TooltipGlobal from '../global/TooltipGlobal';
@@ -375,7 +375,7 @@ function ListPointOfSales({ actions }: Props) {
                   ([_locationKey, salePointArray], index) => (
                     <div
                       key={index}
-                      className="max-h-[400px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4 mb-6 w-full" // Ajuste del ancho del contenedor
+                      className="max-h-[400px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4 mb-6 w-full"
                     >
                       <table className="w-full border-collapse border border-gray-200 rounded-lg">
                         <thead>
@@ -385,9 +385,9 @@ function ListPointOfSales({ actions }: Props) {
                               className="p-3 text-center bg-[#1D3557] text-lg font-semibold dark:text-gray-100 dark:bg-slate-700 text-white border border-gray-200 sticky top-0 z-30 w-full"
                             >
                               <div className="flex justify-between items-center w-full">
-                                <span className="mx-auto">
-                                  {point_of_sales_list.name || 'Nombre de la Sucursal'} -
-                                  {salePointArray[0]?.code || 'Código'} -
+                                <span className="mx-auto text-sm sm:text-base lg:text-lg">
+                                  {point_of_sales_list.name || 'Nombre de la Sucursal'} -{' '}
+                                  {salePointArray[0]?.code || 'Código'} -{' '}
                                   {salePointArray[0]?.codPuntoVenta || 'Código Punto de Venta'}
                                 </span>
                                 <button
@@ -465,7 +465,7 @@ function ListPointOfSales({ actions }: Props) {
                                               e.currentTarget.value
                                             )
                                           }
-                                          className="border p-2 rounded-md text-sm"
+                                          className="border p-2 rounded-md text-sm w-full sm:w-28"
                                           placeholder="Anterior"
                                         />
                                       </td>
@@ -483,7 +483,7 @@ function ListPointOfSales({ actions }: Props) {
                                               e.currentTarget.value
                                             )
                                           }
-                                          className="border p-2 rounded-md text-sm"
+                                          className="border p-2 rounded-md text-sm w-full sm:w-28"
                                           placeholder="Siguiente"
                                         />
                                       </td>
