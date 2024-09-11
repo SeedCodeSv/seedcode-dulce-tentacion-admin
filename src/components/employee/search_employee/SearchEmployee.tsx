@@ -55,7 +55,11 @@ function SearchEmployee(props: IPropsSearchEmployee) {
                 setFilter({ ...filter, nameEmployee: '' });
 
                 getEmployeesPaginated(
-                  Number(user?.correlative.branch.transmitterId),
+                  Number(
+                    user?.correlative?.branch.transmitterId ??
+                      user?.pointOfSale?.branch.transmitterId ??
+                      0
+                  ),
                   1,
                   5,
                   filter.nameEmployee,
@@ -215,7 +219,11 @@ function SearchEmployee(props: IPropsSearchEmployee) {
               color="primary"
               onClick={() => {
                 getEmployeesPaginated(
-                  Number(user?.correlative.branch.transmitterId),
+                  Number(
+                    user?.correlative?.branch.transmitterId ??
+                      user?.pointOfSale?.branch.transmitterId ??
+                      0
+                  ),
                   1,
                   5,
                   filter.nameEmployee,

@@ -101,7 +101,7 @@ function SearchBranchProduct() {
               className="font-semibold order-last mt-4"
               color="primary"
               onClick={() => {
-                getUsersPaginated(1, 5, filter.nameProduct, filter.codeProduct);
+                // getUsersPaginated(1, 5, filter.nameProduct, filter.codeProduct);
                 setOpenVaul(false);
               }}
             >
