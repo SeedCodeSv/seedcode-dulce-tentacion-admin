@@ -51,7 +51,6 @@ export const get_point_of_sale = (
   );
 };
 
-
 //Listado de puntos de venta
 export const get_point_of_sale_list = (branchId: number) => {
   const token = get_token() ?? '';
@@ -64,17 +63,21 @@ export const get_point_of_sale_list = (branchId: number) => {
 
 export const patch_point_of_sale = (payload: PayloadPointOfSales, id: number) => {
   const token = get_token() ?? '';
-  return axios.patch<{ ok: boolean }>(API_URL + '/point-of-sale/update-point-of-sale/' + id, payload, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  return axios.patch<{ ok: boolean }>(
+    API_URL + '/point-of-sale/update-point-of-sale/' + id,
+    payload,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 };
 
 export const verify_code_correlatives = (BranchId: number, posCode: string) => {
   const toke = get_token() ?? '';
   return axios.get<{ ok: boolean }>(
-    import.meta.env.VITE_API_URL + `/point-of-sale/verify-code/${BranchId}?posCode=${posCode}`,
+    API_URL + `/point-of-sale/verify-code/${BranchId}?posCode=${posCode}`,
     {
       headers: {
         Authorization: `Bearer ${toke}`,
