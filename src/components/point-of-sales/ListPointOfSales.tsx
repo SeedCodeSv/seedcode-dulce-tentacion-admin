@@ -358,140 +358,166 @@ function ListPointOfSales({ actions }: Props) {
 
             {/* con ac?rdeon --------------------------------------------------------------- */}
             <div className="mt-4">
-  {loading_point_of_sales_list ? (
-    // Mostrar el componente de carga mientras los datos se están cargando
-    <div className="flex justify-center items-center h-full">
-      <LoadingTable />
-    </div>
-  ) : point_of_sales_list?.pointOfSales &&
-    Object.keys(point_of_sales_list.pointOfSales).length > 0 ? (
-    Object.entries(point_of_sales_list.pointOfSales).map(
-      ([_locationKey, salePointArray], index) => (
-        <div key={index} className="max-h-[400px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4 mb-6">
-          <table className="w-full border-collapse border border-gray-200 rounded-lg">
-            <thead>
-              <tr>
-                <th
-                  colSpan={5}
-                  className="p-3 text-center bg-[#1D3557] text-lg font-semibold dark:text-gray-100 dark:bg-slate-700 text-white border border-gray-200 sticky top-0 z-30 rounded-t-lg w-full "
-                >
-                  {/* Texto centrado con el botón de expandir/contraer alineado a la derecha */}
-                  {point_of_sales_list.name || 'Nombre de la Sucursal'} -
-                  {salePointArray[0]?.code || 'Código'} -
-                  {salePointArray[0]?.codPuntoVenta || 'Código Punto de Venta'}
-                  
-                  {/* Botón de expandir/contraer posicionado absolutamente */}
-                  <button
-                    onClick={() => toggleOpen(index)} // Cambia el estado al hacer clic en el botón
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 focus:outline-none text-white"
-                  >
-                    {openIndex === index ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
-                  </button>
-                </th>
-              </tr>
-            </thead>
+              {loading_point_of_sales_list ? (
+                <div className="flex justify-center items-center h-full">
+                  <LoadingTable />
+                </div>
+              ) : point_of_sales_list?.pointOfSales &&
+                Object.keys(point_of_sales_list.pointOfSales).length > 0 ? (
+                Object.entries(point_of_sales_list.pointOfSales).map(
+                  ([_locationKey, salePointArray], index) => (
+                    <div
+                      key={index}
+                      className="max-h-[400px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4 mb-6 w-full" // Ajuste del ancho del contenedor
+                    >
+                      <table className="w-full border-collapse border border-gray-200 rounded-lg">
+                        <thead>
+                          <tr>
+                            <th
+                              colSpan={5}
+                              className="p-3 text-center bg-[#1D3557] text-lg font-semibold dark:text-gray-100 dark:bg-slate-700 text-white border border-gray-200 sticky top-0 z-30 w-full"
+                            >
 
-            {/* Mostrar los datos solo si está expandido */}
-            {openIndex === index && (
-              <>
-                <thead className="sticky top-[48px] z-20 bg-white border border-gray-200">
-                  <tr>
-                    <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200 border border-gray-200">
-                      Tipo
-                    </th>
-                    <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200 border border-gray-200">
-                      Descripción
-                    </th>
-                    <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200 border border-gray-200">
-                      Anterior
-                    </th>
-                    <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200 border border-gray-200">
-                      Siguiente
-                    </th>
-                    <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200 border border-gray-200">
-                      Acciones
-                    </th>
-                  </tr>
-                </thead>
+                              <div className="flex justify-between items-center w-full">
+                                <span className="mx-auto">
+                                  {point_of_sales_list.name || 'Nombre de la Sucursal'} -
+                                  {salePointArray[0]?.code || 'Código'} -
+                                  {salePointArray[0]?.codPuntoVenta || 'Código Punto de Venta'}
+                                </span>
+                                <button
+                                  onClick={() => toggleOpen(index)}
+                                  className="ml-2 focus:outline-none text-white"
+                                >
+                                  {openIndex === index ? (
+                                    <ChevronUp size={20} />
+                                  ) : (
+                                    <ChevronDown size={20} />
+                                  )}
+                                </button>
+                              </div>
+                            </th>
+                          </tr>
+                        </thead>
 
-                <tbody className="max-h-[600px] w-full overflow-y-auto border border-gray-200">
-                  {salePointArray.length === 0 ? (
-                    <tr>
-                      <td
-                        colSpan={5}
-                        className="p-3 text-sm text-center text-slate-500 border border-gray-200"
-                      >
-                        No se encontraron registros.
-                      </td>
-                    </tr>
-                  ) : (
-                    salePointArray.map((salePoint: PointOfSales, idx: number) => (
-                      <tr className="border border-gray-400 h-16" key={idx}>
-                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap border border-gray-200">
-                          {salePoint.typeVoucher}
-                        </td>
-                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100 border border-gray-200">
-                          {salePoint.description}
-                        </td>
-                        <td className="p-3 text-sm text-slate-500 whitespace-nowrap dark:text-slate-100 border border-gray-200">
-                          <input
-                            type="number"
-                            value={
-                              editableSales.find((item) => item.id === salePoint.id)?.prev ?? salePoint.prev
-                            }
-                            onInput={(e) => handleChange(salePoint.id, 'prev', e.currentTarget.value)}
-                            className="border p-2 rounded-md text-sm"
-                            placeholder="Anterior"
-                          />
-                        </td>
-                        <td className="p-3 text-sm text-slate-500 whitespace-nowrap dark:text-slate-100 border border-gray-200">
-                          <input
-                            type="number"
-                            value={
-                              editableSales.find((item) => item.id === salePoint.id)?.next ?? salePoint.next
-                            }
-                            onInput={(e) => handleChange(salePoint.id, 'next', e.currentTarget.value)}
-                            className="border p-2 rounded-md text-sm"
-                            placeholder="Siguiente"
-                          />
-                        </td>
-                        <td className="p-3 text-sm text-slate-500 whitespace-nowrap dark:text-slate-100 border border-gray-200">
-                          {actions.includes('Editar') && (
-                            <TooltipGlobal text="Editar">
-                              <Button
-                                className="border border-white"
-                                onClick={() => {
-                                  handleEdit(salePoint);
-                                }}
-                                isIconOnly
-                                style={{ backgroundColor: theme.colors.secondary }}
-                              >
-                                <EditIcon
-                                  style={{ color: theme.colors.primary }}
-                                  size={20}
-                                />
-                              </Button>
-                            </TooltipGlobal>
+                      
+                        <tbody
+                          className={`transition-all duration-500 ease-in-out overflow-hidden ${
+                            openIndex === index ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'
+                          }`}
+                        >
+                          {openIndex === index && (
+                            <>
+                              <thead className="sticky top-[48px] z-20 bg-white border border-gray-200">
+                                <tr>
+                                  <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200 border border-gray-200 w-1/5">
+                                    Tipo
+                                  </th>
+                                  <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200 border border-gray-200 w-2/5">
+                                    Descripción
+                                  </th>
+                                  <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200 border border-gray-200 w-1/5">
+                                    Anterior
+                                  </th>
+                                  <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200 border border-gray-200 w-1/5">
+                                    Siguiente
+                                  </th>
+                                  <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200 border border-gray-200 w-1/5">
+                                    Acciones
+                                  </th>
+                                </tr>
+                              </thead>
+
+                              <tbody className="max-h-[600px] w-full overflow-y-auto border border-gray-200">
+                                {salePointArray.length === 0 ? (
+                                  <tr>
+                                    <td
+                                      colSpan={5}
+                                      className="p-3 text-sm text-center text-slate-500 border border-gray-200"
+                                    >
+                                      No se encontraron registros.
+                                    </td>
+                                  </tr>
+                                ) : (
+                                  salePointArray.map((salePoint: PointOfSales, idx: number) => (
+                                    <tr className="border border-gray-400 h-16" key={idx}>
+                                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap border border-gray-200">
+                                        {salePoint.typeVoucher}
+                                      </td>
+                                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100 border border-gray-200">
+                                        {salePoint.description}
+                                      </td>
+                                      <td className="p-3 text-sm text-slate-500 whitespace-nowrap dark:text-slate-100 border border-gray-200">
+                                        <input
+                                          type="number"
+                                          value={
+                                            editableSales.find((item) => item.id === salePoint.id)
+                                              ?.prev ?? salePoint.prev
+                                          }
+                                          onInput={(e) =>
+                                            handleChange(
+                                              salePoint.id,
+                                              'prev',
+                                              e.currentTarget.value
+                                            )
+                                          }
+                                          className="border p-2 rounded-md text-sm"
+                                          placeholder="Anterior"
+                                        />
+                                      </td>
+                                      <td className="p-3 text-sm text-slate-500 whitespace-nowrap dark:text-slate-100 border border-gray-200">
+                                        <input
+                                          type="number"
+                                          value={
+                                            editableSales.find((item) => item.id === salePoint.id)
+                                              ?.next ?? salePoint.next
+                                          }
+                                          onInput={(e) =>
+                                            handleChange(
+                                              salePoint.id,
+                                              'next',
+                                              e.currentTarget.value
+                                            )
+                                          }
+                                          className="border p-2 rounded-md text-sm"
+                                          placeholder="Siguiente"
+                                        />
+                                      </td>
+                                      <td className="p-3 text-sm text-slate-500 whitespace-nowrap dark:text-slate-100 border border-gray-200">
+                                        {actions.includes('Editar') && (
+                                          <TooltipGlobal text="Editar">
+                                            <Button
+                                              className="border border-white"
+                                              onClick={() => {
+                                                handleEdit(salePoint);
+                                              }}
+                                              isIconOnly
+                                              style={{ backgroundColor: theme.colors.secondary }}
+                                            >
+                                              <EditIcon
+                                                style={{ color: theme.colors.primary }}
+                                                size={20}
+                                              />
+                                            </Button>
+                                          </TooltipGlobal>
+                                        )}
+                                      </td>
+                                    </tr>
+                                  ))
+                                )}
+                              </tbody>
+                            </>
                           )}
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </>
-            )}
-          </table>
-        </div>
-      )
-    )
-  ) : (
-    // Mostrar la imagen NoData si no hay datos filtrados
-    <div className="flex justify-center items-center h-full">
-      <NoData />
-    </div>
-  )}
-</div>
-
+                        </tbody>
+                      </table>
+                    </div>
+                  )
+                )
+              ) : (
+                <div className="flex justify-center items-center h-full">
+                  <NoData />
+                </div>
+              )}
+            </div>
           </>
         </div>
       </div>
