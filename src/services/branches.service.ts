@@ -19,21 +19,21 @@ export const get_branches_pagination = (
   const token = get_token() ?? '';
   const user = get_user();
   return axios.get<IGetBranchesPaginated>(
-    API_URL + '/branches/list-paginated/' + user?.correlative?.branch.transmitterId ??
-      user?.pointOfSale?.branch.transmitterId ??
-      0 +
-        '?page=' +
-        page +
-        '&limit=' +
-        limit +
-        '&name=' +
-        name +
-        '&phone=' +
-        phone +
-        '&address=' +
-        address +
-        '&active=' +
-        active,
+    API_URL +
+      '/branches/list-paginated/' +
+      `${user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0}` +
+      '?page=' +
+      page +
+      '&limit=' +
+      limit +
+      '&name=' +
+      name +
+      '&phone=' +
+      phone +
+      '&address=' +
+      address +
+      '&active=' +
+      active,
     {
       headers: {
         Authorization: `Bearer ${token}`,

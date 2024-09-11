@@ -92,7 +92,7 @@ function BirthdayCalendarMobile() {
                 <h2 className="text-lg md:text-xl font-bold text-gray-800 dark:text-white">
                   {months[currentMonth]} {currentYear}
                 </h2>
-                <div className="hidden sm:flex gap-4">
+                <div className="flex sm:flex gap-4">
                   <button
                     onClick={handlePrevMonth}
                     className="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center bg-gray-300 dark:bg-gray-800 hover:bg-gray-400 dark:hover:bg-gray-700 rounded-full transition-all ease-in-out"
@@ -111,30 +111,32 @@ function BirthdayCalendarMobile() {
                 {['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'].map((day) => (
                   <div
                     key={day}
-                    className="uppercase text-xs sm:text-sm tracking-wider text-gray-600 dark:text-gray-300"
+                    className="uppercase text-xs sm:text-sm tracking-wider text-gray-600 dark:text-white"
                   >
                     {day}
                   </div>
                 ))}
               </div>
-              <div className="grid grid-cols-7 gap-4">
+              <div className="grid grid-cols-7 w-full gap-2 md:gap-3 h-[calc(100vh-200px)] auto-rows-fr">
                 {daysArray.map((day) => {
                   const birthdayPeople = getBirthdays(day);
                   return (
                     <div
                       key={day}
                       onClick={() => handleDayClick(day)}
-                      className={`relative bg-gray-100 dark:bg-gray-800 border rounded-lg p-4 h-40 flex justify-center items-center text-lg cursor-pointer ${
-                        birthdayPeople.length > 0
-                          ? 'border-blue-500 bg-blue-100 dark:bg-blue-900'
-                          : 'border-gray-300 dark:border-gray-700'
-                      }`}
+                      className={`relative border rounded-lg p-2 h-full w-full flex justify-center items-center text-lg cursor-pointer `}
                     >
-                      {day}
+                      <div
+                        className={`${
+                          birthdayPeople.length > 0
+                            ? 'bg-blue-500 text-white dark:bg-blue-500 dark:text-white flex justify-center items-center w-10 h-10 rounded-full'
+                            : 'dark:text-white'
+                        }`}
+                      >
+                        <p className="dark:text-white text-grey-800"> {day}</p>
+                      </div>
                       {birthdayPeople.length > 0 && (
                         <>
-                          <span className="absolute bottom-2 right-2 w-3 h-3 bg-blue-500 rounded-full"></span>
-
                           <img
                             src={logo}
                             alt="icon"
@@ -147,25 +149,10 @@ function BirthdayCalendarMobile() {
                 })}
               </div>
             </div>
-
-            <div className="flex sm:hidden justify-center gap-5 mt-4">
-              <button
-                onClick={handlePrevMonth}
-                className="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center bg-gray-300 dark:bg-gray-800 hover:bg-gray-400 dark:hover:bg-gray-700 rounded-full transition-all ease-in-out"
-              >
-                <ArrowLeft className="text-gray-800 dark:text-white" />
-              </button>
-              <button
-                onClick={handleNextMonth}
-                className="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center bg-gray-300 dark:bg-gray-800 hover:bg-gray-400 dark:hover:bg-gray-700 rounded-full transition-all ease-in-out"
-              >
-                <ArrowRight className="text-gray-800 dark:text-white" />
-              </button>
-            </div>
           </div>
           <SlideInModalGlobal
             title="Empleados"
-            children={<ParticipantList employee={selectedParticipants} />} // Pasa los empleados seleccionados
+            children={<ParticipantList employee={selectedParticipants} />}
             open={openModal}
             setOpen={setOpenModal}
           ></SlideInModalGlobal>

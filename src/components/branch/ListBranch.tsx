@@ -64,9 +64,7 @@ function ListBranch({ actions }: ArrayAction) {
   useEffect(() => {
     getBranchesPaginated(1, limit, name, phone, address, active);
   }, [limit, active]);
-  const changePage = (page: number) => {
-    getBranchesPaginated(page, limit, name, phone, address, active);
-  };
+
   const modalAdd = useDisclosure();
   const modalBranchProduct = useDisclosure();
   const modalBoxBranch = useDisclosure();
@@ -383,14 +381,13 @@ function ListBranch({ actions }: ArrayAction) {
                     currentPage={branches_paginated.currentPag}
                     totalPages={branches_paginated.totalPag}
                     onPageChange={(page) => {
-                      changePage(page);
+                      getBranchesPaginated(page, limit, name, phone, address, active);
                     }}
                   />
                 </div>
                 <div className="flex w-full md:hidden fixed bottom-0 left-0 bg-white dark:bg-gray-900 z-20 shadow-lg p-3">
                   <SmPagination
                     handleNext={() => {
-                      changePage(branches_paginated.nextPag);
                       getBranchesPaginated(
                         branches_paginated.nextPag,
                         limit,
@@ -401,7 +398,6 @@ function ListBranch({ actions }: ArrayAction) {
                       );
                     }}
                     handlePrev={() => {
-                      changePage(branches_paginated.prevPag);
                       getBranchesPaginated(
                         branches_paginated.prevPag,
                         limit,
@@ -442,16 +438,13 @@ function ListBranch({ actions }: ArrayAction) {
             <BoxBranch branch={Branch} closeModal={modalBoxBranch.onClose} setBranch={setBranch} />
           </HeadlessModal>
           <HeadlessModal
-          isOpen={modalAddPointOfSales.isOpen}
-          onClose={modalAddPointOfSales.onClose}
-          title="Agregar punto de venta"
-          size="w-[380px] md:w-[700px] p-1"
-        >
-          <AddPointOfSales
+            isOpen={modalAddPointOfSales.isOpen}
             onClose={modalAddPointOfSales.onClose}
-            branchId={selectedBranchId}
-          />
-        </HeadlessModal>
+            title="Agregar punto de venta"
+            size="w-[380px] md:w-[700px] p-1"
+          >
+            <AddPointOfSales onClose={modalAddPointOfSales.onClose} branchId={selectedBranchId} />
+          </HeadlessModal>
         </div>
       )}
     </>
