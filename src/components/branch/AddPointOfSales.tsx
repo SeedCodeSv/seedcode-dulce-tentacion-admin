@@ -30,9 +30,25 @@ function AddPointOfSales(props: Props) {
   };
 
   const validationSchema = yup.object().shape({
-    code: yup.string().required('**Debes especificar el punto de venta**'),
+    // code: yup.string().required('**Debes especificar el punto de venta**'),
+    code: yup
+      .string()
+      .required('**Debes especificar el punto de venta**')
+      .test('unique-code', 'Este código ya está en uso', async function (value) {
+        const { branchId } = this.parent;
+        try {
+          const data = await verify_code_correlatives(branchId, value);
+          if (data.data.ok) {
+            return true;
+          }
+          return false;
+        } catch (error) {
+          return false;
+        }
+      }),
     codPuntoVenta: yup.string().required('**Debes especificar el punto de venta**'),
-    // .matches(/^[A-Z0-9]{4}$/, '**El código debe ser de 4 dígitos**'),
+    userName: yup.string().required('**Debes especificar el nombre de usuario**'),
+    password: yup.string().required('**Debes especificar la contraseña**'),
   });
 
   const { getBranchesList, branch_list } = useBranchesStore();
@@ -48,50 +64,14 @@ function AddPointOfSales(props: Props) {
     }
   }, [selectedIdBranch]);
 
-  const handleSubmit = (values: PointOfSalePayload) => {
-    const payload: PointOfSalePayload = {
-      ...values,
-      branchId: selectedIdBranch,
-    };
-    postPointOfSales(payload);
-    setLastCode(lastCode + 1);
-    props.onClose();
-  };
-
-  // const handleSubmit = async (
-  //   values: PointOfSalePayload & UserPayload,
-  //   formikHelpers: FormikHelpers<any>
-  // ) => {
-  //   const payloadPointOfSale: PointOfSalePayload = {
+  // const handleSubmit = (values: PointOfSalePayload) => {
+  //   const payload: PointOfSalePayload = {
+  //     ...values,
   //     branchId: selectedIdBranch,
-  //     code: values.code,
-  //     codPuntoVenta: values.codPuntoVenta,
   //   };
-
-  //   const payloadUser: UserPayload = {
-  //     userName: values.userName,
-  //     password: values.password,
-  //     roleId: Number(user?.roleId),
-  //     correlativeId: Number(user?.correlativeId),
-  //   };
-
-  //   try {
-  //     // Crear punto de venta
-  //     await postPointOfSales(payloadPointOfSale);
-
-  //     // Crear usuario
-  //     await postUser(payloadUser);
-
-  //     // Mensaje de éxito
-  //     toast.success('Punto de venta y usuario creados con éxito.');
-
-  //     // Cerrar el formulario y reiniciar el formulario
-  //     formikHelpers.resetForm();
-  //     props.onClose();
-  //   } catch (error) {
-  //     // Manejar errores
-  //     toast.error('Ocurrió un error al guardar los datos.');
-  //   }
+  //   postPointOfSales(payload);
+  //   setLastCode(lastCode + 1);
+  //   props.onClose();
   // };
 
   const selectedBranch = useMemo(() => {
@@ -108,6 +88,21 @@ function AddPointOfSales(props: Props) {
       setFieldValue('code', code);
     } else {
       toast.error('Debe seleccionar una sucursal y completar el código de punto de venta.');
+    }
+  };
+  const handleSubmit = async (values: PointOfSalePayload) => {
+    const payload: PointOfSalePayload = {
+      ...values,
+      branchId: selectedIdBranch,
+    };
+
+    try {
+      await verifyCode(selectedIdBranch, values.code);
+      postPointOfSales(payload);
+      setLastCode(lastCode + 1);
+      props.onClose();
+    } catch (error) {
+      toast.error('No se puede guardar. El código ya está en uso.');
     }
   };
 
@@ -164,7 +159,7 @@ function AddPointOfSales(props: Props) {
                 // onChange={handleChange('codPuntoVenta')}
                 onChange={(e) => {
                   handleChange('codPuntoVenta')(e);
-                  setFieldValue('code', ''); // Limpiar el código si se cambia el código del punto de venta
+                  setFieldValue('code', '');
                 }}
                 onBlur={handleBlur('codPuntoVenta')}
                 value={values.codPuntoVenta}
@@ -227,11 +222,11 @@ function AddPointOfSales(props: Props) {
                 label="Nombre de usuario"
                 labelPlacement="outside"
                 name="userName"
-                // value={values.userName}
+                value={values.userName}
                 onChange={handleChange('userName')}
                 onBlur={handleBlur('userName')}
-                // isInvalid={touched.userName && !!errors.userName}
-                // errorMessage={touched.userName && errors.userName}
+                isInvalid={touched.userName && !!errors.userName}
+                errorMessage={touched.userName && errors.userName}
                 placeholder="Ingresa el nombre de usuario"
                 classNames={{
                   base: 'text-gray-500 text-sm font-semibold',
@@ -239,24 +234,6 @@ function AddPointOfSales(props: Props) {
                 variant="bordered"
               />
             </div>
-            {/* <div className="pt-2">
-              <Input
-                label="Contraseña"
-                labelPlacement="outside"
-                name="password"
-                // value={values.password}
-                onChange={handleChange('password')}
-                onBlur={handleBlur('password')}
-                placeholder="Ingresa la Contraseña"
-                // isInvalid={touched.password && !!errors.password}
-                // errorMessage={touched.password && errors.password}
-                type="password"
-                classNames={{
-                  base: 'text-gray-500 text-sm font-semibold',
-                }}
-                variant="bordered"
-              />
-            </div> */}
 
             <div className="pt-2">
               <Input
@@ -265,7 +242,7 @@ function AddPointOfSales(props: Props) {
                     {showPassword ? <EyeOff size={22} /> : <Eye size={22} />}
                   </button>
                 }
-                className="w-full dark:text-white border border-white rounded-xl"
+                className="w-full dark:text-white font-semibold border border-white rounded-xl"
                 variant="bordered"
                 labelPlacement="outside"
                 label="Contraseña"
@@ -275,12 +252,12 @@ function AddPointOfSales(props: Props) {
                 }}
                 isClearable={false}
                 type={showPassword ? 'text' : 'password'}
-                // value={values.password}
+                value={values.password}
                 placeholder="Ingresa la Contraseña"
                 onChange={handleChange('password')}
                 onBlur={handleBlur('password')}
-                // isInvalid={touched.password && !!errors.password}
-                // errorMessage={touched.password && errors.password}
+                isInvalid={touched.password && !!errors.password}
+                errorMessage={touched.password && errors.password}
               />
             </div>
 
