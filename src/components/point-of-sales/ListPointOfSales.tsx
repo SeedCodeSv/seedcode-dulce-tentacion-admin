@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
-import { Autocomplete, AutocompleteItem, Button, ButtonGroup } from '@nextui-org/react';
-import { Filter, Building2, EditIcon, List } from 'lucide-react';
+import { Autocomplete, AutocompleteItem, Button, ButtonGroup, Input } from '@nextui-org/react';
+import { Filter, Building2, List } from 'lucide-react';
 import { ThemeContext } from '../../hooks/useTheme';
 import { global_styles } from '../../styles/global.styles';
 import TooltipGlobal from '../global/TooltipGlobal';
@@ -231,138 +231,7 @@ function ListPointOfSales({ actions }: Props) {
               </div>
             </div>
           </div>
-
           <>
-            {/* <div className="mt-4">
-              {loading_point_of_sales_list ? (
-                // Mostrar el componente de carga mientras los datos se están cargando
-                <div className="flex justify-center items-center h-full">
-                  <LoadingTable />
-                </div>
-              ) : point_of_sales_list?.pointOfSales &&
-                Object.keys(point_of_sales_list.pointOfSales).length > 0 ? (
-                Object.entries(point_of_sales_list.pointOfSales).map(
-                  ([_locationKey, salePointArray], index) => (
-                    <div
-                      key={index}
-                      className="max-h-[400px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4 mb-20" // Aquí agregamos el margen inferior
-                    >
-                      <table className="w-full border-collapse border border-gray-200 rounded-lg">
-                        <thead>
-                          <tr>
-                            <th
-                              colSpan={5}
-                              className="p-3 text-center bg-[#1D3557] text-lg font-semibold dark:text-gray-100 dark:bg-slate-700 text-white border border-gray-200 sticky top-0 z-30 rounded-t-lg"
-                            >
-                              {point_of_sales_list.name || 'Nombre de la Sucursal'} -
-                              {salePointArray[0]?.code || 'Código'} -
-                              {salePointArray[0]?.codPuntoVenta || 'Código Punto de Venta'}
-                            </th>
-                          </tr>
-                        </thead>
-
-                        <thead className="sticky top-[48px] z-20 bg-white border border-gray-200">
-                          <tr>
-                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200 border border-gray-200">
-                              Tipo
-                            </th>
-                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200 border border-gray-200">
-                              Descripción
-                            </th>
-                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200 border border-gray-200">
-                              Anterior
-                            </th>
-                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200 border border-gray-200">
-                              Siguiente
-                            </th>
-                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200 border border-gray-200">
-                              Acciones
-                            </th>
-                          </tr>
-                        </thead>
-
-                        <tbody className="max-h-[600px] w-full overflow-y-auto border border-gray-200">
-                          {salePointArray.length === 0 ? (
-                            <tr>
-                              <td
-                                colSpan={5}
-                                className="p-3 text-sm text-center text-slate-500 border border-gray-200"
-                              >
-                                No se encontraron registros.
-                              </td>
-                            </tr>
-                          ) : (
-                            salePointArray.map((salePoint: PointOfSales, idx: number) => (
-                              <tr className="border border-gray-400 h-16" key={idx}>
-                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap border border-gray-200">
-                                  {salePoint.typeVoucher}
-                                </td>
-                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100 border border-gray-200">
-                                  {salePoint.description}
-                                </td>
-                                <td className="p-3 text-sm text-slate-500 whitespace-nowrap dark:text-slate-100 border border-gray-200">
-                                  <input
-                                    type="number"
-                                    value={
-                                      editableSales.find((item) => item.id === salePoint.id)
-                                        ?.prev ?? salePoint.prev
-                                    }
-                                    onInput={(e) =>
-                                      handleChange(salePoint.id, 'prev', e.currentTarget.value)
-                                    }
-                                    className="border p-2 rounded-md text-sm"
-                                    placeholder="Anterior"
-                                  />
-                                </td>
-                                <td className="p-3 text-sm text-slate-500 whitespace-nowrap dark:text-slate-100 border border-gray-200">
-                                  <input
-                                    type="number"
-                                    value={
-                                      editableSales.find((item) => item.id === salePoint.id)
-                                        ?.next ?? salePoint.next
-                                    }
-                                    onInput={(e) =>
-                                      handleChange(salePoint.id, 'next', e.currentTarget.value)
-                                    }
-                                    className="border p-2 rounded-md text-sm"
-                                    placeholder="Siguiente"
-                                  />
-                                </td>
-                                <td className="p-3 text-sm text-slate-500 whitespace-nowrap dark:text-slate-100 border border-gray-200">
-                                  {actions.includes('Editar') && (
-                                    <TooltipGlobal text="Editar">
-                                      <Button
-                                        className="border border-white"
-                                        onClick={() => {
-                                          handleEdit(salePoint);
-                                        }}
-                                        isIconOnly
-                                        style={{ backgroundColor: theme.colors.secondary }}
-                                      >
-                                        <EditIcon
-                                          style={{ color: theme.colors.primary }}
-                                          size={20}
-                                        />
-                                      </Button>
-                                    </TooltipGlobal>
-                                  )}
-                                </td>
-                              </tr>
-                            ))
-                          )}
-                        </tbody>
-                      </table>
-                    </div>
-                  )
-                )
-              ) : (
-                // Mostrar la imagen NoData si no hay datos filtrados
-                <div className="flex justify-center items-center h-full">
-                  <NoData />
-                </div>
-              )}
-            </div> */}
-
             {/* con ac?rdeon --------------------------------------------------------------- */}
             <div className="mt-4">
               {loading_point_of_sales_list ? (
@@ -395,9 +264,9 @@ function ListPointOfSales({ actions }: Props) {
                                   className="ml-2 focus:outline-none text-white"
                                 >
                                   {openIndex === index ? (
-                                    <ChevronUp size={20} />
+                                    <ChevronUp className="dark:text-white" size={20} />
                                   ) : (
-                                    <ChevronDown size={20} />
+                                    <ChevronDown className="dark:text-white" size={20} />
                                   )}
                                 </button>
                               </div>
@@ -452,12 +321,10 @@ function ListPointOfSales({ actions }: Props) {
                                         {salePoint.description}
                                       </td>
                                       <td className="p-3 text-sm text-slate-500 whitespace-nowrap dark:text-slate-100 border border-gray-200">
-                                        <input
+                                        <Input
                                           type="number"
-                                          value={
-                                            editableSales.find((item) => item.id === salePoint.id)
-                                              ?.prev ?? salePoint.prev
-                                          }
+                                          variant="bordered"
+                                          defaultValue={salePoint.prev.toString()}
                                           onInput={(e) =>
                                             handleChange(
                                               salePoint.id,
@@ -465,17 +332,14 @@ function ListPointOfSales({ actions }: Props) {
                                               e.currentTarget.value
                                             )
                                           }
-                                          className="border p-2 rounded-md text-sm w-full sm:w-28"
+                                          className="border border-white   text-sm w-full rounded-xl"
                                           placeholder="Anterior"
                                         />
                                       </td>
                                       <td className="p-3 text-sm text-slate-500 whitespace-nowrap dark:text-slate-100 border border-gray-200">
-                                        <input
+                                        <Input
                                           type="number"
-                                          value={
-                                            editableSales.find((item) => item.id === salePoint.id)
-                                              ?.next ?? salePoint.next
-                                          }
+                                          defaultValue={salePoint.next.toString()}
                                           onInput={(e) =>
                                             handleChange(
                                               salePoint.id,
@@ -483,7 +347,8 @@ function ListPointOfSales({ actions }: Props) {
                                               e.currentTarget.value
                                             )
                                           }
-                                          className="border p-2 rounded-md text-sm w-full sm:w-28"
+                                          variant="bordered"
+                                          className="border border-white rounded-xl text-sm w-full "
                                           placeholder="Siguiente"
                                         />
                                       </td>
@@ -491,17 +356,14 @@ function ListPointOfSales({ actions }: Props) {
                                         {actions.includes('Editar') && (
                                           <TooltipGlobal text="Editar">
                                             <Button
-                                              className="border border-white"
+                                              className="border border-white w-[100px]"
                                               onClick={() => {
                                                 handleEdit(salePoint);
                                               }}
                                               isIconOnly
                                               style={{ backgroundColor: theme.colors.secondary }}
                                             >
-                                              <EditIcon
-                                                style={{ color: theme.colors.primary }}
-                                                size={20}
-                                              />
+                                              <p className="text-white ">Actualizar</p>
                                             </Button>
                                           </TooltipGlobal>
                                         )}
@@ -531,43 +393,3 @@ function ListPointOfSales({ actions }: Props) {
 }
 
 export default ListPointOfSales;
-
-// const ListItem = (props: GridProps) => {
-//   const { category, handleEdit, actions } = props;
-//   return (
-//     <>
-//       <div className="flex w-full p-5 border shadow dark:border-gray-600 rounded-2xl">
-//         <div className="w-full">
-//           <div className="flex items-center w-full gap-2">
-//             <ScrollIcon className=" dark:text-blue-300" size={20} />
-//             <p className="w-full dark:text-white">{category.name}</p>
-//           </div>
-//         </div>
-//         <div className="flex flex-col items-end justify-between w-full gap-5">
-//           {category.isActive && actions.includes('Editar') ? (
-//             <TooltipGlobal text="Editar el registro" color="primary">
-//               <Button
-//                 className="border border-white"
-//                 onClick={() => handleEdit(category)}
-//                 isIconOnly
-//                 style={global_styles().secondaryStyle}
-//               >
-//                 <EditIcon style={global_styles().secondaryStyle} size={20} />
-//               </Button>
-//             </TooltipGlobal>
-//           ) : (
-//             <Button
-//               type="button"
-//               disabled
-//               style={global_styles().secondaryStyle}
-//               className="flex font-semibold border border-white  cursor-not-allowed"
-//               isIconOnly
-//             >
-//               {/* <Lock /> */}
-//             </Button>
-//           )}
-//         </div>
-//       </div>
-//     </>
-//   );
-// };
