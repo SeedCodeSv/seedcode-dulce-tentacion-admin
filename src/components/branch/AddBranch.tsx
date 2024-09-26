@@ -1,4 +1,4 @@
-import { Button, Input, Textarea } from '@nextui-org/react';
+import { Button, Input, Select, SelectItem, Textarea } from '@nextui-org/react';
 import { global_styles } from '../../styles/global.styles';
 import * as yup from 'yup';
 import { Formik } from 'formik';
@@ -6,6 +6,7 @@ import { Branches, IBranchForm } from '../../types/branches.types';
 import { useBranchesStore } from '../../store/branches.store';
 import { useAuthStore } from '../../store/auth.store';
 import { useState } from 'react';
+import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
 
 interface Props {
   closeModal: () => void;
@@ -19,7 +20,13 @@ function AddBranch(props: Props) {
     name: yup.string().required('** El nombre es requerido **'),
     address: yup.string().required('** La dirección es requerida **'),
     phone: yup.string().required('** El teléfono es requerido **'),
+    codEstable: yup.string().required('**El Código de establecimiento es requerido**'),
+    codEstableMH: yup.string().required('**El Código de establecimiento MH es requerido**'),
+    tipoEstablecimiento: yup.string().required('**El tipo de establecimiento es requerido**'),
   });
+
+  const type_estable = new SeedcodeCatalogosMhService().get009TipoDeEstablecimiento();
+  const type = type_estable.find((item) => item.codigo === props.branch?.tipoEstablecimiento);
 
   const { user } = useAuthStore();
 
@@ -60,11 +67,14 @@ function AddBranch(props: Props) {
           name: props.branch?.name ?? '',
           address: props.branch?.address ?? '',
           phone: props.branch?.phone ?? '',
+          codEstable: props.branch?.codEstable ?? '',
+          codEstableMH: props.branch?.codEstableMH ?? '',
+          tipoEstablecimiento: props.branch?.tipoEstablecimiento ?? '',
         }}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        {({ values, errors, touched, handleBlur, handleChange, handleSubmit }) => (
+        {({ values, errors, touched, handleBlur, setFieldValue, handleChange, handleSubmit }) => (
           <>
             <div className="w-full">
               <div className="w-full pt-3">
@@ -103,6 +113,60 @@ function AddBranch(props: Props) {
                 {/* {errors.phone && touched.phone && (
                   <span className="text-sm font-semibold text-red-500">{errors.phone}</span>
                 )} */}
+              </div>
+
+              <div className="w-full pt-3">
+                <Select
+                  label="Tipo de establecimiento"
+                  placeholder={type?.valores ? type.valores : 'Tipo de establecimiento'}
+                  variant="bordered"
+                  classNames={{ label: 'font-semibold text-sm', base: 'font-semibold' }}
+                  labelPlacement="outside"
+                  onChange={handleChange('tipoEstablecimiento')}
+                  onBlur={handleBlur('tipoEstablecimiento')}
+                  value={values.tipoEstablecimiento}
+                  isInvalid={touched.tipoEstablecimiento && !!errors.tipoEstablecimiento}
+                  errorMessage={errors.tipoEstablecimiento}
+                >
+                  {type_estable.map((item) => (
+                    <SelectItem key={item.codigo} value={item.valores}>
+                      {item.valores}
+                    </SelectItem>
+                  ))}
+                </Select>
+              </div>
+
+              <div className="w-full pt-3">
+                <Input
+                  // type="number"
+                  label="Codigo de establecimiento"
+                  placeholder="Codigo de establecimiento"
+                  variant="bordered"
+                  classNames={{ label: 'font-semibold text-sm', base: 'font-semibold' }}
+                  labelPlacement="outside"
+                  onChange={(e) => {
+                    handleChange('codEstable')(e);
+                    setFieldValue('codEstableMH', e.target.value);
+                  }}
+                  onBlur={handleBlur('codEstable')}
+                  value={values.codEstable}
+                  isInvalid={touched.codEstable && !!errors.codEstable}
+                  errorMessage={errors.codEstable}
+                />
+              </div>
+              <div className="w-full pt-3">
+                <Input
+                  // type="number"
+                  label="Codigo de establecimiento MH"
+                  placeholder="Codigo establecimiento MH"
+                  variant="bordered"
+                  classNames={{ label: 'font-semibold text-sm', base: 'font-semibold' }}
+                  labelPlacement="outside"
+                  value={values.codEstableMH}
+                  isInvalid={touched.codEstableMH && !!errors.codEstableMH}
+                  errorMessage={errors.codEstableMH}
+                  readOnly
+                />
               </div>
               <div className="w-full pt-3">
                 <Textarea

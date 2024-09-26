@@ -421,7 +421,7 @@ function ListBranch({ actions }: ArrayAction) {
               setSelectedBranch(undefined);
             }}
             title={selectedBranch ? 'Editar sucursal' : 'Nueva sucursal'}
-            size="w-[90vw] md:w-[500px]"
+            size="w-[90vw] md:w-[600px]"
           >
             <AddBranch branch={selectedBranch} closeModal={modalAdd.onClose} />
           </HeadlessModal>
