@@ -5,6 +5,9 @@ export interface Branches {
   name: string;
   address: string;
   phone: string;
+  codEstable: string;
+  codEstableMH: string;
+  tipoEstablecimiento: string;
   next: number;
   prev: number;
   isActive: boolean;
@@ -26,6 +29,9 @@ export interface IBranchForm {
   name: string;
   phone: string;
   address: string;
+  codEstable: string;
+  codEstableMH: string;
+  tipoEstablecimiento: string;
 }
 
 export interface IBranchPayload extends IBranchForm {
