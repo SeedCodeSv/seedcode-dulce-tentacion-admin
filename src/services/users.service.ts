@@ -104,3 +104,23 @@ export const activate_user = (id: number) => {
     }
   );
 };
+
+export const generate_code = (id: number) => {
+  const token = get_token() ?? '';
+  return axios.patch<{ ok: boolean, code: string }>(API_URL + '/users/generate-code/' + id, {}, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+export const verify_code = (id: number) => {
+  const token = get_token() ?? '';
+  return axios.get<IGetUsers>(API_URL + '/roles' + id, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+

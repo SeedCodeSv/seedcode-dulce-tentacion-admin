@@ -25,6 +25,7 @@ import {
   EditIcon,
   RefreshCcw,
   Lock,
+  RectangleEllipsis,
 } from 'lucide-react';
 import UpdatePassword from './UpdatePassword';
 import { ThemeContext } from '../../hooks/useTheme';
@@ -45,6 +46,7 @@ import NO_DATA from '@/assets/svg/no_data.svg';
 import SearchUser from './search_user/SearchUser';
 import { useRolesStore } from '@/store/roles.store';
 import { useAuthStore } from '@/store/auth.store';
+import GenerateCode from './GenerateCode';
 interface Props {
   actionss: string[];
 }
@@ -72,6 +74,7 @@ function ListUsers({ actionss }: Props) {
   const modalAdd = useDisclosure();
   const modalUpdate = useDisclosure();
   const modalChangePassword = useDisclosure();
+  const generateCodeModal = useDisclosure();
 
   const [selectId, setSelectedId] = useState(0);
 
@@ -441,6 +444,18 @@ function ListUsers({ actionss }: Props) {
                                   )}
                                 </>
                               )}
+                              <TooltipGlobal text="Generar código">
+                                <Button
+                                  onClick={() => {
+                                    setSelectedId(item.id);
+                                    generateCodeModal.onOpen();
+                                  }}
+                                  isIconOnly
+                                  style={global_styles().darkStyle}
+                                >
+                                  <RectangleEllipsis />
+                                </Button>
+                              </TooltipGlobal>
                             </div>
                           </td>
                         </tr>
@@ -571,6 +586,14 @@ function ListUsers({ actionss }: Props) {
             onClose={modalUpdate.onClose}
             user={users}
           />
+        </HeadlessModal>
+        <HeadlessModal
+          isOpen={generateCodeModal.isOpen}
+          onClose={generateCodeModal.onClose}
+          title="Generar código"
+          size="w-[350px] md:w-[450px]"
+        >
+          <GenerateCode id={selectId}/>
         </HeadlessModal>
       </div>
     </>

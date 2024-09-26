@@ -12,6 +12,7 @@ export interface UsersStore {
   deleteUser: (id: number) => Promise<boolean>;
   updatePassword: (id: number, password: string) => Promise<boolean>;
   activateUser: (id: number) => Promise<void>;
+  generateCode: (id: number) => Promise<string | null>;
   getUsersPaginated: (
     transmitter: number,
     page: number,

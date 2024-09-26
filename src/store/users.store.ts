@@ -3,6 +3,7 @@ import { UsersStore } from './types/users_store.types';
 import {
   activate_user,
   delete_user,
+  generate_code,
   get_user_paginated,
   get_users_list,
   patch_password,
@@ -111,4 +112,20 @@ export const useUsersStore = create<UsersStore>((set) => ({
         toast.error(messages.error);
       });
   },
+  async generateCode(id) {
+    try {
+      const data = await generate_code(id);
+      if (data && data.data.ok) {
+        toast.success(messages.success);
+        return data.data.code;
+      } else {
+        toast.warning(messages.error);
+        return null;
+      }
+    } catch (error) {
+      toast.warning(messages.error);
+      return null;
+    }
+  }
+  
 }));
