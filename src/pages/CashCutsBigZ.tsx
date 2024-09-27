@@ -47,7 +47,7 @@ const CushCatsBigZ = () => {
     getIdBranch();
   }, [dateInitial, dateEnd, branchId, codeSelected]);
 
-  const calculateIVA = (total: number) => total * 0.13;
+  const calculateIVA = (total: number) => total / 1.13;
   const { getBranchesList, branch_list } = useBranchesStore();
   useEffect(() => {
     getBranchesList();
@@ -76,7 +76,6 @@ const CushCatsBigZ = () => {
     iframe.addEventListener('load', () => {
       const body = iframe.contentDocument?.body;
       if (!body) return;
-      // Añadir estilos para ocultar encabezados y pies de página
       const style = document.createElement('style');
       style.innerHTML = `
           @page {
@@ -193,8 +192,8 @@ const CushCatsBigZ = () => {
         <br />
         <div class="w-full">
           <span>TOTAL GENERAL</span><br />
-          <span>GRAVADAS: ${formatCurrency(totalGeneral - totalGeneral * 0.13)}</span><br />
-          <span>IVA: ${formatCurrency(totalGeneral * 0.13)}</span><br />
+          <span>GRAVADAS: ${formatCurrency(totalGeneral / 1.13)}</span><br />
+<span>IVA: ${formatCurrency(totalGeneral - totalGeneral / 1.13)}</span><br />
           <span>SUB-TOTAL: ${formatCurrency(totalGeneral)}</span><br />
           <span>EXENTAS:</span><br />
           <span>NO SUJETAS:</span><br />
@@ -479,10 +478,10 @@ const CushCatsBigZ = () => {
                   <div className="w-full">
                     <h1 className="text-black dark:text-white">TOTAL GENERAL</h1>
                     <h1 className="text-black dark:text-white">
-                      GRAVADAS: {formatCurrency(totalGeneral - totalGeneral * 0.13)}
+                      GRAVADAS: {formatCurrency(totalGeneral - totalGeneral / 1.13)}
                     </h1>
                     <h1 className="text-black dark:text-white">
-                      IVA: {formatCurrency(totalGeneral * 0.13)}
+                      IVA: {formatCurrency(totalGeneral / 1.13)}
                     </h1>
                     <h1 className="text-black dark:text-white">
                       SUB-TOTAL: {formatCurrency(totalGeneral)}
