@@ -13,7 +13,7 @@ import axios from 'axios';
 export const get_point_of_sales = (branchId: number) => {
   const token = get_token() ?? '';
   return axios.get<IGetPointOfSales>(
-    `${import.meta.env.VITE_API_URL}/point-of-sale/by-branch/${branchId}`,
+    `${API_URL}/point-of-sale/by-branch/${branchId}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,

@@ -340,7 +340,7 @@ function SalesReportContigence() {
 
                     const timeout = setTimeout(() => {
                       source.cancel('El tiempo de espera ha expirado');
-                    }, 25000);
+                    }, 20000);
 
                     send_to_mh(data_send, token_mh ?? '', source)
                       .then(async (respuestaMH) => {
@@ -481,7 +481,7 @@ function SalesReportContigence() {
 
                   const timeout = setTimeout(() => {
                     source.cancel('El tiempo de espera ha expirado');
-                  }, 25000);
+                  }, 20000);
                   firmarDocumentoFiscal(data)
                     .then((firmador) => {
                       const data_send: PayloadMH = {

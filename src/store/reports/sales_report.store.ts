@@ -116,10 +116,11 @@ export const salesReportStore = create<ISalesReportStore>((set) => ({
     paymentType = '',
     branch = '',
     correlative = '',
-    typeVoucher = ''
+    typeVoucher = '',
+    pointOfSale = ''
   ) {
     set({ loading_sales_period: true, sales_by_period: undefined });
-    get_sales_by_period(page, limit, startDate, endDate, paymentType, branch, correlative, typeVoucher)
+    get_sales_by_period(page, limit, startDate, endDate, paymentType, branch, correlative, typeVoucher, pointOfSale)
       .then(({ data }) => {
         set({ sales_by_period: data, loading_sales_period: false });
       })

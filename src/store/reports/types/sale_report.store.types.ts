@@ -60,7 +60,8 @@ export interface ISalesReportStore {
     paymentType?: string,
     branch?: string,
     correlative?: string,
-    typeVoucher?: string
+    typeVoucher?: string,
+    pointOfSales?:string 
   ) => void;
   getSalesByPeriodChart: (startDate: string, endDate: string) => void;
   getSalesByDay: (id: number) => void;
