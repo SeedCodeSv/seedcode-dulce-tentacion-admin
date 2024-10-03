@@ -901,3 +901,228 @@ export const export_excel_credito = async (
 
   return blob;
 };
+
+interface NewBookItems {
+  name: string;
+  items: Array<Array<string | number>>;
+}
+
+interface ExportProp {
+  items: NewBookItems[];
+  transmitter: ITransmitter;
+  month: string;
+}
+
+export const export_excel_facturacion = async (props: ExportProp) => {
+  const { transmitter, month, items } = props;
+
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet('Ventas FACT.');
+
+  worksheet.columns = [
+    { key: 'A', width: 15 },
+    { key: 'B', width: 30 },
+    { key: 'C', width: 30 },
+    { key: 'D', width: 30 },
+    { key: 'E', width: 30 },
+    { key: 'F', width: 15 },
+    { key: 'G', width: 15 },
+    { key: 'H', width: 15 },
+    { key: 'I', width: 15 },
+    { key: 'J', width: 15 },
+  ];
+
+  const merges = ['A3:B3', 'C3:J3', 'C4:J4', 'B5:C5'];
+  merges.forEach((range) => worksheet.mergeCells(range));
+
+  const borders = {
+    top: { style: 'thin' },
+    left: { style: 'thin' },
+    bottom: { style: 'thin' },
+    right: { style: 'thin' },
+  } as ExcelJS.Borders;
+
+  const boldText = `${transmitter.nombre}`;
+  const normalText = 'ESTABLECIMIENTO: ';
+
+  worksheet.getCell('D3').value = {
+    richText: [{ text: normalText }, { text: boldText, font: { bold: true } }],
+  };
+
+  worksheet.getCell('D3').alignment = { horizontal: 'center' };
+  const normalTextReg = 'REGISTRO No.';
+  const boldReg = `${transmitter.nrc}`;
+
+  worksheet.getCell('A3').value = {
+    richText: [{ text: normalTextReg }, { text: boldReg, font: { bold: true } }],
+  };
+
+  const titles = [
+    { cell: 'D4', text: 'LIBRO DE VENTAS CONSUMIDOR FINAL' },
+    { cell: 'A5', text: `MES:${month.toUpperCase()}` },
+    { cell: 'B5', text: `AÑO: ${new Date().getFullYear()}` },
+  ];
+  titles.forEach(({ cell, text }) => {
+    worksheet.getCell(cell).value = text;
+    worksheet.getCell(cell).alignment = { horizontal: 'center' };
+
+    if (['A5', 'B5', 'B4', 'D4'].includes(cell)) {
+      worksheet.getCell(cell).font = {
+        bold: true,
+      };
+    }
+  });
+
+  worksheet.getCell('B5').alignment = { horizontal: 'center' };
+
+  let nextLine = 5;
+
+  console.log(items);
+
+  items.forEach((item) => {
+    if (item.items.length > 0) {
+      // worksheet.getCell(`A${nextLine}`).value = item.name;
+      // worksheet.getCell(`A${nextLine}`).font = { bold: true };
+      // worksheet.mergeCells(`A${nextLine}:C${nextLine}`);
+
+      const merges = [
+        `A${nextLine + 2}:A${nextLine + 4}`,
+        `B${nextLine + 2}:C${nextLine + 2}`,
+        `B${nextLine + 3}:B${nextLine + 4}`,
+        `C${nextLine + 3}:C${nextLine + 4}`,
+        `D${nextLine + 2}:E${nextLine + 2}`,
+        `D${nextLine + 3}:D${nextLine + 4}`,
+        `E${nextLine + 3}:E${nextLine + 4}`,
+        `F${nextLine + 2}:H${nextLine + 2}`,
+        `F${nextLine + 3}:F${nextLine + 4}`,
+        `G${nextLine + 3}:H${nextLine + 3}`,
+        `I${nextLine + 2}:I${nextLine + 4}`,
+        `J${nextLine + 2}:J${nextLine + 4}`,
+      ];
+
+      merges.forEach((merge) => {
+        worksheet.mergeCells(merge);
+      });
+
+      const headers_cell = [
+        { cell: `A${nextLine + 4}`, text: 'FECHA EMISION' },
+        { cell: `B${nextLine + 4}`, text: 'CÓDIGO DE GENERACIÓN INICIAL' },
+        { cell: `C${nextLine + 4}`, text: 'CÓDIGO DE GENERACIÓN FINAL' },
+        { cell: `B${nextLine + 2}`, text: item.name },
+        { cell: `D${nextLine + 3}`, text: 'NUMERO DE CONTROL DEL' },
+        { cell: `E${nextLine + 3}`, text: 'NUMERO DE CONTROL AL' },
+        { cell: `E${nextLine + 2}`, text: '' },
+        { cell: `F${nextLine + 2}`, text: 'VENTAS' },
+        { cell: `F${nextLine + 4}`, text: 'EXENTAS' },
+        { cell: `G${nextLine + 3}`, text: 'GRAVADAS' },
+        { cell: `G${nextLine + 4}`, text: 'LOCALES' },
+        { cell: `H${nextLine + 4}`, text: 'EXPORTACIONES' },
+        { cell: `I${nextLine + 4}`, text: 'VENTAS TOTALES' },
+        { cell: `J${nextLine + 4}`, text: 'VENTAS POR CUENTAS DE TERCEROS' },
+      ];
+
+      headers_cell.forEach(({ cell, text }) => {
+        worksheet.getCell(cell).value = text;
+        worksheet.getCell(cell).font = { name: 'Calibri', size: 9, bold: true };
+        worksheet.getCell(cell).alignment = { horizontal: 'center', wrapText: true };
+        worksheet.getCell(cell).border = borders;
+      });
+
+      item.items.forEach((item, rowIndex) => {
+        const row = rowIndex + nextLine + 5;
+        item.forEach((value, colIndex) => {
+          const cell = String.fromCharCode(65 + colIndex) + row;
+          worksheet.getCell(cell).value = value;
+          worksheet.getCell(cell).border = borders;
+          worksheet.getCell(cell).alignment = { horizontal: 'left', wrapText: true };
+          worksheet.getCell(cell).font = { name: 'Calibri', size: 9 };
+          if (colIndex === 1) worksheet.getCell(cell).numFmt = 'mm/dd/yyyy';
+          if ([6, 7, 8, 9, 10].includes(colIndex))
+            worksheet.getCell(cell).numFmt =
+              '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-';
+        });
+      });
+      nextLine += item.items.length + 5;
+
+      worksheet.getCell(`C${nextLine}`).value = 'TOTAL';
+      worksheet.getCell(`C${nextLine}`).font = { name: 'Calibri', size: 8, bold: true };
+
+      ['F', 'G', 'H', 'I', 'J'].forEach((col) => {
+        worksheet.getCell(`${col}${nextLine}`).value = {
+          formula: `SUM(${col}${nextLine - item.items.length}:${col}${nextLine - 1})`,
+          result: 0,
+        };
+        worksheet.getCell(`${col}${nextLine}`).font = { name: 'Calibri', bold: true, size: 8 };
+        worksheet.getCell(`${col}${nextLine}`).numFmt =
+          '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-';
+      });
+
+      const total = `G${nextLine}`;
+
+      // Aplicar bordes a la fila de "TOTAL"
+      const borders_cells = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+      borders_cells.forEach((cell) => {
+        worksheet.getCell(`${cell}${nextLine}`).border = borders;
+      });
+      nextLine += 2;
+
+      worksheet.getCell(`E${nextLine}`).value = `VENTAS LOCALES GRAVADAS`;
+      worksheet.getCell(`F${nextLine}`).value = {
+        formula: `+${total}`,
+      };
+      worksheet.getCell(`G${nextLine}`).value = '/1.13 = VENTAS NETAS GRAVADAS';
+      worksheet.getCell(`I${nextLine}`).value = {
+        formula: `+${total}/1.13`,
+      };
+      worksheet.getCell(`E${nextLine}`).font = { name: 'Calibri', size: 9 };
+      worksheet.getCell(`F${nextLine}`).font = { name: 'Calibri', size: 9 };
+      worksheet.getCell(`G${nextLine}`).font = { name: 'Calibri', size: 9 };
+      worksheet.getCell(`I${nextLine}`).font = { name: 'Calibri', size: 9 };
+      worksheet.getCell(`F${nextLine}`).numFmt =
+        '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-';
+      worksheet.getCell(`I${nextLine}`).numFmt =
+        '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-';
+      const iva_13 = `I${nextLine}`;
+
+      const merges3 = [`G${nextLine}:H${nextLine}`];
+      merges3.forEach((range) => worksheet.mergeCells(range));
+
+      nextLine += 1;
+
+      worksheet.getCell(`G${nextLine}`).value = `POR 13% IMPUESTO (DÉBITO FISCAL)`;
+      worksheet.getCell(`I${nextLine}`).value = {
+        formula: `+${iva_13}*0.13`,
+      };
+
+      worksheet.getCell(`G${nextLine}`).font = { name: 'Calibri', size: 9 };
+      worksheet.getCell(`I${nextLine}`).font = { name: 'Calibri', size: 9 };
+      worksheet.getCell(`I${nextLine}`).numFmt =
+        '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-';
+
+      const iva_for_13 = `I${nextLine}`;
+
+      const merges1 = [`G${nextLine}:H${nextLine}`];
+      merges1.forEach((range) => worksheet.mergeCells(range));
+
+      nextLine += 1;
+
+      worksheet.getCell(`G${nextLine}`).value = `TOTAL VENTAS GRAVADAS`;
+      worksheet.getCell(`I${nextLine}`).value = {
+        formula: `SUM(${iva_for_13}, ${iva_13})`,
+      };
+
+      worksheet.getCell(`G${nextLine}`).font = { name: 'Calibri', size: 9 };
+      worksheet.getCell(`I${nextLine}`).font = { name: 'Calibri', size: 9 };
+      worksheet.getCell(`I${nextLine}`).numFmt =
+        '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-';
+      const merges2 = [`G${nextLine}:H${nextLine}`];
+      merges2.forEach((range) => worksheet.mergeCells(range));
+    }
+    // nextLine += 3;
+  });
+
+  const buffer = await workbook.xlsx.writeBuffer();
+  const blob = new Blob([buffer], { type: 'application/octet-stream' });
+
+  return blob;
+};

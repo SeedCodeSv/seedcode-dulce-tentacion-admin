@@ -8,12 +8,11 @@ import { Button, Select, SelectItem } from '@nextui-org/react';
 import { Fragment, useEffect, useState } from 'react';
 import { PiMicrosoftExcelLogoBold } from 'react-icons/pi';
 import { toast } from 'sonner';
-import { export_excel_factura } from '../excel/generate_excel';
+import { export_excel_facturacion } from '../excel/generate_excel';
 import saveAs from 'file-saver';
 import { formatDateMMDDYYYY } from '@/utils/dates';
 import { formatCurrency } from '@/utils/dte';
 import { useViewsStore } from '@/store/views.store';
-import { SalesByDay } from '@/types/iva_fe';
 
 function FEBookIVA() {
   const [monthSelected, setMonthSelected] = useState(new Date().getMonth() + 1);
@@ -40,66 +39,51 @@ function FEBookIVA() {
       return;
     }
 
-    const data_f = facturas_by_month.length > 0 ? facturas_by_month[0] : undefined;
+    console.log(facturas_by_month);
+    const vouchers: Array<{ name: string; items: Array<Array<string | number>> }> = [];
+    facturas_by_month.forEach((voucher) => {
+      const formatName = (type: string) => {
+        switch (type) {
+          case 'T':
+            return 'Tickets';
+          case 'F':
+            return 'Facturas';
+          case 'FE':
+            return 'Facturas Electrónicas';
+        }
+      };
 
-    const facturas: Array<Array<string | number>> = [];
-
-    if (data_f) {
-      data_f.sales.forEach((factura) => {
-        facturas.push([
-          formatDateMMDDYYYY(factura.day, monthSelected),
-          factura.firstCorrelativ!,
-          factura.lastCorrelative!,
-          factura.firstNumeroControl!.replace('-', ''),
-          factura.lastNumeroControl!.replace('-', ''),
-          '',
-          Number(factura.totalSales),
-          '',
-          Number(factura.totalSales),
-          '',
-        ]);
-      });
-    }
-
-    const filteredByCode = facturas_by_month
-      .filter((item) => item.typeVoucher === 'T')
-      .reduce(
-        (acc, item) => {
-          if (!acc[item['code']]) acc[item['code']] = [];
-          acc[item.code].push(item);
-          return acc;
-        },
-        {} as Record<string, SalesByDay[]>
-      );
-
-    const arraysByCode = Object.values(filteredByCode);
-    const codesArray = Object.keys(filteredByCode);
-
-    const ticketData = arraysByCode
-      .flatMap((items) => items.map((item) => item))
-      .map((items) => {
-        return items.sales.map((item) => {
+      vouchers.push({
+        name: formatName(voucher.typeVoucher) + ' ' + `(${voucher.code})`,
+        items: voucher.sales.map((venta) => {
           return [
-            formatDateMMDDYYYY(item.day, monthSelected),
-            item.firstCorrelativ!,
-            item.lastCorrelative!,
-            item.firstNumeroControl!.replace('-', ''),
-            item.lastNumeroControl!.replace('-', ''),
+            formatDateMMDDYYYY(venta.day, monthSelected),
+            venta.firstCorrelativ!,
+            venta.lastCorrelative!,
+            venta.firstNumeroControl!.replace('-', ''),
+            venta.lastNumeroControl!.replace('-', ''),
             '',
-            Number(item.totalSales),
+            Number(venta.totalSales),
             '',
-            Number(item.totalSales),
+            Number(venta.totalSales),
             '',
           ];
-        });
+        }),
       });
+    });
 
     const month = months.find((month) => month.value === monthSelected)?.name || '';
 
-    const blob = await export_excel_factura(facturas, month, transmitter, ticketData, codesArray);
+    const blob = await export_excel_facturacion({
+      transmitter,
+      month,
+      items: vouchers,
+    });
 
     saveAs(blob, `Libro_Consumidor_Final_${month}.xlsx`);
   };
+
+  console.log(transmitter);
 
   const { actions } = useViewsStore();
   const viewName = actions.find((v) => v.view.name == 'IVA de FE');
@@ -108,7 +92,7 @@ function FEBookIVA() {
   return (
     <Layout title="IVA - FE">
       <div className=" w-full h-full p-10 bg-gray-50 dark:bg-gray-900">
-        <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+        <div className="w-full h-full border-white border p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <div className="w-full flex flex-col lg:flex-row gap-5">
             <div className="w-full">
               <Select
@@ -183,10 +167,10 @@ function FEBookIVA() {
                         <>
                           <div className="w-full py-10">
                             <p>
-                              {index === 0
-                                ? `FACTURAS(${facturas.resolution})`
-                                : `Punto de Venta(
-                              ${facturas.code})`}
+                              {facturas.typeVoucher === 'F' && `Facturas (${facturas.resolution})`}
+                              {facturas.typeVoucher === 'FE' &&
+                                `Facturas Electrónicas (${facturas.code})`}
+                              {facturas.typeVoucher === 'T' && `Tickets (${facturas.code})`}
                             </p>
                           </div>
                           <table className="w-full">
@@ -282,64 +266,6 @@ function FEBookIVA() {
                       )}
                     </Fragment>
                   ))}
-                  {/* {facturas_by_month.length > 0 ? (
-                    <>
-                      <table className="w-full">
-                        <thead className="sticky top-0 z-20 bg-white">
-                          <tr>
-                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                              Fecha
-                            </th>
-                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                              Correlativo Inicial
-                            </th>
-                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                              Correlativo Final
-                            </th>
-                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                              Numero Control Inicial
-                            </th>
-                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                              Numero Control Final
-                            </th>
-                            <th className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                              Total
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {facturas_by_month.map((factura, index) => (
-                            <tr key={index} className="border-b border-slate-200">
-                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                {formatDateMMDDYYYY(factura.day, monthSelected)}
-                              </td>
-                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                {factura.firstCorrelative!}
-                              </td>
-                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                {factura.lastCorrelative!}
-                              </td>
-                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                {factura.firstNumeroControl!}
-                              </td>
-                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                {factura.lastNumeroControl!}
-                              </td>
-                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                {formatCurrency(Number(factura.totalSales))}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </>
-                  ) : (
-                    <div className="w-full h-full flex dark:bg-gray-600 p-10 flex-col justify-center items-center">
-                      <p className="mt-5 dark:text-white text-gray-600 text-xl">
-                        No se encontraron resultados
-                      </p>
-                    </div>
-                  )} */}
                 </>
               )}
             </div>

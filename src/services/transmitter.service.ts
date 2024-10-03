@@ -17,7 +17,7 @@ export const get_transmitterId = () => {
   const user = get_user();
   return axios.get<IGetTransmitter>(
     API_URL +
-      `/transmitter/${user?.correlative?.branch?.name ?? user?.pointOfSale?.branch?.name ?? 0}`,
+      `/transmitter/${user?.correlative?.branch?.transmitterId ?? user?.pointOfSale?.branch?.transmitterId ?? 0}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,

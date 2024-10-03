@@ -1,5 +1,5 @@
-// export const API_URL = 'http://localhost:8080/api';
-export const API_URL = 'https://shark-app-wcoqq.ondigitalocean.app/api';
+export const API_URL = 'http://localhost:8080/api';
+// export const API_URL = 'https://shark-app-wcoqq.ondigitalocean.app/api';
 // export const API_URL = 'http://192.168.0.21:8081/api';
 export const WS_URL = 'wss://shark-app-wcoqq.ondigitalocean.app/sales-gateway';
 // export const WS_URL = 'ws://192.168.0.20:8080/sales-gateway';
