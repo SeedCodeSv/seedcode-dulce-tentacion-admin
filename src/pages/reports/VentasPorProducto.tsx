@@ -4,9 +4,7 @@ import { useContext, useEffect, useState } from 'react';
 import { formatDate } from '../../utils/dates';
 import GraphicProductCategory from './Product/GraphicProductCategory';
 import { salesReportStore } from '@/store/reports/sales_report.store';
-import { DataTable } from 'primereact/datatable';
 import { global_styles } from '@/styles/global.styles';
-import { Column } from 'primereact/column';
 import { formatCurrency } from '@/utils/dte';
 import { useBranchesStore } from '@/store/branches.store';
 import TooltipGlobal from '@/components/global/TooltipGlobal';
@@ -14,6 +12,7 @@ import { Filter, SearchIcon } from 'lucide-react';
 import BottomDrawer from '@/components/global/BottomDrawer';
 import { ThemeContext } from '@/hooks/useTheme';
 import { useAuthStore } from '@/store/auth.store';
+import useGlobalStyles from '@/components/global/global.styles';
 
 function VentasPorProducto() {
   const [startDate, setStartDate] = useState(formatDate());
@@ -36,16 +35,6 @@ function VentasPorProducto() {
     getBranchesList();
   }, []);
 
-  // useEffect(() => {
-  //   getGraphicForCategoryProductsForDates(startDate, endDate, typePayment);
-  //   getSalesProducts(startDate, endDate, typePayment);
-  // }, [startDate, endDate, typePayment]);
-
-  useEffect(() => {
-    // getGraphicForCategoryProductsForDates(startDate, endDate, typePayment);
-    // getSalesProducts(startDate, endDate, typePayment);
-  }, [startDate, endDate, typePayment]);
-
   const handleSearch = (searchParam: string | undefined) => {
     getGraphicForCategoryProductsForDates(
       Number(
@@ -64,10 +53,13 @@ function VentasPorProducto() {
       typePayment
     );
   };
+
+  const styles = useGlobalStyles();
+
   return (
     <Layout title="Ventas por Producto">
-      <div className=" w-full h-full p-10 bg-gray-50 dark:bg-gray-900">
-        <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+      <div className=" w-full h-full p-5 bg-gray-50 dark:bg-gray-900 overflow-y-auto">
+        <div className="w-full h-full border-white border p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <div className="hidden md:grid w-full grid-cols-1 gap-5 md:grid-cols-4">
             <Input
               label="Fecha inicial"
@@ -101,7 +93,7 @@ function VentasPorProducto() {
               onSelectionChange={(key) => {
                 if (key) {
                   const payment = new Set(key);
-                  setTypePayment(payment.values().next().value);
+                  setTypePayment(payment.values().next().value as string);
                 } else {
                   setTypePayment('');
                 }
@@ -186,7 +178,7 @@ function VentasPorProducto() {
                     onSelectionChange={(key) => {
                       if (key) {
                         const payment = new Set(key);
-                        setTypePayment(payment.values().next().value);
+                        setTypePayment(payment.values().next().value as string);
                       } else {
                         setTypePayment('');
                       }
@@ -213,7 +205,7 @@ function VentasPorProducto() {
             </div>
           </div>
 
-          <div className="w-full py-1 border-b dark:border-gray-700">
+          <div className="w-full h-full overflow-y-auto py-1 border-b dark:border-gray-700">
             <div className="w-full mt-5">
               {loading_sales_products ? (
                 <div className="flex flex-col items-center justify-center w-full h-64">
@@ -227,32 +219,36 @@ function VentasPorProducto() {
                       Venta total : {formatCurrency(Number(total_sales_product))}
                     </p>
                   </div>
-                  <DataTable
-                    value={sales_products}
-                    className="shadow dark:text-white dark:bg-gray-950"
-                    emptyMessage="No se encontraron resultados"
-                    scrollHeight="flex"
-                    scrollable
-                    style={{ maxHeight: '500px' }}
-                  >
-                    <Column
-                      headerClassName="text-sm font-semibold"
-                      bodyClassName={'dark:text-white dark:bg-gray-950'}
-                      headerStyle={{
-                        ...global_styles().darkStyle,
-                        borderTopLeftRadius: '10px',
-                      }}
-                      body={(field) => field.productName}
-                      header="Fecha"
-                    />
-                    <Column
-                      headerClassName="text-sm font-semibold"
-                      bodyClassName={'dark:text-white dark:bg-gray-950'}
-                      headerStyle={{ ...global_styles().darkStyle }}
-                      body={(field) => formatCurrency(Number(field.totalItemSum))}
-                      header="Total en ventas"
-                    />
-                  </DataTable>
+                  <div className="max-h-[400px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
+                    <table className="w-full">
+                      <thead className="sticky top-0 z-20 bg-white">
+                        <tr>
+                          <th
+                            style={styles.darkStyle}
+                            className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
+                          >
+                            Producto
+                          </th>
+                          <th
+                            style={styles.darkStyle}
+                            className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
+                          >
+                            Total en ventas
+                          </th>
+                        </tr>
+                      </thead>
+                      {sales_products.map((product) => (
+                        <tr className="border-b border-slate-200">
+                          <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                            {product.productName}
+                          </td>
+                          <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                            {formatCurrency(Number(product.totalItemSum))}
+                          </td>
+                        </tr>
+                      ))}
+                    </table>
+                  </div>
                 </>
               )}
             </div>

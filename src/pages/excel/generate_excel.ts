@@ -1126,3 +1126,349 @@ export const export_excel_facturacion = async (props: ExportProp) => {
 
   return blob;
 };
+
+interface Ccfe {
+  name: string;
+  sales: Array<Array<string | number>>;
+  totals: FCF;
+}
+
+interface ExportPropCcfe {
+  items: Ccfe[];
+  transmitter: ITransmitter;
+  month: string;
+}
+
+export const export_excel_facturacion_ccfe = async ({
+  items,
+  transmitter,
+  month,
+}: ExportPropCcfe) => {
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet('Ventas CCF');
+
+  const borders = {
+    top: { style: 'thin' },
+    left: { style: 'thin' },
+    bottom: { style: 'thin' },
+    right: { style: 'thin' },
+  } as ExcelJS.Borders;
+
+  worksheet.columns = [
+    { key: 'A', width: 5 },
+    { key: 'B', width: 11.8 },
+    { key: 'C', width: 30 },
+    { key: 'D', width: 11.8 },
+    { key: 'E', width: 11.8 },
+    { key: 'F', width: 11.8 },
+    { key: 'G', width: 11.8 },
+    { key: 'H', width: 13 },
+    { key: 'I', width: 13 },
+    { key: 'J', width: 13 },
+    { key: 'K', width: 13 },
+    { key: 'L', width: 13 },
+    { key: 'M', width: 13 },
+    { key: 'N', width: 13 },
+  ];
+
+  const merges = ['A3:C3', 'D3:L3', 'D4:L4', 'D5:E5'];
+
+  merges.forEach((range) => worksheet.mergeCells(range));
+  const titles = [
+    { cell: 'D4', text: 'LIBRO DE COMPRAS' },
+    { cell: 'A5', text: 'MES' },
+    { cell: 'B5', text: `${month}` },
+    { cell: 'D5', text: `AÑO: ${new Date().getFullYear()}` },
+  ];
+  titles.forEach(({ cell, text }) => {
+    worksheet.getCell(cell).value = text;
+    worksheet.getCell(cell).alignment = { horizontal: 'center', wrapText: true };
+
+    if (['A5', 'B5', 'D5'].includes(cell)) {
+      worksheet.getCell(cell).font = {
+        bold: true,
+      };
+    }
+  });
+  worksheet.getCell('B5').font = { bold: true };
+  worksheet.getCell('D5').font = { bold: true };
+  worksheet.getCell('D4').font = { bold: true };
+  worksheet.getCell('A3').value = {
+    richText: [
+      {
+        text: 'REGISTRO No.:',
+        font: {
+          bold: false,
+        },
+      },
+      {
+        text: `${transmitter.nrc}`,
+        font: {
+          bold: true,
+        },
+      },
+    ],
+  };
+  worksheet.getCell('D3').value = {
+    richText: [
+      {
+        text: 'ESTABLECIMIENTO:',
+        font: {
+          bold: false,
+        },
+      },
+      {
+        text: `${transmitter.nombre}`,
+        font: {
+          bold: true,
+        },
+      },
+    ],
+  };
+
+  let nextLine = 7;
+
+  items.forEach(({ name, sales, totals }) => {
+    worksheet.getCell(`A${nextLine}`).value = name;
+    worksheet.getCell(`A${nextLine}`).font = {
+      bold: true,
+      size: 10,
+    };
+
+    const merges = [
+      `A${nextLine}:C${nextLine}`,
+      `A${nextLine + 2}:A${nextLine + 3}`,
+      `B${nextLine + 2}:B${nextLine + 3}`,
+      `C${nextLine + 2}:C${nextLine + 3}`,
+      `D${nextLine + 2}:D${nextLine + 3}`,
+      `E${nextLine + 3}:G${nextLine + 2}`,
+      `H${nextLine + 2}:I${nextLine + 2}`,
+      `J${nextLine + 2}:J${nextLine + 3}`,
+      `K${nextLine + 2}:K${nextLine + 3}`,
+      `L${nextLine + 2}:L${nextLine + 3}`,
+      `M${nextLine + 2}:M${nextLine + 3}`,
+      `N${nextLine + 2}:N${nextLine + 3}`,
+    ];
+
+    merges.forEach((range) => worksheet.mergeCells(range));
+
+    worksheet.getRow(nextLine + 2).height = 25;
+
+    const headers_cell = [
+      { cell: `A${nextLine + 3}`, text: 'No. Corr.' },
+      { cell: `B${nextLine + 3}`, text: 'Fecha Emisión' },
+      { cell: `C${nextLine + 3}`, text: 'Código de generación' },
+      { cell: `D${nextLine + 3}`, text: 'No. Reg.' },
+      { cell: `E${nextLine + 3}`, text: 'Nombre del Cliente' },
+      { cell: `H${nextLine + 2}`, text: 'Ventas Internas' },
+      { cell: `H${nextLine + 3}`, text: 'Exentas' },
+      { cell: `I${nextLine + 3}`, text: 'Gravadas' },
+      { cell: `J${nextLine + 3}`, text: 'IVA Débito Fiscal' },
+      { cell: `K${nextLine + 3}`, text: 'Ventas a cuenta de terceros' },
+      { cell: `L${nextLine + 3}`, text: 'IVA Débito Fiscal a cuenta de terceros' },
+      { cell: `M${nextLine + 3}`, text: 'IVA Percibido' },
+      { cell: `N${nextLine + 3}`, text: 'Total' },
+    ];
+
+    headers_cell.forEach(({ cell, text }) => {
+      worksheet.getCell(cell).value = text;
+      worksheet.getCell(cell).font = { name: 'Calibri', size: 9, bold: true };
+      worksheet.getCell(cell).alignment = { horizontal: 'center', wrapText: true };
+      worksheet.getCell(cell).border = borders;
+    });
+
+    sales.forEach((item, rowIndex) => {
+      const row = rowIndex + nextLine + 4;
+
+      item.forEach((value, colIndex) => {
+        let actualColIndex = colIndex;
+
+        if (colIndex === 4) {
+          worksheet.mergeCells(`${String.fromCharCode(69)}${row}:${String.fromCharCode(71)}${row}`);
+          const cell = `${String.fromCharCode(69)}${row}`;
+          worksheet.getCell(cell).value = value;
+          worksheet.getCell(cell).border = borders;
+          worksheet.getCell(cell).alignment = { horizontal: 'left', wrapText: true };
+          worksheet.getCell(cell).font = { name: 'Calibri', size: 9 };
+        } else if (colIndex > 4) {
+          actualColIndex = colIndex + 2;
+          const cell = String.fromCharCode(65 + actualColIndex) + row;
+          worksheet.getCell(cell).value = value;
+          worksheet.getCell(cell).border = borders;
+          worksheet.getCell(cell).alignment = { horizontal: 'left', wrapText: true };
+          worksheet.getCell(cell).font = { name: 'Calibri', size: 9 };
+
+          if ([5, 6, 7, 8, 9, 10, 11].includes(colIndex))
+            worksheet.getCell(cell).numFmt =
+              '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-';
+        } else {
+          const cell = String.fromCharCode(65 + colIndex) + row;
+          if (colIndex === 1) worksheet.getCell(cell).numFmt = 'mm/dd/yyyy';
+          worksheet.getCell(cell).value = value;
+          worksheet.getCell(cell).border = borders;
+          worksheet.getCell(cell).alignment = { horizontal: 'left', wrapText: true };
+          worksheet.getCell(cell).font = { name: 'Calibri', size: 9 };
+
+          if ([5, 6, 7, 8, 9, 10, 11].includes(colIndex))
+            worksheet.getCell(cell).numFmt =
+              '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-';
+        }
+      });
+    });
+
+    nextLine += sales.length + 4;
+
+    worksheet.getCell(`E${nextLine}`).value = 'TOTAL';
+    worksheet.getCell(`E${nextLine}`).font = {
+      name: 'Calibri',
+      size: 8,
+      bold: true,
+    };
+    ['H', 'I', 'J', 'K', 'L', 'M', 'N'].forEach((col) => {
+      worksheet.getCell(`${col}${nextLine}`).value = {
+        formula: `SUM(${col}8:${col}${nextLine - 1})`,
+        result: 0,
+      };
+      worksheet.getCell(`${col}${nextLine}`).font = { name: 'Calibri', bold: true, size: 8 };
+      worksheet.getCell(`${col}${nextLine}`).numFmt =
+        '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-';
+    });
+
+    const borders_cells = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'];
+
+    borders_cells.forEach((cell) => {
+      worksheet.getCell(`${cell}${nextLine}`).border = borders;
+    });
+
+    const columns_final = [
+      `D${nextLine + 5}`,
+      `F${nextLine + 5}`,
+      `G${nextLine + 5}`,
+      `H${nextLine + 5}`,
+      `I${nextLine + 5}`,
+      `J${nextLine + 5}`,
+    ];
+
+    // merges_cells.forEach((merge) => worksheet.mergeCells(merge))
+
+    worksheet.getCell(`D${nextLine + 5}`).value = 'Ventas Exentas';
+    worksheet.getCell(`F${nextLine + 5}`).value = 'Ventas Gravadas';
+    worksheet.getCell(`G${nextLine + 5}`).value = 'Exportaciones';
+    worksheet.getCell(`H${nextLine + 5}`).value = 'IVA';
+    worksheet.getCell(`I${nextLine + 5}`).value = 'Percibido';
+    worksheet.getCell(`J${nextLine + 5}`).value = 'Total';
+
+    columns_final.forEach((col, index) => {
+      worksheet.getCell(col).alignment = { horizontal: 'center', wrapText: true };
+      worksheet.getCell(col).font = { size: index === 2 ? 10 : 11, name: 'Calibri' };
+    });
+
+    worksheet.getRow(nextLine + 6).height = 6;
+    worksheet.getCell(`B${nextLine + 7}`).value = 'Consumidores Finales';
+    worksheet.getCell(`B${nextLine + 8}`).value = 'Contribuyentes';
+    worksheet.getCell(`B${nextLine + 9}`).value = 'Totales';
+    worksheet.getCell(`B${nextLine + 9}`).font = { bold: true, name: 'Calibri' };
+
+    //FCF
+    worksheet.getCell(`D${nextLine + 7}`).value = totals.exenta;
+    worksheet.getCell(`F${nextLine + 7}`).value = totals.gravada;
+    worksheet.getCell(`G${nextLine + 7}`).value = 0;
+    worksheet.getCell(`H${nextLine + 7}`).value = totals.iva;
+    worksheet.getCell(`I${nextLine + 7}`).value = totals.retencion;
+    worksheet.getCell(`J${nextLine + 7}`).value = totals.total;
+
+    worksheet.getCell(`D${nextLine + 8}`).value = { formula: `+H${nextLine}` };
+    worksheet.getCell(`F${nextLine + 8}`).value = { formula: `+I${nextLine}` };
+    worksheet.getCell(`G${nextLine + 8}`).value = 0;
+    worksheet.getCell(`H${nextLine + 8}`).value = { formula: `+J${nextLine}` };
+    worksheet.getCell(`I${nextLine + 8}`).value = { formula: `+L${nextLine}` };
+    worksheet.getCell(`J${nextLine + 8}`).value = {
+      formula: `SUM(D${nextLine + 8}+F${nextLine + 8}+G${nextLine + 8}+H${nextLine + 8})`,
+    };
+
+    worksheet.getCell(`D${nextLine + 9}`).value = {
+      formula: `SUM(D${nextLine + 7}+D${nextLine + 8})`,
+    };
+    worksheet.getCell(`F${nextLine + 9}`).value = {
+      formula: `SUM(F${nextLine + 7}+F${nextLine + 8})`,
+    };
+    worksheet.getCell(`G${nextLine + 9}`).value = {
+      formula: `SUM(G${nextLine + 7}+G${nextLine + 8})`,
+    };
+    worksheet.getCell(`H${nextLine + 9}`).value = {
+      formula: `SUM(H${nextLine + 7}+H${nextLine + 8})`,
+    };
+    worksheet.getCell(`I${nextLine + 9}`).value = {
+      formula: `SUM(I${nextLine + 7}+I${nextLine + 8})`,
+    };
+    worksheet.getCell(`J${nextLine + 9}`).value = {
+      formula: `SUM(D${nextLine + 9}+F${nextLine + 9}+G${nextLine + 9}+H${nextLine + 9})`,
+    };
+
+    const totals_fields = [
+      `D${nextLine + 9}`,
+      `E${nextLine + 9}`,
+      `F${nextLine + 9}`,
+      `G${nextLine + 9}`,
+      `H${nextLine + 9}`,
+      `I${nextLine + 9}`,
+      `J${nextLine + 9}`,
+    ];
+
+    const cell_to_format = [
+      `D${nextLine + 7}`,
+      `F${nextLine + 7}`,
+      `G${nextLine + 7}`,
+      `H${nextLine + 7}`,
+      `I${nextLine + 7}`,
+      `J${nextLine + 7}`,
+      `D${nextLine + 8}`,
+      `F${nextLine + 8}`,
+      `G${nextLine + 8}`,
+      `H${nextLine + 8}`,
+      `I${nextLine + 8}`,
+      `J${nextLine + 8}`,
+      ...totals_fields,
+    ];
+
+    totals_fields.forEach((cell) => {
+      worksheet.getCell(cell).font = { bold: true };
+      worksheet.getCell(cell).border = {
+        bottom: {
+          style: 'double',
+        },
+        top: {
+          style: 'thin',
+        },
+      };
+    });
+
+    cell_to_format.forEach((cell) => {
+      worksheet.getCell(cell).numFmt = '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-';
+    });
+    nextLine += 5;
+  });
+
+  nextLine += 6
+
+  worksheet.getCell(`D${nextLine + 2}`).border = { bottom: { style: 'thin' } };
+  worksheet.getCell(`D${nextLine + 3}`).value = 'Nombre contador o Contribuyente';
+  worksheet.getCell(`D${nextLine + 2}`).font = { size: 9, name: 'Calibri' };
+  worksheet.getCell(`D${nextLine + 3}`).font = { size: 9, bold: true, name: 'Calibri' };
+
+  worksheet.getCell(`H${nextLine + 2}`).border = { bottom: { style: 'thin' } };
+  worksheet.getCell(`H${nextLine + 3}`).value = 'Firma contador o Contribuyente';
+  worksheet.getCell(`H${nextLine + 2}`).font = { size: 9, name: 'Calibri' };
+  worksheet.getCell(`H${nextLine + 3}`).font = { size: 9, bold: true, name: 'Calibri' };
+
+  worksheet.mergeCells(`D${nextLine + 2}:F${nextLine + 2}`);
+  worksheet.mergeCells(`D${nextLine + 3}:F${nextLine + 3}`);
+
+  worksheet.mergeCells(`H${nextLine + 2}:I${nextLine + 2}`);
+  worksheet.mergeCells(`H${nextLine + 3}:I${nextLine + 3}`);
+
+  const buffer = await workbook.xlsx.writeBuffer();
+  const blob = new Blob([buffer], { type: 'application/octet-stream' });
+
+  return blob;
+};
