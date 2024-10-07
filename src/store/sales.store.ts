@@ -14,6 +14,7 @@ export const useSalesStore = create<salesStore>((set) => ({
   loading_creditos: false,
   creditos_by_month: [],
   factura_totals: 0,
+  facturacion_ccfe: [],
   facturas_by_month: [],
   loading_facturas: false,
   getCffMonth(branchId, month) {
@@ -23,12 +24,14 @@ export const useSalesStore = create<salesStore>((set) => ({
         set({
           creditos_by_month: data.salesCcf,
           factura_totals: data.totalFe,
+          facturacion_ccfe: data.facturacionCcfe,
           loading_creditos: false,
         });
       })
       .catch(() => {
         set({
           creditos_by_month: [],
+          facturacion_ccfe: [],
           factura_totals: 0,
           loading_creditos: false,
         });

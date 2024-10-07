@@ -4,14 +4,15 @@ import { useBranchesStore } from '@/store/branches.store';
 import { useSalesStore } from '@/store/sales.store';
 import { useTransmitterStore } from '@/store/transmitter.store';
 import { months } from '@/utils/constants';
-import { formatDateToMMDDYYYY } from '@/utils/dates';
 import { formatCurrency } from '@/utils/dte';
 import { Button, Select, SelectItem } from '@nextui-org/react';
 import { useEffect, useMemo, useState } from 'react';
 import { PiMicrosoftExcelLogoBold } from 'react-icons/pi';
-import { export_excel_credito } from '../excel/generate_excel';
+import { export_excel_facturacion_ccfe } from '../excel/generate_excel';
 import saveAs from 'file-saver';
 import { useViewsStore } from '@/store/views.store';
+import TableCcfe from './CCFE/TableCcfe';
+import FacturacionCcfeItem from './CCFE/FacturacionCcfe';
 
 function CFFBookIVA() {
   const [monthSelected, setMonthSelected] = useState(new Date().getMonth() + 1);
@@ -24,7 +25,8 @@ function CFFBookIVA() {
     getBranchesList();
   }, []);
 
-  const { loading_creditos, getCffMonth, creditos_by_month, factura_totals } = useSalesStore();
+  const { loading_creditos, getCffMonth, creditos_by_month, factura_totals, facturacion_ccfe } =
+    useSalesStore();
 
   useEffect(() => {
     getCffMonth(branchId, monthSelected > 9 ? `${monthSelected}` : `0${monthSelected}`);
@@ -48,20 +50,58 @@ function CFFBookIVA() {
       Number(cre.montoTotalOperacion),
     ]);
 
+    let items = [];
+
+    if (creditos_by_month.length > 0 || factura_totals > 0) {
+      items.push({
+        name: 'CRÉDITOS FISCALES',
+        sales: data,
+        totals: {
+          total: factura_totals,
+          iva: 0,
+          exenta: 0,
+          gravada: factura_totals,
+          retencion: 0,
+        },
+      });
+    }
+
+    const data_items = facturacion_ccfe.map((fact) => {
+      return {
+        name: `CRÉDITOS FISCALES ELECTRÓNICOS  (${fact.code})`,
+        sales: fact.sales.map((cre, crei) => [
+          crei + 1,
+          cre.fecEmi,
+          cre.codigoGeneracion,
+          cre.customer.nrc !== '0' ? cre.customer.nrc : '',
+          cre.customer.nombre,
+          Number(cre.totalExenta),
+          Number(cre.totalGravada),
+          Number(cre.totalIva),
+          0,
+          0,
+          0,
+          Number(cre.montoTotalOperacion),
+        ]),
+        totals: {
+          exenta: 0,
+          gravada: fact.sales_facturacion,
+          iva: 0,
+          retencion: 0,
+          total: fact.sales_facturacion,
+        },
+      };
+    });
+
+    items = items.concat(data_items);
+
     const month = months.find((month) => month.value === monthSelected)?.name || '';
 
-    const blob = await export_excel_credito(
+    const blob = await export_excel_facturacion_ccfe({
+      items,
       month,
-      data,
-      {
-        total: factura_totals,
-        iva: 0,
-        exenta: 0,
-        gravada: factura_totals,
-        retencion: 0,
-      },
-      transmitter
-    );
+      transmitter,
+    });
 
     saveAs(blob, `Libro_Ventas_CCF_${month}.xlsx`);
   };
@@ -89,7 +129,7 @@ function CFFBookIVA() {
   return (
     <Layout title="IVA - CFF">
       <div className=" w-full h-full p-10 bg-gray-50 dark:bg-gray-900">
-        <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+        <div className="w-full h-full border-white border p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <div className="w-full flex flex-col lg:flex-row gap-5">
             <div className="w-full">
               <Select
@@ -148,7 +188,8 @@ function CFFBookIVA() {
               )}
             </div>
           </div>
-          <div>
+          <div className="overflow-y-auto">
+            <p className="py-3 text-lg font-semibold">CRÉDITOS FISCALES</p>
             <div className="w-full max-h-[500px] lg:max-h-[600px] xl:max-h-[700px] 2xl:max-h-[800px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
               {loading_creditos ? (
                 <div className="w-full flex justify-center p-20 items-center flex-col">
@@ -159,66 +200,7 @@ function CFFBookIVA() {
                 <>
                   {creditos_by_month.length > 0 ? (
                     <>
-                      <table className="w-full">
-                        <thead className="sticky top-0 z-20 dark:bg-black bg-white">
-                          <tr>
-                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                              Fecha
-                            </th>
-                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                              No. Comp.
-                            </th>
-                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                              No. Reg.
-                            </th>
-                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                              Nombre del Cliente
-                            </th>
-                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                              Exenta
-                            </th>
-                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                              Gravada
-                            </th>
-                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                              Iva
-                            </th>
-                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                              Total
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {creditos_by_month.map((factura, index) => (
-                            <tr key={index} className="border-b border-slate-200">
-                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                {formatDateToMMDDYYYY(factura.fecEmi)}
-                              </td>
-                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                {factura.codigoGeneracion}
-                              </td>
-                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                {factura.customer.nrc !== '0' ? factura.customer.nrc : ''}
-                              </td>
-                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                {factura.customer.nombre}
-                              </td>
-                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                {formatCurrency(Number(factura.totalExenta))}
-                              </td>
-                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                {formatCurrency(Number(factura.totalGravada))}
-                              </td>
-                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                {formatCurrency(Number(factura.totalIva))}
-                              </td>
-                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                {formatCurrency(Number(factura.montoTotalOperacion))}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                      <TableCcfe />
                     </>
                   ) : (
                     <div className="w-full h-full flex dark:bg-gray-600 p-10 flex-col justify-center items-center">
@@ -285,6 +267,11 @@ function CFFBookIVA() {
                   </span>
                 </div>
               </div>
+            </div>
+            <div className="mt-4">
+              {facturacion_ccfe.map((item, index) => (
+                <FacturacionCcfeItem facturacionCcfe={item} key={index} />
+              ))}
             </div>
           </div>
         </div>

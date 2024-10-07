@@ -148,7 +148,7 @@ export const SaleInvalidation = (props: Props) => {
 
             const timeout = setTimeout(() => {
               source.cancel('El tiempo de espera ha expirado');
-            }, 25000);
+            }, 20000);
             toast.info('Enviando a hacienda');
             send_to_mh_invalidation(dataMH)
               .then(({ data }) => {

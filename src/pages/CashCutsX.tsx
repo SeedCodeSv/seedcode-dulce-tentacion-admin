@@ -49,7 +49,7 @@ const CashCutsX = () => {
     getIdBranch();
   }, [dateInitial, dateEnd, branchId, codeSelected]);
 
-  const calculateIVA = (total: number) => total * 0.13;
+  const calculateIVA = (total: number) => total / 1.13;
 
   const totalGeneral = useMemo(() => {
     const totalTicket = Number(data?.Ticket?.total ?? 0);
@@ -219,8 +219,8 @@ const CashCutsX = () => {
           <br />
           <div>
             <span>TOTAL GENERAL</span><br />
-            <span>GRAVADAS: ${formatCurrency(totalGeneral - totalGeneral * 0.13)}</span><br />
-            <span>IVA: ${formatCurrency(totalGeneral * 0.13)}</span><br />
+            <span>GRAVADAS: ${formatCurrency(totalGeneral / 1.13)}</span><br />
+            <span>IVA: ${formatCurrency(totalGeneral - totalGeneral / 1.13)}</span><br />
             <span>SUB-TOTAL: ${formatCurrency(totalGeneral)}</span><br />
             <span>EXENTAS:</span><br />
             <span>NO SUJETAS:</span><br />
@@ -642,9 +642,11 @@ const CashCutsX = () => {
                       N. INICIAL: {data?.Ticket?.inicio}
                     </h1>
                     <h1 className="text-black dark:text-white">N. FINAL: {data?.Ticket?.fin}</h1>
-                    <h1 className="text-black dark:text-white">GRAVADAS: $0.00</h1>
                     <h1 className="text-black dark:text-white">
-                      IVA: {calculateIVA(data?.Ticket?.total || 0).toFixed(2)}
+                      GRAVADAS: {formatCurrency(data?.Ticket?.total! / 1.13)}
+                    </h1>
+                    <h1 className="text-black dark:text-white">
+                      IVA: {formatCurrency(data?.Ticket?.total! - data?.Ticket?.total! / 1.13)}
                     </h1>
                     <h1 className="text-black dark:text-white">
                       SUB_TOTAL: {formatCurrency(Number(data?.Ticket?.total.toFixed(2)))}
@@ -668,9 +670,11 @@ const CashCutsX = () => {
                       N. INICIAL: {data?.Factura?.inicio}
                     </h1>
                     <h1 className="text-black dark:text-white">N. FINAL: {data?.Factura?.fin}</h1>
-                    <h1 className="text-black dark:text-white">GRAVADAS: $0.00</h1>
                     <h1 className="text-black dark:text-white">
-                      IVA: {calculateIVA(data?.Factura?.total || 0).toFixed(2)}
+                      GRAVADAS: {formatCurrency(data?.Factura?.total! / 1.13)}
+                    </h1>
+                    <h1 className="text-black dark:text-white">
+                      IVA: {formatCurrency(data?.Factura?.total! - data?.Factura?.total! / 1.13)}
                     </h1>
                     <h1 className="text-black dark:text-white">
                       SUB_TOTAL: {formatCurrency(Number(data?.Factura?.total))}
@@ -696,9 +700,14 @@ const CashCutsX = () => {
                     <h1 className="text-black dark:text-white">
                       N. FINAL: {data?.CreditoFiscal?.fin}
                     </h1>
-                    <h1 className="text-black dark:text-white">GRAVADAS: $0.00</h1>
                     <h1 className="text-black dark:text-white">
-                      IVA: {calculateIVA(data?.CreditoFiscal?.total || 0).toFixed(2)}
+                      GRAVADAS: {formatCurrency(data?.CreditoFiscal?.total! / 1.13)}
+                    </h1>
+                    <h1 className="text-black dark:text-white">
+                      IVA:{' '}
+                      {formatCurrency(
+                        data?.CreditoFiscal?.total! - data?.CreditoFiscal?.total! / 1.13
+                      )}
                     </h1>
                     <h1 className="text-black dark:text-white">
                       SUB_TOTAL: {formatCurrency(Number(data?.CreditoFiscal?.total))}
@@ -724,9 +733,14 @@ const CashCutsX = () => {
                     <h1 className="text-black dark:text-white">
                       N. FINAL: {data?.DevolucionNC?.fin}
                     </h1>
-                    <h1 className="text-black dark:text-white">GRAVADAS: $0.00</h1>
                     <h1 className="text-black dark:text-white">
-                      IVA: {calculateIVA(data?.DevolucionNC?.total || 0).toFixed(2)}
+                      GRAVADAS: {formatCurrency(data?.DevolucionNC?.total! / 1.13)}
+                    </h1>
+                    <h1 className="text-black dark:text-white">
+                      IVA:{' '}
+                      {formatCurrency(
+                        data?.DevolucionNC?.total! - data?.DevolucionNC?.total! / 1.13
+                      )}
                     </h1>
                     <h1 className="text-black dark:text-white">
                       SUB_TOTAL: {formatCurrency(Number(data?.DevolucionNC?.total.toFixed(2)))}
@@ -752,9 +766,12 @@ const CashCutsX = () => {
                     <h1 className="text-black dark:text-white">
                       N. FINAL: {data?.DevolucionT?.fin}
                     </h1>
-                    <h1 className="text-black dark:text-white">GRAVADAS: $0.00</h1>
                     <h1 className="text-black dark:text-white">
-                      IVA: {calculateIVA(data?.DevolucionT?.total || 0)}
+                      GRAVADAS: {formatCurrency(data?.DevolucionT?.total! / 1.13)}
+                    </h1>
+                    <h1 className="text-black dark:text-white">
+                      IVA:{' '}
+                      {formatCurrency(data?.DevolucionT?.total! - data?.DevolucionT?.total! / 1.13)}
                     </h1>
                     <h1 className="text-black dark:text-white">
                       SUB_TOTAL: {formatCurrency(Number(data?.DevolucionT?.total.toFixed(2)))}
@@ -767,24 +784,42 @@ const CashCutsX = () => {
                   </div>
                   <br />
                   <br />
-                  <div className="w-full">
-                    <h1 className="text-black dark:text-white">TOTAL GENERAL</h1>
-                    <h1 className="text-black dark:text-white">
-                      GRAVADAS: {formatCurrency(totalGeneral - totalGeneral * 0.13)}
-                    </h1>
-                    <h1 className="text-black dark:text-white">
-                      IVA: {formatCurrency(totalGeneral * 0.13)}
-                    </h1>
-                    <h1 className="text-black dark:text-white">
-                      SUB-TOTAL: {formatCurrency(totalGeneral)}
-                    </h1>
-                    <h1 className="text-black dark:text-white">EXENTAS:</h1>
-                    <h1 className="text-black dark:text-white">NO SUJETAS:</h1>
-                    <h1 className="text-black dark:text-white">RETENCIONES:</h1>
-                    <h1 className="text-black dark:text-white">
-                      TOTAL: {formatCurrency(totalGeneral)}
-                    </h1>
-                  </div>
+                  {(() => {
+                    const ivaTicket = data?.Ticket?.total! - data?.Ticket?.total! / 1.13;
+                    const ivaFactura = data?.Factura?.total! - data?.Factura?.total! / 1.13;
+                    const ivaCreditoFiscal =
+                      data?.CreditoFiscal?.total! - data?.CreditoFiscal?.total! / 1.13;
+                    const ivaDevolucionNC =
+                      data?.DevolucionNC?.total! - data?.DevolucionNC?.total! / 1.13;
+                    const ivaDevolucionT =
+                      data?.DevolucionT?.total! - data?.DevolucionT?.total! / 1.13;
+
+                    const totalIVA =
+                      ivaTicket + ivaFactura + ivaCreditoFiscal + ivaDevolucionNC + ivaDevolucionT;
+
+                    return (
+                      <>
+                        <div className="w-full">
+                          <h1 className="text-black dark:text-white">TOTAL GENERAL</h1>
+                          <h1 className="text-black dark:text-white">
+                            GRAVADAS: {formatCurrency(totalGeneral / 1.13)}
+                          </h1>
+                          <h1 className="text-black dark:text-white">
+                            IVA: {formatCurrency(totalIVA)}
+                          </h1>
+                          <h1 className="text-black dark:text-white">
+                            SUB-TOTAL: {formatCurrency(totalGeneral)}
+                          </h1>
+                          <h1 className="text-black dark:text-white">EXENTAS: $0.00</h1>
+                          <h1 className="text-black dark:text-white">NO SUJETAS: $0.00</h1>
+                          <h1 className="text-black dark:text-white">RETENCIONES: $0.00</h1>
+                          <h1 className="text-black dark:text-white">
+                            TOTAL: {formatCurrency(totalGeneral)}
+                          </h1>
+                        </div>
+                      </>
+                    );
+                  })()}
                   <div className="grid grid-cols-1 md:grid-cols-2 mt-4 gap-4 w-full">
                     {actionsView.includes('Exportar Excel') && (
                       <Button

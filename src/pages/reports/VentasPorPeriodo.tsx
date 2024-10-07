@@ -26,6 +26,7 @@ import { Filter, SearchIcon } from 'lucide-react';
 import BottomDrawer from '@/components/global/BottomDrawer';
 import { ThemeContext } from '@/hooks/useTheme';
 import { correlativesTypes } from '@/types/correlatives/correlatives_data.types';
+import { usePointOfSales } from '@/store/point-of-sales.store';
 
 function VentasPorPeriodo() {
   const [filter, setFilter] = useState({
@@ -41,6 +42,7 @@ function VentasPorPeriodo() {
   const [startDate, setStartDate] = useState(formatDate());
   const [endDate, setEndDate] = useState(formatDate());
   const [typePayment, setTypePayment] = useState('');
+  const [pointOfSale, setPointOfSale] = useState('');
 
   const [limit, setLimit] = useState(Number(limit_options[0]));
   const [code, setCode] = useState('');
@@ -48,9 +50,12 @@ function VentasPorPeriodo() {
 
   const [selectedBranch, setSelectedBranch] = useState<Branches>();
 
+  const { point_of_sales, getPointOfSales } = usePointOfSales();
+
   useEffect(() => {
     if (selectedBranch) {
       get_correlativesByBranch(Number(selectedBranch?.id));
+      getPointOfSales(Number(selectedBranch?.id));
     }
   }, [selectedBranch]);
 
@@ -77,7 +82,8 @@ function VentasPorPeriodo() {
       searchParam ?? typePayment,
       searchParam ?? selectedBranch?.name,
       searchParam ?? code,
-      searchParam ?? filter.typeVoucher
+      searchParam ?? filter.typeVoucher,
+      pointOfSale ?? ""
     );
     getSalesByPeriodChart(startDate, endDate);
     getBranchesList();
@@ -85,7 +91,7 @@ function VentasPorPeriodo() {
 
   return (
     <Layout title="Ventas por Periodo">
-      <div className=" w-full h-full p-10 bg-gray-50 dark:bg-gray-900">
+      <div className=" w-full h-full p-5 bg-gray-50 dark:bg-gray-900">
         <div className="w-full h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <div className="hidden md:grid w-full grid-cols-1 gap-5 md:grid-cols-4">
             <Input
@@ -120,7 +126,7 @@ function VentasPorPeriodo() {
               onSelectionChange={(key) => {
                 if (key) {
                   const payment = new Set(key);
-                  setTypePayment(payment.values().next().value);
+                  setTypePayment(payment.values().next().value as string);
                 }
               }}
             >
@@ -209,7 +215,7 @@ function VentasPorPeriodo() {
               onSelectionChange={(key) => {
                 if (key) {
                   const corr = new Set(key).values().next().value;
-                  setCode(corr);
+                  setCode(corr as string);
                 }
               }}
             >
@@ -222,7 +228,34 @@ function VentasPorPeriodo() {
                 ))}
             </Select>
 
-            <div className="grid grid-cols-2 w-full gap-4">
+            <div className="col-span-2 grid grid-cols-3 w-full gap-4">
+              <Select
+                label="Punto de venta"
+                variant="bordered"
+                labelPlacement="outside"
+                placeholder='Selecciona un punto de venta'
+                classNames={{ label: 'font-semibold' }}
+                className="w-full"
+                value={limit_options[0]}
+                defaultSelectedKeys={limit_options[0]}
+                onSelectionChange={(key) => {
+                  if (key) {
+                    const point_of_sale = new Set(key).values().next().value;
+                    setPointOfSale(point_of_sale as string);
+                  }
+                }}
+              >
+                {point_of_sales.filter((point) => point.typeVoucher === 'FE').map((point) => (
+                  <SelectItem
+                    key={point.code}
+                    value={limit}
+                    className="dark:text-white"
+                    textValue={point.typeVoucher + " - " + point.code}
+                  >
+                    {point.typeVoucher + " - " + point.code}
+                  </SelectItem>
+                ))}
+              </Select>
               <Select
                 label="Límite"
                 variant="bordered"
@@ -234,7 +267,7 @@ function VentasPorPeriodo() {
                 onSelectionChange={(key) => {
                   if (key) {
                     const limit = new Set(key).values().next().value;
-                    setLimit(limit);
+                    setLimit(limit as number);
                   }
                 }}
               >
@@ -323,7 +356,7 @@ function VentasPorPeriodo() {
                     onSelectionChange={(key) => {
                       if (key) {
                         const payment = new Set(key);
-                        setTypePayment(payment.values().next().value);
+                        setTypePayment(payment.values().next().value as string);
                       }
                     }}
                   >
@@ -400,7 +433,7 @@ function VentasPorPeriodo() {
                     onSelectionChange={(key) => {
                       if (key) {
                         const corr = new Set(key).values().next().value;
-                        setCode(corr);
+                        setCode(corr as string);
                       }
                     }}
                   >
@@ -436,7 +469,7 @@ function VentasPorPeriodo() {
                 onSelectionChange={(key) => {
                   if (key) {
                     const limit = new Set(key).values().next().value;
-                    setLimit(limit);
+                    setLimit(limit as number);
                   }
                 }}
               >

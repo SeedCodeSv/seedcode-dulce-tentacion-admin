@@ -47,7 +47,7 @@ const CushCatsZ = () => {
     getIdBranch();
   }, [dateInitial, dateEnd, branchId, codeSelected]);
 
-  const calculateIVA = (total: number) => total * 0.13;
+  const calculateIVA = (total: number) => total / 1.13;
 
   const [branchAddress, setBranchAddress] = useState('');
 
@@ -186,8 +186,8 @@ const CushCatsZ = () => {
           <br />
           <div>
             <span>TOTAL GENERAL</span><br />
-            <span>GRAVADAS: ${formatCurrency(totalGeneral - totalGeneral * 0.13)}</span><br />
-            <span>IVA: ${formatCurrency(totalGeneral * 0.13)}</span><br />
+           <span>GRAVADAS: ${formatCurrency(totalGeneral / 1.13)}</span><br />
+<span>IVA: ${formatCurrency(totalGeneral - totalGeneral / 1.13)}</span><br />
             <span>SUB-TOTAL: ${formatCurrency(totalGeneral)}</span><br />
             <span>EXENTAS:</span><br />
             <span>NO SUJETAS:</span><br />
@@ -383,7 +383,7 @@ const CushCatsZ = () => {
                     </h1>
                     <h1 className="text-black dark:text-white">GRAVADAS: $0.00</h1>
                     <h1 className="text-black dark:text-white">
-                      IVA: {calculateIVA(data?.CreditoFiscal?.total || 0).toFixed(2)}
+                      IVA: ${calculateIVA(data?.CreditoFiscal?.total || 0).toFixed(2)}
                     </h1>
                     <h1 className="text-black dark:text-white">
                       SUB_TOTAL: {formatCurrency(Number(data?.CreditoFiscal?.total))}
@@ -455,10 +455,10 @@ const CushCatsZ = () => {
                   <div className="w-full">
                     <h1 className="text-black dark:text-white">TOTAL GENERAL</h1>
                     <h1 className="text-black dark:text-white">
-                      GRAVADAS: {formatCurrency(totalGeneral - totalGeneral * 0.13)}
+                      GRAVADAS: {formatCurrency(totalGeneral - totalGeneral / 1.13)}
                     </h1>
                     <h1 className="text-black dark:text-white">
-                      IVA: {formatCurrency(totalGeneral * 0.13)}
+                      IVA: {formatCurrency(totalGeneral / 1.13)}
                     </h1>
                     <h1 className="text-black dark:text-white">
                       SUB-TOTAL: {formatCurrency(totalGeneral)}
