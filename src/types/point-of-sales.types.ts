@@ -129,3 +129,29 @@ export interface PayloadPointOfSales {
   prev: number;
   next: number;
 }
+
+export interface IPointOfSaleCorrelativo {
+	id: number;
+	code: string;
+	typeVoucher: string;
+	description: string;
+	resolution: string;
+	serie: string;
+	from: string;
+	to: string;
+	prev: number;
+	next: number;
+	codPuntoVentaMH: string;
+	codPuntoVenta: string;
+	isActive: boolean;
+	branchId: number;
+	codEstableMH: string;
+	codEstable: string;
+	tipoEstablecimiento: string;
+}
+
+export interface IGetPointOfSaleCorrelative {
+	ok: boolean;
+	status: number;
+	correlativo: IPointOfSaleCorrelativo;
+}

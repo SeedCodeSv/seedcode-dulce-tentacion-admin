@@ -16,6 +16,7 @@
     "@ag-media/react-pdf-table": "^1.0.1",
     "@avalontechsv/idsv": "^1.1.0",
     "@aws-sdk/client-s3": "^3.575.0",
+    "@aws-sdk/s3-request-presigner": "^3.667.0",
     "@formkit/tempo": "^0.1.2",
     "@headlessui/react": "^1.7.19",
     "@nextui-org/react": "^2.2.10",

@@ -2,6 +2,7 @@ export interface Logs {
   message: string;
   title: string;
   generationCode: string;
+  table: string;
 }
 
 export interface Log {

@@ -1,6 +1,8 @@
 import { FacturacionCcfe, SalesCcf } from '@/types/sales_cff.types';
-import { SaleDetails } from '../../types/sales.types';
+import { ISale_JSON_Debito, SaleDates, SaleDetails } from '../../types/sales.types';
 import { SalesByDay } from '@/types/iva_fe';
+import { IPagination } from '@/types/global.types';
+import { SVFC_CF_Firmado } from '@/types/svf_dte/cf.types';
 
 export interface salesStore {
   facturas_by_month: SalesByDay[];
@@ -8,6 +10,11 @@ export interface salesStore {
   creditos_by_month: SalesCcf[];
   facturacion_ccfe: FacturacionCcfe[];
   factura_totals: number;
+  loading_sale: boolean;
+  json_sale: ISale_JSON_Debito | undefined;
+  json_sale_copy: SVFC_CF_Firmado | undefined;
+  sales_dates: SaleDates[];
+  sales_dates_pagination: IPagination;
   loading_creditos: boolean;
   getFeMonth: (branchId: number, month: number) => void;
   getCffMonth: (branchId: number, month: string) => void;
@@ -20,5 +27,15 @@ export interface salesStore {
   ) => void;
   sale_details: SaleDetails | undefined;
   getSaleDetails: (id: number) => void;
-  updateSaleDetails: (data: SaleDetails) => void;
+  updateSaleDetails: (data: ISale_JSON_Debito) => void;
+  getSalesByDatesAndStatus: (
+    page: number,
+    limit: number,
+    branchId: number,
+    startDate: string,
+    endDate: string,
+    state: string
+  ) => void;
+  getNotesOfSale: (id: number) => Promise<{ debits: number; credits: number }>;
+  getJsonSale: (path: string) => void;
 }

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { ICorrelativesDteStore } from './types/correlatives_dte.store.types';
-import { get_correlatives_dte, get_point_of_sales } from '../services/correlatives_dte.service';
+import { get_correlatives_dte, get_correlatives_dte_point_of_sales, get_point_of_sales } from '../services/correlatives_dte.service';
 
 export const useCorrelativesDteStore = create<ICorrelativesDteStore>((set) => ({
   point_of_sales: [],
@@ -20,4 +20,9 @@ export const useCorrelativesDteStore = create<ICorrelativesDteStore>((set) => ({
 
     if (result) return result.data.correlativo;
   },
+  getCorrelativeByPointOfSaleDte(transmitter_id, dte) {
+    return get_correlatives_dte_point_of_sales(transmitter_id, dte)
+      .then(({ data }) => data.correlativo)
+      .catch(() => undefined)
+  }
 }));

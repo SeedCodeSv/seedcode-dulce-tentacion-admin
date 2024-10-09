@@ -21,6 +21,7 @@ import {
   ShoppingBag,
   BookCheck,
   BadgeDollarSign,MapPinned,
+  Tag,
 } from 'lucide-react';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { ThemeContext } from '../hooks/useTheme';
@@ -152,6 +153,12 @@ export const LayoutItems = () => {
       to: '/reports/sales-by-product',
       icon: List,
       label: 'Ventas por Productos',
+    },
+    {
+      viewName: 'Ventas',
+      to: '/sales',
+      icon: Tag,
+      label: 'Ventas',
     },
   ];
 

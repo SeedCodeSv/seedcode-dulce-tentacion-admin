@@ -61,6 +61,9 @@ import SalesInvalidationPage from '@/components/sales/SalesInvalidationPage';
 import AddCustomer from '@/pages/AddCustomer';
 import BirthdayCalendar from '@/components/employee/BirthdayCalendar';
 import PointOfSales from '@/pages/PointOfSales';
+import SalesPage from '@/pages/Sales';
+import NotaDebito from '@/pages/NotaDebito';
+import NotaCredito from '@/pages/NotaCredito';
 
 const Loading = () => {
   return <div>Cargando...</div>;
@@ -347,6 +350,18 @@ export const router = () => {
     {
       path: '/add-theme',
       element: checkAuthorization('Configuración', <CreateTheme />),
+    },
+    {
+      path: '/sales',
+      element: checkAuthorization('Ventas', <SalesPage />),
+    },
+    {
+      path: "/debit-note/:id",
+      element: <NotaDebito />,
+    },
+    {
+      path: "/credit-note/:id",
+      element: <NotaCredito />,
     },
   ]);
 };

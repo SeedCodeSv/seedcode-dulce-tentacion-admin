@@ -3,7 +3,7 @@ import { CF_Receptor, CF_TributosItems } from "./cf.types";
 import {
     FC_ApendiceItems,
     FC_DocumentoRelacionadoItems,
-    FC_Emisor,
+    // FC_Emisor,
     FC_Extension,
     FC_Identificacion,
     FC_VentaTercerosItems,
@@ -14,7 +14,22 @@ export interface NC_Identificacion extends FC_Identificacion { }
 export interface NC_DocumentosRelaciondos
     extends FC_DocumentoRelacionadoItems { }
 
-export interface NC_Emisor extends FC_Emisor { }
+export interface NC_Emisor { 
+    nit: string;
+    nrc: string;
+    nombre: string;
+    codActividad: string;
+    descActividad: string;
+    nombreComercial: string;
+    tipoEstablecimiento: string;
+    direccion: {
+        departamento: string;
+        municipio: string;
+        complemento: string;
+    };
+    telefono: string;
+    correo: string;
+}
 
 export interface NC_Receptor extends CF_Receptor { }
 

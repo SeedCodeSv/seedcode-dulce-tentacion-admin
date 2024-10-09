@@ -193,7 +193,7 @@ function FormMakeSale(props: Props) {
 
     const generate = generate_factura(
       transmitter,
-      Number(correlatives!.siguiente),
+      Number(correlatives!.next),
       tipeDocument,
       Customer,
       cart_products,
@@ -448,6 +448,7 @@ function FormMakeSale(props: Props) {
                   message: errorMessage,
                   generationCode:
                     currentDTE.dteJson.identificacion.codigoGeneracion,
+                    table: 'factura'
                 });
                 toast.success("Se envió la factura a contingencia");
                 props.clear();

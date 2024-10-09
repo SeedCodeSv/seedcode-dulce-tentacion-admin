@@ -38,8 +38,8 @@ export const useAuthStore = create<IAuthStore>((set, get) => ({
             save_branch_id(String(data.user.correlative.branch.id));
           }
           try {
-            const transmitterId = data.user.correlative?.branch?.transmitterId ?? 0;
-            await get().OnLoginMH(transmitterId, data.token);
+            // const transmitterId = data.user.pointOfSale?.branch.transmitterId ?? 0;
+            await get().OnLoginMH(data.user.pointOfSale?.branch.transmitterId ?? 0, data.token);
           } catch (error) {
             toast.error('Error al conectarse con el servidor');
           }
@@ -63,12 +63,14 @@ export const useAuthStore = create<IAuthStore>((set, get) => ({
   async OnLoginMH(id, token) {
     await get_transmitter(id, token)
       .then(({ data }) => {
-        login_mh(data.transmitter.nit, data.transmitter.clavePrivada)
+        login_mh(data.transmitter.nit, data.transmitter.claveApi)
           .then(async (login_mh) => {
             if (login_mh.data.status === 'OK') {
               await save_mh_token(login_mh.data.body.token);
             } else {
-              return;
+              const data = login_mh as unknown as ILoginMHFailed
+              toast.error(`Error ${data}`)
+              return
             }
           })
           .catch((error: AxiosError<ILoginMHFailed>) => {
