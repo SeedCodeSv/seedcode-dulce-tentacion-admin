@@ -158,7 +158,7 @@ export const LayoutItems = () => {
       viewName: 'Ventas',
       to: '/sales',
       icon: Tag,
-      label: 'Ventas',
+      label: 'Ventas facturación electronica',
     },
   ];
 

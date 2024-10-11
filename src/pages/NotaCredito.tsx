@@ -360,6 +360,62 @@ const handleVerify = () => {
       });
 };
 
+const sendToContingencia = () => {
+    setIsLoading(true);
+    toast.info('Enviando a contingencia...')
+    modalError.onClose();
+    if (currentDTE) {
+        currentDTE.dteJson.identificacion.tipoModelo = 2;
+        currentDTE.dteJson.identificacion.tipoOperacion = 2;
+
+        const JSON_DTE = JSON.stringify(currentDTE.dteJson, null, 2)
+        const json_blob = new Blob([JSON_DTE], {
+            type: 'application/json',
+        });
+
+        const json_url = `CLIENTES/${
+            transmitter.nombre
+          }/${new Date().getFullYear()}/VENTAS/NOTAS_DE_CREDITO/${formatDate()}/${
+            currentDTE.dteJson.identificacion.codigoGeneracion
+          }/${currentDTE.dteJson.identificacion.codigoGeneracion}.json`;
+
+          const updloadParams: PutObjectCommandInput = {
+            Bucket: SPACES_BUCKET,
+            Key: json_url,
+            Body: json_blob,
+          };
+
+          s3Client
+            .send(new PutObjectCommand(updloadParams))
+            .then((response) => {
+                if (response.$metadata) {
+                    axios
+                        .post(`${API_URL}/nota-de-credito`, {
+                            dte: json_url,
+                            sello: false,
+                            saleId: id,
+                        })
+                        .then(() => {
+                            toast.success('Nota de credito enviada a contingencia')
+                            navigation('/sales');
+                            setIsLoading(false);
+                        })
+                        .catch(() => {
+                            toast.error('Error al subir la nota de credito a contingencia');
+                            setIsLoading(false)
+                        });
+                } else {
+                    toast.error('Error al subir la nota de credito a contingencia')
+                    setIsLoading(false);
+                }
+            })
+            .catch(() => {
+                toast.error('Error al subir la nota de credito a contingencia');
+                setIsLoading(false)
+            })
+    }
+}
+
 return (
   <Layout title="Nota de Credito">
       <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
@@ -367,17 +423,18 @@ return (
               className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent"
           >
               <div
-                  className="flex items-center gap-3 cursor-pointer mb-4 dark:text-white"
+                  className="flex items-center gap-3 mb-2 dark:text-white"
               >
                  <Button
-                  onClick={() => navigation(-1)}
+                    onClick={() => navigation(-1)}
+                    style={styles.darkStyle}
                  >
                   <ArrowLeft />
                   <p>Regresar</p>
                  </Button>
               </div>
-              <p className="py-4 text-xl font-semibold dark:text-white">Detalles</p>
-              <div className="grid grid-cols-2 gap-5">
+              <p className="mt-4 text-xl font-semibold dark:text-white">Detalles</p>
+              <div className="grid grid-cols-2 gap-5 mt-4">
                   <p className="font-semibold dark:text-white">
                       Código Generación:{' '}
                       <span className="font-normal">{json_sale?.identificacion.codigoGeneracion}</span>
@@ -530,12 +587,12 @@ return (
                       <Button onClick={handleVerify} style={styles.thirdStyle}>
                           Verificar DTE
                       </Button>
-                      {/* <Button
+                      <Button
                           onClick={sendToContingencia}
                           style={styles.dangerStyles}
                       >
                           Enviar a contingencia
-                      </Button> */}
+                      </Button>
                       <Button onClick={() => modalError.onClose()} style={styles.dangerStyles}>
                           Aceptar
                       </Button>

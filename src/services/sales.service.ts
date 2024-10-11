@@ -189,3 +189,14 @@ export const get_notes_of_sale = (id: number) => {
       },
   });
 };
+
+
+export const get_sale_pdf = (saleId: number, type: string) => {
+  const token = get_token();
+  return axios.get<Blob>(`${API_URL}/pdf/sale/${saleId}?type=${type}`, {
+    responseType: "blob",
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+}

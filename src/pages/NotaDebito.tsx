@@ -397,16 +397,67 @@ function NotaDebito() {
       })
   }
 
+  const sendToContingencia = () => {
+    setIsLoading(true);
+    modalError.onClose();
+    if (currentDTE) {
+      currentDTE.dteJson.identificacion.tipoModelo = 2;
+      currentDTE.dteJson.identificacion.tipoOperacion = 2;
+
+      const JSON_DTE = JSON.stringify(currentDTE.dteJson, null, 2);
+      const json_blob = new Blob([JSON_DTE], {
+        type: 'application/json',
+      });
+
+      const json_url = `CLIENTES/${transmitter.nombre
+      }/${new Date().getFullYear()}/VENTAS/NOTAS_DE_DEBITO/${formatDate()}/${currentDTE.dteJson.identificacion.codigoGeneracion
+      }/${currentDTE.dteJson.identificacion.codigoGeneracion}.json`;
+
+      const updloadParams: PutObjectCommandInput = {
+        Bucket: SPACES_BUCKET,
+        Key: json_url,
+        Body: json_blob,
+      };
+
+      s3Client
+        .send(new PutObjectCommand(updloadParams))
+        .then((response) => {
+          if (response.$metadata) {
+            axios
+              .post(`${API_URL}/nota-de-debitos`, {
+                dte: json_url,
+                sello: false,
+                saleId: id,
+              })
+              .then(() => {
+                toast.success('Nota de debito enviada a contingencia');
+                navigation('/sales');
+                setIsLoading(false);
+              })
+              .catch(() => {
+                toast.error('Error al subir la nota de debito a contingencia')
+                setIsLoading(false);
+              });
+          } else {
+            toast.error('Error al subir la nota de debito a contingencia');
+            setIsLoading(false);
+          }
+        })
+        .catch(() => {
+          toast.error('Error al subir ')
+        })
+    }
+  }
+
 
   return (
     <Layout title="Nota de débito">
       <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
         <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
-          <div
-              className="flex items-center gap-3 cursor-pointer mb-4 dark:text-white"
-          >
+          <div className="flex items-center gap-3 cursor-pointer mb-4 dark:text-white">
             <Button
-            onClick={() => navigation(-1)}
+              onClick={() => navigation(-1)}
+              style={styles.darkStyle}
             >
             <ArrowLeft />
             <p>Regresar</p>
@@ -582,12 +633,12 @@ function NotaDebito() {
               <Button onClick={handleVerify} style={styles.thirdStyle}>
                 Verificar DTE
               </Button>
-              {/* <Button
+              <Button
                 onClick={sendToContingencia}
                 style={styles.dangerStyles}
               >
                 Enviar a contingencia
-              </Button> */}
+              </Button>
               <Button onClick={() => modalError.onClose()} style={styles.dangerStyles}>
                 Aceptar
               </Button>

@@ -6,13 +6,14 @@ import { global_styles } from "@/styles/global.styles";
 // import { ambiente, MH_QUERY } from "@/utils/constants";
 import { formatDate } from "@/utils/dates";
 import { formatCurrency } from "@/utils/dte";
-import { Button, Chip, Input, Listbox, ListboxItem, Popover, PopoverContent, PopoverTrigger, Select, SelectItem } from "@nextui-org/react";
+import { Button, Chip, Input, Listbox, ListboxItem, Popover, PopoverContent, PopoverTrigger, Select, SelectItem, useDisclosure } from "@nextui-org/react";
 import { CircleX, EllipsisVertical, LoaderCircle, X } from "lucide-react";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import Pagination from "../global/Pagination";
-// import ModalGlobal from "../global/ModalGlobal";
+// import { ambiente, MH_QUERY } from "@/utils/constants";
+import { get_sale_pdf } from "@/services/sales.service";
 
 function ListSales() {
     const styles = global_styles()
@@ -48,94 +49,18 @@ function ListSales() {
         getSalesByDatesAndStatus(1, limit, Number(user?.pointOfSale?.branch.id), dateInitial, dateEnd, state)
     }, [dateInitial, dateEnd, state, limit])
 
-    // const QR_URL = (codeGen: string, fecEmi: string) => {
-    //     const qr_value =
-    //     MH_QUERY + "?ambiente=" + ambiente + "&codGen=" + codeGen + "&fechaEmi=" + fecEmi
-
-    //     return `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(
-    //     qr_value
-    //     )}`
-    // }
-
-    // const { personalization } = useConfigurationStore()
-    const [loadingPdf, ] = useState(false)
+    const [loadingPdf, setLoadingPdf] = useState(false)
     const [pdfPath, setPdfPath] = useState("")
+    const showFullLayout = useDisclosure()
 
-    //   const showPDF = async (sale: SaleDates) => {
-    //     setLoadingPdf(true)
-    //     const url = await getSignedUrl(
-    //       s3Client,
-    //       new GetObjectCommand({
-    //         Bucket: SPACES_BUCKET,
-    //         Key: sale.pathJson
-    //       })
-    //     )
-    //     if (sale.tipoDte === "01") {
-    //       axios.get<SVFC_FC_Firmado>(url, { responseType: "json" }).then(async (response) => {
-    //         const doc = new jsPDF()
-    //         const QR = QR_URL(
-    //           response.data.identificacion.codigoGeneracion,
-    //           response.data.identificacion.fecEmi
-    //         )
-
-    //         const blobQR = await axios.get<ArrayBuffer>(QR, {
-    //           responseType: "arraybuffer"
-    //         })
-
-    //         let logoUrl = DEFAULT_LOGO
-    //         if (personalization && personalization[0] && personalization[0].logo) {
-    //           logoUrl = personalization[0].logo
-    //         }
-
-    //         const blobLogo = await axios.get<ArrayBuffer>(logoUrl, {
-    //           responseType: "arraybuffer"
-    //         })
-
-    //         const document_pdf = generateFacturaComercial(
-    //           doc,
-    //           response.data,
-    //           new Uint8Array(blobQR.data),
-    //           new Uint8Array(blobLogo.data),
-    //           logoUrl
-    //         )
-
-    //         const pdfUrl = URL.createObjectURL(document_pdf)
-
-    //         setPdfPath(pdfUrl)
-    //         setLoadingPdf(false)
-    //       })
-    //     } else {
-    //       axios.get<SVFC_CF_Firmado>(url, { responseType: "json" }).then(async (response) => {
-    //         const doc = new jsPDF()
-    //         const QR = QR_URL(
-    //           response.data.identificacion.codigoGeneracion,
-    //           response.data.identificacion.fecEmi
-    //         )
-    //         const blobQR = await axios.get<ArrayBuffer>(QR, {
-    //           responseType: "arraybuffer"
-    //         })
-
-    //         let logoUrl = DEFAULT_LOGO
-    //         if (personalization && personalization[0] && personalization[0].logo) {
-    //           logoUrl = personalization[0].logo
-    //         }
-    //         const blobLogo = await axios.get<ArrayBuffer>(logoUrl, {
-    //           responseType: "arraybuffer"
-    //         })
-
-    //         const document_pdf = generateCreditoFiscal(
-    //           doc,
-    //           response.data,
-    //           new Uint8Array(blobQR.data),
-    //           new Uint8Array(blobLogo.data),
-    //           logoUrl
-    //         )
-    //         const pdfUrl = URL.createObjectURL(document_pdf)
-    //         setPdfPath(pdfUrl)
-    //         setLoadingPdf(false)
-    //       })
-    //     }
-    //   }
+      const handleShowPdf = (saleId: number, typeDte: string) => {
+        setLoadingPdf(true)
+        showFullLayout.onOpen()
+        get_sale_pdf(saleId, typeDte).then((res) => {
+          setPdfPath(URL.createObjectURL(res.data))
+          setLoadingPdf(false)
+        })
+      }
 
 
     const verifyNotes = (id: number) => {
@@ -147,8 +72,6 @@ function ListSales() {
         setNotes({ debits: 0, credits: 0 })
     }
 
-    // const modalJson = useDisclosure()
-
     return (
         <div className="w-full h-full p-4 lg:p-8 bg-gray-50 dark:bg-gray-800">
       <div className="w-full h-full p-3 mt-3 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
@@ -158,18 +81,7 @@ function ListSales() {
           endDate={dateEnd}
           dateInitial={dateInitial}
         />
-        <div className="md:flex md:mb-2 gap-10 mb-4 grid overflow-hidden items-end justify-end mr-3">
-          {/* <Button
-            className="font-semibold"
-            onClick={() => modalJson.onOpen()}
-            style={styles.warningStyles}
-          >
-            Procesar JSON
-          </Button>
-
-          <Button className="font-semibold" style={styles.thirdStyle}>
-            Enviar lote a contingencia
-          </Button> */}
+        <div className="md:flex md:mb-2 gap-10 mb-4 grid overflow-hidden items-end justify-end mr-3 mt-4">
           <Select
             classNames={{
               label: "text-sm font-semibold dark:text-white"
@@ -306,23 +218,25 @@ function ListSales() {
                                 //     showPDF(sale)
                                 //   }
                                 // }}
+                                // onClick={handleShowPdf.bind(null, sale.id, sale.tipoDte)}
                               >
                                 <ListboxItem
                                   classNames={{ base: "font-semibold" }}
                                   variant="flat"
                                   color="danger"
                                   key="show-pdf"
+                                  onClick={handleShowPdf.bind(null, sale.id, sale.tipoDte)}
                                 >
                                   Ver comprobante
                                 </ListboxItem>
-                                <ListboxItem
+                                {/* <ListboxItem
                                   classNames={{ base: "font-semibold" }}
                                   variant="flat"
                                   color="danger"
                                   key="verify"
                                 >
                                   Verificar
-                                </ListboxItem>
+                                </ListboxItem> */}
                                 {/* <ListboxItem
                                   classNames={{ base: "font-semibold" }}
                                   key="/get-credit-note/"
@@ -417,10 +331,11 @@ function ListSales() {
                                       variant="flat"
                                       color="danger"
                                       key="show-pdf"
+                                      onClick={handleShowPdf.bind(null, sale.id, sale.tipoDte)}
                                     >
                                       Ver comprobante
                                     </ListboxItem>
-                                    <ListboxItem
+                                    {/* <ListboxItem
                                       classNames={{ base: "font-semibold" }}
                                       variant="flat"
                                       onClick={() => navigation("/annulation/01/" + sale.id)}
@@ -428,7 +343,7 @@ function ListSales() {
                                       key="invalidate"
                                     >
                                       Invalidar
-                                    </ListboxItem>
+                                    </ListboxItem> */}
                                   </Listbox>
                                 </>
                               ) : (
@@ -481,14 +396,14 @@ function ListSales() {
           </div>
         )}
       </div>
-      {/* {loadingPdf && (
+      {loadingPdf && (
         <div className="absolute z-[100] w-screen h-screen inset-0 bg-gray-50 dark:bg-gray-700">
           <div className="flex flex-col items-center justify-center w-full h-full">
             <LoaderCircle size={100} className="animate-spin" />
             <p className="mt-4 text-lg font-semibold">Cargando...</p>
           </div>
         </div>
-      )} */}
+      )}
       {pdfPath && (
         <div className="absolute z-[100] w-screen h-screen inset-0 bg-gray-50 dark:bg-gray-700">
           <Button
