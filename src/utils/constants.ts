@@ -103,3 +103,18 @@ export const months = [
   { value: 11, name: 'Noviembre' },
   { value: 12, name: 'Diciembre' },
 ];
+
+export const sending_steps = [
+  {
+    label: 'Firmando el documento',
+    description: 'Espere mientras se firma el documento',
+  },
+  {
+    label: 'Validando en hacienda',
+    description: 'Hacienda esta validando el documento',
+  },
+  {
+    label: 'Guardando DTE',
+    description: 'Estamos guardando el documento',
+  },
+];

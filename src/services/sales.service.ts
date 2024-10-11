@@ -200,3 +200,23 @@ export const get_sale_pdf = (saleId: number, type: string) => {
     }
   })
 }
+
+export const get_sale_pdf_credit_note = (saleId: number, type: string) => {
+  const token = get_token();
+  return axios.get<Blob>(`${API_URL}/pdf/note-credit/${saleId}?type=${type}`, {
+    responseType: "blob",
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+}
+
+export const get_sale_pdf_debit_note = (saleId: number, type: string) => {
+  const token = get_token();
+  return axios.get<Blob>(`${API_URL}/pdf/note-debit/${saleId}?type=${type}`, {
+    responseType: "blob",
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+}

@@ -1,58 +1,32 @@
-// import { ThemeContext } from "@/hooks/useTheme";
 import { useReportNoteSalesStore } from "@/store/report_notes_sale.store";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-// import jsPDF from "jspdf";
-// import { useConfigurationStore } from "@/store/perzonalitation.store";
-// import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-// import { s3Client } from "@/plugins/s3";
-// import { GetObjectCommand } from "@aws-sdk/client-s3";
-// import { SPACES_BUCKET } from "@/utils/constants";
-// import axios from "axios";
-// import { SVFE_ND_Firmado } from "@/types/svf_dte/nd.types";
 import Layout from "@/layout/Layout";
-import { ArrowLeft, EllipsisVertical } from "lucide-react";
+import { ArrowLeft, EllipsisVertical, LoaderCircle, X } from "lucide-react";
 import { Button, Chip, Listbox, ListboxItem, Popover, PopoverContent, PopoverTrigger } from "@nextui-org/react";
 import { formatCurrency } from "@/utils/dte";
+import useGlobalStyles from "../global/global.styles";
+import { get_sale_pdf_debit_note } from "@/services/sales.service";
 
 function NotesDebitBySale() {
     const {id} = useParams();
     const {notasDebitos, OnGetNotasDebitos} = useReportNoteSalesStore();
-    // const [loadingPdf, setLoadingPdf] = useState(false);
-    // const {personalization} = useConfigurationStore();
     const navigation = useNavigate();
-    // const {theme} = useContext(ThemeContext);
-    // const style = {
-    //     backgroundColor: theme.colors.dark,
-    //     color: theme.colors.primary,
-    // };
+    const [loadingPdf, setLoadingPdf] = useState(false)
+    const [pdfPath, setPdfPath] = useState("")
+    const styles = useGlobalStyles()
 
     useEffect(() => {
         OnGetNotasDebitos(Number(id))
     }, [])
 
-    // const handleGetPDF = async (json: string) => {
-    //     setLoadingPdf(true);
-    //     const url = await getSignedUrl(
-    //         s3Client,
-    //         new GetObjectCommand({
-    //             Bucket: SPACES_BUCKET,
-    //             Key: json,
-    //         })
-    //     ); 
-
-    //     axios
-    //         .get<SVFE_ND_Firmado>(url, {responseType: 'json'})
-    //         .then(async ( response) => {
-    //             const doc = new jsPDF();
-    //             const QR = QR_URL(
-    //                 response.data.identificacion.codigoGeneracion,
-    //                 response.data.identificacion.fecEmi
-    //             )
-
-    //             let logoUrl = DEFA
-    //         })
-    // }
+    const handleGetPDF = (saleId: number, typeDte: string) => {
+        setLoadingPdf(true)
+        get_sale_pdf_debit_note(saleId, typeDte).then((res) => {
+            setPdfPath(URL.createObjectURL(res.data))
+            setLoadingPdf(false)
+        })
+    }
 
     return (
         <Layout title="NOTAS DE DÉBITO">
@@ -129,59 +103,102 @@ function NotesDebitBySale() {
                                 {formatCurrency(Number(sale.montoTotalOperacion))}
                                 </td>
                                 <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                <Popover showArrow>
-                                    <PopoverTrigger>
-                                    <Button isIconOnly>
-                                        <EllipsisVertical size={20} />
-                                    </Button>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="p-1">
-                                    <Listbox
-                                        className="dark:text-white"
-                                        aria-label="Actions"
-                                        // onAction={(key) => {
-                                        //   if (key === 'show-pdf') {
-                                        //     handleGetPDF(sale.pathJson);
-                                        //   }
-                                        // }}
-                                    >
-                                        <ListboxItem
-                                        classNames={{ base: 'font-semibold' }}
-                                        variant="flat"
-                                        color="danger"
-                                        key="show-pdf"
-                                        >
-                                        Ver comprobante
-                                        </ListboxItem>
-                                    </Listbox>
-                                    {sale.salesStatus.name === 'PROCESADO' && (
+                                {!pdfPath && (
+                                     <Popover showArrow>
+                                        <PopoverTrigger>
+                                        <Button isIconOnly>
+                                            <EllipsisVertical size={20} />
+                                        </Button>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="p-1">
                                         <Listbox
-                                        className="dark:text-white"
-                                        aria-label="Actions"
-                                        onAction={(key) => {
-                                            if (key === 'invalidate') {
-                                            navigation('/annulation/06/' + sale.id);
-                                            }
-                                        }}
+                                            className="dark:text-white"
+                                            aria-label="Actions"
+                                            // onAction={(key) => {
+                                            //   if (key === 'show-pdf') {
+                                            //     handleGetPDF(sale.pathJson);
+                                            //   }
+                                            // }}
                                         >
-                                        <ListboxItem
+                                            <ListboxItem
                                             classNames={{ base: 'font-semibold' }}
                                             variant="flat"
                                             color="danger"
-                                            key="invalidate"
-                                        >
-                                            Invalidar
-                                        </ListboxItem>
+                                            key="show-pdf"
+                                            onClick={handleGetPDF.bind(null, sale.id, sale.tipoDte)}
+                                            >
+                                            Ver comprobante
+                                            </ListboxItem>
                                         </Listbox>
-                                    )}
-                                    </PopoverContent>
-                                </Popover>
+                                        {/* {sale.salesStatus.name === 'PROCESADO' && (
+                                            <Listbox
+                                            className="dark:text-white"
+                                            aria-label="Actions"
+                                            onAction={(key) => {
+                                                if (key === 'invalidate') {
+                                                navigation('/annulation/06/' + sale.id);
+                                                }
+                                            }}
+                                            >
+                                            <ListboxItem
+                                                classNames={{ base: 'font-semibold' }}
+                                                variant="flat"
+                                                color="danger"
+                                                key="invalidate"
+                                            >
+                                                Invalidar
+                                            </ListboxItem>
+                                            </Listbox>
+                                        )} */}
+                                        </PopoverContent>
+                                    </Popover>
+                                )}
                                 </td>
                             </tr>
                             ))}
                         </tbody>
                         </table>
                     </div>
+                    {loadingPdf && (
+                        <div className="absolute z-[100] w-screen h-screen inset-0 bg-gray-50 dark:bg-gray-700">
+                        <div className="flex flex-col items-center justify-center w-full h-full">
+                            <LoaderCircle size={100} className="animate-spin" />
+                            <p className="mt-4 text-lg font-semibold">Cargando...</p>
+                        </div>
+                        </div>
+                    )}
+                    {pdfPath && (
+                        <div className="absolute z-[100] w-screen h-screen inset-0 bg-gray-50 dark:bg-gray-700">
+                            <Button
+                                onClick={() => {
+                                setPdfPath("")
+                                }}
+                                style={styles.dangerStyles}
+                                isIconOnly
+                                className="fixed bg-red-600 bottom-10 left-10"
+                            >
+                                <X />
+                            </Button>
+                            {loadingPdf ? (
+                                <div className="flex flex-col items-center justify-center w-full h-full">
+                                <LoaderCircle size={100} className="animate-spin" />
+                                <p className="mt-4 text-lg font-semibold">Cargando...</p>
+                                </div>
+                            ) : (
+                                <>
+                                {pdfPath !== "" ? (
+                                    <div className="w-full h-full">
+                                    <iframe src={pdfPath} className="w-screen h-screen z-[2000]" />
+                                    </div>
+                                ) : (
+                                    <div className="flex items-center justify-center w-full h-full">
+                                    <p>No hay información acerca de este PDF</p>
+                                    </div>
+                                )}
+                                </>
+                            )}
+                        </div>
+                    )}
                 </div>
             </>
         </Layout>

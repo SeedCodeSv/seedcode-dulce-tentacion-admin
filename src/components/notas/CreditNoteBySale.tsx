@@ -1,5 +1,5 @@
 import Layout from "@/layout/Layout";
-import { get_sale_pdf } from "@/services/sales.service";
+import { get_sale_pdf_credit_note } from "@/services/sales.service";
 import { useReportNoteSalesStore } from "@/store/report_notes_sale.store";
 import { formatCurrency } from "@/utils/dte";
 import { Button, Chip, Listbox, ListboxItem, Popover, PopoverContent, PopoverTrigger } from "@nextui-org/react";
@@ -22,7 +22,7 @@ function NotesCreditBySale() {
 
     const handleGetPDF = (saleId: number, typeDte: string) => {
         setLoadingPdf(true)
-        get_sale_pdf(saleId, typeDte).then((res) => {
+        get_sale_pdf_credit_note(saleId, typeDte).then((res) => {
             setPdfPath(URL.createObjectURL(res.data))
             setLoadingPdf(false)
         })
@@ -103,54 +103,36 @@ function NotesCreditBySale() {
                                 {formatCurrency(Number(sale.montoTotalOperacion))}
                                 </td>
                                 <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                <Popover showArrow>
-                                    <PopoverTrigger>
-                                    <Button isIconOnly>
-                                        <EllipsisVertical size={20} />
-                                    </Button>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="p-1">
-                                    <Listbox
-                                        className="dark:text-white"
-                                        aria-label="Actions"
-                                        // onAction={(key) => {
-                                        // if (key === 'show-pdf') {
-                                        //     handleGetPDF(sale.id, sale.tipoDte);
-                                        // }
-                                        // }}
-                                    >
-                                        <ListboxItem
-                                        classNames={{ base: 'font-semibold' }}
-                                        variant="flat"
-                                        color="danger"
-                                        key="show-pdf"
-                                        onClick={handleGetPDF.bind(null, sale.id, sale.tipoDte)}
-                                        >
-                                        Ver comprobante
-                                        </ListboxItem>
-                                    </Listbox>
-                                    {/* {sale.salesStatus.name === 'PROCESADO' && (
+                                {!pdfPath && (
+                                    <Popover showArrow>
+                                        <PopoverTrigger>
+                                        <Button isIconOnly>
+                                            <EllipsisVertical size={20} />
+                                        </Button>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="p-1">
                                         <Listbox
-                                        className="dark:text-white"
-                                        aria-label="Actions"
-                                        onAction={(key) => {
-                                            if (key === 'invalidate') {
-                                            navigation('/annulation/05/' + sale.id);
-                                            }
-                                        }}
+                                            className="dark:text-white"
+                                            aria-label="Actions"
+                                            // onAction={(key) => {
+                                            // if (key === 'show-pdf') {
+                                            //     handleGetPDF(sale.id, sale.tipoDte);
+                                            // }
+                                            // }}
                                         >
-                                        <ListboxItem
+                                            <ListboxItem
                                             classNames={{ base: 'font-semibold' }}
                                             variant="flat"
                                             color="danger"
-                                            key="invalidate"
-                                        >
-                                            Invalidar
-                                        </ListboxItem>
+                                            key="show-pdf"
+                                            onClick={handleGetPDF.bind(null, sale.id, sale.tipoDte)}
+                                            >
+                                            Ver comprobante
+                                            </ListboxItem>
                                         </Listbox>
-                                    )} */}
-                                    </PopoverContent>
-                                </Popover>
+                                        </PopoverContent>
+                                    </Popover>
+                                )}
                                 </td>
                             </tr>
                             ))}
@@ -167,34 +149,34 @@ function NotesCreditBySale() {
                     )}
                     {pdfPath && (
                         <div className="absolute z-[100] w-screen h-screen inset-0 bg-gray-50 dark:bg-gray-700">
-                        <Button
-                            onClick={() => {
-                            setPdfPath("")
-                            }}
-                            style={styles.dangerStyles}
-                            isIconOnly
-                            className="fixed bg-red-600 bottom-10 left-10"
-                        >
-                            <X />
-                        </Button>
-                        {loadingPdf ? (
-                            <div className="flex flex-col items-center justify-center w-full h-full">
-                            <LoaderCircle size={100} className="animate-spin" />
-                            <p className="mt-4 text-lg font-semibold">Cargando...</p>
-                            </div>
-                        ) : (
-                            <>
-                            {pdfPath !== "" ? (
-                                <div className="w-full h-full">
-                                <iframe src={pdfPath} className="w-screen h-screen z-[2000]" />
+                            <Button
+                                onClick={() => {
+                                setPdfPath("")
+                                }}
+                                style={styles.dangerStyles}
+                                isIconOnly
+                                className="fixed bg-red-600 bottom-10 left-10"
+                            >
+                                <X />
+                            </Button>
+                            {loadingPdf ? (
+                                <div className="flex flex-col items-center justify-center w-full h-full">
+                                <LoaderCircle size={100} className="animate-spin" />
+                                <p className="mt-4 text-lg font-semibold">Cargando...</p>
                                 </div>
                             ) : (
-                                <div className="flex items-center justify-center w-full h-full">
-                                <p>No hay información acerca de este PDF</p>
-                                </div>
+                                <>
+                                {pdfPath !== "" ? (
+                                    <div className="w-full h-full">
+                                    <iframe src={pdfPath} className="w-screen h-screen z-[2000]" />
+                                    </div>
+                                ) : (
+                                    <div className="flex items-center justify-center w-full h-full">
+                                    <p>No hay información acerca de este PDF</p>
+                                    </div>
+                                )}
+                                </>
                             )}
-                            </>
-                        )}
                         </div>
                     )}
                 </div>

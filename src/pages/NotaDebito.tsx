@@ -5,7 +5,7 @@ import { useContext, useEffect, useState } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { ThemeContext } from "../hooks/useTheme";
-import { Button, Input, useDisclosure } from "@nextui-org/react";
+import { Button, Input, Spinner, useDisclosure } from "@nextui-org/react";
 import { formatCurrency } from "../utils/dte";
 // import { calculateDiscountedTotal } from "../utils/filters";
 import { toast } from "sonner";
@@ -27,14 +27,11 @@ import HeadlessModal from "../components/global/HeadlessModal";
 import { ArrowLeft, LoaderIcon, ShieldAlert } from "lucide-react";
 import { SendMHFailed } from "../types/transmitter.types";
 import { save_logs } from "../services/logs.service";
-// import jsPDF from "jspdf";
-// import { useConfigurationStore } from "../store/perzonalitation.store";
-// import { makePDFNotaDebito } from "./svfe_pdf/template1/nota_debito.pdf";
 import { PutObjectCommand, PutObjectCommandInput } from "@aws-sdk/client-s3";
 import { formatDate } from "../utils/dates";
 import { s3Client } from "../plugins/s3";
 import { useAuthStore } from "@/store/auth.store";
-import { ambiente, API_URL, SPACES_BUCKET } from "@/utils/constants";
+import { ambiente, API_URL, sending_steps, SPACES_BUCKET } from "@/utils/constants";
 import { ICheckResponse } from "@/types/DTE/check.types";
 
 function NotaDebito() {
@@ -46,6 +43,8 @@ function NotaDebito() {
   const [title, setTitle] = useState<string>("");
   const styles  = global_styles()
   const navigation = useNavigate()
+  const [currentStep, setCurrenStep] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     getSaleDetails(Number(id));
@@ -133,8 +132,11 @@ function NotaDebito() {
   const [currentDTE, setCurrentDTE] = useState<SVFE_ND_SEND>()
 
   const proccessNotaDebito = async () => {
+    setIsLoading(true)
+    setCurrenStep(0)
     if (json_sale) {
       if (json_sale.cuerpoDocumento.length > 0) {
+        setLoading(true)
         const editedItems = json_sale.cuerpoDocumento.filter((item) =>
           json_sale.indexEdited.includes(item.numItem)
         )
@@ -149,6 +151,11 @@ function NotaDebito() {
         }
 
         const correlatives = await getCorrelativeByPointOfSaleDte(Number(user?.id), "NDE")
+        .then((res) => res)
+          .catch(() => {
+            toast.error('No se encontraron correlativos');
+            return;
+          });
 
         if (!correlatives) return
 
@@ -235,6 +242,7 @@ function NotaDebito() {
         setCurrentDTE(nota_debito)
         firmarDocumentoNotaDebito(nota_debito)
           .then((firmador) => {
+            setCurrenStep(1)
             const data_send: PayloadMH = {
                 ambiente: ambiente,
               idEnvio: 1,
@@ -251,6 +259,7 @@ function NotaDebito() {
               }, 25000)
               send_to_mh(data_send, token_mh ?? "", source)
                 .then(async (response) => {
+                  setCurrenStep(2)
                   clearTimeout(timeout)
                   const DTE_FORMED = {
                     ...nota_debito.dteJson,
@@ -302,6 +311,8 @@ function NotaDebito() {
                         )
                         .then(() => {
                           setIsLoading(false)
+                          setLoading(false)
+                          setCurrenStep(0)
                           navigation(-1)
                           toast.success("Nota de debito enviada")
                         })
@@ -315,11 +326,15 @@ function NotaDebito() {
                 .catch(async (error: AxiosError<SendMHFailed>) => {
                   clearTimeout(timeout)
                   if (axios.isCancel(error)) {
+                    setLoading(false);
+                    setCurrenStep(0)
                     setTitle("Tiempo de espera agotado")
                     setErrorMessage("El tiempo limite de espera ha expirado")
                     modalError.onOpen()
                     setIsLoading(false)
                   }
+                  setLoading(false)
+                  setCurrenStep(0)
                   modalError.onOpen()
                   setIsLoading(false)
 
@@ -330,10 +345,12 @@ function NotaDebito() {
                         ? error.response?.data.observaciones.join("\n\n")
                         : ""
                     )
-                    setTitle(error.response?.data.descripcionMsg ?? "Error al procesar venta")
+                    setTitle(error.response?.data.descripcionMsg ?? "Error al procesar nota de debito")
+                    setLoading(false)
+                    setCurrenStep(0)
                     modalError.onOpen()
                     await save_logs({
-                      title: error.response.data.descripcionMsg ?? "Error al procesar venta",
+                      title: error.response.data.descripcionMsg ?? "Error al procesar nota de debito",
                       message:
                         error.response.data.observaciones &&
                         error.response.data.observaciones.length > 0
@@ -346,12 +363,16 @@ function NotaDebito() {
                 })
             } else {
               modalError.onOpen()
+              setLoading(false)
+              setCurrenStep(0)
               setIsLoading(false)
               setErrorMessage("No se ha podido obtener el token de hacienda")
               return
             }
           })
           .catch(() => {
+            setLoading(false)
+            setCurrenStep(0)
             modalError.onOpen()
             setIsLoading(false)
             setTitle("Error en el firmador")
@@ -454,6 +475,40 @@ function NotaDebito() {
     <Layout title="Nota de débito">
       <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
         <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
+          {loading && (
+            <div className="absolute z-[100] left-0 bg-white/80 top-0 h-screen w-screen flex flex-col justify-center items-center">
+              <Spinner className="w-24 h-24 animate-spin"/>
+              <p className="text-lg font-semibold mt-4">Cargando...</p>
+              <div className="flex flex-col">
+                  {sending_steps.map((step, index) => (
+                    <div key={index} className="flex items-start py-2">
+                      <div
+                        className={`flex items-center justify-center w-8 h-8 border-2 rounded-full transition duration-500 ${index <= currentStep
+                          ? 'bg-green-600 border-green-600 text-white'
+                          : 'bg-white border-gray-300 text-gray-500'
+                          }`}
+                      >
+                        {index + 1}
+                      </div>
+                      <div className="ml-4">
+                        <div
+                          className={`font-semibold ${index <= currentStep ? 'text-green-600' : 'text-gray-500'
+                            }`}
+                        >
+                          {step.label}
+                        </div>
+                        {step.description && (
+                          <div className="text-xs font-semibold text-gray-700">
+                            {step.description}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+            </div>
+
+          )}
           <div className="flex items-center gap-3 cursor-pointer mb-4 dark:text-white">
             <Button
               onClick={() => navigation(-1)}
