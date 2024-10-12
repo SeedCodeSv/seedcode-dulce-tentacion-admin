@@ -13,6 +13,7 @@ export interface Log {
   time: string;
   generationCode: string;
   isActive: boolean;
+  table:string
 }
 
 export interface IGetLogByNumber {
