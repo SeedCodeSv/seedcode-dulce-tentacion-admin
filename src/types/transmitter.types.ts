@@ -18,6 +18,7 @@ export interface ITransmitter {
   id: number;
   clavePrivada: string;
   clavePublica: string;
+  claveApi: string;
   nit: string;
   nrc: string;
   nombre: string;

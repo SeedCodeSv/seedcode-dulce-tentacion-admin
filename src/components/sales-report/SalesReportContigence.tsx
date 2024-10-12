@@ -455,6 +455,7 @@ function SalesReportContigence() {
                                 ? error.response?.data.observaciones.join('\n\n')
                                 : '',
                             generationCode: data.dteJson.identificacion.codigoGeneracion,
+                            table: 'report_contingence'
                           });
                           setErrorMessage(
                             error.response.data.observaciones &&
@@ -608,6 +609,7 @@ function SalesReportContigence() {
                                   ? error.response?.data.observaciones.join('\n\n')
                                   : '',
                               generationCode: data.dteJson.identificacion.codigoGeneracion,
+                              table: 'report_contingence'
                             });
                             setErrorMessage(
                               error.response.data.observaciones &&
@@ -644,6 +646,7 @@ function SalesReportContigence() {
                               ? error.response?.data.observaciones.join('\n\n')
                               : '',
                           generationCode: data.dteJson.identificacion.codigoGeneracion,
+                          table: 'report_contingence'
                         });
                         setErrorMessage(
                           error.response.data.observaciones &&

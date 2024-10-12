@@ -84,7 +84,7 @@ const ListCreditCustomers = () => {
 
     const generate = generate_credit_factura(
       transmitter,
-      Number(correlatives!.siguiente),
+      Number(correlatives!.next),
       { id: 1, codigo: '01', valores: 'Factura', isActivated: true },
       cantidad,
       interes,

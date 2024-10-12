@@ -162,7 +162,7 @@ function CreditoFiscal(props: Props) {
     const generate = generate_credito_fiscal(
       transmitter,
       props.tipeDocument,
-      Number(correlatives!.siguiente),
+      Number(correlatives!.next),
       receptor,
       cart_products,
       props.tipePayment,
@@ -329,6 +329,7 @@ function CreditoFiscal(props: Props) {
                         : error.response.data.descripcionMsg,
                     generationCode:
                       generate.dteJson.identificacion.codigoGeneracion,
+                      table: ''
                   });
                 }
               });

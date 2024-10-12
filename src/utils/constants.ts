@@ -1,18 +1,20 @@
-// export const API_URL = 'http://localhost:8080/api';
-export const API_URL = 'https://shark-app-wcoqq.ondigitalocean.app/api';
+export const API_URL = 'http://localhost:8080/api';
+// export const API_URL = 'https://shark-app-wcoqq.ondigitalocean.app/api';
 // export const API_URL = 'http://192.168.0.21:8081/api';
-export const WS_URL = 'wss://shark-app-wcoqq.ondigitalocean.app/sales-gateway';
-// export const WS_URL = 'ws://192.168.0.20:8080/sales-gateway';
+// export const WS_URL = 'wss://shark-app-wcoqq.ondigitalocean.app/sales-gateway';
+export const WS_URL = 'ws://localhost:8080/sales-gateway';
 export const FACTURACION_API = 'https://cats-facturacion-43ay7.ondigitalocean.app/api';
 export const MH_QUERY = 'https://admin.factura.gob.sv/consultaPublica';
 export const ambiente = '00';
 export const version = 2;
 // export const WS_URL = 'ws://192.168.0.20:8080/sales-gateway';
-export const API_FIRMADOR = 'https://firmadorseedcodesv.online/firmardocumento/';
+// export const API_FIRMADOR = 'https://firmadorseedcodesv.online/firmardocumento/';
+export const API_FIRMADOR = 'https://firmador.erpseedcodeone.online/firmardocumento/'
 export const MH_DTE = 'https://apitest.dtes.mh.gob.sv/fesv/recepciondte';
 export const MH_URL = 'https://apitest.dtes.mh.gob.sv/fesv/';
 export const AUTH_MH = 'https://apitest.dtes.mh.gob.sv/seguridad/auth';
 export const CHECK_URL = 'https://apitest.dtes.mh.gob.sv/fesv/recepcion/consultadte/';
+export const SPACES_BUCKET = 'facturacion-seed-code';
 export const messages = {
   error: 'Ocurrió un error al procesar la petición',
   success: 'Petición procesada con éxito',
@@ -100,4 +102,19 @@ export const months = [
   { value: 10, name: 'Octubre' },
   { value: 11, name: 'Noviembre' },
   { value: 12, name: 'Diciembre' },
+];
+
+export const sending_steps = [
+  {
+    label: 'Firmando el documento',
+    description: 'Espere mientras se firma el documento',
+  },
+  {
+    label: 'Validando en hacienda',
+    description: 'Hacienda esta validando el documento',
+  },
+  {
+    label: 'Guardando DTE',
+    description: 'Estamos guardando el documento',
+  },
 ];

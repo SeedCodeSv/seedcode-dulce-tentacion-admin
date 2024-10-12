@@ -1,8 +1,8 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { API_URL } from '../utils/constants';
 import { get_token } from '../storage/localStorage';
 import { IInvalidationResponse } from '../types/DTE/invalidation.types';
-import { IGetSaleDetails, IGetSales } from '../types/sales.types';
+import { IGetNotesOfSale, IGetSaleDetails, IGetSales, IGetSalesByStatusAndDates } from '../types/sales.types';
 import {
   IGetSaleByProduct,
   IGraphicForCategoryProductsForDates,
@@ -165,4 +165,58 @@ export const get_factura_by_month = (branchId: number, month: number) => {
   return axios.get<IGetFeMonth>(
     API_URL + `/reports/get-fe-by-month/${branchId}?month=${month}`
   )
+}
+
+export const get_sales_status_and_dates = (
+  page: number,
+  limit: number,
+  branchId: number,
+  startDate: string,
+  endDate: string,
+  state: string
+): Promise<AxiosResponse<IGetSalesByStatusAndDates>> => {
+  return axios.get<IGetSalesByStatusAndDates>(
+      API_URL +
+      `/sales/sales-by-dates/${branchId}?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}&state=${state}`
+  );
+};
+
+export const get_notes_of_sale = (id: number) => {
+  const token = get_token();
+  return axios.get<IGetNotesOfSale>(API_URL + `/nota-de-credito/all-notes-of-sale/${id}`, {
+      headers: {
+          Authorization: `Bearer ${token}`,
+      },
+  });
+};
+
+
+export const get_sale_pdf = (saleId: number, type: string) => {
+  const token = get_token();
+  return axios.get<Blob>(`${API_URL}/pdf/sale/${saleId}?type=${type}`, {
+    responseType: "blob",
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+}
+
+export const get_sale_pdf_credit_note = (saleId: number, type: string) => {
+  const token = get_token();
+  return axios.get<Blob>(`${API_URL}/pdf/note-credit/${saleId}?type=${type}`, {
+    responseType: "blob",
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+}
+
+export const get_sale_pdf_debit_note = (saleId: number, type: string) => {
+  const token = get_token();
+  return axios.get<Blob>(`${API_URL}/pdf/note-debit/${saleId}?type=${type}`, {
+    responseType: "blob",
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
 }

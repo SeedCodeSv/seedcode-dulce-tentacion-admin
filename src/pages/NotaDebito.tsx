@@ -1,13 +1,13 @@
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import Layout from "../layout/Layout";
 import { useSalesStore } from "../store/sales.store";
 import { useContext, useEffect, useState } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { ThemeContext } from "../hooks/useTheme";
-import { Button, Input, useDisclosure } from "@nextui-org/react";
+import { Button, Input, Spinner, useDisclosure } from "@nextui-org/react";
 import { formatCurrency } from "../utils/dte";
-import { calculateDiscountedTotal } from "../utils/filters";
+// import { calculateDiscountedTotal } from "../utils/filters";
 import { toast } from "sonner";
 import { useCorrelativesDteStore } from "../store/correlatives_dte.store";
 import { useTransmitterStore } from "../store/transmitter.store";
@@ -15,32 +15,36 @@ import { global_styles } from "../styles/global.styles";
 import {
   ND_CuerpoDocumentoItems,
   ND_DocumentoRelacionadoItems,
-  ND_Receptor,
+  SVFE_ND_SEND,
 } from "../types/svf_dte/nd.types";
 import { convertCurrencyFormat } from "../utils/money";
 import { generateNotaDebito } from "../utils/DTE/nota-debito";
-import { firmarDocumentoNotaDebito, send_to_mh } from "../services/DTE.service";
+import { check_dte, firmarDocumentoNotaDebito, send_to_mh } from "../services/DTE.service";
 import { PayloadMH } from "../types/DTE/DTE.types";
-import { return_mh_token } from "../storage/localStorage";
+import { get_token, return_mh_token } from "../storage/localStorage";
 import axios, { AxiosError } from "axios";
 import HeadlessModal from "../components/global/HeadlessModal";
-import { LoaderIcon } from "lucide-react";
+import { ArrowLeft, LoaderIcon, ShieldAlert } from "lucide-react";
 import { SendMHFailed } from "../types/transmitter.types";
 import { save_logs } from "../services/logs.service";
-import jsPDF from "jspdf";
-import { useConfigurationStore } from "../store/perzonalitation.store";
-import { makePDFNotaDebito } from "./svfe_pdf/template1/nota_debito.pdf";
 import { PutObjectCommand, PutObjectCommandInput } from "@aws-sdk/client-s3";
 import { formatDate } from "../utils/dates";
 import { s3Client } from "../plugins/s3";
+import { useAuthStore } from "@/store/auth.store";
+import { ambiente, API_URL, sending_steps, SPACES_BUCKET } from "@/utils/constants";
+import { ICheckResponse } from "@/types/DTE/check.types";
 
 function NotaDebito() {
   const { id } = useParams();
-  const { getSaleDetails, sale_details, updateSaleDetails } = useSalesStore();
-
-  const [isLoading, setIsLoading] = useState(true);
+  const { getSaleDetails, json_sale, updateSaleDetails } = useSalesStore();
+  const { user } = useAuthStore()
+  const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [title, setTitle] = useState<string>("");
+  const styles  = global_styles()
+  const navigation = useNavigate()
+  const [currentStep, setCurrenStep] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     getSaleDetails(Number(id));
@@ -52,49 +56,71 @@ function NotaDebito() {
     color: theme.colors.primary,
   };
 
-  const updatePrice = (price: number, id: number) => {
-    const items = sale_details?.details;
-
+  const updatePrice = (price: number, noItem: number) => {
+    const items = json_sale?.cuerpoDocumento
+    const copy = JSON.parse(JSON.stringify(json_sale?.itemsCopy))
     if (items) {
-      const item = items.find((i) => i.id === id);
+      const item = items.find((i) => i.numItem === noItem)
       if (item) {
-        item.newMontoDescu = 0;
-        (item.porcentajeDescuento = 0),
-          (item.newTotalItem = price * item.newCantidadItem);
-        item.branchProduct.newPrice = price;
-        item.isEdited = true;
+        const total = item.cantidad * price
+        item.precioUni = price
+        item.ventaGravada = total
 
-        const edited = items.map((i) => (i.id === id ? item : i));
+        if (!json_sale.indexEdited.includes(noItem)) {
+          json_sale.indexEdited = [...json_sale.indexEdited, noItem]
+        }
 
-        updateSaleDetails({ ...sale_details, details: edited });
+        const edited = items.map((i) => (i.numItem === noItem ? item : i))
+
+        updateSaleDetails({
+          ...json_sale,
+          cuerpoDocumento: edited,
+          indexEdited: json_sale.indexEdited,
+          itemsCopy: copy
+        })
       }
     }
-  };
+  }
 
-  const updateQuantity = (quantity: number, id: number) => {
-    const items = sale_details?.details;
-
+  const updateQuantity = (quantity: number, noItem: number) => {
+    const items = json_sale?.cuerpoDocumento
+    const copy = JSON.parse(JSON.stringify(json_sale?.itemsCopy))
     if (items) {
-      const item = items.find((i) => i.id === id);
+      const item = items.find((i) => i.numItem === noItem)
       if (item) {
-        item.newCantidadItem = quantity;
+        const total = quantity * item.precioUni
+        item.cantidad = quantity
+        item.ventaGravada = total
+        json_sale.indexEdited = [...json_sale.indexEdited, noItem]
 
-        const discount = calculateDiscountedTotal(
-          item.branchProduct.newPrice,
-          Number(item.porcentajeDescuento)
-        );
+        const edited = items.map((i) => (i.numItem === noItem ? item : i))
 
-        item.isEdited = true;
-
-        item.newMontoDescu = discount.discountAmount * item.newCantidadItem;
-        item.newTotalItem = discount.discountedTotal * item.newCantidadItem;
-        const edited = items.map((i) => (i.id === id ? item : i));
-        updateSaleDetails({ ...sale_details, details: edited });
+        updateSaleDetails({
+          ...json_sale,
+          cuerpoDocumento: edited,
+          indexEdited: json_sale.indexEdited,
+          itemsCopy: copy
+        })
       }
     }
-  };
+  }
 
-  const { getCorrelativesByDte } = useCorrelativesDteStore();
+  const validationBeforeSend = () => {
+    const quantity = json_sale?.cuerpoDocumento.every((item, index) => {
+      const itemCopy = json_sale.itemsCopy[index]
+
+      return item.cantidad >= itemCopy.cantidad
+    })
+
+    const price = json_sale?.cuerpoDocumento.every((item, index) => {
+      const itemCopy = json_sale.itemsCopy[index]
+      return item.precioUni >= itemCopy.precioUni
+    })
+
+    return quantity && price
+  }
+
+  const { getCorrelativeByPointOfSaleDte } = useCorrelativesDteStore();
   const { gettransmitter, transmitter } = useTransmitterStore();
   useEffect(() => {
     gettransmitter();
@@ -102,380 +128,477 @@ function NotaDebito() {
 
   const modalError = useDisclosure();
 
-  const { personalization } = useConfigurationStore();
+  // const { personalization } = useConfigurationStore();
+  const [currentDTE, setCurrentDTE] = useState<SVFE_ND_SEND>()
 
   const proccessNotaDebito = async () => {
-    if (sale_details) {
-      const edited_items = sale_details.details.filter((item) => {
-        if (item.isEdited) {
-          return (
-            item.newCantidadItem >= item.cantidadItem &&
-            item.branchProduct.newPrice >= item.branchProduct.price
-          );
+    setIsLoading(true)
+    setCurrenStep(0)
+    if (json_sale) {
+      if (json_sale.cuerpoDocumento.length > 0) {
+        setLoading(true)
+        const editedItems = json_sale.cuerpoDocumento.filter((item) =>
+          json_sale.indexEdited.includes(item.numItem)
+        )
+        if (editedItems.length === 0) {
+          toast.error("No se encontraron items editados o tienes errores sin resolver")
+          return
         }
-        return false;
-      });
 
-      if (edited_items.length === 0) {
-        toast.error(
-          "No se encontraron items editados o tienes errores sin resolver"
-        );
-        return;
-      }
+        if (!validationBeforeSend()) {
+          toast.error("No se encontraron items editados o tienes errores sin resolver")
+          return
+        }
 
-      const correlatives = await getCorrelativesByDte(transmitter.id, "06");
+        const correlatives = await getCorrelativeByPointOfSaleDte(Number(user?.id), "NDE")
+        .then((res) => res)
+          .catch(() => {
+            toast.error('No se encontraron correlativos');
+            return;
+          });
 
-      const items: ND_CuerpoDocumentoItems[] = sale_details.details.map(
-        (item, index) => {
+        if (!correlatives) return
+
+        const documentoRelacionado: ND_DocumentoRelacionadoItems[] = [
+          {
+            tipoDocumento: "03",
+            tipoGeneracion: 2,
+            numeroDocumento: json_sale.identificacion.codigoGeneracion,
+            fechaEmision: json_sale.identificacion.fecEmi
+          }
+        ]
+
+        const total = editedItems
+          .map((item) => Number(item.ventaGravada))
+          .reduce((a, b) => a + b, 0)
+
+        const total_iva = editedItems
+          .map((cp) => {
+            const iva = Number(cp.ventaGravada) * 0.13
+            return iva
+          })
+          .reduce((a, b) => a + b, 0)
+
+        const resumen = {
+          totalNoSuj: 0,
+          totalExenta: 0,
+          totalGravada: Number(total.toFixed(2)),
+          subTotalVentas: Number(total.toFixed(2)),
+          descuNoSuj: 0,
+          descuExenta: 0,
+          descuGravada: 0,
+          totalDescu: 0,
+          tributos: [
+            {
+              codigo: "20",
+              descripcion: "Impuesto al Valor Agregado 13%",
+              valor: Number(total_iva.toFixed(2))
+            }
+          ],
+          subTotal: Number(total.toFixed(2)),
+          ivaRete1: 0,
+          reteRenta: 0,
+          ivaPerci1: 0,
+          montoTotalOperacion: Number((total + total_iva).toFixed(2)),
+          totalLetras: convertCurrencyFormat(String((total + total_iva).toFixed(2))),
+          condicionOperacion: 1,
+          numPagoElectronico: null
+        }
+
+        const items: ND_CuerpoDocumentoItems[] = editedItems.map((item, index) => {
           return {
             numItem: index + 1,
-            tipoItem: Number(item.branchProduct.product.tipoItem),
-            numeroDocumento: sale_details.codigoGeneracion,
-            codigo:
-              item.branchProduct.product.code !== "N/A"
-                ? item.branchProduct.product.code
-                : null,
+            tipoItem: item.tipoItem,
+            numeroDocumento: json_sale.identificacion.codigoGeneracion,
+            codigo: item.codigo,
             codTributo: null,
-            descripcion: item.branchProduct.product.name,
-            cantidad: item.newCantidadItem,
-            uniMedida: Number(item.branchProduct.product.uniMedida),
-            precioUni: Number(item.branchProduct.price),
-            montoDescu: Number(item.montoDescu),
-            ventaNoSuj: Number(item.ventaNoSuj),
-            ventaExenta: Number(item.ventaExenta),
-            ventaGravada: Number(item.newTotalItem),
-            tributos: ["20"],
-          };
-        }
-      );
+            descripcion: item.descripcion,
+            cantidad: item.cantidad,
+            uniMedida: item.uniMedida,
+            precioUni: item.precioUni,
+            montoDescu: item.montoDescu,
+            ventaNoSuj: item.ventaNoSuj,
+            ventaExenta: item.ventaExenta,
+            ventaGravada: item.ventaGravada,
 
-      const receptor: ND_Receptor = {
-        nit: sale_details.customer!.nit,
-        nrc: sale_details.customer!.nrc,
-        nombre: sale_details.customer!.nombre,
-        codActividad: sale_details.customer!.codActividad,
-        descActividad: sale_details.customer!.descActividad,
-        nombreComercial:
-          sale_details.customer!.nombreComercial === "N/A"
-            ? null
-            : sale_details.customer!.nombreComercial,
-        direccion: {
-          departamento: sale_details.customer.direccion.departamento!,
-          municipio: sale_details.customer.direccion.municipio!,
-          complemento: sale_details.customer.direccion.complemento!,
-        },
-        telefono:
-          sale_details.customer!.telefono === "N/A"
-            ? null
-            : sale_details.customer!.telefono,
-        correo: sale_details.customer!.correo,
-      };
-
-      const documentoRelacionado: ND_DocumentoRelacionadoItems[] = [
-        {
-          tipoDocumento: "03",
-          tipoGeneracion: 2,
-          numeroDocumento: sale_details.codigoGeneracion,
-          fechaEmision: sale_details.fecEmi,
-        },
-      ];
-
-      const total = sale_details.details
-        .map((item) => Number(item.newTotalItem))
-        .reduce((a, b) => a + b, 0);
-
-      const total_iva = sale_details.details
-        .map((cp) => {
-          const iva = Number(cp.newTotalItem) * 0.13;
-          return iva;
+            tributos: ["20"]
+          }
         })
-        .reduce((a, b) => a + b, 0);
 
-      const resumen = {
-        totalNoSuj: 0,
-        totalExenta: 0,
-        totalGravada: Number(total.toFixed(2)),
-        subTotalVentas: Number(total.toFixed(2)),
-        descuNoSuj: 0,
-        descuExenta: 0,
-        descuGravada: 0,
-        totalDescu: 0,
-        tributos: [
-          {
-            codigo: "20",
-            descripcion: "Impuesto al Valor Agregado 13%",
-            valor: Number(total_iva.toFixed(2)),
-          },
-        ],
-        subTotal: Number(total.toFixed(2)),
-        ivaRete1: 0,
-        reteRenta: 0,
-        ivaPerci1: 0,
-        montoTotalOperacion: Number((total + total_iva).toFixed(2)),
-        totalLetras: convertCurrencyFormat(
-          String((total + total_iva).toFixed(2))
-        ),
-        condicionOperacion: 1,
-        numPagoElectronico: null,
-      };
-
-      const nota_debito = generateNotaDebito(
-        transmitter,
-        receptor,
-        documentoRelacionado,
-        items,
-        Number(correlatives?.siguiente ?? 0),
-        resumen,
-        null,
-        null,
-        null
-      );
-      firmarDocumentoNotaDebito(nota_debito)
-        .then((firmador) => {
-          const data_send: PayloadMH = {
-            ambiente: "00",
-            idEnvio: 1,
-            version: 3,
-            tipoDte: "06",
-            documento: firmador.data.body,
-          };
-          const token_mh = return_mh_token();
-          if (token_mh) {
-            const source = axios.CancelToken.source();
-            const timeout = setTimeout(() => {
-              source.cancel("El tiempo de espera ha expirado");
-            }, 20000);
-            send_to_mh(data_send, token_mh ?? "", source)
-              .then(async (response) => {
-                clearTimeout(timeout);
-                const DTE_FORMED = {
-                  ...nota_debito.dteJson,
-                  respuestaMH: response.data,
-                  firma: firmador.data.body,
-                };
-
-                const doc = new jsPDF();
-
-                const data = await axios.get(personalization[0].logo, {
-                  responseType: "arraybuffer",
-                });
-
-                const QR = await axios.get(
-                  "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Example",
-                  {
-                    responseType: "arraybuffer",
+        const nota_debito = generateNotaDebito(
+          transmitter,
+          json_sale.receptor,
+          documentoRelacionado,
+          items,
+          Number(correlatives?.next ?? 0),
+          resumen,
+          null,
+          null,
+          null,
+          correlatives.codPuntoVenta,
+          correlatives.codEstable,
+          correlatives.tipoEstablecimiento
+        )
+        setCurrentDTE(nota_debito)
+        firmarDocumentoNotaDebito(nota_debito)
+          .then((firmador) => {
+            setCurrenStep(1)
+            const data_send: PayloadMH = {
+                ambiente: ambiente,
+              idEnvio: 1,
+              version: 3,
+              tipoDte: "06",
+              documento: firmador.data.body
+            }
+            const token_mh = return_mh_token()
+            if (token_mh) {
+              setIsLoading(true)
+              const source = axios.CancelToken.source()
+              const timeout = setTimeout(() => {
+                source.cancel("El tiempo de espera ha expirado")
+              }, 25000)
+              send_to_mh(data_send, token_mh ?? "", source)
+                .then(async (response) => {
+                  setCurrenStep(2)
+                  clearTimeout(timeout)
+                  const DTE_FORMED = {
+                    ...nota_debito.dteJson,
+                    respuestaMH: response.data,
+                    firma: firmador.data.body
                   }
-                );
 
-                const JSON_DTE = JSON.stringify(
-                  {
-                    ...DTE_FORMED,
-                  },
-                  null,
-                  2
-                );
+                  const JSON_DTE = JSON.stringify(
+                    {
+                      ...DTE_FORMED
+                    },
+                    null,
+                    2
+                  )
 
-                const json_url = `CLIENTES/${
-                  transmitter.nombre
-                }/${new Date().getFullYear()}/VENTAS/NOTAS_DE_DEBITO/${formatDate()}/${
-                  nota_debito.dteJson.identificacion.codigoGeneracion
-                }/${nota_debito.dteJson.identificacion.codigoGeneracion}.json`;
-                const pdf_url = `CLIENTES/${
-                  transmitter.nombre
-                }/${new Date().getFullYear()}/VENTAS/NOTAS_DE_DEBITO/${formatDate()}/${
-                  nota_debito.dteJson.identificacion.codigoGeneracion
-                }/${nota_debito.dteJson.identificacion.codigoGeneracion}.pdf`;
+                  const json_url = `CLIENTES/${
+                    transmitter.nombre
+                  }/${new Date().getFullYear()}/VENTAS/NOTAS_DE_DEBITO/${formatDate()}/${
+                    nota_debito.dteJson.identificacion.codigoGeneracion
+                  }/${nota_debito.dteJson.identificacion.codigoGeneracion}.json`
 
-                const blob = makePDFNotaDebito(
-                  doc,
-                  DTE_FORMED,
-                  data.data ? new Uint8Array(data.data) : "",
-                  new Uint8Array(QR.data),
-                  theme
-                );
+                  const json_blob = new Blob([JSON_DTE], {
+                    type: "application/json"
+                  })
 
-                const json_blob = new Blob([JSON_DTE], {
-                  type: "application/json",
-                });
+                  const uploadParams: PutObjectCommandInput = {
+                    Bucket: SPACES_BUCKET,
+                    Key: json_url,
+                    Body: json_blob
+                  }
 
-                const uploadParams: PutObjectCommandInput = {
-                  Bucket: "seedcode-facturacion",
-                  Key: json_url,
-                  Body: json_blob,
-                };
-                const uploadParamsPDF: PutObjectCommandInput = {
-                  Bucket: "seedcode-facturacion",
-                  Key: pdf_url,
-                  Body: blob,
-                };
-
-                s3Client
-                  .send(new PutObjectCommand(uploadParamsPDF))
+                  s3Client
+                  .send(new PutObjectCommand(uploadParams))
                   .then((response) => {
                     if (response.$metadata) {
-                      s3Client
-                        .send(new PutObjectCommand(uploadParams))
-                        .then((response) => {
-                          if (response.$metadata) {
-                            setIsLoading(false);
-                            toast.success("Nota de debito enviada");
+                      axios
+                        .post(
+                          `${API_URL}/nota-de-debitos`,
+                          {
+                            dte: json_url,
+                            sello: true,
+                            saleId: id
+                          },
+                          {
+                            headers: {
+                              Authorization: `Bearer ${get_token() ?? ""}`
+                            }
                           }
+                        )
+                        .then(() => {
+                          setIsLoading(false)
+                          setLoading(false)
+                          setCurrenStep(0)
+                          navigation(-1)
+                          toast.success("Nota de debito enviada")
                         })
                         .catch(() => {
-                          setIsLoading(false);
-                          modalError.onOpen();
-                        });
+                          toast.error("Error al enviar el PDF")
+                          setIsLoading(false)
+                        })
                     }
                   })
-                  .catch(() => {
-                    setIsLoading(false);
-                    toast.error("Error al enviar el PDF");
-                  });
-              })
-              .catch(async (error: AxiosError<SendMHFailed>) => {
-                clearTimeout(timeout);
-                if (axios.isCancel(error)) {
-                  setTitle("Tiempo de espera agotado");
-                  setErrorMessage("El tiempo limite de espera ha expirado");
-                  modalError.onOpen();
-                  setIsLoading(false);
-                }
-                modalError.onOpen();
-                setIsLoading(false);
+                })
+                .catch(async (error: AxiosError<SendMHFailed>) => {
+                  clearTimeout(timeout)
+                  if (axios.isCancel(error)) {
+                    setLoading(false);
+                    setCurrenStep(0)
+                    setTitle("Tiempo de espera agotado")
+                    setErrorMessage("El tiempo limite de espera ha expirado")
+                    modalError.onOpen()
+                    setIsLoading(false)
+                  }
+                  setLoading(false)
+                  setCurrenStep(0)
+                  modalError.onOpen()
+                  setIsLoading(false)
 
-                if (error.response?.data) {
-                  setErrorMessage(
-                    error.response.data.observaciones &&
-                      error.response.data.observaciones.length > 0
-                      ? error.response?.data.observaciones.join("\n\n")
-                      : ""
-                  );
-                  setTitle(
-                    error.response?.data.descripcionMsg ??
-                      "Error al procesar venta"
-                  );
-                  await save_logs({
-                    title:
-                      error.response.data.descripcionMsg ??
-                      "Error al procesar venta",
-                    message:
+                  if (error.response?.data) {
+                    setErrorMessage(
                       error.response.data.observaciones &&
-                      error.response.data.observaciones.length > 0
+                        error.response.data.observaciones.length > 0
                         ? error.response?.data.observaciones.join("\n\n")
-                        : error.response.data.descripcionMsg,
-                    generationCode:
-                      nota_debito.dteJson.identificacion.codigoGeneracion,
-                  });
-                }
+                        : ""
+                    )
+                    setTitle(error.response?.data.descripcionMsg ?? "Error al procesar nota de debito")
+                    setLoading(false)
+                    setCurrenStep(0)
+                    modalError.onOpen()
+                    await save_logs({
+                      title: error.response.data.descripcionMsg ?? "Error al procesar nota de debito",
+                      message:
+                        error.response.data.observaciones &&
+                        error.response.data.observaciones.length > 0
+                          ? error.response?.data.observaciones.join("\n\n")
+                          : error.response.data.descripcionMsg,
+                      generationCode: nota_debito.dteJson.identificacion.codigoGeneracion,
+                      table: "nota_debito"
+                    })
+                  }
+                })
+            } else {
+              modalError.onOpen()
+              setLoading(false)
+              setCurrenStep(0)
+              setIsLoading(false)
+              setErrorMessage("No se ha podido obtener el token de hacienda")
+              return
+            }
+          })
+          .catch(() => {
+            setLoading(false)
+            setCurrenStep(0)
+            modalError.onOpen()
+            setIsLoading(false)
+            setTitle("Error en el firmador")
+            setErrorMessage("Error al firmar el documento")
+          })
+      }
+    }
+  }
+
+  const handleVerify = () => {
+    setIsLoading(true)
+
+    const payload = {
+      nitEmisor: transmitter.nit,
+      tdte: currentDTE?.dteJson.identificacion.tipoDte ?? "06",
+      codigoGeneracion: currentDTE?.dteJson.identificacion.codigoGeneracion ?? ""
+    }
+
+    const token_mh = return_mh_token()
+
+    check_dte(payload, token_mh ?? "")
+      .then((response) => {
+        toast.success(response.data.estado, {
+          description: `Sello recibido: ${response.data.selloRecibido}`
+        })
+        setIsLoading(false)
+      })
+      .catch((error: AxiosError<ICheckResponse>) => {
+        if (error.status === 500) {
+          toast.error("NO ENCONTRADO", {
+            description: "DTE no encontrado en hacienda"
+          })
+          setIsLoading(false)
+          return
+        }
+
+        toast.error("ERROR", {
+          description: `Error: ${
+            error.response?.data.descripcionMsg ?? "DTE no encontrado en hacienda"
+          }`
+        })
+        setIsLoading(false)
+      })
+  }
+
+  const sendToContingencia = () => {
+    setIsLoading(true);
+    modalError.onClose();
+    if (currentDTE) {
+      currentDTE.dteJson.identificacion.tipoModelo = 2;
+      currentDTE.dteJson.identificacion.tipoOperacion = 2;
+
+      const JSON_DTE = JSON.stringify(currentDTE.dteJson, null, 2);
+      const json_blob = new Blob([JSON_DTE], {
+        type: 'application/json',
+      });
+
+      const json_url = `CLIENTES/${transmitter.nombre
+      }/${new Date().getFullYear()}/VENTAS/NOTAS_DE_DEBITO/${formatDate()}/${currentDTE.dteJson.identificacion.codigoGeneracion
+      }/${currentDTE.dteJson.identificacion.codigoGeneracion}.json`;
+
+      const updloadParams: PutObjectCommandInput = {
+        Bucket: SPACES_BUCKET,
+        Key: json_url,
+        Body: json_blob,
+      };
+
+      s3Client
+        .send(new PutObjectCommand(updloadParams))
+        .then((response) => {
+          if (response.$metadata) {
+            axios
+              .post(`${API_URL}/nota-de-debitos`, {
+                dte: json_url,
+                sello: false,
+                saleId: id,
+              })
+              .then(() => {
+                toast.success('Nota de debito enviada a contingencia');
+                navigation('/sales');
+                setIsLoading(false);
+              })
+              .catch(() => {
+                toast.error('Error al subir la nota de debito a contingencia')
+                setIsLoading(false);
               });
           } else {
-            modalError.onOpen();
+            toast.error('Error al subir la nota de debito a contingencia');
             setIsLoading(false);
-            setErrorMessage("No se ha podido obtener el token de hacienda");
-            return;
           }
         })
         .catch(() => {
-          modalError.onOpen();
-          setIsLoading(false);
-          setTitle("Error en el firmador");
-          setErrorMessage("Error al firmar el documento");
-        });
+          toast.error('Error al subir ')
+        })
     }
-  };
+  }
+
 
   return (
     <Layout title="Nota de débito">
       <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
         <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
+          {loading && (
+            <div className="absolute z-[100] left-0 bg-white/80 top-0 h-screen w-screen flex flex-col justify-center items-center">
+              <Spinner className="w-24 h-24 animate-spin"/>
+              <p className="text-lg font-semibold mt-4">Cargando...</p>
+              <div className="flex flex-col">
+                  {sending_steps.map((step, index) => (
+                    <div key={index} className="flex items-start py-2">
+                      <div
+                        className={`flex items-center justify-center w-8 h-8 border-2 rounded-full transition duration-500 ${index <= currentStep
+                          ? 'bg-green-600 border-green-600 text-white'
+                          : 'bg-white border-gray-300 text-gray-500'
+                          }`}
+                      >
+                        {index + 1}
+                      </div>
+                      <div className="ml-4">
+                        <div
+                          className={`font-semibold ${index <= currentStep ? 'text-green-600' : 'text-gray-500'
+                            }`}
+                        >
+                          {step.label}
+                        </div>
+                        {step.description && (
+                          <div className="text-xs font-semibold text-gray-700">
+                            {step.description}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+            </div>
+
+          )}
+          <div className="flex items-center gap-3 cursor-pointer mb-4 dark:text-white">
+            <Button
+              onClick={() => navigation(-1)}
+              style={styles.darkStyle}
+            >
+            <ArrowLeft />
+            <p>Regresar</p>
+            </Button>
+          </div>
           <p className="text-lg font-semibold dark:text-white">Detalles</p>
           <div className="grid grid-cols-2 gap-5">
             <p className="font-semibold dark:text-white">
               Código Generación:{" "}
               <span className="font-normal">
-                {sale_details?.codigoGeneracion}
+                {json_sale?.identificacion.codigoGeneracion}
               </span>
             </p>
             <p className="font-semibold dark:text-white">
               Sello recepción:{" "}
-              <span className="font-normal">{sale_details?.selloRecibido}</span>
+              <span className="font-normal">{json_sale?.respuestaMH.selloRecibido}</span>
             </p>
             <p className="font-semibold dark:text-white">
               Numero control:{" "}
-              <span className="font-normal">{sale_details?.numeroControl}</span>
+              <span className="font-normal">{json_sale?.identificacion.numeroControl}</span>
             </p>
             <p className="font-semibold dark:text-white">
               Fecha hora:{" "}
               <span className="font-normal">
-                {sale_details?.fecEmi} - {sale_details?.horEmi}
+                {json_sale?.identificacion.fecEmi} - {json_sale?.identificacion.horEmi}
               </span>
             </p>
           </div>
           <p className="text-lg font-semibold py-8 dark:text-white">
             Productos
           </p>
-          {sale_details?.details && (
+          {json_sale?.cuerpoDocumento && (
             <DataTable
               className="shadow"
               emptyMessage="No se encontraron resultados"
-              value={sale_details?.details}
+              value={json_sale?.cuerpoDocumento}
               tableStyle={{ minWidth: "50rem" }}
             >
               <Column
                 headerClassName="text-sm font-semibold"
                 headerStyle={{ ...style, borderTopLeftRadius: "10px" }}
-                field="id"
+                field="numItem"
                 header="No."
               />
               <Column
+                className="dark:text-white"
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
-                field="branchProduct.product.name"
                 header="Nombre"
                 body={(rowData) => (
                   <Input
                     variant="bordered"
-                    defaultValue={rowData.branchProduct.product.name}
+                    defaultValue={rowData.descripcion}
                     onChange={(e) => {
                       updateSaleDetails({
-                        ...sale_details,
-                        details: sale_details?.details?.map((item) => {
-                          if (item.id === rowData.id) {
+                        ...json_sale,
+                        cuerpoDocumento: json_sale?.cuerpoDocumento.map((item) => {
+                          if (item.numItem === rowData.numItem) {
                             return {
                               ...item,
-                              branchProduct: {
-                                ...item.branchProduct,
-                                product: {
-                                  ...item.branchProduct.product,
-                                  name: e.target.value,
-                                },
-                              },
-                            };
+                              descripcion: e.target.value
+                            }
                           }
-                          return item;
-                        }),
-                      });
+                          return item
+                        })
+                      })
                     }}
                   />
                 )}
               />
               <Column
+                className="dark:text-white"
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
                 field="cantidadItem"
                 header="Cantidad"
-                body={(rowData) => (
+                body={(rowData, { rowIndex }) => (
                   <Input
                     variant="bordered"
                     className="w-32"
-                    defaultValue={rowData.cantidadItem}
-                    min={Number(rowData.cantidadItem)}
-                    isInvalid={rowData.newCantidadItem < rowData.cantidadItem}
+                    defaultValue={rowData.cantidad}
+                    min={Number(json_sale.itemsCopy[rowIndex].cantidad)}
+                    isInvalid={rowData.cantidad < json_sale.itemsCopy[rowIndex].cantidad}
                     errorMessage="La cantidad no puede ser menor a la cantidad de venta"
                     type="number"
-                    onChange={(e) =>
-                      updateQuantity(Number(e.target.value), rowData.id)
-                    }
+                    onChange={(e) => updateQuantity(Number(e.target.value), rowData.numItem)}
                   />
                 )}
               />
@@ -490,51 +613,38 @@ function NotaDebito() {
                 header="Descuento"
               /> */}
               <Column
+                className="dark:text-white"
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
-                field="branchProduct.product.code"
                 header="Codigo"
+                body={(row) => <p>{row.codigo ?? "N/A"}</p>}
               />
               <Column
+                className="dark:text-white"
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
-                field="branchProduct.price"
                 header="Precio"
-                body={(rowData) => (
+                body={(rowData, { rowIndex }) => (
                   <Input
                     variant="bordered"
                     className="w-52"
-                    defaultValue={rowData.branchProduct.newPrice}
-                    min={Number(rowData.branchProduct.price)}
+                    defaultValue={rowData.precioUni}
+                    min={Number(json_sale.itemsCopy[rowIndex].precioUni)}
                     type="number"
                     startContent="$"
-                    isInvalid={
-                      rowData.branchProduct.newPrice <
-                      rowData.branchProduct.price
-                    }
+                    isInvalid={rowData.precioUni < json_sale.itemsCopy[rowIndex].precioUni}
                     errorMessage="El precio no puede ser menor al precio de venta"
-                    onChange={(e) =>
-                      updatePrice(Number(e.target.value), rowData.id)
-                    }
-                    endContent={
-                      <span>
-                        {rowData.branchProduct.newPrice !==
-                        rowData.branchProduct.price ? (
-                          <s>${rowData.branchProduct.price}</s>
-                        ) : (
-                          ""
-                        )}
-                      </span>
-                    }
+                    onChange={(e) => updatePrice(Number(e.target.value), rowData.numItem)}
                   />
                 )}
               />
               <Column
+                className="dark:text-white"
                 headerClassName="text-sm font-semibold"
                 headerStyle={style}
                 field="newTotalItem"
                 header="Total"
-                body={(rowData) => formatCurrency(Number(rowData.newTotalItem))}
+                body={(rowData) => formatCurrency(Number(rowData.ventaGravada))}
               />
             </DataTable>
           )}
@@ -552,6 +662,44 @@ function NotaDebito() {
             </Button>
           </div>
         </div>
+
+
+        <HeadlessModal
+          isOpen={modalError.isOpen}
+          onClose={modalError.onClose}
+          title={title}
+          size="w-[600px]"
+        >
+          <div>
+            <div className="flex flex-col items-center justify-center">
+              <ShieldAlert size={75} color="red" />
+              <p className="text-lg font-semibold dark:text-white">{errorMessage}</p>
+            </div>
+            <div className="flex justify-center gap-5 mt-8">
+              <Button
+                onClick={() => {
+                  modalError.onClose()
+                  proccessNotaDebito()
+                }}
+                style={styles.secondaryStyle}
+              >
+                Re-intentar
+              </Button>
+              <Button onClick={handleVerify} style={styles.thirdStyle}>
+                Verificar DTE
+              </Button>
+              <Button
+                onClick={sendToContingencia}
+                style={styles.dangerStyles}
+              >
+                Enviar a contingencia
+              </Button>
+              <Button onClick={() => modalError.onClose()} style={styles.dangerStyles}>
+                Aceptar
+              </Button>
+            </div>
+          </div>
+        </HeadlessModal>
         <HeadlessModal
           isOpen={false}
           onClose={() => {}}

@@ -31,7 +31,7 @@ export interface ND_VentaTercerosItems extends FC_VentaTercerosItems { }
 export interface ND_CuerpoDocumentoItems extends NC_CuerpoDocumentoItems { }
 
 export interface ND_Resumen extends NC_Resumen {
-    numPagoElectronico: string | null
+    // numPagoElectronico: string | null
 }
 
 export interface ND_Extension extends FC_Extension { }
