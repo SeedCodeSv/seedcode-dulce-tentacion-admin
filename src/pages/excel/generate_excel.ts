@@ -207,11 +207,13 @@ export const export_excel_factura = async (
     { key: 'C', width: 30 },
     { key: 'D', width: 30 },
     { key: 'E', width: 30 },
-    { key: 'F', width: 15 },
-    { key: 'G', width: 15 },
+    { key: 'F', width: 30 },
+    { key: 'G', width: 30 },
     { key: 'H', width: 15 },
     { key: 'I', width: 15 },
     { key: 'J', width: 15 },
+    { key: 'K', width: 15 },
+    { key: 'L', width: 15 },
   ];
 
   const merges = [
@@ -925,11 +927,13 @@ export const export_excel_facturacion = async (props: ExportProp) => {
     { key: 'C', width: 30 },
     { key: 'D', width: 30 },
     { key: 'E', width: 30 },
-    { key: 'F', width: 15 },
-    { key: 'G', width: 15 },
+    { key: 'F', width: 30 },
+    { key: 'G', width: 30 },
     { key: 'H', width: 15 },
     { key: 'I', width: 15 },
     { key: 'J', width: 15 },
+    { key: 'K', width: 15 },
+    { key: 'L', width: 15 },
   ];
 
   const merges = ['A3:B3', 'C3:J3', 'C4:J4', 'B5:C5'];
@@ -993,11 +997,16 @@ export const export_excel_facturacion = async (props: ExportProp) => {
         `D${nextLine + 2}:E${nextLine + 2}`,
         `D${nextLine + 3}:D${nextLine + 4}`,
         `E${nextLine + 3}:E${nextLine + 4}`,
-        `F${nextLine + 2}:H${nextLine + 2}`,
+        `F${nextLine + 2}:G${nextLine + 2}`, // Cambiar F y G para comportarse como D y E
         `F${nextLine + 3}:F${nextLine + 4}`,
-        `G${nextLine + 3}:H${nextLine + 3}`,
-        `I${nextLine + 2}:I${nextLine + 4}`,
-        `J${nextLine + 2}:J${nextLine + 4}`,
+        `G${nextLine + 3}:G${nextLine + 4}`,
+        //
+        `H${nextLine + 2}:J${nextLine + 2}`,
+        `H${nextLine + 3}:H${nextLine + 4}`,
+        `I${nextLine + 3}:J${nextLine + 3}`,
+        // `J${nextLine + 3}:J${nextLine + 4}`,
+        `K${nextLine + 2}:K${nextLine + 4}`,
+        `L${nextLine + 2}:L${nextLine + 4}`,
       ];
 
       merges.forEach((merge) => {
@@ -1012,13 +1021,16 @@ export const export_excel_facturacion = async (props: ExportProp) => {
         { cell: `D${nextLine + 3}`, text: 'NUMERO DE CONTROL DEL' },
         { cell: `E${nextLine + 3}`, text: 'NUMERO DE CONTROL AL' },
         { cell: `E${nextLine + 2}`, text: '' },
-        { cell: `F${nextLine + 2}`, text: 'VENTAS' },
-        { cell: `F${nextLine + 4}`, text: 'EXENTAS' },
-        { cell: `G${nextLine + 3}`, text: 'GRAVADAS' },
-        { cell: `G${nextLine + 4}`, text: 'LOCALES' },
-        { cell: `H${nextLine + 4}`, text: 'EXPORTACIONES' },
-        { cell: `I${nextLine + 4}`, text: 'VENTAS TOTALES' },
-        { cell: `J${nextLine + 4}`, text: 'VENTAS POR CUENTAS DE TERCEROS' },
+        { cell: `F${nextLine + 2}`, text: '' },
+        { cell: `F${nextLine + 4}`, text: 'SELLO RECIBIDO DEL' },
+        { cell: `G${nextLine + 3}`, text: 'SELLO RECIBIDO AL' },
+        { cell: `H${nextLine + 2}`, text: 'VENTAS' },
+        { cell: `H${nextLine + 4}`, text: 'EXENTAS' },
+        { cell: `I${nextLine + 3}`, text: 'GRAVADAS' },
+        { cell: `I${nextLine + 4}`, text: 'LOCALES' },
+        { cell: `J${nextLine + 4}`, text: 'EXPORTACIONES' },
+        { cell: `K${nextLine + 4}`, text: 'VENTAS TOTALES' },
+        { cell: `L${nextLine + 4}`, text: 'VENTAS POR CUENTAS DE TERCEROS' },
       ];
 
       headers_cell.forEach(({ cell, text }) => {
@@ -1044,10 +1056,10 @@ export const export_excel_facturacion = async (props: ExportProp) => {
       });
       nextLine += item.items.length + 5;
 
-      worksheet.getCell(`C${nextLine}`).value = 'TOTAL';
-      worksheet.getCell(`C${nextLine}`).font = { name: 'Calibri', size: 8, bold: true };
+      worksheet.getCell(`F${nextLine}`).value = 'TOTAL';
+      worksheet.getCell(`F${nextLine}`).font = { name: 'Calibri', size: 8, bold: true };
 
-      ['F', 'G', 'H', 'I', 'J'].forEach((col) => {
+      ['H', 'I', 'J', 'K', 'L'].forEach((col) => {
         worksheet.getCell(`${col}${nextLine}`).value = {
           formula: `SUM(${col}${nextLine - item.items.length}:${col}${nextLine - 1})`,
           result: 0,
@@ -1057,10 +1069,10 @@ export const export_excel_facturacion = async (props: ExportProp) => {
           '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-';
       });
 
-      const total = `G${nextLine}`;
+      const total = `I${nextLine}`;
 
       // Aplicar bordes a la fila de "TOTAL"
-      const borders_cells = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+      const borders_cells = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
       borders_cells.forEach((cell) => {
         worksheet.getCell(`${cell}${nextLine}`).border = borders;
       });
@@ -1137,12 +1149,14 @@ interface ExportPropCcfe {
   items: Ccfe[];
   transmitter: ITransmitter;
   month: string;
+  branch: string;
 }
 
 export const export_excel_facturacion_ccfe = async ({
   items,
   transmitter,
   month,
+  branch
 }: ExportPropCcfe) => {
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet('Ventas CCF');
@@ -1158,26 +1172,29 @@ export const export_excel_facturacion_ccfe = async ({
     { key: 'A', width: 5 },
     { key: 'B', width: 11.8 },
     { key: 'C', width: 30 },
-    { key: 'D', width: 11.8 },
-    { key: 'E', width: 11.8 },
+    { key: 'D', width: 30 },
+    { key: 'E', width: 30 },
     { key: 'F', width: 11.8 },
     { key: 'G', width: 11.8 },
-    { key: 'H', width: 13 },
-    { key: 'I', width: 13 },
+    { key: 'H', width: 11.8 },
+    { key: 'I', width: 11.8 },
     { key: 'J', width: 13 },
     { key: 'K', width: 13 },
     { key: 'L', width: 13 },
     { key: 'M', width: 13 },
     { key: 'N', width: 13 },
+    { key: 'O', width: 13 },
+    { key: 'P', width: 13 },
   ];
 
   const merges = ['A3:C3', 'D3:L3', 'D4:L4', 'D5:E5'];
 
   merges.forEach((range) => worksheet.mergeCells(range));
   const titles = [
-    { cell: 'D4', text: 'LIBRO DE COMPRAS' },
+    { cell: 'D4', text: 'LIBRO DE VENTAS DE CRÉDITO FISCAL' },
     { cell: 'A5', text: 'MES' },
     { cell: 'B5', text: `${month}` },
+    { cell: 'C5', text: `SUCURSAL: ${branch}` },
     { cell: 'D5', text: `AÑO: ${new Date().getFullYear()}` },
   ];
   titles.forEach(({ cell, text }) => {
@@ -1241,13 +1258,15 @@ export const export_excel_facturacion_ccfe = async ({
       `B${nextLine + 2}:B${nextLine + 3}`,
       `C${nextLine + 2}:C${nextLine + 3}`,
       `D${nextLine + 2}:D${nextLine + 3}`,
-      `E${nextLine + 3}:G${nextLine + 2}`,
-      `H${nextLine + 2}:I${nextLine + 2}`,
-      `J${nextLine + 2}:J${nextLine + 3}`,
-      `K${nextLine + 2}:K${nextLine + 3}`,
+      `E${nextLine + 2}:E${nextLine + 3}`,
+      `F${nextLine + 2}:F${nextLine + 3}`,
+      `G${nextLine + 3}:I${nextLine + 2}`,
+      `J${nextLine + 2}:K${nextLine + 2}`,
       `L${nextLine + 2}:L${nextLine + 3}`,
       `M${nextLine + 2}:M${nextLine + 3}`,
       `N${nextLine + 2}:N${nextLine + 3}`,
+      `O${nextLine + 2}:O${nextLine + 3}`,
+      `P${nextLine + 2}:P${nextLine + 3}`,
     ];
 
     merges.forEach((range) => worksheet.mergeCells(range));
@@ -1258,16 +1277,18 @@ export const export_excel_facturacion_ccfe = async ({
       { cell: `A${nextLine + 3}`, text: 'No. Corr.' },
       { cell: `B${nextLine + 3}`, text: 'Fecha Emisión' },
       { cell: `C${nextLine + 3}`, text: 'Código de generación' },
-      { cell: `D${nextLine + 3}`, text: 'No. Reg.' },
-      { cell: `E${nextLine + 3}`, text: 'Nombre del Cliente' },
-      { cell: `H${nextLine + 2}`, text: 'Ventas Internas' },
-      { cell: `H${nextLine + 3}`, text: 'Exentas' },
-      { cell: `I${nextLine + 3}`, text: 'Gravadas' },
-      { cell: `J${nextLine + 3}`, text: 'IVA Débito Fiscal' },
-      { cell: `K${nextLine + 3}`, text: 'Ventas a cuenta de terceros' },
-      { cell: `L${nextLine + 3}`, text: 'IVA Débito Fiscal a cuenta de terceros' },
-      { cell: `M${nextLine + 3}`, text: 'IVA Percibido' },
-      { cell: `N${nextLine + 3}`, text: 'Total' },
+      { cell: `D${nextLine + 3}`, text: 'Numero de control' },
+      { cell: `E${nextLine + 3}`, text: 'Sello recibido' },
+      { cell: `F${nextLine + 3}`, text: 'No. reg' },
+      { cell: `G${nextLine + 3}`, text: 'Nombre del cliente' },
+      { cell: `J${nextLine + 2}`, text: 'Ventas Internas' },
+      { cell: `J${nextLine + 3}`, text: 'Exentas' },
+      { cell: `K${nextLine + 3}`, text: 'Gravadas' },
+      { cell: `L${nextLine + 3}`, text: 'IVA Débito Fiscal' },
+      { cell: `M${nextLine + 3}`, text: 'Ventas a cuenta de terceros' },
+      { cell: `N${nextLine + 3}`, text: 'IVA Débito Fiscal a cuenta de terceros' },
+      { cell: `O${nextLine + 3}`, text: 'IVA Percibido' },
+      { cell: `P${nextLine + 3}`, text: 'Total' },
     ];
 
     headers_cell.forEach(({ cell, text }) => {
@@ -1283,14 +1304,14 @@ export const export_excel_facturacion_ccfe = async ({
       item.forEach((value, colIndex) => {
         let actualColIndex = colIndex;
 
-        if (colIndex === 4) {
-          worksheet.mergeCells(`${String.fromCharCode(69)}${row}:${String.fromCharCode(71)}${row}`);
-          const cell = `${String.fromCharCode(69)}${row}`;
+        if (colIndex === 6) {
+          worksheet.mergeCells(`${String.fromCharCode(71)}${row}:${String.fromCharCode(73)}${row}`);
+          const cell = `${String.fromCharCode(71)}${row}`;
           worksheet.getCell(cell).value = value;
           worksheet.getCell(cell).border = borders;
           worksheet.getCell(cell).alignment = { horizontal: 'left', wrapText: true };
           worksheet.getCell(cell).font = { name: 'Calibri', size: 9 };
-        } else if (colIndex > 4) {
+        } else if (colIndex > 6) {
           actualColIndex = colIndex + 2;
           const cell = String.fromCharCode(65 + actualColIndex) + row;
           worksheet.getCell(cell).value = value;
@@ -1298,7 +1319,7 @@ export const export_excel_facturacion_ccfe = async ({
           worksheet.getCell(cell).alignment = { horizontal: 'left', wrapText: true };
           worksheet.getCell(cell).font = { name: 'Calibri', size: 9 };
 
-          if ([5, 6, 7, 8, 9, 10, 11].includes(colIndex))
+          if ([7, 8, 9, 10, 11, 12, 13].includes(colIndex))
             worksheet.getCell(cell).numFmt =
               '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-';
         } else {
@@ -1309,7 +1330,7 @@ export const export_excel_facturacion_ccfe = async ({
           worksheet.getCell(cell).alignment = { horizontal: 'left', wrapText: true };
           worksheet.getCell(cell).font = { name: 'Calibri', size: 9 };
 
-          if ([5, 6, 7, 8, 9, 10, 11].includes(colIndex))
+          if ([7, 8, 9, 10, 11, 12, 13].includes(colIndex))
             worksheet.getCell(cell).numFmt =
               '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-';
         }
@@ -1324,9 +1345,9 @@ export const export_excel_facturacion_ccfe = async ({
       size: 8,
       bold: true,
     };
-    ['H', 'I', 'J', 'K', 'L', 'M', 'N'].forEach((col) => {
+    ['J', 'K', 'L', 'M', ' N', 'O', 'P'].forEach((col) => {
       worksheet.getCell(`${col}${nextLine}`).value = {
-        formula: `SUM(${col}8:${col}${nextLine - 1})`,
+        formula: `SUM(${col}${nextLine - 1}:${col}${nextLine - 1})`,
         result: 0,
       };
       worksheet.getCell(`${col}${nextLine}`).font = { name: 'Calibri', bold: true, size: 8 };
@@ -1334,7 +1355,24 @@ export const export_excel_facturacion_ccfe = async ({
         '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-';
     });
 
-    const borders_cells = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'];
+    const borders_cells = [
+      'A',
+      'B',
+      'C',
+      'D',
+      'E',
+      'F',
+      'G',
+      'H',
+      'I',
+      'J',
+      'K',
+      'L',
+      'M',
+      'N',
+      'O',
+      'P',
+    ];
 
     borders_cells.forEach((cell) => {
       worksheet.getCell(`${cell}${nextLine}`).border = borders;
@@ -1377,11 +1415,11 @@ export const export_excel_facturacion_ccfe = async ({
     worksheet.getCell(`I${nextLine + 7}`).value = totals.retencion;
     worksheet.getCell(`J${nextLine + 7}`).value = totals.total;
 
-    worksheet.getCell(`D${nextLine + 8}`).value = { formula: `+H${nextLine}` };
-    worksheet.getCell(`F${nextLine + 8}`).value = { formula: `+I${nextLine}` };
+    worksheet.getCell(`D${nextLine + 8}`).value = { formula: `+J${nextLine}` };
+    worksheet.getCell(`F${nextLine + 8}`).value = { formula: `+K${nextLine}` };
     worksheet.getCell(`G${nextLine + 8}`).value = 0;
-    worksheet.getCell(`H${nextLine + 8}`).value = { formula: `+J${nextLine}` };
-    worksheet.getCell(`I${nextLine + 8}`).value = { formula: `+L${nextLine}` };
+    worksheet.getCell(`H${nextLine + 8}`).value = { formula: `+L${nextLine}` };
+    worksheet.getCell(`I${nextLine + 8}`).value = { formula: `+M${nextLine}` };
     worksheet.getCell(`J${nextLine + 8}`).value = {
       formula: `SUM(D${nextLine + 8}+F${nextLine + 8}+G${nextLine + 8}+H${nextLine + 8})`,
     };
@@ -1446,10 +1484,10 @@ export const export_excel_facturacion_ccfe = async ({
     cell_to_format.forEach((cell) => {
       worksheet.getCell(cell).numFmt = '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-';
     });
-    nextLine += 5;
+    nextLine += 12;
   });
 
-  nextLine += 6
+  nextLine += 6;
 
   worksheet.getCell(`D${nextLine + 2}`).border = { bottom: { style: 'thin' } };
   worksheet.getCell(`D${nextLine + 3}`).value = 'Nombre contador o Contribuyente';

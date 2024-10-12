@@ -17,6 +17,7 @@ import FacturacionCcfeItem from './CCFE/FacturacionCcfe';
 function CFFBookIVA() {
   const [monthSelected, setMonthSelected] = useState(new Date().getMonth() + 1);
   const [branchId, setBranchId] = useState(0);
+  const [branchName, setBranchName] = useState('');
   const { transmitter, gettransmitter } = useTransmitterStore();
   const { branch_list, getBranchesList } = useBranchesStore();
 
@@ -39,6 +40,8 @@ function CFFBookIVA() {
       index + 1,
       cre.fecEmi,
       cre.codigoGeneracion,
+      cre.numeroControl,
+      cre.selloRecibido,
       cre.customer.nrc !== '0' ? cre.customer.nrc : '',
       cre.customer.nombre,
       Number(cre.totalExenta),
@@ -73,6 +76,8 @@ function CFFBookIVA() {
           crei + 1,
           cre.fecEmi,
           cre.codigoGeneracion,
+          cre.numeroControl,
+          cre.selloRecibido,
           cre.customer.nrc !== '0' ? cre.customer.nrc : '',
           cre.customer.nombre,
           Number(cre.totalExenta),
@@ -101,6 +106,7 @@ function CFFBookIVA() {
       items,
       month,
       transmitter,
+      branch: branchName,
     });
 
     saveAs(blob, `Libro_Ventas_CCF_${month}.xlsx`);
@@ -157,7 +163,11 @@ function CFFBookIVA() {
                 defaultSelectedKeys={`${branchId}`}
                 onSelectionChange={(key) => {
                   if (key) {
-                    setBranchId(Number(new Set(key).values().next().value));
+                    const id = Number(new Set(key).values().next().value);
+                    setBranchId(id);
+                    const branch = branch_list.find((branch) => branch.id == id);
+
+                    if (branch) setBranchName(branch.name);
                   }
                 }}
                 className="w-full"

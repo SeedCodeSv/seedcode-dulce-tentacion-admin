@@ -4,6 +4,8 @@ export interface Sale {
 	lastCorrelative: string;
 	firstNumeroControl: string;
 	lastNumeroControl: string;
+	firstSelloRecibido: string;
+	lastSelloRecibido: string;
 	totalSales: number;
 }
 

@@ -60,8 +60,10 @@ function FEBookIVA() {
             formatDateMMDDYYYY(venta.day, monthSelected),
             venta.firstCorrelativ!,
             venta.lastCorrelative!,
-            venta.firstNumeroControl!.replace('-', ''),
-            venta.lastNumeroControl!.replace('-', ''),
+            venta.firstNumeroControl!,
+            venta.lastNumeroControl!,
+            venta.firstSelloRecibido,
+            venta.lastSelloRecibido,
             '',
             Number(venta.totalSales),
             '',
@@ -92,7 +94,7 @@ function FEBookIVA() {
   return (
     <Layout title="IVA - FE">
       <div className=" w-full h-full p-10 bg-gray-50 dark:bg-gray-900">
-        <div className="w-full h-full border-white border p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+        <div className="w-full h-full border-white border p-5 overflow-y-auto custom-scrollbar bg-white shadow rounded-xl dark:bg-gray-900">
           <div className="w-full flex flex-col lg:flex-row gap-5">
             <div className="w-full">
               <Select
@@ -152,7 +154,7 @@ function FEBookIVA() {
             </div>
           </div>
 
-          <div>
+          <div className='max-w-full overflow-x-auto'>
             <div className="w-full max-h-[500px] lg:max-h-[600px] xl:max-h-[700px] 2xl:max-h-[800px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
               {loading_facturas ? (
                 <div className="w-full flex justify-center p-20 items-center flex-col">
@@ -176,22 +178,28 @@ function FEBookIVA() {
                           <table className="w-full">
                             <thead className="sticky top-0 z-20 bg-white">
                               <tr>
-                                <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                                <th className="p-3 text-xs font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                                   Fecha
                                 </th>
-                                <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                                <th className="p-3 text-xs font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                                   Correlativo Inicial
                                 </th>
-                                <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                                <th className="p-3 text-xs font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                                   Correlativo Final
                                 </th>
-                                <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                                <th className="p-3 text-xs font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                                   Numero Control Inicial
                                 </th>
-                                <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                                <th className="p-3 text-xs font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                                   Numero Control Final
                                 </th>
-                                <th className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                                <th className="p-3 w-32 text-xs font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                                  Sello Recibido Inicial
+                                </th>
+                                <th className="p-3 w-32 text-xs font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                                Sello Recibido Final
+                                </th>
+                                <th className="p-3 text-xs font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                                   Total
                                 </th>
                               </tr>
@@ -202,19 +210,25 @@ function FEBookIVA() {
                                   <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                                     {formatDateMMDDYYYY(factura.day, monthSelected)}
                                   </td>
-                                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                  <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
                                     {factura.firstCorrelativ!}
                                   </td>
-                                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                  <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
                                     {factura.lastCorrelative!}
                                   </td>
-                                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                  <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
                                     {factura.firstNumeroControl!}
                                   </td>
-                                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                  <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
                                     {factura.lastNumeroControl!}
                                   </td>
-                                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                  <td className="p-3 w-32 text-xs text-slate-500 dark:text-slate-100">
+                                    <p className="truncate w-44">{factura.firstSelloRecibido!}</p>
+                                  </td>
+                                  <td className="p-3 w-32 text-xs text-slate-500 dark:text-slate-100">
+                                  <p className="truncate w-44">{factura.lastSelloRecibido!}</p>
+                                  </td>
+                                  <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
                                     {formatCurrency(Number(factura.totalSales))}
                                   </td>
                                 </tr>
