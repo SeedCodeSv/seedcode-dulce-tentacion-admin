@@ -2,7 +2,12 @@ import axios, { AxiosResponse } from 'axios';
 import { API_URL } from '../utils/constants';
 import { get_token } from '../storage/localStorage';
 import { IInvalidationResponse } from '../types/DTE/invalidation.types';
-import { IGetNotesOfSale, IGetSaleDetails, IGetSales, IGetSalesByStatusAndDates } from '../types/sales.types';
+import {
+  IGetNotesOfSale,
+  IGetSaleDetails,
+  IGetSales,
+  IGetSalesByStatusAndDates,
+} from '../types/sales.types';
 import {
   IGetSaleByProduct,
   IGraphicForCategoryProductsForDates,
@@ -158,14 +163,14 @@ export const get_sales_by_product = (
 };
 
 export const get_sales_by_ccf = (transmiter: number, month: string) => {
-  return axios.get<IGetSalesCCF>(API_URL + `/reports/get-ccf-by-month/${transmiter}?month=${month}`)
-}
+  return axios.get<IGetSalesCCF>(
+    API_URL + `/reports/get-ccf-by-month/${transmiter}?month=${month}`
+  );
+};
 
 export const get_factura_by_month = (branchId: number, month: number) => {
-  return axios.get<IGetFeMonth>(
-    API_URL + `/reports/get-fe-by-month/${branchId}?month=${month}`
-  )
-}
+  return axios.get<IGetFeMonth>(API_URL + `/reports/get-fe-by-month/${branchId}?month=${month}`);
+};
 
 export const get_sales_status_and_dates = (
   page: number,
@@ -173,50 +178,51 @@ export const get_sales_status_and_dates = (
   branchId: number,
   startDate: string,
   endDate: string,
-  state: string
+  state: string,
+  typeVoucher: string,
+  pointOfSale: string
 ): Promise<AxiosResponse<IGetSalesByStatusAndDates>> => {
   return axios.get<IGetSalesByStatusAndDates>(
-      API_URL +
-      `/sales/sales-by-dates/${branchId}?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}&state=${state}`
+    API_URL +
+      `/sales/sales-by-dates/${branchId}?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}&state=${state}&typeVoucher=${typeVoucher}&pointOfSale=${pointOfSale}`
   );
 };
 
 export const get_notes_of_sale = (id: number) => {
   const token = get_token();
   return axios.get<IGetNotesOfSale>(API_URL + `/nota-de-credito/all-notes-of-sale/${id}`, {
-      headers: {
-          Authorization: `Bearer ${token}`,
-      },
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
 };
-
 
 export const get_sale_pdf = (saleId: number, type: string) => {
   const token = get_token();
   return axios.get<Blob>(`${API_URL}/pdf/sale/${saleId}?type=${type}`, {
-    responseType: "blob",
+    responseType: 'blob',
     headers: {
-      Authorization: `Bearer ${token}`
-    }
-  })
-}
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
 
 export const get_sale_pdf_credit_note = (saleId: number, type: string) => {
   const token = get_token();
   return axios.get<Blob>(`${API_URL}/pdf/note-credit/${saleId}?type=${type}`, {
-    responseType: "blob",
+    responseType: 'blob',
     headers: {
-      Authorization: `Bearer ${token}`
-    }
-  })
-}
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
 
 export const get_sale_pdf_debit_note = (saleId: number, type: string) => {
   const token = get_token();
   return axios.get<Blob>(`${API_URL}/pdf/note-debit/${saleId}?type=${type}`, {
-    responseType: "blob",
+    responseType: 'blob',
     headers: {
-      Authorization: `Bearer ${token}`
-    }
-  })
-}
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};

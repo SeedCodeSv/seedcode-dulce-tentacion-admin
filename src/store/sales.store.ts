@@ -13,7 +13,7 @@ import { messages, SPACES_BUCKET } from '../utils/constants';
 import { calcularPorcentajeDescuento } from '../utils/filters';
 import { s3Client } from '@/plugins/s3';
 import { GetObjectCommand } from '@aws-sdk/client-s3';
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import axios from 'axios';
 import { SVFC_CF_Firmado } from '@/types/svf_dte/cf.types';
 export const useSalesStore = create<salesStore>((set, get) => ({
@@ -150,8 +150,8 @@ export const useSalesStore = create<salesStore>((set, get) => ({
 
   updateSaleDetails: (data) => set({ json_sale: data }),
 
-  getSalesByDatesAndStatus(page = 1, limit = 5, branchId, startDate, endDate, state) {
-    get_sales_status_and_dates(page, limit, branchId, startDate, endDate, state)
+  getSalesByDatesAndStatus(page = 1, limit = 5, branchId, startDate, endDate, state, type, point) {
+    get_sales_status_and_dates(page, limit, branchId, startDate, endDate, state, type, point)
       .then((res) => {
         set({
           sales_dates: res.data.sales,

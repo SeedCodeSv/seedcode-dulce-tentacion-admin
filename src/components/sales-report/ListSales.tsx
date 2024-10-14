@@ -1,144 +1,131 @@
-import { get_user } from "@/storage/localStorage";
-// import { useConfigurationStore } from "@/store/perzonalitation.store";
-import { useSalesStore } from "@/store/sales.store";
-import { global_styles } from "@/styles/global.styles";
-// import { SaleDates } from "@/types/sales.types";
+import { useSalesStore } from '@/store/sales.store';
+import { global_styles } from '@/styles/global.styles';
+import { formatDate } from '@/utils/dates';
+import { formatCurrency } from '@/utils/dte';
+import {
+  Button,
+  Chip,
+  Input,
+  Listbox,
+  ListboxItem,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  Select,
+  SelectItem,
+  useDisclosure,
+} from '@nextui-org/react';
+import { CircleX, EllipsisVertical, LoaderCircle, X } from 'lucide-react';
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router';
+import Pagination from '../global/Pagination';
 // import { ambiente, MH_QUERY } from "@/utils/constants";
-import { formatDate } from "@/utils/dates";
-import { formatCurrency } from "@/utils/dte";
-import { Button, Chip, Input, Listbox, ListboxItem, Popover, PopoverContent, PopoverTrigger, Select, SelectItem, useDisclosure } from "@nextui-org/react";
-import { CircleX, EllipsisVertical, LoaderCircle, X } from "lucide-react";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { useNavigate } from "react-router";
-import { toast } from "sonner";
-import Pagination from "../global/Pagination";
-// import { ambiente, MH_QUERY } from "@/utils/constants";
-import { get_sale_pdf } from "@/services/sales.service";
+import { get_sale_pdf } from '@/services/sales.service';
+import { useBranchesStore } from '@/store/branches.store';
+import { usePointOfSales } from '@/store/point-of-sales.store';
+import { PointOfSale } from '@/types/point-of-sales.types';
+import { limit_options } from '@/utils/constants';
 
 function ListSales() {
-    const styles = global_styles()
-    const [limit, setLimit] = useState(5)
-    const [dateInitial, setDateInitial] = useState(formatDate)
-    const [dateEnd, setDateEnd] = useState(formatDate())
-    const [isActive] = useState(true)
-    const [state, setState] = useState("PROCESADO")
-    const [notes, setNotes] = useState<{ debits: number; credits: number }>({
-      debits: 0,
-      credits: 0
-    })
+  const styles = global_styles();
+  const [limit, setLimit] = useState(5);
+  const [dateInitial, setDateInitial] = useState(formatDate());
+  const [dateEnd, setDateEnd] = useState(formatDate());
+  const [branch, setBranch] = useState(0);
+  const [state, setState] = useState('PROCESADO');
+  const [pointOfSale, setPointOfSale] = useState('');
+  const [typeVoucher, setTypeVoucher] = useState('');
+  const [notes, setNotes] = useState<{ debits: number; credits: number }>({
+    debits: 0,
+    credits: 0,
+  });
 
-    const estadosV = [
-        { label: 'PROCESADO', value: 'PROCESADO' },
-        { label: 'CONTINGENCIA', value: 'CONTINGENCIA' },
-        { label: 'INVALIDADO', value: 'INVALIDADO' }
-      ]
+  const { sales_dates, getSalesByDatesAndStatus, sales_dates_pagination, getNotesOfSale } =
+    useSalesStore();
 
-    const user = get_user()
-    // const [selectedSale, setSelectedSale] = useState<SaleDates>()
+  // const modalVerify = useDisclosure()
+  const navigation = useNavigate();
 
-    const { sales_dates, getSalesByDatesAndStatus, sales_dates_pagination, getNotesOfSale } =
-        useSalesStore()
+  useEffect(() => {
+    getSalesByDatesAndStatus(
+      1,
+      limit,
+      branch,
+      dateInitial,
+      dateEnd,
+      state,
+      typeVoucher,
+      pointOfSale
+    );
+  }, [dateInitial, dateEnd, state, limit, branch, typeVoucher, pointOfSale]);
 
-    // const modalVerify = useDisclosure()
-    const navigation = useNavigate()
+  const [loadingPdf, setLoadingPdf] = useState(false);
+  const [pdfPath, setPdfPath] = useState('');
+  const showFullLayout = useDisclosure();
 
-    useEffect(() => {
-        if (isActive) {
-        toast.info("Cargando información...")
-        }
-        getSalesByDatesAndStatus(1, limit, Number(user?.pointOfSale?.branch.id), dateInitial, dateEnd, state)
-    }, [dateInitial, dateEnd, state, limit])
+  const handleShowPdf = (saleId: number, typeDte: string) => {
+    setLoadingPdf(true);
+    showFullLayout.onOpen();
+    get_sale_pdf(saleId, typeDte).then((res) => {
+      setPdfPath(URL.createObjectURL(res.data));
+      setLoadingPdf(false);
+    });
+  };
 
-    const [loadingPdf, setLoadingPdf] = useState(false)
-    const [pdfPath, setPdfPath] = useState("")
-    const showFullLayout = useDisclosure()
+  const verifyNotes = (id: number) => {
+    getNotesOfSale(id).then((res) => {
+      const { debits, credits } = res;
+      setNotes({ debits, credits });
+      return;
+    });
+    setNotes({ debits: 0, credits: 0 });
+  };
 
-      const handleShowPdf = (saleId: number, typeDte: string) => {
-        setLoadingPdf(true)
-        showFullLayout.onOpen()
-        get_sale_pdf(saleId, typeDte).then((res) => {
-          setPdfPath(URL.createObjectURL(res.data))
-          setLoadingPdf(false)
-        })
-      }
-
-
-    const verifyNotes = (id: number) => {
-        getNotesOfSale(id).then((res) => {
-        const { debits, credits } = res
-        setNotes({ debits, credits })
-        return
-        })
-        setNotes({ debits: 0, credits: 0 })
-    }
-
-    return (
-        <div className="w-full h-full p-4 lg:p-8 bg-gray-50 dark:bg-gray-800">
-      <div className="w-full h-full p-3 mt-3 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
+  return (
+    <div className="w-full h-full p-4 lg:p-8 bg-gray-50 dark:bg-gray-800">
+      <div className="w-full h-full flex flex-col p-3 mt-3 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
         <Filters
           setDateInitial={setDateInitial}
           setEndDate={setDateEnd}
           endDate={dateEnd}
           dateInitial={dateInitial}
+          setBranch={setBranch}
+          branch={branch}
+          state={state}
+          setState={setState}
+          typeVoucher={typeVoucher}
+          setTypeVoucher={setTypeVoucher}
+          pointOfSale={pointOfSale}
+          setPointOfSale={setPointOfSale}
         />
-        <div className="md:flex md:mb-2 gap-10 mb-4 grid overflow-hidden items-end justify-end mr-3 mt-4">
-          <Select
-            classNames={{
-              label: "text-sm font-semibold dark:text-white"
-            }}
-            className="w-44 dark:text-white"
-            variant="bordered"
-            label="Mostrar por estado"
-            labelPlacement="outside"
-            value={state}
-            onChange={(e) => setState(e.target.value)}
-          >
-            {estadosV.map((e) => (
-              <SelectItem className="dark:text-white" key={e.value} value={e.value}>
-                {e.label}
-              </SelectItem>
-            ))}
-          </Select>
-          <Select
-            className="w-[326px] hidden md:flex"
-            variant="bordered"
-            label="Mostrar"
-            labelPlacement="outside"
-            defaultSelectedKeys={["5"]}
-            classNames={{
-              label: "font-semibold"
-            }}
-            value={limit}
-            onChange={(e) => {
-              setLimit(Number(e.target.value !== "" ? e.target.value : "5"))
-            }}
-          >
-            <SelectItem className="dark:text-white" key={"5"}>
-              5
-            </SelectItem>
-            <SelectItem className="dark:text-white" key={"10"}>
-              10
-            </SelectItem>
-            <SelectItem className="dark:text-white" key={"20"}>
-              20
-            </SelectItem>
-            <SelectItem className="dark:text-white" key={"30"}>
-              30
-            </SelectItem>
-            <SelectItem className="dark:text-white" key={"40"}>
-              40
-            </SelectItem>
-            <SelectItem className="dark:text-white" key={"50"}>
-              50
-            </SelectItem>
-            <SelectItem className="dark:text-white" key={"100"}>
-              100
-            </SelectItem>
-          </Select>
+        <div className="flex items-end justify-end mt-3">
+          <div>
+            <Select
+              className="w-44"
+              variant="bordered"
+              label="Cantidad a mostrar"
+              placeholder="Selecciona la cantidad a mostrar"
+              labelPlacement="outside"
+              defaultSelectedKeys={['5']}
+              classNames={{
+                label: 'font-semibold',
+              }}
+              value={limit}
+              onChange={(e) => {
+                setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
+              }}
+            >
+              {limit_options.map((limit) => (
+                <SelectItem key={limit} value={limit}>
+                  {limit}
+                </SelectItem>
+              ))}
+            </Select>
+          </div>
         </div>
-        <div className="overflow-x-auto custom-scrollbar mt-4">
+        <div className="overflow-x-auto flex flex-col h-full custom-scrollbar mt-4">
           <table className="w-full">
-            <thead className="sticky top-0 z-0 bg-white">
+            <thead className="sticky top-0 z-20 bg-white">
               <tr>
                 <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                   No.
@@ -168,7 +155,7 @@ function ListSales() {
                 <tr className="border-b border-slate-200" key={index}>
                   <td className="p-3 text-sm text-slate-500 dark:text-slate-100">{sale.id}</td>
                   <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                    {sale.fecEmi + " - " + sale.horEmi}
+                    {sale.fecEmi + ' - ' + sale.horEmi}
                   </td>
                   <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                     {sale.numeroControl}
@@ -182,14 +169,14 @@ function ListSales() {
                   <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                     <Chip
                       classNames={{
-                        content: "text-white text-sm !font-bold px-3"
+                        content: 'text-white text-sm !font-bold px-3',
                       }}
                       color={
-                        sale.salesStatus.name === "CONTINGENCIA"
-                          ? "warning"
-                          : sale.salesStatus.name === "PROCESADO"
-                            ? "success"
-                            : "danger"
+                        sale.salesStatus.name === 'CONTINGENCIA'
+                          ? 'warning'
+                          : sale.salesStatus.name === 'PROCESADO'
+                            ? 'success'
+                            : 'danger'
                       }
                     >
                       {sale.salesStatus.name}
@@ -204,7 +191,7 @@ function ListSales() {
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent className="p-1">
-                          {sale.salesStatus.name === "CONTINGENCIA" ? (
+                          {sale.salesStatus.name === 'CONTINGENCIA' ? (
                             <>
                               <Listbox
                                 className="dark:text-white"
@@ -221,7 +208,7 @@ function ListSales() {
                                 // onClick={handleShowPdf.bind(null, sale.id, sale.tipoDte)}
                               >
                                 <ListboxItem
-                                  classNames={{ base: "font-semibold" }}
+                                  classNames={{ base: 'font-semibold' }}
                                   variant="flat"
                                   color="danger"
                                   key="show-pdf"
@@ -247,35 +234,35 @@ function ListSales() {
                             </>
                           ) : (
                             <>
-                              {sale.salesStatus.name === "PROCESADO" ? (
+                              {sale.salesStatus.name === 'PROCESADO' ? (
                                 <>
-                                  {sale.tipoDte === "03" ? (
+                                  {sale.tipoDte === '03' ? (
                                     <>
                                       <Listbox
                                         className="dark:text-white"
                                         aria-label="Actions"
                                         onAction={(key) => {
                                           switch (key) {
-                                            case "debit-note":
-                                              navigation("/debit-note/" + sale.id)
-                                              break
-                                            case "show-debit-note":
-                                              navigation("/get-debit-note/" + sale.id)
-                                              break
-                                            case "credit-note":
-                                              navigation("/credit-note/" + sale.id)
-                                              break
-                                            case "show-credit-note":
-                                              navigation("/get-credit-note/" + sale.id)
-                                              break
+                                            case 'debit-note':
+                                              navigation('/debit-note/' + sale.id);
+                                              break;
+                                            case 'show-debit-note':
+                                              navigation('/get-debit-note/' + sale.id);
+                                              break;
+                                            case 'credit-note':
+                                              navigation('/credit-note/' + sale.id);
+                                              break;
+                                            case 'show-credit-note':
+                                              navigation('/get-credit-note/' + sale.id);
+                                              break;
                                             default:
-                                              break
+                                              break;
                                           }
                                         }}
                                       >
                                         {notes.debits > 0 ? (
                                           <ListboxItem
-                                            classNames={{ base: "font-semibold" }}
+                                            classNames={{ base: 'font-semibold' }}
                                             variant="flat"
                                             color="primary"
                                             key="show-debit-note"
@@ -284,7 +271,7 @@ function ListSales() {
                                           </ListboxItem>
                                         ) : (
                                           <ListboxItem
-                                            classNames={{ base: "font-semibold" }}
+                                            classNames={{ base: 'font-semibold' }}
                                             variant="flat"
                                             color="danger"
                                             key="debit-note"
@@ -295,7 +282,7 @@ function ListSales() {
 
                                         {notes.credits > 0 ? (
                                           <ListboxItem
-                                            classNames={{ base: "font-semibold" }}
+                                            classNames={{ base: 'font-semibold' }}
                                             variant="flat"
                                             color="primary"
                                             key="show-credit-note"
@@ -304,7 +291,7 @@ function ListSales() {
                                           </ListboxItem>
                                         ) : (
                                           <ListboxItem
-                                            classNames={{ base: "font-semibold" }}
+                                            classNames={{ base: 'font-semibold' }}
                                             variant="flat"
                                             color="danger"
                                             key="credit-note"
@@ -327,7 +314,7 @@ function ListSales() {
                                     // }}
                                   >
                                     <ListboxItem
-                                      classNames={{ base: "font-semibold" }}
+                                      classNames={{ base: 'font-semibold' }}
                                       variant="flat"
                                       color="danger"
                                       key="show-pdf"
@@ -352,10 +339,7 @@ function ListSales() {
                             </>
                           )}
                           {sale.salesStatus.name === 'INVALIDADO' && (
-                            <Listbox
-                              className="dark:text-white"
-                              aria-label="Actions"
-                            >
+                            <Listbox className="dark:text-white" aria-label="Actions">
                               <ListboxItem
                                 classNames={{ base: 'font-semibold' }}
                                 variant="flat"
@@ -383,12 +367,14 @@ function ListSales() {
               onPageChange={(page) => {
                 getSalesByDatesAndStatus(
                   page,
-                  5,
-                  Number(user?.pointOfSale?.branch.id),
+                  limit,
+                  branch,
                   dateInitial,
                   dateEnd,
-                  state
-                )
+                  state,
+                  typeVoucher,
+                  pointOfSale
+                );
               }}
               nextPage={sales_dates_pagination.prevPag}
               previousPage={sales_dates_pagination.nextPag}
@@ -408,7 +394,7 @@ function ListSales() {
         <div className="absolute z-[100] w-screen h-screen inset-0 bg-gray-50 dark:bg-gray-700">
           <Button
             onClick={() => {
-              setPdfPath("")
+              setPdfPath('');
             }}
             style={styles.dangerStyles}
             isIconOnly
@@ -423,7 +409,7 @@ function ListSales() {
             </div>
           ) : (
             <>
-              {pdfPath !== "" ? (
+              {pdfPath !== '' ? (
                 <div className="w-full h-full">
                   <iframe src={pdfPath} className="w-screen h-screen z-[2000]" />
                 </div>
@@ -436,75 +422,166 @@ function ListSales() {
           )}
         </div>
       )}
-      {/* {selectedSale && (
-        <ModalGlobal
-          size="w-96 md:w-[500px] p-5"
-          title="Verificar DTE en hacienda"
-          isOpen={modalVerify.isOpen}
-          onClose={modalVerify.onClose}
-        >
-          <VerifySale
-            sale={selectedSale}
-            onClose={() => {
-              modalVerify.onClose()
-              getSalesByDatesAndStatus(1, 5, Number(user?.pointOfSale), dateInitial, dateEnd, state)
-            }}
-          />
-        </ModalGlobal>
-      )} */}
-
-      {/* <ModalGlobal
-        title="Procesar JSON"
-        isOpen={modalJson.isOpen}
-        size="w-96 p-4"
-        onClose={modalJson.onClose}
-      >
-        <ProcessJSON closeModal={modalJson.onClose} reloadData={() => getSalesByDatesAndStatus(1, 5, Number(user?.branchId), dateInitial, dateEnd, state)} />
-      </ModalGlobal> */}
     </div>
-    )
+  );
 }
 export default ListSales;
 
-
 interface FiltersProps {
-    dateInitial: string;
-    setDateInitial: Dispatch<SetStateAction<string>>;
-    endDate: string;
-    setEndDate: Dispatch<SetStateAction<string>>;
-  }
-  
-  const Filters = (props: FiltersProps) => {
-    return (
-      <div className="flex w-full gap-5 py-5 md:p-0">
-        <Input
-          className="z-0"
-          onChange={(e) => props.setDateInitial(e.target.value)}
-          value={props.dateInitial}
-          defaultValue={formatDate()}
-          placeholder="Buscar por nombre..."
-          type="date"
-          variant="bordered"
-          label="Fecha inicial"
-          labelPlacement="outside"
-          classNames={{
-            input: 'dark:text-white dark:border-gray-600',
-            label: 'text-sm font-semibold dark:text-white',
-          }}
-        />
-        <Input
-          onChange={(e) => props.setEndDate(e.target.value)}
-          value={props.endDate}
-          placeholder="Buscar por nombre..."
-          variant="bordered"
-          label="Fecha final"
-          type="date"
-          labelPlacement="outside"
-          classNames={{
-            input: 'dark:text-white dark:border-gray-600',
-            label: 'text-sm font-semibold dark:text-white',
-          }}
-        />
-      </div>
-    );
-  };
+  dateInitial: string;
+  setDateInitial: Dispatch<SetStateAction<string>>;
+  endDate: string;
+  setEndDate: Dispatch<SetStateAction<string>>;
+  branch: number;
+  setBranch: Dispatch<SetStateAction<number>>;
+  state: string;
+  setState: Dispatch<SetStateAction<string>>;
+  typeVoucher: string;
+  setTypeVoucher: Dispatch<SetStateAction<string>>;
+  pointOfSale: string;
+  setPointOfSale: Dispatch<SetStateAction<string>>;
+}
+
+const Filters = (props: FiltersProps) => {
+  const { branch_list, getBranchesList } = useBranchesStore();
+  const { point_of_sales_list, getPointOfSalesList } = usePointOfSales();
+
+  useEffect(() => {
+    getBranchesList();
+  }, []);
+
+  useEffect(() => {
+    getPointOfSalesList(props.branch);
+  }, [props.branch]);
+
+  const estadosV = [
+    { label: 'PROCESADO', value: 'PROCESADO' },
+    { label: 'CONTINGENCIA', value: 'CONTINGENCIA' },
+    { label: 'INVALIDADO', value: 'INVALIDADO' },
+  ];
+
+  const filteredPoints = useMemo(() => {
+    if (point_of_sales_list.pointOfSales) {
+      const pointOfSalesArray = Object.values(
+        point_of_sales_list.pointOfSales
+      ).flat() as Array<PointOfSale>;
+      return pointOfSalesArray.filter((point) => point.typeVoucher === 'FE');
+    }
+    return [];
+  }, [point_of_sales_list]);
+
+  return (
+    <div className="grid grid-cols-3 gap-5">
+      <Input
+        className="z-0"
+        onChange={(e) => props.setDateInitial(e.target.value)}
+        value={props.dateInitial}
+        defaultValue={formatDate()}
+        placeholder="Buscar por nombre..."
+        type="date"
+        variant="bordered"
+        label="Fecha inicial"
+        labelPlacement="outside"
+        classNames={{
+          input: 'dark:text-white dark:border-gray-600',
+          label: 'text-sm font-semibold dark:text-white',
+        }}
+      />
+      <Input
+        onChange={(e) => props.setEndDate(e.target.value)}
+        value={props.endDate}
+        placeholder="Buscar por nombre..."
+        variant="bordered"
+        label="Fecha final"
+        type="date"
+        labelPlacement="outside"
+        classNames={{
+          input: 'dark:text-white dark:border-gray-600',
+          label: 'text-sm font-semibold dark:text-white',
+        }}
+      />
+      <Select
+        className="z-0"
+        placeholder="Selecciona la sucursal"
+        variant="bordered"
+        label="Sucursal"
+        labelPlacement="outside"
+        classNames={{
+          label: 'text-sm font-semibold dark:text-white',
+        }}
+        onSelectionChange={(key) => {
+          if (key) {
+            const branchId = Number(new Set(key).values().next().value);
+            props.setBranch(branchId);
+          } else {
+            props.setBranch(0);
+          }
+        }}
+      >
+        {branch_list.map((item) => (
+          <SelectItem key={item.id} value={item.id}>
+            {item.name}
+          </SelectItem>
+        ))}
+      </Select>
+      <Select
+        placeholder="Selecciona un punto de venta"
+        variant="bordered"
+        label="Punto de venta"
+        labelPlacement="outside"
+        classNames={{
+          label: 'text-sm font-semibold dark:text-white',
+        }}
+        onSelectionChange={(key) => {
+          if (key) {
+            const pointOfSale = String(new Set(key).values().next().value);
+            props.setPointOfSale(pointOfSale);
+          } else {
+            props.setPointOfSale('');
+          }
+        }}
+      >
+        {filteredPoints.map((item) => (
+          <SelectItem key={item.code} value={item.id}>
+            {item.code}
+          </SelectItem>
+        ))}
+      </Select>
+      <Select
+        placeholder="Selecciona el tipo de comprobante"
+        variant="bordered"
+        label="Tipo de comprobante"
+        labelPlacement="outside"
+        classNames={{
+          label: 'text-sm font-semibold dark:text-white',
+        }}
+        onChange={(e) => props.setTypeVoucher(e.target.value)}
+      >
+        <SelectItem key="01" value="FE">
+          FE - Factura Comercial
+        </SelectItem>
+        <SelectItem key="03" value="CCFE">
+          CCFE - Crédito Fiscal Electrónico
+        </SelectItem>
+      </Select>
+      <Select
+        classNames={{
+          label: 'text-sm font-semibold dark:text-white',
+        }}
+        className="dark:text-white"
+        variant="bordered"
+        placeholder="Selecciona un estado"
+        label="Mostrar por estado"
+        labelPlacement="outside"
+        value={props.state}
+        onChange={(e) => props.setState(e.target.value)}
+      >
+        {estadosV.map((e) => (
+          <SelectItem className="dark:text-white" key={e.value} value={e.value}>
+            {e.label}
+          </SelectItem>
+        ))}
+      </Select>
+    </div>
+  );
+};

@@ -103,7 +103,7 @@ export interface BranchPointOfSale {
   codEstableMH: string;
   codEstable: string;
   tipoEstablecimiento: string;
-  pointOfSales: PointOfSales;
+  pointOfSales: Object;
   transmitterId: number;
 }
 

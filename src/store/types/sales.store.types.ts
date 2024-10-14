@@ -34,7 +34,9 @@ export interface salesStore {
     branchId: number,
     startDate: string,
     endDate: string,
-    state: string
+    state: string,
+    typeVoucher: string,
+    pointOfSale: string
   ) => void;
   getNotesOfSale: (id: number) => Promise<{ debits: number; credits: number }>;
   getJsonSale: (path: string) => void;
