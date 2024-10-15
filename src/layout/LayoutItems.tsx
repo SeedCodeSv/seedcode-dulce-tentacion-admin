@@ -22,6 +22,7 @@ import {
   BookCheck,
   BadgeDollarSign,MapPinned,
   Tag,
+  DatabaseBackup,
 } from 'lucide-react';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { ThemeContext } from '../hooks/useTheme';
@@ -159,6 +160,12 @@ export const LayoutItems = () => {
       to: '/sales',
       icon: Tag,
       label: 'Ventas facturación electronica',
+    },
+    {
+      viewName: 'Ventas',
+      to: '/contingence-section',
+      icon: DatabaseBackup,
+      label: 'Contingencias',
     },
   ];
 

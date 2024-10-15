@@ -262,3 +262,43 @@ export interface IGetNotesOfSale {
     message: string;
     notes: {debits: number; credits: number}
 }
+
+export interface SaleContingence {
+    id: number;
+    paymentType: string;
+    numeroControl: string;
+    codigoGeneracion: string;
+    tipoDte: string;
+    fecEmi: string;
+    horEmi: string;
+    selloRecibido: string;
+    selloInvalidacion: string;
+    sello: boolean;
+    codeEmployee: string;
+    totalNoSuj: string;
+    totalExenta: string;
+    totalGravada: string;
+    subTotalVentas: string;
+    descuNoSuj: string;
+    descuExenta: string;
+    descuGravada: string;
+    porcentajeDescuento: string;
+    totalDescu: string;
+    subTotal: string;
+    totalIva: string;
+    montoTotalOperacion: string;
+    totalPagar: string;
+    totalLetras: string;
+    pathPdf: string;
+    pathJson: string;
+    isActivated: boolean;
+    boxId: number;
+    customerId: number;
+    employeeId: number;
+    salesStatusId: number;
+  }
+
+  export interface IGetSalesContingence {
+    ok: boolean;
+    sales: SaleContingence[];
+  }

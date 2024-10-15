@@ -118,3 +118,18 @@ export const sending_steps = [
     description: 'Estamos guardando el documento',
   },
 ];
+
+export const contingence_steps = [
+  {
+    label: 'Firmando lote de contingencia',
+    description: 'Espere mientras se firma el lote de contingencia',
+  },
+  {
+    label: 'Validando en hacienda',
+    description: 'Hacienda esta validando el lote de contingencia',
+  },
+  {
+    label: 'Enviando DTEs',
+    description: 'Estamos enviando el lote de DTEs',
+  },
+];

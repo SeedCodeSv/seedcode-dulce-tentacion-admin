@@ -1,5 +1,5 @@
 import { FacturacionCcfe, SalesCcf } from '@/types/sales_cff.types';
-import { ISale_JSON_Debito, SaleDates, SaleDetails } from '../../types/sales.types';
+import { ISale_JSON_Debito, SaleContingence, SaleDates, SaleDetails } from '../../types/sales.types';
 import { SalesByDay } from '@/types/iva_fe';
 import { IPagination } from '@/types/global.types';
 import { SVFC_CF_Firmado } from '@/types/svf_dte/cf.types';
@@ -16,6 +16,7 @@ export interface salesStore {
   sales_dates: SaleDates[];
   sales_dates_pagination: IPagination;
   loading_creditos: boolean;
+  contingence_sales: SaleContingence[];
   getFeMonth: (branchId: number, month: number) => void;
   getCffMonth: (branchId: number, month: string) => void;
   postSales: (
@@ -40,4 +41,5 @@ export interface salesStore {
   ) => void;
   getNotesOfSale: (id: number) => Promise<{ debits: number; credits: number }>;
   getJsonSale: (path: string) => void;
+  getSalesInContingence: (id: number) => void;
 }

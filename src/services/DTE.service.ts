@@ -35,11 +35,12 @@ export const send_to_mh = (
   });
 };
 
-export const send_to_mh_contingencia = (payload: ISendMHContingencia, token: string) => {
+export const send_to_mh_contingencia = (payload: ISendMHContingencia, token: string, cancelToken: CancelTokenSource) => {
   return axios.post<ResponseMHSuccess>(MH_URL + 'contingencia', payload, {
     headers: {
       Authorization: token,
     },
+    cancelToken: cancelToken.token,
   });
 };
 

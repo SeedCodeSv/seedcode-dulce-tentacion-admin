@@ -7,6 +7,7 @@ import {
   IGetSaleDetails,
   IGetSales,
   IGetSalesByStatusAndDates,
+  IGetSalesContingence,
 } from '../types/sales.types';
 import {
   IGetSaleByProduct,
@@ -226,3 +227,7 @@ export const get_sale_pdf_debit_note = (saleId: number, type: string) => {
     },
   });
 };
+
+export const get_sales_in_contingence = (branchId: number) => {
+  return axios.get<IGetSalesContingence>(API_URL + `/sales/sales-contingence/${branchId}`);
+}

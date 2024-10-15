@@ -310,6 +310,7 @@ function SalesReportContigence() {
       ''
     );
     modalLoading.onOpen();
+    const sources = axios.CancelToken.source(); 
 
     firmarDocumentoContingencia(contingencia_send)
       .then((result) => {
@@ -318,7 +319,7 @@ function SalesReportContigence() {
           documento: result.data.body,
         };
 
-        send_to_mh_contingencia(send, token_mh ?? '')
+        send_to_mh_contingencia(send, token_mh ?? '', sources)
           .then((contingencia) => {
             if (contingencia.data.estado === 'RECIBIDO') {
               toast.success('Contingencia exitosa');

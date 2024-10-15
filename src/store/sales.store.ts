@@ -5,6 +5,7 @@ import {
   get_notes_of_sale,
   get_sale_details,
   get_sales_by_ccf,
+  get_sales_in_contingence,
   get_sales_status_and_dates,
   post_sales,
 } from '../services/sales.service';
@@ -37,6 +38,7 @@ export const useSalesStore = create<salesStore>((set, get) => ({
     ok: false,
   },
   loading_facturas: false,
+  contingence_sales: [],
   getCffMonth(branchId, month) {
     set({ loading_creditos: false });
     get_sales_by_ccf(branchId, month)
@@ -200,5 +202,19 @@ export const useSalesStore = create<salesStore>((set, get) => ({
           credits: 0,
         };
       });
+  },
+
+  getSalesInContingence(id) {
+    get_sales_in_contingence(id)
+      .then((res) => {
+        set({
+          contingence_sales: res.data.sales,
+        });
+      })
+      .catch(() => {
+        set({
+          contingence_sales: [],
+        })
+      })
   },
 }));

@@ -6,6 +6,7 @@ import {
   get_birthday_employees,
   get_employee_list,
   get_employees_paginated,
+  get_list_employees,
   patch_employee,
   save_employee,
   verify_code,
@@ -27,6 +28,7 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
     ok: false,
   },
   employee_list: [],
+  employee_contingence_list: [],
   loading_employees: false,
   saveEmployeesPaginated(employee_paginated) {
     set({ employee_paginated });
@@ -183,5 +185,14 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
         birthdays: data.birthdays,
       });
     });
+  },
+  getListEmployees() {
+    get_list_employees()
+      .then(({ data }) => {
+        set((state) => ({ ...state, employee_contingence_list: data.employees }));
+      })
+      .catch(() => {
+        set((state) => ({ ...state, employee_contingence_list: [] }));
+      });
   },
 }));
