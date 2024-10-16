@@ -5,6 +5,7 @@ import { ArrowDown01, ArrowUp01, BadgeDollarSign } from "lucide-react";
 import { useEffect } from "react";
 import ContingenceFC_CCF from "./contingence/ContingenceFC_CFF";
 import ContingenceND from "./contingence/ContingenceND";
+import ContingenceNC from "./contingence/ContingenceNC";
 
 function ContingenceSection() {
     const { getEmployeesList } = useEmployeeStore();
@@ -71,7 +72,7 @@ function ContingenceSection() {
                                 </div>
                             }
                         >
-                            <></>
+                            <ContingenceNC/>
                         </Tab>
                     </Tabs>
                 </div>

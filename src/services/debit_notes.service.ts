@@ -12,5 +12,5 @@ export const get_recent_debit_notes = (id: number, saleId: number) => {
 }
 
 export const get_contingence_debit_notes = (branchId: number) => {
-    return axios.get<IGetAllDebitNotes>(API_URL + `/nota-de-debito/list-contingence/${branchId}`)
+    return axios.get<IGetAllDebitNotes>(API_URL + `/nota-de-debitos/list-contingence/${branchId}`)
 }

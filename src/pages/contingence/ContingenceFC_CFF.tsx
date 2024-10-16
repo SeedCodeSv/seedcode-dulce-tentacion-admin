@@ -315,9 +315,10 @@ function ContingenceFC_CCF() {
                     errorMessage={error.nombreRes}
                     onSelectionChange={(key) => {
                         if (key) {
-                        const employee = JSON.parse(key as string) as Employee;
-                        // setNombreRes({`${employee.firstName} ${employee.secondName} ${employee.firstLastName} ${employee.secondLastName}`});
-                        setNumeroDocumento(employee.dui);
+                            const employee = JSON.parse(key as string) as Employee;
+                            setNombreRes(`${employee.firstName} ${employee.secondName} ${employee.firstLastName} ${employee.secondLastName}`);
+                            setNumeroDocumento(employee.dui);
+                            setTipoDocumento("13")
                         }
                     }}
                     >
@@ -369,22 +370,22 @@ function ContingenceFC_CCF() {
                     <thead className="sticky top-0 z-20 bg-white">
                         <tr>
                         <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                            NO.
+                            No.
                         </th>
                         <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                            FECHA - HORA
+                            Fecha - Hora
                         </th>
                         <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                            TIPO DTE
+                            Tipo DTE
                         </th>
                         <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                            CORRELATIVO
+                            Correlativo
                         </th>
                         <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                            CÓDIGO GENERACIÓN
+                            Código de generación
                         </th>
                         <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                            MONTO TOTAL
+                            Monto total
                         </th>
                         </tr>
                     </thead>

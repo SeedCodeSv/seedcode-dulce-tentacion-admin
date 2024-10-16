@@ -3,7 +3,6 @@ import { useAuthStore } from "@/store/auth.store";
 import { useCorrelativesDteStore } from "@/store/correlatives_dte.store";
 import { useEmployeeStore } from "@/store/employee.store";
 import { useDebitNotes } from "@/store/notes_debit.store";
-// import { useConfigurationStore } from "@/store/perzonalitation.store";
 import { useTransmitterStore } from "@/store/transmitter.store";
 import { IContingencia } from "@/types/DTE/contingencia.types";
 import { SendMHFailed } from "@/types/transmitter.types";
@@ -24,12 +23,20 @@ import { SVFE_ND_Firmado, SVFE_ND_SEND } from "@/types/svf_dte/nd.types.ts";
 import { PayloadMH } from "@/types/DTE/DTE.types.ts";
 import { formatCurrency } from "@/utils/dte.ts";
 import { Employee } from "@/types/employees.types.ts";
+import HeadlessModal from "@/components/global/HeadlessModal.tsx";
+import { ShieldAlert } from "lucide-react";
 
 function ContingenceND() {
     const { onGetContingenceNotes, contingence_debits } = useDebitNotes()
     const { employee_list } = useEmployeeStore();
     const { user } = useAuthStore();
     const { getTransmitter, transmitter } = useTransmitterStore();
+    const [title, setTitle] = useState('');
+    const [errorMessage, setErrorMessage] = useState('Error de firma');
+    const [loading, setLoading] = useState(false);
+    const service = new SeedcodeCatalogosMhService();
+    const { getCorrelativesByDte } = useCorrelativesDteStore();
+    const modalError = useDisclosure();
 
     useEffect(() => {
         onGetContingenceNotes(Number(user?.pointOfSale?.branch.id));
@@ -58,8 +65,8 @@ function ContingenceND() {
     const [currentStep, setCurrentStep] = useState(0);
     const [motivo, setMotivo] = useState('2');
     const [observaciones, setObservaciones] = useState('');
-    const [nombreRes, ] = useState('');
-    const [tipoDocumento, ] = useState('');
+    const [nombreRes, setNombreRes] = useState('');
+    const [tipoDocumento, setTipoDocumento] = useState('');
     const [numeroDocumento, setNumeroDocumento] = useState('');
 
     const [error, setError] = useState({
@@ -93,17 +100,7 @@ function ContingenceND() {
         }
     };
 
-    const [, setTitle] = useState('');
-    const [, setErrorMessage] = useState('Error de firma');
-
-    const [loading, setLoading] = useState(false);
-
-    const service = new SeedcodeCatalogosMhService();
-    const { getCorrelativesByDte } = useCorrelativesDteStore();
-
-    const modalError = useDisclosure();
-
-    // const { personalization } = useConfigurationStore();
+    
 
     const handleProccessContingence = async () => {
         modalError.onClose();
@@ -210,7 +207,7 @@ function ContingenceND() {
                       activo: true,
                       passwordPri: transmitter.clavePrivada,
                       dteJson: {
-                        identificacion: json.identificacion,
+                        identificacion: { ...json.identificacion, tipoOperacion: 2, tipoContingencia: Number(motivo)},
                         emisor: json.emisor,
                         receptor: json.receptor,
                         cuerpoDocumento: json.cuerpoDocumento,
@@ -291,7 +288,7 @@ function ContingenceND() {
 
                                 return axios
                                   .put(
-                                    API_URL + `/nota-de-debito/update-transaction`,
+                                    API_URL + `/nota-de-debitos/update-transaction`,
                                     data_send
                                   )
                                   .then(() => {
@@ -425,7 +422,7 @@ function ContingenceND() {
               </div>
             </div>
           )}
-          {/* <HeadlessModal
+          <HeadlessModal
             title={title}
             isOpen={modalError.isOpen}
             onClose={modalError.onClose}
@@ -443,7 +440,7 @@ function ContingenceND() {
                 </Button>
               </div>
             </div>
-          </HeadlessModal> */}
+          </HeadlessModal>
           <div>
             <p className="font-semibold text-xl dark:text-white">Resumen</p>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-10 gap-y-3 mt-5">
@@ -533,9 +530,10 @@ function ContingenceND() {
                     errorMessage={error.nombreRes}
                     onSelectionChange={(key) => {
                         if (key) {
-                        const employee = JSON.parse(key as string) as Employee;
-                        // setNombreRes({`${employee.firstName} ${employee.secondName} ${employee.firstLastName} ${employee.secondLastName}`});
-                        setNumeroDocumento(employee.dui);
+                          const employee = JSON.parse(key as string) as Employee;
+                          setNombreRes(`${employee.firstName} ${employee.secondName} ${employee.firstLastName} ${employee.secondLastName}`);
+                          setNumeroDocumento(employee.dui);
+                          setTipoDocumento("13");
                         }
                     }}
                     >
@@ -545,7 +543,7 @@ function ContingenceND() {
                         value={`${item.firstName} ${item.secondName} ${item.firstLastName} ${item.secondLastName}`}
                         className=" dark:text-white"
                         >
-                        {`${item.firstName} ${item.secondName} ${item.firstLastName} ${item.secondLastName}`}
+                          {`${item.firstName} ${item.secondName} ${item.firstLastName} ${item.secondLastName}`}
                         </AutocompleteItem>
                     ))}
                 </Autocomplete>
@@ -585,19 +583,19 @@ function ContingenceND() {
                   <thead className="sticky top-0 z-0 bg-white">
                     <tr>
                       <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                        NO.
+                        No.
                       </th>
                       <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                        FECHA - HORA
+                        Fecha - Hora
                       </th>
                       <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                        CORRELATIVO
+                        Correlativo
                       </th>
                       <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                        CÓDIGO GENERACIÓN
+                        Código de generación
                       </th>
                       <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                        MONTO TOTAL
+                        Monto total
                       </th>
                     </tr>
                   </thead>
