@@ -275,13 +275,12 @@ function ContingenceND() {
                               Body: json_blob,
                             };
     
-                            return s3Client
+                            s3Client
                             .send(new PutObjectCommand(uploadParams))
                             .then((response) => {
                               if (response.$metadata) {
                                 const data_send = {
                                   dte: json_url,
-                                  // pdf: pdf_url,
                                   sello: true,
                                   saleId: sale.saleId,
                                 };
