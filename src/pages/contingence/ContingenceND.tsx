@@ -259,11 +259,11 @@ function ContingenceND() {
                             }/${new Date().getFullYear()}/VENTAS/NOTAS_DE_DEBITO/${formatDate()}/${
                               DTE_FORMED.identificacion.codigoGeneracion
                             }/${DTE_FORMED.identificacion.codigoGeneracion}.json`;
-                            const pdf_url = `CLIENTES/${
-                              transmitter.nombre
-                            }/${new Date().getFullYear()}/VENTAS/NOTAS_DE_DEBITO/${formatDate()}/${
-                              DTE_FORMED.identificacion.codigoGeneracion
-                            }/${DTE_FORMED.identificacion.codigoGeneracion}.pdf`;
+                            // const pdf_url = `CLIENTES/${
+                            //   transmitter.nombre
+                            // }/${new Date().getFullYear()}/VENTAS/NOTAS_DE_DEBITO/${formatDate()}/${
+                            //   DTE_FORMED.identificacion.codigoGeneracion
+                            // }/${DTE_FORMED.identificacion.codigoGeneracion}.pdf`;
                               
                             const json_blob = new Blob([JSON_DTE], {
                               type: 'application/json',
@@ -281,7 +281,7 @@ function ContingenceND() {
                               if (response.$metadata) {
                                 const data_send = {
                                   dte: json_url,
-                                  pdf: pdf_url,
+                                  // pdf: pdf_url,
                                   sello: true,
                                   saleId: sale.saleId,
                                 };
