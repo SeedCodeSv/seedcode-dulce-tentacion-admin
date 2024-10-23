@@ -2,7 +2,7 @@ import axios from 'axios';
 import { API_URL } from '../utils/constants';
 import {
   EmployeePayload,
-  GetEmployeeContingence,
+  // GetEmployeeContingence,
   GetEmployeeList,
   IGetEmployeesPaginated,
   Person,
@@ -121,11 +121,11 @@ export const get_birthday_employees = () => {
   });
 };
 
-export const get_list_employees = () => {
-  const token = get_token() ?? '';
-  return axios.get<GetEmployeeContingence>(API_URL + '/employees', {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  })
-}
+// export const get_list_employees = () => {
+//   const token = get_token() ?? '';
+//   return axios.get<GetEmployeeContingence>(API_URL + '/employees', {
+//     headers: {
+//       Authorization: `Bearer ${token}`
+//     }
+//   })
+// }

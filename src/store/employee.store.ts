@@ -6,7 +6,7 @@ import {
   get_birthday_employees,
   get_employee_list,
   get_employees_paginated,
-  get_list_employees,
+  // get_list_employees,
   patch_employee,
   save_employee,
   verify_code,
@@ -186,13 +186,13 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
       });
     });
   },
-  getListEmployees() {
-    get_list_employees()
-      .then(({ data }) => {
-        set((state) => ({ ...state, employee_contingence_list: data.employees }));
-      })
-      .catch(() => {
-        set((state) => ({ ...state, employee_contingence_list: [] }));
-      });
-  },
+  // getListEmployees() {
+  //   get_list_employees()
+  //     .then(({ data }) => {
+  //       set((state) => ({ ...state, employee_contingence_list: data.employees }));
+  //     })
+  //     .catch(() => {
+  //       set((state) => ({ ...state, employee_contingence_list: [] }));
+  //     });
+  // },
 }));
