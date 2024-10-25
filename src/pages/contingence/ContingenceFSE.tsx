@@ -2,7 +2,6 @@ import useGlobalStyles from "@/components/global/global.styles";
 import { useAuthStore } from "@/store/auth.store";
 import { useCorrelativesDteStore } from "@/store/correlatives_dte.store";
 import { useEmployeeStore } from "@/store/employee.store";
-import { useCreditNotes } from "@/store/notes_credits.store";
 import { useTransmitterStore } from "@/store/transmitter.store";
 import { IContingencia } from "@/types/DTE/contingencia.types";
 import { formatDate } from "@/utils/dates";
@@ -11,22 +10,24 @@ import { useEffect, useState } from "react";
 import { SeedcodeCatalogosMhService } from "seedcode-catalogos-mh";
 import { toast } from "sonner";
 import { generate_contingencias } from "./contingencia_facturacion.ts";
-import { firmarDocumentoContingencia, firmarDocumentoNotaDebito, send_to_mh, send_to_mh_contingencia } from "@/services/DTE.service.ts";
+import { firmarDocumentoContingencia, firmarDocumentoSujetoExcluido, send_to_mh, send_to_mh_contingencia } from "@/services/DTE.service.ts";
 import axios, { AxiosError } from "axios";
 import { return_mh_token } from "@/storage/localStorage.ts";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { s3Client } from "@/plugins/s3.ts";
 import { GetObjectCommand, PutObjectCommand, PutObjectCommandInput } from "@aws-sdk/client-s3";
 import { ambiente, API_URL, contingence_steps, SPACES_BUCKET } from "@/utils/constants.ts";
-import { SVFE_NC_Firmado, SVFE_NC_SEND } from "@/types/svf_dte/nc.types.ts";
 import { PayloadMH } from "@/types/DTE/DTE.types.ts";
 import { SendMHFailed } from "@/types/transmitter.types.ts";
 import HeadlessModal from "@/components/global/HeadlessModal.tsx";
 import { ShieldAlert } from "lucide-react";
 import { Employee } from "@/types/employees.types.ts";
+import { useExcludedSubjectStore } from "@/store/excluded_subjects.store.ts";
+import { SVFE_FSE_Firmado, SVFE_FSE_SEND } from "@/types/svf_dte/fse.types.ts";
+import { generateFSEURL } from "./utils.ts";
 
-function ContingenceNC() {
-    const { onGetContingenceNotes, contingence_credits } = useCreditNotes();
+function ContingenceFSE() {
+    const { onGetContingenceExcludedSubject, contingence_excluded_subject } = useExcludedSubjectStore();
     const { employee_list } = useEmployeeStore();
     const { user } = useAuthStore();
     const { getTransmitter, transmitter } = useTransmitterStore();
@@ -51,6 +52,7 @@ function ContingenceNC() {
         second: '2-digit',
         })
     );
+    // const box = 
     const [endDate, setEndDate] = useState(formatDate());
     const [endTime, setEndTime] = useState(
         new Date().toLocaleTimeString('es-ES', {
@@ -61,7 +63,7 @@ function ContingenceNC() {
     );
 
     useEffect(() => {
-        onGetContingenceNotes(Number(user?.pointOfSale?.branch.id));
+        onGetContingenceExcludedSubject(Number(user?.pointOfSale?.branch.id));
         getTransmitter(Number(user?.pointOfSale?.branch.transmitterId))
     }, []);
 
@@ -105,7 +107,7 @@ function ContingenceNC() {
         setTitle('');
         setErrorMessage('');
     
-        const correlatives = contingence_credits.map((sale, index) => ({
+        const correlatives = contingence_excluded_subject.map((sale, index) => ({
           noItem: index + 1,
           codigoGeneracion: sale.codigoGeneracion,
           tipoDoc: sale.tipoDte,
@@ -175,7 +177,7 @@ function ContingenceNC() {
                   toast.success('Contingencia enviada con éxito');
                   // * RECORRER LISTA DE DÉBITOS
                   setCurrentStep(2);
-                  const Promise_all = contingence_credits.map(async (sale) => {
+                  const Promise_all = contingence_excluded_subject.map(async (sale) => {
                     const url = await getSignedUrl(
                       s3Client,
                       new GetObjectCommand({
@@ -185,7 +187,7 @@ function ContingenceNC() {
                     );
     
                     const json = await axios
-                      .get<SVFE_NC_Firmado>(url, {
+                      .get<SVFE_FSE_Firmado>(url, {
                         responseType: 'json',
                       })
                       .then(({ data }) => {
@@ -200,24 +202,21 @@ function ContingenceNC() {
                       return false;
                     }
     
-                    const send: SVFE_NC_SEND = {
+                    const send: SVFE_FSE_SEND = {
                       nit: transmitter.nit,
                       activo: true,
                       passwordPri: transmitter.clavePrivada,
                       dteJson: {
                         identificacion: { ...json.identificacion, tipoOperacion: 2, tipoContingencia: Number(motivo)},
                         emisor: json.emisor,
-                        receptor: json.receptor,
+                        sujetoExcluido: json.sujetoExcluido,
                         cuerpoDocumento: json.cuerpoDocumento,
                         resumen: json.resumen,
                         apendice: json.apendice,
-                        documentoRelacionado: json.documentoRelacionado,
-                        ventaTercero: json.ventaTercero,
-                        extension: json.extension,
                       },
                     };
                     // * FIRMAR NOTA DE DÉBITO
-                    firmarDocumentoNotaDebito(send)
+                    firmarDocumentoSujetoExcluido(send)
                       .then((firma_doc) => {
                         const source_doc = axios.CancelToken.source();
                         const timeout_doc = setTimeout(() => {
@@ -232,7 +231,7 @@ function ContingenceNC() {
                         };
                         const token_mh = return_mh_token();
     
-                        // * ENVIAR NOTA DE DÉBITO A HACIENDA
+                        // * ENVIAR NOTA SUJETO EXCLUIDO A HACIENDA
                         const result = send_to_mh(data_send, token_mh ?? '', source_doc)
                           .then(async (response_nd) => {
                             clearTimeout(timeout);
@@ -250,16 +249,11 @@ function ContingenceNC() {
                               2
                             );
     
-                            const json_url = `CLIENTES/${
-                              transmitter.nombre
-                            }/${new Date().getFullYear()}/VENTAS/NOTAS_DE_DEBITO/${formatDate()}/${
-                              DTE_FORMED.identificacion.codigoGeneracion
-                            }/${DTE_FORMED.identificacion.codigoGeneracion}.json`;
-                            // const pdf_url = `CLIENTES/${
-                            //   transmitter.nombre
-                            // }/${new Date().getFullYear()}/VENTAS/NOTAS_DE_DEBITO/${formatDate()}/${
-                            //   DTE_FORMED.identificacion.codigoGeneracion
-                            // }/${DTE_FORMED.identificacion.codigoGeneracion}.pdf`;                        
+                            const json_url = generateFSEURL(
+                                send.dteJson.emisor.nombre,
+                                send.dteJson.identificacion.codigoGeneracion,
+                                send.dteJson.identificacion.fecEmi
+                            )                       
     
                             const json_blob = new Blob([JSON_DTE], {
                               type: 'application/json',
@@ -277,18 +271,17 @@ function ContingenceNC() {
                             .then((response) => {
                                 if (response.$metadata) {
                                 const data_send = {
-                                    dte: json_url,
-                                    sello: true,
-                                    saleId: sale.saleId,
+                                        dte: json_url,
+                                        sello: false
                                 };
 
                                 return axios
                                     .put(
-                                    API_URL + `/nota-de-credito/update-transaction`,
+                                    API_URL + `/excluded-subject/excluded-subject-update-transaction`,
                                     data_send
                                     )
                                     .then(() => {
-                                    toast.success('Se guardo correctamente la nota de débito');
+                                    toast.success('Se guardo correctamente el sujeto excluido');
                                     return true;
                                     })
                                     .catch(() => {
@@ -331,9 +324,9 @@ function ContingenceNC() {
                           });
                         return result;
                       })
-                      // ! ERROR AL FIRMAR NOTA DE DÉBITO
+                      // ! ERROR AL FIRMAR SUJETO EXCLUIDO
                       .catch(() => {
-                        toast.error('Error al firmar la nota de débito');
+                        toast.error('Error al firmar el sujeto excluido');
                         return false;
                       });
                   });
@@ -341,7 +334,7 @@ function ContingenceNC() {
                   Promise.all(Promise_all)
                     .then(() => {
                       setLoading(false);
-                      onGetContingenceNotes(Number(user?.pointOfSale?.branch.transmitterId));
+                      onGetContingenceExcludedSubject(Number(user?.pointOfSale?.branch.transmitterId));
                     })
                     .catch(() => {
                       toast.error('Error al guardar en la base de datos');
@@ -387,7 +380,7 @@ function ContingenceNC() {
           });
       };
 
-      console.log("CREDIITTSSS", contingence_credits)
+      console.log("EXCLUDED ", contingence_excluded_subject)
 
     return (
         <div className="w-full shadow p-8">
@@ -563,7 +556,7 @@ function ContingenceNC() {
               </>
             ) : (
               <>
-                {motivo === '' || nombreRes === '' || contingence_credits.length === 0 ? (
+                {motivo === '' || nombreRes === '' || contingence_excluded_subject.length === 0 ? (
                   <Button
                     style={styles.dangerStyles}
                     onClick={handleError}
@@ -605,7 +598,7 @@ function ContingenceNC() {
                 </tr>
               </thead>
               <tbody className="max-h-[600px] w-full overflow-y-auto">
-                {contingence_credits.map((sale, index) => (
+                {contingence_excluded_subject.map((sale, index) => (
                   <tr className="border-b border-slate-200" key={index}>
                     <td className="p-3 text-sm text-slate-700 dark:text-slate-100">{index + 1}</td>
                     <td className="p-3 text-sm text-slate-700 dark:text-slate-100">
@@ -618,7 +611,7 @@ function ContingenceNC() {
                       {sale.codigoGeneracion}
                     </td>
                     <td className="p-3 text-sm text-slate-700 dark:text-slate-100">
-                      {sale.montoTotalOperacion}
+                      {sale.totalPagar}
                     </td>
                   </tr>
                 ))}
@@ -630,4 +623,4 @@ function ContingenceNC() {
         </div>
     )
 }
-export default ContingenceNC
+export default ContingenceFSE

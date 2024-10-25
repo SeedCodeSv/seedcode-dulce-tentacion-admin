@@ -360,6 +360,8 @@ const handleVerify = () => {
       });
 };
 
+console.log("CURRENT DTE", currentDTE)
+
 const sendToContingencia = () => {
     setIsLoading(true);
     toast.info('Enviando a contingencia...')

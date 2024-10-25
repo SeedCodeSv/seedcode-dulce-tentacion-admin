@@ -1,11 +1,12 @@
 import Layout from "@/layout/Layout";
 import { useEmployeeStore } from "@/store/employee.store";
 import { Tab, Tabs } from "@nextui-org/react";
-import { ArrowDown01, ArrowUp01, BadgeDollarSign } from "lucide-react";
+import { ArrowDown01, ArrowUp01, BadgeDollarSign, HelpCircle } from "lucide-react";
 import { useEffect } from "react";
 import ContingenceFC_CCF from "./contingence/ContingenceFC_CFF";
 import ContingenceND from "./contingence/ContingenceND";
 import ContingenceNC from "./contingence/ContingenceNC";
+import ContingenceFSE from "./contingence/ContingenceFSE";
 
 function ContingenceSection() {
     const { getEmployeesList } = useEmployeeStore();
@@ -34,22 +35,6 @@ function ContingenceSection() {
                         >
                             <ContingenceFC_CCF />
                         </Tab>
-                        {/* <Tab
-                            key="contingence-invalid"
-                            className="px-2 h-full"
-                            title={
-                                <div className="flex items-center space-x-2">
-                                    <BadgeDollarSign/>
-                                    <span className="font-semibold">VENTAS (FC - CCF) INVALIDAS</span>
-                                </div>
-                            }
-                        >
-                            {modeSalesInvalid === 'generate' && pathJson !== '' && selectedSale ? (
-                                <></>
-                            ): (
-                                <></>
-                            )}
-                        </Tab> */}
                         <Tab
                             key="contingence-nd"
                             className="px-4"
@@ -73,6 +58,18 @@ function ContingenceSection() {
                             }
                         >
                             <ContingenceNC/>
+                        </Tab>
+                        <Tab
+                            key="contingence-fse"
+                            className="px-4 text-sm"
+                            title={
+                                <div className="flex items-center space-x-2">
+                                    <HelpCircle/>
+                                    <span className="font-semibold">SUJETO EXCLUIDO</span>
+                                </div>
+                            }
+                        >
+                            <ContingenceFSE/>
                         </Tab>
                     </Tabs>
                 </div>
