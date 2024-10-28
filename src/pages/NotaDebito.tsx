@@ -120,7 +120,7 @@ function NotaDebito() {
     return quantity && price
   }
 
-  const { getCorrelativeByPointOfSaleDte } = useCorrelativesDteStore();
+  const { getCorrelativesByDte } = useCorrelativesDteStore();
   const { gettransmitter, transmitter } = useTransmitterStore();
   useEffect(() => {
     gettransmitter();
@@ -150,14 +150,11 @@ function NotaDebito() {
           return
         }
 
-        const correlatives = await getCorrelativeByPointOfSaleDte(Number(user?.id), "NDE")
-        .then((res) => res)
-          .catch(() => {
-            toast.error('No se encontraron correlativos');
-            return;
-          });
-
-        if (!correlatives) return
+        const correlatives = await getCorrelativesByDte(Number(user?.id), "NDE")
+        if (!correlatives) {
+          toast.error('No se encontraron correlativos')
+          return;
+      }
 
         const documentoRelacionado: ND_DocumentoRelacionadoItems[] = [
           {
@@ -230,14 +227,14 @@ function NotaDebito() {
           json_sale.receptor,
           documentoRelacionado,
           items,
-          Number(correlatives?.next ?? 0),
+          correlatives,
           resumen,
           null,
           null,
           null,
           correlatives.codPuntoVenta,
-          correlatives.codEstable,
-          correlatives.tipoEstablecimiento
+          // correlatives.codEstable,
+          // correlatives.tipoEstablecimiento
         )
         setCurrentDTE(nota_debito)
         firmarDocumentoNotaDebito(nota_debito)

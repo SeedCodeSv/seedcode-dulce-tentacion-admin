@@ -62,6 +62,8 @@ function ContingenceFSE() {
         })
     );
 
+    console.log("NNNNN", contingence_excluded_subject)
+
     useEffect(() => {
         onGetContingenceExcludedSubject(Number(user?.pointOfSale?.branch.id));
         getTransmitter(Number(user?.pointOfSale?.branch.transmitterId))
@@ -113,7 +115,7 @@ function ContingenceFSE() {
           tipoDoc: sale.tipoDte,
         }));
     
-        const correlativesDte = await getCorrelativesByDte(Number(user?.id), 'NCE')
+        const correlativesDte = await getCorrelativesByDte(Number(user?.id), 'FSE')
         .then((correlatives) => {
           return correlatives;
         })
@@ -190,29 +192,18 @@ function ContingenceFSE() {
                       .get<SVFE_FSE_Firmado>(url, {
                         responseType: 'json',
                       })
-                      .then(({ data }) => {
-                        return data;
-                      })
-                      .catch(() => {
-                        return undefined;
-                      });
-    
-                    if (!json) {
-                      toast.error('Error al cargar la nota de débito');
-                      return false;
-                    }
     
                     const send: SVFE_FSE_SEND = {
                       nit: transmitter.nit,
                       activo: true,
                       passwordPri: transmitter.clavePrivada,
                       dteJson: {
-                        identificacion: { ...json.identificacion, tipoOperacion: 2, tipoContingencia: Number(motivo)},
-                        emisor: json.emisor,
-                        sujetoExcluido: json.sujetoExcluido,
-                        cuerpoDocumento: json.cuerpoDocumento,
-                        resumen: json.resumen,
-                        apendice: json.apendice,
+                        identificacion: { ...json.data.identificacion, tipoOperacion: 2, tipoContingencia: Number(motivo)},
+                        emisor: json.data.emisor,
+                        sujetoExcluido: json.data.sujetoExcluido,
+                        cuerpoDocumento: json.data.cuerpoDocumento,
+                        resumen: json.data.resumen,
+                        apendice: json.data.apendice,
                       },
                     };
                     // * FIRMAR NOTA DE DÉBITO
@@ -225,8 +216,8 @@ function ContingenceFSE() {
                         const data_send: PayloadMH = {
                           ambiente: ambiente,
                           idEnvio: 1,
-                          version: 3,
-                          tipoDte: '05',
+                          version: 1,
+                          tipoDte: '14',
                           documento: firma_doc.data.body,
                         };
                         const token_mh = return_mh_token();
@@ -250,8 +241,8 @@ function ContingenceFSE() {
                             );
     
                             const json_url = generateFSEURL(
-                                send.dteJson.emisor.nombre,
-                                send.dteJson.identificacion.codigoGeneracion,
+                                json.data.emisor.nombre,
+                                json.data.identificacion.codigoGeneracion,
                                 send.dteJson.identificacion.fecEmi
                             )                       
     
@@ -272,7 +263,10 @@ function ContingenceFSE() {
                                 if (response.$metadata) {
                                 const data_send = {
                                         dte: json_url,
-                                        sello: false
+                                        sello: true,
+                                        boxId: sale.boxId,
+                                        employeeId: sale.employeeId,
+                                        supplierId: sale.subjectId
                                 };
 
                                 return axios
@@ -548,7 +542,7 @@ function ContingenceFSE() {
         <div className="mt-4">
           <div className="flex justify-between">
             <p className="font-semibold text-lg dark:text-white">
-              Listado de notas de crédito en contingencia
+              Listado de notas de sujetos excluidos en contingencia
             </p>
             {loading ? (
               <>

@@ -1,3 +1,4 @@
+import { Correlativo } from '@/types/correlatives_dte.types';
 import { ND_ApendiceItems, ND_CuerpoDocumentoItems, ND_DocumentoRelacionadoItems, ND_Emisor, ND_Extension, ND_Receptor, ND_Resumen, ND_VentaTercerosItems, SVFE_ND_SEND } from '../../types/svf_dte/nd.types';
 import { ITransmitter } from "../../types/transmitter.types";
 import { ambiente } from "../constants";
@@ -11,13 +12,14 @@ export const generateNotaDebito = (
     receptor: ND_Receptor,
     documentos_relacionados: ND_DocumentoRelacionadoItems[],
     cuerpoDocumento: ND_CuerpoDocumentoItems[],
-    nextNumber: number,
+    // nextNumber: number,
+    correlative: Correlativo,
     resumen: ND_Resumen,
     ventaTercero: ND_VentaTercerosItems[] | null,
     extension: ND_Extension[] | null,
     apendice: ND_ApendiceItems[] | null,
-    codPuntoVenta: string,
-    codEstable: string,
+    // codPuntoVenta: string,
+    // codEstable: string,
     tipoEstable: string
 ): SVFE_ND_SEND => {
     return {
@@ -28,7 +30,7 @@ export const generateNotaDebito = (
             identificacion: {
                 codigoGeneracion: generate_uuid().toUpperCase(),
                 tipoContingencia: null,
-                numeroControl: generate_control("06", codEstable, codPuntoVenta, formatearNumero(nextNumber)),
+                numeroControl: generate_control("06", correlative.codEstable, correlative.codPuntoVenta, formatearNumero(correlative.next)),
                 tipoOperacion: 1,
                 ambiente: ambiente,
                 fecEmi: getElSalvadorDateTime().fecEmi,
