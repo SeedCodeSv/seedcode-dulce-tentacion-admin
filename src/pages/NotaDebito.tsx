@@ -216,7 +216,7 @@ function NotaDebito() {
             montoDescu: item.montoDescu,
             ventaNoSuj: item.ventaNoSuj,
             ventaExenta: item.ventaExenta,
-            ventaGravada: item.ventaGravada,
+            ventaGravada: Number(item.ventaGravada.toFixed(2)),
 
             tributos: ["20"]
           }
@@ -232,7 +232,7 @@ function NotaDebito() {
           null,
           null,
           null,
-          correlatives.codPuntoVenta,
+          // correlatives.codPuntoVenta,
           // correlatives.codEstable,
           // correlatives.tipoEstablecimiento
         )

@@ -181,7 +181,7 @@ const proccessNotaCredito = async () => {
                     montoDescu: item.montoDescu,
                     ventaNoSuj: item.ventaNoSuj,
                     ventaExenta: item.ventaExenta,
-                    ventaGravada: item.ventaGravada,
+                    ventaGravada: Number(item.ventaGravada.toFixed(2)),
 
                     tributos: ['20'],
                 };
@@ -267,7 +267,7 @@ const proccessNotaCredito = async () => {
                                             .then(() => {
                                                 setIsLoading(false);
                                                 navigation(-1);
-                                                toast.success('Nota de debito enviada');
+                                                toast.success('Nota de credito enviada');
                                             })
                                             .catch(() => {
                                                 toast.error('Error al enviar el PDF');

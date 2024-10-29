@@ -67,6 +67,7 @@ import NotaCredito from '@/pages/NotaCredito';
 import NotesDebitBySale from '@/components/notas/DebitNoteBySale';
 import NotesCreditBySale from '@/components/notas/CreditNoteBySale';
 import ContingenceSection from '@/pages/ContingenceSection';
+import Annulation from '@/pages/Annulation';
 
 const Loading = () => {
   return <div>Cargando...</div>;
@@ -378,5 +379,9 @@ export const router = () => {
       path: "/contingence-section",
       element: <ContingenceSection />,
     },
+    {
+      path: "/annulation/:tipoDte/:id",
+      element: <Annulation />
+    }
   ]);
 };

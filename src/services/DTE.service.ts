@@ -18,6 +18,8 @@ import { SVFE_FC_SEND } from '../types/svf_dte/fc.types';
 import { SVFE_CF_SEND } from '../types/svf_dte/cf.types';
 import { SVFE_ND_SEND } from '../types/svf_dte/nd.types';
 import { SVFE_FSE_SEND } from '@/types/svf_dte/fse.types';
+import { SVFE_InvalidacionCredito_SEND } from '@/types/svf_dte/InvalidationCredito';
+import { SVFE_InvalidacionDebito_SEND } from '@/types/svf_dte/InvalidationDebito';
 
 export const get_ambiente_destino = () => {
   return axios<IGetAmbienteDestino>(FACTURACION_API + '/cat-001-ambiente-de-destino');
@@ -50,6 +52,15 @@ export const send_to_mh_invalidation = (payload: IInvalidationToMH) => {
     headers: {
       Authorization: localStorage.getItem('_MHT'),
     },
+  });
+};
+
+export const send_to_mh_invalidations = (payload: IInvalidationToMH, mh_token: string, cancelToken: CancelTokenSource) => {
+  return axios.post<IResponseInvalidationMH>(`${MH_URL}anulardte`, payload, {
+    headers: {
+      Authorization: mh_token,
+    },
+    cancelToken: cancelToken.token,
   });
 };
 
@@ -87,6 +98,14 @@ export const firmarDocumentoInvalidacion = (payload: ISignInvalidationData) => {
 
 export const firmarDocumentoSujetoExcluido = (payload: SVFE_FSE_SEND) => {
   return axios.post<{ body: string, status:string }>(API_FIRMADOR, payload);
+};
+
+export const firmarDocumentoInvalidacionCredito = (payload: SVFE_InvalidacionCredito_SEND) => {
+  return axios.post<{ body: string }>(API_FIRMADOR, payload);
+};
+
+export const firmarDocumentoInvalidacionDebito = (payload: SVFE_InvalidacionDebito_SEND) => {
+  return axios.post<{ body: string }>(API_FIRMADOR, payload);
 };
 
 export const get_json_from_space = (url: string) => {

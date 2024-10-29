@@ -129,6 +129,15 @@ function NotesCreditBySale() {
                                             >
                                             Ver comprobante
                                             </ListboxItem>
+                                            <ListboxItem
+                                            classNames={{ base: 'font-semibold' }}
+                                            variant="flat"
+                                            color="danger"
+                                            key="invalidate"
+                                            onClick={() => navigation("/annulation/05/" + sale.id)}
+                                            >
+                                                Invalidar
+                                            </ListboxItem>
                                         </Listbox>
                                         </PopoverContent>
                                     </Popover>

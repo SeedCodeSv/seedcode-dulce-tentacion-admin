@@ -20,8 +20,9 @@ export const generateNotaDebito = (
     apendice: ND_ApendiceItems[] | null,
     // codPuntoVenta: string,
     // codEstable: string,
-    tipoEstable: string
+    // tipoEstable: string
 ): SVFE_ND_SEND => {
+    const dataEmisor = { ...emisor, tipoEstablecimiento: correlative.tipoEstablecimiento}
     return {
         nit: emisor.nit,
         activo: true,
@@ -42,7 +43,7 @@ export const generateNotaDebito = (
                 horEmi: getElSalvadorDateTime().horEmi,
             },
             documentoRelacionado: documentos_relacionados,
-            emisor: generateEmisorNotaDebito(emisor, tipoEstable),
+            emisor: generateEmisorNotaDebito(dataEmisor),
             ventaTercero,
             receptor,
             cuerpoDocumento,
@@ -53,9 +54,7 @@ export const generateNotaDebito = (
     };
 };
 
-export const generateEmisorNotaDebito = (
-    transmitter: ITransmitter, codStable: string
-): ND_Emisor => {
+export const generateEmisorNotaDebito = ( transmitter: ITransmitter): ND_Emisor => {
     return {
         nit: transmitter.nit,
         nrc: transmitter.nrc,
@@ -63,7 +62,7 @@ export const generateEmisorNotaDebito = (
         nombreComercial: transmitter.nombreComercial,
         codActividad: transmitter.codActividad,
         descActividad: transmitter.descActividad,
-        tipoEstablecimiento: codStable,
+        tipoEstablecimiento: transmitter.tipoEstablecimiento,
         direccion: {
             departamento: transmitter.direccion.departamento,
             municipio: transmitter.direccion.municipio,
