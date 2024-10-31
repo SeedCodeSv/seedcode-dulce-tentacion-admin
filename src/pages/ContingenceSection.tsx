@@ -10,9 +10,6 @@ import ContingenceFSE from "./contingence/ContingenceFSE";
 
 function ContingenceSection() {
     const { getEmployeesList } = useEmployeeStore();
-    // const [modeSalesInvalid, setModeSalesInvalid] = useState<'show' | 'generate'>('show');
-    // const [pathJson, setPathJson] = useState('');
-    // const [selectedSale, setSelectedSale] = useState();
 
     useEffect(() => {
         getEmployeesList();
@@ -21,14 +18,18 @@ function ContingenceSection() {
     return (
         <Layout title="Contingencia">
             <div className="w-full h-full p-4 lg:p-8 bg-gray-50 dark:bg-gray-800">
-                <div className="w-full h-full p-3 mt-3 overflow-y-auto overflow-x-auto bg-white shadow rounded-xl dark:bg-gray-900">
-                    <Tabs className="px-2" aria-label="Options" color="primary">
+                <div className="w-full h-full p-3 mt-3 bg-white shadow rounded-xl dark:bg-gray-900 overflow-y-auto overflow-x-auto">
+                    <Tabs
+                        className="px-2 grid lg:grid-cols-1 gap-4"
+                        aria-label="Options"
+                        color="primary"
+                    >
                         <Tab
                             key="contingence"
                             className="px-4"
                             title={
                                 <div className="flex items-center space-x-2">
-                                    <BadgeDollarSign/>
+                                    <BadgeDollarSign />
                                     <span className="font-semibold">VENTAS (FC - CCF)</span>
                                 </div>
                             }
@@ -40,40 +41,39 @@ function ContingenceSection() {
                             className="px-4"
                             title={
                                 <div className="flex items-center space-x-2">
-                                    <ArrowUp01/>
+                                    <ArrowUp01 />
                                     <span className="font-semibold">NOTAS DE DÉBITO</span>
                                 </div>
                             }
                         >
-                            <ContingenceND/>
+                            <ContingenceND />
                         </Tab>
                         <Tab
                             key="contingence-nc"
                             className="px-4 text-sm"
                             title={
                                 <div className="flex items-center space-x-2">
-                                    <ArrowDown01/>
+                                    <ArrowDown01 />
                                     <span className="font-semibold">NOTAS DE CRÉDITO</span>
                                 </div>
                             }
                         >
-                            <ContingenceNC/>
+                            <ContingenceNC />
                         </Tab>
                         <Tab
                             key="contingence-fse"
                             className="px-4 text-sm"
                             title={
                                 <div className="flex items-center space-x-2">
-                                    <HelpCircle/>
+                                    <HelpCircle />
                                     <span className="font-semibold">SUJETO EXCLUIDO</span>
                                 </div>
                             }
                         >
-                            <ContingenceFSE/>
+                            <ContingenceFSE />
                         </Tab>
                     </Tabs>
                 </div>
-
             </div>
         </Layout>
     )

@@ -253,7 +253,9 @@ function NotaCredito() {
                     Body: json_blob,
                   };
 
-                  s3Client.send(new PutObjectCommand(uploadParams)).then((response) => {
+                  s3Client
+                  .send(new PutObjectCommand(uploadParams))
+                  .then((response) => {
                     if (response.$metadata) {
                       axios
                         .post(
@@ -278,19 +280,27 @@ function NotaCredito() {
                         })
                         .catch(() => {
                           toast.error('Error al enviar el PDF');
+                          setCurrenStep(0)
+                          setLoading(false)
                           setIsLoading(false);
                         });
                     }
-                  });
+                  })
+                  .catch(() => {
+                    setIsLoading(false);
+                    setCurrenStep(0);
+                    setLoading(false);
+                    modalError.onOpen();
+                  })
                 })
                 .catch(async (error: AxiosError<SendMHFailed>) => {
                   clearTimeout(timeout);
                   if (axios.isCancel(error)) {
-                    setLoading(false)
-                    setCurrenStep(0)
                     setTitle('Tiempo de espera agotado');
                     setErrorMessage('El tiempo limite de espera ha expirado');
                     modalError.onOpen();
+                    setLoading(false)
+                    setCurrenStep(0)
                     setIsLoading(false);
                   }
                   setLoading(false)
@@ -306,11 +316,9 @@ function NotaCredito() {
                         : ''
                     );
                     setTitle(error.response?.data.descripcionMsg ?? 'Error al procesar nota de credito');
-                    setLoading(false)
-                    setCurrenStep(0)
                     modalError.onOpen();
                     await save_logs({
-                      title: error.response.data.descripcionMsg ?? 'Error al procesar venta',
+                      title: error.response.data.descripcionMsg ?? 'Error al procesar nota de credito',
                       message:
                         error.response.data.observaciones &&
                         error.response.data.observaciones.length > 0
@@ -377,8 +385,6 @@ function NotaCredito() {
         setIsLoading(false);
       });
   };
-
-  console.log('CURRENT DTE', currentDTE);
 
   const sendToContingencia = () => {
     setIsLoading(true);

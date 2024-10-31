@@ -62,8 +62,6 @@ function ContingenceFSE() {
         })
     );
 
-    console.log("NNNNN", contingence_excluded_subject)
-
     useEffect(() => {
         onGetContingenceExcludedSubject(Number(user?.pointOfSale?.branch.id));
         getTransmitter(Number(user?.pointOfSale?.branch.transmitterId))
@@ -374,7 +372,6 @@ function ContingenceFSE() {
           });
       };
 
-      console.log("EXCLUDED ", contingence_excluded_subject)
 
     return (
         <div className="w-full shadow p-8">

@@ -9,7 +9,7 @@ import { SendMHFailed } from "@/types/transmitter.types";
 import { formatDate } from "@/utils/dates";
 import { Autocomplete, AutocompleteItem, Button, Input, Select, SelectItem, Spinner, Textarea, useDisclosure } from "@nextui-org/react";
 import axios, { AxiosError } from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { SeedcodeCatalogosMhService } from "seedcode-catalogos-mh";
 import { toast } from "sonner";
 import { generate_contingencias } from "./contingencia_facturacion.ts";
@@ -37,6 +37,12 @@ function ContingenceND() {
     const service = new SeedcodeCatalogosMhService();
     const { getCorrelativesByDte } = useCorrelativesDteStore();
     const modalError = useDisclosure();
+    const [currentStep, setCurrentStep] = useState(0);
+    const [motivo, setMotivo] = useState('2');
+    const [observaciones, setObservaciones] = useState('');
+    const [nombreRes, setNombreRes] = useState('');
+    const [tipoDocumento, setTipoDocumento] = useState('');
+    const [numeroDocumento, setNumeroDocumento] = useState('');
 
     useEffect(() => {
         onGetContingenceNotes(Number(user?.pointOfSale?.branch.id));
@@ -62,12 +68,20 @@ function ContingenceND() {
         })
     );
 
-    const [currentStep, setCurrentStep] = useState(0);
-    const [motivo, setMotivo] = useState('2');
-    const [observaciones, setObservaciones] = useState('');
-    const [nombreRes, setNombreRes] = useState('');
-    const [tipoDocumento, setTipoDocumento] = useState('');
-    const [numeroDocumento, setNumeroDocumento] = useState('');
+    const timeStart = useMemo(() => {
+      if (contingence_debits.length > 0) {
+        setStartTime(contingence_debits[0]?.horEmi);
+        return contingence_debits[0]?.horEmi;
+      }
+      return startTime;
+    }, [contingence_debits])
+
+    const timeEnd = useMemo(() => {
+      if (contingence_debits.length > 0) {
+        setEndTime(contingence_debits[0]?.horEmi);
+        return endTime;
+      }
+    }, [contingence_debits])
 
     const [error, setError] = useState({
         nombreRes: '',
@@ -459,8 +473,7 @@ function ContingenceND() {
                 labelPlacement="outside"
                 variant="bordered"
                 type="time"
-                value={startTime}
-                onChange={(e) => setStartTime(e.target.value)}
+                value={timeStart}
                 label="Hora inicial"
               />
               <Input
@@ -479,8 +492,7 @@ function ContingenceND() {
                 labelPlacement="outside"
                 variant="bordered"
                 type="time"
-                value={endTime}
-                onChange={(e) => setEndTime(e.target.value)}
+                value={timeEnd}
                 label="Hora de fin"
               />
             </div>

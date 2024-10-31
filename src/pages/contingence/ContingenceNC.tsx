@@ -7,7 +7,7 @@ import { useTransmitterStore } from "@/store/transmitter.store";
 import { IContingencia } from "@/types/DTE/contingencia.types";
 import { formatDate } from "@/utils/dates";
 import { Autocomplete, AutocompleteItem, Button, Input, Select, SelectItem, Spinner, Textarea, useDisclosure } from "@nextui-org/react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { SeedcodeCatalogosMhService } from "seedcode-catalogos-mh";
 import { toast } from "sonner";
 import { generate_contingencias } from "./contingencia_facturacion.ts";
@@ -59,6 +59,22 @@ function ContingenceNC() {
         second: '2-digit',
         })
     );
+
+    const timeStart = useMemo(() => {
+      if (contingence_credits.length > 0) {
+        setStartTime(contingence_credits[0]?.horEmi);
+        return contingence_credits[0]?.horEmi;
+      }
+      return startTime;
+    }, [contingence_credits])
+
+    const timeEnd = useMemo(() => {
+      if (contingence_credits.length > 0) {
+        setEndTime(contingence_credits[contingence_credits.length - 1]?.horEmi);
+        return contingence_credits[contingence_credits.length - 1]?.horEmi
+      }
+      return endTime;
+    }, [contingence_credits])
 
     useEffect(() => {
         onGetContingenceNotes(Number(user?.pointOfSale?.branch.id));
@@ -216,7 +232,7 @@ function ContingenceNC() {
                         extension: json.extension,
                       },
                     };
-                    // * FIRMAR NOTA DE DÉBITO
+                    // * FIRMAR NOTA DE CREDITO
                     firmarDocumentoNotaDebito(send)
                       .then((firma_doc) => {
                         const source_doc = axios.CancelToken.source();
@@ -232,7 +248,7 @@ function ContingenceNC() {
                         };
                         const token_mh = return_mh_token();
     
-                        // * ENVIAR NOTA DE DÉBITO A HACIENDA
+                        // * ENVIAR NOTA DE CREDITO A HACIENDA
                         const result = send_to_mh(data_send, token_mh ?? '', source_doc)
                           .then(async (response_nd) => {
                             clearTimeout(timeout);
@@ -254,12 +270,7 @@ function ContingenceNC() {
                               transmitter.nombre
                             }/${new Date().getFullYear()}/VENTAS/NOTAS_DE_DEBITO/${formatDate()}/${
                               DTE_FORMED.identificacion.codigoGeneracion
-                            }/${DTE_FORMED.identificacion.codigoGeneracion}.json`;
-                            // const pdf_url = `CLIENTES/${
-                            //   transmitter.nombre
-                            // }/${new Date().getFullYear()}/VENTAS/NOTAS_DE_DEBITO/${formatDate()}/${
-                            //   DTE_FORMED.identificacion.codigoGeneracion
-                            // }/${DTE_FORMED.identificacion.codigoGeneracion}.pdf`;                        
+                            }/${DTE_FORMED.identificacion.codigoGeneracion}.json`;                       
     
                             const json_blob = new Blob([JSON_DTE], {
                               type: 'application/json',
@@ -387,8 +398,6 @@ function ContingenceNC() {
           });
       };
 
-      console.log("CREDIITTSSS", contingence_credits)
-
     return (
         <div className="w-full shadow p-8">
             {loading && (
@@ -462,8 +471,8 @@ function ContingenceNC() {
             className="dark:text-white"
             variant="bordered"
             type="time"
-            value={startTime}
-            onChange={(e) => setStartTime(e.target.value)}
+            value={timeStart}
+            // onChange={(e) => setStartTime(e.target.value)}
             label="Hora inicial"
           />
           <Input
@@ -482,8 +491,8 @@ function ContingenceNC() {
             variant="bordered"
             className="dark:text-white"
             type="time"
-            value={endTime}
-            onChange={(e) => setEndTime(e.target.value)}
+            value={timeEnd}
+            // onChange={(e) => setEndTime(e.target.value)}
             label="Hora de fin"
           />
         </div>
