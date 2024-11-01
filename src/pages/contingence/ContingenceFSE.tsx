@@ -6,7 +6,7 @@ import { useTransmitterStore } from "@/store/transmitter.store";
 import { IContingencia } from "@/types/DTE/contingencia.types";
 import { formatDate } from "@/utils/dates";
 import { Autocomplete, AutocompleteItem, Button, Input, Select, SelectItem, Spinner, Textarea, useDisclosure } from "@nextui-org/react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { SeedcodeCatalogosMhService } from "seedcode-catalogos-mh";
 import { toast } from "sonner";
 import { generate_contingencias } from "./contingencia_facturacion.ts";
@@ -25,8 +25,11 @@ import { Employee } from "@/types/employees.types.ts";
 import { useExcludedSubjectStore } from "@/store/excluded_subjects.store.ts";
 import { SVFE_FSE_Firmado, SVFE_FSE_SEND } from "@/types/svf_dte/fse.types.ts";
 import { generateFSEURL } from "./utils.ts";
+import { useBranchesStore } from "@/store/branches.store.ts";
 
 function ContingenceFSE() {
+    const {getBranchesList, branch_list} = useBranchesStore();
+    const [branchId, setBranchId] = useState<string | undefined>("")
     const { onGetContingenceExcludedSubject, contingence_excluded_subject } = useExcludedSubjectStore();
     const { employee_list } = useEmployeeStore();
     const { user } = useAuthStore();
@@ -65,7 +68,12 @@ function ContingenceFSE() {
     useEffect(() => {
         onGetContingenceExcludedSubject(Number(user?.pointOfSale?.branch.id));
         getTransmitter(Number(user?.pointOfSale?.branch.transmitterId))
+        getBranchesList()
     }, []);
+
+    const filteredEmployees = useMemo(() => {
+      return branchId ? employee_list.filter((emp) => emp.branchId === Number(branchId)) : [];
+    }, [branchId]);
 
     const [error, setError] = useState({
         nombreRes:'',
@@ -506,7 +514,30 @@ function ContingenceFSE() {
               errorMessage={error.observaciones}
             ></Textarea>
           </div>
-          <div className="flex flex-col w-1/2">
+          <div className="flex flex-col-2 gap-4">
+          <Autocomplete
+              value={branchId}
+              label="Sucursal"
+              labelPlacement="outside"
+              variant="bordered"
+              className="dark:text-white font-semibold"
+              placeholder='Selecciona la sucursal'
+              onSelectionChange={(value) => setBranchId((value as string) || '')}
+              classNames={{
+                base: 'font-semibold text-gray-500 text-sm',
+              }}
+            >
+              {branch_list.map((bra) => (
+                <AutocompleteItem
+                  className="dark:text-white"
+                  value={bra.id.toString()}
+                  key={bra.id.toString()}
+                >
+                  {bra.name}
+                </AutocompleteItem>
+              ))}
+            </Autocomplete>
+
             <Autocomplete
                 className="dark:text-white font-semibold text-sm"
                 variant="bordered"
@@ -524,7 +555,7 @@ function ContingenceFSE() {
                     }
                 }}
                 >
-                {employee_list.map((item) => (
+                {filteredEmployees.map((item) => (
                     <AutocompleteItem
                     key={JSON.stringify(item)}
                     value={`${item.firstName} ${item.secondName} ${item.firstLastName} ${item.secondLastName}`}
