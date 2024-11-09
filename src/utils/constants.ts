@@ -1,20 +1,15 @@
-// export const API_URL = 'http://localhost:8080/api';
-export const API_URL = 'https://shark-app-wcoqq.ondigitalocean.app/api';
-// export const API_URL = 'http://192.168.0.21:8081/api';
-export const WS_URL = 'wss://shark-app-wcoqq.ondigitalocean.app/sales-gateway';
-// export const WS_URL = 'ws://localhost:8080/sales-gateway';
+export const API_URL = import.meta.env.VITE_API_URL
+export const WS_URL = import.meta.env.VITE_WS_URL
 export const FACTURACION_API = 'https://cats-facturacion-43ay7.ondigitalocean.app/api';
-export const MH_QUERY = 'https://admin.factura.gob.sv/consultaPublica';
-export const ambiente = '00';
+export const MH_QUERY = import.meta.env.VITE_MH_QUERY
+export const ambiente = import.meta.env.VITE_AMBIENTE_MH
 export const version = 2;
-// export const WS_URL = 'ws://192.168.0.20:8080/sales-gateway';
-// export const API_FIRMADOR = 'https://firmadorseedcodesv.online/firmardocumento/';
-export const API_FIRMADOR = 'https://firmador.erpseedcodeone.online/firmardocumento/'
-export const MH_DTE = 'https://apitest.dtes.mh.gob.sv/fesv/recepciondte';
-export const MH_URL = 'https://apitest.dtes.mh.gob.sv/fesv/';
-export const AUTH_MH = 'https://apitest.dtes.mh.gob.sv/seguridad/auth';
-export const CHECK_URL = 'https://apitest.dtes.mh.gob.sv/fesv/recepcion/consultadte/';
-export const SPACES_BUCKET = 'facturacion-seed-code';
+export const API_FIRMADOR = import.meta.env.VITE_API_FIRMADOR;
+export const MH_DTE = import.meta.env.VITE_MH_DTE;
+export const MH_URL = import.meta.env.VITE_MH_URL;
+export const AUTH_MH = import.meta.env.VITE_AUTH_MH;
+export const CHECK_URL = import.meta.env.VITE_CHECK_URL;
+export const SPACES_BUCKET = import.meta.env.VITE_SPACES_BUCKET;
 export const messages = {
   error: 'Ocurrió un error al procesar la petición',
   success: 'Petición procesada con éxito',
@@ -49,7 +44,7 @@ export const defaultTheme = {
   },
 };
 
-export const CRP = 'YzJhxGPKCwc7dxyhsgst ';
+export const CRP = import.meta.env.VITE_CRP;
 
 export const views_enabled = [
   'Usuarios',
