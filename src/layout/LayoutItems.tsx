@@ -20,9 +20,11 @@ import {
   UserCheck,
   ShoppingBag,
   BookCheck,
-  BadgeDollarSign,MapPinned,
+  BadgeDollarSign,
+  MapPinned,
   Tag,
   DatabaseBackup,
+  HandCoins,
 } from 'lucide-react';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { ThemeContext } from '../hooks/useTheme';
@@ -234,6 +236,15 @@ export const LayoutItems = () => {
       to: '/iva/fe-book',
       icon: Store,
       label: 'IVA - Facturas',
+    },
+  ];
+
+  const annexesLinks = [
+    {
+      viewName: 'Anexos de compras',
+      to: '/anexos-iva-compras',
+      icon: HandCoins,
+      label: 'Anexos de compras',
     },
   ];
   const [openGroup, setOpenGroup] = useState<string | null>(null);
@@ -473,7 +484,48 @@ export const LayoutItems = () => {
               </SidebarLinkGroup>
             </ul>
           </>
-
+          <>
+            <ul className="flex flex-col gap-1.5">
+              <SidebarLinkGroup
+                activeCondition={validate_pathname(pathname, ['anexos'])}
+                isOpen={openGroup === 'anexos'}
+                onGroupClick={() => handleGroupClick('anexos')}
+              >
+                {(handleClick, open) => (
+                  <>
+                    <div
+                      className={classNames(
+                        validate_pathname(pathname, ['anexos']) &&
+                          'bg-gray-200 dark:bg-gray-700',
+                        'group relative cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
+                      )}
+                      onClick={handleClick}
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <FolderCheck size={iconSize} />
+                        Anexos
+                      </div>
+                      <ChevronDown
+                        className={classNames(open && ' rotate-180', 'items-end justify-end ')}
+                        size={iconSize}
+                      />
+                    </div>
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{
+                        opacity: open ? 1 : 0,
+                        height: open ? 'auto' : 0,
+                      }}
+                      transition={{ duration: 0.3 }}
+                      className="overflow-hidden transform translate"
+                    >
+                      <SidebarLinkList links={annexesLinks} />
+                    </motion.div>
+                  </>
+                )}
+              </SidebarLinkGroup>
+            </ul>
+          </>
           <>
             <ul className="flex flex-col gap-1.5">
               <SidebarLinkGroup

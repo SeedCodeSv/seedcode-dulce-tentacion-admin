@@ -3,8 +3,10 @@ import { useBranchesStore } from '@/store/branches.store';
 import { useShoppingReportsStore } from '@/store/reports/shopping_reports.store';
 import { formatDate } from '@/utils/dates';
 import { formatCurrency } from '@/utils/dte';
-import { Input, Select, SelectItem } from '@nextui-org/react';
+import { Button, Input, Select, SelectItem } from '@nextui-org/react';
 import { useEffect, useState } from 'react';
+import { annexes_iva_shopping, csvmaker } from './utils';
+import { mkConfig, generateCsv, download } from 'export-to-csv';
 
 function AnexosCompras() {
   const { branch_list, getBranchesList } = useBranchesStore();
@@ -23,6 +25,25 @@ function AnexosCompras() {
   useEffect(() => {
     onGetAnnexes(branchId, startDate, endDate);
   }, [branchId, startDate, endDate]);
+
+  const exportAnnexes = async () => {
+    const blob = await annexes_iva_shopping(annexes_list);
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'anexos-iva-compras.xlsx';
+    link.click();
+  };
+
+  const exportAnnexesCSV = async () => {
+    const csv = csvmaker(annexes_list);
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'iva-compras.csv';
+    link.click();
+  };
 
   return (
     <Layout title="Iva - Compras">
@@ -67,6 +88,10 @@ function AnexosCompras() {
                 </SelectItem>
               ))}
             </Select>
+          </div>
+          <div className="w-full flex justify-end">
+            <Button onClick={exportAnnexes}>Exportar anexo</Button>
+            <Button onClick={exportAnnexesCSV}>Exportar a CSV</Button>
           </div>
           <div className="max-h-full w-full relative  overflow-x-auto overflow-y-auto custom-scrollbar mt-4">
             <table className=" w-full ov">
@@ -129,13 +154,15 @@ function AnexosCompras() {
                       {shopping.fecEmi}
                     </td>
                     <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
-                    1. IMPRESO POR IMPRENTA O TIQUETES
+                      1. IMPRESO POR IMPRENTA O TIQUETES
                     </td>
                     <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
-                      {shopping.typeDte === "03" ? "03 - COMPROBANTE DE CREDITO FISCAL" : "01 - FACTURA"}
+                      {shopping.typeDte === '03'
+                        ? '03 - COMPROBANTE DE CREDITO FISCAL'
+                        : '01 - FACTURA'}
                     </td>
                     <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
-                     {shopping.supplier.numDocumento}
+                      {shopping.supplier.numDocumento}
                     </td>
                     <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
                       {shopping.supplier.nrc}

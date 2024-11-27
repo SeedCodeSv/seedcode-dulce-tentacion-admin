@@ -41,6 +41,9 @@ function ShoppingBookIVA() {
     }
 
     const data = shoppings.map((shop, index) => {
+
+      const totalIva = shop.iva.map((i) => Number(i.monto)).reduce((a, b) => a + b, 0);
+
       return [
         index + 1,
         formatDateToMMDDYYYY(shop.fecEmi),
@@ -50,7 +53,7 @@ function ShoppingBookIVA() {
         shop.supplier.nombre,
         shop.typeSale === 'Interna' ? Number(shop.totalGravada) : 0,
         shop.typeSale === 'Externa' ? Number(shop.totalExenta) : 0,
-        Number(shop.totalGravada) * 0.13,
+        Number(totalIva),
         shop.typeSale === 'Interna' ? Number(shop.totalExenta) : 0,
         shop.typeSale === 'Externa' ? Number(shop.totalGravada) : 0,
         Number(shop.montoTotalOperacion),

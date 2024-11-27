@@ -159,3 +159,33 @@ export const TypeCostSpents = [
         value: TypeCostSpentValue.EXCEPCIONES
     }
 ]
+
+export enum ClassDocumentCode {
+    IMPRESO_POR_IMPRENTA_O_TIQUETES = '1',
+    FORMULARIO_UNICO = '2',
+    OTROS = '3',
+    DOCUMENTO_TRIBUTARIO_ELECTRONICO = '4',
+}
+
+export enum ClassDocumentValue {
+    IMPRESO_POR_IMPRENTA_O_TIQUETES = 'IMPRESO POR IMPRENTA O TIQUETES',
+    FORMULARIO_UNICO = 'FORMULARIO UNICO',
+    OTROS = 'OTROS',
+    DOCUMENTO_TRIBUTARIO_ELECTRONICO = 'DOCUMENTO TRIBUTARIO ELECTRONICO (DTE)',
+}
+
+export const ClassDocuments = [
+    {
+        code: ClassDocumentCode.IMPRESO_POR_IMPRENTA_O_TIQUETES,
+        value: ClassDocumentValue.IMPRESO_POR_IMPRENTA_O_TIQUETES
+    }, {
+        code: ClassDocumentCode.FORMULARIO_UNICO,
+        value: ClassDocumentValue.FORMULARIO_UNICO
+    }, {
+        code: ClassDocumentCode.OTROS,
+        value: ClassDocumentValue.OTROS
+    }, {
+        code: ClassDocumentCode.DOCUMENTO_TRIBUTARIO_ELECTRONICO,
+        value: ClassDocumentValue.DOCUMENTO_TRIBUTARIO_ELECTRONICO
+    }
+]

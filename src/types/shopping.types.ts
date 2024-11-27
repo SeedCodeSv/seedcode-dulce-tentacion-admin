@@ -158,6 +158,14 @@ export interface Supplier {
   transmitterId: number;
 }
 
+export interface ShoppingIva {
+  id: number,
+  codigo: string,
+  monto: number,
+  shoppingId: number
+
+}
+
 export interface ShoppingReport {
   id: number;
   controlNumber: string;
@@ -187,6 +195,15 @@ export interface ShoppingReport {
   supplierId: number;
   supplier: Supplier;
   typeSale: "Interna" | "Externa";
+  operationTypeCode: OperationTypeCode,
+  operationTypeValue: OperationTypeValue,
+  classificationCode: ClassificationCode,
+  classificationValue: ClassificationValue,
+  sectorCode: SectorCode,
+  sectorValue: SectorValue,
+  typeCostSpentCode: TypeCostSpentCode,
+  typeCostSpentValue: TypeCostSpentValue,
+  iva: ShoppingIva[]
 }
 
 export interface IGetShoppingReport {

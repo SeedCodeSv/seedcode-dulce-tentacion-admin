@@ -36,6 +36,7 @@
     "dexie": "^4.0.4",
     "dexie-react-hooks": "^1.1.7",
     "exceljs": "^4.4.0",
+    "export-to-csv": "^1.4.0",
     "file-saver": "^2.0.5",
     "flowbite-react": "^0.10.1",
     "formik": "^2.4.5",

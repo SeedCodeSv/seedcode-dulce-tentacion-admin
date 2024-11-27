@@ -34,6 +34,9 @@ import {
   TypeCostSpentCode,
   TypeCostSpents,
   TypeCostSpentValue,
+  ClassDocumentCode,
+  ClassDocumentValue,
+  ClassDocuments,
 } from '@/enums/shopping.enum';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -56,7 +59,6 @@ function CreateShoppingManual() {
 
   const [afectaModified, setAfectaModified] = useState(false);
   const [totalModified, setTotalModified] = useState(false);
-
 
   useEffect(() => {
     getSupplierPagination(1, 15, searchNRC, '', '', 1);
@@ -109,7 +111,7 @@ function CreateShoppingManual() {
     const totalExenta = Number(sanitizedValue);
 
     setExenta(sanitizedValue);
-    setTotal(() => (+afecta + totalExenta + (tipoDte === "03" ? Number(totalIva) : 0)).toFixed(2));
+    setTotal(() => (+afecta + totalExenta + (tipoDte === '03' ? Number(totalIva) : 0)).toFixed(2));
   };
 
   const handleChangeTotal = (e: string) => {
@@ -166,8 +168,10 @@ function CreateShoppingManual() {
       sectorValue: SectorValue.SERVICIOS_PROF_ART_OFF,
       typeCostSpentCode: TypeCostSpentCode.GASTO_VENTA_SIN_DONACION,
       typeCostSpentValue: TypeCostSpentValue.GASTO_VENTA_SIN_DONACION,
+      classDocumentCode: ClassDocumentCode.IMPRESO_POR_IMPRENTA_O_TIQUETES,
+      classDocumentValue: ClassDocumentValue.IMPRESO_POR_IMPRENTA_O_TIQUETES,
       tipoDte: '',
-      typeSale: "interna"
+      typeSale: 'interna',
     },
     validationSchema: yup.object().shape({
       operationTypeCode: yup.string().required('**El tipo de operación es requerido**'),
@@ -178,20 +182,21 @@ function CreateShoppingManual() {
       sectorValue: yup.string().required('**El sector es requerido**'),
       typeCostSpentCode: yup.string().required('**El tipo de gasto es requerido**'),
       typeCostSpentValue: yup.string().required('**El tipo de gasto es requerido**'),
+      classDocumentCode: yup.string().required('**La clasificación es requerida**'),
+      classDocumentValue: yup.string().required('**La clasificación es requerida**'),
       tipoDte: yup.string().required('**El tipo de documento es requerido**'),
       typeSale: yup.string().required('**El tipo de venta es requerido**'),
     }),
     async onSubmit(values, formikHelpers) {
-
       if (!supplierSelected) {
         toast.warning('Debes seleccionar el proveedor');
         return;
       }
 
-      console.log(supplierSelected)
+      console.log(supplierSelected);
 
       try {
-        await validateReceptor(supplierSelected)
+        await validateReceptor(supplierSelected);
         const payload: CreateShoppingDto = {
           branchId: user?.correlative?.branch.id ?? user?.pointOfSale?.branch.id ?? 0,
           supplierId: supplierSelected.id ?? 0,
@@ -206,7 +211,7 @@ function CreateShoppingManual() {
           totalLetras: convertCurrencyFormat(total),
           fecEmi: currentDate,
           correlative: correlative,
-          ...values
+          ...values,
         };
 
         axios
@@ -220,9 +225,9 @@ function CreateShoppingManual() {
           });
       } catch (error) {
         if (error instanceof Error) {
-          toast.error("Proveedor no valido", { description: error.message })
+          toast.error('Proveedor no valido', { description: error.message });
         } else {
-          toast.error('Error al guardar la compra')
+          toast.error('Error al guardar la compra');
         }
       }
     },
@@ -241,11 +246,11 @@ function CreateShoppingManual() {
 
   useEffect(() => {
     if (formik.values.typeSale) {
-      formik.setFieldValue('tipoDte', "01");
-      setTipoDocSelected(filteredTipoDoc[0])
-      setTipoDte("01")
+      formik.setFieldValue('tipoDte', '01');
+      setTipoDocSelected(filteredTipoDoc[0]);
+      setTipoDte('01');
     }
-  }, [formik.values.typeSale])
+  }, [formik.values.typeSale]);
 
   return (
     <>
@@ -253,10 +258,12 @@ function CreateShoppingManual() {
         <X className="cursor-pointer" onClick={clearAllDataManual} />
       </div>
       <div className="w-full h-full overflow-y-auto p-5">
-        <form onSubmit={(e) => {
-          e.preventDefault();
-          formik.handleSubmit()
-        }}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            formik.handleSubmit();
+          }}
+        >
           <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-5">
             <div className="w-full flex flex-col md:flex-row gap-5">
               <Input
@@ -356,14 +363,21 @@ function CreateShoppingManual() {
                 errorMessage={formik.errors.tipoDte}
               >
                 {filteredTipoDoc.map((item) => (
-                  <SelectItem value={item.codigo} key={item.codigo} isReadOnly={["03", "05", "06"].includes(item.codigo) && formik.values.typeSale === "externa"}>
+                  <SelectItem
+                    value={item.codigo}
+                    key={item.codigo}
+                    isReadOnly={
+                      ['03', '05', '06'].includes(item.codigo) &&
+                      formik.values.typeSale === 'externa'
+                    }
+                  >
                     {item.valores}
                   </SelectItem>
                 ))}
               </Select>
             </div>
           </div>
-          <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-10 mt-3">
+          <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-10 mt-3">
             <div>
               <Input
                 classNames={{ label: 'font-semibold' }}
@@ -400,19 +414,51 @@ function CreateShoppingManual() {
                 </SelectItem>
               </Select>
             </div>
-            <div>
-              <Input
-                classNames={{ label: 'font-semibold' }}
-                placeholder="EJ: 101"
-                variant="bordered"
-                value={numeroControl}
-                onChange={({ currentTarget }) => setNumeroControl(currentTarget.value)}
-                label="Numero"
-                labelPlacement="outside"
-              />
-            </div>
           </div>
           <div className="grid grid-cols-2 gap-5 mt-3">
+            <Input
+              classNames={{ label: 'font-semibold' }}
+              placeholder="EJ: 101"
+              variant="bordered"
+              value={numeroControl}
+              onChange={({ currentTarget }) => setNumeroControl(currentTarget.value)}
+              label="Numero de control"
+              labelPlacement="outside"
+            />
+            <Select
+              onBlur={formik.handleBlur('classDocumentCode')}
+              onSelectionChange={(key) => {
+                if (key) {
+                  const value = key.currentKey;
+                  const code = OperationTypes.find((item) => item.code === value);
+                  if (code) {
+                    formik.setFieldValue('classDocumentCode', code.code);
+                    formik.setFieldValue('classDocumentValue', code.value);
+                  } else {
+                    formik.setFieldValue('classDocumentCode', '');
+                    formik.setFieldValue('classDocumentValue', '');
+                  }
+                } else {
+                  formik.setFieldValue('classDocumentCode', '');
+                  formik.setFieldValue('classDocumentValue', '');
+                }
+              }}
+              selectedKeys={formik.values.classDocumentCode}
+              classNames={{ label: 'font-semibold' }}
+              className="w-full"
+              variant="bordered"
+              labelPlacement="outside"
+              placeholder="Selecciona una opción"
+              label="Clase del documento"
+              isInvalid={!!formik.touched.classDocumentCode && !!formik.errors.classDocumentCode}
+              errorMessage={formik.errors.classDocumentCode}
+            >
+              {ClassDocuments.map((item) => (
+                <SelectItem value={item.code} key={item.code}>
+                  {item.value}
+                </SelectItem>
+              ))}
+            </Select>
             <Select
               onBlur={formik.handleBlur('operationTypeCode')}
               onSelectionChange={(key) => {
@@ -637,7 +683,7 @@ function CreateShoppingManual() {
             </div>
           </div>
           <div className="w-full flex justify-end mt-4">
-            <Button type='submit' className="px-16" style={styles.thirdStyle}>
+            <Button type="submit" className="px-16" style={styles.thirdStyle}>
               Guardar
             </Button>
           </div>

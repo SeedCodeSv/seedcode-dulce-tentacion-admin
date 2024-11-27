@@ -31,7 +31,7 @@ function ShoppingPage({ actions }: ArrayAction) {
     getPaginatedShopping(
       user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
       1,
-      5,
+      10,
       dateInitial,
       dateEnd,
       branchId
@@ -43,7 +43,7 @@ function ShoppingPage({ actions }: ArrayAction) {
     getPaginatedShopping(
       user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
       1,
-      5,
+      10,
       dateInitial,
       dateEnd,
       branchId
@@ -54,11 +54,6 @@ function ShoppingPage({ actions }: ArrayAction) {
     <>
       <div className=" w-full h-full p-10 bg-gray-50 dark:bg-gray-900">
         <div className="w-full h-full border border-white p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
-          {/* <div className="flex justify-end">
-            {actions.includes('Agregar') && (
-              <AddButton onClick={() => navigate('/CreateShopping')} />
-            )}
-          </div> */}
           <div className="flex justify-between  mt-6 w-full">
             <div className="md:hidden justify-start flex-grow mt-0">
               <TooltipGlobal text="Filtrar">
@@ -302,7 +297,6 @@ function ShoppingPage({ actions }: ArrayAction) {
                 </tbody>
               </table>
             </div>
-
             {pagination_shopping.totalPag > 1 && (
               <>
                 <div className="hidden w-full mt-5 md:flex">
@@ -317,10 +311,7 @@ function ShoppingPage({ actions }: ArrayAction) {
                           user?.pointOfSale?.branch.transmitterId ??
                           0,
                         page,
-
-                        5,
-                        // "2024-07-02",
-                        // "2024-07-02"
+                        10,
                         dateInitial,
                         dateEnd,
                         branchId
