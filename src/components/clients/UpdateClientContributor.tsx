@@ -11,6 +11,7 @@ import Layout from '@/layout/Layout';
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router';
 import { useBranchesStore } from '@/store/branches.store';
+import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
 
 interface Props {
   customer?: PayloadCustomer;
@@ -193,6 +194,17 @@ function AddClientContributor(props: Props) {
     await get_customer_by_id(parseInt(id || ''));
   };
 
+  const services = useMemo(() => new SeedcodeCatalogosMhService(), [])
+
+  const [activityName, setActivityName] = useState('')
+
+  const cat_19 = useMemo(() => {
+
+    console.log(activityName)
+
+    return services.get019CodigoDeActividaEcono(activityName)
+  }, [activityName])
+
   const selectedKeyTypeOfDocument = useMemo(() => {
     if (user_by_id) {
       const typeOfDocument = cat_022_tipo_de_documentoDeIde.find(
@@ -204,12 +216,12 @@ function AddClientContributor(props: Props) {
 
   const selectedKeyCodActivity = useMemo(() => {
     if (user_by_id) {
-      const codActivity = cat_019_codigo_de_actividad_economica.find(
+      const codActivity = cat_19.find(
         (codActivity) => codActivity.codigo === user_by_id.customer.codActividad
       );
       return codActivity?.codigo;
     }
-  }, [user_by_id, cat_019_codigo_de_actividad_economica.length]);
+  }, [user_by_id, cat_19.length]);
 
   const navigate = useNavigate();
 
@@ -413,9 +425,10 @@ function AddClientContributor(props: Props) {
                         classNames={{
                           base: 'font-semibold text-gray-500 text-sm',
                         }}
+                        onInputChange={(e) => setActivityName(e)}
                         className="dark:text-white"
                       >
-                        {cat_019_codigo_de_actividad_economica.map((dep) => (
+                        {cat_19.map((dep) => (
                           <AutocompleteItem
                             value={dep.codigo}
                             key={dep.codigo}

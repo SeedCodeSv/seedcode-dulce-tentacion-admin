@@ -68,6 +68,7 @@ import NotesDebitBySale from '@/components/notas/DebitNoteBySale';
 import NotesCreditBySale from '@/components/notas/CreditNoteBySale';
 import ContingenceSection from '@/pages/ContingenceSection';
 import Annulation from '@/pages/Annulation';
+import anexos from "@/pages/anexos_iva/router"
 
 const Loading = () => {
   return <div>Cargando...</div>;
@@ -382,6 +383,7 @@ export const router = () => {
     {
       path: "/annulation/:tipoDte/:id",
       element: <Annulation />
-    }
+    },
+    ...anexos
   ]);
 };

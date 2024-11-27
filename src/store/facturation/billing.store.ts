@@ -41,6 +41,9 @@ export const useBillingStore = create<IGlobalBillingStore>((set) => ({
     }
   },
   getCat019CodigoActividadEconomica(name) {
+
+    console.log(name)
+
     set({
       cat_019_codigo_de_actividad_economica: service
         .get019CodigoDeActividaEcono(name)

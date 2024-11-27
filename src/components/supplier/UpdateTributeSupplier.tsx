@@ -8,6 +8,7 @@ import Layout from '@/layout/Layout';
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router';
 import { useSupplierStore } from '@/store/supplier.store';
+import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
 
 function UpdateTributeSupplier() {
   const { id } = useParams();
@@ -23,7 +24,6 @@ function UpdateTributeSupplier() {
     cat_012_departamento,
     cat_022_tipo_de_documentoDeIde,
     cat_013_municipios,
-    cat_019_codigo_de_actividad_economica,
     getCat019CodigoActividadEconomica,
   } = useBillingStore();
   useEffect(() => {
@@ -111,6 +111,15 @@ function UpdateTributeSupplier() {
       (dep) => dep.codigo === dataCreateSupplier?.tipoDocumento
     );
   }, [cat_022_tipo_de_documentoDeIde, dataCreateSupplier?.tipoDocumento]);
+
+  const [activity, setActivity] = useState(dataCreateSupplier.descActividad ?? "");
+
+  const services = useMemo(()=> new SeedcodeCatalogosMhService(),[])
+
+  const cat_019_codigo_de_actividad_economica = useMemo(() => {
+    return services.get019CodigoDeActividaEcono(activity);
+  }, [activity]);
+
   return (
     <Layout title="Actualizar  Contribuyente">
       <div className=" w-full h-full p-5 bg-gray-50 dark:bg-gray-900">
@@ -311,38 +320,39 @@ function UpdateTributeSupplier() {
           </div>
 
           <div className="pt-2">
-                <Autocomplete
-                  label="Actividad"
-                  labelPlacement="outside"
-                  placeholder="Ingresa la actividad"
-                  variant="bordered"
-                  onSelectionChange={(e) => {
-                    const selectActividad = cat_019_codigo_de_actividad_economica.find(
-                      (dep) => dep.codigo.trim() === e
-                    );
-                    if (selectActividad) {
-                      handleChangeAutocomplete('codActividad', selectActividad.codigo);
-                      handleChangeAutocomplete('descActividad', selectActividad.valores);
-                    }
-                  }}
-                  classNames={{
-                    base: 'font-semibold text-gray-500 text-sm',
-                  }}
-                  defaultItems={cat_019_codigo_de_actividad_economica}
-                  selectedKey={dataCreateSupplier?.codActividad}
+            <Autocomplete
+              label="Actividad"
+              labelPlacement="outside"
+              placeholder="Ingresa la actividad"
+              variant="bordered"
+              onSelectionChange={(e) => {
+                const selectActividad = cat_019_codigo_de_actividad_economica.find(
+                  (dep) => dep.codigo.trim() === e
+                );
+                if (selectActividad) {
+                  handleChangeAutocomplete('codActividad', selectActividad.codigo);
+                  handleChangeAutocomplete('descActividad', selectActividad.valores);
+                }
+              }}
+              classNames={{
+                base: 'font-semibold text-gray-500 text-sm',
+              }}
+              defaultItems={cat_019_codigo_de_actividad_economica}
+              selectedKey={dataCreateSupplier?.codActividad}
+              className="dark:text-white"
+              onInputChange={(e) => setActivity(e)}
+            >
+              {cat_019_codigo_de_actividad_economica.map((dep) => (
+                <AutocompleteItem
+                  key={dep.codigo}
+                  value={dep.codigo}
                   className="dark:text-white"
                 >
-                  {cat_019_codigo_de_actividad_economica.map((dep) => (
-                    <AutocompleteItem
-                      key={dep.codigo}
-                      value={dep.codigo}
-                      className="dark:text-white"
-                    >
-                      {dep.valores}
-                    </AutocompleteItem>
-                  ))}
-                </Autocomplete>
-              </div>
+                  {dep.valores}
+                </AutocompleteItem>
+              ))}
+            </Autocomplete>
+          </div>
 
           <div className="pt-2">
             <Textarea

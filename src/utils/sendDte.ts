@@ -56,7 +56,7 @@ export const sendDocumentToMH = async (
         }
         throw error;
       }
-;}
+}
 
 export const processSaleFCF = async (
     sale: SaleContingence,

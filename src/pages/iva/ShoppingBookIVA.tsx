@@ -48,11 +48,11 @@ function ShoppingBookIVA() {
         shop.supplier.nrc !== '0' ? shop.supplier.nrc : '',
         shop.supplier.tipoDocumento !== 'N/A' ? shop.supplier.numDocumento : shop.supplier.nit,
         shop.supplier.nombre,
-        Number(shop.totalGravada),
-        0,
+        shop.typeSale === 'Interna' ? Number(shop.totalGravada) : 0,
+        shop.typeSale === 'Externa' ? Number(shop.totalExenta) : 0,
         Number(shop.totalGravada) * 0.13,
-        Number(shop.totalExenta),
-        0,
+        shop.typeSale === 'Interna' ? Number(shop.totalExenta) : 0,
+        shop.typeSale === 'Externa' ? Number(shop.totalGravada) : 0,
         Number(shop.montoTotalOperacion),
         0,
         0,
@@ -72,7 +72,7 @@ function ShoppingBookIVA() {
   return (
     <Layout title="Iva - Compras">
       <div className=" w-full h-full p-10 bg-gray-50 dark:bg-gray-900">
-        <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+        <div className="w-full h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <div className="w-full flex flex-col lg:flex-row gap-5">
             <div className="w-full">
               <Select
