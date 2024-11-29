@@ -149,6 +149,14 @@
     {
       "view": "Puntos de Venta",
       "actions": ["Mostrar", "Editar"]
+    },
+    {
+      "view": "Anexos de compras",
+      "actions": ["Mostrar", "Exportar", "Exportar CVC"]
+    },
+    {
+      "view": "Anexos de consumidor final",
+      "actions": ["Mostrar", "Exportar", "Exportar CVC"]
     }
   ]
 }

@@ -7,6 +7,7 @@ import { Button, Input, Select, SelectItem } from '@nextui-org/react';
 import { useEffect, useState } from 'react';
 import { annexes_iva_shopping, csvmaker } from './utils';
 import { mkConfig, generateCsv, download } from 'export-to-csv';
+import { global_styles } from '@/styles/global.styles';
 
 function AnexosCompras() {
   const { branch_list, getBranchesList } = useBranchesStore();
@@ -89,12 +90,12 @@ function AnexosCompras() {
               ))}
             </Select>
           </div>
-          <div className="w-full flex justify-end">
-            <Button onClick={exportAnnexes}>Exportar anexo</Button>
-            <Button onClick={exportAnnexesCSV}>Exportar a CSV</Button>
+          <div className="w-full flex justify-end gap-5 mt-4">
+            <Button style={global_styles().thirdStyle} onClick={exportAnnexes}>Exportar anexo</Button>
+            <Button style={global_styles().secondaryStyle} onClick={exportAnnexesCSV}>Exportar a CSV</Button>
           </div>
           <div className="max-h-full w-full relative  overflow-x-auto overflow-y-auto custom-scrollbar mt-4">
-            <table className=" w-full ov">
+            <table className=" w-full">
               <thead className="sticky top-0 z-20 bg-white">
                 <tr>
                   <th

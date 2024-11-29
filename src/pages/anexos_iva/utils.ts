@@ -1,3 +1,5 @@
+import { SaleAnnexe } from '@/store/types/iva-ccfe.types';
+import { IvaSale } from '@/store/types/iva-fe.types';
 import { ShoppingReport } from '@/types/shopping.types';
 import { Supplier } from '@/types/supplier.types';
 import ExcelJS from 'exceljs';
@@ -261,4 +263,359 @@ export const formatControlNumber = (controlNumber: string) => {
         return controlNumber.replace(/-/g, "")
     }
     return ""
+}
+
+export const annexes_iva_fe = async (annexe_fe: IvaSale[]) => {
+
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Anexo FE');
+
+    const titles = [
+        {
+            title: 'FECHA DE EMISIÓN',
+            column: 'A',
+            width: 23.57,
+        }, {
+            title: 'CLASE DE DOCUMENTO',
+            column: 'B',
+            width: 22.14,
+        },
+        {
+            title: 'TIPO DE DOCUMENTO',
+            column: 'C',
+            width: 33.14,
+        },
+        {
+            title: 'NÚMERO DE RESOLUCIÓN',
+            column: 'D',
+            width: 22.57
+        },
+        {
+            title: 'SERIE DEL DOCUMENTO',
+            column: 'E',
+            width: 22.57
+        },
+        {
+            title: 'NUMERO DE CONTROL INTERNO DEL',
+            column: 'F',
+            width: 22.57
+        },
+        {
+            title: 'NUMERO DE CONTROL INTERNO AL ',
+            column: 'G',
+            width: 22.57
+        },
+        {
+            title: 'NÚMERO DE DOCUMENTO (DEL)',
+            column: 'H',
+            width: 22.57
+        },
+        {
+            title: 'NÚMERO DE DOCUMENTO (AL)',
+            column: 'I',
+            width: 18.57
+        },
+        {
+            title: 'NÚMERO DE MAQUINA REGISTRADORA',
+            column: 'J',
+            width: 28
+        },
+        {
+            title: 'VENTAS EXENTAS',
+            column: 'K',
+            width: 20
+        },
+        {
+            title: 'VENTAS INTERNAS EXENTAS NO SUJETAS A PROPORCIONALIDAD',
+            column: 'L',
+            width: 29.29
+        },
+        {
+            title: 'VENTAS NO SUJETAS',
+            column: 'M',
+            width: 21.57
+        },
+        {
+            title: 'VENTAS GRAVADAS LOCALES',
+            column: 'N',
+            width: 28.71
+        },
+        {
+            title: 'EXPORTACIONES DENTRO DEL ÁREA DE CENTROAMÉRICA',
+            column: 'O',
+            width: 28.71
+        },
+        {
+            title: 'EXPORTACIONES FUERA DEL ÁREA DE CENTROAMÉRICA',
+            column: 'P',
+            width: 24.71
+        },
+        {
+            title: 'EXPORTACIONES DE SERVICIO',
+            column: 'Q',
+            width: 22.14
+        },
+        {
+            title: 'VENTAS A ZONAS FRANCAS  Y DPA (TASA CERO)',
+            column: 'R',
+            width: 24.71
+        },
+        {
+            title: 'VENTAS A CUENTA DE TERCEROS NO DOMICILIADOS',
+            column: 'S',
+            width: 26.14
+        },
+        {
+            title: 'TOTAL DE VENTAS',
+            column: 'T',
+            width: 18
+        },
+        {
+            title: 'NUMERO DEL ANEXO',
+            column: 'U',
+            width: 24.71
+        }
+    ];
+
+    worksheet.getRow(1).height = 32.25;
+
+    titles.forEach((title) => {
+        worksheet.getColumn(title.column).width = title.width + 0.71;
+        worksheet.getCell(`${title.column}1`).style = { fill: { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF5b9bd5' } } }
+        worksheet.getCell(`${title.column}1`).value = title.title;
+        worksheet.getCell(`${title.column}1`).font = { bold: true, size: 11, color: { argb: 'FFFFFFFF' } };
+        worksheet.getCell(`${title.column}1`).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+    });
+
+    let nextLine = 2;
+
+    for (const line of annexe_fe) {
+        worksheet.getCell(`A${nextLine}`).value = line.currentDay
+        worksheet.getCell(`B${nextLine}`).value = (line.type === 'FE') ? "1. IMPRESO POR IMPRENTA O TIQUETES" : "4. DOCUMENTO TRIBUTARIO ELECTRÓNICO (DTE)"
+        worksheet.getCell(`C${nextLine}`).value = formatClassDte(line.typeVoucher)
+        worksheet.getCell(`D${nextLine}`).value = formatResolution(line)
+        worksheet.getCell(`E${nextLine}`).value = formatSeries(line)
+        worksheet.getCell(`F${nextLine}`).value = formatInternalControl(line).del
+        worksheet.getCell(`G${nextLine}`).value = formatInternalControl(line).al
+        worksheet.getCell(`H${nextLine}`).value = formatNumberControlDelAl(line).del
+        worksheet.getCell(`I${nextLine}`).value = formatNumberControlDelAl(line).al
+        worksheet.getCell(`J${nextLine}`).value = formatPointOfSale(line)
+        worksheet.getCell(`K${nextLine}`).value = 0.00
+        worksheet.getCell(`L${nextLine}`).value = 0.00
+        worksheet.getCell(`M${nextLine}`).value = 0.00
+        worksheet.getCell(`N${nextLine}`).value = Number(line.totalSales)
+        worksheet.getCell(`O${nextLine}`).value = 0.00
+        worksheet.getCell(`P${nextLine}`).value = 0.00
+        worksheet.getCell(`Q${nextLine}`).value = 0.00
+        worksheet.getCell(`R${nextLine}`).value = 0.00
+        worksheet.getCell(`S${nextLine}`).value = 0.00
+        worksheet.getCell(`T${nextLine}`).value = {
+            formula: `SUM(K${nextLine}:Q${nextLine})`
+        }
+        worksheet.getCell(`U${nextLine}`).value = 2
+
+        if (line.type !== "DTE") {
+            worksheet.getCell(`K${nextLine}`).numFmt = '0';
+        }
+
+        worksheet.getCell(`K${nextLine}`).numFmt = '#,##0.00';
+        worksheet.getCell(`L${nextLine}`).numFmt = '#,##0.00';
+        worksheet.getCell(`M${nextLine}`).numFmt = '#,##0.00';
+        worksheet.getCell(`N${nextLine}`).numFmt = '#,##0.00';
+        worksheet.getCell(`O${nextLine}`).numFmt = '#,##0.00';
+        worksheet.getCell(`P${nextLine}`).numFmt = '#,##0.00';
+        worksheet.getCell(`Q${nextLine}`).numFmt = '#,##0.00';
+        worksheet.getCell(`R${nextLine}`).numFmt = '#,##0.00';
+        worksheet.getCell(`S${nextLine}`).numFmt = '#,##0.00';
+        worksheet.getCell(`T${nextLine}`).numFmt = '#,##0.00';
+        nextLine += 1;
+    }
+
+    const buffer = await workbook.xlsx.writeBuffer();
+
+    const blob = new Blob([buffer], { type: 'application/octet-stream' });
+
+    return blob;
+}
+
+export const formatClassDte = (type: string) => {
+    switch (type) {
+        case "F":
+            return "01. FACTURA"
+        case "T":
+            return "10. TIQUETES DE MAQUINA REGISTRADORA"
+        case "FE":
+            return "01. FACTURA";
+        default:
+            return ""
+    }
+}
+
+export const formatClassCodeDte = (type: string) => {
+    switch (type) {
+        case "F":
+            return "01"
+        case "T":
+            return "10"
+        case "FE":
+            return "01";
+        default:
+            return ""
+    }
+}
+export const formatResolution = (iva: IvaSale) => {
+    if (iva.type === "DTE") return "N/A"
+    return iva.resolution
+}
+
+export const formatSeries = (iva: IvaSale) => {
+    if (iva.type === "DTE") return "N/A"
+    return iva.series
+}
+
+export const formatInternalControl = (iva: IvaSale) => {
+    const del = iva.type === "DTE" ? "N/A" : iva.firstNumeroControl
+    const al = iva.type === "DTE" ? "N/A" : iva.lastNumeroControl
+
+    return { del, al }
+}
+
+export const formatNumberControlDelAl = (iva: IvaSale) => {
+    const del = iva.type === "DTE" ? iva.firstNumeroControl.replace(/-/g, "") : iva.firstNumeroControl
+    const al = iva.type === "DTE" ? iva.lastNumeroControl.replace(/-/g, "") : iva.lastNumeroControl
+
+    return { del, al }
+}
+
+export const formatPointOfSale = (iva: IvaSale) => {
+    if (iva.type === "DTE") return ""
+    return iva.code
+}
+
+export const csvmaker_fe = (annexe_fe: IvaSale[]) => {
+
+    const payload = annexe_fe.map((line) => {
+        return [
+            line.currentDay,
+            (line.type === 'FE') ? "1" : "4",
+            formatClassCodeDte(line.typeVoucher),
+            formatResolution(line),
+            formatSeries(line),
+            formatInternalControl(line).del,
+            formatInternalControl(line).al,
+            formatNumberControlDelAl(line).del,
+            formatNumberControlDelAl(line).al,
+            formatPointOfSale(line),
+            0.00,
+            0.00,
+            0.00,
+            Number(line.totalSales),
+            0.00,
+            0.00,
+            0.00,
+            0.00,
+            0.00,
+            Number(line.totalSales),
+            2
+        ]
+    })
+    return payload.map((row) => row.join(';')).join('\n');
+}
+
+export const annexes_iva_ccfe = (annexe_ccfe: SaleAnnexe) => {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Anexo FE');
+
+    const titles = [
+        {
+            title: 'FECHA DE EMISIÓN DEL DOCUMENTO',
+            column: 'A',
+            width: 23.57,
+        }, {
+            title: 'CLASE DE DOCUMENTO',
+            column: 'B',
+            width: 22.14,
+        },
+        {
+            title: 'TIPO DE DOCUMENTO',
+            column: 'C',
+            width: 33.14,
+        },
+        {
+            title: 'NÚMERO DE RESOLUCIÓN',
+            column: 'D',
+            width: 22.57
+        },
+        {
+            title: 'SERIE DEL DOCUMENTO',
+            column: 'E',
+            width: 22.57
+        },
+        {
+            title: 'NÚMERO DE DOCUMENTO',
+            column: 'F',
+            width: 22.57
+        },
+        {
+            title: 'NUMERO DE CONTROL INTERNO',
+            column: 'G',
+            width: 22.57
+        },
+        {
+            title: 'NIT O NRC DEL CLIENTE',
+            column: 'H',
+            width: 22.57
+        },
+        {
+            title: 'NOMBRE RAZÓN SOCIAL O DENOMINACIÓN',
+            column: 'I',
+            width: 18.57
+        },
+        {
+            title: 'VENTAS EXENTAS ',
+            column: 'J',
+            width: 28
+        },
+        {
+            title: 'VENTAS NO SUJETAS ',
+            column: 'K',
+            width: 20
+        },
+        {
+            title: 'VENTAS GRAVADAS LOCALES ',
+            column: 'L',
+            width: 29.29
+        },
+        {
+            title: 'DÉBITO FISCAL',
+            column: 'M',
+            width: 21.57
+        },
+        {
+            title: 'VENTAS A CUENTA DE TERCEROS NO DOMICILIADOS ',
+            column: 'N',
+            width: 28.71
+        },
+        {
+            title: 'DEBITO FISCAL POR VENTAS A CUENTA DE TERCEROS',
+            column: 'O',
+            width: 28.71
+        },
+        {
+            title: 'TOTAL DE VENTAS',
+            column: 'P',
+            width: 24.71
+        },
+        {
+            title: 'NUMERO DE DUI DEL CLIENTE ',
+            column: 'Q',
+            width: 22.14
+        },
+        {
+            title: 'NÚMERO DEL ANEXO',
+            column: 'R',
+            width: 24.71
+        }
+    ];
+
 }
