@@ -618,4 +618,13 @@ export const annexes_iva_ccfe = (annexe_ccfe: SaleAnnexe) => {
         }
     ];
 
+    titles.forEach((title)=>{
+        worksheet.getColumn(title.column).width = title.width + 0.71;
+        worksheet.getCell(`${title.column}1`).style = { fill: { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF5b9bd5' } } }
+        worksheet.getCell(`${title.column}1`).value = title.title;
+        worksheet.getCell(`${title.column}1`).font = { bold: true, size: 11, color: { argb: 'FFFFFFFF' } };
+        worksheet.getCell(`${title.column}1`).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+        worksheet.getCell(`${title.column}`).value = title.title
+    })
+
 }
