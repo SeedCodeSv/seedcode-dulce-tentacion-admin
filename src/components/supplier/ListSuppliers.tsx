@@ -375,7 +375,7 @@ function ListSuppliers({ actions }: ArrayAction) {
 
                           <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                             <div className="flex w-full gap-5">
-                              {item.isActive && actions.includes('Editar') ? (
+                              {item.isActive && actions.includes('Editar') && (
                                 <TooltipGlobal text="Editar">
                                   <Button
                                     className="border border-white"
@@ -400,105 +400,36 @@ function ListSuppliers({ actions }: ArrayAction) {
                                     />
                                   </Button>
                                 </TooltipGlobal>
-                              ) : (
-                                <Button
-                                  type="button"
-                                  disabled
-                                  style={{
-                                    backgroundColor: theme.colors.secondary,
-                                  }}
-                                  className="flex font-semibold border border-white"
-                                  isIconOnly
-                                >
-                                  <Lock className="text-white" />
-                                </Button>
                               )}
-                              {item.isActive && actions.includes('Eliminar') ? (
+                              {item.isActive && actions.includes('Eliminar') && (
                                 <DeletePopover supplier={item} />
-                              ) : (
-                                <Button
-                                  type="button"
-                                  disabled
-                                  style={{
-                                    backgroundColor: theme.colors.danger,
-                                  }}
-                                  className="flex font-semibold border border-white"
-                                  isIconOnly
-                                >
-                                  <Lock className="text-white" />
-                                </Button>
                               )}
-
                               <>
-                                {item.isActive ? (
-                                  item.esContribuyente === false ? (
-                                    actions.includes('Cambiar Tipo de Proveedor') ? (
-                                      <TooltipGlobal text="Cambiar el tipo de proveedor">
-                                        <Button
-                                          className="border border-white"
-                                          onClick={() => {
-                                            navigate(`/update-supplier-tribute/${item.id}`);
-                                            OnGetBySupplier(item.id ?? 0);
-                                          }}
-                                          isIconOnly
-                                          style={{
-                                            backgroundColor: theme.colors.third,
-                                          }}
-                                        >
-                                          <Repeat
-                                            style={{ color: theme.colors.primary }}
-                                            size={20}
-                                          />
-                                        </Button>
-                                      </TooltipGlobal>
-                                    ) : (
+                                {item.isActive &&
+                                  item.esContribuyente === false &&
+                                  actions.includes('Cambiar Tipo de Proveedor') && (
+                                    <TooltipGlobal text="Cambiar el tipo de proveedor">
                                       <Button
-                                        type="button"
-                                        disabled
+                                        className="border border-white"
+                                        onClick={() => {
+                                          navigate(`/update-supplier-tribute/${item.id}`);
+                                          OnGetBySupplier(item.id ?? 0);
+                                        }}
+                                        isIconOnly
                                         style={{
                                           backgroundColor: theme.colors.third,
-                                          cursor: 'not-allowed',
                                         }}
-                                        className="flex font-semibold border border-white"
-                                        isIconOnly
                                       >
-                                        <Lock className="text-white" />
+                                        <Repeat style={{ color: theme.colors.primary }} size={20} />
                                       </Button>
-                                    )
-                                  ) : (
-                                    <Button
-                                      type="button"
-                                      disabled
-                                      style={{
-                                        backgroundColor: theme.colors.third,
-                                        cursor: 'not-allowed',
-                                      }}
-                                      className="flex font-semibold border border-white"
-                                      isIconOnly
-                                    >
-                                      <Check className="text-white" />
-                                    </Button>
-                                  )
-                                ) : (
-                                  <Button
-                                    type="button"
-                                    disabled
-                                    style={{
-                                      backgroundColor: theme.colors.third,
-                                      cursor: 'not-allowed',
-                                    }}
-                                    className="flex font-semibold border border-white"
-                                    isIconOnly
-                                  >
-                                    <Lock />
-                                  </Button>
-                                )}
+                                    </TooltipGlobal>
+                                  )}
                               </>
 
                               <>
                                 {!item.isActive && (
                                   <>
-                                    {actions.includes('Activar') ? (
+                                    {actions.includes('Activar') && (
                                       <Button
                                         onClick={() => {
                                           handleActivate(item.id ?? 0);
@@ -509,19 +440,6 @@ function ListSuppliers({ actions }: ArrayAction) {
                                         }}
                                       >
                                         <RefreshCcw />
-                                      </Button>
-                                    ) : (
-                                      <Button
-                                        type="button"
-                                        disabled
-                                        style={{
-                                          backgroundColor: theme.colors.third,
-                                          cursor: 'not-allowed',
-                                        }}
-                                        className="flex font-semibold border border-white"
-                                        isIconOnly
-                                      >
-                                        <Lock />
                                       </Button>
                                     )}
                                   </>

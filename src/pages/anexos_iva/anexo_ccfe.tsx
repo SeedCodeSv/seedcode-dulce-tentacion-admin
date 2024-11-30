@@ -3,8 +3,10 @@ import { useBranchesStore } from '@/store/branches.store';
 import { useIvaCcfeStore } from '@/store/reports/iva-ccfe.store';
 import { formatDate } from '@/utils/dates';
 import { formatCurrency } from '@/utils/dte';
-import { Input, Select, SelectItem, Spinner } from '@nextui-org/react';
+import { Button, Input, Select, SelectItem, Spinner } from '@nextui-org/react';
 import { useEffect, useState } from 'react';
+import { csvmaker_ccfe, export_annexes_iva_ccfe } from './utils';
+import { global_styles } from '@/styles/global.styles';
 
 function AnexoCcfe() {
   const { branch_list, getBranchesList } = useBranchesStore();
@@ -23,6 +25,25 @@ function AnexoCcfe() {
   useEffect(() => {
     onGetIvaAnnexesCcf(branchId, startDate, endDate);
   }, [branchId, startDate, endDate]);
+
+  const exportAnnexes = async () => {
+    const blob = await export_annexes_iva_ccfe(annexes_iva_ccfe);
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'anexos-iva-ccfe.xlsx';
+    link.click();
+  };
+
+  const exportAnnexesCSV = async () => {
+    const csv = csvmaker_ccfe(annexes_iva_ccfe);
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'ANEXO_CONTRIBUYENTES.csv';
+    link.click();
+  };
 
   return (
     <Layout title="Anexo CCFE">
@@ -68,7 +89,14 @@ function AnexoCcfe() {
               ))}
             </Select>
           </div>
-
+          <div className="w-full flex justify-end gap-5 mt-4">
+            <Button style={global_styles().thirdStyle} onClick={exportAnnexes}>
+              Exportar anexo
+            </Button>
+            <Button style={global_styles().secondaryStyle} onClick={exportAnnexesCSV}>
+              Exportar a CSV
+            </Button>
+          </div>
           <div className="max-h-full w-full  overflow-x-auto overflow-y-auto custom-scrollbar mt-4">
             <table className=" w-full">
               <thead className="sticky top-0 z-20 bg-white">

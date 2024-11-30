@@ -522,7 +522,7 @@ export const csvmaker_fe = (annexe_fe: IvaSale[]) => {
     return payload.map((row) => row.join(';')).join('\n');
 }
 
-export const annexes_iva_ccfe = (annexe_ccfe: SaleAnnexe) => {
+export const export_annexes_iva_ccfe = async (annexe_ccfe: SaleAnnexe[]) => {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Anexo FE');
 
@@ -534,12 +534,12 @@ export const annexes_iva_ccfe = (annexe_ccfe: SaleAnnexe) => {
         }, {
             title: 'CLASE DE DOCUMENTO',
             column: 'B',
-            width: 22.14,
+            width: 33,
         },
         {
             title: 'TIPO DE DOCUMENTO',
             column: 'C',
-            width: 33.14,
+            width: 27.71,
         },
         {
             title: 'NÚMERO DE RESOLUCIÓN',
@@ -569,27 +569,27 @@ export const annexes_iva_ccfe = (annexe_ccfe: SaleAnnexe) => {
         {
             title: 'NOMBRE RAZÓN SOCIAL O DENOMINACIÓN',
             column: 'I',
-            width: 18.57
+            width: 37.71
         },
         {
             title: 'VENTAS EXENTAS ',
             column: 'J',
-            width: 28
+            width: 20
         },
         {
             title: 'VENTAS NO SUJETAS ',
             column: 'K',
-            width: 20
+            width: 29.29
         },
         {
             title: 'VENTAS GRAVADAS LOCALES ',
             column: 'L',
-            width: 29.29
+            width: 21.57
         },
         {
             title: 'DÉBITO FISCAL',
             column: 'M',
-            width: 21.57
+            width: 24.71
         },
         {
             title: 'VENTAS A CUENTA DE TERCEROS NO DOMICILIADOS ',
@@ -599,33 +599,95 @@ export const annexes_iva_ccfe = (annexe_ccfe: SaleAnnexe) => {
         {
             title: 'DEBITO FISCAL POR VENTAS A CUENTA DE TERCEROS',
             column: 'O',
-            width: 28.71
+            width: 24.71
         },
         {
             title: 'TOTAL DE VENTAS',
             column: 'P',
-            width: 24.71
+            width: 26.14
         },
         {
             title: 'NUMERO DE DUI DEL CLIENTE ',
             column: 'Q',
-            width: 22.14
+            width: 26.14
         },
         {
             title: 'NÚMERO DEL ANEXO',
             column: 'R',
-            width: 24.71
+            width: 18
         }
     ];
 
-    titles.forEach((title)=>{
+    titles.forEach((title) => {
         worksheet.getColumn(title.column).width = title.width + 0.71;
         worksheet.getCell(`${title.column}1`).style = { fill: { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF5b9bd5' } } }
         worksheet.getCell(`${title.column}1`).value = title.title;
         worksheet.getCell(`${title.column}1`).font = { bold: true, size: 11, color: { argb: 'FFFFFFFF' } };
         worksheet.getCell(`${title.column}1`).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
-        worksheet.getCell(`${title.column}`).value = title.title
+        worksheet.getCell(`${title.column}1`).value = title.title
     })
-    
 
+    annexe_ccfe.forEach((line, index) => {
+        const nextLine = index + 2;
+        worksheet.getCell(`A${nextLine}`).value = line.fecEmi;
+        worksheet.getCell(`B${nextLine}`).value = line.tipoDte === "03" ? "4. DOCUMENTO TRIBUTARIO ELECTRONICO (DTE)" : "1. IMPRESO POR IMPRENTA O TIQUETES"
+        worksheet.getCell(`C${nextLine}`).value = "03. COMPROBANTE DE CRÉDITO FISCAL";
+        worksheet.getCell(`D${nextLine}`).value = line.tipoDte === "03" ? line.numeroControl.replace(/-/g, "") : line.box.correlative.resolution
+        worksheet.getCell(`E${nextLine}`).value = line.tipoDte === "03" ? line.selloRecibido.replace(/-/g, "") : line.box.correlative.serie
+        worksheet.getCell(`F${nextLine}`).value = line.tipoDte === "03" ? line.codigoGeneracion.replace(/-/g, "") : line.numeroControl
+        worksheet.getCell(`G${nextLine}`).value = line.tipoDte === "03" ? line.codigoGeneracion.replace(/-/g, "") : line.numeroControl
+        worksheet.getCell(`H${nextLine}`).value = line.customer.nit.length === 14 ? line.customer.nit.replace(/-/g, "") : ""
+        worksheet.getCell(`I${nextLine}`).value = line.customer.nombre
+        worksheet.getCell(`J${nextLine}`).value = Number(line.totalExenta)
+        worksheet.getCell(`K${nextLine}`).value = Number(line.totalNoSuj)
+        worksheet.getCell(`L${nextLine}`).value = Number(line.totalGravada)
+        worksheet.getCell(`M${nextLine}`).value = Number(line.totalIva)
+        worksheet.getCell(`N${nextLine}`).value = 0.00
+        worksheet.getCell(`O${nextLine}`).value = 0.00
+        worksheet.getCell(`P${nextLine}`).value = Number(line.montoTotalOperacion)
+        worksheet.getCell(`Q${nextLine}`).value = line.customer.nit.length >= 9 && line.customer.nit.length <= 10 ? line.customer.nit.replace(/-/g, "") : ""
+        worksheet.getCell(`R${nextLine}`).value = 1
+
+        worksheet.getCell(`J${nextLine}`).numFmt = '#,##0.00';
+        worksheet.getCell(`K${nextLine}`).numFmt = '#,##0.00';
+        worksheet.getCell(`L${nextLine}`).numFmt = '#,##0.00';
+        worksheet.getCell(`M${nextLine}`).numFmt = '#,##0.00';
+        worksheet.getCell(`N${nextLine}`).numFmt = '#,##0.00';
+        worksheet.getCell(`O${nextLine}`).numFmt = '#,##0.00';
+        worksheet.getCell(`P${nextLine}`).numFmt = '#,##0.00';
+
+    })
+
+    const buffer = await workbook.xlsx.writeBuffer();
+
+    const blob = new Blob([buffer], { type: 'application/octet-stream' });
+
+    return blob;
+}
+
+export const csvmaker_ccfe = (annexe_ccfe: SaleAnnexe[]) => {
+
+    const payload = annexe_ccfe.map((line) => {
+        return [
+            line.fecEmi,
+            line.tipoDte === "03" ? "4" : "1",
+            "03",
+            line.tipoDte === "03" ? line.numeroControl.replace(/-/g, "") : line.box.correlative.resolution,
+            line.tipoDte === "03" ? line.selloRecibido.replace(/-/g, "") : line.box.correlative.serie,
+            line.tipoDte === "03" ? line.codigoGeneracion.replace(/-/g, "") : line.numeroControl,
+            line.tipoDte === "03" ? line.codigoGeneracion.replace(/-/g, "") : line.numeroControl,
+            line.customer.nit.length === 14 ? line.customer.nit.replace(/-/g, "") : "",
+            line.customer.nombre,
+            Number(line.totalExenta),
+            Number(line.totalNoSuj),
+            Number(line.totalGravada),
+            Number(line.totalIva),
+            0.00,
+            0.00,
+            Number(line.montoTotalOperacion),
+            line.customer.nit.length >= 9 && line.customer.nit.length <= 10 ? line.customer.nit.replace(/-/g, "") : "",
+            1
+        ]
+    })
+    return payload.map((row) => row.join(';')).join('\n');
 }

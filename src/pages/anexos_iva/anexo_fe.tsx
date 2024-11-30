@@ -31,7 +31,7 @@ function AnexoFe() {
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = 'anexos-iva-compras.xlsx';
+    link.download = 'anexos-iva-fe.xlsx';
     link.click();
   };
 

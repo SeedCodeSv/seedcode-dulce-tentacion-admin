@@ -172,6 +172,7 @@ function CreateShoppingManual() {
       classDocumentValue: ClassDocumentValue.IMPRESO_POR_IMPRENTA_O_TIQUETES,
       tipoDte: '',
       typeSale: 'interna',
+      controlNumber: '',
     },
     validationSchema: yup.object().shape({
       operationTypeCode: yup.string().required('**El tipo de operación es requerido**'),
@@ -186,6 +187,7 @@ function CreateShoppingManual() {
       classDocumentValue: yup.string().required('**La clasificación es requerida**'),
       tipoDte: yup.string().required('**El tipo de documento es requerido**'),
       typeSale: yup.string().required('**El tipo de venta es requerido**'),
+      controlNumber: yup.string().required('**El número de control es requerido**'),
     }),
     async onSubmit(values, formikHelpers) {
       if (!supplierSelected) {
@@ -420,10 +422,13 @@ function CreateShoppingManual() {
               classNames={{ label: 'font-semibold' }}
               placeholder="EJ: 101"
               variant="bordered"
-              value={numeroControl}
-              onChange={({ currentTarget }) => setNumeroControl(currentTarget.value)}
+              value={formik.values.controlNumber}
+              onChange={formik.handleChange('controlNumber')}
+              onBlur={formik.handleBlur('controlNumber')}
               label="Numero de control"
               labelPlacement="outside"
+              isInvalid={!!formik.touched.controlNumber && !!formik.errors.controlNumber}
+              errorMessage={formik.errors.controlNumber}
             />
             <Select
               onBlur={formik.handleBlur('classDocumentCode')}
@@ -591,6 +596,18 @@ function CreateShoppingManual() {
                 </SelectItem>
               ))}
             </Select>
+            <div>
+                <Input
+                  label="CORRELATIVO"
+                  labelPlacement="outside"
+                  readOnly
+                  value={correlative.toString()}
+                  placeholder="EJ: 001"
+                  variant="bordered"
+                  classNames={{ label: 'font-semibold' }}
+                  type="number"
+                />
+              </div>
           </div>
           <p className="py-5 text-xl font-semibold">Resumen</p>
           <div className="rounded border shadow dark:border-gray-700 p-5 md:p-10">
@@ -666,18 +683,6 @@ function CreateShoppingManual() {
                   startContent={<span className="text-red-600 font-bold text-lg">$</span>}
                   value={total}
                   onChange={({ currentTarget }) => handleChangeTotal(currentTarget.value)}
-                />
-              </div>
-              <div>
-                <Input
-                  label="CORRELATIVO"
-                  labelPlacement="outside"
-                  readOnly
-                  value={correlative.toString()}
-                  placeholder="EJ: 001"
-                  variant="bordered"
-                  classNames={{ label: 'font-semibold' }}
-                  type="number"
                 />
               </div>
             </div>

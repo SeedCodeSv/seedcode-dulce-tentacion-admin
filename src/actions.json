@@ -157,6 +157,10 @@
     {
       "view": "Anexos de consumidor final",
       "actions": ["Mostrar", "Exportar", "Exportar CVC"]
+    },
+    {
+      "view": "Anexos ventas a contribuyentes",
+      "actions": ["Mostrar", "Exportar", "Exportar CVC"]
     }
   ]
 }

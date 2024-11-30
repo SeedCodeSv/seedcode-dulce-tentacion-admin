@@ -1,6 +1,16 @@
 import { useBillingStore } from '../../store/facturation/billing.store';
 import { useEffect, useState } from 'react';
-import { Autocomplete, AutocompleteItem, Button, Input, Textarea } from '@nextui-org/react';
+import {
+  Autocomplete,
+  AutocompleteItem,
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Input,
+  Textarea,
+} from '@nextui-org/react';
 import { global_styles } from '../../styles/global.styles';
 import { get_user } from '../../storage/localStorage';
 import Layout from '@/layout/Layout';
@@ -73,362 +83,316 @@ function AddTributeSupplier() {
                 <ArrowLeft className="dark:text-white" size={20} />
                 <p className="dark:text-white">Regresar</p>
               </div>
-              <div className="grid xl:grid-cols-3 gap-5">
-                <div>
-                  <Input
-                    onChange={handleChange}
-                    label="Nombre"
-                    labelPlacement="outside"
-                    className="dark:text-white font-bold"
-                    name="nombre"
-                    placeholder="Ingresa el nombre"
-                    isInvalid={touched.nombre && !!errors.nombre}
-                    errorMessage={touched.nombre && errors.nombre}
-                    classNames={{
-                      label: 'text-gray-500 text-sm font-semibold',
-                    }}
-                    variant="bordered"
-                  />
-                  {/* {errors.nombre && touched.nombre && (
-                    <span className="text-sm font-semibold text-red-500">{errors.nombre}</span>
-                  )} */}
-                </div>
-                <div>
-                  <Input
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    label="Correo electrónico"
-                    className="dark:text-white font-semibold"
-                    labelPlacement="outside"
-                    name="correo"
-                    isInvalid={touched.correo && !!errors.correo}
-                    errorMessage={touched.correo && errors.correo}
-                    placeholder="Ingresa el correo"
-                    classNames={{
-                      label: 'font-semibold text-gray-500 text-sm',
-                    }}
-                    variant="bordered"
-                  />
-                  {/* {errors.correo && touched.correo && (
-                    <span className="text-sm font-semibold text-red-500">{errors.correo}</span>
-                  )} */}
-                </div>
-                <div>
-                  <Input
-                    className="dark:text-white font-semibold"
-                    onChange={handleChange}
-                    type="number"
-                    label="Teléfono"
-                    labelPlacement="outside"
-                    name="telefono"
-                    placeholder="Ingresa el telefono"
-                    isInvalid={touched.telefono && !!errors.telefono}
-                    errorMessage={touched.telefono && errors.telefono}
-                    classNames={{
-                      label: 'text-gray-500 text-sm font-semibold',
-                    }}
-                    variant="bordered"
-                  />
-                  {/* {errors.telefono && touched.telefono && (
-                    <span className="text-sm font-semibold text-red-500">{errors.telefono}</span>
-                  )} */}
-                </div>
-                <div>
-                  <Autocomplete
-                    onBlur={handleBlur}
-                    label="Tipo de documento"
-                    labelPlacement="outside"
-                    onSelectionChange={(value) => {
-                      const selectedTypeDocument = cat_022_tipo_de_documentoDeIde.find(
-                        (dep) => dep.codigo === new Set([value]).values().next().value
-                      );
-                      if (selectedTypeDocument) {
-                        setFieldValue('tipoDocumento', selectedTypeDocument.codigo);
-                      }
-                    }}
-                    placeholder={'Selecciona el tipo de documento'}
-                    isInvalid={touched.tipoDocumento && !!errors.tipoDocumento}
-                    errorMessage={touched.tipoDocumento && errors.tipoDocumento}
-                    variant="bordered"
-                    classNames={{
-                      base: 'font-semibold text-gray-500 text-sm',
-                    }}
-                    className="dark:text-white font-semibold"
-                  >
-                    {cat_022_tipo_de_documentoDeIde.map((dep) => (
-                      <AutocompleteItem
-                        key={dep.codigo}
-                        value={dep.codigo}
-                        className="dark:text-white"
+              <Card>
+                <CardBody>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                      <Input
+                        onChange={handleChange}
+                        label="Nombre"
+                        labelPlacement="outside"
+                        className="dark:text-white font-bold"
+                        name="nombre"
+                        placeholder="Ingresa el nombre"
+                        isInvalid={touched.nombre && !!errors.nombre}
+                        errorMessage={touched.nombre && errors.nombre}
+                        classNames={{
+                          label: 'text-gray-500 text-sm font-semibold',
+                        }}
+                        variant="bordered"
+                      />
+                    </div>
+                    <div>
+                      <Input
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        label="Correo electrónico"
+                        className="dark:text-white font-semibold"
+                        labelPlacement="outside"
+                        name="correo"
+                        isInvalid={touched.correo && !!errors.correo}
+                        errorMessage={touched.correo && errors.correo}
+                        placeholder="Ingresa el correo"
+                        classNames={{
+                          label: 'font-semibold text-gray-500 text-sm',
+                        }}
+                        variant="bordered"
+                      />
+                    </div>
+                    <div>
+                      <Input
+                        className="dark:text-white font-semibold"
+                        onChange={handleChange}
+                        type="number"
+                        label="Teléfono"
+                        labelPlacement="outside"
+                        name="telefono"
+                        placeholder="Ingresa el telefono"
+                        isInvalid={touched.telefono && !!errors.telefono}
+                        errorMessage={touched.telefono && errors.telefono}
+                        classNames={{
+                          label: 'text-gray-500 text-sm font-semibold',
+                        }}
+                        variant="bordered"
+                      />
+                    </div>
+                    <div>
+                      <Autocomplete
+                        onBlur={handleBlur}
+                        label="Tipo de documento"
+                        labelPlacement="outside"
+                        onSelectionChange={(value) => {
+                          const selectedTypeDocument = cat_022_tipo_de_documentoDeIde.find(
+                            (dep) => dep.codigo === new Set([value]).values().next().value
+                          );
+                          if (selectedTypeDocument) {
+                            setFieldValue('tipoDocumento', selectedTypeDocument.codigo);
+                          }
+                        }}
+                        placeholder={'Selecciona el tipo de documento'}
+                        isInvalid={touched.tipoDocumento && !!errors.tipoDocumento}
+                        errorMessage={touched.tipoDocumento && errors.tipoDocumento}
+                        variant="bordered"
+                        classNames={{
+                          base: 'font-semibold text-gray-500 text-sm',
+                        }}
+                        className="dark:text-white font-semibold"
                       >
-                        {dep.valores}
-                      </AutocompleteItem>
-                    ))}
-                  </Autocomplete>
+                        {cat_022_tipo_de_documentoDeIde.map((dep) => (
+                          <AutocompleteItem
+                            key={dep.codigo}
+                            value={dep.codigo}
+                            className="dark:text-white"
+                          >
+                            {dep.valores}
+                          </AutocompleteItem>
+                        ))}
+                      </Autocomplete>
+                    </div>
+                    <div>
+                      <Input
+                        type="text"
+                        label="Número documento"
+                        labelPlacement="outside"
+                        name="numDocumento"
+                        onChange={({ currentTarget }) => {
+                          setFieldValue('numDocumento', currentTarget.value.replace(/[^0-9]/g, ''));
+                        }}
+                        onBlur={handleBlur('numDocumento')}
+                        placeholder="Ingresa el número documento"
+                        classNames={{
+                          label: 'font-semibold text-gray-500 text-sm',
+                          input: 'dark:text-white',
+                          base: 'font-semibold',
+                        }}
+                        variant="bordered"
+                        errorMessage={errors.numDocumento}
+                        isInvalid={!!errors.numDocumento && !!touched.numDocumento}
+                      />
+                    </div>
+                    <div>
+                      <Input
+                        onChange={handleChange}
+                        label="Nombre comercial"
+                        labelPlacement="outside"
+                        className="dark:text-white font-semibold"
+                        name="nombreComercial"
+                        placeholder="Ingresa el nombre comercial"
+                        classNames={{
+                          label: 'font-semibold text-gray-500 text-sm',
+                        }}
+                        variant="bordered"
+                        isInvalid={touched.nombreComercial && !!errors.nombreComercial}
+                        errorMessage={touched.nombreComercial && errors.nombreComercial}
+                      />
+                    </div>
+                    <div>
+                      <Input
+                        className="dark:text-white font-semibold"
+                        onChange={handleChange('nit')}
+                        onBlur={handleBlur('nit')}
+                        label="NIT"
+                        labelPlacement="outside"
+                        name="nit"
+                        placeholder="Ingresa su número de nit sin guiones"
+                        classNames={{
+                          label: 'font-semibold text-gray-500 text-sm',
+                        }}
+                        variant="bordered"
+                        isInvalid={touched.nit && !!errors.nit}
+                        errorMessage={touched.nit && errors.nit}
+                      />
+                    </div>
+                    <div>
+                      <Input
+                        className="dark:text-white font-semibold"
+                        onChange={handleChange}
+                        type="number"
+                        label="NRC"
+                        labelPlacement="outside"
+                        name="nrc"
+                        placeholder="Ingresa el número de NRC"
+                        classNames={{
+                          label: 'font-semibold text-gray-500 text-sm',
+                        }}
+                        variant="bordered"
+                        isInvalid={touched.nrc && !!errors.nrc}
+                        errorMessage={touched.nrc && errors.nrc}
+                      />
+                    </div>
+                    <div className="w-full col-span-1 md:col-span-2">
+                      <Autocomplete
+                        label="Actividad"
+                        labelPlacement="outside"
+                        placeholder="Ingresa la actividad"
+                        variant="bordered"
+                        onSelectionChange={(key) => {
+                          if (key) {
+                            const depSelected = cat_019_codigo_de_actividad_economica.find(
+                              (dep) => dep.codigo === new Set([key]).values().next().value
+                            );
 
-                  {/* {errors.tipoDocumento && touched.tipoDocumento && (
-                    <span className="text-sm font-semibold text-red-500">
-                      {errors.tipoDocumento}
-                    </span>
-                  )} */}
-                </div>
-                <div>
-                  {/* <Input
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    type="number"
-                    label="Numero documento"
-                    labelPlacement="outside"
-                    className="dark:text-white font-semibold"
-                    name="numDocumento"
-                    placeholder="Ingresa el numero documento"
-                    classNames={{
-                      label: 'font-semibold text-gray-500 text-sm',
-                    }}
-                    variant="bordered"
-                    errorMessage={errors.numDocumento}
-                    isInvalid={!!errors.numDocumento && !!touched.numDocumento}
-                  /> */}
-                  <Input
-                    type="text"
-                    label="Número documento"
-                    labelPlacement="outside"
-                    name="numDocumento"
-                    // value={values.numDocumento}
-                    onChange={({ currentTarget }) => {
-                      setFieldValue('numDocumento', currentTarget.value.replace(/[^0-9]/g, ''));
-                    }}
-                    onBlur={handleBlur('numDocumento')}
-                    placeholder="Ingresa el número documento"
-                    classNames={{
-                      label: 'font-semibold text-gray-500 text-sm',
-                      input: 'dark:text-white',
-                      base: 'font-semibold',
-                    }}
-                    variant="bordered"
-                    errorMessage={errors.numDocumento}
-                    isInvalid={!!errors.numDocumento && !!touched.numDocumento}
-                  />
-                  {/* {errors.numDocumento && touched.numDocumento && (
-                    <span className="text-sm font-semibold text-red-500">
-                      {errors.numDocumento}
-                    </span>
-                  )} */}
-                </div>
-
-                <div>
-                  <Input
-                    onChange={handleChange}
-                    label="Nombre comercial"
-                    labelPlacement="outside"
-                    className="dark:text-white font-semibold"
-                    name="nombreComercial"
-                    placeholder="Ingresa el nombre comercial"
-                    classNames={{
-                      label: 'font-semibold text-gray-500 text-sm',
-                    }}
-                    variant="bordered"
-                    isInvalid={touched.nombreComercial && !!errors.nombreComercial}
-                    errorMessage={touched.nombreComercial && errors.nombreComercial}
-                  />
-                  {/* {errors.nombreComercial && touched.nombreComercial && (
-                    <span className="text-sm font-semibold text-red-500">
-                      {errors.nombreComercial}
-                    </span>
-                  )} */}
-                </div>
-                <div>
-                  <Input
-                    className="dark:text-white font-semibold"
-                    onChange={handleChange}
-                    type="number"
-                    label="NIT"
-                    labelPlacement="outside"
-                    name="nit"
-                    placeholder="Ingresa su número de nit sin guiones"
-                    classNames={{
-                      label: 'font-semibold text-gray-500 text-sm',
-                    }}
-                    variant="bordered"
-                    isInvalid={touched.nit && !!errors.nit}
-                    errorMessage={touched.nit && errors.nit}
-                  />
-                  {/* {errors.nit && touched.nit && (
-                    <span className="text-sm font-semibold text-red-500">{errors.nit}</span>
-                  )} */}
-                </div>
-                <div>
-                  <Input
-                    className="dark:text-white font-semibold"
-                    onChange={handleChange}
-                    type="number"
-                    label="NRC"
-                    labelPlacement="outside"
-                    name="nrc"
-                    placeholder="Ingresa el número de NRC"
-                    classNames={{
-                      label: 'font-semibold text-gray-500 text-sm',
-                    }}
-                    variant="bordered"
-                    isInvalid={touched.nrc && !!errors.nrc}
-                    errorMessage={touched.nrc && errors.nrc}
-                  />
-                  {/* {errors.nrc && touched.nrc && (
-                    <span className="text-sm font-semibold text-red-500">{errors.nrc}</span>
-                  )} */}
-                </div>
-
-                <div>
-                  <Autocomplete
-                    label="Actividad"
-                    labelPlacement="outside"
-                    placeholder="Ingresa la actividad"
-                    variant="bordered"
-                    onSelectionChange={(key) => {
-                      if (key) {
-                        const depSelected = cat_019_codigo_de_actividad_economica.find(
-                          (dep) => dep.codigo === new Set([key]).values().next().value
-                        );
-
-                        handleChange('codActividad')(depSelected?.codigo as string);
-                        handleChange('descActividad')(depSelected?.valores || '');
-                      }
-                    }}
-                    classNames={{
-                      base: 'font-semibold text-gray-500 text-sm',
-                    }}
-                    className="dark:text-white"
-                    isInvalid={touched.descActividad && !!errors.descActividad}
-                    errorMessage={touched.descActividad && errors.descActividad}
-                  >
-                    {cat_019_codigo_de_actividad_economica.map((dep) => (
-                      <AutocompleteItem
-                        key={dep.codigo}
-                        value={dep.codigo}
+                            handleChange('codActividad')(depSelected?.codigo as string);
+                            handleChange('descActividad')(depSelected?.valores || '');
+                          }
+                        }}
+                        classNames={{
+                          base: 'font-semibold text-gray-500 text-sm',
+                        }}
+                        onInputChange={(text) => getCat019CodigoActividadEconomica(text)}
                         className="dark:text-white"
+                        isInvalid={touched.descActividad && !!errors.descActividad}
+                        errorMessage={touched.descActividad && errors.descActividad}
                       >
-                        {dep.valores}
-                      </AutocompleteItem>
-                    ))}
-                  </Autocomplete>
-                  {/* {errors.descActividad && touched.descActividad && (
-                    <span className="text-sm font-semibold text-red-500">
-                      {errors.descActividad}
-                    </span>
-                  )} */}
-                </div>
+                        {cat_019_codigo_de_actividad_economica.map((dep) => (
+                          <AutocompleteItem
+                            key={dep.codigo}
+                            value={dep.codigo}
+                            className="dark:text-white"
+                          >
+                            {dep.valores}
+                          </AutocompleteItem>
+                        ))}
+                      </Autocomplete>
+                    </div>
+                  </div>
+                </CardBody>
+              </Card>
+              <Card className="mt-4">
+                <CardHeader>
+                  <h1 className="text-xl font-semibold dark:text-white">Dirección</h1>
+                </CardHeader>
+                <CardBody className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Autocomplete
+                      onBlur={handleBlur}
+                      label="Departamento"
+                      labelPlacement="outside"
+                      onSelectionChange={(key) => {
+                        if (key) {
+                          const depSelected = cat_012_departamento.find(
+                            (dep) => dep.codigo === new Set([key]).values().next().value
+                          );
 
-                <div>
-                  <Autocomplete
-                    onBlur={handleBlur}
-                    label="Departamento"
-                    labelPlacement="outside"
-                    onSelectionChange={(key) => {
-                      if (key) {
-                        const depSelected = cat_012_departamento.find(
-                          (dep) => dep.codigo === new Set([key]).values().next().value
-                        );
+                          setSelectedCodeDep(depSelected?.codigo as string);
+                          handleChange('departamento')(depSelected?.codigo as string);
+                          handleChange('nombreDepartamento')(depSelected?.valores || '');
+                        }
+                      }}
+                      placeholder="Selecciona el departamento"
+                      variant="bordered"
+                      classNames={{
+                        base: 'font-semibold text-gray-500 text-sm',
+                      }}
+                      className="dark:text-white"
+                      isInvalid={touched.departamento && !!errors.departamento}
+                      errorMessage={touched.departamento && errors.departamento}
+                    >
+                      {cat_012_departamento.map((dep) => (
+                        <AutocompleteItem
+                          value={dep.codigo}
+                          key={dep.codigo}
+                          className="dark:text-white"
+                        >
+                          {dep.valores}
+                        </AutocompleteItem>
+                      ))}
+                    </Autocomplete>
+                  </div>
+                  <div>
+                    <Autocomplete
+                      onBlur={handleBlur}
+                      onSelectionChange={(key) => {
+                        if (key) {
+                          const depSelected = cat_013_municipios.find(
+                            (dep) => dep.codigo === new Set([key]).values().next().value
+                          );
 
-                        setSelectedCodeDep(depSelected?.codigo as string);
-                        handleChange('departamento')(depSelected?.codigo as string);
-                        handleChange('nombreDepartamento')(depSelected?.valores || '');
-                      }
-                    }}
-                    placeholder="Selecciona el departamento"
-                    variant="bordered"
-                    classNames={{
-                      base: 'font-semibold text-gray-500 text-sm',
-                    }}
-                    className="dark:text-white"
-                    isInvalid={touched.departamento && !!errors.departamento}
-                    errorMessage={touched.departamento && errors.departamento}
-                  >
-                    {cat_012_departamento.map((dep) => (
-                      <AutocompleteItem
-                        value={dep.codigo}
-                        key={dep.codigo}
-                        className="dark:text-white"
-                      >
-                        {dep.valores}
-                      </AutocompleteItem>
-                    ))}
-                  </Autocomplete>
-                  {/* {errors.departamento && touched.departamento && (
-                    <span className="text-sm font-semibold text-red-500">
-                      {errors.departamento}
-                    </span>
-                  )} */}
-                </div>
-                <div>
-                  <Autocomplete
-                    onBlur={handleBlur}
-                    onSelectionChange={(key) => {
-                      if (key) {
-                        const depSelected = cat_013_municipios.find(
-                          (dep) => dep.codigo === new Set([key]).values().next().value
-                        );
-
-                        handleChange('municipio')(depSelected?.codigo as string);
-                        handleChange('nombreMunicipio')(depSelected?.valores || '');
-                      }
-                    }}
-                    isInvalid={touched.municipio && !!errors.municipio}
-                    errorMessage={touched.municipio && errors.municipio}
-                    label="Municipio"
-                    labelPlacement="outside"
-                    placeholder="Selecciona el municipio"
-                    className="dark:text-white"
-                    variant="bordered"
-                    classNames={{
-                      base: 'font-semibold text-gray-500 text-sm',
-                    }}
-                  >
-                    {cat_013_municipios.map((dep) => (
-                      <AutocompleteItem
-                        value={dep.codigo}
-                        key={dep.codigo}
-                        className="dark:text-white"
-                      >
-                        {dep.valores}
-                      </AutocompleteItem>
-                    ))}
-                  </Autocomplete>
-                  {/* {errors.municipio && touched.municipio && (
-                    <span className="text-sm font-semibold text-red-500">{errors.municipio}</span>
-                  )} */}
-                </div>
-              </div>
+                          handleChange('municipio')(depSelected?.codigo as string);
+                          handleChange('nombreMunicipio')(depSelected?.valores || '');
+                        }
+                      }}
+                      isInvalid={touched.municipio && !!errors.municipio}
+                      errorMessage={touched.municipio && errors.municipio}
+                      label="Municipio"
+                      labelPlacement="outside"
+                      placeholder="Selecciona el municipio"
+                      className="dark:text-white"
+                      variant="bordered"
+                      classNames={{
+                        base: 'font-semibold text-gray-500 text-sm',
+                      }}
+                    >
+                      {cat_013_municipios.map((dep) => (
+                        <AutocompleteItem
+                          value={dep.codigo}
+                          key={dep.codigo}
+                          className="dark:text-white"
+                        >
+                          {dep.valores}
+                        </AutocompleteItem>
+                      ))}
+                    </Autocomplete>
+                  </div>
+                  <div className="col-span-1 md:col-span-2">
+                    <Textarea
+                      className="dark:text-white"
+                      onChange={handleChange}
+                      label="Complemento de dirección"
+                      classNames={{
+                        label: 'font-semibold text-gray-500 text-sm',
+                        input: 'max-h-[90px]',
+                      }}
+                      labelPlacement="outside"
+                      variant="bordered"
+                      placeholder="Ingresa el complemento de dirección"
+                      name="complemento"
+                      errorMessage={errors.complemento}
+                      isInvalid={!!errors.complemento && !!touched.complemento}
+                    />
+                  </div>
+                </CardBody>
+                <CardFooter className="w-full grid grid-cols-2">
+                  <div></div>
+                  <div className="col-span-2 md:col-span-1 grid grid-cols-2 gap-4">
+                    <Button
+                      type="submit"
+                      className="w-full font-semibold"
+                      style={global_styles().dangerStyles}
+                    >
+                      Cancelar
+                    </Button>
+                    <Button
+                      type="submit"
+                      className="w-full font-semibold"
+                      style={global_styles().darkStyle}
+                    >
+                      Guardar
+                    </Button>
+                  </div>
+                </CardFooter>
+              </Card>
               <div></div>
-
-              <div className="pt-2">
-                <Textarea
-                  className="dark:text-white"
-                  onChange={handleChange}
-                  label="Complemento de dirección"
-                  classNames={{
-                    label: 'font-semibold text-gray-500 text-sm',
-                    input: 'max-h-[90px]',
-                  }}
-                  labelPlacement="outside"
-                  variant="bordered"
-                  placeholder="Ingresa el complemento de dirección"
-                  name="complemento"
-                  errorMessage={errors.complemento}
-                  isInvalid={!!errors.complemento && !!touched.complemento}
-                />
-                {/* {errors.complemento && touched.complemento && (
-                  <span className="text-sm font-semibold text-red-500">{errors.complemento}</span>
-                )} */}
-              </div>
-              <div className="pt-4">
-                <Button
-                  type="submit"
-                  className="w-full font-semibold"
-                  style={global_styles().darkStyle}
-                >
-                  Guardar
-                </Button>
-              </div>
             </div>
           </Form>
         )}

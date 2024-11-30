@@ -253,7 +253,7 @@ export const LayoutItems = () => {
       label: 'Anexos de consumidor final',
     },
     {
-      viewName: 'Anexos de consumidor final',
+      viewName: 'Anexos ventas a contribuyentes',
       to: '/anexos-ccfe',
       icon: HandCoins,
       label: 'Anexos ventas a contribuyentes',
@@ -499,7 +499,11 @@ export const LayoutItems = () => {
           <>
             <ul className="flex flex-col gap-1.5">
               <SidebarLinkGroup
-                activeCondition={validate_pathname(pathname, ['anexos'])}
+                activeCondition={validate_pathname(pathname, [
+                  'Anexos de compras',
+                  'Anexos de consumidor final',
+                  'Anexos ventas a contribuyentes',
+                ])}
                 isOpen={openGroup === 'anexos'}
                 onGroupClick={() => handleGroupClick('anexos')}
               >
@@ -507,8 +511,7 @@ export const LayoutItems = () => {
                   <>
                     <div
                       className={classNames(
-                        validate_pathname(pathname, ['anexos']) &&
-                          'bg-gray-200 dark:bg-gray-700',
+                        validate_pathname(pathname, ['anexos']) && 'bg-gray-200 dark:bg-gray-700',
                         'group relative cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
                       )}
                       onClick={handleClick}
