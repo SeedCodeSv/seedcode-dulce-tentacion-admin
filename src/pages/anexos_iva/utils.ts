@@ -626,5 +626,6 @@ export const annexes_iva_ccfe = (annexe_ccfe: SaleAnnexe) => {
         worksheet.getCell(`${title.column}1`).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
         worksheet.getCell(`${title.column}`).value = title.title
     })
+    
 
 }
