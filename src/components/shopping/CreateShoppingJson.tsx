@@ -91,9 +91,6 @@ const JSONMode = () => {
   const actionView = viewName?.actions.name || [];
   const [file, setFile] = useState<File | null>(null);
   const [jsonData, setJsonData] = useState<IResponseFromDigitalOceanDTE>();
-  console.log('al leer json', jsonData);
-  const { user } = useAuthStore();
-
   const styles = useGlobalStyles();
   const [modalSupplier, setModalSupplier] = useState(false);
 

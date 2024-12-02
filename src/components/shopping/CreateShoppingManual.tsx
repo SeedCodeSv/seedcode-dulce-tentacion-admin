@@ -220,7 +220,6 @@ function CreateShoppingManual() {
         return;
       }
 
-      console.log(supplierSelected);
 
       try {
         await validateReceptor(supplierSelected);
@@ -246,12 +245,15 @@ function CreateShoppingManual() {
           .post(API_URL + '/shoppings/create', payload)
           .then(() => {
             toast.success('Compra guardada con éxito');
+            formikHelpers.setSubmitting(false);
             navigate('/shopping');
           })
           .catch(() => {
             toast.error('Error al guardar la compra');
+            formikHelpers.setSubmitting(false);
           });
       } catch (error) {
+        formikHelpers.setSubmitting(false);
         if (error instanceof Error) {
           toast.error('Proveedor no valido', { description: error.message });
         } else {
