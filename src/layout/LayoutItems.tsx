@@ -25,6 +25,7 @@ import {
   Tag,
   DatabaseBackup,
   HandCoins,
+  Book,
 } from 'lucide-react';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { ThemeContext } from '../hooks/useTheme';
@@ -132,10 +133,10 @@ export const LayoutItems = () => {
       label: 'Permisos',
     },
     {
-      viewName: 'Ventas',
+      viewName: 'Invalidaciones',
       to: '/reports/sales-invalidation',
       icon: BadgeDollarSign,
-      label: 'Ventas',
+      label: 'Invalidaciones',
     },
     {
       viewName: 'Puntos de Venta',
@@ -164,7 +165,7 @@ export const LayoutItems = () => {
       label: 'Ventas facturación electronica',
     },
     {
-      viewName: 'Ventas',
+      viewName: 'Contingencias',
       to: '/contingence-section',
       icon: DatabaseBackup,
       label: 'Contingencias',
@@ -218,6 +219,9 @@ export const LayoutItems = () => {
       icon: BookCheck,
       label: 'Correlativos',
     },
+  ];
+
+  const booksLinks = [
     {
       viewName: 'IVA de Compras',
       to: '/iva/shopping-book',
@@ -535,6 +539,52 @@ export const LayoutItems = () => {
                       className="overflow-hidden transform translate"
                     >
                       <SidebarLinkList links={annexesLinks} />
+                    </motion.div>
+                  </>
+                )}
+              </SidebarLinkGroup>
+            </ul>
+          </>
+          <>
+            <ul className="flex flex-col gap-1.5">
+              <SidebarLinkGroup
+                activeCondition={validate_pathname(pathname, [
+                  'IVA de Compras',
+                  'IVA-CCF',
+                  'Anexos ventas a contribuyentes',
+                ])}
+                isOpen={openGroup === 'books'}
+                onGroupClick={() => handleGroupClick('books')}
+              >
+                {(handleClick, open) => (
+                  <>
+                    <div
+                      className={classNames(
+                        validate_pathname(pathname, ['books']) &&
+                          'bg-gray-200 dark:bg-gray-700',
+                        'group relative cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
+                      )}
+                      onClick={handleClick}
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <Book size={iconSize} />
+                        Libros de IVA
+                      </div>
+                      <ChevronDown
+                        className={classNames(open && ' rotate-180', 'items-end justify-end ')}
+                        size={iconSize}
+                      />
+                    </div>
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{
+                        opacity: open ? 1 : 0,
+                        height: open ? 'auto' : 0,
+                      }}
+                      transition={{ duration: 0.3 }}
+                      className="overflow-hidden transform translate"
+                    >
+                      <SidebarLinkList links={booksLinks} />
                     </motion.div>
                   </>
                 )}

@@ -4,6 +4,11 @@ import { ShoppingReport } from '@/types/shopping.types';
 import { Supplier } from '@/types/supplier.types';
 import ExcelJS from 'exceljs';
 
+const formatDate = (dateString: string) => {
+    const [year, month, day] = dateString.split('-');
+    return `${day}/${month}/${year}`;
+};
+
 export const annexes_iva_shopping = async (shoppingReport: ShoppingReport[]) => {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('ANEXO DE COMPRAS');
@@ -132,8 +137,8 @@ export const annexes_iva_shopping = async (shoppingReport: ShoppingReport[]) => 
 
         const totalIva = shopping.iva.map((i) => Number(i.monto)).reduce((a, b) => a + b, 0);
 
-        worksheet.getCell(`A${nextLine}`).value = shopping.fecEmi;
-        worksheet.getCell(`B${nextLine}`).value = "1";
+        worksheet.getCell(`A${nextLine}`).value = formatDate(shopping.fecEmi);
+        worksheet.getCell(`B${nextLine}`).value = formatTypes(shopping).classDocument;
         worksheet.getCell(`C${nextLine}`).value = formatDteType(shopping.typeDte)
         worksheet.getCell(`D${nextLine}`).value = formatControlNumber(shopping.controlNumber);
         worksheet.getCell(`E${nextLine}`).value = formatNit(shopping.supplier)
@@ -218,6 +223,7 @@ export const formatTypes = (shopping: ShoppingReport, onlyCodes: boolean = false
             classification: shopping.classificationCode,
             sector: shopping.sectorCode,
             typeCostSpent: shopping.typeCostSpentCode,
+            classDocument: shopping.classDocumentCode,
         }
     }
     return {
@@ -225,6 +231,7 @@ export const formatTypes = (shopping: ShoppingReport, onlyCodes: boolean = false
         classification: `${shopping.classificationCode} ${shopping.classificationValue} `,
         sector: `${shopping.sectorCode} ${shopping.sectorValue} `,
         typeCostSpent: `${shopping.typeCostSpentCode} ${shopping.typeCostSpentValue} `,
+        classDocument: `${shopping.classDocumentCode} ${shopping.classDocumentValue} `,
     }
 }
 
@@ -232,8 +239,8 @@ export const csvmaker = (shoppingReport: ShoppingReport[]) => {
 
     const payload = shoppingReport.map((item) => {
         return [
-            item.fecEmi,
-            "1",
+            formatDate(item.fecEmi),
+            formatTypes(item, true).classDocument,
             (item.typeDte),
             formatControlNumber(item.controlNumber),
             formatNit(item.supplier),

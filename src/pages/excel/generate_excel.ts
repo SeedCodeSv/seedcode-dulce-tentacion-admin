@@ -137,11 +137,19 @@ export const generate_shopping_excel = async (
     const row = rowIndex + 8;
     item.forEach((value, colIndex) => {
       const cell = String.fromCharCode(65 + colIndex) + row;
-      worksheet.getCell(cell).value = value;
+      if(colIndex === 11){
+        worksheet.getCell(cell).value = {
+          formula: `SUM(${String.fromCharCode(65 + colIndex - 5)}${row}:${String.fromCharCode(65 + colIndex - 1)}${row})`,
+          result: 0
+        }
+      }else{
+        worksheet.getCell(cell).value = value
+      }
+    
       worksheet.getCell(cell).alignment = { horizontal: 'left', wrapText: true };
       worksheet.getCell(cell).font = { name: 'Calibri', size: 8 };
       if (colIndex === 1) worksheet.getCell(cell).numFmt = 'mm/dd/yyyy';
-      if ([6, 8, 9, 11].includes(colIndex))
+      if ([6, 8, 9, 11, 12,13].includes(colIndex))
         worksheet.getCell(cell).numFmt = '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-';
     });
   });

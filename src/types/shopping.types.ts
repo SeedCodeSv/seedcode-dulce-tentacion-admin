@@ -1,4 +1,4 @@
-import { ClassificationCode, ClassificationValue, OperationTypeCode, OperationTypeValue, SectorCode, SectorValue, TypeCostSpentCode, TypeCostSpentValue } from "@/enums/shopping.enum"
+import { ClassDocumentCode, ClassificationCode, ClassificationValue, OperationTypeCode, OperationTypeValue, SectorCode, SectorValue, TypeCostSpentCode, TypeCostSpentValue } from "@/enums/shopping.enum"
 
 export interface ICreateShopping {
   branchId: number
@@ -93,10 +93,10 @@ export interface Branch {
 }
 
 export interface CreateShoppingDto {
-  branchId: number
   supplierId: number
   numeroControl?: string
   // controlNumber: string
+  transmitterId: number
   tipoDte: string
   correlative?: number
   totalExenta?: number
@@ -108,6 +108,7 @@ export interface CreateShoppingDto {
   totalIva?: number
   montoTotalOperacion: number
   totalPagar: number
+  ivaPerci1: number
   totalLetras: string
   fecEmi: string
   operationTypeCode: OperationTypeCode,
@@ -190,11 +191,15 @@ export interface ShoppingReport {
   totalLetras: string;
   pathPdf: string;
   pathJson: string;
+  ivaPerci1: string;
+  ivaRete1: string;
   isActivated: boolean;
   branchId: number;
   supplierId: number;
   supplier: Supplier;
   typeSale: "Interna" | "Externa";
+  classDocumentCode: ClassDocumentCode,
+  classDocumentValue: ClassificationValue,
   operationTypeCode: OperationTypeCode,
   operationTypeValue: OperationTypeValue,
   classificationCode: ClassificationCode,

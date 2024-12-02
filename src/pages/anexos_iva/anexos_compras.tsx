@@ -1,31 +1,24 @@
 import Layout from '@/layout/Layout';
-import { useBranchesStore } from '@/store/branches.store';
 import { useShoppingReportsStore } from '@/store/reports/shopping_reports.store';
 import { formatDate } from '@/utils/dates';
 import { formatCurrency } from '@/utils/dte';
-import { Button, Input, Select, SelectItem } from '@nextui-org/react';
+import { Button, Input } from '@nextui-org/react';
 import { useEffect, useState } from 'react';
 import { annexes_iva_shopping, csvmaker } from './utils';
-import { mkConfig, generateCsv, download } from 'export-to-csv';
 import { global_styles } from '@/styles/global.styles';
+import { useAuthStore } from '@/store/auth.store';
 
 function AnexosCompras() {
-  const { branch_list, getBranchesList } = useBranchesStore();
-
-  useEffect(() => {
-    getBranchesList();
-  }, []);
-
-  const [branchId, setBranchId] = useState(0);
-
   const [startDate, setStartDate] = useState(formatDate());
   const [endDate, setEndDate] = useState(formatDate());
 
   const { annexes_list, onGetAnnexes } = useShoppingReportsStore();
 
+  const { transmitter } = useAuthStore();
+
   useEffect(() => {
-    onGetAnnexes(branchId, startDate, endDate);
-  }, [branchId, startDate, endDate]);
+    onGetAnnexes(transmitter?.id ?? 0, startDate, endDate);
+  }, [transmitter, startDate, endDate]);
 
   const exportAnnexes = async () => {
     const blob = await annexes_iva_shopping(annexes_list);
@@ -50,7 +43,7 @@ function AnexosCompras() {
     <Layout title="Iva - Compras">
       <div className=" w-full h-full p-6 bg-gray-50 dark:bg-gray-900">
         <div className="w-full flex flex-col h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
-          <div className="grid grid-cols-3 gap-5">
+          <div className="grid grid-cols-2 gap-5">
             <Input
               classNames={{ label: 'font-semibold' }}
               label="Fecha inicial"
@@ -69,30 +62,14 @@ function AnexosCompras() {
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
             />
-            <Select
-              defaultSelectedKeys={`${branchId}`}
-              onSelectionChange={(key) => {
-                if (key) {
-                  setBranchId(Number(key.currentKey));
-                }
-              }}
-              className="w-full"
-              placeholder="Selecciona la sucursal"
-              classNames={{ label: 'font-semibold' }}
-              label="Sucursal"
-              labelPlacement="outside"
-              variant="bordered"
-            >
-              {branch_list.map((branch) => (
-                <SelectItem key={branch.id} value={branch.id}>
-                  {branch.name}
-                </SelectItem>
-              ))}
-            </Select>
           </div>
           <div className="w-full flex justify-end gap-5 mt-4">
-            <Button style={global_styles().thirdStyle} onClick={exportAnnexes}>Exportar anexo</Button>
-            <Button style={global_styles().secondaryStyle} onClick={exportAnnexesCSV}>Exportar a CSV</Button>
+            <Button style={global_styles().thirdStyle} onClick={exportAnnexes}>
+              Exportar anexo
+            </Button>
+            <Button style={global_styles().secondaryStyle} onClick={exportAnnexesCSV}>
+              Exportar a CSV
+            </Button>
           </div>
           <div className="max-h-full w-full relative  overflow-x-auto overflow-y-auto custom-scrollbar mt-4">
             <table className=" w-full">
@@ -155,7 +132,7 @@ function AnexosCompras() {
                       {shopping.fecEmi}
                     </td>
                     <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
-                      1. IMPRESO POR IMPRENTA O TIQUETES
+                      {shopping.classDocumentCode}. {shopping.classDocumentValue}
                     </td>
                     <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
                       {shopping.typeDte === '03'

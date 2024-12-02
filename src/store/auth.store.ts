@@ -13,6 +13,8 @@ import {
   delete_mh_token,
   save_branch_id,
   delete_branch_id,
+  get_transmitter_info,
+  save_transmitter,
 } from '../storage/localStorage';
 import { post_login } from '../services/auth.service';
 import { toast } from 'sonner';
@@ -26,7 +28,7 @@ export const useAuthStore = create<IAuthStore>((set, get) => ({
   token: get_token() ?? '',
   isAuth: is_authenticate(),
   user: get_user(),
-
+  transmitter: get_transmitter_info(),
   postLogin: async (payload) => {
     return await post_login(payload)
       .then(async ({ data }) => {
@@ -39,7 +41,7 @@ export const useAuthStore = create<IAuthStore>((set, get) => ({
           }
           try {
             // const transmitterId = data.user.pointOfSale?.branch.transmitterId ?? 0;
-            await get().OnLoginMH(data.user.pointOfSale?.branch.transmitterId ?? 0, data.token);
+            await get().OnLoginMH(data.user.pointOfSale ? data.user.pointOfSale.branch.transmitterId : data.user.correlative?.branch.transmitterId ?? 0, data.token);
           } catch (error) {
             toast.error('Error al conectarse con el servidor');
           }
@@ -63,6 +65,8 @@ export const useAuthStore = create<IAuthStore>((set, get) => ({
   async OnLoginMH(id, token) {
     await get_transmitter(id, token)
       .then(({ data }) => {
+        set({ transmitter: data.transmitter })
+        save_transmitter(data.transmitter)
         login_mh(data.transmitter.nit, data.transmitter.claveApi)
           .then(async (login_mh) => {
             if (login_mh.data.status === 'OK') {

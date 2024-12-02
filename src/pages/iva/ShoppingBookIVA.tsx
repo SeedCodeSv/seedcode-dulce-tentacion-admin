@@ -23,16 +23,13 @@ function ShoppingBookIVA() {
 
   const style = useGlobalStyles();
 
-  const { branch_list, getBranchesList } = useBranchesStore();
-
   useEffect(() => {
     gettransmitter();
   }, []);
 
   useEffect(() => {
-    getBranchesList();
-    onGetShoppingReports(branchId, monthSelected > 9 ? `${monthSelected}` : `0${monthSelected}`);
-  }, [branchId, monthSelected]);
+    onGetShoppingReports(transmitter.id, monthSelected > 9 ? `${monthSelected}` : `0${monthSelected}`);
+  }, [transmitter, monthSelected]);
 
   const handleExportExcel = async () => {
     if (shoppings.length === 0) {
@@ -41,7 +38,6 @@ function ShoppingBookIVA() {
     }
 
     const data = shoppings.map((shop, index) => {
-
       const totalIva = shop.iva.map((i) => Number(i.monto)).reduce((a, b) => a + b, 0);
 
       return [
@@ -57,7 +53,7 @@ function ShoppingBookIVA() {
         shop.typeSale === 'Interna' ? Number(shop.totalExenta) : 0,
         shop.typeSale === 'Externa' ? Number(shop.totalGravada) : 0,
         Number(shop.montoTotalOperacion),
-        0,
+        Number(shop.ivaPerci1),
         0,
       ];
     });
@@ -87,35 +83,13 @@ function ShoppingBookIVA() {
                 }}
                 className="w-full"
                 classNames={{ label: 'font-semibold' }}
-                label="Meses"
+                label="Mes"
                 labelPlacement="outside"
                 variant="bordered"
               >
                 {months.map((month) => (
                   <SelectItem key={month.value} value={month.value}>
                     {month.name}
-                  </SelectItem>
-                ))}
-              </Select>
-            </div>
-            <div className="w-full">
-              <Select
-                defaultSelectedKeys={`${branchId}`}
-                onSelectionChange={(key) => {
-                  if (key) {
-                    setBranchId(Number(new Set(key).values().next().value));
-                  }
-                }}
-                className="w-full"
-                placeholder="Selecciona la sucursal"
-                classNames={{ label: 'font-semibold' }}
-                label="Sucursal"
-                labelPlacement="outside"
-                variant="bordered"
-              >
-                {branch_list.map((branch) => (
-                  <SelectItem key={branch.id} value={branch.id}>
-                    {branch.name}
                   </SelectItem>
                 ))}
               </Select>

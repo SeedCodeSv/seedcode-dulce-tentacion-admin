@@ -2,6 +2,7 @@ import { jwtDecode } from 'jwt-decode';
 import { User, UserLogin } from '../types/auth.types';
 import { RoleViewAction } from '../types/actions_rol.types';
 import { decryptData, encryptData } from '../plugins/crypto';
+import { ITransmitter } from '@/types/transmitter.types';
 export const set_token = (token: string) => {
   localStorage.setItem('_NTE', token);
 };
@@ -120,3 +121,15 @@ export const get_return_action = (): RoleViewAction | undefined => {
   }
   return undefined;
 };
+
+export const save_transmitter = (transmitter: ITransmitter) => {
+  return localStorage.setItem('$TOP', encryptData(transmitter));
+}
+
+export const get_transmitter_info = () => {
+  const transmitter = localStorage.getItem('$TOP')
+  if(transmitter){
+    return decryptData(transmitter) as ITransmitter
+  }
+  return undefined
+}

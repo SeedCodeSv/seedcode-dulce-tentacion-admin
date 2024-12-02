@@ -6,6 +6,7 @@ import {
   Autocomplete,
   AutocompleteItem,
   Button,
+  Checkbox,
   Input,
   Select,
   SelectItem,
@@ -48,7 +49,7 @@ function CreateShoppingManual() {
   const [supplierSelected, setSupplierSelected] = useState<Supplier>();
   const [searchNRC, setSearchNRC] = useState('');
   const [currentDate, setCurrentDate] = useState(formatDate());
-  const { user } = useAuthStore();
+  const { user, transmitter } = useAuthStore();
   const styles = useGlobalStyles();
   const [total, setTotal] = useState('');
   const [afecta, setAfecta] = useState('');
@@ -59,6 +60,7 @@ function CreateShoppingManual() {
 
   const [afectaModified, setAfectaModified] = useState(false);
   const [totalModified, setTotalModified] = useState(false);
+  const [includePerception, setIncludePerception] = useState(false);
 
   useEffect(() => {
     getSupplierPagination(1, 15, searchNRC, '', '', 1);
@@ -94,16 +96,14 @@ function CreateShoppingManual() {
     setAfecta(sanitizedValue);
     setAfectaModified(true);
     setTotalModified(false);
-
-    if (tipoDte === '01') {
-      const ivaIncluido = totalAfecta - totalAfecta / 1.13;
-      setTotalIva(ivaIncluido.toFixed(2));
-      setTotal((totalAfecta + Number(exenta)).toFixed(2));
-    } else {
-      const ivaCalculado = totalAfecta * 0.13;
-      setTotalIva(ivaCalculado.toFixed(2));
-      setTotal((totalAfecta + Number(exenta) + ivaCalculado).toFixed(2));
+    const ivaCalculado = totalAfecta * 0.13;
+    setTotalIva(ivaCalculado.toFixed(2));
+    if (tipoDte !== '14' && includePerception) {
+      const percepcion = totalAfecta * 0.01;
+      setTotal((totalAfecta + Number(exenta) + ivaCalculado + percepcion).toFixed(2));
+      return;
     }
+    setTotal((totalAfecta + Number(exenta) + ivaCalculado).toFixed(2));
   };
 
   const handleChangeExenta = (e: string) => {
@@ -111,6 +111,12 @@ function CreateShoppingManual() {
     const totalExenta = Number(sanitizedValue);
 
     setExenta(sanitizedValue);
+    if (includePerception) {
+      const result = +afecta * 0.01;
+      setTotal(() =>
+        (+afecta + totalExenta + result + (tipoDte === '03' ? Number(totalIva) : 0)).toFixed(2)
+      );
+    }
     setTotal(() => (+afecta + totalExenta + (tipoDte === '03' ? Number(totalIva) : 0)).toFixed(2));
   };
 
@@ -118,7 +124,6 @@ function CreateShoppingManual() {
     const sanitizedValue = e.replace(/[^0-9.]/g, '');
     const totalValue = Number(sanitizedValue);
 
-    setTotal(sanitizedValue);
     setTotalModified(true);
     setAfectaModified(false);
 
@@ -130,9 +135,18 @@ function CreateShoppingManual() {
     } else {
       const ivaCalculado = totalValue * 0.13;
       const afectaConIva = totalValue - ivaCalculado;
+
+      if (includePerception) {
+        const percepcion = afectaConIva * 0.01;
+        setTotal((totalValue + percepcion).toFixed(2));
+        return;
+      }
+
       setAfecta(afectaConIva.toFixed(2));
       setTotalIva(ivaCalculado.toFixed(2));
     }
+
+    setTotal(sanitizedValue);
   };
 
   useEffect(() => {
@@ -141,10 +155,10 @@ function CreateShoppingManual() {
     } else if (totalModified && afecta !== '') {
       handleChangeTotal(total);
     }
-  }, [tipoDte]);
+  }, [tipoDte, includePerception]);
 
   const filteredTipoDoc = useMemo(() => {
-    return tiposDoc.filter((item) => ['01', '03', '06', '05'].includes(item.codigo));
+    return tiposDoc.filter((item) => ['03', '06', '05'].includes(item.codigo));
   }, []);
 
   useEffect(() => {
@@ -157,6 +171,17 @@ function CreateShoppingManual() {
   }, [tipoDte]);
 
   const navigate = useNavigate();
+
+  const $1perception = useMemo(() => {
+    if (includePerception) {
+      if (Number(afecta) > 0) {
+        const result = Number(afecta) * 0.01;
+        return result;
+      }
+      return 0;
+    }
+    return 0;
+  }, [afecta, includePerception]);
 
   const formik = useFormik({
     initialValues: {
@@ -200,7 +225,7 @@ function CreateShoppingManual() {
       try {
         await validateReceptor(supplierSelected);
         const payload: CreateShoppingDto = {
-          branchId: user?.correlative?.branch.id ?? user?.pointOfSale?.branch.id ?? 0,
+          transmitterId: transmitter?.id ?? 0,
           supplierId: supplierSelected.id ?? 0,
           totalExenta: Number(exenta),
           totalGravada: Number(afecta),
@@ -213,6 +238,7 @@ function CreateShoppingManual() {
           totalLetras: convertCurrencyFormat(total),
           fecEmi: currentDate,
           correlative: correlative,
+          ivaPerci1: $1perception,
           ...values,
         };
 
@@ -398,20 +424,23 @@ function CreateShoppingManual() {
                 label="Tipo"
                 placeholder="Selecciona el tipo"
                 labelPlacement="outside"
-                defaultSelectedKeys={`${formik.values.typeSale}`}
+                defaultSelectedKeys={`${formik.values.typeSale === 'interna' ? '0' : '1'}`}
                 onSelectionChange={(key) =>
                   key
-                    ? formik.setFieldValue('typeSale', key.currentKey)
+                    ? formik.setFieldValue(
+                        'typeSale',
+                        key.currentKey === '0' ? 'interna' : 'externa'
+                      )
                     : formik.setFieldValue('typeSale', '')
                 }
                 onBlur={formik.handleBlur('typeSale')}
                 isInvalid={!!formik.touched.typeSale && !!formik.errors.typeSale}
                 errorMessage={formik.errors.typeSale}
               >
-                <SelectItem key={'interna'} value="interna">
+                <SelectItem key={'0'} value="interna">
                   Interna
                 </SelectItem>
-                <SelectItem key={'externa'} value="externa">
+                <SelectItem key={'1'} value="externa">
                   Externa
                 </SelectItem>
               </Select>
@@ -597,21 +626,30 @@ function CreateShoppingManual() {
               ))}
             </Select>
             <div>
-                <Input
-                  label="CORRELATIVO"
-                  labelPlacement="outside"
-                  readOnly
-                  value={correlative.toString()}
-                  placeholder="EJ: 001"
-                  variant="bordered"
-                  classNames={{ label: 'font-semibold' }}
-                  type="number"
-                />
-              </div>
+              <Input
+                label="CORRELATIVO"
+                labelPlacement="outside"
+                readOnly
+                value={correlative.toString()}
+                placeholder="EJ: 001"
+                variant="bordered"
+                classNames={{ label: 'font-semibold' }}
+                type="number"
+              />
+            </div>
+            <div className="flex  items-end">
+              <Checkbox
+                checked={includePerception}
+                onValueChange={(val) => setIncludePerception(val)}
+                size="lg"
+              >
+                ¿Incluye percepción?
+              </Checkbox>
+            </div>
           </div>
           <p className="py-5 text-xl font-semibold">Resumen</p>
           <div className="rounded border shadow dark:border-gray-700 p-5 md:p-10">
-            <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-5">
               <div>
                 <Input
                   label="AFECTA"
@@ -657,6 +695,8 @@ function CreateShoppingManual() {
                   classNames={{ label: 'font-semibold' }}
                   startContent="$"
                   type="number"
+                  readOnly
+                  value={$1perception.toFixed(2)}
                   step={0.01}
                 />
               </div>
@@ -682,6 +722,7 @@ function CreateShoppingManual() {
                   classNames={{ label: 'font-semibold', input: 'text-red-600 text-lg font-bold' }}
                   startContent={<span className="text-red-600 font-bold text-lg">$</span>}
                   value={total}
+                  readOnly
                   onChange={({ currentTarget }) => handleChangeTotal(currentTarget.value)}
                 />
               </div>

@@ -123,6 +123,8 @@ const JSONMode = () => {
     }
   };
 
+  const {transmitter} = useAuthStore()
+
   const formik = useFormik({
     initialValues: {
       operationTypeCode: OperationTypeCode.GRAVADA,
@@ -153,8 +155,8 @@ const JSONMode = () => {
     onSubmit(values, formikHelpers) {
       const formData = new FormData();
       formData.append(
-        'branchId',
-        user?.correlative?.branch.id.toString() ?? user?.pointOfSale?.branch.id.toString() ?? '0'
+        'transmitterId',
+        String(transmitter?.id)
       );
       formData.append('operationTypeCode', values.operationTypeCode);
       formData.append('operationTypeValue', values.operationTypeValue);
