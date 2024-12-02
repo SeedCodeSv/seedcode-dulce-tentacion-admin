@@ -397,7 +397,7 @@ export const annexes_iva_fe = async (annexe_fe: IvaSale[]) => {
     let nextLine = 2;
 
     for (const line of annexe_fe) {
-        worksheet.getCell(`A${nextLine}`).value = line.currentDay
+        worksheet.getCell(`A${nextLine}`).value =  formatDate(line.currentDay)
         worksheet.getCell(`B${nextLine}`).value = (line.type === 'FE') ? "1. IMPRESO POR IMPRENTA O TIQUETES" : "4. DOCUMENTO TRIBUTARIO ELECTRÓNICO (DTE)"
         worksheet.getCell(`C${nextLine}`).value = formatClassDte(line.typeVoucher)
         worksheet.getCell(`D${nextLine}`).value = formatResolution(line)
@@ -503,7 +503,7 @@ export const csvmaker_fe = (annexe_fe: IvaSale[]) => {
 
     const payload = annexe_fe.map((line) => {
         return [
-            line.currentDay,
+            formatDate(line.currentDay),
             (line.type === 'FE') ? "1" : "4",
             formatClassCodeDte(line.typeVoucher),
             formatResolution(line),
@@ -636,7 +636,7 @@ export const export_annexes_iva_ccfe = async (annexe_ccfe: SaleAnnexe[]) => {
 
     annexe_ccfe.forEach((line, index) => {
         const nextLine = index + 2;
-        worksheet.getCell(`A${nextLine}`).value = line.fecEmi;
+        worksheet.getCell(`A${nextLine}`).value = formatDate(line.fecEmi);
         worksheet.getCell(`B${nextLine}`).value = line.tipoDte === "03" ? "4. DOCUMENTO TRIBUTARIO ELECTRONICO (DTE)" : "1. IMPRESO POR IMPRENTA O TIQUETES"
         worksheet.getCell(`C${nextLine}`).value = "03. COMPROBANTE DE CRÉDITO FISCAL";
         worksheet.getCell(`D${nextLine}`).value = line.tipoDte === "03" ? line.numeroControl.replace(/-/g, "") : line.box.correlative.resolution
@@ -676,7 +676,7 @@ export const csvmaker_ccfe = (annexe_ccfe: SaleAnnexe[]) => {
 
     const payload = annexe_ccfe.map((line) => {
         return [
-            line.fecEmi,
+            formatDate(line.fecEmi),
             line.tipoDte === "03" ? "4" : "1",
             "03",
             line.tipoDte === "03" ? line.numeroControl.replace(/-/g, "") : line.box.correlative.resolution,
