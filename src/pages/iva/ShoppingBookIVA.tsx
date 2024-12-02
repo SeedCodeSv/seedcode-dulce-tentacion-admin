@@ -1,6 +1,5 @@
 import useGlobalStyles from '@/components/global/global.styles';
 import Layout from '@/layout/Layout';
-import { useBranchesStore } from '@/store/branches.store';
 import { useShoppingReportsStore } from '@/store/reports/shopping_reports.store';
 import { useTransmitterStore } from '@/store/transmitter.store';
 import { months } from '@/utils/constants';
@@ -16,7 +15,6 @@ import { useViewsStore } from '@/store/views.store';
 
 function ShoppingBookIVA() {
   const [monthSelected, setMonthSelected] = useState(new Date().getMonth() + 1);
-  const [branchId, setBranchId] = useState(0);
   const { transmitter, gettransmitter } = useTransmitterStore();
 
   const { loading, shoppings, onGetShoppingReports } = useShoppingReportsStore();

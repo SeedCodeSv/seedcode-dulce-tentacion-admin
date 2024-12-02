@@ -56,7 +56,6 @@ function CreateShoppingManual() {
   const [exenta, setExenta] = useState('');
   const [totalIva, setTotalIva] = useState('');
   const [correlative, setCorrelative] = useState(0);
-  const [numeroControl, setNumeroControl] = useState('');
 
   const [afectaModified, setAfectaModified] = useState(false);
   const [totalModified, setTotalModified] = useState(false);
@@ -266,7 +265,6 @@ function CreateShoppingManual() {
   const clearAllDataManual = () => {
     setNrc(''); // Limpiar los datos manuales
     setSupplierSelected(undefined); // Limpiar proveedor seleccionado
-    setNumeroControl(''); // Limpiar número de control
     setAfecta('');
     setTotal('');
     setTotalIva('');

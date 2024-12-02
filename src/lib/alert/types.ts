@@ -1,0 +1,12 @@
+export type AlertType = 'success' | 'error' | 'warning' | 'info';
+
+export interface AlertOptions {
+  type?: AlertType;
+  title?: string;
+  message?: string;
+  confirmText?: string;
+  cancelText?: string;
+  onConfirm?: () => void;
+  onCancel?: () => void;
+  timer?: number;
+}

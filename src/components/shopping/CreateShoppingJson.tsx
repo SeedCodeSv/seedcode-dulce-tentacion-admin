@@ -36,12 +36,14 @@ import {
 } from '@/enums/shopping.enum';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
+// import { useAlert } from '@/lib/alert';
 
 function CreateShopping() {
   const { actions } = useViewsStore();
   const viewName = actions.find((v) => v.view.name == 'Compras');
   const actionView = viewName?.actions.name || [];
   const navigate = useNavigate();
+
   return (
     <>
       {actionView.includes('Agregar') ? (
@@ -98,7 +100,7 @@ const JSONMode = () => {
     e.preventDefault();
     setIsDragging(true);
   };
-
+  // const { show } = useAlert();
   const handleDragLeave = () => {
     setIsDragging(false);
   };
@@ -120,7 +122,7 @@ const JSONMode = () => {
     }
   };
 
-  const {transmitter} = useAuthStore()
+  const { transmitter } = useAuthStore();
 
   const formik = useFormik({
     initialValues: {
@@ -151,10 +153,7 @@ const JSONMode = () => {
     }),
     onSubmit(values, formikHelpers) {
       const formData = new FormData();
-      formData.append(
-        'transmitterId',
-        String(transmitter?.id)
-      );
+      formData.append('transmitterId', String(transmitter?.id));
       formData.append('operationTypeCode', values.operationTypeCode);
       formData.append('operationTypeValue', values.operationTypeValue);
       formData.append('classificationCode', values.classificationCode);
@@ -193,14 +192,26 @@ const JSONMode = () => {
 
   const [providerModal, setProviderModal] = useState(false);
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
         if (e.target && e.target.result) {
           const content = e.target.result as string;
-          setJsonData(JSON.parse(content) as IResponseFromDigitalOceanDTE);
+          const result = JSON.parse(content) as IResponseFromDigitalOceanDTE;
+          if (result.identificacion.tipoDte === '01') {
+            setFile(null);
+            // show({
+            //   type: 'success',
+            //   title: 'Success!',
+            //   message: 'Operation completed successfully.',
+            //   timer: 3000,
+            // });
+            toast.error('El archivo seleccionado no es un DTE');
+            return;
+          }
+          setJsonData(result);
           setIsOpen(false);
         }
       };

@@ -989,8 +989,6 @@ export const export_excel_facturacion = async (props: ExportProp) => {
 
   let nextLine = 5;
 
-  console.log(items);
-
   items.forEach((item) => {
     if (item.items.length > 0) {
       // worksheet.getCell(`A${nextLine}`).value = item.name;

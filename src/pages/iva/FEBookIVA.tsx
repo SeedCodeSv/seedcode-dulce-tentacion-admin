@@ -38,8 +38,6 @@ function FEBookIVA() {
       toast.warning('No se encontraron facturas para el mes seleccionado');
       return;
     }
-
-    console.log(facturas_by_month);
     const vouchers: Array<{ name: string; items: Array<Array<string | number>> }> = [];
     facturas_by_month.forEach((voucher) => {
       const formatName = (type: string) => {
@@ -84,9 +82,6 @@ function FEBookIVA() {
 
     saveAs(blob, `Libro_Consumidor_Final_${month}.xlsx`);
   };
-
-  console.log(transmitter);
-
   const { actions } = useViewsStore();
   const viewName = actions.find((v) => v.view.name == 'IVA de FE');
 

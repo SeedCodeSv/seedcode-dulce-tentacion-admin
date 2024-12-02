@@ -275,7 +275,7 @@ function ContingenceND() {
 
                     // * ENVIAR NOTA DE DÉBITO A HACIENDA
                     const result = send_to_mh(data_send, token_mh ?? '', source_doc)
-                      .then(async (response_nd) => {
+                      .then((response_nd) => {
                         clearTimeout(timeout);
                         setLoading(false);
                         setCurrentStep(0);

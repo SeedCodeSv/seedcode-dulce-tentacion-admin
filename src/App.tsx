@@ -11,6 +11,7 @@ import ActionsProvider from './hooks/useActions';
 import { useEffect } from 'react';
 import { useViewsStore } from './store/views.store';
 import { useAuthStore } from './store/auth.store';
+import { AlertProvider } from './lib/alert';
 
 function App() {
   const { OnGetActionsByRol, OnGetViewasAction } = useViewsStore();
@@ -22,18 +23,20 @@ function App() {
 
   return (
     <HelmetProvider>
-      <PrimeReactProvider value={{ unstyled: true, pt: Tailwind }}>
-        <SessionProvider>
-          <ThemeProvider>
-            <Toaster richColors />
-            <NextUIProvider>
-              <ActionsProvider>
-                <Main />
-              </ActionsProvider>
-            </NextUIProvider>
-          </ThemeProvider>
-        </SessionProvider>
-      </PrimeReactProvider>
+      <AlertProvider>
+        <PrimeReactProvider value={{ unstyled: true, pt: Tailwind }}>
+          <SessionProvider>
+            <ThemeProvider>
+              <Toaster richColors />
+              <NextUIProvider>
+                <ActionsProvider>
+                  <Main />
+                </ActionsProvider>
+              </NextUIProvider>
+            </ThemeProvider>
+          </SessionProvider>
+        </PrimeReactProvider>
+      </AlertProvider>
     </HelmetProvider>
   );
 }
