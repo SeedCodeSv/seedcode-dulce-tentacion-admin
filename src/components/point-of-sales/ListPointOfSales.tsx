@@ -13,6 +13,7 @@ import LoadingTable from '../global/LoadingTable';
 import NoData from './types/NoData';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import useWindowSize from '@/hooks/useWindowSize';
+import { toast } from 'sonner';
 interface Props {
   actions: string[];
 }
@@ -55,10 +56,10 @@ function ListPointOfSales({ actions }: Props) {
 
       patchPointOfSales(payload, salePoint.id)
         .then((response) => {
-          console.log('Actualización exitosa', response);
+          toast.success(response ? 'Actualizado correctamente' : 'Error al actualizar');
         })
-        .catch((error) => {
-          console.error('Error al actualizar:', error);
+        .catch(() => {
+          toast.error('Error al actualizar');
         });
     }
   };
@@ -241,7 +242,7 @@ function ListPointOfSales({ actions }: Props) {
               ) : point_of_sales_list?.pointOfSales &&
                 Object.keys(point_of_sales_list.pointOfSales).length > 0 ? (
                 Object.entries(point_of_sales_list.pointOfSales).map(
-                  ([_locationKey, salePointArray], index) => (
+                  ([, salePointArray], index) => (
                     <div
                       key={index}
                       className="max-h-[400px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4 mb-6 w-full"

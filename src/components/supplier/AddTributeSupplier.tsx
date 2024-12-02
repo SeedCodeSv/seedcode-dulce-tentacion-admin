@@ -19,6 +19,7 @@ import { useNavigate } from 'react-router';
 import { useSupplierStore } from '@/store/supplier.store';
 import { Formik, Form } from 'formik';
 import { supplierSchemaContribuyente } from './types/validation_supplier_yup.types';
+import { toast } from 'sonner';
 function AddTributeSupplier() {
   const [selectedCodeDep, setSelectedCodeDep] = useState('');
   const {
@@ -70,8 +71,8 @@ function AddTributeSupplier() {
           try {
             onPostSupplier(values);
             navigate(-1);
-          } catch (error) {
-            console.error(error);
+          } catch {
+            toast.error('Error al crear el proveedor');
           }
           setSubmitting(false);
         }}

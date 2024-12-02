@@ -200,8 +200,6 @@ function AddClientContributor(props: Props) {
 
   const cat_19 = useMemo(() => {
 
-    console.log(activityName)
-
     return services.get019CodigoDeActividaEcono(activityName)
   }, [activityName])
 
@@ -343,7 +341,6 @@ function AddClientContributor(props: Props) {
                               );
                               if (depSelected) {
                                 setFieldValue('tipoDocumento', depSelected.codigo);
-                                console.log('Tipo de documento seleccionado:', depSelected.codigo);
                               }
                             }
                           }}
@@ -407,12 +404,6 @@ function AddClientContributor(props: Props) {
                             if (depSelected) {
                               setFieldValue('codActividad', depSelected.codigo); // Actualiza el valor del código
                               setFieldValue('descActividad', depSelected.valores); // Actualiza el valor de la descripción
-
-                              console.log('Código de actividad seleccionado:', depSelected.codigo); // Verifica el valor del código
-                              console.log(
-                                'Descripción de actividad seleccionada:',
-                                depSelected.valores
-                              ); // Verifica el valor de la descripción
                             }
                           }
                         }}
@@ -454,7 +445,6 @@ function AddClientContributor(props: Props) {
                             const depSelected = cat_012_departamento.find(
                               (dep) => dep.codigo === key
                             );
-                            console.log('Departamento seleccionado:', depSelected);
                             setSelectedCodeDep(depSelected?.codigo as string);
                             handleChange('departamento')(depSelected?.codigo as string);
                             handleChange('nombreDepartamento')(depSelected?.valores || '');
@@ -495,7 +485,6 @@ function AddClientContributor(props: Props) {
                             const munSelected = cat_013_municipios.find(
                               (mun) => mun.codigo === key
                             );
-                            console.log('Municipio seleccionado:', munSelected);
                             setFieldValue('municipio', munSelected?.codigo);
                             setFieldValue('nombreMunicipio', munSelected?.valores);
                           }
@@ -594,7 +583,6 @@ function AddClientContributor(props: Props) {
                             (branch) => branch.id.toString() === key
                           );
                           if (selectedBranch) {
-                            console.log('Sucursal seleccionada:', selectedBranch.id);
                             setFieldValue('branchId', selectedBranch.id);
                           }
                         }}

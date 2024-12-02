@@ -221,7 +221,7 @@ function NotaCredito() {
                 source.cancel('El tiempo de espera ha expirado');
               }, 25000);
               send_to_mh(data_send, token_mh ?? '', source)
-                .then(async (response) => {
+                .then((response) => {
                     setCurrenStep(2);
                   clearTimeout(timeout);
                   const DTE_FORMED = {

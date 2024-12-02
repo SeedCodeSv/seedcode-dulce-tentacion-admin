@@ -7,6 +7,7 @@ import { CategoryProduct } from '../../types/categories.types';
 import { ThemeContext } from '../../hooks/useTheme';
 import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
 import { useSubCategoriesStore } from '../../store/sub-categories.store';
+import { toast } from 'sonner';
 // import { toast } from 'sonner';
 // import { verify_code_product } from '../../services/products.service';
 
@@ -53,7 +54,8 @@ function UpdateProduct({ product, onCloseModal }: Props) {
         onCloseModal();
       }
     } catch (error) {
-      console.error('Error updating product:', error);
+      sertLoging(false);
+      toast.error('Error al actualizar el producto');
     }
   };
 

@@ -273,7 +273,7 @@ function ContingenceNC() {
 
                     // * ENVIAR NOTA DE CREDITO A HACIENDA
                     const result = send_to_mh(data_send, token_mh ?? '', source_doc)
-                      .then(async (response_nd) => {
+                      .then( (response_nd) => {
                         clearTimeout(timeout);
                         const DTE_FORMED = {
                           ...send.dteJson,

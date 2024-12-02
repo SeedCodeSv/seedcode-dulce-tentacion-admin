@@ -1,3 +1,3 @@
 export * from './AlertContext';
 export * from './AlertModal';
-export * from './types';
+export * from './alert.types';

@@ -27,7 +27,6 @@ const UpdateClientNormal = (props: Props) => {
   const { getBranchesList, branch_list } = useBranchesStore();
 
   useEffect(() => {
-    console.log('id:', user_by_id);
     getBranchesList();
   }, []);
 
@@ -144,7 +143,6 @@ const UpdateClientNormal = (props: Props) => {
   }, []);
 
   const onSubmit = async (payload: PayloadCustomer) => {
-    console.log('Tipo dedocumento seleccionado:', payload.tipoDocumento);
     const finalPayload = {
       ...payload,
       correo: payload.correo || 'N/A@gmail.com',
@@ -245,8 +243,7 @@ const UpdateClientNormal = (props: Props) => {
                                 (dep) => dep.codigo === key
                               );
                               if (depSelected) {
-                                setFieldValue('tipoDocumento', depSelected.codigo); // Actualiza el valor de tipoDocumento
-                                console.log('Tipo de documento seleccionado:', depSelected.codigo); // Verifica el valor
+                                setFieldValue('tipoDocumento', depSelected.codigo);
                               }
                             }
                           }}
@@ -303,7 +300,6 @@ const UpdateClientNormal = (props: Props) => {
                               const depSelected = cat_012_departamento.find(
                                 (dep) => dep.codigo === key
                               );
-                              console.log('Departamento seleccionado:', depSelected);
                               setSelectedCodeDep(depSelected?.codigo as string);
                               handleChange('departamento')(depSelected?.codigo as string);
                               handleChange('nombreDepartamento')(depSelected?.valores || '');
@@ -344,7 +340,6 @@ const UpdateClientNormal = (props: Props) => {
                               const munSelected = cat_013_municipios.find(
                                 (mun) => mun.codigo === key
                               );
-                              console.log('Municipio seleccionado:', munSelected);
                               setFieldValue('municipio', munSelected?.codigo);
                               setFieldValue('nombreMunicipio', munSelected?.valores);
                             }
@@ -408,7 +403,6 @@ const UpdateClientNormal = (props: Props) => {
                               (branch) => branch.id.toString() === key
                             );
                             if (selectedBranch) {
-                              console.log('Sucursal seleccionada:', selectedBranch.id); // Verifica el ID seleccionado
                               setFieldValue('branchId', selectedBranch.id); // Actualiza branchId directamente con el ID numérico
                             }
                           }}

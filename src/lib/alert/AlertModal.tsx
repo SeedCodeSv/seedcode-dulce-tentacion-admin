@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { AlertCircle, CheckCircle, XCircle, Info, X } from 'lucide-react';
-import { AlertOptions, AlertType } from './types';
+import { AlertOptions } from './alert.types';
 
 const icons = {
   success: <CheckCircle className="w-12 h-12 text-green-500" />,

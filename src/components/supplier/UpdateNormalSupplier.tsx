@@ -8,6 +8,7 @@ import { Autocomplete, AutocompleteItem, Button, Input, Textarea } from '@nextui
 import { ArrowLeft } from 'lucide-react';
 import { useEffect, useState, useMemo, Key } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { toast } from 'sonner';
 function UpdateNormalSupplier() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -90,7 +91,7 @@ function UpdateNormalSupplier() {
         navigate(-1);
       }
     } catch (error) {
-      console.error('Error updating supplier:', error);
+     toast.error('Error al actualizar el proveedor');
     }
   };
   const selectedTipoDocumento = useMemo(() => {

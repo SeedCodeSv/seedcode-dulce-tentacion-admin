@@ -5,6 +5,7 @@ import { useState } from 'react';
 
 import { useContractTypeStore } from '../../../store/contractType';
 import { global_styles } from '@/styles/global.styles';
+import { toast } from 'sonner';
 
 interface Props {
   closeModal: () => void;
@@ -38,7 +39,8 @@ const AddStatusEmployee = (props: Props) => {
         }
       }
     } catch (error) {
-      console.log(error);
+      toast.error('Error al guardar el tipo de contrato');
+      setLoading(false);
     }
   };
 

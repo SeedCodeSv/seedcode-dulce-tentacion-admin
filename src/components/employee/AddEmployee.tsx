@@ -1,6 +1,6 @@
 import { Autocomplete, AutocompleteItem, Button, Input } from '@nextui-org/react';
 import { useBranchesStore } from '../../store/branches.store';
-import { useContext, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
 import * as yup from 'yup';
 import { ThemeContext } from '../../hooks/useTheme';
 import { useChargesStore } from '../../store/charges.store';
@@ -12,12 +12,13 @@ import Layout from '../../layout/Layout';
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { useEmployeeStore } from '../../store/employee.store';
-import { Employee, EmployeePayload } from '../../types/employees.types';
+import {  EmployeePayload } from '../../types/employees.types';
 import { toast } from 'sonner';
 import { Formik } from 'formik';
 import { Branch } from '@/types/auth.types';
 import { Municipio } from '@/types/billing/cat-013-municipio.types';
 import { Departamento } from '@/types/billing/cat-012-departamento.types';
+import { SetFieldValue } from './types/employee.types';
 function AddEmployee() {
   const { theme } = useContext(ThemeContext);
   const { GetEmployeeStatus, employee_status } = useEmployeeStatusStore();
@@ -140,27 +141,13 @@ function AddEmployee() {
   const [lastName, setLastName] = useState('');
   const [codigo, setCodigoGenerado] = useState('');
 
-  // const generateCode = (setFieldValue: IEmployee) => {
-  //   if (!firstName || !lastName) {
-  //     toast.error(
-  //       'Necesitas ingresar el primer nombre y el primer apellido para generar el código.'
-  //     );
-  //     return;
-  //   }
-  //   const firstNameInitial = firstName.charAt(0).toUpperCase();
-  //   const lastNameInitial = lastName.charAt(0).toUpperCase();
-  //   const randomNumber = Math.floor(10 + Math.random() * 90);
 
-  //   const generatedCode = `${firstNameInitial}${lastNameInitial}${randomNumber}`;
-  //   setCodigoGenerado(generatedCode);
 
-  //   setFieldValue('code', generatedCode);
-  // };
   const generateCode = (
-    setFieldValue: (field: keyof Employee, value: string) => void,
+    setFieldValue: SetFieldValue,
     firstName: string,
     lastName: string,
-    setCodigoGenerado: (codigo: string) => void
+    setCodigoGenerado: Dispatch<SetStateAction<string>>
   ) => {
     if (!firstName || !lastName) {
       toast.error(

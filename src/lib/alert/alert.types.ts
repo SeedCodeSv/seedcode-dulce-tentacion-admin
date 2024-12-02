@@ -10,3 +10,9 @@ export interface AlertOptions {
   onCancel?: () => void;
   timer?: number;
 }
+
+/* eslint-disable no-unused-vars */
+export interface AlertContextType {
+    show: (options: AlertOptions) => void;
+    close: () => void;
+  }

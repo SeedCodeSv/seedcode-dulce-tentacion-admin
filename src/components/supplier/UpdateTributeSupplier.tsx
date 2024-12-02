@@ -9,6 +9,7 @@ import { ArrowLeft } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router';
 import { useSupplierStore } from '@/store/supplier.store';
 import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
+import { toast } from 'sonner';
 
 function UpdateTributeSupplier() {
   const { id } = useParams();
@@ -101,8 +102,8 @@ function UpdateTributeSupplier() {
           OnGetBySupplier(Number(id));
         }
       }
-    } catch (error) {
-      console.error('Error updating supplier:', error);
+    } catch {
+      toast.error('Error al actualizar el proveedor');
     }
   };
 

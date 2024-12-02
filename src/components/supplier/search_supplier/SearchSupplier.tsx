@@ -50,7 +50,7 @@ function SearchSupplier(props: IPropsSearchSupplier) {
               label="Nombre"
               onChange={(e) => {
                 setFilter({ ...filter, nameSupplier: e.target.value });
-                props.nameSupplier(e.target.value); // eslint-disable-line
+                props.nameSupplier(e.target.value);
               }}
               classNames={{
                 label: 'font-semibold text-gray-700',
@@ -69,7 +69,7 @@ function SearchSupplier(props: IPropsSearchSupplier) {
               variant="bordered"
               onChange={(e) => {
                 setFilter({ ...filter, emailSuppplier: e.target.value });
-                props.emailSupplier(e.target.value); // eslint-disable-line
+                props.emailSupplier(e.target.value);
               }}
               labelPlacement="outside"
               label="Correo"

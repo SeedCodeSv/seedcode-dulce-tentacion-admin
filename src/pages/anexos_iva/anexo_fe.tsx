@@ -35,7 +35,7 @@ function AnexoFe() {
     link.click();
   };
 
-  const exportAnnexesCSV = async () => {
+  const exportAnnexesCSV = () => {
     const csv = csvmaker_fe(annexes_iva);
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);

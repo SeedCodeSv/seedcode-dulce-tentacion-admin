@@ -36,7 +36,7 @@ function AddUsers(props: Props) {
     getRolesList();
   }, []);
 
-  const handleSubmit = async (values: UserPayload, resetForm: () => void) => {
+  const handleSubmit = (values: UserPayload, resetForm: () => void) => {
     postUser({ ...values, userId: user?.id ?? 0 }).then(() => {
       resetForm();
       props.onClose();

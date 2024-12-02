@@ -35,7 +35,7 @@ function AnexoCcfe() {
     link.click();
   };
 
-  const exportAnnexesCSV = async () => {
+  const exportAnnexesCSV = () => {
     const csv = csvmaker_ccfe(annexes_iva_ccfe);
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);

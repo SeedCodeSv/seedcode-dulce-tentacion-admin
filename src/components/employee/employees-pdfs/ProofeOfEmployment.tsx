@@ -7,6 +7,7 @@ import { useContext } from 'react';
 import logo from '@/assets/MADNESS.png';
 import TooltipGlobal from '@/components/global/TooltipGlobal';
 import { Lock } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface Props {
   employee: Employee;
@@ -59,7 +60,7 @@ function ProofSalary({ employee, actions }: Props) {
       // Añadir la imagen del logo
       doc.addImage(logoBase64, 'PNG', imgX, imgY, imgWidth, imgHeight);
     } catch (error) {
-      console.error('Error al cargar el logo: ', error);
+      toast.error('Error al agregar el logo');
     }
 
     // Ajusta el tamaño del texto

@@ -24,8 +24,6 @@ import {
   CreditCard,
   Table as ITable,
   Mail,
-  Lock,
-  Check,
   RefreshCcw,
 } from 'lucide-react';
 import { global_styles } from '../../styles/global.styles';
@@ -315,7 +313,7 @@ function ListSuppliers({ actions }: ArrayAction) {
             <MobileViewSupplier
               actions={actions}
               handleActive={handleActivate}
-              handleChangeSupplier={(_supplier) => {}}
+              handleChangeSupplier={() => {}}
               deletePopover={DeletePopover}
               layout={view as 'grid' | 'list'}
             />

@@ -63,9 +63,6 @@ function AddTributeSupplier(props: Props) {
     nombreDepartamento: '',
     complemento: props.supplier_direction?.complemento,
   };
-
-  console.log('initialValues', initialValues);
-
   const styles = useGlobalStyles();
 
   const validationSchema = yup.object().shape({

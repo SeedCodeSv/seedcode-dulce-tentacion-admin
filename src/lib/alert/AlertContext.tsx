@@ -1,11 +1,6 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
-import { AlertOptions } from './types';
+import { AlertOptions, AlertContextType } from './alert.types'
 import { AlertModal } from './AlertModal';
-
-interface AlertContextType {
-  show: (options: AlertOptions) => void;
-  close: () => void;
-}
 
 const AlertContext = createContext<AlertContextType | undefined>(undefined);
 

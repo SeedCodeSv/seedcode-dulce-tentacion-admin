@@ -14,7 +14,6 @@ import { toast } from 'sonner';
 import { PropsUpdateEmployee } from '@/types/sub_categories.types';
 
 function UpdateEmployee(props: PropsUpdateEmployee) {
-  console.log('props', props.data);
   const { theme } = useContext(ThemeContext);
   const { GetEmployeeStatus, employee_status } = useEmployeeStatusStore();
   const { GetContractType, contract_type } = useContractTypeStore();
