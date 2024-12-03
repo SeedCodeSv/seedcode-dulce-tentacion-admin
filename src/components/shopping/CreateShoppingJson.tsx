@@ -1,12 +1,11 @@
-import { Button, Card, CardBody, Select, SelectItem, Tab, Tabs } from '@nextui-org/react';
+import { Button, Card, CardBody, Input, Select, SelectItem, Tab, Tabs } from '@nextui-org/react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import HeadlessModal from '../global/HeadlessModal';
 import ERROR from '../../assets/error.png';
-import { useNavigate } from 'react-router';
-import { ArrowLeft, CloudUpload, X } from 'lucide-react';
+import { CloudUpload, X } from 'lucide-react';
 import { create_shopping, isErrorSupplier } from '@/services/shopping.service';
 import { useAuthStore } from '@/store/auth.store';
 import Layout from '@/layout/Layout';
@@ -36,28 +35,26 @@ import {
 } from '@/enums/shopping.enum';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
+import { useNavigate } from 'react-router';
+import { formatDate } from '@/utils/dates';
+import { useBranchesStore } from '@/store/branches.store';
 import { useAlert } from '@/lib/alert';
+// import { useAlert } from '@/lib/alert';
 
 function CreateShopping() {
   const { actions } = useViewsStore();
   const viewName = actions.find((v) => v.view.name == 'Compras');
   const actionView = viewName?.actions.name || [];
-  const navigate = useNavigate();
-
   return (
     <>
       {actionView.includes('Agregar') ? (
         <Layout title="Agregar">
-          <div className=" w-full h-full p-5 bg-gray-50 dark:bg-gray-900">
-            <div className="w-full h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
-              <div
-                className="flex w-24 items-center cursor-pointer mb-4"
-                onClick={() => navigate('/shopping')}
-              >
-                <ArrowLeft onClick={() => navigate('/shopping')} className="mr-2" />
-                <p>Regresar</p>
-              </div>
+          <div className="">
+            <div className="w-full h-full border border-white p-5 overflow-y-auto bg-white dark:bg-gray-900">
               <Tabs
+                classNames={{
+                  base: 'w-full flex justify-center',
+                }}
                 aria-label="Dynamic tabs"
                 items={[
                   {
@@ -124,6 +121,12 @@ const JSONMode = () => {
 
   const { transmitter } = useAuthStore();
 
+  const { branch_list, getBranchesList } = useBranchesStore();
+
+  useEffect(() => {
+    getBranchesList();
+  }, []);
+
   const formik = useFormik({
     initialValues: {
       operationTypeCode: OperationTypeCode.GRAVADA,
@@ -137,6 +140,8 @@ const JSONMode = () => {
       classDocumentCode: ClassDocumentCode.DOCUMENTO_TRIBUTARIO_ELECTRONICO,
       classDocumentValue: ClassDocumentValue.DOCUMENTO_TRIBUTARIO_ELECTRONICO,
       typeSale: 'interna',
+      declarationDate: formatDate(),
+      branchId: 0,
     },
     validationSchema: yup.object().shape({
       operationTypeCode: yup.string().required('**El tipo de operación es requerido**'),
@@ -150,6 +155,8 @@ const JSONMode = () => {
       classDocumentCode: yup.string().required('**La clasificación es requerida**'),
       classDocumentValue: yup.string().required('**La clasificación es requerida**'),
       typeSale: yup.string().required('**El tipo de venta es requerido**'),
+      declarationDate: yup.string().required('**La fecha es requerida**'),
+      branchId: yup.string().required('**Selecciona la sucursal**'),
     }),
     onSubmit(values, formikHelpers) {
       const formData = new FormData();
@@ -165,6 +172,8 @@ const JSONMode = () => {
       formData.append('classDocumentCode', values.classDocumentCode);
       formData.append('classDocumentValue', values.classDocumentValue);
       formData.append('typeSale', values.typeSale);
+      formData.append("branchId", values.branchId.toString())
+      formData.append("declarationDate", values.declarationDate)
       if (file) {
         formData.append('dte', file);
       }
@@ -312,7 +321,29 @@ const JSONMode = () => {
                 </div>
                 <div className="flex flex-col mt-4 gap-4 p-6 border border-white rounded-lg shadow-lg  text-white">
                   <div>
-                    <div className="grid grid-cols-2 gap-x-5 gap-y-2">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-x-5 gap-y-2">
+                      <Select
+                        classNames={{ label: 'font-semibold' }}
+                        variant="bordered"
+                        label="Sucursal"
+                        placeholder="Selecciona la sucursal"
+                        labelPlacement="outside"
+                        defaultSelectedKeys={`${formik.values.branchId}`}
+                        onSelectionChange={(key) =>
+                          key
+                            ? formik.setFieldValue('branchId', key.currentKey)
+                            : formik.setFieldValue('branchId', '')
+                        }
+                        onBlur={formik.handleBlur('branchId')}
+                        isInvalid={!!formik.touched.branchId && !!formik.errors.branchId}
+                        errorMessage={formik.errors.branchId}
+                      >
+                        {branch_list.map((branch) => (
+                          <SelectItem key={branch.id} value={branch.name}>
+                            {branch.name}
+                          </SelectItem>
+                        ))}
+                      </Select>
                       <Select
                         classNames={{ label: 'font-semibold' }}
                         variant="bordered"
@@ -511,6 +542,20 @@ const JSONMode = () => {
                           </SelectItem>
                         ))}
                       </Select>
+                      <Input
+                        classNames={{ label: 'font-semibold',input: "text-gray-800 dark:text-white" }}
+                        variant="bordered"
+                        type="date"
+                        label="Fecha de declaración"
+                        value={formik.values.declarationDate}
+                        onChange={formik.handleChange('declarationDate')}
+                        onBlur={formik.handleBlur('declarationDate')}
+                        labelPlacement="outside"
+                        isInvalid={
+                          !!formik.touched.declarationDate && !!formik.errors.declarationDate
+                        }
+                        errorMessage={formik.errors.declarationDate}
+                      />
                     </div>
                     <p className="dark:text-white  text-black mt-3">DATOS OBTENIDOS DE LA COMPRA</p>
                     <div className="grid grid-cols-2 gap-6 mt-2">

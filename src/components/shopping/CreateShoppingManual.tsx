@@ -42,13 +42,13 @@ import {
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { validateReceptor } from '@/utils/validation';
+import { useBranchesStore } from '@/store/branches.store';
 
 function CreateShoppingManual() {
   const { getSupplierPagination, supplier_pagination } = useSupplierStore();
   const [nrc, setNrc] = useState('');
   const [supplierSelected, setSupplierSelected] = useState<Supplier>();
   const [searchNRC, setSearchNRC] = useState('');
-  const [currentDate, setCurrentDate] = useState(formatDate());
   const { user, transmitter } = useAuthStore();
   const styles = useGlobalStyles();
   const [total, setTotal] = useState('');
@@ -61,8 +61,11 @@ function CreateShoppingManual() {
   const [totalModified, setTotalModified] = useState(false);
   const [includePerception, setIncludePerception] = useState(false);
 
+  const { branch_list, getBranchesList } = useBranchesStore();
+
   useEffect(() => {
     getSupplierPagination(1, 15, searchNRC, '', '', 1);
+    getBranchesList();
     get_correlative_shopping(
       Number(user?.correlative?.branch.id ?? user?.pointOfSale?.branch.id ?? 0)
     )
@@ -197,6 +200,9 @@ function CreateShoppingManual() {
       tipoDte: '',
       typeSale: 'interna',
       controlNumber: '',
+      declarationDate: formatDate(),
+      fecEmi: formatDate(),
+      branchId: 0
     },
     validationSchema: yup.object().shape({
       operationTypeCode: yup.string().required('**El tipo de operación es requerido**'),
@@ -212,13 +218,15 @@ function CreateShoppingManual() {
       tipoDte: yup.string().required('**El tipo de documento es requerido**'),
       typeSale: yup.string().required('**El tipo de venta es requerido**'),
       controlNumber: yup.string().required('**El número de control es requerido**'),
+      declarationDate: yup.string().required('**La fecha es requerida**'),
+      fecEmi: yup.string().required('**La fecha es requerida**'),
+      branchId: yup.string().required("**Selecciona la sucursal**")
     }),
     async onSubmit(values, formikHelpers) {
       if (!supplierSelected) {
         toast.warning('Debes seleccionar el proveedor');
         return;
       }
-
 
       try {
         await validateReceptor(supplierSelected);
@@ -234,7 +242,6 @@ function CreateShoppingManual() {
           montoTotalOperacion: Number(total),
           totalPagar: Number(total),
           totalLetras: convertCurrencyFormat(total),
-          fecEmi: currentDate,
           correlative: correlative,
           ivaPerci1: $1perception,
           ...values,
@@ -405,17 +412,33 @@ function CreateShoppingManual() {
               </Select>
             </div>
           </div>
-          <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-10 mt-3">
+          <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-5 mt-3">
             <div>
-              <Input
+              <Select
                 classNames={{ label: 'font-semibold' }}
                 variant="bordered"
-                type="date"
-                label="Fecha recibido"
-                value={currentDate}
-                onChange={({ currentTarget }) => setCurrentDate(currentTarget.value)}
+                label="Sucursal"
+                placeholder="Selecciona la sucursal"
                 labelPlacement="outside"
-              />
+                defaultSelectedKeys={`${formik.values.branchId}`}
+                onSelectionChange={(key) =>
+                  key
+                    ? formik.setFieldValue(
+                        'branchId',
+                        key.currentKey
+                      )
+                    : formik.setFieldValue('branchId', '')
+                }
+                onBlur={formik.handleBlur('branchId')}
+                isInvalid={!!formik.touched.branchId && !!formik.errors.branchId}
+                errorMessage={formik.errors.branchId}
+              >
+                {branch_list.map((branch) => (
+                  <SelectItem key={branch.id} value={branch.name}>
+                    {branch.name}
+                  </SelectItem>
+                ))}
+              </Select>
             </div>
             <div>
               <Select
@@ -445,8 +468,6 @@ function CreateShoppingManual() {
                 </SelectItem>
               </Select>
             </div>
-          </div>
-          <div className="grid grid-cols-2 gap-5 mt-3">
             <Input
               classNames={{ label: 'font-semibold' }}
               placeholder="EJ: 101"
@@ -637,6 +658,30 @@ function CreateShoppingManual() {
                 type="number"
               />
             </div>
+            <Input
+              classNames={{ label: 'font-semibold' }}
+              variant="bordered"
+              type="date"
+              label="Fecha del documento"
+              value={formik.values.fecEmi}
+              onChange={formik.handleChange('fecEmi')}
+              onBlur={formik.handleBlur('fecEmi')}
+              labelPlacement="outside"
+              isInvalid={!!formik.touched.fecEmi && !!formik.errors.fecEmi}
+              errorMessage={formik.errors.fecEmi}
+            />
+            <Input
+              classNames={{ label: 'font-semibold' }}
+              variant="bordered"
+              type="date"
+              label="Fecha de declaración"
+              value={formik.values.declarationDate}
+              onChange={formik.handleChange('declarationDate')}
+              onBlur={formik.handleBlur('declarationDate')}
+              labelPlacement="outside"
+              isInvalid={!!formik.touched.declarationDate && !!formik.errors.declarationDate}
+              errorMessage={formik.errors.declarationDate}
+            />
             <div className="flex  items-end">
               <Checkbox
                 checked={includePerception}
