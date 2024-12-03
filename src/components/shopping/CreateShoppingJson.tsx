@@ -36,7 +36,7 @@ import {
 } from '@/enums/shopping.enum';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-// import { useAlert } from '@/lib/alert';
+import { useAlert } from '@/lib/alert';
 
 function CreateShopping() {
   const { actions } = useViewsStore();
@@ -100,7 +100,7 @@ const JSONMode = () => {
     e.preventDefault();
     setIsDragging(true);
   };
-  // const { show } = useAlert();
+  const { show } = useAlert();
   const handleDragLeave = () => {
     setIsDragging(false);
   };
@@ -202,12 +202,12 @@ const JSONMode = () => {
           const result = JSON.parse(content) as IResponseFromDigitalOceanDTE;
           if (result.identificacion.tipoDte === '01') {
             setFile(null);
-            // show({
-            //   type: 'success',
-            //   title: 'Success!',
-            //   message: 'Operation completed successfully.',
-            //   timer: 3000,
-            // });
+            show({
+              type: 'error',
+              title: 'Archivo no valido!',
+              message: 'No puedes agregar documentos con el tipo de DTE 01',
+              timer: 3000,
+            });
             toast.error('El archivo seleccionado no es un DTE');
             return;
           }
@@ -711,7 +711,7 @@ const JSONMode = () => {
             >
               <CloudUpload size={40} />
               {isDragging ? 'Suelta el archivo aquí' : 'Selecciona o arrastra un archivo JSON'}
-              <input onChange={handleFileChange} type="file" id="uploadFile1" className="hidden" />
+              <input onChange={handleFileChange} type="file" id="uploadFile1" accept='application/json' className="hidden" />
             </label>
           </HeadlessModal>
         </>

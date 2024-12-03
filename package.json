@@ -5,12 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host",
-    "build": "tsc && vite build",
+    "build:dev": "tsc && vite build",
+    "build": "swc --no-swcrc --out-dir dist src/**/*.ts src/**/*.tsx && vite build --mode production",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "format": "prettier . --write --ignore-path .gitignore",
     "test": "jest",
-    "commit": "git-cz"
+    "commit": "git-cz",
+    "prepare": "husky",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@ag-media/react-pdf-table": "^1.0.1",
