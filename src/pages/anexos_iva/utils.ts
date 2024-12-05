@@ -134,9 +134,6 @@ export const annexes_iva_shopping = async (shoppingReport: ShoppingReport[]) => 
 
     let nextLine = 2;
     for (const shopping of shoppingReport) {
-
-        const totalIva = shopping.iva.map((i) => Number(i.monto)).reduce((a, b) => a + b, 0);
-
         worksheet.getCell(`A${nextLine}`).value = formatDate(shopping.fecEmi);
         worksheet.getCell(`B${nextLine}`).value = formatTypes(shopping).classDocument;
         worksheet.getCell(`C${nextLine}`).value = formatDteType(shopping.typeDte)
@@ -150,7 +147,7 @@ export const annexes_iva_shopping = async (shoppingReport: ShoppingReport[]) => 
         worksheet.getCell(`K${nextLine}`).value = shopping.typeSale === "Externa" ? Number(shopping.totalGravada) : 0;
         worksheet.getCell(`L${nextLine}`).value = 0.00;
         worksheet.getCell(`M${nextLine}`).value = 0.00;
-        worksheet.getCell(`N${nextLine}`).value = Number(totalIva);
+        worksheet.getCell(`N${nextLine}`).value = Number(shopping.totalGravada) * 0.13;
         worksheet.getCell(`O${nextLine}`).value = {
             formula: `=SUM(G${nextLine}:N${nextLine})`,
             result: 0,
@@ -253,7 +250,7 @@ export const csvmaker = (shoppingReport: ShoppingReport[]) => {
             0.00,
             0.00,
             Number(item.totalIva),
-            Number(item.totalIva),
+            Number(item.montoTotalOperacion),
             formatNumDocument(item.supplier),
             formatTypes(item, true).typeOperation,
             formatTypes(item, true).classification,
