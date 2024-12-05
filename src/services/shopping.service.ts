@@ -3,6 +3,7 @@ import {
   ErrorSupplier,
   ICreateShoppingManual,
   IGetCorrelativeShopping,
+  IGetShoppingDetails,
   IGetShoppingPaginated,
   IGetShoppingReport,
   SuccessSupplier,
@@ -52,4 +53,12 @@ export const get_shopping_by_month = (transmitterId: number, month: string) => {
   return axios.get<IGetShoppingReport>(
     API_URL + `/reports/get-shoppings-by-month/${transmitterId}?month=${month}`
   );
+};
+
+export const get_shopping_by_id = (id: number) => {
+  return axios.get<IGetShoppingDetails>(API_URL + `/shoppings/${id}`);
+}
+
+export const update_shopping_manual = (id: number, payload: ICreateShoppingManual) => {
+  return axios.patch<{ ok: boolean }>(`${API_URL}/shoppings/${id}`, payload);
 };

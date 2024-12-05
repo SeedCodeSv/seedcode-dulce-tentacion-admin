@@ -1,10 +1,12 @@
 
 import { IPagination } from "@/types/global.types"
-import { IGetShopping } from "@/types/shopping.types"
+import { IGetShopping, ShoppingReport } from "@/types/shopping.types"
 
 export interface IShoppingStore {
     shoppingList: IGetShopping[]
     pagination_shopping: IPagination
     loading_shopping: boolean;
+    shopping_details: ShoppingReport | undefined,
+    getShoppingDetails: (id: number) => void
     getPaginatedShopping: (id: number, page?: number, limit?: number, fecha?: string, segundaFecha?: string, branchId?: string) => void
 }

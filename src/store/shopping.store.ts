@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
 import { IShoppingStore } from './types/shopping.store';
-import { get_shoppings_paginated } from '@/services/shopping.service';
+import { get_shopping_by_id, get_shoppings_paginated } from '@/services/shopping.service';
 
 export const useShoppingStore = create<IShoppingStore>((set) => ({
   shoppingList: [],
@@ -15,6 +15,7 @@ export const useShoppingStore = create<IShoppingStore>((set) => ({
     ok: true,
   },
   loading_shopping: false,
+  shopping_details: undefined,
   getPaginatedShopping: (
     id,
     page = 1,
@@ -55,5 +56,12 @@ export const useShoppingStore = create<IShoppingStore>((set) => ({
           },
         });
       });
+  },
+  getShoppingDetails(id) {
+    get_shopping_by_id(id).then(({ data }) => {
+      set({ shopping_details: data.compra });
+    }).catch(()=>{
+      set({ shopping_details: undefined });
+    })
   },
 }));

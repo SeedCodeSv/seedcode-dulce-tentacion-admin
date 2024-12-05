@@ -8,7 +8,7 @@ export const AlertProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [alert, setAlert] = useState<AlertOptions | null>(null);
 
   const show = useCallback((options: AlertOptions) => {
-    setAlert(options);
+    setAlert({...options, key: Date.now().toString()});
   }, []);
 
   const close = useCallback(() => {

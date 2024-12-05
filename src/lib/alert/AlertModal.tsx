@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { AlertCircle, CheckCircle, XCircle, Info, X } from 'lucide-react';
 import { AlertOptions } from './alert.types';
 
@@ -19,17 +20,29 @@ export const AlertModal: React.FC<AlertOptions & { onClose: () => void }> = ({
   onCancel,
   onClose,
   timer,
+  isAutoClose = true,
 }) => {
   useEffect(() => {
-    if (timer) {
+    if (isAutoClose && timer) {
       const timeout = setTimeout(onClose, timer);
       return () => clearTimeout(timeout);
     }
-  }, [timer, onClose]);
+  }, [timer, onClose, isAutoClose]);
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/50">
-      <div className="bg-white rounded-[20px] shadow-xl w-full max-w-md transform transition-all">
+    <motion.div
+      className="fixed inset-0 z-[99999999999] flex items-center justify-center p-4 bg-black/50"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
+      <motion.div
+        className="bg-white rounded-[20px] shadow-xl w-full max-w-md transform transition-all"
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.9, opacity: 0 }}
+        transition={{ duration: 0.1 }}
+      >
         <div className="relative p-6">
           <button
             onClick={onClose}
@@ -37,24 +50,16 @@ export const AlertModal: React.FC<AlertOptions & { onClose: () => void }> = ({
           >
             <X className="w-6 h-6" />
           </button>
-          
+
           <div className="flex flex-col items-center text-center">
-            <div className="mb-4">
-              {icons[type]}
-            </div>
-            
+            <div className="mb-4">{icons[type]}</div>
+
             {title && (
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                {title}
-              </h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">{title}</h3>
             )}
-            
-            {message && (
-              <p className="text-gray-600 mb-6">
-                {message}
-              </p>
-            )}
-            
+
+            {message && <p className="text-gray-600 mb-6">{message}</p>}
+
             <div className="flex gap-3">
               {(onCancel || cancelText) && (
                 <button
@@ -67,7 +72,7 @@ export const AlertModal: React.FC<AlertOptions & { onClose: () => void }> = ({
                   {cancelText || 'Cancel'}
                 </button>
               )}
-              
+
               <button
                 onClick={() => {
                   onConfirm?.();
@@ -80,7 +85,7 @@ export const AlertModal: React.FC<AlertOptions & { onClose: () => void }> = ({
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };

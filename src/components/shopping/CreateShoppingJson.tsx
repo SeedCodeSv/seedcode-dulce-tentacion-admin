@@ -172,8 +172,8 @@ const JSONMode = () => {
       formData.append('classDocumentCode', values.classDocumentCode);
       formData.append('classDocumentValue', values.classDocumentValue);
       formData.append('typeSale', values.typeSale);
-      formData.append("branchId", values.branchId.toString())
-      formData.append("declarationDate", values.declarationDate)
+      formData.append('branchId', values.branchId.toString());
+      formData.append('declarationDate', values.declarationDate);
       if (file) {
         formData.append('dte', file);
       }
@@ -209,15 +209,16 @@ const JSONMode = () => {
         if (e.target && e.target.result) {
           const content = e.target.result as string;
           const result = JSON.parse(content) as IResponseFromDigitalOceanDTE;
-          if (result.identificacion.tipoDte === '01') {
+          if (result.identificacion.tipoDte === '01' || result.identificacion.tipoDte === '14') {
             setFile(null);
+            setIsOpen(false);
             show({
               type: 'error',
               title: 'Archivo no valido!',
-              message: 'No puedes agregar documentos con el tipo de DTE 01',
-              timer: 3000,
+              message: 'No puedes agregar documentos con el tipo de DTE 01 o 14',
+              isAutoClose: false,
             });
-            toast.error('El archivo seleccionado no es un DTE');
+            toast.error('DTE Invalido');
             return;
           }
           setJsonData(result);
@@ -543,7 +544,10 @@ const JSONMode = () => {
                         ))}
                       </Select>
                       <Input
-                        classNames={{ label: 'font-semibold',input: "text-gray-800 dark:text-white" }}
+                        classNames={{
+                          label: 'font-semibold',
+                          input: 'text-gray-800 dark:text-white',
+                        }}
                         variant="bordered"
                         type="date"
                         label="Fecha de declaración"
@@ -756,7 +760,13 @@ const JSONMode = () => {
             >
               <CloudUpload size={40} />
               {isDragging ? 'Suelta el archivo aquí' : 'Selecciona o arrastra un archivo JSON'}
-              <input onChange={handleFileChange} type="file" id="uploadFile1" accept='application/json' className="hidden" />
+              <input
+                onChange={handleFileChange}
+                type="file"
+                id="uploadFile1"
+                accept="application/json"
+                className="hidden"
+              />
             </label>
           </HeadlessModal>
         </>

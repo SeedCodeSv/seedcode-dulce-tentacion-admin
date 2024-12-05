@@ -1,5 +1,5 @@
 import { Autocomplete, AutocompleteItem, Button, Input } from '@nextui-org/react';
-import { ChevronLeft, ChevronRight, Filter, SearchIcon } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Filter, Pen, SearchIcon } from 'lucide-react';
 import NO_DATA from '@/assets/svg/no_data.svg';
 import { useNavigate } from 'react-router-dom';
 import Pagination from '../global/Pagination';
@@ -53,7 +53,7 @@ function ShoppingPage({ actions }: ArrayAction) {
   return (
     <>
       <div className=" w-full h-full p-10 bg-gray-50 dark:bg-gray-900">
-        <div className="w-full h-full border border-white p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
+        <div className="w-full h-full flex flex-col border border-white p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
           <div className="flex justify-between  mt-6 w-full">
             <div className="md:hidden justify-start flex-grow mt-0">
               <TooltipGlobal text="Filtrar">
@@ -215,7 +215,7 @@ function ShoppingPage({ actions }: ArrayAction) {
           </div>
 
           <div className="mt-6 m-6">
-            <div className="max-h-[400px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
+            <div className="max-h-full  overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
               <table className="w-full">
                 <thead className="sticky top-0 z-20 bg-white">
                   <tr>
@@ -239,6 +239,9 @@ function ShoppingPage({ actions }: ArrayAction) {
                     </th>
                     <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                       Monto total
+                    </th>
+                    <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                      Acciones
                     </th>
                   </tr>
                 </thead>
@@ -278,6 +281,19 @@ function ShoppingPage({ actions }: ArrayAction) {
                               </td>
                               <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
                                 {cat.montoTotalOperacion}
+                              </td>
+                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
+                                <div>
+                                  {cat.generationCode === 'N/A' && (
+                                    <Button
+                                      onClick={() => navigate(`/edit-shopping/${cat.id}`)}
+                                      style={global_styles().secondaryStyle}
+                                      isIconOnly
+                                    >
+                                      <Pen />
+                                    </Button>
+                                  )}
+                                </div>
                               </td>
                             </tr>
                           ))}

@@ -9,10 +9,12 @@ export interface AlertOptions {
   onConfirm?: () => void;
   onCancel?: () => void;
   timer?: number;
+  key?: string
+  isAutoClose?: boolean;
 }
 
 /* eslint-disable no-unused-vars */
 export interface AlertContextType {
-    show: (options: AlertOptions) => void;
-    close: () => void;
-  }
+  show: (options: AlertOptions) => void;
+  close: () => void;
+}

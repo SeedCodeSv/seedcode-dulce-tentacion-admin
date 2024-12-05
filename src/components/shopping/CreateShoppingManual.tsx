@@ -10,9 +10,10 @@ import {
   Input,
   Select,
   SelectItem,
+  Tooltip,
 } from '@nextui-org/react';
 import axios from 'axios';
-import { X } from 'lucide-react';
+import { MessageCircleQuestion, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
@@ -49,7 +50,6 @@ function CreateShoppingManual() {
   const [nrc, setNrc] = useState('');
   const [supplierSelected, setSupplierSelected] = useState<Supplier>();
   const [searchNRC, setSearchNRC] = useState('');
-  const { user, transmitter } = useAuthStore();
   const styles = useGlobalStyles();
   const [total, setTotal] = useState('');
   const [afecta, setAfecta] = useState('');
@@ -63,12 +63,12 @@ function CreateShoppingManual() {
 
   const { branch_list, getBranchesList } = useBranchesStore();
 
+  const { transmitter } = useAuthStore();
+
   useEffect(() => {
     getSupplierPagination(1, 15, searchNRC, '', '', 1);
     getBranchesList();
-    get_correlative_shopping(
-      Number(user?.correlative?.branch.id ?? user?.pointOfSale?.branch.id ?? 0)
-    )
+    get_correlative_shopping(Number(transmitter?.id ?? 0))
       .then(({ data }) => {
         setCorrelative(data.correlative + 1);
       })
@@ -86,7 +86,7 @@ function CreateShoppingManual() {
   }, [nrc]);
 
   const services = new SeedcodeCatalogosMhService();
-  const [tipoDte, setTipoDte] = useState('');
+  const [tipoDte, setTipoDte] = useState('03');
   const [tipoDocSelected, setTipoDocSelected] = useState<{ codigo: string; valores: string }>();
 
   const tiposDoc = services.get002TipoDeDocumento();
@@ -202,7 +202,7 @@ function CreateShoppingManual() {
       controlNumber: '',
       declarationDate: formatDate(),
       fecEmi: formatDate(),
-      branchId: 0
+      branchId: 0,
     },
     validationSchema: yup.object().shape({
       operationTypeCode: yup.string().required('**El tipo de operación es requerido**'),
@@ -220,7 +220,7 @@ function CreateShoppingManual() {
       controlNumber: yup.string().required('**El número de control es requerido**'),
       declarationDate: yup.string().required('**La fecha es requerida**'),
       fecEmi: yup.string().required('**La fecha es requerida**'),
-      branchId: yup.string().required("**Selecciona la sucursal**")
+      branchId: yup.string().required('**Selecciona la sucursal**'),
     }),
     async onSubmit(values, formikHelpers) {
       if (!supplierSelected) {
@@ -281,9 +281,9 @@ function CreateShoppingManual() {
 
   useEffect(() => {
     if (formik.values.typeSale) {
-      formik.setFieldValue('tipoDte', '01');
+      formik.setFieldValue('tipoDte', '03');
       setTipoDocSelected(filteredTipoDoc[0]);
-      setTipoDte('01');
+      setTipoDte('03');
     }
   }, [formik.values.typeSale]);
 
@@ -369,47 +369,50 @@ function CreateShoppingManual() {
                 value={tipoDte}
                 onChange={(e) => setTipoDte(e.currentTarget.value)}
               />
-              <Select
-                label="Nombre comprobante"
-                labelPlacement="outside"
-                variant="bordered"
-                placeholder="Selecciona el tipo de documento"
-                selectedKeys={tipoDocSelected ? [`${tipoDocSelected?.codigo}`] : []}
-                classNames={{ label: 'font-semibold' }}
-                onSelectionChange={(key) => {
-                  if (key) {
-                    const fnd = filteredTipoDoc.find((doc) => doc.codigo === key.currentKey);
-                    if (fnd) {
-                      setTipoDocSelected({ codigo: fnd.codigo, valores: fnd.valores });
-                      setTipoDte(fnd.codigo);
-                      formik.setFieldValue('tipoDte', fnd.codigo);
+              <div className="w-full">
+                <Select
+                  label="Nombre comprobante"
+                  labelPlacement="outside"
+                  variant="bordered"
+                  className="w-full"
+                  placeholder="Selecciona el tipo de documento"
+                  selectedKeys={tipoDocSelected ? [`${tipoDocSelected?.codigo}`] : []}
+                  classNames={{ label: 'font-semibold' }}
+                  onSelectionChange={(key) => {
+                    if (key) {
+                      const fnd = filteredTipoDoc.find((doc) => doc.codigo === key.currentKey);
+                      if (fnd) {
+                        setTipoDocSelected({ codigo: fnd.codigo, valores: fnd.valores });
+                        setTipoDte(fnd.codigo);
+                        formik.setFieldValue('tipoDte', fnd.codigo);
+                      } else {
+                        setTipoDte('');
+                        setTipoDocSelected(undefined);
+                        formik.setFieldValue('tipoDte', '');
+                      }
                     } else {
                       setTipoDte('');
                       setTipoDocSelected(undefined);
                       formik.setFieldValue('tipoDte', '');
                     }
-                  } else {
-                    setTipoDte('');
-                    setTipoDocSelected(undefined);
-                    formik.setFieldValue('tipoDte', '');
-                  }
-                }}
-                isInvalid={!!formik.touched.tipoDte && !!formik.errors.tipoDte}
-                errorMessage={formik.errors.tipoDte}
-              >
-                {filteredTipoDoc.map((item) => (
-                  <SelectItem
-                    value={item.codigo}
-                    key={item.codigo}
-                    isReadOnly={
-                      ['03', '05', '06'].includes(item.codigo) &&
-                      formik.values.typeSale === 'externa'
-                    }
-                  >
-                    {item.valores}
-                  </SelectItem>
-                ))}
-              </Select>
+                  }}
+                  isInvalid={!!formik.touched.tipoDte && !!formik.errors.tipoDte}
+                  errorMessage={formik.errors.tipoDte}
+                >
+                  {filteredTipoDoc.map((item) => (
+                    <SelectItem
+                      value={item.codigo}
+                      key={item.codigo}
+                      isReadOnly={
+                        ['03', '05', '06'].includes(item.codigo) &&
+                        formik.values.typeSale === 'externa'
+                      }
+                    >
+                      {item.valores}
+                    </SelectItem>
+                  ))}
+                </Select>
+              </div>
             </div>
           </div>
           <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-5 mt-3">
@@ -423,10 +426,7 @@ function CreateShoppingManual() {
                 defaultSelectedKeys={`${formik.values.branchId}`}
                 onSelectionChange={(key) =>
                   key
-                    ? formik.setFieldValue(
-                        'branchId',
-                        key.currentKey
-                      )
+                    ? formik.setFieldValue('branchId', key.currentKey)
                     : formik.setFieldValue('branchId', '')
                 }
                 onBlur={formik.handleBlur('branchId')}
@@ -475,7 +475,23 @@ function CreateShoppingManual() {
               value={formik.values.controlNumber}
               onChange={formik.handleChange('controlNumber')}
               onBlur={formik.handleBlur('controlNumber')}
-              label="Numero de control"
+              label={
+                <div className="flex gap-5">
+                  <p>Numero de control</p>
+                  <Tooltip
+                    content={
+                      <div className="w-44 ">
+                        <span>
+                          <span className="font-semibold">Consejo:</span> En caso de ser un DTE
+                          ingrese el numero de control del documento con guiones
+                        </span>
+                      </div>
+                    }
+                  >
+                    <MessageCircleQuestion size={20} />
+                  </Tooltip>
+                </div>
+              }
               labelPlacement="outside"
               isInvalid={!!formik.touched.controlNumber && !!formik.errors.controlNumber}
               errorMessage={formik.errors.controlNumber}
@@ -485,7 +501,7 @@ function CreateShoppingManual() {
               onSelectionChange={(key) => {
                 if (key) {
                   const value = key.currentKey;
-                  const code = OperationTypes.find((item) => item.code === value);
+                  const code = ClassDocuments.find((item) => item.code === value);
                   if (code) {
                     formik.setFieldValue('classDocumentCode', code.code);
                     formik.setFieldValue('classDocumentValue', code.value);
@@ -504,7 +520,24 @@ function CreateShoppingManual() {
               variant="bordered"
               labelPlacement="outside"
               placeholder="Selecciona una opción"
-              label="Clase del documento"
+              label={
+                <div className="flex gap-5">
+                  <p>clase del documento</p>
+                  <Tooltip
+                    content={
+                      <div className="w-44 ">
+                        <span>
+                          <span className="font-semibold">Consejo:</span> En caso de ser un DTE
+                          seleccione la opcion {ClassDocumentCode.DOCUMENTO_TRIBUTARIO_ELECTRONICO}.{' '}
+                          {ClassDocumentValue.DOCUMENTO_TRIBUTARIO_ELECTRONICO}
+                        </span>
+                      </div>
+                    }
+                  >
+                    <MessageCircleQuestion size={20} />
+                  </Tooltip>
+                </div>
+              }
               isInvalid={!!formik.touched.classDocumentCode && !!formik.errors.classDocumentCode}
               errorMessage={formik.errors.classDocumentCode}
             >

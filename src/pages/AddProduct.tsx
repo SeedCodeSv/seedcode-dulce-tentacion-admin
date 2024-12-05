@@ -493,7 +493,7 @@ function AddProduct() {
                     <Autocomplete
                       onSelectionChange={(key) => {
                         if (key) {
-                          getSubcategories(new Set([key]).values().next().value);
+                          getSubcategories(Number(key));
                         }
                       }}
                       label="Categoría producto"
