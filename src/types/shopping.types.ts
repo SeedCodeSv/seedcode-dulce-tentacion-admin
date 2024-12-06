@@ -28,6 +28,12 @@ export interface ICreateShoppingManual {
   totalLetras: string
   details: Detail[]
 }
+export interface IGetShoppingReportByCode {
+	ok: boolean;
+	shopping: ShoppingReport | null;
+	status: number;
+}
+
 
 export interface Detail {
   descripcion: string
@@ -93,12 +99,10 @@ export interface Branch {
 }
 
 export interface CreateShoppingDto {
+  branchId: number
   supplierId: number
-  numeroControl?: string
-  // controlNumber: string
-  transmitterId: number
+  numeroControl: string
   tipoDte: string
-  correlative?: number
   totalExenta?: number
   totalGravada?: number
   descuExenta?: number
@@ -108,9 +112,10 @@ export interface CreateShoppingDto {
   totalIva?: number
   montoTotalOperacion: number
   totalPagar: number
-  ivaPerci1: number
   totalLetras: string
-  fecEmi: string
+  fecEmi: string;
+  ivaPerci1: number
+  correlative?: number
   operationTypeCode: OperationTypeCode,
   operationTypeValue: OperationTypeValue,
   classificationCode: ClassificationCode,
