@@ -171,39 +171,37 @@ export interface ShoppingIva {
   shoppingId: number
 
 }
-
 export interface ShoppingReport {
-  id: number;
-  controlNumber: string;
-  generationCode: string;
-  typeDte: string;
-  fecEmi: string;
-  declarationDate: string,
-  horEmi: string;
-  correlative: number;
-  totalNoSuj: string;
-  totalExenta: string;
-  totalGravada: string;
-  subTotalVentas: string;
-  descuNoSuj: string;
-  descuExenta: string;
-  descuGravada: string;
-  porcentajeDescuento: string;
-  totalDescu: string;
-  subTotal: string;
-  totalIva: string;
-  montoTotalOperacion: string;
-  totalPagar: string;
-  totalLetras: string;
-  pathPdf: string;
-  pathJson: string;
-  ivaPerci1: string;
-  ivaRete1: string;
-  isActivated: boolean;
-  branchId: number;
-  supplierId: number;
-  supplier: Supplier;
-  typeSale: "Interna" | "Externa";
+	id: number;
+	controlNumber: string;
+	generationCode: string;
+	typeDte: string;
+	fecEmi: string;
+	horEmi: string;
+	correlative: number;
+	totalNoSuj: string;
+	totalExenta: string;
+	totalGravada: string;
+	subTotalVentas: string;
+	descuNoSuj: string;
+	descuExenta: string;
+	descuGravada: string;
+	porcentajeDescuento: string;
+	totalDescu: string;
+	subTotal: string;
+	totalIva: string;
+	montoTotalOperacion: string;
+	totalPagar: string;
+	totalLetras: string;
+	pathPdf: string;
+	pathJson: string;
+	isActivated: boolean;
+	branchId: number;
+	supplierId: number;
+  supplier:Supplier;
+  typeSale: "interna" | "internacion" | "importacion"
+  ivaPerci1: number
+  tributes: Tributes[],
   classDocumentCode: ClassDocumentCode,
   classDocumentValue: ClassDocumentValue,
   operationTypeCode: OperationTypeCode,
@@ -214,9 +212,58 @@ export interface ShoppingReport {
   sectorValue: SectorValue,
   typeCostSpentCode: TypeCostSpentCode,
   typeCostSpentValue: TypeCostSpentValue,
-  iva: ShoppingIva[],
-  branch: Branch
 }
+
+interface Tributes {
+  codigo: string, 
+  valores: string,
+  value: number
+}
+// export interface ShoppingReport {
+//   id: number;
+//   controlNumber: string;
+//   generationCode: string;
+//   typeDte: string;
+//   fecEmi: string;
+//   declarationDate: string,
+//   horEmi: string;
+//   correlative: number;
+//   totalNoSuj: string;
+//   totalExenta: string;
+//   totalGravada: string;
+//   subTotalVentas: string;
+//   descuNoSuj: string;
+//   descuExenta: string;
+//   descuGravada: string;
+//   porcentajeDescuento: string;
+//   totalDescu: string;
+//   subTotal: string;
+//   totalIva: string;
+//   montoTotalOperacion: string;
+//   totalPagar: string;
+//   totalLetras: string;
+//   pathPdf: string;
+//   pathJson: string;
+//   ivaPerci1: string;
+//   ivaRete1: string;
+//   isActivated: boolean;
+//   branchId: number;
+//   supplierId: number;
+//   supplier: Supplier;
+//   typeSale: "Interna" | "Externa";
+//   classDocumentCode: ClassDocumentCode,
+//   classDocumentValue: ClassDocumentValue,
+//   operationTypeCode: OperationTypeCode,
+//   operationTypeValue: OperationTypeValue,
+//   classificationCode: ClassificationCode,
+//   classificationValue: ClassificationValue,
+//   sectorCode: SectorCode,
+//   sectorValue: SectorValue,
+//   typeCostSpentCode: TypeCostSpentCode,
+//   typeCostSpentValue: TypeCostSpentValue,
+//   iva: ShoppingIva[],
+//   branch: Branch
+// }
 
 export interface IGetShoppingReport {
   ok: boolean;

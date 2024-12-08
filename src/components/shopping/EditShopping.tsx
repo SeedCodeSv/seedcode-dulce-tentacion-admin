@@ -104,23 +104,48 @@ function EditShopping() {
       branchId: yup.string().required('**Selecciona la sucursal**'),
     }),
     onSubmit(values, formikHelpers) {
+      // const payload: CreateShoppingDto = {
+      //   transmitterId: 0,
+      //   supplierId: 0,
+      //   totalExenta: Number(exenta),
+      //   totalGravada: Number(afecta),
+      //   porcentajeDescuento: 0,
+      //   totalDescu: 0,
+      //   totalIva: Number(totalIva),
+      //   subTotal: Number(afecta),
+      //   montoTotalOperacion: Number(total),
+      //   totalPagar: Number(total),
+      //   totalLetras: convertCurrencyFormat(total),
+      //   correlative: 9,
+      //   ivaPerci1: $1perception,
+      //   ...values,
+      // };
       const payload: CreateShoppingDto = {
-        transmitterId: 0,
         supplierId: 0,
-        totalExenta: Number(exenta),
-        totalGravada: Number(afecta),
+        branchId: values.branchId,
+        numeroControl: values.controlNumber || '', // Ensure it's a string
+        tipoDte: values.tipoDte,
+        totalExenta: Number(exenta) || 0,
+        totalGravada: Number(afecta) || 0,
         porcentajeDescuento: 0,
         totalDescu: 0,
-        totalIva: Number(totalIva),
-        subTotal: Number(afecta),
-        montoTotalOperacion: Number(total),
-        totalPagar: Number(total),
+        totalIva: Number(totalIva) || 0,
+        subTotal: Number(afecta) || 0,
+        montoTotalOperacion: Number(total) || 0,
+        totalPagar: Number(total) || 0,
         totalLetras: convertCurrencyFormat(total),
-        correlative: 9,
-        ivaPerci1: $1perception,
-        ...values,
+        fecEmi: values.fecEmi,
+        ivaPerci1: $1perception || 0,
+        operationTypeCode: values.operationTypeCode,
+        operationTypeValue: values.operationTypeValue,
+        classificationCode: values.classificationCode,
+        classificationValue: values.classificationValue,
+        sectorCode: values.sectorCode,
+        sectorValue: values.sectorValue,
+        typeCostSpentCode: values.typeCostSpentCode,
+        typeCostSpentValue: values.typeCostSpentValue,
       };
-
+      
       axios
         .patch(API_URL + `/shoppings/${shopping_details?.id}`, payload)
         .then(() => {
