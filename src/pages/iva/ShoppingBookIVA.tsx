@@ -1,6 +1,5 @@
 import useGlobalStyles from '@/components/global/global.styles';
 import Layout from '@/layout/Layout';
-import { useShoppingReportsStore } from '@/store/reports/shopping_reports.store';
 import { useTransmitterStore } from '@/store/transmitter.store';
 import { months } from '@/utils/constants';
 import { formatDateToMMDDYYYY } from '@/utils/dates';
@@ -26,7 +25,7 @@ function ShoppingBookIVA() {
   const [monthSelected, setMonthSelected] = useState(new Date().getMonth() + 1);
   const { transmitter, gettransmitter } = useTransmitterStore();
   console.log("transmitter", transmitter)
-  const { loading, shoppings, onGetShoppingReports } = useShoppingReportsStore();
+
   const [loadingPdf, setLoadingPdf] = useState(false)
   const showFullLayout = useDisclosure()
   const [typeOverlay, setTypeOverlay] = useState(0)
@@ -244,9 +243,6 @@ function ShoppingBookIVA() {
     gettransmitter();
   }, []);
 
-  useEffect(() => {
-    onGetShoppingReports(transmitter.id, monthSelected > 9 ? `${monthSelected}` : `0${monthSelected}`);
-  }, [transmitter, monthSelected]);
 
   const handleExportExcel = async () => {
     if (shopping_by_months.length === 0) {
@@ -345,30 +341,41 @@ function ShoppingBookIVA() {
               <div className="w-full flex justify-end items-end gap-10">
 
 
-                <Button
-                  className="px-10"
-                  endContent={<Printer size={20} />}
-                  onClick={() => showPdf()}
-                  color="secondary"
-                >
-                  Ver e imprimir
-                </Button>
-                <Button
-                  className="px-10"
-                  endContent={<PiFilePdfDuotone size={20} />}
-                  onClick={() => export_to_pdf("download")}
-                  color="danger"
-                >
-                  Exportar a PDF
-                </Button>
-                <Button
-                  className="px-10"
-                  endContent={<PiMicrosoftExcelLogoBold size={20} />}
-                  onClick={handleExportExcel}
-                  color="success"
-                >
-                  Exportar a excel
-                </Button>
+                {actionView.includes('Imprimir') && (
+                  <Button
+                    className="px-10"
+                    endContent={<Printer size={20} />}
+                    onClick={() => showPdf()}
+                    color="secondary"
+                  >
+                    Ver e imprimir
+                  </Button>
+                )}
+
+                {actionView.includes('Exportar PDF') && (
+                  <Button
+                    className="px-10"
+                    endContent={<PiFilePdfDuotone size={20} />}
+                    onClick={() => export_to_pdf("download")}
+                    color="danger"
+                  >
+                    Exportar a PDF
+                  </Button>
+                )}
+
+                {actionView.includes('Exportar Excel') && (
+                  <Button
+                    className="px-10"
+                    endContent={<PiMicrosoftExcelLogoBold size={20} />}
+                    onClick={handleExportExcel}
+                    color="success"
+                  >
+                    Exportar a excel
+                  </Button>
+                )}
+
+
+
               </div>
             </div>
             <div>

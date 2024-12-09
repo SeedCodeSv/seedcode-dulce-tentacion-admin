@@ -132,7 +132,7 @@
     },
     {
       "view": "IVA de Compras",
-      "actions": ["Imprimir", "Exportar Excel"]
+      "actions": ["Imprimir", "Exportar Excel", "Exportar PDF"]
     },
     {
       "view": "IVA de CCF",
