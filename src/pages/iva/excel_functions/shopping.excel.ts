@@ -1,18 +1,15 @@
-import { useTransmitterStore } from "@/store/transmitter.store";
+
+import { ITransmitter } from "@/types/transmitter.types";
 import ExcelJS from "exceljs"
-import { useEffect } from "react";
 
 export const generate_shopping_excel = async (
   shopping_data: Array<Array<string | number>>,
-  month: string
+  month: string,
+  transmitter: ITransmitter
 ) => {
   const workbook = new ExcelJS.Workbook()
   const worksheet = workbook.addWorksheet("Compras")
-  const { transmitter, gettransmitter } = useTransmitterStore();
 
-  useEffect(() => {
-    gettransmitter(); // Obtén el transmitter al montar el componente
-  }, []);
   worksheet.views = [{ state: "frozen", xSplit: 5, ySplit: 7 }]
 
   const merges = [
@@ -54,7 +51,7 @@ export const generate_shopping_excel = async (
   worksheet.getCell("K7").value = "Import."
 
   const titles = [
-    { cell: "A3", text: "REGISTRO No.  269660-0" },
+    { cell: "A3", text: "REGISTRO No. " + `${transmitter?.nrc}` },
     { cell: "D3", text: "ESTABLECIMIENTO:  " + `${transmitter?.nombreComercial}` },
     { cell: "D4", text: "LIBRO DE COMPRAS" },
     { cell: "A5", text: "MES" },
@@ -148,15 +145,15 @@ export const generate_shopping_excel = async (
 
   const nextLine = shopping_data.length + 8
   worksheet.getCell(`F${nextLine}`).value = "Total"
-  ;["G", "H", "I", "J", "K", "L", "M", "N"].forEach((col) => {
-    worksheet.getCell(`${col}${nextLine}`).value = {
-      formula: `SUM(${col}8:${col}${nextLine - 1})`,
-      result: 0
-    }
-    worksheet.getCell(`${col}${nextLine}`).font = { name: "Calibri", bold: true, size: 8 }
-    worksheet.getCell(`${col}${nextLine}`).numFmt =
-      '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-'
-  })
+    ;["G", "H", "I", "J", "K", "L", "M", "N"].forEach((col) => {
+      worksheet.getCell(`${col}${nextLine}`).value = {
+        formula: `SUM(${col}8:${col}${nextLine - 1})`,
+        result: 0
+      }
+      worksheet.getCell(`${col}${nextLine}`).font = { name: "Calibri", bold: true, size: 8 }
+      worksheet.getCell(`${col}${nextLine}`).numFmt =
+        '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-'
+    })
 
   const borders_cells = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N"]
 
@@ -165,7 +162,7 @@ export const generate_shopping_excel = async (
   })
 
   worksheet.mergeCells(`E${nextLine + 5}:F${nextLine + 5}`)
-  worksheet.getCell(`E${nextLine + 5}`).value = "Oscar Leopoldo Ramirez Garcia"
+  worksheet.getCell(`E${nextLine + 5}`).value = "__________________________"
   worksheet.mergeCells(`G${nextLine + 5}:I${nextLine + 5}`)
   worksheet.getCell(`G${nextLine + 5}`).value = "__________________________"
 
@@ -193,7 +190,8 @@ interface FCF {
 
 export const export_excel_factura = async (
   factura_data: Array<Array<number | string>>,
-  month: string
+  month: string,
+  transmitter: ITransmitter
 ) => {
   const workbook = new ExcelJS.Workbook()
   const worksheet = workbook.addWorksheet("Ventas FACT.")
@@ -243,7 +241,7 @@ export const export_excel_factura = async (
     right: { style: "thin" }
   } as ExcelJS.Borders
 
-  const boldText = "CS EQUIPOS Y SERVICIOS, S.A. DE C.V."
+  const boldText = `${transmitter.nombreComercial}`
   const normalText = "ESTABLECIMIENTO: "
 
   worksheet.getCell("D3").value = {
@@ -325,15 +323,15 @@ export const export_excel_factura = async (
     size: 8,
     bold: true
   }
-  ;["H", "I", "J", "K", "L"].forEach((col) => {
-    worksheet.getCell(`${col}${nextLine}`).value = {
-      formula: `SUM(${col}8:${col}${nextLine - 1})`,
-      result: 0
-    }
-    worksheet.getCell(`${col}${nextLine}`).font = { name: "Calibri", bold: true, size: 8 }
-    worksheet.getCell(`${col}${nextLine}`).numFmt =
-      '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-'
-  })
+    ;["H", "I", "J", "K", "L"].forEach((col) => {
+      worksheet.getCell(`${col}${nextLine}`).value = {
+        formula: `SUM(${col}8:${col}${nextLine - 1})`,
+        result: 0
+      }
+      worksheet.getCell(`${col}${nextLine}`).font = { name: "Calibri", bold: true, size: 8 }
+      worksheet.getCell(`${col}${nextLine}`).numFmt =
+        '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-'
+    })
 
   const borders_cells = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"]
 
@@ -425,7 +423,8 @@ export const export_excel_factura = async (
 export const export_excel_credito = async (
   month: string,
   data: Array<Array<string | number>>,
-  facturas: FCF
+  facturas: FCF,
+  transmitter: ITransmitter
 ) => {
   const workbook = new ExcelJS.Workbook()
   const worksheet = workbook.addWorksheet("Ventas CCF")
@@ -522,7 +521,7 @@ export const export_excel_credito = async (
         }
       },
       {
-        text: "CS EQUIPOS Y SERVICIOS, S.A. DE C.V.",
+        text: `${transmitter?.nombreComercial}`,
         font: {
           bold: true
         }
@@ -601,15 +600,15 @@ export const export_excel_credito = async (
     size: 8,
     bold: true
   }
-  ;["J", "K", "L", "M", "N", "O", "P"].forEach((col) => {
-    worksheet.getCell(`${col}${nextLine}`).value = {
-      formula: `SUM(${col}8:${col}${nextLine - 1})`,
-      result: 0
-    }
-    worksheet.getCell(`${col}${nextLine}`).font = { name: "Calibri", bold: true, size: 8 }
-    worksheet.getCell(`${col}${nextLine}`).numFmt =
-      '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-'
-  })
+    ;["J", "K", "L", "M", "N", "O", "P"].forEach((col) => {
+      worksheet.getCell(`${col}${nextLine}`).value = {
+        formula: `SUM(${col}8:${col}${nextLine - 1})`,
+        result: 0
+      }
+      worksheet.getCell(`${col}${nextLine}`).font = { name: "Calibri", bold: true, size: 8 }
+      worksheet.getCell(`${col}${nextLine}`).numFmt =
+        '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-'
+    })
 
   const borders_cells = [
     "A",

@@ -196,7 +196,7 @@ function ShoppingBookIVA() {
       finalY_Other = 50 // Reiniciar la posición en la nueva página
     }
     doc.setFontSize(10)
-    doc.text(`Oscar Leopoldo Ramirez Garcia`, 10, finalY_Other + 35)
+    doc.text(`_________________________________`, 10, finalY_Other + 35)
     doc.setFont("helvetica", "bold")
     doc.text(`Nombre contador o contribuyente`, 10, finalY_Other + 40)
     doc.setFont("helvetica", "normal")
@@ -304,7 +304,7 @@ function ShoppingBookIVA() {
 
     const month = months.find((month) => month.value === monthSelected)?.name || ""
 
-    const blob = await generate_shopping_excel(formatData, month)
+    const blob = await generate_shopping_excel(formatData, month, transmitter)
 
     saveAs(blob, `Libro_Compras_${month}.xlsx`)
   }
