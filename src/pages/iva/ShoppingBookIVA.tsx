@@ -24,13 +24,11 @@ import FullPageLayout from '@/components/global/FullOverflowLayout';
 function ShoppingBookIVA() {
   const [monthSelected, setMonthSelected] = useState(new Date().getMonth() + 1);
   const { transmitter, gettransmitter } = useTransmitterStore();
-  console.log("transmitter", transmitter)
-
   const [loadingPdf, setLoadingPdf] = useState(false)
   const showFullLayout = useDisclosure()
   const [typeOverlay, setTypeOverlay] = useState(0)
   const { user } = useAuthStore()
-  console.log("data del usuario", user)
+
 
   const [pdf, setPdf] = useState("")
   const { shopping_by_months, onGetShoppingByMonth, loading_shopping } = useShoppingStore()
