@@ -1351,10 +1351,19 @@ export const export_excel_facturacion_ccfe = async ({
       size: 8,
       bold: true,
     };
-    ['J', 'K', 'L', 'M', ' N', 'O', 'P'].forEach((col) => {
+    // ['J', 'K', 'L', 'M', ' N', 'O', 'P'].forEach((col) => {
+    //   worksheet.getCell(`${col}${nextLine}`).value = {
+    //     formula: `SUM(${col}${nextLine - 1}:${col}${nextLine - 1})`,
+    //     result: 0,
+    //   };
+    //   worksheet.getCell(`${col}${nextLine}`).font = { name: 'Calibri', bold: true, size: 8 };
+    //   worksheet.getCell(`${col}${nextLine}`).numFmt =
+    //     '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-';
+    // });
+
+    ['J', 'K', 'L', 'M', 'N', 'O', 'P'].forEach((col) => {
       worksheet.getCell(`${col}${nextLine}`).value = {
-        formula: `SUM(${col}${nextLine - 1}:${col}${nextLine - 1})`,
-        result: 0,
+        formula: `SUM(${col}${nextLine - sales.length}:${col}${nextLine - 1})`,
       };
       worksheet.getCell(`${col}${nextLine}`).font = { name: 'Calibri', bold: true, size: 8 };
       worksheet.getCell(`${col}${nextLine}`).numFmt =
