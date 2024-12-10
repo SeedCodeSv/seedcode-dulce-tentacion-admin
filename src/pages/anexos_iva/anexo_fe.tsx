@@ -7,6 +7,7 @@ import { Button, Input, Select, SelectItem, Spinner } from '@nextui-org/react';
 import { useEffect, useState } from 'react';
 import { annexes_iva_fe, csvmaker_fe } from './utils';
 import { global_styles } from '@/styles/global.styles';
+import NO_DATA from "../../assets/no.png"
 
 function AnexoFe() {
   const { branch_list, getBranchesList } = useBranchesStore();
@@ -98,70 +99,83 @@ function AnexoFe() {
             </Button>
           </div>
           <div className="max-h-full w-full  overflow-x-auto overflow-y-auto custom-scrollbar mt-4">
-            <table className=" w-full">
-              <thead className="sticky top-0 z-20 bg-white">
-                <tr>
-                  <th className="p-3 text-[9px] uppercase font-black text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                    Fecha
-                  </th>
-                  <th className="p-3 text-[9px] uppercase font-black text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                    Resolución
-                  </th>
-                  <th className="p-3 text-[9px] uppercase font-black text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                    Series
-                  </th>
-                  <th className="p-3 text-[9px] uppercase font-black text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                    Numero control del
-                  </th>
-                  <th className="p-3 text-[9px] uppercase font-black text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                    Numero control al
-                  </th>
-                  <th className="p-3 text-[9px] uppercase font-black text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                    Total
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {!loading_annexes_fe && (
-                  <>
-                    {annexes_iva.map((shopping) => (
-                      <tr key={shopping.day} className="border-b border-slate-200">
-                        <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
-                          {shopping.currentDay}
-                        </td>
-                        <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
-                          {shopping.resolution}
-                        </td>
-                        <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
-                          {shopping.series}
-                        </td>
-                        <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
-                          {shopping.firstNumeroControl}
-                        </td>
-                        <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
-                          {shopping.lastNumeroControl}
-                        </td>
-                        <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
-                          {formatCurrency(shopping.totalSales)}
-                        </td>
-                      </tr>
-                    ))}
-                  </>
-                )}
+
+            <>
+              {loading_annexes_fe ? (
                 <>
-                {loading_annexes_fe && (
-                  <tr className="border-b border-slate-200">
-                    <td colSpan={6} className="p-3 text-xs text-slate-500 dark:text-slate-100">
-                     <div className='w-full flex justify-center items-center flex-col'>
-                        <Spinner size='lg' />
-                        <p className='mt-2 text-xl'>Cargando....</p>
-                     </div>
-                    </td>
-                  </tr>
-                )}
+                  <div className='w-full flex justify-center items-center flex-col'>
+                    <Spinner size='lg' />
+                    <p className='mt-2 text-xl'>Cargando....</p>
+                  </div>
                 </>
-              </tbody>
-            </table>
+              ) : (
+                <>
+                  {annexes_iva.length > 0 ? (
+                    <> <table className=" w-full">
+                      <thead className="sticky top-0 z-20 bg-white">
+                        <tr>
+                          <th className="p-3 text-[9px] uppercase font-black text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                            Fecha
+                          </th>
+                          <th className="p-3 text-[9px] uppercase font-black text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                            Resolución
+                          </th>
+                          <th className="p-3 text-[9px] uppercase font-black text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                            Series
+                          </th>
+                          <th className="p-3 text-[9px] uppercase font-black text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                            Numero control del
+                          </th>
+                          <th className="p-3 text-[9px] uppercase font-black text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                            Numero control al
+                          </th>
+                          <th className="p-3 text-[9px] uppercase font-black text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                            Total
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <>
+                          {annexes_iva.map((shopping) => (
+                            <tr key={shopping.day} className="border-b border-slate-200">
+                              <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
+                                {shopping.currentDay}
+                              </td>
+                              <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
+                                {shopping.resolution}
+                              </td>
+                              <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
+                                {shopping.series}
+                              </td>
+                              <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
+                                {shopping.firstNumeroControl}
+                              </td>
+                              <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
+                                {shopping.lastNumeroControl}
+                              </td>
+                              <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
+                                {formatCurrency(shopping.totalSales)}
+                              </td>
+                            </tr>
+                          ))}
+                        </>
+                      </tbody>
+                    </table></>
+                  ) : (
+                    <>
+                      <div className="w-full h-full flex dark:bg-gray-600 p-10 flex-col justify-center items-center">
+                        <img className="w-44 mt-10" src={NO_DATA} alt="" />
+                        <p className="mt-5 dark:text-white text-gray-600 text-xl">
+                          No se encontraron resultados
+                        </p>
+                      </div></>
+                  )}
+                </>
+              )}
+            </>
+
+
+
           </div>
         </div>
       </div>

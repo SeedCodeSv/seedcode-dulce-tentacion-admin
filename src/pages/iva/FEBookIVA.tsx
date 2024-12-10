@@ -188,12 +188,12 @@ function FEBookIVA() {
                                 <th className="p-3 text-xs font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                                   Numero Control Final
                                 </th>
-                                <th className="p-3 w-32 text-xs font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                                {/* <th className="p-3 w-32 text-xs font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                                   Sello Recibido Inicial
-                                </th>
-                                <th className="p-3 w-32 text-xs font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                                </th> */}
+                                {/* <th className="p-3 w-32 text-xs font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                                 Sello Recibido Final
-                                </th>
+                                </th> */}
                                 <th className="p-3 text-xs font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                                   Total
                                 </th>
@@ -217,12 +217,12 @@ function FEBookIVA() {
                                   <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
                                     {factura.lastNumeroControl!}
                                   </td>
-                                  <td className="p-3 w-32 text-xs text-slate-500 dark:text-slate-100">
+                                  {/* <td className="p-3 w-32 text-xs text-slate-500 dark:text-slate-100">
                                     <p className="truncate w-44">{factura.firstSelloRecibido!}</p>
                                   </td>
                                   <td className="p-3 w-32 text-xs text-slate-500 dark:text-slate-100">
                                   <p className="truncate w-44">{factura.lastSelloRecibido!}</p>
-                                  </td>
+                                  </td> */}
                                   <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
                                     {formatCurrency(Number(factura.totalSales))}
                                   </td>
