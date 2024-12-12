@@ -1,7 +1,5 @@
 import Layout from '@/layout/Layout';
-// import { useBranchesStore } from '@/store/branches.store';
 import { useIvaFeStore } from '@/store/reports/iva-fe.store';
-// import { formatDate } from '@/utils/dates';
 import { formatCurrency } from '@/utils/dte';
 import { Button, Select, SelectItem, Spinner } from '@nextui-org/react';
 import { useEffect, useState } from 'react';
@@ -12,19 +10,9 @@ import { useAuthStore } from '@/store/auth.store';
 import { months } from '@/utils/constants';
 
 function AnexoFe() {
-  // const { branch_list, getBranchesList } = useBranchesStore();
   const { user } = useAuthStore();
-
-  // useEffect(() => {
-  //   getBranchesList();
-  // }, []);
-  // const [branchId, setBranchId] = useState(0);
   const [monthSelected, setMonthSelected] = useState(new Date().getMonth() + 1)
-
-  // const [startDate, setStartDate] = useState(formatDate());
-  // const [endDate, setEndDate] = useState(formatDate());
   const { annexes_iva, onGetAnnexesIva, loading_annexes_fe } = useIvaFeStore();
-
   useEffect(() => {
     onGetAnnexesIva(Number(user?.correlative?.branch.transmitterId), monthSelected <= 9 ? "0" + monthSelected : monthSelected.toString());
   }, [user?.correlative?.branch.transmitterId, monthSelected]);
@@ -53,24 +41,7 @@ function AnexoFe() {
       <div className=" w-full h-full flex flex-col p-6 bg-gray-50 dark:bg-gray-900">
         <div className="w-full flex flex-col h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <div className="w-full flex justify-between gap-5">
-            {/* <Input
-              classNames={{ label: 'font-semibold' }}
-              label="Fecha inicial"
-              type="date"
-              variant="bordered"
-              labelPlacement="outside"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-            />
-            <Input
-              classNames={{ label: 'font-semibold' }}
-              label="Fecha inicial"
-              type="date"
-              variant="bordered"
-              labelPlacement="outside"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-            /> */}
+
             <Select
               selectedKeys={[`${monthSelected}`]}
               onSelectionChange={(key) => {
@@ -90,26 +61,7 @@ function AnexoFe() {
                 </SelectItem>
               ))}
             </Select>
-            {/* <Select
-              defaultSelectedKeys={`${branchId}`}
-              onSelectionChange={(key) => {
-                if (key) {
-                  setBranchId(Number(key.currentKey));
-                }
-              }}
-              className="w-full"
-              placeholder="Selecciona la sucursal"
-              classNames={{ label: 'font-semibold' }}
-              label="Sucursal"
-              labelPlacement="outside"
-              variant="bordered"
-            >
-              {branch_list.map((branch) => (
-                <SelectItem key={branch.id} value={branch.id}>
-                  {branch.name}
-                </SelectItem>
-              ))}
-            </Select> */}
+
             <div className="w-full flex justify-end gap-5 mt-4">
               <Button style={global_styles().thirdStyle} onClick={exportAnnexes}>
                 Exportar anexo
@@ -121,7 +73,6 @@ function AnexoFe() {
           </div>
 
           <div className="max-h-full w-full  overflow-x-auto overflow-y-auto custom-scrollbar mt-4">
-
             <>
               {loading_annexes_fe ? (
                 <>
@@ -163,17 +114,20 @@ function AnexoFe() {
                               <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
                                 {shopping.currentDay}
                               </td>
-                              <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
+                              {/* <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
                                 {shopping.resolution}
+                              </td> */}
+                              <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
+                                {shopping.typeVoucher === 'FE' ? shopping.firstNumeroControl : shopping.resolution}
                               </td>
                               <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
-                                {shopping.series}
+                                {shopping.typeVoucher === 'FE' ? shopping.firstSelloRecibido : shopping.series}
                               </td>
                               <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
-                                {shopping.firstNumeroControl}
+                                {shopping.typeVoucher === 'FE' ? shopping.firstCorrelativ : shopping.firstNumeroControl}
                               </td>
                               <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
-                                {shopping.lastNumeroControl}
+                                {shopping.typeVoucher === 'FE' ? shopping.lastCorrelative : shopping.lastNumeroControl}
                               </td>
                               <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
                                 {formatCurrency(shopping.totalSales)}
@@ -195,9 +149,6 @@ function AnexoFe() {
                 </>
               )}
             </>
-
-
-
           </div>
         </div>
       </div>

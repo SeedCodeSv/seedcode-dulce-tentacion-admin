@@ -6,6 +6,18 @@ export interface Sale {
     firstNumeroControl: string;
     lastNumeroControl: string;
     totalSales: number;
+
+
+
+    firstSelloRecibido?: string
+   
+
+ 
+
+    lastSelloRecibido?: string
+
+   
+ 
 }
 
 export interface SalesByDay {
