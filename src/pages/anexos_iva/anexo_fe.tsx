@@ -1,14 +1,15 @@
 import Layout from '@/layout/Layout';
 // import { useBranchesStore } from '@/store/branches.store';
 import { useIvaFeStore } from '@/store/reports/iva-fe.store';
-import { formatDate } from '@/utils/dates';
+// import { formatDate } from '@/utils/dates';
 import { formatCurrency } from '@/utils/dte';
-import { Button, Input, Spinner } from '@nextui-org/react';
+import { Button, Select, SelectItem, Spinner } from '@nextui-org/react';
 import { useEffect, useState } from 'react';
 import { annexes_iva_fe, csvmaker_fe } from './utils';
 import { global_styles } from '@/styles/global.styles';
 import NO_DATA from "../../assets/no.png"
 import { useAuthStore } from '@/store/auth.store';
+import { months } from '@/utils/constants';
 
 function AnexoFe() {
   // const { branch_list, getBranchesList } = useBranchesStore();
@@ -18,14 +19,15 @@ function AnexoFe() {
   //   getBranchesList();
   // }, []);
   // const [branchId, setBranchId] = useState(0);
+  const [monthSelected, setMonthSelected] = useState(new Date().getMonth() + 1)
 
-  const [startDate, setStartDate] = useState(formatDate());
-  const [endDate, setEndDate] = useState(formatDate());
+  // const [startDate, setStartDate] = useState(formatDate());
+  // const [endDate, setEndDate] = useState(formatDate());
   const { annexes_iva, onGetAnnexesIva, loading_annexes_fe } = useIvaFeStore();
 
   useEffect(() => {
-    onGetAnnexesIva(Number(user?.correlative?.branch.transmitterId), startDate, endDate);
-  }, [user?.correlative?.branch.transmitterId, startDate, endDate]);
+    onGetAnnexesIva(Number(user?.correlative?.branch.transmitterId), monthSelected <= 9 ? "0" + monthSelected : monthSelected.toString());
+  }, [user?.correlative?.branch.transmitterId, monthSelected]);
 
   const exportAnnexes = async () => {
     const blob = await annexes_iva_fe(annexes_iva);
@@ -51,7 +53,7 @@ function AnexoFe() {
       <div className=" w-full h-full flex flex-col p-6 bg-gray-50 dark:bg-gray-900">
         <div className="w-full flex flex-col h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <div className="grid grid-cols-3 gap-5">
-            <Input
+            {/* <Input
               classNames={{ label: 'font-semibold' }}
               label="Fecha inicial"
               type="date"
@@ -68,7 +70,26 @@ function AnexoFe() {
               labelPlacement="outside"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-            />
+            /> */}
+            <Select
+              selectedKeys={[`${monthSelected}`]}
+              onSelectionChange={(key) => {
+                if (key) {
+                  setMonthSelected(Number(new Set(key).values().next().value))
+                }
+              }}
+              className="w-44"
+              classNames={{ label: "font-semibold" }}
+              label="Meses"
+              labelPlacement="outside"
+              variant="bordered"
+            >
+              {months.map((month) => (
+                <SelectItem key={month.value} value={month.value}>
+                  {month.name}
+                </SelectItem>
+              ))}
+            </Select>
             {/* <Select
               defaultSelectedKeys={`${branchId}`}
               onSelectionChange={(key) => {
