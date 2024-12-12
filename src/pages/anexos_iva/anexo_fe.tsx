@@ -1,31 +1,31 @@
 import Layout from '@/layout/Layout';
-import { useBranchesStore } from '@/store/branches.store';
+// import { useBranchesStore } from '@/store/branches.store';
 import { useIvaFeStore } from '@/store/reports/iva-fe.store';
 import { formatDate } from '@/utils/dates';
 import { formatCurrency } from '@/utils/dte';
-import { Button, Input, Select, SelectItem, Spinner } from '@nextui-org/react';
+import { Button, Input, Spinner } from '@nextui-org/react';
 import { useEffect, useState } from 'react';
 import { annexes_iva_fe, csvmaker_fe } from './utils';
 import { global_styles } from '@/styles/global.styles';
 import NO_DATA from "../../assets/no.png"
+import { useAuthStore } from '@/store/auth.store';
 
 function AnexoFe() {
-  const { branch_list, getBranchesList } = useBranchesStore();
+  // const { branch_list, getBranchesList } = useBranchesStore();
+  const { user } = useAuthStore();
 
-  useEffect(() => {
-    getBranchesList();
-  }, []);
-
-  const [branchId, setBranchId] = useState(0);
+  // useEffect(() => {
+  //   getBranchesList();
+  // }, []);
+  // const [branchId, setBranchId] = useState(0);
 
   const [startDate, setStartDate] = useState(formatDate());
   const [endDate, setEndDate] = useState(formatDate());
-
   const { annexes_iva, onGetAnnexesIva, loading_annexes_fe } = useIvaFeStore();
 
   useEffect(() => {
-    onGetAnnexesIva(branchId, startDate, endDate);
-  }, [branchId, startDate, endDate]);
+    onGetAnnexesIva(Number(user?.correlative?.branch.transmitterId), startDate, endDate);
+  }, [user?.correlative?.branch.transmitterId, startDate, endDate]);
 
   const exportAnnexes = async () => {
     const blob = await annexes_iva_fe(annexes_iva);
@@ -69,7 +69,7 @@ function AnexoFe() {
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
             />
-            <Select
+            {/* <Select
               defaultSelectedKeys={`${branchId}`}
               onSelectionChange={(key) => {
                 if (key) {
@@ -88,7 +88,7 @@ function AnexoFe() {
                   {branch.name}
                 </SelectItem>
               ))}
-            </Select>
+            </Select> */}
           </div>
           <div className="w-full flex justify-end gap-5 mt-4">
             <Button style={global_styles().thirdStyle} onClick={exportAnnexes}>
