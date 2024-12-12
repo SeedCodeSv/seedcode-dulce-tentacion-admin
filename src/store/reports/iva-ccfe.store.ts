@@ -11,9 +11,9 @@ export const useIvaCcfeStore = create<AnnexeCCFEStore>((set) => ({
     //         set({ annexes_iva_ccfe: data.sales, loading_annexes_iva_ccfe: false });
     //     }).catch(() => set({ annexes_iva_ccfe: [], loading_annexes_iva_ccfe: false }));
     // },
-    onGetIvaAnnexesCcf(branchId, startDate, endDate) {
+    onGetIvaAnnexesCcf(branchId, month) {
         set({ loading_annexes_iva_ccfe: true }); // Aquí activamos el estado de carga
-        get_annexes_iva_ccfe(branchId, startDate, endDate)
+        get_annexes_iva_ccfe(branchId, month)
             .then((res) => {
                 const { data } = res;
                 set({ annexes_iva_ccfe: data.sales, loading_annexes_iva_ccfe: false });

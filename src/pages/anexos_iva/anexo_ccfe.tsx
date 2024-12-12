@@ -1,31 +1,34 @@
 import Layout from '@/layout/Layout';
-import { useBranchesStore } from '@/store/branches.store';
+// import { useBranchesStore } from '@/store/branches.store';
 import { useIvaCcfeStore } from '@/store/reports/iva-ccfe.store';
-import { formatDate } from '@/utils/dates';
+// import { formatDate } from '@/utils/dates';
 import { formatCurrency } from '@/utils/dte';
-import { Button, Input, Select, SelectItem, Spinner } from '@nextui-org/react';
+import { Button, Select, SelectItem, Spinner } from '@nextui-org/react';
 import { useEffect, useState } from 'react';
 import { csvmaker_ccfe, export_annexes_iva_ccfe } from './utils';
 import { global_styles } from '@/styles/global.styles';
 import NO_DATA from "../../assets/no.png"
+import { months } from '@/utils/constants';
+import { useAuthStore } from '@/store/auth.store';
 
 function AnexoCcfe() {
-  const { branch_list, getBranchesList } = useBranchesStore();
+  // const { branch_list, getBranchesList } = useBranchesStore();
+  const [monthSelected, setMonthSelected] = useState(new Date().getMonth() + 1)
+  const { user } = useAuthStore();
+  // useEffect(() => {
+  //   getBranchesList();
+  // }, []);
 
-  useEffect(() => {
-    getBranchesList();
-  }, []);
+  // const [branchId, setBranchId] = useState(0);
 
-  const [branchId, setBranchId] = useState(0);
-
-  const [startDate, setStartDate] = useState(formatDate());
-  const [endDate, setEndDate] = useState(formatDate());
+  // const [startDate, setStartDate] = useState(formatDate());
+  // const [endDate, setEndDate] = useState(formatDate());
 
   const { annexes_iva_ccfe, loading_annexes_iva_ccfe, onGetIvaAnnexesCcf } = useIvaCcfeStore();
 
   useEffect(() => {
-    onGetIvaAnnexesCcf(branchId, startDate, endDate);
-  }, [branchId, startDate, endDate]);
+    onGetIvaAnnexesCcf(Number(user?.correlative?.branch.transmitterId), monthSelected <= 9 ? "0" + monthSelected : monthSelected.toString());
+  }, [user?.correlative?.branch.transmitterId, monthSelected]);
 
   const exportAnnexes = async () => {
     const blob = await export_annexes_iva_ccfe(annexes_iva_ccfe);
@@ -50,8 +53,28 @@ function AnexoCcfe() {
     <Layout title="Anexo CCFE">
       <div className=" w-full h-full flex flex-col p-6 bg-gray-50 dark:bg-gray-900">
         <div className="w-full flex flex-col h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
-          <div className="grid grid-cols-3 gap-5">
-            <Input
+          <div className="w-full flex justify-between gap-5">
+
+            <Select
+              selectedKeys={[`${monthSelected}`]}
+              onSelectionChange={(key) => {
+                if (key) {
+                  setMonthSelected(Number(new Set(key).values().next().value))
+                }
+              }}
+              className="w-44"
+              classNames={{ label: "font-semibold" }}
+              label="Meses"
+              labelPlacement="outside"
+              variant="bordered"
+            >
+              {months.map((month) => (
+                <SelectItem key={month.value} value={month.value}>
+                  {month.name}
+                </SelectItem>
+              ))}
+            </Select>
+            {/* <Input
               classNames={{ label: 'font-semibold' }}
               label="Fecha inicial"
               type="date"
@@ -68,8 +91,8 @@ function AnexoCcfe() {
               labelPlacement="outside"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-            />
-            <Select
+            /> */}
+            {/* <Select
               defaultSelectedKeys={`${branchId}`}
               onSelectionChange={(key) => {
                 if (key) {
@@ -88,21 +111,22 @@ function AnexoCcfe() {
                   {branch.name}
                 </SelectItem>
               ))}
-            </Select>
+            </Select> */}
+            <div className="w-full flex justify-end gap-5 mt-4">
+              <Button style={global_styles().thirdStyle} onClick={exportAnnexes}>
+                Exportar anexo
+              </Button>
+              <Button style={global_styles().secondaryStyle} onClick={exportAnnexesCSV}>
+                Exportar a CSV
+              </Button>
+            </div>
           </div>
-          <div className="w-full flex justify-end gap-5 mt-4">
-            <Button style={global_styles().thirdStyle} onClick={exportAnnexes}>
-              Exportar anexo
-            </Button>
-            <Button style={global_styles().secondaryStyle} onClick={exportAnnexesCSV}>
-              Exportar a CSV
-            </Button>
-          </div>
+
           <div className="max-h-full w-full  overflow-x-auto overflow-y-auto custom-scrollbar mt-4">
             <>
               {loading_annexes_iva_ccfe ? (
                 <>
-                  <div className='w-full flex justify-center items-center flex-col'>
+                  <div className='w-full flex  mt-20 justify-center items-center flex-col'>
                     <Spinner size='lg' />
                     <p className='mt-2 text-xl'>Cargando....</p>
                   </div>

@@ -52,7 +52,7 @@ function AnexoFe() {
     <Layout title="Anexo FE">
       <div className=" w-full h-full flex flex-col p-6 bg-gray-50 dark:bg-gray-900">
         <div className="w-full flex flex-col h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
-          <div className="grid grid-cols-3 gap-5">
+          <div className="w-full flex justify-between gap-5">
             {/* <Input
               classNames={{ label: 'font-semibold' }}
               label="Fecha inicial"
@@ -110,21 +110,22 @@ function AnexoFe() {
                 </SelectItem>
               ))}
             </Select> */}
+            <div className="w-full flex justify-end gap-5 mt-4">
+              <Button style={global_styles().thirdStyle} onClick={exportAnnexes}>
+                Exportar anexo
+              </Button>
+              <Button style={global_styles().secondaryStyle} onClick={exportAnnexesCSV}>
+                Exportar a CSV
+              </Button>
+            </div>
           </div>
-          <div className="w-full flex justify-end gap-5 mt-4">
-            <Button style={global_styles().thirdStyle} onClick={exportAnnexes}>
-              Exportar anexo
-            </Button>
-            <Button style={global_styles().secondaryStyle} onClick={exportAnnexesCSV}>
-              Exportar a CSV
-            </Button>
-          </div>
+
           <div className="max-h-full w-full  overflow-x-auto overflow-y-auto custom-scrollbar mt-4">
 
             <>
               {loading_annexes_fe ? (
                 <>
-                  <div className='w-full flex justify-center items-center flex-col'>
+                  <div className='w-full flex justify-center items-center mt-20 flex-col'>
                     <Spinner size='lg' />
                     <p className='mt-2 text-xl'>Cargando....</p>
                   </div>
