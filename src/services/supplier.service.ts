@@ -28,21 +28,21 @@ export const get_supplier_pagination = (
 ) => {
   const user = get_user();
   const token = get_token() ?? '';
+  const params = {
+    page: page.toString(),
+    nombre: name,
+    correo: email,
+    limit: limit.toString(),
+    isTransmitter: isTransmitter.toString(),
+    active: active.toString(),
+  }
+
+  const queryString = new URLSearchParams(params).toString();
+
   return axios.get<IGetSupplierPagination>(
     API_URL +
-      `/suppliers/list/${user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0}` +
-      '?page=' +
-      page +
-      '&limit=' +
-      limit +
-      '&nombre=' +
-      name +
-      '&correo=' +
-      email +
-      '&isTransmitter=' +
-      isTransmitter +
-      '&active=' +
-      active,
+    `/suppliers/list/${user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0}` +
+    '?' + queryString,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -79,7 +79,7 @@ export const get_supplier = () => {
   const token = get_token() ?? '';
   return axios.get<IGetSuppliers>(
     API_URL +
-      `/suppliers/list-by-transmitter/${user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0}`,
+    `/suppliers/list-by-transmitter/${user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,

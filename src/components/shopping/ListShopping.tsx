@@ -1,5 +1,5 @@
 import { Autocomplete, AutocompleteItem, Button, Input } from '@nextui-org/react';
-import { ChevronLeft, ChevronRight, Filter, Pen, SearchIcon } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Filter, SearchIcon } from 'lucide-react';
 import NO_DATA from '@/assets/svg/no_data.svg';
 import { useNavigate } from 'react-router-dom';
 import Pagination from '../global/Pagination';
@@ -240,9 +240,9 @@ function ShoppingPage({ actions }: ArrayAction) {
                     <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                       Monto total
                     </th>
-                    <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                    {/* <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                       Acciones
-                    </th>
+                    </th> */}
                   </tr>
                 </thead>
                 <tbody className="max-h-[600px] w-full overflow-y-auto">
@@ -282,7 +282,7 @@ function ShoppingPage({ actions }: ArrayAction) {
                               <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
                                 {cat.montoTotalOperacion}
                               </td>
-                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
+                              {/* <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
                                 <div>
                                   {cat.generationCode === 'N/A' && (
                                     <Button
@@ -294,7 +294,7 @@ function ShoppingPage({ actions }: ArrayAction) {
                                     </Button>
                                   )}
                                 </div>
-                              </td>
+                              </td> */}
                             </tr>
                           ))}
                         </>
@@ -324,8 +324,8 @@ function ShoppingPage({ actions }: ArrayAction) {
                     onPageChange={(page) => {
                       getPaginatedShopping(
                         user?.correlative?.branch.transmitterId ??
-                          user?.pointOfSale?.branch.transmitterId ??
-                          0,
+                        user?.pointOfSale?.branch.transmitterId ??
+                        0,
                         page,
                         10,
                         dateInitial,
@@ -340,8 +340,8 @@ function ShoppingPage({ actions }: ArrayAction) {
                     onClick={() => {
                       getPaginatedShopping(
                         user?.correlative?.branch.transmitterId ??
-                          user?.pointOfSale?.branch.transmitterId ??
-                          0,
+                        user?.pointOfSale?.branch.transmitterId ??
+                        0,
                         pagination_shopping.prevPag,
 
                         5,
@@ -362,8 +362,8 @@ function ShoppingPage({ actions }: ArrayAction) {
                     onClick={() => {
                       getPaginatedShopping(
                         user?.correlative?.branch.transmitterId ??
-                          user?.pointOfSale?.branch.transmitterId ??
-                          0,
+                        user?.pointOfSale?.branch.transmitterId ??
+                        0,
                         pagination_shopping.prevPag,
 
                         5,

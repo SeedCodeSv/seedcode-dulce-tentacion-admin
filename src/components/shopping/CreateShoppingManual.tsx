@@ -60,7 +60,6 @@ function CreateShoppingManual() {
   const [includePerception, setIncludePerception] = useState(false);
   const [tipoDte, setTipoDte] = useState('03');
 
-
   const handleChangeAfecta = (e: string) => {
     const sanitizedValue = e.replace(/[^0-9.]/g, "")
     const totalAfecta = Number(sanitizedValue)
@@ -138,33 +137,17 @@ function CreateShoppingManual() {
         setCorrelative(data.correlative + 1);
       })
       .catch(() => setCorrelative(0));
-  }, []);
-
-  // useEffect(() => {
-  //   if (nrc !== "") {
-  //     const find = supplier_pagination.suppliers.find((supp) => supp.nrc === nrc)
-  //     if (find) setSupplierSelected(find)
-  //     else {
-  //       setSupplierSelected(undefined)
-  //     }
-  //   }
-  // }, [nrc])
-  useEffect(() => {
-    if (searchNRC !== "") {
-      getSupplierPagination(1, 15, searchNRC, '', '', 1);
-    }
   }, [searchNRC]);
+
   useEffect(() => {
     if (nrc !== "") {
-      const find = supplier_pagination.suppliers.find(
-        (supp) => supp.nrc === nrc || supp.nombre.toLowerCase().includes(nrc.toLowerCase())
-      );
-      if (find) setSupplierSelected(find);
+      const find = supplier_pagination.suppliers.find((supp) => supp.nrc === nrc)
+      if (find) setSupplierSelected(find)
       else {
-        setSupplierSelected(undefined);
+        setSupplierSelected(undefined)
       }
     }
-  }, [nrc, supplier_pagination.suppliers]);
+  }, [nrc])
 
 
   const services = new SeedcodeCatalogosMhService();
@@ -318,7 +301,7 @@ function CreateShoppingManual() {
               >
                 {supplier_pagination.suppliers.map((supp) => (
                   <AutocompleteItem key={supp.id}>
-                    {supp.nombre + " - " + supp.nombreComercial}
+                    {supp.nombre}
                   </AutocompleteItem>
                 ))}
               </Autocomplete>

@@ -63,6 +63,7 @@ export const get_shopping_by_id = (id: number) => {
   return axios.get<IGetShoppingDetails>(API_URL + `/shoppings/${id}`);
 }
 
+
 export const update_shopping_manual = (id: number, payload: ICreateShoppingManual) => {
   return axios.patch<{ ok: boolean }>(`${API_URL}/shoppings/${id}`, payload);
 };

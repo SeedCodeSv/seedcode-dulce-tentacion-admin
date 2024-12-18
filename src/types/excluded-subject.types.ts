@@ -157,6 +157,35 @@ export interface AnnulationExcludedSubjectPayload {
 }
 
 export interface ExcludedSubjectByMonthBranch {
-  excludedSubject: IExcludedSubjects[]
+  excludedSubject: ExcludedSubject[]
   ok: boolean
+}
+
+
+export interface ExcludedSubject {
+  id: number
+  numeroControl: string
+  codigoGeneracion: string
+  tipoDte: string
+  pathJson: string
+  condicionOperacion: number
+  fecEmi: string
+  horEmi: string
+  selloRecibido: string
+  selloInvalidacion: any
+  sello: boolean
+  totalCompra: string
+  descu: string
+  totalDescu: string
+  ivaRete1: string
+  subTotal: string
+  reteRenta: string
+  totalPagar: string
+  totalLetras: string
+  isActive: boolean
+  subject: Subject
+  subjectId: number
+  boxId: number
+  employeeId: number
+  statusId: number
 }
