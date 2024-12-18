@@ -1,5 +1,5 @@
 import { Autocomplete, AutocompleteItem, Button, Input } from '@nextui-org/react';
-import { ChevronLeft, ChevronRight, Filter, SearchIcon } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Filter, SearchIcon, Trash } from 'lucide-react';
 import NO_DATA from '@/assets/svg/no_data.svg';
 import { useNavigate } from 'react-router-dom';
 import Pagination from '../global/Pagination';
@@ -15,6 +15,9 @@ import TooltipGlobal from '../global/TooltipGlobal';
 import { global_styles } from '@/styles/global.styles';
 import BottomDrawer from '../global/BottomDrawer';
 import { ThemeContext } from '@/hooks/useTheme';
+import axios from 'axios';
+import { API_URL } from '@/utils/constants';
+import { toast } from 'sonner';
 
 function ShoppingPage({ actions }: ArrayAction) {
   const styles = useGlobalStyles();
@@ -50,6 +53,25 @@ function ShoppingPage({ actions }: ArrayAction) {
     );
   };
   const navigate = useNavigate();
+
+  const onDelete = (id: number) => {
+    axios
+      .delete(API_URL + "/shoppings/" + id)
+      .then(() => {
+        getPaginatedShopping(
+          user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
+          1,
+          10,
+          dateInitial,
+          dateEnd,
+          branchId
+        );
+        toast.success("Eliminado con exito")
+      })
+      .catch(() => {
+        toast.error("Error al eliminar")
+      })
+  }
   return (
     <>
       <div className=" w-full h-full p-10 bg-gray-50 dark:bg-gray-900">
@@ -240,9 +262,9 @@ function ShoppingPage({ actions }: ArrayAction) {
                     <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                       Monto total
                     </th>
-                    {/* <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                    <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                       Acciones
-                    </th> */}
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="max-h-[600px] w-full overflow-y-auto">
@@ -282,9 +304,10 @@ function ShoppingPage({ actions }: ArrayAction) {
                               <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
                                 {cat.montoTotalOperacion}
                               </td>
-                              {/* <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
+
+                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
                                 <div>
-                                  {cat.generationCode === 'N/A' && (
+                                  {/* {cat.generationCode === 'N/A' && (
                                     <Button
                                       onClick={() => navigate(`/edit-shopping/${cat.id}`)}
                                       style={global_styles().secondaryStyle}
@@ -292,9 +315,18 @@ function ShoppingPage({ actions }: ArrayAction) {
                                     >
                                       <Pen />
                                     </Button>
+                                  )} */}
+                                  {cat.generationCode === 'N/A' && (
+                                    <Button
+                                      onClick={() => onDelete(cat.id)}
+                                      style={global_styles().warningStyles}
+                                      isIconOnly
+                                    >
+                                      <Trash />
+                                    </Button>
                                   )}
                                 </div>
-                              </td> */}
+                              </td>
                             </tr>
                           ))}
                         </>
