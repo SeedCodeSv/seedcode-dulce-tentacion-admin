@@ -39,7 +39,7 @@ import { useNavigate } from 'react-router';
 import SearchSupplier from './search_supplier/SearchSupplier';
 function ListSuppliers({ actions }: ArrayAction) {
   const { theme } = useContext(ThemeContext);
-  const { getSupplierPagination, supplier_pagination, activateSupplier } = useSupplierStore();
+  const { getSupplierPagination, supplier_pagination, activateSupplier, loading } = useSupplierStore();
   const [limit, setLimit] = useState(5);
   const [search, setSearch] = useState('');
   const [email, setEmail] = useState('');
@@ -313,7 +313,7 @@ function ListSuppliers({ actions }: ArrayAction) {
             <MobileViewSupplier
               actions={actions}
               handleActive={handleActivate}
-              handleChangeSupplier={() => {}}
+              handleChangeSupplier={() => { }}
               deletePopover={DeletePopover}
               layout={view as 'grid' | 'list'}
             />
@@ -345,120 +345,131 @@ function ListSuppliers({ actions }: ArrayAction) {
                   </tr>
                 </thead>
                 <tbody className="max-h-[600px] w-full overflow-y-auto">
-                  {supplier_pagination.suppliers.length > 0 ? (
-                    <>
-                      {supplier_pagination.suppliers.map((item) => (
-                        <tr className="border-b border-slate-200">
-                          <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                            {item.id}
-                          </td>
-                          <td className="p-3 text-sm text-slate-500 dark:text-slate-100 max-w-[350px]">
-                            {item.nombre}
-                          </td>
-                          <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                            {item.telefono}
-                          </td>
-                          <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                            {item.correo}
-                          </td>
-                          <td className="p-3 text-sm text-slate-500 whitespace-nowrap dark:text-slate-100">
-                            <span
-                              className={`px-2 py-1 text-white rounded-lg ${
-                                item.esContribuyente ? 'bg-green-500' : 'bg-red-500'
-                              }`}
-                            >
-                              {item.esContribuyente ? 'CONTRIBUYENTE' : 'CONSUMIDOR FINAL'}
-                            </span>
-                          </td>
-
-                          <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                            <div className="flex w-full gap-5">
-                              {item.isActive && actions.includes('Editar') && (
-                                <TooltipGlobal text="Editar">
-                                  <Button
-                                    className="border border-white"
-                                    onClick={() => {
-                                      if (item.esContribuyente === true) {
-                                        navigate(`/update-supplier-tribute/${item.id}`);
-                                        OnGetBySupplier(item.id ?? 0);
-                                      } else {
-                                        navigate(`/update-supplier-normal/${item.id}`);
-                                        OnGetBySupplier(item.id ?? 0);
-                                      }
-                                    }}
-                                    isIconOnly
-                                    style={{
-                                      backgroundColor: theme.colors.secondary,
-                                    }}
-                                  >
-                                    <EditIcon
-                                      className="text-white"
-                                      style={{ color: theme.colors.primary }}
-                                      size={20}
-                                    />
-                                  </Button>
-                                </TooltipGlobal>
-                              )}
-                              {item.isActive && actions.includes('Eliminar') && (
-                                <DeletePopover supplier={item} />
-                              )}
-                              <>
-                                {item.isActive &&
-                                  item.esContribuyente === false &&
-                                  actions.includes('Cambiar Tipo de Proveedor') && (
-                                    <TooltipGlobal text="Cambiar el tipo de proveedor">
-                                      <Button
-                                        className="border border-white"
-                                        onClick={() => {
-                                          navigate(`/update-supplier-tribute/${item.id}`);
-                                          OnGetBySupplier(item.id ?? 0);
-                                        }}
-                                        isIconOnly
-                                        style={{
-                                          backgroundColor: theme.colors.third,
-                                        }}
-                                      >
-                                        <Repeat style={{ color: theme.colors.primary }} size={20} />
-                                      </Button>
-                                    </TooltipGlobal>
-                                  )}
-                              </>
-
-                              <>
-                                {!item.isActive && (
-                                  <>
-                                    {actions.includes('Activar') && (
-                                      <Button
-                                        onClick={() => {
-                                          handleActivate(item.id ?? 0);
-                                        }}
-                                        isIconOnly
-                                        style={{
-                                          backgroundColor: theme.colors.third,
-                                        }}
-                                      >
-                                        <RefreshCcw />
-                                      </Button>
-                                    )}
-                                  </>
-                                )}
-                              </>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </>
-                  ) : (
+                  {loading ? (
                     <tr>
-                      <td colSpan={5}>
-                        <div className="flex flex-col items-center justify-center w-full">
-                          <img src={NO_DATA} alt="X" className="w-32 h-32" />
-                          <p className="mt-3 text-xl dark:text-white">
-                            No se encontraron resultados
-                          </p>
+                      <td colSpan={5} className="p-3 text-sm text-center text-slate-500">
+                        <div className="flex flex-col items-center justify-center w-full h-64">
+                          <div className="loader"></div>
+                          <p className="mt-3 text-xl font-semibold">Cargando...</p>
                         </div>
                       </td>
                     </tr>
+                  ) : (
+                    <>
+                      {supplier_pagination.suppliers.length > 0 ? (
+                        <>
+                          {supplier_pagination.suppliers.map((item) => (
+                            <tr className="border-b border-slate-200">
+                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                {item.id}
+                              </td>
+                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100 max-w-[350px]">
+                                {item.nombre}
+                              </td>
+                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                {item.telefono}
+                              </td>
+                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                {item.correo}
+                              </td>
+                              <td className="p-3 text-sm text-slate-500 whitespace-nowrap dark:text-slate-100">
+                                <span
+                                  className={`px-2 py-1 text-white rounded-lg ${item.esContribuyente ? 'bg-green-500' : 'bg-red-500'
+                                    }`}
+                                >
+                                  {item.esContribuyente ? 'CONTRIBUYENTE' : 'CONSUMIDOR FINAL'}
+                                </span>
+                              </td>
+
+                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                <div className="flex w-full gap-5">
+                                  {item.isActive && actions.includes('Editar') && (
+                                    <TooltipGlobal text="Editar">
+                                      <Button
+                                        className="border border-white"
+                                        onClick={() => {
+                                          if (item.esContribuyente === true) {
+                                            navigate(`/update-supplier-tribute/${item.id}`);
+                                            OnGetBySupplier(item.id ?? 0);
+                                          } else {
+                                            navigate(`/update-supplier-normal/${item.id}`);
+                                            OnGetBySupplier(item.id ?? 0);
+                                          }
+                                        }}
+                                        isIconOnly
+                                        style={{
+                                          backgroundColor: theme.colors.secondary,
+                                        }}
+                                      >
+                                        <EditIcon
+                                          className="text-white"
+                                          style={{ color: theme.colors.primary }}
+                                          size={20}
+                                        />
+                                      </Button>
+                                    </TooltipGlobal>
+                                  )}
+                                  {item.isActive && actions.includes('Eliminar') && (
+                                    <DeletePopover supplier={item} />
+                                  )}
+                                  <>
+                                    {item.isActive &&
+                                      item.esContribuyente === false &&
+                                      actions.includes('Cambiar Tipo de Proveedor') && (
+                                        <TooltipGlobal text="Cambiar el tipo de proveedor">
+                                          <Button
+                                            className="border border-white"
+                                            onClick={() => {
+                                              navigate(`/update-supplier-tribute/${item.id}`);
+                                              OnGetBySupplier(item.id ?? 0);
+                                            }}
+                                            isIconOnly
+                                            style={{
+                                              backgroundColor: theme.colors.third,
+                                            }}
+                                          >
+                                            <Repeat style={{ color: theme.colors.primary }} size={20} />
+                                          </Button>
+                                        </TooltipGlobal>
+                                      )}
+                                  </>
+
+                                  <>
+                                    {!item.isActive && (
+                                      <>
+                                        {actions.includes('Activar') && (
+                                          <Button
+                                            onClick={() => {
+                                              handleActivate(item.id ?? 0);
+                                            }}
+                                            isIconOnly
+                                            style={{
+                                              backgroundColor: theme.colors.third,
+                                            }}
+                                          >
+                                            <RefreshCcw />
+                                          </Button>
+                                        )}
+                                      </>
+                                    )}
+                                  </>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </>
+                      ) : (
+                        <tr>
+                          <td colSpan={5}>
+                            <div className="flex flex-col items-center justify-center w-full">
+                              <img src={NO_DATA} alt="X" className="w-32 h-32" />
+                              <p className="mt-3 text-xl dark:text-white">
+                                No se encontraron resultados
+                              </p>
+                            </div>
+                          </td>
+                        </tr>
+                      )}</>
                   )}
                 </tbody>
               </table>

@@ -4,6 +4,7 @@ export interface ISupplierStore {
   supplier_pagination: IGetSupplierPagination;
   supplier_list: Supplier[];
   supplier_type: string;
+  loading: boolean;
   saveSupplierPagination: (supplier_pagination: IGetSupplierPagination) => void;
   getSupplierPagination: (
     page: number,
