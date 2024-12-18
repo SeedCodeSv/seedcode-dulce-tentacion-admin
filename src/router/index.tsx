@@ -70,6 +70,7 @@ import ContingenceSection from '@/pages/ContingenceSection';
 import Annulation from '@/pages/Annulation';
 import anexos from "@/pages/anexos_iva/router"
 import EditShopping from '@/components/shopping/EditShopping';
+import AccountCatalogs from '@/pages/AccountCatalogs';
 
 const Loading = () => {
   return <div>Cargando...</div>;
@@ -328,6 +329,10 @@ export const router = () => {
     {
       path: '/cash-cuts-big-z',
       element: checkAuthorization('Corte Gran Z', <CushCatsBigZ />),
+    },
+    {
+      path: '/accountCatalogs',
+      element: checkAuthorization('Catalogos de Cuentas', <AccountCatalogs />),
     },
     {
       path: '/cash-cuts-x',

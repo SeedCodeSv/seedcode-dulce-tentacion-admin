@@ -489,7 +489,7 @@ function ShoppingBookIVA() {
                   </>
                 )}
               </div>
-              <div>
+              {/* <div>
                 <p className="mt-5 text-xl font-semibold">Compras a sujetos excluidos</p>
                 <div className="w-full max-h-[500px] lg:max-h-[600px] xl:max-h-[700px] 2xl:max-h-[800px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
                   <table className="w-full">
@@ -552,7 +552,7 @@ function ShoppingBookIVA() {
                     </tbody>
                   </table>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

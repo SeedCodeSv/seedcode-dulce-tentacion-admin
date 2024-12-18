@@ -9,6 +9,10 @@
       "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Activar Productos"]
     },
     {
+      "view": "Catalogos de Cuentas",
+      "actions": ["Mostrar"]
+    },
+    {
       "view": "Categorias de Productos",
       "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Activar"]
     },
