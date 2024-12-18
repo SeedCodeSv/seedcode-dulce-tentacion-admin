@@ -1,4 +1,4 @@
-import { Autocomplete, AutocompleteItem, Button, Input } from '@nextui-org/react';
+import { Autocomplete, AutocompleteItem, Button, Input, Popover, PopoverContent, PopoverTrigger, Tooltip, useDisclosure } from '@nextui-org/react';
 import { ChevronLeft, ChevronRight, Filter, Pen, SearchIcon, Trash } from 'lucide-react';
 import NO_DATA from '@/assets/svg/no_data.svg';
 import { useNavigate } from 'react-router-dom';
@@ -25,6 +25,7 @@ function ShoppingPage({ actions }: ArrayAction) {
   const [dateEnd, setDateEnd] = useState(fechaEnFormatoDeseado);
   const { shoppingList, getPaginatedShopping, loading_shopping, pagination_shopping } =
     useShoppingStore();
+ 
   const { theme } = useContext(ThemeContext);
   const [openVaul, setOpenVaul] = useState(false);
   const { user } = useAuthStore();
@@ -54,7 +55,28 @@ function ShoppingPage({ actions }: ArrayAction) {
   };
   const navigate = useNavigate();
 
-  const onDelete = (id: number) => {
+  // const onDelete = (id: number) => {
+  //   axios
+  //     .delete(API_URL + "/shoppings/" + id)
+  //     .then(() => {
+  //       getPaginatedShopping(
+  //         user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
+  //         1,
+  //         10,
+  //         dateInitial,
+  //         dateEnd,
+  //         branchId
+  //       );
+  //       toast.success("Eliminado con exito")
+  //     })
+  //     .catch(() => {
+  //       toast.error("Error al eliminar")
+  //     })
+  // }
+
+
+
+  const onDeleteConfirm = (id: number) => {
     axios
       .delete(API_URL + "/shoppings/" + id)
       .then(() => {
@@ -66,12 +88,12 @@ function ShoppingPage({ actions }: ArrayAction) {
           dateEnd,
           branchId
         );
-        toast.success("Eliminado con exito")
+        toast.success("Eliminado con éxito");
       })
       .catch(() => {
-        toast.error("Error al eliminar")
-      })
-  }
+        toast.error("Error al eliminar");
+      });
+  };
   return (
     <>
       <div className=" w-full h-full p-10 bg-gray-50 dark:bg-gray-900">
@@ -316,7 +338,7 @@ function ShoppingPage({ actions }: ArrayAction) {
                                       <Pen />
                                     </Button>
                                   )}
-                                  {cat.generationCode === 'N/A' && (
+                                  {/* {cat.generationCode === 'N/A' && (
                                     <Button
                                       onClick={() => onDelete(cat.id)}
                                       style={global_styles().warningStyles}
@@ -324,6 +346,41 @@ function ShoppingPage({ actions }: ArrayAction) {
                                     >
                                       <Trash />
                                     </Button>
+                                  )} */}
+                                  {cat.generationCode === 'N/A' && (
+                                    <Popover className="border border-white rounded-xl"
+                                    >
+                                      <PopoverTrigger>
+                                        <Button
+                                          style={global_styles().warningStyles}
+                                          isIconOnly
+                                        >
+                                          <Trash />
+                                        </Button>
+                                      </PopoverTrigger>
+                                      <PopoverContent>
+                                        <div className="p-4">
+                                          <p className="text-sm font-normal text-gray-600">
+                                            ¿Deseas eliminar el registro {cat.controlNumber}?
+                                          </p>
+                                          <div className="flex justify-center mt-4">
+                                            <Button
+                                              onClick={() => onDeleteConfirm(cat.id)}
+                                              style={{
+                                                backgroundColor: '#FF4D4F',
+                                                color: 'white',
+                                              }}
+                                              className="mr-2"
+                                            >
+                                              Sí, eliminar
+                                            </Button>
+                                            {/* <Button onClick={onClose} >
+                                              Cancelar
+                                            </Button> */}
+                                          </div>
+                                        </div>
+                                      </PopoverContent>
+                                    </Popover>
                                   )}
                                 </div>
                               </td>
