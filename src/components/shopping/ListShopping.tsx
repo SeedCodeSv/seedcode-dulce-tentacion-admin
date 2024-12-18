@@ -1,5 +1,5 @@
 import { Autocomplete, AutocompleteItem, Button, Input } from '@nextui-org/react';
-import { ChevronLeft, ChevronRight, Filter, SearchIcon, Trash } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Filter, Pen, SearchIcon, Trash } from 'lucide-react';
 import NO_DATA from '@/assets/svg/no_data.svg';
 import { useNavigate } from 'react-router-dom';
 import Pagination from '../global/Pagination';
@@ -306,8 +306,8 @@ function ShoppingPage({ actions }: ArrayAction) {
                               </td>
 
                               <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
-                                <div>
-                                  {/* {cat.generationCode === 'N/A' && (
+                                <div className='flex gap-2'>
+                                  {cat.generationCode === 'N/A' && (
                                     <Button
                                       onClick={() => navigate(`/edit-shopping/${cat.id}`)}
                                       style={global_styles().secondaryStyle}
@@ -315,7 +315,7 @@ function ShoppingPage({ actions }: ArrayAction) {
                                     >
                                       <Pen />
                                     </Button>
-                                  )} */}
+                                  )}
                                   {cat.generationCode === 'N/A' && (
                                     <Button
                                       onClick={() => onDelete(cat.id)}

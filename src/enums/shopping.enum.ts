@@ -189,3 +189,22 @@ export const ClassDocuments = [
         value: ClassDocumentValue.DOCUMENTO_TRIBUTARIO_ELECTRONICO
     }
 ]
+
+
+
+export enum TypeDocumentValue {
+    INTERNA = 'Interna',
+    INTERNACION = 'Internación',
+    IMPORTACION = 'Importación',
+}
+
+export const TypeDocumensList = [
+    {
+        value: TypeDocumentValue.INTERNA
+    }, {
+        value: TypeDocumentValue.INTERNACION
+    }, {
+        value: TypeDocumentValue.IMPORTACION
+    }
+]
+

@@ -38,9 +38,7 @@ function EditShopping() {
   const { id } = useParams<{ id: string }>();
   const { shopping_details, getShoppingDetails } = useShoppingStore();
   const [tipoDte, setTipoDte] = useState('');
-
   const styles = useGlobalStyles();
-
   const { branch_list, getBranchesList } = useBranchesStore();
   const [includePerception, setIncludePerception] = useState(false);
 
@@ -60,12 +58,9 @@ function EditShopping() {
   const [afecta, setAfecta] = useState('');
   const [exenta, setExenta] = useState('');
   const [totalIva, setTotalIva] = useState('');
-
   const [afectaModified, setAfectaModified] = useState(false);
   const [totalModified, setTotalModified] = useState(false);
-
   const navigate = useNavigate();
-
   const formik = useFormik({
     initialValues: {
       operationTypeCode: OperationTypeCode.GRAVADA,
@@ -135,6 +130,7 @@ function EditShopping() {
         totalPagar: Number(total) || 0,
         totalLetras: convertCurrencyFormat(total),
         fecEmi: values.fecEmi,
+        declarationDate: values.declarationDate,
         ivaPerci1: $1perception || 0,
         operationTypeCode: values.operationTypeCode,
         operationTypeValue: values.operationTypeValue,
@@ -144,8 +140,11 @@ function EditShopping() {
         sectorValue: values.sectorValue,
         typeCostSpentCode: values.typeCostSpentCode,
         typeCostSpentValue: values.typeCostSpentValue,
+        typeSale: values.typeSale,
+        classDocumentCode: values.classDocumentCode,
+        classDocumentValue: values.classDocumentValue,
       };
-      
+
       axios
         .patch(API_URL + `/shoppings/${shopping_details?.id}`, payload)
         .then(() => {
@@ -252,9 +251,9 @@ function EditShopping() {
         tipoDte: shopping_details.typeDte,
         typeSale: shopping_details.typeSale,
         controlNumber: shopping_details.controlNumber,
-        declarationDate: shopping_details.declarationDate,
+        declarationDate: shopping_details.declarationDate!,
         fecEmi: shopping_details.fecEmi,
-        branchId: shopping_details.branch.id,
+        branchId: shopping_details.branchId,
       });
 
       setTotal(shopping_details.montoTotalOperacion);
@@ -319,6 +318,8 @@ function EditShopping() {
                       isReadOnly={
                         ['03', '05', '06'].includes(item.codigo) &&
                         formik.values.typeSale === 'externa'
+
+
                       }
                     >
                       {item.valores}
@@ -347,7 +348,7 @@ function EditShopping() {
                     </SelectItem>
                   ))}
                 </Select>
-                <Select
+                {/* <Select
                   classNames={{ label: 'font-semibold' }}
                   variant="bordered"
                   label="Tipo"
@@ -357,9 +358,9 @@ function EditShopping() {
                   onSelectionChange={(key) =>
                     key
                       ? formik.setFieldValue(
-                          'typeSale',
-                          key.currentKey === '0' ? 'interna' : 'externa'
-                        )
+                        'typeSale',
+                        key.currentKey === '0' ? 'interna' : 'externa'
+                      )
                       : formik.setFieldValue('typeSale', '')
                   }
                   onBlur={formik.handleBlur('typeSale')}
@@ -372,7 +373,36 @@ function EditShopping() {
                   <SelectItem key={'1'} value="externa">
                     Externa
                   </SelectItem>
+                </Select> */}
+                <Select
+                  classNames={{ label: 'font-semibold' }}
+                  variant="bordered"
+                  label="Tipo"
+                  placeholder="Selecciona el tipo"
+                  labelPlacement="outside"
+                  selectedKeys={`${['Interna', 'Internacion', 'Importacion'].indexOf(formik.values.typeSale)}`}
+                  onSelectionChange={(key) => {
+                    const index = parseInt(key?.currentKey || '0', 10); // Default to '0' if key.currentKey is undefined
+                    const typeSaleOptions = ['Interna', 'Internacion', 'Importacion'];
+                    const selectedTypeSale = typeSaleOptions[index] || 'Interna'; // Default to 'interna' if index is invalid
+                    formik.setFieldValue('typeSale', selectedTypeSale);
+                  }}
+                  onBlur={formik.handleBlur('typeSale')}
+                  isInvalid={!!formik.touched.typeSale && !!formik.errors.typeSale}
+                  errorMessage={formik.errors.typeSale}
+                >
+                  <SelectItem key={'0'} value="Interna">
+                    Interna
+                  </SelectItem>
+                  <SelectItem key={'1'} value="Internacion">
+                    Internación
+                  </SelectItem>
+                  <SelectItem key={'2'} value="Importacion">
+                    Importación
+                  </SelectItem>
                 </Select>
+
+
                 <Input
                   classNames={{ label: 'font-semibold' }}
                   placeholder="EJ: 101"

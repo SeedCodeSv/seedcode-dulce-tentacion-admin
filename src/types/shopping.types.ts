@@ -124,7 +124,12 @@ export interface CreateShoppingDto {
   sectorValue: SectorValue,
   typeCostSpentCode: TypeCostSpentCode,
   typeCostSpentValue: TypeCostSpentValue,
+  declarationDate?: string
+  typeSale?: string
+  classDocumentCode: ClassDocumentCode,
+  classDocumentValue: ClassDocumentValue,
 }
+
 
 export interface IGetCorrelativeShopping {
   ok: boolean
@@ -212,6 +217,7 @@ export interface ShoppingReport {
   sectorValue: SectorValue,
   typeCostSpentCode: TypeCostSpentCode,
   typeCostSpentValue: TypeCostSpentValue,
+  declarationDate?: string
 }
 
 interface Tributes {
