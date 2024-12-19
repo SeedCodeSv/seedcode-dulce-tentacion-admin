@@ -3,6 +3,7 @@ import {
     Button,
     Select,
     SelectItem,
+    Switch,
 } from '@nextui-org/react';
 import Layout from '@/layout/Layout';
 import useGlobalStyles from '../global/global.styles';
@@ -13,16 +14,34 @@ import { AccountCatalogPayload } from '@/types/accountCatalogs.types';
 import { API_URL } from '@/utils/constants';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router';
+import { ArrowLeft } from 'lucide-react';
 
 function AddAccountCatalogs() {
     const styles = useGlobalStyles();
     const navigate = useNavigate();
-
-
     const AccountTypes = [
-        { key: "Rubro", value: "Rubro", label: "Interna" },
-        { key: "Mayor", value: "Mayor", label: "Internación" },
-        { key: "SubCuenta", value: "SubCuenta", label: "Importación" },
+        { key: "Rubro", value: "Rubro", label: "Rubro" },
+        { key: "Mayor", value: "Mayor", label: "Mayor" },
+        { key: "SubCuenta", value: "SubCuenta", label: "SubCuenta" },
+    ];
+
+
+    const UploadAS = [
+        { key: "Activo", value: "Activo", label: "Activo" },
+        { key: "Pasivo", value: "Pasivo", label: "Pasivo" },
+        { key: "Patrimonio", value: "Patrimonio", label: "Patrimonio" },
+        { key: "Resultado Deudoras", value: "Resultado Deudoras", label: "Resultado Deudoras" },
+        { key: "Resultado Acreedoras", value: "Resultado Acreedoras", label: "Resultado Acreedoras" },
+        { key: "Cuentas de Cierre", value: "Cuentas De Cierre", label: "Cuentas de Cierre" },
+        { key: "Orden Deudoras", value: "Orden Deudoras", label: "Orden Deudoras" },
+        { key: "Orden Acreedoras", value: "Orden Acreedoras", label: "Orden Acreedoras" },
+    ];
+
+    const Item = [
+        { key: "NA", value: "N/A", label: "N/A" },
+        { key: "Ingreso", value: "Ingreso", label: "Ingreso" },
+        { key: "Costo", value: "Costo", label: "Costo" },
+        { key: "Gasto", value: "Gasto", label: "Gasto" },
     ];
 
 
@@ -33,7 +52,9 @@ function AddAccountCatalogs() {
             majorAccount: "",
             level: "",
             hasSub: false,
-            type: "Rubro",
+            type: "",
+            loadAs: "",
+            item: "",
         },
         validationSchema: yup.object().shape({
             code: yup.string().required("**Campo requerido**"),
@@ -41,6 +62,9 @@ function AddAccountCatalogs() {
             majorAccount: yup.string().required("**Campo requerido**"),
             level: yup.string().required("**Campo requerido**"),
             hasSub: yup.boolean().required("**Campo requerido**"),
+            type: yup.string().required("**Campo requerido**"),
+            loadAs: yup.string().required("**Campo requerido**"),
+            item: yup.string().required("**Campo requerido**"),
 
         }),
         async onSubmit(values, formikHelpers) {
@@ -52,9 +76,9 @@ function AddAccountCatalogs() {
                 axios
                     .post(API_URL + "/account-catalogs", payload)
                     .then(() => {
-                        toast.success("Catalogo de cuentas guardada con éxito")
+                        toast.success("Operación realizada con éxito")
                         formikHelpers.setSubmitting(false)
-                        navigate("/shopping")
+                        navigate("/accountCatalogs")
                     })
                     .catch(() => {
                         toast.error("Error al guardar la compra")
@@ -70,151 +94,186 @@ function AddAccountCatalogs() {
     return (
         <Layout title='Catalogo de cuentas'>
             <>
-                <div className="">
-                    <form onSubmit={(e) => {
-                        e.preventDefault()
-                        formik.submitForm()
-                    }}>
-                        <>
-                            <div className="w-full">
-                                <div className="grid w-full grid-cols-1 gap-5 mt-2 md:grid-cols-2">
-                                    <div className="pt-5 pb-2">
 
-                                        <Input
-                                            classNames={{ label: "font-semibold" }}
-                                            label="Codigo"
-                                            placeholder="Ingrese el codigo"
-                                            variant="bordered"
-                                            value={formik.values.code}
-                                            name='code'
-                                            onChange={formik.handleChange("code")}
-                                            onBlur={formik.handleBlur("code")}
-                                            labelPlacement="outside"
-                                            isInvalid={!!formik.touched.code && !!formik.errors.code}
-                                            errorMessage={formik.errors.code}
-                                        />
+                <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
+                    <div className="w-full h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+                        <div className="">
+                            <Button onClick={() => navigate('/accountCatalogs')} className="bg-transparent dark:text-white flex">
+                                <ArrowLeft /> Regresar
+                            </Button >
 
-                                        <Input
-                                            classNames={{ label: "font-semibold" }}
-                                            label="Nombre"
-                                            placeholder="Ingrese el nombre"
-                                            variant="bordered"
-                                            value={formik.values.name}
-                                            name='name'
-                                            onChange={formik.handleChange("name")}
-                                            onBlur={formik.handleBlur("name")}
-                                            labelPlacement="outside"
-                                            isInvalid={!!formik.touched.name && !!formik.errors.name}
-                                            errorMessage={formik.errors.name}
-                                        />
+                            <form onSubmit={(e) => {
+                                e.preventDefault()
+                                formik.submitForm()
+                            }}>
+                                <>
+                                    <div className="w-full">
+                                        <div className="grid w-full grid-cols-1 gap-5 mt-2 md:grid-cols-2">
+                                            <div className="pt-5 pb-2">
+                                                <Input
+                                                    classNames={{ label: "font-semibold" }}
+                                                    label="Código"
+                                                    placeholder="Ingrese el código"
+                                                    variant="bordered"
+                                                    value={formik.values.code}
+                                                    name='code'
+                                                    onChange={formik.handleChange("code")}
+                                                    onBlur={formik.handleBlur("code")}
+                                                    labelPlacement="outside"
+                                                    isInvalid={!!formik.touched.code && !!formik.errors.code}
+                                                    errorMessage={formik.errors.code}
+                                                />
+                                            </div>
 
-                                        <Input
-                                            label="Mejor Cuenta"
-                                            labelPlacement="outside"
-                                            name="majorAccount"
-                                            value={formik.values.majorAccount}
-                                            onChange={formik.handleChange('majorAccount')}
-                                            onBlur={formik.handleBlur('majorAccount')}
-                                            placeholder="00.00"
-                                            classNames={{ label: "font-semibold" }}
-                                            variant="bordered"
-                                            isInvalid={!!formik.touched.majorAccount && !!formik.errors.majorAccount}
-                                            errorMessage={formik.errors.majorAccount}
-                                        />
+                                            <div className="pt-5 pb-2">
+                                                <Input
+                                                    classNames={{ label: "font-semibold" }}
+                                                    label="Nombre"
+                                                    placeholder="Ingrese el nombre"
+                                                    variant="bordered"
+                                                    value={formik.values.name}
+                                                    name='name'
+                                                    onChange={formik.handleChange("name")}
+                                                    onBlur={formik.handleBlur("name")}
+                                                    labelPlacement="outside"
+                                                    isInvalid={!!formik.touched.name && !!formik.errors.name}
+                                                    errorMessage={formik.errors.name}
+                                                />
+                                            </div>
 
-
-
-                                        <Input
-                                            label="Nivel"
-                                            labelPlacement="outside"
-                                            name="level"
-                                            value={formik.values.level}
-                                            onChange={formik.handleChange('level')}
-                                            onBlur={formik.handleBlur('level')}
-                                            placeholder="00.00"
-                                            classNames={{ label: "font-semibold" }}
-                                            variant="bordered"
-                                            isInvalid={!!formik.touched.level && !!formik.errors.level}
-                                            errorMessage={formik.errors.level}
-                                        />
-                                        <Input
-                                            label="Sub Cuenta"
-                                            labelPlacement="outside"
-                                            name="hasSub"
-                                            value={formik.values.hasSub.toString()}
-                                            onChange={formik.handleChange('hasSub')}
-                                            onBlur={formik.handleBlur('hasSub')}
-                                            placeholder="00.00"
-                                            classNames={{ label: "font-semibold" }}
-                                            variant="bordered"
-                                            isInvalid={!!formik.touched.hasSub && !!formik.errors.hasSub}
-                                            errorMessage={formik.errors.hasSub}
-                                        />
+                                            <div className="pt-1 pb-2">
+                                                <Input
+                                                    label="Cuenta Principal"
+                                                    labelPlacement="outside"
+                                                    name="majorAccount"
+                                                    value={formik.values.majorAccount}
+                                                    onChange={formik.handleChange('majorAccount')}
+                                                    onBlur={formik.handleBlur('majorAccount')}
+                                                    placeholder="Ingrese la cuenta principal"
+                                                    classNames={{ label: "font-semibold" }}
+                                                    variant="bordered"
+                                                    isInvalid={!!formik.touched.majorAccount && !!formik.errors.majorAccount}
+                                                    errorMessage={formik.errors.majorAccount}
+                                                />
+                                            </div>
 
 
-                                        {/* <Select
-                                            classNames={{ label: "font-semibold" }}
-                                            variant="bordered"
-                                            label="Tipo de cuenta"
-                                            placeholder="Selecciona el tipo"
-                                            labelPlacement="outside"
-                                            defaultSelectedKeys={[`${formik.values.type}`]}
-                                            onSelectionChange={(key) => {
-                                                const value = new Set(key).values().next().value
-                                                key ? formik.setFieldValue("type", value) : formik.setFieldValue("typeSale", "")
-                                            }}
-                                            onBlur={formik.handleBlur("type")}
-                                            isInvalid={!!formik.touched.type && !!formik.errors.type}
-                                            errorMessage={formik.errors.type}
-                                        >
-                                            <SelectItem key={"Rubro"} value="Rubro">
-                                                Interna
-                                            </SelectItem>
-                                            <SelectItem key={"Mayor"} value="Mayor">
-                                                Internación
-                                            </SelectItem>
-                                            <SelectItem key={"SubCuenta"} value="SubCuenta">
-                                                Importación
-                                            </SelectItem>
-                                        </Select> */}
+                                            <div className="pt-1 pb-2">
+
+                                                <div className="pt-1 pb-2 mb-1">
+                                                    <label className="font-semibold block">Sub Cuenta</label>
+                                                    <Switch
+                                                        color="primary"
+                                                        checked={formik.values.hasSub}
+                                                        onChange={(e) => formik.setFieldValue("hasSub", e.target.checked)}
+                                                        size="lg"
+                                                    />
+                                                </div>
+                                            </div>
 
 
+                                            <div className="pt-1 pb-2">
+                                                <Select
+                                                    classNames={{ label: "font-semibold" }}
+                                                    variant="bordered"
+                                                    label="Tipo de cuenta"
+                                                    placeholder="Selecciona el tipo"
+                                                    labelPlacement="outside"
+                                                    defaultSelectedKeys={[`${formik.values.type}`]}
+                                                    onSelectionChange={(key) => {
+                                                        const value = new Set(key).values().next().value
+                                                        key ? formik.setFieldValue("type", value) : formik.setFieldValue("typeSale", "")
+                                                    }}
+                                                    onBlur={formik.handleBlur("type")}
+                                                    isInvalid={!!formik.touched.type && !!formik.errors.type}
+                                                    errorMessage={formik.errors.type}
+                                                >
+                                                    {AccountTypes.map((type) => (
+                                                        <SelectItem key={type.key} value={type.value}>
+                                                            {type.label}
+                                                        </SelectItem>
+                                                    ))}
+                                                </Select>
+                                            </div>
+
+                                            <div className="pt-1 pb-2">
+                                                <Select
+                                                    classNames={{ label: "font-semibold" }}
+                                                    variant="bordered"
+                                                    label="Cargar como"
+                                                    placeholder="Selecciona el tipo"
+                                                    labelPlacement="outside"
+                                                    defaultSelectedKeys={[`${formik.values.loadAs}`]}
+                                                    onSelectionChange={(key) => {
+                                                        const value = new Set(key).values().next().value
+                                                        key ? formik.setFieldValue("loadAs", value) : formik.setFieldValue("loadAs", "")
+                                                    }}
+                                                    onBlur={formik.handleBlur("loadAs")}
+                                                    isInvalid={!!formik.touched.loadAs && !!formik.errors.loadAs}
+                                                    errorMessage={formik.errors.loadAs}
+                                                >
+                                                    {UploadAS.map((type) => (
+                                                        <SelectItem key={type.key} value={type.value}>
+                                                            {type.label}
+                                                        </SelectItem>
+                                                    ))}
+                                                </Select>
+                                            </div>
+
+                                            <div className="pt-1 pb-2">
+                                                <Select
+                                                    classNames={{ label: "font-semibold" }}
+                                                    variant="bordered"
+                                                    label="Elemento"
+                                                    placeholder="Selecciona el Elemento"
+                                                    labelPlacement="outside"
+                                                    defaultSelectedKeys={[`${formik.values.item}`]}
+                                                    onSelectionChange={(key) => {
+                                                        const value = new Set(key).values().next().value
+                                                        key ? formik.setFieldValue("item", value) : formik.setFieldValue("item", "")
+                                                    }}
+                                                    onBlur={formik.handleBlur("item")}
+                                                    isInvalid={!!formik.touched.item && !!formik.errors.item}
+                                                    errorMessage={formik.errors.item}
+                                                >
+                                                    {Item.map((type) => (
+                                                        <SelectItem key={type.key} value={type.value}>
+                                                            {type.label}
+                                                        </SelectItem>
+                                                    ))}
+                                                </Select>
+                                            </div>
+                                            <div className="pt-1 pb-2">
+                                                <Input
+                                                    classNames={{ label: "font-semibold" }}
+                                                    label="Nivel de Cuenta"
+                                                    placeholder="Ingrese el nivel de cuenta"
+                                                    variant="bordered"
+                                                    value={formik.values.level}
+                                                    name='level'
+                                                    onChange={formik.handleChange("level")}
+                                                    onBlur={formik.handleBlur("level")}
+                                                    labelPlacement="outside"
+                                                    isInvalid={!!formik.touched.level && !!formik.errors.level}
+                                                    errorMessage={formik.errors.level}
+                                                />
+                                            </div>
 
 
-                                        <Select
-                                            classNames={{ label: "font-semibold" }}
-                                            variant="bordered"
-                                            label="Tipo de cuenta"
-                                            placeholder="Selecciona el tipo"
-                                            labelPlacement="outside"
-                                            defaultSelectedKeys={[`${formik.values.type}`]}
-                                            onSelectionChange={(key) => {
-                                                const value = new Set(key).values().next().value
-                                                key ? formik.setFieldValue("type", value) : formik.setFieldValue("typeSale", "")
-                                            }}
-                                            onBlur={formik.handleBlur("type")}
-                                            isInvalid={!!formik.touched.type && !!formik.errors.type}
-                                            errorMessage={formik.errors.type}
-                                        >
-                                            {AccountTypes.map((type) => (
-                                                <SelectItem key={type.key} value={type.value}>
-                                                    {type.label}
-                                                </SelectItem>
-                                            ))}
-                                        </Select>
-
+                                        </div>
+                                        <div className="pt-6 pb-2 ">
+                                            <Button type="submit" className="px-16 w-full" style={styles.thirdStyle}>
+                                                Guardar
+                                            </Button>
+                                        </div>
 
                                     </div>
-                                </div>
-                                <div className="w-full flex justify-end mt-4">
-                                    <Button type="submit" className="px-16" style={styles.thirdStyle}>
-                                        Guardar
-                                    </Button>
-                                </div>
-                            </div>
-                        </>
-                    </form>
+                                </>
+                            </form>
+                        </div>
+                    </div>
                 </div>
+
             </>
         </Layout>
     );

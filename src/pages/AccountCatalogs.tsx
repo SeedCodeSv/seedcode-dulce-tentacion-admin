@@ -1,9 +1,9 @@
 import useGlobalStyles from "@/components/global/global.styles"
 import Layout from "@/layout/Layout"
 import { useAccountCatalogsStore } from "@/store/accountCatalogs.store"
-import { ArrowLeft } from "lucide-react"
+
 import { useEffect, useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import NO_DATA from '../assets/no.png'
 import Pagination from "@/components/global/Pagination"
 import SmPagination from "@/components/global/SmPagination"
@@ -24,19 +24,9 @@ function AddAccountCatalogs() {
         <Layout title="Catalogos de Cuentas">
             <>
                 <div className="w-full h-full flex flex-col overflow-y-auto p-5 bg-white dark:bg-gray-800">
-                    <div className="w-full flex pb-5 mt-10">
-                        <Link to="/" className=" dark:text-white flex">
-                            <ArrowLeft /> Regresar
-                        </Link>
 
-                        {/* <AddButton
-                            onClick={() => {
-                                navigate('/add-account-catalog');
-                            }}
-                        /> */}
-                    </div>
                     <div className="w-full mt-2">
-                        <div className="w-full flex justify-between gap-5">
+                        <div className="w-full flex justify-between gap-5 mt-4">
                             <div className="w-44">
                                 <label className="font-semibold dark:text-white text-sm">Mostrar</label>
                                 <Select
@@ -59,6 +49,15 @@ function AddAccountCatalogs() {
                                     ))}
                                 </Select>
                             </div>
+                            <div className="w-full flex justify-end pb-5 mt-6">
+
+
+                                <AddButton
+                                    onClick={() => {
+                                        navigate('/add-account-catalog');
+                                    }}
+                                />
+                            </div>
                         </div>
                         <div className="w-full max-h-[500px] lg:max-h-[600px] xl:max-h-[700px] 2xl:max-h-[800px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
                             {loading ? (
@@ -77,13 +76,13 @@ function AddAccountCatalogs() {
                                                             style={styles.darkStyle}
                                                             className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
                                                         >
-                                                            Id
+                                                            N
                                                         </th>
                                                         <th
                                                             style={styles.darkStyle}
                                                             className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
                                                         >
-                                                            Codigo
+                                                            Código
                                                         </th>
                                                         <th
                                                             style={styles.darkStyle}
@@ -95,7 +94,7 @@ function AddAccountCatalogs() {
                                                             style={styles.darkStyle}
                                                             className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
                                                         >
-                                                            Cuenta Mayor
+                                                            Cuenta Principal
                                                         </th>
                                                         <th
                                                             style={styles.darkStyle}
@@ -119,7 +118,13 @@ function AddAccountCatalogs() {
                                                             style={styles.darkStyle}
                                                             className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
                                                         >
-                                                            Item
+                                                            Elemento
+                                                        </th>
+                                                        <th
+                                                            style={styles.darkStyle}
+                                                            className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
+                                                        >
+                                                            Cargado como
                                                         </th>
                                                         <th
                                                             style={styles.darkStyle}
@@ -151,13 +156,14 @@ function AddAccountCatalogs() {
                                                             <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                                                                 {shop.accountType}
                                                             </td>
-                                                            {/* <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                                                {shop.subAccount}
-                                                            </td> */}
 
                                                             <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                                                                 {shop.item}
                                                             </td>
+                                                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                                                {shop.uploadAs}
+                                                            </td>
+
 
                                                         </tr>
                                                     ))}
