@@ -71,6 +71,7 @@ import Annulation from '@/pages/Annulation';
 import anexos from "@/pages/anexos_iva/router"
 import EditShopping from '@/components/shopping/EditShopping';
 import AccountCatalogs from '@/pages/AccountCatalogs';
+import AddAccountCatalogs from '@/components/accountCatalogs/AddAccountCatalogs';
 
 const Loading = () => {
   return <div>Cargando...</div>;
@@ -108,6 +109,10 @@ export const router = () => {
     {
       path: '/add-product',
       element: checkAuthorization('Productos', <AddProduct />),
+    },
+    {
+      path: '/add-account-catalog',
+      element: checkAuthorization('Catalogos de Cuentas', <AddAccountCatalogs />),
     },
     {
       path: '/categories',

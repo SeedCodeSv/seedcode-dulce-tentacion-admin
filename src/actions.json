@@ -10,7 +10,7 @@
     },
     {
       "view": "Catalogos de Cuentas",
-      "actions": ["Mostrar"]
+      "actions": ["Mostrar", "Agregar"]
     },
     {
       "view": "Categorias de Productos",

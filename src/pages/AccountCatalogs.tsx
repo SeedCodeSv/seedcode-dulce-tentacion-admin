@@ -3,31 +3,37 @@ import Layout from "@/layout/Layout"
 import { useAccountCatalogsStore } from "@/store/accountCatalogs.store"
 import { ArrowLeft } from "lucide-react"
 import { useEffect, useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import NO_DATA from '../assets/no.png'
 import Pagination from "@/components/global/Pagination"
 import SmPagination from "@/components/global/SmPagination"
 import { Select, SelectItem } from "@nextui-org/react"
 import { limit_options } from "@/utils/constants"
+import AddButton from "@/components/global/AddButton"
 
-function AccountCatalogs() {
-
+function AddAccountCatalogs() {
     const [limit, setLimit] = useState(5);
-
     const { getAccountCatalogs, account_catalog_pagination, loading } = useAccountCatalogsStore()
     useEffect(() => {
         getAccountCatalogs(1, limit)
     }, [limit])
 
+    const navigate = useNavigate();
     const styles = useGlobalStyles()
     return (
-        <Layout title="Catálogos de Cuentas">
+        <Layout title="Catalogos de Cuentas">
             <>
                 <div className="w-full h-full flex flex-col overflow-y-auto p-5 bg-white dark:bg-gray-800">
                     <div className="w-full flex pb-5 mt-10">
                         <Link to="/" className=" dark:text-white flex">
                             <ArrowLeft /> Regresar
                         </Link>
+
+                        {/* <AddButton
+                            onClick={() => {
+                                navigate('/add-account-catalog');
+                            }}
+                        /> */}
                     </div>
                     <div className="w-full mt-2">
                         <div className="w-full flex justify-between gap-5">
@@ -225,4 +231,4 @@ function AccountCatalogs() {
     )
 }
 
-export default AccountCatalogs
+export default AddAccountCatalogs

@@ -1,4 +1,4 @@
-import { AccountCatalog, IGetAccountCatalog } from "@/types/accountCatalogs.types";
+import { AccountCatalog, AccountCatalogPayload, IGetAccountCatalog } from "@/types/accountCatalogs.types";
 
 export interface accountCatalogsStore {
     account_catalog: AccountCatalog[];
@@ -8,5 +8,6 @@ export interface accountCatalogsStore {
         page: number,
         limit: number,
     ) => void;
+    postAccountCatalog: (payload: AccountCatalogPayload) => Promise<boolean>;
 
 }
