@@ -1,25 +1,32 @@
 import useGlobalStyles from "@/components/global/global.styles"
 import Layout from "@/layout/Layout"
 import { useAccountCatalogsStore } from "@/store/accountCatalogs.store"
-
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import NO_DATA from '../assets/no.png'
-import Pagination from "@/components/global/Pagination"
-import SmPagination from "@/components/global/SmPagination"
-import { Select, SelectItem } from "@nextui-org/react"
-import { limit_options } from "@/utils/constants"
+import { Button } from "@nextui-org/react"
 import AddButton from "@/components/global/AddButton"
+import { PiMicrosoftExcelLogoBold } from "react-icons/pi"
+import { generate_catalog_de_cuentas } from "@/components/accountCatalogs/accountCatalogs"
 
 function AddAccountCatalogs() {
-    const [limit, setLimit] = useState(5);
     const { getAccountCatalogs, account_catalog_pagination, loading } = useAccountCatalogsStore()
     useEffect(() => {
-        getAccountCatalogs(1, limit)
-    }, [limit])
+        getAccountCatalogs(1, 5);
+    }, [])
+    const exportAnnexes = async () => {
+        // const month = months.find((month) => month.value === monthSelected)?.name || ""
+        const blob = await generate_catalog_de_cuentas(account_catalog_pagination.accountCatalogs)
+        const url = window.URL.createObjectURL(blob)
+        const link = document.createElement("a")
+        link.href = url
+        link.download = `CATALOGO_DE_CUENTAS.xlsx`
+        link.click()
+    }
 
     const navigate = useNavigate();
     const styles = useGlobalStyles()
+
     return (
         <Layout title="Catalogos de Cuentas">
             <>
@@ -28,26 +35,17 @@ function AddAccountCatalogs() {
                     <div className="w-full mt-2">
                         <div className="w-full flex justify-between gap-5 mt-4">
                             <div className="w-44">
-                                <label className="font-semibold dark:text-white text-sm">Mostrar</label>
-                                <Select
-                                    className="w-44 dark:text-white border border-white rounded-xl"
-                                    variant="bordered"
-                                    defaultSelectedKeys={['5']}
-                                    labelPlacement="outside"
-                                    classNames={{
-                                        label: 'font-semibold',
-                                    }}
-                                    value={limit}
-                                    onChange={(e) => {
-                                        setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
-                                    }}
-                                >
-                                    {limit_options.map((option) => (
-                                        <SelectItem key={option} value={option} className="dark:text-white">
-                                            {option}
-                                        </SelectItem>
-                                    ))}
-                                </Select>
+
+                                <div className="mt-6">
+                                    <Button
+                                        className="px-10 "
+                                        endContent={<PiMicrosoftExcelLogoBold size={20} />}
+                                        onClick={() => exportAnnexes()}
+                                        color="secondary"
+                                    >
+                                        Exportar anexo
+                                    </Button>
+                                </div>
                             </div>
                             <div className="w-full flex justify-end pb-5 mt-6">
 
@@ -108,12 +106,7 @@ function AddAccountCatalogs() {
                                                         >
                                                             Tipo de Cuenta
                                                         </th>
-                                                        {/* <th
-                                                            style={styles.darkStyle}
-                                                            className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                                                        >
-                                                            Sub Cuenta
-                                                        </th> */}
+
                                                         <th
                                                             style={styles.darkStyle}
                                                             className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
@@ -169,44 +162,6 @@ function AddAccountCatalogs() {
                                                     ))}
                                                 </tbody>
                                             </table>
-
-                                            {account_catalog_pagination.totalPag > 1 && (
-                                                <>
-                                                    <div className="hidden w-full mt-5 md:flex">
-                                                        <Pagination
-                                                            previousPage={account_catalog_pagination.prevPag}
-                                                            nextPage={account_catalog_pagination.nextPag}
-                                                            currentPage={account_catalog_pagination.currentPag}
-                                                            totalPages={account_catalog_pagination.totalPag}
-                                                            onPageChange={(page) => {
-                                                                getAccountCatalogs(
-                                                                    page,
-                                                                    limit,
-                                                                );
-                                                            }}
-                                                        />
-                                                    </div>
-                                                    <div className="flex w-full md:hidden fixed bottom-0 left-0 bg-white dark:bg-gray-900 z-20 shadow-lg p-3">
-                                                        <SmPagination
-                                                            handleNext={() => {
-                                                                getAccountCatalogs(
-                                                                    account_catalog_pagination.nextPag,
-                                                                    limit,
-                                                                );
-                                                            }}
-                                                            handlePrev={() => {
-                                                                getAccountCatalogs(
-                                                                    account_catalog_pagination.prevPag,
-                                                                    limit,
-
-                                                                );
-                                                            }}
-                                                            currentPage={account_catalog_pagination.currentPag}
-                                                            totalPages={account_catalog_pagination.totalPag}
-                                                        />
-                                                    </div>
-                                                </>
-                                            )}
                                         </>
                                     ) : (
                                         <>
@@ -218,8 +173,6 @@ function AddAccountCatalogs() {
                                             </div>
                                         </>
                                     )}
-
-
 
                                 </>
                             )}
