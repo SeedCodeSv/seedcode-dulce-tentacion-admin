@@ -5,12 +5,12 @@ import axios from 'axios';
 
 
 export const get_account_catalogs_paginated = (
-    page = 1,
-    limit = 5,
+    name = '',
+    code = '',
 ) => {
     const token = get_token() ?? '';
     return axios.get<IGetAccountCatalog>(
-        `${API_URL}/account-catalogs?page=${page}&limit=${limit}`,
+        `${API_URL}/account-catalogs?name=${name}&code=${code}`,
         {
             headers: {
                 Authorization: `Bearer ${token}`,

@@ -5,8 +5,8 @@ export interface accountCatalogsStore {
     loading: boolean;
     account_catalog_pagination: IGetAccountCatalog;
     getAccountCatalogs: (
-        page: number,
-        limit: number,
+        name : string,
+        code: string,
     ) => void;
     postAccountCatalog: (payload: AccountCatalogPayload) => Promise<boolean>;
 

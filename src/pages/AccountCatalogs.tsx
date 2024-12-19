@@ -1,19 +1,35 @@
 import useGlobalStyles from "@/components/global/global.styles"
 import Layout from "@/layout/Layout"
 import { useAccountCatalogsStore } from "@/store/accountCatalogs.store"
-import { useEffect } from "react"
+import { useContext, useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import NO_DATA from '../assets/no.png'
-import { Button } from "@nextui-org/react"
+import { Button, Input, Popover, PopoverContent, PopoverTrigger } from "@nextui-org/react"
 import AddButton from "@/components/global/AddButton"
 import { PiMicrosoftExcelLogoBold } from "react-icons/pi"
 import { generate_catalog_de_cuentas } from "@/components/accountCatalogs/accountCatalogs"
+import { SearchIcon, Trash } from "lucide-react"
+import { ThemeContext } from "@/hooks/useTheme"
+import { global_styles } from "@/styles/global.styles"
+import axios from "axios"
+import { API_URL } from "@/utils/constants"
+import { toast } from "sonner"
 
 function AddAccountCatalogs() {
+    const [name, setName] = useState('');
+    const [code, setCode] = useState('');
+
     const { getAccountCatalogs, account_catalog_pagination, loading } = useAccountCatalogsStore()
     useEffect(() => {
-        getAccountCatalogs(1, 5);
+        getAccountCatalogs(name, code);
     }, [])
+    const { theme } = useContext(ThemeContext);
+
+
+
+    const handleSearch = (searchParam: string | undefined) => {
+        getAccountCatalogs(searchParam ?? name, searchParam ?? code);
+    };
     const exportAnnexes = async () => {
         // const month = months.find((month) => month.value === monthSelected)?.name || ""
         const blob = await generate_catalog_de_cuentas(account_catalog_pagination.accountCatalogs)
@@ -27,6 +43,19 @@ function AddAccountCatalogs() {
     const navigate = useNavigate();
     const styles = useGlobalStyles()
 
+
+    const onDeleteConfirm = (id: number) => {
+        axios
+            .delete(API_URL + "/account-catalogs/" + id)
+            .then(() => {
+                getAccountCatalogs(name, code);
+                toast.success("Eliminado con éxito");
+            })
+            .catch(() => {
+                toast.error("Error al eliminar");
+            });
+    };
+
     return (
         <Layout title="Catalogos de Cuentas">
             <>
@@ -34,21 +63,74 @@ function AddAccountCatalogs() {
 
                     <div className="w-full mt-2">
                         <div className="w-full flex justify-between gap-5 mt-4">
-                            <div className="w-44">
+                            <div className="w-full">
 
-                                <div className="mt-6">
+                                <div className="mt-2 flex w-full justify-between gap-5">
+                                    <Input
+                                        startContent={<SearchIcon />}
+                                        className="w-full dark:text-white border border-white rounded-xl"
+                                        variant="bordered"
+                                        labelPlacement="outside"
+                                        label="Nombre"
+                                        classNames={{
+                                            label: 'font-semibold text-gray-700',
+                                            inputWrapper: 'pr-0',
+                                        }}
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
+                                        placeholder="Escribe para buscar..."
+                                        isClearable
+                                        onClear={() => {
+                                            setName('');
+                                            handleSearch('');
+                                        }}
+                                    />
+                                    <Input
+                                        startContent={<SearchIcon />}
+                                        className="w-full dark:text-white border border-white rounded-xl"
+                                        variant="bordered"
+                                        labelPlacement="outside"
+                                        label="Código"
+                                        classNames={{
+                                            label: 'font-semibold text-gray-700',
+                                            inputWrapper: 'pr-0',
+                                        }}
+                                        value={code}
+                                        onChange={(e) => setCode(e.target.value)}
+                                        placeholder="Escribe para buscar..."
+                                        isClearable
+                                        onClear={() => {
+                                            // handleSearch("");
+                                            setCode('');
+                                            handleSearch('');
+                                        }}
+                                    />
+
                                     <Button
-                                        className="px-10 "
-                                        endContent={<PiMicrosoftExcelLogoBold size={20} />}
-                                        onClick={() => exportAnnexes()}
-                                        color="secondary"
+                                        style={{
+                                            backgroundColor: theme.colors.secondary,
+                                            color: theme.colors.primary,
+                                        }}
+                                        className="hidden mt-6 font-semibold md:flex border border-white rounded-xl"
+                                        color="primary"
+                                        startContent={<SearchIcon className="w-10" />}
+                                        onClick={() => {
+                                            handleSearch(undefined);
+                                        }}
                                     >
-                                        Exportar anexo
+                                        Buscar
                                     </Button>
                                 </div>
                             </div>
-                            <div className="w-full flex justify-end pb-5 mt-6">
-
+                            <div className="w-full flex justify-end gap-5 pb-5 mt-9">
+                                <Button
+                                    className="px-10 "
+                                    endContent={<PiMicrosoftExcelLogoBold size={20} />}
+                                    onClick={() => exportAnnexes()}
+                                    color="secondary"
+                                >
+                                    Exportar Catálogo
+                                </Button>
 
                                 <AddButton
                                     onClick={() => {
@@ -131,30 +213,63 @@ function AddAccountCatalogs() {
                                                     {account_catalog_pagination.accountCatalogs.map((shop, index) => (
                                                         <tr key={index} className="border-b border-slate-200">
 
-                                                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                                            <td className="p-4 text-sm text-slate-500 dark:text-slate-100">
                                                                 {shop.id}
                                                             </td>
-                                                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                                            <td className="p-4 text-sm text-slate-500 dark:text-slate-100">
                                                                 {shop.code}
                                                             </td>
-                                                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                                            <td className="p-4 text-sm text-slate-500 dark:text-slate-100">
                                                                 {shop.name}
                                                             </td>
-                                                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                                            <td className="p-4 text-sm text-slate-500 dark:text-slate-100">
                                                                 {shop.majorAccount}
                                                             </td>
-                                                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                                            <td className="p-4 text-sm text-slate-500 dark:text-slate-100">
                                                                 {shop.accountLevel}
                                                             </td>
-                                                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                                            <td className="p-4 text-sm text-slate-500 dark:text-slate-100">
                                                                 {shop.accountType}
                                                             </td>
 
-                                                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                                            <td className="p-4 text-sm text-slate-500 dark:text-slate-100">
                                                                 {shop.item}
                                                             </td>
-                                                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                                            <td className="p-4 text-sm text-slate-500 dark:text-slate-100">
                                                                 {shop.uploadAs}
+                                                            </td>
+                                                            <td>
+                                                                <Popover className="border border-white rounded-xl"
+                                                                >
+                                                                    <PopoverTrigger>
+                                                                        <Button
+                                                                            style={global_styles().warningStyles}
+                                                                            isIconOnly
+                                                                        >
+                                                                            <Trash />
+                                                                        </Button>
+                                                                    </PopoverTrigger>
+                                                                    <PopoverContent>
+                                                                        <div className="p-4">
+                                                                            <p className="text-sm font-normal text-gray-600">
+                                                                                ¿Deseas eliminar el registro {shop.id}?
+                                                                            </p>
+                                                                            <div className="flex justify-center mt-4">
+                                                                                <Button
+                                                                                    onClick={() => onDeleteConfirm(shop.id)}
+                                                                                    style={{
+                                                                                        backgroundColor: '#FF4D4F',
+                                                                                        color: 'white',
+                                                                                    }}
+                                                                                    className="mr-2"
+                                                                                >
+                                                                                    Sí, eliminar
+                                                                                </Button>
+
+                                                                            </div>
+                                                                        </div>
+                                                                    </PopoverContent>
+                                                                </Popover>
                                                             </td>
 
 

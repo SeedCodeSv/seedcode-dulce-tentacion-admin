@@ -16,9 +16,9 @@ export const useAccountCatalogsStore = create<accountCatalogsStore>((set) => ({
         status: 0,
         ok: false,
     },
-    getAccountCatalogs: (page, limit) => {
+    getAccountCatalogs: (name, code) => {
         set({ loading: true });
-        get_account_catalogs_paginated(page, limit)
+        get_account_catalogs_paginated(name, code)
             .then((accountCatalogs) => set({ account_catalog_pagination: accountCatalogs.data, loading: false }))
             .catch(() => {
                 set({
