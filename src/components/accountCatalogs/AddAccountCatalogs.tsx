@@ -141,13 +141,13 @@ function AddAccountCatalogs() {
 
                                             <div className="pt-1 pb-2">
                                                 <Input
-                                                    label="Cuenta Principal"
+                                                    label="Cuenta Mayor"
                                                     labelPlacement="outside"
                                                     name="majorAccount"
                                                     value={formik.values.majorAccount}
                                                     onChange={formik.handleChange('majorAccount')}
                                                     onBlur={formik.handleBlur('majorAccount')}
-                                                    placeholder="Ingrese la cuenta principal"
+                                                    placeholder="Ingrese la cuenta mayor"
                                                     classNames={{ label: "font-semibold" }}
                                                     variant="bordered"
                                                     isInvalid={!!formik.touched.majorAccount && !!formik.errors.majorAccount}

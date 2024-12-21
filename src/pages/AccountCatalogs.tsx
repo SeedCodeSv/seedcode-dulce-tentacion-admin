@@ -60,85 +60,7 @@ function AddAccountCatalogs() {
         <Layout title="Catalogos de Cuentas">
             <>
                 <div className="w-full h-full flex flex-col overflow-y-auto p-5 bg-white dark:bg-gray-800">
-
                     <div className="w-full mt-2">
-                        {/* <div className="w-full flex justify-between gap-5 mt-4">
-                            <div className="w-full">
-
-                                <div className="mt-2 flex w-full justify-between gap-5">
-                                    <Input
-                                        startContent={<SearchIcon />}
-                                        className="w-full dark:text-white border border-white rounded-xl"
-                                        variant="bordered"
-                                        labelPlacement="outside"
-                                        label="Nombre"
-                                        classNames={{
-                                            label: 'font-semibold text-gray-700',
-                                            inputWrapper: 'pr-0',
-                                        }}
-                                        value={name}
-                                        onChange={(e) => setName(e.target.value)}
-                                        placeholder="Escribe para buscar..."
-                                        isClearable
-                                        onClear={() => {
-                                            setName('');
-                                            handleSearch('');
-                                        }}
-                                    />
-                                    <Input
-                                        startContent={<SearchIcon />}
-                                        className="w-full dark:text-white border border-white rounded-xl"
-                                        variant="bordered"
-                                        labelPlacement="outside"
-                                        label="Código"
-                                        classNames={{
-                                            label: 'font-semibold text-gray-700',
-                                            inputWrapper: 'pr-0',
-                                        }}
-                                        value={code}
-                                        onChange={(e) => setCode(e.target.value)}
-                                        placeholder="Escribe para buscar..."
-                                        isClearable
-                                        onClear={() => {
-                                            // handleSearch("");
-                                            setCode('');
-                                            handleSearch('');
-                                        }}
-                                    />
-
-                                    <Button
-                                        style={{
-                                            backgroundColor: theme.colors.secondary,
-                                            color: theme.colors.primary,
-                                        }}
-                                        className="hidden mt-6 font-semibold md:flex border border-white rounded-xl"
-                                        color="primary"
-                                        startContent={<SearchIcon className="w-10" />}
-                                        onClick={() => {
-                                            handleSearch(undefined);
-                                        }}
-                                    >
-                                        Buscar
-                                    </Button>
-                                </div>
-                            </div>
-                            <div className="w-full flex justify-end gap-5 pb-5 mt-9">
-                                <Button
-                                    className="px-10 "
-                                    endContent={<PiMicrosoftExcelLogoBold size={20} />}
-                                    onClick={() => exportAnnexes()}
-                                    color="secondary"
-                                >
-                                    Exportar Catálogo
-                                </Button>
-
-                                <AddButton
-                                    onClick={() => {
-                                        navigate('/add-account-catalog');
-                                    }}
-                                />
-                            </div>
-                        </div> */}
                         <div className="w-full flex flex-col lg:flex-row justify-between gap-5 mt-4">
                             <div className="w-full">
                                 <div className="mt-2 flex flex-col lg:flex-row w-full justify-between gap-5">
@@ -250,13 +172,13 @@ function AddAccountCatalogs() {
                                                             style={styles.darkStyle}
                                                             className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
                                                         >
-                                                            Cuenta Principal
+                                                            Cuenta Mayor
                                                         </th>
                                                         <th
                                                             style={styles.darkStyle}
                                                             className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
                                                         >
-                                                            Nivel de cuenta
+                                                            Nivel de Cuenta
                                                         </th>
                                                         <th
                                                             style={styles.darkStyle}
@@ -307,7 +229,6 @@ function AddAccountCatalogs() {
                                                             <td className="p-4 text-sm text-slate-500 dark:text-slate-100">
                                                                 {shop.accountType}
                                                             </td>
-
                                                             <td className="p-4 text-sm text-slate-500 dark:text-slate-100">
                                                                 {shop.item}
                                                             </td>

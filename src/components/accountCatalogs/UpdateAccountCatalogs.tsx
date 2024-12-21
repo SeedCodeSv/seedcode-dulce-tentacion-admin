@@ -168,13 +168,13 @@ function UpdateAccountCatalogs() {
 
                                                 <div className="pt-1 pb-2">
                                                     <Input
-                                                        label="Cuenta Principal"
+                                                        label="Cuenta Mayor"
                                                         labelPlacement="outside"
                                                         name="majorAccount"
                                                         value={formik.values.majorAccount}
                                                         onChange={formik.handleChange('majorAccount')}
                                                         onBlur={formik.handleBlur('majorAccount')}
-                                                        placeholder="Ingrese la cuenta principal"
+                                                        placeholder="Ingrese la cuenta mayor"
                                                         classNames={{ label: "font-semibold" }}
                                                         variant="bordered"
                                                         isInvalid={!!formik.touched.majorAccount && !!formik.errors.majorAccount}
@@ -187,17 +187,12 @@ function UpdateAccountCatalogs() {
 
                                                     <div className="pt-1 pb-2 mb-1">
                                                         <label className="font-semibold block">Sub Cuenta</label>
-                                                        {/* <Switch
-                                                            color="primary"
-                                                            checked={formik.values.hasSub}
-                                                            onChange={(e) => formik.setFieldValue("hasSub", e.target.checked)}
-                                                            size="lg"
-                                                        /> */}
+                                             
                                                         <Switch
                                                             color="primary"
                                                             isSelected={formik.values.hasSub}
-                                                            checked={formik.values.hasSub} // Refleja el valor actual de Formik
-                                                            onChange={(e) => formik.setFieldValue("hasSub", e.target.checked)} // Actualiza el valor cuando el usuario cambie el estado
+                                                            checked={formik.values.hasSub} 
+                                                            onChange={(e) => formik.setFieldValue("hasSub", e.target.checked)} 
                                                             size="lg"
                                                         />
                                                     </div>
@@ -213,8 +208,8 @@ function UpdateAccountCatalogs() {
                                                         labelPlacement="outside"
                                                         selectedKeys={formik.values.type ? [formik.values.type] : []}
                                                         onSelectionChange={(selected) => {
-                                                            const value = Array.from(selected).join(""); // Extraer el valor seleccionado
-                                                            formik.setFieldValue("type", value); // Actualizar en Formik
+                                                            const value = Array.from(selected).join(""); 
+                                                            formik.setFieldValue("type", value); 
                                                         }}
                                                         onBlur={formik.handleBlur("type")}
                                                         isInvalid={!!formik.touched.type && !!formik.errors.type}
@@ -235,7 +230,7 @@ function UpdateAccountCatalogs() {
                                                         label="Cargar como"
                                                         placeholder="Selecciona el tipo"
                                                         labelPlacement="outside"
-                                                        // defaultSelectedKeys={[`${formik.values.loadAs}`]}
+                                            
                                                         selectedKeys={formik.values.loadAs ? [formik.values.loadAs] : []}
                                                         onSelectionChange={(key) => {
                                                             const value = new Set(key).values().next().value
