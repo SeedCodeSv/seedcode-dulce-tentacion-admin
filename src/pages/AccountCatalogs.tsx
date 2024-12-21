@@ -8,7 +8,7 @@ import { Button, Input, Popover, PopoverContent, PopoverTrigger } from "@nextui-
 import AddButton from "@/components/global/AddButton"
 import { PiMicrosoftExcelLogoBold } from "react-icons/pi"
 import { generate_catalog_de_cuentas } from "@/components/accountCatalogs/accountCatalogs"
-import { SearchIcon, Trash } from "lucide-react"
+import { Pen, SearchIcon, Trash } from "lucide-react"
 import { ThemeContext } from "@/hooks/useTheme"
 import { global_styles } from "@/styles/global.styles"
 import axios from "axios"
@@ -62,7 +62,7 @@ function AddAccountCatalogs() {
                 <div className="w-full h-full flex flex-col overflow-y-auto p-5 bg-white dark:bg-gray-800">
 
                     <div className="w-full mt-2">
-                        <div className="w-full flex justify-between gap-5 mt-4">
+                        {/* <div className="w-full flex justify-between gap-5 mt-4">
                             <div className="w-full">
 
                                 <div className="mt-2 flex w-full justify-between gap-5">
@@ -138,7 +138,83 @@ function AddAccountCatalogs() {
                                     }}
                                 />
                             </div>
+                        </div> */}
+                        <div className="w-full flex flex-col lg:flex-row justify-between gap-5 mt-4">
+                            <div className="w-full">
+                                <div className="mt-2 flex flex-col lg:flex-row w-full justify-between gap-5">
+                                    <Input
+                                        startContent={<SearchIcon />}
+                                        className="w-full dark:text-white border border-white rounded-xl mb-4 lg:mb-0"
+                                        variant="bordered"
+                                        labelPlacement="outside"
+                                        label="Nombre"
+                                        classNames={{
+                                            label: 'font-semibold text-gray-700',
+                                            inputWrapper: 'pr-0',
+                                        }}
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
+                                        placeholder="Escribe para buscar..."
+                                        isClearable
+                                        onClear={() => {
+                                            setName('');
+                                            handleSearch('');
+                                        }}
+                                    />
+                                    <Input
+                                        startContent={<SearchIcon />}
+                                        className="w-full dark:text-white border border-white rounded-xl mb-4 lg:mb-0"
+                                        variant="bordered"
+                                        labelPlacement="outside"
+                                        label="Código"
+                                        classNames={{
+                                            label: 'font-semibold text-gray-700',
+                                            inputWrapper: 'pr-0',
+                                        }}
+                                        value={code}
+                                        onChange={(e) => setCode(e.target.value)}
+                                        placeholder="Escribe para buscar..."
+                                        isClearable
+                                        onClear={() => {
+                                            setCode('');
+                                            handleSearch('');
+                                        }}
+                                    />
+                                    <Button
+                                        style={{
+                                            backgroundColor: theme.colors.secondary,
+                                            color: theme.colors.primary,
+                                        }}
+                                        className="w-full lg:w-auto mt-2 lg:mt-6 font-semibold flex justify-center items-center border border-white rounded-xl"
+                                        color="primary"
+                                        startContent={<SearchIcon className="w-10" />}
+                                        onClick={() => {
+                                            handleSearch(undefined);
+                                        }}
+                                    >
+                                        Buscar
+                                    </Button>
+                                </div>
+                            </div>
+                            <div className="w-full flex flex-col lg:flex-row justify-end gap-5 pb-5 mt-6 lg:mt-9">
+                                <Button
+                                    className="w-full lg:w-auto px-4 lg:px-10 mb-4 lg:mb-0"
+                                    endContent={<PiMicrosoftExcelLogoBold size={20} />}
+                                    onClick={() => exportAnnexes()}
+                                    color="secondary"
+                                >
+                                    Exportar Catálogo
+                                </Button>
+                                <AddButton
+
+                                    onClick={() => {
+                                        navigate('/add-account-catalog');
+                                    }}
+                                />
+                            </div>
                         </div>
+
+
                         <div className="w-full max-h-[500px] lg:max-h-[600px] xl:max-h-[700px] 2xl:max-h-[800px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
                             {loading ? (
                                 <div className="w-full flex justify-center p-20 items-center flex-col">
@@ -238,10 +314,10 @@ function AddAccountCatalogs() {
                                                             <td className="p-4 text-sm text-slate-500 dark:text-slate-100">
                                                                 {shop.uploadAs}
                                                             </td>
-                                                            <td>
+                                                            <td className="flex gap-4">
                                                                 <Popover className="border border-white rounded-xl"
                                                                 >
-                                                                    <PopoverTrigger>
+                                                                    <PopoverTrigger className="">
                                                                         <Button
                                                                             style={global_styles().warningStyles}
                                                                             isIconOnly
@@ -270,6 +346,16 @@ function AddAccountCatalogs() {
                                                                         </div>
                                                                     </PopoverContent>
                                                                 </Popover>
+
+
+                                                                <Button className=""
+
+                                                                    onClick={() => navigate(`/update-account-catalog/${shop.id}`)}
+                                                                    style={global_styles().secondaryStyle}
+                                                                    isIconOnly
+                                                                >
+                                                                    <Pen />
+                                                                </Button>
                                                             </td>
 
 

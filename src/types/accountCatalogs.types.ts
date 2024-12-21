@@ -9,7 +9,11 @@ export interface IGetAccountCatalog {
   prevPag: number;
   status: number;
 }
-
+export interface IGetAccountCatalogUpdate {
+  ok: boolean
+  accountCatalogs: AccountCatalog
+  status: number;
+}
 export interface AccountCatalog {
   id: number
   code: string
@@ -25,6 +29,7 @@ export interface AccountCatalog {
 
 
 export interface AccountCatalogPayload {
+ 
   code: string
   hasSub: boolean
   item: string

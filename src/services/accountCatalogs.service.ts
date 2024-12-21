@@ -1,5 +1,5 @@
 import { get_token } from '@/storage/localStorage';
-import { AccountCatalogPayload, IGetAccountCatalog } from '@/types/accountCatalogs.types';
+import { AccountCatalogPayload, IGetAccountCatalog, IGetAccountCatalogUpdate } from '@/types/accountCatalogs.types';
 import { API_URL } from '@/utils/constants';
 import axios from 'axios';
 
@@ -28,5 +28,15 @@ export const post_account_catalog = (payload: AccountCatalogPayload) => {
         },
     });
 };
+
+
+export const account_catalog_by_id = (id: number) => {
+    return axios.get<IGetAccountCatalog>(API_URL + `/account-catalogs/${id}`);
+}
+
+export const get_catalog_by_id = (id: number) => {
+    return axios.get<IGetAccountCatalogUpdate>(API_URL + `/account-catalogs/${id}`);
+}
+
 
 

@@ -277,7 +277,7 @@ export interface IGetShoppingReport {
   status: number;
 }
 
-export interface IGetShoppingDetails{
+export interface  IGetShoppingDetails{
   ok: boolean,
   compra: ShoppingReport,
   status: number

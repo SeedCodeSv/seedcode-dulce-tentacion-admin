@@ -9,5 +9,6 @@ export interface accountCatalogsStore {
         code: string,
     ) => void;
     postAccountCatalog: (payload: AccountCatalogPayload) => Promise<boolean>;
-
+    getCatalogsDetails: (id: number) => void
+    catalog_details: AccountCatalog,
 }

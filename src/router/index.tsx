@@ -72,6 +72,7 @@ import anexos from "@/pages/anexos_iva/router"
 import EditShopping from '@/components/shopping/EditShopping';
 import AccountCatalogs from '@/pages/AccountCatalogs';
 import AddAccountCatalogs from '@/components/accountCatalogs/AddAccountCatalogs';
+import UpdateAccountCatalogs from '@/components/accountCatalogs/UpdateAccountCatalogs';
 
 const Loading = () => {
   return <div>Cargando...</div>;
@@ -398,6 +399,10 @@ export const router = () => {
     {
       path: "/edit-shopping/:id",
       element: <EditShopping />
+    },
+    {
+      path: "/update-account-catalog/:id",
+      element: <UpdateAccountCatalogs />
     },
     ...anexos
   ]);

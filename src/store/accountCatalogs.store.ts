@@ -1,8 +1,9 @@
 import { create } from 'zustand';
 import { accountCatalogsStore } from './types/accountCatalogs.store.types';
-import { get_account_catalogs_paginated, post_account_catalog } from '@/services/accountCatalogs.service';
+import { get_account_catalogs_paginated, get_catalog_by_id, post_account_catalog } from '@/services/accountCatalogs.service';
 import { messages } from '@/utils/constants';
 import { toast } from 'sonner';
+import { AccountCatalog } from '@/types/accountCatalogs.types';
 export const useAccountCatalogsStore = create<accountCatalogsStore>((set) => ({
     account_catalog: [],
     loading: false,
@@ -16,6 +17,7 @@ export const useAccountCatalogsStore = create<accountCatalogsStore>((set) => ({
         status: 0,
         ok: false,
     },
+    catalog_details: {} as AccountCatalog,
     getAccountCatalogs: (name, code) => {
         set({ loading: true });
         get_account_catalogs_paginated(name, code)
@@ -48,5 +50,15 @@ export const useAccountCatalogsStore = create<accountCatalogsStore>((set) => ({
                 return false;
             });
     },
+
+
+
+      getCatalogsDetails(id) {
+        get_catalog_by_id(id).then(({ data }) => {
+          set({ catalog_details: data.accountCatalogs });
+        }).catch(()=>{
+          set({ catalog_details: undefined });
+        })
+      },
 
 }));

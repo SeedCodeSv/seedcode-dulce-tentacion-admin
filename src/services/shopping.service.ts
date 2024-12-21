@@ -59,6 +59,7 @@ export const get_shopping_by_month = (transmitterId: number, month: string) => {
   );
 };
 
+
 export const get_shopping_by_id = (id: number) => {
   return axios.get<IGetShoppingDetails>(API_URL + `/shoppings/${id}`);
 }
