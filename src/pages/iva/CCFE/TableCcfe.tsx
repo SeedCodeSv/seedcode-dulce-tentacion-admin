@@ -6,7 +6,7 @@ function TableCcfe() {
   const { creditos_by_month } = useSalesStore();
 
   // Función para calcular Gravada sin IVA
-const calculateGravadaWithoutVAT = (gravada: any, total: any) => {
+const calculateGravadaWithoutVAT = (gravada: number, total: number) => {
   if (gravada === total) {
     return parseFloat((gravada / 1.13).toFixed(2)); // Eliminar IVA y redondear a 2 decimales
   }

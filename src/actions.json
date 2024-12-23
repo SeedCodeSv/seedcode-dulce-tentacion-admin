@@ -37,6 +37,10 @@
       "actions": ["Mostrar", "Ver Detalle", "Invalidar"]
     },
     {
+      "view": "Ventas Ticket",
+      "actions": ["Mostrar", "Ver Detalle"]
+    },
+    {
       "view": "Empleados",
       "actions": [
         "Mostrar",

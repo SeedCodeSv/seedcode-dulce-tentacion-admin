@@ -135,7 +135,7 @@ function CFFBookIVA() {
   }, [creditos_by_month]);
 
 
-  const calculateGravadaWithoutVAT = (gravada: any, total: any) => {
+  const calculateGravadaWithoutVAT = (gravada: number, total: number) => {
     if (gravada === total) {
       return parseFloat((gravada / 1.13).toFixed(2)); // Quitar IVA y redondear a 2 decimales
     }

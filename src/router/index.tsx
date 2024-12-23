@@ -73,6 +73,7 @@ import EditShopping from '@/components/shopping/EditShopping';
 import AccountCatalogs from '@/pages/AccountCatalogs';
 import AddAccountCatalogs from '@/components/accountCatalogs/AddAccountCatalogs';
 import UpdateAccountCatalogs from '@/components/accountCatalogs/UpdateAccountCatalogs';
+import TicketSales from '@/pages/TicketSales';
 
 const Loading = () => {
   return <div>Cargando...</div>;
@@ -338,7 +339,7 @@ export const router = () => {
     },
     {
       path: '/accountCatalogs',
-      element: checkAuthorization('Catalogos de Cuentas', <AccountCatalogs />),
+      element: checkAuthorization('Catálogos de Cuentas', <AccountCatalogs />),
     },
     {
       path: '/cash-cuts-x',
@@ -371,6 +372,10 @@ export const router = () => {
     {
       path: '/sales',
       element: checkAuthorization('Ventas', <SalesPage />),
+    },
+    {
+      path: '/sales-ticket',
+      element: checkAuthorization('Ventas Ticket', <TicketSales />),
     },
     {
       path: "/debit-note/:id",

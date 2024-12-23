@@ -66,7 +66,7 @@ function AddAccountCatalogs() {
             item: yup.string().required("**Campo requerido**"),
 
         }),
-        async onSubmit(values, formikHelpers) {
+        onSubmit(values, formikHelpers) {
 
             try {
                 const payload: AccountCatalogPayload = {
