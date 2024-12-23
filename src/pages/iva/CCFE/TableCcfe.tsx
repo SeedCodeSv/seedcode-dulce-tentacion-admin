@@ -4,6 +4,14 @@ import { formatCurrency } from '@/utils/dte';
 
 function TableCcfe() {
   const { creditos_by_month } = useSalesStore();
+
+  // Función para calcular Gravada sin IVA
+const calculateGravadaWithoutVAT = (gravada: any, total: any) => {
+  if (gravada === total) {
+    return parseFloat((gravada / 1.13).toFixed(2)); // Eliminar IVA y redondear a 2 decimales
+  }
+  return gravada;
+};
   return (
     <table className="w-full">
       <thead className="sticky top-0 z-20 dark:bg-black bg-white">
@@ -53,7 +61,13 @@ function TableCcfe() {
               {formatCurrency(Number(factura.totalExenta))}
             </td>
             <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-              {formatCurrency(Number(factura.totalGravada))}
+              {/* {formatCurrency(Number(factura.totalGravada))} */}
+              {formatCurrency(
+                calculateGravadaWithoutVAT(
+                  Number(factura.totalGravada),
+                  Number(factura.montoTotalOperacion)
+                )
+              )}
             </td>
             <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
               {formatCurrency(Number(factura.totalIva))}

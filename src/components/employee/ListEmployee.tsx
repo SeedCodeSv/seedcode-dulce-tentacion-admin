@@ -1184,7 +1184,7 @@ function ListEmployee({ actions }: Props) {
                                           </Button>
                                         )}
                                         {actions.includes('Contrato de Trabajo') &&
-                                        employee.isActive ? (
+                                          employee.isActive ? (
                                           <TooltipGlobal text="Generar Contrato de Trabajo">
                                             <Button
                                               className="border border-white"
@@ -1285,8 +1285,8 @@ function ListEmployee({ actions }: Props) {
                         getEmployeesPaginated(
                           Number(
                             user?.correlative?.branch.transmitterId ??
-                              user?.pointOfSale?.branch.transmitterId ??
-                              0
+                            user?.pointOfSale?.branch.transmitterId ??
+                            0
                           ),
                           page,
                           limit,
@@ -1296,8 +1296,8 @@ function ListEmployee({ actions }: Props) {
                           phone,
                           codeEmployee,
                           active ? 1 : 0,
-                          startDate,
-                          endDate
+                          isDate ? startDate : '',
+                          isDate ? endDate : ''
                         );
                       }}
                     />
@@ -1308,8 +1308,8 @@ function ListEmployee({ actions }: Props) {
                         getEmployeesPaginated(
                           Number(
                             user?.correlative?.branch.transmitterId ??
-                              user?.pointOfSale?.branch.transmitterId ??
-                              0
+                            user?.pointOfSale?.branch.transmitterId ??
+                            0
                           ),
                           employee_paginated.nextPag,
                           limit,
@@ -1319,16 +1319,16 @@ function ListEmployee({ actions }: Props) {
                           phone,
                           codeEmployee,
                           active ? 1 : 0,
-                          startDate,
-                          endDate
+                          isDate ? startDate : '',
+                          isDate ? endDate : ''
                         );
                       }}
                       handlePrev={() => {
                         getEmployeesPaginated(
                           Number(
                             user?.correlative?.branch.transmitterId ??
-                              user?.pointOfSale?.branch.transmitterId ??
-                              0
+                            user?.pointOfSale?.branch.transmitterId ??
+                            0
                           ),
                           employee_paginated.prevPag,
                           limit,
@@ -1338,8 +1338,8 @@ function ListEmployee({ actions }: Props) {
                           phone,
                           codeEmployee,
                           active ? 1 : 0,
-                          startDate,
-                          endDate
+                          isDate ? startDate : '',
+                          isDate ? endDate : ''
                         );
                       }}
                       currentPage={employee_paginated.currentPag}

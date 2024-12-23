@@ -70,6 +70,9 @@ import ContingenceSection from '@/pages/ContingenceSection';
 import Annulation from '@/pages/Annulation';
 import anexos from "@/pages/anexos_iva/router"
 import EditShopping from '@/components/shopping/EditShopping';
+import AccountCatalogs from '@/pages/AccountCatalogs';
+import AddAccountCatalogs from '@/components/accountCatalogs/AddAccountCatalogs';
+import UpdateAccountCatalogs from '@/components/accountCatalogs/UpdateAccountCatalogs';
 
 const Loading = () => {
   return <div>Cargando...</div>;
@@ -107,6 +110,10 @@ export const router = () => {
     {
       path: '/add-product',
       element: checkAuthorization('Productos', <AddProduct />),
+    },
+    {
+      path: '/add-account-catalog',
+      element: checkAuthorization('Catalogos de Cuentas', <AddAccountCatalogs />),
     },
     {
       path: '/categories',
@@ -330,6 +337,10 @@ export const router = () => {
       element: checkAuthorization('Corte Gran Z', <CushCatsBigZ />),
     },
     {
+      path: '/accountCatalogs',
+      element: checkAuthorization('Catalogos de Cuentas', <AccountCatalogs />),
+    },
+    {
       path: '/cash-cuts-x',
       element: checkAuthorization('Corte X', <CashCutsX />),
     },
@@ -388,6 +399,10 @@ export const router = () => {
     {
       path: "/edit-shopping/:id",
       element: <EditShopping />
+    },
+    {
+      path: "/update-account-catalog/:id",
+      element: <UpdateAccountCatalogs />
     },
     ...anexos
   ]);

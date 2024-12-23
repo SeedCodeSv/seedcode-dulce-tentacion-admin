@@ -24,16 +24,18 @@ export const useSupplierStore = create<ISupplierStore>((set, get) => ({
     status: 404,
     ok: false,
   },
-
+  loading: false,
   supplier_list: [],
   supplier_type: '',
   supplier: {} as Supplier,
   saveSupplierPagination: (supplier_pagination) => set({ supplier_pagination }),
   getSupplierPagination: (page, limit, name, email, isTransmitter, active) => {
+    set({ loading: true });
     get_supplier_pagination(page, limit, name, email, isTransmitter, active)
-      .then((supplier) => set({ supplier_pagination: supplier.data }))
+      .then((supplier) => set({ supplier_pagination: supplier.data, loading: false }))
       .catch(() => {
         set({
+          loading: false,
           supplier_pagination: {
             suppliers: [],
             total: 0,

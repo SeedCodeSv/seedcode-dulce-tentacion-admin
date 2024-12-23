@@ -5,9 +5,9 @@ import { get_annexes_iva } from "@/services/reports/iva-fe.service";
 export const useIvaFeStore = create<IvaFeStore>((set) => ({
     annexes_iva: [],
     loading_annexes_fe: false,
-    onGetAnnexesIva(branchId, startDate, endDate) {
+    onGetAnnexesIva(branchId, month) {
         set({ loading_annexes_fe: true });
-        get_annexes_iva(branchId, startDate, endDate).then((res) => {
+        get_annexes_iva(branchId, month).then((res) => {
             const { data } = res;
 
             const format = data.salesByDay.flat(2).map(sale => {

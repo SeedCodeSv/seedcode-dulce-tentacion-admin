@@ -9,6 +9,10 @@
       "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Activar Productos"]
     },
     {
+      "view": "Catalogos de Cuentas",
+      "actions": ["Mostrar", "Agregar"]
+    },
+    {
       "view": "Categorias de Productos",
       "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Activar"]
     },
@@ -132,7 +136,7 @@
     },
     {
       "view": "IVA de Compras",
-      "actions": ["Imprimir", "Exportar Excel"]
+      "actions": ["Imprimir", "Exportar Excel", "Exportar PDF"]
     },
     {
       "view": "IVA de CCF",

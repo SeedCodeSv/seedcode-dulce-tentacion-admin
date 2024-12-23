@@ -394,7 +394,7 @@ export const annexes_iva_fe = async (annexe_fe: IvaSale[]) => {
     let nextLine = 2;
 
     for (const line of annexe_fe) {
-        worksheet.getCell(`A${nextLine}`).value =  formatDate(line.currentDay)
+        worksheet.getCell(`A${nextLine}`).value = formatDate(line.currentDay)
         worksheet.getCell(`B${nextLine}`).value = (line.type === 'FE') ? "1. IMPRESO POR IMPRENTA O TIQUETES" : "4. DOCUMENTO TRIBUTARIO ELECTRÓNICO (DTE)"
         worksheet.getCell(`C${nextLine}`).value = formatClassDte(line.typeVoucher)
         worksheet.getCell(`D${nextLine}`).value = formatResolution(line)
@@ -467,19 +467,34 @@ export const formatClassCodeDte = (type: string) => {
             return ""
     }
 }
+// export const formatResolution = (iva: IvaSale) => {
+//     if (iva.type === "DTE") return "N/A"
+//     return iva.resolution
+// }
 export const formatResolution = (iva: IvaSale) => {
-    if (iva.type === "DTE") return "N/A"
-    return iva.resolution
-}
+    if (iva.type === "DTE") {
+        return iva.firstNumeroControl; // Mostrar `firstNumeroControl` si es Factura (FE)
+    }
+    return iva.resolution; // Mostrar `resolution` para otros casos
+};
+
+
+
+// export const formatSeries = (iva: IvaSale) => {
+//     if (iva.type === "DTE") return "N/A"
+//     return iva.series
+// }
 
 export const formatSeries = (iva: IvaSale) => {
-    if (iva.type === "DTE") return "N/A"
-    return iva.series
-}
+    if (iva.type === "DTE") {
+        return iva.firstSelloRecibido; // Mostrar `firstNumeroControl` si es Factura (FE)
+    }
+    return iva.series; // Mostrar `resolution` para otros casos
+};
 
 export const formatInternalControl = (iva: IvaSale) => {
-    const del = iva.type === "DTE" ? "N/A" : iva.firstNumeroControl
-    const al = iva.type === "DTE" ? "N/A" : iva.lastNumeroControl
+    const del = iva.type === "DTE" ? iva.firstCorrelativ : iva.firstNumeroControl
+    const al = iva.type === "DTE" ? iva.lastCorrelative : iva.lastNumeroControl
 
     return { del, al }
 }

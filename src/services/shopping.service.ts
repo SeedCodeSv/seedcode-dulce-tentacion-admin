@@ -6,6 +6,7 @@ import {
   IGetShoppingDetails,
   IGetShoppingPaginated,
   IGetShoppingReport,
+  IGetShoppingReportByCode,
   SuccessSupplier,
 } from '@/types/shopping.types';
 import { API_URL } from '@/utils/constants';
@@ -14,6 +15,9 @@ import axios from 'axios';
 export const create_shopping = (payload: FormData) => {
   return axios.post<ErrorSupplier | SuccessSupplier>(`${API_URL}/shoppings`, payload);
 };
+export const verify_code = (code: string) => {
+  return axios.get<IGetShoppingReportByCode>(`${API_URL}/shoppings/verify-code?code=${code}`)
+}
 
 export const create_shopping_manual = (payload: ICreateShoppingManual) => {
   return axios.post(`${API_URL}/shoppings/create`, payload);
@@ -55,10 +59,14 @@ export const get_shopping_by_month = (transmitterId: number, month: string) => {
   );
 };
 
+
 export const get_shopping_by_id = (id: number) => {
   return axios.get<IGetShoppingDetails>(API_URL + `/shoppings/${id}`);
 }
 
+
 export const update_shopping_manual = (id: number, payload: ICreateShoppingManual) => {
   return axios.patch<{ ok: boolean }>(`${API_URL}/shoppings/${id}`, payload);
 };
+
+

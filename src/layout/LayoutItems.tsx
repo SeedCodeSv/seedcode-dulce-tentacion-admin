@@ -219,6 +219,12 @@ export const LayoutItems = () => {
       icon: BookCheck,
       label: 'Correlativos',
     },
+    {
+      viewName: 'Catalogos de Cuentas',
+      to: '/accountCatalogs',
+      icon: BookCheck,
+      label: 'Catalogos de Cuentas',
+    },
   ];
 
   const booksLinks = [
@@ -301,8 +307,7 @@ export const LayoutItems = () => {
             <NavLink
               to="/"
               className={({ isActive }) =>
-                `group relative flex items-center gap-2.5 rounded-sm py-4 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700 ${
-                  isActive && 'bg-gray-200 dark:bg-gray-700'
+                `group relative flex items-center gap-2.5 rounded-sm py-4 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700 ${isActive && 'bg-gray-200 dark:bg-gray-700'
                 }`
               }
             >
@@ -420,7 +425,7 @@ export const LayoutItems = () => {
                     <div
                       className={classNames(
                         validate_pathname(pathname, ['gestion-reports']) &&
-                          'bg-gray-200 dark:bg-gray-700',
+                        'bg-gray-200 dark:bg-gray-700',
                         'group relative cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
                       )}
                       onClick={handleClick}
@@ -561,7 +566,7 @@ export const LayoutItems = () => {
                     <div
                       className={classNames(
                         validate_pathname(pathname, ['books']) &&
-                          'bg-gray-200 dark:bg-gray-700',
+                        'bg-gray-200 dark:bg-gray-700',
                         'group relative cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
                       )}
                       onClick={handleClick}
@@ -603,7 +608,7 @@ export const LayoutItems = () => {
                     <div
                       className={classNames(
                         validate_pathname(pathname, ['contabilidad']) &&
-                          'bg-gray-200 dark:bg-gray-700',
+                        'bg-gray-200 dark:bg-gray-700',
                         'group relative cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
                       )}
                       onClick={handleClick}

@@ -1,3 +1,5 @@
+import { Transmitter } from "./categories.types";
+
 export interface IAuthPayload {
   userName: string;
   password: string;
@@ -119,6 +121,7 @@ export interface Branch {
   phone: string;
   isActive: boolean;
   transmitterId: number;
+  transmitter: Transmitter;
 }
 
 export interface Box {
