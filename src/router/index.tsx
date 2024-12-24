@@ -69,6 +69,7 @@ import NotesCreditBySale from '@/components/notas/CreditNoteBySale';
 import ContingenceSection from '@/pages/ContingenceSection';
 import Annulation from '@/pages/Annulation';
 import anexos from "@/pages/anexos_iva/router"
+import accounting_items from "@/pages/contablilidad/router"
 import EditShopping from '@/components/shopping/EditShopping';
 import AccountCatalogs from '@/pages/AccountCatalogs';
 import AddAccountCatalogs from '@/components/accountCatalogs/AddAccountCatalogs';
@@ -344,7 +345,7 @@ export const router = () => {
     },
     {
       path: '/accountCatalogs',
-      element: checkAuthorization('Catálogos de Cuentas', <AccountCatalogs />),
+      element: checkAuthorization('Catalogos de Cuentas', <AccountCatalogs />),
     },
     {
       path: '/cash-cuts-x',
@@ -414,6 +415,7 @@ export const router = () => {
       path: "/update-account-catalog/:id",
       element: <UpdateAccountCatalogs />
     },
-    ...anexos
+    ...anexos,
+    ...accounting_items
   ]);
 };

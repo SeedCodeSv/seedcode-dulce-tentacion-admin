@@ -1,4 +1,4 @@
-import { Switch } from '@nextui-org/react';
+import { Button, Switch } from '@nextui-org/react';
 import { NavLink, useLocation } from 'react-router-dom';
 import LOGO from '../assets/MADNESS.png';
 import {
@@ -26,8 +26,9 @@ import {
   DatabaseBackup,
   HandCoins,
   Book,
+  X,
 } from 'lucide-react';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { Dispatch, SetStateAction, useContext, useEffect, useMemo, useState } from 'react';
 import { ThemeContext } from '../hooks/useTheme';
 import { useConfigurationStore } from '../store/perzonalitation.store';
 import useWindowSize from '../hooks/useWindowSize';
@@ -38,7 +39,12 @@ import { motion } from 'framer-motion';
 import { Barcode } from 'lucide-react';
 import SidebarLinkList from '@/components/global/SidebarLinkList ';
 
-export const LayoutItems = () => {
+interface Props {
+  isOpen: boolean;
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
+}
+
+export const LayoutItems = (props: Props) => {
   const { theme, toggleContext, context } = useContext(ThemeContext);
   useEffect(() => {
     if (context === 'dark') {
@@ -229,7 +235,13 @@ export const LayoutItems = () => {
       viewName: 'Catalogos de Cuentas',
       to: '/accountCatalogs',
       icon: BookCheck,
-      label: 'Catalogos de Cuentas',
+      label: 'Catálogos de Cuentas',
+    },
+    {
+      viewName: 'Libros contables',
+      to: '/accounting-items',
+      icon: BookCheck,
+      label: 'Libros contables',
     },
   ];
 
@@ -281,39 +293,40 @@ export const LayoutItems = () => {
   };
   return (
     <>
-      {personalization.length === 0 ? (
-        <div
-          className="flex items-center pl-5 w-full border-b shadow h-[70px]"
-          style={{
-            backgroundColor: theme.colors.dark,
-            color: theme.colors.primary,
-          }}
-        >
-          <img src={LOGO} className="max-h-14" />
-        </div>
-      ) : (
-        <>
-          {personalization.map((item) => (
-            <div
-              key={item.id}
-              className="flex items-center justify-center w-full border-b shadow h-[70px]"
-              style={{
-                backgroundColor: theme.colors.dark,
-                color: theme.colors.primary,
-              }}
-            >
-              <img src={item.logo} className="max-h-14" />
-            </div>
-          ))}
-        </>
-      )}
+      <div
+        className="flex justify-between items-center h-[70px]"
+        style={{
+          backgroundColor: theme.colors.dark,
+          color: theme.colors.primary,
+        }}
+      >
+        {personalization.length === 0 ? (
+          <div className="flex items-center pl-5 w-full shadow">
+            <img src={LOGO} className="max-h-12" />
+          </div>
+        ) : (
+          <>
+            {personalization.map((item) => (
+              <div key={item.id} className="flex items-center justify-center w-full shadow">
+                <img src={item.logo} className="max-h-12" />
+              </div>
+            ))}
+          </>
+        )}
+        {props.isOpen && (
+          <Button isIconOnly onPress={() => props.setIsOpen(false)}>
+            <X />
+          </Button>
+        )}
+      </div>
       <>
         <ul className="mt-2">
           <li>
             <NavLink
               to="/"
               className={({ isActive }) =>
-                `group relative flex items-center gap-2.5 rounded-sm py-4 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700 ${isActive && 'bg-gray-200 dark:bg-gray-700'
+                `group relative flex items-center gap-2.5 rounded-sm py-4 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700 ${
+                  isActive && 'bg-gray-200 dark:bg-gray-700'
                 }`
               }
             >
@@ -431,7 +444,7 @@ export const LayoutItems = () => {
                     <div
                       className={classNames(
                         validate_pathname(pathname, ['gestion-reports']) &&
-                        'bg-gray-200 dark:bg-gray-700',
+                          'bg-gray-200 dark:bg-gray-700',
                         'group relative cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
                       )}
                       onClick={handleClick}
@@ -571,8 +584,7 @@ export const LayoutItems = () => {
                   <>
                     <div
                       className={classNames(
-                        validate_pathname(pathname, ['books']) &&
-                        'bg-gray-200 dark:bg-gray-700',
+                        validate_pathname(pathname, ['books']) && 'bg-gray-200 dark:bg-gray-700',
                         'group relative cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
                       )}
                       onClick={handleClick}
@@ -614,7 +626,7 @@ export const LayoutItems = () => {
                     <div
                       className={classNames(
                         validate_pathname(pathname, ['contabilidad']) &&
-                        'bg-gray-200 dark:bg-gray-700',
+                          'bg-gray-200 dark:bg-gray-700',
                         'group relative cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
                       )}
                       onClick={handleClick}

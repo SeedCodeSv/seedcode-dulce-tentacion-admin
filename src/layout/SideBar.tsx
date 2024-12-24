@@ -17,40 +17,51 @@ import { useAuthStore } from '../store/auth.store';
 import { useNavigate } from 'react-router';
 import { SessionContext } from '../hooks/useSession';
 import { delete_RVA, delete_seller_mode } from '../storage/localStorage';
+import classNames from 'classnames';
+
 interface Props {
   children: ReactNode;
   title: string;
 }
 
 export const SideBar = (props: Props) => {
-  const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const { theme } = useContext(ThemeContext);
 
   const { user, makeLogout } = useAuthStore();
   const { setIsAuth, setToken, setMode } = useContext(SessionContext);
 
-  useEffect(() => {}, [user, theme]);
+  const [isOpen, setIsOpen] = useState<boolean>(
+    () => JSON.parse(localStorage.getItem('sidebarState') || 'false') // Recupera el estado al cargar.
+  );
+
+  const [openInMobile, setOpenInMobile] = useState(false);
+
   const [windowSize, setWindowSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight,
   });
-  const navigation = useNavigate();
+
   const close_login = () => {
     makeLogout();
     delete_seller_mode();
     setIsAuth(false);
     setToken('');
     delete_RVA();
-    navigation('/');
+    navigate('/');
     setMode('');
   };
+
   useEffect(() => {
     const handleResize = () => {
       setWindowSize({
         width: window.innerWidth,
         height: window.innerHeight,
       });
+      // Si el ancho es mayor a 1280px, muestra automáticamente el sidebar.
+      if (window.innerWidth >= 1280) {
+        setIsOpen(true);
+      }
     };
 
     window.addEventListener('resize', handleResize);
@@ -60,31 +71,45 @@ export const SideBar = (props: Props) => {
     };
   }, []);
 
+  useEffect(() => {
+    // Guarda el estado del sidebar en localStorage.
+    localStorage.setItem('sidebarState', JSON.stringify(isOpen));
+  }, [isOpen]);
+
   return (
     <div className="flex w-screen h-screen overflow-x-hidden">
       {windowSize.width < 1280 ? (
-        <SmLayout isOpen={isOpen} setIsOpen={setIsOpen} items={() => <LayoutItems />} />
+        <SmLayout isOpen={openInMobile} setIsOpen={setOpenInMobile} items={() => <LayoutItems setIsOpen={setOpenInMobile} isOpen={openInMobile} />} />
       ) : (
-        <LgLayout items={() => <LayoutItems />} />
+        <LgLayout isOpen={isOpen} setIsOpen={setIsOpen} items={() => <LayoutItems setIsOpen={setIsOpen} isOpen={isOpen} />} />
       )}
-      <div className="flex flex-col w-full xl:ml-80">
+      <div className={classNames('flex flex-col w-full', isOpen ? 'xl:ml-72' : 'xl:ml-0')}>
         <div
-          className="fixed top-0 z-[30] w-screen left-0 xl:pl-[22rem] shadow h-[70px] flex justify-between items-center lg:flex lg:justify-between sm:grid-cols-1 md:grid-cols-1 sm:px-1 mb:px-1 px-6"
+          className={classNames(
+            'fixed top-0 z-[30] w-screen left-0 shadow h-[70px] flex justify-between items-center lg:flex lg:justify-between sm:grid-cols-1 md:grid-cols-1 sm:px-1 mb:px-1 px-6',
+            isOpen ? 'xl:pl-[20rem]' : 'xl:pl-0'
+          )}
           style={{
             backgroundColor: theme.colors.dark,
             color: theme.colors.primary,
           }}
         >
-          <div className="flex start xl:hidden ">
-            <Button isIconOnly onClick={() => setIsOpen(!isOpen)}>
+          {!isOpen && (
+            <div className="hidden start xl:flex">
+              <Button isIconOnly onClick={() => setIsOpen(!isOpen)}>
+                <Menu />
+              </Button>
+            </div>
+          )}
+          <div className="flex start xl:hidden">
+            <Button isIconOnly onClick={() => setOpenInMobile(!openInMobile)}>
               <Menu />
             </Button>
           </div>
-          <div className="ml-3 lg:ml-0">
+          <div className="ml-3">
             <p className="text-sm font-bold uppercase whitespace-nowrap start">{props.title}</p>
           </div>
-          <div className="flex items-end justify-end w-full "></div>
-          <div className="flex items-end justify-end w-full ">
+          <div className="flex items-end justify-end w-full">
             <Dropdown placement="bottom-start" showArrow>
               <DropdownTrigger>
                 <User
@@ -102,7 +127,7 @@ export const SideBar = (props: Props) => {
                     <span className="hidden text-gray-400 lg:block">{user?.userName}</span>
                   }
                   name={<span className="hidden lg:block">{user?.userName}</span>}
-                ></User>
+                />
               </DropdownTrigger>
               <DropdownMenu aria-label="User Actions" variant="flat">
                 <DropdownItem key="profile" className="gap-2 h-14">
@@ -129,7 +154,7 @@ export const SideBar = (props: Props) => {
             </Dropdown>
           </div>
         </div>
-        <div className="w-full h-full overflow-y-auto bg-gray-50 mt-14 lg">{props.children}</div>
+        <div className="w-full h-full overflow-y-auto bg-gray-50 mt-14">{props.children}</div>
       </div>
     </div>
   );
