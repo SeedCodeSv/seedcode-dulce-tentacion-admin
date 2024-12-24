@@ -1,25 +1,79 @@
 import Layout from "../layout/Layout";
-// import { pdf } from "@react-pdf/renderer";
-// import CreditoFiscalTMP from "./invoices/Template2/CFC";
-import { Button } from "@nextui-org/react";
-import { jsPDF } from "jspdf";
-import autoTable, { RowInput } from "jspdf-autotable";
-import QR from "../assets/codigo-qr-1024x1024-1.jpg";
-// import { useContext } from "react";
-// import { ThemeContext } from "../hooks/useTheme";
-import LOGO from "../assets/CSLOGO.png";
-// import { createSVG, createSVGCircle } from "./svfe_pdf/template2/creations";
-import "svg2pdf.js";
-// import BG from "../assets/template2.png";
 import JSONDTE from "../assets/json/20F6B3E1-4AA4-4A93-A169-7F718E9987E9.json";
-import { formatCurrency } from "../utils/dte";
 import { SeedcodeCatalogosMhService } from "seedcode-catalogos-mh";
+import autoTable, { RowInput } from "jspdf-autotable";
+// import QR from "../assets/codigo-qr-1024x1024-1.jpg";
+// import { formatCurrency } from "../utils/dte";
+import { Button } from "@nextui-org/react";
+import LOGO from "../assets/MADNESS.png";
+import { jsPDF } from "jspdf";
+import "svg2pdf.js";
+
+const libroDiario = {
+  partidas: [
+    {
+      numero: 1,
+      fecha: "24-12-2024",
+      cuenta: "1010",
+      concepto: "Compra de mercancía",
+      debe: 1000,
+      haber: 0,
+      conceptoPartida: "Compra"
+    },
+    {
+      numero: 2,
+      fecha: "24-12-2024",
+      cuenta: "2010",
+      concepto: "Pago a proveedores",
+      debe: 0,
+      haber: 1000,
+      conceptoPartida: "Pago"
+    },
+    {
+      numero: 3,
+      fecha: "24-12-2024",
+      cuenta: "1100",
+      concepto: "Venta de producto",
+      debe: 0,
+      haber: 2000,
+      conceptoPartida: "Venta"
+    },
+    {
+      numero: 4,
+      fecha: "24-12-2024",
+      cuenta: "5000",
+      concepto: "Gastos de oficina",
+      debe: 500,
+      haber: 0,
+      conceptoPartida: "Gasto"
+    },
+    {
+      numero: 5,
+      fecha: "24-12-2024",
+      cuenta: "1200",
+      concepto: "Devolución de cliente",
+      debe: 100,
+      haber: 0,
+      conceptoPartida: "Devolución"
+    }
+  ]
+};
+
+// interface ILibroDiario {
+//   numero: number;
+//   fecha: string;
+//   cuenta: string;
+//   concepto: string;
+//   debe: number;
+//   haber: number;
+//   conceptoPartida: string;
+// }
 
 function Test() {
   const makePDF = () => {
     const doc = new jsPDF();
 
-    let finalYFirtsPage = 0;
+    const finalYFirtsPage = 0;
 
     doc.addImage(LOGO, "PNG", 5, 20, 40, 10, "FAST", "FAST");
     doc.setFontSize(7);
@@ -61,289 +115,38 @@ function Test() {
       "center"
     );
 
-    doc.roundedRect(doc.internal.pageSize.width - 45, 20, 40, 20, 2, 2, "S");
-    doc.addImage(QR, "PNG", doc.internal.pageSize.width - 67, 20, 18, 18);
+    const lastElementHeight = distTel + 15;
 
-    doc.setFontSize(6);
-    const text1Y = distTel + 20;
-    const namSplit = doc.splitTextToSize(
-      `NOMBRE : ${JSONDTE.receptor.nombre}`,
-      120
-    );
-    const nameHeight = getHeightText(doc, namSplit);
-    doc.text(namSplit, 10, text1Y, {
-      align: "left",
-    });
-
-    const text2Y = text1Y + nameHeight + 1;
-    const addressSplit = doc.splitTextToSize(
-      `${JSONDTE.receptor.direccion.complemento.toUpperCase()} ${returnAddress(
-        JSONDTE.receptor.direccion.departamento,
-        JSONDTE.receptor.direccion.municipio
-      ).toUpperCase()}`,
-      120
-    );
-    const addressHeight = getHeightText(doc, addressSplit);
-    doc.text(addressSplit, 10, text2Y, { align: "left" });
-
-    const text3Y = text2Y + addressHeight + 1;
-    const giroSplit = doc.splitTextToSize(
-      `GIRO : ${JSONDTE.receptor.descActividad}`,
-      120
-    );
-    const giroHeight = getHeightText(doc, giroSplit);
-    doc.text(giroSplit, 10, text3Y, { align: "left" });
-
-    const text4Y = text3Y + giroHeight + 1;
-    const condOpe = doc.splitTextToSize(
-      "CONDICION DE LA OPERACION: CONTADO",
-      120
-    );
-    const condOpeHeight = getHeightText(doc, condOpe);
-    doc.text(condOpe, 10, text4Y, { align: "left" });
-
-    // Second line
-
-    const text1Y2 = distTel + 20;
-    const nrcSplit = doc.splitTextToSize(
-      `NRC ${" "} ${" "} : ${" "}${JSONDTE.receptor.nrc}`,
-      90
-    );
-    const nrcHeight = getHeightText(doc, nrcSplit);
-    doc.text(nrcSplit, 125, text1Y2, {
-      align: "left",
-    });
-
-    const text2Y2 = text1Y2 + nrcHeight + 1;
-    const nitSplit = doc.splitTextToSize(
-      `NIT ${" "} ${" "} ${" "} : ${" "}${JSONDTE.receptor.nit}`,
-      120
-    );
-    const nitHeight = getHeightText(doc, nitSplit);
-    doc.text(nitSplit, 125, text2Y2, { align: "left" });
-
-    const text3Y2 = text2Y2 + nitHeight + 1;
-    const codigoGen = doc.splitTextToSize(
-      `CODIGO GENERACION ${" "} ${" "} : ${" "}${
-        JSONDTE.identificacion.codigoGeneracion
-      }`,
-      120
-    );
-    const codigoGenHeight = getHeightText(doc, codigoGen);
-    doc.text(codigoGen, 125, text3Y2, { align: "left" });
-
-    const text4Y2 = text3Y2 + codigoGenHeight + 1;
-    const numeroControl = doc.splitTextToSize(
-      `NUMERO DE CONTROL ${" "} ${" "} : ${" "}${
-        JSONDTE.identificacion.numeroControl
-      }`,
-      120
-    );
-    const numeroControlHeight = getHeightText(doc, numeroControl);
-    doc.text(numeroControl, 125, text4Y2, { align: "left" });
-
-    const text5Y2 = text4Y2 + numeroControlHeight + 1;
-    const sello = doc.splitTextToSize(
-      `SELLO ${" "} ${" "} : ${" "}${JSONDTE.respuestaMH.selloRecibido}`,
-      120
-    );
-    const selloHeight = getHeightText(doc, sello);
-    doc.text(sello, 125, text5Y2, { align: "left" });
-
-    const text6Y2 = text5Y2 + selloHeight + 1;
-    const fecHora = doc.splitTextToSize(
-      `FECHA HORA EMISION ${" "} ${" "} : ${" "}${
-        JSONDTE.identificacion.fecEmi
-      }: ${JSONDTE.identificacion.horEmi}`,
-      120
-    );
-    const fecHoraHeight = getHeightText(doc, fecHora);
-    doc.text(fecHora, 125, text6Y2, { align: "left" });
-
-    const text7Y2 = text6Y2 + fecHoraHeight + 1;
-    const modelo = doc.splitTextToSize(
-      `MODELO DE FACTURACION ${" "} ${" "} : ${" "} Previo`,
-      120
-    );
-    const modeloHeight = getHeightText(doc, modelo);
-    doc.text(modelo, 125, text7Y2, { align: "left" });
-
-    const text8Y2 = text7Y2 + modeloHeight + 1;
-    const transmision = doc.splitTextToSize(
-      `MODELO DE FACTURACION ${" "} ${" "} : ${" "} Previo`,
-      120
-    );
-    const transmisionHeight = getHeightText(doc, transmision);
-    doc.text(transmision, 125, text8Y2, { align: "left" });
-
-    const totalHeight = nameHeight + addressHeight + giroHeight + condOpeHeight;
-    const totalHeight2 =
-      nrcHeight +
-      nitHeight +
-      codigoGenHeight +
-      numeroControlHeight +
-      selloHeight +
-      fecHoraHeight +
-      modeloHeight +
-      transmisionHeight;
-
-    doc.roundedRect(
-      5,
-      distTel + 15,
-      doc.internal.pageSize.width - 10,
-      totalHeight > totalHeight2 ? totalHeight + 10 : totalHeight2 + 15,
-      2,
-      2,
-      "S"
-    );
-
-    const lastElementHeight = distTel + 15 + totalHeight2 + 20;
-
-    returnBoldText(
-      doc,
-      "OTROS DOCUMENTOS ASOCIADOS",
-      100,
-      lastElementHeight,
-      "center"
-    );
-
-    doc.roundedRect(
-      5,
-      lastElementHeight + 2,
-      doc.internal.pageSize.width - 10,
-      10,
-      2,
-      2,
-      "S"
-    );
-
-    autoTable(doc, {
-      head: [["Identificación del documento", "Descripción"]],
-      theme: "plain",
-      headStyles: {
-        fontSize: 7,
-      },
-      columnStyles: {
-        0: {
-          cellWidth: 60,
-        },
-      },
-      body: [["", ""]],
-      startY: lastElementHeight + 1,
-    });
-
-    let finalY = ((doc as unknown) as {
-      lastAutoTable: { finalY: number };
-    }).lastAutoTable.finalY;
-
-    returnBoldText(doc, "VENTA A CUENTA DE TERCEROS", 100, finalY, "center");
-
-    doc.roundedRect(
-      5,
-      finalY + 2,
-      doc.internal.pageSize.width - 10,
-      10,
-      2,
-      2,
-      "S"
-    );
-
-    autoTable(doc, {
-      head: [["NIT", "Nombre, denominación o razón social"]],
-      theme: "plain",
-      headStyles: {
-        fontSize: 7,
-      },
-      columnStyles: {
-        0: {
-          cellWidth: 60,
-        },
-      },
-      body: [["", ""]],
-      startY: finalY + 2,
-    });
-
-    finalY = ((doc as unknown) as {
-      lastAutoTable: { finalY: number };
-    }).lastAutoTable.finalY;
-
-    returnBoldText(doc, "DOCUMENTOS RELACIONADOS", 100, finalY, "center");
-
-    doc.roundedRect(
-      5,
-      finalY + 2,
-      doc.internal.pageSize.width - 10,
-      12,
-      2,
-      2,
-      "S"
-    );
-
-    autoTable(doc, {
-      head: [["Tipo de Documento", "N° de Documento", "Fecha de Documento"]],
-      theme: "plain",
-      headStyles: {
-        fontSize: 7,
-      },
-      columnStyles: {
-        0: {
-          cellWidth: 60,
-        },
-      },
-      body: [
-        [
-          JSONDTE.identificacion.tipoDte === "01"
-            ? "Factura Comercial"
-            : "Comprobante de Crédito Fiscal",
-          JSONDTE.identificacion.codigoGeneracion,
-          JSONDTE.identificacion.fecEmi,
-        ],
-      ],
-      bodyStyles: {
-        fontSize: 7,
-      },
-      margin: {
-        bottom: 5,
-      },
-      startY: finalY + 2,
-    });
-
-    finalY = ((doc as unknown) as {
-      lastAutoTable: { finalY: number };
-    }).lastAutoTable.finalY;
-
-    finalYFirtsPage = finalY;
+    const finalY = lastElementHeight + 1;
 
     const headers = [
-      "CANTIDAD",
-      "DESCRIPCION",
-      "PRECIO UNITARIO",
-      "DESCUENTO POR ITEM",
-      "OTROS MONTOS NO AFECTOS",
-      "VENTAS NO SUJETAS",
-      "VENTAS EXENTAS",
-      "VENTAS GRAVADAS",
+      "#",
+      "FECHA",
+      "CUENTA",
+      "CONCEPTO DE LA TRANSACCIÓN",
+      "CONCEPTO",
+      "DEBE",
+      "HABER",
     ];
 
     const array_object: unknown[] = [];
-    JSONDTE.cuerpoDocumento.map((prd) => {
+    libroDiario.partidas.map((item) => {
       array_object.push(
         Object.values({
-          qty: prd.cantidad,
-          desc: prd.descripcion,
-          price: formatCurrency(prd.precioUni),
-          descu: formatCurrency(prd.montoDescu),
-          other: formatCurrency(0),
-          vtSuj: formatCurrency(prd.ventaNoSuj),
-          vtExe: formatCurrency(prd.ventaExenta),
-          vtGrav: formatCurrency(prd.ventaGravada),
+          qty: item.numero,
+          desc: item.fecha,
+          price: item.cuenta,
+          concepto: item.concepto,
+          descu: item.concepto,
+          other: item.debe,
+          vtSuj: item.haber,
         })
       );
     });
 
     autoTable(doc, {
       theme: "plain",
-      startY: finalY + 5,
+      startY: finalY,
       margin: {
         right: 5,
         left: 5,
@@ -354,25 +157,27 @@ function Test() {
       body: (array_object as unknown) as RowInput[],
       columnStyles: {
         0: { cellWidth: 15, halign: "center", cellPadding: 2 },
-        1: { cellWidth: 65, cellPadding: 2 },
+        1: { cellWidth: 25, cellPadding: 2 },
         2: {
           cellWidth: 20,
           cellPadding: 2,
         },
         3: {
-          cellWidth: 20,
+          cellWidth: 50,
           cellPadding: 2,
         },
         4: {
-          cellWidth: 20,
+          cellWidth: 50,
           cellPadding: 2,
         },
         5: {
           cellWidth: 20,
           cellPadding: 2,
         },
-        6: { cellWidth: 20, cellPadding: 2 },
-        7: { cellPadding: 2 },
+        6: {
+          cellWidth: 20,
+          cellPadding: 2,
+        }
       },
       headStyles: {
         textColor: [0, 0, 0],
@@ -384,46 +189,14 @@ function Test() {
         fontSize: 7,
       },
     });
+
     const pageCount = doc.internal.pages.length - 1;
+
     for (let i = 1; i <= pageCount; i++) {
       doc.setPage(i);
       if (i !== 1) {
         headerDoc(doc);
       }
-      doc.roundedRect(doc.internal.pageSize.width - 45, 20, 40, 20, 2, 2, "S");
-      doc.setFontSize(5);
-      returnBoldText(
-        doc,
-        "DOCUMENTO TRIBUTARIO ELECTRONICO",
-        doc.internal.pageSize.width - 25,
-        23,
-        "center"
-      );
-      const docName = doc.splitTextToSize("NOTA DE DÉBITO", 30);
-      doc.setFontSize(6);
-      returnBoldText(
-        doc,
-        docName,
-        doc.internal.pageSize.width - 25,
-        26,
-        "center"
-      );
-      doc.setFontSize(7);
-      returnBoldText(
-        doc,
-        `N.I.T. ${JSONDTE.emisor.nit}`,
-        doc.internal.pageSize.width - 25,
-        33,
-        "center"
-      );
-      returnBoldText(
-        doc,
-        `NRC No. ${JSONDTE.emisor.nrc}`,
-        doc.internal.pageSize.width - 25,
-        36,
-        "center"
-      );
-      doc.addImage(QR, "PNG", doc.internal.pageSize.width - 67, 20, 18, 18);
       const margin = 5;
       const rectWidth = doc.internal.pageSize.getWidth() - 2 * margin;
       const radius = 2;
@@ -437,51 +210,61 @@ function Test() {
 
       doc.setFillColor(255, 255, 255);
       doc.setDrawColor(0, 0, 0);
-      // doc.roundedRect(20, 50, 80, rectHeight, 0, 0, "S");
       doc.setFillColor("#ced4da");
-      doc.roundedRect(
-        85,
-        i > 1 ? 50 : finalYFirtsPage + 5,
-        20,
-        rectHeight - 50,
-        0,
-        0,
-        "S"
-      );
-      // doc.roundedRect(105, 50, 20, rectHeight, 0, 0, "S");
-      doc.roundedRect(
-        125,
-        i > 1 ? 50 : finalYFirtsPage + 5,
-        20,
-        rectHeight - 50,
-        0,
-        0,
-        "S"
-      );
-      // doc.roundedRect(145, 50, 20, rectHeight, 0, 0, "S");
-      doc.roundedRect(
-        165,
-        i !== 1 ? 50 : finalYFirtsPage + 5,
-        20,
-        rectHeight - 50,
-        0,
-        0,
-        "S"
-      );
+
       doc.roundedRect(
         margin,
-        i !== 1 ? 50 : finalYFirtsPage + 5,
-        rectWidth,
-        rectHeight - (i !== 1 ? 0 : pageCount === 1 ? 0 : 50),
-        radius,
-        radius,
+        i > 1 ? 50 : 45,
+        15,
+        rectHeight - 50,
+        0,
+        0,
+        "S"
+      );
+      doc.roundedRect(
+        40,
+        i > 1 ? 50 : 45,
+        25,
+        rectHeight - 50,
+        0,
+        0,
+        "S"
+      );
+      doc.roundedRect(
+        65,
+        i > 1 ? 50 : 45,
+        45,
+        rectHeight - 50,
+        0,
+        0,
+        "S"
+      );
+      doc.roundedRect(
+        160,
+        i > 1 ? 50 : 45,
+        20,
+        rectHeight - 50,
+        0,
+        0,
+        "S"
+      );
+      doc.roundedRect(
+        200,
+        i > 1 ? 50 : 45,
+        20,
+        rectHeight - 50,
+        0,
+        0,
         "S"
       );
 
+
       doc.setFillColor("#ced4da");
+
+      //header
       doc.roundedRect(
         margin,
-        i !== 1 ? 50 : finalYFirtsPage + 5,
+        i !== 1 ? 50 : 40,
         rectWidth,
         8,
         radius,
@@ -489,7 +272,7 @@ function Test() {
         "FD"
       );
       autoTable(doc, {
-        startY: i !== 1 ? 50 : finalYFirtsPage + 5,
+        startY: i !== 1 ? 50 : 40,
         theme: "plain",
         head: [headers],
         columnStyles: {
@@ -511,8 +294,6 @@ function Test() {
             cellWidth: 20,
             cellPadding: 2,
           },
-          6: { cellWidth: 20, cellPadding: 2 },
-          7: { cellPadding: 2 },
         },
         headStyles: {
           textColor: [0, 0, 0],
@@ -520,7 +301,7 @@ function Test() {
           halign: "center",
           fontSize: 5,
         },
-        body: [["", "", "", "", "", "", ""]],
+        body: [["", "", "", "", "", ""]],
         margin: {
           right: 5,
           left: 5,

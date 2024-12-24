@@ -74,6 +74,7 @@ import AccountCatalogs from '@/pages/AccountCatalogs';
 import AddAccountCatalogs from '@/components/accountCatalogs/AddAccountCatalogs';
 import UpdateAccountCatalogs from '@/components/accountCatalogs/UpdateAccountCatalogs';
 import TicketSales from '@/pages/TicketSales';
+import Test from "@/pages/Test";
 
 const Loading = () => {
   return <div>Cargando...</div>;
@@ -104,6 +105,10 @@ export const router = () => {
 
   return createBrowserRouter([
     //Gestion de Productos
+    {
+      path: '/test',
+      element: <Test />,
+    },
     {
       path: '/products',
       element: checkAuthorization('Productos', <Product />),
