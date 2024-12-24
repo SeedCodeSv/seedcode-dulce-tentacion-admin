@@ -169,6 +169,10 @@
     {
       "view": "Anexos ventas a contribuyentes",
       "actions": ["Mostrar", "Exportar", "Exportar CVC"]
+    },
+    {
+      "view": "Libros contables",
+      "actions": ["Mostrar", "Agregar"]
     }
   ]
 }
