@@ -10,3 +10,14 @@ export interface TypeOfAccount {
 export interface IGetTypeOfAccountPaginated extends IPagination {
   typeOfAccounts: TypeOfAccount[];
 }
+
+export interface ITypeOfAccountList {
+  typeOfAccounts: TypeOfAccount[];
+  ok: boolean;
+}
+
+
+export interface ITypeOfAccountPayload {
+  name: string;
+  description: string;
+}

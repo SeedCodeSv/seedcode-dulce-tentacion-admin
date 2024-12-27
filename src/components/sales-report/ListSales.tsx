@@ -82,7 +82,7 @@ function ListSales() {
   };
 
   return (
-    <div className="w-full h-full p-4 lg:p-8 bg-gray-50 dark:bg-gray-800">
+    <div className="w-full h-full bg-gray-50 dark:bg-gray-800">
       <div className="w-full h-full flex flex-col p-3 mt-3 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
         <Filters
           setDateInitial={setDateInitial}

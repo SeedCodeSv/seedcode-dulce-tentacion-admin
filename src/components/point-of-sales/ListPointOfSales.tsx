@@ -86,8 +86,8 @@ function ListPointOfSales({ actions }: Props) {
 
   return (
     <>
-      <div className="w-full h-full p-4 md:p-6 md:px-4 bg-gray-50 dark:bg-gray-800">
-        <div className="w-full h-full flex flex-col p-8 mt-2 rounded-xl overflow-y-auto bg-white custom-scrollbar shadow border dark:border-gray-700 dark:bg-gray-900">
+      <div className="w-full h-full ">
+        <div className="w-full h-full flex flex-col p-5 mt-2  overflow-y-auto bg-white custom-scrollbar  dark:bg-gray-900">
           <div className="flex flex-col justify-between w-full gap-5 lg:flex-row lg:gap-0">
             <div className="hidden  w-full gap-5 md:flex">
               <div className="w-80">

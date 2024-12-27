@@ -16,7 +16,7 @@ interface PaginationProps {
 /* eslint-enable no-unused-vars */
 
 const Pagination: React.FC<PaginationProps> = (props) => {
-  const { totalPages, onPageChange, totalItems = 5 } = props
+  const { totalPages, onPageChange, totalItems = 5 } = props;
 
   const { theme } = useContext(ThemeContext);
 
@@ -120,21 +120,40 @@ const Pagination: React.FC<PaginationProps> = (props) => {
   };
 
   return (
-    <div className="flex gap-2 pagination">
-      <Button style={activeStyle} isIconOnly onClick={goToFirstPage}>
-        <ChevronsLeft />
-      </Button>
-      <Button style={activeStyle} isIconOnly onClick={goToPrevPage}>
-        <ChevronLeft />
-      </Button>
-      {renderPageNumbers()}
-      <Button style={activeStyle} isIconOnly onClick={goToNextPage}>
-        <ChevronRight />
-      </Button>
-      <Button style={activeStyle} isIconOnly onClick={goToLastPage}>
-        <ChevronsRight />
-      </Button>
-    </div>
+    <>
+      <div className="hidden lg:flex gap-2 pagination w-full">
+        <Button style={activeStyle} isIconOnly onClick={goToFirstPage}>
+          <ChevronsLeft />
+        </Button>
+        <Button style={activeStyle} isIconOnly onClick={goToPrevPage}>
+          <ChevronLeft />
+        </Button>
+        {renderPageNumbers()}
+        <Button style={activeStyle} isIconOnly onClick={goToNextPage}>
+          <ChevronRight />
+        </Button>
+        <Button style={activeStyle} isIconOnly onClick={goToLastPage}>
+          <ChevronsRight />
+        </Button>
+      </div>
+      <div className='flex lg:hidden w-full'>
+        <div className="flex justify-between w-full lg:hidden gap-2 pagination">
+          {/* <Button style={activeStyle} isIconOnly onClick={goToFirstPage}>
+            <ChevronsLeft />
+          </Button> */}
+          <Button style={activeStyle} isIconOnly onClick={goToPrevPage}>
+            <ChevronLeft />
+          </Button>
+          {props.currentPage} de {totalPages}
+          <Button style={activeStyle} isIconOnly onClick={goToNextPage}>
+            <ChevronRight />
+          </Button>
+          {/* <Button style={activeStyle} isIconOnly onClick={goToLastPage}>
+            <ChevronsRight />
+          </Button> */}
+        </div>
+      </div>
+    </>
   );
 };
 

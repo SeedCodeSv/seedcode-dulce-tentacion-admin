@@ -67,7 +67,7 @@ function ListPurchasesOrders({ actions }: ArrayAction) {
   return (
     <>
       {mode === 'show' && (
-        <div className=" w-full h-full p-5 bg-gray-50 dark:bg-gray-900">
+        <div className=" w-full h-full bg-gray-50 dark:bg-gray-900">
           <div className="w-full h-full border border-white p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
             <div className="w-full flex justify-between">
               <p className="text-lg font-semibold dark:text-white">Listado de ordenes de compra</p>

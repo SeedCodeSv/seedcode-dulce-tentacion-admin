@@ -7,12 +7,20 @@ interface Props {
   setIsOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-export const LgLayout = ({ items, isOpen }: Props) => {
+export const LgLayout = ({ items, isOpen = true }: Props) => {
+  const initialStyles = isOpen
+    ? { width: '280px', opacity: 1 }
+    : { width: '0px', opacity: 0 };
+
   return (
     <motion.div
-      initial={{ width: '0px', opacity: 0 }}
-      animate={{ width: isOpen ? '280px' : '0px', opacity: isOpen ? 1 : 0 }}
-      transition={{ duration: 0.3 }}
+      initial={initialStyles}
+      animate={
+        isOpen
+          ? { width: '280px', opacity: 1 }
+          : { width: '0px', opacity: 0 }
+      }
+      transition={{ duration: isOpen ? 0 : 0.3 }}
       className="fixed z-50 h-screen overflow-y-auto bg-white dark:bg-gray-900 dark:text-white shadow-2xl"
     >
       {items()}

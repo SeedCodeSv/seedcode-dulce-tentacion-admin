@@ -58,8 +58,8 @@ function VentasPorProducto() {
 
   return (
     <Layout title="Ventas por Producto">
-      <div className=" w-full h-full p-5 bg-gray-50 dark:bg-gray-900 overflow-y-auto">
-        <div className="w-full h-full border-white border p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+      <div className=" w-full h-full bg-gray-50 dark:bg-gray-900">
+        <div className="w-full h-full border border-white p-5 overflow-y-auto  bg-white shadow rounded-xl dark:bg-gray-900">
           <div className="hidden md:grid w-full grid-cols-1 gap-5 md:grid-cols-4">
             <Input
               label="Fecha inicial"

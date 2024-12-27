@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Modal,
   ModalContent,
@@ -13,9 +12,14 @@ import useGlobalStyles from '../global/global.styles';
 import { Plus } from 'lucide-react';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
+import { useTypeOfAccountStore } from '@/store/type-of-aacount.store';
+import { toast } from 'sonner';
+
 
 export default function AddTypeAccounting() {
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const { createTypeOfAccount } = useTypeOfAccountStore();
 
   const handleOpen = () => {
     onOpen();
@@ -28,12 +32,23 @@ export default function AddTypeAccounting() {
       name: '',
       description: '',
     },
-    validationSchema: {
+    validationSchema: yup.object().shape({
       name: yup.string().required('**El nombre es requerido**'),
       description: yup.string().required('**La descripción es requerida**'),
-    },
-    onSubmit: () => {
-      
+    }),
+    onSubmit: (values, formikHelpers) => {
+      createTypeOfAccount(values)
+        .then((res) => {
+          formikHelpers.setSubmitting(false);
+          if (res) {
+            formikHelpers.resetForm();
+            onClose();
+          }
+        })
+        .catch(() => {
+          formikHelpers.setSubmitting(false);
+          toast.error('Error al crear el tipo de partida');
+        });
     },
   });
 
@@ -51,7 +66,7 @@ export default function AddTypeAccounting() {
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
-                  formik.handleSubmit();
+                  formik.handleSubmit(e);
                 }}
               >
                 <ModalHeader className="flex flex-col gap-1">Agregar tipo de partida</ModalHeader>
@@ -80,10 +95,21 @@ export default function AddTypeAccounting() {
                   />
                 </ModalBody>
                 <ModalFooter>
-                  <Button className="px-10" color="danger" variant="light" onPress={onClose}>
+                  <Button
+                    isLoading={formik.isSubmitting}
+                    className="px-10"
+                    color="danger"
+                    variant="light"
+                    onPress={onClose}
+                  >
                     Cancelar
                   </Button>
-                  <Button className="px-10" style={styles.thirdStyle} type="submit">
+                  <Button
+                    isLoading={formik.isSubmitting}
+                    className="px-10"
+                    style={styles.thirdStyle}
+                    type="submit"
+                  >
                     Guardar
                   </Button>
                 </ModalFooter>

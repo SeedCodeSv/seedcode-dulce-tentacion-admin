@@ -96,8 +96,8 @@ function ShoppingPage({ actions }: ArrayAction) {
   };
   return (
     <>
-      <div className=" w-full h-full p-10 bg-gray-50 dark:bg-gray-900">
-        <div className="w-full h-full flex flex-col border border-white p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
+      <div className=" w-full h-full bg-gray-50 dark:bg-gray-900">
+        <div className="w-full h-full flex flex-col border border-white overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
           <div className="flex justify-between  mt-6 w-full">
             <div className="md:hidden justify-start flex-grow mt-0">
               <TooltipGlobal text="Filtrar">

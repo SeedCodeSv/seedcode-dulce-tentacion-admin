@@ -32,7 +32,7 @@ export const SideBar = (props: Props) => {
   const { setIsAuth, setToken, setMode } = useContext(SessionContext);
 
   const [isOpen, setIsOpen] = useState<boolean>(
-    () => JSON.parse(localStorage.getItem('sidebarState') || 'false') // Recupera el estado al cargar.
+    () => JSON.parse(localStorage.getItem('sidebarState') || 'true') // Recupera el estado al cargar.
   );
 
   const [openInMobile, setOpenInMobile] = useState(false);

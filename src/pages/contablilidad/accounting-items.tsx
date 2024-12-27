@@ -1,11 +1,12 @@
-import Layout from '@/layout/Layout'
+import List from '@/components/accounting-items/List';
+import Layout from '@/layout/Layout';
 
 function AccountingItems() {
   return (
     <Layout title="Partidas Contables">
-        <div></div>
+      <List />
     </Layout>
-  )
+  );
 }
 
-export default AccountingItems
+export default AccountingItems;
