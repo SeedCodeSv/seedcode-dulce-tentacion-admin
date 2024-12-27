@@ -241,7 +241,7 @@ function AddAccountingItems() {
       item: yup.string().required('**Campo requerido**'),
     }),
     onSubmit(values, formikHelpers) {
-      if(values.code.slice(0, -2).length < 4){
+      if (values.code.slice(0, -2).length < 4) {
         toast.error('No puedes agregar una cuenta con un código menor a 4 caracteres');
         formikHelpers.setSubmitting(false);
         return;
@@ -472,9 +472,30 @@ function AddAccountingItems() {
                           isReadOnly={Number(items[index].haber) > 0}
                           value={items[index].debe}
                           onChange={(e) => {
-                            const itemss = [...items];
-                            itemss[index].debe = e.target.value.replace(/[^0-9.]/g, '');
-                            setItems([...items]);
+                            const inputValue = e.target.value.replace(/[^0-9.]/g, '');
+                            const updatedItems = [...items];
+                            const currentItem = updatedItems[index];
+                            const duplicate = updatedItems.some(
+                              (item, i) =>
+                                i !== index &&
+                                item.codCuenta === currentItem.codCuenta &&
+                                Number(item.debe) > 0
+                            );
+
+                            if (duplicate) {
+                              toast.error(
+                                'Solo un elemento puede tener un valor en "Debe" para el mismo código.', {
+                                  position: 'bottom-center',
+                                }
+                              );
+                              return;
+                            }
+
+                            currentItem.debe = inputValue;
+                            if (Number(inputValue) > 0) {
+                              currentItem.haber = '';
+                            }
+                            setItems(updatedItems);
                           }}
                         />
                       </td>
@@ -491,9 +512,30 @@ function AddAccountingItems() {
                           value={items[index].haber}
                           isReadOnly={Number(items[index].debe) > 0}
                           onChange={(e) => {
-                            const itemss = [...items];
-                            itemss[index].haber = e.target.value.replace(/[^0-9.]/g, '');
-                            setItems([...items]);
+                            const inputValue = e.target.value.replace(/[^0-9.]/g, '');
+                            const updatedItems = [...items];
+                            const currentItem = updatedItems[index];
+                            const duplicate = updatedItems.some(
+                              (item, i) =>
+                                i !== index &&
+                                item.codCuenta === currentItem.codCuenta &&
+                                Number(item.haber) > 0
+                            );
+
+                            if (duplicate) {
+                              toast.error(
+                                'Solo un elemento puede tener un valor en "Haber" para el mismo código.', {
+                                  position: 'bottom-center',
+                                }
+                              );
+                              return;
+                            }
+
+                            currentItem.haber = inputValue;
+                            if (Number(inputValue) > 0) {
+                              currentItem.debe = '';
+                            }
+                            setItems(updatedItems);
                           }}
                         />
                       </td>
@@ -768,7 +810,12 @@ function AddAccountingItems() {
                     </div>
                   </ModalBody>
                   <ModalFooter className="w-full">
-                    <Button isLoading={formik.isSubmitting} className="px-10" onPress={onClose} style={styles.dangerStyles}>
+                    <Button
+                      isLoading={formik.isSubmitting}
+                      className="px-10"
+                      onPress={onClose}
+                      style={styles.dangerStyles}
+                    >
                       Cancelar
                     </Button>
                     <Button
@@ -828,8 +875,8 @@ export const CodCuentaSelect = (props: CodCuentaProps) => {
           return;
         }
 
-        const itemExist = props.items.some((item) => item.codCuenta === value);
-        if (itemExist) {
+        const itemExist = props.items.filter((item) => item.codCuenta === value);
+        if (itemExist.length > 1) {
           toast.warning('La cuenta ya existe en la lista');
           return;
         }
