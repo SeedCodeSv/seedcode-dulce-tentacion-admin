@@ -1,25 +1,207 @@
 import Layout from "../layout/Layout";
-// import { pdf } from "@react-pdf/renderer";
-// import CreditoFiscalTMP from "./invoices/Template2/CFC";
-import { Button } from "@nextui-org/react";
-import { jsPDF } from "jspdf";
-import autoTable, { RowInput } from "jspdf-autotable";
-import QR from "../assets/codigo-qr-1024x1024-1.jpg";
-// import { useContext } from "react";
-// import { ThemeContext } from "../hooks/useTheme";
-import LOGO from "../assets/CSLOGO.png";
-// import { createSVG, createSVGCircle } from "./svfe_pdf/template2/creations";
-import "svg2pdf.js";
-// import BG from "../assets/template2.png";
 import JSONDTE from "../assets/json/20F6B3E1-4AA4-4A93-A169-7F718E9987E9.json";
-import { formatCurrency } from "../utils/dte";
 import { SeedcodeCatalogosMhService } from "seedcode-catalogos-mh";
+import autoTable from "jspdf-autotable";
+// import QR from "../assets/codigo-qr-1024x1024-1.jpg";
+// import { formatCurrency } from "../utils/dte";
+import { Button } from "@nextui-org/react";
+import LOGO from "../assets/MADNESS.png";
+import { jsPDF } from "jspdf";
+import "svg2pdf.js";
+
+const libroDiario = {
+  partidas: [
+    {
+      numero: 1,
+      fecha: '24-12-2024',
+      conceptoPartida: 'Compra',
+      movimientos: [
+        {
+          cuenta: '1010',
+          concepto: 'Compra de mercancía',
+          debe: 1000,
+          haber: 0,
+        },
+        {
+          cuenta: '1010',
+          concepto: 'Compra',
+          debe: 0,
+          haber: 1000,
+        },
+      ],
+    },
+    {
+      numero: 2,
+      fecha: '24-12-2024',
+      conceptoPartida: 'Pago a proveedores',
+      movimientos: [
+        {
+          cuenta: '1010',
+          concepto: 'Compra de mercancía',
+          debe: 1000,
+          haber: 0,
+        },
+        {
+          cuenta: '1010',
+          concepto: 'Compra',
+          debe: 0,
+          haber: 1000,
+        },
+      ],
+    },
+    {
+      numero: 3,
+      fecha: '24-12-2024',
+      conceptoPartida: 'Venta de producto',
+      movimientos: [
+        {
+          cuenta: '1010',
+          concepto: 'Compra de mercancía',
+          debe: 1000,
+          haber: 0,
+        },
+        {
+          cuenta: '1010',
+          concepto: 'Compra',
+          debe: 0,
+          haber: 1000,
+        },
+      ],
+    },
+    {
+      numero: 4,
+      fecha: '24-12-2024',
+      conceptoPartida: 'Gastos de oficina',
+      movimientos: [
+        {
+          cuenta: '1010',
+          concepto: 'Compra de mercancía',
+          debe: 1000,
+          haber: 0,
+        },
+        {
+          cuenta: '1010',
+          concepto: 'Compra',
+          debe: 0,
+          haber: 1000,
+        },
+      ],
+    },
+    {
+      numero: 5,
+      fecha: '24-12-2024',
+      conceptoPartida: 'Devolución de cliente',
+      movimientos: [
+        {
+          cuenta: '1010',
+          concepto: 'Compra de mercancía',
+          debe: 1000,
+          haber: 0,
+        },
+        {
+          cuenta: '1010',
+          concepto: 'Compra',
+          debe: 0,
+          haber: 1000,
+        },
+      ],
+    },
+    {
+      numero: 6,
+      fecha: '24-12-2024',
+      conceptoPartida: 'Devolución de cliente',
+      movimientos: [
+        {
+          cuenta: '1010',
+          concepto: 'Compra de mercancía',
+          debe: 1000,
+          haber: 0,
+        },
+        {
+          cuenta: '1010',
+          concepto: 'Compra',
+          debe: 0,
+          haber: 1000,
+        },
+      ],
+    },
+    {
+      numero: 7,
+      fecha: '24-12-2024',
+      conceptoPartida: 'Devolución de cliente',
+      movimientos: [
+        {
+          cuenta: '1010',
+          concepto: 'Compra de mercancía',
+          debe: 1000,
+          haber: 0,
+        },
+        {
+          cuenta: '1010',
+          concepto: 'Compra',
+          debe: 0,
+          haber: 1000,
+        },
+      ],
+    },
+    {
+      numero: 8,
+      fecha: '24-12-2024',
+      conceptoPartida: 'Devolución de cliente',
+      movimientos: [
+        {
+          cuenta: '1010',
+          concepto: 'Compra de mercancía',
+          debe: 1000,
+          haber: 0,
+        },
+        {
+          cuenta: '1010',
+          concepto: 'Compra',
+          debe: 0,
+          haber: 1000,
+        },
+      ],
+    },
+    {
+      numero: 9,
+      fecha: '24-12-2024',
+      conceptoPartida: 'Devolución de cliente',
+      movimientos: [
+        {
+          cuenta: '1010',
+          concepto: 'Compra de mercancía',
+          debe: 1000,
+          haber: 0,
+        },
+        {
+          cuenta: '1010',
+          concepto: 'Compra',
+          debe: 0,
+          haber: 1000,
+        },
+      ],
+    },
+  ],
+};
+
+
+
+// interface ILibroDiario {
+//   numero: number;
+//   fecha: string;
+//   cuenta: string;
+//   concepto: string;
+//   debe: number;
+//   haber: number;
+//   conceptoPartida: string;
+// }
 
 function Test() {
   const makePDF = () => {
     const doc = new jsPDF();
 
-    let finalYFirtsPage = 0;
+    const finalYFirtsPage = 0;
 
     doc.addImage(LOGO, "PNG", 5, 20, 40, 10, "FAST", "FAST");
     doc.setFontSize(7);
@@ -61,471 +243,179 @@ function Test() {
       "center"
     );
 
-    doc.roundedRect(doc.internal.pageSize.width - 45, 20, 40, 20, 2, 2, "S");
-    doc.addImage(QR, "PNG", doc.internal.pageSize.width - 67, 20, 18, 18);
-
-    doc.setFontSize(6);
-    const text1Y = distTel + 20;
-    const namSplit = doc.splitTextToSize(
-      `NOMBRE : ${JSONDTE.receptor.nombre}`,
-      120
-    );
-    const nameHeight = getHeightText(doc, namSplit);
-    doc.text(namSplit, 10, text1Y, {
-      align: "left",
-    });
-
-    const text2Y = text1Y + nameHeight + 1;
-    const addressSplit = doc.splitTextToSize(
-      `${JSONDTE.receptor.direccion.complemento.toUpperCase()} ${returnAddress(
-        JSONDTE.receptor.direccion.departamento,
-        JSONDTE.receptor.direccion.municipio
-      ).toUpperCase()}`,
-      120
-    );
-    const addressHeight = getHeightText(doc, addressSplit);
-    doc.text(addressSplit, 10, text2Y, { align: "left" });
-
-    const text3Y = text2Y + addressHeight + 1;
-    const giroSplit = doc.splitTextToSize(
-      `GIRO : ${JSONDTE.receptor.descActividad}`,
-      120
-    );
-    const giroHeight = getHeightText(doc, giroSplit);
-    doc.text(giroSplit, 10, text3Y, { align: "left" });
-
-    const text4Y = text3Y + giroHeight + 1;
-    const condOpe = doc.splitTextToSize(
-      "CONDICION DE LA OPERACION: CONTADO",
-      120
-    );
-    const condOpeHeight = getHeightText(doc, condOpe);
-    doc.text(condOpe, 10, text4Y, { align: "left" });
-
-    // Second line
-
-    const text1Y2 = distTel + 20;
-    const nrcSplit = doc.splitTextToSize(
-      `NRC ${" "} ${" "} : ${" "}${JSONDTE.receptor.nrc}`,
-      90
-    );
-    const nrcHeight = getHeightText(doc, nrcSplit);
-    doc.text(nrcSplit, 125, text1Y2, {
-      align: "left",
-    });
-
-    const text2Y2 = text1Y2 + nrcHeight + 1;
-    const nitSplit = doc.splitTextToSize(
-      `NIT ${" "} ${" "} ${" "} : ${" "}${JSONDTE.receptor.nit}`,
-      120
-    );
-    const nitHeight = getHeightText(doc, nitSplit);
-    doc.text(nitSplit, 125, text2Y2, { align: "left" });
-
-    const text3Y2 = text2Y2 + nitHeight + 1;
-    const codigoGen = doc.splitTextToSize(
-      `CODIGO GENERACION ${" "} ${" "} : ${" "}${
-        JSONDTE.identificacion.codigoGeneracion
-      }`,
-      120
-    );
-    const codigoGenHeight = getHeightText(doc, codigoGen);
-    doc.text(codigoGen, 125, text3Y2, { align: "left" });
-
-    const text4Y2 = text3Y2 + codigoGenHeight + 1;
-    const numeroControl = doc.splitTextToSize(
-      `NUMERO DE CONTROL ${" "} ${" "} : ${" "}${
-        JSONDTE.identificacion.numeroControl
-      }`,
-      120
-    );
-    const numeroControlHeight = getHeightText(doc, numeroControl);
-    doc.text(numeroControl, 125, text4Y2, { align: "left" });
-
-    const text5Y2 = text4Y2 + numeroControlHeight + 1;
-    const sello = doc.splitTextToSize(
-      `SELLO ${" "} ${" "} : ${" "}${JSONDTE.respuestaMH.selloRecibido}`,
-      120
-    );
-    const selloHeight = getHeightText(doc, sello);
-    doc.text(sello, 125, text5Y2, { align: "left" });
-
-    const text6Y2 = text5Y2 + selloHeight + 1;
-    const fecHora = doc.splitTextToSize(
-      `FECHA HORA EMISION ${" "} ${" "} : ${" "}${
-        JSONDTE.identificacion.fecEmi
-      }: ${JSONDTE.identificacion.horEmi}`,
-      120
-    );
-    const fecHoraHeight = getHeightText(doc, fecHora);
-    doc.text(fecHora, 125, text6Y2, { align: "left" });
-
-    const text7Y2 = text6Y2 + fecHoraHeight + 1;
-    const modelo = doc.splitTextToSize(
-      `MODELO DE FACTURACION ${" "} ${" "} : ${" "} Previo`,
-      120
-    );
-    const modeloHeight = getHeightText(doc, modelo);
-    doc.text(modelo, 125, text7Y2, { align: "left" });
-
-    const text8Y2 = text7Y2 + modeloHeight + 1;
-    const transmision = doc.splitTextToSize(
-      `MODELO DE FACTURACION ${" "} ${" "} : ${" "} Previo`,
-      120
-    );
-    const transmisionHeight = getHeightText(doc, transmision);
-    doc.text(transmision, 125, text8Y2, { align: "left" });
-
-    const totalHeight = nameHeight + addressHeight + giroHeight + condOpeHeight;
-    const totalHeight2 =
-      nrcHeight +
-      nitHeight +
-      codigoGenHeight +
-      numeroControlHeight +
-      selloHeight +
-      fecHoraHeight +
-      modeloHeight +
-      transmisionHeight;
-
-    doc.roundedRect(
-      5,
-      distTel + 15,
-      doc.internal.pageSize.width - 10,
-      totalHeight > totalHeight2 ? totalHeight + 10 : totalHeight2 + 15,
-      2,
-      2,
-      "S"
-    );
-
-    const lastElementHeight = distTel + 15 + totalHeight2 + 20;
-
-    returnBoldText(
-      doc,
-      "OTROS DOCUMENTOS ASOCIADOS",
-      100,
-      lastElementHeight,
-      "center"
-    );
-
-    doc.roundedRect(
-      5,
-      lastElementHeight + 2,
-      doc.internal.pageSize.width - 10,
-      10,
-      2,
-      2,
-      "S"
-    );
-
-    autoTable(doc, {
-      head: [["Identificación del documento", "Descripción"]],
-      theme: "plain",
-      headStyles: {
-        fontSize: 7,
-      },
-      columnStyles: {
-        0: {
-          cellWidth: 60,
-        },
-      },
-      body: [["", ""]],
-      startY: lastElementHeight + 1,
-    });
-
-    let finalY = ((doc as unknown) as {
-      lastAutoTable: { finalY: number };
-    }).lastAutoTable.finalY;
-
-    returnBoldText(doc, "VENTA A CUENTA DE TERCEROS", 100, finalY, "center");
-
-    doc.roundedRect(
-      5,
-      finalY + 2,
-      doc.internal.pageSize.width - 10,
-      10,
-      2,
-      2,
-      "S"
-    );
-
-    autoTable(doc, {
-      head: [["NIT", "Nombre, denominación o razón social"]],
-      theme: "plain",
-      headStyles: {
-        fontSize: 7,
-      },
-      columnStyles: {
-        0: {
-          cellWidth: 60,
-        },
-      },
-      body: [["", ""]],
-      startY: finalY + 2,
-    });
-
-    finalY = ((doc as unknown) as {
-      lastAutoTable: { finalY: number };
-    }).lastAutoTable.finalY;
-
-    returnBoldText(doc, "DOCUMENTOS RELACIONADOS", 100, finalY, "center");
-
-    doc.roundedRect(
-      5,
-      finalY + 2,
-      doc.internal.pageSize.width - 10,
-      12,
-      2,
-      2,
-      "S"
-    );
-
-    autoTable(doc, {
-      head: [["Tipo de Documento", "N° de Documento", "Fecha de Documento"]],
-      theme: "plain",
-      headStyles: {
-        fontSize: 7,
-      },
-      columnStyles: {
-        0: {
-          cellWidth: 60,
-        },
-      },
-      body: [
-        [
-          JSONDTE.identificacion.tipoDte === "01"
-            ? "Factura Comercial"
-            : "Comprobante de Crédito Fiscal",
-          JSONDTE.identificacion.codigoGeneracion,
-          JSONDTE.identificacion.fecEmi,
-        ],
-      ],
-      bodyStyles: {
-        fontSize: 7,
-      },
-      margin: {
-        bottom: 5,
-      },
-      startY: finalY + 2,
-    });
-
-    finalY = ((doc as unknown) as {
-      lastAutoTable: { finalY: number };
-    }).lastAutoTable.finalY;
-
-    finalYFirtsPage = finalY;
-
     const headers = [
-      "CANTIDAD",
-      "DESCRIPCION",
-      "PRECIO UNITARIO",
-      "DESCUENTO POR ITEM",
-      "OTROS MONTOS NO AFECTOS",
-      "VENTAS NO SUJETAS",
-      "VENTAS EXENTAS",
-      "VENTAS GRAVADAS",
+      "#",
+      "FECHA",
+      "CUENTA",
+      "CONCEPTO DE LA TRANSACCIÓN",
+      "DEBE",
+      "HABER",
     ];
 
-    const array_object: unknown[] = [];
-    JSONDTE.cuerpoDocumento.map((prd) => {
-      array_object.push(
-        Object.values({
-          qty: prd.cantidad,
-          desc: prd.descripcion,
-          price: formatCurrency(prd.precioUni),
-          descu: formatCurrency(prd.montoDescu),
-          other: formatCurrency(0),
-          vtSuj: formatCurrency(prd.ventaNoSuj),
-          vtExe: formatCurrency(prd.ventaExenta),
-          vtGrav: formatCurrency(prd.ventaGravada),
-        })
-      );
-    });
+    const drawPartidas = () => {
+      let startY = 50;
+      const isFirstPage = true;
 
-    autoTable(doc, {
-      theme: "plain",
-      startY: finalY + 5,
-      margin: {
-        right: 5,
-        left: 5,
-        bottom: doc.internal.pages.length > 1 ? 10 : 55,
-        top: 50,
-      },
-      head: [headers],
-      body: (array_object as unknown) as RowInput[],
-      columnStyles: {
-        0: { cellWidth: 15, halign: "center", cellPadding: 2 },
-        1: { cellWidth: 65, cellPadding: 2 },
-        2: {
-          cellWidth: 20,
-          cellPadding: 2,
-        },
-        3: {
-          cellWidth: 20,
-          cellPadding: 2,
-        },
-        4: {
-          cellWidth: 20,
-          cellPadding: 2,
-        },
-        5: {
-          cellWidth: 20,
-          cellPadding: 2,
-        },
-        6: { cellWidth: 20, cellPadding: 2 },
-        7: { cellPadding: 2 },
-      },
-      headStyles: {
-        textColor: [0, 0, 0],
-        fontStyle: "bold",
-        halign: "center",
-        fontSize: 5,
-      },
-      bodyStyles: {
-        fontSize: 7,
-      },
-    });
+      libroDiario.partidas.forEach((partida) => {
+        let totalDebe = 0;
+        let totalHaber = 0;
+
+        partida.movimientos.forEach((movimiento) => {
+
+          totalDebe += movimiento.debe || 0;
+          totalHaber += movimiento.haber || 0;
+
+          autoTable(doc, {
+            startY,
+            body: [
+              [
+                partida.numero,
+                partida.fecha,
+                movimiento.cuenta,
+                movimiento.concepto || "",
+                movimiento.debe || "0.00",
+                movimiento.haber || "0.00",
+              ],
+            ],
+            theme: "plain",
+            styles: {
+              fontSize: 8,
+            },
+            columnStyles: {
+              0: { cellWidth: 20, halign: "left" }, // Número de partida centrado
+              1: { cellWidth: 25, halign: "left" }, // Fecha centrada
+              2: { cellWidth: 25, halign: "left" },   // Cuenta alineada a la izquierda
+              3: { cellWidth: 75, halign: "left" },  // Concepto alineado a la izquierda
+              4: { cellWidth: 20, halign: "center" }, // Debe alineado a la derecha
+              5: { cellWidth: 20, halign: "center" }, // Haber alineado a la derecha
+            },
+            didDrawPage: (data) => {
+              // Agregar numeración de páginas
+              const pageCount = doc.internal.pages.length - 1;
+              doc.setFontSize(10);
+              doc.text(`Página ${data.pageNumber} de ${pageCount}`, data.settings.margin.left, doc.internal.pageSize.height - 10);
+            },
+            didDrawCell: (data) => {
+              if (data.row.index === 0 && !isFirstPage) {
+                doc.setDrawColor(0, 0, 0);
+                doc.setLineDashPattern([], 0);
+                doc.line(data.cell.x, data.cell.y + data.cell.height, data.cell.x + data.cell.width, data.cell.y + data.cell.height);
+              }
+            },
+          });
+          //eslint-disable-next-line @typescript-eslint/no-explicit-any
+          startY = (doc as any).lastAutoTable.finalY + 1;
+
+        });
+
+        autoTable(doc, {
+          startY,
+          body: [
+            [
+              "CONCEPTO:",
+              partida.conceptoPartida,
+              totalDebe.toFixed(2),
+              totalHaber.toFixed(2),
+            ],
+          ],
+          theme: "plain",
+          styles: {
+            fontSize: 8,
+            fontStyle: "bold",
+          },
+          columnStyles: {
+            0: { cellWidth: 25, halign: "left" },
+            1: { cellWidth: 120, halign: "left" },
+            2: { cellWidth: 20, halign: "center" },
+            3: { cellWidth: 20, halign: "center" },
+          },
+        });
+        //eslint-disable-next-line @typescript-eslint/no-explicit-any
+        startY = (doc as any).lastAutoTable.finalY + 3;
+
+        const lineStartX = 10;
+        const lineEndX = doc.internal.pageSize.getWidth() - 10;
+        const lineY = startY - 2;
+
+        doc.setDrawColor(0, 0, 0);
+        doc.setLineDashPattern([3, 3], 0);
+        doc.line(lineStartX, lineY, lineEndX, lineY);
+
+        startY += 5; // Espacio después de la línea
+      });
+    };
+
+    drawPartidas();
+
     const pageCount = doc.internal.pages.length - 1;
+
     for (let i = 1; i <= pageCount; i++) {
       doc.setPage(i);
       if (i !== 1) {
         headerDoc(doc);
       }
-      doc.roundedRect(doc.internal.pageSize.width - 45, 20, 40, 20, 2, 2, "S");
-      doc.setFontSize(5);
-      returnBoldText(
-        doc,
-        "DOCUMENTO TRIBUTARIO ELECTRONICO",
-        doc.internal.pageSize.width - 25,
-        23,
-        "center"
-      );
-      const docName = doc.splitTextToSize("NOTA DE DÉBITO", 30);
-      doc.setFontSize(6);
-      returnBoldText(
-        doc,
-        docName,
-        doc.internal.pageSize.width - 25,
-        26,
-        "center"
-      );
-      doc.setFontSize(7);
-      returnBoldText(
-        doc,
-        `N.I.T. ${JSONDTE.emisor.nit}`,
-        doc.internal.pageSize.width - 25,
-        33,
-        "center"
-      );
-      returnBoldText(
-        doc,
-        `NRC No. ${JSONDTE.emisor.nrc}`,
-        doc.internal.pageSize.width - 25,
-        36,
-        "center"
-      );
-      doc.addImage(QR, "PNG", doc.internal.pageSize.width - 67, 20, 18, 18);
       const margin = 5;
       const rectWidth = doc.internal.pageSize.getWidth() - 2 * margin;
       const radius = 2;
       const rectHeight =
         doc.internal.pageSize.getHeight() -
-        (i > 1 ? 50 : finalYFirtsPage + 5) -
-        margin +
+        (i > 1 ? 50 : finalYFirtsPage + 5) - margin +
         (i > 1 ? 0 : pageCount > 1 ? 50 : 0);
 
       const rectMargin = doc.internal.pageSize.getHeight() - 50 - margin;
 
-      doc.setFillColor(255, 255, 255);
-      doc.setDrawColor(0, 0, 0);
-      // doc.roundedRect(20, 50, 80, rectHeight, 0, 0, "S");
+      doc.setDrawColor("#ced4da");
       doc.setFillColor("#ced4da");
-      doc.roundedRect(
-        85,
-        i > 1 ? 50 : finalYFirtsPage + 5,
-        20,
-        rectHeight - 50,
-        0,
-        0,
-        "S"
-      );
-      // doc.roundedRect(105, 50, 20, rectHeight, 0, 0, "S");
-      doc.roundedRect(
-        125,
-        i > 1 ? 50 : finalYFirtsPage + 5,
-        20,
-        rectHeight - 50,
-        0,
-        0,
-        "S"
-      );
-      // doc.roundedRect(145, 50, 20, rectHeight, 0, 0, "S");
-      doc.roundedRect(
-        165,
-        i !== 1 ? 50 : finalYFirtsPage + 5,
-        20,
-        rectHeight - 50,
-        0,
-        0,
-        "S"
-      );
-      doc.roundedRect(
-        margin,
-        i !== 1 ? 50 : finalYFirtsPage + 5,
-        rectWidth,
-        rectHeight - (i !== 1 ? 0 : pageCount === 1 ? 0 : 50),
-        radius,
-        radius,
-        "S"
-      );
 
-      doc.setFillColor("#ced4da");
+      //header
       doc.roundedRect(
         margin,
-        i !== 1 ? 50 : finalYFirtsPage + 5,
+        i !== 1 ? 50 : 40,
         rectWidth,
         8,
         radius,
         radius,
-        "FD"
+        "F"
       );
       autoTable(doc, {
-        startY: i !== 1 ? 50 : finalYFirtsPage + 5,
+        startY: i !== 1 ? 50 : 40,
         theme: "plain",
         head: [headers],
         columnStyles: {
-          0: { cellWidth: 15, halign: "center", cellPadding: 2 },
-          1: { cellWidth: 65, cellPadding: 2 },
+          0: { cellWidth: 20, halign: "center", cellPadding: 2 },
+          1: { cellWidth: 25, cellPadding: 2 },
           2: {
-            cellWidth: 20,
+            cellWidth: 25,
             cellPadding: 2,
           },
           3: {
-            cellWidth: 20,
+            cellWidth: 80,
             cellPadding: 2,
           },
           4: {
-            cellWidth: 20,
+            cellWidth: 25,
             cellPadding: 2,
           },
           5: {
             cellWidth: 20,
             cellPadding: 2,
           },
-          6: { cellWidth: 20, cellPadding: 2 },
-          7: { cellPadding: 2 },
         },
         headStyles: {
           textColor: [0, 0, 0],
           fontStyle: "bold",
           halign: "center",
           fontSize: 5,
+          lineWidth: 0,
+          lineColor: [255, 255, 255], // Color del borde (blanco, opcional)
         },
-        body: [["", "", "", "", "", "", ""]],
+        body: [["", "", "", "", "", ""]],
         margin: {
           right: 5,
           left: 5,
         },
       });
+
       if (pageCount > 1 && i > 1) {
         doc.line(
           5,
@@ -546,26 +436,13 @@ function Test() {
       if (pageCount === 1 && 1 === 1) {
         doc.line(
           5,
-          rectMargin,
-          doc.internal.pageSize.getWidth() - 5,
-          rectMargin
-        );
-        doc.line(
-          5,
           rectMargin + 7,
           doc.internal.pageSize.getWidth() - 5,
           rectMargin + 7
         );
         footerDocument(doc, rectMargin);
-        doc.line(
-          125,
-          doc.internal.pageSize.height - 48,
-          125,
-          doc.internal.pageSize.height - 5
-        );
-      }
 
-      // }
+      }
     }
 
     doc.save("test.pdf");
@@ -606,286 +483,41 @@ export const getHeightText = (doc: jsPDF, text: string) => {
   return dimensions.h;
 };
 
-export const makeEmisor = (doc: jsPDF, y = 45) => {
-  const fields = [
-    {
-      label: "Nombre o razón social:",
-      value: "HERNANDEZ MARQUEZ, JOSE MANUEL",
-    },
-    {
-      label: "Actividad económica:",
-      value:
-        "Otras actividades de tegnologia de informacion y servicios de computadora",
-    },
-    { label: "NIT:", value: "03160902981010" },
-    { label: "NRC:", value: "3165298" },
-    {
-      label: "Dirección:",
-      value: "Avenida santa lucia Block K casa #5, SONZACATE, Sonsonate",
-    },
-    { label: "Número de teléfono:", value: "70245680" },
-    { label: "Correo electrónico:", value: "seedcodesv@gmail.com" },
-  ];
-
-  let yPosition = y;
-  let totalHeight = 0;
-
-  fields.forEach((field) => {
-    returnBoldText(doc, field.label, 10, yPosition, "left");
-
-    const splitText = doc.splitTextToSize(
-      field.value,
-      75 - getWidthText(doc, field.label)
-    );
-
-    doc.text(splitText, getWidthText(doc, field.label), yPosition);
-
-    const height = getHeightText(doc, splitText);
-
-    yPosition += height + 1;
-    totalHeight += height + 1;
-  });
-
-  return { totalHeight };
-};
-
-export const makeEmisorHeight = (doc: jsPDF, y = 45, x = 10) => {
-  const fields = [
-    {
-      label: "Nombre o razón social:",
-      value: "HERNANDEZ MARQUEZ, JOSE MANUEL",
-    },
-    {
-      label: "Actividad económica:",
-      value:
-        "Otras actividades de tegnologia de informacion y servicios de computadora",
-    },
-    { label: "NIT:", value: "03160902981010" },
-    { label: "NRC:", value: "3165298" },
-    {
-      label: "Dirección:",
-      value: "Avenida santa lucia Block K casa #5, SONZACATE, Sonsonate",
-    },
-    { label: "Número de teléfono:", value: "70245680" },
-    { label: "Correo electrónico:", value: "seedcodesv@gmail.com" },
-  ];
-  let totalHeight = 0;
-
-  fields.forEach((field) => {
-    const splitText = doc.splitTextToSize(
-      field.value,
-      100 - getWidthText(doc, field.label) + x
-    );
-    const height = getHeightText(doc, splitText);
-    totalHeight += height + 1;
-  });
-
-  const showDoc = () => {
-    let yP = y;
-
-    fields.forEach((field) => {
-      returnBoldText(doc, field.label, x, yP, "left");
-
-      const splitText = doc.splitTextToSize(
-        field.value,
-        100 - getWidthText(doc, field.label) + x
-      );
-
-      doc.text(splitText, getWidthText(doc, field.label), yP);
-
-      const height = getHeightText(doc, splitText);
-
-      yP += height + 1;
-    });
-  };
-
-  return { totalHeight, showDoc };
-};
-
-export const makeReceptor = (doc: jsPDF) => {
-  const fields = [
-    {
-      label: "Nombre o razón social:",
-      value: "HERNANDEZ MARQUEZ, JOSE MANUEL",
-    },
-    {
-      label: "Actividad económica:",
-      value:
-        "Otras actividades de tegnologia de informacion y servicios de computadora",
-    },
-    { label: "NIT:", value: "03160902981010" },
-    { label: "NRC:", value: "3165298" },
-    {
-      label: "Dirección:",
-      value: "Avenida santa lucia Block K casa #5, SONZACATE, Sonsonate",
-    },
-    { label: "Número de teléfono:", value: "70245680" },
-    { label: "Correo electrónico:", value: "seedcodesv@gmail.com" },
-  ];
-
-  let yPosition = 45;
-  const xPosition = 105;
-  let totalHeight = 0;
-
-  fields.forEach((field) => {
-    returnBoldText(doc, field.label, xPosition, yPosition, "left");
-
-    const splitText = doc.splitTextToSize(
-      field.value,
-      100 - getWidthText(doc, field.label)
-    );
-
-    doc.text(
-      splitText,
-      xPosition + getWidthText(doc, field.label, 3),
-      yPosition
-    );
-
-    const height = getHeightText(doc, splitText);
-
-    yPosition += height + 1;
-    totalHeight += height + 1;
-  });
-
-  return { totalHeight };
-};
-
-export const makeHeader = (doc: jsPDF, lastTop: number) => {
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(7);
-  returnBoldText(doc, "Código de Generación:", 10, lastTop + 5);
-  doc.text(
-    "4DF77BC3-6AA7-483A-8B72-28D558D8880A",
-    getWidthText(doc, "Código de Generación:"),
-    lastTop + 5,
-    {
-      align: "left",
-    }
-  );
-  returnBoldText(doc, "Número de Control:", 10, lastTop + 8);
-  doc.text(
-    "DTE-03-M002P001-000000000002058",
-    getWidthText(doc, "Número de Control:"),
-    lastTop + 8,
-    {
-      align: "left",
-    }
-  );
-  returnBoldText(doc, "Sello de Recepción:", 10, lastTop + 11);
-  doc.text(
-    "20240772C711AFD44BA8AF3652B91539C584LEHJ",
-    getWidthText(doc, "Sello de Recepción:"),
-    lastTop + 11,
-    {
-      align: "left",
-    }
-  );
-  returnBoldText(
-    doc,
-    "Modelo de Facturación:",
-    doc.internal.pageSize.getWidth() - getWidthText(doc, "Previo"),
-    lastTop + 5,
-    "right"
-  );
-  doc.text("Previo", doc.internal.pageSize.getWidth() - 10, lastTop + 5, {
-    align: "right",
-  });
-  returnBoldText(
-    doc,
-    "Tipo de Transmisión:",
-    doc.internal.pageSize.getWidth() - getWidthText(doc, "Normal"),
-    lastTop + 8,
-    "right"
-  );
-  doc.text("Normal", doc.internal.pageSize.getWidth() - 10, lastTop + 8, {
-    align: "right",
-  });
-  returnBoldText(
-    doc,
-    "Fecha y Hora de Generación:",
-    doc.internal.pageSize.getWidth() - getWidthText(doc, "2024-06-08 09:15:09"),
-    lastTop + 11,
-    "right"
-  );
-  doc.text(
-    "2024-06-08 09:15:09",
-    doc.internal.pageSize.getWidth() - 10,
-    lastTop + 11,
-    {
-      align: "right",
-    }
-  );
-};
-
-// #region FooterTable
 export const footerDocument = (doc: jsPDF, rectMargin: number) => {
-  const { resumen } = JSONDTE;
-  doc.text(`${resumen.totalLetras}`, 10, rectMargin + 4);
-  doc.text("SUMA DE VENTAS:", 120, rectMargin + 4);
-  doc.text(`$${" "} ${" "} ${resumen.totalNoSuj}`, 145, rectMargin + 4);
-  doc.text(`$${" "} ${" "} ${resumen.totalExenta}`, 165, rectMargin + 4);
-  doc.text(`$${" "} ${" "} ${resumen.totalGravada}`, 185, rectMargin + 4);
-  doc.setFontSize(6);
-  returnBoldText(doc, "Responsable por parte del emisor:", 10, rectMargin + 15);
+  // Título principal en negrita y tamaño de fuente adecuado
+  doc.setFontSize(10);
+  doc.setFont('bold');
+  doc.text(`TOTAL CARGOS Y ABONOS`, 100, rectMargin + 4);
 
-  returnBoldText(doc, "N° de Documento:", 10, rectMargin + 25);
-  returnBoldText(doc, "Observaciones:", 10, rectMargin + 35);
-  returnBoldText(
-    doc,
-    "Responsable por parte del receptor:",
-    65,
-    rectMargin + 15
-  );
+  // Valores de cargos y abonos
+  doc.setFontSize(10);
+  doc.text(`$${" "} ${" "} ${5000}`, 165, rectMargin + 4);
+  doc.text(`$${" "} ${" "} ${5000}`, 185, rectMargin + 4);
 
-  returnBoldText(doc, "N° de Documento:", 65, rectMargin + 25);
+  // Espacio adicional
+  rectMargin += 8;
 
-  doc.text("Suma Total de Operaciones:", 127, rectMargin + 10);
-  doc.text(
-    "Monto global Desc., Rebajas y otros a ventas no sujetas: ",
-    127,
-    rectMargin + 13
-  );
-  doc.text(
-    "Monto global Desc., Rebajas y otros a ventas exentas:",
-    127,
-    rectMargin + 16
-  );
-  doc.text(
-    "Monto global Desc., Rebajas y otros a ventas gravadas:",
-    127,
-    rectMargin + 19
-  );
-  doc.text("IVA 13%: ", 127, rectMargin + 22);
-  doc.text("Sub-Total: ", 127, rectMargin + 25);
-  doc.text("Monto Total de la Operación: ", 127, rectMargin + 28);
-  doc.text("Total Otros montos no afectos: ", 127, rectMargin + 31);
-  doc.text("Total a Pagar: ", 127, rectMargin + 34);
+  // Líneas para firmas
+  const startY = rectMargin + 10;
 
-  for (let i = 0; i < 9; i++) {
-    doc.text("$", 185, rectMargin + i * 3 + 10);
-  }
+  doc.setLineDashPattern([], 0); // Restablecer el estilo de línea a sólido
+  doc.setDrawColor(0, 0, 0); // Establecer el color de la línea a negro
 
-  const totals = [
-    resumen.descuGravada.toFixed(2),
-    resumen.descuNoSuj.toFixed(2),
-    resumen.descuExenta.toFixed(2),
-    resumen.descuGravada.toFixed(2),
-    resumen.tributos
-      .map((tr) => Number(tr.valor))
-      .reduce((a, b) => a + b)
-      .toFixed(2),
-    resumen.subTotal.toFixed(2),
-    resumen.montoTotalOperacion.toFixed(2),
-    "0.00",
-    resumen.totalPagar.toFixed(2),
-  ];
+  // Primera línea para "Hecho por"
+  doc.line(30, startY + 10, 65, startY + 10);
+  doc.text('Hecho por', 40, startY + 15);
 
-  totals.forEach((total, index) => {
-    doc.text(total, 202.5, rectMargin + index * 3 + 10, {
-      align: "right",
-    });
-  });
+  // Segunda línea para "Revisado"
+  doc.line(90, startY + 10, 125, startY + 10);
+  doc.text('Revisado', 100, startY + 15);
+
+  // Tercera línea para "Autorizado"
+  doc.line(140, startY + 10, 175, startY + 10);
+  doc.text('Autorizado', 150, startY + 15);
+
+  doc.setFontSize(10);
 };
+
 
 // #region Header Table
 export const headerDoc = (doc: jsPDF) => {
@@ -925,8 +557,7 @@ export const headerDoc = (doc: jsPDF) => {
 };
 
 // #region Return Address
-
-export const returnAddress = (depP: string, munP: string) => {
+const returnAddress = (depP: string, munP: string) => {
   const catalogos_service = new SeedcodeCatalogosMhService();
   const depF = catalogos_service
     .get012Departamento()
