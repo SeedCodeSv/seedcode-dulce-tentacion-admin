@@ -30,10 +30,17 @@ export const useTypeOfAccountStore = create<TypeOfAccountStore>((set, get) => ({
   getListTypeOfAccount: () => {
     get_type_of_account_list()
       .then((res) => {
-        set((state) => ({
-          ...state,
-          list_type_of_account: res.data.typeOfAccounts,
-        }));
+        if (res.data.typeOfAccounts && res.data.typeOfAccounts.length > 0) {
+          set((state) => ({
+            ...state,
+            list_type_of_account: res.data.typeOfAccounts ?? [],
+          }));
+        } else {
+          set((state) => ({
+            ...state,
+            list_type_of_account: [],
+          }));
+        }
       })
       .catch(() => {
         set((state) => ({
@@ -50,12 +57,29 @@ export const useTypeOfAccountStore = create<TypeOfAccountStore>((set, get) => ({
     }));
     get_type_of_accounts(page, limit, name)
       .then((res) => {
-        set((state) => ({
-          ...state,
-          type_of_account: res.data.typeOfAccounts,
-          type_of_account_pagination: res.data,
-          loading: false,
-        }));
+        if (res.data.typeOfAccounts && res.data.typeOfAccounts.length > 0) {
+          set((state) => ({
+            ...state,
+            type_of_account: res.data.typeOfAccounts,
+            type_of_account_pagination: res.data,
+            loading: false,
+          }));
+        } else {
+          set((state) => ({
+            ...state,
+            type_of_account: [],
+            type_of_account_pagination: {
+              total: 0,
+              currentPag: 1,
+              nextPag: 1,
+              prevPag: 1,
+              totalPag: 1,
+              ok: false,
+              status: 400,
+            },
+            loading: false,
+          }));
+        }
       })
       .catch(() => {
         set((state) => ({

@@ -239,13 +239,13 @@ export const LayoutItems = (props: Props) => {
     },
     {
       viewName: 'Tipos de partida',
-      to: '/accounting-items',
+      to: '/type-accounting',
       icon: BookCheck,
       label: 'Tipos de partida',
     },
     {
       viewName: 'Partidas contables',
-      to: '/type-accounting',
+      to: '/accounting-items',
       icon: BookCheck,
       label: 'Partidas contables',
     },
