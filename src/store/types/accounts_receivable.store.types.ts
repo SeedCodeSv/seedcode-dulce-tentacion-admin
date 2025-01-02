@@ -1,4 +1,8 @@
-import { IAccountReceivable, IGetAccountReceivable, IPayment } from '../../types/account_receivable.types';
+import {
+  IAccountReceivable,
+  IGetAccountReceivable,
+  IPayment,
+} from '../../types/account_receivable.types';
 
 export interface IUseAccountReceivableStore {
   accounts: IAccountReceivable[];

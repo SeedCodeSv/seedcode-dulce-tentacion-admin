@@ -265,6 +265,7 @@ function AddAccountingItems() {
                 );
                 toast.success('Operación realizada con éxito');
                 formikHelpers.setSubmitting(false);
+                formikHelpers.resetForm();
                 getAccountCatalogs('', '');
                 addAccountModal.onClose();
                 // navigate('/accountCatalogs');
@@ -636,7 +637,7 @@ function AddAccountingItems() {
         <Modal
           isOpen={addAccountModal.isOpen}
           size="2xl"
-          onClose={catalogModal.onClose}
+          onClose={addAccountModal.onClose}
           scrollBehavior="inside"
         >
           <ModalContent>

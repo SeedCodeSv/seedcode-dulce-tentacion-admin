@@ -1,6 +1,12 @@
 import { create } from 'zustand';
 import { AccountingItemsServiceStore } from './types/accounting-items.service.store.types';
-import { create_item, get_accounting_items } from '@/services/accounting-items.service';
+import {
+  create_item,
+  delete_item,
+  get_accounting_items,
+  get_details,
+  update_item,
+} from '@/services/accounting-items.service';
 
 export const useAccountingItemsStore = create<AccountingItemsServiceStore>((set) => ({
   accounting_items: [],
@@ -13,6 +19,33 @@ export const useAccountingItemsStore = create<AccountingItemsServiceStore>((set)
     totalPag: 1,
     ok: true,
     status: 200,
+  },
+  details: undefined,
+  loading_details: false,
+  getDetails(id) {
+    return get_details(id)
+      .then((res) => {
+        if (res.data.item) {
+          set((state) => ({
+            ...state,
+            details: res.data.item,
+            loading_details: false,
+          }));
+        } else {
+          set((state) => ({
+            ...state,
+            details: undefined,
+            loading_details: false,
+          }));
+        }
+      })
+      .catch(() => {
+        set((state) => ({
+          ...state,
+          details: undefined,
+          loading_details: false,
+        }));
+      });
   },
   getAccountingItems: (page: number, limit: number, startDate: string, endDate: string) => {
     set((state) => ({
@@ -64,6 +97,24 @@ export const useAccountingItemsStore = create<AccountingItemsServiceStore>((set)
   },
   addAddItem: (payload) => {
     return create_item(payload)
+      .then(() => {
+        return true;
+      })
+      .catch(() => {
+        return false;
+      });
+  },
+  editItem: (payload, id) => {
+    return update_item(payload, id)
+      .then(() => {
+        return true;
+      })
+      .catch(() => {
+        return false;
+      });
+  },
+  deleteItem: (id) => {
+    return delete_item(id)
       .then(() => {
         return true;
       })

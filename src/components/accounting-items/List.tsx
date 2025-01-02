@@ -1,16 +1,28 @@
 import { useAccountingItemsStore } from '@/store/accounting-items.store';
 import { formatDate } from '@/utils/dates';
-import { Button, Input, Select, SelectItem } from '@nextui-org/react';
+import {
+  Button,
+  Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  Select,
+  SelectItem,
+  useDisclosure,
+} from '@nextui-org/react';
 import { useEffect, useState } from 'react';
 import useGlobalStyles from '../global/global.styles';
 import { formatCurrency } from '@/utils/dte';
 import Pagination from '../global/Pagination';
 import { limit_options } from '@/utils/constants';
-import { Plus } from 'lucide-react';
+import { Pencil, Plus, Trash } from 'lucide-react';
 import { useNavigate } from 'react-router';
+import { toast } from 'sonner';
 
 function List() {
-  const { accounting_items, loading, accounting_items_pagination, getAccountingItems } =
+  const { accounting_items, loading, accounting_items_pagination, getAccountingItems, deleteItem } =
     useAccountingItemsStore();
 
   const [startDate, setStartDate] = useState(formatDate());
@@ -18,13 +30,36 @@ function List() {
 
   const [limit, setLimit] = useState(5);
 
-  const styles = useGlobalStyles();
-
   useEffect(() => {
     getAccountingItems(1, limit, startDate, endDate);
   }, [limit, startDate, endDate]);
 
   const navigate = useNavigate();
+  const styles = useGlobalStyles();
+
+  const [selectedId, setSelectedId] = useState<number>(0);
+  const deleteModal = useDisclosure();
+
+  const handleDelete = () => {
+    if (selectedId === 0) {
+      toast.warning('Debe seleccionar una partida contable');
+      return;
+    }
+    deleteItem(selectedId)
+      .then((res) => {
+        if (res) {
+          toast.success('La partida contable ha sido eliminada exitosamente');
+          setStartDate(formatDate());
+          setEndDate(formatDate());
+          deleteModal.onClose();
+        } else {
+          toast.error('Error al eliminar la partida contable');
+        }
+      })
+      .catch(() => {
+        toast.error('Error al eliminar la partida contable');
+      });
+  };
 
   return (
     <div className=" w-full h-full flex flex-col bg-white dark:bg-gray-900">
@@ -52,7 +87,7 @@ function List() {
         <div className="w-full flex justify-between items-end mt-2">
           <Select
             variant="bordered"
-            className='w-64'
+            className="w-64"
             classNames={{ base: 'font-semibold' }}
             label="Cantidad a mostrar"
             placeholder="Selecciona un limite"
@@ -70,7 +105,11 @@ function List() {
               </SelectItem>
             ))}
           </Select>
-          <Button isIconOnly style={styles.secondaryStyle} onPress={() => navigate("/add-accounting-items")}>
+          <Button
+            isIconOnly
+            style={styles.secondaryStyle}
+            onPress={() => navigate('/add-accounting-items')}
+          >
             <Plus />
           </Button>
         </div>
@@ -96,13 +135,16 @@ function List() {
                 <th style={styles.darkStyle} className="p-3 text-sm font-semibold text-left">
                   Haber
                 </th>
+                <th style={styles.darkStyle} className="p-3 text-sm font-semibold text-left">
+                  Acciones
+                </th>
               </tr>
             </thead>
             <tbody className="max-h-[600px] w-full overflow-y-auto">
               {loading ? (
                 <>
                   <tr>
-                    <td colSpan={6} className="p-3 text-sm text-center text-slate-500">
+                    <td colSpan={7} className="p-3 text-sm text-center text-slate-500">
                       <div className="flex flex-col items-center justify-center w-full h-64">
                         <div className="loader"></div>
                         <p className="mt-3 text-xl font-semibold">Cargando...</p>
@@ -132,6 +174,25 @@ function List() {
                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                         {formatCurrency(Number(type.totalHaber))}
                       </td>
+                      <td className="p-3 text-sm flex gap-5 text-slate-500 dark:text-slate-100">
+                        <Button
+                          isIconOnly
+                          style={styles.secondaryStyle}
+                          onPress={() => navigate('/edit-accounting-items/' + type.id)}
+                        >
+                          <Pencil />
+                        </Button>
+                        <Button
+                          isIconOnly
+                          style={styles.dangerStyles}
+                          onPress={() => {
+                            setSelectedId(type.id);
+                            deleteModal.onOpen();
+                          }}
+                        >
+                          <Trash />
+                        </Button>
+                      </td>
                     </tr>
                   ))}
                 </>
@@ -155,6 +216,26 @@ function List() {
           </>
         )}
       </div>
+      <Modal isOpen={deleteModal.isOpen} onClose={deleteModal.onClose}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader>Eliminar Partida Contable</ModalHeader>
+              <ModalBody>
+                <p>¿Está seguro de eliminar esta partida contable?</p>
+              </ModalBody>
+              <ModalFooter>
+                <Button className="px-5" color="danger" variant="light" onPress={onClose}>
+                  Cancelar
+                </Button>
+                <Button className="px-5" style={styles.dangerStyles} onPress={() => handleDelete()}>
+                  Eliminar
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </div>
   );
 }
