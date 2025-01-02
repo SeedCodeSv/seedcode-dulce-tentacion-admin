@@ -1,4 +1,12 @@
-import { Autocomplete, AutocompleteItem, Button, Input, Popover, PopoverContent, PopoverTrigger } from '@nextui-org/react';
+import {
+  Autocomplete,
+  AutocompleteItem,
+  Button,
+  Input,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@nextui-org/react';
 import { ChevronLeft, ChevronRight, Filter, Pen, SearchIcon, Trash } from 'lucide-react';
 import NO_DATA from '@/assets/svg/no_data.svg';
 import { useNavigate } from 'react-router-dom';
@@ -6,7 +14,6 @@ import Pagination from '../global/Pagination';
 import { useAuthStore } from '@/store/auth.store';
 import { useBranchProductStore } from '@/store/branch_product.store';
 import useGlobalStyles from '../global/global.styles';
-import { fechaEnFormatoDeseado } from '@/utils/date';
 import { useShoppingStore } from '@/store/shopping.store';
 import { ArrayAction } from '@/types/view.types';
 import AddButton from '../global/AddButton';
@@ -20,17 +27,22 @@ import { API_URL } from '@/utils/constants';
 import { toast } from 'sonner';
 
 function ShoppingPage({ actions }: ArrayAction) {
+  const {
+    shoppingList,
+    getPaginatedShopping,
+    loading_shopping,
+    pagination_shopping,
+    search_params,
+  } = useShoppingStore();
   const styles = useGlobalStyles();
-  const [dateInitial, setDateInitial] = useState(fechaEnFormatoDeseado);
-  const [dateEnd, setDateEnd] = useState(fechaEnFormatoDeseado);
-  const { shoppingList, getPaginatedShopping, loading_shopping, pagination_shopping } =
-    useShoppingStore();
- 
+  const [dateInitial, setDateInitial] = useState(search_params.startDate);
+  const [dateEnd, setDateEnd] = useState(search_params.endDate);
+
   const { theme } = useContext(ThemeContext);
   const [openVaul, setOpenVaul] = useState(false);
   const { user } = useAuthStore();
   const { getBranchesList, branches_list } = useBranchProductStore();
-  const [branchId, setBranchId] = useState('');
+  const [branchId, setBranchId] = useState(search_params.branchId ?? 0);
   useEffect(() => {
     getPaginatedShopping(
       user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
@@ -74,11 +86,9 @@ function ShoppingPage({ actions }: ArrayAction) {
   //     })
   // }
 
-
-
   const onDeleteConfirm = (id: number) => {
     axios
-      .delete(API_URL + "/shoppings/" + id)
+      .delete(API_URL + '/shoppings/' + id)
       .then(() => {
         getPaginatedShopping(
           user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
@@ -88,10 +98,10 @@ function ShoppingPage({ actions }: ArrayAction) {
           dateEnd,
           branchId
         );
-        toast.success("Eliminado con éxito");
+        toast.success('Eliminado con éxito');
       })
       .catch(() => {
-        toast.error("Error al eliminar");
+        toast.error('Error al eliminar');
       });
   };
   return (
@@ -124,7 +134,7 @@ function ShoppingPage({ actions }: ArrayAction) {
                     }}
                     placeholder="Buscar por fecha..."
                     type="date"
-                    defaultValue={fechaEnFormatoDeseado}
+                    value={dateInitial}
                     variant="bordered"
                     label="Fecha inicial"
                     labelPlacement="outside"
@@ -137,7 +147,7 @@ function ShoppingPage({ actions }: ArrayAction) {
                     onChange={(e) => {
                       setDateEnd(e.target.value);
                     }}
-                    defaultValue={fechaEnFormatoDeseado}
+                    value={dateEnd}
                     placeholder="Buscar por fecha..."
                     variant="bordered"
                     label="Fecha final"
@@ -155,11 +165,14 @@ function ShoppingPage({ actions }: ArrayAction) {
                       labelPlacement="outside"
                       placeholder="Selecciona la sucursal"
                       clearButtonProps={{ onClick: () => setBranchId('') }}
+                      selectedKey={branchId}
+                      onSelectionChange={(key) =>
+                        key ? setBranchId(String(key)) : setBranchId('')
+                      }
                     >
                       {branches_list.map((item) => (
                         <AutocompleteItem
-                          key={JSON.stringify(item)}
-                          onClick={() => setBranchId(item.name)}
+                          key={item.name}
                           value={item.name}
                           className="dark:text-white"
                         >
@@ -200,7 +213,7 @@ function ShoppingPage({ actions }: ArrayAction) {
               }}
               placeholder="Buscar por fecha..."
               type="date"
-              defaultValue={fechaEnFormatoDeseado}
+              value={dateInitial}
               variant="bordered"
               label="Fecha inicial"
               labelPlacement="outside"
@@ -213,7 +226,7 @@ function ShoppingPage({ actions }: ArrayAction) {
               onChange={(e) => {
                 setDateEnd(e.target.value);
               }}
-              defaultValue={fechaEnFormatoDeseado}
+              defaultValue={dateEnd}
               placeholder="Buscar por fecha..."
               variant="bordered"
               label="Fecha final"
@@ -232,11 +245,14 @@ function ShoppingPage({ actions }: ArrayAction) {
                 labelPlacement="outside"
                 placeholder="Selecciona la sucursal"
                 clearButtonProps={{ onClick: () => setBranchId('') }}
+                selectedKey={branchId}
+                onSelectionChange={(key) =>
+                  key ? setBranchId(String(key)) : setBranchId('')
+                }
               >
                 {branches_list.map((item) => (
                   <AutocompleteItem
-                    key={JSON.stringify(item)}
-                    onClick={() => setBranchId(item.name)}
+                    key={item.name}
                     value={item.name}
                     className="dark:text-white"
                   >
@@ -328,7 +344,7 @@ function ShoppingPage({ actions }: ArrayAction) {
                               </td>
 
                               <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
-                                <div className='flex gap-2'>
+                                <div className="flex gap-2">
                                   {cat.generationCode === 'N/A' && (
                                     <Button
                                       onClick={() => navigate(`/edit-shopping/${cat.id}`)}
@@ -348,13 +364,9 @@ function ShoppingPage({ actions }: ArrayAction) {
                                     </Button>
                                   )} */}
                                   {cat.generationCode === 'N/A' && (
-                                    <Popover className="border border-white rounded-xl"
-                                    >
+                                    <Popover className="border border-white rounded-xl">
                                       <PopoverTrigger>
-                                        <Button
-                                          style={global_styles().warningStyles}
-                                          isIconOnly
-                                        >
+                                        <Button style={global_styles().warningStyles} isIconOnly>
                                           <Trash />
                                         </Button>
                                       </PopoverTrigger>
@@ -413,8 +425,8 @@ function ShoppingPage({ actions }: ArrayAction) {
                     onPageChange={(page) => {
                       getPaginatedShopping(
                         user?.correlative?.branch.transmitterId ??
-                        user?.pointOfSale?.branch.transmitterId ??
-                        0,
+                          user?.pointOfSale?.branch.transmitterId ??
+                          0,
                         page,
                         10,
                         dateInitial,
@@ -429,8 +441,8 @@ function ShoppingPage({ actions }: ArrayAction) {
                     onClick={() => {
                       getPaginatedShopping(
                         user?.correlative?.branch.transmitterId ??
-                        user?.pointOfSale?.branch.transmitterId ??
-                        0,
+                          user?.pointOfSale?.branch.transmitterId ??
+                          0,
                         pagination_shopping.prevPag,
 
                         5,
@@ -451,8 +463,8 @@ function ShoppingPage({ actions }: ArrayAction) {
                     onClick={() => {
                       getPaginatedShopping(
                         user?.correlative?.branch.transmitterId ??
-                        user?.pointOfSale?.branch.transmitterId ??
-                        0,
+                          user?.pointOfSale?.branch.transmitterId ??
+                          0,
                         pagination_shopping.prevPag,
 
                         5,

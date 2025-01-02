@@ -1,11 +1,11 @@
-import { Button, Card, CardBody, Select, SelectItem, Tab, Tabs } from '@nextui-org/react';
+import { Button, Card, CardBody, Input, Select, SelectItem, Tab, Tabs } from '@nextui-org/react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import HeadlessModal from '../global/HeadlessModal';
 import ERROR from '../../assets/error.png';
-import {  X } from 'lucide-react';
+import { X } from 'lucide-react';
 import { create_shopping, isErrorSupplier, verify_code } from '@/services/shopping.service';
 import { useAuthStore } from '@/store/auth.store';
 import Layout from '@/layout/Layout';
@@ -92,15 +92,14 @@ const JSONMode = () => {
   const styles = useGlobalStyles();
   const [modalSupplier, setModalSupplier] = useState(false);
 
-
   const { show } = useAlert();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0])
-      setJsonData(undefined)
+      setFile(e.target.files[0]);
+      setJsonData(undefined);
     }
-  }
+  };
   const formik = useFormik({
     initialValues: {
       operationTypeCode: OperationTypeCode.GRAVADA,
@@ -113,71 +112,71 @@ const JSONMode = () => {
       typeCostSpentValue: TypeCostSpentValue.GASTO_VENTA_SIN_DONACION,
       classDocumentCode: ClassDocumentCode.DOCUMENTO_TRIBUTARIO_ELECTRONICO,
       classDocumentValue: ClassDocumentValue.DOCUMENTO_TRIBUTARIO_ELECTRONICO,
-      typeSale: "interna",
+      typeSale: 'interna',
       declarationDate: formatDate(),
-      branchId: user?.correlative?.branchId ?? 0
+      branchId: user?.correlative?.branchId ?? 0,
     },
     validationSchema: yup.object().shape({
-      operationTypeCode: yup.string().required("**El tipo de operación es requerido**"),
-      operationTypeValue: yup.string().required("**El tipo de operación es requerido**"),
-      classificationCode: yup.string().required("**La clasificación es requerida**"),
-      classificationValue: yup.string().required("**La clasificación es requerida**"),
-      sectorCode: yup.string().required("**El sector es requerido**"),
-      sectorValue: yup.string().required("**El sector es requerido**"),
-      typeCostSpentCode: yup.string().required("**El tipo de gasto es requerido**"),
-      typeCostSpentValue: yup.string().required("**El tipo de gasto es requerido**"),
-      classDocumentCode: yup.string().required("**La clasificación es requerida**"),
-      classDocumentValue: yup.string().required("**La clasificación es requerida**"),
-      typeSale: yup.string().required("**El tipo de venta es requerido**"),
-      declarationDate: yup.string().required("**La fecha es requerida**"),
-      branchId: yup.string().required("**Selecciona la sucursal**")
+      operationTypeCode: yup.string().required('**El tipo de operación es requerido**'),
+      operationTypeValue: yup.string().required('**El tipo de operación es requerido**'),
+      classificationCode: yup.string().required('**La clasificación es requerida**'),
+      classificationValue: yup.string().required('**La clasificación es requerida**'),
+      sectorCode: yup.string().required('**El sector es requerido**'),
+      sectorValue: yup.string().required('**El sector es requerido**'),
+      typeCostSpentCode: yup.string().required('**El tipo de gasto es requerido**'),
+      typeCostSpentValue: yup.string().required('**El tipo de gasto es requerido**'),
+      classDocumentCode: yup.string().required('**La clasificación es requerida**'),
+      classDocumentValue: yup.string().required('**La clasificación es requerida**'),
+      typeSale: yup.string().required('**El tipo de venta es requerido**'),
+      declarationDate: yup.string().required('**La fecha es requerida**'),
+      branchId: yup.string().required('**Selecciona la sucursal**'),
     }),
     onSubmit(values, formikHelpers) {
-      const formData = new FormData()
-      formData.append("operationTypeCode", values.operationTypeCode)
-      formData.append("operationTypeValue", values.operationTypeValue)
-      formData.append("classificationCode", values.classificationCode)
-      formData.append("classificationValue", values.classificationValue)
-      formData.append("sectorCode", values.sectorCode)
-      formData.append("sectorValue", values.sectorValue)
-      formData.append("typeCostSpentCode", values.typeCostSpentCode)
-      formData.append("typeCostSpentValue", values.typeCostSpentValue)
-      formData.append("classDocumentCode", values.classDocumentCode)
-      formData.append("classDocumentValue", values.classDocumentValue)
-      formData.append("typeSale", values.typeSale)
-      formData.append("branchId", values.branchId.toString())
-      formData.append("declarationDate", values.declarationDate)
+      const formData = new FormData();
+      formData.append('operationTypeCode', values.operationTypeCode);
+      formData.append('operationTypeValue', values.operationTypeValue);
+      formData.append('classificationCode', values.classificationCode);
+      formData.append('classificationValue', values.classificationValue);
+      formData.append('sectorCode', values.sectorCode);
+      formData.append('sectorValue', values.sectorValue);
+      formData.append('typeCostSpentCode', values.typeCostSpentCode);
+      formData.append('typeCostSpentValue', values.typeCostSpentValue);
+      formData.append('classDocumentCode', values.classDocumentCode);
+      formData.append('classDocumentValue', values.classDocumentValue);
+      formData.append('typeSale', values.typeSale);
+      formData.append('branchId', values.branchId.toString());
+      formData.append('declarationDate', values.declarationDate);
       if (file) {
-        formData.append("dte", file)
+        formData.append('dte', file);
       }
       try {
-        verify_code(jsonData?.identificacion.codigoGeneracion ?? "").then(({ data }) => {
+        verify_code(jsonData?.identificacion.codigoGeneracion ?? '').then(({ data }) => {
           if (data.shopping) {
-            toast.error("El código de generación ya existe")
-            return
+            toast.error('El código de generación ya existe');
+            return;
           } else {
             create_shopping(formData).then(({ data }) => {
               if (data.ok) {
-                formikHelpers.resetForm()
-                formik.setSubmitting(false)
-                toast.success("Información guardada correctamente")
-                navigate("/shopping")
+                formikHelpers.resetForm();
+                formik.setSubmitting(false);
+                toast.success('Información guardada correctamente');
+                navigate('/shopping');
               } else {
-                formik.setSubmitting(false)
+                formik.setSubmitting(false);
                 if (isErrorSupplier(data as unknown as { supplier: boolean })) {
-                  toast.error("Proveedor no encontrado")
-                  setProviderModal(true)
+                  toast.error('Proveedor no encontrado');
+                  setProviderModal(true);
                 }
               }
-            })
+            });
           }
-        })
+        });
       } catch (error) {
-        formik.setSubmitting(false)
-        toast.error("Ocurrió un error al guardar la información")
+        formik.setSubmitting(false);
+        toast.error('Ocurrió un error al guardar la información');
       }
-    }
-  })
+    },
+  });
   const [providerModal, setProviderModal] = useState(false);
   const navigate = useNavigate();
 
@@ -226,21 +225,21 @@ const JSONMode = () => {
             <AddTributeSupplier
               closeModal={() => setModalSupplier(false)}
               supplier={{
-                nit: jsonData?.emisor.nit ?? "",
-                tipoDocumento: jsonData?.emisor.tipoDocumento ?? "36",
-                numDocumento: jsonData?.emisor.nit ?? "",
-                nrc: jsonData?.emisor.nrc ?? "",
-                nombre: jsonData?.emisor.nombre ?? "",
-                telefono: jsonData?.emisor.telefono ?? "",
-                correo: jsonData?.emisor.correo ?? "",
-                nombreComercial: jsonData?.emisor.nombreComercial ?? "",
-                codActividad: jsonData?.emisor.codActividad ?? "",
-                descActividad: jsonData?.emisor.descActividad ?? ""
+                nit: jsonData?.emisor.nit ?? '',
+                tipoDocumento: jsonData?.emisor.tipoDocumento ?? '36',
+                numDocumento: jsonData?.emisor.nit ?? '',
+                nrc: jsonData?.emisor.nrc ?? '',
+                nombre: jsonData?.emisor.nombre ?? '',
+                telefono: jsonData?.emisor.telefono ?? '',
+                correo: jsonData?.emisor.correo ?? '',
+                nombreComercial: jsonData?.emisor.nombreComercial ?? '',
+                codActividad: jsonData?.emisor.codActividad ?? '',
+                descActividad: jsonData?.emisor.descActividad ?? '',
               }}
               supplier_direction={{
-                municipio: jsonData?.emisor.direccion.municipio ?? "",
-                departamento: jsonData?.emisor.direccion.departamento ?? "",
-                complemento: jsonData?.emisor.direccion.complemento ?? ""
+                municipio: jsonData?.emisor.direccion.municipio ?? '',
+                departamento: jsonData?.emisor.direccion.departamento ?? '',
+                complemento: jsonData?.emisor.direccion.complemento ?? '',
               }}
             />
           </HeadlessModal>
@@ -275,67 +274,82 @@ const JSONMode = () => {
                   >
                     Cargar Archivo JSON
                   </Button>
-                  <X className="cursor-pointer" onClick={() => navigate("/shopping")} />
+                  <X className="cursor-pointer" onClick={() => navigate('/shopping')} />
                 </div>
               </div>
               <form
                 onSubmit={(e) => {
-                  e.preventDefault()
-                  formik.submitForm()
+                  e.preventDefault();
+                  formik.submitForm();
                 }}
               >
-                <div className="flex flex-col mt-4 gap-4 p-6 border rounded-lg shadow-lg  text-white">
+                <div className="flex flex-col mt-4 gap-4 p-6 border rounded-lg shadow-lg  dark:text-white">
                   <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-5 mt-3">
+                    <div className="">
+                      <Input
+                        {...formik.getFieldProps('declarationDate')}
+                        isInvalid={
+                          !!formik.touched.declarationDate && !!formik.errors.declarationDate
+                        }
+                        errorMessage={formik.errors.declarationDate}
+                        type="date"
+                        variant="bordered"
+                        label="Fecha de declaración"
+                        labelPlacement='outside'
+                        className='dark:text-white'
+                        classNames={{ label: 'font-semibold' }}
+                      />
+                    </div>
                     <div>
                       <Select
-                        classNames={{ label: "font-semibold" }}
+                        classNames={{ label: 'font-semibold' }}
                         variant="bordered"
                         label="Tipo"
                         placeholder="Selecciona el tipo"
                         labelPlacement="outside"
                         defaultSelectedKeys={[`${formik.values.typeSale}`]}
                         onSelectionChange={(key) => {
-                          const value = new Set(key).values().next().value
+                          const value = new Set(key).values().next().value;
                           key
-                            ? formik.setFieldValue("typeSale", value)
-                            : formik.setFieldValue("typeSale", "")
+                            ? formik.setFieldValue('typeSale', value)
+                            : formik.setFieldValue('typeSale', '');
                         }}
-                        onBlur={formik.handleBlur("typeSale")}
+                        onBlur={formik.handleBlur('typeSale')}
                         isInvalid={!!formik.touched.typeSale && !!formik.errors.typeSale}
                         errorMessage={formik.errors.typeSale}
                       >
-                        <SelectItem key={"interna"} value="interna">
+                        <SelectItem key={'interna'} value="interna">
                           Interna
                         </SelectItem>
-                        <SelectItem key={"internacion"} value="internacion">
+                        <SelectItem key={'internacion'} value="internacion">
                           Internación
                         </SelectItem>
-                        <SelectItem key={"importacion"} value="importacion">
+                        <SelectItem key={'importacion'} value="importacion">
                           Importación
                         </SelectItem>
                       </Select>
                     </div>
 
                     <Select
-                      onBlur={formik.handleBlur("classDocumentCode")}
+                      onBlur={formik.handleBlur('classDocumentCode')}
                       onSelectionChange={(key) => {
                         if (key) {
-                          const value = new Set(key).values().next().value
-                          const code = ClassDocuments.find((item) => item.code === value)
+                          const value = new Set(key).values().next().value;
+                          const code = ClassDocuments.find((item) => item.code === value);
                           if (code) {
-                            formik.setFieldValue("classDocumentCode", code.code)
-                            formik.setFieldValue("classDocumentValue", code.value)
+                            formik.setFieldValue('classDocumentCode', code.code);
+                            formik.setFieldValue('classDocumentValue', code.value);
                           } else {
-                            formik.setFieldValue("classDocumentCode", "")
-                            formik.setFieldValue("classDocumentValue", "")
+                            formik.setFieldValue('classDocumentCode', '');
+                            formik.setFieldValue('classDocumentValue', '');
                           }
                         } else {
-                          formik.setFieldValue("classDocumentCode", "")
-                          formik.setFieldValue("classDocumentValue", "")
+                          formik.setFieldValue('classDocumentCode', '');
+                          formik.setFieldValue('classDocumentValue', '');
                         }
                       }}
                       selectedKeys={formik.values.classDocumentCode}
-                      classNames={{ label: "font-semibold" }}
+                      classNames={{ label: 'font-semibold' }}
                       className="w-full"
                       variant="bordered"
                       labelPlacement="outside"
@@ -353,24 +367,24 @@ const JSONMode = () => {
                       ))}
                     </Select>
                     <Select
-                      onBlur={formik.handleBlur("operationTypeCode")}
+                      onBlur={formik.handleBlur('operationTypeCode')}
                       onSelectionChange={(key) => {
                         if (key) {
-                          const value = new Set(key).values().next().value
-                          const code = OperationTypes.find((item) => item.code === value)
+                          const value = new Set(key).values().next().value;
+                          const code = OperationTypes.find((item) => item.code === value);
                           if (code) {
-                            formik.setFieldValue("operationTypeCode", code.code)
-                            formik.setFieldValue("operationTypeValue", code.value)
+                            formik.setFieldValue('operationTypeCode', code.code);
+                            formik.setFieldValue('operationTypeValue', code.value);
                           } else {
-                            formik.setFieldValue("operationTypeCode", "")
-                            formik.setFieldValue("operationTypeValue", "")
+                            formik.setFieldValue('operationTypeCode', '');
+                            formik.setFieldValue('operationTypeValue', '');
                           }
                         } else {
-                          formik.setFieldValue("operationTypeCode", "")
+                          formik.setFieldValue('operationTypeCode', '');
                         }
                       }}
                       selectedKeys={formik.values.operationTypeCode}
-                      classNames={{ label: "font-semibold" }}
+                      classNames={{ label: 'font-semibold' }}
                       className="w-full"
                       variant="bordered"
                       labelPlacement="outside"
@@ -388,7 +402,7 @@ const JSONMode = () => {
                       ))}
                     </Select>
                     <Select
-                      classNames={{ label: "font-semibold" }}
+                      classNames={{ label: 'font-semibold' }}
                       className="w-full"
                       variant="bordered"
                       labelPlacement="outside"
@@ -396,21 +410,21 @@ const JSONMode = () => {
                       label="Clasificación"
                       onSelectionChange={(key) => {
                         if (key) {
-                          const value = new Set(key).values().next().value
-                          const code = Classifications.find((item) => item.code === value)
+                          const value = new Set(key).values().next().value;
+                          const code = Classifications.find((item) => item.code === value);
                           if (code) {
-                            formik.setFieldValue("classificationCode", code.code)
-                            formik.setFieldValue("classificationValue", code.value)
+                            formik.setFieldValue('classificationCode', code.code);
+                            formik.setFieldValue('classificationValue', code.value);
                           } else {
-                            formik.setFieldValue("classificationCode", "")
-                            formik.setFieldValue("classificationValue", "")
+                            formik.setFieldValue('classificationCode', '');
+                            formik.setFieldValue('classificationValue', '');
                           }
                         } else {
-                          formik.setFieldValue("classificationCode", "")
+                          formik.setFieldValue('classificationCode', '');
                         }
                       }}
                       selectedKeys={formik.values.classificationCode}
-                      onBlur={formik.handleBlur("classificationCode")}
+                      onBlur={formik.handleBlur('classificationCode')}
                       isInvalid={
                         !!formik.touched.classificationCode && !!formik.errors.classificationCode
                       }
@@ -423,7 +437,7 @@ const JSONMode = () => {
                       ))}
                     </Select>
                     <Select
-                      classNames={{ label: "font-semibold" }}
+                      classNames={{ label: 'font-semibold' }}
                       className="w-full"
                       variant="bordered"
                       labelPlacement="outside"
@@ -431,21 +445,21 @@ const JSONMode = () => {
                       label="Sector"
                       onSelectionChange={(key) => {
                         if (key) {
-                          const value = new Set(key).values().next().value
-                          const code = Sectors.find((item) => item.code === value)
+                          const value = new Set(key).values().next().value;
+                          const code = Sectors.find((item) => item.code === value);
                           if (code) {
-                            formik.setFieldValue("sectorCode", code.code)
-                            formik.setFieldValue("sectorValue", code.value)
+                            formik.setFieldValue('sectorCode', code.code);
+                            formik.setFieldValue('sectorValue', code.value);
                           } else {
-                            formik.setFieldValue("sectorCode", "")
-                            formik.setFieldValue("sectorValue", "")
+                            formik.setFieldValue('sectorCode', '');
+                            formik.setFieldValue('sectorValue', '');
                           }
                         } else {
-                          formik.setFieldValue("sectorCode", "")
+                          formik.setFieldValue('sectorCode', '');
                         }
                       }}
                       selectedKeys={formik.values.sectorCode}
-                      onBlur={formik.handleBlur("sectorCode")}
+                      onBlur={formik.handleBlur('sectorCode')}
                       isInvalid={!!formik.touched.sectorCode && !!formik.errors.sectorCode}
                       errorMessage={formik.errors.sectorCode}
                     >
@@ -456,7 +470,7 @@ const JSONMode = () => {
                       ))}
                     </Select>
                     <Select
-                      classNames={{ label: "font-semibold" }}
+                      classNames={{ label: 'font-semibold' }}
                       className="w-full"
                       variant="bordered"
                       labelPlacement="outside"
@@ -464,21 +478,21 @@ const JSONMode = () => {
                       label="Tipo de costo/gasto"
                       onSelectionChange={(key) => {
                         if (key) {
-                          const value = new Set(key).values().next().value
-                          const code = TypeCostSpents.find((item) => item.code === value)
+                          const value = new Set(key).values().next().value;
+                          const code = TypeCostSpents.find((item) => item.code === value);
                           if (code) {
-                            formik.setFieldValue("typeCostSpentCode", code.code)
-                            formik.setFieldValue("typeCostSpentValue", code.value)
+                            formik.setFieldValue('typeCostSpentCode', code.code);
+                            formik.setFieldValue('typeCostSpentValue', code.value);
                           } else {
-                            formik.setFieldValue("typeCostSpentCode", "")
-                            formik.setFieldValue("typeCostSpentValue", "")
+                            formik.setFieldValue('typeCostSpentCode', '');
+                            formik.setFieldValue('typeCostSpentValue', '');
                           }
                         } else {
-                          formik.setFieldValue("typeCostSpentCode", "")
+                          formik.setFieldValue('typeCostSpentCode', '');
                         }
                       }}
                       selectedKeys={formik.values.typeCostSpentCode}
-                      onBlur={formik.handleBlur("typeCostSpentCode")}
+                      onBlur={formik.handleBlur('typeCostSpentCode')}
                       isInvalid={
                         !!formik.touched.typeCostSpentCode && !!formik.errors.typeCostSpentCode
                       }
@@ -495,38 +509,38 @@ const JSONMode = () => {
                     <p className="dark:text-white  text-black">DATOS OBTENIDOS DE LA COMPRA</p>
                     <div className="grid grid-cols-2 gap-6 mt-2">
                       <p className="text-sm font-semibold dark:text-white text-black ">
-                        Número de control:{" "}
+                        Número de control:{' '}
                         <span className="text-sm font-normal dark:text-white  text-black">
                           {jsonData?.identificacion.numeroControl}
                         </span>
                       </p>
                       <p className="text-sm font-semibold dark:text-white  text-black">
-                        Fecha y hora:{" "}
+                        Fecha y hora:{' '}
                         <span className="text-sm font-normal dark:text-white  text-black">
                           {jsonData?.identificacion.fecEmi} {jsonData?.identificacion.horEmi}
                         </span>
                       </p>
                       <p className="text-sm font-semibold dark:text-white  text-black">
-                        Código de generación:{" "}
+                        Código de generación:{' '}
                         <span className="text-sm font-normal dark:text-white  text-black">
                           {jsonData?.identificacion.codigoGeneracion}
                         </span>
                       </p>
                       <p className="text-sm font-semibold dark:text-white  text-black">
-                        Tipo de documento:{" "}
+                        Tipo de documento:{' '}
                         <span className="text-sm font-normal dark:text-white  text-black">
                           {(() => {
                             switch (jsonData?.identificacion.tipoDte) {
-                              case "01":
-                                return "Consumidor Final"
-                              case "03":
-                                return "Crédito fiscal"
-                              case "05":
-                                return "Nota de Crédito"
-                              case "06":
-                                return "Nota de Débito"
+                              case '01':
+                                return 'Consumidor Final';
+                              case '03':
+                                return 'Crédito fiscal';
+                              case '05':
+                                return 'Nota de Crédito';
+                              case '06':
+                                return 'Nota de Débito';
                               default:
-                                return ""
+                                return '';
                             }
                           })()}
                         </span>
@@ -539,16 +553,16 @@ const JSONMode = () => {
                         Nombre: <span className="font-bold">{jsonData?.emisor.nombre}</span>
                       </p>
                       <p className="text-sm font-semibold dark:text-white  text-black">
-                        Descripción:{" "}
+                        Descripción:{' '}
                         <span className="font-normal dark:text-white  text-black ">
                           {jsonData?.emisor.descActividad}
                         </span>
                       </p>
                       <p className="text-sm font-semibold col-span-2 dark:text-white  text-black">
-                        Dirección:{" "}
+                        Dirección:{' '}
                         <span className="font-normal marker:dark:text-white dark:text-white  text-black">
-                          {jsonData?.emisor.direccion.departamento},{" "}
-                          {jsonData?.emisor.direccion.municipio},{" "}
+                          {jsonData?.emisor.direccion.departamento},{' '}
+                          {jsonData?.emisor.direccion.municipio},{' '}
                           {jsonData?.emisor.direccion.complemento}
                         </span>
                       </p>
@@ -556,8 +570,10 @@ const JSONMode = () => {
                     <div className="border-t border-gray-400 my-4"></div>
                     <div className="grid grid-cols-2 gap-6 mt-2">
                       <p className="text-sm font-semibold dark:text-white  text-black">
-                        Total Letras:{" "}
-                        <span className="font-normal dark:text-white  text-black">{TotalLetras}</span>
+                        Total Letras:{' '}
+                        <span className="font-normal dark:text-white  text-black">
+                          {TotalLetras}
+                        </span>
                       </p>
                       <p className="text-sm font-semibold dark:text-white  text-black">
                         Sub-Total:
@@ -568,12 +584,14 @@ const JSONMode = () => {
                       <p className="text-sm font-semibold dark:text-white  text-black">
                         IVA:
                         <span className="text-sm font-normal dark:text-white  text-black">
-                          {jsonData?.identificacion.tipoDte === "03" ? (
+                          {jsonData?.identificacion.tipoDte === '03' ? (
                             <div className="flex flex-col gap-2">
                               {jsonData.resumen.tributos?.map((trib, key) => (
                                 <p className="" key={key}>
-                                  - {trib.codigo} - {trib.descripcion}:{" "}
-                                  <span className="font-semibold">{formatCurrency(trib.valor)}</span>
+                                  - {trib.codigo} - {trib.descripcion}:{' '}
+                                  <span className="font-semibold">
+                                    {formatCurrency(trib.valor)}
+                                  </span>
                                 </p>
                               ))}
                             </div>
@@ -600,7 +618,7 @@ const JSONMode = () => {
                       <DataTable
                         className="w-full max-h-[400px] lg:max-h-[500px] 2xl:max-h-[600px] mt-5 shadow dark:text-white"
                         emptyMessage="Aun no agregar productos o servicios"
-                        tableStyle={{ minWidth: "50rem" }}
+                        tableStyle={{ minWidth: '50rem' }}
                         scrollable
                         value={jsonData.cuerpoDocumento}
                         scrollHeight="flex"
@@ -611,7 +629,7 @@ const JSONMode = () => {
                           bodyClassName="text-sm"
                           headerStyle={{
                             ...styles.darkStyle,
-                            borderTopLeftRadius: "5px"
+                            borderTopLeftRadius: '5px',
                           }}
                           header="Tipo de item"
                           field="tipoItem"
@@ -621,7 +639,7 @@ const JSONMode = () => {
                           headerClassName="text-sm font-semibold"
                           bodyClassName="text-sm"
                           headerStyle={{
-                            ...styles.darkStyle
+                            ...styles.darkStyle,
                           }}
                           header="Unidad de medida"
                           field="uniMedida"
@@ -631,7 +649,7 @@ const JSONMode = () => {
                           headerClassName="text-sm font-semibold"
                           bodyClassName="text-sm"
                           headerStyle={{
-                            ...styles.darkStyle
+                            ...styles.darkStyle,
                           }}
                           header="Cantidad"
                           field="cantidad"
@@ -641,17 +659,17 @@ const JSONMode = () => {
                           headerClassName="text-sm font-semibold"
                           bodyClassName="text-sm"
                           headerStyle={{
-                            ...styles.darkStyle
+                            ...styles.darkStyle,
                           }}
                           header="Codigo"
-                          body={(rowData) => (rowData.codigo ? rowData.codigo : "Sin Código")}
+                          body={(rowData) => (rowData.codigo ? rowData.codigo : 'Sin Código')}
                         />
                         <Column
                           className="dark:text-white  text-black"
                           headerClassName="text-sm font-semibold"
                           bodyClassName="text-sm"
                           headerStyle={{
-                            ...styles.darkStyle
+                            ...styles.darkStyle,
                           }}
                           header="Descripción"
                           field="descripcion"
@@ -661,7 +679,7 @@ const JSONMode = () => {
                           headerClassName="text-sm font-semibold"
                           bodyClassName="text-sm"
                           headerStyle={{
-                            ...styles.darkStyle
+                            ...styles.darkStyle,
                           }}
                           header="Precio unitario"
                           body={(rowData) => `$ ${rowData.precioUni}`}
@@ -683,8 +701,8 @@ const JSONMode = () => {
           <HeadlessModal
             size={
               window.innerWidth < 700
-                ? "w-full md:w-[600px] lg:w-[800px] xl:w-[7000px]"
-                : "w-full md:w-[500px] lg:w-[700px] xl:w-[500px]"
+                ? 'w-full md:w-[600px] lg:w-[800px] xl:w-[7000px]'
+                : 'w-full md:w-[500px] lg:w-[700px] xl:w-[500px]'
             }
             title=""
             isOpen={isOpen}

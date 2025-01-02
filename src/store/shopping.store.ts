@@ -1,7 +1,12 @@
 import { create } from 'zustand';
 
 import { IShoppingStore } from './types/shopping.store';
-import { get_shopping_by_id, get_shopping_by_month, get_shoppings_paginated } from '@/services/shopping.service';
+import {
+  get_shopping_by_id,
+  get_shopping_by_month,
+  get_shoppings_paginated,
+} from '@/services/shopping.service';
+import { formatDate } from '@/utils/dates';
 
 export const useShoppingStore = create<IShoppingStore>((set) => ({
   shoppingList: [],
@@ -17,7 +22,13 @@ export const useShoppingStore = create<IShoppingStore>((set) => ({
   loading_shopping: false,
   shopping_details: undefined,
   shopping_by_months: [],
-
+  search_params: {
+    page: 1,
+    limit: 10,
+    startDate: formatDate(),
+    endDate: formatDate(),
+    branchId: '',
+  },
   getPaginatedShopping: (
     id,
     page = 1,
@@ -26,7 +37,16 @@ export const useShoppingStore = create<IShoppingStore>((set) => ({
     segundaFecha = '',
     branchId = ''
   ): void => {
-    set({ loading_shopping: true });
+    set({
+      loading_shopping: true,
+      search_params: {
+        page,
+        limit,
+        startDate: fecha,
+        endDate: segundaFecha,
+        branchId,
+      },
+    });
     get_shoppings_paginated(id, page, limit, fecha, segundaFecha, branchId)
       .then(({ data }) => {
         set({
@@ -60,20 +80,22 @@ export const useShoppingStore = create<IShoppingStore>((set) => ({
       });
   },
   getShoppingDetails(id) {
-    get_shopping_by_id(id).then(({ data }) => {
-      set({ shopping_details: data.compra });
-    }).catch(()=>{
-      set({ shopping_details: undefined });
-    })
-  },
-  onGetShoppingByMonth(transmitterId, month) {
-    set({ loading_shopping: true })
-    get_shopping_by_month(transmitterId, month)
+    get_shopping_by_id(id)
       .then(({ data }) => {
-        set({ shopping_by_months: data.shoppings, loading_shopping: false })
+        set({ shopping_details: data.compra });
       })
       .catch(() => {
-        set({ shopping_by_months: [], loading_shopping: false })
+        set({ shopping_details: undefined });
+      });
+  },
+  onGetShoppingByMonth(transmitterId, month) {
+    set({ loading_shopping: true });
+    get_shopping_by_month(transmitterId, month)
+      .then(({ data }) => {
+        set({ shopping_by_months: data.shoppings, loading_shopping: false });
       })
-  }
+      .catch(() => {
+        set({ shopping_by_months: [], loading_shopping: false });
+      });
+  },
 }));

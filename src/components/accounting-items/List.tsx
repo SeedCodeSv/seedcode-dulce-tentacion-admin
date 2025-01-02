@@ -1,5 +1,4 @@
 import { useAccountingItemsStore } from '@/store/accounting-items.store';
-import { formatDate } from '@/utils/dates';
 import {
   Button,
   Input,
@@ -22,13 +21,19 @@ import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
 
 function List() {
-  const { accounting_items, loading, accounting_items_pagination, getAccountingItems, deleteItem } =
-    useAccountingItemsStore();
+  const {
+    accounting_items,
+    loading,
+    accounting_items_pagination,
+    getAccountingItems,
+    deleteItem,
+    search_item,
+  } = useAccountingItemsStore();
 
-  const [startDate, setStartDate] = useState(formatDate());
-  const [endDate, setEndDate] = useState(formatDate());
+  const [startDate, setStartDate] = useState(search_item.startDate);
+  const [endDate, setEndDate] = useState(search_item.endDate);
 
-  const [limit, setLimit] = useState(5);
+  const [limit, setLimit] = useState(search_item.limit);
 
   useEffect(() => {
     getAccountingItems(1, limit, startDate, endDate);
@@ -49,8 +54,6 @@ function List() {
       .then((res) => {
         if (res) {
           toast.success('La partida contable ha sido eliminada exitosamente');
-          setStartDate(formatDate());
-          setEndDate(formatDate());
           deleteModal.onClose();
         } else {
           toast.error('Error al eliminar la partida contable');
@@ -154,47 +157,59 @@ function List() {
                 </>
               ) : (
                 <>
-                  {accounting_items.map((type, index) => (
-                    <tr className="border-b border-slate-200" key={index}>
-                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                        {type.noPartida}
-                      </td>
-                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                        {type.date}
-                      </td>
-                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                        {type.typeOfAccount.name}
-                      </td>
-                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                        {type.concepOfTheItem}
-                      </td>
-                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                        {formatCurrency(Number(type.totalDebe))}
-                      </td>
-                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                        {formatCurrency(Number(type.totalHaber))}
-                      </td>
-                      <td className="p-3 text-sm flex gap-5 text-slate-500 dark:text-slate-100">
-                        <Button
-                          isIconOnly
-                          style={styles.secondaryStyle}
-                          onPress={() => navigate('/edit-accounting-items/' + type.id)}
-                        >
-                          <Pencil />
-                        </Button>
-                        <Button
-                          isIconOnly
-                          style={styles.dangerStyles}
-                          onPress={() => {
-                            setSelectedId(type.id);
-                            deleteModal.onOpen();
-                          }}
-                        >
-                          <Trash />
-                        </Button>
+                  {accounting_items.length > 0 ? (
+                    accounting_items.map((type, index) => (
+                      <tr className="border-b border-slate-200" key={index}>
+                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                          {type.noPartida}
+                        </td>
+                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                          {type.date}
+                        </td>
+                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                          {type.typeOfAccount.name}
+                        </td>
+                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                          {type.concepOfTheItem}
+                        </td>
+                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                          {formatCurrency(Number(type.totalDebe))}
+                        </td>
+                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                          {formatCurrency(Number(type.totalHaber))}
+                        </td>
+                        <td className="p-3 text-sm flex gap-5 text-slate-500 dark:text-slate-100">
+                          <Button
+                            isIconOnly
+                            style={styles.secondaryStyle}
+                            onPress={() => navigate('/edit-accounting-items/' + type.id)}
+                          >
+                            <Pencil />
+                          </Button>
+                          <Button
+                            isIconOnly
+                            style={styles.dangerStyles}
+                            onPress={() => {
+                              setSelectedId(type.id);
+                              deleteModal.onOpen();
+                            }}
+                          >
+                            <Trash />
+                          </Button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={7} className="p-3 text-sm text-center text-slate-500">
+                        <div className="flex flex-col items-center justify-center w-full h-64">
+                          <p className="mt-3 text-xl font-semibold">
+                            No se encontraron partidas contables
+                          </p>
+                        </div>
                       </td>
                     </tr>
-                  ))}
+                  )}
                 </>
               )}
             </tbody>

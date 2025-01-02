@@ -7,8 +7,16 @@ import {
   get_details,
   update_item,
 } from '@/services/accounting-items.service';
+import { formatDate } from '@/utils/dates';
 
-export const useAccountingItemsStore = create<AccountingItemsServiceStore>((set) => ({
+export const useAccountingItemsStore = create<AccountingItemsServiceStore>((set, get) => ({
+  search_item: {
+    is_first_time: true,
+    page: 1,
+    limit: 10,
+    startDate: formatDate(),
+    endDate: formatDate(),
+  },
   accounting_items: [],
   loading: false,
   accounting_items_pagination: {
@@ -51,6 +59,7 @@ export const useAccountingItemsStore = create<AccountingItemsServiceStore>((set)
     set((state) => ({
       ...state,
       loading: true,
+      search_item: { page, limit, startDate, endDate, is_first_time: true },
     }));
     return get_accounting_items(page, limit, startDate, endDate)
       .then((res) => {
@@ -107,6 +116,12 @@ export const useAccountingItemsStore = create<AccountingItemsServiceStore>((set)
   editItem: (payload, id) => {
     return update_item(payload, id)
       .then(() => {
+        get().getAccountingItems(
+          get().search_item.page,
+          get().search_item.limit,
+          get().search_item.startDate,
+          get().search_item.endDate
+        );
         return true;
       })
       .catch(() => {
@@ -116,6 +131,12 @@ export const useAccountingItemsStore = create<AccountingItemsServiceStore>((set)
   deleteItem: (id) => {
     return delete_item(id)
       .then(() => {
+        get().getAccountingItems(
+          1,
+          get().search_item.limit,
+          get().search_item.startDate,
+          get().search_item.endDate
+        );
         return true;
       })
       .catch(() => {

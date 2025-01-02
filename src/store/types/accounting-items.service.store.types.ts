@@ -7,6 +7,13 @@ export interface AccountingItemsServiceStore {
   details: ItemDetails | undefined;
   loading_details: boolean;
   accounting_items_pagination: IPagination;
+  search_item: {
+    is_first_time: boolean;
+    page: number;
+    limit: number;
+    startDate: string;
+    endDate: string;
+  };
   getAccountingItems: (
     page: number,
     limit: number,

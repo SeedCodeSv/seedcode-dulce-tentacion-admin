@@ -108,7 +108,7 @@ function AddAccountingItems() {
       no: items.length + 1,
     };
     setItems((prevItems) => {
-      const updatedItems = [newItem, ...prevItems];
+      const updatedItems = [...prevItems, newItem];
       return updatedItems;
     });
   };
@@ -486,7 +486,8 @@ function AddAccountingItems() {
 
                             if (duplicate) {
                               toast.error(
-                                'Solo un elemento puede tener un valor en "Debe" para el mismo código.', {
+                                'Solo un elemento puede tener un valor en "Debe" para el mismo código.',
+                                {
                                   position: 'bottom-center',
                                 }
                               );
@@ -526,7 +527,8 @@ function AddAccountingItems() {
 
                             if (duplicate) {
                               toast.error(
-                                'Solo un elemento puede tener un valor en "Haber" para el mismo código.', {
+                                'Solo un elemento puede tener un valor en "Haber" para el mismo código.',
+                                {
                                   position: 'bottom-center',
                                 }
                               );
@@ -602,7 +604,15 @@ function AddAccountingItems() {
                 </tbody>
               </table>
             </div>
-            <div className="flex justify-end mt-3">
+            <div className="flex justify-end gap-5 mt-3">
+              <Button
+                isLoading={loading}
+                className="px-20"
+                style={styles.dangerStyles}
+                onPress={() => navigate('/accounting-items')}
+              >
+                Cancelar
+              </Button>
               <Button
                 isLoading={loading}
                 className="px-20"
@@ -843,10 +853,9 @@ export default AddAccountingItems;
 
 export const CodCuentaSelect = (props: CodCuentaProps) => {
   const { account_catalog_pagination, loading } = useAccountCatalogsStore();
-
   const LIMIT = 20;
 
-  const [name, setName] = useState('');
+  const [name, setName] = useState(props.items[props.index].codCuenta);
 
   const itemsPag = useMemo(() => {
     const sortedItems = account_catalog_pagination.accountCatalogs.sort((a, b) =>
