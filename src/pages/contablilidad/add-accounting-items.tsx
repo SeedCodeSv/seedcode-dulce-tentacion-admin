@@ -189,6 +189,7 @@ function AddAccountingItems() {
         branchId: item.centroCosto !== '' ? Number(item.centroCosto) : undefined,
         should: Number(item.debe),
         see: Number(item.haber),
+        conceptOfTheTransaction: item.descTran.length > 0 ? item.descTran : 'N/A',
       })),
     })
       .then((res) => {
