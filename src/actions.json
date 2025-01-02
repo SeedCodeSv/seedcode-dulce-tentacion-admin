@@ -171,7 +171,11 @@
       "actions": ["Mostrar", "Exportar", "Exportar CVC"]
     },
     {
-      "view": "Libros contables",
+      "view": "Partidas contables",
+      "actions": ["Mostrar", "Agregar"]
+    },
+    {
+      "view": "Tipos de partida",
       "actions": ["Mostrar", "Agregar"]
     }
   ]

@@ -238,10 +238,16 @@ export const LayoutItems = (props: Props) => {
       label: 'Catálogos de Cuentas',
     },
     {
-      viewName: 'Libros contables',
+      viewName: 'Tipos de partida',
       to: '/accounting-items',
       icon: BookCheck,
-      label: 'Libros contables',
+      label: 'Tipos de partida',
+    },
+    {
+      viewName: 'Partidas contables',
+      to: '/type-accounting',
+      icon: BookCheck,
+      label: 'Partidas contables',
     },
   ];
 
