@@ -1,3 +1,4 @@
+import { IExcludedSubjects } from "./excluded_subjects.types"
 import { Supplier } from "./supplier.types"
 
 export interface SaleEmployee {
@@ -157,8 +158,9 @@ export interface AnnulationExcludedSubjectPayload {
 }
 
 export interface ExcludedSubjectByMonthBranch {
-  excludedSubject: ExcludedSubject[]
   ok: boolean
+  excludedSubject: IExcludedSubjects[]
+  status: number
 }
 
 
@@ -183,7 +185,7 @@ export interface ExcludedSubject {
   totalPagar: string
   totalLetras: string
   isActive: boolean
-  subject: Subject
+  // subject: Subject
   subjectId: number
   boxId: number
   employeeId: number

@@ -921,6 +921,7 @@ interface ExportProp {
   items: NewBookItems[];
   transmitter: ITransmitter;
   month: string;
+  year: number
 }
 
 export const export_excel_facturacion = async (props: ExportProp) => {
@@ -972,7 +973,7 @@ export const export_excel_facturacion = async (props: ExportProp) => {
   const titles = [
     { cell: 'D4', text: 'LIBRO DE VENTAS CONSUMIDOR FINAL' },
     { cell: 'A5', text: `MES:${month.toUpperCase()}` },
-    { cell: 'B5', text: `AÑO: ${new Date().getFullYear()}` },
+    { cell: 'B5', text: `AÑO: ${props.year}` },
   ];
   titles.forEach(({ cell, text }) => {
     worksheet.getCell(cell).value = text;
@@ -1156,13 +1157,15 @@ interface ExportPropCcfe {
   transmitter: ITransmitter;
   month: string;
   branch: string;
+  yeatSelected: number;
 }
 
 export const export_excel_facturacion_ccfe = async ({
   items,
   transmitter,
   month,
-  branch
+  branch,
+  yeatSelected,
 }: ExportPropCcfe) => {
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet('Ventas CCF');
@@ -1201,7 +1204,7 @@ export const export_excel_facturacion_ccfe = async ({
     { cell: 'A5', text: 'MES' },
     { cell: 'B5', text: `${month}` },
     { cell: 'C5', text: `SUCURSAL: ${branch}` },
-    { cell: 'D5', text: `AÑO: ${new Date().getFullYear()}` },
+    { cell: 'D5', text: `AÑO: ${yeatSelected}` },
   ];
   titles.forEach(({ cell, text }) => {
     worksheet.getCell(cell).value = text;

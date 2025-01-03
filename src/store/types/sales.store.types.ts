@@ -17,8 +17,8 @@ export interface salesStore {
   sales_dates_pagination: IPagination;
   loading_creditos: boolean;
   contingence_sales: SaleContingence[];
-  getFeMonth: (branchId: number, month: number) => void;
-  getCffMonth: (branchId: number, month: string) => void;
+  getFeMonth: (branchId: number, month: number, year: number) => void;
+  getCffMonth: (branchId: number, month: string, year:number) => void;
   postSales: (
     pdf: string,
     dte: string,

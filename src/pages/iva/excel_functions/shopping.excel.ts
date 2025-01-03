@@ -5,7 +5,8 @@ import ExcelJS from "exceljs"
 export const generate_shopping_excel = async (
   shopping_data: Array<Array<string | number>>,
   month: string,
-  transmitter: ITransmitter
+  transmitter: ITransmitter,
+  year: number
 ) => {
   const workbook = new ExcelJS.Workbook()
   const worksheet = workbook.addWorksheet("Compras")
@@ -56,7 +57,7 @@ export const generate_shopping_excel = async (
     { cell: "D4", text: "LIBRO DE COMPRAS" },
     { cell: "A5", text: "MES" },
     { cell: "B5", text: `${month}` },
-    { cell: "D5", text: `AÑO: ${new Date().getFullYear()}` }
+    { cell: "D5", text: `AÑO: ${year}` }
   ]
   titles.forEach(({ cell, text }) => {
     worksheet.getCell(cell).value = text
@@ -85,7 +86,7 @@ export const generate_shopping_excel = async (
     { key: "N", width: 10 }
   ]
 
-  const applyAlignmentAndFont = (cell, alignment, font) => {
+  const applyAlignmentAndFont = (cell: any, alignment: any, font: any) => {
     worksheet.getCell(cell).alignment = alignment
     worksheet.getCell(cell).font = font
   }
