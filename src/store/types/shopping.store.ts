@@ -17,5 +17,5 @@ export interface IShoppingStore {
     getShoppingDetails: (id: number) => void
     getPaginatedShopping: (id: number, page?: number, limit?: number, fecha?: string, segundaFecha?: string, branchId?: string) => void
     shopping_by_months: ShoppingReport[],
-    onGetShoppingByMonth: (transmitterId: number, month: string) => void
+    onGetShoppingByMonth: (transmitterId: number, month: string, year: number) => void
 }

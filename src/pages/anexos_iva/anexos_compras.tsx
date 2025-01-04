@@ -1,6 +1,4 @@
 import Layout from '@/layout/Layout';
-// import { useShoppingReportsStore } from '@/store/reports/shopping_reports.store';
-// import { formatDate } from '@/utils/dates';
 import { formatCurrency } from '@/utils/dte';
 import { Button, Select, SelectItem } from '@nextui-org/react';
 import { useEffect, useState } from 'react';
@@ -15,50 +13,32 @@ import NO_DATA from "../../assets/no.png"
 function AnexosCompras() {
   const [monthSelected, setMonthSelected] = useState(new Date().getMonth() + 1)
   const { shopping_by_months, onGetShoppingByMonth, loading_shopping } = useShoppingStore()
-  // const [startDate, setStartDate] = useState(formatDate());
-  // const [endDate, setEndDate] = useState(formatDate());
   const { user } = useAuthStore()
-  // const { annexes_list, onGetAnnexes } = useShoppingReportsStore();
+
+  const currentYear = new Date().getFullYear();
+  const years = [
+    { value: currentYear, name: currentYear.toString() },
+    { value: currentYear - 1, name: (currentYear - 1).toString() }
+  ];
+  const [yearSelected, setYearSelected] = useState(currentYear);
+
   useEffect(() => {
     onGetShoppingByMonth(
       Number(user?.correlative?.branchId),
-      monthSelected <= 9 ? "0" + monthSelected : monthSelected.toString()
+      monthSelected <= 9 ? "0" + monthSelected : monthSelected.toString(), yearSelected
     )
-    // getExcludedSubjectByMonth(Number(user?.employee.branch.id), monthSelected)
-  }, [monthSelected])
-  // const { transmitter } = useAuthStore();
-  // useEffect(() => {
-  //   onGetAnnexes(transmitter?.id ?? 0, startDate, endDate);
-  // }, [transmitter, startDate, endDate]);
+  }, [monthSelected, yearSelected])
 
-  // const month = months.find((month) => month.value === monthSelected)?.name || ""
-
-  // const exportAnnexes = async () => {
-  //   const blob = await annexes_iva_shopping(annexes_list);
-  //   const url = window.URL.createObjectURL(blob);
-  //   const link = document.createElement('a');
-  //   link.href = url;
-  //   link.download = 'anexos-iva-compras.xlsx';
-  //   link.click();
-  // };
   const exportAnnexes = async () => {
     const month = months.find((month) => month.value === monthSelected)?.name || ""
     const blob = await generate_anexe_shopping(shopping_by_months)
     const url = window.URL.createObjectURL(blob)
     const link = document.createElement("a")
     link.href = url
-    link.download = `anexos-iva-compras_${month}_${new Date().getFullYear()}.xlsx`
+    link.download = `anexos-iva-compras_${month}_${yearSelected}.xlsx`
     link.click()
   }
-  // const exportAnnexesCSV = () => {
-  //   const csv = csvmaker(annexes_list);
-  //   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-  //   const url = URL.createObjectURL(blob);
-  //   const link = document.createElement('a');
-  //   link.href = url;
-  //   link.download = 'iva-compras.csv';
-  //   link.click();
-  // };
+
   const exportAnnexesCSV = () => {
     const month = months.find((month) => month.value === monthSelected)?.name || ""
     const csv = csvmaker(shopping_by_months)
@@ -66,7 +46,7 @@ function AnexosCompras() {
     const url = URL.createObjectURL(blob)
     const link = document.createElement("a")
     link.href = url
-    link.download = `iva-compras_${month}_${new Date().getFullYear()}.csv`
+    link.download = `iva-compras_${month}_${yearSelected}.csv`
     link.click()
   }
 
@@ -95,24 +75,25 @@ function AnexosCompras() {
                 </SelectItem>
               ))}
             </Select>
-            {/* <Input
-              classNames={{ label: 'font-semibold' }}
-              label="Fecha inicial"
-              type="date"
-              variant="bordered"
-              labelPlacement="outside"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-            />
-            <Input
-              classNames={{ label: 'font-semibold' }}
-              label="Fecha inicial"
-              type="date"
-              variant="bordered"
-              labelPlacement="outside"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-            /> */}
+            <Select
+                selectedKeys={[`${yearSelected}`]}
+                onSelectionChange={(key) => {
+                  if (key) {
+                    setYearSelected(Number(new Set(key).values().next().value))
+                  }
+                }}
+                className="w-44"
+                classNames={{ label: "font-semibold" }}
+                label="Año"
+                labelPlacement="outside"
+                variant="bordered"
+              >
+                {years.map((years) => (
+                  <SelectItem key={years.value} value={years.value}>
+                    {years.name}
+                  </SelectItem>
+                ))}
+              </Select>
 
             <div className="w-full flex justify-end gap-5 mt-4">
               <Button

@@ -53,9 +53,9 @@ export function isSuccessSupplier(response: { ok: boolean }): response is Succes
   return response && typeof response.ok === 'boolean';
 }
 
-export const get_shopping_by_month = (transmitterId: number, month: string) => {
+export const get_shopping_by_month = (transmitterId: number, month: string, year: number) => {
   return axios.get<IGetShoppingReport>(
-    API_URL + `/reports/get-shoppings-by-month/${transmitterId}?month=${month}`
+    API_URL + `/reports/get-shoppings-by-month/${transmitterId}?month=${month}&year=${year}`
   );
 };
 

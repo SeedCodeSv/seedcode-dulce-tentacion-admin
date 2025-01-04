@@ -64,7 +64,7 @@ function FEBookIVA() {
         name: formatName(voucher.typeVoucher) + ' ' + `(${voucher.code})`,
         items: voucher.sales.map((venta) => {
           return [
-            formatDateMMDDYYYY(venta.day, monthSelected),
+            formatDateMMDDYYYY(venta.day, monthSelected, yearSelected),
             venta.firstCorrelativ!,
             venta.lastCorrelative!,
             venta.firstNumeroControl!,
@@ -238,7 +238,7 @@ function FEBookIVA() {
                               {facturas.sales.map((factura, index) => (
                                 <tr key={index} className="border-b border-slate-200">
                                   <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                    {formatDateMMDDYYYY(factura.day, monthSelected)}
+                                    {formatDateMMDDYYYY(factura.day, monthSelected, yearSelected)}
                                   </td>
                                   <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
                                     {factura.firstCorrelativ!}

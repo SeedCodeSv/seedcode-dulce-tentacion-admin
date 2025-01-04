@@ -42,7 +42,7 @@ function ShoppingBookIVA() {
   useEffect(() => {
     onGetShoppingByMonth(
       Number(user?.correlative?.branchId),
-      monthSelected <= 9 ? "0" + monthSelected : monthSelected.toString()
+      monthSelected <= 9 ? "0" + monthSelected : monthSelected.toString(), yearSelected
     )
     getExcludedSubjectByMonth(Number(user?.correlative?.branchId), monthSelected, yearSelected)
   }, [monthSelected, yearSelected])

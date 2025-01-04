@@ -11,7 +11,12 @@ export function reemplazarNumero(str: string, numero: number) {
   const nuevoNumero = numero.toString().padStart(14, '0');
   return str.replace(/\d{14}$/, nuevoNumero);
 }
-export const formatCurrency = (value: number) => {
+
+export const formatCurrency = (value: number | undefined | null): string => {
+  if (value == null || isNaN(value)) {
+    return "$0.00";
+  }
+
   return value.toLocaleString('en-US', {
     style: 'currency',
     currency: 'USD',

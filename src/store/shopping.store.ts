@@ -88,9 +88,9 @@ export const useShoppingStore = create<IShoppingStore>((set) => ({
         set({ shopping_details: undefined });
       });
   },
-  onGetShoppingByMonth(transmitterId, month) {
+  onGetShoppingByMonth(transmitterId, month, year) {
     set({ loading_shopping: true });
-    get_shopping_by_month(transmitterId, month)
+    get_shopping_by_month(transmitterId, month, year)
       .then(({ data }) => {
         set({ shopping_by_months: data.shoppings, loading_shopping: false });
       })
