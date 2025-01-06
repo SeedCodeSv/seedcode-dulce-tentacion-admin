@@ -39,9 +39,9 @@ export const useSalesStore = create<salesStore>((set, get) => ({
   },
   loading_facturas: false,
   contingence_sales: [],
-  getCffMonth(branchId, month) {
+  getCffMonth(branchId, month, year) {
     set({ loading_creditos: false });
-    get_sales_by_ccf(branchId, month)
+    get_sales_by_ccf(branchId, month, year)
       .then(({ data }) => {
         set({
           creditos_by_month: data.salesCcf,
@@ -59,9 +59,9 @@ export const useSalesStore = create<salesStore>((set, get) => ({
         });
       });
   },
-  getFeMonth(branchId, month) {
+  getFeMonth(branchId, month, year) {
     set({ loading_facturas: true });
-    get_factura_by_month(branchId, month)
+    get_factura_by_month(branchId, month, year)
       .then((data) => {
         set({
           facturas_by_month: data.data.salesByDay,

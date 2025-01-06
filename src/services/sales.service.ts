@@ -163,14 +163,14 @@ export const get_sales_by_product = (
   );
 };
 
-export const get_sales_by_ccf = (transmiter: number, month: string) => {
+export const get_sales_by_ccf = (transmiter: number, month: string, year: number) => {
   return axios.get<IGetSalesCCF>(
-    API_URL + `/reports/get-ccf-by-month/${transmiter}?month=${month}`
+    API_URL + `/reports/get-ccf-by-month/${transmiter}?month=${month}&year=${year}`
   );
 };
 
-export const get_factura_by_month = (branchId: number, month: number) => {
-  return axios.get<IGetFeMonth>(API_URL + `/reports/get-fe-by-month/${branchId}?month=${month}`);
+export const get_factura_by_month = (branchId: number, month: number, year:number) => {
+  return axios.get<IGetFeMonth>(API_URL + `/reports/get-fe-by-month/${branchId}?month=${month}&year=${year}`);
 };
 
 export const get_sales_status_and_dates = (

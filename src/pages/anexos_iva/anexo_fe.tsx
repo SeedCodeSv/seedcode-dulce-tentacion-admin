@@ -13,9 +13,17 @@ function AnexoFe() {
   const { user } = useAuthStore();
   const [monthSelected, setMonthSelected] = useState(new Date().getMonth() + 1)
   const { annexes_iva, onGetAnnexesIva, loading_annexes_fe } = useIvaFeStore();
+
+  const currentYear = new Date().getFullYear();
+  const years = [
+    { value: currentYear, name: currentYear.toString() },
+    { value: currentYear - 1, name: (currentYear - 1).toString() }
+  ];
+  const [yearSelected, setYearSelected] = useState(currentYear);
+
   useEffect(() => {
-    onGetAnnexesIva(Number(user?.correlative?.branch.transmitterId), monthSelected <= 9 ? "0" + monthSelected : monthSelected.toString());
-  }, [user?.correlative?.branch.transmitterId, monthSelected]);
+    onGetAnnexesIva(Number(user?.correlative?.branch.transmitterId), monthSelected <= 9 ? "0" + monthSelected : monthSelected.toString(), yearSelected);
+  }, [user?.correlative?.branch.transmitterId, monthSelected, yearSelected]);
 
   const exportAnnexes = async () => {
     const blob = await annexes_iva_fe(annexes_iva);
@@ -58,6 +66,25 @@ function AnexoFe() {
               {months.map((month) => (
                 <SelectItem key={month.value} value={month.value}>
                   {month.name}
+                </SelectItem>
+              ))}
+            </Select>
+            <Select
+              selectedKeys={[`${yearSelected}`]}
+              onSelectionChange={(key) => {
+                if (key) {
+                  setYearSelected(Number(new Set(key).values().next().value))
+                }
+              }}
+              className="w-44"
+              classNames={{ label: "font-semibold" }}
+              label="Año"
+              labelPlacement="outside"
+              variant="bordered"
+            >
+              {years.map((years) => (
+                <SelectItem key={years.value} value={years.value}>
+                  {years.name}
                 </SelectItem>
               ))}
             </Select>

@@ -140,11 +140,11 @@ export const annexes_iva_shopping = async (shoppingReport: ShoppingReport[]) => 
         worksheet.getCell(`D${nextLine}`).value = formatControlNumber(shopping.controlNumber);
         worksheet.getCell(`E${nextLine}`).value = formatNit(shopping.supplier)
         worksheet.getCell(`F${nextLine}`).value = shopping.supplier.nombre;
-        worksheet.getCell(`G${nextLine}`).value = shopping.typeSale === "Interna" ? Number(shopping.totalExenta) : 0;
-        worksheet.getCell(`H${nextLine}`).value = shopping.typeSale === "Externa" ? Number(shopping.totalExenta) : 0;
+        worksheet.getCell(`G${nextLine}`).value = shopping.typeSale === "interna" ? Number(shopping.totalExenta) : 0;
+        worksheet.getCell(`H${nextLine}`).value = shopping.typeSale === "internacion" ? Number(shopping.totalExenta) : 0;
         worksheet.getCell(`I${nextLine}`).value = 0.00;
-        worksheet.getCell(`J${nextLine}`).value = shopping.typeSale === "Interna" ? Number(shopping.totalGravada) : 0;
-        worksheet.getCell(`K${nextLine}`).value = shopping.typeSale === "Externa" ? Number(shopping.totalGravada) : 0;
+        worksheet.getCell(`J${nextLine}`).value = shopping.typeSale === "interna" ? Number(shopping.totalGravada) : 0;
+        worksheet.getCell(`K${nextLine}`).value = shopping.typeSale === "internacion" ? Number(shopping.totalGravada) : 0;
         worksheet.getCell(`L${nextLine}`).value = 0.00;
         worksheet.getCell(`M${nextLine}`).value = 0.00;
         worksheet.getCell(`N${nextLine}`).value = Number(shopping.totalGravada) * 0.13;
@@ -242,11 +242,11 @@ export const csvmaker = (shoppingReport: ShoppingReport[]) => {
             formatControlNumber(item.controlNumber),
             formatNit(item.supplier),
             item.supplier.nombre,
-            item.typeSale === "Interna" ? Number(item.totalExenta) : 0,
-            item.typeSale === "Externa" ? Number(item.totalExenta) : 0,
+            item.typeSale === "interna" ? Number(item.totalExenta) : 0,
+            item.typeSale === "internacion" ? Number(item.totalExenta) : 0,
             0.00,
-            item.typeSale === "Interna" ? Number(item.totalGravada) : 0,
-            item.typeSale === "Externa" ? Number(item.totalGravada) : 0,
+            item.typeSale === "interna" ? Number(item.totalGravada) : 0,
+            item.typeSale === "internacion" ? Number(item.totalGravada) : 0,
             0.00,
             0.00,
             Number(item.totalIva),

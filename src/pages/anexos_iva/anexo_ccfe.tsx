@@ -7,28 +7,29 @@ import { Button, Select, SelectItem, Spinner } from '@nextui-org/react';
 import { useEffect, useState } from 'react';
 import { csvmaker_ccfe, export_annexes_iva_ccfe } from './utils';
 import { global_styles } from '@/styles/global.styles';
-import NO_DATA from "../../assets/no.png"
+import NO_DATA from '../../assets/no.png';
 import { months } from '@/utils/constants';
 import { useAuthStore } from '@/store/auth.store';
 
 function AnexoCcfe() {
-  // const { branch_list, getBranchesList } = useBranchesStore();
-  const [monthSelected, setMonthSelected] = useState(new Date().getMonth() + 1)
+  const [monthSelected, setMonthSelected] = useState(new Date().getMonth() + 1);
   const { user } = useAuthStore();
-  // useEffect(() => {
-  //   getBranchesList();
-  // }, []);
-
-  // const [branchId, setBranchId] = useState(0);
-
-  // const [startDate, setStartDate] = useState(formatDate());
-  // const [endDate, setEndDate] = useState(formatDate());
-
   const { annexes_iva_ccfe, loading_annexes_iva_ccfe, onGetIvaAnnexesCcf } = useIvaCcfeStore();
 
+  const currentYear = new Date().getFullYear();
+  const years = [
+    { value: currentYear, name: currentYear.toString() },
+    { value: currentYear - 1, name: (currentYear - 1).toString() },
+  ];
+  const [yearSelected, setYearSelected] = useState(currentYear);
+
   useEffect(() => {
-    onGetIvaAnnexesCcf(Number(user?.correlative?.branch.transmitterId), monthSelected <= 9 ? "0" + monthSelected : monthSelected.toString());
-  }, [user?.correlative?.branch.transmitterId, monthSelected]);
+    onGetIvaAnnexesCcf(
+      Number(user?.correlative?.branch.transmitterId),
+      monthSelected <= 9 ? '0' + monthSelected : monthSelected.toString(),
+      yearSelected
+    );
+  }, [user?.correlative?.branch.transmitterId, monthSelected, yearSelected]);
 
   const exportAnnexes = async () => {
     const blob = await export_annexes_iva_ccfe(annexes_iva_ccfe);
@@ -54,16 +55,15 @@ function AnexoCcfe() {
       <div className=" w-full h-full flex flex-col p-6 bg-gray-50 dark:bg-gray-900">
         <div className="w-full flex flex-col h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <div className="w-full flex justify-between gap-5">
-
             <Select
               selectedKeys={[`${monthSelected}`]}
               onSelectionChange={(key) => {
                 if (key) {
-                  setMonthSelected(Number(new Set(key).values().next().value))
+                  setMonthSelected(Number(new Set(key).values().next().value));
                 }
               }}
               className="w-44"
-              classNames={{ label: "font-semibold" }}
+              classNames={{ label: 'font-semibold' }}
               label="Meses"
               labelPlacement="outside"
               variant="bordered"
@@ -74,44 +74,25 @@ function AnexoCcfe() {
                 </SelectItem>
               ))}
             </Select>
-            {/* <Input
-              classNames={{ label: 'font-semibold' }}
-              label="Fecha inicial"
-              type="date"
-              variant="bordered"
-              labelPlacement="outside"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-            />
-            <Input
-              classNames={{ label: 'font-semibold' }}
-              label="Fecha inicial"
-              type="date"
-              variant="bordered"
-              labelPlacement="outside"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-            /> */}
-            {/* <Select
-              defaultSelectedKeys={`${branchId}`}
+            <Select
+              selectedKeys={[`${yearSelected}`]}
               onSelectionChange={(key) => {
                 if (key) {
-                  setBranchId(Number(key.currentKey));
+                  setYearSelected(Number(new Set(key).values().next().value));
                 }
               }}
-              className="w-full"
-              placeholder="Selecciona la sucursal"
+              className="w-44"
               classNames={{ label: 'font-semibold' }}
-              label="Sucursal"
+              label="Año"
               labelPlacement="outside"
               variant="bordered"
             >
-              {branch_list.map((branch) => (
-                <SelectItem key={branch.id} value={branch.id}>
-                  {branch.name}
+              {years.map((years) => (
+                <SelectItem key={years.value} value={years.value}>
+                  {years.name}
                 </SelectItem>
               ))}
-            </Select> */}
+            </Select>
             <div className="w-full flex justify-end gap-5 mt-4">
               <Button style={global_styles().thirdStyle} onClick={exportAnnexes}>
                 Exportar anexo
@@ -126,11 +107,10 @@ function AnexoCcfe() {
             <>
               {loading_annexes_iva_ccfe ? (
                 <>
-                  <div className='w-full flex  mt-20 justify-center items-center flex-col'>
-                    <Spinner size='lg' />
-                    <p className='mt-2 text-xl'>Cargando....</p>
+                  <div className="w-full flex  mt-20 justify-center items-center flex-col">
+                    <Spinner size="lg" />
+                    <p className="mt-2 text-xl">Cargando....</p>
                   </div>
-
                 </>
               ) : (
                 <>
@@ -203,7 +183,7 @@ function AnexoCcfe() {
           </div>
         </div>
       </div>
-    </Layout >
+    </Layout>
   );
 }
 

@@ -23,6 +23,13 @@ function CFFBookIVA() {
   const { transmitter, gettransmitter } = useTransmitterStore();
   const { branch_list, getBranchesList } = useBranchesStore();
 
+  const currentYear = new Date().getFullYear();
+  const years = [
+    { value: currentYear, name: currentYear.toString() },
+    { value: currentYear - 1, name: (currentYear - 1).toString() },
+  ];
+  const [yearSelected, setYearSelected] = useState(currentYear);
+
   useEffect(() => {
     gettransmitter();
     getBranchesList();
@@ -32,12 +39,14 @@ function CFFBookIVA() {
     useSalesStore();
 
   useEffect(() => {
-    getCffMonth(branchId, monthSelected > 9 ? `${monthSelected}` : `0${monthSelected}`);
-  }, [monthSelected, branchId]);
+    getCffMonth(
+      branchId,
+      monthSelected > 9 ? `${monthSelected}` : `0${monthSelected}`,
+      yearSelected
+    );
+  }, [monthSelected, branchId, yearSelected]);
 
   const styles = useGlobalStyles();
-
-
 
   const handleExportExcel = async () => {
     const data = creditos_by_month.map((cre, index) => [
@@ -112,6 +121,7 @@ function CFFBookIVA() {
       month,
       transmitter,
       branch: branchName,
+      yeatSelected: yearSelected,
     });
 
     saveAs(blob, `Libro_Ventas_CCF_${month}.xlsx`);
@@ -134,7 +144,6 @@ function CFFBookIVA() {
       .reduce((a, b) => a + b, 0);
   }, [creditos_by_month]);
 
-
   const calculateGravadaWithoutVAT = (gravada: number, total: number) => {
     if (gravada === total) {
       return parseFloat((gravada / 1.13).toFixed(2)); // Quitar IVA y redondear a 2 decimales
@@ -143,7 +152,9 @@ function CFFBookIVA() {
   };
   const totalGravadaSinIVA = useMemo(() => {
     return creditos_by_month
-      .map((cre) => calculateGravadaWithoutVAT(Number(cre.totalGravada), Number(cre.montoTotalOperacion)))
+      .map((cre) =>
+        calculateGravadaWithoutVAT(Number(cre.totalGravada), Number(cre.montoTotalOperacion))
+      )
       .reduce((a, b) => a + b, 0);
   }, [creditos_by_month]);
 
@@ -151,204 +162,6 @@ function CFFBookIVA() {
   const viewName = actions.find((v) => v.view.name == 'IVA de CCF');
   const actionView = viewName?.actions.name || [];
 
-
-  // const makePdf = () => {
-  //   const doc = new jsPDF({ orientation: "landscape" })
-  //   const margin_left = 5
-  //   const month = months.find((month) => month.value === monthSelected)?.name || ""
-  //   const header = (doc: jsPDF, margin: number) => {
-  //     doc.setFillColor("#edf2f4")
-  //     doc.setDrawColor(0, 0, 0)
-  //     const margin_top = margin - 10
-
-  //     doc.roundedRect(margin_left, margin_top, 10, 10, 0, 0, "FD")
-  //     doc.roundedRect(10 + margin_left, margin_top, 15, 10, 0, 0, "FD")
-  //     doc.roundedRect(25 + margin_left, margin_top, 35, 10, 0, 0, "FD")
-  //     doc.roundedRect(60 + margin_left, margin_top, 15, 10, 0, 0, "FD")
-  //     doc.roundedRect(75 + margin_left, margin_top, 45, 10, 0, 0, "FD")
-  //     doc.roundedRect(120 + margin_left, margin_top, 40, 5, 0, 0, "FD")
-  //     doc.roundedRect(120 + margin_left, margin_top + 5, 20, 5, 0, 0, "FD")
-  //     doc.roundedRect(140 + margin_left, margin_top + 5, 20, 5, 0, 0, "FD")
-  //     doc.roundedRect(160 + margin_left, margin_top, 25, 10, 0, 0, "FD")
-  //     doc.roundedRect(185 + margin_left, margin_top, 25, 10, 0, 0, "FD")
-  //     doc.roundedRect(210 + margin_left, margin_top, 25, 10, 0, 0, "FD")
-  //     doc.roundedRect(235 + margin_left, margin_top, 25, 10, 0, 0, "FD")
-  //     doc.roundedRect(260 + margin_left, margin_top, 25, 10, 0, 0, "FD")
-
-  //     doc.setFontSize(7)
-
-  //     const text1 = doc.splitTextToSize("No. Corr.", 5)
-  //     doc.text(text1, 7, margin_top + 5)
-  //     doc.text("Fecha", margin_left + 15, margin_top + 5)
-  //     doc.text("No. Documento", margin_left + 35, margin_top + 5)
-  //     doc.text("No. Reg.", margin_left + 63, margin_top + 5)
-  //     doc.text("Nombre del cliente", margin_left + 85, margin_top + 5)
-  //     doc.text("Ventas internas", margin_left + 130, margin_top + 3)
-  //     doc.text("Exentas", margin_left + 125, margin_top + 8)
-  //     doc.text("Gravadas", margin_left + 145, margin_top + 8)
-  //     doc.text("IVA Débito fiscal", margin_left + 165, margin_top + 5)
-  //     const text2 = doc.splitTextToSize("Venta a cuenta de terceros", 18)
-  //     doc.text(text2, margin_left + 197, margin_top + 4, { align: "center" })
-  //     const text3 = doc.splitTextToSize("IVA Débito Fiscal a cuenta de terceros", 20)
-  //     doc.text(text3, margin_left + 222, margin_top + 3, { align: "center" })
-  //     doc.text("IVA Percibido", margin_left + 240, margin_top + 5)
-  //     doc.text("Total", margin_left + 270, margin_top + 5)
-  //   }
-
-  //   const $exentas = creditos_by_month
-  //     .map((cm) => Number(cm.totalExenta) + Number(cm.totalNoSuj))
-  //     .reduce((a, b) => a + b, 0)
-  //   const $gravadas = creditos_by_month
-  //     .map((cm) => Number(cm.totalGravada))
-  //     .reduce((a, b) => a + b, 0)
-
-  //   const $iva13 = Number($gravadas * 0.13)
-
-  //   const $sumTotal = $exentas + $gravadas + $iva13
-
-  //   const finalData = [
-  //     "",
-  //     "",
-  //     "",
-  //     "",
-  //     "TOTAL",
-  //     formatCurrency(Number($exentas)),
-  //     formatCurrency(Number($gravadas)),
-  //     formatCurrency(Number($iva13)),
-  //     formatCurrency(0.0),
-  //     formatCurrency(0.0),
-  //     formatCurrency(0.0),
-  //     formatCurrency(Number($sumTotal))
-  //   ]
-
-  //   const formatedData = creditos_by_month.map((cre, index) => [
-  //     index + 1,
-  //     cre.fecEmi,
-  //     cre.codigoGeneracion,
-  //     cre.numeroControl,
-  //     cre.selloRecibido,
-  //     cre.customer.nrc !== '0' ? cre.customer.nrc : '',
-  //     cre.customer.nombre,
-  //     Number(cre.totalExenta),
-  //     Number(cre.totalGravada),
-  //     Number(cre.totalIva),
-  //     0, // Otros valores que quieras incluir
-  //     0,
-  //     0,
-  //     Number(cre.montoTotalOperacion),
-  //   ]);
-
-
-  //   autoTable(doc, {
-  //     startY: 45,
-  //     margin: { left: 5, right: 7, top: 45, bottom: 10 },
-  //     theme: "grid",
-  //     body: [
-  //       ...formatedData.map((row) =>
-  //         row.map((value, index) =>
-  //           index >= 5 && index <= 11 ? formatCurrency(Number(value)) : value
-  //         )
-  //       ),
-  //       finalData
-  //     ],
-  //     didDrawPage: (options) => {
-  //       header(doc, options.settings.startY)
-  //     },
-  //     styles: {
-  //       lineColor: "#000000",
-  //       fontSize: 7
-  //     },
-  //     columnStyles: {
-  //       0: { cellWidth: 10 },
-  //       1: { cellWidth: 15 },
-  //       2: { cellWidth: 35 },
-  //       3: { cellWidth: 15 },
-  //       4: { cellWidth: 45 },
-  //       5: { cellWidth: 20 },
-  //       6: { cellWidth: 20 },
-  //       7: { cellWidth: 25 },
-  //       8: { cellWidth: 25 },
-  //       9: { cellWidth: 25 },
-  //       10: { cellWidth: 25 },
-  //       11: { cellWidth: 25 }
-  //     }
-  //   })
-
-
-  //   let finalY_Other = (
-  //     doc as unknown as {
-  //       lastAutoTable: { finalY: number }
-  //     }
-  //   ).lastAutoTable.finalY
-
-  //   const pageCount = doc.internal.pages.length - 1
-  //   const total_heigth = doc.internal.pageSize.height
-
-  //   if (total_heigth - finalY_Other < 50) {
-  //     doc.addPage()
-  //     finalY_Other = 50 // Reiniciar la posición en la nueva página
-  //   }
-  //   doc.setFontSize(8)
-  //   doc.text(`Consumidores Finales:`, 10, finalY_Other + 15)
-  //   doc.text(`Contribuyentes:`, 10, finalY_Other + 20)
-  //   doc.text(`Totales:`, 10, finalY_Other + 25)
-
-  //   doc.text(`Ventas Exentas`, 70, finalY_Other + 10)
-  //   doc.text(`${formatCurrency(1290)}`, 70, finalY_Other + 15)
-  //   doc.text(`${formatCurrency($exentas)}`, 70, finalY_Other + 20)
-  //   doc.text(`${formatCurrency(1290)}`, 70, finalY_Other + 25)
-
-  //   doc.text(`Ventas Gravadas`, 110, finalY_Other + 10)
-  //   doc.text(`${formatCurrency(1290)}`, 110, finalY_Other + 15)
-  //   doc.text(`${formatCurrency($gravadas)}`, 110, finalY_Other + 20)
-  //   doc.text(`${formatCurrency(1290)}`, 110, finalY_Other + 25)
-
-  //   doc.text(`Importaciones`, 150, finalY_Other + 10)
-  //   doc.text(`${formatCurrency(1290)}`, 150, finalY_Other + 15)
-  //   doc.text(`${formatCurrency(0)}`, 150, finalY_Other + 20)
-  //   doc.text(`${formatCurrency(1290)}`, 150, finalY_Other + 25)
-
-  //   doc.text(`IVA`, 190, finalY_Other + 10)
-  //   doc.text(`${formatCurrency(1290)}`, 190, finalY_Other + 15)
-  //   doc.text(`${formatCurrency($iva13)}`, 190, finalY_Other + 20)
-  //   doc.text(`${formatCurrency(1290)}`, 190, finalY_Other + 25)
-
-  //   doc.text(`Percibido`, 230, finalY_Other + 10)
-  //   doc.text(`${formatCurrency(1290)}`, 230, finalY_Other + 15)
-  //   doc.text(`${formatCurrency(0)}`, 230, finalY_Other + 20)
-  //   doc.text(`${formatCurrency(1290)}`, 230, finalY_Other + 25)
-
-  //   doc.text(`Total`, 270, finalY_Other + 10)
-  //   doc.text(`${formatCurrency(1290)}`, 270, finalY_Other + 15)
-  //   doc.text(`${formatCurrency($sumTotal)}`, 270, finalY_Other + 20)
-  //   doc.text(`${formatCurrency(1290)}`, 270, finalY_Other + 25)
-
-  //   doc.line(70, finalY_Other + 22, 287, finalY_Other + 22)
-
-  //   doc.setFontSize(10)
-  //   doc.text(`Oscar Leopoldo Ramirez Garcia`, 10, finalY_Other + 40)
-  //   doc.setFont("helvetica", "bold")
-  //   doc.text(`Nombre contador o contribuyente`, 10, finalY_Other + 45)
-  //   doc.setFont("helvetica", "normal")
-
-  //   doc.text(`_________________________________`, 200, finalY_Other + 40)
-  //   doc.setFont("helvetica", "bold")
-  //   doc.text(`Firma contador o Contribuyente`, 200, finalY_Other + 45)
-  //   doc.setFont("helvetica", "normal")
-
-  //   for (let i = 1; i <= pageCount; i++) {
-  //     doc.setPage(i)
-  //     doc.setFontSize(10)
-  //     doc.text("Folio No. " + String(i), doc.internal.pageSize.width - 30, 5)
-  //     doc.text("REGISTRO No.269660-0", 10, 10, { align: "left" })
-  //     doc.text("ESTABLECIMIENTO: CS EQUIPOS Y SERVICIOS, S.A. DE C.V.", 90, 10, { align: "left" })
-  //     doc.text("LIBRO DE VENTAS A CONTRIBUYENTES", 150, 18, { align: "center" })
-  //     doc.text(`MES: ${month.toUpperCase()}`, 10, 29, { align: "left" })
-  //     doc.text(`A\u00D1O:  ${new Date().getFullYear()}`, 290, 29, { align: "right" })
-  //   }
-
-  //   doc.save("example.pdf")
-  // }
   return (
     <Layout title="IVA - CFF">
       <div className=" w-full h-full p-10 bg-gray-50 dark:bg-gray-900">
@@ -371,6 +184,27 @@ function CFFBookIVA() {
                 {months.map((month) => (
                   <SelectItem key={month.value} value={month.value}>
                     {month.name}
+                  </SelectItem>
+                ))}
+              </Select>
+            </div>
+            <div className="w-full">
+              <Select
+                selectedKeys={[`${yearSelected}`]}
+                onSelectionChange={(key) => {
+                  if (key) {
+                    setYearSelected(Number(new Set(key).values().next().value));
+                  }
+                }}
+                className="w-full"
+                classNames={{ label: 'font-semibold' }}
+                label="Año"
+                labelPlacement="outside"
+                variant="bordered"
+              >
+                {years.map((years) => (
+                  <SelectItem key={years.value} value={years.value}>
+                    {years.name}
                   </SelectItem>
                 ))}
               </Select>
@@ -500,7 +334,12 @@ function CFFBookIVA() {
                     {formatCurrency(totalGravada + factura_totals)}
                   </span> */}
                   <span className="border p-1">
-                    {formatCurrency(calculateGravadaWithoutVAT(totalGravadaSinIVA + factura_totals, total + factura_totals))}
+                    {formatCurrency(
+                      calculateGravadaWithoutVAT(
+                        totalGravadaSinIVA + factura_totals,
+                        total + factura_totals
+                      )
+                    )}
                   </span>
                   <span className="border p-1"></span>
                   <span className="border p-1">{formatCurrency(0)}</span>

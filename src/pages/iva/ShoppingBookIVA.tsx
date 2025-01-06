@@ -29,6 +29,12 @@ function ShoppingBookIVA() {
   const [typeOverlay, setTypeOverlay] = useState(0)
   const { user } = useAuthStore()
 
+  const currentYear = new Date().getFullYear();
+  const years = [
+    { value: currentYear, name: currentYear.toString() },
+    { value: currentYear - 1, name: (currentYear - 1).toString() }
+  ];
+  const [yearSelected, setYearSelected] = useState(currentYear);
 
   const [pdf, setPdf] = useState("")
   const { shopping_by_months, onGetShoppingByMonth, loading_shopping } = useShoppingStore()
@@ -36,10 +42,10 @@ function ShoppingBookIVA() {
   useEffect(() => {
     onGetShoppingByMonth(
       Number(user?.correlative?.branchId),
-      monthSelected <= 9 ? "0" + monthSelected : monthSelected.toString()
+      monthSelected <= 9 ? "0" + monthSelected : monthSelected.toString(), yearSelected
     )
-    getExcludedSubjectByMonth(Number(user?.correlative?.branchId), monthSelected)
-  }, [monthSelected])
+    getExcludedSubjectByMonth(Number(user?.correlative?.branchId), monthSelected, yearSelected)
+  }, [monthSelected, yearSelected])
 
 
   const formatData = useMemo(() => {
@@ -211,10 +217,10 @@ function ShoppingBookIVA() {
       doc.text(`${transmitter.nombreComercial}`, 90, 10, { align: "left" }) //nombre comercial
       doc.text("LIBRO DE COMPRAS", 150, 18, { align: "center" })
       doc.text(`MES: ${month.toUpperCase()}`, 10, 29, { align: "left" })
-      doc.text(`A\u00D1O:  ${new Date().getFullYear()}`, 290, 29, { align: "right" })
+      doc.text(`A\u00D1O:  ${yearSelected}`, 290, 29, { align: "right" })
     }
     if (type === "download") {
-      doc.save(`LIBRO_COMPRAS_${month}_${new Date().getFullYear()}.pdf`)
+      doc.save(`LIBRO_COMPRAS_${month}_${yearSelected}.pdf`)
       return undefined
     } else {
       return doc.output("blob")
@@ -298,7 +304,7 @@ function ShoppingBookIVA() {
 
     const month = months.find((month) => month.value === monthSelected)?.name || ""
 
-    const blob = await generate_shopping_excel(formatData, month, transmitter)
+    const blob = await generate_shopping_excel(formatData, month, transmitter, yearSelected)
 
     saveAs(blob, `Libro_Compras_${month}.xlsx`)
   }
@@ -333,6 +339,25 @@ function ShoppingBookIVA() {
                 {months.map((month) => (
                   <SelectItem key={month.value} value={month.value}>
                     {month.name}
+                  </SelectItem>
+                ))}
+              </Select>
+              <Select
+                selectedKeys={[`${yearSelected}`]}
+                onSelectionChange={(key) => {
+                  if (key) {
+                    setYearSelected(Number(new Set(key).values().next().value))
+                  }
+                }}
+                className="w-44"
+                classNames={{ label: "font-semibold" }}
+                label="Año"
+                labelPlacement="outside"
+                variant="bordered"
+              >
+                {years.map((years) => (
+                  <SelectItem key={years.value} value={years.value}>
+                    {years.name}
                   </SelectItem>
                 ))}
               </Select>

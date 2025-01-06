@@ -27,11 +27,18 @@ function FEBookIVA() {
     getBranchesList();
   }, []);
 
+  const currentYear = new Date().getFullYear();
+  const years = [
+    { value: currentYear, name: currentYear.toString() },
+    { value: currentYear - 1, name: (currentYear - 1).toString() },
+  ];
+  const [yearSelected, setYearSelected] = useState(currentYear);
+
   const { facturas_by_month, loading_facturas, getFeMonth } = useSalesStore();
 
   useEffect(() => {
-    getFeMonth(branchId, monthSelected);
-  }, [monthSelected, branchId]);
+    getFeMonth(branchId, monthSelected, yearSelected);
+  }, [monthSelected, branchId, yearSelected]);
 
   const styles = useGlobalStyles();
 
@@ -57,7 +64,7 @@ function FEBookIVA() {
         name: formatName(voucher.typeVoucher) + ' ' + `(${voucher.code})`,
         items: voucher.sales.map((venta) => {
           return [
-            formatDateMMDDYYYY(venta.day, monthSelected),
+            formatDateMMDDYYYY(venta.day, monthSelected, yearSelected),
             venta.firstCorrelativ!,
             venta.lastCorrelative!,
             venta.firstNumeroControl!,
@@ -80,6 +87,7 @@ function FEBookIVA() {
       transmitter,
       month,
       items: vouchers,
+      year: yearSelected,
     });
 
     saveAs(blob, `Libro_Consumidor_Final_${month}.xlsx`);
@@ -89,165 +97,6 @@ function FEBookIVA() {
 
   const actionView = viewName?.actions.name || [];
 
-
-
-  // const handleExportPDF = () => {
-  //   const doc = new jsPDF({ orientation: "landscape" })
-  //   const margin_left = 5
-  //   const month = months.find((month) => month.value === monthSelected)?.name || ""
-  //   const header = (doc: jsPDF, margin: number) => {
-  //     doc.setFillColor("#edf2f4")
-  //     doc.setDrawColor(0, 0, 0)
-  //     const margin_top = margin - 15
-
-  //     doc.roundedRect(margin_left, margin_top, 30, 15, 0, 0, "FD")
-  //     doc.roundedRect(30 + margin_left, margin_top, 60, 5, 0, 0, "FD")
-  //     doc.roundedRect(30 + margin_left, margin_top + 5, 30, 10, 0, 0, "FD")
-  //     doc.roundedRect(60 + margin_left, margin_top + 5, 30, 10, 0, 0, "FD")
-  //     doc.roundedRect(90 + margin_left, margin_top, 60, 5, 0, 0, "FD")
-  //     doc.roundedRect(90 + margin_left, margin_top + 5, 30, 10, 0, 0, "FD")
-  //     doc.roundedRect(120 + margin_left, margin_top + 5, 30, 10, 0, 0, "FD")
-  //     doc.roundedRect(150 + margin_left, margin_top, 75, 5, 0, 0, "FD")
-  //     doc.roundedRect(150 + margin_left, margin_top + 5, 25, 10, 0, 0, "FD")
-  //     doc.roundedRect(175 + margin_left, margin_top + 5, 50, 5, 0, 0, "FD")
-  //     doc.roundedRect(175 + margin_left, margin_top + 10, 25, 5, 0, 0, "FD")
-  //     doc.roundedRect(200 + margin_left, margin_top + 10, 25, 5, 0, 0, "FD")
-  //     doc.roundedRect(225 + margin_left, margin_top, 30, 15, 0, 0, "FD")
-  //     doc.roundedRect(255 + margin_left, margin_top, 30, 15, 0, 0, "FD")
-
-  //     doc.setFontSize(7)
-
-  //     doc.text("FECHA EMISIÓN", 10, margin_top + 8)
-  //     doc.text("FACTURAS", 55, margin_top + 4)
-
-  //     const text = doc.splitTextToSize("CÓDIGO GENERACIÓN INICIAL", 27)
-  //     doc.text(text, 50, margin_top + 10, { align: "center" })
-
-  //     const codFinal = doc.splitTextToSize("CÓDIGO GENERACIÓN FINAL", 27)
-  //     doc.text(codFinal, 80, margin_top + 10, { align: "center" })
-
-  //     const controlSt = doc.splitTextToSize("NUMERO DE CONTROL DEL", 27)
-  //     doc.text(controlSt, 110, margin_top + 10, { align: "center" })
-
-  //     const controlEnd = doc.splitTextToSize("NUMERO DE CONTROL AL", 27)
-  //     doc.text(controlEnd, 140, margin_top + 10, { align: "center" })
-
-  //     doc.text("EXENTAS", 167.5, margin_top + 11, { align: "center" })
-  //     doc.text("VENTAS", 190, margin_top + 3.5)
-  //     doc.text("GRAVADAS", 200, margin_top + 8.5)
-  //     doc.text("LOCALES", 187, margin_top + 13.5)
-  //     doc.text("EXPORTACIONES", 207, margin_top + 13.5)
-
-  //     const vTotal = doc.splitTextToSize("VENTAS TOTALES", 27)
-  //     doc.text(vTotal, 245, margin_top + 8.5, { align: "center" })
-
-  //     const vTerceros = doc.splitTextToSize("VENTAS POR CUENTA DE TERCEROS", 27)
-  //     doc.text(vTerceros, 275, margin_top + 8.5, { align: "center" })
-  //   }
-
-  //   const data = facturas_by_month.map((factura) => {
-  //     return {
-  //       fecha: formatDateMMDDYYYY(factura.day, monthSelected),
-  //       codGenI: factura.firstCorrelative!,
-  //       codGenF: factura.lastCorrelative!,
-  //       numeroI: factura.firstNumeroControl!.replaceAll("-", ""),
-  //       numeroF: factura.lastNumeroControl!.replaceAll("-", ""),
-  //       exento: 0,
-  //       locales: Number(factura.totalSales),
-  //       exp: 0,
-  //       total: Number(factura.totalSales),
-  //       tercero: 0
-  //     }
-  //   })
-
-  //   const ventas_locales = data.map((factura) => factura.total).reduce((a, b) => a + b, 0)
-
-  //   const exentas = data.map((factura) => factura.exento).reduce((a, b) => a + b, 0)
-
-  //   const total = ventas_locales + exentas
-
-  //   autoTable(doc, {
-  //     startY: 50,
-  //     margin: { left: 5, right: 7, top: 50, bottom: 10 },
-  //     theme: "grid",
-  //     showHead: false,
-  //     body: [
-  //       ...data.map((dt) => ({
-  //         ...dt,
-  //         exento: formatCurrency(dt.exento),
-  //         locales: formatCurrency(dt.locales),
-  //         exp: formatCurrency(dt.exp),
-  //         total: formatCurrency(dt.total),
-  //         tercero: formatCurrency(dt.tercero)
-  //       }))
-  //     ],
-  //     styles: {
-  //       lineColor: "#000000",
-  //       fontSize: 7
-  //     },
-  //     columnStyles: {
-  //       0: { cellWidth: 30 },
-  //       1: { cellWidth: 30 },
-  //       2: { cellWidth: 30 },
-  //       3: { cellWidth: 30 },
-  //       4: { cellWidth: 30 },
-  //       5: { cellWidth: 25 },
-  //       6: { cellWidth: 25 },
-  //       7: { cellWidth: 25 },
-  //       8: { cellWidth: 30 }
-  //     },
-  //     didDrawPage: (options) => {
-  //       header(doc, options.settings.startY)
-  //     }
-  //   })
-
-  //   // const pageSizeHeight = doc.internal.pageSize.height
-
-  //   let finalY_Other = (
-  //     doc as unknown as {
-  //       lastAutoTable: { finalY: number }
-  //     }
-  //   ).lastAutoTable.finalY
-
-  //   const pageCount = doc.internal.pages.length - 1
-  //   const total_heigth = doc.internal.pageSize.height
-
-  //   if (total_heigth - finalY_Other < 50) {
-  //     doc.addPage()
-  //     finalY_Other = 50 // Reiniciar la posición en la nueva página
-  //   }
-  //   doc.setFontSize(10)
-  //   doc.text(`VENTAS LOCALES GRAVADAS:   ${formatCurrency(ventas_locales)}`, 10, finalY_Other + 10)
-  //   doc.text(`/1.13 = VENTAS NETAS GRAVADAS`, 175, finalY_Other + 10)
-  //   doc.text(`${formatCurrency(total / 1.13)}`, 260, finalY_Other + 10)
-  //   doc.text(`POR 13% IMPUESTO (DÉBITO FISCAL)`, 175, finalY_Other + 18)
-  //   doc.text(`${formatCurrency((total / 1.13) * 0.13)}`, 260, finalY_Other + 18)
-  //   doc.text(`TOTAL VENTAS GRAVADAS:`, 175, finalY_Other + 26)
-  //   doc.text(`_______________`, 260, finalY_Other + 20)
-  //   doc.text(`${formatCurrency(total)}`, 260, finalY_Other + 26)
-
-  //   doc.text(`Oscar Leopoldo Ramirez Garcia`, 10, finalY_Other + 35)
-  //   doc.setFont("helvetica", "bold")
-  //   doc.text(`Nombre contador o contribuyente`, 10, finalY_Other + 40)
-  //   doc.setFont("helvetica", "normal")
-
-  //   doc.text(`_________________________________`, 200, finalY_Other + 35)
-  //   doc.setFont("helvetica", "bold")
-  //   doc.text(`Firma contador o Contribuyente`, 200, finalY_Other + 40)
-  //   doc.setFont("helvetica", "normal")
-  //   for (let i = 1; i <= pageCount; i++) {
-  //     doc.setPage(i)
-  //     doc.setFontSize(10)
-  //     doc.text("Folio No. " + String(i), doc.internal.pageSize.width - 30, 5)
-  //     doc.text("REGISTRO No.269660-0", 10, 10, { align: "left" })
-  //     doc.text("ESTABLECIMIENTO: CS EQUIPOS Y SERVICIOS, S.A. DE C.V.", 90, 10, { align: "left" })
-  //     doc.text("LIBRO DE VENTAS CONSUMIDOR FINAL", 150, 18, { align: "center" })
-  //     doc.text(`MES: ${month.toUpperCase()}`, 10, 29, { align: "left" })
-  //     doc.text(`A\u00D1O:  ${new Date().getFullYear()}`, 290, 29, { align: "right" })
-  //   }
-
-  //   doc.save(`Libro_Consumidor_Final_${month}.pdf`)
-  // }
   return (
     <Layout title="IVA - FE">
       <div className=" w-full h-full p-10 bg-gray-50 dark:bg-gray-900">
@@ -270,6 +119,27 @@ function FEBookIVA() {
                 {months.map((month) => (
                   <SelectItem key={month.value} value={month.value}>
                     {month.name}
+                  </SelectItem>
+                ))}
+              </Select>
+            </div>
+            <div className="w-full">
+              <Select
+                selectedKeys={[`${yearSelected}`]}
+                onSelectionChange={(key) => {
+                  if (key) {
+                    setYearSelected(Number(new Set(key).values().next().value));
+                  }
+                }}
+                className="w-full"
+                classNames={{ label: 'font-semibold' }}
+                label="Año"
+                labelPlacement="outside"
+                variant="bordered"
+              >
+                {years.map((years) => (
+                  <SelectItem key={years.value} value={years.value}>
+                    {years.name}
                   </SelectItem>
                 ))}
               </Select>
@@ -368,7 +238,7 @@ function FEBookIVA() {
                               {facturas.sales.map((factura, index) => (
                                 <tr key={index} className="border-b border-slate-200">
                                   <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                    {formatDateMMDDYYYY(factura.day, monthSelected)}
+                                    {formatDateMMDDYYYY(factura.day, monthSelected, yearSelected)}
                                   </td>
                                   <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
                                     {factura.firstCorrelativ!}
