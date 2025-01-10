@@ -855,26 +855,29 @@ export const CodCuentaSelect = (props: CodCuentaProps) => {
   const { account_catalog_pagination, loading } = useAccountCatalogsStore();
   const LIMIT = 20;
 
-  const [name, setName] = useState(props.items[props.index].codCuenta);
+  // Inicializa solo con el código
+  const initialCode = props.items[props.index].codCuenta || '';
+  const initialDesc = props.items[props.index].descCuenta || '';
+  const [name, setName] = useState(initialCode ? `${initialCode} - ${initialDesc}` : '');
 
   const itemsPag = useMemo(() => {
     const sortedItems = account_catalog_pagination.accountCatalogs.sort((a, b) =>
       a.code.localeCompare(b.code)
     );
 
-    if (name.trim() !== '') {
+    if (name.trim() !== '' && !name.includes(' - ')) {
+      // Si se está escribiendo algo que no incluye " - ", filtra por código
       return sortedItems
-        .filter((item) => item.code.startsWith(name)) // No necesitas toLowerCase si son números.
+        .filter((item) => item.code.startsWith(name))
         .slice(0, LIMIT);
     }
 
-    return sortedItems.slice(0, LIMIT);
+    return sortedItems.slice(0, LIMIT); // Devuelve la lista completa si no hay búsqueda
   }, [account_catalog_pagination, name]);
 
   const onChange = (key: string) => {
     if (key) {
       const items = [...props.items];
-
       const value = String(key);
 
       const itemFind = account_catalog_pagination.accountCatalogs.find(
@@ -896,8 +899,15 @@ export const CodCuentaSelect = (props: CodCuentaProps) => {
         item.codCuenta = itemFind.code;
         item.descCuenta = itemFind.name;
         props.setItems([...items]);
+
+        // Actualiza el input con "code - name"
+        setName(`${itemFind.code} - ${itemFind.name}`);
       }
     }
+  };
+
+  const handleInputChange = (e: string) => {
+    setName(e); // Actualiza el estado solo cuando el usuario escribe
   };
 
   return (
@@ -912,14 +922,14 @@ export const CodCuentaSelect = (props: CodCuentaProps) => {
       }}
       aria-describedby="Cuenta"
       aria-labelledby="Cuenta"
-      onInputChange={(e) => setName(e)}
+      onInputChange={handleInputChange} // Usa una función dedicada para cambios en el input
       startContent={
         <Button isIconOnly size="sm" onPress={() => props.openCatalogModal(props.index)}>
           <Search />
         </Button>
       }
       isLoading={loading}
-      selectedKey={props.items[props.index].codCuenta}
+      selectedKey={props.items[props.index].codCuenta} // Selecciona usando el código
       onSelectionChange={(key) => {
         if (key) {
           onChange(String(key));
@@ -927,13 +937,20 @@ export const CodCuentaSelect = (props: CodCuentaProps) => {
       }}
     >
       {itemsPag.map((account) => (
-        <AutocompleteItem key={account.code} value={account.code} textValue={account.code}>
-          {account.code}
+        <AutocompleteItem
+          key={account.code}
+          value={account.code} // El valor seleccionado será el código
+          textValue={`${account.code} - ${account.name}`} // Muestra "code - name" en el input
+        >
+          {account.code} - {account.name} {/* Muestra ambos en las opciones */}
         </AutocompleteItem>
       ))}
     </Autocomplete>
   );
 };
+
+
+
 
 interface PropsItems {
   items: Items[];
