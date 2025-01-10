@@ -35,12 +35,14 @@ import * as yup from 'yup';
 import useGlobalStyles from '../global/global.styles';
 
 function EditShopping() {
-  const { id } = useParams<{ id: string }>();
+  const { id, controlNumber } = useParams<{ id: string; controlNumber: string }>();
   const { shopping_details, getShoppingDetails } = useShoppingStore();
   const [tipoDte, setTipoDte] = useState('');
   const styles = useGlobalStyles();
   const { branch_list, getBranchesList } = useBranchesStore();
   const [includePerception, setIncludePerception] = useState(false);
+
+  const isDisabled = controlNumber?.toUpperCase().startsWith('DTE');
 
   useEffect(() => {
     getShoppingDetails(Number(id));
@@ -293,6 +295,7 @@ function EditShopping() {
                   placeholder="Selecciona el tipo de documento"
                   selectedKeys={[formik.values.tipoDte]}
                   classNames={{ label: 'font-semibold' }}
+                  isDisabled={isDisabled}
                   onSelectionChange={(key) => {
                     if (key) {
                       const fnd = filteredTipoDoc.find((doc) => doc.codigo === key.currentKey);
@@ -390,6 +393,7 @@ function EditShopping() {
                   onBlur={formik.handleBlur('typeSale')}
                   isInvalid={!!formik.touched.typeSale && !!formik.errors.typeSale}
                   errorMessage={formik.errors.typeSale}
+                  isDisabled={isDisabled}
                 >
                   <SelectItem key={'0'} value="Interna">
                     Interna
@@ -414,6 +418,7 @@ function EditShopping() {
                   labelPlacement="outside"
                   isInvalid={!!formik.touched.controlNumber && !!formik.errors.controlNumber}
                   errorMessage={formik.errors.controlNumber}
+                  isDisabled={isDisabled}
                 />
                 <Select
                   onBlur={formik.handleBlur('classDocumentCode')}
@@ -440,6 +445,7 @@ function EditShopping() {
                   labelPlacement="outside"
                   placeholder="Selecciona una opción"
                   label="Clase del documento"
+                  isDisabled={isDisabled}
                   isInvalid={
                     !!formik.touched.classDocumentCode && !!formik.errors.classDocumentCode
                   }
@@ -475,6 +481,7 @@ function EditShopping() {
                   labelPlacement="outside"
                   placeholder="Selecciona una opción"
                   label="Tipo de operación"
+                  isDisabled={isDisabled}
                   isInvalid={
                     !!formik.touched.operationTypeCode && !!formik.errors.operationTypeCode
                   }
@@ -493,6 +500,7 @@ function EditShopping() {
                   labelPlacement="outside"
                   placeholder="Selecciona una opción"
                   label="Clasificación"
+                  isDisabled={isDisabled}
                   onSelectionChange={(key) => {
                     if (key) {
                       const value = key.currentKey;
@@ -528,6 +536,7 @@ function EditShopping() {
                   labelPlacement="outside"
                   placeholder="Selecciona una opción"
                   label="Sector"
+                  isDisabled={isDisabled}
                   onSelectionChange={(key) => {
                     if (key) {
                       const value = key.currentKey;
@@ -561,6 +570,7 @@ function EditShopping() {
                   labelPlacement="outside"
                   placeholder="Selecciona una opción"
                   label="Tipo de costo/gasto"
+                  isDisabled={isDisabled}
                   onSelectionChange={(key) => {
                     if (key) {
                       const value = key.currentKey;
@@ -600,6 +610,7 @@ function EditShopping() {
                   labelPlacement="outside"
                   isInvalid={!!formik.touched.fecEmi && !!formik.errors.fecEmi}
                   errorMessage={formik.errors.fecEmi}
+                  isDisabled={isDisabled}
                 />
                 <Input
                   classNames={{ label: 'font-semibold' }}
@@ -612,6 +623,7 @@ function EditShopping() {
                   labelPlacement="outside"
                   isInvalid={!!formik.touched.declarationDate && !!formik.errors.declarationDate}
                   errorMessage={formik.errors.declarationDate}
+                  isDisabled={isDisabled}
                 />
                 <div className="flex  items-end">
                   <Checkbox
@@ -620,6 +632,7 @@ function EditShopping() {
                     checked={includePerception}
                     onValueChange={(val) => setIncludePerception(val)}
                     size="lg"
+                    isDisabled={isDisabled}
                   >
                     ¿Incluye percepción?
                   </Checkbox>
@@ -641,6 +654,7 @@ function EditShopping() {
                       startContent={<span className="text-red-600 font-bold text-lg">$</span>}
                       value={afecta}
                       onChange={({ currentTarget }) => handleChangeAfecta(currentTarget.value)}
+                      disabled={isDisabled}
                     />
                   </div>
                   <div>
@@ -656,6 +670,7 @@ function EditShopping() {
                       startContent={<span className="text-red-600 font-bold text-lg">$</span>}
                       value={exenta}
                       onChange={({ currentTarget }) => handleChangeExenta(currentTarget.value)}
+                      disabled={isDisabled}
                     />
                   </div>
                   <div>
@@ -671,6 +686,7 @@ function EditShopping() {
                       }}
                       startContent={<span className="text-red-600 font-bold text-lg">$</span>}
                       value={totalIva}
+                      disabled={isDisabled}
                     />
                   </div>
                   <div>
@@ -685,6 +701,7 @@ function EditShopping() {
                       readOnly
                       value={$1perception.toFixed(2)}
                       step={0.01}
+                      disabled={isDisabled}
                     />
                   </div>
                   <div>
@@ -698,6 +715,7 @@ function EditShopping() {
                       type="number"
                       value={afecta}
                       step={0.01}
+                      disabled={isDisabled}
                     />
                   </div>
                   <div>
@@ -714,6 +732,7 @@ function EditShopping() {
                       value={total}
                       readOnly
                       onChange={({ currentTarget }) => handleChangeTotal(currentTarget.value)}
+                      disabled={isDisabled}
                     />
                   </div>
                 </div>

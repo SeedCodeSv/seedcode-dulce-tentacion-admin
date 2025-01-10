@@ -86,7 +86,7 @@ export const generate_shopping_excel = async (
     { key: "N", width: 10 }
   ]
 
-  const applyAlignmentAndFont = (cell: any, alignment: any, font: any) => {
+  const applyAlignmentAndFont = (cell, alignment, font) => {
     worksheet.getCell(cell).alignment = alignment
     worksheet.getCell(cell).font = font
   }
