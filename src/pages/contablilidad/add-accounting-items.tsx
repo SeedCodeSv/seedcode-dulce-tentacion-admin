@@ -247,42 +247,47 @@ function AddAccountingItems() {
         formikHelpers.setSubmitting(false);
         return;
       }
-
+  
       verify_item_count(values.code.slice(0, -2)).then((res) => {
         if (res.data.countItems > 0) {
           formikHelpers.setSubmitting(false);
           toast.error('Ya existen partidas contables con esta cuenta');
           return;
         } else {
+          const payload: AccountCatalogPayload = {
+            ...values,
+          };
+  
           try {
-            const payload: AccountCatalogPayload = {
-              ...values,
-            };
             axios
               .post(API_URL + '/account-catalogs', payload)
-              .then(async () => {
-                await axios.patch(
-                  API_URL + '/account-catalogs/update-sub-account/' + values.code.slice(0, -2)
-                );
+              .then(() => {
                 toast.success('Operación realizada con éxito');
                 formikHelpers.setSubmitting(false);
                 formikHelpers.resetForm();
                 getAccountCatalogs('', '');
                 addAccountModal.onClose();
-                // navigate('/accountCatalogs');
               })
-              .catch(() => {
-                toast.error('Error al guardar la cuenta');
+              .catch((error) => {
+                if (
+                  error.response &&
+                  error.response.data.message.includes('AccountCatalog with code')
+                ) {
+                  toast.warning('Ya existe una cuenta con este código');
+                } else {
+                  toast.error('Error al guardar la cuenta');
+                }
                 formikHelpers.setSubmitting(false);
               });
           } catch (error) {
-            toast.error('Error al guardar la cuenta');
+            toast.error('Error inesperado al guardar la cuenta');
             formikHelpers.setSubmitting(false);
           }
         }
       });
     },
   });
+  
 
   return (
     <Layout title="Agregar Partida Contable">
