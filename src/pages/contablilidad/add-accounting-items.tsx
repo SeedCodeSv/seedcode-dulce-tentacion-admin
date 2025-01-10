@@ -247,7 +247,7 @@ function AddAccountingItems() {
         formikHelpers.setSubmitting(false);
         return;
       }
-  
+
       verify_item_count(values.code.slice(0, -2)).then((res) => {
         if (res.data.countItems > 0) {
           formikHelpers.setSubmitting(false);
@@ -257,7 +257,7 @@ function AddAccountingItems() {
           const payload: AccountCatalogPayload = {
             ...values,
           };
-  
+
           try {
             axios
               .post(API_URL + '/account-catalogs', payload)
@@ -287,7 +287,6 @@ function AddAccountingItems() {
       });
     },
   });
-  
 
   return (
     <Layout title="Agregar Partida Contable">
@@ -344,14 +343,14 @@ function AddAccountingItems() {
             <div
               className={classNames(
                 'flex items-center py-2 gap-5',
-                selectedIndex !== null && items[selectedIndex].codCuenta !== ''
+                selectedIndex !== null && items[selectedIndex]?.codCuenta !== ''
                   ? 'justify-between'
                   : 'justify-end'
               )}
             >
-              {selectedIndex !== null && items[selectedIndex].codCuenta !== '' && (
+              {selectedIndex !== null && items[selectedIndex]?.codCuenta !== '' && (
                 <div className="bg-red-100 px-10 py-2 border text-red-600 font-semibold text-sm  border-red-500 rounded">
-                  {items[selectedIndex].codCuenta} - {items[selectedIndex].descCuenta}
+                  {items[selectedIndex]?.codCuenta} - {items[selectedIndex]?.descCuenta}
                 </div>
               )}
               <div className="flex justify-end gap-10">
@@ -571,7 +570,7 @@ function AddAccountingItems() {
                         variant="bordered"
                         classNames={{ base: 'font-semibold' }}
                         labelPlacement="outside"
-                        value={$debe.toString()}
+                        value={$debe.toFixed(2)}
                         readOnly
                       />
                     </td>
@@ -581,7 +580,7 @@ function AddAccountingItems() {
                         variant="bordered"
                         classNames={{ base: 'font-semibold' }}
                         labelPlacement="outside"
-                        value={$haber.toString()}
+                        value={$haber.toFixed(2)}
                         readOnly
                       />
                     </td>
@@ -600,7 +599,7 @@ function AddAccountingItems() {
                         variant="bordered"
                         classNames={{ base: 'font-semibold' }}
                         labelPlacement="outside"
-                        value={$total.toString()}
+                        value={$total.toFixed(2)}
                         readOnly
                       />
                     </td>
@@ -872,9 +871,7 @@ export const CodCuentaSelect = (props: CodCuentaProps) => {
 
     if (name.trim() !== '' && !name.includes(' - ')) {
       // Si se está escribiendo algo que no incluye " - ", filtra por código
-      return sortedItems
-        .filter((item) => item.code.startsWith(name))
-        .slice(0, LIMIT);
+      return sortedItems.filter((item) => item.code.startsWith(name)).slice(0, LIMIT);
     }
 
     return sortedItems.slice(0, LIMIT); // Devuelve la lista completa si no hay búsqueda
@@ -953,9 +950,6 @@ export const CodCuentaSelect = (props: CodCuentaProps) => {
     </Autocomplete>
   );
 };
-
-
-
 
 interface PropsItems {
   items: Items[];
