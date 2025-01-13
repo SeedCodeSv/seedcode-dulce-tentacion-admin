@@ -86,7 +86,7 @@ export const generate_shopping_excel = async (
     { key: "N", width: 10 }
   ]
 
-  const applyAlignmentAndFont = (cell: any, alignment: any, font: any) => {
+  const applyAlignmentAndFont = (cell: string, alignment: ExcelJS.Alignment, font: ExcelJS.Font) => {
     worksheet.getCell(cell).alignment = alignment
     worksheet.getCell(cell).font = font
   }
@@ -114,7 +114,7 @@ export const generate_shopping_excel = async (
     "J7",
     "K7"
   ]
-  headersCells.forEach((cell) => applyAlignmentAndFont(cell, alignmentCenter, fontSize8))
+  headersCells.forEach((cell) => applyAlignmentAndFont(cell, alignmentCenter as ExcelJS.Alignment, fontSize8 as ExcelJS.Font))
 
   worksheet.getRow(6).height = 20
 

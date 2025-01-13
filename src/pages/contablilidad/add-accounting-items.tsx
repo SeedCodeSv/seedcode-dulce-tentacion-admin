@@ -141,7 +141,7 @@ function AddAccountingItems() {
   }, [items]);
 
   const $total = useMemo(() => {
-    return $debe - $haber;
+    return Number($debe.toFixed(2)) - Number($haber.toFixed(2));
   }, [$debe, $haber]);
 
   const { addAddItem } = useAccountingItemsStore();
@@ -196,7 +196,7 @@ function AddAccountingItems() {
         if (res) {
           toast.success('La partida contable ha sido creada exitosamente');
           setLoading(false);
-          navigate('/accounting-items');
+          window.location.reload();
         } else {
           toast.error('Error al crear la partida contable');
           setLoading(false);

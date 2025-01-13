@@ -7,15 +7,15 @@ import {
   get_details,
   update_item,
 } from '@/services/accounting-items.service';
-import { formatDate } from '@/utils/dates';
+import { get_accounting_item_search } from '@/storage/localStorage';
 
 export const useAccountingItemsStore = create<AccountingItemsServiceStore>((set, get) => ({
   search_item: {
     is_first_time: true,
-    page: 1,
-    limit: 10,
-    startDate: formatDate(),
-    endDate: formatDate(),
+    page: get_accounting_item_search().page,
+    limit: get_accounting_item_search().limit,
+    startDate: get_accounting_item_search().startDate,
+    endDate: get_accounting_item_search().endDate,
   },
   accounting_items: [],
   loading: false,
@@ -61,6 +61,7 @@ export const useAccountingItemsStore = create<AccountingItemsServiceStore>((set,
       loading: true,
       search_item: { page, limit, startDate, endDate, is_first_time: true },
     }));
+    localStorage.setItem('accounting_items', JSON.stringify({ page, limit, startDate, endDate }));
     return get_accounting_items(page, limit, startDate, endDate)
       .then((res) => {
         if (res.data.items.length > 0) {

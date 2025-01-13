@@ -3,6 +3,7 @@ import { User, UserLogin } from '../types/auth.types';
 import { RoleViewAction } from '../types/actions_rol.types';
 import { decryptData, encryptData } from '../plugins/crypto';
 import { ITransmitter } from '@/types/transmitter.types';
+import { formatDate } from '@/utils/dates';
 export const set_token = (token: string) => {
   localStorage.setItem('_NTE', token);
 };
@@ -92,7 +93,7 @@ export const delete_branch_id = () => {
   return localStorage.removeItem('branch_id');
 };
 
-export const  delete_RVA = () => {
+export const delete_RVA = () => {
   return localStorage.removeItem('_RVA');
 };
 
@@ -124,12 +125,32 @@ export const get_return_action = (): RoleViewAction | undefined => {
 
 export const save_transmitter = (transmitter: ITransmitter) => {
   return localStorage.setItem('$TOP', encryptData(transmitter));
-}
+};
 
 export const get_transmitter_info = () => {
-  const transmitter = localStorage.getItem('$TOP')
-  if(transmitter){
-    return decryptData(transmitter) as ITransmitter
+  const transmitter = localStorage.getItem('$TOP');
+  if (transmitter) {
+    return decryptData(transmitter) as ITransmitter;
   }
-  return undefined
+  return undefined;
+};
+
+interface SearchItem {
+  page: number;
+  limit: number;
+  startDate: string;
+  endDate: string;
 }
+
+export const get_accounting_item_search = () => {
+  const item = localStorage.getItem('accounting_items');
+  if (item) {
+    return JSON.parse(item) as SearchItem;
+  }
+  return {
+    page: 1,
+    limit: 10,
+    startDate: formatDate(),
+    endDate: formatDate(),
+  }
+};
