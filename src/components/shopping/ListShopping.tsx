@@ -6,6 +6,8 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
+  Select,
+  SelectItem,
 } from '@nextui-org/react';
 import { ChevronLeft, ChevronRight, Filter, Pen, SearchIcon, Trash } from 'lucide-react';
 import NO_DATA from '@/assets/svg/no_data.svg';
@@ -23,7 +25,7 @@ import { global_styles } from '@/styles/global.styles';
 import BottomDrawer from '../global/BottomDrawer';
 import { ThemeContext } from '@/hooks/useTheme';
 import axios from 'axios';
-import { API_URL } from '@/utils/constants';
+import { API_URL, limit_options } from '@/utils/constants';
 import { toast } from 'sonner';
 
 function ShoppingPage({ actions }: ArrayAction) {
@@ -37,6 +39,7 @@ function ShoppingPage({ actions }: ArrayAction) {
   const styles = useGlobalStyles();
   const [dateInitial, setDateInitial] = useState(search_params.startDate);
   const [dateEnd, setDateEnd] = useState(search_params.endDate);
+  const [limit, setLimit] = useState(5);
 
   const { theme } = useContext(ThemeContext);
   const [openVaul, setOpenVaul] = useState(false);
@@ -47,19 +50,19 @@ function ShoppingPage({ actions }: ArrayAction) {
     getPaginatedShopping(
       user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
       1,
-      10,
+      limit,
       dateInitial,
       dateEnd,
       branchId
     );
     getBranchesList();
-  }, []);
+  }, [limit]);
 
   const searchDailyReport = () => {
     getPaginatedShopping(
       user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
       1,
-      10,
+      limit,
       dateInitial,
       dateEnd,
       branchId
@@ -93,7 +96,7 @@ function ShoppingPage({ actions }: ArrayAction) {
         getPaginatedShopping(
           user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
           1,
-          10,
+          limit,
           dateInitial,
           dateEnd,
           branchId
@@ -157,6 +160,25 @@ function ShoppingPage({ actions }: ArrayAction) {
                       label: 'text-sm font-semibold',
                     }}
                   />
+                  <Select
+                    className="w-44 dark:text-white border border-white rounded-xl"
+                    variant="bordered"
+                    labelPlacement="outside"
+                    classNames={{
+                      label: 'font-semibold',
+                    }}
+                    defaultSelectedKeys={['5']}
+                    value={limit}
+                    onChange={(e) => {
+                      setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
+                    }}
+                  >
+                    {limit_options.map((option) => (
+                      <SelectItem className="w-full dark:text-white" key={option} value={option}>
+                        {option}
+                      </SelectItem>
+                    ))}
+                  </Select>
                   <div className="w-full">
                     <p className="text-sm font-semibold dark:text-white">Sucursal</p>
                     <Autocomplete
@@ -205,7 +227,7 @@ function ShoppingPage({ actions }: ArrayAction) {
               )}
             </div>
           </div>
-          <div className="grid grid-cols-4 m-4 gap-5 px-2">
+          <div className="grid grid-cols-5 m-4 gap-5 px-2">
             <Input
               className="dark:text-white border border-white rounded-xl hidden md:flex"
               onChange={(e) => {
@@ -236,32 +258,42 @@ function ShoppingPage({ actions }: ArrayAction) {
                 label: 'text-sm font-semibold',
               }}
             />
-
-            <div className="w-full ">
-              <p className="text-sm font-semibold dark:text-white">Sucursal</p>
-              <Autocomplete
-                className="dark:text-white font-semibold border border-white rounded-xl hidden md:flex"
-                variant="bordered"
-                labelPlacement="outside"
-                placeholder="Selecciona la sucursal"
-                clearButtonProps={{ onClick: () => setBranchId('') }}
-                selectedKey={branchId}
-                onSelectionChange={(key) =>
-                  key ? setBranchId(String(key)) : setBranchId('')
-                }
-              >
-                {branches_list.map((item) => (
-                  <AutocompleteItem
-                    key={item.name}
-                    value={item.name}
-                    className="dark:text-white"
-                  >
-                    {item.name}
-                  </AutocompleteItem>
-                ))}
-              </Autocomplete>
-            </div>
-
+            <Autocomplete
+              className="dark:text-white font-semibold border border-white rounded-xl hidden md:flex"
+              variant="bordered"
+              labelPlacement="outside"
+              placeholder="Selecciona la sucursal"
+              label="Sucursal"
+              clearButtonProps={{ onClick: () => setBranchId('') }}
+              selectedKey={branchId}
+              onSelectionChange={(key) => (key ? setBranchId(String(key)) : setBranchId(''))}
+            >
+              {branches_list.map((item) => (
+                <AutocompleteItem key={item.name} value={item.name} className="dark:text-white">
+                  {item.name}
+                </AutocompleteItem>
+              ))}
+            </Autocomplete>
+            <Select
+              className="dark:text-white border border-white rounded-xl"
+              variant="bordered"
+              labelPlacement="outside"
+              label="Cantidad a mostrar"
+              classNames={{
+                label: 'font-semibold',
+              }}
+              defaultSelectedKeys={['5']}
+              value={limit}
+              onChange={(e) => {
+                setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
+              }}
+            >
+              {limit_options.map((option) => (
+                <SelectItem className="w-full dark:text-white" key={option} value={option}>
+                  {option}
+                </SelectItem>
+              ))}
+            </Select>
             <div className="w-full hidden md:flex">
               <Button
                 className="mt-6 border border-white"
@@ -345,7 +377,14 @@ function ShoppingPage({ actions }: ArrayAction) {
 
                               <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
                                 <div className="flex gap-2">
-                                  {cat.generationCode === 'N/A' && (
+                                  <Button
+                                    onClick={() => navigate(`/edit-shopping/${cat.id}/${cat.controlNumber}`)}
+                                    style={global_styles().secondaryStyle}
+                                    isIconOnly
+                                  >
+                                    <Pen />
+                                  </Button>
+                                  {/* {cat.generationCode === 'N/A' && (
                                     <Button
                                       onClick={() => navigate(`/edit-shopping/${cat.id}`)}
                                       style={global_styles().secondaryStyle}
@@ -353,7 +392,7 @@ function ShoppingPage({ actions }: ArrayAction) {
                                     >
                                       <Pen />
                                     </Button>
-                                  )}
+                                  )} */}
                                   {/* {cat.generationCode === 'N/A' && (
                                     <Button
                                       onClick={() => onDelete(cat.id)}
@@ -428,7 +467,7 @@ function ShoppingPage({ actions }: ArrayAction) {
                           user?.pointOfSale?.branch.transmitterId ??
                           0,
                         page,
-                        10,
+                        limit,
                         dateInitial,
                         dateEnd,
                         branchId
@@ -444,8 +483,7 @@ function ShoppingPage({ actions }: ArrayAction) {
                           user?.pointOfSale?.branch.transmitterId ??
                           0,
                         pagination_shopping.prevPag,
-
-                        5,
+                        limit,
                         dateInitial,
                         dateEnd,
                         branchId
@@ -466,8 +504,7 @@ function ShoppingPage({ actions }: ArrayAction) {
                           user?.pointOfSale?.branch.transmitterId ??
                           0,
                         pagination_shopping.prevPag,
-
-                        5,
+                        limit,
                         dateInitial,
                         dateEnd,
                         branchId

@@ -408,7 +408,7 @@ export const router = () => {
       element: <Annulation />
     },
     {
-      path: "/edit-shopping/:id",
+      path: "/edit-shopping/:id/:controlNumber",
       element: <EditShopping />
     },
     {
