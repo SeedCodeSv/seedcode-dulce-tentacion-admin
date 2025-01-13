@@ -141,7 +141,7 @@ function AddAccountingItems() {
   }, [items]);
 
   const $total = useMemo(() => {
-    return Number($debe.toFixed(2)) - Number($haber.toFixed(2));
+    return Number((Number($debe.toFixed(2)) - Number($haber.toFixed(2))).toFixed(2));
   }, [$debe, $haber]);
 
   const { addAddItem } = useAccountingItemsStore();
@@ -599,7 +599,7 @@ function AddAccountingItems() {
                         variant="bordered"
                         classNames={{ base: 'font-semibold' }}
                         labelPlacement="outside"
-                        value={$total.toFixed(2)}
+                        value={$total.toString()}
                         readOnly
                       />
                     </td>
@@ -869,9 +869,9 @@ export const CodCuentaSelect = (props: CodCuentaProps) => {
       a.code.localeCompare(b.code)
     );
 
-    if (name.trim() !== '' && !name.includes(' - ')) {
+    if (name.trim() !== '') {
       // Si se está escribiendo algo que no incluye " - ", filtra por código
-      return sortedItems.filter((item) => item.code.startsWith(name)).slice(0, LIMIT);
+      return sortedItems.filter((item) => (item.code + ' - ' + item.name).startsWith(name)).slice(0, LIMIT);
     }
 
     return sortedItems.slice(0, LIMIT); // Devuelve la lista completa si no hay búsqueda
@@ -913,41 +913,44 @@ export const CodCuentaSelect = (props: CodCuentaProps) => {
   };
 
   return (
-    <Autocomplete
-      className="min-w-52"
-      placeholder="Buscar cuenta"
-      variant="bordered"
-      inputProps={{
-        classNames: {
-          inputWrapper: 'pl-1',
-        },
-      }}
-      aria-describedby="Cuenta"
-      aria-labelledby="Cuenta"
-      onInputChange={handleInputChange} // Usa una función dedicada para cambios en el input
-      startContent={
-        <Button isIconOnly size="sm" onPress={() => props.openCatalogModal(props.index)}>
-          <Search />
-        </Button>
-      }
-      isLoading={loading}
-      selectedKey={props.items[props.index].codCuenta} // Selecciona usando el código
-      onSelectionChange={(key) => {
-        if (key) {
-          onChange(String(key));
+    <>
+      <Autocomplete
+        className="min-w-52"
+        placeholder="Buscar cuenta"
+        variant="bordered"
+        inputProps={{
+          classNames: {
+            inputWrapper: 'pl-1',
+          },
+        }}
+        aria-describedby="Cuenta"
+        aria-labelledby="Cuenta"
+        onInputChange={handleInputChange} // Usa una función dedicada para cambios en el input
+        startContent={
+          <Button isIconOnly size="sm" onPress={() => props.openCatalogModal(props.index)}>
+            <Search />
+          </Button>
         }
-      }}
-    >
-      {itemsPag.map((account) => (
-        <AutocompleteItem
-          key={account.code}
-          value={account.code} // El valor seleccionado será el código
-          textValue={`${account.code} - ${account.name}`} // Muestra "code - name" en el input
-        >
-          {account.code} - {account.name} {/* Muestra ambos en las opciones */}
-        </AutocompleteItem>
-      ))}
-    </Autocomplete>
+        isLoading={loading}
+        selectedKey={props.items[props.index].codCuenta} // Selecciona usando el código
+        onSelectionChange={(key) => {
+          if (key) {
+            onChange(String(key));
+          }
+        }}
+      >
+        {itemsPag.map((account) => (
+          <AutocompleteItem
+            key={account.code}
+            value={account.code} // El valor seleccionado será el código
+            textValue={`${account.code} - ${account.name}`}
+          >
+            {account.code} - {account.name} {/* Muestra ambos en las opciones */}
+          </AutocompleteItem>
+        ))}
+      </Autocomplete>
+      <span>{}</span>
+    </>
   );
 };
 
