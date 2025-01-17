@@ -481,22 +481,7 @@ function AddAccountingItems() {
                             const inputValue = e.target.value.replace(/[^0-9.]/g, '');
                             const updatedItems = [...items];
                             const currentItem = updatedItems[index];
-                            const duplicate = updatedItems.some(
-                              (item, i) =>
-                                i !== index &&
-                                item.codCuenta === currentItem.codCuenta &&
-                                Number(item.debe) > 0
-                            );
-
-                            if (duplicate) {
-                              toast.error(
-                                'Solo un elemento puede tener un valor en "Debe" para el mismo código.',
-                                {
-                                  position: 'bottom-center',
-                                }
-                              );
-                              return;
-                            }
+                           
 
                             currentItem.debe = inputValue;
                             if (Number(inputValue) > 0) {
@@ -522,22 +507,7 @@ function AddAccountingItems() {
                             const inputValue = e.target.value.replace(/[^0-9.]/g, '');
                             const updatedItems = [...items];
                             const currentItem = updatedItems[index];
-                            const duplicate = updatedItems.some(
-                              (item, i) =>
-                                i !== index &&
-                                item.codCuenta === currentItem.codCuenta &&
-                                Number(item.haber) > 0
-                            );
-
-                            if (duplicate) {
-                              toast.error(
-                                'Solo un elemento puede tener un valor en "Haber" para el mismo código.',
-                                {
-                                  position: 'bottom-center',
-                                }
-                              );
-                              return;
-                            }
+                            
 
                             currentItem.haber = inputValue;
                             if (Number(inputValue) > 0) {
@@ -888,12 +858,6 @@ export const CodCuentaSelect = (props: CodCuentaProps) => {
       if (itemFind) {
         if (itemFind.subAccount) {
           toast.error('No se puede agregar una cuenta con sub-cuentas');
-          return;
-        }
-
-        const itemExist = props.items.filter((item) => item.codCuenta === value);
-        if (itemExist.length > 1) {
-          toast.warning('La cuenta ya existe en la lista');
           return;
         }
 

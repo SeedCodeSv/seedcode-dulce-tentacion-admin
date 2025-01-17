@@ -76,6 +76,7 @@ import AddAccountCatalogs from '@/components/accountCatalogs/AddAccountCatalogs'
 import UpdateAccountCatalogs from '@/components/accountCatalogs/UpdateAccountCatalogs';
 import TicketSales from '@/pages/TicketSales';
 import Test from "@/pages/Test";
+import pages_router from "@/pages/router"
 
 const Loading = () => {
   return <div>Cargando...</div>;
@@ -416,6 +417,7 @@ export const router = () => {
       element: <UpdateAccountCatalogs />
     },
     ...anexos,
-    ...accounting_items
+    ...accounting_items,
+    ...pages_router
   ]);
 };
