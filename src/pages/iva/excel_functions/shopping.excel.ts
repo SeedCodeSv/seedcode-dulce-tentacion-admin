@@ -20,11 +20,11 @@ export const generate_shopping_excel = async (
     "D6:D7",
     "E6:E7",
     "F6:F7",
-    "G6:I6",
-    "J6:K6",
-    "L6:L7",
-    "M6:M7",
+    "G6:J6",
+    "K6:M6",
     "N6:N7",
+    "O6:O7",
+    "P6:P7",
     "D3:N3",
     "A3:C3",
     "D4:N4",
@@ -39,17 +39,20 @@ export const generate_shopping_excel = async (
   worksheet.getCell("E6").value = "NIT U DUI"
   worksheet.getCell("F6").value = "Nombre del proveedor"
   worksheet.getCell("G6").value = "Compras Gravadas"
-  worksheet.getCell("J6").value = "Compras Exentas"
-  worksheet.getCell("L6").value = "Total compras"
-  worksheet.getCell("M6").value = "Anticipo a cuenta IVA percibido"
-  worksheet.getCell("N6").value = "Compras a Suj. Excluidos"
+  worksheet.getCell("K6").value = "Compras Exentas"
+  
 
   worksheet.getCell("G7").value = "Internas"
-  worksheet.getCell("H7").value = "Import."
-  worksheet.getCell("I7").value = "IVA"
+  worksheet.getCell("H7").value = "Internaciones"
+  worksheet.getCell("I7").value = "Importaciones"
+  worksheet.getCell("J7").value = "IVA"
 
-  worksheet.getCell("J7").value = "Internas"
-  worksheet.getCell("K7").value = "Import."
+  worksheet.getCell("K7").value = "Internas"
+  worksheet.getCell("L7").value = "Internaciones"
+  worksheet.getCell("M7").value = "Importaciones"
+  worksheet.getCell("N6").value = "Total compras"
+  worksheet.getCell("O6").value = "Anticipo a cuenta IVA percibido"
+  worksheet.getCell("P6").value = "Compras a Suj. Excluidos"
 
   const titles = [
     { cell: "A3", text: "REGISTRO No. " + `${transmitter?.nrc}` },
@@ -77,13 +80,16 @@ export const generate_shopping_excel = async (
     { key: "D", width: 10 },
     { key: "E", width: 15 },
     { key: "F", width: 45 },
-    { key: "G", width: 10 },
-    { key: "H", width: 10 },
-    { key: "J", width: 10 },
-    { key: "K", width: 10 },
-    { key: "L", width: 15 },
-    { key: "M", width: 10 },
-    { key: "N", width: 10 }
+    { key: "G", width: 13},
+    { key: "H", width: 13 },
+    { key: "I", width: 13 },
+    { key: "J", width: 13 },
+    { key: "K", width: 13 },
+    { key: "L", width: 13 },
+    { key: "M", width: 13 },
+    { key: "N", width: 13 },
+    { key: "O", width: 13 },
+    { key: "P", width: 13 }
   ]
 
   const applyAlignmentAndFont = (cell: string, alignment: ExcelJS.Alignment, font: ExcelJS.Font) => {
@@ -112,7 +118,12 @@ export const generate_shopping_excel = async (
     "H7",
     "I7",
     "J7",
-    "K7"
+    "K7",
+    "L7",
+    "M7",
+    "N6",
+    "O6",
+    "P6"
   ]
   headersCells.forEach((cell) => applyAlignmentAndFont(cell, alignmentCenter as ExcelJS.Alignment, fontSize8 as ExcelJS.Font))
 
@@ -126,7 +137,7 @@ export const generate_shopping_excel = async (
   } as ExcelJS.Borders
 
   for (let row = 6; row <= 6 + shopping_data.length + 1; row++) {
-    for (let col = 0; col < 14; col++) {
+    for (let col = 0; col < 16; col++) {
       worksheet.getCell(String.fromCharCode(65 + col) + row).border = borders
     }
   }
@@ -139,14 +150,14 @@ export const generate_shopping_excel = async (
       worksheet.getCell(cell).alignment = { horizontal: "left", wrapText: true }
       worksheet.getCell(cell).font = { name: "Calibri", size: 8 }
       if (colIndex === 1) worksheet.getCell(cell).numFmt = "mm/dd/yyyy"
-      if ([6, 7, 8, 9, 10, 11, 12, 13].includes(colIndex))
+      if ([6, 7, 8, 9, 10, 11, 12, 13,14,15].includes(colIndex))
         worksheet.getCell(cell).numFmt = '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-'
     })
   })
 
   const nextLine = shopping_data.length + 8
   worksheet.getCell(`F${nextLine}`).value = "Total"
-    ;["G", "H", "I", "J", "K", "L", "M", "N"].forEach((col) => {
+    ;["G", "H", "I", "J", "K", "L", "M", "N","O","P"].forEach((col) => {
       worksheet.getCell(`${col}${nextLine}`).value = {
         formula: `SUM(${col}8:${col}${nextLine - 1})`,
         result: 0
@@ -156,7 +167,7 @@ export const generate_shopping_excel = async (
         '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-'
     })
 
-  const borders_cells = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N"]
+  const borders_cells = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O","P"]
 
   borders_cells.forEach((cell) => {
     worksheet.getCell(`${cell}${nextLine}`).border = borders

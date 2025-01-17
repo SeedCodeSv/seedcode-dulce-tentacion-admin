@@ -204,7 +204,7 @@ export interface ShoppingReport {
 	branchId: number;
 	supplierId: number;
   supplier:Supplier;
-  typeSale: "interna" | "internacion" | "importacion"
+  typeSale: "Interna" | "Internacion" | "Importacion"
   ivaPerci1: number
   tributes: Tributes[],
   classDocumentCode: ClassDocumentCode,

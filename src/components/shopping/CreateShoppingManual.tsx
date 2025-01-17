@@ -43,6 +43,7 @@ import {
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { validateReceptor } from '@/utils/validation';
+import { useBranchesStore } from '@/store/branches.store';
 
 function CreateShoppingManual() {
   const { user } = useAuthStore();
@@ -58,7 +59,13 @@ function CreateShoppingManual() {
   const [afectaModified, setAfectaModified] = useState(false);
   const [totalModified, setTotalModified] = useState(false);
   const [includePerception, setIncludePerception] = useState(false);
+
+  const {getBranchesList, branch_list} = useBranchesStore()
   const [tipoDte, setTipoDte] = useState('03');
+
+  useEffect(()=>{
+    getBranchesList()
+  },[])
 
   const handleChangeAfecta = (e: string) => {
     const sanitizedValue = e.replace(/[^0-9.]/g, "")
@@ -190,7 +197,7 @@ function CreateShoppingManual() {
       typeSale: "interna",
       declarationDate: formatDate(),
       fecEmi: formatDate(),
-      branchId: Number(user?.correlative?.branchId ?? 0),
+      branchId: 0,
       numeroControl: ""
     },
     validationSchema: yup.object().shape({
@@ -208,7 +215,7 @@ function CreateShoppingManual() {
       typeSale: yup.string().required("**El tipo de venta es requerido**"),
       declarationDate: yup.string().required("**La fecha es requerida**"),
       fecEmi: yup.string().required("**La fecha es requerida**"),
-      branchId: yup.string().required("**Selecciona la sucursal**"),
+      branchId: yup.number().required("**Selecciona la sucursal**").min(1, "**Selecciona la sucursal**"),
       numeroControl: yup.string().required("**Ingresa el numero de control**")
     }),
     async onSubmit(values, formikHelpers) {
@@ -255,8 +262,6 @@ function CreateShoppingManual() {
       }
     }
   })
-
-
 
   return (
     <>
@@ -347,6 +352,29 @@ function CreateShoppingManual() {
             </div>
           </div>
           <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-5 mt-3">
+          <div>
+              <Select
+                classNames={{ label: "font-semibold" }}
+                variant="bordered"
+                label="Sucursal"
+                placeholder="Selecciona la sucursal"
+                labelPlacement="outside"
+                defaultSelectedKeys={[`${formik.values.branchId}`]}
+                onSelectionChange={(key) => {
+                  const value = new Set(key).values().next().value
+                  key ? formik.setFieldValue("branchId", value) : formik.setFieldValue("branchId", "")
+                }}
+                onBlur={formik.handleBlur("branchId")}
+                isInvalid={!!formik.touched.branchId && !!formik.errors.branchId}
+                errorMessage={formik.errors.branchId}
+              >
+               {branch_list.map((item) => (
+                 <SelectItem value={item.id} key={item.id}>
+                   {item.name}
+                 </SelectItem>
+               ))}
+              </Select>
+            </div>
             <div>
               <Select
                 classNames={{ label: "font-semibold" }}

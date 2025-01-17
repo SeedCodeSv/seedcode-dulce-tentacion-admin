@@ -159,23 +159,23 @@ export const generate_anexe_shopping = async (shoppings: ShoppingReport[]) => {
       worksheet.getCell(`E${nextLine}`).value = formatNit(shopping.supplier)
       worksheet.getCell(`F${nextLine}`).value = shopping.supplier.nombre
       worksheet.getCell(`G${nextLine}`).value =
-        shopping.typeSale === "interna"
+        shopping.typeSale === "Interna"
           ? Number(shopping.totalExenta) + Number(shopping.totalNoSuj) + ivaExenta
           : 0
       worksheet.getCell(`H${nextLine}`).value =
-        shopping.typeSale === "internacion"
+        shopping.typeSale === "Internacion"
           ? Number(shopping.totalExenta) + Number(shopping.totalNoSuj) + ivaExenta
           : 0
       worksheet.getCell(`I${nextLine}`).value =
-        shopping.typeSale === "importacion"
+        shopping.typeSale === "Importacion"
           ? Number(shopping.totalExenta) + Number(shopping.totalNoSuj) + ivaExenta
           : 0
       worksheet.getCell(`J${nextLine}`).value =
-        shopping.typeSale === "interna" ? Number(shopping.totalGravada) : 0
+        shopping.typeSale === "Interna" ? Number(shopping.totalGravada) : 0
       worksheet.getCell(`K${nextLine}`).value =
-        shopping.typeSale === "internacion" ? Number(shopping.totalGravada) : 0
+        shopping.typeSale === "Internacion" ? Number(shopping.totalGravada) : 0
       worksheet.getCell(`L${nextLine}`).value =
-        shopping.typeSale === "importacion" ? Number(shopping.totalGravada) : 0
+        shopping.typeSale === "Importacion" ? Number(shopping.totalGravada) : 0
       worksheet.getCell(`M${nextLine}`).value = 0.0
       worksheet.getCell(`N${nextLine}`).value = Number(shopping.totalGravada) * 0.13
       worksheet.getCell(`O${nextLine}`).value = {

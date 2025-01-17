@@ -65,11 +65,13 @@ function ShoppingBookIVA() {
           ? shop.supplier.nit
           : shop.supplier.numDocumento,
         shop.supplier.nombre,
-        shop.typeSale === "interna" ? Number(shop.totalGravada) : 0,
-        shop.typeSale !== "interna" ? Number(shop.totalGravada) : 0,
+        shop.typeSale === "Interna" ? Number(shop.totalGravada) : 0,
+        shop.typeSale === "Internacion" ? Number(shop.totalGravada) : 0,
+        shop.typeSale === "Importacion" ? Number(shop.totalGravada) : 0,
         Number(shop.totalGravada) * 0.13,
-        shop.typeSale === "interna" ? totalExenta : 0,
-        shop.typeSale !== "interna" ? totalExenta : 0,
+        shop.typeSale === "Interna" ? totalExenta : 0,
+        shop.typeSale === "Internacion" ? totalExenta : 0,
+        shop.typeSale === "Importacion" ? totalExenta : 0,
         Number(shop.montoTotalOperacion),
         Number(shop.ivaPerci1),
         0
@@ -91,7 +93,10 @@ function ShoppingBookIVA() {
       0,
       0,
       0,
-      Number(exc.totalCompra)
+      0,
+      0,
+      Number(exc.totalCompra),
+     
     ])
 
     const formatData = [...data, ...dataExcluded]
@@ -112,43 +117,47 @@ function ShoppingBookIVA() {
 
       doc.roundedRect(margin_left, margin_top, 10, 10, 0, 0, "FD")
       doc.roundedRect(10 + margin_left, margin_top, 15, 10, 0, 0, "FD")
-      doc.roundedRect(25 + margin_left, margin_top, 35, 10, 0, 0, "FD")
-      doc.roundedRect(60 + margin_left, margin_top, 15, 10, 0, 0, "FD")
-      doc.roundedRect(75 + margin_left, margin_top, 25, 10, 0, 0, "FD")
-      doc.roundedRect(100 + margin_left, margin_top, 40, 10, 0, 0, "FD")
-      doc.roundedRect(140 + margin_left, margin_top, 45, 5, 0, 0, "FD")
-      doc.roundedRect(140 + margin_left, margin_top + 5, 15, 5, 0, 0, "FD")
-      doc.roundedRect(140 + margin_left + 15, margin_top + 5, 15, 5, 0, 0, "FD")
-      doc.roundedRect(140 + margin_left + 30, margin_top + 5, 15, 5, 0, 0, "FD")
-      doc.roundedRect(185 + margin_left, margin_top, 45, 5, 0, 0, "FD")
-      doc.roundedRect(185 + margin_left, margin_top + 5, 20, 5, 0, 0, "FD")
-      doc.roundedRect(185 + margin_left + 20, margin_top + 5, 25, 5, 0, 0, "FD")
-      doc.roundedRect(230 + margin_left, margin_top, 18, 10, 0, 0, "FD")
-      doc.roundedRect(248 + margin_left, margin_top, 20, 10, 0, 0, "FD")
-      doc.roundedRect(268 + margin_left, margin_top, 18, 10, 0, 0, "FD")
+      doc.roundedRect(25 + margin_left, margin_top, 30, 10, 0, 0, "FD")
+      doc.roundedRect(55 + margin_left, margin_top, 15, 10, 0, 0, "FD")
+      doc.roundedRect(70 + margin_left, margin_top, 25, 10, 0, 0, "FD")
+      doc.roundedRect(95 + margin_left, margin_top, 35, 10, 0, 0, "FD")
+      doc.roundedRect(130 + margin_left, margin_top, 60, 5, 0, 0, "FD")
+      doc.roundedRect(130 + margin_left, margin_top + 5, 15, 5, 0, 0, "FD")
+      doc.roundedRect(130 + margin_left + 15, margin_top + 5, 15, 5, 0, 0, "FD")
+      doc.roundedRect(130 + margin_left + 30, margin_top + 5, 15, 5, 0, 0, "FD")
+      doc.roundedRect(130 + margin_left + 45, margin_top + 5, 15, 5, 0, 0, "FD")
+      doc.roundedRect(190 + margin_left, margin_top, 45, 5, 0, 0, "FD")
+      doc.roundedRect(190 + margin_left, margin_top + 5, 15, 5, 0, 0, "FD")
+      doc.roundedRect(190 + margin_left + 15, margin_top + 5, 15, 5, 0, 0, "FD")
+      doc.roundedRect(190 + margin_left + 30, margin_top + 5, 15, 5, 0, 0, "FD")
+      doc.roundedRect(235 + margin_left, margin_top, 18, 10, 0, 0, "FD")
+      doc.roundedRect(253 + margin_left, margin_top, 18, 10, 0, 0, "FD")
+      doc.roundedRect(271 + margin_left, margin_top, 18, 10, 0, 0, "FD")
 
-      doc.setFontSize(7)
+      doc.setFontSize(6.2)
 
       const text1 = doc.splitTextToSize("No. Corr.", 5)
       doc.text(text1, 7, margin_top + 5)
       doc.text("Fecha", margin_left + 15, margin_top + 5)
-      doc.text("No. Doc.", margin_left + 43, margin_top + 5)
-      doc.text("No. Reg.", margin_left + 63, margin_top + 5)
-      doc.text("NIT o DUI", margin_left + 80, margin_top + 5)
-      doc.text("Nombre del proveedor", margin_left + 107, margin_top + 5)
-      doc.text("Compras Gravadas", margin_left + 155, margin_top + 3)
-      doc.text("Internas", margin_left + 143, margin_top + 8)
-      doc.text("Import.", margin_left + 158, margin_top + 8)
-      doc.text("IVA", margin_left + 175, margin_top + 8)
-      doc.text("Compras Exentas", margin_left + 195, margin_top + 3)
-      doc.text("Internas", margin_left + 190, margin_top + 8)
-      doc.text("Import.", margin_left + 213, margin_top + 8)
+      doc.text("No. Doc.", margin_left + 35, margin_top + 5)
+      doc.text("No. Reg.", margin_left + 58, margin_top + 5)
+      doc.text("NIT o DUI", margin_left + 78, margin_top + 5)
+      doc.text("Nombre del proveedor", margin_left + 100, margin_top + 5)
+      doc.text("Compras Gravadas", margin_left + 150, margin_top + 3)
+      doc.text("Internas", margin_left + 133, margin_top + 8)
+      doc.text("Internaciones", margin_left + 145.5, margin_top + 8)
+      doc.text("Importaciones", margin_left + 160.2, margin_top + 8)
+      doc.text("IVA", margin_left + 180, margin_top + 8)
+      doc.text("Compras Exentas", margin_left + 205, margin_top + 3)
+      doc.text("Internas", margin_left + 195, margin_top + 8)
+      doc.text("Internaciones", margin_left + 206, margin_top + 8)
+      doc.text("Importaciones", margin_left + 220.5, margin_top + 8)
       const text2 = doc.splitTextToSize("Total Compras", 10)
-      doc.text(text2, margin_left + 240, margin_top + 5, { align: "center" })
+      doc.text(text2, margin_left + 243.5, margin_top + 4, { align: "center" })
       const text3 = doc.splitTextToSize("Anticipo a cuenta IVA percibido", 15)
-      doc.text(text3, margin_left + 258, margin_top + 3, { align: "center" })
+      doc.text(text3, margin_left + 262, margin_top + 3, { align: "center" })
       const text4 = doc.splitTextToSize("Compras a Suj. Excluidos", 15)
-      doc.text(text4, margin_left + 278, margin_top + 3, { align: "center" })
+      doc.text(text4, margin_left + 280, margin_top + 4, { align: "center" })
     }
 
     autoTable(doc, {
@@ -165,23 +174,25 @@ function ShoppingBookIVA() {
       },
       styles: {
         lineColor: "#000000",
-        fontSize: 7
+        fontSize: 6.5
       },
       columnStyles: {
         0: { cellWidth: 10 },
         1: { cellWidth: 15 },
-        2: { cellWidth: 35 },
+        2: { cellWidth: 30 },
         3: { cellWidth: 15 },
         4: { cellWidth: 25 },
-        5: { cellWidth: 40 },
+        5: { cellWidth: 35 },
         6: { cellWidth: 15 },
         7: { cellWidth: 15 },
         8: { cellWidth: 15 },
-        9: { cellWidth: 20 },
-        10: { cellWidth: 25 },
-        11: { cellWidth: 18 },
-        12: { cellWidth: 20 },
-        13: { cellWidth: 18 }
+        9: { cellWidth: 15 },
+        10: { cellWidth: 15 },
+        11: { cellWidth: 15 },
+        12: { cellWidth: 15 },
+        13: { cellWidth: 18 },
+        14: { cellWidth: 18 },
+        15: { cellWidth: 18 },
       }
     })
 
@@ -269,11 +280,13 @@ function ShoppingBookIVA() {
           ? shop.supplier.nit
           : shop.supplier.numDocumento,
         shop.supplier.nombre,
-        shop.typeSale === "interna" ? Number(shop.totalGravada) : 0,
-        shop.typeSale !== "interna" ? Number(shop.totalGravada) : 0,
+        shop.typeSale === "Interna" ? Number(shop.totalGravada) : 0,
+        shop.typeSale  === "Internacion" ? Number(shop.totalGravada) : 0,
+        shop.typeSale  === "Importacion" ? Number(shop.totalGravada) : 0,
         Number(shop.totalGravada) * 0.13,
-        shop.typeSale === "interna" ? totalExenta : 0,
-        shop.typeSale !== "interna" ? totalExenta : 0,
+        shop.typeSale === "Interna" ? totalExenta : 0,
+        shop.typeSale === "Internacion" ? totalExenta : 0,
+        shop.typeSale === "Importacion" ? totalExenta : 0,
         Number(shop.montoTotalOperacion),
         Number(shop.ivaPerci1),
         0
@@ -370,6 +383,7 @@ function ShoppingBookIVA() {
                     endContent={<Printer size={20} />}
                     onClick={() => showPdf()}
                     color="secondary"
+                    style={styles.thirdStyle}
                   >
                     Ver e imprimir
                   </Button>
@@ -378,6 +392,7 @@ function ShoppingBookIVA() {
                 {actionView.includes('Exportar PDF') && (
                   <Button
                     className="px-10"
+                    style={styles.dangerStyles}
                     endContent={<PiFilePdfDuotone size={20} />}
                     onClick={() => export_to_pdf("download")}
                     color="danger"
@@ -389,6 +404,7 @@ function ShoppingBookIVA() {
                 {actionView.includes('Exportar Excel') && (
                   <Button
                     className="px-10"
+                    style={styles.secondaryStyle}
                     endContent={<PiMicrosoftExcelLogoBold size={20} />}
                     onClick={handleExportExcel}
                     color="success"
