@@ -74,10 +74,10 @@ function EditAccountingItems() {
   }, [items]);
 
   const $total = useMemo(() => {
-    return $debe - $haber;
+    return Number($debe.toFixed(2)) - Number($haber.toFixed(2));
   }, [$debe, $haber]);
 
-  const {editItem} = useAccountingItemsStore()
+  const { editItem } = useAccountingItemsStore();
 
   const handleDeleteItem = (index: number) => {
     const itemss = [...items];
@@ -100,7 +100,7 @@ function EditAccountingItems() {
       id: 0,
     };
     setItems((prevItems) => {
-      const updatedItems = [newItem, ...prevItems];
+      const updatedItems = [...prevItems, newItem];
       return updatedItems;
     });
   };
@@ -156,22 +156,26 @@ function EditAccountingItems() {
 
     setLoading(true);
 
-    editItem({
-      date: date,
-      typeOfAccountId: selectedType,
-      concepOfTheItem: description,
-      totalDebe: $debe,
-      totalHaber: $haber,
-      difference: $total,
-      itemDetailsEdit: items.map((item, index) => ({
-        numberItem: (index + 1).toString(),
-        catalog: item.codCuenta,
-        branchId: item.centroCosto !== '' ? Number(item.centroCosto) : undefined,
-        should: Number(item.debe),
-        see: Number(item.haber),
-        id: item.id,
-      })),
-    }, +id!)
+    editItem(
+      {
+        date: date,
+        typeOfAccountId: selectedType,
+        concepOfTheItem: description,
+        totalDebe: $debe,
+        totalHaber: $haber,
+        difference: $total,
+        itemDetailsEdit: items.map((item, index) => ({
+          numberItem: (index + 1).toString(),
+          conceptOfTheTransaction: item.descTran ?? "N/A",
+          catalog: item.codCuenta,
+          branchId: item.centroCosto !== '' ? Number(item.centroCosto) : undefined,
+          should: Number(item.debe),
+          see: Number(item.haber),
+          id: item.id,
+        })),
+      },
+      +id!
+    )
       .then((res) => {
         if (res) {
           toast.success('La partida contable ha sido creada exitosamente');
@@ -199,6 +203,7 @@ function EditAccountingItems() {
 
     return true;
   };
+
   return (
     <Layout title="Editar Partida Contable">
       <>
@@ -272,9 +277,6 @@ function EditAccountingItems() {
                     </div>
                   )}
                   <div className="flex justify-end gap-10">
-                    {/* <Button onPress={() => addAccountModal.onOpen()} style={styles.thirdStyle}>
-                      Agregar cuenta
-                    </Button> */}
                     <Button onPress={handleAddItem} isIconOnly style={styles.secondaryStyle}>
                       <Plus />
                     </Button>
@@ -401,23 +403,6 @@ function EditAccountingItems() {
                                 const inputValue = e.target.value.replace(/[^0-9.]/g, '');
                                 const updatedItems = [...items];
                                 const currentItem = updatedItems[index];
-                                const duplicate = updatedItems.some(
-                                  (item, i) =>
-                                    i !== index &&
-                                    item.codCuenta === currentItem.codCuenta &&
-                                    Number(item.debe) > 0
-                                );
-
-                                if (duplicate) {
-                                  toast.error(
-                                    'Solo un elemento puede tener un valor en "Debe" para el mismo código.',
-                                    {
-                                      position: 'bottom-center',
-                                    }
-                                  );
-                                  return;
-                                }
-
                                 currentItem.debe = inputValue;
                                 if (Number(inputValue) > 0) {
                                   currentItem.haber = '';
@@ -442,23 +427,6 @@ function EditAccountingItems() {
                                 const inputValue = e.target.value.replace(/[^0-9.]/g, '');
                                 const updatedItems = [...items];
                                 const currentItem = updatedItems[index];
-                                const duplicate = updatedItems.some(
-                                  (item, i) =>
-                                    i !== index &&
-                                    item.codCuenta === currentItem.codCuenta &&
-                                    Number(item.haber) > 0
-                                );
-
-                                if (duplicate) {
-                                  toast.error(
-                                    'Solo un elemento puede tener un valor en "Haber" para el mismo código.',
-                                    {
-                                      position: 'bottom-center',
-                                    }
-                                  );
-                                  return;
-                                }
-
                                 currentItem.haber = inputValue;
                                 if (Number(inputValue) > 0) {
                                   currentItem.debe = '';
@@ -492,7 +460,7 @@ function EditAccountingItems() {
                             variant="bordered"
                             classNames={{ base: 'font-semibold' }}
                             labelPlacement="outside"
-                            value={$debe.toString()}
+                            value={$debe.toFixed(2)}
                             readOnly
                           />
                         </td>
@@ -502,7 +470,7 @@ function EditAccountingItems() {
                             variant="bordered"
                             classNames={{ base: 'font-semibold' }}
                             labelPlacement="outside"
-                            value={$haber.toString()}
+                            value={$haber.toFixed(2)}
                             readOnly
                           />
                         </td>
@@ -521,7 +489,7 @@ function EditAccountingItems() {
                             variant="bordered"
                             classNames={{ base: 'font-semibold' }}
                             labelPlacement="outside"
-                            value={$total.toString()}
+                            value={$total.toFixed(2)}
                             readOnly
                           />
                         </td>
@@ -574,14 +542,12 @@ export default EditAccountingItems;
 
 export const CodCuentaSelect = (props: CodCuentaPropsEdit) => {
   const { account_catalog_pagination, loading } = useAccountCatalogsStore();
-
   const LIMIT = 20;
 
-  const [name, setName] = useState('');
-
-  useEffect(() => {
-    setName(props.items[props.index].codCuenta);
-  }, [props.items, props.index]);
+  // Inicializa solo con el código
+  const initialCode = props.items[props.index].codCuenta || '';
+  const initialDesc = props.items[props.index].descCuenta || '';
+  const [name, setName] = useState(initialCode ? `${initialCode} - ${initialDesc}` : '');
 
   const itemsPag = useMemo(() => {
     const sortedItems = account_catalog_pagination.accountCatalogs.sort((a, b) =>
@@ -589,18 +555,18 @@ export const CodCuentaSelect = (props: CodCuentaPropsEdit) => {
     );
 
     if (name.trim() !== '') {
+      // Si se está escribiendo algo que no incluye " - ", filtra por código
       return sortedItems
-        .filter((item) => item.code.startsWith(name)) // No necesitas toLowerCase si son números.
+        .filter((item) => (item.code + ' - ' + item.name).startsWith(name))
         .slice(0, LIMIT);
     }
 
-    return sortedItems.slice(0, LIMIT);
+    return sortedItems.slice(0, LIMIT); // Devuelve la lista completa si no hay búsqueda
   }, [account_catalog_pagination, name]);
 
   const onChange = (key: string) => {
     if (key) {
       const items = [...props.items];
-
       const value = String(key);
 
       const itemFind = account_catalog_pagination.accountCatalogs.find(
@@ -612,52 +578,60 @@ export const CodCuentaSelect = (props: CodCuentaPropsEdit) => {
           return;
         }
 
-        const itemExist = props.items.filter((item) => item.codCuenta === value);
-        if (itemExist.length > 1) {
-          toast.warning('La cuenta ya existe en la lista');
-          return;
-        }
-
         const item = items[props.index];
         item.codCuenta = itemFind.code;
         item.descCuenta = itemFind.name;
         props.setItems([...items]);
+
+        // Actualiza el input con "code - name"
+        setName(`${itemFind.code} - ${itemFind.name}`);
       }
     }
   };
 
+  const handleInputChange = (e: string) => {
+    setName(e); // Actualiza el estado solo cuando el usuario escribe
+  };
+
   return (
-    <Autocomplete
-      className="min-w-52"
-      placeholder="Buscar cuenta"
-      variant="bordered"
-      inputProps={{
-        classNames: {
-          inputWrapper: 'pl-1',
-        },
-      }}
-      aria-describedby="Cuenta"
-      aria-labelledby="Cuenta"
-      onInputChange={(e) => setName(e)}
-      startContent={
-        <Button isIconOnly size="sm" onPress={() => props.openCatalogModal(props.index)}>
-          <Search />
-        </Button>
-      }
-      isLoading={loading}
-      selectedKey={props.items[props.index].codCuenta}
-      onSelectionChange={(key) => {
-        if (key) {
-          onChange(String(key));
+    <>
+      <Autocomplete
+        className="min-w-52"
+        placeholder="Buscar cuenta"
+        variant="bordered"
+        inputProps={{
+          classNames: {
+            inputWrapper: 'pl-1',
+          },
+        }}
+        aria-describedby="Cuenta"
+        aria-labelledby="Cuenta"
+        onInputChange={handleInputChange} // Usa una función dedicada para cambios en el input
+        startContent={
+          <Button isIconOnly size="sm" onPress={() => props.openCatalogModal(props.index)}>
+            <Search />
+          </Button>
         }
-      }}
-    >
-      {itemsPag.map((account) => (
-        <AutocompleteItem key={account.code} value={account.code} textValue={account.code}>
-          {account.code}
-        </AutocompleteItem>
-      ))}
-    </Autocomplete>
+        isLoading={loading}
+        selectedKey={props.items[props.index].codCuenta} // Selecciona usando el código
+        onSelectionChange={(key) => {
+          if (key) {
+            onChange(String(key));
+          }
+        }}
+      >
+        {itemsPag.map((account) => (
+          <AutocompleteItem
+            key={account.code}
+            value={account.code} // El valor seleccionado será el código
+            textValue={`${account.code} - ${account.name}`}
+          >
+            {account.code} - {account.name} {/* Muestra ambos en las opciones */}
+          </AutocompleteItem>
+        ))}
+      </Autocomplete>
+      <span>{}</span>
+    </>
   );
 };
 
