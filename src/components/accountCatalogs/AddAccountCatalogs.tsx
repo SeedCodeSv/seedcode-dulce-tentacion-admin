@@ -31,7 +31,7 @@ function AddAccountCatalogs() {
   ];
 
   const Item = [
-    { key: 'NA', value: 'N/A', label: 'N/A' },
+    { key: 'N/A', value: 'N/A', label: 'N/A' },
     { key: 'Ingreso', value: 'Ingreso', label: 'Ingreso' },
     { key: 'Costo', value: 'Costo', label: 'Costo' },
     { key: 'Gasto', value: 'Gasto', label: 'Gasto' },
