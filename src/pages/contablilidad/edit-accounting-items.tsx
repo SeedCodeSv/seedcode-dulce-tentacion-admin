@@ -115,7 +115,7 @@ function EditAccountingItems() {
         no: Number(item.numberItem),
         codCuenta: item.accountCatalog.code,
         descCuenta: item.accountCatalog.name,
-        centroCosto: item.branchId.toString(),
+        centroCosto: item.branchId  ? Number(item.branchId).toString() : '',
         descTran: item.conceptOfTheTransaction,
         debe: String(item.should),
         haber: String(item.see),
