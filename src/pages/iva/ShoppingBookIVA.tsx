@@ -435,13 +435,13 @@ function ShoppingBookIVA() {
                                 style={styles.darkStyle}
                                 className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
                               >
-                                Fecha de emision
+                                Fecha de declaración
                               </th>
                               <th
                                 style={styles.darkStyle}
                                 className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
                               >
-                                Fecha de declaración
+                                Fecha de emision
                               </th>
                               <th
                                 style={styles.darkStyle}
