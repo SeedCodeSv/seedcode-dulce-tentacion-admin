@@ -435,7 +435,13 @@ function ShoppingBookIVA() {
                                 style={styles.darkStyle}
                                 className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
                               >
-                                Fecha
+                                Fecha de emision
+                              </th>
+                              <th
+                                style={styles.darkStyle}
+                                className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
+                              >
+                                Fecha de declaración
                               </th>
                               <th
                                 style={styles.darkStyle}
@@ -484,6 +490,9 @@ function ShoppingBookIVA() {
                           <tbody>
                             {shopping_by_months.map((shop, index) => (
                               <tr key={index} className="border-b border-slate-200">
+                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                  {formatDateToMMDDYYYY(shop.declarationDate ?? shop.fecEmi)}
+                                </td>
                                 <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                                   {formatDateToMMDDYYYY(shop.fecEmi)}
                                 </td>
