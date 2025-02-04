@@ -623,7 +623,6 @@ function EditShopping() {
                   labelPlacement="outside"
                   isInvalid={!!formik.touched.declarationDate && !!formik.errors.declarationDate}
                   errorMessage={formik.errors.declarationDate}
-                  isDisabled={isDisabled}
                 />
                 <div className="flex  items-end">
                   <Checkbox
