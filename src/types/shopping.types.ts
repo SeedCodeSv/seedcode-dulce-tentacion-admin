@@ -284,6 +284,25 @@ export interface  IGetShoppingDetails{
   status: number
 }
 
+export interface ISupplier {
+  id: number;
+  nombre: string;
+  nombreComercial: string;
+  nrc: string;
+  nit: string;
+  tipoDocumento: string;
+  numDocumento: string;
+  codActividad: string;
+  descActividad: string;
+  bienTitulo: string;
+  telefono: string;
+  correo: string;
+  isActive?: boolean | undefined;
+  esContribuyente: number | boolean;
+  tipoContribuyente?: any;
+  direccionId?: number | undefined;
+}
+
 export interface GeneralInfoProps {
     tipoDte: string;
     setTipoDte: (tipoDte: string) => void;
@@ -292,7 +311,7 @@ export interface GeneralInfoProps {
     setNrc: (nrc: string) => void;
     includePerception: boolean;
     setIncludePerception: (includePerception: boolean) => void;
-    supplierSelected: Supplier | undefined;
-    setSupplierSelected: (supplierSelected: Supplier | undefined) => void;
+    supplierSelected: ISupplier | undefined;
+    setSupplierSelected: (supplierSelected: ISupplier | undefined) => void;
     setSearchNRC: (searchNRC: string) => void;
   }
