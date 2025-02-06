@@ -33,6 +33,7 @@ import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
 import { toast } from 'sonner';
 import * as yup from 'yup';
 import useGlobalStyles from '../global/global.styles';
+import { useAuthStore } from '@/store/auth.store';
 
 function EditShopping() {
   const { id, controlNumber } = useParams<{ id: string; controlNumber: string }>();
@@ -55,6 +56,8 @@ function EditShopping() {
   const filteredTipoDoc = useMemo(() => {
     return tiposDoc.filter((item) => ['03', '06', '05'].includes(item.codigo));
   }, []);
+
+  const { user } = useAuthStore();
 
   const [total, setTotal] = useState('');
   const [afecta, setAfecta] = useState('');
@@ -144,6 +147,7 @@ function EditShopping() {
         typeCostSpentValue: values.typeCostSpentValue,
         typeSale: values.typeSale,
         classDocumentCode: values.classDocumentCode,
+        transmitterId: user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
         classDocumentValue: values.classDocumentValue,
       };
 

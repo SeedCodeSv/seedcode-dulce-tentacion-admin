@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import { ButtonGroup, Card, useDisclosure } from '@nextui-org/react';
 import { useThemeStore } from '../../store/theme.store';
 import { Theme, ThemeContext } from '../../hooks/useTheme';
-import { Check, Plus } from 'lucide-react';
+import { Check, Edit, Plus } from 'lucide-react';
 import AddButton from '../global/AddButton';
 import CreateConfiguration from './CreateConfiguration';
 import { useConfigurationStore } from '../../store/perzonalitation.store';
@@ -42,14 +42,6 @@ const ConfigurationList = ({ actions }: Props) => {
   const tramsiter =
     user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0;
 
-  // useEffect(() => {
-  //   if (context === 'dark') {
-  //     document.getElementsByTagName('body')[0].classList.add('dark');
-  //   } else {
-  //     document.getElementsByTagName('body')[0].classList.remove('dark');
-  //   }
-  // }, [context]);
-
   useEffect(() => {
     GetConfigurationByTransmitter(tramsiter || 0);
     getPaginatedThemes(1, 30);
@@ -80,26 +72,7 @@ const ConfigurationList = ({ actions }: Props) => {
       <div className=" w-full h-full p-5 bg-gray-50 dark:bg-gray-900">
         <div className="w-full h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <div className="flex justify-evenly gap-10 mt-5 ml-5 ">
-            {/* <div className="w-full mt-1">
-              <Switch
-                className="relative"
-                onValueChange={(isDark) => toggleContext(isDark ? 'dark' : 'light')}
-                isSelected={context === 'dark'}
-                size="lg"
-                thumbIcon={({ isSelected }) =>
-                  isSelected ? (
-                    <SunMedium className="text-yellow-500" />
-                  ) : (
-                    <Moon className="text-gray-800" />
-                  )
-                }
-              >
-                <p className="text-sm font-semibold lg:text-base relative">
-                  {context === 'dark' ? 'Modo claro' : 'Modo oscuro'}
-                </p>
-              </Switch>
-            </div> */}
-            <div className="flex gap-4 justify-between">
+            <div className="flex gap-4 justify-between w-full">
               <ButtonGroup>
                 <Button
                   isIconOnly
@@ -259,6 +232,9 @@ const ConfigurationList = ({ actions }: Props) => {
                   disabled
                 ></Button>
               )}
+              <Button style={global_styles().secondaryStyle}
+                onClick={() => navigate('/edit-transmitter-info')}
+                className="hidden font-semibold md:flex" endContent={<Edit size={20} />} >Editar emisor</Button>
             </div>
           </div>
 
@@ -357,7 +333,7 @@ const ConfigurationList = ({ actions }: Props) => {
                       onClick={() => {
                         handleUpdate(themeS), setSelectedTheme(themeS.name);
                       }}
-                      // onClick={() => toggleTheme(themeS as Theme)}
+                    // onClick={() => toggleTheme(themeS as Theme)}
                     >
                       <span className="col-span-6 font-semibold">{themeS.name}</span>
                       <div className="absolute top-5 right-5">

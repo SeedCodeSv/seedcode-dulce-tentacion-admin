@@ -38,7 +38,6 @@ import * as yup from 'yup';
 import { useNavigate } from 'react-router';
 import { formatDate } from '@/utils/dates';
 import { useAlert } from '@/lib/alert';
-// import { useAlert } from '@/lib/alert';
 
 function CreateShopping() {
   const { actions } = useViewsStore();
@@ -91,7 +90,6 @@ const JSONMode = () => {
   const [jsonData, setJsonData] = useState<IResponseFromDigitalOceanDTE>();
   const styles = useGlobalStyles();
   const [modalSupplier, setModalSupplier] = useState(false);
-
   const { show } = useAlert();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -132,6 +130,9 @@ const JSONMode = () => {
       branchId: yup.string().required('**Selecciona la sucursal**'),
     }),
     onSubmit(values, formikHelpers) {
+
+      const transmitterId = user?.correlative ? user?.correlative.branch.transmitter.id : user?.pointOfSale?.branch.transmitter.id ?? 0;
+
       const formData = new FormData();
       formData.append('operationTypeCode', values.operationTypeCode);
       formData.append('operationTypeValue', values.operationTypeValue);
@@ -146,6 +147,7 @@ const JSONMode = () => {
       formData.append('typeSale', values.typeSale);
       formData.append('branchId', values.branchId.toString());
       formData.append('declarationDate', values.declarationDate);
+      formData.append('transmitterId', transmitterId.toString());
       if (file) {
         formData.append('dte', file);
       }

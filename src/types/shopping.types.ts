@@ -128,6 +128,7 @@ export interface CreateShoppingDto {
   typeSale?: string
   classDocumentCode: ClassDocumentCode,
   classDocumentValue: ClassDocumentValue,
+  transmitterId: number
 }
 
 
@@ -282,3 +283,16 @@ export interface  IGetShoppingDetails{
   compra: ShoppingReport,
   status: number
 }
+
+export interface GeneralInfoProps {
+    tipoDte: string;
+    setTipoDte: (tipoDte: string) => void;
+    correlative: number;
+    nrc: string;
+    setNrc: (nrc: string) => void;
+    includePerception: boolean;
+    setIncludePerception: (includePerception: boolean) => void;
+    supplierSelected: Supplier | undefined;
+    setSupplierSelected: (supplierSelected: Supplier | undefined) => void;
+    setSearchNRC: (searchNRC: string) => void;
+  }

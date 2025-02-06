@@ -77,6 +77,7 @@ import UpdateAccountCatalogs from '@/components/accountCatalogs/UpdateAccountCat
 import TicketSales from '@/pages/TicketSales';
 import Test from "@/pages/Test";
 import pages_router from "@/pages/router"
+import EditTransmitterInfo from '@/pages/edit-transmitter-info';
 
 const Loading = () => {
   return <div>Cargando...</div>;
@@ -415,6 +416,10 @@ export const router = () => {
     {
       path: "/update-account-catalog/:id",
       element: <UpdateAccountCatalogs />
+    },
+    {
+      path: "/edit-transmitter-info",
+      element: <EditTransmitterInfo />
     },
     ...anexos,
     ...accounting_items,
