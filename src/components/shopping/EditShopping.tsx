@@ -259,7 +259,7 @@ function EditShopping() {
         controlNumber: shopping_details.controlNumber,
         declarationDate: shopping_details.declarationDate!,
         fecEmi: shopping_details.fecEmi,
-        branchId: shopping_details.branchId,
+        branchId: shopping_details.branchId ?? 0,
       });
 
       setTotal(shopping_details.montoTotalOperacion);
