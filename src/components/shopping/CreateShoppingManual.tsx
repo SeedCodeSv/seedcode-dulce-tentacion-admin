@@ -24,7 +24,7 @@ import {
   ClassDocumentCode,
   ClassDocumentValue,
 } from '@/enums/shopping.enum';
-import { useFormik } from 'formik';
+import { FormikProvider, useFormik } from 'formik';
 import * as yup from 'yup';
 import { validateReceptor } from '@/utils/validation';
 import { useBranchesStore } from '@/store/branches.store';
@@ -243,6 +243,7 @@ function CreateShoppingManual() {
   return (
     <>
       <div className="w-full h-full">
+        <FormikProvider value={formik}>
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -349,6 +350,7 @@ function CreateShoppingManual() {
             </Button>
           </div>
         </form>
+        </FormikProvider>
       </div>
     </>
   );
