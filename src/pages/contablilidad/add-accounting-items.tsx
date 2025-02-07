@@ -34,6 +34,7 @@ import * as yup from 'yup';
 import { verify_item_count } from '@/services/accounting-items.service';
 import axios from 'axios';
 import { API_URL } from '@/utils/constants';
+import { useAuthStore } from '@/store/auth.store';
 
 interface Items {
   no: number;
@@ -84,6 +85,8 @@ function AddAccountingItems() {
     getBranchesList();
     getListTypeOfAccount();
   }, []);
+
+  const { user } = useAuthStore();
 
   const [items, setItems] = useState<Items[]>([
     {
@@ -175,7 +178,8 @@ function AddAccountingItems() {
     }
 
     setLoading(true);
-
+    const trandId =
+      user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0;
     addAddItem({
       date: date,
       typeOfAccountId: selectedType,
@@ -183,6 +187,7 @@ function AddAccountingItems() {
       totalDebe: $debe,
       totalHaber: $haber,
       difference: $total,
+      transmitterId: trandId,
       itemDetails: items.map((item, index) => ({
         numberItem: (index + 1).toString(),
         catalog: item.codCuenta,
@@ -481,7 +486,6 @@ function AddAccountingItems() {
                             const inputValue = e.target.value.replace(/[^0-9.]/g, '');
                             const updatedItems = [...items];
                             const currentItem = updatedItems[index];
-                           
 
                             currentItem.debe = inputValue;
                             if (Number(inputValue) > 0) {
@@ -507,7 +511,6 @@ function AddAccountingItems() {
                             const inputValue = e.target.value.replace(/[^0-9.]/g, '');
                             const updatedItems = [...items];
                             const currentItem = updatedItems[index];
-                            
 
                             currentItem.haber = inputValue;
                             if (Number(inputValue) > 0) {
@@ -841,7 +844,9 @@ export const CodCuentaSelect = (props: CodCuentaProps) => {
 
     if (name.trim() !== '') {
       // Si se está escribiendo algo que no incluye " - ", filtra por código
-      return sortedItems.filter((item) => (item.code + ' - ' + item.name).startsWith(name)).slice(0, LIMIT);
+      return sortedItems
+        .filter((item) => (item.code + ' - ' + item.name).startsWith(name))
+        .slice(0, LIMIT);
     }
 
     return sortedItems.slice(0, LIMIT); // Devuelve la lista completa si no hay búsqueda

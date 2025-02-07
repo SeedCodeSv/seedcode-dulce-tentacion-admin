@@ -164,6 +164,7 @@ function EditAccountingItems() {
         totalDebe: $debe,
         totalHaber: $haber,
         difference: $total,
+        transmitterId: details!.transmitterId,
         itemDetailsEdit: items.map((item, index) => ({
           numberItem: (index + 1).toString(),
           conceptOfTheTransaction: item.descTran ?? "N/A",

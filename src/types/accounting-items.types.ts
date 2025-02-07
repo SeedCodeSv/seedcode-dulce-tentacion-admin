@@ -7,6 +7,7 @@ export interface AddItem {
   totalDebe: number;
   totalHaber: number;
   difference: number;
+  transmitterId: number;
   itemDetails: ItemDetail[];
 }
 
@@ -25,6 +26,7 @@ export interface EditItem {
   totalDebe: number;
   totalHaber: number;
   difference: number;
+  transmitterId: number;
   itemDetailsEdit: ItemDetailEdit[];
 }
 
@@ -53,6 +55,7 @@ export interface Item {
   difference: string;
   isActive: boolean;
   noPartida: number;
+  transmitterId: number;
   typeOfAccount: TypeOfAccount;
   typeOfAccountId: number;
 }
@@ -75,6 +78,7 @@ export interface Details {
   should: number;
   see: number;
   isActive: boolean;
+  transmitterId: number;
   accountCatalog: {
     id: number;
     code: string;
@@ -101,6 +105,7 @@ export interface ItemDetails {
   totalHaber: number;
   difference: number;
   isActive: boolean;
+  transmitterId: number;
   typeOfAccount: {
     id: number;
     name: string;

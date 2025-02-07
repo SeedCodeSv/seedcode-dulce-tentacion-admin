@@ -1,5 +1,4 @@
 import { get_correlative_shopping } from '@/services/shopping.service';
-import { CreateShoppingDto } from '@/types/shopping.types';
 import { API_URL } from '@/utils/constants';
 import { formatDate } from '@/utils/dates';
 import { Button, Modal, ModalContent, useDisclosure } from '@nextui-org/react';
@@ -324,8 +323,11 @@ function CreateShoppingManual() {
       }
 
       try {
+        const transId =
+          user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0;
+
         await validateReceptor(supplierSelected);
-        const payload: CreateShoppingDto = {
+        const payload = {
           supplierId: supplierSelected.id ?? 0,
           totalExenta: Number(exenta),
           totalGravada: Number(afecta),
@@ -337,9 +339,25 @@ function CreateShoppingManual() {
           totalPagar: Number(total),
           totalLetras: convertCurrencyFormat(total),
           ivaPerci1: $1perception,
-          transmitterId:
-            user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
+          transmitterId: transId,
           ...values,
+          itemCatalog: {
+            trasmitterId: transId,
+            date: dateItem,
+            typeOfAccountId: selectedType,
+            concepOfTheItem: description,
+            totalDebe: $debe,
+            totalHaber: $haber,
+            difference: $total,
+            itemDetails: items.map((item, index) => ({
+              numberItem: (index + 1).toString(),
+              catalog: item.codCuenta,
+              branchId: item.centroCosto !== '' ? Number(item.centroCosto) : undefined,
+              should: Number(item.debe),
+              see: Number(item.haber),
+              conceptOfTheTransaction: item.descTran.length > 0 ? item.descTran : 'N/A',
+            })),
+          },
         };
 
         axios
