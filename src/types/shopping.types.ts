@@ -169,6 +169,7 @@ export interface Supplier {
   tipoContribuyente?: any;
   direccionId: number;
   transmitterId: number;
+  codCuenta: string;
 }
 
 export interface ShoppingIva {
@@ -247,10 +248,22 @@ export interface ItemDetails {
   isActive: boolean,
   accountCatalogId: number
   branchId: number | null,
-  itemId: number
+  itemId: number,
+  accountCatalog: {
+    id: number;
+    code: string
+    name: string
+    majorAccount: string
+    accountLevel: string
+    accountType: string
+    uploadAs: string
+    subAccount: boolean
+    item: string
+    isActive: boolean
+  }
 }
 
-interface ShoppingDetails extends ShoppingReport {
+export interface ShoppingDetails extends ShoppingReport {
   item: {
     id: number;
     noPartida: number;

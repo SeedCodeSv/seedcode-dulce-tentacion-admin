@@ -19,11 +19,19 @@ import Layout from '@/layout/Layout';
 import { useBranchesStore } from '@/store/branches.store';
 import { useShoppingStore } from '@/store/shopping.store';
 import { global_styles } from '@/styles/global.styles';
-import { CreateShoppingDto } from '@/types/shopping.types';
 import { API_URL } from '@/utils/constants';
 import { formatDate } from '@/utils/dates';
 import { convertCurrencyFormat } from '@/utils/money';
-import { Button, Checkbox, Input, Select, SelectItem } from '@nextui-org/react';
+import {
+  Button,
+  Checkbox,
+  Input,
+  Modal,
+  ModalContent,
+  Select,
+  SelectItem,
+  useDisclosure,
+} from '@nextui-org/react';
 import axios from 'axios';
 import { useFormik } from 'formik';
 import { useEffect, useMemo, useState } from 'react';
@@ -34,6 +42,11 @@ import { toast } from 'sonner';
 import * as yup from 'yup';
 import useGlobalStyles from '../global/global.styles';
 import { useAuthStore } from '@/store/auth.store';
+import AccountItem from './manual/account-item';
+import { Items } from '@/pages/contablilidad/types/types';
+import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
+import { useFiscalDataAndParameterStore } from '@/store/fiscal-data-and-paramters.store';
+import CatalogItemsPaginated from './manual/catalog-items-paginated';
 
 function EditShopping() {
   const { id, controlNumber } = useParams<{ id: string; controlNumber: string }>();
@@ -42,12 +55,18 @@ function EditShopping() {
   const styles = useGlobalStyles();
   const { branch_list, getBranchesList } = useBranchesStore();
   const [includePerception, setIncludePerception] = useState(false);
+  const { getAccountCatalogs, account_catalog_pagination } = useAccountCatalogsStore();
 
   const isDisabled = controlNumber?.toUpperCase().startsWith('DTE');
+  const { getFiscalDataAndParameter, fiscalDataAndParameter } = useFiscalDataAndParameterStore();
 
   useEffect(() => {
     getShoppingDetails(Number(id));
     getBranchesList();
+    getAccountCatalogs('', '');
+    const transmitterId =
+      user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0;
+    getFiscalDataAndParameter(transmitterId);
   }, []);
 
   const services = useMemo(() => new SeedcodeCatalogosMhService(), []);
@@ -58,6 +77,62 @@ function EditShopping() {
   }, []);
 
   const { user } = useAuthStore();
+
+  // item
+  const [branchName, setBranchName] = useState('');
+  const [description, setDescription] = useState('');
+  const [dateItem, setDateItem] = useState(formatDate());
+  const [selectedType, setSelectedType] = useState(0);
+  const [items, setItems] = useState<Items[]>([
+    {
+      no: 1,
+      codCuenta: '',
+      descCuenta: '',
+      centroCosto: undefined,
+      descTran: '',
+      debe: '0',
+      haber: '0',
+    },
+    {
+      no: 1,
+      codCuenta: '',
+      descCuenta: '',
+      centroCosto: undefined,
+      descTran: '',
+      debe: '0',
+      haber: '0',
+    },
+    {
+      no: 1,
+      codCuenta: '',
+      descCuenta: '',
+      centroCosto: undefined,
+      descTran: '',
+      debe: '0',
+      haber: '0',
+    },
+  ]);
+
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [editIndex, setEditIndex] = useState<number | null>(null);
+  const catalogModal = useDisclosure();
+
+  const $debe = useMemo(() => {
+    return items.reduce((acc, item) => acc + Number(item.debe), 0);
+  }, [items]);
+
+  const $haber = useMemo(() => {
+    return items.reduce((acc, item) => acc + Number(item.haber), 0);
+  }, [items]);
+
+  const $total = useMemo(() => {
+    return Number((Number($debe.toFixed(2)) - Number($haber.toFixed(2))).toFixed(2));
+  }, [$debe, $haber]);
+
+  const openCatalogModal = (index: number) => {
+    setEditIndex(index);
+    catalogModal.onOpen();
+  };
 
   const [total, setTotal] = useState('');
   const [afecta, setAfecta] = useState('');
@@ -104,26 +179,12 @@ function EditShopping() {
       branchId: yup.string().required('**Selecciona la sucursal**'),
     }),
     onSubmit(values, formikHelpers) {
-      // const payload: CreateShoppingDto = {
-      //   transmitterId: 0,
-      //   supplierId: 0,
-      //   totalExenta: Number(exenta),
-      //   totalGravada: Number(afecta),
-      //   porcentajeDescuento: 0,
-      //   totalDescu: 0,
-      //   totalIva: Number(totalIva),
-      //   subTotal: Number(afecta),
-      //   montoTotalOperacion: Number(total),
-      //   totalPagar: Number(total),
-      //   totalLetras: convertCurrencyFormat(total),
-      //   correlative: 9,
-      //   ivaPerci1: $1perception,
-      //   ...values,
-      // };
-      const payload: CreateShoppingDto = {
+      const transId =
+        user?.correlative?.branch.transmitter.id ?? user?.pointOfSale?.branch.transmitter.id ?? 0;
+      const payload = {
         supplierId: 0,
         branchId: values.branchId,
-        numeroControl: values.controlNumber || '', // Ensure it's a string
+        numeroControl: values.controlNumber || '',
         tipoDte: values.tipoDte,
         totalExenta: Number(exenta) || 0,
         totalGravada: Number(afecta) || 0,
@@ -147,8 +208,25 @@ function EditShopping() {
         typeCostSpentValue: values.typeCostSpentValue,
         typeSale: values.typeSale,
         classDocumentCode: values.classDocumentCode,
-        transmitterId: user?.correlative?.branch.transmitter.id ?? user?.pointOfSale?.branch.transmitter.id ?? 0,
+        transmitterId: transId,
         classDocumentValue: values.classDocumentValue,
+        itemCatalog: {
+          transmitterId: transId,
+          date: dateItem,
+          typeOfAccountId: selectedType,
+          concepOfTheItem: description,
+          totalDebe: $debe,
+          totalHaber: $haber,
+          difference: $total,
+          itemDetails: items.map((item) => ({
+            numberItem: item.no,
+            catalog: item.codCuenta,
+            branchId:(values.branchId ?? undefined),
+            should: Number(item.debe),
+            see: Number(item.haber),
+            conceptOfTheTransaction: item.descTran.length > 0 ? item.descTran : 'N/A',
+          })),
+        },
       };
 
       axios
@@ -173,6 +251,16 @@ function EditShopping() {
     setAfectaModified(true);
     setTotalModified(false);
     const ivaCalculado = totalAfecta * 0.13;
+
+    const itemsS = [...items];
+    itemsS[0].debe = totalAfecta.toString();
+    itemsS[0].haber = '0';
+    itemsS[1].debe = ivaCalculado.toString();
+    itemsS[1].haber = '0';
+    itemsS[2].debe = '0';
+    itemsS[2].haber = (totalAfecta + ivaCalculado).toFixed(2);
+    setItems(itemsS);
+
     setTotalIva(ivaCalculado.toFixed(2));
     if (tipoDte !== '14' && includePerception) {
       const percepcion = totalAfecta * 0.01;
@@ -186,14 +274,19 @@ function EditShopping() {
     const sanitizedValue = e.replace(/[^0-9.]/g, '');
     const totalExenta = Number(sanitizedValue);
 
+    const itemsS = [...items];
+    itemsS[0].debe = (Number(afecta) + totalExenta).toFixed(2);
+    itemsS[0].haber = '0';
+    itemsS[2].debe = '0';
+    itemsS[2].haber = (Number(afecta) + Number(totalExenta) + Number(totalIva)).toFixed(2);
+    setItems(itemsS);
+
     setExenta(sanitizedValue);
     if (includePerception) {
       const result = +afecta * 0.01;
-      setTotal(() =>
-        (+afecta + totalExenta + result + (tipoDte === '03' ? Number(totalIva) : 0)).toFixed(2)
-      );
+      setTotal(() => (+afecta + totalExenta + result + Number(totalIva)).toFixed(2));
     }
-    setTotal(() => (+afecta + totalExenta + (tipoDte === '03' ? Number(totalIva) : 0)).toFixed(2));
+    setTotal(() => (+afecta + totalExenta + Number(totalIva)).toFixed(2));
   };
 
   const handleChangeTotal = (e: string) => {
@@ -203,24 +296,26 @@ function EditShopping() {
     setTotalModified(true);
     setAfectaModified(false);
 
-    if (tipoDte) {
-      const ivaIncluido = totalValue - totalValue / 1.13;
-      const afectaSinIva = totalValue - ivaIncluido;
-      setAfecta(afectaSinIva.toFixed(2));
-      setTotalIva(ivaIncluido.toFixed(2));
-    } else {
-      const ivaCalculado = totalValue * 0.13;
-      const afectaConIva = totalValue - ivaCalculado;
+    const ivaCalculado = totalValue * 0.13;
+    const afectaConIva = totalValue - ivaCalculado;
 
-      if (includePerception) {
-        const percepcion = afectaConIva * 0.01;
-        setTotal((totalValue + percepcion).toFixed(2));
-        return;
-      }
-
-      setAfecta(afectaConIva.toFixed(2));
-      setTotalIva(ivaCalculado.toFixed(2));
+    if (includePerception) {
+      const percepcion = afectaConIva * 0.01;
+      setTotal((totalValue + percepcion).toFixed(2));
+      return;
     }
+
+    setAfecta(afectaConIva.toFixed(2));
+    setTotalIva(ivaCalculado.toFixed(2));
+
+    const itemsS = [...items];
+    itemsS[0].debe = (Number(afecta) + Number(exenta)).toFixed(2);
+    itemsS[0].haber = '0';
+    itemsS[1].debe = ivaCalculado.toFixed(2);
+    itemsS[1].haber = '0';
+    itemsS[2].debe = '0';
+    itemsS[2].haber = (Number(afecta) + Number(exenta) + Number(totalIva)).toFixed(2);
+    setItems(itemsS);
 
     setTotal(sanitizedValue);
   };
@@ -261,6 +356,80 @@ function EditShopping() {
         fecEmi: shopping_details.fecEmi,
         branchId: shopping_details.branchId ?? 0,
       });
+
+      const branch = branch_list.find((branch) => branch.id === shopping_details.branchId);
+
+      setBranchName(branch?.name ?? '');
+
+      if (shopping_details.item) {
+        setDescription(shopping_details.item.concepOfTheItem);
+        setDateItem(shopping_details.item.date);
+        setSelectedType(shopping_details.item.typeOfAccountId);
+        const itemss = [...items];
+        itemss[0].debe = shopping_details.item.itemsDetails[0].should.toString();
+        itemss[0].haber = shopping_details.item.itemsDetails[0].see.toString();
+        itemss[0].codCuenta = shopping_details.item.itemsDetails[0].accountCatalog.code;
+        itemss[0].descCuenta = shopping_details.item.itemsDetails[0].accountCatalog.name;
+        itemss[0].descTran = shopping_details.item.itemsDetails[0].conceptOfTheTransaction;
+        itemss[0].no = shopping_details.item.itemsDetails[0].id;
+        itemss[1].debe = shopping_details.item.itemsDetails[1].should.toString();
+        itemss[1].haber = shopping_details.item.itemsDetails[1].see.toString();
+        itemss[1].codCuenta = shopping_details.item.itemsDetails[1].accountCatalog.code;
+        itemss[1].descCuenta = shopping_details.item.itemsDetails[1].accountCatalog.name;
+        itemss[1].descTran = shopping_details.item.itemsDetails[1].conceptOfTheTransaction;
+        itemss[1].no = shopping_details.item.itemsDetails[1].id;
+        itemss[2].debe = shopping_details.item.itemsDetails[2].should.toString();
+        itemss[2].haber = shopping_details.item.itemsDetails[2].see.toString();
+        itemss[2].codCuenta = shopping_details.item.itemsDetails[2].accountCatalog.code;
+        itemss[2].descCuenta = shopping_details.item.itemsDetails[2].accountCatalog.name;
+        itemss[2].descTran = shopping_details.item.itemsDetails[2].conceptOfTheTransaction;
+        itemss[2].no = shopping_details.item.itemsDetails[2].id;
+        setItems(itemss);
+      } else {
+        const handleSearchCuenta = (codCuenta: string) => {
+          const fun = account_catalog_pagination.accountCatalogs.find(
+            (item) => item.code === codCuenta
+          );
+          if (fun) {
+            return fun;
+          } else {
+            return null;
+          }
+        };
+
+        setItems([
+          {
+            debe: (
+              +shopping_details.totalGravada +
+              +shopping_details.totalExenta +
+              +shopping_details.totalNoSuj
+            ).toFixed(2),
+            haber: '0',
+            codCuenta:
+              handleSearchCuenta(fiscalDataAndParameter?.ivaLocalShopping ?? '')?.code ?? '',
+            descCuenta:
+              handleSearchCuenta(fiscalDataAndParameter?.ivaLocalShopping ?? '')?.name ?? '',
+            descTran: '',
+            no: 1,
+          },
+          {
+            debe: shopping_details.totalIva,
+            haber: '0',
+            codCuenta: handleSearchCuenta(fiscalDataAndParameter?.ivaTributte ?? '')?.code ?? '',
+            descCuenta: handleSearchCuenta(fiscalDataAndParameter?.ivaTributte ?? '')?.name ?? '',
+            descTran: '',
+            no: 2,
+          },
+          {
+            debe: '0',
+            haber: shopping_details.montoTotalOperacion,
+            codCuenta: handleSearchCuenta(shopping_details.supplier.codCuenta ?? '')?.name ?? '',
+            descCuenta: handleSearchCuenta(shopping_details.supplier.codCuenta ?? '')?.name ?? '',
+            descTran: '',
+            no: 3,
+          },
+        ]);
+      }
 
       setTotal(shopping_details.montoTotalOperacion);
       setAfecta(shopping_details.totalGravada);
@@ -325,8 +494,6 @@ function EditShopping() {
                       isReadOnly={
                         ['03', '05', '06'].includes(item.codigo) &&
                         formik.values.typeSale === 'externa'
-
-
                       }
                     >
                       {item.valores}
@@ -340,11 +507,23 @@ function EditShopping() {
                   placeholder="Selecciona la sucursal"
                   labelPlacement="outside"
                   selectedKeys={[`${formik.values.branchId.toString()}`]}
-                  onSelectionChange={(key) =>
-                    key
-                      ? formik.setFieldValue('branchId', key.currentKey)
-                      : formik.setFieldValue('branchId', '')
-                  }
+                  onSelectionChange={(key) => {
+                    if (key) {
+                      const fnd = branch_list.find(
+                        (branch) => branch.id === Number(key.currentKey)
+                      );
+                      if (fnd) {
+                        setBranchName(fnd.name);
+                        formik.setFieldValue('branchId', fnd.id);
+                      } else {
+                        setBranchName('');
+                        formik.setFieldValue('branchId', 0);
+                      }
+                    } else {
+                      setBranchName('');
+                      formik.setFieldValue('branchId', 0);
+                    }
+                  }}
                   onBlur={formik.handleBlur('branchId')}
                   isInvalid={!!formik.touched.branchId && !!formik.errors.branchId}
                   errorMessage={formik.errors.branchId}
@@ -355,32 +534,6 @@ function EditShopping() {
                     </SelectItem>
                   ))}
                 </Select>
-                {/* <Select
-                  classNames={{ label: 'font-semibold' }}
-                  variant="bordered"
-                  label="Tipo"
-                  placeholder="Selecciona el tipo"
-                  labelPlacement="outside"
-                  selectedKeys={`${formik.values.typeSale === 'interna' ? '0' : '1'}`}
-                  onSelectionChange={(key) =>
-                    key
-                      ? formik.setFieldValue(
-                        'typeSale',
-                        key.currentKey === '0' ? 'interna' : 'externa'
-                      )
-                      : formik.setFieldValue('typeSale', '')
-                  }
-                  onBlur={formik.handleBlur('typeSale')}
-                  isInvalid={!!formik.touched.typeSale && !!formik.errors.typeSale}
-                  errorMessage={formik.errors.typeSale}
-                >
-                  <SelectItem key={'0'} value="interna">
-                    Interna
-                  </SelectItem>
-                  <SelectItem key={'1'} value="externa">
-                    Externa
-                  </SelectItem>
-                </Select> */}
                 <Select
                   classNames={{ label: 'font-semibold' }}
                   variant="bordered"
@@ -409,8 +562,6 @@ function EditShopping() {
                     Importación
                   </SelectItem>
                 </Select>
-
-
                 <Input
                   classNames={{ label: 'font-semibold' }}
                   placeholder="EJ: 101"
@@ -641,6 +792,26 @@ function EditShopping() {
                   </Checkbox>
                 </div>
               </div>
+              <AccountItem
+                items={items}
+                setItems={setItems}
+                index={0}
+                selectedIndex={selectedIndex}
+                setSelectedIndex={setSelectedIndex}
+                openCatalogModal={openCatalogModal}
+                onClose={catalogModal.onClose}
+                branchName={branchName}
+                $debe={$debe}
+                $haber={$haber}
+                $total={$total}
+                description={description}
+                date={dateItem}
+                selectedType={selectedType}
+                setSelectedType={setSelectedType}
+                setDate={setDateItem}
+                setDescription={setDescription}
+                isReadOnly={true}
+              />
               <div>
                 <p className="py-4 text-xl font-semibold">Resumen: </p>
                 <div className="grid grid-cols-3 gap-5">
@@ -785,6 +956,27 @@ function EditShopping() {
             </>
           )}
         </div>
+        {editIndex !== null && (
+          <Modal
+            isOpen={catalogModal.isOpen}
+            size="2xl"
+            onClose={catalogModal.onClose}
+            scrollBehavior="inside"
+          >
+            <ModalContent>
+              {(onClose) => (
+                <>
+                  <CatalogItemsPaginated
+                    onClose={onClose}
+                    items={items}
+                    setItems={setItems}
+                    index={editIndex}
+                  />
+                </>
+              )}
+            </ModalContent>
+          </Modal>
+        )}
       </div>
     </Layout>
   );

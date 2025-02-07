@@ -23,6 +23,7 @@ function AccountItem({
   setDate,
   selectedType,
   setSelectedType,
+  isReadOnly,
 }: AccountItemProps) {
   const styles = useGlobalStyles();
   const { list_type_of_account, getListTypeOfAccount } = useTypeOfAccountStore();
@@ -191,7 +192,7 @@ function AccountItem({
                               base: 'font-semibold',
                             }}
                             labelPlacement="outside"
-                            isReadOnly={Number(items[index].haber) > 0}
+                            isReadOnly={Number(items[index].haber) > 0 || isReadOnly}
                             value={items[index].debe}
                             onChange={(e) => {
                               const inputValue = e.target.value.replace(/[^0-9.]/g, '');
@@ -217,7 +218,7 @@ function AccountItem({
                             }}
                             labelPlacement="outside"
                             value={items[index].haber}
-                            isReadOnly={Number(items[index].debe) > 0}
+                            isReadOnly={Number(items[index].debe) > 0 || isReadOnly}
                             onChange={(e) => {
                               const inputValue = e.target.value.replace(/[^0-9.]/g, '');
                               const updatedItems = [...items];

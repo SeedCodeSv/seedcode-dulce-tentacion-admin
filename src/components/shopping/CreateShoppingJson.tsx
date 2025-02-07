@@ -872,6 +872,7 @@ const JSONMode = () => {
                   setSelectedType={setSelectedType}
                   setDate={setDateItem}
                   setDescription={setDescription}
+                  isReadOnly
                 />
                 {jsonData && (
                   <div>

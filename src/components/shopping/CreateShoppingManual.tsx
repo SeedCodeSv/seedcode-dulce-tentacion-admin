@@ -352,7 +352,7 @@ function CreateShoppingManual() {
             itemDetails: items.map((item, index) => ({
               numberItem: (index + 1).toString(),
               catalog: item.codCuenta,
-              branchId: item.centroCosto !== '' ? Number(item.centroCosto) : undefined,
+              branchId:(values.branchId ?? undefined),
               should: Number(item.debe),
               see: Number(item.haber),
               conceptOfTheTransaction: item.descTran.length > 0 ? item.descTran : 'N/A',
@@ -424,6 +424,7 @@ function CreateShoppingManual() {
               setSelectedType={setSelectedType}
               setDate={setDateItem}
               setDescription={setDescription}
+              isReadOnly
             />
             <ResumeShopping
               afecta={afecta}

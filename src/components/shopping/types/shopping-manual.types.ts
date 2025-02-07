@@ -30,6 +30,7 @@ export interface AccountItemProps {
     setDate: Dispatch<SetStateAction<string>>;
     selectedType: number;
     setSelectedType: Dispatch<SetStateAction<number>>;
+    isReadOnly: boolean
 }
 
 export interface CodCuentaProps {

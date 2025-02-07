@@ -1,12 +1,12 @@
 
 import { IPagination } from "@/types/global.types"
-import { IGetShopping, ShoppingReport } from "@/types/shopping.types"
+import { IGetShopping, ShoppingDetails, ShoppingReport } from "@/types/shopping.types"
 
 export interface IShoppingStore {
     shoppingList: IGetShopping[]
     pagination_shopping: IPagination
     loading_shopping: boolean;
-    shopping_details: ShoppingReport | undefined,
+    shopping_details: ShoppingDetails | undefined,
     search_params: {
       page: number;
       limit: number;
