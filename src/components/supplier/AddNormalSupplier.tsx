@@ -9,6 +9,8 @@ import { useNavigate } from 'react-router';
 import { useAuthStore } from '@/store/auth.store';
 import { Formik, Form } from 'formik';
 import { supplierSchemaNormal } from './types/validation_supplier_yup.types';
+import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
+import { SelectedItem } from './select-account';
 function AddNormalSupplier() {
   const [selectedCodeDep, setSelectedCodeDep] = useState('');
   const {
@@ -19,9 +21,13 @@ function AddNormalSupplier() {
     cat_022_tipo_de_documentoDeIde,
     cat_013_municipios,
   } = useBillingStore();
+
+  const { getAccountCatalogs } = useAccountCatalogsStore();
+
   useEffect(() => {
     getCat022TipoDeDocumentoDeIde();
     getCat012Departamento();
+    getAccountCatalogs('', '');
   }, []);
   useEffect(() => {
     if (selectedCodeDep !== '0') {
@@ -50,6 +56,7 @@ function AddNormalSupplier() {
           municipio: '',
           departamento: '',
           complemento: '',
+          codCuenta: '',
           transmitterId:
             user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
         }}
@@ -64,7 +71,7 @@ function AddNormalSupplier() {
           setSubmitting(false);
         }}
       >
-        {({ errors, touched, handleChange, handleBlur, setFieldValue }) => (
+        {({ errors, touched, handleChange, handleBlur, setFieldValue, values, getFieldProps }) => (
           <Form className=" w-full h-full p-5 bg-gray-50 dark:bg-gray-900">
             <div className="w-full h-full border-white border p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
               <div onClick={() => navigate(-1)} className="w-32  flex gap-2 mb-4 cursor-pointer">
@@ -72,7 +79,7 @@ function AddNormalSupplier() {
                 <p className="dark:text-white">Regresar</p>
               </div>
 
-              <div className="grid xl:grid-cols-3 gap-5 pt-3">
+              <div className="grid lg:grid-cols-2 gap-5 pt-3">
                 <div>
                   <Input
                     onBlur={handleBlur}
@@ -126,8 +133,7 @@ function AddNormalSupplier() {
                     variant="bordered"
                   />
                 </div>
-              </div>
-              <div className="grid xl:grid-cols-2 gap-5 pt-3">
+
                 <div>
                   <Autocomplete
                     onBlur={handleBlur}
@@ -161,7 +167,23 @@ function AddNormalSupplier() {
                     ))}
                   </Autocomplete>
                 </div>
-
+                <div className="w-full flex items-end gap-2">
+                  <Input
+                    classNames={{
+                      label: 'font-semibold text-gray-500 text-sm',
+                    }}
+                    placeholder="Ingresa el código de la cuenta"
+                    {...getFieldProps('codCuenta')}
+                    variant="bordered"
+                    label="Cuenta"
+                    labelPlacement="outside"
+                    className="w-full"
+                  />
+                  <SelectedItem
+                    code={values.codCuenta}
+                    setCode={(value) => setFieldValue('codCuenta', value)}
+                  />
+                </div>
                 <div>
                   <Input
                     type="text"
@@ -272,13 +294,22 @@ function AddNormalSupplier() {
                   className="dark:text-white font-semibold"
                 />
               </div>
-              <Button
-                type="submit"
-                className="w-full mt-4 text-sm font-semibold"
-                style={global_styles().darkStyle}
-              >
-                Guardar
-              </Button>
+              <div className="flex gap-4 justify-end w-full">
+                <Button
+                  type="submit"
+                  className="mt-4 px-20 text-sm font-semibold"
+                  style={global_styles().dangerStyles}
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  type="submit"
+                  className="mt-4 px-20 text-sm font-semibold"
+                  style={global_styles().darkStyle}
+                >
+                  Guardar
+                </Button>
+              </div>
             </div>
           </Form>
         )}

@@ -51,8 +51,6 @@ interface ShoppingPayload {
   numeroControl: string;
 }
 
-
-
 function GeneralInfo({
   tipoDte,
   setTipoDte,
@@ -64,6 +62,7 @@ function GeneralInfo({
   supplierSelected,
   setSupplierSelected,
   setSearchNRC,
+  setBranchName,
 }: GeneralInfoProps) {
   const formik = useFormikContext<ShoppingPayload>();
 
@@ -97,7 +96,7 @@ function GeneralInfo({
             labelPlacement="outside"
             variant="bordered"
             placeholder="Selecciona el proveedor"
-            selectedKey={`${supplierSelected?.id}`}
+            selectedKey={`${supplierSelected?.id ?? undefined}`}
             classNames={{ base: 'font-semibold' }}
             onInputChange={(text) => setSearchNRC(text)}
             onSelectionChange={(key) => {
@@ -112,7 +111,7 @@ function GeneralInfo({
             }}
           >
             {supplier_pagination.suppliers.map((supp) => (
-              <AutocompleteItem key={supp.id}>{supp.nombre}</AutocompleteItem>
+              <AutocompleteItem key={supp.id} textValue={supp.nombre}>{supp.nombre}</AutocompleteItem>
             ))}
           </Autocomplete>
         </div>
@@ -135,7 +134,7 @@ function GeneralInfo({
             labelPlacement="outside"
             variant="bordered"
             placeholder="Selecciona el tipo de documento"
-            selectedKeys={[formik.values.tipoDte]}
+            selectedKeys={formik.values.tipoDte !== '' ? [formik.values.tipoDte] : undefined}
             classNames={{ label: 'font-semibold' }}
             onSelectionChange={(key) => {
               const value = new Set(key).values().next().value as string;
@@ -149,7 +148,7 @@ function GeneralInfo({
             }}
           >
             {filteredTipoDoc.map((item) => (
-              <SelectItem value={item.codigo} key={item.codigo}>
+              <SelectItem value={item.codigo} key={item.codigo} textValue={item.valores}>
                 {item.valores}
               </SelectItem>
             ))}
@@ -164,17 +163,27 @@ function GeneralInfo({
             label="Sucursal"
             placeholder="Selecciona la sucursal"
             labelPlacement="outside"
-            defaultSelectedKeys={[`${formik.values.branchId}`]}
+            defaultSelectedKeys={
+              formik.values.branchId > 0 ? [`${formik.values.branchId}`] : undefined
+            }
             onSelectionChange={(key) => {
-              const value = new Set(key).values().next().value;
-              key ? formik.setFieldValue('branchId', value) : formik.setFieldValue('branchId', '');
+              if (key) {
+                const branchId = Number(key.anchorKey);
+
+                const branch = branch_list.find((item) => item.id === branchId);
+
+                if (branch) {
+                  formik.setFieldValue('branchId', branchId);
+                  setBranchName(branch.name);
+                }
+              }
             }}
             onBlur={formik.handleBlur('branchId')}
             isInvalid={!!formik.touched.branchId && !!formik.errors.branchId}
             errorMessage={formik.errors.branchId}
           >
             {branch_list.map((item) => (
-              <SelectItem value={item.id} key={item.id}>
+              <SelectItem value={item.id} key={item.id} textValue={item.name}>
                 {item.name}
               </SelectItem>
             ))}
@@ -187,7 +196,9 @@ function GeneralInfo({
             label="Tipo"
             placeholder="Selecciona el tipo"
             labelPlacement="outside"
-            defaultSelectedKeys={[`${formik.values.typeSale}`]}
+            defaultSelectedKeys={
+              formik.values.typeSale !== '' ? [`${formik.values.typeSale}`] : undefined
+            }
             onSelectionChange={(key) => {
               const value = new Set(key).values().next().value;
               key ? formik.setFieldValue('typeSale', value) : formik.setFieldValue('typeSale', '');
@@ -196,13 +207,13 @@ function GeneralInfo({
             isInvalid={!!formik.touched.typeSale && !!formik.errors.typeSale}
             errorMessage={formik.errors.typeSale}
           >
-            <SelectItem key={'interna'} value="interna">
+            <SelectItem key={'interna'} value="interna" textValue="Interna">
               Interna
             </SelectItem>
-            <SelectItem key={'internacion'} value="internacion">
+            <SelectItem key={'internacion'} value="internacion" textValue="Internación">
               Internación
             </SelectItem>
-            <SelectItem key={'importacion'} value="importacion">
+            <SelectItem key={'importacion'} value="importacion" textValue="Importación">
               Importación
             </SelectItem>
           </Select>
@@ -253,7 +264,11 @@ function GeneralInfo({
               formik.setFieldValue('classDocumentValue', '');
             }
           }}
-          selectedKeys={formik.values.classDocumentCode}
+          selectedKeys={
+            String(formik.values.classDocumentCode) !== ''
+              ? [`${formik.values.classDocumentCode}`]
+              : undefined
+          }
           classNames={{ label: 'font-semibold' }}
           className="w-full"
           variant="bordered"
@@ -281,7 +296,7 @@ function GeneralInfo({
           errorMessage={formik.errors.classDocumentCode}
         >
           {ClassDocuments.map((item) => (
-            <SelectItem value={item.code} key={item.code}>
+            <SelectItem value={item.code} key={item.code} textValue={item.value}>
               {item.value}
             </SelectItem>
           ))}
@@ -303,7 +318,11 @@ function GeneralInfo({
               formik.setFieldValue('operationTypeCode', '');
             }
           }}
-          selectedKeys={formik.values.operationTypeCode}
+          selectedKeys={
+            String(formik.values.operationTypeCode) !== ''
+              ? [`${formik.values.operationTypeCode}`]
+              : undefined
+          }
           classNames={{ label: 'font-semibold' }}
           className="w-full"
           variant="bordered"
@@ -314,7 +333,7 @@ function GeneralInfo({
           errorMessage={formik.errors.operationTypeCode}
         >
           {OperationTypes.map((item) => (
-            <SelectItem value={item.code} key={item.code}>
+            <SelectItem value={item.code} key={item.code} textValue={item.value}>
               {item.value}
             </SelectItem>
           ))}
@@ -341,13 +360,17 @@ function GeneralInfo({
               formik.setFieldValue('classificationCode', '');
             }
           }}
-          selectedKeys={formik.values.classificationCode}
+          selectedKeys={
+            String(formik.values.classificationCode) !== ''
+              ? [`${formik.values.classificationCode}`]
+              : undefined
+          }
           onBlur={formik.handleBlur('classificationCode')}
           isInvalid={!!formik.touched.classificationCode && !!formik.errors.classificationCode}
           errorMessage={formik.errors.classificationCode}
         >
           {Classifications.map((item) => (
-            <SelectItem value={item.code} key={item.code}>
+            <SelectItem value={item.code} key={item.code} textValue={item.value}>
               {item.value}
             </SelectItem>
           ))}
@@ -374,13 +397,15 @@ function GeneralInfo({
               formik.setFieldValue('sectorCode', '');
             }
           }}
-          selectedKeys={formik.values.sectorCode}
+          selectedKeys={
+            String(formik.values.sectorCode) !== '' ? [`${formik.values.sectorCode}`] : undefined
+          }
           onBlur={formik.handleBlur('sectorCode')}
           isInvalid={!!formik.touched.sectorCode && !!formik.errors.sectorCode}
           errorMessage={formik.errors.sectorCode}
         >
           {Sectors.map((item) => (
-            <SelectItem value={item.code} key={item.code}>
+            <SelectItem value={item.code} key={item.code} textValue={item.value}>
               {item.value}
             </SelectItem>
           ))}
@@ -407,13 +432,17 @@ function GeneralInfo({
               formik.setFieldValue('typeCostSpentCode', '');
             }
           }}
-          selectedKeys={formik.values.typeCostSpentCode}
+          selectedKeys={
+            String(formik.values.typeCostSpentCode) !== ''
+              ? [`${formik.values.typeCostSpentCode}`]
+              : undefined
+          }
           onBlur={formik.handleBlur('typeCostSpentCode')}
           isInvalid={!!formik.touched.typeCostSpentCode && !!formik.errors.typeCostSpentCode}
           errorMessage={formik.errors.typeCostSpentCode}
         >
           {TypeCostSpents.map((item) => (
-            <SelectItem value={item.code} key={item.code}>
+            <SelectItem value={item.code} key={item.code} textValue={item.value}>
               {item.value}
             </SelectItem>
           ))}

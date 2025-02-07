@@ -1,4 +1,5 @@
 import { ClassDocumentCode, ClassDocumentValue, ClassificationCode, ClassificationValue, OperationTypeCode, OperationTypeValue, SectorCode, SectorValue, TypeCostSpentCode, TypeCostSpentValue } from "@/enums/shopping.enum"
+import { Dispatch, SetStateAction } from "react"
 
 export interface ICreateShopping {
   branchId: number
@@ -29,9 +30,9 @@ export interface ICreateShoppingManual {
   details: Detail[]
 }
 export interface IGetShoppingReportByCode {
-	ok: boolean;
-	shopping: ShoppingReport | null;
-	status: number;
+  ok: boolean;
+  shopping: ShoppingReport | null;
+  status: number;
 }
 
 
@@ -178,33 +179,33 @@ export interface ShoppingIva {
 
 }
 export interface ShoppingReport {
-	id: number;
-	controlNumber: string;
-	generationCode: string;
-	typeDte: string;
-	fecEmi: string;
-	horEmi: string;
-	correlative: number;
-	totalNoSuj: string;
-	totalExenta: string;
-	totalGravada: string;
-	subTotalVentas: string;
-	descuNoSuj: string;
-	descuExenta: string;
-	descuGravada: string;
-	porcentajeDescuento: string;
-	totalDescu: string;
-	subTotal: string;
-	totalIva: string;
-	montoTotalOperacion: string;
-	totalPagar: string;
-	totalLetras: string;
-	pathPdf: string;
-	pathJson: string;
-	isActivated: boolean;
-	branchId: number;
-	supplierId: number;
-  supplier:Supplier;
+  id: number;
+  controlNumber: string;
+  generationCode: string;
+  typeDte: string;
+  fecEmi: string;
+  horEmi: string;
+  correlative: number;
+  totalNoSuj: string;
+  totalExenta: string;
+  totalGravada: string;
+  subTotalVentas: string;
+  descuNoSuj: string;
+  descuExenta: string;
+  descuGravada: string;
+  porcentajeDescuento: string;
+  totalDescu: string;
+  subTotal: string;
+  totalIva: string;
+  montoTotalOperacion: string;
+  totalPagar: string;
+  totalLetras: string;
+  pathPdf: string;
+  pathJson: string;
+  isActivated: boolean;
+  branchId: number;
+  supplierId: number;
+  supplier: Supplier;
   typeSale: "Interna" | "Internacion" | "Importacion"
   ivaPerci1: number
   tributes: Tributes[],
@@ -222,7 +223,7 @@ export interface ShoppingReport {
 }
 
 interface Tributes {
-  codigo: string, 
+  codigo: string,
   valores: string,
   value: number
 }
@@ -278,7 +279,7 @@ export interface IGetShoppingReport {
   status: number;
 }
 
-export interface  IGetShoppingDetails{
+export interface IGetShoppingDetails {
   ok: boolean,
   compra: ShoppingReport,
   status: number
@@ -301,17 +302,19 @@ export interface ISupplier {
   esContribuyente: number | boolean;
   tipoContribuyente?: any;
   direccionId?: number | undefined;
+  codCuenta: string
 }
 
 export interface GeneralInfoProps {
-    tipoDte: string;
-    setTipoDte: (tipoDte: string) => void;
-    correlative: number;
-    nrc: string;
-    setNrc: (nrc: string) => void;
-    includePerception: boolean;
-    setIncludePerception: (includePerception: boolean) => void;
-    supplierSelected: ISupplier | undefined;
-    setSupplierSelected: (supplierSelected: ISupplier | undefined) => void;
-    setSearchNRC: (searchNRC: string) => void;
-  }
+  tipoDte: string;
+  setTipoDte: (tipoDte: string) => void;
+  correlative: number;
+  nrc: string;
+  setNrc: (nrc: string) => void;
+  includePerception: boolean;
+  setIncludePerception: (includePerception: boolean) => void;
+  supplierSelected: ISupplier | undefined;
+  setSupplierSelected: (supplierSelected: ISupplier | undefined) => void;
+  setSearchNRC: (searchNRC: string) => void;
+  setBranchName: Dispatch<SetStateAction<string>>;
+}

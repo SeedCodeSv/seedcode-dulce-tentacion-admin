@@ -20,7 +20,11 @@ import { useSupplierStore } from '@/store/supplier.store';
 import { Formik, Form } from 'formik';
 import { supplierSchemaContribuyente } from './types/validation_supplier_yup.types';
 import { toast } from 'sonner';
+import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
+import { SelectedItem } from './select-account';
 function AddTributeSupplier() {
+  const { getAccountCatalogs } = useAccountCatalogsStore();
+
   const [selectedCodeDep, setSelectedCodeDep] = useState('');
   const {
     getCat012Departamento,
@@ -36,6 +40,8 @@ function AddTributeSupplier() {
     getCat022TipoDeDocumentoDeIde();
     getCat012Departamento();
     getCat019CodigoActividadEconomica();
+
+    getAccountCatalogs('', '');
   }, []);
   const { onPostSupplier } = useSupplierStore();
   useEffect(() => {
@@ -63,6 +69,7 @@ function AddTributeSupplier() {
           municipio: '',
           departamento: '',
           complemento: '',
+          codCuenta: '',
           transmitterId:
             user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
         }}
@@ -77,7 +84,7 @@ function AddTributeSupplier() {
           setSubmitting(false);
         }}
       >
-        {({ errors, touched, handleChange, handleBlur, setFieldValue }) => (
+        {({ errors, touched, handleChange, handleBlur, setFieldValue, values, getFieldProps }) => (
           <Form className=" w-full h-full p-5 bg-gray-50 dark:bg-gray-900">
             <div className="w-full h-full border-white border p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
               <div onClick={() => navigate(-1)} className="w-32  flex gap-2 mb-4 cursor-pointer">
@@ -241,7 +248,7 @@ function AddTributeSupplier() {
                         errorMessage={touched.nrc && errors.nrc}
                       />
                     </div>
-                    <div className="w-full col-span-1 md:col-span-2">
+                    <div className="w-full">
                       <Autocomplete
                         label="Actividad"
                         labelPlacement="outside"
@@ -275,6 +282,23 @@ function AddTributeSupplier() {
                           </AutocompleteItem>
                         ))}
                       </Autocomplete>
+                    </div>
+                    <div className="w-full flex items-end gap-2">
+                      <Input
+                        classNames={{
+                          label: 'font-semibold text-gray-500 text-sm',
+                        }}
+                        placeholder="Ingresa el código de la cuenta"
+                        {...getFieldProps('codCuenta')}
+                        variant="bordered"
+                        label="Cuenta"
+                        labelPlacement="outside"
+                        className="w-full"
+                      />
+                      <SelectedItem
+                        code={values.codCuenta}
+                        setCode={(value) => setFieldValue('codCuenta', value)}
+                      />
                     </div>
                   </div>
                 </CardBody>

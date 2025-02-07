@@ -2,7 +2,7 @@ import { get_correlative_shopping } from '@/services/shopping.service';
 import { CreateShoppingDto } from '@/types/shopping.types';
 import { API_URL } from '@/utils/constants';
 import { formatDate } from '@/utils/dates';
-import { Button, Input } from '@nextui-org/react';
+import { Button, Modal, ModalContent, useDisclosure } from '@nextui-org/react';
 import axios from 'axios';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -12,7 +12,7 @@ import { useAuthStore } from '@/store/auth.store';
 import { Supplier } from '@/types/supplier.types';
 import { useSupplierStore } from '@/store/supplier.store';
 import { convertCurrencyFormat } from '@/utils/money';
-import {  
+import {
   ClassificationCode,
   ClassificationValue,
   SectorCode,
@@ -29,10 +29,17 @@ import * as yup from 'yup';
 import { validateReceptor } from '@/utils/validation';
 import { useBranchesStore } from '@/store/branches.store';
 import GeneralInfo from './manual/general-info';
+import { Items } from '@/pages/contablilidad/types/types';
+import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
+import { useFiscalDataAndParameterStore } from '@/store/fiscal-data-and-paramters.store';
+import ResumeShopping from './manual/resume-shopping';
+import CatalogItemsPaginated from './manual/catalog-items-paginated';
+import AccountItem from './manual/account-item';
 
 function CreateShoppingManual() {
   const { user } = useAuthStore();
   const { getSupplierPagination, supplier_pagination } = useSupplierStore();
+  const { getFiscalDataAndParameter, fiscalDataAndParameter } = useFiscalDataAndParameterStore();
   const [nrc, setNrc] = useState('');
   const [supplierSelected, setSupplierSelected] = useState<Supplier>();
   const [searchNRC, setSearchNRC] = useState('');
@@ -44,13 +51,47 @@ function CreateShoppingManual() {
   const [afectaModified, setAfectaModified] = useState(false);
   const [totalModified, setTotalModified] = useState(false);
   const [includePerception, setIncludePerception] = useState(false);
+  const [branchName, setBranchName] = useState('');
+  const [description, setDescription] = useState('');
+  const [dateItem, setDateItem] = useState(formatDate());
+  const [selectedType, setSelectedType] = useState(0);
 
   const { getBranchesList } = useBranchesStore();
   const [tipoDte, setTipoDte] = useState('03');
+  const { getAccountCatalogs, account_catalog_pagination } = useAccountCatalogsStore();
 
   useEffect(() => {
+    const trandId =
+      user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0;
+
     getBranchesList();
+    getAccountCatalogs('', '');
+    getFiscalDataAndParameter(trandId);
   }, []);
+
+  useEffect(() => {
+    if (fiscalDataAndParameter) {
+      const itemss = [...items];
+      if (fiscalDataAndParameter) {
+        const findedO = account_catalog_pagination.accountCatalogs.find(
+          (acc) => acc.code === fiscalDataAndParameter.ivaLocalShopping
+        );
+        const findedI = account_catalog_pagination.accountCatalogs.find(
+          (acc) => acc.code === fiscalDataAndParameter.ivaTributte
+        );
+
+        if (findedO) {
+          itemss[0].codCuenta = findedO.code;
+          itemss[0].descCuenta = findedO.name;
+        }
+        if (findedI) {
+          itemss[1].codCuenta = findedI.code;
+          itemss[1].descCuenta = findedI.name;
+        }
+      }
+      setItems([...itemss]);
+    }
+  }, [fiscalDataAndParameter]);
 
   const handleChangeAfecta = (e: string) => {
     const sanitizedValue = e.replace(/[^0-9.]/g, '');
@@ -60,6 +101,16 @@ function CreateShoppingManual() {
     setAfectaModified(true);
     setTotalModified(false);
     const ivaCalculado = totalAfecta * 0.13;
+
+    const itemsS = [...items];
+    itemsS[0].debe = totalAfecta.toString();
+    itemsS[0].haber = '0';
+    itemsS[1].debe = ivaCalculado.toString();
+    itemsS[1].haber = '0';
+    itemsS[2].debe = '0';
+    itemsS[2].haber = (totalAfecta + ivaCalculado).toFixed(2);
+    setItems(itemsS);
+
     setTotalIva(ivaCalculado.toFixed(2));
     if (tipoDte !== '14' && includePerception) {
       const percepcion = totalAfecta * 0.01;
@@ -73,14 +124,19 @@ function CreateShoppingManual() {
     const sanitizedValue = e.replace(/[^0-9.]/g, '');
     const totalExenta = Number(sanitizedValue);
 
+    const itemsS = [...items];
+    itemsS[0].debe = (Number(afecta) + totalExenta).toFixed(2);
+    itemsS[0].haber = '0';
+    itemsS[2].debe = '0';
+    itemsS[2].haber = (Number(afecta) + Number(totalExenta) + Number(totalIva)).toFixed(2);
+    setItems(itemsS);
+
     setExenta(sanitizedValue);
     if (includePerception) {
       const result = +afecta * 0.01;
-      setTotal(() =>
-        (+afecta + totalExenta + result + (tipoDte === '03' ? Number(totalIva) : 0)).toFixed(2)
-      );
+      setTotal(() => (+afecta + totalExenta + result + Number(totalIva)).toFixed(2));
     }
-    setTotal(() => (+afecta + totalExenta + (tipoDte === '03' ? Number(totalIva) : 0)).toFixed(2));
+    setTotal(() => (+afecta + totalExenta + Number(totalIva)).toFixed(2));
   };
 
   const handleChangeTotal = (e: string) => {
@@ -90,24 +146,26 @@ function CreateShoppingManual() {
     setTotalModified(true);
     setAfectaModified(false);
 
-    if (tipoDte) {
-      const ivaIncluido = totalValue - totalValue / 1.13;
-      const afectaSinIva = totalValue - ivaIncluido;
-      setAfecta(afectaSinIva.toFixed(2));
-      setTotalIva(ivaIncluido.toFixed(2));
-    } else {
-      const ivaCalculado = totalValue * 0.13;
-      const afectaConIva = totalValue - ivaCalculado;
+    const ivaCalculado = totalValue * 0.13;
+    const afectaConIva = totalValue - ivaCalculado;
 
-      if (includePerception) {
-        const percepcion = afectaConIva * 0.01;
-        setTotal((totalValue + percepcion).toFixed(2));
-        return;
-      }
-
-      setAfecta(afectaConIva.toFixed(2));
-      setTotalIva(ivaCalculado.toFixed(2));
+    if (includePerception) {
+      const percepcion = afectaConIva * 0.01;
+      setTotal((totalValue + percepcion).toFixed(2));
+      return;
     }
+
+    setAfecta(afectaConIva.toFixed(2));
+    setTotalIva(ivaCalculado.toFixed(2));
+
+    const itemsS = [...items];
+    itemsS[0].debe = (Number(afecta) + Number(exenta)).toFixed(2);
+    itemsS[0].haber = '0';
+    itemsS[1].debe = ivaCalculado.toFixed(2);
+    itemsS[1].haber = '0';
+    itemsS[2].debe = '0';
+    itemsS[2].haber = (Number(afecta) + Number(exenta) + Number(totalIva)).toFixed(2);
+    setItems(itemsS);
 
     setTotal(sanitizedValue);
   };
@@ -151,6 +209,72 @@ function CreateShoppingManual() {
     }
     return 0;
   }, [afecta, includePerception]);
+
+  const [items, setItems] = useState<Items[]>([
+    {
+      no: 1,
+      codCuenta: '',
+      descCuenta: '',
+      centroCosto: undefined,
+      descTran: '',
+      debe: '0',
+      haber: '0',
+    },
+    {
+      no: 1,
+      codCuenta: '',
+      descCuenta: '',
+      centroCosto: undefined,
+      descTran: '',
+      debe: '0',
+      haber: '0',
+    },
+    {
+      no: 1,
+      codCuenta: '',
+      descCuenta: '',
+      centroCosto: undefined,
+      descTran: '',
+      debe: '0',
+      haber: '0',
+    },
+  ]);
+
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [editIndex, setEditIndex] = useState<number | null>(null);
+  const catalogModal = useDisclosure();
+
+  const $debe = useMemo(() => {
+    return items.reduce((acc, item) => acc + Number(item.debe), 0);
+  }, [items]);
+
+  const $haber = useMemo(() => {
+    return items.reduce((acc, item) => acc + Number(item.haber), 0);
+  }, [items]);
+
+  const $total = useMemo(() => {
+    return Number((Number($debe.toFixed(2)) - Number($haber.toFixed(2))).toFixed(2));
+  }, [$debe, $haber]);
+
+  const openCatalogModal = (index: number) => {
+    setEditIndex(index);
+    catalogModal.onOpen();
+  };
+
+  useEffect(() => {
+    if (supplierSelected) {
+      const itemss = [...items];
+      const finded = account_catalog_pagination.accountCatalogs.find(
+        (acc) => acc.code === supplierSelected?.codCuenta
+      );
+      if (finded) {
+        itemss[2].codCuenta = finded.code;
+        itemss[2].descCuenta = finded.name;
+      }
+
+      setItems(itemss);
+    }
+  }, [supplierSelected]);
 
   const [exenta, setExenta] = useState('');
   const formik = useFormik({
@@ -244,114 +368,85 @@ function CreateShoppingManual() {
     <>
       <div className="w-full h-full">
         <FormikProvider value={formik}>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            formik.submitForm();
-          }}
-          className="w-full h-full overflow-y-auto p-5"
-        >
-          <GeneralInfo
-            setSupplierSelected={setSupplierSelected}
-            setNrc={setNrc}
-            setSearchNRC={setSearchNRC}
-            supplierSelected={supplierSelected}
-            nrc={nrc}
-            includePerception={includePerception}
-            setIncludePerception={setIncludePerception}
-            tipoDte={tipoDte}
-            setTipoDte={setTipoDte}
-            correlative={correlative}
-          />
-          <p className="py-5 text-xl font-semibold">Resumen</p>
-          <div className="rounded border shadow dark:border-gray-700 p-5 md:p-10">
-            <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-5">
-              <div>
-                <Input
-                  label="AFECTA"
-                  labelPlacement="outside"
-                  placeholder="0.00"
-                  variant="bordered"
-                  classNames={{ label: 'font-semibold', input: 'text-red-600 text-lg font-bold' }}
-                  startContent={<span className="text-red-600 font-bold text-lg">$</span>}
-                  value={afecta}
-                  onChange={({ currentTarget }) => handleChangeAfecta(currentTarget.value)}
-                />
-              </div>
-              <div>
-                <Input
-                  label="EXENTA"
-                  labelPlacement="outside"
-                  placeholder="0.00"
-                  variant="bordered"
-                  classNames={{ label: 'font-semibold', input: 'text-red-600 text-lg font-bold' }}
-                  startContent={<span className="text-red-600 font-bold text-lg">$</span>}
-                  value={exenta}
-                  onChange={({ currentTarget }) => handleChangeExenta(currentTarget.value)}
-                />
-              </div>
-              <div>
-                <Input
-                  label="IVA"
-                  labelPlacement="outside"
-                  placeholder="0.00"
-                  variant="bordered"
-                  readOnly
-                  classNames={{ label: 'font-semibold', input: 'text-red-600 text-lg font-bold' }}
-                  startContent={<span className="text-red-600 font-bold text-lg">$</span>}
-                  value={totalIva}
-                />
-              </div>
-              <div>
-                <Input
-                  label="PERCEPCIÓN"
-                  labelPlacement="outside"
-                  placeholder="0.00"
-                  variant="bordered"
-                  classNames={{ label: 'font-semibold' }}
-                  startContent="$"
-                  type="number"
-                  readOnly
-                  value={$1perception.toFixed(2)}
-                  step={0.01}
-                />
-              </div>
-              <div>
-                <Input
-                  label="SUBTOTAL"
-                  labelPlacement="outside"
-                  placeholder="0.00"
-                  variant="bordered"
-                  classNames={{ label: 'font-semibold' }}
-                  startContent="$"
-                  type="number"
-                  value={afecta}
-                  step={0.01}
-                />
-              </div>
-              <div>
-                <Input
-                  label="TOTAL"
-                  labelPlacement="outside"
-                  placeholder="0.00"
-                  variant="bordered"
-                  classNames={{ label: 'font-semibold', input: 'text-red-600 text-lg font-bold' }}
-                  startContent={<span className="text-red-600 font-bold text-lg">$</span>}
-                  value={total}
-                  readOnly
-                  onChange={({ currentTarget }) => handleChangeTotal(currentTarget.value)}
-                />
-              </div>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              formik.submitForm();
+            }}
+            className="w-full h-full overflow-y-auto p-5"
+          >
+            <GeneralInfo
+              setSupplierSelected={setSupplierSelected}
+              setNrc={setNrc}
+              setSearchNRC={setSearchNRC}
+              supplierSelected={supplierSelected}
+              nrc={nrc}
+              includePerception={includePerception}
+              setIncludePerception={setIncludePerception}
+              tipoDte={tipoDte}
+              setTipoDte={setTipoDte}
+              correlative={correlative}
+              setBranchName={setBranchName}
+            />
+            <AccountItem
+              items={items}
+              setItems={setItems}
+              index={0}
+              selectedIndex={selectedIndex}
+              setSelectedIndex={setSelectedIndex}
+              openCatalogModal={openCatalogModal}
+              onClose={catalogModal.onClose}
+              branchName={branchName}
+              $debe={$debe}
+              $haber={$haber}
+              $total={$total}
+              description={description}
+              date={dateItem}
+              selectedType={selectedType}
+              setSelectedType={setSelectedType}
+              setDate={setDateItem}
+              setDescription={setDescription}
+            />
+            <ResumeShopping
+              afecta={afecta}
+              handleChangeAfecta={handleChangeAfecta}
+              exenta={exenta}
+              handleChangeExenta={handleChangeExenta}
+              totalIva={totalIva}
+              $1perception={$1perception}
+              total={total}
+              handleChangeTotal={handleChangeTotal}
+            />
+
+            <div className="w-full flex justify-end mt-4">
+              <Button type="submit" className="px-16" style={styles.thirdStyle}>
+                Guardar
+              </Button>
             </div>
-          </div>
-          <div className="w-full flex justify-end mt-4">
-            <Button type="submit" className="px-16" style={styles.thirdStyle}>
-              Guardar
-            </Button>
-          </div>
-        </form>
+          </form>
         </FormikProvider>
       </div>
+      {editIndex !== null && (
+        <Modal
+          isOpen={catalogModal.isOpen}
+          size="2xl"
+          onClose={catalogModal.onClose}
+          scrollBehavior="inside"
+        >
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <CatalogItemsPaginated
+                  onClose={onClose}
+                  items={items}
+                  setItems={setItems}
+                  index={editIndex}
+                />
+              </>
+            )}
+          </ModalContent>
+        </Modal>
+      )}
     </>
   );
 }

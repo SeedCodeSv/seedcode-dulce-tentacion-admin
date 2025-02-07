@@ -16,6 +16,7 @@ export interface Supplier {
   nombreComercial: string;
   nrc: string;
   nit: string;
+  codCuenta: string;
   tipoDocumento: string;
   numDocumento: string;
   codActividad: string;
