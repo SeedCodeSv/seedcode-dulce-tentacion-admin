@@ -1,5 +1,20 @@
-import { Button, Card, CardBody, Input, Select, SelectItem, Tab, Tabs } from '@nextui-org/react';
-import { useEffect, useState } from 'react';
+import {
+  Button,
+  Card,
+  CardBody,
+  Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  Select,
+  SelectItem,
+  Tab,
+  Tabs,
+  useDisclosure,
+} from '@nextui-org/react';
+import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
@@ -38,6 +53,13 @@ import * as yup from 'yup';
 import { useNavigate } from 'react-router';
 import { formatDate } from '@/utils/dates';
 import { useAlert } from '@/lib/alert';
+import { Items } from '@/pages/contablilidad/types/types';
+import AccountItem from './manual/account-item';
+import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
+import { useFiscalDataAndParameterStore } from '@/store/fiscal-data-and-paramters.store';
+import { useBranchesStore } from '@/store/branches.store';
+import { get_supplier_by_nit } from '@/services/supplier.service';
+import CatalogItemsPaginated from './manual/catalog-items-paginated';
 
 function CreateShopping() {
   const { actions } = useViewsStore();
@@ -91,6 +113,45 @@ const JSONMode = () => {
   const styles = useGlobalStyles();
   const [modalSupplier, setModalSupplier] = useState(false);
   const { show } = useAlert();
+  const { getAccountCatalogs, account_catalog_pagination } = useAccountCatalogsStore();
+  const { getFiscalDataAndParameter, fiscalDataAndParameter } = useFiscalDataAndParameterStore();
+  const { branch_list, getBranchesList } = useBranchesStore();
+  useEffect(() => {
+    if (user) {
+      const transId = user.correlative
+        ? user.correlative.branch.transmitter.id
+        : user.pointOfSale
+          ? user.pointOfSale.branch.transmitter.id
+          : 0;
+      getFiscalDataAndParameter(transId);
+      getAccountCatalogs('', '');
+      getBranchesList();
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (fiscalDataAndParameter) {
+      const itemss = [...items];
+      if (fiscalDataAndParameter) {
+        const findedO = account_catalog_pagination.accountCatalogs.find(
+          (acc) => acc.code === fiscalDataAndParameter.ivaLocalShopping
+        );
+        const findedI = account_catalog_pagination.accountCatalogs.find(
+          (acc) => acc.code === fiscalDataAndParameter.ivaTributte
+        );
+
+        if (findedO) {
+          itemss[0].codCuenta = findedO.code;
+          itemss[0].descCuenta = findedO.name;
+        }
+        if (findedI) {
+          itemss[1].codCuenta = findedI.code;
+          itemss[1].descCuenta = findedI.name;
+        }
+      }
+      setItems([...itemss]);
+    }
+  }, [fiscalDataAndParameter]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -98,6 +159,69 @@ const JSONMode = () => {
       setJsonData(undefined);
     }
   };
+
+  const [branchName, setBranchSelected] = useState<string>("");
+
+  const [items, setItems] = useState<Items[]>([
+    {
+      no: 1,
+      codCuenta: '',
+      descCuenta: '',
+      centroCosto: undefined,
+      descTran: '',
+      debe: '0',
+      haber: '0',
+    },
+    {
+      no: 1,
+      codCuenta: '',
+      descCuenta: '',
+      centroCosto: undefined,
+      descTran: '',
+      debe: '0',
+      haber: '0',
+    },
+    {
+      no: 1,
+      codCuenta: '',
+      descCuenta: '',
+      centroCosto: undefined,
+      descTran: '',
+      debe: '0',
+      haber: '0',
+    },
+  ]);
+
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [editIndex, setEditIndex] = useState<number | null>(null);
+  const catalogModal = useDisclosure();
+  const [description, setDescription] = useState('');
+  const [dateItem, setDateItem] = useState(formatDate());
+  const [selectedType, setSelectedType] = useState(0);
+
+  const $debe = useMemo(() => {
+    return items.reduce((acc, item) => acc + Number(item.debe), 0);
+  }, [items]);
+
+  const $haber = useMemo(() => {
+    return items.reduce((acc, item) => acc + Number(item.haber), 0);
+  }, [items]);
+
+  const $total = useMemo(() => {
+    return Number((Number($debe.toFixed(2)) - Number($haber.toFixed(2))).toFixed(2));
+  }, [$debe, $haber]);
+
+  const openCatalogModal = (index: number) => {
+    setEditIndex(index);
+    catalogModal.onOpen();
+  };
+
+  useEffect(()=>{
+    if(user){
+      setBranchSelected(user?.correlative?.branch.name ?? '');
+    }
+  },[user])
+
   const formik = useFormik({
     initialValues: {
       operationTypeCode: OperationTypeCode.GRAVADA,
@@ -130,8 +254,9 @@ const JSONMode = () => {
       branchId: yup.string().required('**Selecciona la sucursal**'),
     }),
     onSubmit(values, formikHelpers) {
-
-      const transmitterId = user?.correlative ? user?.correlative.branch.transmitter.id : user?.pointOfSale?.branch.transmitter.id ?? 0;
+      const transmitterId = user?.correlative
+        ? user?.correlative.branch.transmitter.id
+        : (user?.pointOfSale?.branch.transmitter.id ?? 0);
 
       const formData = new FormData();
       formData.append('operationTypeCode', values.operationTypeCode);
@@ -148,6 +273,28 @@ const JSONMode = () => {
       formData.append('branchId', values.branchId.toString());
       formData.append('declarationDate', values.declarationDate);
       formData.append('transmitterId', transmitterId.toString());
+
+      const itemsS = {
+        trasmitterId: transmitterId,
+        date: dateItem,
+        typeOfAccountId: selectedType,
+        concepOfTheItem: description,
+        totalDebe: $debe,
+        totalHaber: $haber,
+        difference: $total,
+        itemDetails: items.map((item, index) => ({
+          numberItem: (index + 1).toString(),
+          catalog: item.codCuenta,
+          branchId: item.centroCosto !== '' ? Number(item.centroCosto) : undefined,
+          should: Number(item.debe),
+          see: Number(item.haber),
+          conceptOfTheTransaction: item.descTran.length > 0 ? item.descTran : 'N/A',
+        }))
+      }
+
+      formData.append('itemCatalog', JSON.stringify(itemsS));
+
+
       if (file) {
         formData.append('dte', file);
       }
@@ -189,13 +336,13 @@ const JSONMode = () => {
         if (e.target && e.target.result) {
           const content = e.target.result as string;
           const result = JSON.parse(content) as IResponseFromDigitalOceanDTE;
-          if (result.identificacion.tipoDte === '01' || result.identificacion.tipoDte === '14') {
+          if (!['03', '05', '06'].includes(result.identificacion.tipoDte)) {
             setFile(null);
             setIsOpen(false);
             show({
               type: 'error',
               title: 'Archivo no valido!',
-              message: 'No puedes agregar documentos con el tipo de DTE 01 o 14',
+              message: 'No puedes agregar este tipo de DTE',
               isAutoClose: false,
             });
             toast.error('DTE Invalido');
@@ -209,6 +356,44 @@ const JSONMode = () => {
     }
   }, [file]);
 
+  useEffect(() => {
+    if (jsonData) {
+      const total = jsonData.resumen.montoTotalOperacion ?? 0;
+      const iva =
+        jsonData.resumen.tributos && jsonData.resumen.tributos.length > 0
+          ? jsonData.resumen.tributos?.map((item) => item.valor).reduce((a, b) => a + b, 0)
+          : 0;
+      const totalWithoutIva = total - iva;
+
+      const itemss = [...items];
+      itemss[0].debe = totalWithoutIva.toFixed(2);
+      itemss[0].haber = '0';
+      itemss[1].debe = iva.toFixed(2);
+      itemss[1].haber = '0';
+      itemss[2].debe = '0';
+      itemss[2].haber = total.toFixed(2);
+      setItems([...itemss]);
+
+      get_supplier_by_nit(jsonData.emisor.nit!)
+        .then((res) => {
+          const find = account_catalog_pagination.accountCatalogs.find(
+            (item) => item.code === res.data.supplier.codCuenta
+          );
+
+          if (find) {
+            const itemss = [...items];
+            itemss[2].codCuenta = find.code;
+            itemss[2].descCuenta = find.name;
+            setItems([...itemss]);
+          }
+        })
+        .catch(() => {
+          toast.error('Proveedor no encontrado');
+          setProviderModal(true);
+        });
+    }
+  }, [jsonData]);
+
   const SubTotal = jsonData?.resumen?.subTotal ?? 0;
   const TotalLetras = jsonData?.resumen?.totalLetras ?? '';
   const MontoDeOperacion = jsonData?.resumen?.totalPagar ?? 0;
@@ -218,53 +403,74 @@ const JSONMode = () => {
     <>
       {actionView.includes('Agregar') ? (
         <>
-          <HeadlessModal
-            title="Registrar proveedor"
-            isOpen={modalSupplier}
-            onClose={() => setModalSupplier(false)}
-            size="w-full md:w-[600px] lg:w-[800px] xl:w-[1000px]"
-          >
-            <AddTributeSupplier
-              closeModal={() => setModalSupplier(false)}
-              supplier={{
-                nit: jsonData?.emisor.nit ?? '',
-                tipoDocumento: jsonData?.emisor.tipoDocumento ?? '36',
-                numDocumento: jsonData?.emisor.nit ?? '',
-                nrc: jsonData?.emisor.nrc ?? '',
-                nombre: jsonData?.emisor.nombre ?? '',
-                telefono: jsonData?.emisor.telefono ?? '',
-                correo: jsonData?.emisor.correo ?? '',
-                nombreComercial: jsonData?.emisor.nombreComercial ?? '',
-                codActividad: jsonData?.emisor.codActividad ?? '',
-                descActividad: jsonData?.emisor.descActividad ?? '',
-              }}
-              supplier_direction={{
-                municipio: jsonData?.emisor.direccion.municipio ?? '',
-                departamento: jsonData?.emisor.direccion.departamento ?? '',
-                complemento: jsonData?.emisor.direccion.complemento ?? '',
-              }}
-            />
-          </HeadlessModal>
-          <HeadlessModal
-            isOpen={providerModal}
-            onClose={() => setProviderModal(false)}
-            title="Proveedor no encontrado"
-            size="w-96"
-          >
-            <div className="w-full flex flex-col justify-center items-center">
-              <img className="w-32" src={ERROR} alt="" />
-              <p className="font-semibold pt-3">El proveedor no se encontró en los registros</p>
-              <p className="font-semibold pb-3">¿Deseas registrarlo?</p>
-              <div className="w-full grid grid-cols-2 gap-5">
-                <Button onClick={() => setProviderModal(false)} style={styles.dangerStyles}>
-                  Aceptar
-                </Button>
-                <Button onClick={() => setModalSupplier(true)} style={styles.thirdStyle}>
-                  Registrar
-                </Button>
-              </div>
-            </div>
-          </HeadlessModal>
+          <Modal size='3xl' isOpen={modalSupplier} onClose={() => setModalSupplier(false)}>
+            <ModalContent>
+              {() => (
+                <>
+                  <ModalHeader>Registrar proveedor</ModalHeader>
+                  <ModalBody>
+                    <AddTributeSupplier
+                      closeModal={() => {
+                        setProviderModal(false);
+                        setModalSupplier(false);
+                      }}
+                      setCode={(code, description) => {
+                        const itemss = [...items];
+                        itemss[2].codCuenta = code;
+                        itemss[2].descCuenta = description;
+                        setItems(itemss);
+                      }}
+                      supplier={{
+                        nit: jsonData?.emisor.nit ?? '',
+                        tipoDocumento: jsonData?.emisor.tipoDocumento ?? '36',
+                        numDocumento: jsonData?.emisor.nit ?? '',
+                        nrc: jsonData?.emisor.nrc ?? '',
+                        nombre: jsonData?.emisor.nombre ?? '',
+                        telefono: jsonData?.emisor.telefono ?? '',
+                        correo: jsonData?.emisor.correo ?? '',
+                        nombreComercial: jsonData?.emisor.nombreComercial ?? '',
+                        codActividad: jsonData?.emisor.codActividad ?? '',
+                        descActividad: jsonData?.emisor.descActividad ?? '',
+                      }}
+                      supplier_direction={{
+                        municipio: jsonData?.emisor.direccion.municipio ?? '',
+                        departamento: jsonData?.emisor.direccion.departamento ?? '',
+                        complemento: jsonData?.emisor.direccion.complemento ?? '',
+                      }}
+                    />
+                  </ModalBody>
+                </>
+              )}
+            </ModalContent>
+          </Modal>
+          <Modal isOpen={providerModal} isDismissable={false} closeButton={<></>}>
+            <ModalContent>
+              {() => (
+                <>
+                  <ModalHeader>Proveedor no encontrado</ModalHeader>
+                  <ModalBody className="flex flex-col justify-center items-center">
+                    <img className="w-32" src={ERROR} alt="" />
+                    <p className="font-semibold pt-3">
+                      El proveedor no se encontró en los registros
+                    </p>
+                    <p className="font-semibold pb-3">¿Deseas registrarlo?</p>
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button
+                      onClick={() => {
+                        setModalSupplier(true);
+                        setProviderModal(false);
+                      }}
+                      className="px-20"
+                      style={styles.thirdStyle}
+                    >
+                      Registrar
+                    </Button>
+                  </ModalFooter>
+                </>
+              )}
+            </ModalContent>
+          </Modal>
           <div className="w-full h-full p-4 overflow-y-auto">
             <div className=" justify-between w-full gap-5 mb-5 lg:mb-10 lg:flex-row lg:gap-0">
               <div className="flex flex-row w-full">
@@ -297,8 +503,8 @@ const JSONMode = () => {
                         type="date"
                         variant="bordered"
                         label="Fecha de declaración"
-                        labelPlacement='outside'
-                        className='dark:text-white'
+                        labelPlacement="outside"
+                        className="dark:text-white"
                         classNames={{ label: 'font-semibold' }}
                       />
                     </div>
@@ -331,7 +537,44 @@ const JSONMode = () => {
                         </SelectItem>
                       </Select>
                     </div>
+                    <div>
+                      <Select
+                        classNames={{ label: 'font-semibold' }}
+                        variant="bordered"
+                        label="Sucursal"
+                        placeholder="Selecciona la sucursal"
+                        labelPlacement="outside"
+                        defaultSelectedKeys={
+                          formik.values.branchId > 0 ? [`${formik.values.branchId}`] : undefined
+                        }
+                        onSelectionChange={(key) => {
+                          if (key) {
+                            const branchId = Number(key.anchorKey);
 
+                            const branch = branch_list.find((item) => item.id === branchId);
+
+                            if (branch) {
+                              setBranchSelected(branch.name);
+                              formik.setFieldValue('branchId', branchId);
+                              const itemss = [...items];
+                              itemss[0].centroCosto = branch.id.toString();
+                              itemss[1].centroCosto = branch.id.toString();
+                              itemss[2].centroCosto = branch.id.toString();
+                              setItems([...itemss]);
+                            }
+                          }
+                        }}
+                        onBlur={formik.handleBlur('branchId')}
+                        isInvalid={!!formik.touched.branchId && !!formik.errors.branchId}
+                        errorMessage={formik.errors.branchId}
+                      >
+                        {branch_list.map((item) => (
+                          <SelectItem value={item.id} key={item.id} textValue={item.name}>
+                            {item.name}
+                          </SelectItem>
+                        ))}
+                      </Select>
+                    </div>
                     <Select
                       onBlur={formik.handleBlur('classDocumentCode')}
                       onSelectionChange={(key) => {
@@ -611,6 +854,25 @@ const JSONMode = () => {
                     </div>
                   </div>
                 </div>
+                <AccountItem
+                  items={items}
+                  setItems={setItems}
+                  index={0}
+                  selectedIndex={selectedIndex}
+                  setSelectedIndex={setSelectedIndex}
+                  openCatalogModal={openCatalogModal}
+                  onClose={catalogModal.onClose}
+                  branchName={branchName}
+                  $debe={$debe}
+                  $haber={$haber}
+                  $total={$total}
+                  description={description}
+                  date={dateItem}
+                  selectedType={selectedType}
+                  setSelectedType={setSelectedType}
+                  setDate={setDateItem}
+                  setDescription={setDescription}
+                />
                 {jsonData && (
                   <div>
                     <p className="mt-4 font-semibold  dark:text-white  text-black justify-center text-lg">
@@ -741,6 +1003,27 @@ const JSONMode = () => {
         </>
       ) : (
         <NoAuthorization />
+      )}
+       {editIndex !== null && (
+        <Modal
+          isOpen={catalogModal.isOpen}
+          size="2xl"
+          onClose={catalogModal.onClose}
+          scrollBehavior="inside"
+        >
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <CatalogItemsPaginated
+                  onClose={onClose}
+                  items={items}
+                  setItems={setItems}
+                  index={editIndex}
+                />
+              </>
+            )}
+          </ModalContent>
+        </Modal>
       )}
     </>
   );

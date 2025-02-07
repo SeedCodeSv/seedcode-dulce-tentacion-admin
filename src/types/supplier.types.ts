@@ -75,4 +75,5 @@ export interface PayloadSupplier {
   complemento?: string;
   esContribuyente?: number | boolean;
   transmitterId?: number;
+  codCuenta?: string;
 }

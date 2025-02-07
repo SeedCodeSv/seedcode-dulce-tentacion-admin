@@ -12,36 +12,17 @@ import { useBillingStore } from '@/store/facturation/billing.store';
 import { typesDocumento } from '@/utils/constants';
 import { useViewsStore } from '@/store/views.store';
 import NoAuthorization from '@/pages/NoAuthorization';
+import { SelectedItem } from '../supplier/select-account';
+import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
+import { AddSupplierProps } from './types/shopping-manual.types';
 
-interface PSuplier {
-  nrc: string;
-  nit: string;
-  tipoDocumento: string;
-  numDocumento: string;
-  telefono: string;
-  correo: string;
-  nombre: string;
-  nombreComercial: string;
-  codActividad: string;
-  descActividad: string;
-}
-
-interface Props {
-  closeModal: () => void;
-  supplier?: PSuplier;
-  supplier_direction?: {
-    municipio: string;
-    departamento: string;
-    complemento: string;
-  };
-  id?: number;
-}
-
-function AddTributeSupplier(props: Props) {
+function AddTributeSupplier(props: AddSupplierProps) {
   const { actions } = useViewsStore();
   const viewName = actions.find((v) => v.view.name == 'Proveedores');
   const actionView = viewName?.actions.name || [];
   const [nrc, setNrc] = useState<string>(props.supplier?.nrc ?? '');
+
+  const { account_catalog_pagination } = useAccountCatalogsStore();
   const initialValues = {
     nombre: props.supplier?.nombre ?? '',
     nombreComercial: props.supplier?.nombreComercial ?? '',
@@ -62,6 +43,7 @@ function AddTributeSupplier(props: Props) {
     departamento: props.supplier_direction?.departamento ?? '',
     nombreDepartamento: '',
     complemento: props.supplier_direction?.complemento,
+    codCuenta: '',
   };
   const styles = useGlobalStyles();
 
@@ -166,340 +148,336 @@ function AddTributeSupplier(props: Props) {
     };
     await onPostSupplier(values);
 
+    const find = account_catalog_pagination.accountCatalogs.find(
+      (item) => item.code === values.codCuenta
+    );
+
+    if (find) {
+      props.setCode(find.code, find.name);
+    }
+
     props.closeModal();
   };
 
   return (
-    <div className="p-4 dark:text-white">
+    <div className="dark:text-white">
       {actionView.includes('Agregar') ? (
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={(values) => onSubmit(values)}
         >
-          {({ values, errors, touched, handleBlur, setFieldValue, handleChange, handleSubmit }) => (
+          {({
+            values,
+            errors,
+            touched,
+            handleBlur,
+            setFieldValue,
+            handleChange,
+            handleSubmit,
+            getFieldProps,
+          }) => (
             <>
-              <div className="grid grid-cols-2 gap-5">
+              <div className="grid grid-cols-2 gap-5 gap-y-2">
                 <div>
-                  <div className="mt-10">
-                    <Input
-                      label="Nombre"
-                      labelPlacement="outside"
-                      name="name"
-                      value={values.nombre}
-                      onChange={handleChange('nombre')}
-                      onBlur={handleBlur('nombre')}
-                      placeholder="Ingresa el nombre"
-                      classNames={{
-                        label: 'font-semibold text-gray-500 text-sm',
-                      }}
-                      variant="bordered"
-                    />
-                    {errors.nombre && touched.nombre && (
-                      <span className="text-sm font-semibold text-red-500">{errors.nombre}</span>
-                    )}
-                  </div>
-                  <div className="pt-2">
-                    <Input
-                      label="Nombre comercial"
-                      labelPlacement="outside"
-                      name="name"
-                      value={values.nombreComercial}
-                      onChange={handleChange('nombreComercial')}
-                      onBlur={handleBlur('nombreComercial')}
-                      placeholder="Ingresa el nombre comercial"
-                      classNames={{
-                        label: 'font-semibold text-gray-500 text-sm',
-                      }}
-                      variant="bordered"
-                    />
-                    {errors.nombreComercial && touched.nombreComercial && (
-                      <span className="text-sm font-semibold text-red-500">
-                        {errors.nombreComercial}
-                      </span>
-                    )}
-                  </div>
-                  <div className="pt-2">
-                    <Input
-                      label="Correo electrónico"
-                      labelPlacement="outside"
-                      name="correo"
-                      value={values.correo}
-                      onChange={handleChange('correo')}
-                      onBlur={handleBlur('correo')}
-                      placeholder="Ingresa el correo"
-                      classNames={{
-                        label: 'font-semibold text-gray-500 text-sm',
-                      }}
-                      variant="bordered"
-                    />
-                    {errors.correo && touched.correo && (
-                      <span className="text-sm font-semibold text-red-500">{errors.correo}</span>
-                    )}
-                  </div>
-                  <div className="pt-2">
-                    <Input
-                      label="Teléfono"
-                      labelPlacement="outside"
-                      name="telefono"
-                      value={values.telefono}
-                      onChange={(e) => setFieldValue('telefono', e.currentTarget.value)}
-                      onBlur={handleBlur('telefono')}
-                      placeholder="Ingresa el teléfono"
-                      classNames={{
-                        label: 'font-semibold text-gray-500 text-sm',
-                      }}
-                      variant="bordered"
-                      errorMessage={errors.telefono}
-                      isInvalid={!!errors.telefono && !!touched.telefono}
-                      disabled={false}
-                    />
-                  </div>
-                  <div className="pt-2">
-                    {/* <Autocomplete
-                      label="Tipo de documento"
-                      labelPlacement="outside"
-                      placeholder={'Selecciona el tipo de documento'}
-                      onSelectionChange={(key) => {
-                        if (key) {
-                          setFieldValue('tipoDocumento', key as string);
-                        }
-                      }}
-                      onBlur={handleBlur('tipoDocumento')}
-                      variant="bordered"
-                      classNames={{
-                        base: 'font-semibold text-gray-500 text-sm',
-                      }}
-                      value={values.tipoDocumento}
-                      className="dark:text-white"
-                      isInvalid={!!errors.tipoDocumento && !!touched.tipoDocumento}
-                      errorMessage={errors.tipoDocumento}
-                      selectedKey={values.tipoDocumento}
-                    >
-                      {typesDocumento.map((dep) => (
-                        <AutocompleteItem
-                          value={dep.code}
-                          key={dep.code}
-                          className="dark:text-white"
-                        >
-                          {dep.name}
-                        </AutocompleteItem>
-                      ))}
-                    </Autocomplete> */}
-                    <Autocomplete
-                      label="Tipo de documento"
-                      labelPlacement="outside"
-                      placeholder={'Selecciona el tipo de documento'}
-                      onSelectionChange={(key) => {
-                        if (key) {
-                          setFieldValue('tipoDocumento', key as string);
-                        }
-                      }}
-                      value={values.tipoDocumento} // Asegúrate de que esto esté correcto
-                      onBlur={handleBlur('tipoDocumento')}
-                      variant="bordered"
-                      classNames={{
-                        base: 'font-semibold text-gray-500 text-sm',
-                      }}
-                      className="dark:text-white"
-                      isInvalid={!!errors.tipoDocumento && !!touched.tipoDocumento}
-                      errorMessage={errors.tipoDocumento}
-                      selectedKey={values.tipoDocumento} // Asegúrate de que esto esté correcto
-                    >
-                      {typesDocumento.map((dep) => (
-                        <AutocompleteItem
-                          value={dep.code}
-                          key={dep.code}
-                          className="dark:text-white"
-                        >
-                          {dep.name}
-                        </AutocompleteItem>
-                      ))}
-                    </Autocomplete>
-                  </div>
-                  <div className="pt-2">
-                    <Input
-                      type="number"
-                      label="Número documento"
-                      labelPlacement="outside"
-                      value={values.numDocumento}
-                      onBlur={handleBlur('numDocumento')}
-                      onChange={handleChange('numDocumento')}
-                      placeholder="Ingresa el número documento"
-                      classNames={{
-                        label: 'font-semibold text-gray-500 text-sm',
-                        base: 'font-semibold',
-                      }}
-                      variant="bordered"
-                      errorMessage={errors.numDocumento}
-                      isInvalid={!!errors.numDocumento && !!touched.numDocumento}
-                    />
-                  </div>
-                  <div className="pt-2">
-                    <Autocomplete
-                      onSelectionChange={(key) => {
-                        if (key) {
-                          const depSelected = JSON.parse(key as string) as CodigoActividadEconomica;
-                          setFieldValue('codActividad', depSelected.codigo);
-                          setFieldValue('descActividad', depSelected.valores);
-                        }
-                      }}
-                      onBlur={handleBlur('codActividad')}
-                      label="Actividad"
-                      labelPlacement="outside"
-                      placeholder={'Selecciona la actividad'}
-                      variant="bordered"
-                      classNames={{
-                        base: 'font-semibold text-gray-500 text-sm',
-                      }}
-                      className="dark:text-white"
-                      value={selectedKeyCodActivity}
-                      selectedKey={values.codActividad}
-                      onInputChange={(e) => handleFilter(e)}
-                      isInvalid={!!errors.codActividad && !!touched.codActividad}
-                      errorMessage={errors.codActividad}
-                    >
-                      {cat_019_codigo_de_actividad_economica.map((dep) => (
-                        <AutocompleteItem
-                          value={dep.codigo}
-                          key={dep.codigo}
-                          className="dark:text-white"
-                        >
-                          {dep.valores}
-                        </AutocompleteItem>
-                      ))}
-                    </Autocomplete>
-                  </div>
+                  <Input
+                    label="Nombre"
+                    labelPlacement="outside"
+                    name="name"
+                    value={values.nombre}
+                    onChange={handleChange('nombre')}
+                    onBlur={handleBlur('nombre')}
+                    placeholder="Ingresa el nombre"
+                    classNames={{
+                      label: 'font-semibold text-gray-500 text-sm',
+                    }}
+                    variant="bordered"
+                  />
+                  {errors.nombre && touched.nombre && (
+                    <span className="text-sm font-semibold text-red-500">{errors.nombre}</span>
+                  )}
                 </div>
                 <div>
-                  <div className="mt-4">
-                    <Autocomplete
-                      onSelectionChange={(key) => {
-                        if (key) {
-                          const depSelected = cat_012_departamento.find(
-                            (dep) => dep.codigo === key
-                          ) as CodigoActividadEconomica;
-                          setSelectedCodeDep(depSelected.codigo);
-                          setFieldValue('departamento', depSelected.valores);
-                          setFieldValue('nombreDepartamento', depSelected.valores);
-                        }
-                      }}
-                      onBlur={handleBlur('departamento')}
-                      label="Departamento"
-                      labelPlacement="outside"
-                      placeholder={'Selecciona el departamento'}
-                      variant="bordered"
-                      classNames={{
-                        base: 'font-semibold text-gray-500 text-sm',
-                      }}
-                      className="dark:text-white"
-                      selectedKey={values.departamento}
-                      isInvalid={!!errors.departamento && !!touched.departamento}
-                      errorMessage={errors.departamento}
-                    >
-                      {cat_012_departamento.map((dep) => (
-                        <AutocompleteItem
-                          value={dep.codigo}
-                          key={dep.codigo}
-                          className="dark:text-white"
-                        >
-                          {dep.valores}
-                        </AutocompleteItem>
-                      ))}
-                    </Autocomplete>
-                  </div>
-                  <div className="pt-2">
-                    <Autocomplete
-                      onSelectionChange={(key) => {
-                        if (key) {
-                          const depSelected = cat_013_municipios.find(
-                            (dep) => dep.codigo === key
-                          ) as Departamento;
-                          handleChange('municipio')(depSelected.codigo);
-                          handleChange('nombreMunicipio')(depSelected.valores);
-                        }
-                      }}
-                      onBlur={handleBlur('municipio')}
-                      label="Municipio"
-                      labelPlacement="outside"
-                      placeholder={'Selecciona el municipio'}
-                      variant="bordered"
-                      classNames={{
-                        base: 'font-semibold text-gray-500 text-sm',
-                      }}
-                      className="dark:text-white"
-                      selectedKey={values.municipio}
-                      isInvalid={!!errors.municipio && !!touched.municipio}
-                      errorMessage={errors.municipio}
-                    >
-                      {cat_013_municipios.map((dep) => (
-                        <AutocompleteItem
-                          value={dep.codigo}
-                          key={dep.codigo}
-                          className="dark:text-white"
-                        >
-                          {dep.valores}
-                        </AutocompleteItem>
-                      ))}
-                    </Autocomplete>
-                  </div>
-                  <div className="pt-2">
-                    <Textarea
-                      label="Complemento de dirección"
-                      classNames={{
-                        label: 'font-semibold text-gray-500 text-sm',
-                        input: 'min-h-[90px]',
-                      }}
-                      labelPlacement="outside"
-                      variant="bordered"
-                      placeholder="Ingresa el complemento de dirección"
-                      name="complemento"
-                      value={values.complemento}
-                      onChange={handleChange('complemento')}
-                      onBlur={handleBlur('complemento')}
-                    />
-                    {errors.complemento && touched.complemento && (
-                      <span className="text-sm font-semibold text-red-500">
-                        {errors.complemento}
-                      </span>
-                    )}
-                  </div>
-                  <div className="pt-2">
-                    <Input
-                      label="NIT"
-                      labelPlacement="outside"
-                      name="nit"
-                      value={values.nit}
-                      onChange={handleChange('nit')}
-                      onBlur={handleBlur('nit')}
-                      placeholder="Ingresa su número de nit"
-                      classNames={{
-                        label: 'font-semibold text-gray-500 text-sm',
-                      }}
-                      variant="bordered"
-                    />
-                    {errors.nit && touched.nit && (
-                      <span className="text-sm font-semibold text-red-500">{errors.nit}</span>
-                    )}
-                  </div>
-                  <div className="pt-2">
-                    <Input
-                      type="number"
-                      label="NRC"
-                      labelPlacement="outside"
-                      name="nrc"
-                      value={values.nrc}
-                      onChange={(e) => setNrc(e.target.value)}
-                      placeholder="Ingresa el número de NRC"
-                      classNames={{
-                        label: 'font-semibold text-gray-500 text-sm',
-                      }}
-                      variant="bordered"
-                      isInvalid={!!errors.nrc && !!touched.nrc}
-                      errorMessage={errors.nrc}
-                    />
-                  </div>
+                  <Input
+                    label="Nombre comercial"
+                    labelPlacement="outside"
+                    name="name"
+                    value={values.nombreComercial}
+                    onChange={handleChange('nombreComercial')}
+                    onBlur={handleBlur('nombreComercial')}
+                    placeholder="Ingresa el nombre comercial"
+                    classNames={{
+                      label: 'font-semibold text-gray-500 text-sm',
+                    }}
+                    variant="bordered"
+                  />
+                  {errors.nombreComercial && touched.nombreComercial && (
+                    <span className="text-sm font-semibold text-red-500">
+                      {errors.nombreComercial}
+                    </span>
+                  )}
                 </div>
+                <div>
+                  <Input
+                    label="Correo electrónico"
+                    labelPlacement="outside"
+                    name="correo"
+                    value={values.correo}
+                    onChange={handleChange('correo')}
+                    onBlur={handleBlur('correo')}
+                    placeholder="Ingresa el correo"
+                    classNames={{
+                      label: 'font-semibold text-gray-500 text-sm',
+                    }}
+                    variant="bordered"
+                  />
+                  {errors.correo && touched.correo && (
+                    <span className="text-sm font-semibold text-red-500">{errors.correo}</span>
+                  )}
+                </div>
+                <div>
+                  <Input
+                    label="Teléfono"
+                    labelPlacement="outside"
+                    name="telefono"
+                    value={values.telefono}
+                    onChange={(e) => setFieldValue('telefono', e.currentTarget.value)}
+                    onBlur={handleBlur('telefono')}
+                    placeholder="Ingresa el teléfono"
+                    classNames={{
+                      label: 'font-semibold text-gray-500 text-sm',
+                    }}
+                    variant="bordered"
+                    errorMessage={errors.telefono}
+                    isInvalid={!!errors.telefono && !!touched.telefono}
+                    disabled={false}
+                  />
+                </div>
+                <div>
+                  <Autocomplete
+                    label="Tipo de documento"
+                    labelPlacement="outside"
+                    placeholder={'Selecciona el tipo de documento'}
+                    onSelectionChange={(key) => {
+                      if (key) {
+                        setFieldValue('tipoDocumento', key as string);
+                      }
+                    }}
+                    value={values.tipoDocumento} // Asegúrate de que esto esté correcto
+                    onBlur={handleBlur('tipoDocumento')}
+                    variant="bordered"
+                    classNames={{
+                      base: 'font-semibold text-gray-500 text-sm',
+                    }}
+                    className="dark:text-white"
+                    isInvalid={!!errors.tipoDocumento && !!touched.tipoDocumento}
+                    errorMessage={errors.tipoDocumento}
+                    selectedKey={values.tipoDocumento} // Asegúrate de que esto esté correcto
+                  >
+                    {typesDocumento.map((dep) => (
+                      <AutocompleteItem value={dep.code} key={dep.code} className="dark:text-white">
+                        {dep.name}
+                      </AutocompleteItem>
+                    ))}
+                  </Autocomplete>
+                </div>
+                <div>
+                  <Input
+                    type="number"
+                    label="Número documento"
+                    labelPlacement="outside"
+                    value={values.numDocumento}
+                    onBlur={handleBlur('numDocumento')}
+                    onChange={handleChange('numDocumento')}
+                    placeholder="Ingresa el número documento"
+                    classNames={{
+                      label: 'font-semibold text-gray-500 text-sm',
+                      base: 'font-semibold',
+                    }}
+                    variant="bordered"
+                    errorMessage={errors.numDocumento}
+                    isInvalid={!!errors.numDocumento && !!touched.numDocumento}
+                  />
+                </div>
+                <div>
+                  <Autocomplete
+                    onSelectionChange={(key) => {
+                      if (key) {
+                        const depSelected = JSON.parse(key as string) as CodigoActividadEconomica;
+                        setFieldValue('codActividad', depSelected.codigo);
+                        setFieldValue('descActividad', depSelected.valores);
+                      }
+                    }}
+                    onBlur={handleBlur('codActividad')}
+                    label="Actividad"
+                    labelPlacement="outside"
+                    placeholder={'Selecciona la actividad'}
+                    variant="bordered"
+                    classNames={{
+                      base: 'font-semibold text-gray-500 text-sm',
+                    }}
+                    className="dark:text-white"
+                    value={selectedKeyCodActivity}
+                    selectedKey={values.codActividad}
+                    onInputChange={(e) => handleFilter(e)}
+                    isInvalid={!!errors.codActividad && !!touched.codActividad}
+                    errorMessage={errors.codActividad}
+                  >
+                    {cat_019_codigo_de_actividad_economica.map((dep) => (
+                      <AutocompleteItem
+                        value={dep.codigo}
+                        key={dep.codigo}
+                        className="dark:text-white"
+                      >
+                        {dep.valores}
+                      </AutocompleteItem>
+                    ))}
+                  </Autocomplete>
+                </div>
+
+                <div>
+                  <Autocomplete
+                    onSelectionChange={(key) => {
+                      if (key) {
+                        const depSelected = cat_012_departamento.find(
+                          (dep) => dep.codigo === key
+                        ) as CodigoActividadEconomica;
+                        setSelectedCodeDep(depSelected.codigo);
+                        setFieldValue('departamento', depSelected.valores);
+                        setFieldValue('nombreDepartamento', depSelected.valores);
+                      }
+                    }}
+                    onBlur={handleBlur('departamento')}
+                    label="Departamento"
+                    labelPlacement="outside"
+                    placeholder={'Selecciona el departamento'}
+                    variant="bordered"
+                    classNames={{
+                      base: 'font-semibold text-gray-500 text-sm',
+                    }}
+                    className="dark:text-white"
+                    selectedKey={values.departamento}
+                    isInvalid={!!errors.departamento && !!touched.departamento}
+                    errorMessage={errors.departamento}
+                  >
+                    {cat_012_departamento.map((dep) => (
+                      <AutocompleteItem
+                        value={dep.codigo}
+                        key={dep.codigo}
+                        className="dark:text-white"
+                      >
+                        {dep.valores}
+                      </AutocompleteItem>
+                    ))}
+                  </Autocomplete>
+                </div>
+                <div>
+                  <Autocomplete
+                    onSelectionChange={(key) => {
+                      if (key) {
+                        const depSelected = cat_013_municipios.find(
+                          (dep) => dep.codigo === key
+                        ) as Departamento;
+                        handleChange('municipio')(depSelected.codigo);
+                        handleChange('nombreMunicipio')(depSelected.valores);
+                      }
+                    }}
+                    onBlur={handleBlur('municipio')}
+                    label="Municipio"
+                    labelPlacement="outside"
+                    placeholder={'Selecciona el municipio'}
+                    variant="bordered"
+                    classNames={{
+                      base: 'font-semibold text-gray-500 text-sm',
+                    }}
+                    className="dark:text-white"
+                    selectedKey={values.municipio}
+                    isInvalid={!!errors.municipio && !!touched.municipio}
+                    errorMessage={errors.municipio}
+                  >
+                    {cat_013_municipios.map((dep) => (
+                      <AutocompleteItem
+                        value={dep.codigo}
+                        key={dep.codigo}
+                        className="dark:text-white"
+                      >
+                        {dep.valores}
+                      </AutocompleteItem>
+                    ))}
+                  </Autocomplete>
+                </div>
+
+                <div>
+                  <Input
+                    label="NIT"
+                    labelPlacement="outside"
+                    name="nit"
+                    value={values.nit}
+                    onChange={handleChange('nit')}
+                    onBlur={handleBlur('nit')}
+                    placeholder="Ingresa su número de nit"
+                    classNames={{
+                      label: 'font-semibold text-gray-500 text-sm',
+                    }}
+                    variant="bordered"
+                  />
+                  {errors.nit && touched.nit && (
+                    <span className="text-sm font-semibold text-red-500">{errors.nit}</span>
+                  )}
+                </div>
+                <div>
+                  <Input
+                    type="number"
+                    label="NRC"
+                    labelPlacement="outside"
+                    name="nrc"
+                    value={values.nrc}
+                    onChange={(e) => setNrc(e.target.value)}
+                    placeholder="Ingresa el número de NRC"
+                    classNames={{
+                      label: 'font-semibold text-gray-500 text-sm',
+                    }}
+                    variant="bordered"
+                    isInvalid={!!errors.nrc && !!touched.nrc}
+                    errorMessage={errors.nrc}
+                  />
+                </div>
+                <div className="w-full flex items-end gap-2">
+                  <Input
+                    classNames={{
+                      label: 'font-semibold text-gray-500 text-sm',
+                    }}
+                    placeholder="Ingresa el código de la cuenta"
+                    {...getFieldProps('codCuenta')}
+                    variant="bordered"
+                    label="Cuenta"
+                    labelPlacement="outside"
+                    className="w-full"
+                  />
+                  <SelectedItem
+                    code={values.codCuenta}
+                    setCode={(value) => setFieldValue('codCuenta', value)}
+                  />
+                </div>
+              </div>
+              <div>
+                <Textarea
+                  label="Complemento de dirección"
+                  classNames={{
+                    label: 'font-semibold text-gray-500 text-sm',
+                    input: 'min-h-[90px]',
+                  }}
+                  labelPlacement="outside"
+                  variant="bordered"
+                  placeholder="Ingresa el complemento de dirección"
+                  name="complemento"
+                  value={values.complemento}
+                  onChange={handleChange('complemento')}
+                  onBlur={handleBlur('complemento')}
+                />
+                {errors.complemento && touched.complemento && (
+                  <span className="text-sm font-semibold text-red-500">{errors.complemento}</span>
+                )}
               </div>
               <div className="pt-4">
                 <Button

@@ -52,7 +52,6 @@ export const get_supplier_pagination = (
 };
 
 export const update_supplier = (payload: Supplier, id: number) => {
-  delete payload.id;
   delete payload.isActive;
   delete payload.direccion;
   delete payload.direccionId;
@@ -104,6 +103,15 @@ export const activate_supplier = (id: number) => {
 export const get_supplier_by_id = (id: number) => {
   const token = get_token() ?? '';
   return axios.get<IGetSuppliersById>(API_URL + `/suppliers/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+export const get_supplier_by_nit = (nit: string) => {
+  const token = get_token() ?? '';
+  return axios.get<IGetSuppliersById>(API_URL + `/suppliers/by-nit/${nit}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

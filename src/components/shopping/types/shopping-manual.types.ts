@@ -39,3 +39,27 @@ export interface CodCuentaProps {
     openCatalogModal: (index: number) => void;
     onClose: () => void;
 }
+interface PSuplier {
+    nrc: string;
+    nit: string;
+    tipoDocumento: string;
+    numDocumento: string;
+    telefono: string;
+    correo: string;
+    nombre: string;
+    nombreComercial: string;
+    codActividad: string;
+    descActividad: string;
+}
+
+export interface AddSupplierProps {
+    closeModal: () => void;
+    setCode: (code: string, description: string) => void;
+    supplier?: PSuplier;
+    supplier_direction?: {
+        municipio: string;
+        departamento: string;
+        complemento: string;
+    };
+    id?: number;
+}
