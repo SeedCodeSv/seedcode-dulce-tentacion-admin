@@ -147,7 +147,7 @@ function EditShopping() {
         typeCostSpentValue: values.typeCostSpentValue,
         typeSale: values.typeSale,
         classDocumentCode: values.classDocumentCode,
-        transmitterId: user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
+        transmitterId: user?.correlative?.branch.transmitter.id ?? user?.pointOfSale?.branch.transmitter.id ?? 0,
         classDocumentValue: values.classDocumentValue,
       };
 

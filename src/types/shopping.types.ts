@@ -209,6 +209,7 @@ export interface ShoppingReport {
   typeSale: "Interna" | "Internacion" | "Importacion"
   ivaPerci1: number
   tributes: Tributes[],
+  iva: Tributes[],
   classDocumentCode: ClassDocumentCode,
   classDocumentValue: ClassDocumentValue,
   operationTypeCode: OperationTypeCode,
@@ -223,55 +224,13 @@ export interface ShoppingReport {
 }
 
 interface Tributes {
-  codigo: string,
-  valores: string,
-  value: number
+  id: number;
+  codigo: string;
+  valores: string;
+  value: number;
+  shoppingId: number;
 }
-// export interface ShoppingReport {
-//   id: number;
-//   controlNumber: string;
-//   generationCode: string;
-//   typeDte: string;
-//   fecEmi: string;
-//   declarationDate: string,
-//   horEmi: string;
-//   correlative: number;
-//   totalNoSuj: string;
-//   totalExenta: string;
-//   totalGravada: string;
-//   subTotalVentas: string;
-//   descuNoSuj: string;
-//   descuExenta: string;
-//   descuGravada: string;
-//   porcentajeDescuento: string;
-//   totalDescu: string;
-//   subTotal: string;
-//   totalIva: string;
-//   montoTotalOperacion: string;
-//   totalPagar: string;
-//   totalLetras: string;
-//   pathPdf: string;
-//   pathJson: string;
-//   ivaPerci1: string;
-//   ivaRete1: string;
-//   isActivated: boolean;
-//   branchId: number;
-//   supplierId: number;
-//   supplier: Supplier;
-//   typeSale: "Interna" | "Externa";
-//   classDocumentCode: ClassDocumentCode,
-//   classDocumentValue: ClassDocumentValue,
-//   operationTypeCode: OperationTypeCode,
-//   operationTypeValue: OperationTypeValue,
-//   classificationCode: ClassificationCode,
-//   classificationValue: ClassificationValue,
-//   sectorCode: SectorCode,
-//   sectorValue: SectorValue,
-//   typeCostSpentCode: TypeCostSpentCode,
-//   typeCostSpentValue: TypeCostSpentValue,
-//   iva: ShoppingIva[],
-//   branch: Branch
-// }
+
 
 export interface IGetShoppingReport {
   ok: boolean;
@@ -279,9 +238,37 @@ export interface IGetShoppingReport {
   status: number;
 }
 
+export interface ItemDetails {
+  id: number
+  numberItem: string
+  conceptOfTheTransaction: string
+  should: number,
+  see: number,
+  isActive: boolean,
+  accountCatalogId: number
+  branchId: number | null,
+  itemId: number
+}
+
+interface ShoppingDetails extends ShoppingReport {
+  item: {
+    id: number;
+    noPartida: number;
+    date: string;
+    concepOfTheItem: string;
+    totalDebe: string;
+    totalHaber: string;
+    difference: string;
+    isActive: boolean;
+    typeOfAccountId: number;
+    transmitterId: number;
+    itemsDetails: ItemDetails[]
+  }
+}
+
 export interface IGetShoppingDetails {
   ok: boolean,
-  compra: ShoppingReport,
+  compra: ShoppingDetails,
   status: number
 }
 

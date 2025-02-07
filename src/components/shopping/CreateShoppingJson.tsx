@@ -105,6 +105,7 @@ function CreateShopping() {
 export default CreateShopping;
 const JSONMode = () => {
   const { user } = useAuthStore();
+
   const { actions } = useViewsStore();
   const viewName = actions.find((v) => v.view.name == 'Compras');
   const actionView = viewName?.actions.name || [];
@@ -160,7 +161,7 @@ const JSONMode = () => {
     }
   };
 
-  const [branchName, setBranchSelected] = useState<string>("");
+  const [branchName, setBranchSelected] = useState<string>('');
 
   const [items, setItems] = useState<Items[]>([
     {
@@ -216,11 +217,11 @@ const JSONMode = () => {
     catalogModal.onOpen();
   };
 
-  useEffect(()=>{
-    if(user){
+  useEffect(() => {
+    if (user) {
       setBranchSelected(user?.correlative?.branch.name ?? '');
     }
-  },[user])
+  }, [user]);
 
   const formik = useFormik({
     initialValues: {
@@ -275,7 +276,7 @@ const JSONMode = () => {
       formData.append('transmitterId', transmitterId.toString());
 
       const itemsS = {
-        trasmitterId: transmitterId,
+        transmitterId: transmitterId,
         date: dateItem,
         typeOfAccountId: selectedType,
         concepOfTheItem: description,
@@ -285,15 +286,14 @@ const JSONMode = () => {
         itemDetails: items.map((item, index) => ({
           numberItem: (index + 1).toString(),
           catalog: item.codCuenta,
-          branchId: item.centroCosto !== '' ? Number(item.centroCosto) : undefined,
+          branchId:(values.branchId ?? undefined),
           should: Number(item.debe),
           see: Number(item.haber),
           conceptOfTheTransaction: item.descTran.length > 0 ? item.descTran : 'N/A',
-        }))
-      }
+        })),
+      };
 
       formData.append('itemCatalog', JSON.stringify(itemsS));
-
 
       if (file) {
         formData.append('dte', file);
@@ -309,7 +309,7 @@ const JSONMode = () => {
                 formikHelpers.resetForm();
                 formik.setSubmitting(false);
                 toast.success('Información guardada correctamente');
-                navigate('/shopping');
+                // navigate('/shopping');
               } else {
                 formik.setSubmitting(false);
                 if (isErrorSupplier(data as unknown as { supplier: boolean })) {
@@ -403,7 +403,7 @@ const JSONMode = () => {
     <>
       {actionView.includes('Agregar') ? (
         <>
-          <Modal size='3xl' isOpen={modalSupplier} onClose={() => setModalSupplier(false)}>
+          <Modal size="3xl" isOpen={modalSupplier} onClose={() => setModalSupplier(false)}>
             <ModalContent>
               {() => (
                 <>
@@ -1004,7 +1004,7 @@ const JSONMode = () => {
       ) : (
         <NoAuthorization />
       )}
-       {editIndex !== null && (
+      {editIndex !== null && (
         <Modal
           isOpen={catalogModal.isOpen}
           size="2xl"

@@ -342,7 +342,7 @@ function CreateShoppingManual() {
           transmitterId: transId,
           ...values,
           itemCatalog: {
-            trasmitterId: transId,
+            transmitterId: transId,
             date: dateItem,
             typeOfAccountId: selectedType,
             concepOfTheItem: description,
