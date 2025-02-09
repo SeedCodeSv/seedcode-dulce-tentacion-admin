@@ -47,11 +47,12 @@ import { Items } from '@/pages/contablilidad/types/types';
 import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
 import { useFiscalDataAndParameterStore } from '@/store/fiscal-data-and-paramters.store';
 import CatalogItemsPaginated from './manual/catalog-items-paginated';
+// import { cat_011_tipo_de_item } from '@/services/facturation/cat-011-tipo-de-item.service';
 
 function EditShopping() {
   const { id, controlNumber } = useParams<{ id: string; controlNumber: string }>();
   const { shopping_details, getShoppingDetails } = useShoppingStore();
-  const [tipoDte, setTipoDte] = useState('');
+  // const [tipoDte, setTipoDte] = useState('');
   const styles = useGlobalStyles();
   const { branch_list, getBranchesList } = useBranchesStore();
   const [includePerception, setIncludePerception] = useState(false);
@@ -138,8 +139,8 @@ function EditShopping() {
   const [afecta, setAfecta] = useState('');
   const [exenta, setExenta] = useState('');
   const [totalIva, setTotalIva] = useState('');
-  const [afectaModified, setAfectaModified] = useState(false);
-  const [totalModified, setTotalModified] = useState(false);
+  // const [afectaModified, setAfectaModified] = useState(false);
+  // const [totalModified, setTotalModified] = useState(false);
   const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
@@ -221,7 +222,7 @@ function EditShopping() {
           itemDetails: items.map((item) => ({
             numberItem: item.no,
             catalog: item.codCuenta,
-            branchId:(values.branchId ?? undefined),
+            branchId: values.branchId ?? undefined,
             should: Number(item.debe),
             see: Number(item.haber),
             conceptOfTheTransaction: item.descTran.length > 0 ? item.descTran : 'N/A',
@@ -243,94 +244,38 @@ function EditShopping() {
     },
   });
 
-  const handleChangeAfecta = (e: string) => {
-    const sanitizedValue = e.replace(/[^0-9.]/g, '');
-    const totalAfecta = Number(sanitizedValue);
-
-    setAfecta(sanitizedValue);
-    setAfectaModified(true);
-    setTotalModified(false);
-    const ivaCalculado = totalAfecta * 0.13;
-
-    const itemsS = [...items];
-    itemsS[0].debe = totalAfecta.toString();
-    itemsS[0].haber = '0';
-    itemsS[1].debe = ivaCalculado.toString();
-    itemsS[1].haber = '0';
-    itemsS[2].debe = '0';
-    itemsS[2].haber = (totalAfecta + ivaCalculado).toFixed(2);
-    setItems(itemsS);
-
-    setTotalIva(ivaCalculado.toFixed(2));
-    if (tipoDte !== '14' && includePerception) {
-      const percepcion = totalAfecta * 0.01;
-      setTotal((totalAfecta + Number(exenta) + ivaCalculado + percepcion).toFixed(2));
-      return;
+  const handleDeleteItem = (index: number) => {
+    const itemss = [...items];
+    itemss.splice(index, 1);
+    setItems([...itemss]);
+    if (selectedIndex === index) {
+      setSelectedIndex(null);
     }
-    setTotal((totalAfecta + Number(exenta) + ivaCalculado).toFixed(2));
   };
 
-  const handleChangeExenta = (e: string) => {
-    const sanitizedValue = e.replace(/[^0-9.]/g, '');
-    const totalExenta = Number(sanitizedValue);
+  // const $afecta = useMemo(() => {
+  //   const afecta = items
+  //     .slice(0, items.length - 2)
+  //     .reduce((acc, item) => acc + Number(item.debe) + Number(item.haber), 0)
+  //     .toFixed(2);
 
-    const itemsS = [...items];
-    itemsS[0].debe = (Number(afecta) + totalExenta).toFixed(2);
-    itemsS[0].haber = '0';
-    itemsS[2].debe = '0';
-    itemsS[2].haber = (Number(afecta) + Number(totalExenta) + Number(totalIva)).toFixed(2);
-    setItems(itemsS);
+  //   return afecta;
+  // }, [items]);
 
-    setExenta(sanitizedValue);
-    if (includePerception) {
-      const result = +afecta * 0.01;
-      setTotal(() => (+afecta + totalExenta + result + Number(totalIva)).toFixed(2));
-    }
-    setTotal(() => (+afecta + totalExenta + Number(totalIva)).toFixed(2));
-  };
+  // const $totalIva = useMemo(() => {
+  //   const iva = items[items.length - 2]?.debe
+  //     ? Number(items[items.length - 2].debe) + Number(items[items.length - 2].haber)
+  //     : 0;
+  //   return iva.toFixed(2);
+  // }, [items]);
 
-  const handleChangeTotal = (e: string) => {
-    const sanitizedValue = e.replace(/[^0-9.]/g, '');
-    const totalValue = Number(sanitizedValue);
-
-    setTotalModified(true);
-    setAfectaModified(false);
-
-    const ivaCalculado = totalValue * 0.13;
-    const afectaConIva = totalValue - ivaCalculado;
-
-    if (includePerception) {
-      const percepcion = afectaConIva * 0.01;
-      setTotal((totalValue + percepcion).toFixed(2));
-      return;
-    }
-
-    setAfecta(afectaConIva.toFixed(2));
-    setTotalIva(ivaCalculado.toFixed(2));
-
-    const itemsS = [...items];
-    itemsS[0].debe = (Number(afecta) + Number(exenta)).toFixed(2);
-    itemsS[0].haber = '0';
-    itemsS[1].debe = ivaCalculado.toFixed(2);
-    itemsS[1].haber = '0';
-    itemsS[2].debe = '0';
-    itemsS[2].haber = (Number(afecta) + Number(exenta) + Number(totalIva)).toFixed(2);
-    setItems(itemsS);
-
-    setTotal(sanitizedValue);
-  };
-
-  useEffect(() => {
-    if (afectaModified && total !== '') {
-      handleChangeAfecta(afecta);
-    } else if (totalModified && afecta !== '') {
-      handleChangeTotal(total);
-    }
-  }, [tipoDte]);
-
-  useEffect(() => {
-    handleChangeAfecta(afecta);
-  }, [includePerception]);
+  // const $totalItems = useMemo(() => {
+  //   return (
+  //     items
+  //       .slice(0, items.length - 2)
+  //       .reduce((acc, item) => acc + Number(item.debe) + Number(item.haber), 0) + +$totalIva
+  //   ).toFixed(2);
+  // }, [items]);
 
   useEffect(() => {
     if (shopping_details) {
@@ -365,25 +310,16 @@ function EditShopping() {
         setDescription(shopping_details.item.concepOfTheItem);
         setDateItem(shopping_details.item.date);
         setSelectedType(shopping_details.item.typeOfAccountId);
-        const itemss = [...items];
-        itemss[0].debe = shopping_details.item.itemsDetails[0].should.toString();
-        itemss[0].haber = shopping_details.item.itemsDetails[0].see.toString();
-        itemss[0].codCuenta = shopping_details.item.itemsDetails[0].accountCatalog.code;
-        itemss[0].descCuenta = shopping_details.item.itemsDetails[0].accountCatalog.name;
-        itemss[0].descTran = shopping_details.item.itemsDetails[0].conceptOfTheTransaction;
-        itemss[0].no = shopping_details.item.itemsDetails[0].id;
-        itemss[1].debe = shopping_details.item.itemsDetails[1].should.toString();
-        itemss[1].haber = shopping_details.item.itemsDetails[1].see.toString();
-        itemss[1].codCuenta = shopping_details.item.itemsDetails[1].accountCatalog.code;
-        itemss[1].descCuenta = shopping_details.item.itemsDetails[1].accountCatalog.name;
-        itemss[1].descTran = shopping_details.item.itemsDetails[1].conceptOfTheTransaction;
-        itemss[1].no = shopping_details.item.itemsDetails[1].id;
-        itemss[2].debe = shopping_details.item.itemsDetails[2].should.toString();
-        itemss[2].haber = shopping_details.item.itemsDetails[2].see.toString();
-        itemss[2].codCuenta = shopping_details.item.itemsDetails[2].accountCatalog.code;
-        itemss[2].descCuenta = shopping_details.item.itemsDetails[2].accountCatalog.name;
-        itemss[2].descTran = shopping_details.item.itemsDetails[2].conceptOfTheTransaction;
-        itemss[2].no = shopping_details.item.itemsDetails[2].id;
+
+        const itemss = shopping_details.item.itemsDetails.map((item) => ({
+          debe: (+item.should).toFixed(2),
+          haber: (+item.see).toFixed(2),
+          codCuenta: item.accountCatalog.code,
+          descCuenta: item.accountCatalog.name,
+          descTran: item.conceptOfTheTransaction,
+          no: +item.numberItem,
+        }));
+
         setItems(itemss);
       } else {
         const handleSearchCuenta = (codCuenta: string) => {
@@ -405,26 +341,26 @@ function EditShopping() {
               +shopping_details.totalNoSuj
             ).toFixed(2),
             haber: '0',
-            codCuenta:
-              handleSearchCuenta(fiscalDataAndParameter?.ivaLocalShopping ?? '')?.code ?? '',
-            descCuenta:
-              handleSearchCuenta(fiscalDataAndParameter?.ivaLocalShopping ?? '')?.name ?? '',
+            codCuenta: '',
+            descCuenta: '',
             descTran: '',
             no: 1,
           },
           {
             debe: shopping_details.totalIva,
             haber: '0',
-            codCuenta: handleSearchCuenta(fiscalDataAndParameter?.ivaTributte ?? '')?.code ?? '',
-            descCuenta: handleSearchCuenta(fiscalDataAndParameter?.ivaTributte ?? '')?.name ?? '',
+            codCuenta:
+              handleSearchCuenta(fiscalDataAndParameter?.ivaLocalShopping ?? '')?.code ?? '',
+            descCuenta:
+              handleSearchCuenta(fiscalDataAndParameter?.ivaLocalShopping ?? '')?.name ?? '',
             descTran: '',
             no: 2,
           },
           {
             debe: '0',
             haber: shopping_details.montoTotalOperacion,
-            codCuenta: handleSearchCuenta(shopping_details.supplier.codCuenta ?? '')?.name ?? '',
-            descCuenta: handleSearchCuenta(shopping_details.supplier.codCuenta ?? '')?.name ?? '',
+            codCuenta: handleSearchCuenta('21020101')?.code ?? '',
+            descCuenta: handleSearchCuenta('21020101')?.name ?? '',
             descTran: '',
             no: 3,
           },
@@ -473,14 +409,14 @@ function EditShopping() {
                     if (key) {
                       const fnd = filteredTipoDoc.find((doc) => doc.codigo === key.currentKey);
                       if (fnd) {
-                        setTipoDte(fnd.codigo);
+                        // setTipoDte(fnd.codigo);
                         formik.setFieldValue('tipoDte', fnd.codigo);
                       } else {
-                        setTipoDte('');
+                        // setTipoDte('');
                         formik.setFieldValue('tipoDte', '');
                       }
                     } else {
-                      setTipoDte('');
+                      // setTipoDte('');
                       formik.setFieldValue('tipoDte', '');
                     }
                   }}
@@ -793,6 +729,11 @@ function EditShopping() {
                 </div>
               </div>
               <AccountItem
+                addItems={() => {}}
+                handleDeleteItem={(index) => {
+                  handleDeleteItem(index);
+                }}
+                ivaShoppingCod={fiscalDataAndParameter?.ivaLocalShopping ?? ''}
                 items={items}
                 setItems={setItems}
                 index={0}
@@ -805,7 +746,7 @@ function EditShopping() {
                 $haber={$haber}
                 $total={$total}
                 description={description}
-                date={dateItem}
+                date={dateItem} 
                 selectedType={selectedType}
                 setSelectedType={setSelectedType}
                 setDate={setDateItem}
@@ -827,7 +768,7 @@ function EditShopping() {
                       }}
                       startContent={<span className="text-red-600 font-bold text-lg">$</span>}
                       value={afecta}
-                      onChange={({ currentTarget }) => handleChangeAfecta(currentTarget.value)}
+                      readOnly
                       disabled={isDisabled}
                     />
                   </div>
@@ -843,7 +784,7 @@ function EditShopping() {
                       }}
                       startContent={<span className="text-red-600 font-bold text-lg">$</span>}
                       value={exenta}
-                      onChange={({ currentTarget }) => handleChangeExenta(currentTarget.value)}
+                      readOnly
                       disabled={isDisabled}
                     />
                   </div>
@@ -905,7 +846,6 @@ function EditShopping() {
                       startContent={<span className="text-red-600 font-bold text-lg">$</span>}
                       value={total}
                       readOnly
-                      onChange={({ currentTarget }) => handleChangeTotal(currentTarget.value)}
                       disabled={isDisabled}
                     />
                   </div>

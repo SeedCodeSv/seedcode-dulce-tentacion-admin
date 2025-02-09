@@ -3,17 +3,15 @@ import { Dispatch, SetStateAction } from "react"
 
 export interface ResumeShoppingProps {
     afecta: string,
-    handleChangeAfecta: (e: string) => void
     exenta: string,
-    handleChangeExenta: (e: string) => void
     totalIva: string
     $1perception: number
     total: string
-    handleChangeTotal: (e: string) => void
 }
 
 export interface AccountItemProps {
     items: Items[];
+    ivaShoppingCod: string
     setItems: Dispatch<SetStateAction<Items[]>>;
     index: number;
     selectedIndex: number | null;
@@ -31,6 +29,8 @@ export interface AccountItemProps {
     selectedType: number;
     setSelectedType: Dispatch<SetStateAction<number>>;
     isReadOnly: boolean
+    addItems: () => void
+    handleDeleteItem: (index:number) => void
 }
 
 export interface CodCuentaProps {

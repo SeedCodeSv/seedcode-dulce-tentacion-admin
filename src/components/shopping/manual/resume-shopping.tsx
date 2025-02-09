@@ -1,21 +1,16 @@
 import { Accordion, AccordionItem, Input } from '@nextui-org/react';
 import { ResumeShoppingProps } from '../types/shopping-manual.types';
 
-function ResumeShopping({
-  afecta,
-  handleChangeAfecta,
-  exenta,
-  handleChangeExenta,
-  totalIva,
-  $1perception,
-  total,
-  handleChangeTotal,
-}: ResumeShoppingProps) {
+function ResumeShopping({ afecta, exenta, totalIva, $1perception, total }: ResumeShoppingProps) {
   return (
     <>
       <div className="w-full mt-4 border p-3 rounded-[12px]">
         <Accordion defaultExpandedKeys={['1']}>
-          <AccordionItem key={'1'} textValue='Resumen' title={<p className="text-xl font-semibold">Resumen</p>}>
+          <AccordionItem
+            key={'1'}
+            textValue="Resumen"
+            title={<p className="text-xl font-semibold">Resumen</p>}
+          >
             <div>
               <div className="rounded border shadow dark:border-gray-700 p-5 md:p-10">
                 <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-5">
@@ -29,9 +24,9 @@ function ResumeShopping({
                         label: 'font-semibold',
                         input: 'text-red-600 text-lg font-bold',
                       }}
+                      readOnly
                       startContent={<span className="text-red-600 font-bold text-lg">$</span>}
                       value={afecta}
-                      onChange={({ currentTarget }) => handleChangeAfecta(currentTarget.value)}
                     />
                   </div>
                   <div>
@@ -44,9 +39,9 @@ function ResumeShopping({
                         label: 'font-semibold',
                         input: 'text-red-600 text-lg font-bold',
                       }}
+                      readOnly
                       startContent={<span className="text-red-600 font-bold text-lg">$</span>}
                       value={exenta}
-                      onChange={({ currentTarget }) => handleChangeExenta(currentTarget.value)}
                     />
                   </div>
                   <div>
@@ -86,6 +81,7 @@ function ResumeShopping({
                       variant="bordered"
                       classNames={{ label: 'font-semibold' }}
                       startContent="$"
+                      readOnly
                       type="number"
                       value={afecta}
                       step={0.01}
@@ -104,7 +100,6 @@ function ResumeShopping({
                       startContent={<span className="text-red-600 font-bold text-lg">$</span>}
                       value={total}
                       readOnly
-                      onChange={({ currentTarget }) => handleChangeTotal(currentTarget.value)}
                     />
                   </div>
                 </div>

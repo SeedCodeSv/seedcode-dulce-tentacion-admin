@@ -1,10 +1,19 @@
 import useGlobalStyles from '@/components/global/global.styles';
-import { Accordion, AccordionItem, Input, Select, SelectItem, Textarea } from '@nextui-org/react';
+import {
+  Accordion,
+  AccordionItem,
+  Button,
+  Input,
+  Select,
+  SelectItem,
+  Textarea,
+} from '@nextui-org/react';
 import classNames from 'classnames';
 import { CodCuentaSelect } from './cod-cuenta-select';
 import { useEffect } from 'react';
 import { useTypeOfAccountStore } from '@/store/type-of-aacount.store';
 import { AccountItemProps } from '../types/shopping-manual.types';
+import { Plus, Trash } from 'lucide-react';
 
 function AccountItem({
   items,
@@ -23,7 +32,8 @@ function AccountItem({
   setDate,
   selectedType,
   setSelectedType,
-  isReadOnly,
+  addItems,
+  ivaShoppingCod,
 }: AccountItemProps) {
   const styles = useGlobalStyles();
   const { list_type_of_account, getListTypeOfAccount } = useTypeOfAccountStore();
@@ -49,6 +59,64 @@ function AccountItem({
       setSelectedType(find?.id ?? 0);
     }
   }, [list_type_of_account]);
+
+  const handleInputChange = (index: number, field: 'debe' | 'haber', value: string) => {
+    const inputValue = value.replace(/[^0-9.]/g, ''); // Filtra el valor para permitir solo números y puntos
+    const updatedItems = [...items]; // Crea una copia del estado actual
+    const currentItem = updatedItems[index];
+  
+    // Actualiza el campo correspondiente
+    currentItem[field] = inputValue;
+  
+    // Limpia el campo opuesto si el valor es mayor que 0
+    if (Number(inputValue) > 0) {
+      currentItem[field === 'debe' ? 'haber' : 'debe'] = '';
+    }
+  
+    // Calcula el total excluyendo el último y penúltimo elemento
+    const total = updatedItems
+      .slice(0, -2) // Excluye los últimos dos elementos
+      .map((item) => Number(item.debe) + Number(item.haber))
+      .reduce((a, b) => a + b, 0);
+  
+    const result = Number(total.toFixed(2)); // Redondea a 2 decimales
+    const iva13 = Number((result * 0.13).toFixed(2)); // Calcula el IVA del 13%
+  
+    // Actualiza el penúltimo elemento (IVA)
+    updatedItems[updatedItems.length - 2].debe = iva13.toFixed(2);
+    updatedItems[updatedItems.length - 2].haber = '0';
+  
+    // Actualiza el último elemento (total + IVA)
+    updatedItems[updatedItems.length - 1].haber = (result + iva13).toFixed(2);
+    updatedItems[updatedItems.length - 1].debe = '0';
+  
+    // Actualiza el estado
+    setItems(updatedItems);
+  };
+const handleRemove = (index: number) => {
+  // Filtra el ítem a eliminar y excluye el último y penúltimo elemento
+  const newItems = items.filter((_, i) => i !== index && i < items.length - 2);
+
+  // Calcula el total excluyendo el último y penúltimo elemento
+  const total = newItems
+    .map((item) => Number(item.debe) + Number(item.haber))
+    .reduce((a, b) => a + b, 0);
+    
+
+  const iva13 = Number((total * 0.13).toFixed(2)); // Calcula el IVA del 13%
+
+  const lastItem = items[items.length - 1];
+  const prevItem = items[items.length - 2];
+
+  // Agrega el penúltimo y último elemento con los valores de IVA y total + IVA
+  newItems.push(
+    { ...prevItem, debe: iva13.toFixed(2), haber: '0' }, // Penúltimo elemento (IVA)
+    { ...lastItem, debe: '0', haber: (total + iva13).toFixed(2) } // Último elemento (total + IVA)
+  );
+
+  // Actualiza el estado con los nuevos ítems
+  setItems(newItems);
+};
 
   return (
     <>
@@ -107,7 +175,12 @@ function AccountItem({
                   onValueChange={handleChangeDes}
                 />
               </div>
-              <div className="overflow-x-auto flex flex-col h-full custom-scrollbar mt-4">
+              <div className="w-full flex justify-end py-3">
+                <Button isIconOnly style={styles.thirdStyle} onPress={addItems}>
+                  <Plus size={20} />
+                </Button>
+              </div>
+              <div className="overflow-x-auto flex flex-col h-full custom-scrollbar">
                 <table className="w-full">
                   <thead className="sticky top-0 z-20 bg-white">
                     <tr>
@@ -141,10 +214,16 @@ function AccountItem({
                       >
                         Haber
                       </th>
+                      <th
+                        style={styles.darkStyle}
+                        className="p-3 whitespace-nowrap text-xs font-semibold text-left"
+                      >
+                        Acciones
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
-                    {items.map((_, index) => (
+                    {items.map((item, index) => (
                       <tr
                         className={classNames(
                           'border-b border-slate-200',
@@ -160,6 +239,9 @@ function AccountItem({
                             items={items}
                             setItems={setItems}
                             index={index}
+                            isReadOnly={
+                              item.codCuenta === ivaShoppingCod || index === items.length - 1
+                            }
                           />
                         </td>
                         <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
@@ -192,18 +274,14 @@ function AccountItem({
                               base: 'font-semibold',
                             }}
                             labelPlacement="outside"
-                            isReadOnly={Number(items[index].haber) > 0 || isReadOnly}
+                            isReadOnly={
+                              Number(items[index].haber) > 0 ||
+                              index === items.length - 1 ||
+                              item.codCuenta === ivaShoppingCod
+                            }
                             value={items[index].debe}
                             onChange={(e) => {
-                              const inputValue = e.target.value.replace(/[^0-9.]/g, '');
-                              const updatedItems = [...items];
-                              const currentItem = updatedItems[index];
-
-                              currentItem.debe = inputValue;
-                              if (Number(inputValue) > 0) {
-                                currentItem.haber = '';
-                              }
-                              setItems(updatedItems);
+                              handleInputChange(index, 'debe', e.target.value);
                             }}
                           />
                         </td>
@@ -218,19 +296,27 @@ function AccountItem({
                             }}
                             labelPlacement="outside"
                             value={items[index].haber}
-                            isReadOnly={Number(items[index].debe) > 0 || isReadOnly}
+                            isReadOnly={
+                              Number(items[index].debe) > 0 ||
+                              index === items.length - 1 ||
+                              item.codCuenta === ivaShoppingCod
+                            }
                             onChange={(e) => {
-                              const inputValue = e.target.value.replace(/[^0-9.]/g, '');
-                              const updatedItems = [...items];
-                              const currentItem = updatedItems[index];
-
-                              currentItem.haber = inputValue;
-                              if (Number(inputValue) > 0) {
-                                currentItem.debe = '';
-                              }
-                              setItems(updatedItems);
+                              handleInputChange(index, 'haber', e.target.value);
                             }}
                           />
+                        </td>
+                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                          <Button
+                            isIconOnly
+                            isDisabled={
+                              item.codCuenta === ivaShoppingCod || index === items.length - 1
+                            }
+                            style={styles.dangerStyles}
+                            onPress={() => handleRemove(index)}
+                          >
+                            <Trash size={20} />
+                          </Button>
                         </td>
                       </tr>
                     ))}

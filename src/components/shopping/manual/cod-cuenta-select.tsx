@@ -1,12 +1,13 @@
 import { CodCuentaProps } from '@/pages/contablilidad/types/types';
 import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
-import { Autocomplete, AutocompleteItem, Button } from '@nextui-org/react';
+import { Autocomplete, AutocompleteItem, Button, Input } from '@nextui-org/react';
 import { Search } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 export const CodCuentaSelect = (props: CodCuentaProps) => {
   const { account_catalog_pagination, loading } = useAccountCatalogsStore();
+  const { isReadOnly = false } = props;
   const LIMIT = 20;
 
   // Inicializa solo con el código
@@ -66,7 +67,8 @@ export const CodCuentaSelect = (props: CodCuentaProps) => {
 
   return (
     <>
-      <Autocomplete
+    {isReadOnly ? <Input variant='bordered' value={props.items[props.index].codCuenta + " - " + props.items[props.index].descCuenta} readOnly /> : <Autocomplete
+      readOnly={isReadOnly}
         className="min-w-52"
         placeholder="Buscar cuenta"
         variant="bordered"
@@ -79,7 +81,7 @@ export const CodCuentaSelect = (props: CodCuentaProps) => {
         aria-labelledby="Cuenta"
         onInputChange={handleInputChange} // Usa una función dedicada para cambios en el input
         startContent={
-          <Button isIconOnly size="sm" onPress={() => props.openCatalogModal(props.index)}>
+          <Button isDisabled={isReadOnly} isIconOnly size="sm" onPress={() => props.openCatalogModal(props.index)}>
             <Search />
           </Button>
         }
@@ -100,8 +102,8 @@ export const CodCuentaSelect = (props: CodCuentaProps) => {
             {account.code} - {account.name} {/* Muestra ambos en las opciones */}
           </AutocompleteItem>
         ))}
-      </Autocomplete>
-      <span>{}</span>
+      </Autocomplete> }
+      
     </>
   );
 };

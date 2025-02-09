@@ -27,6 +27,7 @@ export interface CodCuentaProps {
   index: number;
   openCatalogModal: (index: number) => void;
   onClose: () => void;
+  isReadOnly?: boolean;
 }
 
 export interface CodCuentaPropsEdit {

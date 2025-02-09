@@ -43,12 +43,7 @@ function CreateShoppingManual() {
   const [supplierSelected, setSupplierSelected] = useState<Supplier>();
   const [searchNRC, setSearchNRC] = useState('');
   const styles = useGlobalStyles();
-  const [total, setTotal] = useState('');
-  const [afecta, setAfecta] = useState('');
-  const [totalIva, setTotalIva] = useState('');
   const [correlative, setCorrelative] = useState(0);
-  const [afectaModified, setAfectaModified] = useState(false);
-  const [totalModified, setTotalModified] = useState(false);
   const [includePerception, setIncludePerception] = useState(false);
   const [branchName, setBranchName] = useState('');
   const [description, setDescription] = useState('');
@@ -72,110 +67,24 @@ function CreateShoppingManual() {
     if (fiscalDataAndParameter) {
       const itemss = [...items];
       if (fiscalDataAndParameter) {
-        const findedO = account_catalog_pagination.accountCatalogs.find(
+        const findedI = account_catalog_pagination.accountCatalogs.find(
           (acc) => acc.code === fiscalDataAndParameter.ivaLocalShopping
         );
-        const findedI = account_catalog_pagination.accountCatalogs.find(
-          (acc) => acc.code === fiscalDataAndParameter.ivaTributte
+        const findedII = account_catalog_pagination.accountCatalogs.find(
+          (acc) => acc.code === '21020101'
         );
-
-        if (findedO) {
-          itemss[0].codCuenta = findedO.code;
-          itemss[0].descCuenta = findedO.name;
-        }
         if (findedI) {
           itemss[1].codCuenta = findedI.code;
           itemss[1].descCuenta = findedI.name;
+        }
+        if (findedII) {
+          itemss[2].codCuenta = findedII.code;
+          itemss[2].descCuenta = findedII.name;
         }
       }
       setItems([...itemss]);
     }
   }, [fiscalDataAndParameter]);
-
-  const handleChangeAfecta = (e: string) => {
-    const sanitizedValue = e.replace(/[^0-9.]/g, '');
-    const totalAfecta = Number(sanitizedValue);
-
-    setAfecta(sanitizedValue);
-    setAfectaModified(true);
-    setTotalModified(false);
-    const ivaCalculado = totalAfecta * 0.13;
-
-    const itemsS = [...items];
-    itemsS[0].debe = totalAfecta.toString();
-    itemsS[0].haber = '0';
-    itemsS[1].debe = ivaCalculado.toString();
-    itemsS[1].haber = '0';
-    itemsS[2].debe = '0';
-    itemsS[2].haber = (totalAfecta + ivaCalculado).toFixed(2);
-    setItems(itemsS);
-
-    setTotalIva(ivaCalculado.toFixed(2));
-    if (tipoDte !== '14' && includePerception) {
-      const percepcion = totalAfecta * 0.01;
-      setTotal((totalAfecta + Number(exenta) + ivaCalculado + percepcion).toFixed(2));
-      return;
-    }
-    setTotal((totalAfecta + Number(exenta) + ivaCalculado).toFixed(2));
-  };
-
-  const handleChangeExenta = (e: string) => {
-    const sanitizedValue = e.replace(/[^0-9.]/g, '');
-    const totalExenta = Number(sanitizedValue);
-
-    const itemsS = [...items];
-    itemsS[0].debe = (Number(afecta) + totalExenta).toFixed(2);
-    itemsS[0].haber = '0';
-    itemsS[2].debe = '0';
-    itemsS[2].haber = (Number(afecta) + Number(totalExenta) + Number(totalIva)).toFixed(2);
-    setItems(itemsS);
-
-    setExenta(sanitizedValue);
-    if (includePerception) {
-      const result = +afecta * 0.01;
-      setTotal(() => (+afecta + totalExenta + result + Number(totalIva)).toFixed(2));
-    }
-    setTotal(() => (+afecta + totalExenta + Number(totalIva)).toFixed(2));
-  };
-
-  const handleChangeTotal = (e: string) => {
-    const sanitizedValue = e.replace(/[^0-9.]/g, '');
-    const totalValue = Number(sanitizedValue);
-
-    setTotalModified(true);
-    setAfectaModified(false);
-
-    const ivaCalculado = totalValue * 0.13;
-    const afectaConIva = totalValue - ivaCalculado;
-
-    if (includePerception) {
-      const percepcion = afectaConIva * 0.01;
-      setTotal((totalValue + percepcion).toFixed(2));
-      return;
-    }
-
-    setAfecta(afectaConIva.toFixed(2));
-    setTotalIva(ivaCalculado.toFixed(2));
-
-    const itemsS = [...items];
-    itemsS[0].debe = (Number(afecta) + Number(exenta)).toFixed(2);
-    itemsS[0].haber = '0';
-    itemsS[1].debe = ivaCalculado.toFixed(2);
-    itemsS[1].haber = '0';
-    itemsS[2].debe = '0';
-    itemsS[2].haber = (Number(afecta) + Number(exenta) + Number(totalIva)).toFixed(2);
-    setItems(itemsS);
-
-    setTotal(sanitizedValue);
-  };
-
-  useEffect(() => {
-    if (afectaModified && total !== '') {
-      handleChangeAfecta(afecta);
-    } else if (totalModified && afecta !== '') {
-      handleChangeTotal(total);
-    }
-  }, [tipoDte, includePerception]);
 
   useEffect(() => {
     getSupplierPagination(1, 15, searchNRC, '', '', 1);
@@ -199,15 +108,8 @@ function CreateShoppingManual() {
   const navigate = useNavigate();
 
   const $1perception = useMemo(() => {
-    if (includePerception) {
-      if (Number(afecta) > 0) {
-        const result = Number(afecta) * 0.01;
-        return result;
-      }
-      return 0;
-    }
     return 0;
-  }, [afecta, includePerception]);
+  }, [includePerception]);
 
   const [items, setItems] = useState<Items[]>([
     {
@@ -239,6 +141,53 @@ function CreateShoppingManual() {
     },
   ]);
 
+  const addItem = () => {
+    const itemss = [...items];
+    itemss.unshift({
+      no: items.length + 1,
+      codCuenta: '',
+      descCuenta: '',
+      centroCosto: undefined,
+      descTran: '',
+      debe: '0',
+      haber: '0',
+    });
+    setItems(itemss);
+  };
+
+  const handleDeleteItem = (index: number) => {
+    const itemss = [...items];
+    itemss.splice(index, 1);
+    setItems([...itemss]);
+    if (selectedIndex === index) {
+      setSelectedIndex(null);
+    }
+  };
+
+  const $afecta = useMemo(() => {
+    const afecta = items
+      .slice(0, items.length - 2)
+      .reduce((acc, item) => acc + Number(item.debe) + Number(item.haber), 0)
+      .toFixed(2);
+
+    return afecta;
+  }, [items]);
+
+  const $totalIva = useMemo(() => {
+    const iva = items[items.length - 2]?.debe
+      ? Number(items[items.length - 2].debe) + Number(items[items.length - 2].haber)
+      : 0;
+    return iva.toFixed(2);
+  }, [items]);
+
+  const $totalItems = useMemo(() => {
+    return (
+      items
+        .slice(0, items.length - 2)
+        .reduce((acc, item) => acc + Number(item.debe) + Number(item.haber), 0) + +$totalIva
+    ).toFixed(2);
+  }, [items]);
+
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const catalogModal = useDisclosure();
@@ -260,22 +209,10 @@ function CreateShoppingManual() {
     catalogModal.onOpen();
   };
 
-  useEffect(() => {
-    if (supplierSelected) {
-      const itemss = [...items];
-      const finded = account_catalog_pagination.accountCatalogs.find(
-        (acc) => acc.code === supplierSelected?.codCuenta
-      );
-      if (finded) {
-        itemss[2].codCuenta = finded.code;
-        itemss[2].descCuenta = finded.name;
-      }
+  const $exenta = useMemo(() => {
+    return 0;
+  }, []);
 
-      setItems(itemss);
-    }
-  }, [supplierSelected]);
-
-  const [exenta, setExenta] = useState('');
   const formik = useFormik({
     initialValues: {
       operationTypeCode: OperationTypeCode.GRAVADA,
@@ -329,15 +266,15 @@ function CreateShoppingManual() {
         await validateReceptor(supplierSelected);
         const payload = {
           supplierId: supplierSelected.id ?? 0,
-          totalExenta: Number(exenta),
-          totalGravada: Number(afecta),
+          totalExenta: Number($exenta),
+          totalGravada: Number($afecta),
           porcentajeDescuento: 0,
           totalDescu: 0,
-          totalIva: Number(totalIva),
-          subTotal: Number(afecta),
-          montoTotalOperacion: Number(total),
-          totalPagar: Number(total),
-          totalLetras: convertCurrencyFormat(total),
+          totalIva: Number($totalIva),
+          subTotal: Number($afecta),
+          montoTotalOperacion: Number($total),
+          totalPagar: Number($total),
+          totalLetras: convertCurrencyFormat($total.toFixed(2)),
           ivaPerci1: $1perception,
           transmitterId: transId,
           ...values,
@@ -352,7 +289,7 @@ function CreateShoppingManual() {
             itemDetails: items.map((item, index) => ({
               numberItem: (index + 1).toString(),
               catalog: item.codCuenta,
-              branchId:(values.branchId ?? undefined),
+              branchId: values.branchId ?? undefined,
               should: Number(item.debe),
               see: Number(item.haber),
               conceptOfTheTransaction: item.descTran.length > 0 ? item.descTran : 'N/A',
@@ -408,7 +345,10 @@ function CreateShoppingManual() {
             />
             <AccountItem
               items={items}
+              ivaShoppingCod={fiscalDataAndParameter?.ivaLocalShopping ?? 'null'}
+              addItems={addItem}
               setItems={setItems}
+              handleDeleteItem={handleDeleteItem}
               index={0}
               selectedIndex={selectedIndex}
               setSelectedIndex={setSelectedIndex}
@@ -427,14 +367,11 @@ function CreateShoppingManual() {
               isReadOnly
             />
             <ResumeShopping
-              afecta={afecta}
-              handleChangeAfecta={handleChangeAfecta}
-              exenta={exenta}
-              handleChangeExenta={handleChangeExenta}
-              totalIva={totalIva}
+              afecta={$afecta}
+              exenta={$exenta.toFixed(2)}
+              totalIva={$totalIva}
               $1perception={$1perception}
-              total={total}
-              handleChangeTotal={handleChangeTotal}
+              total={$totalItems}
             />
 
             <div className="w-full flex justify-end mt-4">

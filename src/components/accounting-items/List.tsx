@@ -182,7 +182,9 @@ function List() {
                           <Button
                             isIconOnly
                             style={styles.secondaryStyle}
-                            onPress={() => navigate('/edit-accounting-items/' + type.id)}
+                            onPress={() =>
+                              (window.location.href = '/edit-accounting-items/' + type.id)
+                            }
                           >
                             <Pencil />
                           </Button>
