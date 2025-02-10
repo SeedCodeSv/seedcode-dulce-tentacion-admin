@@ -856,6 +856,7 @@ const JSONMode = () => {
                 </div>
                 <AccountItem
                   items={items}
+                  editAccount
                   setItems={setItems}
                   index={0}
                   selectedIndex={selectedIndex}
