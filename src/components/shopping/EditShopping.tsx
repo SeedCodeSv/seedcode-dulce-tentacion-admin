@@ -189,7 +189,15 @@ function EditShopping() {
       fecEmi: yup.string().required('**La fecha es requerida**'),
       branchId: yup.string().required('**Selecciona la sucursal**'),
     }),
+
     onSubmit(values, formikHelpers) {
+
+      if (items.some((item) => !item.codCuenta || item.codCuenta === '')) {
+        toast.error('Revisa los datos de la partida hay lineas sin código de cuenta');
+        formik.setSubmitting(false);
+        return;
+      }
+
       const transId =
         user?.correlative?.branch.transmitter.id ?? user?.pointOfSale?.branch.transmitter.id ?? 0;
       const payload = {
@@ -197,7 +205,7 @@ function EditShopping() {
         branchId: values.branchId,
         numeroControl: values.controlNumber || '',
         tipoDte: values.tipoDte,
-        totalExenta: Number("0") || 0,
+        totalExenta: Number('0') || 0,
         totalGravada: Number($afecta) || 0,
         porcentajeDescuento: 0,
         totalDescu: 0,
@@ -287,7 +295,6 @@ function EditShopping() {
     ).toFixed(2);
   }, [items]);
 
-
   // TODO: Asignar valores a formik y a items
   useEffect(() => {
     if (shopping_details) {
@@ -328,8 +335,8 @@ function EditShopping() {
         const itemss = shopping_details.item.itemsDetails.map((item) => ({
           debe: (+item.should).toFixed(2),
           haber: (+item.see).toFixed(2),
-          codCuenta: item.accountCatalog.code,
-          descCuenta: item.accountCatalog.name,
+          codCuenta: item.accountCatalog?.code ?? '',
+          descCuenta: item.accountCatalog?.name ?? '',
           descTran: item.conceptOfTheTransaction,
           no: +item.numberItem,
         }));
@@ -757,7 +764,7 @@ function EditShopping() {
                 $haber={$haber}
                 $total={$total}
                 description={description}
-                date={dateItem} 
+                date={dateItem}
                 selectedType={selectedType}
                 setSelectedType={setSelectedType}
                 setDate={setDateItem}
@@ -796,7 +803,7 @@ function EditShopping() {
                         input: 'text-red-600 text-lg font-bold',
                       }}
                       startContent={<span className="text-red-600 font-bold text-lg">$</span>}
-                      value={"0"}
+                      value={'0'}
                       readOnly
                       disabled={isDisabled}
                     />

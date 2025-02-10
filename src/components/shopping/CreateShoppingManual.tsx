@@ -298,6 +298,12 @@ function CreateShoppingManual() {
           },
         };
 
+        if (items.some((item) => !item.codCuenta || item.codCuenta === '')) {
+          toast.error('Revisa los datos de la partida hay lineas sin código de cuenta');
+          formik.setSubmitting(false);
+          return;
+        }
+
         axios
           .post(API_URL + '/shoppings/create', payload)
           .then(() => {

@@ -255,6 +255,13 @@ const JSONMode = () => {
       branchId: yup.string().required('**Selecciona la sucursal**'),
     }),
     onSubmit(values, formikHelpers) {
+
+      if (items.some((item) => !item.codCuenta || item.codCuenta === '')) {
+        toast.error('Revisa los datos de la partida hay lineas sin código de cuenta');
+        formik.setSubmitting(false);
+        return;
+      }
+
       const transmitterId = user?.correlative
         ? user?.correlative.branch.transmitter.id
         : (user?.pointOfSale?.branch.transmitter.id ?? 0);
