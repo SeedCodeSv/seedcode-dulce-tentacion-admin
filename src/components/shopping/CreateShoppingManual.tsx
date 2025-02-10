@@ -68,11 +68,14 @@ function CreateShoppingManual() {
       const itemss = [...items];
       if (fiscalDataAndParameter) {
         const findedI = account_catalog_pagination.accountCatalogs.find(
-          (acc) => acc.code === fiscalDataAndParameter.ivaLocalShopping || "110901"
+          (acc) => acc.code === (fiscalDataAndParameter.ivaLocalShopping || "110901")
         );
         const findedII = account_catalog_pagination.accountCatalogs.find(
           (acc) => acc.code === '21020101'
         );
+
+
+
         if (findedI) {
           itemss[1].codCuenta = findedI.code;
           itemss[1].descCuenta = findedI.name;
