@@ -79,6 +79,8 @@ function EditShopping() {
 
   const { user } = useAuthStore();
 
+  const [hasDetails, setHasDetails] = useState(false);
+
   // item
   const [branchName, setBranchName] = useState('');
   const [description, setDescription] = useState('');
@@ -114,6 +116,20 @@ function EditShopping() {
     },
   ]);
 
+  const addItem = () => {
+    const itemss = [...items];
+    itemss.unshift({
+      no: items.length + 1,
+      codCuenta: '',
+      descCuenta: '',
+      centroCosto: undefined,
+      descTran: '',
+      debe: '0',
+      haber: '0',
+    });
+    setItems(itemss);
+  };
+
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const catalogModal = useDisclosure();
@@ -135,12 +151,6 @@ function EditShopping() {
     catalogModal.onOpen();
   };
 
-  const [total, setTotal] = useState('');
-  const [afecta, setAfecta] = useState('');
-  const [exenta, setExenta] = useState('');
-  const [totalIva, setTotalIva] = useState('');
-  // const [afectaModified, setAfectaModified] = useState(false);
-  // const [totalModified, setTotalModified] = useState(false);
   const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
@@ -187,15 +197,15 @@ function EditShopping() {
         branchId: values.branchId,
         numeroControl: values.controlNumber || '',
         tipoDte: values.tipoDte,
-        totalExenta: Number(exenta) || 0,
-        totalGravada: Number(afecta) || 0,
+        totalExenta: Number("0") || 0,
+        totalGravada: Number($afecta) || 0,
         porcentajeDescuento: 0,
         totalDescu: 0,
-        totalIva: Number(totalIva) || 0,
-        subTotal: Number(afecta) || 0,
-        montoTotalOperacion: Number(total) || 0,
-        totalPagar: Number(total) || 0,
-        totalLetras: convertCurrencyFormat(total),
+        totalIva: Number($totalIva) || 0,
+        subTotal: Number($afecta) || 0,
+        montoTotalOperacion: Number($totalItems) || 0,
+        totalPagar: Number($totalItems) || 0,
+        totalLetras: convertCurrencyFormat($totalItems),
         fecEmi: values.fecEmi,
         declarationDate: values.declarationDate,
         ivaPerci1: $1perception || 0,
@@ -253,30 +263,32 @@ function EditShopping() {
     }
   };
 
-  // const $afecta = useMemo(() => {
-  //   const afecta = items
-  //     .slice(0, items.length - 2)
-  //     .reduce((acc, item) => acc + Number(item.debe) + Number(item.haber), 0)
-  //     .toFixed(2);
+  const $afecta = useMemo(() => {
+    const afecta = items
+      .slice(0, items.length - 2)
+      .reduce((acc, item) => acc + Number(item.debe) + Number(item.haber), 0)
+      .toFixed(2);
 
-  //   return afecta;
-  // }, [items]);
+    return afecta;
+  }, [items]);
 
-  // const $totalIva = useMemo(() => {
-  //   const iva = items[items.length - 2]?.debe
-  //     ? Number(items[items.length - 2].debe) + Number(items[items.length - 2].haber)
-  //     : 0;
-  //   return iva.toFixed(2);
-  // }, [items]);
+  const $totalIva = useMemo(() => {
+    const iva = items[items.length - 2]?.debe
+      ? Number(items[items.length - 2].debe) + Number(items[items.length - 2].haber)
+      : 0;
+    return iva.toFixed(2);
+  }, [items]);
 
-  // const $totalItems = useMemo(() => {
-  //   return (
-  //     items
-  //       .slice(0, items.length - 2)
-  //       .reduce((acc, item) => acc + Number(item.debe) + Number(item.haber), 0) + +$totalIva
-  //   ).toFixed(2);
-  // }, [items]);
+  const $totalItems = useMemo(() => {
+    return (
+      items
+        .slice(0, items.length - 2)
+        .reduce((acc, item) => acc + Number(item.debe) + Number(item.haber), 0) + +$totalIva
+    ).toFixed(2);
+  }, [items]);
 
+
+  // TODO: Asignar valores a formik y a items
   useEffect(() => {
     if (shopping_details) {
       if (Number(shopping_details.ivaPerci1) > 0) {
@@ -306,7 +318,9 @@ function EditShopping() {
 
       setBranchName(branch?.name ?? '');
 
+      // ?Si se incluyen
       if (shopping_details.item) {
+        setHasDetails(true);
         setDescription(shopping_details.item.concepOfTheItem);
         setDateItem(shopping_details.item.date);
         setSelectedType(shopping_details.item.typeOfAccountId);
@@ -322,6 +336,8 @@ function EditShopping() {
 
         setItems(itemss);
       } else {
+        // ?Si No existen
+        setHasDetails(false);
         const handleSearchCuenta = (codCuenta: string) => {
           const fun = account_catalog_pagination.accountCatalogs.find(
             (item) => item.code === codCuenta
@@ -366,24 +382,19 @@ function EditShopping() {
           },
         ]);
       }
-
-      setTotal(shopping_details.montoTotalOperacion);
-      setAfecta(shopping_details.totalGravada);
-      setExenta(shopping_details.totalExenta);
-      setTotalIva(shopping_details.totalIva);
     }
   }, [shopping_details]);
 
   const $1perception = useMemo(() => {
     if (includePerception) {
-      if (Number(afecta) > 0) {
-        const result = Number(afecta) * 0.01;
+      if (Number($afecta) > 0) {
+        const result = Number($afecta) * 0.01;
         return result;
       }
       return 0;
     }
     return 0;
-  }, [afecta, includePerception]);
+  }, [includePerception]);
 
   return (
     <Layout title="Editar compra">
@@ -729,7 +740,7 @@ function EditShopping() {
                 </div>
               </div>
               <AccountItem
-                addItems={() => {}}
+                addItems={addItem}
                 handleDeleteItem={(index) => {
                   handleDeleteItem(index);
                 }}
@@ -751,7 +762,9 @@ function EditShopping() {
                 setSelectedType={setSelectedType}
                 setDate={setDateItem}
                 setDescription={setDescription}
-                isReadOnly={true}
+                isReadOnly={!!isDisabled}
+                canAddItem={!isDisabled}
+                editAccount={!hasDetails}
               />
               <div>
                 <p className="py-4 text-xl font-semibold">Resumen: </p>
@@ -767,7 +780,7 @@ function EditShopping() {
                         input: 'text-red-600 text-lg font-bold',
                       }}
                       startContent={<span className="text-red-600 font-bold text-lg">$</span>}
-                      value={afecta}
+                      value={$afecta}
                       readOnly
                       disabled={isDisabled}
                     />
@@ -783,7 +796,7 @@ function EditShopping() {
                         input: 'text-red-600 text-lg font-bold',
                       }}
                       startContent={<span className="text-red-600 font-bold text-lg">$</span>}
-                      value={exenta}
+                      value={"0"}
                       readOnly
                       disabled={isDisabled}
                     />
@@ -800,7 +813,7 @@ function EditShopping() {
                         input: 'text-red-600 text-lg font-bold',
                       }}
                       startContent={<span className="text-red-600 font-bold text-lg">$</span>}
-                      value={totalIva}
+                      value={$totalIva}
                       disabled={isDisabled}
                     />
                   </div>
@@ -828,7 +841,7 @@ function EditShopping() {
                       classNames={{ label: 'font-semibold' }}
                       startContent="$"
                       type="number"
-                      value={afecta}
+                      value={$afecta}
                       step={0.01}
                       disabled={isDisabled}
                     />
@@ -844,7 +857,7 @@ function EditShopping() {
                         input: 'text-red-600 text-lg font-bold',
                       }}
                       startContent={<span className="text-red-600 font-bold text-lg">$</span>}
-                      value={total}
+                      value={$totalItems}
                       readOnly
                       disabled={isDisabled}
                     />

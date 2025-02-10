@@ -135,19 +135,19 @@ const JSONMode = () => {
       const itemss = [...items];
       if (fiscalDataAndParameter) {
         const findedO = account_catalog_pagination.accountCatalogs.find(
-          (acc) => acc.code === fiscalDataAndParameter.ivaLocalShopping
+          (acc) => acc.code === (fiscalDataAndParameter.ivaLocalShopping || "110901")
         );
         const findedI = account_catalog_pagination.accountCatalogs.find(
-          (acc) => acc.code === fiscalDataAndParameter.ivaTributte
+          (acc) => acc.code === '21020101'
         );
 
         if (findedO) {
-          itemss[0].codCuenta = findedO.code;
-          itemss[0].descCuenta = findedO.name;
+          itemss[1].codCuenta = findedO.code;
+          itemss[1].descCuenta = findedO.name;
         }
         if (findedI) {
-          itemss[1].codCuenta = findedI.code;
-          itemss[1].descCuenta = findedI.name;
+          itemss[2].codCuenta = findedI.code;
+          itemss[2].descCuenta = findedI.name;
         }
       }
       setItems([...itemss]);
@@ -309,7 +309,7 @@ const JSONMode = () => {
                 formikHelpers.resetForm();
                 formik.setSubmitting(false);
                 toast.success('Información guardada correctamente');
-                // navigate('/shopping');
+                navigate('/shopping');
               } else {
                 formik.setSubmitting(false);
                 if (isErrorSupplier(data as unknown as { supplier: boolean })) {
@@ -873,6 +873,10 @@ const JSONMode = () => {
                   setDate={setDateItem}
                   setDescription={setDescription}
                   isReadOnly
+                  addItems={()=> {}}
+                  handleDeleteItem={() => {}}
+                  canAddItem={false}
+                  ivaShoppingCod={fiscalDataAndParameter?.ivaLocalShopping || "110901"}
                 />
                 {jsonData && (
                   <div>

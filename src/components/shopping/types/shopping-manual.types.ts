@@ -31,6 +31,8 @@ export interface AccountItemProps {
     isReadOnly: boolean
     addItems: () => void
     handleDeleteItem: (index:number) => void
+    canAddItem: boolean,
+    editAccount: boolean
 }
 
 export interface CodCuentaProps {

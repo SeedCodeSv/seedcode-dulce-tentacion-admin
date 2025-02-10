@@ -367,7 +367,8 @@ function CreateShoppingManual() {
               setSelectedType={setSelectedType}
               setDate={setDateItem}
               setDescription={setDescription}
-              isReadOnly
+              isReadOnly={false}
+              canAddItem={true}
             />
             <ResumeShopping
               afecta={$afecta}

@@ -34,6 +34,9 @@ function AccountItem({
   setSelectedType,
   addItems,
   ivaShoppingCod,
+  canAddItem,
+  isReadOnly,
+  editAccount,
 }: AccountItemProps) {
   const styles = useGlobalStyles();
   const { list_type_of_account, getListTypeOfAccount } = useTypeOfAccountStore();
@@ -64,59 +67,58 @@ function AccountItem({
     const inputValue = value.replace(/[^0-9.]/g, ''); // Filtra el valor para permitir solo números y puntos
     const updatedItems = [...items]; // Crea una copia del estado actual
     const currentItem = updatedItems[index];
-  
+
     // Actualiza el campo correspondiente
     currentItem[field] = inputValue;
-  
+
     // Limpia el campo opuesto si el valor es mayor que 0
     if (Number(inputValue) > 0) {
       currentItem[field === 'debe' ? 'haber' : 'debe'] = '';
     }
-  
+
     // Calcula el total excluyendo el último y penúltimo elemento
     const total = updatedItems
       .slice(0, -2) // Excluye los últimos dos elementos
       .map((item) => Number(item.debe) + Number(item.haber))
       .reduce((a, b) => a + b, 0);
-  
+
     const result = Number(total.toFixed(2)); // Redondea a 2 decimales
     const iva13 = Number((result * 0.13).toFixed(2)); // Calcula el IVA del 13%
-  
+
     // Actualiza el penúltimo elemento (IVA)
     updatedItems[updatedItems.length - 2].debe = iva13.toFixed(2);
     updatedItems[updatedItems.length - 2].haber = '0';
-  
+
     // Actualiza el último elemento (total + IVA)
     updatedItems[updatedItems.length - 1].haber = (result + iva13).toFixed(2);
     updatedItems[updatedItems.length - 1].debe = '0';
-  
+
     // Actualiza el estado
     setItems(updatedItems);
   };
-const handleRemove = (index: number) => {
-  // Filtra el ítem a eliminar y excluye el último y penúltimo elemento
-  const newItems = items.filter((_, i) => i !== index && i < items.length - 2);
+  const handleRemove = (index: number) => {
+    // Filtra el ítem a eliminar y excluye el último y penúltimo elemento
+    const newItems = items.filter((_, i) => i !== index && i < items.length - 2);
 
-  // Calcula el total excluyendo el último y penúltimo elemento
-  const total = newItems
-    .map((item) => Number(item.debe) + Number(item.haber))
-    .reduce((a, b) => a + b, 0);
-    
+    // Calcula el total excluyendo el último y penúltimo elemento
+    const total = newItems
+      .map((item) => Number(item.debe) + Number(item.haber))
+      .reduce((a, b) => a + b, 0);
 
-  const iva13 = Number((total * 0.13).toFixed(2)); // Calcula el IVA del 13%
+    const iva13 = Number((total * 0.13).toFixed(2)); // Calcula el IVA del 13%
 
-  const lastItem = items[items.length - 1];
-  const prevItem = items[items.length - 2];
+    const lastItem = items[items.length - 1];
+    const prevItem = items[items.length - 2];
 
-  // Agrega el penúltimo y último elemento con los valores de IVA y total + IVA
-  newItems.push(
-    { ...prevItem, debe: iva13.toFixed(2), haber: '0' }, // Penúltimo elemento (IVA)
-    { ...lastItem, debe: '0', haber: (total + iva13).toFixed(2) } // Último elemento (total + IVA)
-  );
+    // Agrega el penúltimo y último elemento con los valores de IVA y total + IVA
+    newItems.push(
+      { ...prevItem, debe: iva13.toFixed(2), haber: '0' }, // Penúltimo elemento (IVA)
+      { ...lastItem, debe: '0', haber: (total + iva13).toFixed(2) } // Último elemento (total + IVA)
+    );
 
-  // Actualiza el estado con los nuevos ítems
-  setItems(newItems);
-};
+    // Actualiza el estado con los nuevos ítems
+    setItems(newItems);
+  };
 
   return (
     <>
@@ -138,6 +140,7 @@ const handleRemove = (index: number) => {
                   type="date"
                   label="Fecha de la partida"
                   value={date}
+                  readOnly={isReadOnly}
                   onChange={(e) => setDate(e.target.value)}
                 ></Input>
                 <Select
@@ -148,6 +151,7 @@ const handleRemove = (index: number) => {
                   variant="bordered"
                   label="Tipo de partida"
                   placeholder="Selecciona el tipo de partida"
+                  isDisabled={isReadOnly}
                   selectedKeys={selectedType > 0 ? [selectedType.toString()] : []}
                   onSelectionChange={(key) => {
                     if (key) {
@@ -164,6 +168,7 @@ const handleRemove = (index: number) => {
               </div>
               <div className="mt-3">
                 <Textarea
+                  isReadOnly={isReadOnly}
                   label="Concepto de la partida"
                   placeholder="Ingresa el concepto de la partida"
                   variant="bordered"
@@ -176,9 +181,11 @@ const handleRemove = (index: number) => {
                 />
               </div>
               <div className="w-full flex justify-end py-3">
-                <Button isIconOnly style={styles.thirdStyle} onPress={addItems}>
-                  <Plus size={20} />
-                </Button>
+                {canAddItem && (
+                  <Button isIconOnly style={styles.thirdStyle} onPress={addItems}>
+                    <Plus size={20} />
+                  </Button>
+                )}
               </div>
               <div className="overflow-x-auto flex flex-col h-full custom-scrollbar">
                 <table className="w-full">
@@ -240,10 +247,13 @@ const handleRemove = (index: number) => {
                             setItems={setItems}
                             index={index}
                             isReadOnly={
-                              item.codCuenta === ivaShoppingCod || index === items.length - 1
+                              item.codCuenta === ivaShoppingCod ||
+                              index === items.length - 1 ||
+                              (!editAccount && isReadOnly)
                             }
                           />
                         </td>
+
                         <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                           <p>{branchName}</p>
                         </td>
@@ -257,6 +267,7 @@ const handleRemove = (index: number) => {
                             }}
                             labelPlacement="outside"
                             value={items[index].descTran}
+                            isReadOnly={isReadOnly}
                             onChange={(e) => {
                               const itemss = [...items];
                               itemss[index].descTran = e.target.value;
@@ -277,7 +288,8 @@ const handleRemove = (index: number) => {
                             isReadOnly={
                               Number(items[index].haber) > 0 ||
                               index === items.length - 1 ||
-                              item.codCuenta === ivaShoppingCod
+                              item.codCuenta === ivaShoppingCod ||
+                              isReadOnly
                             }
                             value={items[index].debe}
                             onChange={(e) => {
@@ -299,7 +311,8 @@ const handleRemove = (index: number) => {
                             isReadOnly={
                               Number(items[index].debe) > 0 ||
                               index === items.length - 1 ||
-                              item.codCuenta === ivaShoppingCod
+                              item.codCuenta === ivaShoppingCod ||
+                              isReadOnly
                             }
                             onChange={(e) => {
                               handleInputChange(index, 'haber', e.target.value);
@@ -310,7 +323,9 @@ const handleRemove = (index: number) => {
                           <Button
                             isIconOnly
                             isDisabled={
-                              item.codCuenta === ivaShoppingCod || index === items.length - 1
+                              item.codCuenta === ivaShoppingCod ||
+                              index === items.length - 1 ||
+                              isReadOnly
                             }
                             style={styles.dangerStyles}
                             onPress={() => handleRemove(index)}
