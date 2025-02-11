@@ -8,6 +8,7 @@ export interface Items {
   descTran: string;
   debe: string;
   haber: string;
+  itemId: number;
 }
 
 export interface ItemsEdit {

@@ -121,6 +121,7 @@ function CreateShoppingManual() {
       descTran: '',
       debe: '0',
       haber: '0',
+      itemId: 0,
     },
     {
       no: 1,
@@ -130,6 +131,7 @@ function CreateShoppingManual() {
       descTran: '',
       debe: '0',
       haber: '0',
+      itemId: 0,
     },
     {
       no: 1,
@@ -139,6 +141,7 @@ function CreateShoppingManual() {
       descTran: '',
       debe: '0',
       haber: '0',
+      itemId: 0,
     },
   ]);
 
@@ -152,6 +155,7 @@ function CreateShoppingManual() {
       descTran: '',
       debe: '0',
       haber: '0',
+      itemId: 0,
     });
     setItems(itemss);
   };
@@ -293,6 +297,7 @@ function CreateShoppingManual() {
               branchId: values.branchId ?? undefined,
               should: Number(item.debe),
               see: Number(item.haber),
+              itemId: 0,
               conceptOfTheTransaction: item.descTran.length > 0 ? item.descTran : 'N/A',
             })),
           },

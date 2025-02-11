@@ -95,6 +95,7 @@ function EditShopping() {
       descTran: '',
       debe: '0',
       haber: '0',
+      itemId: 0,
     },
     {
       no: 1,
@@ -104,6 +105,7 @@ function EditShopping() {
       descTran: '',
       debe: '0',
       haber: '0',
+      itemId: 0,
     },
     {
       no: 1,
@@ -113,6 +115,7 @@ function EditShopping() {
       descTran: '',
       debe: '0',
       haber: '0',
+      itemId: 0,
     },
   ]);
 
@@ -126,6 +129,7 @@ function EditShopping() {
       descTran: '',
       debe: '0',
       haber: '0',
+      itemId: 0,
     });
     setItems(itemss);
   };
@@ -244,6 +248,7 @@ function EditShopping() {
             should: Number(item.debe),
             see: Number(item.haber),
             conceptOfTheTransaction: item.descTran.length > 0 ? item.descTran : 'N/A',
+            itemId: item.itemId,
           })),
         },
       };
@@ -339,6 +344,7 @@ function EditShopping() {
           descCuenta: item.accountCatalog?.name ?? '',
           descTran: item.conceptOfTheTransaction,
           no: +item.numberItem,
+          itemId: item.id,
         }));
 
         setItems(itemss);
@@ -368,6 +374,7 @@ function EditShopping() {
             descCuenta: '',
             descTran: '',
             no: 1,
+            itemId: 0,
           },
           {
             debe: shopping_details.totalIva,
@@ -378,6 +385,7 @@ function EditShopping() {
               handleSearchCuenta(fiscalDataAndParameter?.ivaLocalShopping ?? '')?.name ?? '',
             descTran: '',
             no: 2,
+            itemId: 0,
           },
           {
             debe: '0',
@@ -386,6 +394,7 @@ function EditShopping() {
             descCuenta: handleSearchCuenta('21020101')?.name ?? '',
             descTran: '',
             no: 3,
+            itemId: 0,
           },
         ]);
       }
@@ -769,7 +778,7 @@ function EditShopping() {
                 setSelectedType={setSelectedType}
                 setDate={setDateItem}
                 setDescription={setDescription}
-                isReadOnly={!!isDisabled}
+                isReadOnly={false}
                 canAddItem={!isDisabled}
                 editAccount={!hasDetails}
               />

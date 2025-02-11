@@ -135,7 +135,7 @@ const JSONMode = () => {
       const itemss = [...items];
       if (fiscalDataAndParameter) {
         const findedO = account_catalog_pagination.accountCatalogs.find(
-          (acc) => acc.code === (fiscalDataAndParameter.ivaLocalShopping || "110901")
+          (acc) => acc.code === (fiscalDataAndParameter.ivaLocalShopping || '110901')
         );
         const findedI = account_catalog_pagination.accountCatalogs.find(
           (acc) => acc.code === '21020101'
@@ -172,6 +172,7 @@ const JSONMode = () => {
       descTran: '',
       debe: '0',
       haber: '0',
+      itemId: 0,
     },
     {
       no: 1,
@@ -181,6 +182,7 @@ const JSONMode = () => {
       descTran: '',
       debe: '0',
       haber: '0',
+      itemId: 0,
     },
     {
       no: 1,
@@ -190,6 +192,7 @@ const JSONMode = () => {
       descTran: '',
       debe: '0',
       haber: '0',
+      itemId: 0,
     },
   ]);
 
@@ -255,7 +258,6 @@ const JSONMode = () => {
       branchId: yup.string().required('**Selecciona la sucursal**'),
     }),
     onSubmit(values, formikHelpers) {
-
       if (items.some((item) => !item.codCuenta || item.codCuenta === '')) {
         toast.error('Revisa los datos de la partida hay lineas sin código de cuenta');
         formik.setSubmitting(false);
@@ -293,9 +295,10 @@ const JSONMode = () => {
         itemDetails: items.map((item, index) => ({
           numberItem: (index + 1).toString(),
           catalog: item.codCuenta,
-          branchId:(values.branchId ?? undefined),
+          branchId: values.branchId ?? undefined,
           should: Number(item.debe),
           see: Number(item.haber),
+          itemId: 0,
           conceptOfTheTransaction: item.descTran.length > 0 ? item.descTran : 'N/A',
         })),
       };
@@ -880,11 +883,11 @@ const JSONMode = () => {
                   setSelectedType={setSelectedType}
                   setDate={setDateItem}
                   setDescription={setDescription}
-                  isReadOnly
-                  addItems={()=> {}}
+                  isReadOnly={false}
+                  addItems={() => {}}
                   handleDeleteItem={() => {}}
                   canAddItem={false}
-                  ivaShoppingCod={fiscalDataAndParameter?.ivaLocalShopping || "110901"}
+                  ivaShoppingCod={fiscalDataAndParameter?.ivaLocalShopping || '110901'}
                 />
                 {jsonData && (
                   <div>
