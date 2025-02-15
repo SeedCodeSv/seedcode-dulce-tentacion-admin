@@ -240,7 +240,7 @@ const JSONMode = () => {
       classDocumentValue: ClassDocumentValue.DOCUMENTO_TRIBUTARIO_ELECTRONICO,
       typeSale: 'interna',
       declarationDate: formatDate(),
-      branchId: user?.correlative?.branchId ?? 0,
+      branchId: 0,
     },
     validationSchema: yup.object().shape({
       operationTypeCode: yup.string().required('**El tipo de operación es requerido**'),
@@ -255,7 +255,10 @@ const JSONMode = () => {
       classDocumentValue: yup.string().required('**La clasificación es requerida**'),
       typeSale: yup.string().required('**El tipo de venta es requerido**'),
       declarationDate: yup.string().required('**La fecha es requerida**'),
-      branchId: yup.string().required('**Selecciona la sucursal**'),
+      branchId: yup
+        .number()
+        .required('**Selecciona la sucursal**')
+        .min(1, '**Selecciona la sucursal**'),
     }),
     onSubmit(values, formikHelpers) {
       if (items.some((item) => !item.codCuenta || item.codCuenta === '')) {

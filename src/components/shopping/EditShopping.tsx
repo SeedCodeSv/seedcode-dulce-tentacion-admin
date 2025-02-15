@@ -191,11 +191,13 @@ function EditShopping() {
       controlNumber: yup.string().required('**El número de control es requerido**'),
       declarationDate: yup.string().required('**La fecha es requerida**'),
       fecEmi: yup.string().required('**La fecha es requerida**'),
-      branchId: yup.string().required('**Selecciona la sucursal**'),
+      branchId: yup
+        .number()
+        .required('**Selecciona la sucursal**')
+        .min(1, '**Selecciona la sucursal**'),
     }),
 
     onSubmit(values, formikHelpers) {
-
       if (items.some((item) => !item.codCuenta || item.codCuenta === '')) {
         toast.error('Revisa los datos de la partida hay lineas sin código de cuenta');
         formik.setSubmitting(false);
