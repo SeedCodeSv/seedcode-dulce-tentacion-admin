@@ -26,7 +26,7 @@ import classNames from 'classnames';
 import { Plus, Search, Trash } from 'lucide-react';
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
-import { CodCuentaProps } from './types/types';
+import { CodCuentaProps, Items } from './types/types';
 import { useAccountingItemsStore } from '@/store/accounting-items.store';
 import { useNavigate } from 'react-router';
 import { useFormik } from 'formik';
@@ -34,17 +34,7 @@ import * as yup from 'yup';
 import { verify_item_count } from '@/services/accounting-items.service';
 import axios from 'axios';
 import { API_URL } from '@/utils/constants';
-import { useAuthStore } from '@/store/auth.store';
-
-interface Items {
-  no: number;
-  codCuenta: string;
-  descCuenta: string;
-  centroCosto?: string;
-  descTran: string;
-  debe: string;
-  haber: string;
-}
+import { useAuthStore } from '@/store/auth.store'
 
 const AccountTypes = [
   { key: 'Rubro', value: 'Rubro', label: 'Rubro' },
@@ -90,6 +80,7 @@ function AddAccountingItems() {
 
   const [items, setItems] = useState<Items[]>([
     {
+      itemId: 0,
       no: 1,
       codCuenta: '',
       descCuenta: '',
@@ -109,6 +100,7 @@ function AddAccountingItems() {
       debe: '0',
       haber: '0',
       no: items.length + 1,
+      itemId: 0,
     };
     setItems((prevItems) => {
       const updatedItems = [...prevItems, newItem];
@@ -292,6 +284,7 @@ function AddAccountingItems() {
       });
     },
   });
+  
 
   return (
     <Layout title="Agregar Partida Contable">

@@ -36,6 +36,7 @@
     "classnames": "^2.5.1",
     "clsx": "^2.1.1",
     "crypto-js": "^4.2.0",
+    "debounce": "^2.2.0",
     "dexie": "^4.0.4",
     "dexie-react-hooks": "^1.1.7",
     "exceljs": "^4.4.0",

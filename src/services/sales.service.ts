@@ -6,6 +6,7 @@ import {
   IGetNotesOfSale,
   IGetSaleDetails,
   IGetSales,
+  IGetSalesByItem,
   IGetSalesByStatusAndDates,
   IGetSalesContingence,
 } from '../types/sales.types';
@@ -169,8 +170,10 @@ export const get_sales_by_ccf = (transmiter: number, month: string, year: number
   );
 };
 
-export const get_factura_by_month = (branchId: number, month: number, year:number) => {
-  return axios.get<IGetFeMonth>(API_URL + `/reports/get-fe-by-month/${branchId}?month=${month}&year=${year}`);
+export const get_factura_by_month = (branchId: number, month: number, year: number) => {
+  return axios.get<IGetFeMonth>(
+    API_URL + `/reports/get-fe-by-month/${branchId}?month=${month}&year=${year}`
+  );
 };
 
 export const get_sales_status_and_dates = (
@@ -230,4 +233,10 @@ export const get_sale_pdf_debit_note = (saleId: number, type: string) => {
 
 export const get_sales_in_contingence = (branchId: number) => {
   return axios.get<IGetSalesContingence>(API_URL + `/sales/sales-contingence/${branchId}`);
-}
+};
+
+export const get_sales_by_item = (transId: number, startDate: string, endDate: string) => {
+  return axios.get<IGetSalesByItem>(
+    API_URL + `/reports/by-items/${transId}?startDate=${startDate}&endDate=${endDate}`
+  );
+};
