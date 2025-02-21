@@ -19,7 +19,7 @@ export interface salesStore {
   contingence_sales: SaleContingence[];
   saleByItem: ISaleByItem[],
   loadingSalesByItem: boolean,
-  getSaleByItem: (transId: number, startDate: string, endDate: string) => void;
+  getSaleByItem: (transId: number, startDate: string, endDate: string, branches: number[] | undefined) => void;
   getFeMonth: (branchId: number, month: number, year: number) => void;
   getCffMonth: (branchId: number, month: string, year:number) => void;
   postSales: (

@@ -42,9 +42,9 @@ export const useSalesStore = create<salesStore>((set, get) => ({
   contingence_sales: [],
   saleByItem: [],
   loadingSalesByItem: false,
-  getSaleByItem(transId, startDate, endDate) {
+  getSaleByItem(transId, startDate, endDate, branches) {
     set({ loadingSalesByItem: true });
-    get_sales_by_item(transId, startDate, endDate)
+    get_sales_by_item(transId, startDate, endDate, branches)
       .then(({ data }) => {
         set({ saleByItem: data.data, loadingSalesByItem: false });
       })

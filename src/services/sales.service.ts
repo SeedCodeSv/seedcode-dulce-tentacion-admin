@@ -235,8 +235,19 @@ export const get_sales_in_contingence = (branchId: number) => {
   return axios.get<IGetSalesContingence>(API_URL + `/sales/sales-contingence/${branchId}`);
 };
 
-export const get_sales_by_item = (transId: number, startDate: string, endDate: string) => {
-  return axios.get<IGetSalesByItem>(
-    API_URL + `/reports/by-items/${transId}?startDate=${startDate}&endDate=${endDate}`
-  );
+export const get_sales_by_item = (
+  transId: number,
+  startDate: string,
+  endDate: string,
+  branches: number[] | undefined
+) => {
+  const params = new URLSearchParams();
+  params.append('startDate', startDate);
+  params.append('endDate', endDate);
+
+  if (branches) {
+    branches.forEach((branch) => params.append('branches', branch.toString()));
+  }
+
+  return axios.get<IGetSalesByItem>(API_URL + `/reports/by-items/${transId}?${params.toString()}`);
 };
