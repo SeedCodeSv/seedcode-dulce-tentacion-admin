@@ -102,6 +102,8 @@ function AddItemsBySales() {
       const cfeSinIva = Number(((item.salesCfe + item.salesTicketCfe) / 1.13).toFixed(2));
       const cfeIva = Number((item.salesCfe + item.salesTicketCfe - cfeSinIva).toFixed(2));
 
+      const description = `REGISTRO DE VENTAS DEL DIA - ${item.branch.name}`;
+
       items.push({
         no: items.length + 1,
         codCuenta: fiscalDataAndParameter?.generalBox ?? '',
