@@ -144,19 +144,29 @@ function CreateShoppingManual() {
       itemId: 0,
     },
   ]);
-
-  const addItem = () => {
+  const [$exenta, setExenta] = useState('0');
+  const addItem = (newItem?: Items) => {
     const itemss = [...items];
-    itemss.unshift({
-      no: items.length + 1,
-      codCuenta: '',
-      descCuenta: '',
-      centroCosto: undefined,
-      descTran: '',
-      debe: '0',
-      haber: '0',
-      itemId: 0,
-    });
+
+    // Si se proporciona un nuevo item (desde EXENTA)
+    if (newItem) {
+      newItem.no = items.length + 1;
+      itemss.unshift(newItem);
+
+      setExenta(newItem.debe);
+    } else {
+      itemss.unshift({
+        no: items.length + 1,
+        codCuenta: '',
+        descCuenta: '',
+        centroCosto: undefined,
+        descTran: '',
+        debe: '0',
+        haber: '0',
+        itemId: 0,
+      });
+    }
+
     setItems(itemss);
   };
 
@@ -171,10 +181,16 @@ function CreateShoppingManual() {
 
   const $afecta = useMemo(() => {
     const afecta = items
-      .slice(0, items.length - 2)
-      .reduce((acc, item) => acc + Number(item.debe) + Number(item.haber), 0)
+      .slice(0, items.length - 2) 
+      .reduce((acc, item) => {
+        // Verificar si item.descTran está definido y si NO es EXENTA
+        if (!item.descTran || !item.descTran.startsWith("Exenta:")) {
+          return acc + Number(item.debe) + Number(item.haber);
+        }
+        return acc; 
+      }, 0)
       .toFixed(2);
-
+  
     return afecta;
   }, [items]);
 
@@ -202,7 +218,7 @@ function CreateShoppingManual() {
   }, [items]);
 
   const $haber = useMemo(() => {
-    return items.reduce((acc, item) => acc + Number(item.haber), 0);
+    return items.reduce((acc, item) => acc + Number(item.haber), 0 + Number($exenta || 0));
   }, [items]);
 
   const $total = useMemo(() => {
@@ -214,9 +230,6 @@ function CreateShoppingManual() {
     catalogModal.onOpen();
   };
 
-  const $exenta = useMemo(() => {
-    return 0;
-  }, []);
 
   const formik = useFormik({
     initialValues: {
@@ -271,7 +284,7 @@ function CreateShoppingManual() {
         await validateReceptor(supplierSelected);
         const payload = {
           supplierId: supplierSelected.id ?? 0,
-          totalExenta: Number($exenta),
+          totalExenta: Number($exenta ?? 0),
           totalGravada: Number($afecta),
           porcentajeDescuento: 0,
           totalDescu: 0,
@@ -379,13 +392,15 @@ function CreateShoppingManual() {
               setDescription={setDescription}
               isReadOnly={false}
               canAddItem={true}
+              setExenta={setExenta}
             />
             <ResumeShopping
               afecta={$afecta}
-              exenta={$exenta.toFixed(2)}
+              exenta={$exenta}
               totalIva={$totalIva}
               $1perception={$1perception}
               total={$totalItems}
+              addItems={addItem}
             />
 
             <div className="w-full flex justify-end mt-4">

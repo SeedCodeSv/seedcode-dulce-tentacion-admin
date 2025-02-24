@@ -37,19 +37,25 @@ function AccountItem({
   canAddItem,
   isReadOnly,
   editAccount,
+  setExenta
 }: AccountItemProps) {
   const styles = useGlobalStyles();
   const { list_type_of_account, getListTypeOfAccount } = useTypeOfAccountStore();
 
   const handleChangeDes = (text: string) => {
     setDescription(text);
+    const newItems = items.map((item) => {
+      // Si el item tiene "comienza con "Exenta:", no se actualiza
+      if (item.descTran && item.descTran.startsWith('Exenta:')) {
+        return item;
+      }
+      return {
+        ...item,
+        descTran: text,
+      };
+    });
 
-    const newitems = items.map((item) => ({
-      ...item,
-      descTran: text,
-    }));
-
-    setItems(newitems);
+    setItems(newItems);
   };
 
   useEffect(() => {
@@ -97,8 +103,16 @@ function AccountItem({
     setItems(updatedItems);
   };
   const handleRemove = (index: number) => {
+    // Verificar si la fila eliminada es EXENTA
+    const isExenta = items[index].descTran.startsWith("Exenta:");
+
     // Filtra el ítem a eliminar y excluye el último y penúltimo elemento
     const newItems = items.filter((_, i) => i !== index && i < items.length - 2);
+
+    // Si la fila eliminada es EXENTA, actualizar el estado $exenta a '0'
+    if (isExenta) {
+      setExenta('0');
+    }
 
     // Calcula el total excluyendo el último y penúltimo elemento
     const total = newItems
@@ -270,8 +284,14 @@ function AccountItem({
                             isReadOnly={isReadOnly}
                             onChange={(e) => {
                               const itemss = [...items];
-                              itemss[index].descTran = e.target.value;
-                              setItems([...items]);
+                              const currentValue = e.target.value;
+                              if (itemss[index].descTran.startsWith('Exenta:')) {
+                                const editablePart = currentValue.replace('Exenta: ', '');
+                                itemss[index].descTran = `Exenta: ${editablePart}`;
+                              } else {
+                                itemss[index].descTran = currentValue;
+                              }
+                              setItems(itemss);
                             }}
                           />
                         </td>
@@ -289,7 +309,8 @@ function AccountItem({
                               Number(items[index].haber) > 0 ||
                               index === items.length - 1 ||
                               item.codCuenta === ivaShoppingCod ||
-                              isReadOnly
+                              isReadOnly ||
+                              items[index].descTran.startsWith('Exenta:')
                             }
                             value={items[index].debe}
                             onChange={(e) => {

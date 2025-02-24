@@ -7,6 +7,7 @@ export interface ResumeShoppingProps {
     totalIva: string
     $1perception: number
     total: string
+    addItems: (newItem?: Items) => void
 }
 
 export interface AccountItemProps {
@@ -33,6 +34,7 @@ export interface AccountItemProps {
     handleDeleteItem: (index:number) => void
     canAddItem: boolean,
     editAccount: boolean
+    setExenta: Dispatch<SetStateAction<string>>
 }
 
 export interface CodCuentaProps {
