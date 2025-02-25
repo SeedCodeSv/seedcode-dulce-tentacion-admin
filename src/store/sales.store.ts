@@ -5,6 +5,7 @@ import {
   get_notes_of_sale,
   get_sale_details,
   get_sales_by_ccf,
+  get_sales_by_item,
   get_sales_in_contingence,
   get_sales_status_and_dates,
   post_sales,
@@ -39,6 +40,18 @@ export const useSalesStore = create<salesStore>((set, get) => ({
   },
   loading_facturas: false,
   contingence_sales: [],
+  saleByItem: [],
+  loadingSalesByItem: false,
+  getSaleByItem(transId, startDate, endDate, branches) {
+    set({ loadingSalesByItem: true });
+    get_sales_by_item(transId, startDate, endDate, branches)
+      .then(({ data }) => {
+        set({ saleByItem: data.data, loadingSalesByItem: false });
+      })
+      .catch(() => {
+        set({ saleByItem: [], loadingSalesByItem: false });
+      });
+  },
   getCffMonth(branchId, month, year) {
     set({ loading_creditos: false });
     get_sales_by_ccf(branchId, month, year)
@@ -214,7 +227,7 @@ export const useSalesStore = create<salesStore>((set, get) => ({
       .catch(() => {
         set({
           contingence_sales: [],
-        })
-      })
+        });
+      });
   },
 }));

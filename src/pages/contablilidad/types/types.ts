@@ -38,3 +38,11 @@ export interface CodCuentaPropsEdit {
   openCatalogModal: (index: number) => void;
   onClose: () => void;
 }
+
+export interface ItemListProps {
+  items: Items[];
+  openModal: () => void;
+  isOpen: boolean;
+  setItems: React.Dispatch<React.SetStateAction<Items[]>>;
+  getBranchName: (id: number) => string;
+}

@@ -108,13 +108,18 @@ function List() {
               </SelectItem>
             ))}
           </Select>
-          <Button
-            isIconOnly
-            style={styles.secondaryStyle}
-            onPress={() => navigate('/add-accounting-items')}
-          >
-            <Plus />
-          </Button>
+          <div className="flex gap-2 items-end justify-end">
+            <Button style={styles.thirdStyle} onPress={() => navigate('/add-item-by-sales')}>
+              Generar partida de ventas
+            </Button>
+            <Button
+              isIconOnly
+              style={styles.secondaryStyle}
+              onPress={() => navigate('/add-accounting-items')}
+            >
+              <Plus />
+            </Button>
+          </div>
         </div>
         <div className="overflow-x-auto flex flex-col h-full custom-scrollbar mt-4">
           <table className="w-full">
