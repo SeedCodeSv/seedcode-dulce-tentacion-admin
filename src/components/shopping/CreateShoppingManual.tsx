@@ -181,25 +181,33 @@ function CreateShoppingManual() {
 
   const $afecta = useMemo(() => {
     const afecta = items
+      .slice(0, items.length - 2)
+      .reduce((acc, item) => {
+        // Verificar si item.descTran está definido y si NO es EXENTA
+        if (!item.descTran || !item.descTran.startsWith('Exenta:')) {
+          return acc + Number(item.debe) + Number(item.haber);
+        }
+        return acc;
+      }, 0)
+      .toFixed(2);
+
+    return afecta;
+  }, [items]);
+
+  const $totalIva = useMemo(() => {
+    const iva = items
       .slice(0, items.length - 2) 
       .reduce((acc, item) => {
         // Verificar si item.descTran está definido y si NO es EXENTA
         if (!item.descTran || !item.descTran.startsWith("Exenta:")) {
           return acc + Number(item.debe) + Number(item.haber);
         }
-        return acc; 
-      }, 0)
-      .toFixed(2);
+        return acc;
+      }, 0) * 0.13; 
   
-    return afecta;
+    return iva.toFixed(2); 
   }, [items]);
 
-  const $totalIva = useMemo(() => {
-    const iva = items[items.length - 2]?.debe
-      ? Number(items[items.length - 2].debe) + Number(items[items.length - 2].haber)
-      : 0;
-    return iva.toFixed(2);
-  }, [items]);
 
   const $totalItems = useMemo(() => {
     return (
@@ -229,7 +237,6 @@ function CreateShoppingManual() {
     setEditIndex(index);
     catalogModal.onOpen();
   };
-
 
   const formik = useFormik({
     initialValues: {
@@ -318,7 +325,7 @@ function CreateShoppingManual() {
 
         if (items.some((item) => !item.codCuenta || item.codCuenta === '')) {
           toast.error('Revisa los datos de la partida hay lineas sin código de cuenta');
-          formik.setSubmitting(false);
+          formikHelpers.setSubmitting(false);
           return;
         }
 
@@ -351,7 +358,9 @@ function CreateShoppingManual() {
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              formik.submitForm();
+              if (!formik.isSubmitting) {
+                formik.submitForm();
+              }
             }}
             className="w-full h-full overflow-y-auto p-5"
           >
@@ -404,8 +413,14 @@ function CreateShoppingManual() {
             />
 
             <div className="w-full flex justify-end mt-4">
-              <Button type="submit" className="px-16" style={styles.thirdStyle}>
-                Guardar
+              <Button
+                type="submit"
+                className="px-16"
+                style={styles.thirdStyle}
+                isDisabled={formik.isSubmitting}
+                isLoading={formik.isSubmitting}
+              >
+                {formik.isSubmitting ? 'Guardando...' : 'Guardar'}
               </Button>
             </div>
           </form>

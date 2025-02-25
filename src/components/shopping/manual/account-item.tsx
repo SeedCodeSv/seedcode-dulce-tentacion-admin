@@ -104,7 +104,7 @@ function AccountItem({
   };
   const handleRemove = (index: number) => {
     // Verificar si la fila eliminada es EXENTA
-    const isExenta = items[index].descTran.startsWith("Exenta:");
+    const isExenta = items[index]?.descTran?.startsWith("Exenta:");
 
     // Filtra el ítem a eliminar y excluye el último y penúltimo elemento
     const newItems = items.filter((_, i) => i !== index && i < items.length - 2);
@@ -310,7 +310,7 @@ function AccountItem({
                               index === items.length - 1 ||
                               item.codCuenta === ivaShoppingCod ||
                               isReadOnly ||
-                              items[index].descTran.startsWith('Exenta:')
+                              (items[index].descTran ? items[index].descTran.startsWith('Exenta:') : false)
                             }
                             value={items[index].debe}
                             onChange={(e) => {
