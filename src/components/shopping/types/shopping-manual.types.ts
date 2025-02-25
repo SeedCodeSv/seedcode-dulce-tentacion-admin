@@ -34,7 +34,7 @@ export interface AccountItemProps {
     handleDeleteItem: (index:number) => void
     canAddItem: boolean,
     editAccount: boolean
-    setExenta: Dispatch<SetStateAction<string>>
+    setExenta?: Dispatch<SetStateAction<string>>
 }
 
 export interface CodCuentaProps {

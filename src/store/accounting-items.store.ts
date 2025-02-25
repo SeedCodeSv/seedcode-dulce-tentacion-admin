@@ -16,6 +16,7 @@ export const useAccountingItemsStore = create<AccountingItemsServiceStore>((set,
     limit: get_accounting_item_search().limit,
     startDate: get_accounting_item_search().startDate,
     endDate: get_accounting_item_search().endDate,
+    typeItem: get_accounting_item_search().typeItem,
   },
   accounting_items: [],
   loading: false,
@@ -55,14 +56,14 @@ export const useAccountingItemsStore = create<AccountingItemsServiceStore>((set,
         }));
       });
   },
-  getAccountingItems: (page: number, limit: number, startDate: string, endDate: string) => {
+  getAccountingItems: (page: number, limit: number, startDate: string, endDate: string, typeItem: string) => {
     set((state) => ({
       ...state,
       loading: true,
-      search_item: { page, limit, startDate, endDate, is_first_time: true },
+      search_item: { page, limit, startDate, endDate, typeItem, is_first_time: true },
     }));
-    localStorage.setItem('accounting_items', JSON.stringify({ page, limit, startDate, endDate }));
-    return get_accounting_items(page, limit, startDate, endDate)
+    localStorage.setItem('accounting_items', JSON.stringify({ page, limit, startDate, endDate, typeItem }));
+    return get_accounting_items(page, limit, startDate, endDate, typeItem)
       .then((res) => {
         if (res.data.items.length > 0) {
           set((state) => ({
@@ -121,7 +122,8 @@ export const useAccountingItemsStore = create<AccountingItemsServiceStore>((set,
           get().search_item.page,
           get().search_item.limit,
           get().search_item.startDate,
-          get().search_item.endDate
+          get().search_item.endDate,
+          get().search_item.typeItem
         );
         return true;
       })
@@ -136,7 +138,8 @@ export const useAccountingItemsStore = create<AccountingItemsServiceStore>((set,
           1,
           get().search_item.limit,
           get().search_item.startDate,
-          get().search_item.endDate
+          get().search_item.endDate,
+          get().search_item.typeItem
         );
         return true;
       })

@@ -11,7 +11,7 @@ export interface TypeOfAccountStore {
     limit: number;
     page: number;
   };
-  getListTypeOfAccount: () => void;
+  getListTypeOfAccount: () => Promise<void>;
   getTypeOfAccounts: (page: number, limit: number, name: string) => void;
   createTypeOfAccount: (payload: ITypeOfAccountPayload) => Promise<boolean>;
   updateTypeOfAccount: (payload: ITypeOfAccountPayload, id: number) => Promise<boolean>;

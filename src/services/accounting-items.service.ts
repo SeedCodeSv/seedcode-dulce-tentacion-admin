@@ -31,11 +31,12 @@ export const get_accounting_items = (
   page: number,
   limit: number,
   startDate: string,
-  endDate: string
+  endDate: string,
+  typeItem: string
 ) => {
   const token = get_token();
   return axios.get<GetAccountingItems>(
-    `${API_URL}/items/paginate?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`,
+    `${API_URL}/items/paginate?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}&typeItem=${typeItem}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,

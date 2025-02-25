@@ -19,6 +19,7 @@ import { limit_options } from '@/utils/constants';
 import { Pencil, Plus, Trash } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
+import { useTypeOfAccountStore } from '@/store/type-of-aacount.store';
 
 function List() {
   const {
@@ -29,15 +30,17 @@ function List() {
     deleteItem,
     search_item,
   } = useAccountingItemsStore();
+  const { getListTypeOfAccount, list_type_of_account } = useTypeOfAccountStore();
 
   const [startDate, setStartDate] = useState(search_item.startDate);
   const [endDate, setEndDate] = useState(search_item.endDate);
-
   const [limit, setLimit] = useState(search_item.limit);
+  const [typeItem, setTypeItem] = useState(search_item.typeItem || '');
 
   useEffect(() => {
-    getAccountingItems(1, limit, startDate, endDate);
-  }, [limit, startDate, endDate]);
+    getAccountingItems(1, limit, startDate, endDate, typeItem);
+    getListTypeOfAccount();
+  }, [limit, startDate, endDate, typeItem]);
 
   const navigate = useNavigate();
   const styles = useGlobalStyles();
@@ -67,7 +70,7 @@ function List() {
   return (
     <div className=" w-full h-full flex flex-col bg-white dark:bg-gray-900">
       <div className="w-full h-full flex flex-col border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
-        <div className="w-full grid grid-cols-2 gap-5">
+        <div className="w-full grid grid-cols-3 gap-5">
           <Input
             classNames={{ label: 'font-semibold' }}
             label="Fecha inicial"
@@ -86,6 +89,26 @@ function List() {
             onChange={(e) => setEndDate(e.target.value)}
             value={endDate}
           ></Input>
+          <Select
+            variant="bordered"
+            className=""
+            classNames={{ base: 'font-semibold' }}
+            label="Tipo de partida"
+            placeholder="Selecciona un tipo de partida"
+            labelPlacement="outside"
+            selectedKeys={[typeItem]}
+            onSelectionChange={(key) => {
+              if (key) {
+                setTypeItem(String(key.currentKey));
+              }
+            }}
+          >
+            {list_type_of_account.map((item) => (
+              <SelectItem key={item.id} value={item.id}>
+                {item.name}
+              </SelectItem>
+            ))}
+          </Select>
         </div>
         <div className="w-full flex justify-between items-end mt-2">
           <Select
@@ -172,7 +195,7 @@ function List() {
                           {type.date}
                         </td>
                         <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                          {type.typeOfAccount.name}
+                          {type?.typeOfAccount?.name}
                         </td>
                         <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                           {type.concepOfTheItem}
@@ -231,7 +254,7 @@ function List() {
                 currentPage={accounting_items_pagination.currentPag}
                 totalPages={accounting_items_pagination.totalPag}
                 onPageChange={(page) => {
-                  getAccountingItems(page, limit, startDate, endDate);
+                  getAccountingItems(page, limit, startDate, endDate, typeItem);
                 }}
               />
             </div>

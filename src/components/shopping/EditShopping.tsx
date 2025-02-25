@@ -174,6 +174,7 @@ function EditShopping() {
       declarationDate: formatDate(),
       fecEmi: formatDate(),
       branchId: 0,
+      totalExenta: 0,
     },
     validationSchema: yup.object().shape({
       operationTypeCode: yup.string().required('**El tipo de operación es requerido**'),
@@ -211,7 +212,7 @@ function EditShopping() {
         branchId: values.branchId,
         numeroControl: values.controlNumber || '',
         tipoDte: values.tipoDte,
-        totalExenta: Number('0') || 0,
+        totalExenta: values.totalExenta || 0,
         totalGravada: Number($afecta) || 0,
         porcentajeDescuento: 0,
         totalDescu: 0,
@@ -294,6 +295,7 @@ function EditShopping() {
     return iva.toFixed(2);
   }, [items]);
 
+
   const $totalItems = useMemo(() => {
     return (
       items
@@ -326,6 +328,7 @@ function EditShopping() {
         declarationDate: shopping_details.declarationDate!,
         fecEmi: shopping_details.fecEmi,
         branchId: shopping_details.branchId ?? 0,
+        totalExenta: Number(shopping_details.totalExenta),
       });
 
       const branch = branch_list.find((branch) => branch.id === shopping_details.branchId);
@@ -814,7 +817,7 @@ function EditShopping() {
                         input: 'text-red-600 text-lg font-bold',
                       }}
                       startContent={<span className="text-red-600 font-bold text-lg">$</span>}
-                      value={'0'}
+                      value={String(formik.values.totalExenta) ?? 0}
                       readOnly
                       disabled={isDisabled}
                     />

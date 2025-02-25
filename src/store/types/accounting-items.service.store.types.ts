@@ -13,12 +13,14 @@ export interface AccountingItemsServiceStore {
     limit: number;
     startDate: string;
     endDate: string;
+    typeItem: string;
   };
   getAccountingItems: (
     page: number,
     limit: number,
     startDate: string,
-    endDate: string
+    endDate: string,
+    typeItem: string
   ) => Promise<void>;
   addAddItem: (payload: AddItem) => Promise<boolean>;
   editItem: (payload: EditItem, id: number) => Promise<boolean>;

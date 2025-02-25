@@ -27,8 +27,8 @@ export const useTypeOfAccountStore = create<TypeOfAccountStore>((set, get) => ({
     limit: 5,
     page: 1,
   },
-  getListTypeOfAccount: () => {
-    get_type_of_account_list()
+  async getListTypeOfAccount (){
+    return await get_type_of_account_list()
       .then((res) => {
         if (res.data.typeOfAccounts && res.data.typeOfAccounts.length > 0) {
           set((state) => ({

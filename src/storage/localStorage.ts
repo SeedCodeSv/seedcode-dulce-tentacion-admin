@@ -140,6 +140,7 @@ interface SearchItem {
   limit: number;
   startDate: string;
   endDate: string;
+  typeItem: string;
 }
 
 export const get_accounting_item_search = () => {
@@ -152,5 +153,6 @@ export const get_accounting_item_search = () => {
     limit: 10,
     startDate: formatDate(),
     endDate: formatDate(),
+    typeItem: '',
   }
 };

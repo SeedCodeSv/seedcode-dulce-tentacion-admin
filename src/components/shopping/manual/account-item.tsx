@@ -111,7 +111,7 @@ function AccountItem({
 
     // Si la fila eliminada es EXENTA, actualizar el estado $exenta a '0'
     if (isExenta) {
-      setExenta('0');
+      setExenta!('0');
     }
 
     // Calcula el total excluyendo el último y penúltimo elemento
