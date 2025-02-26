@@ -5,6 +5,7 @@ import {
   delete_item,
   get_accounting_items,
   get_details,
+  get_report_for_item,
   update_item,
 } from '@/services/accounting-items.service';
 import { get_accounting_item_search } from '@/storage/localStorage';
@@ -18,6 +19,7 @@ export const useAccountingItemsStore = create<AccountingItemsServiceStore>((set,
     endDate: get_accounting_item_search().endDate,
     typeItem: get_accounting_item_search().typeItem,
   },
+  report_for_item: [],
   accounting_items: [],
   loading: false,
   accounting_items_pagination: {
@@ -56,13 +58,22 @@ export const useAccountingItemsStore = create<AccountingItemsServiceStore>((set,
         }));
       });
   },
-  getAccountingItems: (page: number, limit: number, startDate: string, endDate: string, typeItem: string) => {
+  getAccountingItems: (
+    page: number,
+    limit: number,
+    startDate: string,
+    endDate: string,
+    typeItem: string
+  ) => {
     set((state) => ({
       ...state,
       loading: true,
       search_item: { page, limit, startDate, endDate, typeItem, is_first_time: true },
     }));
-    localStorage.setItem('accounting_items', JSON.stringify({ page, limit, startDate, endDate, typeItem }));
+    localStorage.setItem(
+      'accounting_items',
+      JSON.stringify({ page, limit, startDate, endDate, typeItem })
+    );
     return get_accounting_items(page, limit, startDate, endDate, typeItem)
       .then((res) => {
         if (res.data.items.length > 0) {
@@ -145,6 +156,31 @@ export const useAccountingItemsStore = create<AccountingItemsServiceStore>((set,
       })
       .catch(() => {
         return false;
+      });
+  },
+  getReportForItem(id) {
+    return get_report_for_item(id)
+      .then((res) => {
+        if (res.data) {
+          set((state) => ({
+            ...state,
+            report_for_item: res.data,
+            loading_details: false,
+          }));
+        } else {
+          set((state) => ({
+            ...state,
+            report_for_item: undefined,
+            loading_details: false,
+          }));
+        }
+      })
+      .catch(() => {
+        set((state) => ({
+          ...state,
+          report_for_item: undefined,
+          loading_details: false,
+        }));
       });
   },
 }));

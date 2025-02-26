@@ -1,8 +1,9 @@
-import { AddItem, EditItem, Item, ItemDetails } from '@/types/accounting-items.types';
+import { AddItem, EditItem, Item, ItemDetails, ReportForItem } from '@/types/accounting-items.types';
 import { IPagination } from '@/types/global.types';
 
 export interface AccountingItemsServiceStore {
   accounting_items: Item[];
+  report_for_item: ReportForItem[][];
   loading: boolean;
   details: ItemDetails | undefined;
   loading_details: boolean;
@@ -26,4 +27,5 @@ export interface AccountingItemsServiceStore {
   editItem: (payload: EditItem, id: number) => Promise<boolean>;
   getDetails: (id: number) => Promise<void>;
   deleteItem: (id: number) => Promise<boolean>;
+  getReportForItem: (id: number) => Promise<void>;
 }

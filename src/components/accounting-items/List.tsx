@@ -16,10 +16,13 @@ import useGlobalStyles from '../global/global.styles';
 import { formatCurrency } from '@/utils/dte';
 import Pagination from '../global/Pagination';
 import { limit_options } from '@/utils/constants';
-import { Pencil, Plus, Trash } from 'lucide-react';
+import { Pencil, Plus, Trash, X } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
 import { useTypeOfAccountStore } from '@/store/type-of-aacount.store';
+import { PiFilePdfDuotone } from 'react-icons/pi';
+import ItemPdf from './ItemPdf';
+import FullPageLayout from '../global/FullOverflowLayout';
 
 function List() {
   const {
@@ -29,18 +32,31 @@ function List() {
     getAccountingItems,
     deleteItem,
     search_item,
+    report_for_item,
+    getReportForItem,
   } = useAccountingItemsStore();
   const { getListTypeOfAccount, list_type_of_account } = useTypeOfAccountStore();
 
   const [startDate, setStartDate] = useState(search_item.startDate);
   const [endDate, setEndDate] = useState(search_item.endDate);
   const [limit, setLimit] = useState(search_item.limit);
+  const [date, setDate] = useState('');
+
   const [typeItem, setTypeItem] = useState(search_item.typeItem || '');
+  const [reportForItem, setReportForItem] = useState<number>(0);
+  const showFullLayout = useDisclosure();
+  const [correlative, setCorrelative] = useState('');
 
   useEffect(() => {
     getAccountingItems(1, limit, startDate, endDate, typeItem);
     getListTypeOfAccount();
   }, [limit, startDate, endDate, typeItem]);
+
+  useEffect(() => {
+    if (reportForItem) {
+      getReportForItem(Number(reportForItem));
+    }
+  }, [reportForItem]);
 
   const navigate = useNavigate();
   const styles = useGlobalStyles();
@@ -65,6 +81,20 @@ function List() {
       .catch(() => {
         toast.error('Error al eliminar la partida contable');
       });
+  };
+
+  const handleShowPdf = (id: number, date: string, correlative: string) => {
+    setReportForItem(id);
+    setDate(date);
+    setCorrelative(correlative);
+    showFullLayout.onOpen();
+  };
+
+  const closeShowPdf = () => {
+    setReportForItem(0);
+    setDate('');
+    setCorrelative('');
+    showFullLayout.onClose();
   };
 
   return (
@@ -161,6 +191,9 @@ function List() {
                   Concepto
                 </th>
                 <th style={styles.darkStyle} className="p-3 text-sm font-semibold text-left">
+                  Correlativo
+                </th>
+                <th style={styles.darkStyle} className="p-3 text-sm font-semibold text-left">
                   Debe
                 </th>
                 <th style={styles.darkStyle} className="p-3 text-sm font-semibold text-left">
@@ -201,6 +234,9 @@ function List() {
                           {type.concepOfTheItem}
                         </td>
                         <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                          {type?.correlative}
+                        </td>
+                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                           {formatCurrency(Number(type.totalDebe))}
                         </td>
                         <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
@@ -225,6 +261,15 @@ function List() {
                             }}
                           >
                             <Trash />
+                          </Button>
+                          <Button
+                            isIconOnly
+                            style={styles.warningStyles}
+                            onPress={() => {
+                              handleShowPdf(type.id, type.date, type.correlative);
+                            }}
+                          >
+                            <PiFilePdfDuotone size={30} />
                           </Button>
                         </td>
                       </tr>
@@ -281,6 +326,19 @@ function List() {
           )}
         </ModalContent>
       </Modal>
+      <FullPageLayout show={showFullLayout.isOpen}>
+        <div className="w-[95vw] h-[95vh] bg-white rounded-2xl">
+          <Button
+            color="danger"
+            onClick={closeShowPdf}
+            className="absolute bottom-6 left-6"
+            isIconOnly
+          >
+            <X />
+          </Button>
+          <ItemPdf JSONData={report_for_item} date={date} correlative={correlative} />
+        </div>
+      </FullPageLayout>
     </div>
   );
 }

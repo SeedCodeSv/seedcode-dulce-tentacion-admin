@@ -1,5 +1,6 @@
 import moment from 'moment-timezone';
 import { format } from "@formkit/tempo"
+import 'moment/locale/es';
 
 const l = "es"
 

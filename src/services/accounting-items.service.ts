@@ -71,3 +71,12 @@ export const delete_item = (id: number) => {
     },
   });
 };
+
+export const get_report_for_item = (id: number) => {
+  const token = get_token();
+  return axios.get(`${API_URL}/reports/forItem/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}

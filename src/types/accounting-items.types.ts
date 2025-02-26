@@ -58,6 +58,16 @@ export interface Item {
   transmitterId: number;
   typeOfAccount: TypeOfAccount;
   typeOfAccountId: number;
+  correlative: string
+}
+
+export interface ReportForItem {
+  account: string;
+  description: string;
+  parciales: number;
+  debe: string;
+  haber: string;
+  majorAccount: string;
 }
 
 export interface GetAccountingItems extends IPagination {
