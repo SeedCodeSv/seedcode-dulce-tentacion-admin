@@ -32,7 +32,7 @@ export interface AccountItemProps {
     isReadOnly: boolean
     addItems: () => void
     handleDeleteItem: (index:number) => void
-    canAddItem: boolean,
+    canAddItem?: boolean,
     editAccount: boolean
     setExenta?: Dispatch<SetStateAction<string>>
 }

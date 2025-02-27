@@ -196,6 +196,21 @@ const JSONMode = () => {
     },
   ]);
 
+  const addItem = () => {
+    const itemss = [...items];
+    itemss.unshift({
+      no: items.length + 1,
+      codCuenta: '',
+      descCuenta: '',
+      centroCosto: undefined,
+      descTran: '',
+      debe: '0',
+      haber: '0',
+      itemId: 0,
+    });
+    setItems(itemss);
+  };
+
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const catalogModal = useDisclosure();
@@ -887,7 +902,7 @@ const JSONMode = () => {
                   setDate={setDateItem}
                   setDescription={setDescription}
                   isReadOnly={false}
-                  addItems={() => {}}
+                  addItems={addItem}
                   handleDeleteItem={() => {}}
                   canAddItem={false}
                   ivaShoppingCod={fiscalDataAndParameter?.ivaLocalShopping || '110901'}

@@ -34,10 +34,9 @@ function AccountItem({
   setSelectedType,
   addItems,
   ivaShoppingCod,
-  canAddItem,
   isReadOnly,
   editAccount,
-  setExenta
+  setExenta,
 }: AccountItemProps) {
   const styles = useGlobalStyles();
   const { list_type_of_account, getListTypeOfAccount } = useTypeOfAccountStore();
@@ -104,7 +103,7 @@ function AccountItem({
   };
   const handleRemove = (index: number) => {
     // Verificar si la fila eliminada es EXENTA
-    const isExenta = items[index]?.descTran?.startsWith("Exenta:");
+    const isExenta = items[index]?.descTran?.startsWith('Exenta:');
 
     // Filtra el ítem a eliminar y excluye el último y penúltimo elemento
     const newItems = items.filter((_, i) => i !== index && i < items.length - 2);
@@ -195,11 +194,9 @@ function AccountItem({
                 />
               </div>
               <div className="w-full flex justify-end py-3">
-                {canAddItem && (
-                  <Button isIconOnly style={styles.thirdStyle} onPress={addItems}>
-                    <Plus size={20} />
-                  </Button>
-                )}
+                <Button isIconOnly style={styles.thirdStyle} onPress={addItems}>
+                  <Plus size={20} />
+                </Button>
               </div>
               <div className="overflow-x-auto flex flex-col h-full custom-scrollbar">
                 <table className="w-full">
@@ -310,7 +307,9 @@ function AccountItem({
                               index === items.length - 1 ||
                               item.codCuenta === ivaShoppingCod ||
                               isReadOnly ||
-                              (items[index].descTran ? items[index].descTran.startsWith('Exenta:') : false)
+                              (items[index].descTran
+                                ? items[index].descTran.startsWith('Exenta:')
+                                : false)
                             }
                             value={items[index].debe}
                             onChange={(e) => {
