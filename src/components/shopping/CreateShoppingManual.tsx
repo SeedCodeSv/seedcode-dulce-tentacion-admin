@@ -157,12 +157,15 @@ function CreateShoppingManual() {
         itemss[index] = newItem;
       } else {
         newItem.no = items.length + 1;
-        newItem.debe = '0';
-        itemss.unshift(newItem);
         if (newItem.isExenta) {
           setExenta(newItem.debe);
+        } else {
+          newItem.debe = '0';
+          newItem.haber = '0';
         }
+        itemss.unshift(newItem);
       }
+      setItems([...itemss]);
     } else {
       itemss.unshift({
         no: items.length + 1,
@@ -175,9 +178,8 @@ function CreateShoppingManual() {
         itemId: 0,
         isExenta: false,
       });
+      setItems([...itemss]);
     }
-  
-    setItems([...itemss]);
   };
 
   const handleDeleteItem = (index: number) => {

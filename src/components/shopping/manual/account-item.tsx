@@ -71,38 +71,43 @@ function AccountItem({
     const inputValue = value.replace(/[^0-9.]/g, ''); // Filtra el valor para permitir solo números y puntos
     const updatedItems = [...items]; // Crea una copia del estado actual
     const currentItem = updatedItems[index];
-
+  
     // Actualiza el campo correspondiente
     currentItem[field] = inputValue;
-
+  
     // Limpia el campo opuesto si el valor es mayor que 0
     if (Number(inputValue) > 0) {
       currentItem[field === 'debe' ? 'haber' : 'debe'] = '';
     }
-
+  
+    // Si es una fila EXENTA y el valor es 0, no resetear la descripción
+    if (currentItem.isExenta && inputValue === '') {
+      currentItem.descTran = 'Exenta: ';
+    }
+  
     // Calcula el total excluyendo el último y penúltimo elemento
     const total = updatedItems
       .slice(0, -2) // Excluye los últimos dos elementos
+      .filter(item => !item.isExenta) // Excluye las filas EXENTA
       .map((item) => Number(item.debe) + Number(item.haber))
       .reduce((a, b) => a + b, 0);
-
+  
     const result = Number(total.toFixed(2)); // Redondea a 2 decimales
     const iva13 = Number((result * 0.13).toFixed(2)); // Calcula el IVA del 13%
-
+  
     // Actualiza el penúltimo elemento (IVA)
     updatedItems[updatedItems.length - 2].debe = iva13.toFixed(2);
     updatedItems[updatedItems.length - 2].haber = '0';
-
+  
     // Actualiza el último elemento (total + IVA)
     updatedItems[updatedItems.length - 1].haber = (result + iva13).toFixed(2);
     updatedItems[updatedItems.length - 1].debe = '0';
-
+  
     // Actualiza el estado
     setItems(updatedItems);
   };
 
   const handleRemove = (index: number) => {
-
     // Filtra el ítem a eliminar y excluye el último y penúltimo elemento
     const newItems = items.filter((_, i) => i !== index && i < items.length - 2);
 
@@ -313,8 +318,8 @@ function AccountItem({
                           />
                         </td>
                         <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                        <Input
-                            aria-labelledby="Debe"
+                          <Input
+                            aria-labelledby="Haber"
                             className="min-w-24"
                             placeholder="0.00"
                             variant="bordered"
@@ -323,15 +328,15 @@ function AccountItem({
                             }}
                             labelPlacement="outside"
                             isReadOnly={
-                              Number(items[index].haber) > 0 ||
+                              Number(items[index].debe) > 0 ||
                               index === items.length - 1 ||
                               item.codCuenta === ivaShoppingCod ||
                               isReadOnly ||
-                              (items[index].descTran ? items[index].descTran.startsWith('Exenta:') : false)
+                              items[index].isExenta
                             }
-                            value={items[index].debe}
+                            value={items[index].haber}
                             onChange={(e) => {
-                              handleInputChange(index, 'debe', e.target.value);
+                              handleInputChange(index, 'haber', e.target.value);
                             }}
                           />
                         </td>
