@@ -122,6 +122,7 @@ function CreateShoppingManual() {
       debe: '0',
       haber: '0',
       itemId: 0,
+      isExenta: false,
     },
     {
       no: 1,
@@ -132,6 +133,7 @@ function CreateShoppingManual() {
       debe: '0',
       haber: '0',
       itemId: 0,
+      isExenta: false,
     },
     {
       no: 1,
@@ -142,18 +144,25 @@ function CreateShoppingManual() {
       debe: '0',
       haber: '0',
       itemId: 0,
+      isExenta: false,
     },
   ]);
   const [$exenta, setExenta] = useState('0');
-  const addItem = (newItem?: Items) => {
+
+  const addItem = (newItem?: Items, index?: number) => {
     const itemss = [...items];
-
-    // Si se proporciona un nuevo item (desde EXENTA)
+  
     if (newItem) {
-      newItem.no = items.length + 1;
-      itemss.unshift(newItem);
-
-      setExenta(newItem.debe);
+      if (index !== undefined) {
+        itemss[index] = newItem;
+      } else {
+        newItem.no = items.length + 1;
+        newItem.debe = '0';
+        itemss.unshift(newItem);
+        if (newItem.isExenta) {
+          setExenta(newItem.debe);
+        }
+      }
     } else {
       itemss.unshift({
         no: items.length + 1,
@@ -164,10 +173,11 @@ function CreateShoppingManual() {
         debe: '0',
         haber: '0',
         itemId: 0,
+        isExenta: false,
       });
     }
-
-    setItems(itemss);
+  
+    setItems([...itemss]);
   };
 
   const handleDeleteItem = (index: number) => {
@@ -183,14 +193,14 @@ function CreateShoppingManual() {
     const afecta = items
       .slice(0, items.length - 2)
       .reduce((acc, item) => {
-        // Verificar si item.descTran está definido y si NO es EXENTA
-        if (!item.descTran || !item.descTran.startsWith('Exenta:')) {
+        // Verificar si item.isExenta está en false
+        if (!item.isExenta) {
           return acc + Number(item.debe) + Number(item.haber);
         }
         return acc;
       }, 0)
       .toFixed(2);
-
+  
     return afecta;
   }, [items]);
 
@@ -198,8 +208,8 @@ function CreateShoppingManual() {
     const iva = items
       .slice(0, items.length - 2) 
       .reduce((acc, item) => {
-        // Verificar si item.descTran está definido y si NO es EXENTA
-        if (!item.descTran || !item.descTran.startsWith("Exenta:")) {
+        // Verificar si item.isExenta está en false
+        if (!item.isExenta) {
           return acc + Number(item.debe) + Number(item.haber);
         }
         return acc;
@@ -322,7 +332,6 @@ function CreateShoppingManual() {
             })),
           },
         };
-
         if (items.some((item) => !item.codCuenta || item.codCuenta === '')) {
           toast.error('Revisa los datos de la partida hay lineas sin código de cuenta');
           formikHelpers.setSubmitting(false);

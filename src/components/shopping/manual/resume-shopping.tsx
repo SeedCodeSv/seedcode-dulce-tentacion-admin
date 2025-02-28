@@ -12,34 +12,41 @@ function ResumeShopping({
 }: ResumeShoppingProps) {
   const [inputValue, setInputValue] = useState(exenta);
   const [hasExenta, setHasExenta] = useState(false);
+  const [exentaItemIndex, setExentaItemIndex] = useState<number | null>(null);
 
   useEffect(() => {
-    const debounceTimer = setTimeout(() => {
-      if (inputValue && !hasExenta) {
-        // Solo agregar si no hay una fila de EXENTA
-        const numericValue = parseFloat(inputValue) || 0;
-
-        // Si el valor es mayor que 0, agregar un item específico para EXENTA
-        if (numericValue > 0) {
-          addItems({
+    const numericValue = parseFloat(inputValue) || 0;
+  
+    if (numericValue > 0) {
+      if (!hasExenta) {
+        // Solo agregar una nueva fila EXENTA si no existe una
+        const debounceTimer = setTimeout(() => {
+          const newItem = {
             no: 0,
             codCuenta: '',
             descCuenta: '',
             centroCosto: undefined,
-            descTran: `Exenta: ${numericValue}`,
+            descTran: '', // No agregar "Exenta:" aquí, ya que no es necesario
             debe: numericValue.toString(),
             haber: '0',
             itemId: 0,
-          });
-
+            isExenta: true,
+          };
+  
+          addItems(newItem);
+          setExentaItemIndex(0); // Asumimos que el nuevo ítem se agrega al principio
           setHasExenta(true);
-          // setInputValue('');
-        }
+        }, 1000);
+  
+        return () => clearTimeout(debounceTimer);
       }
-    }, 1000);
-
-    return () => clearTimeout(debounceTimer);
-  }, [inputValue, addItems, hasExenta]);
+    } else if (hasExenta && exentaItemIndex !== null) {
+      // Si el valor es 0 y hay una fila EXENTA, eliminarla
+      addItems(undefined, exentaItemIndex);
+      setHasExenta(false);
+      setExentaItemIndex(null);
+    }
+  }, [inputValue, addItems, hasExenta, exentaItemIndex]);
 
   useEffect(() => {
     setInputValue(exenta);
@@ -47,7 +54,6 @@ function ResumeShopping({
       setHasExenta(false);
     }
   }, [exenta]);
-  
 
   return (
     <>
@@ -89,7 +95,6 @@ function ResumeShopping({
                       startContent={<span className="text-red-600 font-bold text-lg">$</span>}
                       value={inputValue}
                       onChange={(e) => setInputValue(e.target.value)}
-                      isDisabled={hasExenta}
                     />
                   </div>
                   <div>

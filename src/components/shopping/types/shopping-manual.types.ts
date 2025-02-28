@@ -7,7 +7,7 @@ export interface ResumeShoppingProps {
     totalIva: string
     $1perception: number
     total: string
-    addItems: (newItem?: Items) => void
+    addItems: (newItem?: Items, index?: number) => void
 }
 
 export interface AccountItemProps {

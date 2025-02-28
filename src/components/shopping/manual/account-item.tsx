@@ -44,8 +44,7 @@ function AccountItem({
   const handleChangeDes = (text: string) => {
     setDescription(text);
     const newItems = items.map((item) => {
-      // Si el item tiene "comienza con "Exenta:", no se actualiza
-      if (item.descTran && item.descTran.startsWith('Exenta:')) {
+      if (item.isExenta) {
         return item;
       }
       return {
@@ -101,15 +100,14 @@ function AccountItem({
     // Actualiza el estado
     setItems(updatedItems);
   };
+
   const handleRemove = (index: number) => {
-    // Verificar si la fila eliminada es EXENTA
-    const isExenta = items[index]?.descTran?.startsWith('Exenta:');
 
     // Filtra el ítem a eliminar y excluye el último y penúltimo elemento
     const newItems = items.filter((_, i) => i !== index && i < items.length - 2);
 
     // Si la fila eliminada es EXENTA, actualizar el estado $exenta a '0'
-    if (isExenta) {
+    if (items[index].isExenta == true) {
       setExenta!('0');
     }
 
@@ -282,12 +280,11 @@ function AccountItem({
                             onChange={(e) => {
                               const itemss = [...items];
                               const currentValue = e.target.value;
-                              if (itemss[index].descTran.startsWith('Exenta:')) {
-                                const editablePart = currentValue.replace('Exenta: ', '');
-                                itemss[index].descTran = `Exenta: ${editablePart}`;
-                              } else {
-                                itemss[index].descTran = currentValue;
-                              }
+
+                              // Actualiza la descripción del ítem actual
+                              itemss[index].descTran = currentValue;
+
+                              // Actualiza el estado con los nuevos ítems
                               setItems(itemss);
                             }}
                           />
@@ -307,9 +304,7 @@ function AccountItem({
                               index === items.length - 1 ||
                               item.codCuenta === ivaShoppingCod ||
                               isReadOnly ||
-                              (items[index].descTran
-                                ? items[index].descTran.startsWith('Exenta:')
-                                : false)
+                              items[index].isExenta
                             }
                             value={items[index].debe}
                             onChange={(e) => {
@@ -318,8 +313,8 @@ function AccountItem({
                           />
                         </td>
                         <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                          <Input
-                            aria-labelledby="Haber"
+                        <Input
+                            aria-labelledby="Debe"
                             className="min-w-24"
                             placeholder="0.00"
                             variant="bordered"
@@ -327,15 +322,16 @@ function AccountItem({
                               base: 'font-semibold',
                             }}
                             labelPlacement="outside"
-                            value={items[index].haber}
                             isReadOnly={
-                              Number(items[index].debe) > 0 ||
+                              Number(items[index].haber) > 0 ||
                               index === items.length - 1 ||
                               item.codCuenta === ivaShoppingCod ||
-                              isReadOnly
+                              isReadOnly ||
+                              (items[index].descTran ? items[index].descTran.startsWith('Exenta:') : false)
                             }
+                            value={items[index].debe}
                             onChange={(e) => {
-                              handleInputChange(index, 'haber', e.target.value);
+                              handleInputChange(index, 'debe', e.target.value);
                             }}
                           />
                         </td>

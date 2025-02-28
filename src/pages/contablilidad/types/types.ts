@@ -9,6 +9,7 @@ export interface Items {
   debe: string;
   haber: string;
   itemId: number;
+  isExenta: boolean;
 }
 
 export interface ItemsEdit {
