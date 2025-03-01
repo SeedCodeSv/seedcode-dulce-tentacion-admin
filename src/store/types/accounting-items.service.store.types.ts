@@ -23,7 +23,8 @@ export interface AccountingItemsServiceStore {
     endDate: string,
     typeItem: string
   ) => Promise<void>;
-  addAddItem: (payload: AddItem) => Promise<boolean>;
+  addAddItem: (payload: AddItem) => Promise<Item | undefined>;
+  updateAndDeleteItem: (id:number,payload: AddItem) => Promise<boolean>;
   editItem: (payload: EditItem, id: number) => Promise<boolean>;
   getDetails: (id: number) => Promise<void>;
   deleteItem: (id: number) => Promise<boolean>;

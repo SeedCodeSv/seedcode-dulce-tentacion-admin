@@ -12,6 +12,11 @@ import {
   Textarea,
   useDisclosure,
   Selection,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
 } from '@nextui-org/react';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { ItemListProps, Items } from './types/types';
@@ -23,6 +28,9 @@ import { useAuthStore } from '@/store/auth.store';
 import { toast } from 'sonner';
 import { useAccountingItemsStore } from '@/store/accounting-items.store';
 import { useNavigate } from 'react-router';
+import { Period } from '@/types/items-period.types';
+import { create_period, find_period, update_period } from '@/services/items-period.service';
+import { DateTime } from 'luxon';
 
 function AddItemsBySales() {
   const [startDate, setStartDate] = useState(formatDate());
@@ -90,6 +98,9 @@ function AddItemsBySales() {
   }, [saleByItem]);
 
   const [items, setItems] = useState<Items[]>([]);
+
+  const [period, setPeriod] = useState<Period>();
+  const periodModal = useDisclosure();
 
   useEffect(() => {
     const items: Items[] = [];
@@ -191,16 +202,16 @@ function AddItemsBySales() {
           descTran: value,
         }));
       });
-    }, 200), // 200ms delay
+    }, 200),
     []
   );
 
   const [loading, setLoading] = useState(false);
 
-  const { addAddItem } = useAccountingItemsStore();
+  const { addAddItem, updateAndDeleteItem } = useAccountingItemsStore();
   const navigate = useNavigate();
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (items.length === 0) {
       toast.warning('Debe agregar al menos una partida');
       return;
@@ -225,6 +236,18 @@ function AddItemsBySales() {
       return;
     }
 
+    const listBranches = Array.from(branches) as number[];
+    const existsPeriod = await find_period(startDate, endDate, listBranches);
+
+    if (existsPeriod && existsPeriod.data.period) {
+      toast.warning('Ya existe un periodo para estas fechas', {
+        description: `Periodo existente: ${existsPeriod.data.period.startDate} - ${existsPeriod.data.period.endDate}`,
+      });
+      setPeriod(existsPeriod.data.period);
+      periodModal.onOpenChange();
+      return;
+    }
+
     setLoading(true);
     const trandId =
       user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0;
@@ -245,11 +268,13 @@ function AddItemsBySales() {
         conceptOfTheTransaction: item.descTran.length > 0 ? item.descTran : 'N/A',
       })),
     })
-      .then((res) => {
+      .then(async (res) => {
         if (res) {
+          await create_period(startDate, endDate, Array.from(branches) as number[], res.id);
+
           toast.success('La partida contable ha sido creada exitosamente');
           setLoading(false);
-          window.location.reload();
+          navigate('/accounting-items')
         } else {
           toast.error('Error al crear la partida contable');
           setLoading(false);
@@ -271,6 +296,59 @@ function AddItemsBySales() {
     }
 
     return true;
+  };
+
+  const formatBranchName = (branches: number[]) => {
+    if (branches.length === 0) return branch_list.map((b) => b.name).join(', ');
+    const branchesName = branches.map((branch) => {
+      const branchName = branch_list.find((b) => b.id === branch)?.name;
+      return branchName;
+    });
+    return branchesName.join(', ');
+  };
+
+  const formattedStartDate = (startDate: string) => {
+    const format = DateTime.fromISO(startDate, { zone: 'America/El_Salvador' });
+    const formattedStartDate = format.toLocaleString(DateTime.DATE_FULL);
+    return formattedStartDate;
+  };
+
+  const [loadingUpdate, setloadingUpdateActions] = useState(false);
+
+  const handleUpdateAndDelete = () => {
+    if (period) {
+      setloadingUpdateActions(true);
+      const trandId =
+        user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0;
+      updateAndDeleteItem(period.item.id, {
+        date: date,
+        typeOfAccountId: selectedType,
+        concepOfTheItem: description,
+        totalDebe: $debe,
+        totalHaber: $haber,
+        difference: $total,
+        transmitterId: trandId,
+        itemDetails: items.map((item, index) => ({
+          numberItem: (index + 1).toString(),
+          catalog: item.codCuenta,
+          branchId: item.centroCosto !== '' ? Number(item.centroCosto) : undefined,
+          should: Number(item.debe),
+          see: Number(item.haber),
+          conceptOfTheTransaction: item.descTran.length > 0 ? item.descTran : 'N/A',
+        })),
+      })
+        .then(async () => {
+          const listBranches = Array.from(branches) as number[];
+          setloadingUpdateActions(false);
+          await update_period(period.id, startDate, endDate, listBranches, period.item.id);
+          toast.success('Partida actualizada');
+          navigate('/accounting-items')
+        })
+        .catch(() => {
+          setloadingUpdateActions(false);
+          toast.error('Error al actualizar partida');
+        });
+    }
   };
 
   return (
@@ -296,24 +374,29 @@ function AddItemsBySales() {
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
             />
-            <Select
-              variant="bordered"
-              labelPlacement="outside"
-              label="Sucursal"
-              classNames={{ label: 'font-semibold' }}
-              placeholder="Seleccione una sucursal"
-              className="col-span-2 md:col-span-1"
-              multiple
-              selectionMode="multiple"
-              selectedKeys={branches}
-              onSelectionChange={setBranches}
-            >
-              {branch_list.map((branch) => (
-                <SelectItem key={branch.id} value={branch.id}>
-                  {branch.name}
-                </SelectItem>
-              ))}
-            </Select>
+            <div className="flex gap-5 items-end">
+              <Select
+                variant="bordered"
+                labelPlacement="outside"
+                label="Sucursal"
+                classNames={{ label: 'font-semibold' }}
+                placeholder="Seleccione una sucursal"
+                className="col-span-2 md:col-span-1"
+                multiple
+                isLoading={loadingSalesByItem}
+                isRequired={loadingSalesByItem}
+                selectionMode="multiple"
+                selectedKeys={branches}
+                onSelectionChange={setBranches}
+              >
+                {branch_list.map((branch) => (
+                  <SelectItem key={branch.id} value={branch.id}>
+                    {branch.name}
+                  </SelectItem>
+                ))}
+              </Select>
+              <Button style={styles.thirdStyle}>Buscar</Button>
+            </div>
           </div>
           <div className="w-full grid grid-cols-2 gap-5 mt-8">
             <Input
@@ -488,6 +571,55 @@ function AddItemsBySales() {
             </Button>
           </div>
         </div>
+        <Modal isOpen={periodModal.isOpen} onOpenChange={periodModal.onOpenChange} size="xl">
+          <ModalContent>
+            <>
+              <ModalHeader>Se encontró una partida contable en este periodo</ModalHeader>
+              <ModalBody>
+                <p>
+                  <span className="font-semibold">Periodo registrado:</span> Del{' '}
+                  {period ? formattedStartDate(period.startDate) : '-'} al{' '}
+                  {period ? formattedStartDate(period.endDate) : '-'}
+                </p>
+                <p>
+                  <span className="font-semibold">Sucursales:</span>{' '}
+                  {formatBranchName(period?.branches || [])}
+                </p>
+                <p>
+                  <span className="font-semibold">Correlativo:</span> {period?.item?.correlative}
+                </p>
+                <div className="grid grid-cols-2 gap5">
+                  <div>
+                    <p className="font-semibold text-lg">Debe</p>
+                    <p>{period?.item?.totalDebe}</p>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-lg">Haber</p>
+                    <p>{period?.item?.totalHaber}</p>
+                  </div>
+                </div>
+              </ModalBody>
+              <ModalFooter>
+                <Button
+                  isLoading={loadingUpdate}
+                  className="w-full"
+                  style={styles.dangerStyles}
+                  onPress={() => navigate('/accounting-items')}
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  isLoading={loadingUpdate}
+                  className="w-full"
+                  style={styles.secondaryStyle}
+                  onPress={() => handleUpdateAndDelete()}
+                >
+                  Modificar partida
+                </Button>
+              </ModalFooter>
+            </>
+          </ModalContent>
+        </Modal>
       </div>
     </Layout>
   );

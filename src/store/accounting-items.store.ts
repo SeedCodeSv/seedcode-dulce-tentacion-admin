@@ -6,6 +6,7 @@ import {
   get_accounting_items,
   get_details,
   get_report_for_item,
+  update_and_delete,
   update_item,
 } from '@/services/accounting-items.service';
 import { get_accounting_item_search } from '@/storage/localStorage';
@@ -33,6 +34,15 @@ export const useAccountingItemsStore = create<AccountingItemsServiceStore>((set,
   },
   details: undefined,
   loading_details: false,
+  updateAndDeleteItem(id, payload) {
+    return update_and_delete(payload, id)
+      .then((res) => {
+        return res.data.ok;
+      })
+      .catch(() => {
+        return false;
+      });
+  },
   getDetails(id) {
     return get_details(id)
       .then((res) => {
@@ -119,11 +129,11 @@ export const useAccountingItemsStore = create<AccountingItemsServiceStore>((set,
   },
   addAddItem: (payload) => {
     return create_item(payload)
-      .then(() => {
-        return true;
+      .then((data) => {
+        return data.data.item;
       })
       .catch(() => {
-        return false;
+        return undefined;
       });
   },
   editItem: (payload, id) => {
