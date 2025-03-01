@@ -141,6 +141,7 @@ interface SearchItem {
   startDate: string;
   endDate: string;
   typeItem: string;
+  typeOrder: string;  
 }
 
 export const get_accounting_item_search = () => {
@@ -154,5 +155,6 @@ export const get_accounting_item_search = () => {
     startDate: formatDate(),
     endDate: formatDate(),
     typeItem: '',
+    typeOrder: ''
   }
 };

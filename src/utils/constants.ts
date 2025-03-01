@@ -31,6 +31,10 @@ export const operadores = [
   { label: '>= mayor o igual', value: '>=' },
   { label: '<= menor o igual', value: '<=' },
 ];
+export const typeOrden = [
+  { label: 'Ascendente', value: 'ASC' },
+  { label: 'Descendente', value: 'DESC' }
+];
 export const defaultTheme = {
   name: 'theme1',
   context: 'dark',

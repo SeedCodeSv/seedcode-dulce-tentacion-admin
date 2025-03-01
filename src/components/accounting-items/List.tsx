@@ -15,7 +15,7 @@ import { useEffect, useState } from 'react';
 import useGlobalStyles from '../global/global.styles';
 import { formatCurrency } from '@/utils/dte';
 import Pagination from '../global/Pagination';
-import { limit_options } from '@/utils/constants';
+import { limit_options, typeOrden } from '@/utils/constants';
 import { Pencil, Plus, Trash, X } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
@@ -46,11 +46,12 @@ function List() {
   const [reportForItem, setReportForItem] = useState<number>(0);
   const showFullLayout = useDisclosure();
   const [correlative, setCorrelative] = useState('');
+  const [typeOrder, setTypeOrder] = useState(search_item.typeOrder);
 
   useEffect(() => {
-    getAccountingItems(1, limit, startDate, endDate, typeItem);
+    getAccountingItems(1, limit, startDate, endDate, typeItem, typeOrder);
     getListTypeOfAccount();
-  }, [limit, startDate, endDate, typeItem]);
+  }, [limit, startDate, endDate, typeItem, typeOrder]);
 
   useEffect(() => {
     if (reportForItem) {
@@ -158,6 +159,26 @@ function List() {
             {limit_options.map((option) => (
               <SelectItem key={option} value={option}>
                 {option}
+              </SelectItem>
+            ))}
+          </Select>
+          <Select
+            variant="bordered"
+            className="w-64"
+            classNames={{ base: 'font-semibold' }}
+            label="Ordenar registros"
+            placeholder="Selecciona un tipo"
+            labelPlacement="outside"
+            selectedKeys={[typeOrder]}
+            onSelectionChange={(key) => {
+              if (key) {
+                setTypeOrder(String(key.currentKey));
+              }
+            }}
+          >
+            {typeOrden.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
               </SelectItem>
             ))}
           </Select>
@@ -299,7 +320,7 @@ function List() {
                 currentPage={accounting_items_pagination.currentPag}
                 totalPages={accounting_items_pagination.totalPag}
                 onPageChange={(page) => {
-                  getAccountingItems(page, limit, startDate, endDate, typeItem);
+                  getAccountingItems(page, limit, startDate, endDate, typeItem, typeOrder);
                 }}
               />
             </div>

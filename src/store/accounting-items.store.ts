@@ -19,6 +19,7 @@ export const useAccountingItemsStore = create<AccountingItemsServiceStore>((set,
     startDate: get_accounting_item_search().startDate,
     endDate: get_accounting_item_search().endDate,
     typeItem: get_accounting_item_search().typeItem,
+    typeOrder: get_accounting_item_search().typeOrder,
   },
   report_for_item: [],
   accounting_items: [],
@@ -73,18 +74,19 @@ export const useAccountingItemsStore = create<AccountingItemsServiceStore>((set,
     limit: number,
     startDate: string,
     endDate: string,
-    typeItem: string
+    typeItem: string,
+    typeOrder: string
   ) => {
     set((state) => ({
       ...state,
       loading: true,
-      search_item: { page, limit, startDate, endDate, typeItem, is_first_time: true },
+      search_item: { page, limit, startDate, endDate, typeItem, is_first_time: true, typeOrder},
     }));
     localStorage.setItem(
       'accounting_items',
-      JSON.stringify({ page, limit, startDate, endDate, typeItem })
+      JSON.stringify({ page, limit, startDate, endDate, typeItem, typeOrder })
     );
-    return get_accounting_items(page, limit, startDate, endDate, typeItem)
+    return get_accounting_items(page, limit, startDate, endDate, typeItem, typeOrder)
       .then((res) => {
         if (res.data.items.length > 0) {
           set((state) => ({
@@ -144,7 +146,8 @@ export const useAccountingItemsStore = create<AccountingItemsServiceStore>((set,
           get().search_item.limit,
           get().search_item.startDate,
           get().search_item.endDate,
-          get().search_item.typeItem
+          get().search_item.typeItem,
+          get().search_item.typeOrder
         );
         return true;
       })
@@ -160,7 +163,8 @@ export const useAccountingItemsStore = create<AccountingItemsServiceStore>((set,
           get().search_item.limit,
           get().search_item.startDate,
           get().search_item.endDate,
-          get().search_item.typeItem
+          get().search_item.typeItem,
+          get().search_item.typeOrder
         );
         return true;
       })
