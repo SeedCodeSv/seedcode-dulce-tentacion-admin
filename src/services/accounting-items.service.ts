@@ -4,6 +4,7 @@ import {
   EditItem,
   GetAccountingItems,
   GetDetails,
+  Item,
   VerifyItemCount,
 } from '@/types/accounting-items.types';
 import { API_URL } from '@/utils/constants';
@@ -11,11 +12,24 @@ import axios from 'axios';
 
 export const create_item = (payload: AddItem) => {
   const token = get_token();
-  return axios.post(API_URL + '/items', payload, {
+  return axios.post<{ ok: boolean; item: Item }>(API_URL + '/items', payload, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
+};
+
+export const update_and_delete = (payload: AddItem, id: number) => {
+  const token = get_token();
+  return axios.patch<{ ok: boolean; item: Item }>(
+    API_URL + `/items/update-and-delete/${id}`,
+    payload,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 };
 
 export const update_item = (payload: EditItem, id: number) => {
@@ -79,4 +93,4 @@ export const get_report_for_item = (id: number) => {
       Authorization: `Bearer ${token}`,
     },
   });
-}
+};

@@ -3,11 +3,17 @@ import {
   AutocompleteItem,
   Button,
   Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
   Popover,
   PopoverContent,
   PopoverTrigger,
   Select,
   SelectItem,
+  useDisclosure,
 } from '@nextui-org/react';
 import { ChevronLeft, ChevronRight, Filter, Pen, SearchIcon, Trash } from 'lucide-react';
 import NO_DATA from '@/assets/svg/no_data.svg';
@@ -70,25 +76,6 @@ function ShoppingPage({ actions }: ArrayAction) {
   };
   const navigate = useNavigate();
 
-  // const onDelete = (id: number) => {
-  //   axios
-  //     .delete(API_URL + "/shoppings/" + id)
-  //     .then(() => {
-  //       getPaginatedShopping(
-  //         user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
-  //         1,
-  //         10,
-  //         dateInitial,
-  //         dateEnd,
-  //         branchId
-  //       );
-  //       toast.success("Eliminado con exito")
-  //     })
-  //     .catch(() => {
-  //       toast.error("Error al eliminar")
-  //     })
-  // }
-
   const onDeleteConfirm = (id: number) => {
     axios
       .delete(API_URL + '/shoppings/' + id)
@@ -107,8 +94,87 @@ function ShoppingPage({ actions }: ArrayAction) {
         toast.error('Error al eliminar');
       });
   };
+
+  const modalConfirm = useDisclosure();
+
+  const [selectedShoppingId, setSelectedShoppingId] = useState<number | null>(null);
+
+  const handleVerify = (id: number) => {
+    setSelectedShoppingId(id);
+    axios
+      .get(API_URL + `/shoppings/verify-if-contain-item/${id}`)
+      .then((res) => {
+        if (res.data) {
+          onDeleteConfirm(id);
+        } else {
+          modalConfirm.onOpen();
+          toast.success('La compra incluye una partida contable');
+        }
+      })
+      .catch(() => {
+        modalConfirm.onOpen();
+        toast.warning('La compra incluye una partida contable');
+      });
+  };
+
+  const [loadingDelete, setLoadingDelete] = useState(false);
+
+  const deletePermanently = (id: number) => {
+    setLoadingDelete(true);
+    axios
+      .delete(API_URL + `/shoppings/delete-permanently/${id}`)
+      .then(() => {
+        getPaginatedShopping(
+          user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
+          1,
+          limit,
+          dateInitial,
+          dateEnd,
+          branchId
+        );
+        setLoadingDelete(false);
+        toast.success('Eliminado con éxito');
+        modalConfirm.onClose();
+      })
+      .catch(() => {
+        setLoadingDelete(false);
+        toast.error('Error al eliminar');
+      });
+  };
+
   return (
     <>
+      <Modal isDismissable={false} isOpen={modalConfirm.isOpen} onClose={modalConfirm.onClose}>
+        <ModalContent>
+          <ModalHeader>Confirmar eliminación</ModalHeader>
+          <ModalBody>
+            <p className="text-lg font-semibold text-center">
+              Esta compra incluye una partida contable, ¿deseas eliminarla?
+            </p>
+            <p className="text-sm text-center font-semibold text-red-500">
+              Esta acción no se puede deshacer(se eliminara la compra y la partida)
+            </p>
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              isLoading={loadingDelete}
+              className="border border-white rounded-xl px-10 font-semibold"
+              style={global_styles().thirdStyle}
+              onClick={modalConfirm.onClose}
+            >
+              Cancelar
+            </Button>
+            <Button
+              isLoading={loadingDelete}
+              className="border border-white rounded-xl px-10 font-semibold"
+              style={global_styles().dangerStyles}
+              onClick={() => deletePermanently(selectedShoppingId ?? 0)}
+            >
+              Eliminar
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
       <div className=" w-full h-full bg-gray-50 dark:bg-gray-900">
         <div className="w-full h-full flex flex-col border border-white overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
           <div className="flex justify-between  mt-6 w-full">
@@ -378,30 +444,25 @@ function ShoppingPage({ actions }: ArrayAction) {
                               <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
                                 <div className="flex gap-2">
                                   <Button
-                                    onClick={() => navigate(`/edit-shopping/${cat.id}/${cat.controlNumber}`)}
+                                    onClick={() =>
+                                      navigate(`/edit-shopping/${cat.id}/${cat.controlNumber}`)
+                                    }
                                     style={global_styles().secondaryStyle}
                                     isIconOnly
                                   >
                                     <Pen />
                                   </Button>
-                                  {/* {cat.generationCode === 'N/A' && (
-                                    <Button
-                                      onClick={() => navigate(`/edit-shopping/${cat.id}`)}
-                                      style={global_styles().secondaryStyle}
-                                      isIconOnly
-                                    >
-                                      <Pen />
-                                    </Button>
-                                  )} */}
-                                  {/* {cat.generationCode === 'N/A' && (
-                                    <Button
-                                      onClick={() => onDelete(cat.id)}
-                                      style={global_styles().warningStyles}
-                                      isIconOnly
-                                    >
-                                      <Trash />
-                                    </Button>
-                                  )} */}
+                                  {cat.generationCode !== 'N/A' && (
+                                    <>
+                                      <Button
+                                        onPress={() => handleVerify(cat.id)}
+                                        style={global_styles().warningStyles}
+                                        isIconOnly
+                                      >
+                                        <Trash />
+                                      </Button>
+                                    </>
+                                  )}
                                   {cat.generationCode === 'N/A' && (
                                     <Popover className="border border-white rounded-xl">
                                       <PopoverTrigger>
@@ -425,9 +486,6 @@ function ShoppingPage({ actions }: ArrayAction) {
                                             >
                                               Sí, eliminar
                                             </Button>
-                                            {/* <Button onClick={onClose} >
-                                              Cancelar
-                                            </Button> */}
                                           </div>
                                         </div>
                                       </PopoverContent>
