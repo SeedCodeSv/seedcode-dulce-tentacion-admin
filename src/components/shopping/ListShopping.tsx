@@ -27,6 +27,7 @@ import { ThemeContext } from '@/hooks/useTheme';
 import axios from 'axios';
 import { API_URL, limit_options } from '@/utils/constants';
 import { toast } from 'sonner';
+import { DeleteShopingDTE } from './DeleteShopingDTE';
 
 function ShoppingPage({ actions }: ArrayAction) {
   const {
@@ -378,30 +379,32 @@ function ShoppingPage({ actions }: ArrayAction) {
                               <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
                                 <div className="flex gap-2">
                                   <Button
-                                    onClick={() => navigate(`/edit-shopping/${cat.id}/${cat.controlNumber}`)}
+                                    onClick={() =>
+                                      navigate(`/edit-shopping/${cat.id}/${cat.controlNumber}`)
+                                    }
                                     style={global_styles().secondaryStyle}
                                     isIconOnly
                                   >
                                     <Pen />
                                   </Button>
-                                  {/* {cat.generationCode === 'N/A' && (
-                                    <Button
-                                      onClick={() => navigate(`/edit-shopping/${cat.id}`)}
-                                      style={global_styles().secondaryStyle}
-                                      isIconOnly
-                                    >
-                                      <Pen />
-                                    </Button>
-                                  )} */}
-                                  {/* {cat.generationCode === 'N/A' && (
-                                    <Button
-                                      onClick={() => onDelete(cat.id)}
-                                      style={global_styles().warningStyles}
-                                      isIconOnly
-                                    >
-                                      <Trash />
-                                    </Button>
-                                  )} */}
+                                  {cat.controlNumber.match(/^DTE-03-[A-Z]\d{3}P\d{3}-\d+$/) && (
+                                    <DeleteShopingDTE
+                                      controlNumber={cat.controlNumber}
+                                      id={cat.id}
+                                      reload={() => {
+                                        getPaginatedShopping(
+                                          user?.correlative?.branch.transmitterId ??
+                                            user?.pointOfSale?.branch.transmitterId ??
+                                            0,
+                                          1,
+                                          limit,
+                                          dateInitial,
+                                          dateEnd,
+                                          branchId
+                                        );
+                                      }}
+                                    />
+                                  )}
                                   {cat.generationCode === 'N/A' && (
                                     <Popover className="border border-white rounded-xl">
                                       <PopoverTrigger>
