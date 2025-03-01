@@ -8,6 +8,8 @@ export interface ResumeShoppingProps {
     $1perception: number
     total: string
     addItems: (newItem?: Items, index?: number) => void
+    items: Items[]
+    setExenta?: Dispatch<SetStateAction<string>>
 }
 
 export interface AccountItemProps {

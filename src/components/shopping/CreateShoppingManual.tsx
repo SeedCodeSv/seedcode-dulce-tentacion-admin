@@ -147,8 +147,8 @@ function CreateShoppingManual() {
       isExenta: false,
     },
   ]);
+  
   const [$exenta, setExenta] = useState('0');
-
   const addItem = (newItem?: Items, index?: number) => {
     const itemss = [...items];
   
@@ -165,7 +165,7 @@ function CreateShoppingManual() {
         }
         itemss.unshift(newItem);
       }
-      setItems([...itemss]);
+      setItems([...itemss,]);
     } else {
       itemss.unshift({
         no: items.length + 1,
@@ -225,7 +225,7 @@ function CreateShoppingManual() {
     return (
       items
         .slice(0, items.length - 2)
-        .reduce((acc, item) => acc + Number(item.debe) + Number(item.haber), 0) + +$totalIva
+        .reduce((acc, item) => acc + Number(item.debe) + Number(item.haber), 0)  + +$totalIva
     ).toFixed(2);
   }, [items]);
 
@@ -421,6 +421,8 @@ function CreateShoppingManual() {
               $1perception={$1perception}
               total={$totalItems}
               addItems={addItem}
+              items={items}
+              setExenta={setExenta}
             />
 
             <div className="w-full flex justify-end mt-4">

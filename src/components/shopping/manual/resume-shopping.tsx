@@ -9,14 +9,50 @@ function ResumeShopping({
   $1perception,
   total,
   addItems,
+  setExenta,
+  items,
 }: ResumeShoppingProps) {
-  const [inputValue, setInputValue] = useState(exenta);
   const [hasExenta, setHasExenta] = useState(false);
   const [exentaItemIndex, setExentaItemIndex] = useState<number | null>(null);
 
+  // Encuentra la fila EXENTA en la lista de ítems
   useEffect(() => {
-    const numericValue = parseFloat(inputValue) || 0;
-  
+    if (items && items.length > 0) {
+      const index = items.findIndex((item) => item.isExenta === true);
+      if (index !== -1) {
+        setExentaItemIndex(index);
+        setHasExenta(true);
+      } else {
+        setExentaItemIndex(null);
+        setHasExenta(false);
+      }
+    }
+  }, [items]);
+
+  // Actualiza el valor de `debe` en la fila EXENTA cuando cambia `exenta`
+  useEffect(() => {
+    if (exentaItemIndex !== null && items && items[exentaItemIndex]) {
+      const currentExentaValue = items[exentaItemIndex].debe;
+
+      // Solo actualiza si el valor de `exenta` es diferente al valor actual en la fila EXENTA
+      if (currentExentaValue !== exenta) {
+        const updatedItem = {
+          ...items[exentaItemIndex],
+          debe: exenta,
+        };
+        addItems(updatedItem, exentaItemIndex);
+      }
+    }
+  }, [exenta, exentaItemIndex, items, addItems]);
+
+  const handleExentaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    setExenta!(newValue);
+  };
+
+  useEffect(() => {
+    const numericValue = parseFloat(exenta) || 0;
+
     if (numericValue > 0) {
       if (!hasExenta) {
         // Solo agregar una nueva fila EXENTA si no existe una
@@ -26,18 +62,18 @@ function ResumeShopping({
             codCuenta: '',
             descCuenta: '',
             centroCosto: undefined,
-            descTran: '', // No agregar "Exenta:" aquí, ya que no es necesario
+            descTran: '',
             debe: numericValue.toString(),
             haber: '0',
             itemId: 0,
             isExenta: true,
           };
-  
+
           addItems(newItem);
-          setExentaItemIndex(0); // Asumimos que el nuevo ítem se agrega al principio
+          setExentaItemIndex(0);
           setHasExenta(true);
         }, 1000);
-  
+
         return () => clearTimeout(debounceTimer);
       }
     } else if (hasExenta && exentaItemIndex !== null) {
@@ -46,14 +82,7 @@ function ResumeShopping({
       setHasExenta(false);
       setExentaItemIndex(null);
     }
-  }, [inputValue, addItems, hasExenta, exentaItemIndex]);
-
-  useEffect(() => {
-    setInputValue(exenta);
-    if (parseFloat(exenta) === 0) {
-      setHasExenta(false);
-    }
-  }, [exenta]);
+  }, [exenta, addItems, hasExenta, exentaItemIndex]);
 
   return (
     <>
@@ -93,8 +122,8 @@ function ResumeShopping({
                         input: 'text-red-600 text-lg font-bold',
                       }}
                       startContent={<span className="text-red-600 font-bold text-lg">$</span>}
-                      value={inputValue}
-                      onChange={(e) => setInputValue(e.target.value)}
+                      value={exenta}
+                      onChange={handleExentaChange}
                     />
                   </div>
                   <div>
