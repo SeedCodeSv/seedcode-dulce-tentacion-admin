@@ -23,6 +23,7 @@ import { useTypeOfAccountStore } from '@/store/type-of-aacount.store';
 import { PiFilePdfDuotone } from 'react-icons/pi';
 import ItemPdf from './ItemPdf';
 import FullPageLayout from '../global/FullOverflowLayout';
+import DailyBook from './daily-book';
 
 function List() {
   const {
@@ -183,6 +184,7 @@ function List() {
             ))}
           </Select>
           <div className="flex gap-2 items-end justify-end">
+            <DailyBook />
             <Button style={styles.thirdStyle} onPress={() => navigate('/add-item-by-sales')}>
               Generar partida de ventas
             </Button>
