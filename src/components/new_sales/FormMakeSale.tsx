@@ -531,7 +531,6 @@ function FormMakeSale(props: Props) {
           {customer_list.map((item) => (
             <AutocompleteItem
               key={JSON.stringify(item)}
-              value={item.nombre}
               className="dark:text-white"
             >
               {item.nombre}
@@ -554,7 +553,7 @@ function FormMakeSale(props: Props) {
           placeholder="Selecciona la condición"
         >
           {condiciones.map((item) => (
-            <AutocompleteItem className="dark:text-white" key={item.codigo} value={item.codigo}>
+            <AutocompleteItem className="dark:text-white" key={item.codigo}>
               {item.valores}
             </AutocompleteItem>
           ))}
@@ -576,7 +575,6 @@ function FormMakeSale(props: Props) {
             <AutocompleteItem
               className="dark:text-white"
               key={JSON.stringify(item)}
-              value={item.codigo}
             >
               {item.valores}
             </AutocompleteItem>
@@ -598,7 +596,7 @@ function FormMakeSale(props: Props) {
             placeholder="Selecciona el tipo de tributo"
           >
             {tipos_tributo.map((item) => (
-              <AutocompleteItem key={JSON.stringify(item)} value={item.codigo}>
+              <AutocompleteItem key={JSON.stringify(item)}>
                 {item.valores}
               </AutocompleteItem>
             ))}
@@ -661,7 +659,6 @@ function FormMakeSale(props: Props) {
                     {metodos_de_pago.map((item) => (
                       <AutocompleteItem
                         key={item.codigo}
-                        value={item.codigo}
                         className="dark:text-white"
                       >
                         {item.valores}
@@ -689,7 +686,6 @@ function FormMakeSale(props: Props) {
                         {plazos.map((item) => (
                           <AutocompleteItem
                             key={item.codigo}
-                            value={item.codigo}
                             className="dark:text-white"
                           >
                             {item.valores}

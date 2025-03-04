@@ -5,7 +5,7 @@ import { useSalesStore } from '@/store/sales.store';
 import { useTransmitterStore } from '@/store/transmitter.store';
 import { months } from '@/utils/constants';
 import { formatCurrency } from '@/utils/dte';
-import { Button, Select, SelectItem } from "@heroui/react";
+import { Button, Select, SelectItem } from '@heroui/react';
 import { useEffect, useMemo, useState } from 'react';
 import { PiMicrosoftExcelLogoBold } from 'react-icons/pi';
 import { export_excel_facturacion_ccfe } from '../excel/generate_excel';
@@ -182,9 +182,7 @@ function CFFBookIVA() {
                 variant="bordered"
               >
                 {months.map((month) => (
-                  <SelectItem key={month.value} value={month.value}>
-                    {month.name}
-                  </SelectItem>
+                  <SelectItem key={month.value}>{month.name}</SelectItem>
                 ))}
               </Select>
             </div>
@@ -203,9 +201,7 @@ function CFFBookIVA() {
                 variant="bordered"
               >
                 {years.map((years) => (
-                  <SelectItem key={years.value} value={years.value}>
-                    {years.name}
-                  </SelectItem>
+                  <SelectItem key={years.value}>{years.name}</SelectItem>
                 ))}
               </Select>
             </div>
@@ -229,9 +225,7 @@ function CFFBookIVA() {
                 variant="bordered"
               >
                 {branch_list.map((branch) => (
-                  <SelectItem key={branch.id} value={branch.id}>
-                    {branch.name}
-                  </SelectItem>
+                  <SelectItem key={branch.id}>{branch.name}</SelectItem>
                 ))}
               </Select>
             </div>

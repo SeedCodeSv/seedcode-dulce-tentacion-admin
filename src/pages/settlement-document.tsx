@@ -75,7 +75,7 @@ function SettlementDocument() {
               }}
             >
               {limit_options.map((limit) => (
-                <SelectItem key={limit} value={limit}>
+                <SelectItem key={limit}>
                   {limit}
                 </SelectItem>
               ))}

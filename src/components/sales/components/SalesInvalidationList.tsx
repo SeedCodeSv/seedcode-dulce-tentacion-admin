@@ -150,7 +150,6 @@ function SalesInvalidationList({ actions }: { actions: string[] }) {
                 <AutocompleteItem
                   onClick={() => setBranchId(bra.id)}
                   className="dark:text-white"
-                  value={bra.id}
                   key={bra.id}
                 >
                   {bra.name}
@@ -198,7 +197,7 @@ function SalesInvalidationList({ actions }: { actions: string[] }) {
               {correlativesTypes
                 .filter((dep) => ['F', 'CCF', 'T'].includes(dep.value)) // Filtra solo "F", "CCF", "T"
                 .map((dep) => (
-                  <AutocompleteItem className="dark:text-white" value={dep.label} key={dep.value}>
+                  <AutocompleteItem className="dark:text-white" key={dep.value}>
                     {dep.value + ' - ' + dep.label}
                   </AutocompleteItem>
                 ))}

@@ -223,7 +223,6 @@ function ReportSalesByBranch() {
                     onClick={() => setBranchId(branch.id)}
                     className="dark:text-white"
                     key={branch.id}
-                    value={branch.id}
                   >
                     {branch.name}
                   </AutocompleteItem>
@@ -264,7 +263,6 @@ function ReportSalesByBranch() {
                     onClick={() => setBranchId(branch.id)}
                     className="dark:text-white"
                     key={branch.id}
-                    value={branch.id.toString()}
                   >
                     {branch.name}
                   </SelectItem>

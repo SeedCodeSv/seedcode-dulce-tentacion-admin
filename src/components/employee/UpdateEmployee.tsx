@@ -382,7 +382,6 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
                       <AutocompleteItem
                         onClick={() => setDataCreate({ ...dataCreate, studyLevelId: item.id })}
                         key={JSON.stringify(item)}
-                        value={item.name}
                         className="dark:text-white"
                       >
                         {item.name}
@@ -408,7 +407,6 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
                       <AutocompleteItem
                         onClick={() => setDataCreate({ ...dataCreate, statusId: item.id })}
                         key={JSON.stringify(item)}
-                        value={item.name}
                         className="dark:text-white"
                       >
                         {item.name}
@@ -432,7 +430,6 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
                       <AutocompleteItem
                         onClick={() => setDataCreate({ ...dataCreate, contractTypeId: item.id })}
                         key={JSON.stringify(item)}
-                        value={item.name}
                         className="dark:text-white"
                       >
                         {item.name}
@@ -473,7 +470,6 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
                       <AutocompleteItem
                         onClick={() => setDataCreate({ ...dataCreate, chargeId: item.id })}
                         key={JSON.stringify(item)}
-                        value={item.name}
                         className="dark:text-white"
                       >
                         {item.name}
@@ -497,7 +493,6 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
                       <AutocompleteItem
                         onClick={() => setDataCreate({ ...dataCreate, branchId: bra.id })}
                         className="dark:text-white"
-                        value={bra.name}
                         key={JSON.stringify(bra)}
                       >
                         {bra.name}
@@ -530,7 +525,6 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
                               departmentName: dep.valores,
                             });
                         }}
-                        value={dep.codigo}
                         key={JSON.stringify(dep)}
                         className="dark:text-white"
                       >
@@ -561,7 +555,6 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
                             municipalityName: dep.valores,
                           });
                         }}
-                        value={dep.codigo}
                         key={JSON.stringify(dep)}
                         className="dark:text-white"
                       >

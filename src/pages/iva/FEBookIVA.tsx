@@ -4,7 +4,7 @@ import { useBranchesStore } from '@/store/branches.store';
 import { useSalesStore } from '@/store/sales.store';
 import { useTransmitterStore } from '@/store/transmitter.store';
 import { months } from '@/utils/constants';
-import { Button, Select, SelectItem } from "@heroui/react";
+import { Button, Select, SelectItem } from '@heroui/react';
 import { Fragment, useEffect, useState } from 'react';
 import { PiMicrosoftExcelLogoBold } from 'react-icons/pi';
 import { toast } from 'sonner';
@@ -117,9 +117,7 @@ function FEBookIVA() {
                 variant="bordered"
               >
                 {months.map((month) => (
-                  <SelectItem key={month.value} value={month.value}>
-                    {month.name}
-                  </SelectItem>
+                  <SelectItem key={month.value}>{month.name}</SelectItem>
                 ))}
               </Select>
             </div>
@@ -138,9 +136,7 @@ function FEBookIVA() {
                 variant="bordered"
               >
                 {years.map((years) => (
-                  <SelectItem key={years.value} value={years.value}>
-                    {years.name}
-                  </SelectItem>
+                  <SelectItem key={years.value}>{years.name}</SelectItem>
                 ))}
               </Select>
             </div>
@@ -160,9 +156,7 @@ function FEBookIVA() {
                 variant="bordered"
               >
                 {branch_list.map((branch) => (
-                  <SelectItem key={branch.id} value={branch.id}>
-                    {branch.name}
-                  </SelectItem>
+                  <SelectItem key={branch.id}>{branch.name}</SelectItem>
                 ))}
               </Select>
             </div>
@@ -184,7 +178,7 @@ function FEBookIVA() {
             </div>
           </div>
 
-          <div className='max-w-full overflow-x-auto'>
+          <div className="max-w-full overflow-x-auto">
             <div className="w-full max-h-[500px] lg:max-h-[600px] xl:max-h-[700px] 2xl:max-h-[800px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
               {loading_facturas ? (
                 <div className="w-full flex justify-center p-20 items-center flex-col">
@@ -281,7 +275,7 @@ function FEBookIVA() {
                                   .map((factura) => Number(factura.totalSales))
                                   .reduce((a, b) => a + b, 0) /
                                   1.13) *
-                                0.13
+                                  0.13
                               )}
                             </p>
                             <p className="mt-2">

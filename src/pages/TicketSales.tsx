@@ -124,7 +124,7 @@ function TicketSales() {
                     }}
                   >
                     {branch_list.map((item) => (
-                      <SelectItem key={item.id} value={item.id}>
+                      <SelectItem key={item.id}>
                         {item.name}
                       </SelectItem>
                     ))}

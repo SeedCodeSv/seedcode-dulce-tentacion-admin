@@ -853,10 +853,10 @@ function SalesReportContigence() {
               }}
               defaultSelectedKeys={['1']}
             >
-              <SelectItem key={'1'} value={'1'}>
+              <SelectItem key={'1'}>
                 Procesadas
               </SelectItem>
-              <SelectItem key={'0'} value={'0'}>
+              <SelectItem key={'0'}>
                 Contingencia
               </SelectItem>
             </Select>
@@ -1148,7 +1148,7 @@ function SalesReportContigence() {
             }}
           >
             {cat_005_tipo_de_contingencia.map((tCon) => (
-              <SelectItem key={tCon.codigo} value={tCon.codigo}>
+              <SelectItem key={tCon.codigo}>
                 {tCon.valores}
               </SelectItem>
             ))}

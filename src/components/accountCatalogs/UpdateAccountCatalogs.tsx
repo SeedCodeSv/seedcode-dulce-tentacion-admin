@@ -215,7 +215,7 @@ function UpdateAccountCatalogs() {
                                                         errorMessage={formik.errors.type}
                                                     >
                                                         {AccountTypes.map((type) => (
-                                                            <SelectItem key={type.key} value={type.value}>
+                                                            <SelectItem key={type.key}>
                                                                 {type.label}
                                                             </SelectItem>
                                                         ))}
@@ -240,7 +240,7 @@ function UpdateAccountCatalogs() {
                                                         errorMessage={formik.errors.loadAs}
                                                     >
                                                         {UploadAS.map((type) => (
-                                                            <SelectItem key={type.key} value={type.value}>
+                                                            <SelectItem key={type.key}>
                                                                 {type.label}
                                                             </SelectItem>
                                                         ))}
@@ -265,7 +265,7 @@ function UpdateAccountCatalogs() {
                                                         errorMessage={formik.errors.item}
                                                     >
                                                         {Item.map((type) => (
-                                                            <SelectItem key={type.key} value={type.value}>
+                                                            <SelectItem key={type.key}>
                                                                 {type.label}
                                                             </SelectItem>
                                                         ))}

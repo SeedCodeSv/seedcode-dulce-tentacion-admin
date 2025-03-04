@@ -111,7 +111,7 @@ function EditFormTributte({ selectedDepartment, setSelectedDepartment }: Props) 
             errorMessage={formik.errors.tipoDocumento}
           >
             {services.get022TipoDeDocumentoDeIde().map((dep) => (
-              <AutocompleteItem key={dep.codigo} value={dep.codigo} className="dark:text-white">
+              <AutocompleteItem key={dep.codigo} className="dark:text-white">
                 {dep.valores}
               </AutocompleteItem>
             ))}
@@ -204,7 +204,7 @@ function EditFormTributte({ selectedDepartment, setSelectedDepartment }: Props) 
             errorMessage={formik.errors.codActividad}
           >
             {economicActivities.map((dep) => (
-              <AutocompleteItem key={dep.codigo} value={dep.codigo} className="dark:text-white">
+              <AutocompleteItem key={dep.codigo} className="dark:text-white">
                 {dep.valores}
               </AutocompleteItem>
             ))}
@@ -236,7 +236,7 @@ function EditFormTributte({ selectedDepartment, setSelectedDepartment }: Props) 
             errorMessage={formik.touched.departamento && formik.errors.departamento}
           >
             {services.get012Departamento().map((dep) => (
-              <AutocompleteItem value={dep.codigo} key={dep.codigo} className="dark:text-white">
+              <AutocompleteItem key={dep.codigo} className="dark:text-white">
                 {dep.valores}
               </AutocompleteItem>
             ))}
@@ -267,7 +267,7 @@ function EditFormTributte({ selectedDepartment, setSelectedDepartment }: Props) 
             errorMessage={formik.errors.municipio}
           >
             {municipios.map((mun) => (
-              <AutocompleteItem key={mun.codigo} value={mun.codigo} className="dark:text-white">
+              <AutocompleteItem key={mun.codigo} className="dark:text-white">
                 {mun.valores}
               </AutocompleteItem>
             ))}

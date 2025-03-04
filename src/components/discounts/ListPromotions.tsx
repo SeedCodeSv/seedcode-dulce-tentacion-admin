@@ -138,7 +138,6 @@ function ListDiscount({ actions }: Props) {
                     onClick={() => setbranch(branch)}
                     className="dark:text-white"
                     key={branch.id}
-                    value={branch.id}
                   >
                     {branch.name}
                   </AutocompleteItem>
@@ -162,7 +161,6 @@ function ListDiscount({ actions }: Props) {
                 {Tipos_Promotions.map((limit) => (
                   <SelectItem
                     key={limit}
-                    value={limit}
                     className="dark:text-white"
                   >
                     {limit}
@@ -230,7 +228,6 @@ function ListDiscount({ actions }: Props) {
                   {limit_options.map((limit) => (
                     <SelectItem
                       key={limit}
-                      value={limit}
                       className="dark:text-white"
                     >
                       {limit}

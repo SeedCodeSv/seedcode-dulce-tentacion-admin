@@ -834,7 +834,6 @@ function ListEmployee({ actions }: Props) {
                     >
                       {branch_list.map((bra) => (
                         <AutocompleteItem
-                          value={bra.name}
                           className="dark:text-white"
                           key={bra.name}
                         >
@@ -983,7 +982,7 @@ function ListEmployee({ actions }: Props) {
                       }}
                     >
                       {limit_options.map((option) => (
-                        <SelectItem key={option} value={option} className="dark:text-white">
+                        <SelectItem key={option} className="dark:text-white">
                           {option}
                         </SelectItem>
                       ))}

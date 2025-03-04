@@ -128,7 +128,6 @@ function SearchProduct(props: IPropsSearchProduct) {
             >
               {list_categories.map((bra) => (
                 <AutocompleteItem
-                  value={bra.name}
                   key={JSON.stringify(bra)}
                   className="dark:text-white  border dark:border-white rounded-xl"
                 >
@@ -161,7 +160,6 @@ function SearchProduct(props: IPropsSearchProduct) {
             >
               {itemSubCategories.map((item) => (
                 <AutocompleteItem
-                  value={item.name}
                   key={JSON.stringify(item)}
                   className="dark:text-white  border dark:border-white rounded-xl"
                 >

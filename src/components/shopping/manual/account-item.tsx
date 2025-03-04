@@ -176,7 +176,7 @@ function AccountItem({
                   }}
                 >
                   {list_type_of_account.map((type) => (
-                    <SelectItem value={type.id.toString()} key={type.id} textValue={type.name}>
+                    <SelectItem key={type.id} textValue={type.name}>
                       {type.name}
                     </SelectItem>
                   ))}

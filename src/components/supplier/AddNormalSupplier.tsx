@@ -159,7 +159,6 @@ function AddNormalSupplier() {
                     {cat_022_tipo_de_documentoDeIde.map((dep) => (
                       <AutocompleteItem
                         key={dep.codigo}
-                        value={dep.codigo}
                         className="dark:text-white"
                       >
                         {dep.valores}
@@ -232,7 +231,6 @@ function AddNormalSupplier() {
                   >
                     {cat_012_departamento.map((dep) => (
                       <AutocompleteItem
-                        value={dep.codigo}
                         key={dep.codigo}
                         className="dark:text-white"
                       >
@@ -267,7 +265,6 @@ function AddNormalSupplier() {
                   >
                     {cat_013_municipios.map((dep) => (
                       <AutocompleteItem
-                        value={dep.codigo}
                         key={dep.codigo}
                         className="dark:text-white"
                       >

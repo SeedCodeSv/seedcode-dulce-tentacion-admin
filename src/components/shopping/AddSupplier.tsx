@@ -2,7 +2,7 @@ import { PayloadSupplier } from '../../types/supplier.types';
 import * as yup from 'yup';
 import { useEffect, useMemo, useState } from 'react';
 import { Formik } from 'formik';
-import { Autocomplete, AutocompleteItem, Button, Input, Textarea } from "@heroui/react";
+import { Autocomplete, AutocompleteItem, Button, Input, Textarea } from '@heroui/react';
 import { CodigoActividadEconomica } from '../../types/billing/cat-019-codigo-de-actividad-economica.types';
 import { Departamento } from '../../types/billing/cat-012-departamento.types';
 import { useSupplierStore } from '../../store/supplier.store';
@@ -275,7 +275,7 @@ function AddTributeSupplier(props: AddSupplierProps) {
                     selectedKey={values.tipoDocumento} // Asegúrate de que esto esté correcto
                   >
                     {typesDocumento.map((dep) => (
-                      <AutocompleteItem value={dep.code} key={dep.code} className="dark:text-white">
+                      <AutocompleteItem key={dep.code} className="dark:text-white">
                         {dep.name}
                       </AutocompleteItem>
                     ))}
@@ -324,11 +324,7 @@ function AddTributeSupplier(props: AddSupplierProps) {
                     errorMessage={errors.codActividad}
                   >
                     {cat_019_codigo_de_actividad_economica.map((dep) => (
-                      <AutocompleteItem
-                        value={dep.codigo}
-                        key={dep.codigo}
-                        className="dark:text-white"
-                      >
+                      <AutocompleteItem key={dep.codigo} className="dark:text-white">
                         {dep.valores}
                       </AutocompleteItem>
                     ))}
@@ -361,13 +357,7 @@ function AddTributeSupplier(props: AddSupplierProps) {
                     errorMessage={errors.departamento}
                   >
                     {cat_012_departamento.map((dep) => (
-                      <AutocompleteItem
-                        value={dep.codigo}
-                        key={dep.codigo}
-                        className="dark:text-white"
-                      >
-                        {dep.valores}
-                      </AutocompleteItem>
+                      <AutocompleteItem className="dark:text-white">{dep.valores}</AutocompleteItem>
                     ))}
                   </Autocomplete>
                 </div>
@@ -396,11 +386,7 @@ function AddTributeSupplier(props: AddSupplierProps) {
                     errorMessage={errors.municipio}
                   >
                     {cat_013_municipios.map((dep) => (
-                      <AutocompleteItem
-                        value={dep.codigo}
-                        key={dep.codigo}
-                        className="dark:text-white"
-                      >
+                      <AutocompleteItem key={dep.codigo} className="dark:text-white">
                         {dep.valores}
                       </AutocompleteItem>
                     ))}

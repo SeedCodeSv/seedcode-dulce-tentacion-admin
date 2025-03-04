@@ -71,7 +71,7 @@ function CreateTheme() {
       <Layout title="Agregar tema">
         <>
           <div className=" w-full h-full p-5 bg-gray-50 dark:bg-gray-900">
-            <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+            <div className="w-full h-full border-white border p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
               <div className="flex cursor-pointer" onClick={() => navigate('/configuration')}>
                 <ArrowLeft className="mr-2 dark:text-white" />
                 <p className="text-lg font-semibold dark:text-white"> Regresar </p>
@@ -221,10 +221,10 @@ function CreateTheme() {
                       setColor({ ...color, context: e.target.value });
                     }}
                   >
-                    <SelectItem value={'light'} key={'light'} className="dark:text-white">
+                    <SelectItem  key={'light'} className="dark:text-white">
                       Claro
                     </SelectItem>
-                    <SelectItem value={'dark'} key={'dark'} className="dark:text-white">
+                    <SelectItem  key={'dark'} className="dark:text-white">
                       Oscuro
                     </SelectItem>
                   </Select>

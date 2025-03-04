@@ -280,7 +280,6 @@ const AddExpenses = (props: Props) => {
                   >
                     {list_categories_expenses.map((dep) => (
                       <AutocompleteItem
-                        value={dep.id}
                         key={JSON.stringify(dep)}
                         className="dark:text-white"
                       >

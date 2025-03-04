@@ -166,7 +166,7 @@ const ListClients = ({ actions }: Props) => {
                   }}
                 >
                   {branch_list.map((bra) => (
-                    <AutocompleteItem value={bra.name} className="dark:text-white" key={bra.name}>
+                    <AutocompleteItem className="dark:text-white" key={bra.name}>
                       {bra.name}
                     </AutocompleteItem>
                   ))}

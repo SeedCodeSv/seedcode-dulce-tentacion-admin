@@ -245,7 +245,7 @@ function EditAccountingItems() {
                     }}
                   >
                     {list_type_of_account.map((type) => (
-                      <SelectItem value={type.id} key={type.id}>
+                      <SelectItem  key={type.id}>
                         {type.name}
                       </SelectItem>
                     ))}
@@ -365,7 +365,7 @@ function EditAccountingItems() {
                               }}
                             >
                               {branch_list.map((branch) => (
-                                <SelectItem value={branch.id} key={branch.id}>
+                                <SelectItem key={branch.id}>
                                   {branch.name}
                                 </SelectItem>
                               ))}
@@ -624,7 +624,6 @@ export const CodCuentaSelect = (props: CodCuentaPropsEdit) => {
         {itemsPag.map((account) => (
           <AutocompleteItem
             key={account.code}
-            value={account.code} // El valor seleccionado será el código
             textValue={`${account.code} - ${account.name}`}
           >
             {account.code} - {account.name} {/* Muestra ambos en las opciones */}

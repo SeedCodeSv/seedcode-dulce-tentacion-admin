@@ -80,7 +80,7 @@ function UpdateCorrelative({ correlative, onClose, reload }: IPropsCorrelativeUp
             }}
           >
             {correlativesTypes.map((dep) => (
-              <AutocompleteItem className="dark:text-white" value={dep.label} key={dep.value}>
+              <AutocompleteItem className="dark:text-white" key={dep.value}>
                 {dep.value + ' - ' + dep.label}
               </AutocompleteItem>
             ))}

@@ -64,7 +64,7 @@ function AnexoFe() {
               variant="bordered"
             >
               {months.map((month) => (
-                <SelectItem key={month.value} value={month.value}>
+                <SelectItem key={month.value}>
                   {month.name}
                 </SelectItem>
               ))}
@@ -83,7 +83,7 @@ function AnexoFe() {
               variant="bordered"
             >
               {years.map((years) => (
-                <SelectItem key={years.value} value={years.value}>
+                <SelectItem key={years.value}>
                   {years.name}
                 </SelectItem>
               ))}

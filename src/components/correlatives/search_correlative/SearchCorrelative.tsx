@@ -60,7 +60,7 @@ function SearchCorrelative(props: IPropsSearchCorrelative) {
                 }}
               >
                 {branch_list.map((bra) => (
-                  <AutocompleteItem className="dark:text-white" value={bra.name} key={bra.name}>
+                  <AutocompleteItem className="dark:text-white" key={bra.name}>
                     {bra.name}
                   </AutocompleteItem>
                 ))}
@@ -85,7 +85,7 @@ function SearchCorrelative(props: IPropsSearchCorrelative) {
                 }}
               >
                 {correlativesTypes.map((dep) => (
-                  <AutocompleteItem className="dark:text-white" value={dep.label} key={dep.value}>
+                  <AutocompleteItem className="dark:text-white" key={dep.value}>
                     {dep.value + ' - ' + dep.label}
                   </AutocompleteItem>
                 ))}

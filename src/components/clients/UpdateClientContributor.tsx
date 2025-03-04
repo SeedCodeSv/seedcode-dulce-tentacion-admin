@@ -357,7 +357,6 @@ function AddClientContributor(props: Props) {
                         >
                           {cat_022_tipo_de_documentoDeIde.map((dep) => (
                             <AutocompleteItem
-                              value={dep.codigo}
                               key={dep.codigo}
                               className="dark:text-white"
                             >
@@ -421,7 +420,6 @@ function AddClientContributor(props: Props) {
                       >
                         {cat_19.map((dep) => (
                           <AutocompleteItem
-                            value={dep.codigo}
                             key={dep.codigo}
                             className="dark:text-white"
                           >
@@ -464,7 +462,6 @@ function AddClientContributor(props: Props) {
                       >
                         {cat_012_departamento.map((dep) => (
                           <AutocompleteItem
-                            value={dep.codigo}
                             key={dep.codigo}
                             className="dark:text-white"
                           >
@@ -502,7 +499,6 @@ function AddClientContributor(props: Props) {
                       >
                         {cat_013_municipios.map((dep) => (
                           <AutocompleteItem
-                            value={dep.id}
                             key={dep.codigo}
                             className="dark:text-white"
                           >
@@ -600,7 +596,6 @@ function AddClientContributor(props: Props) {
                         {branch_list.map((bra) => (
                           <AutocompleteItem
                             className="dark:text-white"
-                            value={bra.id.toString()}
                             key={bra.id}
                           >
                             {bra.name}

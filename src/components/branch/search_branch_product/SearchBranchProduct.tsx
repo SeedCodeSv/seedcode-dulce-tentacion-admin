@@ -86,7 +86,6 @@ function SearchBranchProduct() {
                 <AutocompleteItem
                   className="dark:text-white"
                   key={category.id}
-                  value={category.id}
                   textValue={category.name}
                 >
                   {category.name}

@@ -73,7 +73,7 @@ function TypeAccountingItem() {
                 }}
               >
                 {limit_options.map((option, index) => (
-                  <SelectItem key={index} value={option}>
+                  <SelectItem key={index} >
                     {option}
                   </SelectItem>
                 ))}

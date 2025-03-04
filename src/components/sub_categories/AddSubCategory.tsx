@@ -118,7 +118,6 @@ const AddSubCategory = (props: Props) => {
                 {list_categories.map((bra) => (
                   <AutocompleteItem
                     className="dark:text-white"
-                    value={bra.name}
                     key={JSON.stringify(bra)}
                   >
                     {bra.name}

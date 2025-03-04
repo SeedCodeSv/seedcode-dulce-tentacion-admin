@@ -119,7 +119,6 @@ function AddUsers(props: Props) {
                     .map((dep) => (
                       <AutocompleteItem
                         className="dark:text-white"
-                        value={dep.id}
                         key={JSON.stringify(dep)}
                       >
                         {dep.name}

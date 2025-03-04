@@ -193,7 +193,7 @@ function ListBranch() {
             }}
           >
             {limit_options.map((option) => (
-              <SelectItem className="w-full dark:text-white" key={option} value={option}>
+              <SelectItem className="w-full dark:text-white" key={option}>
                 {option}
               </SelectItem>
             ))}

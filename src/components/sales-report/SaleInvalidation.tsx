@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import { Button, Input, Switch } from "@heroui/react";
+import { Button, Input, Switch } from '@heroui/react';
 import { global_styles } from '../../styles/global.styles';
 import { toast } from 'sonner';
 import { Sale } from '../../types/report_contigence';
@@ -10,7 +10,7 @@ import { IInvalidationBody, IInvalidationToMH } from '../../types/DTE/invalidati
 import { getElSalvadorDateTime } from '../../utils/dates';
 import { useTransmitterStore } from '../../store/transmitter.store';
 import { documentsTypeReceipt } from '../../utils/dte';
-import { Select, SelectItem } from "@heroui/react";
+import { Select, SelectItem } from '@heroui/react';
 import { invalidationTypes } from '../../types/DTE/invalidation.types';
 import { firmarDocumentoInvalidacion, send_to_mh_invalidation } from '../../services/DTE.service';
 import { return_mh_token } from '../../storage/localStorage';
@@ -241,9 +241,7 @@ export const SaleInvalidation = (props: Props) => {
                       onChange={handleChange('typeDocResponsible')}
                     >
                       {documentsTypeReceipt.map((doc) => (
-                        <SelectItem key={doc.codigo} value={doc.codigo}>
-                          {doc.valores}
-                        </SelectItem>
+                        <SelectItem key={doc.codigo}>{doc.valores}</SelectItem>
                       ))}
                     </Select>
                     {errors.typeDocResponsible && touched.typeDocResponsible && (
@@ -302,9 +300,7 @@ export const SaleInvalidation = (props: Props) => {
                       onChange={handleChange('typeDocApplicant')}
                     >
                       {documentsTypeReceipt.map((doc) => (
-                        <SelectItem key={doc.codigo} value={doc.codigo}>
-                          {doc.valores}
-                        </SelectItem>
+                        <SelectItem key={doc.codigo}>{doc.valores}</SelectItem>
                       ))}
                     </Select>
                     {errors.typeDocApplicant && touched.typeDocApplicant && (
@@ -341,9 +337,7 @@ export const SaleInvalidation = (props: Props) => {
                         }}
                       >
                         {invalidationTypes.map((type) => (
-                          <SelectItem key={type.id} value={type.id}>
-                            {type.valores}
-                          </SelectItem>
+                          <SelectItem key={type.id}>{type.valores}</SelectItem>
                         ))}
                       </Select>
                       <Select
@@ -355,7 +349,7 @@ export const SaleInvalidation = (props: Props) => {
                         onChange={(e) => setGenerationCodeR(e.target.value)}
                       >
                         {sales.map((sale) => (
-                          <SelectItem key={sale.codigoGeneracion} value={sale.codigoGeneracion}>
+                          <SelectItem key={sale.codigoGeneracion}>
                             {sale.id +
                               ' - ' +
                               sale.fecEmi +

@@ -218,7 +218,6 @@ import {
                           {operadores.map((operator) => (
                             <SelectItem
                               key={operator.value}
-                              value={operator.value}
                               className="dark:text-white"
                             >
                               {operator.label}
@@ -321,7 +320,6 @@ import {
                           onClick={() => setBranchId(branch.id)}
                           className="dark:text-white"
                           key={branch.id}
-                          value={branch.id}
                           textValue={branch.name}
                         >
                           {branch.name}

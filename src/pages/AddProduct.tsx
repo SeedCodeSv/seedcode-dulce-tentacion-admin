@@ -414,7 +414,7 @@ function AddProduct() {
                       errorMessage={touched.branch && errors.branch}
                     >
                       {branch_list.map((val) => (
-                        <SelectItem key={val.id} value={val.id} className="dark:text-white">
+                        <SelectItem key={val.id} className="dark:text-white">
                           {val.name}
                         </SelectItem>
                       ))}
@@ -447,7 +447,6 @@ function AddProduct() {
                       {itemTypes.map((item) => (
                         <AutocompleteItem
                           key={item.codigo}
-                          value={item.codigo}
                           className="dark:text-white"
                         >
                           {item.valores}
@@ -481,7 +480,6 @@ function AddProduct() {
                       {unidadDeMedidaList.map((item) => (
                         <AutocompleteItem
                           key={item.codigo}
-                          value={item.codigo}
                           className="dark:text-white"
                         >
                           {item.valores}
@@ -506,7 +504,7 @@ function AddProduct() {
                       className="dark:text-white"
                     >
                       {list_categories.map((bra) => (
-                        <AutocompleteItem value={bra.name} key={bra.id} className="dark:text-white">
+                        <AutocompleteItem key={bra.id} className="dark:text-white">
                           {bra.name}
                         </AutocompleteItem>
                       ))}
@@ -536,7 +534,6 @@ function AddProduct() {
                     >
                       {subcategories?.map((sub) => (
                         <SelectItem
-                          value={sub.id.toString()}
                           key={sub.id}
                           className="dark:text-white"
                         >
@@ -587,7 +584,6 @@ function AddProduct() {
                     >
                       {supplier_list.map((bra) => (
                         <AutocompleteItem
-                          value={bra.nombre}
                           key={bra.id ?? 0}
                           className="dark:text-white"
                         >

@@ -495,7 +495,7 @@ function ContingenceFSE() {
               errorMessage={error.motivo}
             >
               {service.get005TipoDeContingencum().map((item) => (
-                <SelectItem key={item.codigo} value={item.codigo} className="dark:text-white">
+                <SelectItem key={item.codigo}  className="dark:text-white">
                   {item.valores}
                 </SelectItem>
               ))}
@@ -530,7 +530,6 @@ function ContingenceFSE() {
               {branch_list.map((bra) => (
                 <AutocompleteItem
                   className="dark:text-white"
-                  value={bra.id.toString()}
                   key={bra.id.toString()}
                 >
                   {bra.name}
@@ -558,7 +557,6 @@ function ContingenceFSE() {
                 {filteredEmployees.map((item) => (
                     <AutocompleteItem
                     key={JSON.stringify(item)}
-                    value={`${item.firstName} ${item.secondName} ${item.firstLastName} ${item.secondLastName}`}
                     className=" dark:text-white"
                     >
                     {`${item.firstName} ${item.secondName} ${item.firstLastName} ${item.secondLastName}`}

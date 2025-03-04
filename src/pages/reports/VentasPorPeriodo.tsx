@@ -1,11 +1,4 @@
-import {
-  Autocomplete,
-  AutocompleteItem,
-  Button,
-  Input,
-  Select,
-  SelectItem,
-} from "@heroui/react";
+import { Autocomplete, AutocompleteItem, Button, Input, Select, SelectItem } from '@heroui/react';
 import Layout from '../../layout/Layout';
 import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
 import { useContext, useEffect, useState } from 'react';
@@ -83,7 +76,7 @@ function VentasPorPeriodo() {
       searchParam ?? selectedBranch?.name,
       searchParam ?? code,
       searchParam ?? filter.typeVoucher,
-      pointOfSale ?? ""
+      pointOfSale ?? ''
     );
     getSalesByPeriodChart(startDate, endDate);
     getBranchesList();
@@ -131,7 +124,7 @@ function VentasPorPeriodo() {
               }}
             >
               {typeSales.map((type) => (
-                <SelectItem key={type.codigo} value={type.codigo} className="dark:text-white">
+                <SelectItem key={type.codigo} className="dark:text-white">
                   {type.valores}
                 </SelectItem>
               ))}
@@ -155,7 +148,7 @@ function VentasPorPeriodo() {
               placeholder="Selecciona la sucursal"
             >
               {branch_list.map((branch) => (
-                <SelectItem key={branch.id} value={branch.id} className="dark:text-white">
+                <SelectItem key={branch.id} className="dark:text-white">
                   {branch.name}
                 </SelectItem>
               ))}
@@ -199,7 +192,7 @@ function VentasPorPeriodo() {
                 {correlativesTypes
                   .filter((dep) => ['F', 'CCF', 'T'].includes(dep.value)) // Filtra solo "F", "CCF", "T"
                   .map((dep) => (
-                    <AutocompleteItem className="dark:text-white" value={dep.label} key={dep.value}>
+                    <AutocompleteItem className="dark:text-white" key={dep.value}>
                       {dep.value + ' - ' + dep.label}
                     </AutocompleteItem>
                   ))}
@@ -222,7 +215,7 @@ function VentasPorPeriodo() {
               {list_correlatives
                 .filter((corr) => corr.typeVoucher === 'T') // Filtrar por tipoVoucher "T"
                 .map((corr) => (
-                  <SelectItem key={corr.code} value={corr.code} className="dark:text-white">
+                  <SelectItem key={corr.code} className="dark:text-white">
                     {corr.code}
                   </SelectItem>
                 ))}
@@ -233,7 +226,7 @@ function VentasPorPeriodo() {
                 label="Punto de venta"
                 variant="bordered"
                 labelPlacement="outside"
-                placeholder='Selecciona un punto de venta'
+                placeholder="Selecciona un punto de venta"
                 classNames={{ label: 'font-semibold' }}
                 className="w-full"
                 value={limit_options[0]}
@@ -245,16 +238,17 @@ function VentasPorPeriodo() {
                   }
                 }}
               >
-                {point_of_sales.filter((point) => point.typeVoucher === 'FE').map((point) => (
-                  <SelectItem
-                    key={point.code}
-                    value={limit}
-                    className="dark:text-white"
-                    textValue={point.typeVoucher + " - " + point.code}
-                  >
-                    {point.typeVoucher + " - " + point.code}
-                  </SelectItem>
-                ))}
+                {point_of_sales
+                  .filter((point) => point.typeVoucher === 'FE')
+                  .map((point) => (
+                    <SelectItem
+                      key={point.code}
+                      className="dark:text-white"
+                      textValue={point.typeVoucher + ' - ' + point.code}
+                    >
+                      {point.typeVoucher + ' - ' + point.code}
+                    </SelectItem>
+                  ))}
               </Select>
               <Select
                 label="Límite"
@@ -272,12 +266,7 @@ function VentasPorPeriodo() {
                 }}
               >
                 {limit_options.map((limit) => (
-                  <SelectItem
-                    key={limit}
-                    value={limit}
-                    className="dark:text-white"
-                    textValue={limit}
-                  >
+                  <SelectItem key={limit} className="dark:text-white" textValue={limit}>
                     {limit}
                   </SelectItem>
                 ))}
@@ -361,7 +350,7 @@ function VentasPorPeriodo() {
                     }}
                   >
                     {typeSales.map((type) => (
-                      <SelectItem key={type.codigo} value={type.codigo} className="dark:text-white">
+                      <SelectItem key={type.codigo} className="dark:text-white">
                         {type.valores}
                       </SelectItem>
                     ))}
@@ -386,7 +375,7 @@ function VentasPorPeriodo() {
                     placeholder="Selecciona la sucursal"
                   >
                     {branch_list.map((branch) => (
-                      <SelectItem key={branch.id} value={branch.id} className="dark:text-white">
+                      <SelectItem key={branch.id} className="dark:text-white">
                         {branch.name}
                       </SelectItem>
                     ))}
@@ -413,11 +402,7 @@ function VentasPorPeriodo() {
                     {correlativesTypes
                       .filter((dep) => ['F', 'CCF', 'T'].includes(dep.value)) // Filtra solo "F", "CCF", "T"
                       .map((dep) => (
-                        <AutocompleteItem
-                          className="dark:text-white"
-                          value={dep.label}
-                          key={dep.value}
-                        >
+                        <AutocompleteItem className="dark:text-white" key={dep.value}>
                           {dep.value + ' - ' + dep.label}
                         </AutocompleteItem>
                       ))}
@@ -440,7 +425,7 @@ function VentasPorPeriodo() {
                     {list_correlatives
                       .filter((corr) => corr.typeVoucher === 'T') // Filtrar por tipoVoucher "T"
                       .map((corr) => (
-                        <SelectItem key={corr.code} value={corr.code} className="dark:text-white">
+                        <SelectItem key={corr.code} className="dark:text-white">
                           {corr.code}
                         </SelectItem>
                       ))}
@@ -474,12 +459,7 @@ function VentasPorPeriodo() {
                 }}
               >
                 {limit_options.map((limit) => (
-                  <SelectItem
-                    key={limit}
-                    value={limit}
-                    className="dark:text-white"
-                    textValue={limit}
-                  >
+                  <SelectItem key={limit} className="dark:text-white" textValue={limit}>
                     {limit}
                   </SelectItem>
                 ))}

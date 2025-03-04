@@ -92,7 +92,7 @@ function AddUsers(props: Props) {
                   {roles_list
                     .filter((rol) => rol.name !== 'TIENDA')
                     .map((dep) => (
-                      <AutocompleteItem value={dep.id} key={JSON.stringify(dep)}>
+                      <AutocompleteItem key={JSON.stringify(dep)}>
                         {dep.name}
                       </AutocompleteItem>
                     ))}

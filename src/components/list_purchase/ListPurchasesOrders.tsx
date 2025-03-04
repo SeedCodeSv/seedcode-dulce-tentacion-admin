@@ -122,7 +122,6 @@ function ListPurchasesOrders({ actions }: ArrayAction) {
                     <AutocompleteItem
                       className="dark:text-white"
                       key={branch.id ?? 0}
-                      value={branch.nombre}
                     >
                       {branch.nombre}
                     </AutocompleteItem>
@@ -176,13 +175,13 @@ function ListPurchasesOrders({ actions }: ArrayAction) {
                   value={limit}
                   onChange={(e) => setShowState(e.target.value ? e.target.value : '')}
                 >
-                  <SelectItem className="dark:text-white" key={''} value={'todos'}>
+                  <SelectItem className="dark:text-white" key={''}>
                     Mostrar todos
                   </SelectItem>
-                  <SelectItem className="dark:text-white" key={'false'} value={'false'}>
+                  <SelectItem className="dark:text-white" key={'false'}>
                     Pendientes
                   </SelectItem>
-                  <SelectItem className="dark:text-white" key={'true'} value={'true'}>
+                  <SelectItem className="dark:text-white" key={'true'}>
                     Completados
                   </SelectItem>
                 </Select>

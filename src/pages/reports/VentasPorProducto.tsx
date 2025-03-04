@@ -100,7 +100,7 @@ function VentasPorProducto() {
               }}
             >
               {branch_list.map((type) => (
-                <SelectItem key={type.name} value={type.name} className="dark:text-white">
+                <SelectItem key={type.name} className="dark:text-white">
                   {type.name}
                 </SelectItem>
               ))}
@@ -185,7 +185,7 @@ function VentasPorProducto() {
                     }}
                   >
                     {branch_list.map((type) => (
-                      <SelectItem key={type.name} value={type.name} className="dark:text-white">
+                      <SelectItem key={type.name} className="dark:text-white">
                         {type.name}
                       </SelectItem>
                     ))}

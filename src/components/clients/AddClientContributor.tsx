@@ -287,7 +287,6 @@ function AddClientContributor() {
                     >
                       {cat_022_tipo_de_documentoDeIde.map((dep) => (
                         <AutocompleteItem
-                          value={dep.codigo}
                           key={dep.codigo}
                           className="dark:text-white"
                         >
@@ -413,7 +412,6 @@ function AddClientContributor() {
                     >
                       {cat_019_codigo_de_actividad_economica.map((dep) => (
                         <AutocompleteItem
-                          value={dep.codigo}
                           key={dep.codigo}
                           className="dark:text-white"
                         >
@@ -449,7 +447,6 @@ function AddClientContributor() {
                       {branch_list.map((bra) => (
                         <AutocompleteItem
                           className="dark:text-white"
-                          value={bra.id.toString()}
                           key={bra.id.toString()}
                         >
                           {bra.name}
@@ -495,7 +492,6 @@ function AddClientContributor() {
                     >
                       {cat_012_departamento.map((dep) => (
                         <AutocompleteItem
-                          value={dep.codigo}
                           key={dep.codigo}
                           className="dark:text-white"
                         >
@@ -530,7 +526,6 @@ function AddClientContributor() {
                     >
                       {cat_013_municipios.map((dep) => (
                         <AutocompleteItem
-                          value={dep.codigo}
                           key={dep.codigo}
                           className="dark:text-white"
                         >

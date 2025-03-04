@@ -352,7 +352,6 @@ function Annulation06({ id }: Props) {
                 <SelectItem
                   className="dark:text-white"
                   key={item.id}
-                  value={item.id}
                   textValue={item.valores}
                 >
                   {item.valores}
@@ -380,7 +379,6 @@ function Annulation06({ id }: Props) {
                 {recent_debit_notes.map((item) => (
                   <SelectItem
                     key={item.codigoGeneracion}
-                    value={item.codigoGeneracion}
                     textValue={item.codigoGeneracion}
                     className="dark:text-white"
                   >
@@ -443,7 +441,6 @@ function Annulation06({ id }: Props) {
                         {employee_list.map((item) => (
                           <AutocompleteItem
                             key={JSON.stringify(item)}
-                            value={item.dui}
                             className=" dark:text-white"
                           >
                             {`${item.id} - ${item.firstName + ' ' + item.secondName} ${item.firstLastName} ${item.secondLastName}`}
@@ -523,7 +520,6 @@ function Annulation06({ id }: Props) {
                             <SelectItem
                               className="dark:text-white"
                               key={doc.codigo}
-                              value={doc.codigo}
                             >
                               {doc.valores}
                             </SelectItem>

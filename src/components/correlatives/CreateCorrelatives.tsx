@@ -86,7 +86,7 @@ function CreateCorrelative({ onClose, reload }: IPropsCorrelativeUpdate) {
                 }}
               >
                 {correlativesTypes.map((dep) => (
-                  <AutocompleteItem className="dark:text-white" value={dep.label} key={dep.value}>
+                  <AutocompleteItem className="dark:text-white" key={dep.value}>
                     {dep.value + ' - ' + dep.label}
                   </AutocompleteItem>
                 ))}
@@ -221,7 +221,7 @@ function CreateCorrelative({ onClose, reload }: IPropsCorrelativeUpdate) {
               }}
             >
               {branch_list.map((bra) => (
-                <AutocompleteItem className="dark:text-white" value={bra.id} key={bra.id}>
+                <AutocompleteItem className="dark:text-white" key={bra.id}>
                   {bra.name}
                 </AutocompleteItem>
               ))}

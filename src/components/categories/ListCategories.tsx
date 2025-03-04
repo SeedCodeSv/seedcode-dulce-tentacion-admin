@@ -166,7 +166,7 @@ function ListCategories({ actions }: PProps) {
                 }}
               >
                 {limit_options.map((limit) => (
-                  <SelectItem key={limit} value={limit} className="dark:text-white">
+                  <SelectItem key={limit} className="dark:text-white">
                     {limit}
                   </SelectItem>
                 ))}

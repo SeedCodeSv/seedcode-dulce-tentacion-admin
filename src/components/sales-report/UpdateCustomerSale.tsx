@@ -251,7 +251,7 @@ const UpdateCustomerSales = (props: Props) => {
                   }}
                 >
                   {cat_019_codigo_de_actividad_economica.map((dep) => (
-                    <AutocompleteItem value={dep.codigo} key={JSON.stringify(dep)}>
+                    <AutocompleteItem key={JSON.stringify(dep)}>
                       {dep.valores}
                     </AutocompleteItem>
                   ))}
@@ -283,7 +283,7 @@ const UpdateCustomerSales = (props: Props) => {
                       }}
                     >
                       {cay_002_tipo_de_documento.map((dep) => (
-                        <AutocompleteItem value={dep.codigo} key={JSON.stringify(dep)}>
+                        <AutocompleteItem key={JSON.stringify(dep)}>
                           {dep.valores}
                         </AutocompleteItem>
                       ))}
@@ -344,7 +344,7 @@ const UpdateCustomerSales = (props: Props) => {
                     value={values.nombreDepartamento}
                   >
                     {cat_012_departamento.map((dep) => (
-                      <AutocompleteItem value={dep.codigo} key={JSON.stringify(dep)}>
+                      <AutocompleteItem key={JSON.stringify(dep)}>
                         {dep.valores}
                       </AutocompleteItem>
                     ))}
@@ -382,7 +382,7 @@ const UpdateCustomerSales = (props: Props) => {
                       value={values.nombreMunicipio}
                     >
                       {cat_013_municipios!.map((dep) => (
-                        <AutocompleteItem value={dep.codigo} key={JSON.stringify(dep)}>
+                        <AutocompleteItem  key={JSON.stringify(dep)}>
                           {dep.valores}
                         </AutocompleteItem>
                       ))}
@@ -417,7 +417,7 @@ const UpdateCustomerSales = (props: Props) => {
                       value={values.nombreMunicipio}
                     >
                       {cat_013_municipios!.map((dep) => (
-                        <AutocompleteItem value={dep.codigo} key={JSON.stringify(dep)}>
+                        <AutocompleteItem key={JSON.stringify(dep)}>
                           {dep.valores}
                         </AutocompleteItem>
                       ))}
@@ -445,7 +445,7 @@ const UpdateCustomerSales = (props: Props) => {
                   value={values.tipoItem}
                 >
                   {cat_011_tipo_de_item.map((item) => (
-                    <AutocompleteItem key={JSON.stringify(item)} value={item.codigo}>
+                    <AutocompleteItem key={JSON.stringify(item)}>
                       {item.valores}
                     </AutocompleteItem>
                   ))}
@@ -472,7 +472,7 @@ const UpdateCustomerSales = (props: Props) => {
                   value={values.uniMedida}
                 >
                   {unidadDeMedidaList.map((item) => (
-                    <AutocompleteItem key={JSON.stringify(item)} value={item.valores}>
+                    <AutocompleteItem key={JSON.stringify(item)}>
                       {item.valores}
                     </AutocompleteItem>
                   ))}

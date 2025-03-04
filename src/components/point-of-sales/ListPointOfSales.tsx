@@ -113,7 +113,6 @@ function ListPointOfSales({ actions }: Props) {
                 >
                   {branch_list.map((bra) => (
                     <AutocompleteItem
-                      value={bra.id}
                       className="dark:text-white"
                       key={JSON.stringify(bra)}
                     >
@@ -180,7 +179,6 @@ function ListPointOfSales({ actions }: Props) {
                     >
                       {branch_list.map((bra) => (
                         <AutocompleteItem
-                          value={bra.id}
                           className="dark:text-white"
                           key={JSON.stringify(bra)}
                         >

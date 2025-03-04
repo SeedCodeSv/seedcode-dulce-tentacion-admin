@@ -83,7 +83,6 @@ const PurchaseOrderForm = () => {
                 >
                   {branch_list.map((bra) => (
                     <AutocompleteItem
-                      value={bra.name}
                       className="dark:text-white"
                       key={JSON.stringify(bra)}
                     >
@@ -160,7 +159,7 @@ const PurchaseOrderForm = () => {
                   }}
                 >
                   {limit_options.map((option) => (
-                    <SelectItem key={option} value={option} className="dark:text-white">
+                    <SelectItem key={option} className="dark:text-white">
                       {option}
                     </SelectItem>
                   ))}

@@ -296,7 +296,6 @@ const CushCatsBigZ = () => {
                   {branch_list.map((item) => (
                     <AutocompleteItem
                       key={item.id}
-                      value={item.id}
                       onClick={() => {
                         setBranch(item.id);
                         setBranchName(item.name);

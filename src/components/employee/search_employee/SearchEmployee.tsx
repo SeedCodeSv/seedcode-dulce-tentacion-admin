@@ -203,7 +203,7 @@ function SearchEmployee(props: IPropsSearchEmployee) {
               }}
             >
               {branch_list.map((dep) => (
-                <AutocompleteItem className="dark:text-white" value={dep.id} key={dep.name}>
+                <AutocompleteItem className="dark:text-white" key={dep.name}>
                   {dep.name}
                 </AutocompleteItem>
               ))}

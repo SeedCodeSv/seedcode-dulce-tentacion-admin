@@ -588,7 +588,6 @@ const CashCutsX = () => {
                   {branch_list.map((item) => (
                     <AutocompleteItem
                       key={item.id}
-                      value={item.id}
                       onClick={() => {
                         setBranchId(item.id);
                         setBranchName(item.name);

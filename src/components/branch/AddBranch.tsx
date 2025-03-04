@@ -129,7 +129,7 @@ function AddBranch(props: Props) {
                   errorMessage={errors.tipoEstablecimiento}
                 >
                   {type_estable.map((item) => (
-                    <SelectItem key={item.codigo} value={item.valores}>
+                    <SelectItem key={item.codigo}>
                       {item.valores}
                     </SelectItem>
                   ))}

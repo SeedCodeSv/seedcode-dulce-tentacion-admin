@@ -1,7 +1,7 @@
 import BottomDrawer from '@/components/global/BottomDrawer';
 import TooltipGlobal from '@/components/global/TooltipGlobal';
 import { global_styles } from '@/styles/global.styles';
-import { Autocomplete, AutocompleteItem, Button, Input } from "@heroui/react";
+import { Autocomplete, AutocompleteItem, Button, Input } from '@heroui/react';
 import { Filter, Mail, User } from 'lucide-react';
 import { useContext, useEffect, useState } from 'react';
 import { IPropsSearchCustomer } from '../types/mobile-view.types';
@@ -94,7 +94,7 @@ function SearchClient(props: IPropsSearchCustomer) {
             </label>
             <Autocomplete
               onSelectionChange={(key) => {
-                const branchName = new Set([key]).values().next().value;
+                const branchName = String(new Set([key]).values().next().value ?? '');
                 setFilter({ ...filter, nameBranch: branchName });
                 props.nameBranch(branchName);
               }}
@@ -108,7 +108,7 @@ function SearchClient(props: IPropsSearchCustomer) {
               clearButtonProps={{}}
             >
               {branch_list.map((bra) => (
-                <AutocompleteItem value={bra.name} className="dark:text-white" key={bra.name}>
+                <AutocompleteItem className="dark:text-white" key={bra.name}>
                   {bra.name}
                 </AutocompleteItem>
               ))}
