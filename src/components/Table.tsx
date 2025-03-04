@@ -10,7 +10,7 @@ import {
   Eye,
 } from 'lucide-react';
 import { Theme } from '../hooks/useTheme';
-import { Button, ButtonGroup } from '@nextui-org/react';
+import { Button, ButtonGroup } from "@heroui/react";
 import TooltipGlobal from './global/TooltipGlobal';
 
 interface Props {

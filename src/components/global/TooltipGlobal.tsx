@@ -1,4 +1,4 @@
-import { Tooltip } from '@nextui-org/react';
+import { Tooltip } from "@heroui/react";
 interface Props {
   children: JSX.Element;
   text: string;

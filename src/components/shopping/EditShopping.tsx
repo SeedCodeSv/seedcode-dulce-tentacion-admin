@@ -31,7 +31,7 @@ import {
   Select,
   SelectItem,
   useDisclosure,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import axios from 'axios';
 import { useFormik } from 'formik';
 import { useEffect, useMemo, useState } from 'react';

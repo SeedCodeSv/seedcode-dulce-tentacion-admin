@@ -1,11 +1,11 @@
 import Layout from '../layout/Layout';
-import { Tab, Tabs } from '@nextui-org/react';
+import { Tab, Tabs } from "@heroui/react";
 import AddClientNormal from '../components/clients/AddClientNormal';
 import AddClientContributor from '../components/clients/AddClientContributor';
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
-import { Button } from '@nextui-org/react';
+import { Button } from "@heroui/react";
 import { useCustomerStore } from '@/store/customers.store';
 import GlobalLoading from '@/components/global/GlobalLoading';
 

@@ -1,6 +1,6 @@
 import { ClipboardList, DollarSign, Plus, ShoppingBag } from 'lucide-react';
 import { BranchProduct } from '../../../types/branch_products.types';
-import { Button } from '@nextui-org/react';
+import { Button } from "@heroui/react";
 import { global_styles } from '../../../styles/global.styles';
 import { toast } from 'sonner';
 import { useBranchProductStore } from '../../../store/branch_product.store';

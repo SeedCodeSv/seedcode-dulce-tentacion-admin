@@ -9,7 +9,7 @@ import {
   SelectItem,
   Textarea,
   Tooltip,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { Formik } from 'formik';
 import { Key, useContext, useEffect, useState } from 'react';
 import * as yup from 'yup';
@@ -24,7 +24,7 @@ import { operadores } from '../../utils/constants';
 import { Promotion } from '../../types/promotions.types';
 import { useBranchProductStore } from '../../store/branch_product.store';
 import { usePromotionsStore } from '../../store/promotions/promotions.store';
-import { Tab, Tabs } from '@nextui-org/react';
+import { Tab, Tabs } from "@heroui/react";
 import React from 'react';
 import AddPromotionsByProducts from './AddPromotionsByProducts';
 import AddPromotionsByCategory from './AddPromotionsByCategory';

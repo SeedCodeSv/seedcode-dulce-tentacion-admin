@@ -1,4 +1,4 @@
-import { Button, Input, Select, SelectItem, Textarea } from '@nextui-org/react';
+import { Button, Input, Select, SelectItem, Textarea } from "@heroui/react";
 import { global_styles } from '../../styles/global.styles';
 import * as yup from 'yup';
 import { Formik } from 'formik';

@@ -21,7 +21,7 @@ import {
   SelectItem,
   Textarea,
   useDisclosure,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { Plus, Search, Trash } from 'lucide-react';
 import { useBranchesStore } from '@/store/branches.store';
 import { useTypeOfAccountStore } from '@/store/type-of-aacount.store';

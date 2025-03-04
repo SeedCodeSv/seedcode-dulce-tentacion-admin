@@ -20,7 +20,7 @@ import {
   SelectItem,
   Spinner,
   useDisclosure,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import classNames from 'classnames';
 import jsPDF from 'jspdf';
 import { CreditCard, Eye, Filter, Table2Icon, X } from 'lucide-react';

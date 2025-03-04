@@ -13,7 +13,7 @@ import {
   Tab,
   Tabs,
   useDisclosure,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { DataTable } from 'primereact/datatable';

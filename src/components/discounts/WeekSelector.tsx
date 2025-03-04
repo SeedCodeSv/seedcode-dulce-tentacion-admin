@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button } from '@nextui-org/react';
+import { Button } from "@heroui/react";
 import { eachDayOfInterval, format, parseISO } from 'date-fns';
 
 const daysOfWeek = [
@@ -60,7 +60,7 @@ const WeekSelector: React.FC<WeekSelectorProps> = ({ startDate, endDate, onDaysS
 export default WeekSelector;
 
 // import React, { useState } from 'react';
-// import { Button } from '@nextui-org/react';
+// import { Button } from '@heroui/react';
 
 // const daysOfWeek = [
 //   { label: 'Lunes', value: 'Monday' },

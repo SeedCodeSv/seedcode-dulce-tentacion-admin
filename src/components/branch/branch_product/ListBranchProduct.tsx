@@ -8,7 +8,7 @@ import {
   Autocomplete,
   AutocompleteItem,
   ButtonGroup,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { Search, ArrowLeft, CreditCard, Table as ITable } from 'lucide-react';
 import { ThemeContext } from '../../../hooks/useTheme';
 import MobileView from './MobileView';

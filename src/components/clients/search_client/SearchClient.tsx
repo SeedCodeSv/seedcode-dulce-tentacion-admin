@@ -1,7 +1,7 @@
 import BottomDrawer from '@/components/global/BottomDrawer';
 import TooltipGlobal from '@/components/global/TooltipGlobal';
 import { global_styles } from '@/styles/global.styles';
-import { Autocomplete, AutocompleteItem, Button, Input } from '@nextui-org/react';
+import { Autocomplete, AutocompleteItem, Button, Input } from "@heroui/react";
 import { Filter, Mail, User } from 'lucide-react';
 import { useContext, useEffect, useState } from 'react';
 import { IPropsSearchCustomer } from '../types/mobile-view.types';

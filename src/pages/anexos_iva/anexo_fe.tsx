@@ -1,7 +1,7 @@
 import Layout from '@/layout/Layout';
 import { useIvaFeStore } from '@/store/reports/iva-fe.store';
 import { formatCurrency } from '@/utils/dte';
-import { Button, Select, SelectItem, Spinner } from '@nextui-org/react';
+import { Button, Select, SelectItem, Spinner } from "@heroui/react";
 import { useEffect, useState } from 'react';
 import { annexes_iva_fe, csvmaker_fe } from './utils';
 import { global_styles } from '@/styles/global.styles';

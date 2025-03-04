@@ -5,7 +5,7 @@ import { DataTable } from 'primereact/datatable';
 import { useContext, useEffect, useState } from 'react';
 import Pagination from '../global/Pagination';
 import SmPagination from '../global/SmPagination';
-import { Autocomplete, AutocompleteItem, Button, ButtonGroup } from '@nextui-org/react';
+import { Autocomplete, AutocompleteItem, Button, ButtonGroup } from "@heroui/react";
 import { correlativesTypes } from '@/types/correlatives/correlatives_data.types';
 import { useBranchesStore } from '@/store/branches.store';
 import HeadlessModal from '../global/HeadlessModal';

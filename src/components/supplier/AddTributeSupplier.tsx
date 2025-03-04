@@ -10,7 +10,7 @@ import {
   CardHeader,
   Input,
   Textarea,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { global_styles } from '../../styles/global.styles';
 import { get_user } from '../../storage/localStorage';
 import Layout from '@/layout/Layout';

@@ -11,7 +11,7 @@ import {
   SelectItem,
   Switch,
   useDisclosure,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import {
   Edit,
   ShoppingBag,

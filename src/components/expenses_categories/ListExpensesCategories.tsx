@@ -11,7 +11,7 @@ import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { CategoryExpense } from '../../types/categories_expenses.types.ts';
 import { EditIcon, User, TrashIcon, Table as ITable, CreditCard, List } from 'lucide-react';
 import AddButton from '../global/AddButton';

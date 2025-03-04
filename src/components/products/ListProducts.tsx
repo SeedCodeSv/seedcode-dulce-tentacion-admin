@@ -10,7 +10,7 @@ import {
   Autocomplete,
   AutocompleteItem,
   Switch,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { useEffect, useState, useContext } from 'react';
 import {
   EditIcon,
@@ -29,7 +29,7 @@ import { Product } from '../../types/products.types';
 import AddProducts from './AddProducts';
 import { useCategoriesStore } from '../../store/categories.store';
 import { ThemeContext } from '../../hooks/useTheme';
-import { ButtonGroup } from '@nextui-org/react';
+import { ButtonGroup } from "@heroui/react";
 import { CategoryProduct } from '../../types/categories.types';
 import MobileView from './MobileView';
 // import { Drawer } from "vaul";

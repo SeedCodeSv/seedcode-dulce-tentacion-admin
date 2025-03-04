@@ -1,7 +1,7 @@
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
 import { useContext, useEffect, useState } from 'react';
-import { Switch } from '@nextui-org/react';
+import { Switch } from "@heroui/react";
 import { ThemeContext } from '../../hooks/useTheme';
 import { useReportContigenceStore } from '../../store/report_contigence.store';
 

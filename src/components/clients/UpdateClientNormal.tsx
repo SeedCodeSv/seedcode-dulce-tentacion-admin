@@ -1,7 +1,7 @@
 import * as yup from 'yup';
 import { Formik } from 'formik';
 import { CustomerDirection, PayloadCustomer } from '../../types/customers.types';
-import { Autocomplete, AutocompleteItem, Button, Input, Textarea } from '@nextui-org/react';
+import { Autocomplete, AutocompleteItem, Button, Input, Textarea } from "@heroui/react";
 import { useCustomerStore } from '../../store/customers.store';
 import { useBillingStore } from '../../store/facturation/billing.store';
 import { useContext, useEffect, useMemo, useState } from 'react';

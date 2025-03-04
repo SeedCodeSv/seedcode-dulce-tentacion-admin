@@ -3,7 +3,7 @@ import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
 import { useAuthStore } from '@/store/auth.store';
 import { useSupplierStore } from '@/store/supplier.store';
 import { global_styles } from '@/styles/global.styles';
-import { Autocomplete, AutocompleteItem, Button, Input, Textarea } from '@nextui-org/react';
+import { Autocomplete, AutocompleteItem, Button, Input, Textarea } from "@heroui/react";
 import { useFormik } from 'formik';
 import { ArrowLeft } from 'lucide-react';
 import { useEffect, useState, useMemo } from 'react';

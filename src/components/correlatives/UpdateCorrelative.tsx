@@ -2,7 +2,7 @@ import { ThemeContext } from '@/hooks/useTheme';
 import { useCorrelativesStore } from '@/store/correlatives-store/correlatives.store';
 import { correlativesTypes } from '@/types/correlatives/correlatives_data.types';
 import { Correlatives, IPropsCorrelativeUpdate } from '@/types/correlatives/correlatives_types';
-import { Autocomplete, AutocompleteItem, Button, Input } from '@nextui-org/react';
+import { Autocomplete, AutocompleteItem, Button, Input } from "@heroui/react";
 import { useContext, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 

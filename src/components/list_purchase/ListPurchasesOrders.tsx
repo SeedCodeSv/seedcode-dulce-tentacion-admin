@@ -8,7 +8,7 @@ import {
   Select,
   SelectItem,
   useDisclosure,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import FullDialog from '../global/FullDialog';
 import AddPurchaseOrders from './AddPurchaseOrders';
 import AddButton from '../global/AddButton';

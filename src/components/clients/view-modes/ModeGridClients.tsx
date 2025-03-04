@@ -1,6 +1,6 @@
 import TooltipGlobal from '@/components/global/TooltipGlobal';
 import { global_styles } from '@/styles/global.styles';
-import { Button } from '@nextui-org/react';
+import { Button } from "@heroui/react";
 import classNames from 'classnames';
 import {
   User as IUser,

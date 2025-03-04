@@ -5,7 +5,7 @@ import { useContext, useEffect, useState } from 'react';
 import { useAuthStore } from '../../store/auth.store';
 import { ThemeContext } from '../../hooks/useTheme';
 import { formatCurrency } from '../../utils/dte';
-import { Autocomplete, AutocompleteItem, Button, Input } from '@nextui-org/react';
+import { Autocomplete, AutocompleteItem, Button, Input } from "@heroui/react";
 import { fechaActualString } from '../../utils/dates';
 import { useBranchesStore } from '../../store/branches.store';
 import { return_branch_id } from '../../storage/localStorage';

@@ -1,7 +1,7 @@
 import { get_correlative_shopping } from '@/services/shopping.service';
 import { API_URL } from '@/utils/constants';
 import { formatDate } from '@/utils/dates';
-import { Button, Modal, ModalContent, useDisclosure } from '@nextui-org/react';
+import { Button, Modal, ModalContent, useDisclosure } from "@heroui/react";
 import axios from 'axios';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';

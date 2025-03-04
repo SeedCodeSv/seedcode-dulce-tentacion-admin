@@ -13,7 +13,7 @@ import {
   Autocomplete,
   AutocompleteItem,
   Switch,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import {
   TrashIcon,
   Table as ITable,

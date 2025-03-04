@@ -13,7 +13,7 @@ import { formatCurrency } from '../utils/dte';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { ThemeContext } from '../hooks/useTheme';
-// import { Skeleton } from '@nextui-org/react';
+// import { Skeleton } from '@heroui/react';
 import '../components/home/style.css';
 import { Skeleton } from '@/components/ui/skeleton';
 import { get_theme_by_transmitter } from '@/services/configuration.service';

@@ -7,7 +7,7 @@ import { global_styles } from '@/styles/global.styles';
 import { ThemeContext } from '@/hooks/useTheme';
 import { useCorrelativesDteStore } from '@/store/correlatives_dte.store';
 import { useTransmitterStore } from '@/store/transmitter.store';
-import { Button, Input, Spinner, useDisclosure } from '@nextui-org/react';
+import { Button, Input, Spinner, useDisclosure } from "@heroui/react";
 import { SVFE_NC_SEND } from '@/types/svf_dte/nc.types';
 import { toast } from 'sonner';
 import { ND_CuerpoDocumentoItems, ND_DocumentoRelacionadoItems } from '@/types/svf_dte/nd.types';

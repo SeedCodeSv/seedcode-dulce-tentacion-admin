@@ -23,7 +23,7 @@ import {
   SelectItem,
   Spinner,
   Textarea,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { contingence_steps } from '@/utils/constants.ts';
 import { formatCurrency } from '@/utils/dte.ts';
 import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';

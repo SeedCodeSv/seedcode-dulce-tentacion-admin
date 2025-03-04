@@ -3,7 +3,7 @@ import TooltipGlobal from '@/components/global/TooltipGlobal';
 import { ThemeContext } from '@/hooks/useTheme';
 
 import { global_styles } from '@/styles/global.styles';
-import { Autocomplete, AutocompleteItem, Button, Input } from '@nextui-org/react';
+import { Autocomplete, AutocompleteItem, Button, Input } from "@heroui/react";
 import { Filter, Search } from 'lucide-react';
 import { useContext, useEffect, useState } from 'react';
 import { IPropsSearchEmployee } from '../types/mobile-view.types';

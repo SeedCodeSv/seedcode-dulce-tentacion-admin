@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
-import { Autocomplete, AutocompleteItem, Button, Input } from '@nextui-org/react';
+import { Autocomplete, AutocompleteItem, Button, Input } from "@heroui/react";
 import viewActions from '../../actions.json';
 import { useViewsStore } from '../../store/views.store';
 import { useActionsRolStore } from '../../store/actions_rol.store';

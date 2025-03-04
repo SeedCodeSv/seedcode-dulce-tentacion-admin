@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useBranchesStore } from '../../store/branches.store';
-import { Button, Input, Select, SelectItem, Switch, useDisclosure } from '@nextui-org/react';
+import { Button, Input, Select, SelectItem, Switch, useDisclosure } from "@heroui/react";
 import { PhoneIcon, User, MapPinIcon, Filter } from 'lucide-react';
 
 import AddButton from '../global/AddButton';

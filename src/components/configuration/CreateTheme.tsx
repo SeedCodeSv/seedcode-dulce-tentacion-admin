@@ -1,4 +1,4 @@
-import { Select, SelectItem, Button as NButton, Input } from '@nextui-org/react';
+import { Select, SelectItem, Button as NButton, Input } from "@heroui/react";
 import { ColorPicker } from 'primereact/colorpicker';
 import { useContext, useEffect, useState } from 'react';
 import { useThemeStore } from '../../store/theme.store';

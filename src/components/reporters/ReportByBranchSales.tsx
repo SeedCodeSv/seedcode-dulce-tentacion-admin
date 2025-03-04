@@ -13,7 +13,7 @@ import {
   TableHeader,
   TableRow,
   useDisclosure,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import Chart from 'react-apexcharts';
 import { ApexOptions } from 'apexcharts';
 import { ThemeContext } from '../../hooks/useTheme';

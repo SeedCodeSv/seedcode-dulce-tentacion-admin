@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Autocomplete, AutocompleteItem, Button } from '@nextui-org/react';
+import { Autocomplete, AutocompleteItem, Button } from "@heroui/react";
 import { ZCashCutsResponse } from '../types/cashCuts.types';
 import { useAuthStore } from '../store/auth.store';
 import { fechaActualString } from '../utils/dates';

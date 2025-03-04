@@ -4,7 +4,7 @@ import { DataTable } from 'primereact/datatable';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { useSalesInvalidation } from '../store/sales_invalidations.store';
 import { fechaActualString } from '@/utils/dates';
-import { Autocomplete, AutocompleteItem, Button, Input, Switch } from '@nextui-org/react';
+import { Autocomplete, AutocompleteItem, Button, Input, Switch } from "@heroui/react";
 import { correlativesTypes } from '@/types/correlatives/correlatives_data.types';
 import { CheckCircle, CircleX, Eye, Lock, Search, XCircle } from 'lucide-react';
 import { useBranchesStore } from '@/store/branches.store';

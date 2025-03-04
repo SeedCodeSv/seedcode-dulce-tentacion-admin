@@ -10,7 +10,7 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { useTypeOfAccountStore } from '@/store/type-of-aacount.store';
 import useGlobalStyles from '../global/global.styles';
 

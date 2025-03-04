@@ -1,5 +1,5 @@
 import { Theme } from '../hooks/useTheme';
-import * as NextUI from '@nextui-org/react';
+import * as NextUI from "@heroui/react";
 
 interface Props {
   theme: Theme;

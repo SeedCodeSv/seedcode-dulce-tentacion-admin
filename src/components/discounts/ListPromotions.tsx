@@ -13,7 +13,7 @@ import {
   Input,
   Select,
   SelectItem,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { usePromotionsStore } from "../../store/promotions/promotions.store";
 import { useBranchesStore } from "../../store/branches.store";
 import { Tipos_Promotions, limit_options } from "../../utils/constants";

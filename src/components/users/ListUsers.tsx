@@ -12,7 +12,7 @@ import {
   SelectItem,
   Switch,
   useDisclosure,
-} from '@nextui-org/react';
+} from "@heroui/react";
 
 import AddUsers from './AddUsers';
 import UpdateUsers from './UpdateUsers';
@@ -29,7 +29,7 @@ import {
 } from 'lucide-react';
 import UpdatePassword from './UpdatePassword';
 import { ThemeContext } from '../../hooks/useTheme';
-import { ButtonGroup } from '@nextui-org/react';
+import { ButtonGroup } from "@heroui/react";
 import MobileView from './MobileView';
 import AddButton from '../global/AddButton';
 import Pagination from '../global/Pagination';

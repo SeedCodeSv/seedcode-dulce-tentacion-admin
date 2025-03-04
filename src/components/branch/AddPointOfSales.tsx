@@ -1,4 +1,4 @@
-import { Button, Input } from '@nextui-org/react';
+import { Button, Input } from "@heroui/react";
 import { Formik, FormikHelpers } from 'formik';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { ThemeContext } from '../../hooks/useTheme';

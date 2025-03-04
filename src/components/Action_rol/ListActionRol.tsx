@@ -7,7 +7,7 @@ import permissionss from '../../actions.json';
 import PermissionAddActionRol from './AddActionRol';
 import { useActionsRolStore } from '@/store/actions_rol.store';
 import { IUpdateActions } from '@/types/actions_rol.types';
-import { Button } from '@nextui-org/react';
+import { Button } from "@heroui/react";
 import { ThemeContext } from '@/hooks/useTheme';
 
 const PermissionTable: React.FC = () => {

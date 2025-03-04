@@ -1,4 +1,4 @@
-import { Autocomplete, AutocompleteItem, Button, Input } from '@nextui-org/react';
+import { Autocomplete, AutocompleteItem, Button, Input } from "@heroui/react";
 import { Customer, Sale, ValidateContigence } from '../../types/report_contigence';
 import { useContext, useEffect, useState } from 'react';
 import { useLogsStore } from '../../store/logs.store';

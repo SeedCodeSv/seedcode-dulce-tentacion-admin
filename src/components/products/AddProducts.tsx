@@ -6,7 +6,7 @@ import {
   AutocompleteItem,
   Select,
   SelectItem,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { Formik } from 'formik';
 import { useContext, useEffect, useState } from 'react';
 import * as yup from 'yup';

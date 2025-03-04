@@ -1,4 +1,4 @@
-import { Button, Input, Tooltip } from '@nextui-org/react';
+import { Button, Input, Tooltip } from "@heroui/react";
 import { useContext } from 'react';
 import { Minus, Plus, ShoppingCart, Trash } from 'lucide-react';
 import { ThemeContext } from '../../../hooks/useTheme';
@@ -46,6 +46,70 @@ function CartProductsMobile() {
   };
 
   return (
+    // <div className="grid  grid-cols-1 bg-gray-50 dark:bg-gray-800 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 h-[50vh] overflow-x-auto ">
+    //   {cart_products.map((product) => (
+    //     <div
+    //       key={product.id}
+    //       className="p-4 shadow-lg bg-gray-50 dark:bg-gray-700 rounded-lg flex flex-col justify-between h-auto"
+    //     >
+    //       <div className=" ">
+    //         <div className="text-lg font-bold mb-2 text-black dark:text-white">{nameBodyTemplate(product)}</div>
+    //         <div className="text-sm mb-2 text-black dark:text-white ">
+    //           Cantidad:
+    //           <Input
+    //             variant="bordered"
+    //             color="primary"
+    //             className="w-16 ml-2"
+    //             type="number"
+    //             defaultValue={product.quantity.toString()}
+    //             onChange={(e) => onUpdateQuantity(product.id, Number(e.target.value))}
+    //           />
+    //         </div>
+    //         <div className="text-sm mb-2 text-black dark:text-white">
+    //           Precio: {formatCurrency(Number(product.price))}
+    //         </div>
+    //         <div className="text-sm mb-2 text-black dark:text-white">
+    //           Total: {totalBodyTemplate(product)}
+    //         </div>
+    //       </div>
+    //       <div className="flex gap-4 mt-4">
+    //         <Button
+    //           style={{
+    //             backgroundColor: theme.colors.secondary,
+    //           }}
+    //           isIconOnly
+    //           onClick={() => {
+    //             onPlusQuantity(product.id);
+    //           }}
+    //         >
+    //           <Plus size={18} className="text-white" />
+    //         </Button>
+    //         <Button
+    //           style={{
+    //             backgroundColor: theme.colors.warning,
+    //           }}
+    //           isIconOnly
+    //           onClick={() => {
+    //             onMinusQuantity(product.id);
+    //           }}
+    //         >
+    //           <Minus size={18} className="text-white" />
+    //         </Button>
+    //         <Button
+    //           style={{
+    //             backgroundColor: theme.colors.danger,
+    //           }}
+    //           isIconOnly
+    //           onClick={() => {
+    //             onRemoveProduct(product.id);
+    //           }}
+    //         >
+    //           <Trash size={18} className="text-white" />
+    //         </Button>
+    //       </div>
+    //     </div>
+    //   ))}
+    // </div>
     <div className="grid grid-cols-1 bg-gray-50 dark:bg-gray-800 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 h-[50vh] overflow-x-auto">
       {cart_products.length === 0 ? (
         <>
@@ -123,70 +187,6 @@ function CartProductsMobile() {
         ))
       )}
     </div>
-    // <div className="grid  grid-cols-1 bg-gray-50 dark:bg-gray-800 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 h-[50vh] overflow-x-auto ">
-    //   {cart_products.map((product) => (
-    //     <div
-    //       key={product.id}
-    //       className="p-4 shadow-lg bg-gray-50 dark:bg-gray-700 rounded-lg flex flex-col justify-between h-auto"
-    //     >
-    //       <div className=" ">
-    //         <div className="text-lg font-bold mb-2 text-black dark:text-white">{nameBodyTemplate(product)}</div>
-    //         <div className="text-sm mb-2 text-black dark:text-white ">
-    //           Cantidad:
-    //           <Input
-    //             variant="bordered"
-    //             color="primary"
-    //             className="w-16 ml-2"
-    //             type="number"
-    //             defaultValue={product.quantity.toString()}
-    //             onChange={(e) => onUpdateQuantity(product.id, Number(e.target.value))}
-    //           />
-    //         </div>
-    //         <div className="text-sm mb-2 text-black dark:text-white">
-    //           Precio: {formatCurrency(Number(product.price))}
-    //         </div>
-    //         <div className="text-sm mb-2 text-black dark:text-white">
-    //           Total: {totalBodyTemplate(product)}
-    //         </div>
-    //       </div>
-    //       <div className="flex gap-4 mt-4">
-    //         <Button
-    //           style={{
-    //             backgroundColor: theme.colors.secondary,
-    //           }}
-    //           isIconOnly
-    //           onClick={() => {
-    //             onPlusQuantity(product.id);
-    //           }}
-    //         >
-    //           <Plus size={18} className="text-white" />
-    //         </Button>
-    //         <Button
-    //           style={{
-    //             backgroundColor: theme.colors.warning,
-    //           }}
-    //           isIconOnly
-    //           onClick={() => {
-    //             onMinusQuantity(product.id);
-    //           }}
-    //         >
-    //           <Minus size={18} className="text-white" />
-    //         </Button>
-    //         <Button
-    //           style={{
-    //             backgroundColor: theme.colors.danger,
-    //           }}
-    //           isIconOnly
-    //           onClick={() => {
-    //             onRemoveProduct(product.id);
-    //           }}
-    //         >
-    //           <Trash size={18} className="text-white" />
-    //         </Button>
-    //       </div>
-    //     </div>
-    //   ))}
-    // </div>
   );
 }
 

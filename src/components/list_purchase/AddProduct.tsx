@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import HeadlessModal from '../global/HeadlessModal';
-import { Button, Input } from '@nextui-org/react';
+import { Button, Input } from "@heroui/react";
 import { useBranchProductStore } from '../../store/branch_product.store';
 import { useSupplierStore } from '../../store/supplier.store';
 import { useBranchesStore } from '../../store/branches.store';

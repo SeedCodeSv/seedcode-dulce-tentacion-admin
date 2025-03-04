@@ -4,7 +4,7 @@ import { useBranchesStore } from '@/store/branches.store';
 import { useSalesStore } from '@/store/sales.store';
 import { useTransmitterStore } from '@/store/transmitter.store';
 import { months } from '@/utils/constants';
-import { Button, Select, SelectItem } from '@nextui-org/react';
+import { Button, Select, SelectItem } from "@heroui/react";
 import { Fragment, useEffect, useState } from 'react';
 import { PiMicrosoftExcelLogoBold } from 'react-icons/pi';
 import { toast } from 'sonner';

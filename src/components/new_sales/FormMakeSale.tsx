@@ -4,7 +4,7 @@ import {
   Button,
   Input,
   useDisclosure,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { useBillingStore } from "../../store/facturation/billing.store";
 import { Fragment, useEffect, useState } from "react";
 import { useCustomerStore } from "../../store/customers.store";

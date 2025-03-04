@@ -14,7 +14,7 @@ import {
   Select,
   SelectItem,
   useDisclosure,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { ChevronLeft, ChevronRight, Filter, Pen, SearchIcon, Trash } from 'lucide-react';
 import NO_DATA from '@/assets/svg/no_data.svg';
 import { useNavigate } from 'react-router-dom';

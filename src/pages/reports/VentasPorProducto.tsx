@@ -1,5 +1,5 @@
 import Layout from '../../layout/Layout';
-import { Button, Input, Select, SelectItem } from '@nextui-org/react';
+import { Button, Input, Select, SelectItem } from "@heroui/react";
 import { useContext, useEffect, useState } from 'react';
 import { formatDate } from '../../utils/dates';
 import GraphicProductCategory from './Product/GraphicProductCategory';

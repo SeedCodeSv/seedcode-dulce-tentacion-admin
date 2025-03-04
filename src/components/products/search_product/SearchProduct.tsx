@@ -7,7 +7,7 @@ import { useSubCategoriesStore } from '@/store/sub-categories.store';
 import { useSubCategoryStore } from '@/store/sub-category';
 import { global_styles } from '@/styles/global.styles';
 import { CategoryProduct } from '@/types/categories.types';
-import { Autocomplete, AutocompleteItem, Button, Input } from '@nextui-org/react';
+import { Autocomplete, AutocompleteItem, Button, Input } from "@heroui/react";
 import { Filter, SearchIcon } from 'lucide-react';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { IPropsSearchProduct } from '../types/mobile-view.types';

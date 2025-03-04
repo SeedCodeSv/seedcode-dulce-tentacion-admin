@@ -26,7 +26,7 @@ import {
   Select,
   SelectItem,
   Tooltip,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { useFormikContext } from 'formik';
 import { MessageCircleQuestion } from 'lucide-react';
 import { useMemo } from 'react';

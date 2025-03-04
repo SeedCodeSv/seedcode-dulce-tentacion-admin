@@ -5,7 +5,7 @@ import {
   Input,
   Select,
   SelectItem,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import Layout from '../../layout/Layout';
 import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
 import { useContext, useEffect, useState } from 'react';

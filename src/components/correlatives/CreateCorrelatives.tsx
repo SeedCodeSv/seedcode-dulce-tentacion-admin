@@ -3,7 +3,7 @@ import { useBranchesStore } from '@/store/branches.store';
 import { useCorrelativesStore } from '@/store/correlatives-store/correlatives.store';
 import { correlativesTypes } from '@/types/correlatives/correlatives_data.types';
 import { IPropsCorrelativeUpdate } from '@/types/correlatives/correlatives_types';
-import { Autocomplete, AutocompleteItem, Button, Input } from '@nextui-org/react';
+import { Autocomplete, AutocompleteItem, Button, Input } from "@heroui/react";
 import { useContext, useEffect } from 'react';
 import { toast } from 'sonner';
 import { Formik, Form } from 'formik';

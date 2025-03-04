@@ -9,7 +9,7 @@ import {
   PopoverTrigger,
   PopoverContent,
   Switch,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { useContext, useEffect, useState } from 'react';
 import {
   EditIcon,

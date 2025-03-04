@@ -6,7 +6,7 @@ import {
   Switch,
   Autocomplete,
   AutocompleteItem,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { useCustomerStore } from '../../store/customers.store';
 import { useContext, useEffect, useState } from 'react';
 import {
@@ -20,7 +20,7 @@ import {
   Repeat,
 } from 'lucide-react';
 
-import { ButtonGroup } from '@nextui-org/react';
+import { ButtonGroup } from "@heroui/react";
 import { ThemeContext } from '../../hooks/useTheme';
 import Pagination from '../global/Pagination';
 import { global_styles } from '../../styles/global.styles';

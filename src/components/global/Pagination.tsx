@@ -1,4 +1,4 @@
-import { Button } from '@nextui-org/react';
+import { Button } from "@heroui/react";
 import React, { useContext } from 'react';
 import classNames from 'classnames';
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';

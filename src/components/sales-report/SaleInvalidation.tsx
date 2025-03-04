@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import { Button, Input, Switch } from '@nextui-org/react';
+import { Button, Input, Switch } from "@heroui/react";
 import { global_styles } from '../../styles/global.styles';
 import { toast } from 'sonner';
 import { Sale } from '../../types/report_contigence';
@@ -10,7 +10,7 @@ import { IInvalidationBody, IInvalidationToMH } from '../../types/DTE/invalidati
 import { getElSalvadorDateTime } from '../../utils/dates';
 import { useTransmitterStore } from '../../store/transmitter.store';
 import { documentsTypeReceipt } from '../../utils/dte';
-import { Select, SelectItem } from '@nextui-org/react';
+import { Select, SelectItem } from "@heroui/react";
 import { invalidationTypes } from '../../types/DTE/invalidation.types';
 import { firmarDocumentoInvalidacion, send_to_mh_invalidation } from '../../services/DTE.service';
 import { return_mh_token } from '../../storage/localStorage';

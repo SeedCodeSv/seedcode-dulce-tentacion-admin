@@ -5,7 +5,7 @@ import { useSalesStore } from '@/store/sales.store';
 import { useTransmitterStore } from '@/store/transmitter.store';
 import { months } from '@/utils/constants';
 import { formatCurrency } from '@/utils/dte';
-import { Button, Select, SelectItem } from '@nextui-org/react';
+import { Button, Select, SelectItem } from "@heroui/react";
 import { useEffect, useMemo, useState } from 'react';
 import { PiMicrosoftExcelLogoBold } from 'react-icons/pi';
 import { export_excel_facturacion_ccfe } from '../excel/generate_excel';

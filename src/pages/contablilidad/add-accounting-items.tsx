@@ -21,7 +21,7 @@ import {
   Switch,
   Textarea,
   useDisclosure,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import classNames from 'classnames';
 import { Plus, Search, Trash } from 'lucide-react';
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';

@@ -1,4 +1,4 @@
-import { Input, Textarea, Button, Autocomplete, AutocompleteItem } from '@nextui-org/react';
+import { Input, Textarea, Button, Autocomplete, AutocompleteItem } from "@heroui/react";
 import { useContext, useEffect, useState } from 'react';
 import { useCategoriesStore } from '../../store/categories.store';
 import { Product, ProductPayload } from '../../types/products.types';

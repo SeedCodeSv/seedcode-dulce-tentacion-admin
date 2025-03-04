@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from 'react';
-import { Popover, PopoverTrigger, PopoverContent, Button } from '@nextui-org/react';
+import { Popover, PopoverTrigger, PopoverContent, Button } from "@heroui/react";
 import { PlusIcon } from 'lucide-react';
 
 interface Props {

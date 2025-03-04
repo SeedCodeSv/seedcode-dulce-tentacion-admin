@@ -6,7 +6,7 @@ import {
   Input,
   Select,
   SelectItem,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { Building2, Search, Truck, DollarSign, User, ScrollText, ArrowLeft } from 'lucide-react';
 import { useBranchProductStore } from '../../store/branch_product.store';
 import { useSupplierStore } from '../../store/supplier.store';

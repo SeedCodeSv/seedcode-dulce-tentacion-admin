@@ -6,7 +6,7 @@ import {
   Select,
   SelectItem,
   useDisclosure,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { DollarSign, Plus, Printer, ScrollText, Search, Trash, Truck } from 'lucide-react';
 import { useContext, useEffect, useState } from 'react';
 import { useBranchProductStore } from '../../store/branch_product.store';

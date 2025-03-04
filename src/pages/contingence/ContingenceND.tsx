@@ -17,7 +17,7 @@ import {
   Spinner,
   Textarea,
   useDisclosure,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import axios, { AxiosError } from 'axios';
 import { useEffect, useMemo, useState } from 'react';
 import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';

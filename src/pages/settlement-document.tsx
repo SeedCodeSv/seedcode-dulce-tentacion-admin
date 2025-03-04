@@ -3,7 +3,7 @@ import { useAuthStore } from '@/store/auth.store';
 import { useSettlementDocumentStore } from '@/store/settlement-document.store';
 import { limit_options } from '@/utils/constants';
 import { formatCurrency } from '@/utils/dte';
-import { Button, Input, Select, SelectItem } from '@nextui-org/react';
+import { Button, Input, Select, SelectItem } from "@heroui/react";
 import { useEffect, useState } from 'react';
 import NO_DATA from '@/assets/svg/no_data.svg';
 import { Plus } from 'lucide-react';

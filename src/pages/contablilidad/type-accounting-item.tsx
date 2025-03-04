@@ -7,7 +7,7 @@ import Layout from '@/layout/Layout';
 import { useTypeOfAccountStore } from '@/store/type-of-aacount.store';
 import { TypeOfAccount } from '@/types/type-of-account.types';
 import { limit_options } from '@/utils/constants';
-import { Button, Input, Select, SelectItem, useDisclosure } from '@nextui-org/react';
+import { Button, Input, Select, SelectItem, useDisclosure } from "@heroui/react";
 import { Pencil, Trash } from 'lucide-react';
 import { useEffect, useState } from 'react';
 

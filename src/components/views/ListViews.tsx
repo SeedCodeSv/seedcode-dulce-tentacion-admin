@@ -10,7 +10,7 @@ import {
   PopoverContent,
   PopoverTrigger,
   useDisclosure,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { Table as ITable, CreditCard, List, TrashIcon } from 'lucide-react';
 import AddButton from '../global/AddButton';
 import ModalGlobal from '../global/ModalGlobal';

@@ -1,4 +1,4 @@
-import { Input, Button } from '@nextui-org/react';
+import { Input, Button } from "@heroui/react";
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { useCategoriesStore } from '../../store/categories.store';

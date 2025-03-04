@@ -7,7 +7,7 @@ import {
   PopoverTrigger,
   PopoverContent,
   useDisclosure,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { TrashIcon } from 'lucide-react';
 import { useContext } from 'react';
 interface PopProps {

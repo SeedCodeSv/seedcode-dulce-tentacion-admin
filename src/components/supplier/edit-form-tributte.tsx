@@ -1,7 +1,7 @@
 import { useFormikContext } from 'formik';
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
 import { EditSupplierPayload } from './types/edit-supplier';
-import { Autocomplete, AutocompleteItem, Input, Textarea } from '@nextui-org/react';
+import { Autocomplete, AutocompleteItem, Input, Textarea } from "@heroui/react";
 import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
 import { SelectedItem } from './select-account';
 import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';

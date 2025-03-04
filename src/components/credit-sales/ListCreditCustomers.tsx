@@ -2,7 +2,7 @@ import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
 import { useContext, useEffect, useState } from 'react';
 import { ThemeContext } from '../../hooks/useTheme';
-import { Button, useDisclosure } from '@nextui-org/react';
+import { Button, useDisclosure } from "@heroui/react";
 import { EyeIcon, HandCoins } from 'lucide-react';
 import { useAccountReceivableStore } from '../../store/accounts_receivable.store';
 import ModalGlobal from '../global/ModalGlobal';

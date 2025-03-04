@@ -5,7 +5,7 @@ import { useEmployeeStore } from "@/store/employee.store";
 import { useTransmitterStore } from "@/store/transmitter.store";
 import { IContingencia } from "@/types/DTE/contingencia.types";
 import { formatDate } from "@/utils/dates";
-import { Autocomplete, AutocompleteItem, Button, Input, Select, SelectItem, Spinner, Textarea, useDisclosure } from "@nextui-org/react";
+import { Autocomplete, AutocompleteItem, Button, Input, Select, SelectItem, Spinner, Textarea, useDisclosure } from "@heroui/react";
 import { useEffect, useMemo, useState } from "react";
 import { SeedcodeCatalogosMhService } from "seedcode-catalogos-mh";
 import { toast } from "sonner";

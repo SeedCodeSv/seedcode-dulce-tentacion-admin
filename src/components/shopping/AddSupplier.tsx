@@ -2,7 +2,7 @@ import { PayloadSupplier } from '../../types/supplier.types';
 import * as yup from 'yup';
 import { useEffect, useMemo, useState } from 'react';
 import { Formik } from 'formik';
-import { Autocomplete, AutocompleteItem, Button, Input, Textarea } from '@nextui-org/react';
+import { Autocomplete, AutocompleteItem, Button, Input, Textarea } from "@heroui/react";
 import { CodigoActividadEconomica } from '../../types/billing/cat-019-codigo-de-actividad-economica.types';
 import { Departamento } from '../../types/billing/cat-012-departamento.types';
 import { useSupplierStore } from '../../store/supplier.store';

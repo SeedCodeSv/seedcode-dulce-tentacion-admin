@@ -14,7 +14,7 @@ import {
   Select,
   SelectItem,
   useDisclosure,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { CircleX, EllipsisVertical, LoaderCircle, X } from 'lucide-react';
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';

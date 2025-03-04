@@ -5,7 +5,7 @@ import { useAuthStore } from '@/store/auth.store';
 import { useCategoriesStore } from '@/store/categories.store';
 import { useUsersStore } from '@/store/users.store';
 import { global_styles } from '@/styles/global.styles';
-import { Autocomplete, AutocompleteItem, Button, Input } from '@nextui-org/react';
+import { Autocomplete, AutocompleteItem, Button, Input } from "@heroui/react";
 import { Filter, Search } from 'lucide-react';
 import { useContext, useEffect, useState } from 'react';
 function SearchBranchProduct() {

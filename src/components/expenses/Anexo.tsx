@@ -3,7 +3,7 @@ import { LoaderCircle, X } from 'lucide-react';
 import { useExpenseStore } from '../../store/expenses.store';
 import axios from 'axios';
 import { ThemeContext } from '../../hooks/useTheme';
-import { Button } from '@nextui-org/react';
+import { Button } from "@heroui/react";
 import { toast } from 'sonner';
 
 interface Props {

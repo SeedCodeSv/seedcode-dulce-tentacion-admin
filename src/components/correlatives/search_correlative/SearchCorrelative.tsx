@@ -5,7 +5,7 @@ import { useBranchesStore } from '@/store/branches.store';
 import { useCorrelativesStore } from '@/store/correlatives-store/correlatives.store';
 import { global_styles } from '@/styles/global.styles';
 import { correlativesTypes } from '@/types/correlatives/correlatives_data.types';
-import { Autocomplete, AutocompleteItem, Button } from '@nextui-org/react';
+import { Autocomplete, AutocompleteItem, Button } from "@heroui/react";
 import { Filter } from 'lucide-react';
 import React, { useContext, useEffect, useState } from 'react';
 import { IPropsSearchCorrelative } from '../types/mobile_correlatives_types';

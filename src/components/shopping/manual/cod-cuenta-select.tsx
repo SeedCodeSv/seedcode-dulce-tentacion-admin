@@ -1,6 +1,6 @@
 import { CodCuentaProps } from '@/pages/contablilidad/types/types';
 import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
-import { Autocomplete, AutocompleteItem, Button, Input } from '@nextui-org/react';
+import { Autocomplete, AutocompleteItem, Button, Input } from "@heroui/react";
 import { Search } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';

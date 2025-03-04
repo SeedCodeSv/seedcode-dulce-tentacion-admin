@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import { ButtonGroup, Card, useDisclosure } from '@nextui-org/react';
+import { ButtonGroup, Card, useDisclosure } from "@heroui/react";
 import { useThemeStore } from '../../store/theme.store';
 import { Theme, ThemeContext } from '../../hooks/useTheme';
 import { Check, Edit, Plus } from 'lucide-react';
@@ -11,7 +11,7 @@ import UpdateFile from './UpdateFile';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import UpdateConfigurationName from './UpdateConfigurationName';
-import { Button } from '@nextui-org/react';
+import { Button } from "@heroui/react";
 import { Image } from 'primereact/image';
 import { Table as ITable, CreditCard, List } from 'lucide-react';
 import MobileViewConfi from './MobileViewConfi';

@@ -5,7 +5,7 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import useGlobalStyles from '../global/global.styles';
 import { useTypeOfAccountStore } from '@/store/type-of-aacount.store';
 import { useState } from 'react';

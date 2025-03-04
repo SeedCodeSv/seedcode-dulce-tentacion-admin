@@ -1,4 +1,4 @@
-import { Input, Button, Select, SelectItem, Switch } from '@nextui-org/react';
+import { Input, Button, Select, SelectItem, Switch } from "@heroui/react";
 import Layout from '@/layout/Layout';
 import useGlobalStyles from '../global/global.styles';
 import { useFormik } from 'formik';

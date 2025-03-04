@@ -4,7 +4,7 @@ import { ThemeContext } from '@/hooks/useTheme';
 import { useRolesStore } from '@/store/roles.store';
 import { useUsersStore } from '@/store/users.store';
 import { global_styles } from '@/styles/global.styles';
-import { Autocomplete, AutocompleteItem, Button, Input } from '@nextui-org/react';
+import { Autocomplete, AutocompleteItem, Button, Input } from "@heroui/react";
 import { Filter, Search } from 'lucide-react';
 import { useContext, useEffect, useState } from 'react';
 import { IPropsSearchUser } from '../types/mobile-view.types';

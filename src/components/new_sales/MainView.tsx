@@ -9,7 +9,7 @@ import {
   SelectItem,
   Tooltip,
   useDisclosure,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { Barcode, CreditCard, List, Search, Table as ITable, Plus, Send } from 'lucide-react';
 import { useContext, useEffect, useState } from 'react';
 import { ThemeContext } from '../../hooks/useTheme';

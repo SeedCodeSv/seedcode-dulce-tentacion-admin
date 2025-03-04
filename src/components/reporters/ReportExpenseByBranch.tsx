@@ -2,7 +2,7 @@ import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
 import { useContext, useEffect, useState } from 'react';
 import { ThemeContext } from '../../hooks/useTheme';
-import { Autocomplete, AutocompleteItem, Button, Input } from '@nextui-org/react';
+import { Autocomplete, AutocompleteItem, Button, Input } from "@heroui/react";
 import { fechaActualString } from '../../utils/dates';
 import { useBranchesStore } from '../../store/branches.store';
 import { useReportsByBranch } from '../../store/reports/report_store';

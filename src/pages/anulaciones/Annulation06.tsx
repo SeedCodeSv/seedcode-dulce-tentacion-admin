@@ -25,7 +25,7 @@ import {
   SelectItem,
   Spinner,
   useDisclosure,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import axios, { AxiosError } from 'axios';
 import { Formik } from 'formik';
 import { ArrowLeft, ShieldAlert } from 'lucide-react';

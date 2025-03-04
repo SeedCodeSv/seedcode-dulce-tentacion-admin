@@ -7,7 +7,7 @@ import {
   SelectItem,
   Textarea,
   useDisclosure,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { useContext, useEffect, useState } from 'react';
 import WeekSelector from './WeekSelector';
 import { Formik } from 'formik';

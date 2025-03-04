@@ -1,4 +1,4 @@
-import { Button } from '@nextui-org/react';
+import { Button } from "@heroui/react";
 import { DataView } from 'primereact/dataview';
 import { classNames } from 'primereact/utils';
 import { EditIcon, RefreshCcw, ScrollIcon, PackageSearch, Lock } from 'lucide-react';

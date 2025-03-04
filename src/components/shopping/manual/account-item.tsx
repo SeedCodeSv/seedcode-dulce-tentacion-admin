@@ -7,7 +7,7 @@ import {
   Select,
   SelectItem,
   Textarea,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import classNames from 'classnames';
 import { CodCuentaSelect } from './cod-cuenta-select';
 import { useEffect } from 'react';

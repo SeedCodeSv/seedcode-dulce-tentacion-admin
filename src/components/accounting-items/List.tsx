@@ -10,7 +10,7 @@ import {
   Select,
   SelectItem,
   useDisclosure,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { useEffect, useState } from 'react';
 import useGlobalStyles from '../global/global.styles';
 import { formatCurrency } from '@/utils/dte';
@@ -136,7 +136,7 @@ function List() {
             }}
           >
             {list_type_of_account.map((item) => (
-              <SelectItem key={item.id} value={item.id}>
+              <SelectItem key={item.id}>
                 {item.name}
               </SelectItem>
             ))}
@@ -158,7 +158,7 @@ function List() {
             }}
           >
             {limit_options.map((option) => (
-              <SelectItem key={option} value={option}>
+              <SelectItem key={option}>
                 {option}
               </SelectItem>
             ))}
@@ -178,7 +178,7 @@ function List() {
             }}
           >
             {typeOrden.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
+              <SelectItem key={option.value}>
                 {option.label}
               </SelectItem>
             ))}

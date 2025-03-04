@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
   getKeyValue,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { ThemeContext } from '../hooks/useTheme';
 import { Edit, Trash } from 'lucide-react';
 

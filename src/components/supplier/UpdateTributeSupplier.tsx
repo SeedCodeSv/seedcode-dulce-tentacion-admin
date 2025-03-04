@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Button } from '@nextui-org/react';
+import { Button } from "@heroui/react";
 import { global_styles } from '../../styles/global.styles';
 import Layout from '@/layout/Layout';
 import { ArrowLeft } from 'lucide-react';

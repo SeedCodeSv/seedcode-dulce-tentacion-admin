@@ -7,7 +7,7 @@ import {
   Select,
   SelectItem,
   Textarea,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { ArrowLeft } from 'lucide-react';
 import * as yup from 'yup';
 import { Formik } from 'formik';
