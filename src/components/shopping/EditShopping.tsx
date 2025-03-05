@@ -42,17 +42,17 @@ import { toast } from 'sonner';
 import * as yup from 'yup';
 import useGlobalStyles from '../global/global.styles';
 import { useAuthStore } from '@/store/auth.store';
-import AccountItem from './manual/account-item';
 import { Items } from '@/pages/contablilidad/types/types';
 import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
 import { useFiscalDataAndParameterStore } from '@/store/fiscal-data-and-paramters.store';
 import CatalogItemsPaginated from './manual/catalog-items-paginated';
-// import { cat_011_tipo_de_item } from '@/services/facturation/cat-011-tipo-de-item.service';
+import EditResumeShopping from './EditResumenShoping';
+import AccountItemEdit from './AccountItemEdit';
 
 function EditShopping() {
   const { id, controlNumber } = useParams<{ id: string; controlNumber: string }>();
   const { shopping_details, getShoppingDetails } = useShoppingStore();
-  // const [tipoDte, setTipoDte] = useState('');
+
   const styles = useGlobalStyles();
   const { branch_list, getBranchesList } = useBranchesStore();
   const [includePerception, setIncludePerception] = useState(false);
@@ -69,6 +69,11 @@ function EditShopping() {
       user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0;
     getFiscalDataAndParameter(transmitterId);
   }, []);
+
+  const [$exenta, setExenta] = useState(shopping_details?.totalExenta || '0');
+  useEffect(() => {
+    setExenta(shopping_details?.totalExenta || '0');
+  }, [shopping_details?.totalExenta]);
 
   const services = useMemo(() => new SeedcodeCatalogosMhService(), []);
   const tiposDoc = services.get002TipoDeDocumento();
@@ -96,6 +101,7 @@ function EditShopping() {
       debe: '0',
       haber: '0',
       itemId: 0,
+      isExenta: false,
     },
     {
       no: 1,
@@ -106,6 +112,7 @@ function EditShopping() {
       debe: '0',
       haber: '0',
       itemId: 0,
+      isExenta: false,
     },
     {
       no: 1,
@@ -116,22 +123,79 @@ function EditShopping() {
       debe: '0',
       haber: '0',
       itemId: 0,
+      isExenta: false,
     },
   ]);
 
-  const addItem = () => {
+  const addItem = (newItem?: Items, index?: number) => {
     const itemss = [...items];
-    itemss.unshift({
-      no: items.length + 1,
-      codCuenta: '',
-      descCuenta: '',
-      centroCosto: undefined,
-      descTran: '',
-      debe: '0',
-      haber: '0',
-      itemId: 0,
-    });
-    setItems(itemss);
+
+    if (newItem) {
+      if (index !== undefined) {
+        // Actualizar la fila en su posición original
+        itemss[index] = newItem;
+      } else {
+        if (newItem.isExenta) {
+          // Verificar si ya existe una fila EXENTA
+          const existingExentaIndex = itemss.findIndex((item) => item.isExenta);
+
+          if (existingExentaIndex !== -1) {
+            // Si ya existe una fila EXENTA, actualizarla
+            itemss[existingExentaIndex] = newItem;
+          } else {
+            // Si no existe una fila EXENTA, agregarla como el primer ítem
+            newItem.no = 1;
+            itemss.unshift(newItem);
+
+            // Reordenar los números de los demás ítems
+            itemss.forEach((item, idx) => {
+              if (idx > 0) {
+                item.no = idx + 1;
+              }
+            });
+          }
+          setExenta(newItem.debe);
+        } else {
+          // Agregar el ítem no exento al inicio
+          newItem.no = 1;
+          newItem.debe = '0';
+          newItem.haber = '0';
+          itemss.unshift(newItem);
+          newItem.codCuenta = '';
+          newItem.descCuenta = '';
+          newItem.centroCosto = undefined;
+          newItem.descTran = '';
+
+          // Reordenar los números de los demás ítems
+          itemss.forEach((item, idx) => {
+            if (idx > 0) {
+              item.no = idx + 1;
+            }
+          });
+        }
+      }
+    } else {
+      itemss.unshift({
+        no: 1,
+        codCuenta: '',
+        descCuenta: '',
+        centroCosto: undefined,
+        descTran: '',
+        debe: '0',
+        haber: '0',
+        itemId: 0,
+        isExenta: false,
+      });
+
+      // Reordenar los números de los demás ítems
+      itemss.forEach((item, idx) => {
+        if (idx > 0) {
+          item.no = idx + 1;
+        }
+      });
+    }
+
+    setItems([...itemss]);
   };
 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
@@ -143,7 +207,7 @@ function EditShopping() {
   }, [items]);
 
   const $haber = useMemo(() => {
-    return items.reduce((acc, item) => acc + Number(item.haber), 0);
+    return items.reduce((acc, item) => acc + Number(item.haber), 0 + Number($exenta || 0));
   }, [items]);
 
   const $total = useMemo(() => {
@@ -174,7 +238,7 @@ function EditShopping() {
       declarationDate: formatDate(),
       fecEmi: formatDate(),
       branchId: 0,
-      totalExenta: 0,
+      totalExenta: $exenta,
     },
     validationSchema: yup.object().shape({
       operationTypeCode: yup.string().required('**El tipo de operación es requerido**'),
@@ -212,7 +276,7 @@ function EditShopping() {
         branchId: values.branchId,
         numeroControl: values.controlNumber || '',
         tipoDte: values.tipoDte,
-        totalExenta: values.totalExenta || 0,
+        totalExenta: $exenta,
         totalGravada: Number($afecta) || 0,
         porcentajeDescuento: 0,
         totalDescu: 0,
@@ -255,7 +319,6 @@ function EditShopping() {
           })),
         },
       };
-
       axios
         .patch(API_URL + `/shoppings/${shopping_details?.id}`, payload)
         .then(() => {
@@ -279,22 +342,29 @@ function EditShopping() {
     }
   };
 
+  const sortedItems = items.sort((a, b) => a.no - b.no);
+
   const $afecta = useMemo(() => {
-    const afecta = items
-      .slice(0, items.length - 2)
+    const afecta = sortedItems
+      .slice(0, sortedItems.length - 2)
+      .filter((item) => item?.debe !== $exenta || item?.isExenta)
       .reduce((acc, item) => acc + Number(item.debe) + Number(item.haber), 0)
       .toFixed(2);
-
     return afecta;
-  }, [items]);
+  }, [sortedItems, $exenta]);
 
   const $totalIva = useMemo(() => {
-    const iva = items[items.length - 2]?.debe
-      ? Number(items[items.length - 2].debe) + Number(items[items.length - 2].haber)
-      : 0;
-    return iva.toFixed(2);
-  }, [items]);
+    const iva =
+      items.slice(0, items.length - 2).reduce((acc, item) => {
+        // No aplicar IVA si el ítem es EXENTO o si su valor de "debe" es igual a $exenta
+        if (item?.isExenta || item.debe === $exenta) {
+          return acc;
+        }
+        return acc + Number(item.debe) + Number(item.haber);
+      }, 0) * 0.13;
 
+    return iva.toFixed(2);
+  }, [items, $exenta]);
 
   const $totalItems = useMemo(() => {
     return (
@@ -328,7 +398,7 @@ function EditShopping() {
         declarationDate: shopping_details.declarationDate!,
         fecEmi: shopping_details.fecEmi,
         branchId: shopping_details.branchId ?? 0,
-        totalExenta: Number(shopping_details.totalExenta),
+        totalExenta: String($exenta),
       });
 
       const branch = branch_list.find((branch) => branch.id === shopping_details.branchId);
@@ -760,11 +830,9 @@ function EditShopping() {
                   </Checkbox>
                 </div>
               </div>
-              <AccountItem
+              <AccountItemEdit
                 addItems={addItem}
-                handleDeleteItem={(index) => {
-                  handleDeleteItem(index);
-                }}
+                handleDeleteItem={handleDeleteItem}
                 ivaShoppingCod={fiscalDataAndParameter?.ivaLocalShopping ?? ''}
                 items={items}
                 setItems={setItems}
@@ -786,104 +854,20 @@ function EditShopping() {
                 isReadOnly={false}
                 canAddItem={!isDisabled}
                 editAccount={!hasDetails}
+                exenta={$exenta}
+                setExenta={setExenta}
               />
               <div>
-                <p className="py-4 text-xl font-semibold">Resumen: </p>
-                <div className="grid grid-cols-3 gap-5">
-                  <div>
-                    <Input
-                      label="AFECTA"
-                      labelPlacement="outside"
-                      placeholder="0.00"
-                      variant="bordered"
-                      classNames={{
-                        label: 'font-semibold',
-                        input: 'text-red-600 text-lg font-bold',
-                      }}
-                      startContent={<span className="text-red-600 font-bold text-lg">$</span>}
-                      value={$afecta}
-                      readOnly
-                      disabled={isDisabled}
-                    />
-                  </div>
-                  <div>
-                    <Input
-                      label="EXENTA"
-                      labelPlacement="outside"
-                      placeholder="0.00"
-                      variant="bordered"
-                      classNames={{
-                        label: 'font-semibold',
-                        input: 'text-red-600 text-lg font-bold',
-                      }}
-                      startContent={<span className="text-red-600 font-bold text-lg">$</span>}
-                      value={String(formik.values.totalExenta) ?? 0}
-                      readOnly
-                      disabled={isDisabled}
-                    />
-                  </div>
-                  <div>
-                    <Input
-                      label="IVA"
-                      labelPlacement="outside"
-                      placeholder="0.00"
-                      variant="bordered"
-                      readOnly
-                      classNames={{
-                        label: 'font-semibold',
-                        input: 'text-red-600 text-lg font-bold',
-                      }}
-                      startContent={<span className="text-red-600 font-bold text-lg">$</span>}
-                      value={$totalIva}
-                      disabled={isDisabled}
-                    />
-                  </div>
-                  <div>
-                    <Input
-                      label="PERCEPCIÓN"
-                      labelPlacement="outside"
-                      placeholder="0.00"
-                      variant="bordered"
-                      classNames={{ label: 'font-semibold' }}
-                      startContent="$"
-                      type="number"
-                      readOnly
-                      value={$1perception.toFixed(2)}
-                      step={0.01}
-                      disabled={isDisabled}
-                    />
-                  </div>
-                  <div>
-                    <Input
-                      label="SUBTOTAL"
-                      labelPlacement="outside"
-                      placeholder="0.00"
-                      variant="bordered"
-                      classNames={{ label: 'font-semibold' }}
-                      startContent="$"
-                      type="number"
-                      value={$afecta}
-                      step={0.01}
-                      disabled={isDisabled}
-                    />
-                  </div>
-                  <div>
-                    <Input
-                      label="TOTAL"
-                      labelPlacement="outside"
-                      placeholder="0.00"
-                      variant="bordered"
-                      classNames={{
-                        label: 'font-semibold',
-                        input: 'text-red-600 text-lg font-bold',
-                      }}
-                      startContent={<span className="text-red-600 font-bold text-lg">$</span>}
-                      value={$totalItems}
-                      readOnly
-                      disabled={isDisabled}
-                    />
-                  </div>
-                </div>
+                <EditResumeShopping
+                  afecta={$afecta}
+                  exenta={$exenta}
+                  totalIva={$totalIva}
+                  $1perception={$1perception}
+                  total={$totalItems}
+                  addItems={addItem}
+                  items={items}
+                  setExenta={setExenta}
+                />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 mt-10 gap-5 ">
                 <div />
