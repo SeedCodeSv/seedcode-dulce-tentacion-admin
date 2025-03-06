@@ -375,13 +375,11 @@ function DailyBook() {
 
     const blob = doc.output('blob');
     const url = URL.createObjectURL(blob);
-
-    setPdf(url);
     setLoadingPdf(false);
+    setPdf(url);
   };
 
   const handleShowPreview = () => {
-    setLoadingPdf(true);
     generatePDF('show');
     previewModal.onOpenChange();
   };
