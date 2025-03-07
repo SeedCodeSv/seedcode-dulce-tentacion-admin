@@ -19,13 +19,13 @@ function EditResumeShopping({
     const numericExenta = parseFloat(exenta) || 0;
 
     if (numericExenta > 0) {
-      // Verificar si ya existe una fila con el valor de `debe` igual a `exenta`
+      // Verificar si ya existe una fila con `debe` igual a `exenta`
       const existingExentaIndex = items.findIndex(
-        (item) => parseFloat(item.debe) === numericExenta
+        (item) => parseFloat(item.debe) === numericExenta || item.isExenta
       );
 
       if (existingExentaIndex === -1) {
-        // Si no existe una fila con el valor de `debe` igual a `exenta`, crear una nueva fila EXENTA
+        // Si no existe una fila con `debe` igual a `exenta`, crear una nueva fila EXENTA
         const newItem = {
           no: items.length + 1,
           codCuenta: '',
@@ -39,16 +39,18 @@ function EditResumeShopping({
         };
 
         addItems(newItem);
-        setExentaItemIndex(items.length);
+        setExentaItemIndex(items.length); // Guardar el índice de la nueva fila exenta
         setHasExenta(true);
       } else {
-        // Si ya existe una fila con el valor de `debe` igual a `exenta`, actualizarla
+        // Si ya existe una fila con `debe` igual a `exenta`, actualizarla
         const updatedItem = {
           ...items[existingExentaIndex],
           debe: exenta,
+          isExenta: true, // Asegurarse de que la fila siga siendo exenta
         };
+
         addItems(updatedItem, existingExentaIndex);
-        setExentaItemIndex(existingExentaIndex);
+        setExentaItemIndex(existingExentaIndex); // Actualizar el índice de la fila exenta
         setHasExenta(true);
       }
     } else if (hasExenta && exentaItemIndex !== null) {
@@ -57,7 +59,7 @@ function EditResumeShopping({
       setHasExenta(false);
       setExentaItemIndex(null);
     }
-  }, [exenta]); 
+  }, [exenta]);
 
   const handleExentaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;

@@ -343,15 +343,20 @@ function EditShopping() {
   };
 
   const sortedItems = items.sort((a, b) => a.no - b.no);
-
   const $afecta = useMemo(() => {
     const afecta = sortedItems
-      .slice(0, sortedItems.length - 2)
-      .filter((item) => item?.debe !== $exenta || item?.isExenta)
-      .reduce((acc, item) => acc + Number(item.debe) + Number(item.haber), 0)
+      .slice(0, items.length - 2)
+      .reduce((acc, item) => {
+        // Verificar si item.isExenta está en false
+        if (item.debe !== $exenta || !item.isExenta) {
+          return acc + Number(item.debe) + Number(item.haber);
+        }
+        return acc;
+      }, 0)
       .toFixed(2);
+  
     return afecta;
-  }, [sortedItems, $exenta]);
+  }, [items]);
 
   const $totalIva = useMemo(() => {
     const iva =
