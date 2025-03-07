@@ -80,12 +80,13 @@ export const useShoppingStore = create<IShoppingStore>((set) => ({
       });
   },
   getShoppingDetails(id) {
+    set({ loading_shopping: true });
     get_shopping_by_id(id)
       .then(({ data }) => {
-        set({ shopping_details: data.compra });
+        set({ shopping_details: data.compra, loading_shopping: false });
       })
       .catch(() => {
-        set({ shopping_details: undefined });
+        set({ shopping_details: undefined, loading_shopping: false });
       });
   },
   onGetShoppingByMonth(transmitterId, month, year) {

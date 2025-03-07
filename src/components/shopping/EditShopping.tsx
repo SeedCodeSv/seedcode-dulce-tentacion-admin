@@ -51,7 +51,7 @@ import AccountItemEdit from './AccountItemEdit';
 
 function EditShopping() {
   const { id, controlNumber } = useParams<{ id: string; controlNumber: string }>();
-  const { shopping_details, getShoppingDetails } = useShoppingStore();
+  const { shopping_details, getShoppingDetails, loading_shopping } = useShoppingStore();
 
   const styles = useGlobalStyles();
   const { branch_list, getBranchesList } = useBranchesStore();
@@ -354,7 +354,7 @@ function EditShopping() {
         return acc;
       }, 0)
       .toFixed(2);
-  
+
     return afecta;
   }, [items]);
 
@@ -496,419 +496,416 @@ function EditShopping() {
     <Layout title="Editar compra">
       <div className="w-full h-full p-5 bg-gray-100 dark:bg-gray-800 dark:text-white">
         <div className="w-full h-full p-8 mt-2 custom-scrollbar overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
-          {shopping_details ? (
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                formik.handleSubmit();
-              }}
-            >
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                <Select
-                  label="Nombre comprobante"
-                  labelPlacement="outside"
-                  variant="bordered"
-                  placeholder="Selecciona el tipo de documento"
-                  selectedKeys={[formik.values.tipoDte]}
-                  classNames={{ label: 'font-semibold' }}
-                  isDisabled={isDisabled}
-                  onSelectionChange={(key) => {
-                    if (key) {
-                      const fnd = filteredTipoDoc.find((doc) => doc.codigo === key.currentKey);
-                      if (fnd) {
-                        // setTipoDte(fnd.codigo);
-                        formik.setFieldValue('tipoDte', fnd.codigo);
+          <>
+            {loading_shopping ? (
+              <div className="flex flex-col items-center justify-center w-full h-full">
+                <div className="loader"></div>
+                <p className="mt-3 text-xl font-semibold">Cargando...</p>
+              </div>
+            ) : shopping_details ? (
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  formik.handleSubmit();
+                }}
+              >
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                  <Select
+                    label="Nombre comprobante"
+                    labelPlacement="outside"
+                    variant="bordered"
+                    placeholder="Selecciona el tipo de documento"
+                    selectedKeys={[formik.values.tipoDte]}
+                    classNames={{ label: 'font-semibold' }}
+                    isDisabled={isDisabled}
+                    onSelectionChange={(key) => {
+                      if (key) {
+                        const fnd = filteredTipoDoc.find((doc) => doc.codigo === key.currentKey);
+                        if (fnd) {
+                          // setTipoDte(fnd.codigo);
+                          formik.setFieldValue('tipoDte', fnd.codigo);
+                        } else {
+                          // setTipoDte('');
+                          formik.setFieldValue('tipoDte', '');
+                        }
                       } else {
                         // setTipoDte('');
                         formik.setFieldValue('tipoDte', '');
                       }
-                    } else {
-                      // setTipoDte('');
-                      formik.setFieldValue('tipoDte', '');
-                    }
-                  }}
-                  isInvalid={!!formik.touched.tipoDte && !!formik.errors.tipoDte}
-                  errorMessage={formik.errors.tipoDte}
-                >
-                  {filteredTipoDoc.map((item) => (
-                    <SelectItem
-                      key={item.codigo}
-                      isReadOnly={
-                        ['03', '05', '06'].includes(item.codigo) &&
-                        formik.values.typeSale === 'externa'
-                      }
-                    >
-                      {item.valores}
-                    </SelectItem>
-                  ))}
-                </Select>
-                <Select
-                  classNames={{ label: 'font-semibold' }}
-                  variant="bordered"
-                  label="Sucursal"
-                  placeholder="Selecciona la sucursal"
-                  labelPlacement="outside"
-                  selectedKeys={[`${formik.values.branchId.toString()}`]}
-                  onSelectionChange={(key) => {
-                    if (key) {
-                      const fnd = branch_list.find(
-                        (branch) => branch.id === Number(key.currentKey)
-                      );
-                      if (fnd) {
-                        setBranchName(fnd.name);
-                        formik.setFieldValue('branchId', fnd.id);
+                    }}
+                    isInvalid={!!formik.touched.tipoDte && !!formik.errors.tipoDte}
+                    errorMessage={formik.errors.tipoDte}
+                  >
+                    {filteredTipoDoc.map((item) => (
+                      <SelectItem
+                        key={item.codigo}
+                        isReadOnly={
+                          ['03', '05', '06'].includes(item.codigo) &&
+                          formik.values.typeSale === 'externa'
+                        }
+                      >
+                        {item.valores}
+                      </SelectItem>
+                    ))}
+                  </Select>
+                  <Select
+                    classNames={{ label: 'font-semibold' }}
+                    variant="bordered"
+                    label="Sucursal"
+                    placeholder="Selecciona la sucursal"
+                    labelPlacement="outside"
+                    selectedKeys={[`${formik.values.branchId.toString()}`]}
+                    onSelectionChange={(key) => {
+                      if (key) {
+                        const fnd = branch_list.find(
+                          (branch) => branch.id === Number(key.currentKey)
+                        );
+                        if (fnd) {
+                          setBranchName(fnd.name);
+                          formik.setFieldValue('branchId', fnd.id);
+                        } else {
+                          setBranchName('');
+                          formik.setFieldValue('branchId', 0);
+                        }
                       } else {
                         setBranchName('');
                         formik.setFieldValue('branchId', 0);
                       }
-                    } else {
-                      setBranchName('');
-                      formik.setFieldValue('branchId', 0);
-                    }
-                  }}
-                  onBlur={formik.handleBlur('branchId')}
-                  isInvalid={!!formik.touched.branchId && !!formik.errors.branchId}
-                  errorMessage={formik.errors.branchId}
-                >
-                  {branch_list.map((branch) => (
-                    <SelectItem key={branch.id}>{branch.name}</SelectItem>
-                  ))}
-                </Select>
-                <Select
-                  classNames={{ label: 'font-semibold' }}
-                  variant="bordered"
-                  label="Tipo"
-                  placeholder="Selecciona el tipo"
-                  labelPlacement="outside"
-                  selectedKeys={`${['Interna', 'Internacion', 'Importacion'].indexOf(formik.values.typeSale)}`}
-                  onSelectionChange={(key) => {
-                    const index = parseInt(key?.currentKey || '0', 10); // Default to '0' if key.currentKey is undefined
-                    const typeSaleOptions = ['Interna', 'Internacion', 'Importacion'];
-                    const selectedTypeSale = typeSaleOptions[index] || 'Interna'; // Default to 'interna' if index is invalid
-                    formik.setFieldValue('typeSale', selectedTypeSale);
-                  }}
-                  onBlur={formik.handleBlur('typeSale')}
-                  isInvalid={!!formik.touched.typeSale && !!formik.errors.typeSale}
-                  errorMessage={formik.errors.typeSale}
-                  isDisabled={isDisabled}
-                >
-                  <SelectItem key={'0'}>Interna</SelectItem>
-                  <SelectItem key={'1'}>Internación</SelectItem>
-                  <SelectItem key={'2'}>Importación</SelectItem>
-                </Select>
-                <Input
-                  classNames={{ label: 'font-semibold' }}
-                  placeholder="EJ: 101"
-                  variant="bordered"
-                  value={formik.values.controlNumber}
-                  onChange={formik.handleChange('controlNumber')}
-                  onBlur={formik.handleBlur('controlNumber')}
-                  label="Numero de control"
-                  labelPlacement="outside"
-                  isInvalid={!!formik.touched.controlNumber && !!formik.errors.controlNumber}
-                  errorMessage={formik.errors.controlNumber}
-                  isDisabled={isDisabled}
-                />
-                <Select
-                  onBlur={formik.handleBlur('classDocumentCode')}
-                  onSelectionChange={(key) => {
-                    if (key) {
-                      const value = key.currentKey;
-                      const code = ClassDocuments.find((item) => item.code === value);
-                      if (code) {
-                        formik.setFieldValue('classDocumentCode', code.code);
-                        formik.setFieldValue('classDocumentValue', code.value);
+                    }}
+                    onBlur={formik.handleBlur('branchId')}
+                    isInvalid={!!formik.touched.branchId && !!formik.errors.branchId}
+                    errorMessage={formik.errors.branchId}
+                  >
+                    {branch_list.map((branch) => (
+                      <SelectItem key={branch.id}>{branch.name}</SelectItem>
+                    ))}
+                  </Select>
+                  <Select
+                    classNames={{ label: 'font-semibold' }}
+                    variant="bordered"
+                    label="Tipo"
+                    placeholder="Selecciona el tipo"
+                    labelPlacement="outside"
+                    selectedKeys={`${['Interna', 'Internacion', 'Importacion'].indexOf(formik.values.typeSale)}`}
+                    onSelectionChange={(key) => {
+                      const index = parseInt(key?.currentKey || '0', 10); // Default to '0' if key.currentKey is undefined
+                      const typeSaleOptions = ['Interna', 'Internacion', 'Importacion'];
+                      const selectedTypeSale = typeSaleOptions[index] || 'Interna'; // Default to 'interna' if index is invalid
+                      formik.setFieldValue('typeSale', selectedTypeSale);
+                    }}
+                    onBlur={formik.handleBlur('typeSale')}
+                    isInvalid={!!formik.touched.typeSale && !!formik.errors.typeSale}
+                    errorMessage={formik.errors.typeSale}
+                    isDisabled={isDisabled}
+                  >
+                    <SelectItem key={'0'}>Interna</SelectItem>
+                    <SelectItem key={'1'}>Internación</SelectItem>
+                    <SelectItem key={'2'}>Importación</SelectItem>
+                  </Select>
+                  <Input
+                    classNames={{ label: 'font-semibold' }}
+                    placeholder="EJ: 101"
+                    variant="bordered"
+                    value={formik.values.controlNumber}
+                    onChange={formik.handleChange('controlNumber')}
+                    onBlur={formik.handleBlur('controlNumber')}
+                    label="Numero de control"
+                    labelPlacement="outside"
+                    isInvalid={!!formik.touched.controlNumber && !!formik.errors.controlNumber}
+                    errorMessage={formik.errors.controlNumber}
+                    isDisabled={isDisabled}
+                  />
+                  <Select
+                    onBlur={formik.handleBlur('classDocumentCode')}
+                    onSelectionChange={(key) => {
+                      if (key) {
+                        const value = key.currentKey;
+                        const code = ClassDocuments.find((item) => item.code === value);
+                        if (code) {
+                          formik.setFieldValue('classDocumentCode', code.code);
+                          formik.setFieldValue('classDocumentValue', code.value);
+                        } else {
+                          formik.setFieldValue('classDocumentCode', '');
+                          formik.setFieldValue('classDocumentValue', '');
+                        }
                       } else {
                         formik.setFieldValue('classDocumentCode', '');
                         formik.setFieldValue('classDocumentValue', '');
                       }
-                    } else {
-                      formik.setFieldValue('classDocumentCode', '');
-                      formik.setFieldValue('classDocumentValue', '');
+                    }}
+                    selectedKeys={formik.values.classDocumentCode}
+                    classNames={{ label: 'font-semibold' }}
+                    className="w-full"
+                    variant="bordered"
+                    labelPlacement="outside"
+                    placeholder="Selecciona una opción"
+                    label="Clase del documento"
+                    isDisabled={isDisabled}
+                    isInvalid={
+                      !!formik.touched.classDocumentCode && !!formik.errors.classDocumentCode
                     }
-                  }}
-                  selectedKeys={formik.values.classDocumentCode}
-                  classNames={{ label: 'font-semibold' }}
-                  className="w-full"
-                  variant="bordered"
-                  labelPlacement="outside"
-                  placeholder="Selecciona una opción"
-                  label="Clase del documento"
-                  isDisabled={isDisabled}
-                  isInvalid={
-                    !!formik.touched.classDocumentCode && !!formik.errors.classDocumentCode
-                  }
-                  errorMessage={formik.errors.classDocumentCode}
-                >
-                  {ClassDocuments.map((item) => (
-                    <SelectItem key={item.code}>
-                      {item.value}
-                    </SelectItem>
-                  ))}
-                </Select>
-                <Select
-                  onBlur={formik.handleBlur('operationTypeCode')}
-                  onSelectionChange={(key) => {
-                    if (key) {
-                      const value = key.currentKey;
-                      const code = OperationTypes.find((item) => item.code === value);
-                      if (code) {
-                        formik.setFieldValue('operationTypeCode', code.code);
-                        formik.setFieldValue('operationTypeValue', code.value);
+                    errorMessage={formik.errors.classDocumentCode}
+                  >
+                    {ClassDocuments.map((item) => (
+                      <SelectItem key={item.code}>{item.value}</SelectItem>
+                    ))}
+                  </Select>
+                  <Select
+                    onBlur={formik.handleBlur('operationTypeCode')}
+                    onSelectionChange={(key) => {
+                      if (key) {
+                        const value = key.currentKey;
+                        const code = OperationTypes.find((item) => item.code === value);
+                        if (code) {
+                          formik.setFieldValue('operationTypeCode', code.code);
+                          formik.setFieldValue('operationTypeValue', code.value);
+                        } else {
+                          formik.setFieldValue('operationTypeCode', '');
+                          formik.setFieldValue('operationTypeValue', '');
+                        }
                       } else {
                         formik.setFieldValue('operationTypeCode', '');
-                        formik.setFieldValue('operationTypeValue', '');
                       }
-                    } else {
-                      formik.setFieldValue('operationTypeCode', '');
+                    }}
+                    selectedKeys={formik.values.operationTypeCode}
+                    classNames={{ label: 'font-semibold' }}
+                    className="w-full"
+                    variant="bordered"
+                    labelPlacement="outside"
+                    placeholder="Selecciona una opción"
+                    label="Tipo de operación"
+                    isDisabled={isDisabled}
+                    isInvalid={
+                      !!formik.touched.operationTypeCode && !!formik.errors.operationTypeCode
                     }
-                  }}
-                  selectedKeys={formik.values.operationTypeCode}
-                  classNames={{ label: 'font-semibold' }}
-                  className="w-full"
-                  variant="bordered"
-                  labelPlacement="outside"
-                  placeholder="Selecciona una opción"
-                  label="Tipo de operación"
-                  isDisabled={isDisabled}
-                  isInvalid={
-                    !!formik.touched.operationTypeCode && !!formik.errors.operationTypeCode
-                  }
-                  errorMessage={formik.errors.operationTypeCode}
-                >
-                  {OperationTypes.map((item) => (
-                    <SelectItem key={item.code}>
-                      {item.value}
-                    </SelectItem>
-                  ))}
-                </Select>
-                <Select
-                  classNames={{ label: 'font-semibold' }}
-                  className="w-full"
-                  variant="bordered"
-                  labelPlacement="outside"
-                  placeholder="Selecciona una opción"
-                  label="Clasificación"
-                  isDisabled={isDisabled}
-                  onSelectionChange={(key) => {
-                    if (key) {
-                      const value = key.currentKey;
-                      const code = Classifications.find((item) => item.code === value);
-                      if (code) {
-                        formik.setFieldValue('classificationCode', code.code);
-                        formik.setFieldValue('classificationValue', code.value);
+                    errorMessage={formik.errors.operationTypeCode}
+                  >
+                    {OperationTypes.map((item) => (
+                      <SelectItem key={item.code}>{item.value}</SelectItem>
+                    ))}
+                  </Select>
+                  <Select
+                    classNames={{ label: 'font-semibold' }}
+                    className="w-full"
+                    variant="bordered"
+                    labelPlacement="outside"
+                    placeholder="Selecciona una opción"
+                    label="Clasificación"
+                    isDisabled={isDisabled}
+                    onSelectionChange={(key) => {
+                      if (key) {
+                        const value = key.currentKey;
+                        const code = Classifications.find((item) => item.code === value);
+                        if (code) {
+                          formik.setFieldValue('classificationCode', code.code);
+                          formik.setFieldValue('classificationValue', code.value);
+                        } else {
+                          formik.setFieldValue('classificationCode', '');
+                          formik.setFieldValue('classificationValue', '');
+                        }
                       } else {
                         formik.setFieldValue('classificationCode', '');
-                        formik.setFieldValue('classificationValue', '');
                       }
-                    } else {
-                      formik.setFieldValue('classificationCode', '');
+                    }}
+                    selectedKeys={formik.values.classificationCode}
+                    onBlur={formik.handleBlur('classificationCode')}
+                    isInvalid={
+                      !!formik.touched.classificationCode && !!formik.errors.classificationCode
                     }
-                  }}
-                  selectedKeys={formik.values.classificationCode}
-                  onBlur={formik.handleBlur('classificationCode')}
-                  isInvalid={
-                    !!formik.touched.classificationCode && !!formik.errors.classificationCode
-                  }
-                  errorMessage={formik.errors.classificationCode}
-                >
-                  {Classifications.map((item) => (
-                    <SelectItem key={item.code}>
-                      {item.value}
-                    </SelectItem>
-                  ))}
-                </Select>
-                <Select
-                  classNames={{ label: 'font-semibold' }}
-                  className="w-full"
-                  variant="bordered"
-                  labelPlacement="outside"
-                  placeholder="Selecciona una opción"
-                  label="Sector"
-                  isDisabled={isDisabled}
-                  onSelectionChange={(key) => {
-                    if (key) {
-                      const value = key.currentKey;
-                      const code = Sectors.find((item) => item.code === value);
-                      if (code) {
-                        formik.setFieldValue('sectorCode', code.code);
-                        formik.setFieldValue('sectorValue', code.value);
+                    errorMessage={formik.errors.classificationCode}
+                  >
+                    {Classifications.map((item) => (
+                      <SelectItem key={item.code}>{item.value}</SelectItem>
+                    ))}
+                  </Select>
+                  <Select
+                    classNames={{ label: 'font-semibold' }}
+                    className="w-full"
+                    variant="bordered"
+                    labelPlacement="outside"
+                    placeholder="Selecciona una opción"
+                    label="Sector"
+                    isDisabled={isDisabled}
+                    onSelectionChange={(key) => {
+                      if (key) {
+                        const value = key.currentKey;
+                        const code = Sectors.find((item) => item.code === value);
+                        if (code) {
+                          formik.setFieldValue('sectorCode', code.code);
+                          formik.setFieldValue('sectorValue', code.value);
+                        } else {
+                          formik.setFieldValue('sectorCode', '');
+                          formik.setFieldValue('sectorValue', '');
+                        }
                       } else {
                         formik.setFieldValue('sectorCode', '');
-                        formik.setFieldValue('sectorValue', '');
                       }
-                    } else {
-                      formik.setFieldValue('sectorCode', '');
-                    }
-                  }}
-                  selectedKeys={formik.values.sectorCode}
-                  onBlur={formik.handleBlur('sectorCode')}
-                  isInvalid={!!formik.touched.sectorCode && !!formik.errors.sectorCode}
-                  errorMessage={formik.errors.sectorCode}
-                >
-                  {Sectors.map((item) => (
-                    <SelectItem key={item.code}>
-                      {item.value}
-                    </SelectItem>
-                  ))}
-                </Select>
-                <Select
-                  classNames={{ label: 'font-semibold' }}
-                  className="w-full"
-                  variant="bordered"
-                  labelPlacement="outside"
-                  placeholder="Selecciona una opción"
-                  label="Tipo de costo/gasto"
-                  isDisabled={isDisabled}
-                  onSelectionChange={(key) => {
-                    if (key) {
-                      const value = key.currentKey;
-                      const code = TypeCostSpents.find((item) => item.code === value);
-                      if (code) {
-                        formik.setFieldValue('typeCostSpentCode', code.code);
-                        formik.setFieldValue('typeCostSpentValue', code.value);
+                    }}
+                    selectedKeys={formik.values.sectorCode}
+                    onBlur={formik.handleBlur('sectorCode')}
+                    isInvalid={!!formik.touched.sectorCode && !!formik.errors.sectorCode}
+                    errorMessage={formik.errors.sectorCode}
+                  >
+                    {Sectors.map((item) => (
+                      <SelectItem key={item.code}>{item.value}</SelectItem>
+                    ))}
+                  </Select>
+                  <Select
+                    classNames={{ label: 'font-semibold' }}
+                    className="w-full"
+                    variant="bordered"
+                    labelPlacement="outside"
+                    placeholder="Selecciona una opción"
+                    label="Tipo de costo/gasto"
+                    isDisabled={isDisabled}
+                    onSelectionChange={(key) => {
+                      if (key) {
+                        const value = key.currentKey;
+                        const code = TypeCostSpents.find((item) => item.code === value);
+                        if (code) {
+                          formik.setFieldValue('typeCostSpentCode', code.code);
+                          formik.setFieldValue('typeCostSpentValue', code.value);
+                        } else {
+                          formik.setFieldValue('typeCostSpentCode', '');
+                          formik.setFieldValue('typeCostSpentValue', '');
+                        }
                       } else {
                         formik.setFieldValue('typeCostSpentCode', '');
-                        formik.setFieldValue('typeCostSpentValue', '');
                       }
-                    } else {
-                      formik.setFieldValue('typeCostSpentCode', '');
+                    }}
+                    selectedKeys={formik.values.typeCostSpentCode}
+                    onBlur={formik.handleBlur('typeCostSpentCode')}
+                    isInvalid={
+                      !!formik.touched.typeCostSpentCode && !!formik.errors.typeCostSpentCode
                     }
-                  }}
-                  selectedKeys={formik.values.typeCostSpentCode}
-                  onBlur={formik.handleBlur('typeCostSpentCode')}
-                  isInvalid={
-                    !!formik.touched.typeCostSpentCode && !!formik.errors.typeCostSpentCode
-                  }
-                  errorMessage={formik.errors.typeCostSpentCode}
-                >
-                  {TypeCostSpents.map((item) => (
-                    <SelectItem key={item.code}>
-                      {item.value}
-                    </SelectItem>
-                  ))}
-                </Select>
-                <Input
-                  classNames={{ label: 'font-semibold' }}
-                  variant="bordered"
-                  type="date"
-                  label="Fecha del documento"
-                  value={formik.values.fecEmi}
-                  onChange={formik.handleChange('fecEmi')}
-                  onBlur={formik.handleBlur('fecEmi')}
-                  labelPlacement="outside"
-                  isInvalid={!!formik.touched.fecEmi && !!formik.errors.fecEmi}
-                  errorMessage={formik.errors.fecEmi}
-                  isDisabled={isDisabled}
-                />
-                <Input
-                  classNames={{ label: 'font-semibold' }}
-                  variant="bordered"
-                  type="date"
-                  label="Fecha de declaración"
-                  value={formik.values.declarationDate}
-                  onChange={formik.handleChange('declarationDate')}
-                  onBlur={formik.handleBlur('declarationDate')}
-                  labelPlacement="outside"
-                  isInvalid={!!formik.touched.declarationDate && !!formik.errors.declarationDate}
-                  errorMessage={formik.errors.declarationDate}
-                />
-                <div className="flex  items-end">
-                  <Checkbox
-                    defaultChecked={includePerception}
-                    isSelected={includePerception}
-                    checked={includePerception}
-                    onValueChange={(val) => setIncludePerception(val)}
-                    size="lg"
-                    isDisabled={isDisabled}
+                    errorMessage={formik.errors.typeCostSpentCode}
                   >
-                    ¿Incluye percepción?
-                  </Checkbox>
+                    {TypeCostSpents.map((item) => (
+                      <SelectItem key={item.code}>{item.value}</SelectItem>
+                    ))}
+                  </Select>
+                  <Input
+                    classNames={{ label: 'font-semibold' }}
+                    variant="bordered"
+                    type="date"
+                    label="Fecha del documento"
+                    value={formik.values.fecEmi}
+                    onChange={formik.handleChange('fecEmi')}
+                    onBlur={formik.handleBlur('fecEmi')}
+                    labelPlacement="outside"
+                    isInvalid={!!formik.touched.fecEmi && !!formik.errors.fecEmi}
+                    errorMessage={formik.errors.fecEmi}
+                    isDisabled={isDisabled}
+                  />
+                  <Input
+                    classNames={{ label: 'font-semibold' }}
+                    variant="bordered"
+                    type="date"
+                    label="Fecha de declaración"
+                    value={formik.values.declarationDate}
+                    onChange={formik.handleChange('declarationDate')}
+                    onBlur={formik.handleBlur('declarationDate')}
+                    labelPlacement="outside"
+                    isInvalid={!!formik.touched.declarationDate && !!formik.errors.declarationDate}
+                    errorMessage={formik.errors.declarationDate}
+                  />
+                  <div className="flex  items-end">
+                    <Checkbox
+                      defaultChecked={includePerception}
+                      isSelected={includePerception}
+                      checked={includePerception}
+                      onValueChange={(val) => setIncludePerception(val)}
+                      size="lg"
+                      isDisabled={isDisabled}
+                    >
+                      ¿Incluye percepción?
+                    </Checkbox>
+                  </div>
                 </div>
-              </div>
-              <AccountItemEdit
-                addItems={addItem}
-                handleDeleteItem={handleDeleteItem}
-                ivaShoppingCod={fiscalDataAndParameter?.ivaLocalShopping ?? ''}
-                items={items}
-                setItems={setItems}
-                index={0}
-                selectedIndex={selectedIndex}
-                setSelectedIndex={setSelectedIndex}
-                openCatalogModal={openCatalogModal}
-                onClose={catalogModal.onClose}
-                branchName={branchName}
-                $debe={$debe}
-                $haber={$haber}
-                $total={$total}
-                description={description}
-                date={dateItem}
-                selectedType={selectedType}
-                setSelectedType={setSelectedType}
-                setDate={setDateItem}
-                setDescription={setDescription}
-                isReadOnly={false}
-                canAddItem={!isDisabled}
-                editAccount={!hasDetails}
-                exenta={$exenta}
-                setExenta={setExenta}
-              />
-              <div>
-                <EditResumeShopping
-                  afecta={$afecta}
-                  exenta={$exenta}
-                  totalIva={$totalIva}
-                  $1perception={$1perception}
-                  total={$totalItems}
+                <AccountItemEdit
                   addItems={addItem}
+                  handleDeleteItem={handleDeleteItem}
+                  ivaShoppingCod={fiscalDataAndParameter?.ivaLocalShopping ?? ''}
                   items={items}
+                  setItems={setItems}
+                  index={0}
+                  selectedIndex={selectedIndex}
+                  setSelectedIndex={setSelectedIndex}
+                  openCatalogModal={openCatalogModal}
+                  onClose={catalogModal.onClose}
+                  branchName={branchName}
+                  $debe={$debe}
+                  $haber={$haber}
+                  $total={$total}
+                  description={description}
+                  date={dateItem}
+                  selectedType={selectedType}
+                  setSelectedType={setSelectedType}
+                  setDate={setDateItem}
+                  setDescription={setDescription}
+                  isReadOnly={false}
+                  canAddItem={!isDisabled}
+                  editAccount={!hasDetails}
+                  exenta={$exenta}
                   setExenta={setExenta}
                 />
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 mt-10 gap-5 ">
-                <div />
-                <Button
-                  onClick={() => navigate('/shopping')}
-                  className="px-20"
-                  style={styles.dangerStyles}
-                  isLoading={formik.isSubmitting}
-                >
-                  Regresar
-                </Button>
-                <Button
-                  isLoading={formik.isSubmitting}
-                  type="submit"
-                  className="px-20"
-                  style={styles.thirdStyle}
-                >
-                  Guardar
-                </Button>
-              </div>
-            </form>
-          ) : (
-            <>
-              <div className="w-full h-full flex flex-col justify-center items-center">
-                <IoWarning size={50} className="text-orange-400" />
-                <p className="mt-4 text-lg">No se encontró la venta solicitada</p>
-                <div className="flex gap-5 mt-4">
+                <div>
+                  <EditResumeShopping
+                    afecta={$afecta}
+                    exenta={$exenta}
+                    totalIva={$totalIva}
+                    $1perception={$1perception}
+                    total={$totalItems}
+                    addItems={addItem}
+                    items={items}
+                    setExenta={setExenta}
+                  />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 mt-10 gap-5 ">
+                  <div />
                   <Button
                     onClick={() => navigate('/shopping')}
-                    className="font-semibold px-10"
-                    style={global_styles().dangerStyles}
+                    className="px-20"
+                    style={styles.dangerStyles}
+                    isLoading={formik.isSubmitting}
                   >
                     Regresar
                   </Button>
                   <Button
-                    onClick={() => window.location.reload()}
-                    className="font-semibold px-10"
-                    style={global_styles().secondaryStyle}
+                    isLoading={formik.isSubmitting}
+                    type="submit"
+                    className="px-20"
+                    style={styles.thirdStyle}
                   >
-                    Recargar
+                    Guardar
                   </Button>
                 </div>
-              </div>
-            </>
-          )}
+              </form>
+            ) : (
+              <>
+                <div className="w-full h-full flex flex-col justify-center items-center">
+                  <IoWarning size={50} className="text-orange-400" />
+                  <p className="mt-4 text-lg">No se encontró la venta solicitada</p>
+                  <div className="flex gap-5 mt-4">
+                    <Button
+                      onClick={() => navigate('/shopping')}
+                      className="font-semibold px-10"
+                      style={global_styles().dangerStyles}
+                    >
+                      Regresar
+                    </Button>
+                    <Button
+                      onClick={() => window.location.reload()}
+                      className="font-semibold px-10"
+                      style={global_styles().secondaryStyle}
+                    >
+                      Recargar
+                    </Button>
+                  </div>
+                </div>
+              </>
+            )}
+          </>
         </div>
         {editIndex !== null && (
           <Modal
