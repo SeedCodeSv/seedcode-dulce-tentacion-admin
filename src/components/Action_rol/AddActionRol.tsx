@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
-import { Autocomplete, AutocompleteItem, Button, Input } from '@nextui-org/react';
+import { Autocomplete, AutocompleteItem, Button, Input } from "@heroui/react";
 import viewActions from '../../actions.json';
 import { useViewsStore } from '../../store/views.store';
 import { useActionsRolStore } from '../../store/actions_rol.store';
@@ -141,7 +141,7 @@ const PermissionAddActionRol: React.FC = () => {
   const renderSection = (view: { id: number; name: string }) => {
     const actions = viewActions.view_actions.find((va) => va.view === view.name)?.actions || [];
     return (
-      <div className="w-full w-1/3 sm:w-1/2 p-2" key={view.id}>
+      <div className="w-full sm:w-1/2 p-2" key={view.id}>
         <div
           className="mb-4 dark:bg-gray-900  shadow-lg border border-gray-300 rounded-lg overflow-hidden"
           style={{ height: '400px', width: '100%' }}
@@ -242,7 +242,6 @@ const PermissionAddActionRol: React.FC = () => {
                   onClick={() => {
                     setSelectedCustomer(role.id), OnGetActionsByRolePage(role.id);
                   }}
-                  value={role.name}
                   key={role.id}
                   className="dark:text-white"
                 >

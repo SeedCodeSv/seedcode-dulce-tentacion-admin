@@ -26,7 +26,7 @@ import {
   Select,
   SelectItem,
   Tooltip,
-} from '@nextui-org/react';
+} from '@heroui/react';
 import { useFormikContext } from 'formik';
 import { MessageCircleQuestion } from 'lucide-react';
 import { useMemo } from 'react';
@@ -111,7 +111,9 @@ function GeneralInfo({
             }}
           >
             {supplier_pagination.suppliers.map((supp) => (
-              <AutocompleteItem key={supp.id} textValue={supp.nombre}>{supp.nombre}</AutocompleteItem>
+              <AutocompleteItem key={supp.id} textValue={supp.nombre}>
+                {supp.nombre}
+              </AutocompleteItem>
             ))}
           </Autocomplete>
         </div>
@@ -148,7 +150,7 @@ function GeneralInfo({
             }}
           >
             {filteredTipoDoc.map((item) => (
-              <SelectItem value={item.codigo} key={item.codigo} textValue={item.valores}>
+              <SelectItem key={item.codigo} textValue={item.valores}>
                 {item.valores}
               </SelectItem>
             ))}
@@ -183,7 +185,7 @@ function GeneralInfo({
             errorMessage={formik.errors.branchId}
           >
             {branch_list.map((item) => (
-              <SelectItem value={item.id} key={item.id} textValue={item.name}>
+              <SelectItem key={item.id} textValue={item.name}>
                 {item.name}
               </SelectItem>
             ))}
@@ -207,13 +209,13 @@ function GeneralInfo({
             isInvalid={!!formik.touched.typeSale && !!formik.errors.typeSale}
             errorMessage={formik.errors.typeSale}
           >
-            <SelectItem key={'interna'} value="interna" textValue="Interna">
+            <SelectItem key={'interna'} textValue="Interna">
               Interna
             </SelectItem>
-            <SelectItem key={'internacion'} value="internacion" textValue="Internación">
+            <SelectItem key={'internacion'} textValue="Internación">
               Internación
             </SelectItem>
-            <SelectItem key={'importacion'} value="importacion" textValue="Importación">
+            <SelectItem key={'importacion'} textValue="Importación">
               Importación
             </SelectItem>
           </Select>
@@ -296,7 +298,7 @@ function GeneralInfo({
           errorMessage={formik.errors.classDocumentCode}
         >
           {ClassDocuments.map((item) => (
-            <SelectItem value={item.code} key={item.code} textValue={item.value}>
+            <SelectItem key={item.code} textValue={item.value}>
               {item.value}
             </SelectItem>
           ))}
@@ -333,7 +335,7 @@ function GeneralInfo({
           errorMessage={formik.errors.operationTypeCode}
         >
           {OperationTypes.map((item) => (
-            <SelectItem value={item.code} key={item.code} textValue={item.value}>
+            <SelectItem key={item.code} textValue={item.value}>
               {item.value}
             </SelectItem>
           ))}
@@ -370,7 +372,7 @@ function GeneralInfo({
           errorMessage={formik.errors.classificationCode}
         >
           {Classifications.map((item) => (
-            <SelectItem value={item.code} key={item.code} textValue={item.value}>
+            <SelectItem key={item.code} textValue={item.value}>
               {item.value}
             </SelectItem>
           ))}
@@ -405,7 +407,7 @@ function GeneralInfo({
           errorMessage={formik.errors.sectorCode}
         >
           {Sectors.map((item) => (
-            <SelectItem value={item.code} key={item.code} textValue={item.value}>
+            <SelectItem key={item.code} textValue={item.value}>
               {item.value}
             </SelectItem>
           ))}
@@ -442,7 +444,7 @@ function GeneralInfo({
           errorMessage={formik.errors.typeCostSpentCode}
         >
           {TypeCostSpents.map((item) => (
-            <SelectItem value={item.code} key={item.code} textValue={item.value}>
+            <SelectItem key={item.code} textValue={item.value}>
               {item.value}
             </SelectItem>
           ))}

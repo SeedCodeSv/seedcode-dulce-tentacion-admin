@@ -1,4 +1,4 @@
-import { Input, Button, Textarea } from '@nextui-org/react';
+import { Input, Button, Textarea } from "@heroui/react";
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { useContext } from 'react';

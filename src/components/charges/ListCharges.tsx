@@ -8,7 +8,7 @@ import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { useContext, useEffect, useState } from 'react';
 import {
   EditIcon,
@@ -242,7 +242,7 @@ function ListCharges({ actions }: IProps) {
             }}
           >
             {limit_options.map((option) => (
-              <SelectItem key={option} value={option} className="dark:text-white">
+              <SelectItem key={option} className="dark:text-white">
                 {option}
               </SelectItem>
             ))}

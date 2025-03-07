@@ -4,7 +4,7 @@ import { DataTable } from 'primereact/datatable';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { useSalesInvalidation } from '../store/sales_invalidations.store';
 import { fechaActualString } from '@/utils/dates';
-import { Autocomplete, AutocompleteItem, Button, Input, Switch } from '@nextui-org/react';
+import { Autocomplete, AutocompleteItem, Button, Input, Switch } from "@heroui/react";
 import { correlativesTypes } from '@/types/correlatives/correlatives_data.types';
 import { CheckCircle, CircleX, Eye, Lock, Search, XCircle } from 'lucide-react';
 import { useBranchesStore } from '@/store/branches.store';
@@ -150,7 +150,6 @@ function SalesInvalidationList({ actions }: { actions: string[] }) {
                 <AutocompleteItem
                   onClick={() => setBranchId(bra.id)}
                   className="dark:text-white"
-                  value={bra.id}
                   key={bra.id}
                 >
                   {bra.name}
@@ -198,7 +197,7 @@ function SalesInvalidationList({ actions }: { actions: string[] }) {
               {correlativesTypes
                 .filter((dep) => ['F', 'CCF', 'T'].includes(dep.value)) // Filtra solo "F", "CCF", "T"
                 .map((dep) => (
-                  <AutocompleteItem className="dark:text-white" value={dep.label} key={dep.value}>
+                  <AutocompleteItem className="dark:text-white" key={dep.value}>
                     {dep.value + ' - ' + dep.label}
                   </AutocompleteItem>
                 ))}

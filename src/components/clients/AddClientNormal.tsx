@@ -1,4 +1,4 @@
-import { Autocomplete, AutocompleteItem, Button, Input, Textarea } from '@nextui-org/react';
+import { Autocomplete, AutocompleteItem, Button, Input, Textarea } from "@heroui/react";
 import { useCustomerStore } from '@/store/customers.store';
 import { useBillingStore } from '@/store/facturation/billing.store';
 import { useEffect, useRef, useState } from 'react';
@@ -217,7 +217,6 @@ const AddClientNormal = () => {
                         >
                           {cat_022_tipo_de_documentoDeIde.map((dep) => (
                             <AutocompleteItem
-                              value={dep.codigo}
                               key={dep.codigo}
                               className="dark:text-white"
                             >
@@ -291,7 +290,6 @@ const AddClientNormal = () => {
                         >
                           {cat_012_departamento.map((dep) => (
                             <AutocompleteItem
-                              value={dep.codigo}
                               key={dep.codigo}
                               className="dark:text-white"
                             >
@@ -327,7 +325,6 @@ const AddClientNormal = () => {
                         >
                           {cat_013_municipios.map((dep) => (
                             <AutocompleteItem
-                              value={dep.codigo}
                               key={dep.codigo}
                               className="dark:text-white"
                             >
@@ -383,7 +380,6 @@ const AddClientNormal = () => {
                           {branch_list.map((bra) => (
                             <AutocompleteItem
                               className="dark:text-white"
-                              value={bra.name}
                               key={bra.id.toString()}
                             >
                               {bra.name}

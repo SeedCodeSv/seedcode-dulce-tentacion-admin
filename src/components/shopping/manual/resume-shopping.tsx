@@ -1,4 +1,4 @@
-import { Accordion, AccordionItem, Input } from '@nextui-org/react';
+import { Accordion, AccordionItem, Input } from "@heroui/react";
 import { ResumeShoppingProps } from '../types/shopping-manual.types';
 import { useEffect, useState } from 'react';
 

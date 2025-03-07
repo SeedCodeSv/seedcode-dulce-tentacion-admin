@@ -1,4 +1,4 @@
-import { Input, Button, Autocomplete, AutocompleteItem } from '@nextui-org/react';
+import { Input, Button, Autocomplete, AutocompleteItem } from "@heroui/react";
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { ThemeContext } from '../../hooks/useTheme';
@@ -118,7 +118,6 @@ const AddSubCategory = (props: Props) => {
                 {list_categories.map((bra) => (
                   <AutocompleteItem
                     className="dark:text-white"
-                    value={bra.name}
                     key={JSON.stringify(bra)}
                   >
                     {bra.name}

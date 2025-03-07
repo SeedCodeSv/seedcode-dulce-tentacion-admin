@@ -7,7 +7,7 @@ import {
   DropdownMenu,
   DropdownTrigger,
   User,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { SmLayout } from './SmLayout';
 import { LayoutItems } from './LayoutItems';
 import { LgLayout } from './LgLayout';

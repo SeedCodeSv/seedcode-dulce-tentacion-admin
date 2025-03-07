@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Input } from '@nextui-org/react';
+import { Input } from "@heroui/react";
 import { fechaActualString } from '../../utils/dates';
 
 function SalesByTransmitter() {

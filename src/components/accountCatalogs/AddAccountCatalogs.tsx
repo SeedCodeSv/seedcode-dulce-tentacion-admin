@@ -1,4 +1,4 @@
-import { Input, Button, Select, SelectItem, Switch } from '@nextui-org/react';
+import { Input, Button, Select, SelectItem, Switch } from "@heroui/react";
 import Layout from '@/layout/Layout';
 import useGlobalStyles from '../global/global.styles';
 import { useFormik } from 'formik';
@@ -181,7 +181,7 @@ function AddAccountCatalogs() {
                           errorMessage={formik.errors.type}
                         >
                           {AccountTypes.map((type) => (
-                            <SelectItem key={type.key} value={type.value}>
+                            <SelectItem key={type.key}>
                               {type.label}
                             </SelectItem>
                           ))}
@@ -207,7 +207,7 @@ function AddAccountCatalogs() {
                           errorMessage={formik.errors.loadAs}
                         >
                           {UploadAS.map((type) => (
-                            <SelectItem key={type.key} value={type.value}>
+                            <SelectItem key={type.key}>
                               {type.label}
                             </SelectItem>
                           ))}
@@ -233,7 +233,7 @@ function AddAccountCatalogs() {
                           errorMessage={formik.errors.item}
                         >
                           {Item.map((type) => (
-                            <SelectItem key={type.key} value={type.value}>
+                            <SelectItem key={type.key}>
                               {type.label}
                             </SelectItem>
                           ))}

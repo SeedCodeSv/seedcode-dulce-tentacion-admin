@@ -1,4 +1,4 @@
-import { Button } from '@nextui-org/react';
+import { Button } from "@heroui/react";
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useEmployeeStore } from '@/store/employee.store';

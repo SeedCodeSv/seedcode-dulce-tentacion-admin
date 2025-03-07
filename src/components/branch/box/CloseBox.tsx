@@ -8,7 +8,7 @@ import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-} from '@nextui-org/react';
+} from "@heroui/react";
 //   import Layout from "@renderer/components/global/Layout";
 import { useContext, useEffect, useState } from 'react';
 import OneDollar from '../../../assets/dollars/1.jpg';

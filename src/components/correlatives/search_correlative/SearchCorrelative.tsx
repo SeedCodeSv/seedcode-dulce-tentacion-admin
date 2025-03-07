@@ -5,7 +5,7 @@ import { useBranchesStore } from '@/store/branches.store';
 import { useCorrelativesStore } from '@/store/correlatives-store/correlatives.store';
 import { global_styles } from '@/styles/global.styles';
 import { correlativesTypes } from '@/types/correlatives/correlatives_data.types';
-import { Autocomplete, AutocompleteItem, Button } from '@nextui-org/react';
+import { Autocomplete, AutocompleteItem, Button } from "@heroui/react";
 import { Filter } from 'lucide-react';
 import React, { useContext, useEffect, useState } from 'react';
 import { IPropsSearchCorrelative } from '../types/mobile_correlatives_types';
@@ -60,7 +60,7 @@ function SearchCorrelative(props: IPropsSearchCorrelative) {
                 }}
               >
                 {branch_list.map((bra) => (
-                  <AutocompleteItem className="dark:text-white" value={bra.name} key={bra.name}>
+                  <AutocompleteItem className="dark:text-white" key={bra.name}>
                     {bra.name}
                   </AutocompleteItem>
                 ))}
@@ -85,7 +85,7 @@ function SearchCorrelative(props: IPropsSearchCorrelative) {
                 }}
               >
                 {correlativesTypes.map((dep) => (
-                  <AutocompleteItem className="dark:text-white" value={dep.label} key={dep.value}>
+                  <AutocompleteItem className="dark:text-white" key={dep.value}>
                     {dep.value + ' - ' + dep.label}
                   </AutocompleteItem>
                 ))}

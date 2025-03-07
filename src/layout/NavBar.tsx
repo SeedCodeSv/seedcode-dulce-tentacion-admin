@@ -13,7 +13,7 @@ import {
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { ThemeContext } from '../hooks/useTheme';
 import { Box, ChevronDown, Home } from 'lucide-react';
 // import LOGO from "../assets/react.svg"

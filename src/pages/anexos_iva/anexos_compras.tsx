@@ -1,6 +1,6 @@
 import Layout from '@/layout/Layout';
 import { formatCurrency } from '@/utils/dte';
-import { Button, Select, SelectItem } from '@nextui-org/react';
+import { Button, Select, SelectItem } from "@heroui/react";
 import { useEffect, useState } from 'react';
 import { csvmaker } from './utils';
 import { useAuthStore } from '@/store/auth.store';
@@ -70,7 +70,7 @@ function AnexosCompras() {
               variant="bordered"
             >
               {months.map((month) => (
-                <SelectItem key={month.value} value={month.value}>
+                <SelectItem key={month.value}>
                   {month.name}
                 </SelectItem>
               ))}
@@ -89,7 +89,7 @@ function AnexosCompras() {
                 variant="bordered"
               >
                 {years.map((years) => (
-                  <SelectItem key={years.value} value={years.value}>
+                  <SelectItem key={years.value}>
                     {years.name}
                   </SelectItem>
                 ))}

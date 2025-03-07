@@ -8,7 +8,7 @@ import {
   Autocomplete,
   AutocompleteItem,
   ButtonGroup,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { Search, ArrowLeft, CreditCard, Table as ITable } from 'lucide-react';
 import { ThemeContext } from '../../../hooks/useTheme';
 import MobileView from './MobileView';
@@ -55,7 +55,7 @@ function ListEmployee({ id, onclick }: Props) {
   return (
     <>
       <div className=" w-full h-full p-10 bg-gray-50 dark:bg-gray-900">
-        <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+        <div className="w-full h-full border-white border p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <div onClick={onclick} className="mb-4  w-24 cursor-pointer flex">
             <ArrowLeft className="dark:text-white mr-2" />
             <p className="dark:text-white">Regresar</p>
@@ -123,7 +123,6 @@ function ListEmployee({ id, onclick }: Props) {
               >
                 {list_categories.map((bra) => (
                   <AutocompleteItem
-                    value={bra.name}
                     key={JSON.stringify(bra)}
                     className="dark:text-white"
                   >
@@ -271,7 +270,6 @@ function ListEmployee({ id, onclick }: Props) {
                         >
                           {list_categories.map((bra) => (
                             <AutocompleteItem
-                              value={bra.name}
                               key={bra.name}
                               className="dark:text-white"
                             >

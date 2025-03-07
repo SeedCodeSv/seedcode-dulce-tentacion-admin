@@ -7,7 +7,7 @@ import {
   Button,
   useDisclosure,
   Input,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import useGlobalStyles from '../global/global.styles';
 import { Plus } from 'lucide-react';
 import { useFormik } from 'formik';

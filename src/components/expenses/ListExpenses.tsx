@@ -11,7 +11,7 @@ import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { Attachment, IExpense /*IExpensePayloads*/ } from '../../types/expenses.types';
 import {
   User,

@@ -1,4 +1,4 @@
-import { Button } from '@nextui-org/react';
+import { Button } from "@heroui/react";
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { global_styles } from '../../styles/global.styles';
 

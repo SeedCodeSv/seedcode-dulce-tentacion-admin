@@ -10,7 +10,7 @@ import {
   Autocomplete,
   AutocompleteItem,
   Switch,
-} from '@nextui-org/react';
+} from '@heroui/react';
 import { useEffect, useState, useContext } from 'react';
 import {
   EditIcon,
@@ -29,7 +29,7 @@ import { Product } from '../../types/products.types';
 import AddProducts from './AddProducts';
 import { useCategoriesStore } from '../../store/categories.store';
 import { ThemeContext } from '../../hooks/useTheme';
-import { ButtonGroup } from '@nextui-org/react';
+import { ButtonGroup } from '@heroui/react';
 import { CategoryProduct } from '../../types/categories.types';
 import MobileView from './MobileView';
 // import { Drawer } from "vaul";
@@ -201,11 +201,7 @@ function ListProducts({ actions }: Props) {
                   }}
                 >
                   {list_categories.map((bra) => (
-                    <AutocompleteItem
-                      value={bra.name}
-                      key={JSON.stringify(bra)}
-                      className="dark:text-white"
-                    >
+                    <AutocompleteItem key={JSON.stringify(bra)} className="dark:text-white">
                       {bra.name}
                     </AutocompleteItem>
                   ))}
@@ -239,11 +235,7 @@ function ListProducts({ actions }: Props) {
                   }}
                 >
                   {(item) => (
-                    <AutocompleteItem
-                      value={item.name}
-                      key={JSON.stringify(item)}
-                      className="dark:text-white"
-                    >
+                    <AutocompleteItem key={JSON.stringify(item)} className="dark:text-white">
                       {item.name}
                     </AutocompleteItem>
                   )}
@@ -300,7 +292,7 @@ function ListProducts({ actions }: Props) {
                   }}
                 >
                   {limit_options.map((limit) => (
-                    <SelectItem key={limit} value={limit} className="dark:text-white">
+                    <SelectItem key={limit} className="dark:text-white">
                       {limit}
                     </SelectItem>
                   ))}

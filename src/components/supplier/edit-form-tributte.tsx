@@ -1,7 +1,7 @@
 import { useFormikContext } from 'formik';
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
 import { EditSupplierPayload } from './types/edit-supplier';
-import { Autocomplete, AutocompleteItem, Input, Textarea } from '@nextui-org/react';
+import { Autocomplete, AutocompleteItem, Input, Textarea } from "@heroui/react";
 import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
 import { SelectedItem } from './select-account';
 import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
@@ -111,7 +111,7 @@ function EditFormTributte({ selectedDepartment, setSelectedDepartment }: Props) 
             errorMessage={formik.errors.tipoDocumento}
           >
             {services.get022TipoDeDocumentoDeIde().map((dep) => (
-              <AutocompleteItem key={dep.codigo} value={dep.codigo} className="dark:text-white">
+              <AutocompleteItem key={dep.codigo} className="dark:text-white">
                 {dep.valores}
               </AutocompleteItem>
             ))}
@@ -204,7 +204,7 @@ function EditFormTributte({ selectedDepartment, setSelectedDepartment }: Props) 
             errorMessage={formik.errors.codActividad}
           >
             {economicActivities.map((dep) => (
-              <AutocompleteItem key={dep.codigo} value={dep.codigo} className="dark:text-white">
+              <AutocompleteItem key={dep.codigo} className="dark:text-white">
                 {dep.valores}
               </AutocompleteItem>
             ))}
@@ -236,7 +236,7 @@ function EditFormTributte({ selectedDepartment, setSelectedDepartment }: Props) 
             errorMessage={formik.touched.departamento && formik.errors.departamento}
           >
             {services.get012Departamento().map((dep) => (
-              <AutocompleteItem value={dep.codigo} key={dep.codigo} className="dark:text-white">
+              <AutocompleteItem key={dep.codigo} className="dark:text-white">
                 {dep.valores}
               </AutocompleteItem>
             ))}
@@ -267,7 +267,7 @@ function EditFormTributte({ selectedDepartment, setSelectedDepartment }: Props) 
             errorMessage={formik.errors.municipio}
           >
             {municipios.map((mun) => (
-              <AutocompleteItem key={mun.codigo} value={mun.codigo} className="dark:text-white">
+              <AutocompleteItem key={mun.codigo} className="dark:text-white">
                 {mun.valores}
               </AutocompleteItem>
             ))}

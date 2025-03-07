@@ -1,6 +1,6 @@
 import Layout from "@/layout/Layout";
 import { useEmployeeStore } from "@/store/employee.store";
-import { Tab, Tabs } from "@nextui-org/react";
+import { Tab, Tabs } from "@heroui/react";
 import { ArrowDown01, ArrowUp01, BadgeDollarSign, HelpCircle } from "lucide-react";
 import { useEffect } from "react";
 import ContingenceFC_CCF from "./contingence/ContingenceFC_CFF";

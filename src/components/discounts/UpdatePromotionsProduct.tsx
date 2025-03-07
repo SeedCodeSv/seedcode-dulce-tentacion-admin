@@ -7,7 +7,7 @@ import {
   SelectItem,
   Textarea,
   useDisclosure,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { useContext, useEffect, useState } from 'react';
 import WeekSelector from './WeekSelector';
 import { Formik } from 'formik';
@@ -248,7 +248,6 @@ function UpdatePromotionsByProduct(props: Props) {
                           {operadores.map((operator) => (
                             <SelectItem
                               key={operator.value}
-                              value={operator.value}
                               className="dark:text-white"
                             >
                               {operator.label}
@@ -473,7 +472,7 @@ function UpdatePromotionsByProduct(props: Props) {
                 className="w-full dark:text-white"
               >
                 {branch_list.map((branch: Branches) => (
-                  <SelectItem className="dark:text-white" key={branch.name} value={branch.name}>
+                  <SelectItem className="dark:text-white" key={branch.name}>
                     {branch.name}
                   </SelectItem>
                 ))}

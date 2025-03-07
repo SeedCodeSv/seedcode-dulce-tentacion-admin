@@ -3,7 +3,7 @@ import Pagination from '@/components/global/Pagination';
 import { Items } from '@/pages/contablilidad/types/types';
 import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
 import { AccountCatalog } from '@/types/accountCatalogs.types';
-import { Input, ModalBody, ModalFooter, ModalHeader } from '@nextui-org/react';
+import { Input, ModalBody, ModalFooter, ModalHeader } from "@heroui/react";
 import { Dispatch, SetStateAction, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 

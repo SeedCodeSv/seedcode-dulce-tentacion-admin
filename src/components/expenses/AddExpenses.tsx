@@ -6,7 +6,7 @@ import {
   AutocompleteItem,
   Image as NextImage,
   Tooltip,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { global_styles } from '../../styles/global.styles';
 import * as yup from 'yup';
 import { useExpenseStore } from '../../store/expenses.store.ts';
@@ -280,7 +280,6 @@ const AddExpenses = (props: Props) => {
                   >
                     {list_categories_expenses.map((dep) => (
                       <AutocompleteItem
-                        value={dep.id}
                         key={JSON.stringify(dep)}
                         className="dark:text-white"
                       >

@@ -1,4 +1,4 @@
-import { Button, useDisclosure } from "@nextui-org/react";
+import { Button, useDisclosure } from "@heroui/react";
 import { useEffect, useState } from "react";
 import { Customer } from "../../types/customers.types";
 import { toast } from "sonner";

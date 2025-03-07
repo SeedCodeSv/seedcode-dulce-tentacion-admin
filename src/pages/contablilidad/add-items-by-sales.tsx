@@ -17,7 +17,7 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
-} from '@nextui-org/react';
+} from '@heroui/react';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { ItemListProps, Items } from './types/types';
 import { CodCuentaSelect } from '@/components/shopping/manual/cod-cuenta-select';
@@ -63,7 +63,9 @@ function AddItemsBySales() {
 
   const { saleByItem, getSaleByItem, loadingSalesByItem } = useSalesStore();
 
-  useEffect(() => {
+  
+
+  const handleSearch = () => {
     const transId = user?.correlative
       ? user?.correlative.branch.transmitter.id
       : user?.pointOfSale?.branch.transmitter.id;
@@ -88,7 +90,11 @@ function AddItemsBySales() {
         }));
       });
     }
-  }, [startDate, endDate, branches]);
+  };
+
+  useEffect(() => {
+    handleSearch()
+  }, []);
 
   const $itemsFilter = useMemo(() => {
     return saleByItem.filter(
@@ -274,7 +280,7 @@ function AddItemsBySales() {
 
           toast.success('La partida contable ha sido creada exitosamente');
           setLoading(false);
-          navigate('/accounting-items')
+          navigate('/accounting-items');
         } else {
           toast.error('Error al crear la partida contable');
           setLoading(false);
@@ -342,7 +348,7 @@ function AddItemsBySales() {
           setloadingUpdateActions(false);
           await update_period(period.id, startDate, endDate, listBranches, period.item.id);
           toast.success('Partida actualizada');
-          navigate('/accounting-items')
+          navigate('/accounting-items');
         })
         .catch(() => {
           setloadingUpdateActions(false);
@@ -390,12 +396,10 @@ function AddItemsBySales() {
                 onSelectionChange={setBranches}
               >
                 {branch_list.map((branch) => (
-                  <SelectItem key={branch.id} value={branch.id}>
-                    {branch.name}
-                  </SelectItem>
+                  <SelectItem key={branch.id}>{branch.name}</SelectItem>
                 ))}
               </Select>
-              <Button style={styles.thirdStyle}>Buscar</Button>
+              <Button onPress={handleSearch} className='px-5 font-semibold' style={styles.thirdStyle}>Buscar</Button>
             </div>
           </div>
           <div className="w-full grid grid-cols-2 gap-5 mt-8">
@@ -426,7 +430,7 @@ function AddItemsBySales() {
               }}
             >
               {list_type_of_account.map((type) => (
-                <SelectItem value={type.id.toString()} key={type.id} textValue={type.name}>
+                <SelectItem key={type.id} textValue={type.name}>
                   {type.name}
                 </SelectItem>
               ))}

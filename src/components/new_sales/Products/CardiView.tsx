@@ -3,7 +3,7 @@ import { BranchProduct } from '../../../types/branch_products.types';
 import classNames from 'classnames';
 import { DataView } from 'primereact/dataview';
 import { formatCurrency } from '../../../utils/dte';
-import { Button } from '@nextui-org/react';
+import { Button } from "@heroui/react";
 import { Plus } from 'lucide-react';
 import { global_styles } from '../../../styles/global.styles';
 import { toast } from 'sonner';

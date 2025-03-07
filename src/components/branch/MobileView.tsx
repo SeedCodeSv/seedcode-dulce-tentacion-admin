@@ -1,7 +1,7 @@
 import { useBranchesStore } from '../../store/branches.store';
 import { DataView } from 'primereact/dataview';
 import { BadgeCheck, Edit, MapPin, Phone, Scroll, ShoppingBag } from 'lucide-react';
-import { Button } from '@nextui-org/react';
+import { Button } from "@heroui/react";
 import { classNames } from 'primereact/utils';
 import { global_styles } from '../../styles/global.styles';
 import { GridProps, MobileViewProps } from './types/mobile_view.types';

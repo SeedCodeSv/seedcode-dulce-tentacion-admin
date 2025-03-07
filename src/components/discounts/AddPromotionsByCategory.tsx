@@ -9,7 +9,7 @@ import {
   Autocomplete,
   AutocompleteItem,
   Tooltip,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { Formik } from 'formik';
 import { useContext, useEffect, useState } from 'react';
 import * as yup from 'yup';
@@ -180,7 +180,6 @@ function AddPromotionsByCategory() {
                         {operadores.map((operator) => (
                           <SelectItem
                             key={operator.value}
-                            value={operator.value}
                             className="dark:text-white"
                           >
                             {operator.label}
@@ -293,7 +292,6 @@ function AddPromotionsByCategory() {
                           onClick={() => setBranchId(branch.id)}
                           className="dark:text-white"
                           key={branch.id}
-                          value={branch.id}
                         >
                           {branch.name}
                         </AutocompleteItem>
@@ -393,7 +391,7 @@ function AddPromotionsByCategory() {
                         }}
                       >
                         {categories_list.map((val) => (
-                          <SelectItem key={val.id} value={val.id} className="dark:text-white">
+                          <SelectItem key={val.id} className="dark:text-white">
                             {val.name}
                           </SelectItem>
                         ))}

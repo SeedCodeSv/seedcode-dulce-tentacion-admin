@@ -13,7 +13,7 @@ import {
   Tab,
   Tabs,
   useDisclosure,
-} from '@nextui-org/react';
+} from '@heroui/react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { DataTable } from 'primereact/datatable';
@@ -554,15 +554,9 @@ const JSONMode = () => {
                         isInvalid={!!formik.touched.typeSale && !!formik.errors.typeSale}
                         errorMessage={formik.errors.typeSale}
                       >
-                        <SelectItem key={'interna'} value="interna">
-                          Interna
-                        </SelectItem>
-                        <SelectItem key={'internacion'} value="internacion">
-                          Internación
-                        </SelectItem>
-                        <SelectItem key={'importacion'} value="importacion">
-                          Importación
-                        </SelectItem>
+                        <SelectItem key={'interna'}>Interna</SelectItem>
+                        <SelectItem key={'internacion'}>Internación</SelectItem>
+                        <SelectItem key={'importacion'}>Importación</SelectItem>
                       </Select>
                     </div>
                     <div>
@@ -597,7 +591,7 @@ const JSONMode = () => {
                         errorMessage={formik.errors.branchId}
                       >
                         {branch_list.map((item) => (
-                          <SelectItem value={item.id} key={item.id} textValue={item.name}>
+                          <SelectItem key={item.id} textValue={item.name}>
                             {item.name}
                           </SelectItem>
                         ))}
@@ -634,9 +628,7 @@ const JSONMode = () => {
                       errorMessage={formik.errors.classDocumentCode}
                     >
                       {ClassDocuments.map((item) => (
-                        <SelectItem value={item.code} key={item.code}>
-                          {item.value}
-                        </SelectItem>
+                        <SelectItem key={item.code}>{item.value}</SelectItem>
                       ))}
                     </Select>
                     <Select
@@ -669,9 +661,7 @@ const JSONMode = () => {
                       errorMessage={formik.errors.operationTypeCode}
                     >
                       {OperationTypes.map((item) => (
-                        <SelectItem value={item.code} key={item.code}>
-                          {item.value}
-                        </SelectItem>
+                        <SelectItem key={item.code}>{item.value}</SelectItem>
                       ))}
                     </Select>
                     <Select
@@ -704,9 +694,7 @@ const JSONMode = () => {
                       errorMessage={formik.errors.classificationCode}
                     >
                       {Classifications.map((item) => (
-                        <SelectItem value={item.code} key={item.code}>
-                          {item.value}
-                        </SelectItem>
+                        <SelectItem key={item.code}>{item.value}</SelectItem>
                       ))}
                     </Select>
                     <Select
@@ -737,9 +725,7 @@ const JSONMode = () => {
                       errorMessage={formik.errors.sectorCode}
                     >
                       {Sectors.map((item) => (
-                        <SelectItem value={item.code} key={item.code}>
-                          {item.value}
-                        </SelectItem>
+                        <SelectItem key={item.code}>{item.value}</SelectItem>
                       ))}
                     </Select>
                     <Select
@@ -772,7 +758,7 @@ const JSONMode = () => {
                       errorMessage={formik.errors.typeCostSpentCode}
                     >
                       {TypeCostSpents.map((item) => (
-                        <SelectItem value={item.code} key={item.code}>
+                        <SelectItem key={item.code}>
                           {item.value}
                         </SelectItem>
                       ))}

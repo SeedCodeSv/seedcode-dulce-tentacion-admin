@@ -3,7 +3,7 @@ import useWindowSize from '@/hooks/useWindowSize';
 import { salesReportStore } from '@/store/reports/sales_report.store';
 import { formatCurrency } from '@/utils/dte';
 import { getRandomColorsArray } from '@/utils/filters';
-import { Button } from '@nextui-org/react';
+import { Button } from "@heroui/react";
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import ApexCharts from 'react-apexcharts';

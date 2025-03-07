@@ -1,6 +1,6 @@
 import { ChangeEvent, useContext, useRef, useState, useEffect } from 'react';
 import { toast } from 'sonner';
-import { Image as NextImage, Button, Input, Checkbox } from '@nextui-org/react';
+import { Image as NextImage, Button, Input, Checkbox } from "@heroui/react";
 import { useConfigurationStore } from '../../store/perzonalitation.store';
 import { ICreacteConfiguaration } from '../../types/configuration.types';
 import DefaultImage from '../../assets/react.svg';

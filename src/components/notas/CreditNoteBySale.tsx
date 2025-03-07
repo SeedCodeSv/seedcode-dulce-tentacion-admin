@@ -2,7 +2,7 @@ import Layout from "@/layout/Layout";
 import { get_sale_pdf_credit_note } from "@/services/sales.service";
 import { useReportNoteSalesStore } from "@/store/report_notes_sale.store";
 import { formatCurrency } from "@/utils/dte";
-import { Button, Chip, Listbox, ListboxItem, Popover, PopoverContent, PopoverTrigger } from "@nextui-org/react";
+import { Button, Chip, Listbox, ListboxItem, Popover, PopoverContent, PopoverTrigger } from "@heroui/react";
 import { ArrowLeft, EllipsisVertical, LoaderCircle, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";

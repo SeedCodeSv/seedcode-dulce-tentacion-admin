@@ -3,7 +3,7 @@ import { useBranchesStore } from '@/store/branches.store';
 import { useCorrelativesStore } from '@/store/correlatives-store/correlatives.store';
 import { correlativesTypes } from '@/types/correlatives/correlatives_data.types';
 import { IPropsCorrelativeUpdate } from '@/types/correlatives/correlatives_types';
-import { Autocomplete, AutocompleteItem, Button, Input } from '@nextui-org/react';
+import { Autocomplete, AutocompleteItem, Button, Input } from "@heroui/react";
 import { useContext, useEffect } from 'react';
 import { toast } from 'sonner';
 import { Formik, Form } from 'formik';
@@ -86,7 +86,7 @@ function CreateCorrelative({ onClose, reload }: IPropsCorrelativeUpdate) {
                 }}
               >
                 {correlativesTypes.map((dep) => (
-                  <AutocompleteItem className="dark:text-white" value={dep.label} key={dep.value}>
+                  <AutocompleteItem className="dark:text-white" key={dep.value}>
                     {dep.value + ' - ' + dep.label}
                   </AutocompleteItem>
                 ))}
@@ -221,7 +221,7 @@ function CreateCorrelative({ onClose, reload }: IPropsCorrelativeUpdate) {
               }}
             >
               {branch_list.map((bra) => (
-                <AutocompleteItem className="dark:text-white" value={bra.id} key={bra.id}>
+                <AutocompleteItem className="dark:text-white" key={bra.id}>
                   {bra.name}
                 </AutocompleteItem>
               ))}

@@ -13,7 +13,7 @@ import {
   TableHeader,
   TableRow,
   useDisclosure,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import Chart from 'react-apexcharts';
 import { ApexOptions } from 'apexcharts';
 import { ThemeContext } from '../../hooks/useTheme';
@@ -223,7 +223,6 @@ function ReportSalesByBranch() {
                     onClick={() => setBranchId(branch.id)}
                     className="dark:text-white"
                     key={branch.id}
-                    value={branch.id}
                   >
                     {branch.name}
                   </AutocompleteItem>
@@ -264,7 +263,6 @@ function ReportSalesByBranch() {
                     onClick={() => setBranchId(branch.id)}
                     className="dark:text-white"
                     key={branch.id}
-                    value={branch.id.toString()}
                   >
                     {branch.name}
                   </SelectItem>

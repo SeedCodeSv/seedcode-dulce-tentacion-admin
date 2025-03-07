@@ -9,7 +9,7 @@ import {
   PopoverTrigger,
   PopoverContent,
   Switch,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { useContext, useEffect, useState } from 'react';
 import {
   EditIcon,
@@ -233,7 +233,7 @@ function ListStatusEmployee({ actions }: ArrayAction) {
                 }}
               >
                 {limit_options.map((option) => (
-                  <SelectItem key={option} value={option} className="dark:text-white">
+                  <SelectItem key={option} className="dark:text-white">
                     {option}
                   </SelectItem>
                 ))}

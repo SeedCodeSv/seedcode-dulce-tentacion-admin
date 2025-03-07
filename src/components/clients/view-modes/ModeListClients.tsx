@@ -1,5 +1,5 @@
 import TooltipGlobal from '@/components/global/TooltipGlobal';
-import { Button } from '@nextui-org/react';
+import { Button } from "@heroui/react";
 import {
   User as IUser,
   EditIcon,

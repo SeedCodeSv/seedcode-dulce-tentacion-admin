@@ -11,7 +11,7 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { formatCurrency } from '@/utils/dte';
 import useGlobalStyles from '../global/global.styles';
 import { get_sale_pdf_debit_note } from '@/services/sales.service';

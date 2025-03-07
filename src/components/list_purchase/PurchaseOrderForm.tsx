@@ -6,7 +6,7 @@ import {
   Input,
   Select,
   SelectItem,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { Building2, Search, Truck, DollarSign, User, ScrollText, ArrowLeft } from 'lucide-react';
 import { useBranchProductStore } from '../../store/branch_product.store';
 import { useSupplierStore } from '../../store/supplier.store';
@@ -83,7 +83,6 @@ const PurchaseOrderForm = () => {
                 >
                   {branch_list.map((bra) => (
                     <AutocompleteItem
-                      value={bra.name}
                       className="dark:text-white"
                       key={JSON.stringify(bra)}
                     >
@@ -160,7 +159,7 @@ const PurchaseOrderForm = () => {
                   }}
                 >
                   {limit_options.map((option) => (
-                    <SelectItem key={option} value={option} className="dark:text-white">
+                    <SelectItem key={option} className="dark:text-white">
                       {option}
                     </SelectItem>
                   ))}

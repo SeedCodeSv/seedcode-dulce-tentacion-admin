@@ -5,7 +5,7 @@ import { useContext, useEffect, useState } from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { ThemeContext } from '../hooks/useTheme';
-import { Button, Input, Spinner, useDisclosure } from '@nextui-org/react';
+import { Button, Input, Spinner, useDisclosure } from "@heroui/react";
 import { formatCurrency } from '../utils/dte';
 import { toast } from 'sonner';
 import { useCorrelativesDteStore } from '../store/correlatives_dte.store';

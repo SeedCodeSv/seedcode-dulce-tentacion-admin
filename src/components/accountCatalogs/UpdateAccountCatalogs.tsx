@@ -1,7 +1,7 @@
 import Layout from "@/layout/Layout"
 import { AccountCatalogPayload } from "@/types/accountCatalogs.types";
 import { API_URL } from "@/utils/constants";
-import { Button, Input, Select, SelectItem, Switch } from "@nextui-org/react"
+import { Button, Input, Select, SelectItem, Switch } from "@heroui/react"
 import axios from "axios";
 import { useFormik } from "formik";
 import { ArrowLeft } from "lucide-react"
@@ -215,7 +215,7 @@ function UpdateAccountCatalogs() {
                                                         errorMessage={formik.errors.type}
                                                     >
                                                         {AccountTypes.map((type) => (
-                                                            <SelectItem key={type.key} value={type.value}>
+                                                            <SelectItem key={type.key}>
                                                                 {type.label}
                                                             </SelectItem>
                                                         ))}
@@ -240,7 +240,7 @@ function UpdateAccountCatalogs() {
                                                         errorMessage={formik.errors.loadAs}
                                                     >
                                                         {UploadAS.map((type) => (
-                                                            <SelectItem key={type.key} value={type.value}>
+                                                            <SelectItem key={type.key}>
                                                                 {type.label}
                                                             </SelectItem>
                                                         ))}
@@ -265,7 +265,7 @@ function UpdateAccountCatalogs() {
                                                         errorMessage={formik.errors.item}
                                                     >
                                                         {Item.map((type) => (
-                                                            <SelectItem key={type.key} value={type.value}>
+                                                            <SelectItem key={type.key}>
                                                                 {type.label}
                                                             </SelectItem>
                                                         ))}

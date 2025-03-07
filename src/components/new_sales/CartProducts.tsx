@@ -1,4 +1,4 @@
-import { Button, Input, Tooltip } from '@nextui-org/react';
+import { Button, Input, Tooltip } from "@heroui/react";
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
 import { useContext } from 'react';

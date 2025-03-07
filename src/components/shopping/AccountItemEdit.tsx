@@ -7,7 +7,7 @@ import {
   Select,
   SelectItem,
   Textarea,
-} from '@nextui-org/react';
+} from '@heroui/react';
 import classNames from 'classnames';
 import { useEffect } from 'react';
 import { useTypeOfAccountStore } from '@/store/type-of-aacount.store';

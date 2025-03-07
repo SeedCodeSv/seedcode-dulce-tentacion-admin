@@ -9,7 +9,7 @@ import {
   PopoverTrigger,
   PopoverContent,
   Switch,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { useContext, useEffect, useState } from 'react';
 import {
   EditIcon,
@@ -166,7 +166,7 @@ function ListCategories({ actions }: PProps) {
                 }}
               >
                 {limit_options.map((limit) => (
-                  <SelectItem key={limit} value={limit} className="dark:text-white">
+                  <SelectItem key={limit} className="dark:text-white">
                     {limit}
                   </SelectItem>
                 ))}

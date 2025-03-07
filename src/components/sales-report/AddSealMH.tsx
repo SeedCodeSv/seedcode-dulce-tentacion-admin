@@ -13,7 +13,7 @@ import { toast } from 'sonner';
 import { Sale } from '../../types/report_contigence';
 import { check_dte, get_json_from_space } from '../../services/DTE.service';
 import { ICheckResponse } from '../../types/DTE/check.types';
-import { Button } from '@nextui-org/react';
+import { Button } from "@heroui/react";
 import { global_styles } from '../../styles/global.styles';
 import { LoaderCircle } from 'lucide-react';
 

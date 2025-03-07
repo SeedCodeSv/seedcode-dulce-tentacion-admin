@@ -6,7 +6,7 @@ import {
   AutocompleteItem,
   Select,
   SelectItem,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { Formik } from 'formik';
 import { useContext, useEffect, useState } from 'react';
 import * as yup from 'yup';
@@ -201,7 +201,6 @@ function AddProducts(props: Props) {
                       {itemTypes.map((item) => (
                         <AutocompleteItem
                           key={JSON.stringify(item)}
-                          value={item.codigo}
                           onClick={() => {
                             handleChange('tipoDeItem')(item.valores.toString());
                             handleChange('tipoItem')(item.codigo.toString());
@@ -228,7 +227,6 @@ function AddProducts(props: Props) {
                       {unidadDeMedidaList.map((item) => (
                         <AutocompleteItem
                           key={JSON.stringify(item)}
-                          value={item.valores}
                           onClick={() => {
                             handleChange('unidaDeMedida')(item.valores.toString());
                             handleChange('uniMedida')(item.codigo.toString());
@@ -331,7 +329,6 @@ function AddProducts(props: Props) {
                   >
                     {list_categories.map((bra) => (
                       <AutocompleteItem
-                        value={bra.name}
                         key={JSON.stringify(bra)}
                         className="dark:text-white"
                       >
@@ -407,7 +404,6 @@ function AddProducts(props: Props) {
                   >
                     {subcategories?.map((sub) => (
                       <AutocompleteItem
-                        value={sub.id.toString()}
                         key={JSON.stringify(sub)}
                         onClick={() => {
                           handleChange('subCategoryId')(sub.id.toString());
@@ -545,7 +541,7 @@ function AddProducts(props: Props) {
                     }}
                   >
                     {branch_list.map((val) => (
-                      <SelectItem key={val.id} value={val.id} className="dark:text-white">
+                      <SelectItem key={val.id} className="dark:text-white">
                         {val.name}
                       </SelectItem>
                     ))}
@@ -575,7 +571,6 @@ function AddProducts(props: Props) {
                   >
                     {supplier_list.map((bra) => (
                       <AutocompleteItem
-                        value={bra.nombre}
                         key={JSON.stringify(bra)}
                         className="dark:text-white"
                       >

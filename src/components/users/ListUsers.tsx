@@ -12,7 +12,7 @@ import {
   SelectItem,
   Switch,
   useDisclosure,
-} from '@nextui-org/react';
+} from "@heroui/react";
 
 import AddUsers from './AddUsers';
 import UpdateUsers from './UpdateUsers';
@@ -29,7 +29,7 @@ import {
 } from 'lucide-react';
 import UpdatePassword from './UpdatePassword';
 import { ThemeContext } from '../../hooks/useTheme';
-import { ButtonGroup } from '@nextui-org/react';
+import { ButtonGroup } from "@heroui/react";
 import MobileView from './MobileView';
 import AddButton from '../global/AddButton';
 import Pagination from '../global/Pagination';
@@ -169,7 +169,7 @@ function ListUsers({ actionss }: Props) {
                   }}
                 >
                   {roles_list.map((dep) => (
-                    <AutocompleteItem className="dark:text-white" value={dep.id} key={dep.name}>
+                    <AutocompleteItem className="dark:text-white" key={dep.name}>
                       {dep.name}
                     </AutocompleteItem>
                   ))}
@@ -223,7 +223,7 @@ function ListUsers({ actionss }: Props) {
                   }}
                 >
                   {limit_options.map((limit) => (
-                    <SelectItem className="dark:text-white" key={limit} value={limit}>
+                    <SelectItem className="dark:text-white" key={limit}>
                       {limit}
                     </SelectItem>
                   ))}

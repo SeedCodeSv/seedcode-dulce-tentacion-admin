@@ -1,4 +1,4 @@
-import { nextui } from "@nextui-org/react";
+import { heroui } from "@heroui/react";
 import TailwindcssAnimate from "tailwindcss-animate";
 
 /** @type {import('tailwindcss').Config} */
@@ -9,7 +9,7 @@ export default {
     "./components/**/*.{ts,tsx}",
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
-    "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
+    "./node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
   prefix: "",
   theme: {
@@ -81,5 +81,5 @@ export default {
       },
     },
   },
-  plugins: [TailwindcssAnimate, nextui()],
+  plugins: [TailwindcssAnimate, heroui()],
 };

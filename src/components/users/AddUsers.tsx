@@ -1,4 +1,4 @@
-import { Autocomplete, AutocompleteItem, Button, Input } from '@nextui-org/react';
+import { Autocomplete, AutocompleteItem, Button, Input } from "@heroui/react";
 import { Formik } from 'formik';
 import { useContext, useEffect } from 'react';
 import * as yup from 'yup';
@@ -119,7 +119,6 @@ function AddUsers(props: Props) {
                     .map((dep) => (
                       <AutocompleteItem
                         className="dark:text-white"
-                        value={dep.id}
                         key={JSON.stringify(dep)}
                       >
                         {dep.name}

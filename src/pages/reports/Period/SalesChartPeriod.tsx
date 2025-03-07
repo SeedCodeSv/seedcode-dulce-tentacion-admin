@@ -3,7 +3,7 @@ import { formatCurrency } from '@/utils/dte';
 import { salesReportStore } from '@/store/reports/sales_report.store';
 import useWindowSize from '@/hooks/useWindowSize';
 import { useContext, useEffect, useMemo, useState } from 'react';
-import { Button } from '@nextui-org/react';
+import { Button } from "@heroui/react";
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { ThemeContext } from '@/hooks/useTheme';
 import { ApexTooltip } from '@/types/Apex';

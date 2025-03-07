@@ -13,7 +13,7 @@ import {
   Input,
   Select,
   SelectItem,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { usePromotionsStore } from "../../store/promotions/promotions.store";
 import { useBranchesStore } from "../../store/branches.store";
 import { Tipos_Promotions, limit_options } from "../../utils/constants";
@@ -138,7 +138,6 @@ function ListDiscount({ actions }: Props) {
                     onClick={() => setbranch(branch)}
                     className="dark:text-white"
                     key={branch.id}
-                    value={branch.id}
                   >
                     {branch.name}
                   </AutocompleteItem>
@@ -162,7 +161,6 @@ function ListDiscount({ actions }: Props) {
                 {Tipos_Promotions.map((limit) => (
                   <SelectItem
                     key={limit}
-                    value={limit}
                     className="dark:text-white"
                   >
                     {limit}
@@ -230,7 +228,6 @@ function ListDiscount({ actions }: Props) {
                   {limit_options.map((limit) => (
                     <SelectItem
                       key={limit}
-                      value={limit}
                       className="dark:text-white"
                     >
                       {limit}

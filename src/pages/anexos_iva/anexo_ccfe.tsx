@@ -3,7 +3,7 @@ import Layout from '@/layout/Layout';
 import { useIvaCcfeStore } from '@/store/reports/iva-ccfe.store';
 // import { formatDate } from '@/utils/dates';
 import { formatCurrency } from '@/utils/dte';
-import { Button, Select, SelectItem, Spinner } from '@nextui-org/react';
+import { Button, Select, SelectItem, Spinner } from "@heroui/react";
 import { useEffect, useState } from 'react';
 import { csvmaker_ccfe, export_annexes_iva_ccfe } from './utils';
 import { global_styles } from '@/styles/global.styles';
@@ -69,7 +69,7 @@ function AnexoCcfe() {
               variant="bordered"
             >
               {months.map((month) => (
-                <SelectItem key={month.value} value={month.value}>
+                <SelectItem key={month.value}>
                   {month.name}
                 </SelectItem>
               ))}
@@ -88,7 +88,7 @@ function AnexoCcfe() {
               variant="bordered"
             >
               {years.map((years) => (
-                <SelectItem key={years.value} value={years.value}>
+                <SelectItem key={years.value}>
                   {years.name}
                 </SelectItem>
               ))}

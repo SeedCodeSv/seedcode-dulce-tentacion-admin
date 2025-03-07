@@ -11,7 +11,7 @@ import {
   SelectItem,
   Switch,
   useDisclosure,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import {
   Edit,
   ShoppingBag,
@@ -219,7 +219,7 @@ function ListBranch({ actions }: ArrayAction) {
                     }}
                   >
                     {limit_options.map((option) => (
-                      <SelectItem className="w-full dark:text-white" key={option} value={option}>
+                      <SelectItem className="w-full dark:text-white" key={option}>
                         {option}
                       </SelectItem>
                     ))}

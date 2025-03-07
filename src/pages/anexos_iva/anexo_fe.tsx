@@ -1,7 +1,7 @@
 import Layout from '@/layout/Layout';
 import { useIvaFeStore } from '@/store/reports/iva-fe.store';
 import { formatCurrency } from '@/utils/dte';
-import { Button, Select, SelectItem, Spinner } from '@nextui-org/react';
+import { Button, Select, SelectItem, Spinner } from "@heroui/react";
 import { useEffect, useState } from 'react';
 import { annexes_iva_fe, csvmaker_fe } from './utils';
 import { global_styles } from '@/styles/global.styles';
@@ -64,7 +64,7 @@ function AnexoFe() {
               variant="bordered"
             >
               {months.map((month) => (
-                <SelectItem key={month.value} value={month.value}>
+                <SelectItem key={month.value}>
                   {month.name}
                 </SelectItem>
               ))}
@@ -83,7 +83,7 @@ function AnexoFe() {
               variant="bordered"
             >
               {years.map((years) => (
-                <SelectItem key={years.value} value={years.value}>
+                <SelectItem key={years.value}>
                   {years.name}
                 </SelectItem>
               ))}

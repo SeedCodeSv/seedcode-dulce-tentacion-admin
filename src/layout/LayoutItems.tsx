@@ -1,4 +1,4 @@
-import { Button, Switch } from '@nextui-org/react';
+import { Button, Switch } from "@heroui/react";
 import { NavLink, useLocation } from 'react-router-dom';
 import LOGO from '../assets/MADNESS.png';
 import {

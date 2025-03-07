@@ -5,7 +5,7 @@ import {
   PopoverContent,
   PopoverTrigger,
   useDisclosure,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { global_styles } from '../../styles/global.styles';
 import * as yup from 'yup';
 import { Formik } from 'formik';

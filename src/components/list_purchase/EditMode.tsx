@@ -8,7 +8,7 @@ import { ThemeContext } from '../../hooks/useTheme';
 import PurchaseOrders from '../invoice/PurchaseOrders';
 import { pdf } from '@react-pdf/renderer';
 import print from 'print-js';
-import { Button, Input, useDisclosure } from '@nextui-org/react';
+import { Button, Input, useDisclosure } from "@heroui/react";
 import { ArrowLeft, Plus, Printer, Trash } from 'lucide-react';
 import { global_styles } from '../../styles/global.styles';
 import AddProduct from './AddProduct';

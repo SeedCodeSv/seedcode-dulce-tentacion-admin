@@ -10,7 +10,7 @@ import {
   CardHeader,
   Input,
   Textarea,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { global_styles } from '../../styles/global.styles';
 import { get_user } from '../../storage/localStorage';
 import Layout from '@/layout/Layout';
@@ -169,7 +169,6 @@ function AddTributeSupplier() {
                         {cat_022_tipo_de_documentoDeIde.map((dep) => (
                           <AutocompleteItem
                             key={dep.codigo}
-                            value={dep.codigo}
                             className="dark:text-white"
                           >
                             {dep.valores}
@@ -275,7 +274,6 @@ function AddTributeSupplier() {
                         {cat_019_codigo_de_actividad_economica.map((dep) => (
                           <AutocompleteItem
                             key={dep.codigo}
-                            value={dep.codigo}
                             className="dark:text-white"
                           >
                             {dep.valores}
@@ -335,7 +333,6 @@ function AddTributeSupplier() {
                     >
                       {cat_012_departamento.map((dep) => (
                         <AutocompleteItem
-                          value={dep.codigo}
                           key={dep.codigo}
                           className="dark:text-white"
                         >
@@ -370,7 +367,6 @@ function AddTributeSupplier() {
                     >
                       {cat_013_municipios.map((dep) => (
                         <AutocompleteItem
-                          value={dep.codigo}
                           key={dep.codigo}
                           className="dark:text-white"
                         >

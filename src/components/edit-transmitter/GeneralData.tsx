@@ -7,7 +7,7 @@ import {
   ModalFooter,
   ModalHeader,
   useDisclosure,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { Search } from 'lucide-react';
 import useGlobalStyles from '../global/global.styles';
 import { useFormik } from 'formik';

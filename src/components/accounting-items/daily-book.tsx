@@ -1,5 +1,6 @@
 import {
   Button,
+  Checkbox,
   Input,
   Modal,
   ModalBody,
@@ -7,7 +8,7 @@ import {
   ModalFooter,
   ModalHeader,
   useDisclosure,
-} from '@nextui-org/react';
+} from '@heroui/react';
 import useGlobalStyles from '../global/global.styles';
 import { formatDate } from '@/utils/dates';
 import { useState } from 'react';
@@ -47,11 +48,19 @@ function DailyBook() {
     });
   };
 
+  const [hasIncludeSignature, setHasIncludeSignature] = useState(false);
+  const [hasNumberPages, setHasNumberPages] = useState(false);
+  const [hasSaltOfPage, setHasSaltOfPage] = useState(false);
+
   const [pdf, setPdf] = useState('');
 
   const generatePDF = (type: 'show' | 'download') => {
     setLoadingPdf(true);
     const doc = new jsPDF();
+
+    const $totalDebe = items.reduce((total, item) => total + +item.totalDebe, 0);
+    const $totalHaber = items.reduce((total, item) => total + +item.totalHaber, 0);
+
     const itemsList = items.map((item) => {
       return {
         title: 'Tabla',
@@ -66,7 +75,14 @@ function DailyBook() {
                 '',
                 '',
               ],
-              ['', '', '', detail.conceptOfTheTransaction, detail.should, detail.see],
+              [
+                '',
+                '',
+                '',
+                detail.conceptOfTheTransaction,
+                Number(detail.should) > 0 ? detail.should : '',
+                Number(detail.see) > 0 ? detail.see : '',
+              ],
             ];
           } else {
             return [
@@ -75,8 +91,8 @@ function DailyBook() {
                 index === 0 ? item.date : '',
                 detail.accountCatalog.code,
                 detail.accountCatalog.name,
-                detail.should,
-                detail.see,
+                Number(detail.should) > 0 ? detail.should : '',
+                Number(detail.see) > 0 ? detail.see : '',
               ],
             ];
           }
@@ -85,8 +101,10 @@ function DailyBook() {
     });
 
     const header = (doc: jsPDF, item: Item | undefined) => {
-      doc.setFontSize(8);
-      doc.text(`Pagina ${doc.getNumberOfPages()}`, doc.internal.pageSize.getWidth() - 20,   10);
+      if (hasNumberPages) {
+        doc.setFontSize(8);
+        doc.text(`Pagina ${doc.getNumberOfPages()}`, doc.internal.pageSize.getWidth() - 20, 10);
+      }
       doc.setFontSize(13);
       doc.setFont('helvetica', 'bold');
       doc.text('MADNESS', doc.internal.pageSize.getWidth() / 2, 15, {
@@ -98,7 +116,7 @@ function DailyBook() {
       });
       doc.setFont('helvetica', 'normal');
       doc.text(
-        item ? `del ${formatFecha(item.date)} al ${formatFecha(item.date)}` : '',
+        item ? `del ${formatFecha(startDate)} al ${formatFecha(endDate)}` : '',
         doc.internal.pageSize.getWidth() / 2,
         25,
         {
@@ -108,8 +126,6 @@ function DailyBook() {
       doc.text('VALORES EXPRESADOS EN US DOLARES', doc.internal.pageSize.getWidth() / 2, 30, {
         align: 'center',
       });
-
-      doc.roundedRect(2, 35, doc.internal.pageSize.getWidth() - 3, 6, 2, 2);
     };
 
     const searchItem = (code: string) => {
@@ -123,7 +139,7 @@ function DailyBook() {
         theme: 'plain',
         margin: { horizontal: 3, top: 35 },
         bodyStyles: {
-          fontSize: 9,
+          fontSize: 8,
         },
         columnStyles: {
           0: {
@@ -132,18 +148,18 @@ function DailyBook() {
             valign: 'middle',
           },
           1: {
-            cellWidth: 60,
+            cellWidth: 50,
             fontStyle: 'bold',
             valign: 'middle',
           },
           2: {
-            cellWidth: 30,
+            cellWidth: 33,
             halign: 'right',
             cellPadding: { horizontal: 5 },
             valign: 'middle',
           },
           3: {
-            cellWidth: 25,
+            cellWidth: 28,
             halign: 'right',
             cellPadding: { horizontal: 5 },
             valign: 'middle',
@@ -171,24 +187,33 @@ function DailyBook() {
             valign: 'middle',
           },
           1: {
-            cellWidth: 60,
+            cellWidth: 50,
           },
           2: {
-            cellWidth: 30,
+            cellWidth: 33,
           },
           3: {
-            cellWidth: 25,
+            cellWidth: 28,
           },
         },
         body: [[item?.concepOfTheItem ?? '', '', '', '']],
       });
     };
-
+    let startY = 35;
     itemsList.forEach((table, index) => {
-      if (index > 0) doc.addPage();
+      if (hasSaltOfPage) {
+        if (index > 0) doc.addPage();
+      } else {
+        const pageHeight = doc.internal.pageSize.getHeight();
+        const remainingSpace = pageHeight - startY;
+        if (remainingSpace < 50) {
+          doc.addPage();
+          startY = 35;
+        }
+      }
       autoTable(doc, {
         margin: { horizontal: 3, top: 35 },
-        startY: 35,
+        startY: hasSaltOfPage ? 35 : startY,
         theme: 'plain',
         head: [['# Partida', 'Fecha', 'Cuenta', 'Concepto de la transacción', 'Debe', 'Haber']],
         columnStyles: {
@@ -205,12 +230,12 @@ function DailyBook() {
             cellWidth: 'auto',
           },
           4: {
-            cellWidth: 30,
+            cellWidth: 33,
             halign: 'right',
             cellPadding: { horizontal: 5 },
           },
           5: {
-            cellWidth: 25,
+            cellWidth: 28,
             halign: 'right',
             cellPadding: { horizontal: 5 },
           },
@@ -225,10 +250,122 @@ function DailyBook() {
         didDrawPage: function () {
           header(doc, searchItem(table.data[0][0]));
         },
+        didDrawCell: function (data) {
+          if (data.section === 'head') {
+            doc.setDrawColor(0, 0, 0);
+            doc.roundedRect(2, data.cell.y, doc.internal.pageSize.getWidth() - 3, 6, 2, 2);
+          }
+        },
       });
-      const finalY =
+      let finalY =
         (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY || 30;
       footer(doc, finalY, searchItem(table.data[0][0]));
+      finalY = (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY;
+      startY = finalY + 5;
+      if (index === itemsList.length - 1) {
+        autoTable(doc, {
+          margin: { horizontal: 3, top: startY },
+          startY: finalY,
+          theme: 'plain',
+          head: [['', '', '', '']],
+          showHead: false,
+          body: [['', 'Total cargos y abonos:', $totalDebe.toFixed(2), $totalHaber.toFixed(2)]],
+          bodyStyles: {
+            fontSize: 8,
+          },
+          columnStyles: {
+            0: {
+              cellWidth: 'auto',
+              fontStyle: 'bold',
+              valign: 'middle',
+            },
+            1: {
+              cellWidth: 50,
+              fontStyle: 'bold',
+              valign: 'middle',
+              lineWidth: {
+                top: 0.1,
+              },
+              lineColor: [0, 0, 0],
+            },
+            2: {
+              cellWidth: 33,
+              halign: 'right',
+              cellPadding: { horizontal: 5 },
+              valign: 'middle',
+              lineWidth: {
+                top: 0.1,
+              },
+              lineColor: [0, 0, 0],
+            },
+            3: {
+              cellWidth: 28,
+              halign: 'right',
+              cellPadding: { horizontal: 5 },
+              valign: 'middle',
+              lineWidth: {
+                top: 0.1,
+              },
+              lineColor: [0, 0, 0],
+            },
+          },
+          didDrawCell: function (data) {
+            if (data.column.index === 2 || data.column.index === 1 || data.column.index === 3) {
+              doc.line(
+                data.cell.x,
+                data.cell.y + data.cell.height,
+                data.cell.x + data.cell.width,
+                data.cell.y + data.cell.height
+              );
+              doc.line(
+                data.cell.x,
+                data.cell.y + data.cell.height + 1,
+                data.cell.x + data.cell.width,
+                data.cell.y + data.cell.height + 1
+              );
+            }
+          },
+        });
+        finalY = (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY;
+        if (hasIncludeSignature) {
+          autoTable(doc, {
+            startY: finalY + 20,
+            margin: { horizontal: 3 },
+            bodyStyles: {
+              halign: 'center',
+            },
+            columnStyles: {
+              0: {
+                cellWidth: 'auto',
+                halign: 'center',
+              },
+              1: {
+                cellWidth: 'auto',
+                halign: 'center',
+              },
+              2: {
+                cellWidth: 'auto',
+                halign: 'center',
+              },
+            },
+            body: [['Hecho por', 'Revisado por', 'Autorizado']],
+            head: [['', '', '']],
+            showHead: false,
+            theme: 'plain',
+            didDrawCell: function (data) {
+              if ([0, 1, 2].includes(data.column.index)) {
+                doc.setDrawColor(0, 0, 0);
+                doc.line(
+                  data.cell.x + 10,
+                  data.cell.y,
+                  data.cell.x + data.cell.width - 10,
+                  data.cell.y
+                );
+              }
+            },
+          });
+        }
+      }
     });
 
     if (type === 'download') {
@@ -238,13 +375,11 @@ function DailyBook() {
 
     const blob = doc.output('blob');
     const url = URL.createObjectURL(blob);
-
-    setPdf(url);
     setLoadingPdf(false);
+    setPdf(url);
   };
 
   const handleShowPreview = () => {
-    setLoadingPdf(true);
     generatePDF('show');
     previewModal.onOpenChange();
   };
@@ -260,7 +395,7 @@ function DailyBook() {
         <div className="w-[100vw] h-[100vh] bg-white rounded-2xl">
           <Button
             color="danger"
-            onClick={() => previewModal.onClose()}
+            onPress={() => previewModal.onClose()}
             className="absolute bottom-6 left-6"
             isIconOnly
           >
@@ -276,7 +411,7 @@ function DailyBook() {
           )}
         </div>
       </FullPageLayout>
-      <Modal {...modal} size="lg" isDismissable={false}>
+      <Modal {...modal} size="xl" isDismissable={false}>
         <ModalContent>
           <>
             <ModalHeader>Generar libro diario</ModalHeader>
@@ -299,6 +434,33 @@ function DailyBook() {
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
               />
+              <Checkbox
+                onValueChange={(e) => setHasNumberPages(e)}
+                isSelected={hasNumberPages}
+                checked={hasNumberPages}
+                size="lg"
+                lineThrough
+              >
+                Numerar paginas {hasNumberPages ? '✓' : ''}
+              </Checkbox>
+              <Checkbox
+                onValueChange={(e) => setHasIncludeSignature(e)}
+                checked={hasIncludeSignature}
+                isSelected={hasIncludeSignature}
+                size="lg"
+                lineThrough
+              >
+                Incluir firmantes {hasIncludeSignature ? '✓' : ''}
+              </Checkbox>
+              <Checkbox
+                onValueChange={(e) => setHasSaltOfPage(e)}
+                checked={hasSaltOfPage}
+                isSelected={hasSaltOfPage}
+                size="lg"
+                lineThrough
+              >
+                Incluir saltos de pagina por partida {hasSaltOfPage ? '✓' : ''}
+              </Checkbox>
               <Button
                 onPress={handleGetItems}
                 isLoading={loadingItems}

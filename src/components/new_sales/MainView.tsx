@@ -9,7 +9,7 @@ import {
   SelectItem,
   Tooltip,
   useDisclosure,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { Barcode, CreditCard, List, Search, Table as ITable, Plus, Send } from 'lucide-react';
 import { useContext, useEffect, useState } from 'react';
 import { ThemeContext } from '../../hooks/useTheme';
@@ -324,7 +324,7 @@ const MainView = () => {
                     }}
                   >
                     {limit_options.map((option) => (
-                      <SelectItem key={option} value={option} className="dark:text-white">
+                      <SelectItem key={option} className="dark:text-white">
                         {option}
                       </SelectItem>
                     ))}
@@ -556,7 +556,7 @@ const ListProduct = () => {
           }}
         >
           {limit_options.map((option) => (
-            <SelectItem key={option} value={option} className="dark:text-white">
+            <SelectItem key={option} className="dark:text-white">
               {option}
             </SelectItem>
           ))}

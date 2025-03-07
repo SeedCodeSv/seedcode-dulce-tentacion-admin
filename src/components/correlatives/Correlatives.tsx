@@ -5,7 +5,7 @@ import { DataTable } from 'primereact/datatable';
 import { useContext, useEffect, useState } from 'react';
 import Pagination from '../global/Pagination';
 import SmPagination from '../global/SmPagination';
-import { Autocomplete, AutocompleteItem, Button, ButtonGroup } from '@nextui-org/react';
+import { Autocomplete, AutocompleteItem, Button, ButtonGroup } from "@heroui/react";
 import { correlativesTypes } from '@/types/correlatives/correlatives_data.types';
 import { useBranchesStore } from '@/store/branches.store';
 import HeadlessModal from '../global/HeadlessModal';
@@ -50,7 +50,7 @@ function CorrelativesList({ actions }: { actions: string[] }) {
   );
   return (
     <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
-      <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+      <div className="w-full h-full border-white border p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
         <div className="flex justify-between items-end ">
           <SearchCorrelative
             branchName={(name) => {
@@ -88,7 +88,7 @@ function CorrelativesList({ actions }: { actions: string[] }) {
               }}
             >
               {branch_list.map((bra) => (
-                <AutocompleteItem className="dark:text-white" value={bra.name} key={bra.name}>
+                <AutocompleteItem className="dark:text-white" key={bra.name}>
                   {bra.name}
                 </AutocompleteItem>
               ))}
@@ -113,7 +113,7 @@ function CorrelativesList({ actions }: { actions: string[] }) {
               }}
             >
               {correlativesTypes.map((dep) => (
-                <AutocompleteItem className="dark:text-white" value={dep.label} key={dep.value}>
+                <AutocompleteItem className="dark:text-white" key={dep.value}>
                   {dep.value + ' - ' + dep.label}
                 </AutocompleteItem>
               ))}

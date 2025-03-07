@@ -3,7 +3,7 @@ import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
 import { useAuthStore } from '@/store/auth.store';
 import { useSupplierStore } from '@/store/supplier.store';
 import { global_styles } from '@/styles/global.styles';
-import { Autocomplete, AutocompleteItem, Button, Input, Textarea } from '@nextui-org/react';
+import { Autocomplete, AutocompleteItem, Button, Input, Textarea } from "@heroui/react";
 import { useFormik } from 'formik';
 import { ArrowLeft } from 'lucide-react';
 import { useEffect, useState, useMemo } from 'react';
@@ -182,7 +182,6 @@ function UpdateNormalSupplier() {
                   {services.get022TipoDeDocumentoDeIde().map((dep) => (
                     <AutocompleteItem
                       key={dep.codigo}
-                      value={dep.codigo}
                       className="dark:text-white"
                     >
                       {dep.valores}
@@ -250,7 +249,6 @@ function UpdateNormalSupplier() {
                 >
                   {services.get012Departamento().map((dep) => (
                     <AutocompleteItem
-                      value={dep.codigo}
                       key={dep.codigo}
                       className="dark:text-white"
                     >
@@ -286,7 +284,6 @@ function UpdateNormalSupplier() {
                   {municipios.map((mun) => (
                     <AutocompleteItem
                       key={mun.codigo}
-                      value={mun.codigo}
                       className="dark:text-white"
                     >
                       {mun.valores}

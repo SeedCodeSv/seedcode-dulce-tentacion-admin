@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { useViewsStore } from '../../store/views.store';
 import { toast } from 'sonner';
 import { messages } from '../../utils/constants';
-import { Button, Checkbox } from '@nextui-org/react';
-import { CircularProgress } from '@nextui-org/react';
+import { Button, Checkbox } from "@heroui/react";
+import { CircularProgress } from "@heroui/react";
 
 interface Props {
   onClose: () => void;

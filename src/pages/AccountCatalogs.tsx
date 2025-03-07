@@ -4,7 +4,7 @@ import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import NO_DATA from '../assets/no.png';
-import { Button, Input, Popover, PopoverContent, PopoverTrigger } from '@nextui-org/react';
+import { Button, Input, Popover, PopoverContent, PopoverTrigger } from "@heroui/react";
 import AddButton from '@/components/global/AddButton';
 import { PiMicrosoftExcelLogoBold } from 'react-icons/pi';
 import { generate_catalog_de_cuentas } from '@/components/accountCatalogs/accountCatalogs';

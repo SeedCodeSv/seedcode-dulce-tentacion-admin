@@ -2,7 +2,7 @@ import BottomDrawer from '@/components/global/BottomDrawer';
 import TooltipGlobal from '@/components/global/TooltipGlobal';
 import { ThemeContext } from '@/hooks/useTheme';
 import { global_styles } from '@/styles/global.styles';
-import { Button, Input } from '@nextui-org/react';
+import { Button, Input } from "@heroui/react";
 import { Filter, User } from 'lucide-react';
 import React, { useContext, useState } from 'react';
 import { IPropsSearchSubCategoryProduct } from '../types/mobile_view.types';

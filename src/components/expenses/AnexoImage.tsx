@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { LoaderCircle, Image, X } from 'lucide-react';
 import { useExpenseStore } from '../../store/expenses.store';
 import ModalGlobal from '../global/ModalGlobal';
-import { Button } from '@nextui-org/react';
+import { Button } from "@heroui/react";
 import { global_styles } from '../../styles/global.styles';
 
 interface Props {

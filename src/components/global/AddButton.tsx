@@ -1,4 +1,4 @@
-import { Button } from '@nextui-org/react';
+import { Button } from "@heroui/react";
 import { Plus } from 'lucide-react';
 import { useContext } from 'react';
 import { ThemeContext } from '../../hooks/useTheme';

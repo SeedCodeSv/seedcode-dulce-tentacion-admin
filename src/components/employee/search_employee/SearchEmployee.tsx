@@ -3,7 +3,7 @@ import TooltipGlobal from '@/components/global/TooltipGlobal';
 import { ThemeContext } from '@/hooks/useTheme';
 
 import { global_styles } from '@/styles/global.styles';
-import { Autocomplete, AutocompleteItem, Button, Input } from '@nextui-org/react';
+import { Autocomplete, AutocompleteItem, Button, Input } from "@heroui/react";
 import { Filter, Search } from 'lucide-react';
 import { useContext, useEffect, useState } from 'react';
 import { IPropsSearchEmployee } from '../types/mobile-view.types';
@@ -203,7 +203,7 @@ function SearchEmployee(props: IPropsSearchEmployee) {
               }}
             >
               {branch_list.map((dep) => (
-                <AutocompleteItem className="dark:text-white" value={dep.id} key={dep.name}>
+                <AutocompleteItem className="dark:text-white" key={dep.name}>
                   {dep.name}
                 </AutocompleteItem>
               ))}

@@ -1,7 +1,7 @@
 import * as yup from 'yup';
 import { Formik } from 'formik';
 import { CustomerDirection, PayloadCustomer } from '../../types/customers.types';
-import { Autocomplete, AutocompleteItem, Button, Input, Textarea } from '@nextui-org/react';
+import { Autocomplete, AutocompleteItem, Button, Input, Textarea } from "@heroui/react";
 import { useCustomerStore } from '../../store/customers.store';
 import { useBillingStore } from '../../store/facturation/billing.store';
 import { useContext, useEffect, useMemo, useState } from 'react';
@@ -260,7 +260,6 @@ const UpdateClientNormal = (props: Props) => {
                         >
                           {cat_022_tipo_de_documentoDeIde.map((dep) => (
                             <AutocompleteItem
-                              value={dep.codigo}
                               key={dep.codigo}
                               className="dark:text-white"
                             >
@@ -319,7 +318,6 @@ const UpdateClientNormal = (props: Props) => {
                         >
                           {cat_012_departamento.map((dep) => (
                             <AutocompleteItem
-                              value={dep.codigo}
                               key={dep.codigo}
                               className="dark:text-white"
                             >
@@ -357,7 +355,6 @@ const UpdateClientNormal = (props: Props) => {
                         >
                           {cat_013_municipios.map((dep) => (
                             <AutocompleteItem
-                              value={dep.id}
                               key={dep.codigo}
                               className="dark:text-white"
                             >
@@ -420,7 +417,6 @@ const UpdateClientNormal = (props: Props) => {
                           {branch_list.map((bra) => (
                             <AutocompleteItem
                               className="dark:text-white"
-                              value={bra.id.toString()}
                               key={bra.id}
                             >
                               {bra.name}

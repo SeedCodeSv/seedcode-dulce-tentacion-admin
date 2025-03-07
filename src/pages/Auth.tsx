@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react';
 import BUSINESS from '../assets/bussines.jpg';
-import { Button, Input } from '@nextui-org/react';
+import { Button, Input } from "@heroui/react";
 import { Eye, EyeOff } from 'lucide-react';
 import { ThemeContext } from '../hooks/useTheme';
 import LOGO from '../assets/fac3.png';

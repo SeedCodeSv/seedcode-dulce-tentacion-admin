@@ -23,7 +23,7 @@ import {
   SelectItem,
   Spinner,
   useDisclosure,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import axios, { AxiosError } from 'axios';
 import { Formik } from 'formik';
 import { ArrowLeft, ShieldAlert } from 'lucide-react';
@@ -342,7 +342,6 @@ function Invalidation05({ id }: Props) {
                 <SelectItem
                   className="dark:text-white"
                   key={item.id}
-                  value={item.id}
                   textValue={item.valores}
                 >
                   {item.valores}
@@ -370,7 +369,6 @@ function Invalidation05({ id }: Props) {
                 {recent_credit_notes.map((item) => (
                   <SelectItem
                     key={item.codigoGeneracion}
-                    value={item.codigoGeneracion}
                     textValue={item.codigoGeneracion}
                   >
                     {item.numeroControl + ' - ' + item.codigoGeneracion}
@@ -432,7 +430,6 @@ function Invalidation05({ id }: Props) {
                         {employee_list.map((item) => (
                           <AutocompleteItem
                             key={JSON.stringify(item)}
-                            value={item.dui}
                             className=" dark:text-white"
                           >
                             {`${item.id} - ${item.firstName + ' ' + item.secondName} ${item.firstLastName} ${item.secondLastName}`}
@@ -512,7 +509,6 @@ function Invalidation05({ id }: Props) {
                             <SelectItem
                               className="dark:text-white"
                               key={doc.codigo}
-                              value={doc.codigo}
                             >
                               {doc.valores}
                             </SelectItem>

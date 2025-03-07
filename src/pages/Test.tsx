@@ -4,7 +4,7 @@ import { SeedcodeCatalogosMhService } from "seedcode-catalogos-mh";
 import autoTable from "jspdf-autotable";
 // import QR from "../assets/codigo-qr-1024x1024-1.jpg";
 // import { formatCurrency } from "../utils/dte";
-import { Button } from "@nextui-org/react";
+import { Button } from "@heroui/react";
 import LOGO from "../assets/MADNESS.png";
 import { jsPDF } from "jspdf";
 import "svg2pdf.js";

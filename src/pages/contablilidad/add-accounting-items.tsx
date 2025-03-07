@@ -21,7 +21,7 @@ import {
   Switch,
   Textarea,
   useDisclosure,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import classNames from 'classnames';
 import { Plus, Search, Trash } from 'lucide-react';
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
@@ -319,7 +319,7 @@ function AddAccountingItems() {
                 }}
               >
                 {list_type_of_account.map((type) => (
-                  <SelectItem value={type.id} key={type.id}>
+                  <SelectItem key={type.id}>
                     {type.name}
                   </SelectItem>
                 ))}
@@ -440,7 +440,7 @@ function AddAccountingItems() {
                           }}
                         >
                           {branch_list.map((branch) => (
-                            <SelectItem value={branch.id} key={branch.id}>
+                            <SelectItem  key={branch.id}>
                               {branch.name}
                             </SelectItem>
                           ))}
@@ -715,7 +715,7 @@ function AddAccountingItems() {
                             errorMessage={formik.errors.type}
                           >
                             {AccountTypes.map((type) => (
-                              <SelectItem key={type.key} value={type.value}>
+                              <SelectItem key={type.key} >
                                 {type.label}
                               </SelectItem>
                             ))}
@@ -741,7 +741,7 @@ function AddAccountingItems() {
                             errorMessage={formik.errors.loadAs}
                           >
                             {UploadAS.map((type) => (
-                              <SelectItem key={type.key} value={type.value}>
+                              <SelectItem key={type.key} >
                                 {type.label}
                               </SelectItem>
                             ))}
@@ -767,7 +767,7 @@ function AddAccountingItems() {
                             errorMessage={formik.errors.item}
                           >
                             {Item.map((type) => (
-                              <SelectItem key={type.key} value={type.value}>
+                              <SelectItem key={type.key} >
                                 {type.label}
                               </SelectItem>
                             ))}
@@ -904,7 +904,6 @@ export const CodCuentaSelect = (props: CodCuentaProps) => {
         {itemsPag.map((account) => (
           <AutocompleteItem
             key={account.code}
-            value={account.code} // El valor seleccionado será el código
             textValue={`${account.code} - ${account.name}`}
           >
             {account.code} - {account.name} {/* Muestra ambos en las opciones */}

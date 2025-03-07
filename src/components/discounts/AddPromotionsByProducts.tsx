@@ -10,7 +10,7 @@ import {
   Textarea,
   Tooltip,
   useDisclosure,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { Formik } from 'formik';
 import { useContext, useEffect, useState } from 'react';
 import * as yup from 'yup';
@@ -205,7 +205,6 @@ function AddPromotionsByProducts() {
                         {operadores.map((operator) => (
                           <SelectItem
                             key={operator.value}
-                            value={operator.value}
                             className="dark:text-white"
                           >
                             {operator.label}
@@ -261,7 +260,6 @@ function AddPromotionsByProducts() {
                         {operadores.map((operator) => (
                           <SelectItem
                             key={operator.value}
-                            value={operator.value}
                             className="dark:text-white"
                           >
                             {operator.label}
@@ -510,7 +508,7 @@ function AddPromotionsByProducts() {
                 className="w-full dark:text-white"
               >
                 {branch_list.map((branch: Branches) => (
-                  <SelectItem className="dark:text-white" key={branch.name} value={branch.name}>
+                  <SelectItem className="dark:text-white" key={branch.name}>
                     {branch.name}
                   </SelectItem>
                 ))}
@@ -531,7 +529,6 @@ function AddPromotionsByProducts() {
                   <AutocompleteItem
                     className="dark:text-white"
                     key={branch.id ?? 0}
-                    value={branch.id}
                   >
                     {branch.nombre}
                   </AutocompleteItem>

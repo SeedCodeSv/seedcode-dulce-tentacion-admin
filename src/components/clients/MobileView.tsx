@@ -1,4 +1,4 @@
-import { Button } from '@nextui-org/react';
+import { Button } from "@heroui/react";
 import { DataView } from 'primereact/dataview';
 import { useCustomerStore } from '../../store/customers.store';
 import { classNames } from 'primereact/utils';

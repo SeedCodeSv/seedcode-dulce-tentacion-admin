@@ -2,7 +2,6 @@ import React, { useCallback, useState } from 'react';
 import {
   Upload,
   X,
-  File,
   CheckCircle,
   AlertCircle,
   ImageIcon,
@@ -23,7 +22,7 @@ import { useAuthStore } from '@/store/auth.store';
 import { PutObjectCommand, PutObjectCommandInput } from '@aws-sdk/client-s3';
 import { s3Client } from '@/plugins/s3';
 import { save_settlement_document } from '@/services/settlement-document.service';
-import { Button, useDisclosure } from '@nextui-org/react';
+import { Button, useDisclosure } from '@heroui/react';
 import HeadlessModal from '@/components/global/HeadlessModal';
 import useGlobalStyles from '@/components/global/global.styles';
 import AddTributeSupplier from '@/components/shopping/AddSupplier';
@@ -280,6 +279,7 @@ function AddSettlementDocument() {
               supplierModal.onOpenChange();
               providerModal.onOpenChange();
             }}
+            setCode={() => {}}
             supplier={{
               nit: file?.content?.emisor.nit ?? '',
               tipoDocumento: '36',

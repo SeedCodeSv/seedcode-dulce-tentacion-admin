@@ -1,4 +1,4 @@
-import { Autocomplete, AutocompleteItem, Button, Input } from '@nextui-org/react';
+import { Autocomplete, AutocompleteItem, Button, Input } from "@heroui/react";
 import { useBranchesStore } from '../../store/branches.store';
 import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
 import * as yup from 'yup';
@@ -629,7 +629,6 @@ function AddEmployee() {
                                 })
                               }
                               key={JSON.stringify(item)}
-                              value={item.name}
                               className="dark:text-white"
                             >
                               {item.name}
@@ -668,7 +667,6 @@ function AddEmployee() {
                             <AutocompleteItem
                               onClick={() => setDataCreate({ ...dataCreate, statusId: item.id })}
                               key={JSON.stringify(item)}
-                              value={item.name}
                               className="dark:text-white"
                             >
                               {item.name}
@@ -712,7 +710,6 @@ function AddEmployee() {
                                 })
                               }
                               key={JSON.stringify(item)}
-                              value={item.name}
                               className="dark:text-white"
                             >
                               {item.name}
@@ -772,7 +769,6 @@ function AddEmployee() {
                             <AutocompleteItem
                               onClick={() => setDataCreate({ ...dataCreate, chargeId: item.id })}
                               key={JSON.stringify(item)}
-                              value={item.name}
                               className="dark:text-white"
                             >
                               {item.name}
@@ -818,7 +814,6 @@ function AddEmployee() {
                                     departmentName: dep.valores,
                                   });
                               }}
-                              value={dep.codigo}
                               key={JSON.stringify(dep)}
                               className="dark:text-white"
                             >
@@ -862,7 +857,6 @@ function AddEmployee() {
                                     municipalityName: dep.valores,
                                   });
                               }}
-                              value={dep.codigo}
                               key={JSON.stringify(dep)}
                               className="dark:text-white"
                             >
@@ -902,7 +896,6 @@ function AddEmployee() {
                             <AutocompleteItem
                               onClick={() => setDataCreate({ ...dataCreate, branchId: bra.id })}
                               className="dark:text-white"
-                              value={bra.name}
                               key={JSON.stringify(bra)}
                             >
                               {bra.name}

@@ -3,7 +3,7 @@ import { classNames } from 'primereact/utils';
 import { CalendarMinus2, CalendarPlus2, Edit, Shapes, Store } from 'lucide-react';
 
 import { usePromotionsStore } from '../../store/promotions/promotions.store';
-import { Button } from '@nextui-org/react';
+import { Button } from "@heroui/react";
 import { global_styles } from '../../styles/global.styles';
 import { GridProps, MobileViewProps } from './types/mobile_view.types';
 

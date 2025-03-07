@@ -1,6 +1,6 @@
 import './App.css';
 import ThemeProvider from './hooks/useTheme';
-import { NextUIProvider } from '@nextui-org/react';
+import { HeroUIProvider } from '@heroui/react';
 import { Toaster } from 'sonner';
 import SessionProvider from './hooks/useSession';
 import Main from './pages/Main';
@@ -28,11 +28,11 @@ function App() {
           <SessionProvider>
             <ThemeProvider>
               <Toaster richColors />
-              <NextUIProvider>
+              <HeroUIProvider labelPlacement="outside">
                 <ActionsProvider>
                   <Main />
                 </ActionsProvider>
-              </NextUIProvider>
+              </HeroUIProvider>
             </ThemeProvider>
           </SessionProvider>
         </PrimeReactProvider>

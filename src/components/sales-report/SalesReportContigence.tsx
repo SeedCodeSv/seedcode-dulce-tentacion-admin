@@ -13,7 +13,7 @@ import {
   SelectItem,
   Textarea,
   useDisclosure,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { ThemeContext } from '../../hooks/useTheme';
 import { useReportContigenceStore } from '../../store/report_contigence.store';
 import { get_token, return_mh_token } from '../../storage/localStorage';
@@ -853,10 +853,10 @@ function SalesReportContigence() {
               }}
               defaultSelectedKeys={['1']}
             >
-              <SelectItem key={'1'} value={'1'}>
+              <SelectItem key={'1'}>
                 Procesadas
               </SelectItem>
-              <SelectItem key={'0'} value={'0'}>
+              <SelectItem key={'0'}>
                 Contingencia
               </SelectItem>
             </Select>
@@ -1148,7 +1148,7 @@ function SalesReportContigence() {
             }}
           >
             {cat_005_tipo_de_contingencia.map((tCon) => (
-              <SelectItem key={tCon.codigo} value={tCon.codigo}>
+              <SelectItem key={tCon.codigo}>
                 {tCon.valores}
               </SelectItem>
             ))}

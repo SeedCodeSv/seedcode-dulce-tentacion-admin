@@ -4,7 +4,7 @@ import { useTransmitterStore } from '@/store/transmitter.store';
 import { months } from '@/utils/constants';
 import { formatDateToMMDDYYYY } from '@/utils/dates';
 import { formatCurrency } from '@/utils/dte';
-import { Button, Select, SelectItem, useDisclosure } from '@nextui-org/react';
+import { Button, Select, SelectItem, useDisclosure } from "@heroui/react";
 import saveAs from 'file-saver';
 import { useEffect, useMemo, useState } from 'react';
 import { PiFilePdfDuotone, PiMicrosoftExcelLogoBold } from 'react-icons/pi';
@@ -75,7 +75,7 @@ function ShoppingBookIVA() {
         Number(shop.montoTotalOperacion),
         Number(shop.ivaPerci1),
         0
-      ]
+      ];
     })
 
     const dataExcluded = excluded_subjects_month.map((exc) => [
@@ -290,7 +290,7 @@ function ShoppingBookIVA() {
         Number(shop.montoTotalOperacion),
         Number(shop.ivaPerci1),
         0
-      ]
+      ];
     })
 
     const dataExcluded = excluded_subjects_month.map((exc) => [
@@ -350,7 +350,7 @@ function ShoppingBookIVA() {
                 variant="bordered"
               >
                 {months.map((month) => (
-                  <SelectItem key={month.value} value={month.value}>
+                  <SelectItem key={month.value} >
                     {month.name}
                   </SelectItem>
                 ))}
@@ -369,7 +369,7 @@ function ShoppingBookIVA() {
                 variant="bordered"
               >
                 {years.map((years) => (
-                  <SelectItem key={years.value} value={years.value}>
+                  <SelectItem key={years.value} >
                     {years.name}
                   </SelectItem>
                 ))}

@@ -14,7 +14,7 @@ import {
   Select,
   SelectItem,
   useDisclosure,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { ChevronLeft, ChevronRight, Filter, Pen, SearchIcon, Trash } from 'lucide-react';
 import NO_DATA from '@/assets/svg/no_data.svg';
 import { useNavigate } from 'react-router-dom';
@@ -240,7 +240,7 @@ function ShoppingPage({ actions }: ArrayAction) {
                     }}
                   >
                     {limit_options.map((option) => (
-                      <SelectItem className="w-full dark:text-white" key={option} value={option}>
+                      <SelectItem className="w-full dark:text-white" key={option}>
                         {option}
                       </SelectItem>
                     ))}
@@ -261,7 +261,6 @@ function ShoppingPage({ actions }: ArrayAction) {
                       {branches_list.map((item) => (
                         <AutocompleteItem
                           key={item.name}
-                          value={item.name}
                           className="dark:text-white"
                         >
                           {item.name}
@@ -335,7 +334,7 @@ function ShoppingPage({ actions }: ArrayAction) {
               onSelectionChange={(key) => (key ? setBranchId(String(key)) : setBranchId(''))}
             >
               {branches_list.map((item) => (
-                <AutocompleteItem key={item.name} value={item.name} className="dark:text-white">
+                <AutocompleteItem key={item.name} className="dark:text-white">
                   {item.name}
                 </AutocompleteItem>
               ))}
@@ -355,7 +354,7 @@ function ShoppingPage({ actions }: ArrayAction) {
               }}
             >
               {limit_options.map((option) => (
-                <SelectItem className="w-full dark:text-white" key={option} value={option}>
+                <SelectItem className="w-full dark:text-white" key={option}>
                   {option}
                 </SelectItem>
               ))}

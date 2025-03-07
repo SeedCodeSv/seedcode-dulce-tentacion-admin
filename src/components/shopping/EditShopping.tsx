@@ -31,7 +31,7 @@ import {
   Select,
   SelectItem,
   useDisclosure,
-} from '@nextui-org/react';
+} from '@heroui/react';
 import axios from 'axios';
 import { useFormik } from 'formik';
 import { useEffect, useMemo, useState } from 'react';
@@ -532,7 +532,6 @@ function EditShopping() {
                 >
                   {filteredTipoDoc.map((item) => (
                     <SelectItem
-                      value={item.codigo}
                       key={item.codigo}
                       isReadOnly={
                         ['03', '05', '06'].includes(item.codigo) &&
@@ -572,9 +571,7 @@ function EditShopping() {
                   errorMessage={formik.errors.branchId}
                 >
                   {branch_list.map((branch) => (
-                    <SelectItem key={branch.id} value={branch.name}>
-                      {branch.name}
-                    </SelectItem>
+                    <SelectItem key={branch.id}>{branch.name}</SelectItem>
                   ))}
                 </Select>
                 <Select
@@ -595,15 +592,9 @@ function EditShopping() {
                   errorMessage={formik.errors.typeSale}
                   isDisabled={isDisabled}
                 >
-                  <SelectItem key={'0'} value="Interna">
-                    Interna
-                  </SelectItem>
-                  <SelectItem key={'1'} value="Internacion">
-                    Internación
-                  </SelectItem>
-                  <SelectItem key={'2'} value="Importacion">
-                    Importación
-                  </SelectItem>
+                  <SelectItem key={'0'}>Interna</SelectItem>
+                  <SelectItem key={'1'}>Internación</SelectItem>
+                  <SelectItem key={'2'}>Importación</SelectItem>
                 </Select>
                 <Input
                   classNames={{ label: 'font-semibold' }}
@@ -650,7 +641,7 @@ function EditShopping() {
                   errorMessage={formik.errors.classDocumentCode}
                 >
                   {ClassDocuments.map((item) => (
-                    <SelectItem value={item.code} key={item.code}>
+                    <SelectItem key={item.code}>
                       {item.value}
                     </SelectItem>
                   ))}
@@ -686,7 +677,7 @@ function EditShopping() {
                   errorMessage={formik.errors.operationTypeCode}
                 >
                   {OperationTypes.map((item) => (
-                    <SelectItem value={item.code} key={item.code}>
+                    <SelectItem key={item.code}>
                       {item.value}
                     </SelectItem>
                   ))}
@@ -722,7 +713,7 @@ function EditShopping() {
                   errorMessage={formik.errors.classificationCode}
                 >
                   {Classifications.map((item) => (
-                    <SelectItem value={item.code} key={item.code}>
+                    <SelectItem key={item.code}>
                       {item.value}
                     </SelectItem>
                   ))}
@@ -756,7 +747,7 @@ function EditShopping() {
                   errorMessage={formik.errors.sectorCode}
                 >
                   {Sectors.map((item) => (
-                    <SelectItem value={item.code} key={item.code}>
+                    <SelectItem key={item.code}>
                       {item.value}
                     </SelectItem>
                   ))}
@@ -792,7 +783,7 @@ function EditShopping() {
                   errorMessage={formik.errors.typeCostSpentCode}
                 >
                   {TypeCostSpents.map((item) => (
-                    <SelectItem value={item.code} key={item.code}>
+                    <SelectItem key={item.code}>
                       {item.value}
                     </SelectItem>
                   ))}

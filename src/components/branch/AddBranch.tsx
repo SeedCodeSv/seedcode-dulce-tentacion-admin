@@ -1,4 +1,4 @@
-import { Button, Input, Select, SelectItem, Textarea } from '@nextui-org/react';
+import { Button, Input, Select, SelectItem, Textarea } from "@heroui/react";
 import { global_styles } from '../../styles/global.styles';
 import * as yup from 'yup';
 import { Formik } from 'formik';
@@ -129,7 +129,7 @@ function AddBranch(props: Props) {
                   errorMessage={errors.tipoEstablecimiento}
                 >
                   {type_estable.map((item) => (
-                    <SelectItem key={item.codigo} value={item.valores}>
+                    <SelectItem key={item.codigo}>
                       {item.valores}
                     </SelectItem>
                   ))}

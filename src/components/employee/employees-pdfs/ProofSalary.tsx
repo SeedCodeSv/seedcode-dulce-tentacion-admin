@@ -1,5 +1,5 @@
 import { ThemeContext } from '@/hooks/useTheme';
-import { Button } from '@nextui-org/react';
+import { Button } from "@heroui/react";
 import jsPDF from 'jspdf';
 import { Wallet } from 'lucide-react';
 import { useContext } from 'react';

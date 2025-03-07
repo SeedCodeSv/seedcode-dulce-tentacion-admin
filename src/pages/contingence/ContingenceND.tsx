@@ -17,7 +17,7 @@ import {
   Spinner,
   Textarea,
   useDisclosure,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import axios, { AxiosError } from 'axios';
 import { useEffect, useMemo, useState } from 'react';
 import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
@@ -536,7 +536,7 @@ function ContingenceND() {
               errorMessage={error.motivo}
             >
               {service.get005TipoDeContingencum().map((item) => (
-                <SelectItem className="dark:text-white" key={item.codigo} value={item.codigo}>
+                <SelectItem className="dark:text-white" key={item.codigo} >
                   {item.valores}
                 </SelectItem>
               ))}
@@ -570,7 +570,6 @@ function ContingenceND() {
               {branch_list.map((bra) => (
                 <AutocompleteItem
                   className="dark:text-white"
-                  value={bra.id.toString()}
                   key={bra.id.toString()}
                 >
                   {bra.name}
@@ -600,7 +599,6 @@ function ContingenceND() {
               {filteredEmployees.map((item) => (
                 <AutocompleteItem
                   key={JSON.stringify(item)}
-                  value={`${item.firstName} ${item.secondName} ${item.firstLastName} ${item.secondLastName}`}
                   className=" dark:text-white"
                 >
                   {`${item.firstName} ${item.secondName} ${item.firstLastName} ${item.secondLastName}`}

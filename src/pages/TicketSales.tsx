@@ -20,7 +20,7 @@ import {
   SelectItem,
   Spinner,
   useDisclosure,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import classNames from 'classnames';
 import jsPDF from 'jspdf';
 import { CreditCard, Eye, Filter, Table2Icon, X } from 'lucide-react';
@@ -124,7 +124,7 @@ function TicketSales() {
                     }}
                   >
                     {branch_list.map((item) => (
-                      <SelectItem key={item.id} value={item.id}>
+                      <SelectItem key={item.id}>
                         {item.name}
                       </SelectItem>
                     ))}

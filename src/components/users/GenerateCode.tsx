@@ -1,6 +1,6 @@
 import { useUsersStore } from "@/store/users.store";
 import { global_styles } from "@/styles/global.styles";
-import { Button, Input, Tooltip } from "@nextui-org/react";
+import { Button, Input, Tooltip } from "@heroui/react";
 import { Copy } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";

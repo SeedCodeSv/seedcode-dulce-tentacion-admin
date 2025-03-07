@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { API_URL } from '../../utils/constants';
 import { toast } from 'sonner';
-import { Button } from '@nextui-org/react';
+import { Button } from "@heroui/react";
 import DefaultImage from '../../assets/react.svg';
 import { useConfigurationStore } from '../../store/perzonalitation.store';
 import { useAuthStore } from '../../store/auth.store';

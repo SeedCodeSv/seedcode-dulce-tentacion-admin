@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { Button, Checkbox, Input } from '@nextui-org/react';
+import { Button, Checkbox, Input } from "@heroui/react";
 import { useConfigurationStore } from '../../store/perzonalitation.store';
 import * as yup from 'yup';
 import { Formik } from 'formik';

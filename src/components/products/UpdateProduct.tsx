@@ -1,4 +1,4 @@
-import { Input, Textarea, Button, Autocomplete, AutocompleteItem } from '@nextui-org/react';
+import { Input, Textarea, Button, Autocomplete, AutocompleteItem } from "@heroui/react";
 import { useContext, useEffect, useState } from 'react';
 import { useCategoriesStore } from '../../store/categories.store';
 import { Product, ProductPayload } from '../../types/products.types';
@@ -119,7 +119,6 @@ function UpdateProduct({ product, onCloseModal }: Props) {
             >
               {list_categories.map((category) => (
                 <AutocompleteItem
-                  value={category.name}
                   key={JSON.stringify(category)}
                   className="dark:text-white"
                 >
@@ -141,7 +140,6 @@ function UpdateProduct({ product, onCloseModal }: Props) {
             >
               {subcategories?.map((sub) => (
                 <AutocompleteItem
-                  value={sub.id.toString()}
                   key={JSON.stringify(sub)}
                   onClick={() => {
                     setDataUpdateProduct((prev) => ({
@@ -170,7 +168,6 @@ function UpdateProduct({ product, onCloseModal }: Props) {
                 <AutocompleteItem
                   className="dark:text-white"
                   key={JSON.stringify(item)}
-                  value={item.codigo}
                   onClick={() => {
                     setDataUpdateProduct((prev) => ({
                       ...prev,
@@ -201,7 +198,6 @@ function UpdateProduct({ product, onCloseModal }: Props) {
                 <AutocompleteItem
                   className="dark:text-white"
                   key={item.id}
-                  value={item.valores}
                   onClick={() => {
                     setDataUpdateProduct((prev) => ({
                       ...prev,

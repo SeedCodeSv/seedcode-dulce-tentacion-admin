@@ -14,7 +14,7 @@ import {
   Select,
   SelectItem,
   useDisclosure,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { CircleX, EllipsisVertical, LoaderCircle, X } from 'lucide-react';
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -116,7 +116,7 @@ function ListSales() {
               }}
             >
               {limit_options.map((limit) => (
-                <SelectItem key={limit} value={limit}>
+                <SelectItem key={limit}>
                   {limit}
                 </SelectItem>
               ))}
@@ -519,7 +519,7 @@ const Filters = (props: FiltersProps) => {
         }}
       >
         {branch_list.map((item) => (
-          <SelectItem key={item.id} value={item.id}>
+          <SelectItem key={item.id}>
             {item.name}
           </SelectItem>
         ))}
@@ -542,7 +542,7 @@ const Filters = (props: FiltersProps) => {
         }}
       >
         {filteredPoints.map((item) => (
-          <SelectItem key={item.code} value={item.id}>
+          <SelectItem key={item.code}>
             {item.code}
           </SelectItem>
         ))}
@@ -557,10 +557,10 @@ const Filters = (props: FiltersProps) => {
         }}
         onChange={(e) => props.setTypeVoucher(e.target.value)}
       >
-        <SelectItem key="01" value="FE">
+        <SelectItem key="01">
           FE - Factura Comercial
         </SelectItem>
-        <SelectItem key="03" value="CCFE">
+        <SelectItem key="03">
           CCFE - Crédito Fiscal Electrónico
         </SelectItem>
       </Select>
@@ -577,7 +577,7 @@ const Filters = (props: FiltersProps) => {
         onChange={(e) => props.setState(e.target.value)}
       >
         {estadosV.map((e) => (
-          <SelectItem className="dark:text-white" key={e.value} value={e.value}>
+          <SelectItem className="dark:text-white" key={e.value}>
             {e.label}
           </SelectItem>
         ))}

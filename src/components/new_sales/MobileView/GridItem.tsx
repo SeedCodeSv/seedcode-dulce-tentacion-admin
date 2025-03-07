@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import { BranchProduct } from '../../../types/branch_products.types';
 import { ClipboardList, DollarSign, Plus, ShoppingBag } from 'lucide-react';
 import { ListItem } from './ListItem';
-import { Button } from '@nextui-org/react';
+import { Button } from "@heroui/react";
 import { global_styles } from '../../../styles/global.styles';
 import { toast } from 'sonner';
 import { useBranchProductStore } from '../../../store/branch_product.store';
