@@ -249,6 +249,12 @@ export const LayoutItems = (props: Props) => {
       icon: BookCheck,
       label: 'Partidas contables',
     },
+    {
+      viewName: 'Reportes contables',
+      to: '/report-accounting',
+      icon: BookCheck,
+      label: 'Reportes contables',
+    },
   ];
 
   const booksLinks = [

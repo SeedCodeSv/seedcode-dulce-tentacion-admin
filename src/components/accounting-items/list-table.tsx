@@ -13,7 +13,6 @@ import {
 } from '@heroui/react';
 import { useEffect, useMemo, useState } from 'react';
 import useGlobalStyles from '../global/global.styles';
-import { formatCurrency } from '@/utils/dte';
 import Pagination from '../global/Pagination';
 import { limit_options, typeOrden } from '@/utils/constants';
 import { Pencil, Plus, Trash, X } from 'lucide-react';
@@ -23,9 +22,7 @@ import { useTypeOfAccountStore } from '@/store/type-of-aacount.store';
 import { PiFilePdfDuotone } from 'react-icons/pi';
 import ItemPdf from './ItemPdf';
 import FullPageLayout from '../global/FullOverflowLayout';
-import DailyBook from './daily-book';
 import { useAuthStore } from '@/store/auth.store';
-import MajorBook from './major-book';
 
 function List() {
   const {
@@ -110,8 +107,8 @@ function List() {
   };
 
   return (
-    <div className=" w-full h-full flex flex-col bg-white dark:bg-gray-900">
-      <div className="w-full h-full flex flex-col border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+   <>
+      <div className="w-full h-full flex flex-col border border-white p-3 bg-white shadow rounded-xl dark:bg-gray-900">
         <div className="w-full grid grid-cols-3 gap-5">
           <Input
             classNames={{ label: 'font-semibold' }}
@@ -188,8 +185,6 @@ function List() {
             ))}
           </Select>
           <div className="flex gap-2 items-end justify-end">
-            <MajorBook />
-            <DailyBook />
             <Button style={styles.thirdStyle} onPress={() => navigate('/add-item-by-sales')}>
               Generar partida de ventas
             </Button>
@@ -202,37 +197,31 @@ function List() {
             </Button>
           </div>
         </div>
-        <div className="overflow-x-auto flex flex-col h-full custom-scrollbar mt-4">
+        <div className="overflow-y-auto flex flex-col h-full custom-scrollbar mt-4">
           <table className="w-full">
             <thead className="sticky top-0 z-20 bg-white">
               <tr>
-                <th style={styles.darkStyle} className="p-3 text-sm font-semibold text-left">
+                <th style={styles.darkStyle} className="p-3 text-xs font-semibold text-left">
                   No. de partida
                 </th>
-                <th style={styles.darkStyle} className="p-3 text-sm font-semibold text-left">
+                <th style={styles.darkStyle} className="p-3 text-xs font-semibold text-left">
                   Fecha
                 </th>
-                <th style={styles.darkStyle} className="p-3 text-sm font-semibold text-left">
+                <th style={styles.darkStyle} className="p-3 text-xs font-semibold text-left">
                   Tipo de partida
                 </th>
-                <th style={styles.darkStyle} className="p-3 text-sm font-semibold text-left">
+                <th style={styles.darkStyle} className="p-3 text-xs font-semibold text-left">
                   Concepto
                 </th>
-                <th style={styles.darkStyle} className="p-3 text-sm font-semibold text-left">
+                <th style={styles.darkStyle} className="p-3 text-xs font-semibold text-left">
                   Correlativo
                 </th>
-                <th style={styles.darkStyle} className="p-3 text-sm font-semibold text-left">
-                  Debe
-                </th>
-                <th style={styles.darkStyle} className="p-3 text-sm font-semibold text-left">
-                  Haber
-                </th>
-                <th style={styles.darkStyle} className="p-3 text-sm font-semibold text-left">
+                <th style={styles.darkStyle} className="p-3 text-xs font-semibold text-left">
                   Acciones
                 </th>
               </tr>
             </thead>
-            <tbody className="max-h-[600px] w-full overflow-y-auto">
+            <tbody>
               {loading ? (
                 <>
                   <tr>
@@ -259,16 +248,10 @@ function List() {
                           {type?.typeOfAccount?.name}
                         </td>
                         <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                          {type.concepOfTheItem}
+                          <p className='truncate'>{type.concepOfTheItem}</p>
                         </td>
                         <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                           {type?.correlative}
-                        </td>
-                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                          {formatCurrency(Number(type.totalDebe))}
-                        </td>
-                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                          {formatCurrency(Number(type.totalHaber))}
                         </td>
                         <td className="p-3 text-sm flex gap-5 text-slate-500 dark:text-slate-100">
                           <Button
@@ -367,7 +350,7 @@ function List() {
           <ItemPdf JSONData={report_for_item} date={date} correlative={correlative} />
         </div>
       </FullPageLayout>
-    </div>
+    </>
   );
 }
 

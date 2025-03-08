@@ -20,9 +20,14 @@ import { formatDdMmYyyy } from '@/utils/date';
 import FullPageLayout from '../global/FullOverflowLayout';
 import { X } from 'lucide-react';
 
-function MajorBook() {
+type UseDisclosureReturn = ReturnType<typeof useDisclosure>;
+
+interface Props {
+  disclosure: UseDisclosureReturn;
+}
+
+function MajorBook({ disclosure }: Props) {
   const styles = useGlobalStyles();
-  const modal = useDisclosure();
 
   const [startDate, setStartDate] = useState(formatDate());
   const [endDate, setEndDate] = useState(formatDate());
@@ -317,9 +322,6 @@ function MajorBook() {
   const previewModal = useDisclosure();
   return (
     <>
-      <Button style={styles.darkStyle} onPress={modal.onOpenChange}>
-        Generar libro mayor
-      </Button>
       <FullPageLayout show={previewModal.isOpen}>
         <div className="w-[100vw] h-[100vh] bg-white rounded-2xl">
           <Button
@@ -340,7 +342,7 @@ function MajorBook() {
           )}
         </div>
       </FullPageLayout>
-      <Modal {...modal} size="xl" isDismissable={false}>
+      <Modal {...disclosure} size="xl" isDismissable={false}>
         <ModalContent>
           <>
             <ModalHeader>Generar libro mayor</ModalHeader>

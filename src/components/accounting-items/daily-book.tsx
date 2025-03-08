@@ -20,9 +20,14 @@ import { Item } from '@/types/items.types';
 import FullPageLayout from '../global/FullOverflowLayout';
 import { X } from 'lucide-react';
 
-function DailyBook() {
+type UseDisclosureReturn = ReturnType<typeof useDisclosure>;
+
+interface Props {
+  disclosure: UseDisclosureReturn;
+}
+
+function DailyBook({ disclosure }: Props) {
   const styles = useGlobalStyles();
-  const modal = useDisclosure();
 
   const [startDate, setStartDate] = useState(formatDate());
   const [endDate, setEndDate] = useState(formatDate());
@@ -388,9 +393,6 @@ function DailyBook() {
 
   return (
     <>
-      <Button style={styles.secondaryStyle} onPress={modal.onOpenChange}>
-        Generar libro diario
-      </Button>
       <FullPageLayout show={previewModal.isOpen}>
         <div className="w-[100vw] h-[100vh] bg-white rounded-2xl">
           <Button
@@ -411,7 +413,7 @@ function DailyBook() {
           )}
         </div>
       </FullPageLayout>
-      <Modal {...modal} size="xl" isDismissable={false}>
+      <Modal {...disclosure} size="xl" isDismissable={false}>
         <ModalContent>
           <>
             <ModalHeader>Generar libro diario</ModalHeader>

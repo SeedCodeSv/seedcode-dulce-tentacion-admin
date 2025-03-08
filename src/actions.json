@@ -55,6 +55,12 @@
       ]
     },
     {
+      "view": "Reportes contables",
+      "actions": [
+        "Mostrar"
+      ]
+    },
+    {
       "view": "Ordenes de Compra",
       "actions": [
         "Mostrar",

@@ -1,4 +1,4 @@
-import { TrendingUp, TrendingDown, Package, DollarSign } from 'lucide-react';
+import { TrendingUp, Package, DollarSign } from 'lucide-react';
 import { memo, useMemo } from 'react';
 import { ResponsiveContainer, Area, AreaChart } from 'recharts';
 import { salesReportStore } from '../../store/reports/sales_report.store.ts';
@@ -104,7 +104,7 @@ function Charts() {
         <div className="relative z-10">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-base sm:text-lg font-medium opacity-90">Ventas del dia</h3>
-            <TrendingDown className="w-5 h-5 sm:w-6 sm:h-6 opacity-75" />
+            <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 opacity-75" />
           </div>
           <p className="text-xl sm:text-3xl font-bold">
             {loading_sales_by_table_date ? <Spinner /> : formatCurrency(total)}

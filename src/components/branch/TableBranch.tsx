@@ -56,13 +56,13 @@ function TableBranch(props: Props) {
                         <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                           {branch.id}
                         </td>
-                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
+                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                           {branch.name}
                         </td>
-                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
+                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                           {branch.phone}
                         </td>
-                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
+                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                           {branch.address}
                         </td>
                         <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
