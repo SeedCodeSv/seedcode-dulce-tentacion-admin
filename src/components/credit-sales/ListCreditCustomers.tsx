@@ -12,17 +12,12 @@ import { useTransmitterStore } from '../../store/transmitter.store';
 import { SVFE_FC_SEND } from '../../types/svf_dte/fc.types';
 import { generate_credit_factura } from '../../utils/DTE/factura';
 import { firmarDocumentoFactura, send_to_mh } from '../../services/DTE.service';
-import { get_token, return_mh_token } from '../../storage/localStorage';
+import { return_mh_token } from '../../storage/localStorage';
 import { PayloadMH } from '../../types/DTE/DTE.types';
-import { ambiente, API_URL } from '../../utils/constants';
+import { ambiente } from '../../utils/constants';
 import axios, { AxiosError } from 'axios';
-import { formatDate } from '../../utils/dates';
-import Template1CFC from '../../pages/invoices/Template1CFC';
-import { PutObjectCommand, PutObjectCommandInput } from '@aws-sdk/client-s3';
-import { s3Client } from '../../plugins/s3';
 import { SendMHFailed } from '../../types/transmitter.types';
 import { Customer } from '../../types/customers.types';
-import { pdf } from '@react-pdf/renderer';
 
 const ListCreditCustomers = () => {
   const { theme } = useContext(ThemeContext);
@@ -118,95 +113,12 @@ const ListCreditCustomers = () => {
             }, 20000);
 
             send_to_mh(data_send, token_mh, source)
-              .then(async ({ data }) => {
+              .then( ({ data }) => {
                 if (data.selloRecibido) {
                   clearTimeout(timeout);
                   toast.success('Hacienda respondió correctamente', {
                     description: 'Estamos guardando tus datos',
                   });
-
-                  const json_url = `CLIENTES/${
-                    transmitter.nombre
-                  }/${new Date().getFullYear()}/CREDITOS/FACTURAS/${formatDate()}/${
-                    generate.dteJson.identificacion.codigoGeneracion
-                  }/${generate.dteJson.identificacion.codigoGeneracion}.json`;
-                  const pdf_url = `CLIENTES/${
-                    transmitter.nombre
-                  }/${new Date().getFullYear()}/CREDITOS/FACTURAS/${formatDate()}/${
-                    generate.dteJson.identificacion.codigoGeneracion
-                  }/${generate.dteJson.identificacion.codigoGeneracion}.pdf`;
-
-                  const JSON_DTE = JSON.stringify(
-                    {
-                      ...generate.dteJson,
-                      respuestaMH: data,
-                      firma: firma.data.body,
-                    },
-                    null,
-                    2
-                  );
-                  const json_blob = new Blob([JSON_DTE], {
-                    type: 'application/json',
-                  });
-
-                  const blob = await pdf(
-                    <Template1CFC
-                      dte={{
-                        ...generate.dteJson,
-                        respuestaMH: data,
-                        firma: firma.data.body,
-                      }}
-                    />
-                  ).toBlob();
-
-                  if (json_blob && blob) {
-                    const uploadParams: PutObjectCommandInput = {
-                      Bucket: 'seedcode-facturacion',
-                      Key: json_url,
-                      Body: json_blob,
-                    };
-                    const uploadParamsPDF: PutObjectCommandInput = {
-                      Bucket: 'seedcode-facturacion',
-                      Key: pdf_url,
-                      Body: blob,
-                    };
-
-                    s3Client.send(new PutObjectCommand(uploadParamsPDF)).then((response) => {
-                      if (response.$metadata) {
-                        s3Client.send(new PutObjectCommand(uploadParams)).then((response) => {
-                          if (response.$metadata) {
-                            const token = get_token() ?? '';
-
-                            axios
-                              .post(
-                                API_URL + '/sales/credit-sale',
-                                {
-                                  pdf: pdf_url,
-                                  dte: json_url,
-                                  clienteId: customer?.id,
-                                  cajaId: Number(localStorage.getItem('box')),
-                                  codigoEmpleado: 1,
-                                  sello: true,
-                                },
-                                {
-                                  headers: {
-                                    Authorization: `Bearer ${token}`,
-                                  },
-                                }
-                              )
-                              .then(() => {
-                                toast.success('Se completo con éxito la venta');
-                                setLoading(false);
-                              })
-                              .catch(() => {
-                                toast.error('Error al guardar la venta');
-                                setLoading(false);
-                              });
-                          }
-                        });
-                      }
-                    });
-                  }
                 }
               })
               .catch((error: AxiosError<SendMHFailed>) => {

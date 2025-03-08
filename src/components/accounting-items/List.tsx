@@ -10,8 +10,8 @@ import {
   Select,
   SelectItem,
   useDisclosure,
-} from "@heroui/react";
-import { useEffect, useState } from 'react';
+} from '@heroui/react';
+import { useEffect, useMemo, useState } from 'react';
 import useGlobalStyles from '../global/global.styles';
 import { formatCurrency } from '@/utils/dte';
 import Pagination from '../global/Pagination';
@@ -24,6 +24,8 @@ import { PiFilePdfDuotone } from 'react-icons/pi';
 import ItemPdf from './ItemPdf';
 import FullPageLayout from '../global/FullOverflowLayout';
 import DailyBook from './daily-book';
+import { useAuthStore } from '@/store/auth.store';
+import MajorBook from './major-book';
 
 function List() {
   const {
@@ -38,6 +40,8 @@ function List() {
   } = useAccountingItemsStore();
   const { getListTypeOfAccount, list_type_of_account } = useTypeOfAccountStore();
 
+  const { user } = useAuthStore();
+
   const [startDate, setStartDate] = useState(search_item.startDate);
   const [endDate, setEndDate] = useState(search_item.endDate);
   const [limit, setLimit] = useState(search_item.limit);
@@ -49,8 +53,14 @@ function List() {
   const [correlative, setCorrelative] = useState('');
   const [typeOrder, setTypeOrder] = useState(search_item.typeOrder);
 
+  const transId = useMemo(() => {
+    return user?.correlative
+      ? user.correlative.branch.transmitter.id
+      : (user?.pointOfSale?.branch.transmitter.id ?? 0);
+  }, [user]);
+
   useEffect(() => {
-    getAccountingItems(1, limit, startDate, endDate, typeItem, typeOrder);
+    getAccountingItems(Number(transId), 1, limit, startDate, endDate, typeItem, typeOrder);
     getListTypeOfAccount();
   }, [limit, startDate, endDate, typeItem, typeOrder]);
 
@@ -71,7 +81,7 @@ function List() {
       toast.warning('Debe seleccionar una partida contable');
       return;
     }
-    deleteItem(selectedId)
+    deleteItem(selectedId, transId)
       .then((res) => {
         if (res) {
           toast.success('La partida contable ha sido eliminada exitosamente');
@@ -136,9 +146,7 @@ function List() {
             }}
           >
             {list_type_of_account.map((item) => (
-              <SelectItem key={item.id}>
-                {item.name}
-              </SelectItem>
+              <SelectItem key={item.id}>{item.name}</SelectItem>
             ))}
           </Select>
         </div>
@@ -158,9 +166,7 @@ function List() {
             }}
           >
             {limit_options.map((option) => (
-              <SelectItem key={option}>
-                {option}
-              </SelectItem>
+              <SelectItem key={option}>{option}</SelectItem>
             ))}
           </Select>
           <Select
@@ -178,12 +184,11 @@ function List() {
             }}
           >
             {typeOrden.map((option) => (
-              <SelectItem key={option.value}>
-                {option.label}
-              </SelectItem>
+              <SelectItem key={option.value}>{option.label}</SelectItem>
             ))}
           </Select>
           <div className="flex gap-2 items-end justify-end">
+            <MajorBook />
             <DailyBook />
             <Button style={styles.thirdStyle} onPress={() => navigate('/add-item-by-sales')}>
               Generar partida de ventas
@@ -322,7 +327,7 @@ function List() {
                 currentPage={accounting_items_pagination.currentPag}
                 totalPages={accounting_items_pagination.totalPag}
                 onPageChange={(page) => {
-                  getAccountingItems(page, limit, startDate, endDate, typeItem, typeOrder);
+                  getAccountingItems(transId, page, limit, startDate, endDate, typeItem, typeOrder);
                 }}
               />
             </div>
@@ -350,10 +355,10 @@ function List() {
         </ModalContent>
       </Modal>
       <FullPageLayout show={showFullLayout.isOpen}>
-        <div className="w-[95vw] h-[95vh] bg-white rounded-2xl">
+        <div className="w-[100vw] h-[100vh] bg-white rounded-2xl">
           <Button
             color="danger"
-            onClick={closeShowPdf}
+            onPress={closeShowPdf}
             className="absolute bottom-6 left-6"
             isIconOnly
           >

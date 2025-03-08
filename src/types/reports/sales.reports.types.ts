@@ -1,8 +1,9 @@
-import { Product } from "../products.types";
+import { Product } from '../products.types';
 
 export interface SaleBranchMonth {
   branch: string;
-  total: number;
+  currentMonthSales: number;
+  lastMonthSales: number;
 }
 
 export interface IGetSalesByBranchOfCurrentMonth {
@@ -16,13 +17,13 @@ export interface SaleMonthYear {
 }
 
 export interface IDataExpenseReport {
-  branch: string,
-  total: number
+  branch: string;
+  total: number;
 }
 export interface ProductoMostSelledTable {
-  branchProduct: BranchProduct,
-  quantity: number
-  total: number
+  branchProduct: BranchProduct;
+  quantity: number;
+  total: number;
 }
 
 export interface BranchProduct {
@@ -108,16 +109,15 @@ export interface SaleTableDay {
   salesStatusId?: number;
 }
 
-
 export interface IResponseDataProductGrafic {
   ok: boolean;
   data: IDataProductGrafic[];
 }
 
 export interface IDataProductGrafic {
-  productName: string
-  quantity: string
-  total: string
+  productName: string;
+  quantity: string;
+  total: string;
 }
 
 export interface SaleTable {
@@ -151,24 +151,24 @@ export interface IGraphicForCategoryProductsForDates {
 }
 
 export interface GraphicSubCategory {
-	subCategoryName: string;
-	totalItems: string;
+  subCategoryName: string;
+  totalItems: string;
 }
 
 export interface IGraphicSubCategoryProductsForDates {
-	ok: boolean;
-	message: string;
-	detailSales: GraphicSubCategory[];
-	totalSales: number;
+  ok: boolean;
+  message: string;
+  detailSales: GraphicSubCategory[];
+  totalSales: number;
 }
 
 export interface SaleProduct {
-	productName: string;
-	totalItemSum: string;
+  productName: string;
+  totalItemSum: string;
 }
 
 export interface IGetSaleByProduct {
-	ok: boolean;
-	sales: SaleProduct[];
-	totalSales: number;
+  ok: boolean;
+  sales: SaleProduct[];
+  totalSales: number;
 }

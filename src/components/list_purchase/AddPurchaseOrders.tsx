@@ -17,13 +17,9 @@ import { global_styles } from '../../styles/global.styles';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { ThemeContext } from '../../hooks/useTheme';
-import { IBranchProductOrderQuantity } from '../../types/branch_products.types';
 import HeadlessModal from '../global/HeadlessModal';
 import { IBranchProductOrder, PurchaseOrderPayload } from '../../types/purchase_orders.types';
 import { usePurchaseOrdersStore } from '../../store/purchase_orders.store';
-import PurchaseOrders from '../invoice/PurchaseOrders';
-import { pdf } from '@react-pdf/renderer';
-import print from 'print-js';
 import { useNavigate } from 'react-router';
 import AddButton from '../global/AddButton';
 import Layout from '@/layout/Layout';
@@ -67,32 +63,6 @@ function AddPurchaseOrders() {
   const style = {
     backgroundColor: theme.colors.dark,
     color: theme.colors.primary,
-  };
-
-  const handlePrint = async (products: IBranchProductOrderQuantity[], supplierName: string) => {
-    const total = products.map((p) => Number(p.price) * p.quantity).reduce((a, b) => a + b, 0);
-    const blob = await pdf(
-      <PurchaseOrders
-        supplier={supplierName}
-        total={total}
-        dark={theme.colors.dark}
-        primary={theme.colors.primary}
-        items={products.map((p) => ({
-          qty: p.quantity,
-          name: p.product.name,
-          price: Number(p.price),
-          total: Number(p.price) * p.quantity,
-        }))}
-      />
-    ).toBlob();
-
-    const URL_PDF = URL.createObjectURL(blob);
-
-    print({
-      printable: URL_PDF,
-      type: 'pdf',
-      showModal: false,
-    });
   };
 
   const { postPurchaseOrder } = usePurchaseOrdersStore();
@@ -249,7 +219,7 @@ function AddPurchaseOrders() {
                 </DataTable>
                 <div className="w-full py-5 flex justify-start">
                   <Button
-                    onClick={() => handlePrint(supplier.products, supplier.supplier.nombre)}
+                    onClick={() => {}}
                     style={global_styles().warningStyles}
                   >
                     <Printer />

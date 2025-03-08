@@ -44,3 +44,29 @@ export interface IGetItemsDates {
     isActive: boolean
   }
   
+  export interface GetItemsByMajor {
+    majorAccounts: MajorAccount[]
+    ok: boolean
+  }
+  
+  export interface MajorAccount {
+    id: number
+    code: string
+    name: string
+    majorAccount: string
+    accountLevel: string
+    accountType: string
+    uploadAs: string
+    subAccount: boolean
+    item: string
+    isActive: boolean
+    saldoAnterior: number
+    items: ItemMajor[]
+  }
+  
+  export interface ItemMajor {
+    day: string
+    totalDebe: string
+    totalHaber: string
+  }
+  

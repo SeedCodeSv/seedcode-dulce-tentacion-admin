@@ -9,7 +9,7 @@ import {
   SelectItem,
   Tooltip,
   useDisclosure,
-} from "@heroui/react";
+} from '@heroui/react';
 import { Barcode, CreditCard, List, Search, Table as ITable, Plus, Send } from 'lucide-react';
 import { useContext, useEffect, useState } from 'react';
 import { ThemeContext } from '../../hooks/useTheme';
@@ -56,8 +56,7 @@ const MainView = () => {
     pagination_branch_products,
     getPaginatedBranchProducts,
     getProductByCode,
-    cart_products,
-    emptyCart,
+    cart_products
   } = useBranchProductStore();
 
   useEffect(() => {
@@ -220,12 +219,7 @@ const MainView = () => {
         size="w-screen md:w-[600px] lg:w-[90vw] xl:w-[1200px] h-auto"
       >
         <div className="p-5 h-full lg:max-h-[80vh]">
-          <FormMakeSale
-            clear={() => {
-              modalAdd.onClose();
-              emptyCart();
-            }}
-          />
+          <FormMakeSale />
         </div>
       </HeadlessModal>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} title="Agregar" size="full">
@@ -410,9 +404,11 @@ const ListProduct = () => {
   const handler = (evt: KeyboardEvent) => {
     if (interval) clearInterval(interval);
     if (evt.code === 'Enter') {
-      if (barcode) getProductByCode(user?.correlative?.branch.transmitterId ??
-        user?.pointOfSale?.branch.transmitterId ??
-        0, barcode);
+      if (barcode)
+        getProductByCode(
+          user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
+          barcode
+        );
       barcode = '';
       return;
     }

@@ -119,7 +119,7 @@ function ItemPdf({ JSONData, date, correlative }: Props) {
     });
   }
 
-  const exportToPdf = () => { 
+  const exportToPdf = () => {
     const doc = new jsPDF();
 
     const headers = ['', '', '', '', ''];
@@ -139,8 +139,9 @@ function ItemPdf({ JSONData, date, correlative }: Props) {
       .sort((a, b) => a[0].localeCompare(b[0]));
 
     const countMap = new Map();
+    const displayedKeys = new Set();
     data.forEach((row) => {
-      const key = row[0]; // Primera columna
+      const key = row[0];
       countMap.set(key, (countMap.get(key) || 0) + 1);
     });
     autoTable(doc, {
@@ -174,10 +175,13 @@ function ItemPdf({ JSONData, date, correlative }: Props) {
       },
       didParseCell: (data) => {
         if (data.column.index === 0) {
-          // Solo la primera columna
           const key = data.cell.raw;
           if (countMap.get(key) > 1) {
-            data.cell.text = [''];
+            if (displayedKeys.has(key)) {
+              data.cell.text = [''];
+            } else {
+              displayedKeys.add(key);
+            }
           }
         }
       },
@@ -203,7 +207,6 @@ function ItemPdf({ JSONData, date, correlative }: Props) {
         }
       },
     });
-
     const lastAutotableY = (
       doc as unknown as {
         lastAutoTable: { finalY: number };
@@ -352,9 +355,14 @@ function ItemPdf({ JSONData, date, correlative }: Props) {
       doc.text(`Pág. No. ${i.toString().padStart(5, '0')}`, doc.internal.pageSize.width - 15, 10, {
         align: 'center',
       });
-      doc.text(`Correlativo. ${correlative.padStart(5, '0')}`, doc.internal.pageSize.width -190, 10, {
-        align: 'center',
-      });
+      doc.text(
+        `Correlativo. ${correlative.padStart(5, '0')}`,
+        doc.internal.pageSize.width - 190,
+        10,
+        {
+          align: 'center',
+        }
+      );
       doc.text(formatDate(new Date()), doc.internal.pageSize.width - 5, 15, {
         align: 'right',
       });
@@ -373,12 +381,7 @@ function ItemPdf({ JSONData, date, correlative }: Props) {
   return (
     <div style={{ width: '100%', height: '100%' }}>
       {pdfUrl ? (
-        <iframe
-          src={pdfUrl}
-          width="100%"
-          height="100%"
-          style={{ border: 'none' }}
-        />
+        <iframe src={pdfUrl} width="100%" height="100%" style={{ border: 'none' }} />
       ) : (
         <p>Generando PDF...</p>
       )}

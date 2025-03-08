@@ -42,6 +42,7 @@ export const update_item = (payload: EditItem, id: number) => {
 };
 
 export const get_accounting_items = (
+  id: number,
   page: number,
   limit: number,
   startDate: string,
@@ -49,9 +50,17 @@ export const get_accounting_items = (
   typeItem: string,
   typeOrder: string
 ) => {
+  const params = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+    startDate,
+    endDate,
+    typeItem,
+    typeOrder,
+  });
   const token = get_token();
   return axios.get<GetAccountingItems>(
-    `${API_URL}/items/paginate?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}&typeItem=${typeItem}&typeOrder=${typeOrder}`,
+    `${API_URL}/items/paginate/${id}?${params.toString()}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,

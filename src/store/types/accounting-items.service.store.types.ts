@@ -1,7 +1,7 @@
 import { AddItem, EditItem, Item, ItemDetails, ReportForItem } from '@/types/accounting-items.types';
 import { IPagination } from '@/types/global.types';
 
-export interface AccountingItemsServiceStore {
+export interface  AccountingItemsServiceStore {
   accounting_items: Item[];
   report_for_item: ReportForItem[][];
   loading: boolean;
@@ -18,6 +18,7 @@ export interface AccountingItemsServiceStore {
     typeOrder: string
   };
   getAccountingItems: (
+    id:number,
     page: number,
     limit: number,
     startDate: string,
@@ -29,6 +30,6 @@ export interface AccountingItemsServiceStore {
   updateAndDeleteItem: (id:number,payload: AddItem) => Promise<boolean>;
   editItem: (payload: EditItem, id: number) => Promise<boolean>;
   getDetails: (id: number) => Promise<void>;
-  deleteItem: (id: number) => Promise<boolean>;
+  deleteItem: (id: number,transid: number) => Promise<boolean>;
   getReportForItem: (id: number) => Promise<void>;
 }

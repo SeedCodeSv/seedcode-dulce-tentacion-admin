@@ -70,6 +70,7 @@ export const useAccountingItemsStore = create<AccountingItemsServiceStore>((set,
       });
   },
   getAccountingItems: (
+    id: number,
     page: number,
     limit: number,
     startDate: string,
@@ -80,13 +81,13 @@ export const useAccountingItemsStore = create<AccountingItemsServiceStore>((set,
     set((state) => ({
       ...state,
       loading: true,
-      search_item: { page, limit, startDate, endDate, typeItem, is_first_time: true, typeOrder},
+      search_item: { page, limit, startDate, endDate, typeItem, is_first_time: true, typeOrder },
     }));
     localStorage.setItem(
       'accounting_items',
       JSON.stringify({ page, limit, startDate, endDate, typeItem, typeOrder })
     );
-    return get_accounting_items(page, limit, startDate, endDate, typeItem, typeOrder)
+    return get_accounting_items(id, page, limit, startDate, endDate, typeItem, typeOrder)
       .then((res) => {
         if (res.data.items.length > 0) {
           set((state) => ({
@@ -142,6 +143,7 @@ export const useAccountingItemsStore = create<AccountingItemsServiceStore>((set,
     return update_item(payload, id)
       .then(() => {
         get().getAccountingItems(
+          payload.transmitterId,
           get().search_item.page,
           get().search_item.limit,
           get().search_item.startDate,
@@ -155,10 +157,11 @@ export const useAccountingItemsStore = create<AccountingItemsServiceStore>((set,
         return false;
       });
   },
-  deleteItem: (id) => {
+  deleteItem: (id, transid) => {
     return delete_item(id)
       .then(() => {
         get().getAccountingItems(
+          transid,
           1,
           get().search_item.limit,
           get().search_item.startDate,

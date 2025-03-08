@@ -5,9 +5,6 @@ import { formatCurrency } from '../../utils/dte';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { ThemeContext } from '../../hooks/useTheme';
-import PurchaseOrders from '../invoice/PurchaseOrders';
-import { pdf } from '@react-pdf/renderer';
-import print from 'print-js';
 import { Button, Input, useDisclosure } from "@heroui/react";
 import { ArrowLeft, Plus, Printer, Trash } from 'lucide-react';
 import { global_styles } from '../../styles/global.styles';
@@ -38,32 +35,6 @@ function EditMode(props: Props) {
   const style = {
     backgroundColor: theme.colors.dark,
     color: theme.colors.primary,
-  };
-
-  const handlePrint = async (supplierName: string) => {
-    const total = details_order_purchase.map((p) => Number(p.total)).reduce((a, b) => a + b, 0);
-    const blob = await pdf(
-      <PurchaseOrders
-        supplier={supplierName}
-        total={total}
-        dark={theme.colors.dark}
-        primary={theme.colors.primary}
-        items={details_order_purchase.map((p) => ({
-          qty: p.quantity,
-          name: p.name,
-          price: p.price,
-          total: Number(p.total),
-        }))}
-      />
-    ).toBlob();
-
-    const URL_PDF = URL.createObjectURL(blob);
-
-    print({
-      printable: URL_PDF,
-      type: 'pdf',
-      showModal: false,
-    });
   };
 
   const total = useMemo(() => {
@@ -115,7 +86,7 @@ function EditMode(props: Props) {
         <div className="mt-5">
           <Button
             style={global_styles().warningStyles}
-            onClick={() => handlePrint(props.purchase_order.supplier.nombre)}
+            onClick={() =>{}}
           >
             <Printer />
           </Button>

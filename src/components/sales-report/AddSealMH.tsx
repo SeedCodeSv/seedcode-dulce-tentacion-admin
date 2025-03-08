@@ -1,19 +1,14 @@
-import axios, { AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import { get_json_sale } from '../../services/sales.service';
-import { DteJson, IDTE } from '../../types/DTE/DTE.types';
+import { IDTE } from '../../types/DTE/DTE.types';
 import { useTransmitterStore } from '../../store/transmitter.store';
 import { useEffect, useState } from 'react';
-import { pdf } from '@react-pdf/renderer';
-import { Invoice } from '../../pages/Invoice';
-import { ambiente, API_URL, MH_QUERY } from '../../utils/constants';
-import { PutObjectCommand, PutObjectCommandInput } from '@aws-sdk/client-s3';
-import { s3Client } from '../../plugins/s3';
-import { get_token, return_mh_token } from '../../storage/localStorage';
+import { return_mh_token } from '../../storage/localStorage';
 import { toast } from 'sonner';
 import { Sale } from '../../types/report_contigence';
 import { check_dte, get_json_from_space } from '../../services/DTE.service';
 import { ICheckResponse } from '../../types/DTE/check.types';
-import { Button } from "@heroui/react";
+import { Button } from '@heroui/react';
 import { global_styles } from '../../styles/global.styles';
 import { LoaderCircle } from 'lucide-react';
 
@@ -30,10 +25,6 @@ export const AddSealMH = (props: Props) => {
   const { gettransmitter, transmitter } = useTransmitterStore();
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
-
-  const generateURLMH = (ambiente: string, codegen: string, fechaEmi: string) => {
-    return `${MH_QUERY}?ambiente=${ambiente}&codGen=${codegen}&fechaEmi=${fechaEmi}`;
-  };
   interface Data {
     quantity: number;
     discount: string | number;
@@ -63,7 +54,7 @@ export const AddSealMH = (props: Props) => {
         get_json_sale(sale.id).then((data) => {
           setMessage('Generando documento...');
           get_json_from_space(data.data.json)
-            .then(async (response) => {
+            .then((response) => {
               const jsonData: IDTE = response.data;
               const data: Data[] = [];
               for (const item of jsonData.cuerpoDocumento) {
@@ -79,101 +70,6 @@ export const AddSealMH = (props: Props) => {
               }
 
               jsonData.respuestaMH.selloRecibido = selloRecibido;
-
-              const generate: DteJson = {
-                nit: transmitter.nit,
-                activo: true,
-                passwordPri: transmitter.clavePublica,
-                dteJson: {
-                  identificacion: jsonData.identificacion,
-                  documentoRelacionado: null,
-                  emisor: jsonData.emisor,
-                  receptor: jsonData.receptor,
-                  otrosDocumentos: null,
-                  ventaTercero: null,
-                  cuerpoDocumento: jsonData.cuerpoDocumento,
-                  resumen: jsonData.resumen,
-                  extension: null,
-                  apendice: null,
-                },
-              } as DteJson;
-
-              //json send to spapce
-              const JSON_DTE = JSON.stringify(
-                {
-                  ...generate.dteJson,
-                  respuestaMH: jsonData.respuestaMH,
-                  firma: jsonData.firma,
-                },
-                null,
-                2
-              );
-              const json_blob = new Blob([JSON_DTE], {
-                type: 'application/json',
-              });
-
-              const blob = await pdf(
-                <Invoice
-                  MHUrl={generateURLMH(
-                    ambiente,
-                    generate.dteJson.identificacion.codigoGeneracion,
-                    generate.dteJson.identificacion.fecEmi
-                  )}
-                  DTE={generate}
-                  sello={selloRecibido}
-                />
-              ).toBlob();
-              if (json_blob && blob) {
-                const uploadParams: PutObjectCommandInput = {
-                  Bucket: 'seedcode-facturacion',
-                  Key: props.sale.pathJson,
-                  Body: json_blob,
-                };
-                const uploadParamsPDF: PutObjectCommandInput = {
-                  Bucket: 'seedcode-facturacion',
-                  Key: props.sale.pathPdf,
-                  Body: blob,
-                };
-                try {
-                  setMessage('Subiendo documento...');
-                  s3Client.send(new PutObjectCommand(uploadParamsPDF)).then((response) => {
-                    if (response.$metadata) {
-                      s3Client.send(new PutObjectCommand(uploadParams)).then((response) => {
-                        if (response.$metadata) {
-                          const token = get_token() ?? '';
-
-                          axios
-                            .put(
-                              API_URL + '/sales/sale-update-transaction',
-                              {
-                                pdf: props.sale.pathPdf,
-                                dte: props.sale.pathJson,
-                                sello: true,
-                              },
-                              {
-                                headers: {
-                                  Authorization: `Bearer ${token}`,
-                                },
-                              }
-                            )
-                            .then(() => {
-                              toast.success('Se actualizo con éxito la venta');
-                              setLoading(false);
-                              props.onClose();
-                              props.reload();
-                            })
-                            .catch(() => {
-                              toast.error('Error al guardar la venta');
-                              setLoading(false);
-                            });
-                        }
-                      });
-                    }
-                  });
-                } catch (error) {
-                  setLoading(false);
-                }
-              }
             })
             .catch(() => {
               setLoading(false);
