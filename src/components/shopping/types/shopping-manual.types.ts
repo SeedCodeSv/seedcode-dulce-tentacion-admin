@@ -37,6 +37,7 @@ export interface AccountItemProps {
     canAddItem?: boolean,
     editAccount: boolean
     setExenta?: Dispatch<SetStateAction<string>>
+    exenta?: string
 }
 
 export interface CodCuentaProps {

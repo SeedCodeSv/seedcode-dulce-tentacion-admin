@@ -160,8 +160,14 @@ function CreateShoppingManual() {
         if (newItem.isExenta) {
           setExenta(newItem.debe);
         } else {
+          newItem.codCuenta = '';
+          newItem.descCuenta = '';
+          newItem.centroCosto = undefined
           newItem.debe = '0';
           newItem.haber = '0';
+          newItem.descTran = '';
+          newItem.itemId = 0;
+          newItem.isExenta = false;
         }
         itemss.unshift(newItem);
       }
