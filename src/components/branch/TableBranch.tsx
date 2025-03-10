@@ -1,3 +1,4 @@
+import ThGlobal from "@/themes/ui/th-global";
 import { useBranchesStore } from "../../store/branches.store";
 import { Branches } from "../../types/branches.types";
 import NO_DATA from "@/assets/svg/no_data.svg";
@@ -17,21 +18,21 @@ function TableBranch(props: Props) {
         <table className="w-full">
           <thead className="sticky top-0 z-20 bg-white">
             <tr>
-              <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+              <ThGlobal className="text-left p-3">
                 No.
-              </th>
-              <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+              </ThGlobal>
+              <ThGlobal className="text-left p-3">
                 Nombre
-              </th>
-              <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+              </ThGlobal>
+              <ThGlobal className="text-left p-3">
                 Teléfono
-              </th>
-              <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+              </ThGlobal>
+              <ThGlobal className="text-left p-3">
                 Dirección
-              </th>
-              <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+              </ThGlobal>
+              <ThGlobal className="text-left p-3">
                 Acciones
-              </th>
+              </ThGlobal>
             </tr>
           </thead>
           <tbody className="max-h-[600px] w-full overflow-y-auto">

@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { useBranchesStore } from '../../store/branches.store';
 import {
   Button,
@@ -11,25 +11,22 @@ import {
   SelectItem,
   Switch,
   useDisclosure,
-} from "@heroui/react";
+} from '@heroui/react';
 import {
   Edit,
   ShoppingBag,
   PhoneIcon,
   User,
-  TrashIcon,
   MapPinIcon,
   Table as ITable,
   CreditCard,
-  List,
   RefreshCcw,
   Store,
+  Trash,
 } from 'lucide-react';
-import { ThemeContext } from '../../hooks/useTheme';
 import AddButton from '../global/AddButton';
 import Pagination from '../global/Pagination';
 import AddBranch from './AddBranch';
-import { global_styles } from '../../styles/global.styles';
 import { limit_options, messages } from '../../utils/constants';
 import TableBranch from './TableBranch';
 import MobileView from './MobileView';
@@ -40,14 +37,16 @@ import BoxBranch from './BoxBranch';
 import classNames from 'classnames';
 import HeadlessModal from '../global/HeadlessModal';
 import TooltipGlobal from '../global/TooltipGlobal';
-
 import SmPagination from '../global/SmPagination';
 import { ArrayAction } from '@/types/view.types';
 import useWindowSize from '@/hooks/useWindowSize';
 import SearchBranch from './search_branch/SearchBranch';
 import AddPointOfSales from './AddPointOfSales';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
+import useThemeColors from '@/themes/use-theme-colors';
+
 function ListBranch({ actions }: ArrayAction) {
-  const { theme } = useContext(ThemeContext);
   const { getBranchesPaginated, branches_paginated, disableBranch } = useBranchesStore();
   const [name, setName] = useState('');
   const modalAddPointOfSales = useDisclosure();
@@ -173,18 +172,15 @@ function ListBranch({ actions }: ArrayAction) {
                     getBranchesPaginated(1, limit, name, phone, '', active);
                   }}
                 />
-                <Button
-                  style={{
-                    backgroundColor: theme.colors.secondary,
-                    color: theme.colors.primary,
-                  }}
+                <ButtonUi
+                  theme={Colors.Primary}
                   className="hidden mt-6 font-semibold md:flex border border-white rounded-xl"
                   color="primary"
-                  onClick={() => handleSearch()}
+                  onPress={() => handleSearch()}
                   type="button"
                 >
                   Buscar
-                </Button>
+                </ButtonUi>
               </div>
             </div>
 
@@ -225,71 +221,21 @@ function ListBranch({ actions }: ArrayAction) {
                     ))}
                   </Select>
                 </div>
-                <ButtonGroup className="xl:flex hidden mt-4 border border-white rounded-xl">
-                  <Button
-                    className="hidden md:inline-flex"
+                <ButtonGroup className="mt-4">
+                  <ButtonUi
+                    theme={view === 'table' ? Colors.Primary : Colors.Default}
                     isIconOnly
-                    color="secondary"
-                    style={{
-                      backgroundColor: view === 'table' ? theme.colors.third : '#e5e5e5',
-                      color: view === 'table' ? theme.colors.primary : '#3e3e3e',
-                    }}
-                    onClick={() => setView('table')}
-                    type="button"
+                    onPress={() => setView('table')}
                   >
                     <ITable />
-                  </Button>
-                  <Button
+                  </ButtonUi>
+                  <ButtonUi
+                    theme={view === 'grid' ? Colors.Primary : Colors.Default}
                     isIconOnly
-                    color="default"
-                    style={{
-                      backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
-                      color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
-                    }}
-                    onClick={() => setView('grid')}
-                    type="button"
+                    onPress={() => setView('grid')}
                   >
                     <CreditCard />
-                  </Button>
-                  <Button
-                    isIconOnly
-                    color="default"
-                    style={{
-                      backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
-                      color: view === 'list' ? theme.colors.primary : '#3e3e3e',
-                    }}
-                    onClick={() => setView('list')}
-                    type="button"
-                  >
-                    <List />
-                  </Button>
-                </ButtonGroup>
-
-                <ButtonGroup className="mt-4 xl:hidden border border-white rounded-xl">
-                  <Button
-                    isIconOnly
-                    color="default"
-                    style={{
-                      backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
-                      color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
-                    }}
-                    onClick={() => setView('grid')}
-                    type="button"
-                  >
-                    <CreditCard />
-                  </Button>
-                  <Button
-                    isIconOnly
-                    color="default"
-                    style={{
-                      backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
-                      color: view === 'list' ? theme.colors.primary : '#3e3e3e',
-                    }}
-                    onClick={() => setView('list')}
-                    type="button"
-                  >
-                    <List />
-                  </Button>
+                  </ButtonUi>
                 </ButtonGroup>
               </div>
             </div>
@@ -299,57 +245,57 @@ function ListBranch({ actions }: ArrayAction) {
                 actionsElement={(item) => (
                   <>
                     <div className="flex w-full gap-5">
+                      {actions.includes('Editar') && item.isActive && (
+                        <>
+                          <ButtonUi
+                            onPress={() => {
+                              handleEdit(item);
+                            }}
+                            isIconOnly
+                            theme={Colors.Success}
+                          >
+                            <Edit />
+                          </ButtonUi>
+                        </>
+                      )}
                       {actions.includes('Ver Productos') && item.isActive && (
-                        <Button
-                          onClick={() => {
+                        <ButtonUi
+                          onPress={() => {
                             setBranchId(item.id);
                             modalBranchProduct.onOpen();
                           }}
                           isIconOnly
-                          style={global_styles().thirdStyle}
+                          theme={Colors.Primary}
                         >
                           <ShoppingBag />
-                        </Button>
-                      )}
-                      {actions.includes('Editar') && item.isActive && (
-                        <>
-                          <Button
-                            onClick={() => {
-                              handleEdit(item);
-                            }}
-                            isIconOnly
-                            style={global_styles().secondaryStyle}
-                          >
-                            <Edit />
-                          </Button>
-                        </>
+                        </ButtonUi>
                       )}
                       {actions.includes('Eliminar') && (
                         <>{item.isActive && <DeletePopUp branch={item} />}</>
                       )}
 
                       <TooltipGlobal text="Asignar punto de venta">
-                        <Button
-                          onClick={() => {
+                        <ButtonUi
+                          onPress={() => {
                             handlePointOfSales(item.id);
                           }}
                           isIconOnly
-                          style={global_styles().darkStyle}
+                          theme={Colors.Primary}
                         >
                           <Store />
-                        </Button>
+                        </ButtonUi>
                       </TooltipGlobal>
                       {actions.includes('Activar Sucursal') && !item.isActive && (
                         <TooltipGlobal text="Activar la sucursal">
-                          <Button
-                            onClick={() => {
+                          <ButtonUi
+                            onPress={() => {
                               handleInactive(item);
                             }}
                             isIconOnly
-                            style={global_styles().thirdStyle}
+                            theme={Colors.Info}
                           >
                             <RefreshCcw />
-                          </Button>
+                          </ButtonUi>
                         </TooltipGlobal>
                       )}
                     </div>
@@ -364,11 +310,11 @@ function ListBranch({ actions }: ArrayAction) {
                   handleActive={() => {
                     handleInactive;
                   }}
-                  layout={view as 'grid' | 'list'}
                   deletePopover={DeletePopUp}
                   handleEdit={handleEdit}
                   handleBranchProduct={handleBranchProduct}
                   handleBox={handleBox}
+                  layout={view as 'grid' | 'list'}
                 />
               </>
             )}
@@ -459,16 +405,14 @@ interface Props {
 
 const DeletePopUp = ({ branch }: Props) => {
   const { deleteBranch, disableBranch } = useBranchesStore();
-  const { theme } = useContext(ThemeContext);
-
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const deleteDisclosure = useDisclosure();
 
   const handleDelete = () => {
     if (branch.isActive) {
       disableBranch(branch.id, !branch.isActive).then((res) => {
         if (res) {
           toast.success(messages.success);
-          onClose();
+          deleteDisclosure.onClose();
         } else {
           toast.error(messages.error);
         }
@@ -477,53 +421,45 @@ const DeletePopUp = ({ branch }: Props) => {
       deleteBranch(branch.id).then((res) => {
         if (res) {
           toast.success(messages.success);
-          onClose();
+          deleteDisclosure.onClose();
         } else {
           toast.error(messages.error);
         }
       });
     }
   };
+  const style = useThemeColors({ name: Colors.Error });
 
   return (
     <>
-      <Popover isOpen={isOpen} onClose={onClose} backdrop="blur" showArrow>
+      <Popover
+        className="border border-white rounded-2xl"
+        {...deleteDisclosure}
+        backdrop="blur"
+        showArrow
+      >
         <PopoverTrigger>
-          <Button
-            onClick={onOpen}
-            isIconOnly
-            style={{
-              backgroundColor: theme.colors.danger,
-            }}
-          >
-            <TooltipGlobal text="Eliminar la sucursal" color="primary">
-              <TrashIcon
-                style={{
-                  color: theme.colors.primary,
-                }}
-                size={20}
-              />
-            </TooltipGlobal>
+          <Button isIconOnly style={style}>
+            <Trash />
           </Button>
         </PopoverTrigger>
         <PopoverContent>
-          <div className="w-full p-5 text-center">
+          <div className="flex flex-col items-center justify-center w-full p-5">
             <p className="font-semibold text-gray-600 dark:text-white">Eliminar {branch.name}</p>
-            <p className="mt-3 text-gray-600 dark:text-white w-72 mx-auto">
-              ¿Estás seguro de que deseas eliminar este registro?
+            <p className="mt-3 text-center text-gray-600 dark:text-white w-72">
+              ¿Estas seguro de eliminar este registro?
             </p>
-            <div className="mt-4 flex justify-center">
-              <Button onClick={onClose}>No, cancelar</Button>
-              <Button
-                onClick={() => handleDelete()}
-                className="ml-5"
-                style={{
-                  backgroundColor: theme.colors.danger,
-                  color: theme.colors.primary,
-                }}
+            <div className="flex justify-center mt-4 gap-5">
+              <ButtonUi
+                theme={Colors.Default}
+                onPress={deleteDisclosure.onClose}
+                className="border border-white"
               >
-                Sí, eliminar
-              </Button>
+                No, cancelar
+              </ButtonUi>
+              <ButtonUi theme={Colors.Error} onPress={() => handleDelete()}>
+                Si, eliminar
+              </ButtonUi>
             </div>
           </div>
         </PopoverContent>

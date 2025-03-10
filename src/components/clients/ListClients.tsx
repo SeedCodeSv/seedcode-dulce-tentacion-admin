@@ -1,18 +1,16 @@
 import {
-  Button,
   Input,
   Select,
   SelectItem,
   Switch,
   Autocomplete,
   AutocompleteItem,
-} from "@heroui/react";
+} from '@heroui/react';
 import { useCustomerStore } from '../../store/customers.store';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   EditIcon,
   User,
-  List,
   CreditCard,
   Table as ITable,
   Mail,
@@ -20,10 +18,8 @@ import {
   Repeat,
 } from 'lucide-react';
 
-import { ButtonGroup } from "@heroui/react";
-import { ThemeContext } from '../../hooks/useTheme';
+import { ButtonGroup } from '@heroui/react';
 import Pagination from '../global/Pagination';
-import { global_styles } from '../../styles/global.styles';
 import SmPagination from '../global/SmPagination';
 import classNames from 'classnames';
 import TooltipGlobal from '../global/TooltipGlobal';
@@ -34,16 +30,17 @@ import { useNavigate } from 'react-router';
 import SearchClient from './search_client/SearchClient';
 import AddButton from '../global/AddButton';
 import ModeGridClients from './view-modes/ModeGridClients';
-import ModeListClients from './view-modes/ModeListClients';
+
 import Lottie from 'lottie-react';
 import EMPTY from '@/assets/animations/Animation - 1724269736818.json';
 import { DeletePopover } from './view-modes/DeleteClients';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
 interface Props {
   actions: string[];
 }
 
 const ListClients = ({ actions }: Props) => {
-  const { theme } = useContext(ThemeContext);
   const { getCustomersPagination, customer_pagination, save_active_customer, loading_customer } =
     useCustomerStore();
   const [limit, setLimit] = useState(5);
@@ -172,17 +169,14 @@ const ListClients = ({ actions }: Props) => {
                   ))}
                 </Autocomplete>
               </div>
-              <Button
-                style={{
-                  backgroundColor: theme.colors.secondary,
-                  color: theme.colors.primary,
-                }}
+              <ButtonUi
+                theme={Colors.Primary}
                 className="hidden mt-6 font-semibold md:flex"
                 color="primary"
-                onClick={() => handleSearch(undefined)}
+                onPress={() => handleSearch(undefined)}
               >
                 Buscar
-              </Button>
+              </ButtonUi>
             </div>
           </div>
 
@@ -285,65 +279,21 @@ const ListClients = ({ actions }: Props) => {
                 Mostrar {active ? 'inactivos' : 'activos'}
               </span>
             </Switch>
-            <ButtonGroup className=" xl:flex  hidden border border-white rounded-xl">
-              <Button
-                className="hidden md:inline-flex"
+            <ButtonGroup className="mt-4">
+              <ButtonUi
+                theme={view === 'table' ? Colors.Primary : Colors.Default}
                 isIconOnly
-                color="secondary"
-                style={{
-                  backgroundColor: view === 'table' ? theme.colors.third : '#e5e5e5',
-                  color: view === 'table' ? theme.colors.primary : '#3e3e3e',
-                }}
-                onClick={() => setView('table')}
+                onPress={() => setView('table')}
               >
                 <ITable />
-              </Button>
-              <Button
+              </ButtonUi>
+              <ButtonUi
+                theme={view === 'grid' ? Colors.Primary : Colors.Default}
                 isIconOnly
-                color="default"
-                style={{
-                  backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
-                  color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
-                }}
-                onClick={() => setView('grid')}
+                onPress={() => setView('grid')}
               >
                 <CreditCard />
-              </Button>
-              <Button
-                isIconOnly
-                color="default"
-                style={{
-                  backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
-                  color: view === 'list' ? theme.colors.primary : '#3e3e3e',
-                }}
-                onClick={() => setView('list')}
-              >
-                <List />
-              </Button>
-            </ButtonGroup>
-            <ButtonGroup className=" xl:hidden  flex border border-white rounded-xl">
-              <Button
-                isIconOnly
-                color="default"
-                style={{
-                  backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
-                  color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
-                }}
-                onClick={() => setView('grid')}
-              >
-                <CreditCard />
-              </Button>
-              <Button
-                isIconOnly
-                color="default"
-                style={{
-                  backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
-                  color: view === 'list' ? theme.colors.primary : '#3e3e3e',
-                }}
-                onClick={() => setView('list')}
-              >
-                <List />
-              </Button>
+              </ButtonUi>
             </ButtonGroup>
           </div>
           <div className="flex items-center justify-center ml-2"></div>
@@ -357,13 +307,6 @@ const ListClients = ({ actions }: Props) => {
                     customers={customer_pagination.customers}
                     actions={actions}
                   ></ModeGridClients>
-                )}
-                {view === 'list' && (
-                  <ModeListClients
-                    handleActivate={(id) => handleActivate(id)}
-                    actions={actions}
-                    customers={customer_pagination.customers}
-                  ></ModeListClients>
                 )}
                 <div className="flex justify-end w-full py-3 md:py-0 bg-first-300"></div>
                 {view === 'table' && (
@@ -421,7 +364,6 @@ const ListClients = ({ actions }: Props) => {
                                         {customer.correo}
                                       </td>
                                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                        {/* {customer.esContribuyente ? 'Si' : 'No'} */}
                                         <span
                                           className={`px-2 py-1 text-white rounded-lg ${
                                             customer.esContribuyente ? 'bg-green-500' : 'bg-red-500'
@@ -437,22 +379,17 @@ const ListClients = ({ actions }: Props) => {
                                         <div className="flex w-full gap-5">
                                           {customer.isActive && actions.includes('Editar') && (
                                             <TooltipGlobal text="Editar">
-                                              <Button
+                                              <ButtonUi
                                                 isIconOnly
-                                                onClick={() =>
+                                                onPress={() =>
                                                   navigate(
                                                     `/add-customer/${customer.id}/${customer.esContribuyente ? 'tribute' : 'normal'}`
                                                   )
                                                 }
-                                                style={global_styles().secondaryStyle}
+                                                theme={Colors.Primary}
                                               >
-                                                <EditIcon
-                                                  style={{
-                                                    color: theme.colors.primary,
-                                                  }}
-                                                  size={20}
-                                                />
-                                              </Button>
+                                                <EditIcon size={20} />
+                                              </ButtonUi>
                                             </TooltipGlobal>
                                           )}
                                           {actions.includes('Eliminar') && (
@@ -467,20 +404,17 @@ const ListClients = ({ actions }: Props) => {
                                               <>
                                                 {customer.esContribuyente === false && (
                                                   <TooltipGlobal text="Cambiar tipo de Cliente">
-                                                    <Button
-                                                      onClick={() =>
+                                                    <ButtonUi
+                                                      onPress={() =>
                                                         navigate(
                                                           `/add-customer/${customer.id}/tribute`
                                                         )
                                                       }
                                                       isIconOnly
-                                                      style={global_styles().thirdStyle}
+                                                      theme={Colors.Primary}
                                                     >
-                                                      <Repeat
-                                                        style={{ color: theme.colors.primary }}
-                                                        size={20}
-                                                      />
-                                                    </Button>
+                                                      <Repeat size={20} />
+                                                    </ButtonUi>
                                                   </TooltipGlobal>
                                                 )}
                                               </>
@@ -489,13 +423,13 @@ const ListClients = ({ actions }: Props) => {
                                             <>
                                               {actions.includes('Activar Cliente') && (
                                                 <TooltipGlobal text="Activar">
-                                                  <Button
-                                                    onClick={() => handleActivate(customer.id)}
+                                                  <ButtonUi
+                                                    onPress={() => handleActivate(customer.id)}
                                                     isIconOnly
-                                                    style={global_styles().thirdStyle}
+                                                    theme={Colors.Primary}
                                                   >
                                                     <RefreshCcw />
-                                                  </Button>
+                                                  </ButtonUi>
                                                 </TooltipGlobal>
                                               )}
                                             </>

@@ -1,67 +1,60 @@
-import { ThemeContext } from '@/hooks/useTheme';
 import { useCustomerStore } from '@/store/customers.store';
+import ButtonUi from '@/themes/ui/button-ui';
+import useThemeColors from '@/themes/use-theme-colors';
 import { Customer } from '@/types/customers.types';
-import {
-  Button,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  useDisclosure,
-} from "@heroui/react";
-import { TrashIcon } from 'lucide-react';
-import { useContext } from 'react';
+import { Colors } from '@/types/themes.types';
+import { Button, Popover, PopoverTrigger, PopoverContent, useDisclosure } from '@heroui/react';
+import { Trash } from 'lucide-react';
+
 interface PopProps {
   customers: Customer;
 }
 export const DeletePopover = ({ customers }: PopProps) => {
-  const { theme } = useContext(ThemeContext);
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const deleteDisclosure = useDisclosure();
   const { deleteCustomer } = useCustomerStore();
-  const handleDelete = async (id: number) => {
-    await deleteCustomer(id);
-    onClose();
+  const handleDelete = async () => {
+    await deleteCustomer(customers.id);
+    deleteDisclosure.onClose();
   };
+
+  const style = useThemeColors({ name: Colors.Error });
+
   return (
-    <Popover isOpen={isOpen} onClose={onClose} backdrop="blur" showArrow>
-      <PopoverTrigger>
-        <Button
-          onClick={onOpen}
-          isIconOnly
-          style={{
-            backgroundColor: theme.colors.danger,
-          }}
-        >
-          <TrashIcon
-            style={{
-              color: theme.colors.primary,
-            }}
-            size={20}
-          />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent>
-        <div className="w-full p-5 dark:text-white flex flex-col items-center justify-center">
-          <p className="font-semibold text-gray-600 dark:text-white text-center">
-            Eliminar {customers.nombre}
-          </p>
-          <p className="mt-3 text-center text-gray-600 dark:text-white w-72">
-            ¿Estás seguro de eliminar este registro?
-          </p>
-          <div className="mt-4 flex justify-center">
-            <Button onClick={onClose}>No, cancelar</Button>
-            <Button
-              onClick={() => handleDelete(customers.id)}
-              className="ml-5"
-              style={{
-                backgroundColor: theme.colors.danger,
-                color: theme.colors.primary,
-              }}
-            >
-              Si, eliminar
-            </Button>
+    <>
+      <Popover
+        className="border border-white rounded-2xl"
+        {...deleteDisclosure}
+        backdrop="blur"
+        showArrow
+      >
+        <PopoverTrigger>
+          <Button isIconOnly style={style}>
+            <Trash />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent>
+          <div className="flex flex-col items-center justify-center w-full p-5">
+            <p className="font-semibold text-gray-600 dark:text-white">
+              Eliminar {customers.nombre}
+            </p>
+            <p className="mt-3 text-center text-gray-600 dark:text-white w-72">
+              ¿Estas seguro de eliminar este registro?
+            </p>
+            <div className="flex justify-center mt-4 gap-5">
+              <ButtonUi
+                theme={Colors.Default}
+                onPress={deleteDisclosure.onClose}
+                className="border border-white"
+              >
+                No, cancelar
+              </ButtonUi>
+              <ButtonUi theme={Colors.Error} onPress={() => handleDelete()}>
+                Si, eliminar
+              </ButtonUi>
+            </div>
           </div>
-        </div>
-      </PopoverContent>
-    </Popover>
+        </PopoverContent>
+      </Popover>
+    </>
   );
 };

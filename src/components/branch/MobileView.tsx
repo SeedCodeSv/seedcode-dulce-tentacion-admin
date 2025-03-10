@@ -1,10 +1,10 @@
 import { useBranchesStore } from '../../store/branches.store';
 import { DataView } from 'primereact/dataview';
 import { BadgeCheck, Edit, MapPin, Phone, Scroll, ShoppingBag } from 'lucide-react';
-import { Button } from "@heroui/react";
 import { classNames } from 'primereact/utils';
-import { global_styles } from '../../styles/global.styles';
 import { GridProps, MobileViewProps } from './types/mobile_view.types';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
 
 function MobileView(props: MobileViewProps) {
   const {
@@ -91,31 +91,27 @@ const GridItem = (props: GridProps) => {
           <div className="flex justify-between mt-5 w-full">
             {actions.includes('Editar') && branch.isActive && (
               <>
-                <Button
-                  onClick={() => handleEdit(branch)}
-                  isIconOnly
-                  style={global_styles().secondaryStyle}
-                >
+                <ButtonUi onPress={() => handleEdit(branch)} isIconOnly theme={Colors.Success}>
                   <Edit />
-                </Button>
+                </ButtonUi>
               </>
             )}
-            <Button
-              onClick={() => {
+            <ButtonUi
+              onPress={() => {
                 handleBranchProduct(branch.id);
               }}
               isIconOnly
-              style={global_styles().thirdStyle}
+              theme={Colors.Info}
             >
               <ShoppingBag />
-            </Button>
+            </ButtonUi>
             {branch.isActive === false && (
-              <Button
-                onClick={() => {
+              <ButtonUi
+                onPress={() => {
                   handleActive(branch.id);
                 }}
                 isIconOnly
-                style={global_styles().thirdStyle}
+                theme={Colors.Info}
               >
                 <BadgeCheck
                   onClick={() => {
@@ -123,7 +119,7 @@ const GridItem = (props: GridProps) => {
                   }}
                   size={20}
                 />
-              </Button>
+              </ButtonUi>
             )}
             {deletePopover({ branch })}
           </div>
@@ -165,29 +161,25 @@ const ListItem = (props: GridProps) => {
           </div>
         </div>
         <div className="flex flex-col items-end justify-between gap-4">
-          <Button
-            onClick={() => handleEdit(branch)}
-            isIconOnly
-            style={global_styles().secondaryStyle}
-          >
+          <ButtonUi onPress={() => handleEdit(branch)} isIconOnly theme={Colors.Info}>
             <Edit />
-          </Button>
-          <Button
-            onClick={() => {
+          </ButtonUi>
+          <ButtonUi
+            onPress={() => {
               handleBranchProduct(branch.id);
             }}
             isIconOnly
-            style={global_styles().thirdStyle}
+            theme={Colors.Info}
           >
             <ShoppingBag />
-          </Button>
+          </ButtonUi>
           {branch.isActive === false && (
-            <Button
-              onClick={() => {
+            <ButtonUi
+              onPress={() => {
                 handleActive(branch.id);
               }}
               isIconOnly
-              style={global_styles().thirdStyle}
+              theme={Colors.Info}
             >
               <BadgeCheck
                 onClick={() => {
@@ -195,7 +187,7 @@ const ListItem = (props: GridProps) => {
                 }}
                 size={20}
               />
-            </Button>
+            </ButtonUi>
           )}
           {deletePopover({ branch })}
         </div>
