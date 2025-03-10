@@ -20,6 +20,7 @@ import FullPageLayout from '../global/FullOverflowLayout';
 import { X } from 'lucide-react';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
+import Pui from '@/themes/ui/p-ui';
 
 type UseDisclosureReturn = ReturnType<typeof useDisclosure>;
 
@@ -415,7 +416,9 @@ function DailyBook({ disclosure }: Props) {
       <Modal {...disclosure} size="xl" isDismissable={false}>
         <ModalContent>
           <>
-            <ModalHeader>Generar libro diario</ModalHeader>
+            <ModalHeader>
+              <Pui>Generar libro diario</Pui>
+            </ModalHeader>
             <ModalBody>
               <Input
                 labelPlacement="outside"
@@ -424,6 +427,7 @@ function DailyBook({ disclosure }: Props) {
                 type="date"
                 variant="bordered"
                 value={startDate}
+                className='dark:text-white'
                 onChange={(e) => setStartDate(e.target.value)}
               />
               <Input
@@ -431,6 +435,7 @@ function DailyBook({ disclosure }: Props) {
                 classNames={{ label: 'font-semibold' }}
                 label="Fecha final"
                 type="date"
+                className='dark:text-white'
                 variant="bordered"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
@@ -472,7 +477,7 @@ function DailyBook({ disclosure }: Props) {
               </ButtonUi>
             </ModalBody>
             <ModalFooter>
-              <ButtonUi isLoading={loadingItems} theme={Colors.Default} className="px-10">
+              <ButtonUi onPress={disclosure.onClose} isLoading={loadingItems} theme={Colors.Default} className="px-10">
                 Cancelar
               </ButtonUi>
               <ButtonUi
