@@ -1,13 +1,11 @@
-import { ThemeContext } from '@/hooks/useTheme';
 import { Employee } from '@/types/employees.types';
-import { Button } from "@heroui/react";
 import jsPDF from 'jspdf';
 import { Notebook } from 'lucide-react';
-import { useContext } from 'react';
 import logo from '@/assets/MADNESS.png';
 import TooltipGlobal from '@/components/global/TooltipGlobal';
-import { Lock } from 'lucide-react';
 import { toast } from 'sonner';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
 
 interface Props {
   employee: Employee;
@@ -15,12 +13,6 @@ interface Props {
 }
 
 function ProofSalary({ employee, actions }: Props) {
-  const { theme } = useContext(ThemeContext);
-  const style = {
-    backgroundColor: theme.colors.dark,
-    color: theme.colors.primary,
-  };
-
   const convertImageToBase64 = (url: string): Promise<string> => {
     return new Promise((resolve, reject) => {
       const img = new Image();
@@ -120,38 +112,19 @@ function ProofSalary({ employee, actions }: Props) {
 
   return (
     <>
-      {actions.includes('Constancia de Trabajo') && employee.isActive ? (
+      {actions.includes('Constancia de Trabajo') && employee.isActive && (
         <TooltipGlobal text="Generar Constancia de Trabajo">
-          <Button
+          <ButtonUi
             className="border border-white"
             onClick={() => {
               generatePDF();
             }}
             isIconOnly
-            style={{
-              backgroundColor: theme.colors.third,
-            }}
+            theme={Colors.Warning}
           >
-            <Notebook
-              style={{
-                color: theme.colors.primary,
-              }}
-              size={20}
-            />
-          </Button>
+            <Notebook size={20} />
+          </ButtonUi>
         </TooltipGlobal>
-      ) : (
-        <>
-          <Button
-            type="button"
-            disabled
-            style={{ ...style, cursor: 'not-allowed' }}
-            className="flex font-semibold border border-white "
-            isIconOnly
-          >
-            <Lock />
-          </Button>
-        </>
       )}
     </>
   );

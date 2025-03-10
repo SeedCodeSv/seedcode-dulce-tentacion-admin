@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useEmployeeStore } from '../../store/employee.store';
 import {
   Button,
@@ -13,26 +13,22 @@ import {
   Autocomplete,
   AutocompleteItem,
   Switch,
-} from "@heroui/react";
+} from '@heroui/react';
 import {
-  TrashIcon,
   Table as ITable,
   CreditCard,
-  List,
   EditIcon,
   User,
   Phone,
   RefreshCcw,
   FileText,
-  Lock,
   ScanBarcode,
   Store,
+  Trash,
 } from 'lucide-react';
-
 import { Employee, EmployeePayload } from '../../types/employees.types';
 import AddButton from '../global/AddButton';
 import Pagination from '../global/Pagination';
-import { ThemeContext } from '../../hooks/useTheme';
 import MobileView from './MobileView';
 import AddEmployee from './AddEmployee';
 import { global_styles } from '../../styles/global.styles';
@@ -53,17 +49,16 @@ import SearchEmployee from './search_employee/SearchEmployee';
 import ProofSalary from './employees-pdfs/ProofSalary';
 import { fechaActualString } from '@/utils/dates';
 import ProofeOfEmployment from './employees-pdfs/ProofeOfEmployment';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
+import ThGlobal from '@/themes/ui/th-global';
+import useThemeColors from '@/themes/use-theme-colors';
 
 interface Props {
   actions: string[];
 }
 
 function ListEmployee({ actions }: Props) {
-  const { theme } = useContext(ThemeContext);
-  const style = {
-    backgroundColor: theme.colors.dark,
-    color: theme.colors.primary,
-  };
   const { user } = useAuthStore();
   const { getEmployeesPaginated, employee_paginated, activateEmployee, loading_employees } =
     useEmployeeStore();
@@ -833,10 +828,7 @@ function ListEmployee({ actions }: Props) {
                       }}
                     >
                       {branch_list.map((bra) => (
-                        <AutocompleteItem
-                          className="dark:text-white"
-                          key={bra.name}
-                        >
+                        <AutocompleteItem className="dark:text-white" key={bra.name}>
                           {bra.name}
                         </AutocompleteItem>
                       ))}
@@ -879,29 +871,22 @@ function ListEmployee({ actions }: Props) {
                       </div>
                     </>
                   )}
-                  <Button
-                    style={{
-                      backgroundColor: theme.colors.secondary,
-                      color: theme.colors.primary,
-                    }}
+                  <ButtonUi
+                    theme={Colors.Primary}
                     className="hidden mt-6 font-semibold md:flex border border-white"
                     color="primary"
-                    onClick={() => changePage()}
+                    onPress={() => changePage()}
                   >
                     Buscar
-                  </Button>
+                  </ButtonUi>
 
-                  <Button
-                    style={{
-                      backgroundColor: theme.colors.secondary,
-                      color: theme.colors.primary,
-                    }}
+                  <ButtonUi
+                    theme={Colors.Primary}
                     className="hidden mt-6 font-semibold md:flex border border-white"
-                    color="primary"
-                    onClick={() => setDate(!isDate)}
+                    onPress={() => setDate(!isDate)}
                   >
                     Filtrar Fechas
-                  </Button>
+                  </ButtonUi>
                 </div>
               </div>
 
@@ -921,49 +906,25 @@ function ListEmployee({ actions }: Props) {
                       </span>
                     </Switch>
                   </div>
-                  {actions.includes('Cumpleaños') ? (
-                    <Button
-                      onClick={() => navigate('/birthday-calendar')}
-                      style={global_styles().thirdStyle}
+                  {actions.includes('Cumpleaños') && (
+                    <ButtonUi
+                      onPress={() => navigate('/birthday-calendar')}
+                      theme={Colors.Primary}
                       className="xl:hidden md:hidden border border-white"
                     >
                       <p className="text-sm sm:text-base">Cumpleaños</p>
-                    </Button>
-                  ) : (
-                    <Button
-                      type="button"
-                      disabled
-                      style={{
-                        backgroundColor: theme.colors.secondary,
-                      }}
-                      className="flex xl:hidden md:hidden font-semibold border border-white  cursor-not-allowed"
-                      isIconOnly
-                    >
-                      <Lock className="text-white" />
-                    </Button>
+                    </ButtonUi>
                   )}
                 </div>
                 <div className="flex gap-10 w-full justify-between items-center lg:justify-end order-1 lg:order-2">
-                  {actions.includes('Cumpleaños') ? (
-                    <Button
-                      onClick={() => navigate('/birthday-calendar')}
-                      style={global_styles().thirdStyle}
+                  {actions.includes('Cumpleaños') && (
+                    <ButtonUi
+                      onPress={() => navigate('/birthday-calendar')}
+                      theme={Colors.Primary}
                       className=" xl:flex md:flex hidden border mt-7 border-white"
                     >
                       <p className="text-sm sm:text-base">Cumpleaños</p>
-                    </Button>
-                  ) : (
-                    <Button
-                      type="button"
-                      disabled
-                      style={{
-                        backgroundColor: theme.colors.secondary,
-                      }}
-                      className="flex xl:flex md:flex hidden  font-semibold border border-white  cursor-not-allowed"
-                      isIconOnly
-                    >
-                      <Lock className="text-white" />
-                    </Button>
+                    </ButtonUi>
                   )}
 
                   <div className="w-44">
@@ -988,82 +949,34 @@ function ListEmployee({ actions }: Props) {
                       ))}
                     </Select>
                   </div>
-                  <ButtonGroup className="mt-4 border xl:hidden border-white rounded-xl">
-                    <Button
+                  <ButtonGroup className="mt-4">
+                    <ButtonUi
+                      theme={view === 'table' ? Colors.Primary : Colors.Default}
                       isIconOnly
-                      color="default"
-                      style={{
-                        backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
-                        color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
-                      }}
-                      onClick={() => setView('grid')}
-                    >
-                      <CreditCard />
-                    </Button>
-                    <Button
-                      isIconOnly
-                      color="default"
-                      style={{
-                        backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
-                        color: view === 'list' ? theme.colors.primary : '#3e3e3e',
-                      }}
-                      onClick={() => setView('list')}
-                    >
-                      <List />
-                    </Button>
-                  </ButtonGroup>
-
-                  <ButtonGroup className="mt-4 border xl:flex hidden border-white rounded-xl">
-                    <Button
-                      className=""
-                      isIconOnly
-                      color="secondary"
-                      style={{
-                        backgroundColor: view === 'table' ? theme.colors.third : '#e5e5e5',
-                        color: view === 'table' ? theme.colors.primary : '#3e3e3e',
-                      }}
-                      onClick={() => setView('table')}
+                      onPress={() => setView('table')}
                     >
                       <ITable />
-                    </Button>
-                    <Button
+                    </ButtonUi>
+                    <ButtonUi
+                      theme={view === 'grid' ? Colors.Primary : Colors.Default}
                       isIconOnly
-                      color="default"
-                      style={{
-                        backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
-                        color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
-                      }}
-                      onClick={() => setView('grid')}
+                      onPress={() => setView('grid')}
                     >
                       <CreditCard />
-                    </Button>
-                    <Button
-                      isIconOnly
-                      color="default"
-                      style={{
-                        backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
-                        color: view === 'list' ? theme.colors.primary : '#3e3e3e',
-                      }}
-                      onClick={() => setView('list')}
-                    >
-                      <List />
-                    </Button>
+                    </ButtonUi>
                   </ButtonGroup>
                 </div>
               </div>
 
               {(view === 'grid' || view === 'list') && (
                 <MobileView
-                  OpenPdf={(employee) => {
-                    OpenPdf(employee);
-                  }}
-                  deletePopover={DeletePopover}
+                  DeletePopover={DeletePopover}
                   openEditModal={(employee) => {
                     setDataUpdate(employee);
                   }}
-                  layout={view as 'grid' | 'list'}
                   actions={actions}
                   handleActivate={handleActivate}
+                  WorkConstancy={(employee) => OpenPdf(employee)}
                 />
               )}
               {view === 'table' && (
@@ -1072,27 +985,13 @@ function ListEmployee({ actions }: Props) {
                     <table className="w-full">
                       <thead className="sticky top-0 z-20 bg-white">
                         <tr>
-                          <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                            No.
-                          </th>
-                          <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                            Nombre
-                          </th>
-                          <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                            Apellido
-                          </th>
-                          <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                            Teléfono
-                          </th>
-                          <th className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                            Sucursal
-                          </th>
-                          <th className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                            Codigo
-                          </th>
-                          <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                            Acciones
-                          </th>
+                          <ThGlobal className="text-left p-3">No.</ThGlobal>
+                          <ThGlobal className="text-left p-3">Nombre</ThGlobal>
+                          <ThGlobal className="text-left p-3">Apellido</ThGlobal>
+                          <ThGlobal className="text-left p-3">Teléfono</ThGlobal>
+                          <ThGlobal className="text-left p-3">Sucursal</ThGlobal>
+                          <ThGlobal className="text-left p-3">Codigo</ThGlobal>
+                          <ThGlobal className="text-left p-3">Acciones</ThGlobal>
                         </tr>
                       </thead>
                       <tbody className="max-h-[600px] w-full overflow-y-auto">
@@ -1131,113 +1030,53 @@ function ListEmployee({ actions }: Props) {
                                     </td>
                                     <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                                       <div className="flex w-full gap-5">
-                                        {employee.isActive && actions.includes('Editar') ? (
+                                        {employee.isActive && actions.includes('Editar') && (
                                           <>
                                             <TooltipGlobal text="Editar">
-                                              <Button
+                                              <ButtonUi
                                                 className="border border-white"
                                                 onClick={() => {
                                                   setDataUpdate(employee);
                                                 }}
                                                 isIconOnly
-                                                style={{
-                                                  backgroundColor: theme.colors.secondary,
-                                                }}
+                                                theme={Colors.Success}
                                               >
-                                                <EditIcon
-                                                  style={{
-                                                    color: theme.colors.primary,
-                                                  }}
-                                                  size={20}
-                                                />
-                                              </Button>
+                                                <EditIcon size={20} />
+                                              </ButtonUi>
                                             </TooltipGlobal>
                                           </>
-                                        ) : (
-                                          <Button
-                                            type="button"
-                                            disabled
-                                            style={{
-                                              backgroundColor: theme.colors.secondary,
-                                            }}
-                                            className="flex font-semibold border border-white  cursor-not-allowed"
-                                            isIconOnly
-                                          >
-                                            <Lock />
-                                          </Button>
                                         )}
 
-                                        {actions.includes('Eliminar') && employee.isActive ? (
+                                        {actions.includes('Eliminar') && employee.isActive && (
                                           <DeletePopover employee={employee} />
-                                        ) : (
-                                          <Button
-                                            type="button"
-                                            disabled
-                                            style={{
-                                              backgroundColor: theme.colors.danger,
-                                            }}
-                                            className="flex font-semibold border border-white  cursor-not-allowed"
-                                            isIconOnly
-                                          >
-                                            <Lock />
-                                          </Button>
                                         )}
                                         {actions.includes('Contrato de Trabajo') &&
-                                          employee.isActive ? (
-                                          <TooltipGlobal text="Generar Contrato de Trabajo">
-                                            <Button
-                                              className="border border-white"
-                                              onClick={() => OpenPdf(employee)}
-                                              isIconOnly
-                                              style={{
-                                                backgroundColor: theme.colors.dark,
-                                              }}
-                                            >
-                                              <FileText
-                                                style={{
-                                                  color: theme.colors.primary,
-                                                }}
-                                                size={20}
-                                              />
-                                            </Button>
-                                          </TooltipGlobal>
-                                        ) : (
-                                          <>
-                                            <Button
-                                              type="button"
-                                              disabled
-                                              style={{ ...style, cursor: 'not-allowed' }}
-                                              className="flex font-semibold border border-white "
-                                              isIconOnly
-                                            >
-                                              <Lock />
-                                            </Button>
-                                          </>
-                                        )}
+                                          employee.isActive && (
+                                            <TooltipGlobal text="Generar Contrato de Trabajo">
+                                              <ButtonUi
+                                                className="border border-white"
+                                                onPress={() => OpenPdf(employee)}
+                                                isIconOnly
+                                                theme={Colors.Info}
+                                              >
+                                                <FileText size={20} />
+                                              </ButtonUi>
+                                            </TooltipGlobal>
+                                          )}
 
                                         {!employee.isActive && (
                                           <>
-                                            {actions.includes('Activar') ? (
+                                            {actions.includes('Activar') && (
                                               <TooltipGlobal text="Activar">
                                                 <Button
                                                   className="border border-white"
-                                                  onClick={() => handleActivate(employee.id)}
+                                                  onPress={() => handleActivate(employee.id)}
                                                   isIconOnly
                                                   style={global_styles().thirdStyle}
                                                 >
                                                   <RefreshCcw />
                                                 </Button>
                                               </TooltipGlobal>
-                                            ) : (
-                                              <Button
-                                                type="button"
-                                                disabled
-                                                style={global_styles().thirdStyle}
-                                                className="flex font-semibold border border-white  cursor-not-allowed"
-                                                isIconOnly
-                                              >
-                                                <Lock />
-                                              </Button>
                                             )}
                                           </>
                                         )}
@@ -1284,8 +1123,8 @@ function ListEmployee({ actions }: Props) {
                         getEmployeesPaginated(
                           Number(
                             user?.correlative?.branch.transmitterId ??
-                            user?.pointOfSale?.branch.transmitterId ??
-                            0
+                              user?.pointOfSale?.branch.transmitterId ??
+                              0
                           ),
                           page,
                           limit,
@@ -1307,8 +1146,8 @@ function ListEmployee({ actions }: Props) {
                         getEmployeesPaginated(
                           Number(
                             user?.correlative?.branch.transmitterId ??
-                            user?.pointOfSale?.branch.transmitterId ??
-                            0
+                              user?.pointOfSale?.branch.transmitterId ??
+                              0
                           ),
                           employee_paginated.nextPag,
                           limit,
@@ -1326,8 +1165,8 @@ function ListEmployee({ actions }: Props) {
                         getEmployeesPaginated(
                           Number(
                             user?.correlative?.branch.transmitterId ??
-                            user?.pointOfSale?.branch.transmitterId ??
-                            0
+                              user?.pointOfSale?.branch.transmitterId ??
+                              0
                           ),
                           employee_paginated.prevPag,
                           limit,
@@ -1369,42 +1208,27 @@ interface PopProps {
 }
 
 export const DeletePopover = ({ employee }: PopProps) => {
-  const { theme } = useContext(ThemeContext);
-
   const { deleteEmployee } = useEmployeeStore();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const deleteDisclosure = useDisclosure();
 
   const handleDelete = async () => {
     await deleteEmployee(employee.id);
-    onClose();
+    deleteDisclosure.onClose();
   };
+
+  const style = useThemeColors({ name: Colors.Error });
 
   return (
     <>
       <Popover
         className="border border-white rounded-2xl"
-        isOpen={isOpen}
-        onClose={onClose}
+        {...deleteDisclosure}
         backdrop="blur"
         showArrow
       >
         <PopoverTrigger>
-          <Button
-            className="border border-white"
-            onClick={onOpen}
-            isIconOnly
-            style={{
-              backgroundColor: theme.colors.danger,
-            }}
-          >
-            <TooltipGlobal text="Eliminar">
-              <TrashIcon
-                style={{
-                  color: theme.colors.primary,
-                }}
-                size={20}
-              />
-            </TooltipGlobal>
+          <Button isIconOnly style={style}>
+            <Trash />
           </Button>
         </PopoverTrigger>
         <PopoverContent>
@@ -1415,20 +1239,17 @@ export const DeletePopover = ({ employee }: PopProps) => {
             <p className="mt-3 text-center text-gray-600 dark:text-white w-72">
               ¿Estas seguro de eliminar este registro?
             </p>
-            <div className="mt-4">
-              <Button className="border border-white" onClick={onClose}>
-                No, cancelar
-              </Button>
-              <Button
-                onClick={() => handleDelete()}
-                className="ml-5 border border-white"
-                style={{
-                  backgroundColor: theme.colors.danger,
-                  color: theme.colors.primary,
-                }}
+            <div className="flex justify-center mt-4 gap-5">
+              <ButtonUi
+                theme={Colors.Default}
+                onPress={deleteDisclosure.onClose}
+                className="border border-white"
               >
+                No, cancelar
+              </ButtonUi>
+              <ButtonUi theme={Colors.Error} onPress={() => handleDelete()}>
                 Si, eliminar
-              </Button>
+              </ButtonUi>
             </div>
           </div>
         </PopoverContent>

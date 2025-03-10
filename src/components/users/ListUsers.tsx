@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useUsersStore } from '../../store/users.store';
 import {
   Autocomplete,
@@ -12,7 +12,7 @@ import {
   SelectItem,
   Switch,
   useDisclosure,
-} from "@heroui/react";
+} from '@heroui/react';
 
 import AddUsers from './AddUsers';
 import UpdateUsers from './UpdateUsers';
@@ -20,21 +20,17 @@ import {
   Key,
   Table as ITable,
   CreditCard,
-  TrashIcon,
-  List,
   EditIcon,
   RefreshCcw,
   Lock,
   RectangleEllipsis,
+  Trash,
 } from 'lucide-react';
 import UpdatePassword from './UpdatePassword';
-import { ThemeContext } from '../../hooks/useTheme';
-import { ButtonGroup } from "@heroui/react";
-import MobileView from './MobileView';
+import { ButtonGroup } from '@heroui/react';
 import AddButton from '../global/AddButton';
 import Pagination from '../global/Pagination';
 import { User } from '../../types/users.types';
-import { global_styles } from '../../styles/global.styles';
 import classNames from 'classnames';
 import { limit_options } from '../../utils/constants';
 import SmPagination from '../global/SmPagination';
@@ -47,11 +43,15 @@ import SearchUser from './search_user/SearchUser';
 import { useRolesStore } from '@/store/roles.store';
 import { useAuthStore } from '@/store/auth.store';
 import GenerateCode from './GenerateCode';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
+import ThGlobal from '@/themes/ui/th-global';
+import useThemeColors from '@/themes/use-theme-colors';
+import CardProduct from './MobileView';
 interface Props {
   actionss: string[];
 }
 function ListUsers({ actionss }: Props) {
-  const { theme } = useContext(ThemeContext);
   const [limit, setLimit] = useState(5);
   const { users_paginated, getUsersPaginated, activateUser } = useUsersStore();
   const [users, setUser] = useState<User | undefined>();
@@ -175,17 +175,13 @@ function ListUsers({ actionss }: Props) {
                   ))}
                 </Autocomplete>
               </div>
-              <Button
-                style={{
-                  backgroundColor: theme.colors.secondary,
-                  color: theme.colors.primary,
-                }}
+              <ButtonUi
+                theme={Colors.Primary}
                 className="hidden mt-6 font-semibold md:flex border border-white"
-                color="primary"
-                onClick={() => handleSearch(undefined)}
+                onPress={() => handleSearch(undefined)}
               >
                 Buscar
-              </Button>
+              </ButtonUi>
             </div>
           </div>
 
@@ -229,83 +225,38 @@ function ListUsers({ actionss }: Props) {
                   ))}
                 </Select>
               </div>
-              <ButtonGroup className="mt-4  xl:flex hidden border border-white rounded-xl">
-                <Button
-                  className="hidden md:inline-flex"
+              <ButtonGroup className="mt-4">
+                <ButtonUi
+                  theme={view === 'table' ? Colors.Primary : Colors.Default}
                   isIconOnly
-                  color="secondary"
-                  style={{
-                    backgroundColor: view === 'table' ? theme.colors.third : '#e5e5e5',
-                    color: view === 'table' ? theme.colors.primary : '#3e3e3e',
-                  }}
-                  onClick={() => setView('table')}
+                  onPress={() => setView('table')}
                 >
                   <ITable />
-                </Button>
-                <Button
+                </ButtonUi>
+                <ButtonUi
+                  theme={view === 'grid' ? Colors.Primary : Colors.Default}
                   isIconOnly
-                  color="default"
-                  style={{
-                    backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
-                    color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
-                  }}
-                  onClick={() => setView('grid')}
+                  onPress={() => setView('grid')}
                 >
                   <CreditCard />
-                </Button>
-                <Button
-                  isIconOnly
-                  color="default"
-                  style={{
-                    backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
-                    color: view === 'list' ? theme.colors.primary : '#3e3e3e',
-                  }}
-                  onClick={() => setView('list')}
-                >
-                  <List />
-                </Button>
-              </ButtonGroup>
-              <ButtonGroup className="mt-4 xl:hidden border border-white rounded-xl ">
-                <Button
-                  isIconOnly
-                  color="default"
-                  style={{
-                    backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
-                    color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
-                  }}
-                  onClick={() => setView('grid')}
-                >
-                  <CreditCard />
-                </Button>
-                <Button
-                  isIconOnly
-                  color="default"
-                  style={{
-                    backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
-                    color: view === 'list' ? theme.colors.primary : '#3e3e3e',
-                  }}
-                  onClick={() => setView('list')}
-                >
-                  <List />
-                </Button>
+                </ButtonUi>
               </ButtonGroup>
             </div>
           </div>
 
           {(view === 'grid' || view === 'list') && (
-            <MobileView
-              deletePopover={DeletePopUp}
+            <CardProduct
+              actions={actionss}
               openEditModal={(user) => {
                 setUser(user);
                 modalUpdate.onOpen();
               }}
+              DeletePopover={DeletePopUp}
+              handleActivate={handleActivate}
               openKeyModal={(user) => {
                 setSelectedId(user.id);
                 modalChangePassword.onOpen();
               }}
-              layout={view as 'grid' | 'list'}
-              actions={actionss}
-              handleActivate={handleActivate}
             />
           )}
           {view === 'table' && (
@@ -313,18 +264,10 @@ function ListUsers({ actionss }: Props) {
               <table className="w-full">
                 <thead className="sticky top-0 z-20 bg-white">
                   <tr>
-                    <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                      No.
-                    </th>
-                    <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                      Nombre de usuario
-                    </th>
-                    <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                      Rol
-                    </th>
-                    <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                      Acciones
-                    </th>
+                    <ThGlobal className="text-left p-3">No.</ThGlobal>
+                    <ThGlobal className="text-left p-3">Nombre de usuario</ThGlobal>
+                    <ThGlobal className="text-left p-3">Rol</ThGlobal>
+                    <ThGlobal className="text-left p-3"></ThGlobal>
                   </tr>
                 </thead>
                 <tbody className="max-h-[600px] w-full overflow-y-auto">
@@ -345,61 +288,53 @@ function ListUsers({ actionss }: Props) {
                             <div className="flex w-full gap-5">
                               {item.active && actionss.includes('Editar') ? (
                                 <TooltipGlobal text="Editar">
-                                  <Button
+                                  <ButtonUi
                                     className="border border-white"
-                                    onClick={() => {
+                                    onPress={() => {
                                       setUser(item);
                                       modalUpdate.onOpen();
                                     }}
                                     isIconOnly
-                                    style={{
-                                      backgroundColor: theme.colors.secondary,
-                                    }}
+                                    theme={Colors.Success}
                                   >
-                                    <EditIcon style={{ color: theme.colors.primary }} size={20} />
-                                  </Button>
+                                    <EditIcon size={20} />
+                                  </ButtonUi>
                                 </TooltipGlobal>
                               ) : (
-                                <Button
+                                <ButtonUi
                                   type="button"
                                   disabled
-                                  style={{
-                                    backgroundColor: theme.colors.secondary,
-                                  }}
+                                  theme={Colors.Secondary}
                                   className="flex font-semibold border border-white  cursor-not-allowed"
                                   isIconOnly
                                 >
                                   <Lock className="text-white" />
-                                </Button>
+                                </ButtonUi>
                               )}
                               {item.active && actionss.includes('Cambiar Contraseña') ? (
                                 <TooltipGlobal text="Cambiar contraseña">
-                                  <Button
+                                  <ButtonUi
                                     className="border border-white"
-                                    onClick={() => {
+                                    onPress={() => {
                                       setSelectedId(item.id);
                                       modalChangePassword.onOpen();
                                     }}
                                     isIconOnly
-                                    style={{
-                                      backgroundColor: theme.colors.warning,
-                                    }}
+                                    theme={Colors.Warning}
                                   >
-                                    <Key color={theme.colors.primary} size={20} />
-                                  </Button>
+                                    <Key size={20} />
+                                  </ButtonUi>
                                 </TooltipGlobal>
                               ) : (
-                                <Button
+                                <ButtonUi
                                   type="button"
                                   disabled
-                                  style={{
-                                    backgroundColor: theme.colors.warning,
-                                  }}
+                                  theme={Colors.Warning}
                                   className="flex font-semibold border border-white  cursor-not-allowed"
                                   isIconOnly
                                 >
                                   <Lock className="text-white" />
-                                </Button>
+                                </ButtonUi>
                               )}
 
                               {item.active && actionss.includes('Eliminar') ? (
@@ -407,54 +342,52 @@ function ListUsers({ actionss }: Props) {
                                   <DeletePopUp user={item} />
                                 </>
                               ) : (
-                                <Button
+                                <ButtonUi
                                   type="button"
                                   disabled
-                                  style={{
-                                    backgroundColor: theme.colors.danger,
-                                  }}
+                                  theme={Colors.Warning}
                                   className="flex font-semibold border border-white  cursor-not-allowed"
                                   isIconOnly
                                 >
                                   <Lock className="text-white" />
-                                </Button>
+                                </ButtonUi>
                               )}
                               {!item.active && (
                                 <>
                                   {actionss.includes('Activar') ? (
                                     <TooltipGlobal text="Activar">
-                                      <Button
-                                        onClick={() => handleActivate(item.id)}
+                                      <ButtonUi
+                                        onPress={() => handleActivate(item.id)}
                                         isIconOnly
-                                        style={global_styles().thirdStyle}
+                                        theme={Colors.Info}
                                       >
                                         <RefreshCcw />
-                                      </Button>
+                                      </ButtonUi>
                                     </TooltipGlobal>
                                   ) : (
-                                    <Button
+                                    <ButtonUi
                                       type="button"
                                       disabled
-                                      style={global_styles().thirdStyle}
+                                      theme={Colors.Info}
                                       className="flex font-semibold border border-white  cursor-not-allowed"
                                       isIconOnly
                                     >
                                       <Lock />
-                                    </Button>
+                                    </ButtonUi>
                                   )}
                                 </>
                               )}
                               <TooltipGlobal text="Generar código">
-                                <Button
-                                  onClick={() => {
+                                <ButtonUi
+                                  onPress={() => {
                                     setSelectedId(item.id);
                                     generateCodeModal.onOpen();
                                   }}
                                   isIconOnly
-                                  style={global_styles().darkStyle}
+                                  theme={Colors.Info}
                                 >
                                   <RectangleEllipsis />
-                                </Button>
+                                </ButtonUi>
                               </TooltipGlobal>
                             </div>
                           </td>
@@ -593,7 +526,7 @@ function ListUsers({ actionss }: Props) {
           title="Generar código"
           size="w-[350px] md:w-[450px]"
         >
-          <GenerateCode id={selectId}/>
+          <GenerateCode id={selectId} />
         </HeadlessModal>
       </div>
     </>
@@ -604,41 +537,25 @@ interface PopProps {
   user: User;
 }
 export const DeletePopUp = ({ user }: PopProps) => {
-  const { theme } = useContext(ThemeContext);
   const { deleteUser } = useUsersStore();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const deleteDisclosure = useDisclosure();
 
   const handleDelete = () => {
     deleteUser(user.id);
-    onClose();
+    deleteDisclosure.onClose();
   };
-
+  const style = useThemeColors({ name: Colors.Error });
   return (
     <>
       <Popover
         className="border border-white rounded-2xl"
-        isOpen={isOpen}
-        onClose={onClose}
+        {...deleteDisclosure}
         backdrop="blur"
         showArrow
       >
         <PopoverTrigger>
-          <Button
-            className="border border-white"
-            onClick={onOpen}
-            isIconOnly
-            style={{
-              backgroundColor: theme.colors.danger,
-            }}
-          >
-            <TooltipGlobal text="Eliminar">
-              <TrashIcon
-                style={{
-                  color: theme.colors.primary,
-                }}
-                size={20}
-              />
-            </TooltipGlobal>
+          <Button isIconOnly style={style}>
+            <Trash />
           </Button>
         </PopoverTrigger>
         <PopoverContent>
@@ -647,20 +564,17 @@ export const DeletePopUp = ({ user }: PopProps) => {
             <p className="mt-3 text-center text-gray-600 dark:text-white w-72">
               ¿Estas seguro de eliminar este registro?
             </p>
-            <div className="flex justify-center mt-4">
-              <Button className="border border-white" onClick={onClose}>
-                No, cancelar
-              </Button>
-              <Button
-                onClick={() => handleDelete()}
-                className="ml-5 border border-white"
-                style={{
-                  backgroundColor: theme.colors.danger,
-                  color: theme.colors.primary,
-                }}
+            <div className="flex justify-center mt-4 gap-5">
+              <ButtonUi
+                theme={Colors.Default}
+                onPress={deleteDisclosure.onClose}
+                className="border border-white"
               >
+                No, cancelar
+              </ButtonUi>
+              <ButtonUi theme={Colors.Error} onPress={() => handleDelete()}>
                 Si, eliminar
-              </Button>
+              </ButtonUi>
             </div>
           </div>
         </PopoverContent>
