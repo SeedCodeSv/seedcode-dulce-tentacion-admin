@@ -18,12 +18,10 @@ import {
 import Layout from '@/layout/Layout';
 import { useBranchesStore } from '@/store/branches.store';
 import { useShoppingStore } from '@/store/shopping.store';
-import { global_styles } from '@/styles/global.styles';
 import { API_URL } from '@/utils/constants';
 import { formatDate } from '@/utils/dates';
 import { convertCurrencyFormat } from '@/utils/money';
 import {
-  Button,
   Checkbox,
   Input,
   Modal,
@@ -40,20 +38,19 @@ import { useNavigate, useParams } from 'react-router';
 import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
 import { toast } from 'sonner';
 import * as yup from 'yup';
-import useGlobalStyles from '../global/global.styles';
 import { useAuthStore } from '@/store/auth.store';
 import { Items } from '@/pages/contablilidad/types/types';
 import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
 import { useFiscalDataAndParameterStore } from '@/store/fiscal-data-and-paramters.store';
 import CatalogItemsPaginated from './manual/catalog-items-paginated';
-import EditResumeShopping from './EditResumenShoping';
-import AccountItemEdit from './AccountItemEdit';
+import EditResumeShopping from './edit-resumen-shopping';
+import AccountItemEdit from './account-item-edit';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
 
 function EditShopping() {
   const { id, controlNumber } = useParams<{ id: string; controlNumber: string }>();
   const { shopping_details, getShoppingDetails, loading_shopping } = useShoppingStore();
-
-  const styles = useGlobalStyles();
   const { branch_list, getBranchesList } = useBranchesStore();
   const [includePerception, setIncludePerception] = useState(false);
   const { getAccountCatalogs, account_catalog_pagination } = useAccountCatalogsStore();
@@ -863,22 +860,22 @@ function EditShopping() {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 mt-10 gap-5 ">
                   <div />
-                  <Button
-                    onClick={() => navigate('/shopping')}
+                  <ButtonUi
+                    onPress={() => navigate('/shopping')}
                     className="px-20"
-                    style={styles.dangerStyles}
+                    theme={Colors.Default}
                     isLoading={formik.isSubmitting}
                   >
                     Regresar
-                  </Button>
-                  <Button
+                  </ButtonUi>
+                  <ButtonUi
                     isLoading={formik.isSubmitting}
                     type="submit"
                     className="px-20"
-                    style={styles.thirdStyle}
+                    theme={Colors.Primary}
                   >
                     Guardar
-                  </Button>
+                  </ButtonUi>
                 </div>
               </form>
             ) : (
@@ -887,20 +884,20 @@ function EditShopping() {
                   <IoWarning size={50} className="text-orange-400" />
                   <p className="mt-4 text-lg">No se encontró la venta solicitada</p>
                   <div className="flex gap-5 mt-4">
-                    <Button
-                      onClick={() => navigate('/shopping')}
+                    <ButtonUi
+                      onPress={() => navigate('/shopping')}
                       className="font-semibold px-10"
-                      style={global_styles().dangerStyles}
+                      theme={Colors.Default}
                     >
                       Regresar
-                    </Button>
-                    <Button
-                      onClick={() => window.location.reload()}
+                    </ButtonUi>
+                    <ButtonUi
+                      onPress={() => window.location.reload()}
                       className="font-semibold px-10"
-                      style={global_styles().secondaryStyle}
+                      theme={Colors.Primary}
                     >
                       Recargar
-                    </Button>
+                    </ButtonUi>
                   </div>
                 </div>
               </>

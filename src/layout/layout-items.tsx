@@ -1,4 +1,4 @@
-import { Button, Switch } from "@heroui/react";
+import { Button, Switch } from '@heroui/react';
 import { NavLink, useLocation } from 'react-router-dom';
 import LOGO from '../assets/MADNESS.png';
 import {
@@ -38,6 +38,7 @@ import classNames from 'classnames';
 import { motion } from 'framer-motion';
 import { Barcode } from 'lucide-react';
 import SidebarLinkList from '@/components/global/SidebarLinkList ';
+import { hexToRgba } from './utils';
 
 interface Props {
   isOpen: boolean;
@@ -73,6 +74,7 @@ export const LayoutItems = (props: Props) => {
   const location = useLocation();
 
   const { pathname } = location;
+
   const linksProductManagement = [
     { viewName: 'Productos', to: '/products', icon: Barcode, label: 'Productos' },
     {
@@ -305,13 +307,7 @@ export const LayoutItems = (props: Props) => {
   };
   return (
     <>
-      <div
-        className="flex justify-between items-center h-[70px]"
-        style={{
-          backgroundColor: theme.colors.dark,
-          color: theme.colors.primary,
-        }}
-      >
+      <div className="flex justify-between items-center h-[70px]">
         {personalization.length === 0 ? (
           <div className="flex items-center pl-5 w-full shadow">
             <img src={LOGO} className="max-h-12" />
@@ -336,11 +332,14 @@ export const LayoutItems = (props: Props) => {
           <li>
             <NavLink
               to="/"
-              className={({ isActive }) =>
-                `group relative flex items-center gap-2.5 rounded-sm py-4 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700 ${
-                  isActive && 'bg-gray-200 dark:bg-gray-700'
-                }`
-              }
+              style={({ isActive }) => ({
+                backgroundColor: isActive
+                  ? hexToRgba(theme.colors[context].menu.textColor, 0.3)
+                  : theme.colors[context].menu.background,
+                color: theme.colors[context].menu.textColor,
+              })}
+              className={`group relative flex items-center gap-2.5 rounded-sm py-4 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700
+                `}
             >
               <Home />
               Inicio
@@ -350,22 +349,35 @@ export const LayoutItems = (props: Props) => {
           <>
             <ul className="flex flex-col gap-1.5">
               <SidebarLinkGroup
-                activeCondition={validate_pathname(pathname, ['gestion-productos'])}
+                activeCondition={
+                  validate_pathname(pathname, [
+                    'products',
+                    'categories',
+                    'subCategories',
+                    'orders',
+                    'compras',
+                  ]) && openGroup === 'gestion-productos'
+                }
                 isOpen={openGroup === 'gestion-productos'}
                 onGroupClick={() => handleGroupClick('gestion-productos')}
               >
                 {(handleClick, open) => (
                   <>
                     <div
-                      className={classNames(
-                        validate_pathname(pathname, [
+                      style={{
+                        backgroundColor: validate_pathname(pathname, [
                           'products',
                           'categories',
                           'subCategories',
                           'orders',
                           'compras',
-                        ]) && 'bg-gray-200 dark:bg-gray-700',
-                        'group cursor-pointer relative flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
+                        ])
+                          ? hexToRgba(theme.colors[context].menu.textColor, 0.3)
+                          : theme.colors[context].menu.background,
+                        color: theme.colors[context].menu.textColor,
+                      }}
+                      className={classNames(
+                        'group cursor-pointer relative flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium duration-300 ease-in-out'
                       )}
                       onClick={handleClick}
                     >
@@ -398,23 +410,37 @@ export const LayoutItems = (props: Props) => {
           <>
             <ul className="flex flex-col gap-1.5">
               <SidebarLinkGroup
-                activeCondition={validate_pathname(pathname, ['administración'])}
+                activeCondition={
+                  validate_pathname(pathname, [
+                    'employees',
+                    'clients',
+                    'users',
+                    'branches',
+                    'suppliers',
+                    'pointsOfSale',
+                  ]) && openGroup === 'administración'
+                }
                 isOpen={openGroup === 'administración'}
                 onGroupClick={() => handleGroupClick('administración')}
               >
                 {(handleClick, open) => (
                   <>
                     <div
-                      className={classNames(
-                        validate_pathname(pathname, [
+                      style={{
+                        backgroundColor: validate_pathname(pathname, [
                           'employees',
                           'clients',
                           'users',
                           'branches',
                           'suppliers',
                           'pointsOfSale',
-                        ]) && 'bg-gray-200 dark:bg-gray-700',
-                        'group relative cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-body duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
+                        ])
+                          ? hexToRgba(theme.colors[context].menu.textColor, 0.3)
+                          : theme.colors[context].menu.background,
+                        color: theme.colors[context].menu.textColor,
+                      }}
+                      className={classNames(
+                        'group relative cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-body duration-300 ease-in-out'
                       )}
                       onClick={handleClick}
                     >
@@ -454,9 +480,13 @@ export const LayoutItems = (props: Props) => {
                 {(handleClick, open) => (
                   <>
                     <div
+                      style={{
+                        backgroundColor: validate_pathname(pathname, ['gestion-reports'])
+                          ? hexToRgba(theme.colors[context].menu.textColor, 0.3)
+                          : theme.colors[context].menu.background,
+                        color: theme.colors[context].menu.textColor,
+                      }}
                       className={classNames(
-                        validate_pathname(pathname, ['gestion-reports']) &&
-                          'bg-gray-200 dark:bg-gray-700',
                         'group relative cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
                       )}
                       onClick={handleClick}
@@ -490,23 +520,30 @@ export const LayoutItems = (props: Props) => {
           <>
             <ul className="flex flex-col gap-1.5">
               <SidebarLinkGroup
-                activeCondition={validate_pathname(pathname, [
-                  'Nivel de Estudio',
-                  'Estados del Empleado',
-                  'Tipo de Contratacion',
-                ])}
+                activeCondition={
+                  validate_pathname(pathname, [
+                    'Nivel de Estudio',
+                    'Estados del Empleado',
+                    'Tipo de Contratacion',
+                  ]) && openGroup === 'planillas'
+                }
                 isOpen={openGroup === 'planillas'}
                 onGroupClick={() => handleGroupClick('planillas')}
               >
                 {(handleClick, open) => (
                   <>
                     <div
-                      className={classNames(
-                        validate_pathname(pathname, [
+                      style={{
+                        backgroundColor: validate_pathname(pathname, [
                           'Nivel de Estudio',
                           'Estados del Empleado',
                           'Tipo de Contratacion',
-                        ]) && 'bg-gray-200 dark:bg-gray-700',
+                        ])
+                          ? hexToRgba(theme.colors[context].menu.textColor, 0.3)
+                          : theme.colors[context].menu.background,
+                        color: theme.colors[context].menu.textColor,
+                      }}
+                      className={classNames(
                         'group relative cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
                       )}
                       onClick={handleClick}
@@ -539,19 +576,30 @@ export const LayoutItems = (props: Props) => {
           <>
             <ul className="flex flex-col gap-1.5">
               <SidebarLinkGroup
-                activeCondition={validate_pathname(pathname, [
-                  'Anexos de compras',
-                  'Anexos de consumidor final',
-                  'Anexos ventas a contribuyentes',
-                ])}
+                activeCondition={
+                  validate_pathname(pathname, [
+                    '/anexos-iva-compras',
+                    '/anexos-fe',
+                    '/anexos-ccfe',
+                  ]) && openGroup === 'anexos'
+                }
                 isOpen={openGroup === 'anexos'}
                 onGroupClick={() => handleGroupClick('anexos')}
               >
                 {(handleClick, open) => (
                   <>
                     <div
+                      style={{
+                        backgroundColor: validate_pathname(pathname, [
+                          '/anexos-iva-compras',
+                          '/anexos-fe',
+                          '/anexos-ccfe',
+                        ])
+                          ? hexToRgba(theme.colors[context].menu.textColor, 0.3)
+                          : theme.colors[context].menu.background,
+                        color: theme.colors[context].menu.textColor,
+                      }}
                       className={classNames(
-                        validate_pathname(pathname, ['anexos']) && 'bg-gray-200 dark:bg-gray-700',
                         'group relative cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
                       )}
                       onClick={handleClick}
@@ -584,19 +632,30 @@ export const LayoutItems = (props: Props) => {
           <>
             <ul className="flex flex-col gap-1.5">
               <SidebarLinkGroup
-                activeCondition={validate_pathname(pathname, [
-                  'IVA de Compras',
-                  'IVA-CCF',
-                  'Anexos ventas a contribuyentes',
-                ])}
+                activeCondition={
+                  validate_pathname(pathname, [
+                    '/iva/shopping-book',
+                    '/iva/ccf-book',
+                    '/iva/fe-book',
+                  ]) && openGroup === 'books'
+                }
                 isOpen={openGroup === 'books'}
                 onGroupClick={() => handleGroupClick('books')}
               >
                 {(handleClick, open) => (
                   <>
                     <div
+                      style={{
+                        backgroundColor: validate_pathname(pathname, [
+                          '/iva/shopping-book',
+                          '/iva/ccf-book',
+                          '/iva/fe-book',
+                        ])
+                          ? hexToRgba(theme.colors[context].menu.textColor, 0.3)
+                          : theme.colors[context].menu.background,
+                        color: theme.colors[context].menu.textColor,
+                      }}
                       className={classNames(
-                        validate_pathname(pathname, ['books']) && 'bg-gray-200 dark:bg-gray-700',
                         'group relative cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
                       )}
                       onClick={handleClick}
@@ -629,16 +688,40 @@ export const LayoutItems = (props: Props) => {
           <>
             <ul className="flex flex-col gap-1.5">
               <SidebarLinkGroup
-                activeCondition={validate_pathname(pathname, ['contabilidad'])}
+                activeCondition={
+                  validate_pathname(pathname, [
+                    'cash-cuts-big-z',
+                    'cash-cuts-x',
+                    'cash-cuts-z',
+                    'correlative',
+                    'accountCatalogs',
+                    'type-accounting',
+                    'accounting-items',
+                    'report-accounting',
+                  ]) && openGroup === 'contabilidad'
+                }
                 isOpen={openGroup === 'contabilidad'}
                 onGroupClick={() => handleGroupClick('contabilidad')}
               >
                 {(handleClick, open) => (
                   <>
                     <div
+                      style={{
+                        backgroundColor: validate_pathname(pathname, [
+                          'cash-cuts-big-z',
+                          'cash-cuts-x',
+                          'cash-cuts-z',
+                          'correlative',
+                          'accountCatalogs',
+                          'type-accounting',
+                          'accounting-items',
+                          'report-accounting',
+                        ])
+                          ? hexToRgba(theme.colors[context].menu.textColor, 0.3)
+                          : theme.colors[context].menu.background,
+                        color: theme.colors[context].menu.textColor,
+                      }}
                       className={classNames(
-                        validate_pathname(pathname, ['contabilidad']) &&
-                          'bg-gray-200 dark:bg-gray-700',
                         'group relative cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
                       )}
                       onClick={handleClick}
@@ -672,9 +755,11 @@ export const LayoutItems = (props: Props) => {
       </>
 
       <div
-        className={
-          ' flex w-full py-4 pl-5 cursor-pointer :-coffee-green hover:font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-coffee-green'
-        }
+        style={{
+          backgroundColor: theme.colors[context].menu.background,
+          color: theme.colors[context].menu.textColor,
+        }}
+        className={' flex w-full py-4 pl-5 cursor-pointer :-coffee-green hover:font-semibold'}
       >
         <Switch
           className="relative"
@@ -682,7 +767,10 @@ export const LayoutItems = (props: Props) => {
           isSelected={context === 'dark'}
           size={windowSize.width > 768 ? undefined : 'sm'}
         >
-          <p className="relative text-sm lg:text-base">
+          <p
+            style={{ color: theme.colors[context].menu.textColor }}
+            className="relative text-sm lg:text-base"
+          >
             {context === 'dark' ? 'Modo claro' : 'Modo oscuro'}
           </p>
         </Switch>

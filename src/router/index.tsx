@@ -42,8 +42,8 @@ import CushCatsBigZ from '@/pages/CashCutsBigZ';
 import CashCutsX from '@/pages/CashCutsX';
 import CushCatsZ from '@/pages/CashCutsZ';
 import ShoppingBookIVA from '@/pages/iva/ShoppingBookIVA';
-import Shopping from '@/pages/Shopping';
-import CreateShopping from '@/components/shopping/CreateShoppingJson';
+import Shopping from '@/pages/shopping';
+import CreateShopping from '@/components/shopping/create-shopping-json';
 import CFFBookIVA from '@/pages/iva/CFFBookIVA';
 import FEBookIVA from '@/pages/iva/FEBookIVA';
 import CreateTheme from '@/components/configuration/CreateTheme';
@@ -70,7 +70,7 @@ import ContingenceSection from '@/pages/ContingenceSection';
 import Annulation from '@/pages/Annulation';
 import anexos from "@/pages/anexos_iva/router"
 import accounting_items from "@/pages/contablilidad/router"
-import EditShopping from '@/components/shopping/EditShopping';
+import EditShopping from '@/components/shopping/edit-shopping';
 import AccountCatalogs from '@/pages/account-catalog';
 import AddAccountCatalogs from '@/components/account-catalogs/add-account-catalog';
 import UpdateAccountCatalogs from '@/components/account-catalogs/update-account-catalog';

@@ -8,9 +8,9 @@ import {
   DropdownTrigger,
   User,
 } from "@heroui/react";
-import { SmLayout } from './SmLayout';
-import { LayoutItems } from './LayoutItems';
-import { LgLayout } from './LgLayout';
+import { SmLayout } from './sm-layout';
+import { LayoutItems } from './layout-items';
+import { LgLayout } from './lg-layout';
 import USER from '../assets/user.png';
 import { ThemeContext } from '../hooks/useTheme';
 import { useAuthStore } from '../store/auth.store';
@@ -26,7 +26,7 @@ interface Props {
 
 export const SideBar = (props: Props) => {
   const navigate = useNavigate();
-  const { theme } = useContext(ThemeContext);
+  const { theme,context } = useContext(ThemeContext);
 
   const { user, makeLogout } = useAuthStore();
   const { setIsAuth, setToken, setMode } = useContext(SessionContext);
@@ -90,8 +90,8 @@ export const SideBar = (props: Props) => {
             isOpen ? 'xl:pl-[20rem]' : 'xl:pl-0'
           )}
           style={{
-            backgroundColor: theme.colors.dark,
-            color: theme.colors.primary,
+            backgroundColor: theme.colors[context].menu.background,
+            color: theme.colors[context].menu.textColor,
           }}
         >
           {!isOpen && (

@@ -18,16 +18,16 @@ interface PaginationProps {
 const Pagination: React.FC<PaginationProps> = (props) => {
   const { totalPages, onPageChange, totalItems = 5 } = props;
 
-  const { theme } = useContext(ThemeContext);
+  const { theme, context } = useContext(ThemeContext);
 
   const activeStyle = {
-    background: theme.colors.dark,
-    color: theme.colors.primary,
+    background: theme.colors[context].buttons.colors.primary,
+    color: theme.colors[context].buttons.textColor,
   };
 
   const inactiveStyle = {
-    background: theme.colors.primary,
-    color: theme.colors.dark,
+    background: theme.colors[context].buttons.colors.default,
+    color: theme.colors[context].buttons.textDefaultColor,
   };
 
   const handlePageChange = (pageNumber: number) => {
@@ -44,7 +44,7 @@ const Pagination: React.FC<PaginationProps> = (props) => {
           <Button
             key={i}
             style={props.currentPage === i ? activeStyle : inactiveStyle}
-            onClick={() => handlePageChange(i)}
+            onPress={() => handlePageChange(i)}
             isIconOnly
             className={classNames(props.currentPage === i ? 'active' : '', 'px-2 font-semibold')}
           >
@@ -71,7 +71,7 @@ const Pagination: React.FC<PaginationProps> = (props) => {
           <Button
             key={i}
             style={props.currentPage === i ? activeStyle : inactiveStyle}
-            onClick={() => handlePageChange(i)}
+            onPress={() => handlePageChange(i)}
             isIconOnly
             className={classNames(props.currentPage === i ? 'active' : '', 'px-2 font-semibold')}
           >
@@ -122,35 +122,30 @@ const Pagination: React.FC<PaginationProps> = (props) => {
   return (
     <>
       <div className="hidden lg:flex gap-2 pagination w-full">
-        <Button style={activeStyle} isIconOnly onClick={goToFirstPage}>
+        <Button style={activeStyle} isIconOnly onPress={goToFirstPage}>
           <ChevronsLeft />
         </Button>
-        <Button style={activeStyle} isIconOnly onClick={goToPrevPage}>
+        <Button style={activeStyle} isIconOnly onPress={goToPrevPage}>
           <ChevronLeft />
         </Button>
         {renderPageNumbers()}
-        <Button style={activeStyle} isIconOnly onClick={goToNextPage}>
+        <Button style={activeStyle} isIconOnly onPress={goToNextPage}>
           <ChevronRight />
         </Button>
-        <Button style={activeStyle} isIconOnly onClick={goToLastPage}>
+        <Button style={activeStyle} isIconOnly onPress={goToLastPage}>
           <ChevronsRight />
         </Button>
       </div>
       <div className='flex lg:hidden w-full'>
         <div className="flex justify-between w-full lg:hidden gap-2 pagination">
-          {/* <Button style={activeStyle} isIconOnly onClick={goToFirstPage}>
-            <ChevronsLeft />
-          </Button> */}
-          <Button style={activeStyle} isIconOnly onClick={goToPrevPage}>
+
+          <Button style={activeStyle} isIconOnly onPress={goToPrevPage}>
             <ChevronLeft />
           </Button>
           {props.currentPage} de {totalPages}
-          <Button style={activeStyle} isIconOnly onClick={goToNextPage}>
+          <Button style={activeStyle} isIconOnly onPress={goToNextPage}>
             <ChevronRight />
           </Button>
-          {/* <Button style={activeStyle} isIconOnly onClick={goToLastPage}>
-            <ChevronsRight />
-          </Button> */}
         </div>
       </div>
     </>

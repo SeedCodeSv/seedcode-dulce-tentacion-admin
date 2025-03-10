@@ -2,11 +2,10 @@ import { PayloadSupplier } from '../../types/supplier.types';
 import * as yup from 'yup';
 import { useEffect, useMemo, useState } from 'react';
 import { Formik } from 'formik';
-import { Autocomplete, AutocompleteItem, Button, Input, Textarea } from '@heroui/react';
+import { Autocomplete, AutocompleteItem, Input, Textarea } from '@heroui/react';
 import { CodigoActividadEconomica } from '../../types/billing/cat-019-codigo-de-actividad-economica.types';
 import { Departamento } from '../../types/billing/cat-012-departamento.types';
 import { useSupplierStore } from '../../store/supplier.store';
-import useGlobalStyles from '../global/global.styles';
 import { get_user } from '@/storage/localStorage';
 import { useBillingStore } from '@/store/facturation/billing.store';
 import { typesDocumento } from '@/utils/constants';
@@ -15,6 +14,8 @@ import NoAuthorization from '@/pages/NoAuthorization';
 import { SelectedItem } from '../supplier/select-account';
 import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
 import { AddSupplierProps } from './types/shopping-manual.types';
+import { Colors } from '@/types/themes.types';
+import ButtonUi from '@/themes/ui/button-ui';
 
 function AddTributeSupplier(props: AddSupplierProps) {
   const { actions } = useViewsStore();
@@ -45,7 +46,6 @@ function AddTributeSupplier(props: AddSupplierProps) {
     complemento: props.supplier_direction?.complemento,
     codCuenta: '',
   };
-  const styles = useGlobalStyles();
 
   const validationSchema = yup.object().shape({
     nombre: yup.string().required('**El nombre es requerido**'),
@@ -357,7 +357,9 @@ function AddTributeSupplier(props: AddSupplierProps) {
                     errorMessage={errors.departamento}
                   >
                     {cat_012_departamento.map((dep) => (
-                      <AutocompleteItem className="dark:text-white">{dep.valores}</AutocompleteItem>
+                      <AutocompleteItem key={dep.codigo} className="dark:text-white">
+                        {dep.valores}
+                      </AutocompleteItem>
                     ))}
                   </Autocomplete>
                 </div>
@@ -465,14 +467,14 @@ function AddTributeSupplier(props: AddSupplierProps) {
                   <span className="text-sm font-semibold text-red-500">{errors.complemento}</span>
                 )}
               </div>
-              <div className="pt-4">
-                <Button
-                  onClick={() => handleSubmit()}
-                  className="w-full font-semibold"
-                  style={styles.darkStyle}
+              <div className="pt-4 flex justify-end">
+                <ButtonUi
+                  onPress={() => handleSubmit()}
+                  className="px-20 font-semibold"
+                  theme={Colors.Primary}
                 >
                   Guardar
-                </Button>
+                </ButtonUi>
               </div>
             </>
           )}

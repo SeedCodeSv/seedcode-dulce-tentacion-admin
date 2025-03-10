@@ -1,12 +1,11 @@
 import { get_correlative_shopping } from '@/services/shopping.service';
 import { API_URL } from '@/utils/constants';
 import { formatDate } from '@/utils/dates';
-import { Button, Modal, ModalContent, useDisclosure } from "@heroui/react";
+import { Modal, ModalContent, useDisclosure } from "@heroui/react";
 import axios from 'axios';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
-import useGlobalStyles from '../global/global.styles';
 import { useAuthStore } from '@/store/auth.store';
 import { Supplier } from '@/types/supplier.types';
 import { useSupplierStore } from '@/store/supplier.store';
@@ -34,6 +33,8 @@ import { useFiscalDataAndParameterStore } from '@/store/fiscal-data-and-paramter
 import ResumeShopping from './manual/resume-shopping';
 import CatalogItemsPaginated from './manual/catalog-items-paginated';
 import AccountItem from './manual/account-item';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
 
 function CreateShoppingManual() {
   const { user } = useAuthStore();
@@ -42,7 +43,6 @@ function CreateShoppingManual() {
   const [nrc, setNrc] = useState('');
   const [supplierSelected, setSupplierSelected] = useState<Supplier>();
   const [searchNRC, setSearchNRC] = useState('');
-  const styles = useGlobalStyles();
   const [correlative, setCorrelative] = useState(0);
   const [includePerception, setIncludePerception] = useState(false);
   const [branchName, setBranchName] = useState('');
@@ -432,15 +432,15 @@ function CreateShoppingManual() {
             />
 
             <div className="w-full flex justify-end mt-4">
-              <Button
+              <ButtonUi
                 type="submit"
                 className="px-16"
-                style={styles.thirdStyle}
+                theme={Colors.Primary}
                 isDisabled={formik.isSubmitting}
                 isLoading={formik.isSubmitting}
               >
                 {formik.isSubmitting ? 'Guardando...' : 'Guardar'}
-              </Button>
+              </ButtonUi>
             </div>
           </form>
         </FormikProvider>

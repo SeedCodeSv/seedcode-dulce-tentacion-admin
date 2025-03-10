@@ -1,11 +1,21 @@
-import { useAccountCatalogsStore } from "@/store/accountCatalogs.store";
-import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@heroui/react";
-import { Dispatch, SetStateAction, useMemo, useState } from "react";
-import useGlobalStyles from "../global/global.styles";
-import { AccountCatalog } from "@/types/accountCatalogs.types";
-import { toast } from "sonner";
-import { Search } from "lucide-react";
-import Pagination from "../global/Pagination";
+import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
+import {
+  Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  useDisclosure,
+} from '@heroui/react';
+import { Dispatch, SetStateAction, useMemo, useState } from 'react';
+import { AccountCatalog } from '@/types/accountCatalogs.types';
+import { toast } from 'sonner';
+import { Search } from 'lucide-react';
+import Pagination from '../global/Pagination';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
+import ThGlobal from '@/themes/ui/th-global';
 
 interface PropsItems {
   code: string;
@@ -41,8 +51,6 @@ export const SelectedItem = (props: PropsItems) => {
     setCurrentPage(page);
   };
 
-  const styles = useGlobalStyles();
-
   const handleSelectItem = (item: AccountCatalog) => {
     if (item.subAccount) {
       toast.error('No se puede agregar una cuenta con sub-cuentas');
@@ -54,9 +62,9 @@ export const SelectedItem = (props: PropsItems) => {
 
   return (
     <>
-      <Button onClick={modalCatalog.onOpen} isIconOnly style={styles.secondaryStyle}>
+      <ButtonUi onPress={modalCatalog.onOpen} isIconOnly theme={Colors.Info}>
         <Search />
-      </Button>
+      </ButtonUi>
       <Modal
         scrollBehavior="inside"
         size="3xl"
@@ -84,18 +92,8 @@ export const SelectedItem = (props: PropsItems) => {
                   <table className="w-full">
                     <thead className="sticky top-0 z-20 bg-white">
                       <tr>
-                        <th
-                          style={styles.darkStyle}
-                          className="p-3 whitespace-nowrap text-xs font-semibold text-left"
-                        >
-                          Code
-                        </th>
-                        <th
-                          style={styles.darkStyle}
-                          className="p-3 whitespace-nowrap text-xs font-semibold text-left"
-                        >
-                          Name
-                        </th>
+                        <ThGlobal className="text-left p-3">Código</ThGlobal>
+                        <ThGlobal className="text-left p-3">Nombre</ThGlobal>
                       </tr>
                     </thead>
                     <tbody>

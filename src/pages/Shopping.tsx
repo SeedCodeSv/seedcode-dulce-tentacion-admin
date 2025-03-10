@@ -1,4 +1,4 @@
-import ListShopping from '@/components/shopping/ListShopping.tsx';
+import ListShopping from '@/components/shopping/list-shopping.tsx';
 import Layout from '../layout/Layout.tsx';
 import { useViewsStore } from '@/store/views.store.ts';
 
