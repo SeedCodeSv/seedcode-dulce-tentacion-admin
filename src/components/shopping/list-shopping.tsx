@@ -14,25 +14,26 @@ import {
   Select,
   SelectItem,
   useDisclosure,
-} from "@heroui/react";
-import { ChevronLeft, ChevronRight, Filter, Pen, SearchIcon, Trash } from 'lucide-react';
+} from '@heroui/react';
+import { Filter, Pen, SearchIcon, Trash } from 'lucide-react';
 import NO_DATA from '@/assets/svg/no_data.svg';
 import { useNavigate } from 'react-router-dom';
 import Pagination from '../global/Pagination';
 import { useAuthStore } from '@/store/auth.store';
 import { useBranchProductStore } from '@/store/branch_product.store';
-import useGlobalStyles from '../global/global.styles';
 import { useShoppingStore } from '@/store/shopping.store';
 import { ArrayAction } from '@/types/view.types';
 import AddButton from '../global/AddButton';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import TooltipGlobal from '../global/TooltipGlobal';
-import { global_styles } from '@/styles/global.styles';
 import BottomDrawer from '../global/BottomDrawer';
-import { ThemeContext } from '@/hooks/useTheme';
 import axios from 'axios';
 import { API_URL, limit_options } from '@/utils/constants';
 import { toast } from 'sonner';
+import ThGlobal from '@/themes/ui/th-global';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
+import useThemeColors from '@/themes/use-theme-colors';
 
 function ShoppingPage({ actions }: ArrayAction) {
   const {
@@ -42,12 +43,9 @@ function ShoppingPage({ actions }: ArrayAction) {
     pagination_shopping,
     search_params,
   } = useShoppingStore();
-  const styles = useGlobalStyles();
   const [dateInitial, setDateInitial] = useState(search_params.startDate);
   const [dateEnd, setDateEnd] = useState(search_params.endDate);
   const [limit, setLimit] = useState(5);
-
-  const { theme } = useContext(ThemeContext);
   const [openVaul, setOpenVaul] = useState(false);
   const { user } = useAuthStore();
   const { getBranchesList, branches_list } = useBranchProductStore();
@@ -142,6 +140,8 @@ function ShoppingPage({ actions }: ArrayAction) {
       });
   };
 
+  const style = useThemeColors({ name: Colors.Error });
+
   return (
     <>
       <Modal isDismissable={false} isOpen={modalConfirm.isOpen} onClose={modalConfirm.onClose}>
@@ -156,39 +156,38 @@ function ShoppingPage({ actions }: ArrayAction) {
             </p>
           </ModalBody>
           <ModalFooter>
-            <Button
+            <ButtonUi
               isLoading={loadingDelete}
               className="border border-white rounded-xl px-10 font-semibold"
-              style={global_styles().thirdStyle}
-              onClick={modalConfirm.onClose}
+              theme={Colors.Default}
+              onPress={modalConfirm.onClose}
             >
               Cancelar
-            </Button>
-            <Button
+            </ButtonUi>
+            <ButtonUi
               isLoading={loadingDelete}
               className="border border-white rounded-xl px-10 font-semibold"
-              style={global_styles().dangerStyles}
-              onClick={() => deletePermanently(selectedShoppingId ?? 0)}
+              theme={Colors.Error}
+              onPress={() => deletePermanently(selectedShoppingId ?? 0)}
             >
               Eliminar
-            </Button>
+            </ButtonUi>
           </ModalFooter>
         </ModalContent>
       </Modal>
       <div className=" w-full h-full bg-gray-50 dark:bg-gray-900">
         <div className="w-full h-full flex flex-col border border-white overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
-          <div className="flex justify-between  mt-6 w-full">
+          <div className="flex justify-between mt-6 w-full px-5">
             <div className="md:hidden justify-start flex-grow mt-0">
               <TooltipGlobal text="Filtrar">
-                <Button
-                  className="border border-white rounded-xl"
-                  style={global_styles().thirdStyle}
+                <ButtonUi
+                  theme={Colors.Primary}
                   isIconOnly
-                  onClick={() => setOpenVaul(true)}
+                  onPress={() => setOpenVaul(true)}
                   type="button"
                 >
                   <Filter />
-                </Button>
+                </ButtonUi>
               </TooltipGlobal>
               <BottomDrawer
                 open={openVaul}
@@ -226,25 +225,6 @@ function ShoppingPage({ actions }: ArrayAction) {
                       label: 'text-sm font-semibold',
                     }}
                   />
-                  <Select
-                    className="w-44 dark:text-white border border-white rounded-xl"
-                    variant="bordered"
-                    labelPlacement="outside"
-                    classNames={{
-                      label: 'font-semibold',
-                    }}
-                    defaultSelectedKeys={['5']}
-                    value={limit}
-                    onChange={(e) => {
-                      setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
-                    }}
-                  >
-                    {limit_options.map((option) => (
-                      <SelectItem className="w-full dark:text-white" key={option}>
-                        {option}
-                      </SelectItem>
-                    ))}
-                  </Select>
                   <div className="w-full">
                     <p className="text-sm font-semibold dark:text-white">Sucursal</p>
                     <Autocomplete
@@ -259,30 +239,23 @@ function ShoppingPage({ actions }: ArrayAction) {
                       }
                     >
                       {branches_list.map((item) => (
-                        <AutocompleteItem
-                          key={item.name}
-                          className="dark:text-white"
-                        >
+                        <AutocompleteItem key={item.name} className="dark:text-white">
                           {item.name}
                         </AutocompleteItem>
                       ))}
                     </Autocomplete>
                   </div>
 
-                  <Button
-                    style={{
-                      backgroundColor: theme.colors.secondary,
-                      color: theme.colors.primary,
-                      fontSize: '16px',
-                    }}
+                  <ButtonUi
+                    theme={Colors.Primary}
                     className="mt-6 font-semibold"
-                    onClick={() => {
+                    onPress={() => {
                       searchDailyReport();
                       setOpenVaul(false);
                     }}
                   >
                     Buscar
-                  </Button>
+                  </ButtonUi>
                 </div>
               </BottomDrawer>
             </div>
@@ -292,7 +265,7 @@ function ShoppingPage({ actions }: ArrayAction) {
               )}
             </div>
           </div>
-          <div className="grid grid-cols-5 m-4 gap-5 px-2">
+          <div className="flex justify-between mt-4 gap-3 md:gap-5 items-end px-2">
             <Input
               className="dark:text-white border border-white rounded-xl hidden md:flex"
               onChange={(e) => {
@@ -359,15 +332,14 @@ function ShoppingPage({ actions }: ArrayAction) {
                 </SelectItem>
               ))}
             </Select>
-            <div className="w-full hidden md:flex">
-              <Button
-                className="mt-6 border border-white"
+            <div className="hidden md:flex items-end justify-end">
+              <ButtonUi
+                theme={Colors.Primary}
                 startContent={<SearchIcon className="w-full" />}
-                onClick={searchDailyReport}
-                style={styles.secondaryStyle}
+                onPress={searchDailyReport}
               >
                 Buscar
-              </Button>
+              </ButtonUi>
             </div>
           </div>
 
@@ -376,30 +348,14 @@ function ShoppingPage({ actions }: ArrayAction) {
               <table className="w-full">
                 <thead className="sticky top-0 z-20 bg-white">
                   <tr>
-                    <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                      No.
-                    </th>
-                    <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                      Número de control
-                    </th>
-                    <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                      Código de generación
-                    </th>
-                    <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                      Fecha/Hora emisión
-                    </th>
-                    <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                      Subtotal
-                    </th>
-                    <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                      IVA
-                    </th>
-                    <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                      Monto total
-                    </th>
-                    <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                      Acciones
-                    </th>
+                    <ThGlobal className="text-left p-3">No.</ThGlobal>
+                    <ThGlobal className="text-left p-3">No. de control</ThGlobal>
+                    <ThGlobal className="text-left p-3">Cod. generación</ThGlobal>
+                    <ThGlobal className="text-left p-3">Fecha/Hora emisión</ThGlobal>
+                    <ThGlobal className="text-left p-3">Subtotal</ThGlobal>
+                    <ThGlobal className="text-left p-3">IVA</ThGlobal>
+                    <ThGlobal className="text-left p-3">Monto total</ThGlobal>
+                    <ThGlobal className="text-left p-3">Acciones</ThGlobal>
                   </tr>
                 </thead>
                 <tbody className="max-h-[600px] w-full overflow-y-auto">
@@ -442,30 +398,30 @@ function ShoppingPage({ actions }: ArrayAction) {
 
                               <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
                                 <div className="flex gap-2">
-                                  <Button
-                                    onClick={() =>
+                                  <ButtonUi
+                                    onPress={() =>
                                       navigate(`/edit-shopping/${cat.id}/${cat.controlNumber}`)
                                     }
-                                    style={global_styles().secondaryStyle}
+                                    theme={Colors.Success}
                                     isIconOnly
                                   >
                                     <Pen />
-                                  </Button>
+                                  </ButtonUi>
                                   {cat.generationCode !== 'N/A' && (
                                     <>
-                                      <Button
+                                      <ButtonUi
                                         onPress={() => handleVerify(cat.id)}
-                                        style={global_styles().warningStyles}
+                                        theme={Colors.Error}
                                         isIconOnly
                                       >
                                         <Trash />
-                                      </Button>
+                                      </ButtonUi>
                                     </>
                                   )}
                                   {cat.generationCode === 'N/A' && (
                                     <Popover className="border border-white rounded-xl">
                                       <PopoverTrigger>
-                                        <Button style={global_styles().warningStyles} isIconOnly>
+                                        <Button style={style} isIconOnly>
                                           <Trash />
                                         </Button>
                                       </PopoverTrigger>
@@ -475,16 +431,13 @@ function ShoppingPage({ actions }: ArrayAction) {
                                             ¿Deseas eliminar el registro {cat.controlNumber}?
                                           </p>
                                           <div className="flex justify-center mt-4">
-                                            <Button
-                                              onClick={() => onDeleteConfirm(cat.id)}
-                                              style={{
-                                                backgroundColor: '#FF4D4F',
-                                                color: 'white',
-                                              }}
+                                            <ButtonUi
+                                              onPress={() => onDeleteConfirm(cat.id)}
+                                              theme={Colors.Error}
                                               className="mr-2"
                                             >
                                               Sí, eliminar
-                                            </Button>
+                                            </ButtonUi>
                                           </div>
                                         </div>
                                       </PopoverContent>
@@ -512,7 +465,7 @@ function ShoppingPage({ actions }: ArrayAction) {
             </div>
             {pagination_shopping.totalPag > 1 && (
               <>
-                <div className="hidden w-full mt-5 md:flex">
+                <div className="w-full mt-5">
                   <Pagination
                     previousPage={pagination_shopping.prevPag}
                     nextPage={pagination_shopping.nextPag}
@@ -531,47 +484,6 @@ function ShoppingPage({ actions }: ArrayAction) {
                       );
                     }}
                   />
-                </div>
-                <div className="flex items-center justify-between w-full mt-5 md:hidden">
-                  <Button
-                    onClick={() => {
-                      getPaginatedShopping(
-                        user?.correlative?.branch.transmitterId ??
-                          user?.pointOfSale?.branch.transmitterId ??
-                          0,
-                        pagination_shopping.prevPag,
-                        limit,
-                        dateInitial,
-                        dateEnd,
-                        branchId
-                      );
-                    }}
-                    style={styles.darkStyle}
-                    isIconOnly
-                  >
-                    <ChevronLeft />
-                  </Button>
-                  <span className="font-semibold">
-                    {pagination_shopping.currentPag} de {pagination_shopping.totalPag}
-                  </span>
-                  <Button
-                    onClick={() => {
-                      getPaginatedShopping(
-                        user?.correlative?.branch.transmitterId ??
-                          user?.pointOfSale?.branch.transmitterId ??
-                          0,
-                        pagination_shopping.prevPag,
-                        limit,
-                        dateInitial,
-                        dateEnd,
-                        branchId
-                      );
-                    }}
-                    style={styles.darkStyle}
-                    isIconOnly
-                  >
-                    <ChevronRight />
-                  </Button>
                 </div>
               </>
             )}

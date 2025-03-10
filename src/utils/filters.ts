@@ -1,5 +1,3 @@
-import { Color, Theme } from "../hooks/useTheme";
-import { Theme as ITheme } from "../types/themes.types";
 import { RoleViewAction } from "../types/actions_rol.types";
 import {
   IBranchProductOrderQuantity,
@@ -15,17 +13,6 @@ export const normalize = (text: string) =>
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase();
-
-export function formatThemeData(themesData: ITheme[]): Theme[] {
-  return themesData.map((theme) => ({
-    name: theme.name,
-    context: theme.context,
-    colors: theme.colors.reduce((acc, color) => {
-      acc[color.name as keyof Color] = color.color;
-      return acc;
-    }, {} as Color),
-  }));
-}
 
 export const filterActions = (name: string, actions: RoleViewAction) => {
   const actions_return = actions.view.find((vi) => vi.name === name);

@@ -1,5 +1,4 @@
 import {
-  Button,
   Card,
   CardBody,
   Input,
@@ -16,19 +15,16 @@ import {
 } from '@heroui/react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
 import HeadlessModal from '../global/HeadlessModal';
 import ERROR from '../../assets/error.png';
 import { X } from 'lucide-react';
 import { create_shopping, isErrorSupplier, verify_code } from '@/services/shopping.service';
 import { useAuthStore } from '@/store/auth.store';
 import Layout from '@/layout/Layout';
-import useGlobalStyles from '../global/global.styles';
 import { formatCurrency } from '@/utils/dte';
 import { IResponseFromDigitalOceanDTE } from '@/store/types/sub_interface_shopping/response_from_digitalocean_DTE_types';
-import AddTributeSupplier from './AddSupplier';
-import CreateShoppingManual from './CreateShoppingManual';
+import AddTributeSupplier from './add-supplier';
+import CreateShoppingManual from './create-shopping-manual';
 import { useViewsStore } from '@/store/views.store';
 import NoAuthorization from '@/pages/NoAuthorization';
 import {
@@ -60,6 +56,9 @@ import { useFiscalDataAndParameterStore } from '@/store/fiscal-data-and-paramter
 import { useBranchesStore } from '@/store/branches.store';
 import { get_supplier_by_nit } from '@/services/supplier.service';
 import CatalogItemsPaginated from './manual/catalog-items-paginated';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
+import ThGlobal from '@/themes/ui/th-global';
 
 function CreateShopping() {
   const { actions } = useViewsStore();
@@ -111,7 +110,6 @@ const JSONMode = () => {
   const actionView = viewName?.actions.name || [];
   const [file, setFile] = useState<File | null>(null);
   const [jsonData, setJsonData] = useState<IResponseFromDigitalOceanDTE>();
-  const styles = useGlobalStyles();
   const [modalSupplier, setModalSupplier] = useState(false);
   const { show } = useAlert();
   const { getAccountCatalogs, account_catalog_pagination } = useAccountCatalogsStore();
@@ -431,7 +429,12 @@ const JSONMode = () => {
     <>
       {actionView.includes('Agregar') ? (
         <>
-          <Modal size="3xl" isOpen={modalSupplier} onClose={() => setModalSupplier(false)}>
+          <Modal
+            size="3xl"
+            isOpen={modalSupplier}
+            isDismissable={false}
+            onClose={() => setModalSupplier(false)}
+          >
             <ModalContent>
               {() => (
                 <>
@@ -484,16 +487,16 @@ const JSONMode = () => {
                     <p className="font-semibold pb-3">¿Deseas registrarlo?</p>
                   </ModalBody>
                   <ModalFooter>
-                    <Button
-                      onClick={() => {
+                    <ButtonUi
+                      onPress={() => {
                         setModalSupplier(true);
                         setProviderModal(false);
                       }}
                       className="px-20"
-                      style={styles.thirdStyle}
+                      theme={Colors.Info}
                     >
                       Registrar
-                    </Button>
+                    </ButtonUi>
                   </ModalFooter>
                 </>
               )}
@@ -503,13 +506,13 @@ const JSONMode = () => {
             <div className=" justify-between w-full gap-5 mb-5 lg:mb-10 lg:flex-row lg:gap-0">
               <div className="flex flex-row w-full">
                 <div className="w-full flex justify-between mt-3 ">
-                  <Button
-                    onClick={() => setIsOpen(true)}
-                    style={styles.darkStyle}
+                  <ButtonUi
+                    onPress={() => setIsOpen(true)}
+                    theme={Colors.Info}
                     className="px-4 py-2"
                   >
                     Cargar Archivo JSON
-                  </Button>
+                  </ButtonUi>
                   <X className="cursor-pointer" onClick={() => navigate('/shopping')} />
                 </div>
               </div>
@@ -758,9 +761,7 @@ const JSONMode = () => {
                       errorMessage={formik.errors.typeCostSpentCode}
                     >
                       {TypeCostSpents.map((item) => (
-                        <SelectItem key={item.code}>
-                          {item.value}
-                        </SelectItem>
+                        <SelectItem key={item.code}>{item.value}</SelectItem>
                       ))}
                     </Select>
                   </div>
@@ -898,85 +899,57 @@ const JSONMode = () => {
                     <p className="mt-4 font-semibold  dark:text-white  text-black justify-center text-lg">
                       DATOS DEL PRODUCTO
                     </p>
-                    <div className="flex flex-col items-end ">
-                      <DataTable
-                        className="w-full max-h-[400px] lg:max-h-[500px] 2xl:max-h-[600px] mt-5 shadow dark:text-white"
-                        emptyMessage="Aun no agregar productos o servicios"
-                        tableStyle={{ minWidth: '50rem' }}
-                        scrollable
-                        value={jsonData.cuerpoDocumento}
-                        scrollHeight="flex"
-                      >
-                        <Column
-                          className="dark:text-white  text-black"
-                          headerClassName="text-sm font-semibold"
-                          bodyClassName="text-sm"
-                          headerStyle={{
-                            ...styles.darkStyle,
-                            borderTopLeftRadius: '5px',
-                          }}
-                          header="Tipo de item"
-                          field="tipoItem"
-                        />
-                        <Column
-                          className="dark:text-white  text-black"
-                          headerClassName="text-sm font-semibold"
-                          bodyClassName="text-sm"
-                          headerStyle={{
-                            ...styles.darkStyle,
-                          }}
-                          header="Unidad de medida"
-                          field="uniMedida"
-                        />
-                        <Column
-                          className="dark:text-white  text-black"
-                          headerClassName="text-sm font-semibold"
-                          bodyClassName="text-sm"
-                          headerStyle={{
-                            ...styles.darkStyle,
-                          }}
-                          header="Cantidad"
-                          field="cantidad"
-                        />
-                        <Column
-                          className="dark:text-white  text-black"
-                          headerClassName="text-sm font-semibold"
-                          bodyClassName="text-sm"
-                          headerStyle={{
-                            ...styles.darkStyle,
-                          }}
-                          header="Codigo"
-                          body={(rowData) => (rowData.codigo ? rowData.codigo : 'Sin Código')}
-                        />
-                        <Column
-                          className="dark:text-white  text-black"
-                          headerClassName="text-sm font-semibold"
-                          bodyClassName="text-sm"
-                          headerStyle={{
-                            ...styles.darkStyle,
-                          }}
-                          header="Descripción"
-                          field="descripcion"
-                        />
-                        <Column
-                          className="dark:text-white  text-black"
-                          headerClassName="text-sm font-semibold"
-                          bodyClassName="text-sm"
-                          headerStyle={{
-                            ...styles.darkStyle,
-                          }}
-                          header="Precio unitario"
-                          body={(rowData) => `$ ${rowData.precioUni}`}
-                        />
-                      </DataTable>
+                    <div className="flex flex-col w-full">
+                      <div className="max-h-full  overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
+                        <table className="w-full">
+                          <thead className="sticky top-0 z-20 bg-white">
+                            <tr>
+                              <ThGlobal className="text-left p-3">Tipo de item</ThGlobal>
+                              <ThGlobal className="text-left p-3">Un. de medida</ThGlobal>
+                              <ThGlobal className="text-left p-3">Cod. generación</ThGlobal>
+                              <ThGlobal className="text-left p-3">Cantidad</ThGlobal>
+                              <ThGlobal className="text-left p-3">Código</ThGlobal>
+                              <ThGlobal className="text-left p-3">Descripción</ThGlobal>
+                              <ThGlobal className="text-left p-3">Pre. unitario</ThGlobal>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {jsonData.cuerpoDocumento.map((item, index) => (
+                              <tr key={index}>
+                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                  {item.tipoItem}
+                                </td>
+                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                  {item.uniMedida}
+                                </td>
+                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                  {item.tipoItem}
+                                </td>
+                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                  {item.cantidad}
+                                </td>
+                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                  {item.codigo}
+                                </td>
+                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                  {item.descripcion}
+                                </td>
+                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                  {item.precioUni}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
                   </div>
                 )}
                 {jsonData && (
                   <div className="flex justify-end">
-                    <Button style={styles.thirdStyle} type="submit">
+                    <ButtonUi theme={Colors.Primary} type="submit">
                       Guardar
-                    </Button>
+                    </ButtonUi>
                   </div>
                 )}
               </form>

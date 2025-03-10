@@ -25,7 +25,7 @@ import { save_settlement_document } from '@/services/settlement-document.service
 import { Button, useDisclosure } from '@heroui/react';
 import HeadlessModal from '@/components/global/HeadlessModal';
 import useGlobalStyles from '@/components/global/global.styles';
-import AddTributeSupplier from '@/components/shopping/AddSupplier';
+import AddTributeSupplier from '@/components/shopping/add-supplier';
 import { useNavigate } from 'react-router';
 
 interface FileStatus {

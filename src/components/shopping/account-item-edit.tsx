@@ -1,19 +1,13 @@
-import useGlobalStyles from '@/components/global/global.styles';
-import {
-  Accordion,
-  AccordionItem,
-  Button,
-  Input,
-  Select,
-  SelectItem,
-  Textarea,
-} from '@heroui/react';
+import { Accordion, AccordionItem, Input, Select, SelectItem, Textarea } from '@heroui/react';
 import classNames from 'classnames';
 import { useEffect } from 'react';
 import { useTypeOfAccountStore } from '@/store/type-of-aacount.store';
 import { Plus, Trash } from 'lucide-react';
 import { AccountItemProps } from './types/shopping-manual.types';
 import { CodCuentaSelect } from './manual/cod-cuenta-select';
+import ThGlobal from '@/themes/ui/th-global';
+import { Colors } from '@/types/themes.types';
+import ButtonUi from '@/themes/ui/button-ui';
 
 function AccountItemEdit({
   items,
@@ -37,9 +31,8 @@ function AccountItemEdit({
   isReadOnly,
   editAccount,
   exenta,
-  setExenta
+  setExenta,
 }: AccountItemProps) {
-  const styles = useGlobalStyles();
   const { list_type_of_account, getListTypeOfAccount } = useTypeOfAccountStore();
 
   const handleChangeDes = (text: string) => {
@@ -173,7 +166,7 @@ function AccountItemEdit({
                   }}
                 >
                   {list_type_of_account.map((type) => (
-                    <SelectItem value={type.id.toString()} key={type.id} textValue={type.name}>
+                    <SelectItem key={type.id} textValue={type.name}>
                       {type.name}
                     </SelectItem>
                   ))}
@@ -194,55 +187,25 @@ function AccountItemEdit({
                 />
               </div>
               <div className="w-full flex justify-end py-3">
-                <Button isIconOnly style={styles.thirdStyle} onPress={addItems}>
+                <ButtonUi isIconOnly theme={Colors.Success} onPress={addItems}>
                   <Plus size={20} />
-                </Button>
+                </ButtonUi>
               </div>
               <div className="overflow-x-auto flex flex-col h-full custom-scrollbar">
                 <table className="w-full">
                   <thead className="sticky top-0 z-20 bg-white">
                     <tr>
-                      <th
-                        style={styles.darkStyle}
-                        className="p-3 whitespace-nowrap text-xs font-semibold text-left"
-                      >
-                        Cod. Cuenta
-                      </th>
-                      <th
-                        style={styles.darkStyle}
-                        className="p-3 whitespace-nowrap text-xs font-semibold text-left"
-                      >
-                        Centro Costo
-                      </th>
-                      <th
-                        style={styles.darkStyle}
-                        className="p-3 whitespace-nowrap text-xs font-semibold text-left"
-                      >
-                        Concepto de la transacción
-                      </th>
-                      <th
-                        style={styles.darkStyle}
-                        className="p-3 whitespace-nowrap text-xs font-semibold text-left"
-                      >
-                        Debe
-                      </th>
-                      <th
-                        style={styles.darkStyle}
-                        className="p-3 whitespace-nowrap text-xs font-semibold text-left"
-                      >
-                        Haber
-                      </th>
-                      <th
-                        style={styles.darkStyle}
-                        className="p-3 whitespace-nowrap text-xs font-semibold text-left"
-                      >
-                        Acciones
-                      </th>
+                      <ThGlobal className="text-left p-3">Código</ThGlobal>
+                      <ThGlobal className="text-left p-3">Centro Costo</ThGlobal>
+                      <ThGlobal className="text-left p-3">Concepto de la transacción</ThGlobal>
+                      <ThGlobal className="text-left p-3">Debe</ThGlobal>
+                      <ThGlobal className="text-left p-3">Haber</ThGlobal>
+                      <ThGlobal className="text-left p-3">Acciones</ThGlobal>
                     </tr>
                   </thead>
                   <tbody>
                     {items
-                      .sort((a, b) => a.no - b.no) 
+                      .sort((a, b) => a.no - b.no)
                       .map((item, index) => (
                         <tr
                           className={classNames(
@@ -342,18 +305,18 @@ function AccountItemEdit({
                             />
                           </td>
                           <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                            <Button
+                            <ButtonUi
                               isIconOnly
                               isDisabled={
                                 item.codCuenta === ivaShoppingCod ||
                                 index === items.length - 1 ||
                                 isReadOnly
                               }
-                              style={styles.dangerStyles}
+                              theme={Colors.Error}
                               onPress={() => handleRemove(index)}
                             >
                               <Trash size={20} />
-                            </Button>
+                            </ButtonUi>
                           </td>
                         </tr>
                       ))}
