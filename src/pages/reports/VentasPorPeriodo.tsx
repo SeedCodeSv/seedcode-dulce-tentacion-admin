@@ -1,15 +1,12 @@
-import { Autocomplete, AutocompleteItem, Button, Input, Select, SelectItem } from '@heroui/react';
+import { Autocomplete, AutocompleteItem, Input, Select, SelectItem } from '@heroui/react';
 import Layout from '../../layout/Layout';
 import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { formatDate } from '../../utils/dates';
 import { salesReportStore } from '../../store/reports/sales_report.store';
 import Pagination from '../../components/global/Pagination';
 import SalesChartPeriod from './Period/SalesChartPeriod';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
-import { formatCurrency, formatCurrencySales } from '@/utils/dte';
-import { global_styles } from '@/styles/global.styles';
+import { formatCurrency } from '@/utils/dte';
 import { limit_options } from '@/utils/constants';
 import { useBranchesStore } from '@/store/branches.store';
 import { useCorrelativesStore } from '@/store/correlatives.store';
@@ -17,9 +14,11 @@ import { Branches } from '@/types/branches.types';
 import TooltipGlobal from '@/components/global/TooltipGlobal';
 import { Filter, SearchIcon } from 'lucide-react';
 import BottomDrawer from '@/components/global/BottomDrawer';
-import { ThemeContext } from '@/hooks/useTheme';
 import { correlativesTypes } from '@/types/correlatives/correlatives_data.types';
 import { usePointOfSales } from '@/store/point-of-sales.store';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
+import ThGlobal from '@/themes/ui/th-global';
 
 function VentasPorPeriodo() {
   const [filter, setFilter] = useState({
@@ -27,7 +26,6 @@ function VentasPorPeriodo() {
     correlativeType: '',
   });
   const service = new SeedcodeCatalogosMhService();
-  const { theme } = useContext(ThemeContext);
   const typeSales = service.get017FormaDePago();
   const { getBranchesList, branch_list } = useBranchesStore();
   const { get_correlativesByBranch, list_correlatives } = useCorrelativesStore();
@@ -92,7 +90,7 @@ function VentasPorPeriodo() {
               labelPlacement="outside"
               classNames={{ label: 'font-semibold' }}
               variant="bordered"
-              className="w-full"
+              className="w-full dark:text-white"
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
@@ -102,7 +100,7 @@ function VentasPorPeriodo() {
               labelPlacement="outside"
               classNames={{ label: 'font-semibold' }}
               variant="bordered"
-              className="w-full"
+              className="w-full dark:text-white"
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
@@ -113,7 +111,7 @@ function VentasPorPeriodo() {
               placeholder="Selecciona el tipo de pago"
               labelPlacement="outside"
               classNames={{ label: 'font-semibold' }}
-              className="w-full"
+              className="w-full dark:text-white"
               value={typePayment}
               defaultSelectedKeys={typePayment}
               onSelectionChange={(key) => {
@@ -134,6 +132,7 @@ function VentasPorPeriodo() {
               classNames={{ label: 'font-semibold' }}
               label="Sucursal"
               labelPlacement="outside"
+              className="w-full dark:text-white"
               onSelectionChange={(key) => {
                 if (key) {
                   const branch_id = new Set(key).values().next().value;
@@ -153,25 +152,6 @@ function VentasPorPeriodo() {
                 </SelectItem>
               ))}
             </Select>
-            {/* <Select
-              classNames={{ label: 'font-semibold' }}
-              label="Punto de venta"
-              labelPlacement="outside"
-              variant="bordered"
-              placeholder="Selecciona la sucursal"
-              onSelectionChange={(key) => {
-                if (key) {
-                  const corr = new Set(key).values().next().value;
-                  setCode(corr);
-                }
-              }}
-            >
-              {list_correlatives.map((corr) => (
-                <SelectItem key={corr.code} value={corr.code} className="dark:text-white">
-                  {corr.code}
-                </SelectItem>
-              ))}
-            </Select> */}
             <div className="w-full">
               <Autocomplete
                 onSelectionChange={(e) => {
@@ -204,6 +184,7 @@ function VentasPorPeriodo() {
               label="Correlativo"
               labelPlacement="outside"
               variant="bordered"
+              className="w-full dark:text-white"
               placeholder="Selecciona la correlativo"
               onSelectionChange={(key) => {
                 if (key) {
@@ -228,7 +209,7 @@ function VentasPorPeriodo() {
                 labelPlacement="outside"
                 placeholder="Selecciona un punto de venta"
                 classNames={{ label: 'font-semibold' }}
-                className="w-full"
+                className="w-full dark:text-white"
                 value={limit_options[0]}
                 defaultSelectedKeys={limit_options[0]}
                 onSelectionChange={(key) => {
@@ -255,7 +236,7 @@ function VentasPorPeriodo() {
                 variant="bordered"
                 labelPlacement="outside"
                 classNames={{ label: 'font-semibold' }}
-                className="w-full"
+                className="w-full dark:text-white"
                 value={limit_options[0]}
                 defaultSelectedKeys={limit_options[0]}
                 onSelectionChange={(key) => {
@@ -272,21 +253,18 @@ function VentasPorPeriodo() {
                 ))}
               </Select>
               <div className="flex flex-col mt-6 w-full">
-                <Button
-                  style={{
-                    backgroundColor: theme.colors.secondary,
-                    color: theme.colors.primary,
-                  }}
+                <ButtonUi
+                  theme={Colors.Primary}
                   className="hidden font-semibold md:flex"
                   color="primary"
                   endContent={<SearchIcon size={15} />}
-                  onClick={() => {
+                  onPress={() => {
                     handleSearch(undefined);
                     setOpenVaul(false);
                   }}
                 >
                   Buscar
-                </Button>
+                </ButtonUi>
               </div>
             </div>
           </div>
@@ -295,14 +273,14 @@ function VentasPorPeriodo() {
           <div className="flex items-center gap-5">
             <div className="flex-1 block md:hidden">
               <TooltipGlobal text="Filtros disponibles" color="primary">
-                <Button
-                  style={global_styles().thirdStyle}
+                <ButtonUi
+                  theme={Colors.Info}
                   isIconOnly
                   type="button"
-                  onClick={() => setOpenVaul(true)}
+                  onPress={() => setOpenVaul(true)}
                 >
                   <Filter />
-                </Button>
+                </ButtonUi>
               </TooltipGlobal>
               <BottomDrawer
                 title="Filtros disponibles"
@@ -431,15 +409,16 @@ function VentasPorPeriodo() {
                       ))}
                   </Select>
                 </div>
-                <Button
-                  onClick={() => {
+                <ButtonUi
+                  theme={Colors.Primary}
+                  onPress={() => {
                     handleSearch(undefined);
                     setOpenVaul(false);
                   }}
                   className="w-full mt-5"
                 >
                   Aplicar filtros
-                </Button>
+                </ButtonUi>
               </BottomDrawer>
             </div>
             <div className="md:hidden flex justify-end w-full md:w-auto md:ml-auto">
@@ -503,83 +482,58 @@ function VentasPorPeriodo() {
             </div>
           </div>
 
-          <div className="w-full mt-5">
-            {loading_sales_period ? (
-              <div className="flex flex-col items-center justify-center w-full h-64">
-                <div className="loader"></div>
-                <p className="mt-3 text-xl font-semibold">Cargando...</p>
-              </div>
-            ) : (
-              <>
-                {sales_by_period ? (
-                  <div className="w-full">
-                    <DataTable
-                      value={sales_by_period.sales}
-                      className="shadow dark:text-white"
-                      emptyMessage="No se encontraron resultados"
-                    >
-                      <Column
-                        headerClassName="text-sm font-semibold"
-                        bodyClassName={'dark:text-white'}
-                        headerStyle={{
-                          ...global_styles().darkStyle,
-                          borderTopLeftRadius: '10px',
-                        }}
-                        body={(field) => field.date}
-                        header="Fecha"
-                      />
-                      <Column
-                        headerClassName="text-sm font-semibold"
-                        bodyClassName={'dark:text-white'}
-                        headerStyle={{
-                          ...global_styles().darkStyle,
-                        }}
-                        header="Total en Ventas"
-                        body={(field) => formatCurrencySales(field.totalSales)}
-                      />
-
-                      <Column
-                        headerClassName="text-sm font-semibold"
-                        bodyClassName={'dark:text-white'}
-                        headerStyle={{
-                          ...global_styles().darkStyle,
-                          borderTopRightRadius: '10px',
-                        }}
-                        body={(field) => field.salesCount}
-                        header="No. de ventas"
-                      />
-                    </DataTable>
-                    <div className="w-full mt-4">
-                      <Pagination
-                        nextPage={sales_by_period.nextPag}
-                        previousPage={sales_by_period.prevPag}
-                        totalPages={sales_by_period.totalPag}
-                        currentPage={sales_by_period.currentPag}
-                        onPageChange={(page) => getSalesByPeriod(page, limit, startDate, endDate)}
-                      />
-                    </div>
-                  </div>
-                ) : (
-                  <div className="flex items-center justify-center w-full h-64 text-center">
-                    <p>No hay resultados</p>
-                  </div>
-                )}
-              </>
-            )}
-            <div className="w-full p-5 mt-4 overflow-x-hidden bg-white border shadow dark:text-white dark:bg-gray-950 rounded-2xl">
-              <div className="w-full">
-                {sales_by_period_graph?.data && (
-                  <SalesChartPeriod
-                    startDate={startDate}
-                    endDate={endDate}
-                    labels={sales_by_period_graph.data
-                      .sort((a, b) => Number(b.total) - Number(a.total))
-                      .map((sale) => sale.branch)}
-                  />
-                )}
-              </div>
-            </div>
+          <div className="max-h-[400px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
+            <table className="w-full">
+              <thead className="sticky top-0 z-20 bg-white">
+                <tr>
+                  <ThGlobal className="text-left p-3">No.Fecha</ThGlobal>
+                  <ThGlobal className="text-left p-3">Total en Ventas</ThGlobal>
+                  <ThGlobal className="text-left p-3">No. de ventas</ThGlobal>
+                </tr>
+              </thead>
+              <tbody className="max-h-[600px] w-full overflow-y-auto">
+                {sales_by_period?.sales.map((sale, index) => (
+                  <tr key={index} className="border-b border-slate-200">
+                    <td className="p-3 text-sm text-slate-500 dark:text-slate-100">{sale.date}</td>
+                    <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                      {formatCurrency(+sale.totalSales)}
+                    </td>
+                    <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                      {sale.salesCount}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
+
+          {sales_by_period && (
+            <>
+              <div className="w-full mt-4">
+                <Pagination
+                  nextPage={sales_by_period.nextPag}
+                  previousPage={sales_by_period.prevPag}
+                  totalPages={sales_by_period.totalPag}
+                  currentPage={sales_by_period.currentPag}
+                  onPageChange={(page) => getSalesByPeriod(page, limit, startDate, endDate)}
+                />
+              </div>
+
+              <div className="w-full p-5 mt-4 overflow-x-hidden bg-white border shadow dark:text-white dark:bg-gray-950 rounded-2xl">
+                <div className="w-full">
+                  {sales_by_period_graph?.data && (
+                    <SalesChartPeriod
+                      startDate={startDate}
+                      endDate={endDate}
+                      labels={sales_by_period_graph.data
+                        .sort((a, b) => Number(b.total) - Number(a.total))
+                        .map((sale) => sale.branch)}
+                    />
+                  )}
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </Layout>

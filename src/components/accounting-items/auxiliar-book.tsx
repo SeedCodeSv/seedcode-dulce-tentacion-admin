@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Button,
   Input,
@@ -7,7 +7,10 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
+  Select,
+  SelectItem,
   useDisclosure,
+  Selection,
 } from '@heroui/react';
 import { useAuthStore } from '@/store/auth.store';
 import { useItemsStore } from '@/store/items.store';
@@ -28,12 +31,23 @@ interface Props {
   disclosure: UseDisclosureReturn;
 }
 
-function MajorBook({ disclosure }: Props) {
+function AuxiliarBook({ disclosure }: Props) {
   const [startDate, setStartDate] = useState(formatDate());
   const [endDate, setEndDate] = useState(formatDate());
   const [loadingPdf, setLoadingPdf] = useState(false);
+  const [accounts, setAccounts] = useState<Selection>(new Set([]));
+  const {
+    getMajorAccounts,
+    majorAccounts,
+    getItemsByDailyMajorAccount,
+    dailyMajorItemsAccount,
+    loadingDailyMajorAccount,
+    loadingMajorAccount,
+  } = useItemsStore();
 
-  const { getItemsByMajor, majorItems, loadingMajorAccount } = useItemsStore();
+  useEffect(() => {
+    getMajorAccounts();
+  }, []);
 
   const { user } = useAuthStore();
 
@@ -42,7 +56,9 @@ function MajorBook({ disclosure }: Props) {
       ? user.correlative.branch.transmitter.id
       : (user?.pointOfSale?.branch.transmitter.id ?? 0);
 
-    getItemsByMajor(transId, startDate, endDate);
+    const accountsArray = Array.from(accounts) as string[];
+
+    getItemsByDailyMajorAccount(transId, startDate, endDate, accountsArray);
   };
 
   const [pdf, setPdf] = useState('');
@@ -50,7 +66,6 @@ function MajorBook({ disclosure }: Props) {
   const generatePDF = (type: 'show' | 'download') => {
     setLoadingPdf(true);
     const doc = new jsPDF();
-
     const calcSaldo = (
       typeAccount: string,
       totalDbe: number,
@@ -110,42 +125,23 @@ function MajorBook({ disclosure }: Props) {
 
       return saldos[typeAccount];
     };
-
-    let allTotalSee = 0;
-    let allTotalShould = 0;
-
-    for (const item of majorItems) {
-      let saldoAnterior = +item.saldoAnterior;
-
-      let data: string[][] = [];
-
+    for (const item of dailyMajorItemsAccount) {
+      const saldoAnterior = +item.saldoAnterior;
       if (item.items.length > 0 || saldoAnterior !== 0) {
-        data = item.items.map((it, index) => {
-          saldoAnterior = calcSaldo(
-            item.uploadAs,
-            +it.totalDebe,
-            +it.totalHaber,
-            saldoAnterior,
-            index,
-            saldoAnterior
-          );
-          const itemsRes = [
-            formatDdMmYyyy(it.day),
-            'Transacciones del día',
-            formatMoney(+it.totalDebe),
-            formatMoney(+it.totalHaber),
-            +saldoAnterior < 0
-              ? `(${formatMoney(Math.abs(saldoAnterior))})`
-              : formatMoney(saldoAnterior),
+        const data = item.items.map((it) => {
+          return [
+            formatDdMmYyyy(it.item.date),
+            it.item.noPartida,
+            it.accountCatalog.code,
+            it.conceptOfTheTransaction ?? it.accountCatalog.name,
+            +it.should < 0 ? `(${formatMoney(-it.should)})` : formatMoney(+it.should),
+            +it.see < 0 ? `(${formatMoney(-it.see)})` : formatMoney(+it.see),
           ];
-
-          return itemsRes;
         });
 
-        const totalSee = item.items.reduce((acc, it) => acc + +it.totalDebe, 0);
-        const totalShould = item.items.reduce((acc, it) => acc + +it.totalHaber, 0);
-        allTotalSee += totalSee;
-        allTotalShould += totalShould;
+        const totalSee = item.items.reduce((acc, it) => acc + +it.see, 0);
+        const totalShould = item.items.reduce((acc, it) => acc + +it.should, 0);
+
         doc.setFontSize(10);
         doc.setFont('helvetica', 'bold');
 
@@ -167,21 +163,33 @@ function MajorBook({ disclosure }: Props) {
           showHead: 'never',
           theme: 'plain',
           startY: canAddPage ? 30 : lastAutoTable ? lastAutoTable.finalY + 10 : 30,
-          head: [['', '']],
+          head: [['', '', '', '']],
           body: [
-            ['Cuenta:', item.code],
-            ['Nombre de Cuenta:', item.name],
+            [
+              item.code,
+              item.name,
+              `Saldo Anterior $ `,
+              saldoAnterior < 0 ? `(${formatMoney(saldoAnterior)})` : formatMoney(saldoAnterior),
+            ],
           ],
+          bodyStyles: {
+            fontSize: 9,
+            fontStyle: 'bold',
+          },
           columnStyles: {
-            0: { cellWidth: 38, font: 'helvetica', fontStyle: 'bold' },
-            1: { cellWidth: 'auto' },
+            0: { cellWidth: 30, font: 'helvetica', fontStyle: 'bold' },
+            1: { cellWidth: 105 },
+            2: { cellWidth: 30 },
+            3: { cellWidth: 35, halign: 'right' },
           },
         });
+
         lastAutoTable = (
           doc as unknown as {
             lastAutoTable: { finalY: number };
           }
         ).lastAutoTable;
+
         autoTable(doc, {
           margin: {
             horizontal: 3,
@@ -189,47 +197,32 @@ function MajorBook({ disclosure }: Props) {
           },
           showHead: 'firstPage',
           showFoot: 'lastPage',
-          foot: [
-            [
-              '',
-              'Total Cuenta:',
-              formatMoney(totalSee),
-              formatMoney(totalShould),
-              data.length > 0
-                ? data[data.length - 1][4]
-                : item.saldoAnterior < 0
-                  ? `(${Math.abs(item.saldoAnterior).toFixed(2)})`
-                  : item.saldoAnterior.toFixed(2),
-            ],
-          ],
-          body: [
-            [
-              '',
-              '',
-              '',
-              'Saldo anterior:',
-              item.saldoAnterior < 0
-                ? `(${Math.abs(item.saldoAnterior).toFixed(2)})`
-                : item.saldoAnterior.toFixed(2),
-            ],
-            ...data,
-          ],
-          theme: 'plain',
-          head: [['Fecha', 'Concepto', 'Debe', 'Haber', 'Saldo']],
-          startY: lastAutoTable ? lastAutoTable.finalY + 2 : 5,
+          head: [['Fecha', 'Numero', 'Código', 'Concepto', 'Debe', 'Haber']],
+          body: data,
+          bodyStyles: {
+            fontSize: 8,
+          },
+          headStyles: {
+            fontSize: 9,
+          },
           columnStyles: {
-            0: { cellWidth: 25 },
-            1: { cellWidth: 'auto' },
-            2: { cellWidth: 38 },
-            3: { cellWidth: 38 },
-            4: { cellWidth: 38 },
+            0: { cellWidth: 20 },
+            1: { cellWidth: 20 },
+            2: { cellWidth: 28 },
+            3: { cellWidth: 'auto' },
+            4: { cellWidth: 38, halign: 'right' },
+            5: { cellWidth: 38, halign: 'right' },
+          },
+          theme: 'plain',
+          startY: lastAutoTable ? lastAutoTable.finalY + 2 : 5,
+          didParseCell: (data) => {
+            if (data.section === 'head') {
+              if (data.column.index === 4 || data.column.index === 5) {
+                data.cell.styles.halign = 'right';
+              }
+            }
           },
           didDrawCell: (data) => {
-            if (data.section === 'foot') {
-              doc.setDrawColor(0, 0, 0);
-              doc.setLineWidth(0.1);
-              doc.line(60, data.cell.y, doc.internal.pageSize.width - 2, data.cell.y);
-            }
             if (data.section === 'head') {
               doc.setDrawColor(0, 0, 0);
               doc.line(1, data.cell.y - 1, doc.internal.pageSize.width - 2, data.cell.y - 1);
@@ -248,7 +241,7 @@ function MajorBook({ disclosure }: Props) {
             doc.text('MADNESS', doc.internal.pageSize.width / 2, 10, {
               align: 'center',
             });
-            doc.text('Libro mayor', doc.internal.pageSize.width / 2, 15, {
+            doc.text('Libro auxiliar', doc.internal.pageSize.width / 2, 15, {
               align: 'center',
             });
 
@@ -268,44 +261,103 @@ function MajorBook({ disclosure }: Props) {
             });
           },
         });
+
+        lastAutoTable = (
+          doc as unknown as {
+            lastAutoTable: { finalY: number };
+          }
+        ).lastAutoTable;
+
+        const saldo = calcSaldo(
+          item.uploadAs,
+          totalShould,
+          totalSee,
+          saldoAnterior,
+          0,
+          saldoAnterior
+        );
+
+        autoTable(doc, {
+          margin: {
+            horizontal: 3,
+            top: 35,
+          },
+          startY: lastAutoTable ? lastAutoTable.finalY + 2 : 5,
+          theme: 'plain',
+          columnStyles: {
+            0: { cellWidth: 20 },
+            1: { cellWidth: 20 },
+            2: { cellWidth: 28 },
+            3: { cellWidth: 'auto', halign: 'right' },
+            4: { cellWidth: 38, halign: 'right' },
+            5: { cellWidth: 38, halign: 'right' },
+          },
+          bodyStyles: {
+            fontSize: 9,
+          },
+          footStyles: {
+            fontSize: 9,
+          },
+          head: [['', '', '', '', '', '']],
+          showHead: 'never',
+          body: [
+            [
+              '',
+              '',
+              '',
+              'Subtotal $',
+              +totalShould < 0 ? `(${formatMoney(-totalShould)})` : formatMoney(totalShould),
+              +totalSee < 0 ? `(${formatMoney(-totalSee)})` : formatMoney(totalSee),
+            ],
+          ],
+          foot: [
+            [
+              '',
+              '',
+              '',
+              '',
+              'Saldo final $',
+              +saldo < 0 ? `(${formatMoney(-saldo)})` : formatMoney(saldo),
+            ],
+          ],
+          didParseCell: (data) => {
+            if (data.section === 'foot') {
+              if (data.column.index === 4 || data.column.index === 5) {
+                data.cell.styles.halign = 'right';
+              }
+            }
+          },
+          didDrawCell: (data) => {
+            if (data.section === 'body') {
+              if (data.row.index === 0) {
+                doc.setDrawColor(0, 0, 0);
+                doc.line(110, data.cell.y, doc.internal.pageSize.width - 2, data.cell.y);
+              }
+            }
+            if (data.section === 'foot') {
+              doc.setDrawColor(0, 0, 0);
+              doc.line(110, data.cell.y, doc.internal.pageSize.width - 2, data.cell.y);
+              doc.line(110, data.cell.y - 1, doc.internal.pageSize.width - 2, data.cell.y - 1);
+              doc.line(
+                170,
+                data.cell.y + data.cell.height - 1,
+                doc.internal.pageSize.width - 2,
+                data.cell.y + data.cell.height - 1
+              );
+              doc.line(
+                170,
+                data.cell.y + data.cell.height,
+                doc.internal.pageSize.width - 2,
+                data.cell.y + data.cell.height
+              );
+            }
+          },
+        });
       }
     }
 
-    const lastAutoTable = (
-      doc as unknown as {
-        lastAutoTable: { finalY: number };
-      }
-    ).lastAutoTable;
-
-    autoTable(doc, {
-      margin: {
-        horizontal: 3,
-        top: 35,
-      },
-      showHead: 'never',
-      theme: 'plain',
-      startY: lastAutoTable ? lastAutoTable.finalY + 15 : 10,
-      head: [['', '', '', '', '']],
-      body: [['', 'Total General:', formatMoney(allTotalSee), formatMoney(allTotalShould), '']],
-      columnStyles: {
-        0: { cellWidth: 25 },
-        1: { cellWidth: 'auto', halign: 'right' },
-        2: { cellWidth: 38 },
-        3: { cellWidth: 38 },
-        4: { cellWidth: 38 },
-      },
-      didDrawCell(data) {
-        if (data.section === 'body') {
-          doc.setDrawColor(0, 0, 0);
-          doc.setLineWidth(0.1);
-          doc.line(60, data.cell.y, doc.internal.pageSize.width - 20, data.cell.y);
-          doc.line(60, data.cell.y - 1, doc.internal.pageSize.width - 20, data.cell.y - 1);
-        }
-      },
-    });
-
     if (type === 'download') {
-      doc.save('libro-mayor.pdf');
+      doc.save('libro-diario-mayor.pdf');
       return;
     }
 
@@ -320,6 +372,7 @@ function MajorBook({ disclosure }: Props) {
   };
 
   const previewModal = useDisclosure();
+
   return (
     <>
       <FullPageLayout show={previewModal.isOpen}>
@@ -346,32 +399,57 @@ function MajorBook({ disclosure }: Props) {
         <ModalContent>
           <>
             <ModalHeader>
-              <Pui>Generar libro mayor</Pui>
+              <Pui>Generar libro diario mayor</Pui>
             </ModalHeader>
             <ModalBody>
-              <Input
-                labelPlacement="outside"
-                classNames={{ label: 'font-semibold' }}
-                label="Fecha inicial"
-                type="date"
+              <Select
+                classNames={{ base: 'font-semibold' }}
+                selectionMode="multiple"
                 variant="bordered"
-                className="dark:text-white"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-              />
-              <Input
+                className="dark:text-white z-[800]"
+                label="Cuenta mayor"
                 labelPlacement="outside"
-                classNames={{ label: 'font-semibold' }}
-                label="Fecha final"
-                type="date"
-                variant="bordered"
-                className="dark:text-white"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-              />
+                placeholder="Seleccione una cuenta mayor"
+                isLoading={loadingMajorAccount}
+                selectedKeys={accounts}
+                onSelectionChange={setAccounts}
+              >
+                {majorAccounts.map((account) => (
+                  <SelectItem
+                    className="dark:text-white"
+                    key={account.code}
+                    textValue={`${account.code} - ${account.name}`}
+                  >
+                    {account.code} - {account.name}
+                  </SelectItem>
+                ))}
+              </Select>
+              <div className="mt-5">
+                <Input
+                  labelPlacement="outside"
+                  classNames={{ label: 'font-semibold' }}
+                  label="Fecha inicial"
+                  type="date"
+                  variant="bordered"
+                  value={startDate}
+                  className="dark:text-white"
+                  onChange={(e) => setStartDate(e.target.value)}
+                />
+              </div>
+              <div className="mt-4">
+                <Input
+                  labelPlacement="outside"
+                  classNames={{ label: 'font-semibold' }}
+                  label="Fecha final"
+                  type="date"
+                  variant="bordered"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                />
+              </div>
               <ButtonUi
                 onPress={handleGetItems}
-                isLoading={loadingMajorAccount}
+                isLoading={loadingDailyMajorAccount}
                 theme={Colors.Primary}
                 className="w-full"
               >
@@ -381,7 +459,7 @@ function MajorBook({ disclosure }: Props) {
             <ModalFooter>
               <ButtonUi
                 onPress={disclosure.onClose}
-                isLoading={loadingMajorAccount}
+                isLoading={loadingDailyMajorAccount}
                 theme={Colors.Default}
                 className="px-10"
               >
@@ -389,8 +467,8 @@ function MajorBook({ disclosure }: Props) {
               </ButtonUi>
               <ButtonUi
                 onPress={handleShowPreview}
-                isDisabled={majorItems.length === 0}
-                isLoading={loadingMajorAccount || loadingPdf}
+                isDisabled={dailyMajorItemsAccount.length === 0}
+                isLoading={loadingDailyMajorAccount || loadingPdf}
                 theme={Colors.Info}
                 className="px-10"
               >
@@ -398,8 +476,8 @@ function MajorBook({ disclosure }: Props) {
               </ButtonUi>
               <ButtonUi
                 onPress={() => generatePDF('download')}
-                isDisabled={majorItems.length === 0}
-                isLoading={loadingMajorAccount}
+                isDisabled={dailyMajorItemsAccount.length === 0}
+                isLoading={loadingDailyMajorAccount}
                 theme={Colors.Success}
                 className="px-10"
               >
@@ -413,4 +491,4 @@ function MajorBook({ disclosure }: Props) {
   );
 }
 
-export default MajorBook;
+export default AuxiliarBook;

@@ -1,4 +1,6 @@
+import AuxiliarBook from '@/components/accounting-items/auxiliar-book';
 import DailyBook from '@/components/accounting-items/daily-book';
+import DailyMajorBook from '@/components/accounting-items/daily-major-book';
 import MajorBook from '@/components/accounting-items/major-book';
 import Layout from '@/layout/Layout';
 import { Button, Card, CardFooter, CardHeader, useDisclosure } from '@heroui/react';
@@ -7,6 +9,8 @@ import { ArrowRight, Book } from 'lucide-react';
 function Reports() {
   const modalDailyBook = useDisclosure();
   const modalMajorBook = useDisclosure();
+  const modalDailyMajorBook = useDisclosure();
+  const modalAuxiliarBook = useDisclosure();
 
   const reports = [
     {
@@ -28,12 +32,16 @@ function Reports() {
     {
       name: 'Libro Diario Mayor',
       icon: <Book size={20} className="text-blue-500" />,
-      onPress: () => {},
+      onPress: () => {
+        modalDailyMajorBook.onOpen();
+      },
     },
     {
-      name: 'Estado de cuenta',
+      name: 'Libro Auxiliar',
       icon: <Book size={20} className="text-blue-500" />,
-      onPress: () => {},
+      onPress: () => {
+        modalAuxiliarBook.onOpen();
+      },
     },
     {
       name: 'Balance General',
@@ -69,6 +77,8 @@ function Reports() {
         </div>
         <DailyBook disclosure={modalDailyBook} />
         <MajorBook disclosure={modalMajorBook} />
+        <DailyMajorBook disclosure={modalDailyMajorBook} />
+        <AuxiliarBook disclosure={modalAuxiliarBook} />
       </div>
     </Layout>
   );

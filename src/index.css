@@ -294,3 +294,9 @@
     transform: rotate(360deg);
   }
 }
+
+@media (prefers-color-scheme: dark) {
+  input, select, textarea {
+    color: #ffffff !important;
+  }
+}

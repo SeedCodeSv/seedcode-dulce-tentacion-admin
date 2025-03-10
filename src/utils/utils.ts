@@ -286,7 +286,7 @@ export const formatTypes = (shopping: ShoppingReport, onlyCodes: boolean = false
 };
 
 export function formatMoney(amount: number): string {
-  return amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return Math.abs(amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
 export const formatPercentage= (per:number) => {

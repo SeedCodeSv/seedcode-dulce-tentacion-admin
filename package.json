@@ -21,7 +21,7 @@
       "@aws-sdk/s3-request-presigner": "^3.667.0",
       "@formkit/tempo": "^0.1.2",
       "@headlessui/react": "^1.7.19",
-      "@heroui/react": "2.7.4",
+      "@heroui/react": "2.7.5",
       "apexcharts": "^3.50.0",
       "axios": "^1.6.8",
       "browser-image-compression": "^2.0.2",
