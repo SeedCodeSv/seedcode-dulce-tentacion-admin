@@ -1,13 +1,14 @@
-import { Autocomplete, AutocompleteItem, Button, Input } from "@heroui/react";
+import { Autocomplete, AutocompleteItem, Input } from '@heroui/react';
 import { Formik } from 'formik';
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import * as yup from 'yup';
 import { useRolesStore } from '../../store/roles.store';
 import { Role } from '../../types/roles.types';
 import { useUsersStore } from '../../store/users.store';
 import { UserPayload } from '../../types/users.types';
-import { ThemeContext } from '../../hooks/useTheme';
 import { useAuthStore } from '@/store/auth.store';
+import { Colors } from '@/types/themes.types';
+import ButtonUi from '@/themes/ui/button-ui';
 
 interface Props {
   onClose: () => void;
@@ -15,7 +16,6 @@ interface Props {
 }
 
 function AddUsers(props: Props) {
-  const { theme } = useContext(ThemeContext);
   const { user } = useAuthStore();
   const validationSchema = yup.object().shape({
     userName: yup.string().required('**El usuario es requerido**'),
@@ -117,26 +117,19 @@ function AddUsers(props: Props) {
                   {roles_list
                     .filter((dep) => dep.name !== 'TIENDA')
                     .map((dep) => (
-                      <AutocompleteItem
-                        className="dark:text-white"
-                        key={JSON.stringify(dep)}
-                      >
+                      <AutocompleteItem className="dark:text-white" key={JSON.stringify(dep)}>
                         {dep.name}
                       </AutocompleteItem>
                     ))}
                 </Autocomplete>
               </div>
-
-              <Button
-                onClick={() => handleSubmit()}
+              <ButtonUi
+                onPress={() => handleSubmit()}
                 className="w-full mt-4 text-sm font-semibold mb-3"
-                style={{
-                  backgroundColor: theme.colors.third,
-                  color: theme.colors.primary,
-                }}
+                theme={Colors.Primary}
               >
                 Guardar
-              </Button>
+              </ButtonUi>
             </div>
           </>
         )}

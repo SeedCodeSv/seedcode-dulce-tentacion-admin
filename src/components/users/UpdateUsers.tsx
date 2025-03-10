@@ -1,14 +1,13 @@
-import { Autocomplete, AutocompleteItem, Button, Input } from "@heroui/react";
+import { Autocomplete, AutocompleteItem, Input } from '@heroui/react';
 import { Formik } from 'formik';
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import * as yup from 'yup';
 import { useRolesStore } from '../../store/roles.store';
-// import { useEmployeeStore } from '../../store/employee.store';
-// import { Employee } from '../../types/employees.types';
 import { Role } from '../../types/roles.types';
 import { useUsersStore } from '../../store/users.store';
 import { User, UserUpdate } from '../../types/users.types';
-import { ThemeContext } from '../../hooks/useTheme';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
 
 interface Props {
   onClose: () => void;
@@ -17,7 +16,8 @@ interface Props {
 }
 
 function AddUsers(props: Props) {
-  const { theme } = useContext(ThemeContext);
+  const { roles_list, getRolesList } = useRolesStore();
+  const { patchUser } = useUsersStore();
 
   const initialValues = {
     userName: props.user?.userName ?? '',
@@ -28,9 +28,6 @@ function AddUsers(props: Props) {
     userName: yup.string().required('El usuario es requerido'),
     roleId: yup.number().required('El rol es requerido').min(1, 'El rol es requerido'),
   });
-
-  const { roles_list, getRolesList } = useRolesStore();
-  const { patchUser } = useUsersStore();
 
   useEffect(() => {
     getRolesList();
@@ -92,9 +89,7 @@ function AddUsers(props: Props) {
                   {roles_list
                     .filter((rol) => rol.name !== 'TIENDA')
                     .map((dep) => (
-                      <AutocompleteItem key={JSON.stringify(dep)}>
-                        {dep.name}
-                      </AutocompleteItem>
+                      <AutocompleteItem key={JSON.stringify(dep)}>{dep.name}</AutocompleteItem>
                     ))}
                 </Autocomplete>
                 {errors.roleId && touched.roleId && (
@@ -102,16 +97,13 @@ function AddUsers(props: Props) {
                 )}
               </div>
 
-              <Button
-                onClick={() => handleSubmit()}
+              <ButtonUi
+                onPress={() => handleSubmit()}
                 className="w-full mt-4 text-sm font-semibold mb-3"
-                style={{
-                  backgroundColor: theme.colors.third,
-                  color: theme.colors.primary,
-                }}
+                theme={Colors.Primary}
               >
                 Guardar
-              </Button>
+              </ButtonUi>
             </div>
           </>
         )}

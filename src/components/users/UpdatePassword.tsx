@@ -1,9 +1,9 @@
-import { Button, Input } from "@heroui/react";
+import { Input } from '@heroui/react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { useUsersStore } from '../../store/users.store';
-import { useContext } from 'react';
-import { ThemeContext } from '../../hooks/useTheme';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
 
 interface Props {
   id: number;
@@ -11,13 +11,11 @@ interface Props {
 }
 
 function UpdatePassword(props: Props) {
-  const { theme } = useContext(ThemeContext);
+  const { updatePassword } = useUsersStore();
 
   const initialValues = {
     password: '',
   };
-
-  const { updatePassword } = useUsersStore();
 
   const validationSchema = yup.object().shape({
     password: yup.string().required('La contraseña es requerida'),
@@ -57,20 +55,14 @@ function UpdatePassword(props: Props) {
                 isInvalid={touched.password && !!errors.password}
                 errorMessage={touched.password && errors.password}
               />
-              {/* {errors.password && touched.password && (
-                <span className="text-sm font-semibold text-red-500">{errors.password}</span>
-              )} */}
             </div>
-            <Button
-              onClick={() => handleSubmit()}
+            <ButtonUi
+              onPress={() => handleSubmit()}
               className="w-full mt-4 text-sm font-semibold"
-              style={{
-                backgroundColor: theme.colors.third,
-                color: theme.colors.primary,
-              }}
+              theme={Colors.Primary}
             >
               Guardar
-            </Button>
+            </ButtonUi>
           </>
         )}
       </Formik>

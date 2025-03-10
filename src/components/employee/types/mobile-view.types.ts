@@ -1,12 +1,11 @@
 import { Employee, MonthsAttendance } from '../../../types/employees.types';
 
 export interface IMobileView {
-  layout: 'grid' | 'list';
-  deletePopover: ({ employee }: { employee: Employee }) => JSX.Element;
+  DeletePopover: ({ employee }: { employee: Employee }) => JSX.Element;
   openEditModal: (employee: Employee) => void;
   actions: string[];
   handleActivate: (id: number) => void;
-  OpenPdf: (employee: Employee) => void;
+  WorkConstancy: (employee: Employee) => void;
 }
 
 export interface GridProps extends IMobileView {
