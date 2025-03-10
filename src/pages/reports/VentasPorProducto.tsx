@@ -1,6 +1,6 @@
 import Layout from '../../layout/Layout';
-import { Button, Input, Select, SelectItem } from "@heroui/react";
-import { useContext, useEffect, useState } from 'react';
+import { Button, Input, Select, SelectItem } from '@heroui/react';
+import { useEffect, useState } from 'react';
 import { formatDate } from '../../utils/dates';
 import GraphicProductCategory from './Product/GraphicProductCategory';
 import { salesReportStore } from '@/store/reports/sales_report.store';
@@ -10,16 +10,16 @@ import { useBranchesStore } from '@/store/branches.store';
 import TooltipGlobal from '@/components/global/TooltipGlobal';
 import { Filter, SearchIcon } from 'lucide-react';
 import BottomDrawer from '@/components/global/BottomDrawer';
-import { ThemeContext } from '@/hooks/useTheme';
 import { useAuthStore } from '@/store/auth.store';
-import useGlobalStyles from '@/components/global/global.styles';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
+import ThGlobal from '@/themes/ui/th-global';
 
 function VentasPorProducto() {
   const [startDate, setStartDate] = useState(formatDate());
   const [endDate, setEndDate] = useState(formatDate());
   const [openVaul, setOpenVaul] = useState(false);
   const [typePayment, setTypePayment] = useState('');
-  const { theme } = useContext(ThemeContext);
   const { getBranchesList, branch_list } = useBranchesStore();
   const { user } = useAuthStore();
 
@@ -53,8 +53,6 @@ function VentasPorProducto() {
       typePayment
     );
   };
-
-  const styles = useGlobalStyles();
 
   return (
     <Layout title="Ventas por Producto">
@@ -107,11 +105,8 @@ function VentasPorProducto() {
             </Select>
 
             <div className="flex flex-col w-full mt-6">
-              <Button
-                style={{
-                  backgroundColor: theme.colors.secondary,
-                  color: theme.colors.primary,
-                }}
+              <ButtonUi
+                theme={Colors.Primary}
                 className="hidden font-semibold md:flex"
                 color="primary"
                 endContent={<SearchIcon size={15} />}
@@ -121,7 +116,7 @@ function VentasPorProducto() {
                 }}
               >
                 Buscar
-              </Button>
+              </ButtonUi>
             </div>
           </div>
 
@@ -223,18 +218,8 @@ function VentasPorProducto() {
                     <table className="w-full">
                       <thead className="sticky top-0 z-20 bg-white">
                         <tr>
-                          <th
-                            style={styles.darkStyle}
-                            className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                          >
-                            Producto
-                          </th>
-                          <th
-                            style={styles.darkStyle}
-                            className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                          >
-                            Total en ventas
-                          </th>
+                        <ThGlobal className="text-left p-3">Producto</ThGlobal>
+                        <ThGlobal className="text-left p-3">Total en ventas</ThGlobal>
                         </tr>
                       </thead>
                       {sales_products.map((product) => (

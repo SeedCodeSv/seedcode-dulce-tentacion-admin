@@ -29,7 +29,6 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import Pagination from '../global/Pagination';
 import { Paginator } from 'primereact/paginator';
-import { paginator_styles } from '../../styles/paginator.styles';
 import ModalGlobal from '../global/ModalGlobal';
 import AddExpenses from './AddExpenses';
 import MobileView from './MobileView';
@@ -302,7 +301,6 @@ const ListExpenses = () => {
             </div>
             <div className="flex w-full mt-5 md:hidden">
               <Paginator
-                pt={paginator_styles(1)}
                 className="flex justify-between w-full"
                 first={(expenses_paginated.currentPag - 1) * limit}
                 rows={limit}
