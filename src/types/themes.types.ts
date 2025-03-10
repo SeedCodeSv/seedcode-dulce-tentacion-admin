@@ -1,7 +1,10 @@
+import { IPagination } from "./global.types";
+
 export interface ThemePayload {
   name: string;
   context: 'light' | 'dark';
   colors: Color[];
+  transmitterId?: number;
 }
 
 export interface Color {
@@ -25,13 +28,75 @@ export interface Theme {
   colors: ColorTheme[];
 }
 
-export interface IGetPaginatedThemes {
+export interface findOne {
   ok: boolean;
+  message: string;
   themes: Theme[];
-  total: number;
-  totalPag: number;
-  currentPag: number;
-  nextPag: number;
-  prevPag: number;
   status: number;
+}
+
+// New theme system
+export interface Menu {
+  textColor: string;
+  background: string;
+}
+
+export interface Button {
+  error: string;
+  success: string;
+  warning: string;
+  primary: string;
+  info: string;
+  secondary: string;
+  default: string;
+}
+
+export interface Context {
+  background: string;
+  textColor: string;
+  menu: Menu;
+  table: {
+    background: string;
+    textColor: string;
+  };
+  buttons: {
+    colors: Button;
+    textColor: string;
+    textDefaultColor: string;
+  };
+}
+
+export interface Menu {
+  textColor: string;
+  background: string;
+}
+
+export interface Color {
+  light:  Context;
+  dark: Context;
+}
+
+export interface ITheme {
+  name: string;
+  colors: Color;
+}
+
+export enum Colors {
+  Error = 'error',
+  Success = 'success',
+  Warning = 'warning',
+  Primary = 'primary',
+  Info = 'info',
+  Secondary = 'secondary',
+  Default = 'default',
+}
+
+export interface ThemeData {
+  id: number;
+  transmitterId: number;
+  theme: ITheme;
+}
+
+export interface IGetPaginationThemes  extends IPagination{
+  themes: ThemeData[];
 }

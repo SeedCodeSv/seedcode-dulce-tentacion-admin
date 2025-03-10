@@ -1,4 +1,3 @@
-import useGlobalStyles from '@/components/global/global.styles';
 import Pagination from '@/components/global/Pagination';
 import Layout from '@/layout/Layout';
 import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
@@ -21,7 +20,7 @@ import {
   Switch,
   Textarea,
   useDisclosure,
-} from "@heroui/react";
+} from '@heroui/react';
 import classNames from 'classnames';
 import { Plus, Search, Trash } from 'lucide-react';
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
@@ -34,7 +33,10 @@ import * as yup from 'yup';
 import { verify_item_count } from '@/services/accounting-items.service';
 import axios from 'axios';
 import { API_URL } from '@/utils/constants';
-import { useAuthStore } from '@/store/auth.store'
+import { useAuthStore } from '@/store/auth.store';
+import ThGlobal from '@/themes/ui/th-global';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
 
 const AccountTypes = [
   { key: 'Rubro', value: 'Rubro', label: 'Rubro' },
@@ -61,7 +63,6 @@ const Item = [
 ];
 
 function AddAccountingItems() {
-  const styles = useGlobalStyles();
   const { getAccountCatalogs } = useAccountCatalogsStore();
   const { branch_list, getBranchesList } = useBranchesStore();
   const { list_type_of_account, getListTypeOfAccount } = useTypeOfAccountStore();
@@ -284,7 +285,6 @@ function AddAccountingItems() {
       });
     },
   });
-  
 
   return (
     <Layout title="Agregar Partida Contable">
@@ -319,9 +319,7 @@ function AddAccountingItems() {
                 }}
               >
                 {list_type_of_account.map((type) => (
-                  <SelectItem key={type.id}>
-                    {type.name}
-                  </SelectItem>
+                  <SelectItem key={type.id}>{type.name}</SelectItem>
                 ))}
               </Select>
             </div>
@@ -352,54 +350,24 @@ function AddAccountingItems() {
                 </div>
               )}
               <div className="flex justify-end gap-10">
-                <Button onPress={() => addAccountModal.onOpen()} style={styles.thirdStyle}>
+                <ButtonUi onPress={() => addAccountModal.onOpen()} theme={Colors.Info}>
                   Agregar cuenta
-                </Button>
-                <Button onPress={handleAddItem} isIconOnly style={styles.secondaryStyle}>
+                </ButtonUi>
+                <ButtonUi onPress={handleAddItem} isIconOnly theme={Colors.Success}>
                   <Plus />
-                </Button>
+                </ButtonUi>
               </div>
             </div>
             <div className="overflow-x-auto flex flex-col h-full custom-scrollbar mt-4">
               <table className="w-full">
                 <thead className="sticky top-0 z-20 bg-white">
                   <tr>
-                    <th
-                      style={styles.darkStyle}
-                      className="p-3 whitespace-nowrap text-xs font-semibold text-left"
-                    >
-                      Cod. Cuenta
-                    </th>
-                    <th
-                      style={styles.darkStyle}
-                      className="p-3 whitespace-nowrap text-xs font-semibold text-left"
-                    >
-                      Centro Costo
-                    </th>
-                    <th
-                      style={styles.darkStyle}
-                      className="p-3 whitespace-nowrap text-xs font-semibold text-left"
-                    >
-                      Concepto de la transacción
-                    </th>
-                    <th
-                      style={styles.darkStyle}
-                      className="p-3 whitespace-nowrap text-xs font-semibold text-left"
-                    >
-                      Debe
-                    </th>
-                    <th
-                      style={styles.darkStyle}
-                      className="p-3 whitespace-nowrap text-xs font-semibold text-left"
-                    >
-                      Haber
-                    </th>
-                    <th
-                      style={styles.darkStyle}
-                      className="p-3 whitespace-nowrap text-xs font-semibold text-left"
-                    >
-                      Acciones
-                    </th>
+                    <ThGlobal className="text-left p-3">Cod. cuenta</ThGlobal>
+                    <ThGlobal className="text-left p-3">Centro costo</ThGlobal>
+                    <ThGlobal className="text-left p-3">Concepto</ThGlobal>
+                    <ThGlobal className="text-left p-3">Debe</ThGlobal>
+                    <ThGlobal className="text-left p-3">Haber</ThGlobal>
+                    <ThGlobal className="text-left p-3">Acciones</ThGlobal>
                   </tr>
                 </thead>
                 <tbody>
@@ -440,9 +408,7 @@ function AddAccountingItems() {
                           }}
                         >
                           {branch_list.map((branch) => (
-                            <SelectItem  key={branch.id}>
-                              {branch.name}
-                            </SelectItem>
+                            <SelectItem key={branch.id}>{branch.name}</SelectItem>
                           ))}
                         </Select>
                       </td>
@@ -514,13 +480,13 @@ function AddAccountingItems() {
                         />
                       </td>
                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                        <Button
+                        <ButtonUi
                           onPress={() => handleDeleteItem(index)}
                           isIconOnly
-                          style={styles.dangerStyles}
+                          theme={Colors.Error}
                         >
                           <Trash />
-                        </Button>
+                        </ButtonUi>
                       </td>
                     </tr>
                   ))}
@@ -575,22 +541,22 @@ function AddAccountingItems() {
               </table>
             </div>
             <div className="flex justify-end gap-5 mt-3">
-              <Button
+              <ButtonUi
                 isLoading={loading}
                 className="px-20"
-                style={styles.dangerStyles}
+                theme={Colors.Default}
                 onPress={() => navigate('/accounting-items')}
               >
                 Cancelar
-              </Button>
-              <Button
+              </ButtonUi>
+              <ButtonUi
                 isLoading={loading}
                 className="px-20"
-                style={styles.secondaryStyle}
+                theme={Colors.Primary}
                 onPress={() => handleSave()}
               >
                 Guardar
-              </Button>
+              </ButtonUi>
             </div>
           </div>
         </div>
@@ -715,9 +681,7 @@ function AddAccountingItems() {
                             errorMessage={formik.errors.type}
                           >
                             {AccountTypes.map((type) => (
-                              <SelectItem key={type.key} >
-                                {type.label}
-                              </SelectItem>
+                              <SelectItem key={type.key}>{type.label}</SelectItem>
                             ))}
                           </Select>
                         </div>
@@ -741,9 +705,7 @@ function AddAccountingItems() {
                             errorMessage={formik.errors.loadAs}
                           >
                             {UploadAS.map((type) => (
-                              <SelectItem key={type.key} >
-                                {type.label}
-                              </SelectItem>
+                              <SelectItem key={type.key}>{type.label}</SelectItem>
                             ))}
                           </Select>
                         </div>
@@ -767,9 +729,7 @@ function AddAccountingItems() {
                             errorMessage={formik.errors.item}
                           >
                             {Item.map((type) => (
-                              <SelectItem key={type.key} >
-                                {type.label}
-                              </SelectItem>
+                              <SelectItem key={type.key}>{type.label}</SelectItem>
                             ))}
                           </Select>
                         </div>
@@ -792,22 +752,22 @@ function AddAccountingItems() {
                     </div>
                   </ModalBody>
                   <ModalFooter className="w-full">
-                    <Button
+                    <ButtonUi
                       isLoading={formik.isSubmitting}
                       className="px-10"
                       onPress={onClose}
-                      style={styles.dangerStyles}
+                      theme={Colors.Default}
                     >
                       Cancelar
-                    </Button>
-                    <Button
+                    </ButtonUi>
+                    <ButtonUi
                       className="px-10"
-                      style={styles.thirdStyle}
                       isLoading={formik.isSubmitting}
                       type="submit"
+                      theme={Colors.Primary}
                     >
                       Agregar cuenta
-                    </Button>
+                    </ButtonUi>
                   </ModalFooter>
                 </form>
               </>
@@ -902,10 +862,7 @@ export const CodCuentaSelect = (props: CodCuentaProps) => {
         }}
       >
         {itemsPag.map((account) => (
-          <AutocompleteItem
-            key={account.code}
-            textValue={`${account.code} - ${account.name}`}
-          >
+          <AutocompleteItem key={account.code} textValue={`${account.code} - ${account.name}`}>
             {account.code} - {account.name} {/* Muestra ambos en las opciones */}
           </AutocompleteItem>
         ))}
@@ -948,9 +905,6 @@ export const ItemPaginated = (props: PropsItems) => {
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
-
-  const styles = useGlobalStyles();
-
   const handleSelectItem = (item: AccountCatalog) => {
     if (item.subAccount) {
       toast.error('No se puede agregar una cuenta con sub-cuentas');
@@ -983,18 +937,8 @@ export const ItemPaginated = (props: PropsItems) => {
             <table className="w-full">
               <thead className="sticky top-0 z-20 bg-white">
                 <tr>
-                  <th
-                    style={styles.darkStyle}
-                    className="p-3 whitespace-nowrap text-xs font-semibold text-left"
-                  >
-                    Code
-                  </th>
-                  <th
-                    style={styles.darkStyle}
-                    className="p-3 whitespace-nowrap text-xs font-semibold text-left"
-                  >
-                    Name
-                  </th>
+                  <ThGlobal className="text-left p-3">Código</ThGlobal>
+                  <ThGlobal className="text-left p-3">Nombre</ThGlobal>
                 </tr>
               </thead>
               <tbody>

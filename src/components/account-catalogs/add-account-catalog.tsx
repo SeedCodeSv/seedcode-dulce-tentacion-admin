@@ -1,6 +1,5 @@
 import { Input, Button, Select, SelectItem, Switch } from "@heroui/react";
 import Layout from '@/layout/Layout';
-import useGlobalStyles from '../global/global.styles';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import axios from 'axios';
@@ -9,9 +8,10 @@ import { API_URL } from '@/utils/constants';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
+import ButtonUi from "@/themes/ui/button-ui";
+import { Colors } from "@/types/themes.types";
 
 function AddAccountCatalogs() {
-  const styles = useGlobalStyles();
   const navigate = useNavigate();
   const AccountTypes = [
     { key: 'Rubro', value: 'Rubro', label: 'Rubro' },
@@ -255,10 +255,10 @@ function AddAccountCatalogs() {
                         />
                       </div>
                     </div>
-                    <div className="pt-6 pb-2 ">
-                      <Button type="submit" isLoading={formik.isSubmitting} className="px-16 w-full" style={styles.thirdStyle}>
+                    <div className="pt-6 pb-2 w-full flex justify-end">
+                      <ButtonUi theme={Colors.Primary} type="submit" isLoading={formik.isSubmitting} className="px-16">
                         Guardar
-                      </Button>
+                      </ButtonUi>
                     </div>
                   </div>
                 </>

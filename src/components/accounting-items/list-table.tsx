@@ -23,6 +23,9 @@ import { PiFilePdfDuotone } from 'react-icons/pi';
 import ItemPdf from './ItemPdf';
 import FullPageLayout from '../global/FullOverflowLayout';
 import { useAuthStore } from '@/store/auth.store';
+import ThGlobal from '@/themes/ui/th-global';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
 
 function List() {
   const {
@@ -107,7 +110,7 @@ function List() {
   };
 
   return (
-   <>
+    <>
       <div className="w-full h-full flex flex-col border border-white p-3 bg-white shadow rounded-xl dark:bg-gray-900">
         <div className="w-full grid grid-cols-3 gap-5">
           <Input
@@ -185,40 +188,28 @@ function List() {
             ))}
           </Select>
           <div className="flex gap-2 items-end justify-end">
-            <Button style={styles.thirdStyle} onPress={() => navigate('/add-item-by-sales')}>
+            <ButtonUi theme={Colors.Info} onPress={() => navigate('/add-item-by-sales')}>
               Generar partida de ventas
-            </Button>
-            <Button
+            </ButtonUi>
+            <ButtonUi
               isIconOnly
-              style={styles.secondaryStyle}
+              theme={Colors.Success}
               onPress={() => navigate('/add-accounting-items')}
             >
               <Plus />
-            </Button>
+            </ButtonUi>
           </div>
         </div>
         <div className="overflow-y-auto flex flex-col h-full custom-scrollbar mt-4">
           <table className="w-full">
             <thead className="sticky top-0 z-20 bg-white">
               <tr>
-                <th style={styles.darkStyle} className="p-3 text-xs font-semibold text-left">
-                  No. de partida
-                </th>
-                <th style={styles.darkStyle} className="p-3 text-xs font-semibold text-left">
-                  Fecha
-                </th>
-                <th style={styles.darkStyle} className="p-3 text-xs font-semibold text-left">
-                  Tipo de partida
-                </th>
-                <th style={styles.darkStyle} className="p-3 text-xs font-semibold text-left">
-                  Concepto
-                </th>
-                <th style={styles.darkStyle} className="p-3 text-xs font-semibold text-left">
-                  Correlativo
-                </th>
-                <th style={styles.darkStyle} className="p-3 text-xs font-semibold text-left">
-                  Acciones
-                </th>
+                <ThGlobal className="text-left p-3">No.</ThGlobal>
+                <ThGlobal className="text-left p-3">Fecha</ThGlobal>
+                <ThGlobal className="text-left p-3">Tipo</ThGlobal>
+                <ThGlobal className="text-left p-3">Concepto</ThGlobal>
+                <ThGlobal className="text-left p-3">Correlativo</ThGlobal>
+                <ThGlobal className="text-left p-3">Acciones</ThGlobal>
               </tr>
             </thead>
             <tbody>
@@ -248,40 +239,40 @@ function List() {
                           {type?.typeOfAccount?.name}
                         </td>
                         <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                          <p className='truncate'>{type.concepOfTheItem}</p>
+                          <p className="truncate">{type.concepOfTheItem}</p>
                         </td>
                         <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                           {type?.correlative}
                         </td>
                         <td className="p-3 text-sm flex gap-5 text-slate-500 dark:text-slate-100">
-                          <Button
+                          <ButtonUi
                             isIconOnly
-                            style={styles.secondaryStyle}
+                            theme={Colors.Success}
                             onPress={() =>
                               (window.location.href = '/edit-accounting-items/' + type.id)
                             }
                           >
                             <Pencil />
-                          </Button>
-                          <Button
+                          </ButtonUi>
+                          <ButtonUi
                             isIconOnly
-                            style={styles.dangerStyles}
+                            theme={Colors.Error}
                             onPress={() => {
                               setSelectedId(type.id);
                               deleteModal.onOpen();
                             }}
                           >
                             <Trash />
-                          </Button>
-                          <Button
+                          </ButtonUi>
+                          <ButtonUi
                             isIconOnly
-                            style={styles.warningStyles}
+                            theme={Colors.Warning}
                             onPress={() => {
                               handleShowPdf(type.id, type.date, type.correlative);
                             }}
                           >
                             <PiFilePdfDuotone size={30} />
-                          </Button>
+                          </ButtonUi>
                         </td>
                       </tr>
                     ))

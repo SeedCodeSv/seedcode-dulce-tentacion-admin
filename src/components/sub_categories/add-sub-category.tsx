@@ -1,12 +1,13 @@
-import { Input, Button, Autocomplete, AutocompleteItem } from "@heroui/react";
+import { Input, Autocomplete, AutocompleteItem } from '@heroui/react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import { ThemeContext } from '../../hooks/useTheme';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ISubCategory, ISubCategoryPayload } from '../../types/sub_categories.types';
 import { useSubCategoryStore } from '../../store/sub-category';
 import { useCategoriesStore } from '../../store/categories.store';
 import { CategoryProduct } from '../../types/branch_products.types';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
 
 interface Props {
   closeModal: () => void;
@@ -14,8 +15,6 @@ interface Props {
 }
 
 const AddSubCategory = (props: Props) => {
-  const { theme } = useContext(ThemeContext);
-
   const validationSchema = yup.object().shape({
     name: yup.string().required('**Debes especificar el nombre de la categoría**'),
 
@@ -116,26 +115,16 @@ const AddSubCategory = (props: Props) => {
                 errorMessage={errors.categoryProductId}
               >
                 {list_categories.map((bra) => (
-                  <AutocompleteItem
-                    className="dark:text-white"
-                    key={JSON.stringify(bra)}
-                  >
+                  <AutocompleteItem className="dark:text-white" key={JSON.stringify(bra)}>
                     {bra.name}
                   </AutocompleteItem>
                 ))}
               </Autocomplete>
             </div>
             {!loading ? (
-              <Button
-                onClick={() => handleSubmit()}
-                className="w-full mt-4 text-sm font-semibold"
-                style={{
-                  backgroundColor: theme.colors.third,
-                  color: theme.colors.primary,
-                }}
-              >
+              <ButtonUi onPress={() => handleSubmit()} theme={Colors.Primary}>
                 Guardar
-              </Button>
+              </ButtonUi>
             ) : (
               <div className="flex flex-col items-center justify-center w-full">
                 <div className="loaderBranch w-2 h-2 mt-2"></div>

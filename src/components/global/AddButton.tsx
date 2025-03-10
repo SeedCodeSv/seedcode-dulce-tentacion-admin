@@ -1,8 +1,6 @@
-import { Button } from "@heroui/react";
 import { Plus } from 'lucide-react';
-import { useContext } from 'react';
-import { ThemeContext } from '../../hooks/useTheme';
-import TooltipGlobal from './TooltipGlobal';
+import { Colors } from '@/types/themes.types';
+import ButtonUi from '@/themes/ui/button-ui';
 
 interface Props {
   onClick: () => void;
@@ -10,36 +8,11 @@ interface Props {
 }
 
 function AddButton(props: Props) {
-  const { theme } = useContext(ThemeContext);
-  const { colors } = theme;
-
-  const style = {
-    backgroundColor: colors.third,
-    color: colors.primary,
-  };
-
   return (
     <>
-      <Button
-        onClick={props.onClick}
-        endContent={<Plus size={20} />}
-        style={style}
-        className="hidden font-semibold md:flex border border-white"
-        type="button"
-      >
-        {props.text ? props.text : 'Agregar nuevo'}
-      </Button>
-      <TooltipGlobal text="Agregar nuevo" color="primary">
-        <Button
-          type="button"
-          onClick={props.onClick}
-          style={style}
-          className="flex font-semibold md:hidden border border-white"
-          isIconOnly
-        >
-          <Plus />
-        </Button>
-      </TooltipGlobal>
+      <ButtonUi onPress={props.onClick} theme={Colors.Success} isIconOnly>
+        <Plus />
+      </ButtonUi>
     </>
   );
 }

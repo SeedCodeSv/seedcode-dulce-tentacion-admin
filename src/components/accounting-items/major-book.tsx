@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import useGlobalStyles from '../global/global.styles';
 import {
   Button,
   Input,
@@ -19,6 +18,8 @@ import { formatMoney } from '@/utils/utils';
 import { formatDdMmYyyy } from '@/utils/date';
 import FullPageLayout from '../global/FullOverflowLayout';
 import { X } from 'lucide-react';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
 
 type UseDisclosureReturn = ReturnType<typeof useDisclosure>;
 
@@ -27,8 +28,6 @@ interface Props {
 }
 
 function MajorBook({ disclosure }: Props) {
-  const styles = useGlobalStyles();
-
   const [startDate, setStartDate] = useState(formatDate());
   const [endDate, setEndDate] = useState(formatDate());
   const [loadingPdf, setLoadingPdf] = useState(false);
@@ -365,37 +364,37 @@ function MajorBook({ disclosure }: Props) {
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
               />
-              <Button
+              <ButtonUi
                 onPress={handleGetItems}
                 isLoading={loadingMajorAccount}
-                style={styles.secondaryStyle}
+                theme={Colors.Primary}
                 className="w-full"
               >
                 Buscar
-              </Button>
+              </ButtonUi>
             </ModalBody>
             <ModalFooter>
-              <Button isLoading={loadingMajorAccount} style={styles.dangerStyles} className="px-10">
+              <ButtonUi isLoading={loadingMajorAccount} theme={Colors.Default} className="px-10">
                 Cancelar
-              </Button>
-              <Button
+              </ButtonUi>
+              <ButtonUi
                 onPress={handleShowPreview}
                 isDisabled={majorItems.length === 0}
                 isLoading={loadingMajorAccount || loadingPdf}
-                style={styles.darkStyle}
+                theme={Colors.Info}
                 className="px-10"
               >
                 Visualizar
-              </Button>
-              <Button
+              </ButtonUi>
+              <ButtonUi
                 onPress={() => generatePDF('download')}
                 isDisabled={majorItems.length === 0}
                 isLoading={loadingMajorAccount}
-                style={styles.thirdStyle}
+                theme={Colors.Success}
                 className="px-10"
               >
                 Descargar PDF
-              </Button>
+              </ButtonUi>
             </ModalFooter>
           </>
         </ModalContent>

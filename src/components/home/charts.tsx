@@ -19,10 +19,10 @@ function Charts() {
   const { most_product_selled, loading_most_selled_product } = useBranchProductReportStore();
 
   const total = useMemo(() => {
-    return sales_branch_month
-      .map((sale) => Number(sale.currentMonthSales))
+    return sales_table_day
+      .map((sale) => Number(sale.totalSales))
       .reduce((a, b) => a + b, 0);
-  }, [sales_branch_month]);
+  }, [sales_table_day]);
 
   const monthlyData = useMemo(() => {
     return sales_branch_month.map((item) => ({

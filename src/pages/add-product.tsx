@@ -1,17 +1,8 @@
 import Layout from '@/layout/Layout';
-import {
-  Autocomplete,
-  AutocompleteItem,
-  Button,
-  Input,
-  Select,
-  SelectItem,
-  Textarea,
-} from "@heroui/react";
+import { Autocomplete, AutocompleteItem, Input, Select, SelectItem, Textarea } from '@heroui/react';
 import { ArrowLeft } from 'lucide-react';
 import * as yup from 'yup';
 import { Formik } from 'formik';
-import { global_styles } from '@/styles/global.styles';
 import { useEffect, useState } from 'react';
 import { useBranchesStore } from '@/store/branches.store';
 import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
@@ -23,6 +14,8 @@ import { verify_code_product } from '@/services/products.service';
 import { useProductsStore } from '@/store/products.store';
 import { ProductPayloadFormik } from '@/types/products.types';
 import { useNavigate } from 'react-router';
+import { Colors } from '@/types/themes.types';
+import ButtonUi from '@/themes/ui/button-ui';
 
 function AddProduct() {
   const [selectedBranches, setSelectedBranches] = useState<string[]>([]);
@@ -303,18 +296,18 @@ function AddProduct() {
                         variant="bordered"
                         label="Código de producto"
                       />
-                      <Button
-                        onClick={async () => {
+                      <ButtonUi
+                        onPress={async () => {
                           const code = await generarCodigo(values.name);
                           if (code) {
                             handleChange('code')(code);
                           }
                         }}
                         className="px-6"
-                        style={global_styles().thirdStyle}
+                        theme={Colors.Info}
                       >
                         Generar
-                      </Button>
+                      </ButtonUi>
                     </div>
                     {error && (
                       <p className="text-xs text-red-500 font-semibold ml-1">
@@ -445,10 +438,7 @@ function AddProduct() {
                       errorMessage={touched.tipoItem && errors.tipoItem}
                     >
                       {itemTypes.map((item) => (
-                        <AutocompleteItem
-                          key={item.codigo}
-                          className="dark:text-white"
-                        >
+                        <AutocompleteItem key={item.codigo} className="dark:text-white">
                           {item.valores}
                         </AutocompleteItem>
                       ))}
@@ -478,10 +468,7 @@ function AddProduct() {
                       errorMessage={touched.uniMedida && errors.uniMedida}
                     >
                       {unidadDeMedidaList.map((item) => (
-                        <AutocompleteItem
-                          key={item.codigo}
-                          className="dark:text-white"
-                        >
+                        <AutocompleteItem key={item.codigo} className="dark:text-white">
                           {item.valores}
                         </AutocompleteItem>
                       ))}
@@ -533,10 +520,7 @@ function AddProduct() {
                       errorMessage={touched.subCategoryId && errors.subCategoryId}
                     >
                       {subcategories?.map((sub) => (
-                        <SelectItem
-                          key={sub.id}
-                          className="dark:text-white"
-                        >
+                        <SelectItem key={sub.id} className="dark:text-white">
                           {sub.name}
                         </SelectItem>
                       ))}
@@ -583,29 +567,24 @@ function AddProduct() {
                       errorMessage={touched.supplierId && errors.supplierId}
                     >
                       {supplier_list.map((bra) => (
-                        <AutocompleteItem
-                          key={bra.id ?? 0}
-                          className="dark:text-white"
-                        >
+                        <AutocompleteItem key={bra.id ?? 0} className="dark:text-white">
                           {bra.nombre}
                         </AutocompleteItem>
                       ))}
                     </Autocomplete>
                   </div>
-                  {!loading ? (
-                    <Button
-                      onClick={() => handleSubmit()}
-                      className="w-full mt-4 text-sm font-semibold "
-                      style={global_styles().thirdStyle}
-                    >
+                 <div className='flex justify-end items-end mt-4'>
+                 {!loading ? (
+                    <ButtonUi className='px-20' theme={Colors.Primary} onPress={() => handleSubmit()}>
                       Guardar
-                    </Button>
+                    </ButtonUi>
                   ) : (
                     <div className="flex flex-col items-center justify-center w-full">
                       <div className="loaderBranch w-2 h-2 mt-2"></div>
                       <p className="mt-3 text-sm font-semibold">Cargando...</p>
                     </div>
                   )}
+                 </div>
                 </div>
               </div>
             )}

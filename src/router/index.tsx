@@ -34,7 +34,7 @@ import AddEmployee from '../components/employee/AddEmployee';
 import VentasPorPeriodo from '../pages/reports/VentasPorPeriodo';
 import StudyLevel from '@/pages/StudyLevel';
 import AddActionRol from '@/components/Action_rol/AddActionRol';
-import AddProduct from '@/pages/AddProduct';
+import AddProduct from '@/pages/add-product';
 import VentasPorProducto from '@/pages/reports/VentasPorProducto';
 import NoAuthorization from '../pages/NoAuthorization';
 import { JSX } from 'react/jsx-runtime';
@@ -71,9 +71,9 @@ import Annulation from '@/pages/Annulation';
 import anexos from "@/pages/anexos_iva/router"
 import accounting_items from "@/pages/contablilidad/router"
 import EditShopping from '@/components/shopping/EditShopping';
-import AccountCatalogs from '@/pages/AccountCatalogs';
-import AddAccountCatalogs from '@/components/accountCatalogs/AddAccountCatalogs';
-import UpdateAccountCatalogs from '@/components/accountCatalogs/UpdateAccountCatalogs';
+import AccountCatalogs from '@/pages/account-catalog';
+import AddAccountCatalogs from '@/components/account-catalogs/add-account-catalog';
+import UpdateAccountCatalogs from '@/components/account-catalogs/update-account-catalog';
 import TicketSales from '@/pages/TicketSales';
 import Test from "@/pages/Test";
 import pages_router from "@/pages/router"

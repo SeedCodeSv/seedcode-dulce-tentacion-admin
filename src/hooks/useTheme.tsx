@@ -1,27 +1,14 @@
 /* eslint-disable no-unused-vars */
 import React from 'react';
-import { defaultTheme } from '../utils/constants';
+import defaultTheme from '@/themes/default-theme.json';
+import { ITheme } from '@/types/themes.types';
 
 interface Props {
   children: React.ReactNode;
 }
-export interface Color {
-  danger: string;
-  primary: string;
-  secondary: string;
-  third: string;
-  warning: string;
-  dark: string;
-}
-
-export interface Theme {
-  name: string;
-  context: 'light' | 'dark';
-  colors: Color;
-}
 interface ThemeContextType {
-  theme: Theme;
-  toggleTheme: (themeName: Theme) => void;
+  theme: ITheme;
+  toggleTheme: (themeName: ITheme) => void;
   navbar: string;
   toggleNavBar: (themeName: string) => void;
   context: 'light' | 'dark';
@@ -29,7 +16,7 @@ interface ThemeContextType {
 }
 
 export const ThemeContext = React.createContext<ThemeContextType>({
-  theme: {} as Theme,
+  theme: defaultTheme as ITheme,
   toggleTheme: () => {},
   navbar: '',
   toggleNavBar: () => {},
@@ -41,7 +28,7 @@ function ThemeProvider(props: Props) {
   const themeConfigured = localStorage.getItem('theme');
 
   const [theme, setTheme] = React.useState(
-    themeConfigured ? JSON.parse(themeConfigured) : (defaultTheme as Theme)
+    themeConfigured ? JSON.parse(themeConfigured) : (defaultTheme as ITheme)
   );
 
   const [navbar, setNavbar] = React.useState('sidebar');
@@ -50,14 +37,17 @@ function ThemeProvider(props: Props) {
     setNavbar(barType);
   };
 
-  const toggleTheme = (themeName: Theme) => {
+  const [context, setContext] = React.useState<'light' | 'dark'>(
+    (localStorage.getItem('context') as 'light' | 'dark') ?? 'light'
+  );
+
+  const toggleTheme = (themeName: ITheme) => {
+    window.document.body.style.backgroundColor = themeName.colors[context].background;
+    window.document.body.style.color = themeName.colors[context].textColor;
+
     setTheme(themeName);
     localStorage.setItem('theme', JSON.stringify(themeName));
   };
-
-  const [context, setContext] = React.useState<'light' | 'dark'>(
-    localStorage.getItem('context') as 'light' | 'dark'
-  );
 
   const toggleContext = (context: 'light' | 'dark') => {
     setContext(context);
@@ -74,3 +64,5 @@ function ThemeProvider(props: Props) {
 }
 
 export default ThemeProvider;
+
+export const useTheme = () => React.useContext(ThemeContext);

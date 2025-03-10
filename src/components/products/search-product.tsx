@@ -1,16 +1,15 @@
 import BottomDrawer from '@/components/global/BottomDrawer';
-import TooltipGlobal from '@/components/global/TooltipGlobal';
-import { ThemeContext } from '@/hooks/useTheme';
 import { useCategoriesStore } from '@/store/categories.store';
 import { useProductsStore } from '@/store/products.store';
 import { useSubCategoriesStore } from '@/store/sub-categories.store';
 import { useSubCategoryStore } from '@/store/sub-category';
-import { global_styles } from '@/styles/global.styles';
 import { CategoryProduct } from '@/types/categories.types';
-import { Autocomplete, AutocompleteItem, Button, Input } from "@heroui/react";
+import { Autocomplete, AutocompleteItem, Input } from '@heroui/react';
 import { Filter, SearchIcon } from 'lucide-react';
-import { useContext, useEffect, useMemo, useState } from 'react';
-import { IPropsSearchProduct } from '../types/mobile-view.types';
+import { useEffect, useMemo, useState } from 'react';
+import { IPropsSearchProduct } from './types/mobile-view.types';
+import { Colors } from '@/types/themes.types';
+import ButtonUi from '@/themes/ui/button-ui';
 
 function SearchProduct(props: IPropsSearchProduct) {
   const { getSubcategories, subcategories } = useSubCategoriesStore();
@@ -39,21 +38,12 @@ function SearchProduct(props: IPropsSearchProduct) {
   const handleSearch = () => {
     getPaginatedProducts(1, 5, category, subCategory, search, code, 1);
   };
-  const { theme } = useContext(ThemeContext);
   return (
     <div className="flex items-center gap-5">
       <div className="block md:hidden">
-        <TooltipGlobal text="Filtros disponibles" color="primary">
-          <Button
-            className="border border-white"
-            style={global_styles().thirdStyle}
-            isIconOnly
-            type="button"
-            onClick={() => setOpenVaul(true)}
-          >
-            <Filter />
-          </Button>
-        </TooltipGlobal>
+        <ButtonUi theme={Colors.Info} isIconOnly type="button" onClick={() => setOpenVaul(true)}>
+          <Filter />
+        </ButtonUi>
         <BottomDrawer
           title="Filtros disponibles"
           open={openVaul}
@@ -167,21 +157,15 @@ function SearchProduct(props: IPropsSearchProduct) {
                 </AutocompleteItem>
               ))}
             </Autocomplete>
-            <Button
-              color="primary"
-              onClick={() => {
+            <ButtonUi
+              theme={Colors.Primary}
+              onPress={() => {
                 handleSearch();
                 setOpenVaul(false);
               }}
-              style={{
-                backgroundColor: theme.colors.secondary,
-                color: theme.colors.primary,
-                fontSize: '16px',
-              }}
-              className=" font-semibold"
             >
               Buscar
-            </Button>
+            </ButtonUi>
           </div>
         </BottomDrawer>
       </div>

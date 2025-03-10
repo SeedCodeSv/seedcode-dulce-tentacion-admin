@@ -1,11 +1,9 @@
-import useGlobalStyles from '@/components/global/global.styles';
 import Layout from '@/layout/Layout';
 import { useBranchesStore } from '@/store/branches.store';
 import { useFiscalDataAndParameterStore } from '@/store/fiscal-data-and-paramters.store';
 import { useSalesStore } from '@/store/sales.store';
 import { formatDate } from '@/utils/dates';
 import {
-  Button,
   Input,
   Select,
   SelectItem,
@@ -31,6 +29,9 @@ import { useNavigate } from 'react-router';
 import { Period } from '@/types/items-period.types';
 import { create_period, find_period, update_period } from '@/services/items-period.service';
 import { DateTime } from 'luxon';
+import ThGlobal from '@/themes/ui/th-global';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
 
 function AddItemsBySales() {
   const [startDate, setStartDate] = useState(formatDate());
@@ -44,8 +45,6 @@ function AddItemsBySales() {
   const [selectedType, setSelectedType] = useState(0);
 
   const { user } = useAuthStore();
-
-  const styles = useGlobalStyles();
 
   const [branches, setBranches] = useState<Selection>(new Set([]));
 
@@ -62,8 +61,6 @@ function AddItemsBySales() {
   }, []);
 
   const { saleByItem, getSaleByItem, loadingSalesByItem } = useSalesStore();
-
-  
 
   const handleSearch = () => {
     const transId = user?.correlative
@@ -93,7 +90,7 @@ function AddItemsBySales() {
   };
 
   useEffect(() => {
-    handleSearch()
+    handleSearch();
   }, []);
 
   const $itemsFilter = useMemo(() => {
@@ -399,7 +396,9 @@ function AddItemsBySales() {
                   <SelectItem key={branch.id}>{branch.name}</SelectItem>
                 ))}
               </Select>
-              <Button onPress={handleSearch} className='px-5 font-semibold' style={styles.thirdStyle}>Buscar</Button>
+              <ButtonUi onPress={handleSearch} theme={Colors.Primary}>
+                Buscar
+              </ButtonUi>
             </div>
           </div>
           <div className="w-full grid grid-cols-2 gap-5 mt-8">
@@ -453,36 +452,11 @@ function AddItemsBySales() {
             <table className="w-full">
               <thead className="sticky top-0 z-20 bg-white">
                 <tr>
-                  <th
-                    style={styles.darkStyle}
-                    className="p-3 whitespace-nowrap text-xs font-semibold text-left"
-                  >
-                    Cod. Cuenta
-                  </th>
-                  <th
-                    style={styles.darkStyle}
-                    className="p-3 whitespace-nowrap text-xs font-semibold text-left"
-                  >
-                    Centro Costo
-                  </th>
-                  <th
-                    style={styles.darkStyle}
-                    className="p-3 whitespace-nowrap text-xs font-semibold text-left"
-                  >
-                    Concepto de la transacción
-                  </th>
-                  <th
-                    style={styles.darkStyle}
-                    className="p-3 whitespace-nowrap text-xs font-semibold text-left"
-                  >
-                    Debe
-                  </th>
-                  <th
-                    style={styles.darkStyle}
-                    className="p-3 whitespace-nowrap text-xs font-semibold text-left"
-                  >
-                    Haber
-                  </th>
+                  <ThGlobal className="text-left p-3">Cod. cuenta</ThGlobal>
+                  <ThGlobal className="text-left p-3">Centro costo</ThGlobal>
+                  <ThGlobal className="text-left p-3">Concepto</ThGlobal>
+                  <ThGlobal className="text-left p-3">Debe</ThGlobal>
+                  <ThGlobal className="text-left p-3">Haber</ThGlobal>
                 </tr>
               </thead>
               <tbody>
@@ -557,22 +531,16 @@ function AddItemsBySales() {
             </table>
           </div>
           <div className="flex justify-end gap-5 mt-3">
-            <Button
+            <ButtonUi
+              theme={Colors.Default}
               isLoading={loading}
-              className="px-20"
-              style={styles.dangerStyles}
               onPress={() => navigate('/accounting-items')}
             >
               Cancelar
-            </Button>
-            <Button
-              isLoading={loading}
-              className="px-20"
-              style={styles.secondaryStyle}
-              onPress={() => handleSave()}
-            >
+            </ButtonUi>
+            <ButtonUi theme={Colors.Primary} isLoading={loading} onPress={() => handleSave()}>
               Guardar
-            </Button>
+            </ButtonUi>
           </div>
         </div>
         <Modal isOpen={periodModal.isOpen} onOpenChange={periodModal.onOpenChange} size="xl">
@@ -604,22 +572,20 @@ function AddItemsBySales() {
                 </div>
               </ModalBody>
               <ModalFooter>
-                <Button
+                <ButtonUi
                   isLoading={loadingUpdate}
-                  className="w-full"
-                  style={styles.dangerStyles}
+                  theme={Colors.Default}
                   onPress={() => navigate('/accounting-items')}
                 >
                   Cancelar
-                </Button>
-                <Button
+                </ButtonUi>
+                <ButtonUi
                   isLoading={loadingUpdate}
-                  className="w-full"
-                  style={styles.secondaryStyle}
+                  theme={Colors.Primary}
                   onPress={() => handleUpdateAndDelete()}
                 >
                   Modificar partida
-                </Button>
+                </ButtonUi>
               </ModalFooter>
             </>
           </ModalContent>

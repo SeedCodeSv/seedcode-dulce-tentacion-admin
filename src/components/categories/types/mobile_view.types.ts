@@ -1,7 +1,6 @@
 import { CategoryProduct } from "../../../types/categories.types";
 
 export interface MobileViewProps {
-    layout: 'grid' | 'list';
     deletePopover: ({ category }: { category: CategoryProduct }) => JSX.Element;
     handleEdit: (category: CategoryProduct) => void;
     actions: string[];

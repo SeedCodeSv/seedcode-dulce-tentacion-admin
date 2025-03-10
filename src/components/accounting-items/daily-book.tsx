@@ -9,7 +9,6 @@ import {
   ModalHeader,
   useDisclosure,
 } from '@heroui/react';
-import useGlobalStyles from '../global/global.styles';
 import { formatDate } from '@/utils/dates';
 import { useState } from 'react';
 import { useItemsStore } from '@/store/items.store';
@@ -19,6 +18,8 @@ import autoTable from 'jspdf-autotable';
 import { Item } from '@/types/items.types';
 import FullPageLayout from '../global/FullOverflowLayout';
 import { X } from 'lucide-react';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
 
 type UseDisclosureReturn = ReturnType<typeof useDisclosure>;
 
@@ -27,8 +28,6 @@ interface Props {
 }
 
 function DailyBook({ disclosure }: Props) {
-  const styles = useGlobalStyles();
-
   const [startDate, setStartDate] = useState(formatDate());
   const [endDate, setEndDate] = useState(formatDate());
   const [loadingPdf, setLoadingPdf] = useState(false);
@@ -463,37 +462,37 @@ function DailyBook({ disclosure }: Props) {
               >
                 Incluir saltos de pagina por partida {hasSaltOfPage ? '✓' : ''}
               </Checkbox>
-              <Button
+              <ButtonUi
                 onPress={handleGetItems}
                 isLoading={loadingItems}
-                style={styles.secondaryStyle}
                 className="w-full"
+                theme={Colors.Primary}
               >
                 Buscar
-              </Button>
+              </ButtonUi>
             </ModalBody>
             <ModalFooter>
-              <Button isLoading={loadingItems} style={styles.dangerStyles} className="px-10">
+              <ButtonUi isLoading={loadingItems} theme={Colors.Default} className="px-10">
                 Cancelar
-              </Button>
-              <Button
+              </ButtonUi>
+              <ButtonUi
                 onPress={handleShowPreview}
                 isDisabled={items.length === 0}
                 isLoading={loadingItems || loadingPdf}
-                style={styles.darkStyle}
                 className="px-10"
+                theme={Colors.Info}
               >
                 Visualizar
-              </Button>
-              <Button
+              </ButtonUi>
+              <ButtonUi
                 onPress={() => generatePDF('download')}
                 isDisabled={items.length === 0}
                 isLoading={loadingItems}
-                style={styles.thirdStyle}
                 className="px-10"
+                theme={Colors.Success}
               >
                 Descargar PDF
-              </Button>
+              </ButtonUi>
             </ModalFooter>
           </>
         </ModalContent>

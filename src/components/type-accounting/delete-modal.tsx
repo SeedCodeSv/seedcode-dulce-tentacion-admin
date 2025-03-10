@@ -6,9 +6,10 @@ import {
   ModalFooter,
   ModalHeader,
 } from "@heroui/react";
-import useGlobalStyles from '../global/global.styles';
 import { useTypeOfAccountStore } from '@/store/type-of-aacount.store';
 import { useState } from 'react';
+import ButtonUi from "@/themes/ui/button-ui";
+import { Colors } from "@/types/themes.types";
 
 interface Props {
   isOpen: boolean;
@@ -17,7 +18,6 @@ interface Props {
 }
 
 function DeleteModal(props: Props) {
-  const styles = useGlobalStyles();
   const [loading, setLoading] = useState(false);
 
   const { deleteTypeOfAccount } = useTypeOfAccountStore();
@@ -57,14 +57,14 @@ function DeleteModal(props: Props) {
               >
                 Cancelar
               </Button>
-              <Button
+              <ButtonUi
                 isLoading={loading}
                 className="px-10"
-                style={styles.dangerStyles}
+                theme={Colors.Error}
                 onPress={handleDelete}
               >
                 Eliminar
-              </Button>
+              </ButtonUi>
             </ModalFooter>
           </>
         )}

@@ -9,25 +9,19 @@ import {
   PopoverTrigger,
   PopoverContent,
   Switch,
-} from "@heroui/react";
-import { useContext, useEffect, useState } from 'react';
+} from '@heroui/react';
+import { useEffect, useState } from 'react';
 import {
   EditIcon,
   User,
-  TrashIcon,
   Table as ITable,
   CreditCard,
-  List,
   RefreshCcw,
-  Lock,
   SearchIcon,
+  Trash,
 } from 'lucide-react';
-import { ThemeContext } from '../../hooks/useTheme';
-import AddSubCategory from './AddSubCategory';
+import AddSubCategory from './add-sub-category';
 import AddButton from '../global/AddButton';
-import MobileView from './MobileView';
-import Pagination from '../global/Pagination';
-import { global_styles } from '../../styles/global.styles';
 import { limit_options } from '../../utils/constants';
 import SmPagination from '../global/SmPagination';
 import HeadlessModal from '../global/HeadlessModal';
@@ -36,15 +30,19 @@ import { useSubCategoryStore } from '../../store/sub-category';
 import TooltipGlobal from '../global/TooltipGlobal';
 import NO_DATA from '@/assets/svg/no_data.svg';
 import classNames from 'classnames';
-import SearchSubCategories from './search_sub_categories_product/SearchSubCategories';
 import useWindowSize from '@/hooks/useWindowSize';
+import ThGlobal from '@/themes/ui/th-global';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
+import useThemeColors from '@/themes/use-theme-colors';
+import Pagination from '../global/Pagination';
+import CardSubCategory from './card-sub-category';
 
 interface PProps {
   actions: string[];
 }
 
 function ListSubCategory({ actions }: PProps) {
-  const { theme } = useContext(ThemeContext);
   const [selectedCategory, setSelectedCategory] = useState<ISubCategory>();
   const {
     sub_categories_paginated,
@@ -77,17 +75,11 @@ function ListSubCategory({ actions }: PProps) {
   return (
     <div className=" w-full h-full bg-white dark:bg-gray-900">
       <div className="w-full h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
-        <div className="flex justify-between items-end ">
-          <SearchSubCategories
-            nameSubCategoryProduct={(name: string) => setSearch(name)}
-          ></SearchSubCategories>
-        </div>
-
-        <div className="w-full flex justify-between  md:flex">
+        <div className="w-full flex justify-between">
           <div className="flex gap-5">
             <Input
               startContent={<User />}
-              className="w-full xl:w-96 dark:text-white border border-white rounded-xl hidden md:flex"
+              className="w-full xl:w-96 dark:text-white border border-white rounded-xl"
               variant="bordered"
               labelPlacement="outside"
               label="Nombre"
@@ -104,18 +96,15 @@ function ListSubCategory({ actions }: PProps) {
                 handleSearch('');
               }}
             />
-            <Button
-              style={{
-                backgroundColor: theme.colors.secondary,
-                color: theme.colors.primary,
-              }}
-              className="mt-6 font-semibold border border-white rounded-xl hidden md:flex"
-              color="primary"
-              startContent={<SearchIcon className="w-10" />}
-              onClick={() => handleSearch(undefined)}
-            >
-              Buscar
-            </Button>
+            <div className="flex items-end">
+              <ButtonUi
+                theme={Colors.Primary}
+                startContent={<SearchIcon className="w-10" />}
+                onPress={() => handleSearch(undefined)}
+              >
+                Buscar
+              </ButtonUi>
+            </div>
           </div>
           <div className="flex gap-5 mt-6">
             {actions.includes('Agregar') && (
@@ -171,73 +160,28 @@ function ListSubCategory({ actions }: PProps) {
             </div>
 
             <ButtonGroup className="mt-4 xl:flex hidden border border-white rounded-xl">
-              <Button
-                className="hidden md:inline-flex"
+              <ButtonUi
+                theme={view === 'table' ? Colors.Primary : Colors.Default}
                 isIconOnly
-                color="secondary"
-                style={{
-                  backgroundColor: view === 'table' ? theme.colors.third : '#e5e5e5',
-                  color: view === 'table' ? theme.colors.primary : '#3e3e3e',
-                }}
-                onClick={() => setView('table')}
+                onPress={() => setView('table')}
               >
                 <ITable />
-              </Button>
-              <Button
+              </ButtonUi>
+              <ButtonUi
+                theme={view === 'grid' ? Colors.Primary : Colors.Default}
                 isIconOnly
-                color="default"
-                style={{
-                  backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
-                  color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
-                }}
-                onClick={() => setView('grid')}
+                onPress={() => setView('grid')}
               >
                 <CreditCard />
-              </Button>
-              <Button
-                isIconOnly
-                color="default"
-                style={{
-                  backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
-                  color: view === 'list' ? theme.colors.primary : '#3e3e3e',
-                }}
-                onClick={() => setView('list')}
-              >
-                <List />
-              </Button>
-            </ButtonGroup>
-            <ButtonGroup className="xl:hidden mt-4 border border-white rounded-xl">
-              <Button
-                isIconOnly
-                color="default"
-                style={{
-                  backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
-                  color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
-                }}
-                onClick={() => setView('grid')}
-              >
-                <CreditCard />
-              </Button>
-              <Button
-                isIconOnly
-                color="default"
-                style={{
-                  backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
-                  color: view === 'list' ? theme.colors.primary : '#3e3e3e',
-                }}
-                onClick={() => setView('list')}
-              >
-                <List />
-              </Button>
+              </ButtonUi>
             </ButtonGroup>
           </div>
         </div>
 
         {(view === 'grid' || view === 'list') && (
-          <MobileView
+          <CardSubCategory
             handleActive={handleActivate}
             deletePopover={DeletePopUp}
-            layout={view as 'grid' | 'list'}
             handleEdit={(item) => {
               setSelectedCategory(item);
               modalAdd.onOpen();
@@ -251,19 +195,10 @@ function ListSubCategory({ actions }: PProps) {
               <table className="w-full">
                 <thead className="sticky top-0 z-20 bg-white">
                   <tr>
-                    <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                      No.
-                    </th>
-                    <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                      Nombre
-                    </th>
-
-                    <th className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                      Sub categoría
-                    </th>
-                    <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                      Acciones
-                    </th>
+                    <ThGlobal className="text-left p-3">No.</ThGlobal>
+                    <ThGlobal className="text-left p-3">Nombre</ThGlobal>
+                    <ThGlobal className="text-left p-3">Categoría</ThGlobal>
+                    <ThGlobal className="text-left p-3">Acciones</ThGlobal>
                   </tr>
                 </thead>
                 <tbody className="max-h-[600px] w-full overflow-y-auto">
@@ -294,84 +229,36 @@ function ListSubCategory({ actions }: PProps) {
 
                               <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                                 <div className="flex w-full gap-5">
-                                  {categories.isActive && actions.includes('Editar') ? (
-                                    <TooltipGlobal text="Editar">
-                                      <Button
-                                        className="border border-white rounded-xl"
-                                        onClick={() => {
-                                          setSelectedCategory(categories);
-
-                                          modalAdd.onOpen();
-                                        }}
-                                        isIconOnly
-                                        style={{
-                                          backgroundColor: theme.colors.secondary,
-                                        }}
-                                      >
-                                        <EditIcon
-                                          style={{
-                                            color: theme.colors.primary,
-                                          }}
-                                          size={20}
-                                        />
-                                      </Button>
-                                    </TooltipGlobal>
-                                  ) : (
-                                    <Button
-                                      type="button"
-                                      disabled
-                                      style={{
-                                        backgroundColor: theme.colors.secondary,
+                                  {categories.isActive && actions.includes('Editar') && (
+                                    <ButtonUi
+                                      theme={Colors.Success}
+                                      onPress={() => {
+                                        setSelectedCategory(categories);
+                                        modalAdd.onOpen();
                                       }}
-                                      className="flex font-semibold border border-white  cursor-not-allowed"
                                       isIconOnly
                                     >
-                                      <Lock className="text-white" />
-                                    </Button>
+                                      <EditIcon size={20} />
+                                    </ButtonUi>
                                   )}
-                                  {categories.isActive && actions.includes('Eliminar') ? (
+                                  {categories.isActive && actions.includes('Eliminar') && (
                                     <DeletePopUp subcategory={categories} />
-                                  ) : (
-                                    <Button
-                                      type="button"
-                                      disabled
-                                      style={{
-                                        backgroundColor: theme.colors.danger,
-                                      }}
-                                      className="flex font-semibold border border-white  cursor-not-allowed"
-                                      isIconOnly
-                                    >
-                                      <Lock className="text-white" />
-                                    </Button>
                                   )}
                                   {!categories.isActive && (
                                     <>
-                                      {actions.includes('Activar') ? (
+                                      {actions.includes('Activar') && (
                                         <TooltipGlobal text="Activar">
-                                          <Button
-                                            className="border border-white rounded-xl"
-                                            onClick={() => handleActivate(categories.id)}
+                                          <ButtonUi
+                                            theme={Colors.Info}
+                                            onPress={() => handleActivate(categories.id)}
                                             isIconOnly
-                                            style={global_styles().thirdStyle}
                                           >
                                             <RefreshCcw />
-                                          </Button>
+                                          </ButtonUi>
                                         </TooltipGlobal>
-                                      ) : (
-                                        <Button
-                                          type="button"
-                                          disabled
-                                          style={global_styles().thirdStyle}
-                                          className="flex font-semibold  cursor-not-allowed border border-white"
-                                          isIconOnly
-                                        >
-                                          <Lock />
-                                        </Button>
                                       )}
                                     </>
                                   )}
-
-                                  {/*  */}
                                 </div>
                               </td>
                             </tr>
@@ -440,40 +327,22 @@ interface Props {
 }
 
 export const DeletePopUp = ({ subcategory }: Props) => {
-  const { theme } = useContext(ThemeContext);
-
   const { deleteSubCategory } = useSubCategoryStore();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const deleteDisclosure = useDisclosure();
 
   const handleDelete = async () => {
     await deleteSubCategory(subcategory.id);
-    onClose();
+    deleteDisclosure.onClose();
   };
+
+  const style = useThemeColors({ name: Colors.Error });
 
   return (
     <>
-      <Popover
-        className="border border-white rounded-2xl"
-        isOpen={isOpen}
-        onClose={onClose}
-        backdrop="blur"
-        showArrow
-      >
+      <Popover {...deleteDisclosure} backdrop="blur" showArrow>
         <PopoverTrigger>
-          <Button
-            className="border border-white rounded-xl"
-            onClick={onOpen}
-            isIconOnly
-            style={{
-              backgroundColor: theme.colors.danger,
-            }}
-          >
-            <TrashIcon
-              style={{
-                color: theme.colors.primary,
-              }}
-              size={20}
-            />
+          <Button isIconOnly style={style}>
+            <Trash />
           </Button>
         </PopoverTrigger>
         <PopoverContent>
@@ -485,19 +354,12 @@ export const DeletePopUp = ({ subcategory }: Props) => {
               ¿Estas seguro de eliminar este registro?
             </p>
             <div className="mt-4">
-              <Button className="border border-white" onClick={onClose}>
+              <ButtonUi theme={Colors.Default} onPress={deleteDisclosure.onClose}>
                 No, cancelar
-              </Button>
-              <Button
-                onClick={() => handleDelete()}
-                className="ml-5 border border-white"
-                style={{
-                  backgroundColor: theme.colors.danger,
-                  color: theme.colors.primary,
-                }}
-              >
+              </ButtonUi>
+              <ButtonUi theme={Colors.Error} onPress={() => handleDelete()}>
                 Si, eliminar
-              </Button>
+              </ButtonUi>
             </div>
           </div>
         </PopoverContent>

@@ -1,5 +1,5 @@
 import Layout from '../layout/Layout';
-import ListSubCategory from '../components/sub_categories/ListSubCategories';
+import ListSubCategory from '../components/sub_categories/list-sub-categories';
 import { useViewsStore } from '@/store/views.store';
 function ProductsCategories() {
   const { actions } = useViewsStore();

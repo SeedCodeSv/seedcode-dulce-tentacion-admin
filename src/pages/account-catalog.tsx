@@ -1,35 +1,36 @@
-import useGlobalStyles from '@/components/global/global.styles';
 import Layout from '@/layout/Layout';
 import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import NO_DATA from '../assets/no.png';
-import { Button, Input, Popover, PopoverContent, PopoverTrigger } from "@heroui/react";
+import { Button, Input, Popover, PopoverContent, PopoverTrigger } from '@heroui/react';
 import AddButton from '@/components/global/AddButton';
 import { PiMicrosoftExcelLogoBold } from 'react-icons/pi';
-import { generate_catalog_de_cuentas } from '@/components/accountCatalogs/accountCatalogs';
+import { generate_catalog_de_cuentas } from '@/components/account-catalogs/accountCatalogs';
 import { Pen, SearchIcon, Trash } from 'lucide-react';
-import { ThemeContext } from '@/hooks/useTheme';
-import { global_styles } from '@/styles/global.styles';
 import axios from 'axios';
 import { API_URL } from '@/utils/constants';
 import { toast } from 'sonner';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
+import ThGlobal from '@/themes/ui/th-global';
+import useThemeColors from '@/themes/use-theme-colors';
 
 function AddAccountCatalogs() {
   const [name, setName] = useState('');
   const [code, setCode] = useState('');
 
+  const style = useThemeColors({ name: Colors.Error });
+
   const { getAccountCatalogs, account_catalog_pagination, loading } = useAccountCatalogsStore();
   useEffect(() => {
     getAccountCatalogs(name, code);
   }, []);
-  const { theme } = useContext(ThemeContext);
 
   const handleSearch = (searchParam: string | undefined) => {
     getAccountCatalogs(searchParam ?? name, searchParam ?? code);
   };
   const exportAnnexes = async () => {
-    // const month = months.find((month) => month.value === monthSelected)?.name || ""
     const blob = await generate_catalog_de_cuentas(account_catalog_pagination.accountCatalogs);
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -39,8 +40,6 @@ function AddAccountCatalogs() {
   };
 
   const navigate = useNavigate();
-  const styles = useGlobalStyles();
-
   const onDeleteConfirm = (id: number) => {
     axios
       .delete(API_URL + '/account-catalogs/' + id)
@@ -60,10 +59,10 @@ function AddAccountCatalogs() {
           <div className="w-full mt-2">
             <div className="w-full flex flex-col lg:flex-row justify-between gap-5 mt-4">
               <div className="w-full">
-                <div className="mt-2 flex flex-col lg:flex-row w-full justify-between gap-5">
+                <div className="mt-2 flex flex-row w-full justify-between items-end gap-5">
                   <Input
                     startContent={<SearchIcon />}
-                    className="w-full dark:text-white border border-white rounded-xl mb-4 lg:mb-0"
+                    className="w-full dark:text-white border border-white rounded-xl"
                     variant="bordered"
                     labelPlacement="outside"
                     label="Nombre"
@@ -82,7 +81,7 @@ function AddAccountCatalogs() {
                   />
                   <Input
                     startContent={<SearchIcon />}
-                    className="w-full dark:text-white border border-white rounded-xl mb-4 lg:mb-0"
+                    className="w-full dark:text-white border border-white rounded-xl"
                     variant="bordered"
                     labelPlacement="outside"
                     label="Código"
@@ -99,31 +98,26 @@ function AddAccountCatalogs() {
                       handleSearch('');
                     }}
                   />
-                  <Button
-                    style={{
-                      backgroundColor: theme.colors.secondary,
-                      color: theme.colors.primary,
-                    }}
-                    className="w-full lg:w-auto mt-2 lg:mt-6 font-semibold flex justify-center items-center border border-white rounded-xl"
-                    color="primary"
+                  <ButtonUi
+                    theme={Colors.Primary}
                     startContent={<SearchIcon className="w-10" />}
-                    onClick={() => {
+                    onPress={() => {
                       handleSearch(undefined);
                     }}
                   >
                     Buscar
-                  </Button>
+                  </ButtonUi>
                 </div>
               </div>
-              <div className="w-full flex flex-col lg:flex-row justify-end gap-5 pb-5 mt-6 lg:mt-9">
-                <Button
-                  className="w-full lg:w-auto px-4 lg:px-10 mb-4 lg:mb-0"
+              <div className="w-full flex flex-col lg:flex-row justify-end items-end gap-5 pb-5 mt-6 lg:mt-9">
+                <ButtonUi
+                  theme={Colors.Info}
                   endContent={<PiMicrosoftExcelLogoBold size={20} />}
-                  onClick={() => exportAnnexes()}
+                  onPress={() => exportAnnexes()}
                   color="secondary"
                 >
                   Exportar Catálogo
-                </Button>
+                </ButtonUi>
                 <AddButton
                   onClick={() => {
                     navigate('/add-account-catalog');
@@ -145,61 +139,15 @@ function AddAccountCatalogs() {
                       <table className="w-full">
                         <thead className="sticky top-0 z-20 bg-white">
                           <tr>
-                            <th
-                              style={styles.darkStyle}
-                              className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                            >
-                              N
-                            </th>
-                            <th
-                              style={styles.darkStyle}
-                              className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                            >
-                              Código
-                            </th>
-                            <th
-                              style={styles.darkStyle}
-                              className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                            >
-                              Nombre
-                            </th>
-                            <th
-                              style={styles.darkStyle}
-                              className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                            >
-                              Cuenta Mayor
-                            </th>
-                            <th
-                              style={styles.darkStyle}
-                              className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                            >
-                              Nivel de Cuenta
-                            </th>
-                            <th
-                              style={styles.darkStyle}
-                              className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                            >
-                              Tipo de Cuenta
-                            </th>
-
-                            <th
-                              style={styles.darkStyle}
-                              className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                            >
-                              Elemento
-                            </th>
-                            <th
-                              style={styles.darkStyle}
-                              className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                            >
-                              Cargado como
-                            </th>
-                            <th
-                              style={styles.darkStyle}
-                              className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                            >
-                              Acciones
-                            </th>
+                            <ThGlobal className="text-left p-3">No.</ThGlobal>
+                            <ThGlobal className="text-left p-3">Codigo</ThGlobal>
+                            <ThGlobal className="text-left p-3">Nombre</ThGlobal>
+                            <ThGlobal className="text-left p-3">Cuenta mayor</ThGlobal>
+                            <ThGlobal className="text-left p-3">Nivel</ThGlobal>
+                            <ThGlobal className="text-left p-3">Tipo</ThGlobal>
+                            <ThGlobal className="text-left p-3">Elemento</ThGlobal>
+                            <ThGlobal className="text-left p-3">Cargando como</ThGlobal>
+                            <ThGlobal className="text-left p-3">Acciones</ThGlobal>
                           </tr>
                         </thead>
                         <tbody>
@@ -232,7 +180,7 @@ function AddAccountCatalogs() {
                               <td className="flex gap-4">
                                 <Popover className="border border-white rounded-xl">
                                   <PopoverTrigger className="">
-                                    <Button style={global_styles().warningStyles} isIconOnly>
+                                    <Button style={style} isIconOnly>
                                       <Trash />
                                     </Button>
                                   </PopoverTrigger>
@@ -243,11 +191,8 @@ function AddAccountCatalogs() {
                                       </p>
                                       <div className="flex justify-center mt-4">
                                         <Button
-                                          onClick={() => onDeleteConfirm(shop.id)}
-                                          style={{
-                                            backgroundColor: '#FF4D4F',
-                                            color: 'white',
-                                          }}
+                                          onPress={() => onDeleteConfirm(shop.id)}
+                                          style={style}
                                           className="mr-2"
                                         >
                                           Sí, eliminar
@@ -257,14 +202,14 @@ function AddAccountCatalogs() {
                                   </PopoverContent>
                                 </Popover>
 
-                                <Button
+                                <ButtonUi
                                   className=""
-                                  onClick={() => navigate(`/update-account-catalog/${shop.id}`)}
-                                  style={global_styles().secondaryStyle}
+                                  onPress={() => navigate(`/update-account-catalog/${shop.id}`)}
+                                  theme={Colors.Success}
                                   isIconOnly
                                 >
                                   <Pen />
-                                </Button>
+                                </ButtonUi>
                               </td>
                             </tr>
                           ))}

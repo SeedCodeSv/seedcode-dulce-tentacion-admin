@@ -8,12 +8,13 @@ import {
   useDisclosure,
   Input,
 } from "@heroui/react";
-import useGlobalStyles from '../global/global.styles';
 import { Plus } from 'lucide-react';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { useTypeOfAccountStore } from '@/store/type-of-aacount.store';
 import { toast } from 'sonner';
+import ButtonUi from "@/themes/ui/button-ui";
+import { Colors } from "@/types/themes.types";
 
 
 export default function AddTypeAccounting() {
@@ -24,8 +25,6 @@ export default function AddTypeAccounting() {
   const handleOpen = () => {
     onOpen();
   };
-
-  const styles = useGlobalStyles();
 
   const formik = useFormik({
     initialValues: {
@@ -55,9 +54,9 @@ export default function AddTypeAccounting() {
   return (
     <>
       <div className="flex flex-wrap gap-3">
-        <Button isIconOnly style={styles.secondaryStyle} onPress={() => handleOpen()}>
+        <ButtonUi isIconOnly theme={Colors.Success} onPress={() => handleOpen()}>
           <Plus />
-        </Button>
+        </ButtonUi>
       </div>
       <Modal isOpen={isOpen} size={'lg'} onClose={onClose}>
         <ModalContent>
@@ -104,14 +103,14 @@ export default function AddTypeAccounting() {
                   >
                     Cancelar
                   </Button>
-                  <Button
+                  <ButtonUi
                     isLoading={formik.isSubmitting}
                     className="px-10"
-                    style={styles.thirdStyle}
+                    theme={Colors.Primary}
                     type="submit"
                   >
                     Guardar
-                  </Button>
+                  </ButtonUi>
                 </ModalFooter>
               </form>
             </>

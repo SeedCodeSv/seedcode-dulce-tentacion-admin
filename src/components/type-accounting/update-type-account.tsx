@@ -12,7 +12,8 @@ import {
   ModalHeader,
 } from "@heroui/react";
 import { useTypeOfAccountStore } from '@/store/type-of-aacount.store';
-import useGlobalStyles from '../global/global.styles';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
 
 interface Props {
   type: TypeOfAccount;
@@ -22,7 +23,6 @@ interface Props {
 
 function UpdateTypeAccounting(props: Props) {
   const { updateTypeOfAccount } = useTypeOfAccountStore();
-  const styles = useGlobalStyles();
 
   const formik = useFormik({
     initialValues: {
@@ -94,14 +94,14 @@ function UpdateTypeAccounting(props: Props) {
                 >
                   Cancelar
                 </Button>
-                <Button
+                <ButtonUi
                   isLoading={formik.isSubmitting}
                   className="px-10"
-                  style={styles.thirdStyle}
+                  theme={Colors.Primary}
                   type="submit"
                 >
                   Guardar
-                </Button>
+                </ButtonUi>
               </ModalFooter>
             </form>
           </>

@@ -1,7 +1,6 @@
 import { Product } from '../../../types/products.types';
 
 export interface IMobileView {
-  layout: 'grid' | 'list';
   DeletePopover: ({ product }: { product: Product }) => JSX.Element;
   openEditModal: (product: Product) => void;
   actions: string[];

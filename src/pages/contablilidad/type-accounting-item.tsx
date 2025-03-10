@@ -1,13 +1,15 @@
-import useGlobalStyles from '@/components/global/global.styles';
 import Pagination from '@/components/global/Pagination';
-import AddTypeAccounting from '@/components/type-accounting/AddTypeAccounting';
-import DeleteModal from '@/components/type-accounting/DeleteModal';
-import UpdateTypeAccounting from '@/components/type-accounting/UpdateTypeAccounting';
+import AddTypeAccounting from '@/components/type-accounting/add-type-account';
+import DeleteModal from '@/components/type-accounting/delete-modal';
+import UpdateTypeAccounting from '@/components/type-accounting/update-type-account';
 import Layout from '@/layout/Layout';
 import { useTypeOfAccountStore } from '@/store/type-of-aacount.store';
+import ButtonUi from '@/themes/ui/button-ui';
+import ThGlobal from '@/themes/ui/th-global';
+import { Colors } from '@/types/themes.types';
 import { TypeOfAccount } from '@/types/type-of-account.types';
 import { limit_options } from '@/utils/constants';
-import { Button, Input, Select, SelectItem, useDisclosure } from "@heroui/react";
+import { Input, Select, SelectItem, useDisclosure } from '@heroui/react';
 import { Pencil, Trash } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -21,9 +23,6 @@ function TypeAccountingItem() {
   useEffect(() => {
     getTypeOfAccounts(1, limit, name);
   }, [name]);
-
-  const styles = useGlobalStyles();
-
   const updateModal = useDisclosure();
   const deleteModal = useDisclosure();
   const [selectedType, setSelectedType] = useState<TypeOfAccount>();
@@ -73,9 +72,7 @@ function TypeAccountingItem() {
                 }}
               >
                 {limit_options.map((option, index) => (
-                  <SelectItem key={index} >
-                    {option}
-                  </SelectItem>
+                  <SelectItem key={index}>{option}</SelectItem>
                 ))}
               </Select>
               <AddTypeAccounting />
@@ -85,18 +82,10 @@ function TypeAccountingItem() {
               <table className="w-full">
                 <thead className="sticky top-0 z-20 bg-white">
                   <tr>
-                    <th style={styles.darkStyle} className="p-3 text-sm font-semibold text-left">
-                      No.
-                    </th>
-                    <th style={styles.darkStyle} className="p-3 text-sm font-semibold text-left">
-                      Nombre
-                    </th>
-                    <th style={styles.darkStyle} className="p-3 text-sm font-semibold text-left">
-                      Descripción
-                    </th>
-                    <th style={styles.darkStyle} className="p-3 text-sm font-semibold text-left">
-                      Acciones
-                    </th>
+                    <ThGlobal className="text-left p-3">No.</ThGlobal>
+                    <ThGlobal className="text-left p-3">Nombre</ThGlobal>
+                    <ThGlobal className="text-left p-3">Descripción</ThGlobal>
+                    <ThGlobal className="text-left p-3">Acciones</ThGlobal>
                   </tr>
                 </thead>
                 <tbody className="max-h-[600px] w-full overflow-y-auto">
@@ -125,20 +114,20 @@ function TypeAccountingItem() {
                             {type.description}
                           </td>
                           <td className="p-3 text-sm text-slate-500 dark:text-slate-100 flex    gap-5">
-                            <Button
+                            <ButtonUi
                               isIconOnly
-                              style={styles.secondaryStyle}
+                              theme={Colors.Success}
                               onPress={() => handleEdit(type)}
                             >
                               <Pencil size={20} />
-                            </Button>
-                            <Button
+                            </ButtonUi>
+                            <ButtonUi
                               isIconOnly
-                              style={styles.dangerStyles}
+                              theme={Colors.Error}
                               onPress={() => handleDelete(type.id)}
                             >
                               <Trash size={20} />
-                            </Button>
+                            </ButtonUi>
                           </td>
                         </tr>
                       ))}

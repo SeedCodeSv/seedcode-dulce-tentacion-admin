@@ -1,5 +1,5 @@
 import Layout from '../layout/Layout';
-import ListCategories from '../components/categories/ListCategories';
+import ListCategories from '../components/categories/list-categories';
 
 import { useViewsStore } from '@/store/views.store';
 
