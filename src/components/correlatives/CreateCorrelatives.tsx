@@ -1,15 +1,15 @@
-import { ThemeContext } from '@/hooks/useTheme';
 import { useBranchesStore } from '@/store/branches.store';
 import { useCorrelativesStore } from '@/store/correlatives-store/correlatives.store';
 import { correlativesTypes } from '@/types/correlatives/correlatives_data.types';
 import { IPropsCorrelativeUpdate } from '@/types/correlatives/correlatives_types';
-import { Autocomplete, AutocompleteItem, Button, Input } from "@heroui/react";
-import { useContext, useEffect } from 'react';
+import { Autocomplete, AutocompleteItem, Input } from "@heroui/react";
+import { useEffect } from 'react';
 import { toast } from 'sonner';
 import { Formik, Form } from 'formik';
 import { validation_correlatives } from './types/validation_correlatives_yup';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
 function CreateCorrelative({ onClose, reload }: IPropsCorrelativeUpdate) {
-  const { theme } = useContext(ThemeContext);
 
   const { OnCreateCorrelatives } = useCorrelativesStore();
 
@@ -231,16 +231,13 @@ function CreateCorrelative({ onClose, reload }: IPropsCorrelativeUpdate) {
             )}
           </div>
           <div className="w-full">
-            <Button
+            <ButtonUi
               type="submit"
               className="w-full mt-4 text-sm font-semibold"
-              style={{
-                backgroundColor: theme.colors.third,
-                color: theme.colors.primary,
-              }}
+              theme={Colors.Primary}
             >
               Guardar
-            </Button>
+            </ButtonUi>
           </div>
         </Form>
       )}

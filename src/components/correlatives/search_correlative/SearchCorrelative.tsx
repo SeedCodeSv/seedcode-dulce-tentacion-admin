@@ -1,17 +1,17 @@
 import BottomDrawer from '@/components/global/BottomDrawer';
 import TooltipGlobal from '@/components/global/TooltipGlobal';
-import { ThemeContext } from '@/hooks/useTheme';
 import { useBranchesStore } from '@/store/branches.store';
 import { useCorrelativesStore } from '@/store/correlatives-store/correlatives.store';
 import { global_styles } from '@/styles/global.styles';
 import { correlativesTypes } from '@/types/correlatives/correlatives_data.types';
 import { Autocomplete, AutocompleteItem, Button } from "@heroui/react";
 import { Filter } from 'lucide-react';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IPropsSearchCorrelative } from '../types/mobile_correlatives_types';
+import { Colors } from '@/types/themes.types';
+import ButtonUi from '@/themes/ui/button-ui';
 
 function SearchCorrelative(props: IPropsSearchCorrelative) {
-  const { theme } = useContext(ThemeContext);
   const [openVaul, setOpenVaul] = React.useState(false);
   const [filter, setFilter] = useState({
     branchName: '',
@@ -91,12 +91,8 @@ function SearchCorrelative(props: IPropsSearchCorrelative) {
                 ))}
               </Autocomplete>
             </div>
-            <Button
-              style={{
-                backgroundColor: theme.colors.secondary,
-                color: theme.colors.primary,
-                fontSize: '16px',
-              }}
+            <ButtonUi
+              theme={Colors.Primary}
               className="mb-10 font-semibold border border-white rounded-xl"
               color="primary"
               onClick={() => {
@@ -111,7 +107,7 @@ function SearchCorrelative(props: IPropsSearchCorrelative) {
               }}
             >
               Buscar
-            </Button>
+            </ButtonUi>
           </div>
         </BottomDrawer>
       </div>

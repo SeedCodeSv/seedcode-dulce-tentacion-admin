@@ -1,13 +1,13 @@
-import { ThemeContext } from '@/hooks/useTheme';
 import { useCorrelativesStore } from '@/store/correlatives-store/correlatives.store';
+import ButtonUi from '@/themes/ui/button-ui';
 import { correlativesTypes } from '@/types/correlatives/correlatives_data.types';
 import { Correlatives, IPropsCorrelativeUpdate } from '@/types/correlatives/correlatives_types';
-import { Autocomplete, AutocompleteItem, Button, Input } from "@heroui/react";
-import { useContext, useEffect, useState } from 'react';
+import { Colors } from '@/types/themes.types';
+import { Autocomplete, AutocompleteItem, Input } from "@heroui/react";
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 function UpdateCorrelative({ correlative, onClose, reload }: IPropsCorrelativeUpdate) {
-  const { theme } = useContext(ThemeContext);
   const [datUpdateCorrelative, setDatUpdateCorrelative] = useState<Correlatives>({
     code: correlative?.code,
     typeVoucher: correlative?.typeVoucher,
@@ -174,16 +174,13 @@ function UpdateCorrelative({ correlative, onClose, reload }: IPropsCorrelativeUp
       </div>
 
       <div className="w-full">
-        <Button
-          onClick={handleUpdateCorrelative}
+        <ButtonUi
+          onPress={handleUpdateCorrelative}
           className="w-full mt-4 text-sm font-semibold"
-          style={{
-            backgroundColor: theme.colors.third,
-            color: theme.colors.primary,
-          }}
+          theme={Colors.Success}
         >
           Guardar
-        </Button>
+        </ButtonUi>
       </div>
     </div>
   );
