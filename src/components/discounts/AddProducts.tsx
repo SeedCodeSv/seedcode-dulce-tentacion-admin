@@ -1,25 +1,24 @@
 import {
   Autocomplete,
   AutocompleteItem,
-  Button,
   Input,
   Select,
   SelectItem,
   useDisclosure,
 } from '@heroui/react';
-import { DollarSign, Plus, Printer, ScrollText, Search, Trash, Truck } from 'lucide-react';
-import { useContext, useEffect, useState } from 'react';
+import { DollarSign, Plus, ScrollText, Search, Trash, Truck } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { useBranchProductStore } from '../../store/branch_product.store';
 import { Branches } from '../../types/branches.types';
 import { useBranchesStore } from '../../store/branches.store';
 import { useSupplierStore } from '../../store/supplier.store';
-import { global_styles } from '../../styles/global.styles';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import { ThemeContext } from '../../hooks/useTheme';
 import HeadlessModal from '../global/HeadlessModal';
 import { IBranchProductOrder, PurchaseOrderPayload } from '../../types/purchase_orders.types';
 import { usePurchaseOrdersStore } from '../../store/purchase_orders.store';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
 
 interface Props {
   closeModal: () => void;
@@ -40,9 +39,7 @@ function AddPurchaseOrders(props: Props) {
   } = useBranchProductStore();
 
   const { getSupplierList, supplier_list } = useSupplierStore();
-
   const { branch_list, getBranchesList } = useBranchesStore();
-
   const [branch, setBranch] = useState('');
   const [supplier, setSupplier] = useState('');
 
@@ -54,12 +51,6 @@ function AddPurchaseOrders(props: Props) {
     getBranchesList();
     getSupplierList('');
   }, []);
-
-  const { theme } = useContext(ThemeContext);
-  const style = {
-    backgroundColor: theme.colors.dark,
-    color: theme.colors.primary,
-  };
 
   const { postPurchaseOrder } = usePurchaseOrdersStore();
 
@@ -96,9 +87,9 @@ function AddPurchaseOrders(props: Props) {
       <div className="flex flex-col justify-between w-full">
         <div className="flex justify-between w-full">
           <p className="text-xl font-semibold dark:text-white">Lista de productos</p>
-          <Button onClick={vaul.onOpen} isIconOnly style={global_styles().thirdStyle}>
+          <ButtonUi onClick={vaul.onOpen} theme={Colors.Success}>
             <Plus />
-          </Button>
+          </ButtonUi>
         </div>
 
         {orders_by_supplier.length === 0 && (
@@ -122,21 +113,14 @@ function AddPurchaseOrders(props: Props) {
               value={supplier.products}
               tableStyle={{ minWidth: '50rem' }}
             >
+              <Column headerClassName="text-sm font-semibold" field="id" header="No." />
               <Column
                 headerClassName="text-sm font-semibold"
-                headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
-                field="id"
-                header="No."
-              />
-              <Column
-                headerClassName="text-sm font-semibold"
-                headerStyle={style}
                 field="product.name"
                 header="Nombre"
               />
               <Column
                 headerClassName="text-sm font-semibold"
-                headerStyle={style}
                 field="quantity"
                 header="Cantidad"
                 body={(item) => (
@@ -154,13 +138,11 @@ function AddPurchaseOrders(props: Props) {
               />
               <Column
                 headerClassName="text-sm font-semibold"
-                headerStyle={style}
                 field="product.code"
                 header="Código"
               />
               <Column
                 headerClassName="text-sm font-semibold"
-                headerStyle={style}
                 field="price"
                 header="Precio"
                 body={(item) => (
@@ -178,37 +160,28 @@ function AddPurchaseOrders(props: Props) {
                 )}
               />
               <Column
-                headerStyle={{ ...style, borderTopRightRadius: '10px' }}
+                headerStyle={{ borderTopRightRadius: '10px' }}
                 header="Acciones"
                 body={(item) => (
                   <div className="flex w-full gap-5">
-                    <Button
-                      style={global_styles().dangerStyles}
+                    <ButtonUi
+                      theme={Colors.Warning}
                       isIconOnly
-                      onClick={() => deleteProductOrder(item.id)}
+                      onPress={() => deleteProductOrder(item.id)}
                     >
                       <Trash size={18} />
-                    </Button>
+                    </ButtonUi>
                   </div>
                 )}
               />
             </DataTable>
-            <div className="flex justify-start w-full py-5">
-              <Button onClick={() => {}} style={global_styles().warningStyles}>
-                <Printer />
-              </Button>
-            </div>
           </div>
         ))}
 
         <div className="flex justify-end w-full mt-4">
-          <Button
-            onClick={handleSaveOrder}
-            style={global_styles().secondaryStyle}
-            className="px-16"
-          >
+          <ButtonUi onPress={handleSaveOrder} theme={Colors.Primary} className="px-16">
             Guardar
-          </Button>
+          </ButtonUi>
         </div>
       </div>
       <HeadlessModal
@@ -272,9 +245,9 @@ function AddPurchaseOrders(props: Props) {
             </div>
           </div>
           <div className="flex justify-end w-full py-5">
-            <Button onClick={vaul.onClose} style={global_styles().secondaryStyle} className="px-10">
+            <ButtonUi onPress={vaul.onClose} theme={Colors.Primary} className="px-10">
               Aceptar
-            </Button>
+            </ButtonUi>
           </div>
           <div className="grid w-full grid-cols-1 gap-5 mt-4 md:grid-cols-2 lg:grid-cols-3">
             {branch_product_order.map((branch_product) => (
@@ -293,13 +266,13 @@ function AddPurchaseOrders(props: Props) {
                 <p className="flex gap-3 mt-2 dark:text-white">
                   <DollarSign /> ${branch_product.price}
                 </p>
-                <Button
+                <ButtonUi
                   className="px-10 mt-3"
-                  style={global_styles().thirdStyle}
+                  theme={Colors.Primary}
                   onPress={() => addProductOrder(branch_product)}
                 >
                   Agregar
-                </Button>
+                </ButtonUi>
               </div>
             ))}
           </div>

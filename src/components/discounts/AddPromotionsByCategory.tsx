@@ -1,5 +1,4 @@
 import {
-  Button,
   Checkbox,
   CheckboxGroup,
   Input,
@@ -11,9 +10,8 @@ import {
   Tooltip,
 } from "@heroui/react";
 import { Formik } from 'formik';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import * as yup from 'yup';
-import { ThemeContext } from '../../hooks/useTheme';
 import WeekSelector from './WeekSelector';
 import { useBranchesStore } from '../../store/branches.store';
 import { formatDate } from '../../utils/dates';
@@ -23,6 +21,8 @@ import { useBranchProductStore } from '../../store/branch_product.store';
 import { usePromotionsByCategoryStore } from '../../store/promotions/promotionsByCategory.store';
 import { useCategoriesStore } from '../../store/categories.store';
 import { useNavigate } from 'react-router';
+import ButtonUi from "@/themes/ui/button-ui";
+import { Colors } from "@/types/themes.types";
 
 function AddPromotionsByCategory() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -58,8 +58,6 @@ function AddPromotionsByCategory() {
   const handleDaysSelected = (days: string[]) => {
     setSelectedDays(days);
   };
-
-  const { theme } = useContext(ThemeContext);
   const validationSchema = yup.object().shape({
     name: yup.string().required('**El nombre es requerido**'),
   });
@@ -427,16 +425,13 @@ function AddPromotionsByCategory() {
                 </div>
               </div>
               <div className="mt-4 flex flex-row justify-center">
-                <Button
-                  onClick={() => handleSubmit()}
+                <ButtonUi
+                  onPress={() => handleSubmit()}
                   className="hidden font-semibold md:flex w-44 h-full py-2"
-                  style={{
-                    backgroundColor: theme.colors.third,
-                    color: theme.colors.primary,
-                  }}
+                  theme={Colors.Primary}
                 >
                   Crear Promoción
-                </Button>
+                </ButtonUi>
               </div>
             </>
           )}

@@ -1,7 +1,6 @@
 import {
   Autocomplete,
   AutocompleteItem,
-  Button,
   Checkbox,
   CheckboxGroup,
   Input,
@@ -11,9 +10,8 @@ import {
   Tooltip,
 } from "@heroui/react";
 import { Formik } from 'formik';
-import { Key, useContext, useEffect, useState } from 'react';
+import { Key, useEffect, useState } from 'react';
 import * as yup from 'yup';
-import { ThemeContext } from '../../hooks/useTheme';
 import WeekSelector from './WeekSelector';
 import { useBranchesStore } from '../../store/branches.store';
 import { formatDate } from '../../utils/dates';
@@ -28,6 +26,8 @@ import { Tab, Tabs } from "@heroui/react";
 import React from 'react';
 import AddPromotionsByProducts from './AddPromotionsByProducts';
 import AddPromotionsByCategory from './AddPromotionsByCategory';
+import { Colors } from "@/types/themes.types";
+import ButtonUi from "@/themes/ui/button-ui";
 
 
 function AddDiscount() {
@@ -56,13 +56,7 @@ function AddDiscount() {
   const handlePriorityChange = (selectedValues: string[]) => {
     setPriority(selectedValues[0]);
   };
-  const { theme } = useContext(ThemeContext);
-  const { colors } = theme;
 
-  const style = {
-    backgroundColor: colors.third,
-    color: colors.primary,
-  };
   const handleDaysSelected = (days: string[]) => {
     setSelectedDays(days);
   };
@@ -463,13 +457,13 @@ function AddDiscount() {
                         </div>
                       </div>
                       <div className="mt-4 flex flex-row justify-center">
-                        <Button
+                        <ButtonUi
                           type="submit"
-                          style={style}
+                          theme={Colors.Primary}
                           className="hidden w-44 font-semibold md:flex h-full py-2"
                         >
                           Crear Promoción
-                        </Button>
+                        </ButtonUi>
                       </div>
                     </form>
                   )}

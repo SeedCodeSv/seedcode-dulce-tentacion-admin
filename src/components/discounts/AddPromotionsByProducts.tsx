@@ -12,9 +12,8 @@ import {
   useDisclosure,
 } from "@heroui/react";
 import { Formik } from 'formik';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import * as yup from 'yup';
-import { ThemeContext } from '../../hooks/useTheme';
 import WeekSelector from './WeekSelector';
 import { useBranchesStore } from '../../store/branches.store';
 import { formatDate } from '../../utils/dates';
@@ -28,6 +27,8 @@ import { Branches } from '../../types/branches.types';
 import { useSupplierStore } from '../../store/supplier.store';
 import { usePromotionsProductsStore } from '../../store/promotions/promotionsByProduct.store';
 import { useNavigate } from 'react-router';
+import ButtonUi from "@/themes/ui/button-ui";
+import { Colors } from "@/types/themes.types";
 
 function AddPromotionsByProducts() {
   const vaul = useDisclosure();
@@ -80,7 +81,6 @@ function AddPromotionsByProducts() {
   const handleDaysSelected = (days: string[]) => {
     setSelectedDays(days);
   };
-  const { theme } = useContext(ThemeContext);
   const validationSchema = yup.object().shape({
     name: yup.string().required('**El nombre es requerido**'),
   });
@@ -462,16 +462,13 @@ function AddPromotionsByProducts() {
                 </div>
 
                 <div className="mt-32">
-                  <Button
-                    onClick={() => handleSubmit()}
+                  <ButtonUi
+                    onPress={() => handleSubmit()}
                     className="hidden w-full h-full py-2 font-semibold md:flex"
-                    style={{
-                      backgroundColor: theme.colors.third,
-                      color: theme.colors.primary,
-                    }}
+                    theme={Colors.Primary}
                   >
                     Guardar
-                  </Button>
+                  </ButtonUi>
                 </div>
               </div>
             </>
