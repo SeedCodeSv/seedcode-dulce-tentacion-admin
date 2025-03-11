@@ -1,21 +1,18 @@
-import { Select, SelectItem, Button as NButton, Input } from "@heroui/react";
+import { Select, SelectItem, Input } from "@heroui/react";
 import { ColorPicker } from 'primereact/colorpicker';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useThemeStore } from '../../store/theme.store';
-import { ThemePayload } from '../../types/themes.types';
-import { save_theme } from '../../services/theme.service';
-import { toast } from 'sonner';
 import { defaultTheme } from '../../utils/constants';
-import { Theme, ThemeContext } from '../../hooks/useTheme';
 import Layout from '@/layout/Layout';
 import { useNavigate } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
 import Table from '../Table';
+import ButtonUi from "@/themes/ui/button-ui";
+import { Colors } from "@/types/themes.types";
 
 function CreateTheme() {
   const [color, setColor] = useState(defaultTheme);
   const { getPaginatedThemes } = useThemeStore();
-  const { theme } = useContext(ThemeContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,45 +21,45 @@ function CreateTheme() {
 
   const handleSave = () => {
     if (color.context) {
-      const payload: ThemePayload = {
-        name: color.name,
-        context: color.context as 'light' | 'dark',
-        colors: [
-          {
-            name: 'danger',
-            color: color.colors.danger,
-          },
-          {
-            name: 'dark',
-            color: color.colors.dark,
-          },
-          {
-            name: 'primary',
-            color: color.colors.primary,
-          },
-          {
-            name: 'secondary',
-            color: color.colors.secondary,
-          },
-          {
-            name: 'third',
-            color: color.colors.third,
-          },
-          {
-            name: 'warning',
-            color: color.colors.warning,
-          },
-        ],
-      };
+      // const payload: ThemePayload = {
+      //   name: color.name,
+      //   context: color.context as 'light' | 'dark',
+      //   colors: [
+      //     {
+      //       name: 'danger',
+      //       color: color.colors.danger,
+      //     },
+      //     {
+      //       name: 'dark',
+      //       color: color.colors.dark,
+      //     },
+      //     {
+      //       name: 'primary',
+      //       color: color.colors.primary,
+      //     },
+      //     {
+      //       name: 'secondary',
+      //       color: color.colors.secondary,
+      //     },
+      //     {
+      //       name: 'third',
+      //       color: color.colors.third,
+      //     },
+      //     {
+      //       name: 'warning',
+      //       color: color.colors.warning,
+      //     },
+      //   ],
+      // };
 
-      save_theme(payload)
-        .then(() => {
-          toast.success('Se guardo el tema');
-          location.href = '/configuration';
-        })
-        .catch(() => {
-          toast.error('Error al guardar el tema');
-        });
+      // save_theme(payload)
+      //   .then(() => {
+      //     toast.success('Se guardo el tema');
+      //     location.href = '/configuration';
+      //   })
+      //   .catch(() => {
+      //     toast.error('Error al guardar el tema');
+      //   });
     }
   };
 
@@ -232,19 +229,16 @@ function CreateTheme() {
               </div>
               <div className="mt-5">
                 {/* <Button theme={color as Theme} /> */}
-                <Table theme={color as Theme} />
+                <Table theme={color} />
               </div>
               <div className="mt-5">
-                <NButton
+                <ButtonUi
                   className="w-full text-sm font-semibold"
-                  onClick={handleSave}
-                  style={{
-                    backgroundColor: theme.colors.third,
-                    color: theme.colors.primary,
-                  }}
+                  onPress={handleSave}
+                  theme={Colors.Primary}
                 >
                   Guardar
-                </NButton>
+                </ButtonUi>
               </div>
             </div>
           </div>

@@ -1,12 +1,13 @@
-import { ChangeEvent, useContext, useRef, useState, useEffect } from 'react';
+import { ChangeEvent, useRef, useState, useEffect } from 'react';
 import { toast } from 'sonner';
-import { Image as NextImage, Button, Input, Checkbox } from "@heroui/react";
+import { Image as NextImage, Input, Checkbox } from "@heroui/react";
 import { useConfigurationStore } from '../../store/perzonalitation.store';
 import { ICreacteConfiguaration } from '../../types/configuration.types';
 import DefaultImage from '../../assets/react.svg';
-import { ThemeContext } from '../../hooks/useTheme';
 import { useAuthStore } from '../../store/auth.store';
 import compressImage from 'browser-image-compression';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
 
 interface Props {
   theme: string;
@@ -15,7 +16,6 @@ interface Props {
 function CreateConfiguration(props: Props) {
   const { OnCreateConfiguration } = useConfigurationStore();
   const [selectedImage, setSelectedImage] = useState(DefaultImage);
-  const { theme } = useContext(ThemeContext);
   const { user } = useAuthStore();
   const [loading, setLoading] = useState(false);
   const [wantPrint, setWantPrint] = useState(0);
@@ -118,17 +118,14 @@ function CreateConfiguration(props: Props) {
         />
         <div className="mt-2">
           <label htmlFor="fileInput">
-            <Button
+            <ButtonUi
               className="text-white font-semibold px-5"
-              onClick={handleButtonClick}
-              style={{
-                backgroundColor: theme.colors.dark,
-                color: theme.colors.primary,
-              }}
+              onPress={handleButtonClick}
+              theme={Colors.Primary}
               disabled={loading}
             >
               {loading ? 'Cargando...' : 'Selecciona un archivo'}
-            </Button>
+            </ButtonUi>
           </label>
           <input
             type="file"
@@ -159,18 +156,15 @@ function CreateConfiguration(props: Props) {
             Habilitar impresión
           </Checkbox>
         </div>
-        <Button
+        <ButtonUi
           color="primary"
           className="font-semibold w-full mt-4 text-sm text-white shadow-lg"
-          onClick={handleSave}
-          style={{
-            backgroundColor: theme.colors.third,
-            color: theme.colors.primary,
-          }}
+          onPress={handleSave}
+          theme={Colors.Primary}
           disabled={loading}
         >
           {loading ? 'Guardando...' : 'Guardar'}
-        </Button>
+        </ButtonUi>
       </div>
     </div>
   );

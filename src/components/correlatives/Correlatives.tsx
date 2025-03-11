@@ -1,30 +1,25 @@
-import { ThemeContext } from '@/hooks/useTheme';
 import { useCorrelativesStore } from '@/store/correlatives-store/correlatives.store';
-import { Column } from 'primereact/column';
-import { DataTable } from 'primereact/datatable';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Pagination from '../global/Pagination';
 import SmPagination from '../global/SmPagination';
-import { Autocomplete, AutocompleteItem, Button, ButtonGroup } from "@heroui/react";
+import { Autocomplete, AutocompleteItem, ButtonGroup } from '@heroui/react';
 import { correlativesTypes } from '@/types/correlatives/correlatives_data.types';
 import { useBranchesStore } from '@/store/branches.store';
 import HeadlessModal from '../global/HeadlessModal';
 import UpdateCorrelative from './UpdateCorrelative';
 import { Correlatives } from '@/types/correlatives/correlatives_types';
-import { CreditCard, EditIcon, Lock, List, Table as ITable, Search } from 'lucide-react';
+import { CreditCard, EditIcon, Table as ITable, Search } from 'lucide-react';
 import CreateCorrelative from './CreateCorrelatives';
 import AddButton from '../global/AddButton';
 import NotAddButton from '../global/NoAdd';
 import useWindowSize from '@/hooks/useWindowSize';
 import MobileView from './mode_correlative/MobileView';
 import SearchCorrelative from './search_correlative/SearchCorrelative';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
+import ThGlobal from '@/themes/ui/th-global';
 
 function CorrelativesList({ actions }: { actions: string[] }) {
-  const { theme } = useContext(ThemeContext);
-  const style = {
-    backgroundColor: theme.colors.dark,
-    color: theme.colors.primary,
-  };
   const { getBranchesList, branch_list } = useBranchesStore();
   const { correlatives, OnGetByBranchAndTypeVoucherCorrelatives, pagination_correlatives } =
     useCorrelativesStore();
@@ -120,13 +115,10 @@ function CorrelativesList({ actions }: { actions: string[] }) {
             </Autocomplete>
           </div>
 
-          <Button
+          <ButtonUi
             startContent={<Search />}
-            style={{
-              backgroundColor: theme.colors.secondary,
-              color: theme.colors.primary,
-            }}
-            onClick={() =>
+            theme={Colors.Primary}
+            onPress={() =>
               OnGetByBranchAndTypeVoucherCorrelatives(
                 1,
                 5,
@@ -137,70 +129,25 @@ function CorrelativesList({ actions }: { actions: string[] }) {
             className="w-full mt-5 border border-white rounded-xl"
           >
             Buscar
-          </Button>
+          </ButtonUi>
         </div>
 
         <div className="flex items-end justify-end gap-10 mt-3   lg:justify-end">
-          <ButtonGroup className="border xl:flex hidden border-white  rounded-xl">
-            <Button
+          <ButtonGroup className="mt-4">
+            <ButtonUi
+              theme={view === 'table' ? Colors.Primary : Colors.Default}
               isIconOnly
-              color="secondary"
-              className="hidden md:inline-flex"
-              style={{
-                backgroundColor: view === 'table' ? theme.colors.third : '#e5e5e5',
-                color: view === 'table' ? theme.colors.primary : '#3e3e3e',
-              }}
-              onClick={() => setView('table')}
+              onPress={() => setView('table')}
             >
               <ITable />
-            </Button>
-
-            <Button
+            </ButtonUi>
+            <ButtonUi
+              theme={view === 'grid' ? Colors.Primary : Colors.Default}
               isIconOnly
-              color="default"
-              style={{
-                backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
-                color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
-              }}
-              onClick={() => setView('grid')}
+              onPress={() => setView('grid')}
             >
               <CreditCard />
-            </Button>
-            <Button
-              isIconOnly
-              color="default"
-              style={{
-                backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
-                color: view === 'list' ? theme.colors.primary : '#3e3e3e',
-              }}
-              onClick={() => setView('list')}
-            >
-              <List />
-            </Button>
-          </ButtonGroup>{' '}
-          <ButtonGroup className="border border-white xl:hidden  rounded-xl">
-            <Button
-              isIconOnly
-              color="default"
-              style={{
-                backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
-                color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
-              }}
-              onClick={() => setView('grid')}
-            >
-              <CreditCard />
-            </Button>
-            <Button
-              isIconOnly
-              color="default"
-              style={{
-                backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
-                color: view === 'list' ? theme.colors.primary : '#3e3e3e',
-              }}
-              onClick={() => setView('list')}
-            >
-              <List />
-            </Button>
+            </ButtonUi>
           </ButtonGroup>
         </div>
 
@@ -213,125 +160,97 @@ function CorrelativesList({ actions }: { actions: string[] }) {
             ></MobileView>
           )}
           {view === 'table' && (
-            <DataTable
-              emptyMessage="No se encontraron resultados"
-              className="shadow dark:text-white w-full"
-              value={correlatives}
-              tableStyle={{ minWidth: '50rem' }}
-            >
-              <Column
-                headerClassName="text-sm font-semibold"
-                headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
-                field="id"
-                header="No."
-                className="dark:text-white"
-              />
+            <>
+              <div className="max-h-[400px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
+                <table className="w-full">
+                  <thead className="sticky top-0 z-20 bg-white">
+                    <tr>
+                      <ThGlobal className="text-left p-3">No.</ThGlobal>
+                      <ThGlobal className="text-left p-3">Código</ThGlobal>
+                      <ThGlobal className="text-left p-3">Tipo de Factura</ThGlobal>
+                      <ThGlobal className="text-left p-3">Resolucion</ThGlobal>
+                      <ThGlobal className="text-left p-3">Serie</ThGlobal>
+                      <ThGlobal className="text-left p-3">Inicio</ThGlobal>
+                      <ThGlobal className="text-left p-3">Fin</ThGlobal>
+                      <ThGlobal className="text-left p-3">Anterior</ThGlobal>
+                      <ThGlobal className="text-left p-3">Siguiente</ThGlobal>
+                      <ThGlobal className="text-left p-3">Sucursal</ThGlobal>
+                      <ThGlobal className="text-left p-3">Acciones</ThGlobal>
+                    </tr>
+                  </thead>
+                  <tbody className="max-h-[600px] w-full overflow-y-auto">
+                    <>
+                      {correlatives.length > 0 ? (
+                        <>
+                          {correlatives.map((item, index) => (
+                            <tr key={index} className="border-b border-slate-200">
+                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                {item?.id}
+                              </td>
+                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
+                                {item?.code}
+                              </td>
+                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                {item?.typeVoucher}
+                              </td>
+                              <td className="p-3 text-sm text-slate-500 whitespace-nowrap dark:text-slate-100">
+                                {item?.resolution}
+                              </td>
 
-              <Column
-                headerClassName="text-sm font-semibold"
-                headerStyle={style}
-                body={(rowData) => <>{rowData.code?.trim() !== '' ? rowData.code : 'N/A'}</>}
-                header="Código"
-                className="dark:text-white"
-              />
-
-              <Column
-                headerClassName="text-sm font-semibold"
-                headerStyle={style}
-                body={(rowData) => {
-                  const voucherType = correlativesTypes.find(
-                    (dep) => dep.value === rowData.typeVoucher
-                  );
-                  return voucherType ? `${voucherType.value} - ${voucherType.label} ` : 'Boleta';
-                }}
-                header="Tipo de Factura"
-                className="dark:text-white"
-              />
-
-              <Column
-                headerClassName="text-sm font-semibold"
-                headerStyle={style}
-                field="resolution"
-                header="Resolucion"
-                className="dark:text-white"
-              />
-              <Column
-                headerClassName="text-sm font-semibold"
-                headerStyle={style}
-                field="serie"
-                header="Serie"
-                className="dark:text-white"
-              />
-              <Column
-                headerClassName="text-sm font-semibold"
-                headerStyle={style}
-                field="from"
-                header="Inicio"
-                className="dark:text-white"
-              />
-              <Column
-                headerClassName="text-sm font-semibold"
-                headerStyle={style}
-                field="to"
-                header="Fin"
-                className="dark:text-white"
-              />
-              <Column
-                headerClassName="text-sm font-semibold"
-                headerStyle={style}
-                field="prev"
-                header="Anterior"
-                className="dark:text-white"
-              />
-              <Column
-                headerClassName="text-sm font-semibold"
-                headerStyle={style}
-                field="next"
-                header="Siguiente"
-                className="dark:text-white"
-              />
-              <Column
-                headerClassName="text-sm font-semibold"
-                headerStyle={style}
-                field="branch.name"
-                header="Sucursal"
-                className="dark:text-white"
-              />
-              <Column
-                headerClassName="text-sm font-semibold"
-                headerStyle={style}
-                body={(rowData) => (
-                  <>
-                    {actions.includes('Editar') ? (
-                      <Button
-                        isIconOnly
-                        style={{
-                          backgroundColor: theme.colors.secondary,
-                        }}
-                        onClick={() => {
-                          handleUpdate(rowData);
-                          setSelectedCorrelativeId(rowData.id);
-                        }}
-                      >
-                        <EditIcon style={{ color: theme.colors.primary }} size={20} />
-                      </Button>
-                    ) : (
-                      <Button
-                        type="button"
-                        disabled
-                        style={{ ...style, cursor: 'not-allowed' }}
-                        className="flex font-semibold "
-                        isIconOnly
-                      >
-                        <Lock />
-                      </Button>
-                    )}
-                  </>
-                )}
-                header="Acciones"
-                className="dark:text-white"
-              />
-            </DataTable>
+                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                {item?.serie}
+                              </td>
+                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
+                                {item?.from}
+                              </td>
+                              <td className="p-3 text-sm text-slate-500 whitespace-nowrap dark:text-slate-100">
+                                {item?.to}
+                              </td>
+                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                {item?.prev}
+                              </td>
+                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                {item?.next}
+                              </td>
+                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                {item?.branch?.name}
+                              </td>
+                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                <div className="flex w-full gap-5">
+                                  {actions.includes('Editar') && (
+                                    <ButtonUi
+                                      isIconOnly
+                                      theme={Colors.Success}
+                                      onPress={() => {
+                                        handleUpdate(item);
+                                        setSelectedCorrelativeId(item?.id ?? 0);
+                                      }}
+                                    >
+                                      <EditIcon size={20} />
+                                    </ButtonUi>
+                                  )}
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </>
+                      ) : (
+                        <tr>
+                          <td colSpan={5}>
+                            <div className="flex flex-col items-center justify-center w-full">
+                              {/* <img src={NO_DATA} alt="X" className="w-32 h-32" /> */}
+                              <p className="mt-3 text-xl dark:text-white">
+                                No se encontraron resultados
+                              </p>
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                    </>
+                  </tbody>
+                </table>
+              </div>
+            </>
           )}
         </div>
         <div>

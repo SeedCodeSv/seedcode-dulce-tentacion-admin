@@ -1,13 +1,13 @@
 import axios from 'axios';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { API_URL } from '../../utils/constants';
 import { toast } from 'sonner';
-import { Button } from "@heroui/react";
 import DefaultImage from '../../assets/react.svg';
 import { useConfigurationStore } from '../../store/perzonalitation.store';
 import { useAuthStore } from '../../store/auth.store';
-import { ThemeContext } from '../../hooks/useTheme';
 import compressImage from 'browser-image-compression';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
 
 interface Props {
   perzonalitationId: number;
@@ -19,15 +19,12 @@ function UpdateFile(props: Props) {
   const [loading, setLoading] = useState(false);
   const { personalization, GetConfigurationByTransmitter } = useConfigurationStore();
   const { user } = useAuthStore();
-  const tramsiter = user?.correlative?.branch.transmitterId ??
-  user?.pointOfSale?.branch.transmitterId ??
-  0;
+  const tramsiter =
+    user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0;
 
   useEffect(() => {
     GetConfigurationByTransmitter(tramsiter || 0);
   }, []);
-
-  const { theme } = useContext(ThemeContext);
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -115,17 +112,14 @@ function UpdateFile(props: Props) {
           />
           <div className="mt-2">
             <label htmlFor="fileInput">
-              <Button
+              <ButtonUi
                 className="text-white font-semibold px-5"
-                onClick={handleButtonClick}
-                style={{
-                  backgroundColor: theme.colors.dark,
-                  color: theme.colors.primary,
-                }}
+                onPress={handleButtonClick}
+                theme={Colors.Primary}
                 disabled={loading}
               >
                 {loading ? 'Cargando...' : 'Selecciona un archivo'}
-              </Button>
+              </ButtonUi>
             </label>
             <input
               type="file"
@@ -139,17 +133,14 @@ function UpdateFile(props: Props) {
         </div>
 
         <div className="mt-5">
-          <Button
+          <ButtonUi
             className="font-semibold w-full mt-4 text-sm text-white shadow-lg"
-            style={{
-              backgroundColor: theme.colors.third,
-              color: theme.colors.primary,
-            }}
-            onClick={handleUpload}
+            theme={Colors.Success}
+            onPress={handleUpload}
             disabled={loading}
           >
             {loading ? 'Guardando...' : 'Guardar'}
-          </Button>
+          </ButtonUi>
         </div>
       </div>
     </>
