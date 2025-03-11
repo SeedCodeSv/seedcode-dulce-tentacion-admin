@@ -1,8 +1,6 @@
-import { useContext, useEffect, useState } from 'react';
-import { Autocomplete, AutocompleteItem, Button, ButtonGroup, Input } from "@heroui/react";
-import { Filter, Building2, List } from 'lucide-react';
-import { ThemeContext } from '../../hooks/useTheme';
-import { global_styles } from '../../styles/global.styles';
+import { useEffect, useState } from 'react';
+import { Autocomplete, AutocompleteItem, ButtonGroup, Input } from '@heroui/react';
+import { Filter, Building2, Table2Icon, CreditCard } from 'lucide-react';
 import TooltipGlobal from '../global/TooltipGlobal';
 import BottomDrawer from '../global/BottomDrawer';
 import { usePointOfSales } from '@/store/point-of-sales.store';
@@ -14,12 +12,13 @@ import NoData from './types/NoData';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import useWindowSize from '@/hooks/useWindowSize';
 import { toast } from 'sonner';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
 interface Props {
   actions: string[];
 }
 function ListPointOfSales({ actions }: Props) {
   const [editableSales, setEditableSales] = useState<PointOfSales[]>([]);
-  const { theme } = useContext(ThemeContext);
   const [branch, setBranch] = useState(0);
   const { getBranchesList, branch_list } = useBranchesStore();
   const {
@@ -112,10 +111,7 @@ function ListPointOfSales({ actions }: Props) {
                   }}
                 >
                   {branch_list.map((bra) => (
-                    <AutocompleteItem
-                      className="dark:text-white"
-                      key={JSON.stringify(bra)}
-                    >
+                    <AutocompleteItem className="dark:text-white" key={JSON.stringify(bra)}>
                       {bra.name}
                     </AutocompleteItem>
                   ))}
@@ -123,17 +119,14 @@ function ListPointOfSales({ actions }: Props) {
               </div>
 
               <div className="mt-6">
-                <Button
-                  style={{
-                    backgroundColor: theme.colors.secondary,
-                    color: theme.colors.primary,
-                  }}
+                <ButtonUi
+                  theme={Colors.Primary}
                   className="font-semibold w-32"
                   color="primary"
-                  onClick={() => handleSearch(undefined)}
+                  onPress={() => handleSearch(undefined)}
                 >
                   Buscar
-                </Button>
+                </ButtonUi>
               </div>
             </div>
           </div>
@@ -141,14 +134,14 @@ function ListPointOfSales({ actions }: Props) {
             <div className="flex items-center gap-5 md:hidden">
               <div className="block md:hidden">
                 <TooltipGlobal text="Buscar por filtros" color="primary">
-                  <Button
-                    style={global_styles().thirdStyle}
+                  <ButtonUi
+                    theme={Colors.Info}
                     isIconOnly
                     type="button"
-                    onClick={() => setOpenVaul(true)}
+                    onPress={() => setOpenVaul(true)}
                   >
                     <Filter />
-                  </Button>
+                  </ButtonUi>
                 </TooltipGlobal>
 
                 <BottomDrawer
@@ -178,54 +171,41 @@ function ListPointOfSales({ actions }: Props) {
                       }}
                     >
                       {branch_list.map((bra) => (
-                        <AutocompleteItem
-                          className="dark:text-white"
-                          key={JSON.stringify(bra)}
-                        >
+                        <AutocompleteItem className="dark:text-white" key={JSON.stringify(bra)}>
                           {bra.name}
                         </AutocompleteItem>
                       ))}
                     </Autocomplete>
 
-                    <Button
-                      style={global_styles().darkStyle}
+                    <ButtonUi
+                      theme={Colors.Primary}
                       className="mb-10 font-semibold"
                       color="primary"
-                      onClick={() => {
+                      onPress={() => {
                         handleSearch(undefined);
                         setOpenVaul(false);
                       }}
                     >
                       Aplicar
-                    </Button>
+                    </ButtonUi>
                   </div>
                 </BottomDrawer>
 
-                <ButtonGroup className="xl:flex hidden mt-4 border border-white rounded-xl ">
-                  <Button
-                    className="hidden md:inline-flex"
+                <ButtonGroup className="mt-4">
+                  <ButtonUi
+                    theme={view === 'table' ? Colors.Primary : Colors.Default}
                     isIconOnly
-                    color="secondary"
-                    style={{
-                      backgroundColor: view === 'table' ? theme.colors.third : '#e5e5e5',
-                      color: view === 'table' ? theme.colors.primary : '#3e3e3e',
-                    }}
-                    onClick={() => setView('table')}
+                    onPress={() => setView('table')}
                   >
-                    {/* <ITable /> */}
-                  </Button>
-
-                  <Button
+                    <Table2Icon />
+                  </ButtonUi>
+                  <ButtonUi
+                    theme={view === 'list' ? Colors.Primary : Colors.Default}
                     isIconOnly
-                    color="default"
-                    style={{
-                      backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
-                      color: view === 'list' ? theme.colors.primary : '#3e3e3e',
-                    }}
-                    onClick={() => setView('list')}
+                    onPress={() => setView('list')}
                   >
-                    <List />
-                  </Button>
+                    <CreditCard />
+                  </ButtonUi>
                 </ButtonGroup>
               </div>
             </div>
@@ -353,18 +333,15 @@ function ListPointOfSales({ actions }: Props) {
                                       </td>
                                       <td className="p-3 text-sm text-slate-500 whitespace-nowrap dark:text-slate-100 border border-gray-200">
                                         {actions.includes('Editar') && (
-                                          <TooltipGlobal text="Editar">
-                                            <Button
-                                              className="border border-white w-[100px]"
-                                              onClick={() => {
-                                                handleEdit(salePoint);
-                                              }}
-                                              isIconOnly
-                                              style={{ backgroundColor: theme.colors.secondary }}
-                                            >
-                                              <p className="text-white ">Actualizar</p>
-                                            </Button>
-                                          </TooltipGlobal>
+                                          <ButtonUi
+                                            onPress={() => {
+                                              handleEdit(salePoint);
+                                            }}
+                                            isIconOnly
+                                            theme={Colors.Success}
+                                          >
+                                            <p className="text-white ">Actualizar</p>
+                                          </ButtonUi>
                                         )}
                                       </td>
                                     </tr>
