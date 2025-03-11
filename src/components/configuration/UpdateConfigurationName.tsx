@@ -1,10 +1,10 @@
-import { useContext } from 'react';
-import { Button, Checkbox, Input } from "@heroui/react";
+import { Checkbox, Input } from "@heroui/react";
 import { useConfigurationStore } from '../../store/perzonalitation.store';
 import * as yup from 'yup';
 import { Formik } from 'formik';
-import { ThemeContext } from '../../hooks/useTheme';
 import { IConfiguration } from '../../types/configuration.types';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
 
 interface Props {
   name: IConfiguration | undefined;
@@ -13,7 +13,6 @@ interface Props {
 }
 
 function UpdateConfigurationName(props: Props) {
-  const { theme } = useContext(ThemeContext);
   const { UpdateConfigurationName, personalization } = useConfigurationStore();
 
   const Namep = personalization?.find((config) => config.name)?.name || '';
@@ -74,16 +73,13 @@ function UpdateConfigurationName(props: Props) {
                 {values.wantPrint === true ? 'Deshabilitar impresión' : 'Habilitar impresión'}
               </Checkbox>
             </div>
-            <Button
-              onClick={() => handleSubmit()}
+            <ButtonUi
+              onPress={() => handleSubmit()}
               className="w-full mt-4 text-sm font-semibold"
-              style={{
-                backgroundColor: theme.colors.third,
-                color: theme.colors.primary,
-              }}
+              theme={Colors.Success}
             >
               Guardar
-            </Button>
+            </ButtonUi>
           </>
         )}
       </Formik>

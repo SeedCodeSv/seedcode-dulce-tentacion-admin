@@ -6,7 +6,7 @@ import { defaultTheme } from '../../utils/constants';
 import Layout from '@/layout/Layout';
 import { useNavigate } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
-import Table from '../Table';
+// import Table from '../Table';
 import ButtonUi from "@/themes/ui/button-ui";
 import { Colors } from "@/types/themes.types";
 
@@ -229,7 +229,7 @@ function CreateTheme() {
               </div>
               <div className="mt-5">
                 {/* <Button theme={color as Theme} /> */}
-                <Table theme={color} />
+                {/* <Table theme={color} /> */}
               </div>
               <div className="mt-5">
                 <ButtonUi
