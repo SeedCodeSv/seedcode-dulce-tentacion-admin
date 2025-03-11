@@ -15,7 +15,6 @@ import { useActionsRolStore } from '../store/actions_rol.store';
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '../store/auth.store';
 import Supplier from '../pages/Supplier';
-import PurchaseOrders from '../pages/PurchaseOrders';
 import Discount from '../pages/Promotions';
 import AddPromotions from '../components/discounts/AddPromotions';
 import StatusEmployee from '../pages/statusEmployee';
@@ -45,8 +44,6 @@ import UpdateNormalSupplier from '@/components/supplier/UpdateNormalSupplier';
 import CorrelativePage from '@/pages/CorrelativePage';
 import UpdateTributeSupplier from '@/components/supplier/UpdateTributeSupplier';
 import UpdateClientContributor from '@/components/clients/UpdateClientContributor';
-import AddPurchaseOrders from '@/components/list_purchase/AddPurchaseOrders';
-import PurchaseOrderForm from '@/components/list_purchase/PurchaseOrderForm';
 import AddCustomer from '@/pages/AddCustomer';
 import BirthdayCalendar from '@/components/employee/BirthdayCalendar';
 import PointOfSales from '@/pages/PointOfSales';
@@ -126,18 +123,6 @@ export const router = () => {
     {
       path: '/CreateShopping',
       element: checkAuthorization('Compras', <CreateShopping />),
-    },
-    {
-      path: '/purchase-orders',
-      element: checkAuthorization('Ordenes de Compra', <PurchaseOrders />),
-    },
-    {
-      path: '/add-purchase-order',
-      element: checkAuthorization('Ordenes de Compra', <AddPurchaseOrders />),
-    },
-    {
-      path: '/add-product-purchase-order',
-      element: checkAuthorization('Ordenes de Compra', <PurchaseOrderForm />),
     },
 
     //Administracion

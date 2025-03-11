@@ -1,7 +1,6 @@
-import { Autocomplete, AutocompleteItem, Button, Input } from "@heroui/react";
+import { Autocomplete, AutocompleteItem, Button, Input } from '@heroui/react';
 import { useBranchesStore } from '../../store/branches.store';
-import { useContext, useEffect, useState } from 'react';
-import { ThemeContext } from '../../hooks/useTheme';
+import { useEffect, useState } from 'react';
 import { useChargesStore } from '../../store/charges.store';
 import { useBillingStore } from '../../store/facturation/billing.store';
 import { useEmployeeStatusStore } from '../../store/employee_status.store';
@@ -12,9 +11,10 @@ import { useEmployeeStore } from '../../store/employee.store';
 import { EmployeePayload } from '../../types/employees.types';
 import { toast } from 'sonner';
 import { PropsUpdateEmployee } from '@/types/sub_categories.types';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
 
 function UpdateEmployee(props: PropsUpdateEmployee) {
-  const { theme } = useContext(ThemeContext);
   const { GetEmployeeStatus, employee_status } = useEmployeeStatusStore();
   const { GetContractType, contract_type } = useContractTypeStore();
   const { GetStudyLevel, study_level } = useStudyLevelStore();
@@ -271,18 +271,15 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
                     {error && <p className="text-xs text-red-500">{'Este código ya existe'}</p>}
                   </div>
                   <div className="mt-3">
-                    <Button
-                      onClick={() => {
+                    <ButtonUi
+                      onPress={() => {
                         generateCode();
                       }}
-                      className="xl:w-full w-[140px] mt-3 text-sm font-semibold bg-blue-400"
-                      style={{
-                        backgroundColor: theme.colors.dark,
-                        color: theme.colors.primary,
-                      }}
+                      className="xl:w-full w-[140px] mt-3 text-sm"
+                      theme={Colors.Info}
                     >
                       Generar
-                    </Button>
+                    </ButtonUi>
                   </div>
                 </div>
                 <div className="flex flex-col mt-3">
@@ -583,16 +580,13 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
                 </div>
 
                 <div className="mt-3 md:mt-3">
-                  <Button
-                    onClick={createEmployee}
+                  <ButtonUi
+                    onPress={createEmployee}
                     className="w-full mt-3 text-sm font-semibold"
-                    style={{
-                      backgroundColor: theme.colors.dark,
-                      color: theme.colors.primary,
-                    }}
+                    theme={Colors.Primary}
                   >
                     Guardar
-                  </Button>
+                  </ButtonUi>
                 </div>
               </div>
             </>

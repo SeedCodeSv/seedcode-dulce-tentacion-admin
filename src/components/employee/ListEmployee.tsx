@@ -38,7 +38,7 @@ import { limit_options } from '../../utils/constants';
 import SmPagination from '../global/SmPagination';
 import HeadlessModal from '../global/HeadlessModal';
 import { useNavigate } from 'react-router';
-import UpdateEmployee from './UpdateEmployee';
+import UpdateEmployee from './update-employee';
 import TooltipGlobal from '../global/TooltipGlobal';
 import NO_DATA from '@/assets/svg/no_data.svg';
 import useWindowSize from '@/hooks/useWindowSize';

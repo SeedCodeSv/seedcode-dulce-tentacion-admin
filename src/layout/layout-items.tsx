@@ -95,12 +95,6 @@ export const LayoutItems = (props: Props) => {
       icon: ShoppingBag,
       label: 'Compras',
     },
-    {
-      viewName: 'Ordenes de Compra',
-      to: '/purchase-orders',
-      icon: List,
-      label: 'Ordenes de Compra',
-    },
   ];
 
   const linkAdministration = [

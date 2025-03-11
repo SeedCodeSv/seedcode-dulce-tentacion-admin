@@ -1,9 +1,9 @@
-import { Input, Button, Textarea } from "@heroui/react";
+import { Input, Textarea } from "@heroui/react";
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import { useContext } from 'react';
-import { ThemeContext } from '../../../hooks/useTheme';
 import { useStatusStudyLevel } from '@/store/studyLevel';
+import ButtonUi from "@/themes/ui/button-ui";
+import { Colors } from "@/types/themes.types";
 
 interface Props {
   closeModal: () => void;
@@ -15,8 +15,6 @@ interface Props {
 }
 
 const AddStatusEmployee = (props: Props) => {
-  const { theme } = useContext(ThemeContext);
-
   const validationSchema = yup.object().shape({
     name: yup.string().required('**Campo requerido**'),
     description: yup.string().required('**Campo requerido**'),
@@ -79,16 +77,13 @@ const AddStatusEmployee = (props: Props) => {
                 variant="bordered"
               />
             </div>
-            <Button
-              onClick={() => handleSubmit()}
+            <ButtonUi
+              onPress={() => handleSubmit()}
               className="w-full mt-4 text-sm font-semibold"
-              style={{
-                backgroundColor: theme.colors.third,
-                color: theme.colors.primary,
-              }}
+              theme={Colors.Primary}
             >
               Guardar
-            </Button>
+            </ButtonUi>
           </>
         )}
       </Formik>

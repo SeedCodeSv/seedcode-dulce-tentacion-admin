@@ -2,29 +2,22 @@ import {
   Input,
   Button,
   useDisclosure,
-  ButtonGroup,
   Select,
   SelectItem,
   Popover,
   PopoverTrigger,
   PopoverContent,
   Switch,
-} from "@heroui/react";
-import { useContext, useEffect, useState } from 'react';
+} from '@heroui/react';
+import { useEffect, useState } from 'react';
 import {
   EditIcon,
   User,
   TrashIcon,
-  Table as ITable,
-  CreditCard,
-  List,
   Filter,
   RefreshCcw,
   SearchIcon,
-  Lock,
 } from 'lucide-react';
-import { ThemeContext } from '../../../hooks/useTheme';
-import { global_styles } from '../../../styles/global.styles';
 import AddButton from '../../global/AddButton';
 import Pagination from '../../global/Pagination';
 import HeadlessModal from '../../global/HeadlessModal';
@@ -32,7 +25,6 @@ import SmPagination from '../../global/SmPagination';
 import { limit_options } from '../../../utils/constants';
 import NO_DATA from '@/assets/svg/no_data.svg';
 import { statusEmployee } from '../../../types/statusEmployee.types';
-import MobileView from './MobileView';
 import AddTypeContract from './AddTypeContract';
 import { useContractTypeStore } from '../../../store/contractType';
 import { ContractType } from '../../../types/contarctType.types';
@@ -41,10 +33,12 @@ import BottomDrawer from '@/components/global/BottomDrawer';
 import classNames from 'classnames';
 import { ArrayAction } from '@/types/view.types';
 import NotAddButton from '@/components/global/NoAdd';
-import useWindowSize from '@/hooks/useWindowSize';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
+import ThGlobal from '@/themes/ui/th-global';
+import useThemeColors from '@/themes/use-theme-colors';
 
 function ListContractType({ actions }: ArrayAction) {
-  const { theme } = useContext(ThemeContext);
   const [openVaul, setOpenVaul] = useState(false);
 
   const {
@@ -71,11 +65,6 @@ function ListContractType({ actions }: ArrayAction) {
   };
 
   const modalAdd = useDisclosure();
-
-  const { windowSize } = useWindowSize();
-  const [view, setView] = useState<'table' | 'grid' | 'list'>(
-    windowSize.width < 768 ? 'grid' : 'table'
-  );
   const handleEdit = (item: ContractType) => {
     setContractType({
       id: item.id,
@@ -92,63 +81,6 @@ function ListContractType({ actions }: ArrayAction) {
     <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
       <div className="w-full h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
         <div className="flex justify-between items-end ">
-          {/* <div className="flex items-center gap-5">
-            <div className="block md:hidden">
-              <TooltipGlobal text="Filtrar">
-                <Button
-                  className="border border-white rounded-xl"
-                  style={global_styles().thirdStyle}
-                  isIconOnly
-                  onClick={() => setOpenVaul(true)}
-                  type="button"
-                >
-                  <Filter />
-                </Button>
-              </TooltipGlobal>
-              <BottomDrawer
-                open={openVaul}
-                onClose={() => setOpenVaul(false)}
-                title="Filtros disponibles"
-              >
-                <div className="flex flex-col  gap-2">
-                  <Input
-                    startContent={<User />}
-                    className="w-full xl:w-96 dark:text-white border border-white rounded-xl"
-                    variant="bordered"
-                    labelPlacement="outside"
-                    label="Nombre"
-                    classNames={{
-                      label: 'font-semibold text-gray-700',
-                      inputWrapper: 'pr-0',
-                    }}
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    placeholder="Escribe para buscar..."
-                    isClearable
-                    onClear={() => {
-                      setSearch('');
-                      handleSearch('');
-                    }}
-                  />
-                  <Button
-                    style={{
-                      backgroundColor: theme.colors.secondary,
-                      color: theme.colors.primary,
-                      fontSize: '16px',
-                    }}
-                    className="mt-6 font-semibold border border-white rounded-xl"
-                    onClick={() => {
-                      handleSearch(undefined);
-                      setOpenVaul(false);
-                    }}
-                  >
-                    Buscar
-                  </Button>
-                </div>
-              </BottomDrawer>
-            </div>
-          </div> */}
-
           <div className="grid w-full grid-cols-2 gap-5 md:flex ">
             <div className="w-full flex gap-4">
               <Input
@@ -170,18 +102,13 @@ function ListContractType({ actions }: ArrayAction) {
                   handleSearch('');
                 }}
               />
-              <Button
-                style={{
-                  backgroundColor: theme.colors.secondary,
-                  color: theme.colors.primary,
-                }}
-                className="mt-6 font-semibold border border-white rounded-xl hidden md:flex"
-                color="primary"
-                startContent={<SearchIcon size={25} />}
-                onClick={() => handleSearch(undefined)}
+              <ButtonUi
+                theme={Colors.Primary}
+                startContent={<SearchIcon className="w-10" />}
+                onPress={() => handleSearch(undefined)}
               >
                 Buscar
-              </Button>
+              </ButtonUi>
             </div>
 
             <div className="flex mt-6">
@@ -199,15 +126,9 @@ function ListContractType({ actions }: ArrayAction) {
               </div>
               <div className="block md:hidden">
                 <TooltipGlobal text="Filtrar">
-                  <Button
-                    className="border border-white rounded-xl"
-                    style={global_styles().thirdStyle}
-                    isIconOnly
-                    onClick={() => setOpenVaul(true)}
-                    type="button"
-                  >
+                  <ButtonUi theme={Colors.Info} isIconOnly onPress={() => setOpenVaul(true)}>
                     <Filter />
-                  </Button>
+                  </ButtonUi>
                 </TooltipGlobal>
                 <BottomDrawer
                   open={openVaul}
@@ -234,61 +155,23 @@ function ListContractType({ actions }: ArrayAction) {
                         handleSearch('');
                       }}
                     />
-                    <Button
-                      style={{
-                        backgroundColor: theme.colors.secondary,
-                        color: theme.colors.primary,
-                        fontSize: '16px',
-                      }}
+                    <ButtonUi
+                      theme={Colors.Primary}
+                      startContent={<SearchIcon className="w-10" />}
                       className="mt-6 font-semibold border border-white rounded-xl"
-                      onClick={() => {
+                      onPress={() => {
                         handleSearch(undefined);
                         setOpenVaul(false);
                       }}
                     >
                       Buscar
-                    </Button>
+                    </ButtonUi>
                   </div>
                 </BottomDrawer>
               </div>
             </div>
           </div>
         </div>
-
-        {/* <div className="grid w-full grid-cols-2 gap-5 md:flex">
-          <Input
-            startContent={<User />}
-            className="w-full xl:w-96 dark:text-white border border-white rounded-xl"
-            variant="bordered"
-            labelPlacement="outside"
-            label="Nombre"
-            classNames={{
-              label: 'font-semibold text-gray-700',
-              inputWrapper: 'pr-0',
-            }}
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Escribe para buscar..."
-            isClearable
-            onClear={() => {
-              setSearch('');
-              handleSearch('');
-            }}
-          />
-          <Button
-            style={{
-              backgroundColor: theme.colors.secondary,
-              color: theme.colors.primary,
-            }}
-            className="mt-6 font-semibold md:flex border border-white rounded-xl"
-            color="primary"
-            startContent={<SearchIcon size={25} />}
-            onClick={() => handleSearch(undefined)}
-          >
-            Buscar
-          </Button>
-        </div> */}
-
         <div className="flex flex-col gap-3 mt-3 lg:flex-row lg:justify-between lg:gap-10">
           <div className="flex justify-start order-2 lg:order-1">
             <div className="xl:mt-10">
@@ -329,217 +212,93 @@ function ListContractType({ actions }: ArrayAction) {
                 ))}
               </Select>
             </div>
-
-            <ButtonGroup className="xl:flex hidden mt-4 border border-white rounded-xl ">
-              <Button
-                className="hidden md:inline-flex"
-                isIconOnly
-                color="secondary"
-                style={{
-                  backgroundColor: view === 'table' ? theme.colors.third : '#e5e5e5',
-                  color: view === 'table' ? theme.colors.primary : '#3e3e3e',
-                }}
-                onClick={() => setView('table')}
-              >
-                <ITable />
-              </Button>
-              <Button
-                isIconOnly
-                color="default"
-                style={{
-                  backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
-                  color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
-                }}
-                onClick={() => setView('grid')}
-              >
-                <CreditCard />
-              </Button>
-              <Button
-                isIconOnly
-                color="default"
-                style={{
-                  backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
-                  color: view === 'list' ? theme.colors.primary : '#3e3e3e',
-                }}
-                onClick={() => setView('list')}
-              >
-                <List />
-              </Button>
-            </ButtonGroup>
-            <ButtonGroup className=" xl:hidden mt-4 border border-white rounded-xl ">
-              <Button
-                isIconOnly
-                color="default"
-                style={{
-                  backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
-                  color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
-                }}
-                onClick={() => setView('grid')}
-              >
-                <CreditCard />
-              </Button>
-              <Button
-                isIconOnly
-                color="default"
-                style={{
-                  backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
-                  color: view === 'list' ? theme.colors.primary : '#3e3e3e',
-                }}
-                onClick={() => setView('list')}
-              >
-                <List />
-              </Button>
-            </ButtonGroup>
           </div>
         </div>
-
-        {(view === 'grid' || view === 'list') && (
-          <MobileView
-            handleActive={handleActivate}
-            deletePopover={DeletePopUp}
-            layout={view as 'grid' | 'list'}
-            handleEdit={handleEdit}
-            actions={actions}
-          />
-        )}
-        {view === 'table' && (
-          <>
-            <div className="max-h-[400px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
-              <table className="w-full">
-                <thead className="sticky top-0 z-20 bg-white">
+        <>
+          <div className="max-h-[400px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
+            <table className="w-full">
+              <thead className="sticky top-0 z-20 bg-white">
+                <tr>
+                  <ThGlobal className="text-left p-3">No.</ThGlobal>
+                  <ThGlobal className="text-left p-3">Nombre</ThGlobal>
+                  <ThGlobal className="text-left p-3">Acciones</ThGlobal>
+                </tr>
+              </thead>
+              <tbody className="max-h-[600px] w-full overflow-y-auto">
+                {loading_contract_type ? (
                   <tr>
-                    <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                      No.
-                    </th>
-                    <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                      Nombre
-                    </th>
-                    <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                      Acciones
-                    </th>
+                    <td colSpan={5} className="p-3 text-sm text-center text-slate-500">
+                      <div className="flex flex-col items-center justify-center w-full h-64">
+                        <div className="loader"></div>
+                        <p className="mt-3 text-xl font-semibold">Cargando...</p>
+                      </div>
+                    </td>
                   </tr>
-                </thead>
-                <tbody className="max-h-[600px] w-full overflow-y-auto">
-                  {loading_contract_type ? (
-                    <tr>
-                      <td colSpan={5} className="p-3 text-sm text-center text-slate-500">
-                        <div className="flex flex-col items-center justify-center w-full h-64">
-                          <div className="loader"></div>
-                          <p className="mt-3 text-xl font-semibold">Cargando...</p>
-                        </div>
-                      </td>
-                    </tr>
-                  ) : (
-                    <>
-                      {paginated_contract_type.contractTypes.length > 0 ? (
-                        <>
-                          {paginated_contract_type.contractTypes.map((contractType) => (
-                            <tr className="border-b border-slate-200">
-                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                {contractType.id}
-                              </td>
-                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
-                                {contractType.name}
-                              </td>
-                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                <div className="flex w-full gap-5">
-                                  {actions.includes('Editar') && contractType.isActive ? (
-                                    <>
-                                      <TooltipGlobal text="Editar">
-                                        <Button
-                                          onClick={() => {
-                                            handleEdit(contractType);
-
-                                            modalAdd.onOpen();
-                                          }}
-                                          isIconOnly
-                                          style={{
-                                            backgroundColor: theme.colors.secondary,
-                                          }}
-                                        >
-                                          <EditIcon
-                                            style={{
-                                              color: theme.colors.primary,
-                                            }}
-                                            size={20}
-                                          />
-                                        </Button>
-                                      </TooltipGlobal>
-                                    </>
-                                  ) : (
-                                    <Button
-                                      isIconOnly
-                                      style={{
-                                        backgroundColor: theme.colors.secondary,
-                                        cursor: 'not-allowed',
+                ) : (
+                  <>
+                    {paginated_contract_type.contractTypes.length > 0 ? (
+                      <>
+                        {paginated_contract_type.contractTypes.map((contractType) => (
+                          <tr className="border-b border-slate-200">
+                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                              {contractType.id}
+                            </td>
+                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
+                              {contractType.name}
+                            </td>
+                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                              <div className="flex w-full gap-5">
+                                {actions.includes('Editar') && contractType.isActive && (
+                                  <>
+                                    <ButtonUi
+                                      onPress={() => {
+                                        handleEdit(contractType);
+                                        modalAdd.onOpen();
                                       }}
-                                    >
-                                      <Lock style={{ color: theme.colors.primary }} size={20} />
-                                    </Button>
-                                  )}
-                                  {actions.includes('Eliminar') && contractType.isActive ? (
-                                    <DeletePopUp ContractTypes={contractType} />
-                                  ) : (
-                                    <Button
                                       isIconOnly
-                                      style={{ backgroundColor: theme.colors.danger }}
+                                      theme={Colors.Success}
                                     >
-                                      <Lock
-                                        style={{
-                                          color: theme.colors.primary,
-                                          cursor: 'not-allowed',
-                                        }}
-                                        size={20}
-                                      />
-                                    </Button>
-                                  )}
-                                  {contractType.isActive === false && (
-                                    <>
-                                      {actions.includes('Activar') ? (
-                                        <TooltipGlobal text="Activar">
-                                          <Button
-                                            onClick={() => handleActivate(contractType.id)}
-                                            isIconOnly
-                                            style={global_styles().thirdStyle}
-                                          >
-                                            <RefreshCcw />
-                                          </Button>
-                                        </TooltipGlobal>
-                                      ) : (
-                                        <Button
-                                          isIconOnly
-                                          style={{
-                                            ...global_styles().thirdStyle,
-                                            cursor: 'not-allowed',
-                                          }}
-                                        >
-                                          <Lock />
-                                        </Button>
-                                      )}
-                                    </>
-                                  )}
-                                </div>
-                              </td>
-                            </tr>
-                          ))}
-                        </>
-                      ) : (
-                        <tr>
-                          <td colSpan={5}>
-                            <div className="flex flex-col items-center justify-center w-full">
-                              <img src={NO_DATA} alt="X" className="w-32 h-32" />
-                              <p className="mt-3 text-xl">No se encontraron resultados</p>
-                            </div>
-                          </td>
-                        </tr>
-                      )}
-                    </>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </>
-        )}
+                                      <EditIcon size={20} />
+                                    </ButtonUi>
+                                  </>
+                                )}
+                                {actions.includes('Eliminar') && contractType.isActive && (
+                                  <DeletePopUp ContractTypes={contractType} />
+                                )}
+                                {contractType.isActive === false && (
+                                  <>
+                                    {actions.includes('Activar') && (
+                                      <ButtonUi
+                                        onPress={() => handleActivate(contractType.id)}
+                                        isIconOnly
+                                        theme={Colors.Primary}
+                                      >
+                                        <RefreshCcw />
+                                      </ButtonUi>
+                                    )}
+                                  </>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </>
+                    ) : (
+                      <tr>
+                        <td colSpan={5}>
+                          <div className="flex flex-col items-center justify-center w-full">
+                            <img src={NO_DATA} alt="X" className="w-32 h-32" />
+                            <p className="mt-3 text-xl">No se encontraron resultados</p>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </>
         {paginated_contract_type.totalPag > 1 && (
           <>
             <div className="hidden w-full mt-5 md:flex">
@@ -588,7 +347,6 @@ interface Props {
 }
 
 const DeletePopUp = ({ ContractTypes }: Props) => {
-  const { theme } = useContext(ThemeContext);
   const { deleteContractType } = useContractTypeStore();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -597,23 +355,14 @@ const DeletePopUp = ({ ContractTypes }: Props) => {
     onClose();
   };
 
+  const style = useThemeColors({ name: Colors.Error });
+
   return (
     <>
       <Popover isOpen={isOpen} onClose={onClose} backdrop="blur" showArrow>
         <PopoverTrigger>
-          <Button
-            onClick={onOpen}
-            isIconOnly
-            style={{
-              backgroundColor: theme.colors.danger,
-            }}
-          >
-            <TrashIcon
-              style={{
-                color: theme.colors.primary,
-              }}
-              size={20}
-            />
+          <Button onPress={onOpen} isIconOnly style={style}>
+            <TrashIcon size={20} />
           </Button>
         </PopoverTrigger>
         <PopoverContent>
@@ -625,17 +374,12 @@ const DeletePopUp = ({ ContractTypes }: Props) => {
               ¿Estas seguro de eliminar este registro?
             </p>
             <div className="mt-4 flex justify-center">
-              <Button onClick={onClose}>No, cancelar</Button>
-              <Button
-                onClick={() => handleDelete()}
-                className="ml-5"
-                style={{
-                  backgroundColor: theme.colors.danger,
-                  color: theme.colors.primary,
-                }}
-              >
+              <ButtonUi theme={Colors.Default} onPress={onClose}>
+                No, cancelar
+              </ButtonUi>
+              <ButtonUi onPress={() => handleDelete()} className="ml-5" theme={Colors.Error}>
                 Si, eliminar
-              </Button>
+              </ButtonUi>
             </div>
           </div>
         </PopoverContent>

@@ -2,49 +2,41 @@ import {
   Input,
   Button,
   useDisclosure,
-  ButtonGroup,
   Select,
   SelectItem,
   Popover,
   PopoverTrigger,
   PopoverContent,
   Switch,
-} from "@heroui/react";
-import { useContext, useEffect, useState } from 'react';
+} from '@heroui/react';
+import { useEffect, useState } from 'react';
 import {
   EditIcon,
   User,
   TrashIcon,
-  Table as ITable,
-  CreditCard,
-  List,
   Filter,
   RefreshCcw,
   SearchIcon,
-  Lock,
 } from 'lucide-react';
-
 import NO_DATA from '@/assets/svg/no_data.svg';
 import classNames from 'classnames';
-import { ThemeContext } from '../../../hooks/useTheme';
-import { global_styles } from '../../../styles/global.styles';
 import AddButton from '../../global/AddButton';
 import Pagination from '../../global/Pagination';
-import HeadlessModal from '../../global/HeadlessModal';
-import SmPagination from '../../global/SmPagination';
 import { limit_options } from '../../../utils/constants';
-import MobileView from './MobileView';
-import AddStudyLevel from './AddStudyLevel';
 import { useStatusStudyLevel } from '@/store/studyLevel';
 import { StudyLevel } from '@/types/study_level.types';
 import BottomDrawer from '@/components/global/BottomDrawer';
 import TooltipGlobal from '@/components/global/TooltipGlobal';
 import { ArrayAction } from '@/types/view.types';
 import NotAddButton from '@/components/global/NoAdd';
-import useWindowSize from '@/hooks/useWindowSize';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
+import ThGlobal from '@/themes/ui/th-global';
+import useThemeColors from '@/themes/use-theme-colors';
+import HeadlessModal from '@/components/global/HeadlessModal';
+import AddStudyLevel from './AddStudyLevel';
 
 function ListStudyLevel({ actions }: ArrayAction) {
-  const { theme } = useContext(ThemeContext);
   const [openVaul, setOpenVaul] = useState(false);
   const [isActive, setActive] = useState(true);
 
@@ -67,12 +59,6 @@ function ListStudyLevel({ actions }: ArrayAction) {
   };
 
   const modalAdd = useDisclosure();
-
-  // const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
-  const { windowSize } = useWindowSize();
-  const [view, setView] = useState<'table' | 'grid' | 'list'>(
-    windowSize.width < 768 ? 'grid' : 'table'
-  );
 
   const handleEdit = (item: StudyLevel) => {
     setSelectedStatusEmployee({
@@ -113,18 +99,15 @@ function ListStudyLevel({ actions }: ArrayAction) {
                 handleSearch('');
               }}
             />
-            <Button
-              style={{
-                backgroundColor: theme.colors.secondary,
-                color: theme.colors.primary,
-              }}
+            <ButtonUi
+              theme={Colors.Primary}
               className="hidden mt-6 font-semibold md:flex border border-white rounded-xl"
               color="primary"
               startContent={<SearchIcon size={23} />}
-              onClick={() => handleSearch(undefined)}
+              onPress={() => handleSearch(undefined)}
             >
               Buscar
-            </Button>
+            </ButtonUi>
           </div>
 
           <div className="flex  mt-6">
@@ -142,15 +125,15 @@ function ListStudyLevel({ actions }: ArrayAction) {
             </div>
             <div className="md:hidden justify-start ">
               <TooltipGlobal text="Filtrar">
-                <Button
+                <ButtonUi
                   className="border border-white rounded-xl"
-                  style={global_styles().thirdStyle}
+                  theme={Colors.Info}
                   isIconOnly
-                  onClick={() => setOpenVaul(true)}
+                  onPress={() => setOpenVaul(true)}
                   type="button"
                 >
                   <Filter />
-                </Button>
+                </ButtonUi>
               </TooltipGlobal>
               <BottomDrawer
                 open={openVaul}
@@ -177,20 +160,16 @@ function ListStudyLevel({ actions }: ArrayAction) {
                       handleSearch('');
                     }}
                   />
-                  <Button
-                    style={{
-                      backgroundColor: theme.colors.secondary,
-                      color: theme.colors.primary,
-                      fontSize: '16px',
-                    }}
+                  <ButtonUi
+                    theme={Colors.Primary}
                     className="mt-6 font-semibold"
-                    onClick={() => {
+                    onPress={() => {
                       handleSearch(undefined);
                       setOpenVaul(false);
                     }}
                   >
                     Buscar
-                  </Button>
+                  </ButtonUi>
                 </div>
               </BottomDrawer>
             </div>
@@ -237,230 +216,103 @@ function ListStudyLevel({ actions }: ArrayAction) {
                 ))}
               </Select>
             </div>
-            <ButtonGroup className="xl:flex hidden mt-4 border border-white rounded-xl ">
-              <Button
-                className="hidden md:inline-flex"
-                isIconOnly
-                color="secondary"
-                style={{
-                  backgroundColor: view === 'table' ? theme.colors.third : '#e5e5e5',
-                  color: view === 'table' ? theme.colors.primary : '#3e3e3e',
-                }}
-                onClick={() => setView('table')}
-              >
-                <ITable />
-              </Button>
-              <Button
-                isIconOnly
-                color="default"
-                style={{
-                  backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
-                  color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
-                }}
-                onClick={() => setView('grid')}
-              >
-                <CreditCard />
-              </Button>
-              <Button
-                isIconOnly
-                color="default"
-                style={{
-                  backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
-                  color: view === 'list' ? theme.colors.primary : '#3e3e3e',
-                }}
-                onClick={() => setView('list')}
-              >
-                <List />
-              </Button>
-            </ButtonGroup>
-            <ButtonGroup className=" xl:hidden mt-4 border border-white rounded-xl ">
-              <Button
-                isIconOnly
-                color="default"
-                style={{
-                  backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
-                  color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
-                }}
-                onClick={() => setView('grid')}
-              >
-                <CreditCard />
-              </Button>
-              <Button
-                isIconOnly
-                color="default"
-                style={{
-                  backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
-                  color: view === 'list' ? theme.colors.primary : '#3e3e3e',
-                }}
-                onClick={() => setView('list')}
-              >
-                <List />
-              </Button>
-            </ButtonGroup>
           </div>
         </div>
-
-        {(view === 'grid' || view === 'list') && (
-          <MobileView
-            handleActive={handleActivate}
-            deletePopover={DeletePopUp}
-            layout={view as 'grid' | 'list'}
-            handleEdit={handleEdit}
-            actions={actions}
-          />
-        )}
-        {view === 'table' && (
-          <>
-            <div className="max-h-[400px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
-              <table className="w-full">
-                <thead className="sticky top-0 z-20 bg-white">
+        <>
+          <div className="max-h-[400px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
+            <table className="w-full">
+              <thead className="sticky top-0 z-20 bg-white">
+                <tr>
+                  <ThGlobal className="text-left p-3">No.</ThGlobal>
+                  <ThGlobal className="text-left p-3">Nombre</ThGlobal>
+                  <ThGlobal className="text-left p-3">Descripción</ThGlobal>
+                  <ThGlobal className="text-left p-3">Acciones</ThGlobal>
+                </tr>
+              </thead>
+              <tbody className="max-h-[600px] w-full overflow-y-auto">
+                {loading_study_level ? (
                   <tr>
-                    <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                      No.
-                    </th>
-                    <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                      Nombre
-                    </th>
-                    <th className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                      Descripción
-                    </th>
-                    <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                      Acciones
-                    </th>
+                    <td colSpan={5} className="p-3 text-sm text-center text-slate-500">
+                      <div className="flex flex-col items-center justify-center w-full h-64">
+                        <div className="loader"></div>
+                        <p className="mt-3 text-xl font-semibold">Cargando...</p>
+                      </div>
+                    </td>
                   </tr>
-                </thead>
-                <tbody className="max-h-[600px] w-full overflow-y-auto">
-                  {loading_study_level ? (
-                    <tr>
-                      <td colSpan={5} className="p-3 text-sm text-center text-slate-500">
-                        <div className="flex flex-col items-center justify-center w-full h-64">
-                          <div className="loader"></div>
-                          <p className="mt-3 text-xl font-semibold">Cargando...</p>
-                        </div>
-                      </td>
-                    </tr>
-                  ) : (
-                    <>
-                      {paginated_study_level.studyLevels.length > 0 ? (
-                        <>
-                          {paginated_study_level.studyLevels.map((staudyLevel) => (
-                            <tr className="border-b border-slate-200">
-                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                {staudyLevel.id}
-                              </td>
-                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
-                                {staudyLevel.name}
-                              </td>
-                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                {staudyLevel.description}
-                              </td>
-                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                <div className="flex w-full gap-5">
-                                  {actions.includes('Editar') && staudyLevel.isActive ? (
-                                    <>
-                                      {staudyLevel.isActive && (
-                                        <TooltipGlobal text="Editar">
-                                          <Button
-                                            className="border border-white"
-                                            onClick={() => {
-                                              handleEdit(staudyLevel);
-
-                                              modalAdd.onOpen();
-                                            }}
-                                            isIconOnly
-                                            style={{
-                                              backgroundColor: theme.colors.secondary,
-                                            }}
-                                          >
-                                            <EditIcon
-                                              style={{
-                                                color: theme.colors.primary,
-                                              }}
-                                              size={20}
-                                            />
-                                          </Button>
-                                        </TooltipGlobal>
-                                      )}
-                                    </>
-                                  ) : (
-                                    <Button
-                                      className="border border-white"
-                                      isIconOnly
-                                      style={{
-                                        backgroundColor: theme.colors.secondary,
-                                        cursor: 'not-allowed',
-                                      }}
-                                    >
-                                      <Lock style={{ color: theme.colors.primary }} size={20} />
-                                    </Button>
-                                  )}
-                                  {actions.includes('Eliminar') && staudyLevel.isActive ? (
-                                    <DeletePopUp studyLevel={staudyLevel} />
-                                  ) : (
-                                    <Button
-                                      className="border border-white"
-                                      isIconOnly
-                                      style={{ backgroundColor: theme.colors.danger }}
-                                    >
-                                      <Lock
-                                        style={{
-                                          color: theme.colors.primary,
-                                          cursor: 'not-allowed',
+                ) : (
+                  <>
+                    {paginated_study_level.studyLevels.length > 0 ? (
+                      <>
+                        {paginated_study_level.studyLevels.map((staudyLevel) => (
+                          <tr className="border-b border-slate-200">
+                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                              {staudyLevel.id}
+                            </td>
+                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
+                              {staudyLevel.name}
+                            </td>
+                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                              {staudyLevel.description}
+                            </td>
+                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                              <div className="flex w-full gap-5">
+                                {actions.includes('Editar') && staudyLevel.isActive && (
+                                  <>
+                                    {staudyLevel.isActive && (
+                                      <ButtonUi
+                                        className="border border-white"
+                                        onPress={() => {
+                                          handleEdit(staudyLevel);
+                                          modalAdd.onOpen();
                                         }}
-                                        size={20}
-                                      />
-                                    </Button>
-                                  )}
-                                  {staudyLevel.isActive === false && (
-                                    <>
-                                      {actions.includes('Activar') ? (
-                                        <Button
-                                          className="border border-white"
-                                          onClick={() => handleActivate(staudyLevel.id)}
-                                          isIconOnly
-                                          style={global_styles().thirdStyle}
-                                        >
-                                          <RefreshCcw />
-                                        </Button>
-                                      ) : (
-                                        <Button
-                                          className="border border-white"
-                                          isIconOnly
-                                          style={{
-                                            ...global_styles().thirdStyle,
-                                            cursor: 'not-allowed',
-                                          }}
-                                        >
-                                          <Lock />
-                                        </Button>
-                                      )}
-                                    </>
-                                  )}
-                                </div>
-                              </td>
-                            </tr>
-                          ))}
-                        </>
-                      ) : (
-                        <tr>
-                          <td colSpan={5}>
-                            <div className="flex flex-col items-center justify-center w-full">
-                              <img src={NO_DATA} alt="X" className="w-32 h-32" />
-                              <p className="mt-3 text-xl">No se encontraron resultados</p>
-                            </div>
-                          </td>
-                        </tr>
-                      )}
-                    </>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </>
-        )}
+                                        isIconOnly
+                                        theme={Colors.Success}
+                                      >
+                                        <EditIcon size={20} />
+                                      </ButtonUi>
+                                    )}
+                                  </>
+                                )}
+                                {actions.includes('Eliminar') && staudyLevel.isActive && (
+                                  <DeletePopUp studyLevel={staudyLevel} />
+                                )}
+                                {staudyLevel.isActive === false && (
+                                  <>
+                                    {actions.includes('Activar') && (
+                                      <ButtonUi
+                                        onPress={() => handleActivate(staudyLevel.id)}
+                                        isIconOnly
+                                        theme={Colors.Primary}
+                                      >
+                                        <RefreshCcw />
+                                      </ButtonUi>
+                                    )}
+                                  </>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </>
+                    ) : (
+                      <tr>
+                        <td colSpan={5}>
+                          <div className="flex flex-col items-center justify-center w-full">
+                            <img src={NO_DATA} alt="X" className="w-32 h-32" />
+                            <p className="mt-3 text-xl">No se encontraron resultados</p>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </>
         {paginated_study_level.totalPag > 1 && (
           <>
-            <div className="hidden w-full mt-5 md:flex">
+            <div className="w-full mt-5 flex">
               <Pagination
                 previousPage={paginated_study_level.prevPag}
                 nextPage={paginated_study_level.nextPag}
@@ -470,20 +322,6 @@ function ListStudyLevel({ actions }: ArrayAction) {
                   getPaginatedStudyLevel(page, limit, search);
                 }}
               />
-            </div>
-            <div className="flex w-full mt-5 md:hidden">
-              <div className="flex w-full mt-5 md:hidden">
-                <SmPagination
-                  handleNext={() => {
-                    getPaginatedStudyLevel(paginated_study_level.nextPag, limit, search);
-                  }}
-                  handlePrev={() => {
-                    getPaginatedStudyLevel(paginated_study_level.prevPag, limit, search);
-                  }}
-                  currentPage={paginated_study_level.currentPag}
-                  totalPages={paginated_study_level.totalPag}
-                />
-              </div>
             </div>
           </>
         )}
@@ -506,8 +344,6 @@ interface Props {
 }
 
 const DeletePopUp = ({ studyLevel }: Props) => {
-  const { theme } = useContext(ThemeContext);
-
   const { deleteStudyLevel } = useStatusStudyLevel();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -515,6 +351,8 @@ const DeletePopUp = ({ studyLevel }: Props) => {
     await deleteStudyLevel(studyLevel.id);
     onClose();
   };
+
+  const style = useThemeColors({name: Colors.Error})
 
   return (
     <>
@@ -528,16 +366,11 @@ const DeletePopUp = ({ studyLevel }: Props) => {
         <PopoverTrigger>
           <Button
             className="border border-white"
-            onClick={onOpen}
+            onPress={onOpen}
             isIconOnly
-            style={{
-              backgroundColor: theme.colors.danger,
-            }}
+            style={style}
           >
             <TrashIcon
-              style={{
-                color: theme.colors.primary,
-              }}
               size={20}
             />
           </Button>
@@ -551,19 +384,16 @@ const DeletePopUp = ({ studyLevel }: Props) => {
               ¿Estas seguro de eliminar este registro?
             </p>
             <div className="mt-4 flex justify-center">
-              <Button className="border border-white " onClick={onClose}>
+              <ButtonUi theme={Colors.Default} onPress={onClose}>
                 No, cancelar
-              </Button>
-              <Button
-                onClick={() => handleDelete()}
-                className="ml-5 border border-white"
-                style={{
-                  backgroundColor: theme.colors.danger,
-                  color: theme.colors.primary,
-                }}
+              </ButtonUi>
+              <ButtonUi
+                onPress={() => handleDelete()}
+                className="ml-5"
+                theme={Colors.Error}
               >
                 Si, eliminar
-              </Button>
+              </ButtonUi>
             </div>
           </div>
         </PopoverContent>
