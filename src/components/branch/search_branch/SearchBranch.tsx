@@ -1,17 +1,16 @@
 import BottomDrawer from '@/components/global/BottomDrawer';
 import TooltipGlobal from '@/components/global/TooltipGlobal';
-import { ThemeContext } from '@/hooks/useTheme';
-
 import { global_styles } from '@/styles/global.styles';
 import { Button, Input } from "@heroui/react";
 import { Filter, Phone, User } from 'lucide-react';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { IPropsSearchBranch } from '../types/mobile_view.types';
 import { useBranchesStore } from '@/store/branches.store';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
 
 function SearchBranch(props: IPropsSearchBranch) {
   const [openVaul, setOpenVaul] = useState(false);
-  const { theme } = useContext(ThemeContext);
   const { getBranchesPaginated } = useBranchesStore();
   const [filter, setFilter] = useState({
     nameBranch: '',
@@ -124,15 +123,11 @@ function SearchBranch(props: IPropsSearchBranch) {
               }}
               placeholder="Escribe para buscar..."
             />
-            <Button
-              style={{
-                backgroundColor: theme.colors.secondary,
-                color: theme.colors.primary,
-                fontSize: '16px',
-              }}
+            <ButtonUi
+              theme={Colors.Primary}
               className="mb-10 font-semibold"
               color="primary"
-              onClick={() => {
+              onPress={() => {
                 handleSearch();
                 setFilter({
                   nameBranch: '',
@@ -143,7 +138,7 @@ function SearchBranch(props: IPropsSearchBranch) {
               }}
             >
               Buscar
-            </Button>
+            </ButtonUi>
           </div>
         </BottomDrawer>
       </div>

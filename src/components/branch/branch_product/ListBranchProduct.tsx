@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useBranchesStore } from '../../../store/branches.store';
 import {
   Button,
@@ -8,9 +8,8 @@ import {
   Autocomplete,
   AutocompleteItem,
   ButtonGroup,
-} from "@heroui/react";
+} from '@heroui/react';
 import { Search, ArrowLeft, CreditCard, Table as ITable } from 'lucide-react';
-import { ThemeContext } from '../../../hooks/useTheme';
 import MobileView from './MobileView';
 import { CategoryProduct } from '../../../types/categories.types';
 import { useCategoriesStore } from '../../../store/categories.store';
@@ -21,12 +20,13 @@ import NO_DATA from '@/assets/svg/no_data.svg';
 import { formatCurrency } from '@/utils/dte';
 import BottomDrawer from '@/components/global/BottomDrawer';
 import SearchBranchProduct from '../search_branch_product/SearchBranchProduct';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
 interface Props {
   id: number;
   onclick: () => void;
 }
 function ListEmployee({ id, onclick }: Props) {
-  const { theme } = useContext(ThemeContext);
   const {
     getBranchProducts,
     branch_product_Paginated,
@@ -122,10 +122,7 @@ function ListEmployee({ id, onclick }: Props) {
                 }}
               >
                 {list_categories.map((bra) => (
-                  <AutocompleteItem
-                    key={JSON.stringify(bra)}
-                    className="dark:text-white"
-                  >
+                  <AutocompleteItem key={JSON.stringify(bra)} className="dark:text-white">
                     {bra.name}
                   </AutocompleteItem>
                 ))}
@@ -134,31 +131,21 @@ function ListEmployee({ id, onclick }: Props) {
           </div>
           <SearchBranchProduct></SearchBranchProduct>
           <div className="w-full flex items-end justify-between">
-            <ButtonGroup>
-              <Button
+            <ButtonGroup className="mt-4">
+              <ButtonUi
+                theme={view === 'table' ? Colors.Primary : Colors.Default}
                 isIconOnly
-                color="secondary"
-                style={{
-                  backgroundColor: view === 'table' ? theme.colors.third : '#e5e5e5',
-                  color: view === 'table' ? theme.colors.primary : '#3e3e3e',
-                }}
-                onClick={() => setView('table')}
-                type="button"
+                onPress={() => setView('table')}
               >
                 <ITable />
-              </Button>
-              <Button
+              </ButtonUi>
+              <ButtonUi
+                theme={view === 'grid' ? Colors.Primary : Colors.Default}
                 isIconOnly
-                color="default"
-                style={{
-                  backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
-                  color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
-                }}
-                onClick={() => setView('grid')}
-                type="button"
+                onPress={() => setView('grid')}
               >
                 <CreditCard />
-              </Button>
+              </ButtonUi>
             </ButtonGroup>
 
             <div className="flex items-end gap-5">
@@ -185,16 +172,9 @@ function ListEmployee({ id, onclick }: Props) {
                 </Select>
               </div>
               <div className="hidden md:flex">
-                <Button
-                  style={{
-                    backgroundColor: theme.colors.secondary,
-                    color: theme.colors.primary,
-                  }}
-                  color="primary"
-                  onClick={() => changePage()}
-                >
+                <ButtonUi theme={Colors.Primary} color="primary" onPress={() => changePage()}>
                   Buscar
-                </Button>
+                </ButtonUi>
               </div>
             </div>
           </div>
@@ -269,10 +249,7 @@ function ListEmployee({ id, onclick }: Props) {
                           }}
                         >
                           {list_categories.map((bra) => (
-                            <AutocompleteItem
-                              key={bra.name}
-                              className="dark:text-white"
-                            >
+                            <AutocompleteItem key={bra.name} className="dark:text-white">
                               {bra.name}
                             </AutocompleteItem>
                           ))}

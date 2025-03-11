@@ -1,7 +1,6 @@
-import { Button, Input } from "@heroui/react";
+import { Input } from '@heroui/react';
 import { Formik, FormikHelpers } from 'formik';
-import { useContext, useEffect, useMemo, useState } from 'react';
-import { ThemeContext } from '../../hooks/useTheme';
+import { useEffect, useMemo, useState } from 'react';
 import { useBranchesStore } from '@/store/branches.store';
 import { toast } from 'sonner';
 import * as yup from 'yup';
@@ -9,6 +8,8 @@ import { PointOfSalePayload, BranchPointOfSale } from '@/types/point-of-sales.ty
 import { verify_code_correlatives } from '@/services/point-of-sales.service';
 import { usePointOfSales } from '@/store/point-of-sales.store';
 import { Eye, EyeOff } from 'lucide-react';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
 
 interface Props {
   onClose: () => void;
@@ -17,7 +18,6 @@ interface Props {
 }
 
 function AddPointOfSales(props: Props) {
-  const { theme } = useContext(ThemeContext);
   const [selectedIdBranch] = useState(props.branchId);
   const [lastCode, setLastCode] = useState(0);
 
@@ -192,28 +192,22 @@ function AddPointOfSales(props: Props) {
                 />
               </div>
               <div className="grid grid-cols-2 gap-2 mt-2 mb-2">
-                <Button
-                  onClick={() => generateCode(setFieldValue, values.codPuntoVenta)}
+                <ButtonUi
+                  onPress={() => generateCode(setFieldValue, values.codPuntoVenta)}
                   className="text-sm font-semibold"
-                  style={{
-                    backgroundColor: theme.colors.third,
-                    color: theme.colors.primary,
-                  }}
+                  theme={Colors.Secondary}
                 >
                   Generar Código
-                </Button>
-                <Button
+                </ButtonUi>
+                <ButtonUi
                   className="text-sm font-semibold"
-                  style={{
-                    backgroundColor: theme.colors.warning,
-                    color: theme.colors.primary,
-                  }}
-                  onClick={() => {
+                  theme={Colors.Secondary}
+                  onPress={() => {
                     verifyCode(selectedIdBranch, values.code);
                   }}
                 >
                   Verificar Código
-                </Button>
+                </ButtonUi>
               </div>
             </div>
 
@@ -261,16 +255,13 @@ function AddPointOfSales(props: Props) {
               />
             </div>
 
-            <Button
-              onClick={() => handleSubmit()}
+            <ButtonUi
+              onPress={() => handleSubmit()}
               className="w-full mt-4 text-sm font-semibold"
-              style={{
-                backgroundColor: theme.colors.third,
-                color: theme.colors.primary,
-              }}
+              theme={Colors.Secondary}
             >
               Guardar
-            </Button>
+            </ButtonUi>
           </>
         )}
       </Formik>

@@ -2,12 +2,10 @@ import { useState, useEffect, useMemo } from 'react';
 import { useBranchesStore } from '../../store/branches.store';
 import { Button, Input, Select, SelectItem, Switch, useDisclosure } from "@heroui/react";
 import { PhoneIcon, User, MapPinIcon, Filter } from 'lucide-react';
-
 import AddButton from '../global/AddButton';
 import { Drawer } from 'vaul';
 import Pagination from '../global/Pagination';
 import { Paginator } from 'primereact/paginator';
-import { paginator_styles } from '../../styles/paginator.styles';
 import ModalGlobal from '../global/ModalGlobal';
 import AddBranch from './AddBranch';
 import { global_styles } from '../../styles/global.styles';
@@ -19,7 +17,6 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 function ListBranch() {
   const { getBranchesPaginated, branches_paginated } = useBranchesStore();
-
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');

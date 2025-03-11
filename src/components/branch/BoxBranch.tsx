@@ -5,7 +5,7 @@ import {
   PopoverContent,
   PopoverTrigger,
   useDisclosure,
-} from "@heroui/react";
+} from '@heroui/react';
 import { global_styles } from '../../styles/global.styles';
 import * as yup from 'yup';
 import { Formik } from 'formik';
@@ -18,6 +18,8 @@ import { BoxIcon } from 'lucide-react';
 import { post_box, save_branch_id } from '../../storage/localStorage';
 import CloseBox from './box/CloseBox';
 import HeadlessModal from '../global/HeadlessModal';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
 
 interface Props {
   closeModal: () => void;
@@ -26,7 +28,6 @@ interface Props {
 }
 
 function AddBranch(props: Props) {
-
   const modalCloseBox = useDisclosure();
 
   const validationSchema = yup.object().shape({
@@ -111,30 +112,23 @@ function AddBranch(props: Props) {
                       ¿Como quieres cerrar la caja?
                     </p>
                     <div className="mt-4">
-                      <Button
-                        style={global_styles().dangerStyles}
-                        onClick={() => modalCloseBox.onOpen()}
-                      >
+                      <ButtonUi theme={Colors.Success} onPress={() => modalCloseBox.onOpen()}>
                         Cierre contabilizado
-                      </Button>
-                      <Button
+                      </ButtonUi>
+                      <ButtonUi
                         onClick={() => handleCloseBoxId()}
                         className="ml-5"
-                        style={global_styles().darkStyle}
+                        theme={Colors.Info}
                       >
                         Solo cerrar caja
-                      </Button>
+                      </ButtonUi>
                     </div>
                   </div>
                 </PopoverContent>
               </Popover>
-              <Button
-                className="font-semibold"
-                style={global_styles().darkStyle}
-                onClick={handleActivate}
-              >
+              <ButtonUi className="font-semibold" theme={Colors.Secondary} onPress={handleActivate}>
                 Usar caja activa
-              </Button>
+              </ButtonUi>
             </div>
           </>
         ) : (

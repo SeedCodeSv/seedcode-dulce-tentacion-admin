@@ -1,20 +1,20 @@
 import BottomDrawer from '@/components/global/BottomDrawer';
 import TooltipGlobal from '@/components/global/TooltipGlobal';
-import { ThemeContext } from '@/hooks/useTheme';
 import { useAuthStore } from '@/store/auth.store';
 import { useCategoriesStore } from '@/store/categories.store';
 import { useUsersStore } from '@/store/users.store';
 import { global_styles } from '@/styles/global.styles';
-import { Autocomplete, AutocompleteItem, Button, Input } from "@heroui/react";
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
+import { Autocomplete, AutocompleteItem, Button, Input } from '@heroui/react';
 import { Filter, Search } from 'lucide-react';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 function SearchBranchProduct() {
   const { categories_list, getListCategoriesList } = useCategoriesStore();
   useEffect(() => {
     getListCategoriesList();
   }, []);
   const [openVaul, setOpenVaul] = useState(false);
-  const { theme } = useContext(ThemeContext);
   const { getUsersPaginated } = useUsersStore();
   const [filter] = useState({
     nameProduct: '',
@@ -93,15 +93,10 @@ function SearchBranchProduct() {
               ))}
             </Autocomplete>
 
-            <Button
-              style={{
-                backgroundColor: theme.colors.secondary,
-                color: theme.colors.primary,
-                fontSize: '16px',
-              }}
+            <ButtonUi
+              theme={Colors.Primary}
               className="font-semibold order-last mt-4"
-              color="primary"
-              onClick={() => {
+              onPress={() => {
                 getUsersPaginated(
                   user?.correlative?.branch.transmitterId ??
                     user?.pointOfSale?.branch.transmitterId ??
@@ -115,7 +110,7 @@ function SearchBranchProduct() {
               }}
             >
               Buscar
-            </Button>
+            </ButtonUi>
           </div>
         </BottomDrawer>
       </div>

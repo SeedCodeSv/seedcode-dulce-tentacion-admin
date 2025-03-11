@@ -1,15 +1,16 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
-import { Autocomplete, AutocompleteItem, Button, Input } from "@heroui/react";
+import { Autocomplete, AutocompleteItem, Input } from '@heroui/react';
 import viewActions from '../../actions.json';
 import { useViewsStore } from '../../store/views.store';
 import { useActionsRolStore } from '../../store/actions_rol.store';
 import { useAuthStore } from '../../store/auth.store';
 import { create_role_action } from '../../services/actions.service';
-import { ThemeContext } from '../../hooks/useTheme';
 import { Role } from '../../types/auth.types';
 import { get_all_roles } from '../../services/roles.service';
 import { Search } from 'lucide-react';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
 const PermissionAddActionRol: React.FC = () => {
   const { OnGetViewasAction, viewasAction } = useViewsStore();
   const [selectedActions, setSelectedActions] = useState<{ [viewId: number]: string[] }>({});
@@ -136,8 +137,6 @@ const PermissionAddActionRol: React.FC = () => {
     });
   };
 
-  const { theme } = useContext(ThemeContext);
-
   const renderSection = (view: { id: number; name: string }) => {
     const actions = viewActions.view_actions.find((va) => va.view === view.name)?.actions || [];
     return (
@@ -146,10 +145,7 @@ const PermissionAddActionRol: React.FC = () => {
           className="mb-4 dark:bg-gray-900  shadow-lg border border-gray-300 rounded-lg overflow-hidden"
           style={{ height: '400px', width: '100%' }}
         >
-          <div
-            style={{ backgroundColor: theme.colors.dark, color: theme.colors.primary }}
-            className="flex items-center justify-between px-4 py-3 text-white "
-          >
+          <div className="flex items-center justify-between px-4 py-3 text-white ">
             <p className="font-semibold">{view.name}</p>
             <div className="flex items-center justify-center">
               <span className="ml-2">Seleccionar todas</span>
@@ -275,13 +271,13 @@ const PermissionAddActionRol: React.FC = () => {
         </div>
       </div>
       <div className="fixed bottom-8 right-8">
-        <Button
-          style={{ backgroundColor: theme.colors.dark, color: theme.colors.primary }}
-          onClick={handleSubmit}
+        <ButtonUi
+          theme={Colors.Success}
+          onPress={handleSubmit}
           className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition disabled:opacity-50"
         >
           Guardar
-        </Button>
+        </ButtonUi>
       </div>
     </>
   );

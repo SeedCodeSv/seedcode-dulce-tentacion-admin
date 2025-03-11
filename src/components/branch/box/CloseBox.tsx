@@ -1,16 +1,15 @@
 import {
   Card,
   Image,
-  Button,
   Input,
   CardBody,
   useDisclosure,
   Popover,
   PopoverTrigger,
   PopoverContent,
-} from "@heroui/react";
+} from '@heroui/react';
 //   import Layout from "@renderer/components/global/Layout";
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import OneDollar from '../../../assets/dollars/1.jpg';
 import FiveDollar from '../../../assets/dollars/5.png';
 import ThenDollar from '../../../assets/dollars/10.png';
@@ -29,15 +28,16 @@ import { close_box } from '../../../services/Boxes.service';
 import { toast } from 'sonner';
 import { IGetBox } from '../../../types/box.types';
 import { useNavigate } from 'react-router';
-import { ThemeContext } from '../../../hooks/useTheme';
 import { get_box } from '../../../storage/localStorage';
+import { Colors } from '@/types/themes.types';
+import ButtonUi from '@/themes/ui/button-ui';
+
 function Box() {
   const [idBox, setIdBox] = useState(0);
   useEffect(() => {
     const box = get_box();
     setIdBox(Number(box));
   }, []);
-  const { theme } = useContext(ThemeContext);
 
   const [boxValues, setBoxValues] = useState<ICloseBox>({
     oneDollar: 0,
@@ -425,53 +425,45 @@ function Box() {
                 <>
                   <Popover backdrop="blur" isOpen={popover.isOpen}>
                     <PopoverTrigger>
-                      <Button
+                      <ButtonUi
                         className="w-full text-white bg-coffee-brown"
-                        onClick={() => popover.onOpen()}
-                        style={{
-                          backgroundColor: theme.colors.third,
-                        }}
+                        onPress={() => popover.onOpen()}
+                        theme={Colors.Warning}
                       >
                         Cerrar Caja
-                      </Button>
+                      </ButtonUi>
                     </PopoverTrigger>
                     <PopoverContent>
                       <div className="p-4 w-72">
-                        <Button
-                          onClick={() => {
+                        <ButtonUi
+                          onPress={() => {
                             popover.onClose();
                             preview_box();
                           }}
-                          style={{
-                            backgroundColor: theme.colors.third,
-                          }}
+                          theme={Colors.Info}
                           className="w-full mt-3 text-white bg-coffee-brown"
                         >
                           Verificar nuevamente
-                        </Button>
-                        <Button
-                          onClick={completeBox}
+                        </ButtonUi>
+                        <ButtonUi
+                          onPress={completeBox}
                           className="w-full mt-3 text-white bg-coffee-green"
-                          style={{
-                            backgroundColor: theme.colors.third,
-                          }}
+                          theme={Colors.Success}
                         >
                           Completar de caja
-                        </Button>
+                        </ButtonUi>
                       </div>
                     </PopoverContent>
                   </Popover>
                 </>
               ) : (
-                <Button
+                <ButtonUi
                   onPress={preview_box}
                   className="w-full text-white bg-coffee-brown"
-                  style={{
-                    backgroundColor: theme.colors.third,
-                  }}
+                  theme={Colors.Secondary}
                 >
                   Cerrar caja
-                </Button>
+                </ButtonUi>
               )}
             </div>
           </div>
