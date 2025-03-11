@@ -6,7 +6,7 @@
    "scripts": {
       "dev": "vite --host",
       "build:dev": "tsc && vite build",
-      "build": "swc --no-swcrc --out-dir dist src/**/*.ts src/**/*.tsx && vite build --mode production",
+      "build": "tsc -b && vite build",
       "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
       "preview": "vite preview",
       "format": "prettier . --write --ignore-path .gitignore",
