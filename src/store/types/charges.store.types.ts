@@ -4,6 +4,7 @@ import { ICharge, IGetChargesPaginated } from "../../types/charges.types";
 export interface IChargesStore {
   charges: ICharge[];
   charges_paginated: IGetChargesPaginated;
+  loading: boolean;
   getChargesList: () => void;
   getChargesPaginated: (page: number, limit: number, name: string, active?: number) => void;
   postCharge: (name:string) => void;

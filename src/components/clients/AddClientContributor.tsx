@@ -1,4 +1,4 @@
-import { Input, Autocomplete, AutocompleteItem, Textarea, Button } from "@heroui/react";
+import { Input, Autocomplete, AutocompleteItem, Textarea } from "@heroui/react";
 import { Formik } from 'formik';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import * as yup from 'yup';
@@ -8,11 +8,11 @@ import { Municipio } from '@/types/billing/cat-013-municipio.types';
 import { CodigoActividadEconomica } from '@/types/billing/cat-019-codigo-de-actividad-economica.types';
 import { useCustomerStore } from '@/store/customers.store';
 import { PayloadCustomer } from '@/types/customers.types';
-// import { contributorTypes } from '@/utils/constants';
 import { useNavigate, useParams } from 'react-router';
 import { Loader } from 'lucide-react';
-import useGlobalStyles from '@/components/global/global.styles';
 import { useBranchesStore } from '@/store/branches.store';
+import ButtonUi from "@/themes/ui/button-ui";
+import { Colors } from "@/types/themes.types";
 
 function AddClientContributor() {
   const { getBranchesList, branch_list } = useBranchesStore();
@@ -22,7 +22,6 @@ function AddClientContributor() {
   }, []);
   const navigate = useNavigate();
   const { postCustomer, patchCustomer, customer, getCustomerById, loading } = useCustomerStore();
-  const styles = useGlobalStyles();
 
   const { id } = useParams();
 
@@ -563,7 +562,7 @@ function AddClientContributor() {
                       <Loader size={35} className="animate-spin dark:text-white" />
                     </div>
                   ) : (
-                    <Button
+                    <ButtonUi
                       onClick={async (e) => {
                         e.preventDefault();
                         const valid = await validateForm().then((error) => {
@@ -576,10 +575,10 @@ function AddClientContributor() {
                       }}
                       className="w-full md:w-96 font-semibold"
                       ref={button}
-                      style={styles.darkStyle}
+                      theme={Colors.Primary}
                     >
                       Guardar
-                    </Button>
+                    </ButtonUi>
                   )}
                 </div>
               </div>

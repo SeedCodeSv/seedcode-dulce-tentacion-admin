@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Check } from 'lucide-react';
 import { toast } from 'sonner';
 import { useViewsStore } from '../../store/views.store';
@@ -7,8 +7,8 @@ import permissionss from '../../actions.json';
 import PermissionAddActionRol from './AddActionRol';
 import { useActionsRolStore } from '@/store/actions_rol.store';
 import { IUpdateActions } from '@/types/actions_rol.types';
-import { Button } from "@heroui/react";
-import { ThemeContext } from '@/hooks/useTheme';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
 
 const PermissionTable: React.FC = () => {
   const { OnGetViewasAction, viewasAction } = useViewsStore();
@@ -105,20 +105,18 @@ const PermissionTable: React.FC = () => {
     }
   }, [viewasAction]);
 
-  const { theme } = useContext(ThemeContext);
-
   return (
     <>
       <div className="flex flex-col lg:flex-row h-screen">
         <div className="w-full lg:w-1/4  border border-slate-200 rounded-xl dark:bg-gray-900 p-4 mt-2">
           <div className="p-2 ">
-            <Button
-              style={{ backgroundColor: theme.colors.dark, color: theme.colors.primary }}
-              onClick={handleCreateOrUpdateViewsAndActions}
+            <ButtonUi
+               theme={Colors.Primary}
+              onPress={handleCreateOrUpdateViewsAndActions}
               className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition disabled:opacity-50"
             >
               Actualizar
-            </Button>
+            </ButtonUi>
           </div>
           <div className="overflow-y-auto custom-scrollbar1 max-h-64 lg:max-h-[calc(100vh-100px)]">
             {viewasAction &&

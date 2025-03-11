@@ -7,6 +7,7 @@ import { messages } from "../utils/constants";
 
 export const useChargesStore = create<IChargesStore>((set, get) => ({
   charges: [],
+  loading: false,
   charges_paginated: {
     charges: [],
     total: 0,
@@ -25,12 +26,14 @@ export const useChargesStore = create<IChargesStore>((set, get) => ({
       });
   },
   getChargesPaginated: (page: number, limit: number, name: string, active = 1) => {
+    set({ loading: true });
     get_charges_paginated(page, limit, name, active)
       .then((categories) =>
-        set({ charges_paginated: categories.data })
+        set({ charges_paginated: categories.data, loading: false })
       )
       .catch(() => {
         set({
+          loading: false,
           charges_paginated: {
             charges: [],
             total: 0,
