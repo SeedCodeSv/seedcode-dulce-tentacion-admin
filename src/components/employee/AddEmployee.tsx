@@ -1,8 +1,7 @@
-import { Autocomplete, AutocompleteItem, Button, Input } from "@heroui/react";
+import { Autocomplete, AutocompleteItem, Button, Input } from '@heroui/react';
 import { useBranchesStore } from '../../store/branches.store';
-import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import * as yup from 'yup';
-import { ThemeContext } from '../../hooks/useTheme';
 import { useChargesStore } from '../../store/charges.store';
 import { useBillingStore } from '../../store/facturation/billing.store';
 import { useEmployeeStatusStore } from '../../store/employee_status.store';
@@ -12,15 +11,17 @@ import Layout from '../../layout/Layout';
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { useEmployeeStore } from '../../store/employee.store';
-import {  EmployeePayload } from '../../types/employees.types';
+import { EmployeePayload } from '../../types/employees.types';
 import { toast } from 'sonner';
 import { Formik } from 'formik';
 import { Branch } from '@/types/auth.types';
 import { Municipio } from '@/types/billing/cat-013-municipio.types';
 import { Departamento } from '@/types/billing/cat-012-departamento.types';
 import { SetFieldValue } from './types/employee.types';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
+
 function AddEmployee() {
-  const { theme } = useContext(ThemeContext);
   const { GetEmployeeStatus, employee_status } = useEmployeeStatusStore();
   const { GetContractType, contract_type } = useContractTypeStore();
   const { GetStudyLevel, study_level } = useStudyLevelStore();
@@ -140,8 +141,6 @@ function AddEmployee() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [codigo, setCodigoGenerado] = useState('');
-
-
 
   const generateCode = (
     setFieldValue: SetFieldValue,
@@ -428,18 +427,8 @@ function AddEmployee() {
                           />
                         </div>
                         <div className="mt-3">
-                          {/* <Button
-                            onClick={() => generateCode(setFieldValue)}
-                            className="xl:w-full w-[140px] mt-3 text-sm font-semibold bg-blue-400"
-                            style={{
-                              backgroundColor: theme.colors.dark,
-                              color: theme.colors.primary,
-                            }}
-                          >
-                            Generar
-                          </Button> */}
-                          <Button
-                            onClick={() =>
+                          <ButtonUi
+                            onPress={() =>
                               generateCode(
                                 setFieldValue,
                                 firstName, // Aquí debes pasar el valor del primer nombre
@@ -447,14 +436,11 @@ function AddEmployee() {
                                 setCodigoGenerado // Aquí debes pasar la función para generar el código
                               )
                             }
-                            className="xl:w-full w-[140px] mt-3 text-sm font-semibold bg-blue-400"
-                            style={{
-                              backgroundColor: theme.colors.dark,
-                              color: theme.colors.primary,
-                            }}
+                            className="xl:w-full w-[140px] mt-3"
+                            theme={Colors.Info}
                           >
                             Generar
-                          </Button>
+                          </ButtonUi>
                         </div>
                       </div>
 
@@ -913,16 +899,13 @@ function AddEmployee() {
                     {/* <span className="flex flex-col mt-4">-- Dirección --</span> */}
                     <div className="grid grid-cols-1 gap-4 mt-3 md:grid-cols-2">
                       <div className="mt-0 md:mt-3">
-                        <Button
-                          onClick={() => handleSubmit()}
+                        <ButtonUi
+                          onPress={() => handleSubmit()}
                           className="w-full mt-3 text-sm font-semibold"
-                          style={{
-                            backgroundColor: theme.colors.dark,
-                            color: theme.colors.primary,
-                          }}
+                          theme={Colors.Primary}
                         >
                           Guardar
-                        </Button>
+                        </ButtonUi>
                       </div>
                     </div>
                   </>
