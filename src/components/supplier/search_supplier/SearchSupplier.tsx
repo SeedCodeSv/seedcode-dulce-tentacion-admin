@@ -1,17 +1,15 @@
 import BottomDrawer from '@/components/global/BottomDrawer';
 import TooltipGlobal from '@/components/global/TooltipGlobal';
-import { ThemeContext } from '@/hooks/useTheme';
-import { global_styles } from '@/styles/global.styles';
-import { Button, Input } from "@heroui/react";
+import { Input } from '@heroui/react';
 import { Filter, Mail, User } from 'lucide-react';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { IPropsSearchSupplier } from '../types/movile-view.types';
 import { useSupplierStore } from '@/store/supplier.store';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
 
 function SearchSupplier(props: IPropsSearchSupplier) {
   const { getSupplierPagination } = useSupplierStore();
-
-  const { theme } = useContext(ThemeContext);
   const [openVaul, setOpenVaul] = useState(false);
 
   const [filter, setFilter] = useState({
@@ -27,14 +25,9 @@ function SearchSupplier(props: IPropsSearchSupplier) {
     <div className="flex items-center gap-5">
       <div className="block md:hidden">
         <TooltipGlobal text="Buscar por filtros" color="primary">
-          <Button
-            style={global_styles().thirdStyle}
-            isIconOnly
-            onClick={() => setOpenVaul(true)}
-            type="button"
-          >
+          <ButtonUi theme={Colors.Info} isIconOnly onPress={() => setOpenVaul(true)} type="button">
             <Filter />
-          </Button>
+          </ButtonUi>
         </TooltipGlobal>
         <BottomDrawer
           title="Filtros disponibles"
@@ -85,21 +78,18 @@ function SearchSupplier(props: IPropsSearchSupplier) {
               }}
             />
 
-            <Button
-              style={{
-                backgroundColor: theme.colors.secondary,
-                color: theme.colors.primary,
-              }}
+            <ButtonUi
+              theme={Colors.Primary}
               className="font-semibold"
               color="primary"
-              onClick={() => {
+              onPress={() => {
                 handleSearch();
                 setFilter({ typeSupplier: '', nameSupplier: '', emailSuppplier: '' });
                 setOpenVaul(false);
               }}
             >
               Buscar
-            </Button>
+            </ButtonUi>
           </div>
         </BottomDrawer>
       </div>

@@ -1,8 +1,7 @@
-import { Autocomplete, AutocompleteItem, Button, Input } from "@heroui/react";
+import { Autocomplete, AutocompleteItem, Input } from '@heroui/react';
 import { Customer, Sale, ValidateContigence } from '../../types/report_contigence';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLogsStore } from '../../store/logs.store';
-import { ThemeContext } from '../../hooks/useTheme';
 import { Municipio } from '../../types/billing/cat-013-municipio.types';
 // import { useBillingStore } from "../../store/facturation/billing.store";
 import { Departamento } from '../../types/billing/cat-012-departamento.types';
@@ -14,6 +13,8 @@ import * as yup from 'yup';
 import { IUnitOfMeasurement } from '../../types/billing/cat-014-tipos-de-medida.types';
 import { TipoDeItem } from '../../types/billing/cat-011-tipo-de-item.types';
 import { ITipoDocumento } from '../../types/DTE/tipo_documento.types';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
 
 /* eslint-disable no-unused-vars */
 interface Props {
@@ -25,7 +26,6 @@ interface Props {
 }
 /* eslint-enable no-unused-vars */
 const UpdateCustomerSales = (props: Props) => {
-  const { theme } = useContext(ThemeContext);
   const { logs, getLogs } = useLogsStore();
   const [selectedCodeDep, setSelectedCodeDep] = useState('0');
   const [selectedMunicipio, setSeletedMunicipio] = useState<Municipio>();
@@ -251,9 +251,7 @@ const UpdateCustomerSales = (props: Props) => {
                   }}
                 >
                   {cat_019_codigo_de_actividad_economica.map((dep) => (
-                    <AutocompleteItem key={JSON.stringify(dep)}>
-                      {dep.valores}
-                    </AutocompleteItem>
+                    <AutocompleteItem key={JSON.stringify(dep)}>{dep.valores}</AutocompleteItem>
                   ))}
                 </Autocomplete>
                 {errors.descActividad && touched.descActividad && (
@@ -283,9 +281,7 @@ const UpdateCustomerSales = (props: Props) => {
                       }}
                     >
                       {cay_002_tipo_de_documento.map((dep) => (
-                        <AutocompleteItem key={JSON.stringify(dep)}>
-                          {dep.valores}
-                        </AutocompleteItem>
+                        <AutocompleteItem key={JSON.stringify(dep)}>{dep.valores}</AutocompleteItem>
                       ))}
                     </Autocomplete>
                     {errors.tipoDocument && touched.tipoDocument && (
@@ -344,9 +340,7 @@ const UpdateCustomerSales = (props: Props) => {
                     value={values.nombreDepartamento}
                   >
                     {cat_012_departamento.map((dep) => (
-                      <AutocompleteItem key={JSON.stringify(dep)}>
-                        {dep.valores}
-                      </AutocompleteItem>
+                      <AutocompleteItem key={JSON.stringify(dep)}>{dep.valores}</AutocompleteItem>
                     ))}
                   </Autocomplete>
                   {errors.nombreDepartamento && touched.nombreDepartamento && (
@@ -382,9 +376,7 @@ const UpdateCustomerSales = (props: Props) => {
                       value={values.nombreMunicipio}
                     >
                       {cat_013_municipios!.map((dep) => (
-                        <AutocompleteItem  key={JSON.stringify(dep)}>
-                          {dep.valores}
-                        </AutocompleteItem>
+                        <AutocompleteItem key={JSON.stringify(dep)}>{dep.valores}</AutocompleteItem>
                       ))}
                     </Autocomplete>
                     {errors.nombreDepartamento && touched.nombreDepartamento && (
@@ -417,9 +409,7 @@ const UpdateCustomerSales = (props: Props) => {
                       value={values.nombreMunicipio}
                     >
                       {cat_013_municipios!.map((dep) => (
-                        <AutocompleteItem key={JSON.stringify(dep)}>
-                          {dep.valores}
-                        </AutocompleteItem>
+                        <AutocompleteItem key={JSON.stringify(dep)}>{dep.valores}</AutocompleteItem>
                       ))}
                     </Autocomplete>
                   </div>
@@ -445,9 +435,7 @@ const UpdateCustomerSales = (props: Props) => {
                   value={values.tipoItem}
                 >
                   {cat_011_tipo_de_item.map((item) => (
-                    <AutocompleteItem key={JSON.stringify(item)}>
-                      {item.valores}
-                    </AutocompleteItem>
+                    <AutocompleteItem key={JSON.stringify(item)}>{item.valores}</AutocompleteItem>
                   ))}
                 </Autocomplete>
                 {errors.tipoItem && touched.tipoItem && (
@@ -472,9 +460,7 @@ const UpdateCustomerSales = (props: Props) => {
                   value={values.uniMedida}
                 >
                   {unidadDeMedidaList.map((item) => (
-                    <AutocompleteItem key={JSON.stringify(item)}>
-                      {item.valores}
-                    </AutocompleteItem>
+                    <AutocompleteItem key={JSON.stringify(item)}>{item.valores}</AutocompleteItem>
                   ))}
                 </Autocomplete>
                 {errors.uniMedida && touched.uniMedida && (
@@ -482,16 +468,13 @@ const UpdateCustomerSales = (props: Props) => {
                 )}
               </div>
             </div>
-            <Button
-              onClick={() => handleSubmit()}
+            <ButtonUi
+              onPress={() => handleSubmit()}
               className="w-full mt-4 text-sm font-semibold"
-              style={{
-                backgroundColor: theme.colors.third,
-                color: theme.colors.primary,
-              }}
+              theme={Colors.Primary}
             >
               Guardar
-            </Button>
+            </ButtonUi>
           </>
         )}
       </Formik>

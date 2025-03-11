@@ -1,17 +1,13 @@
-import { useCallback, useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import Layout from '../layout/Layout';
 import { salesReportStore } from '../store/reports/sales_report.store';
 import { useAuthStore } from '../store/auth.store';
 import { useBranchProductReportStore } from '../store/reports/branch_product.store';
 import { formatCurrency } from '../utils/dte';
-import { ThemeContext } from '../hooks/useTheme';
 import '../components/home/style.css';
-import { get_theme_by_transmitter } from '@/services/configuration.service';
 import Charts from '@/components/home/charts';
 
 function Home() {
-  const { toggleTheme } = useContext(ThemeContext);
-
   const {
     getSalesByBranchAndMonth,
     getSalesByYearAndMonth,
@@ -37,31 +33,6 @@ function Home() {
       getSalesTableDay(branchId);
     }
   }, [user]);
-
-  const fetchThemeData = useCallback(async () => {
-    try {
-      const { data } = await get_theme_by_transmitter();
-      if (data.ok) {
-        const theme = {
-          name: data.personalization.name,
-          context: data.personalization.context === 'light' ? 'light' : 'dark',
-          colors: data.personalization.colors,
-        };
-        toggleTheme({
-          ...theme,
-          context: theme.context === 'light' ? 'light' : 'dark',
-        });
-      } else {
-        throw new Error('No tienes tema seleccionado');
-      }
-    } catch (error) {
-      throw new Error('No tienes tema seleccionado');
-    }
-  }, [toggleTheme]);
-
-  useEffect(() => {
-    fetchThemeData();
-  }, []);
 
   return (
     <Layout title="Inicio">

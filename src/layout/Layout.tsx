@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import { ThemeContext } from '../hooks/useTheme';
-import NavBar from './NavBar';
+import NavBar from './nav-bar';
 import { SideBar } from './side-bar';
 import classNames from 'classnames';
 import { useConfigurationStore } from '../store/perzonalitation.store';

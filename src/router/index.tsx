@@ -12,14 +12,10 @@ import Expenses from '../pages/Expenses';
 import ActionRol from '../pages/ActionRol';
 import Charges from '../pages/Charges';
 import SubCategories from '../pages/SubCategories';
-import NewSales from '../pages/NewSales';
 import Configuration from '../pages/Configuration';
-import SalesReportContigencePage from '../pages/SalesReportContigencePage';
 import { useActionsRolStore } from '../store/actions_rol.store';
 import { useEffect, useState } from 'react';
-import Views from '../pages/Views';
 import { useAuthStore } from '../store/auth.store';
-import HomeSeller from '../pages/Seller/HomeSeller';
 import ExpenseByDatesTransmitter from '../pages/ExpenseByDatesTransmitter';
 import Supplier from '../pages/Supplier';
 import ReportByBranchSalesByBranch from '../pages/ReportByBranchSalesByBranch';
@@ -41,7 +37,7 @@ import { JSX } from 'react/jsx-runtime';
 import CushCatsBigZ from '@/pages/CashCutsBigZ';
 import CashCutsX from '@/pages/CashCutsX';
 import CushCatsZ from '@/pages/CashCutsZ';
-import ShoppingBookIVA from '@/pages/iva/ShoppingBookIVA';
+import ShoppingBookIVA from '@/pages/iva/shopping-iva';
 import Shopping from '@/pages/shopping';
 import CreateShopping from '@/components/shopping/create-shopping-json';
 import CFFBookIVA from '@/pages/iva/CFFBookIVA';
@@ -57,13 +53,10 @@ import UpdateTributeSupplier from '@/components/supplier/UpdateTributeSupplier';
 import UpdateClientContributor from '@/components/clients/UpdateClientContributor';
 import AddPurchaseOrders from '@/components/list_purchase/AddPurchaseOrders';
 import PurchaseOrderForm from '@/components/list_purchase/PurchaseOrderForm';
-import SalesInvalidationPage from '@/components/sales/SalesInvalidationPage';
 import AddCustomer from '@/pages/AddCustomer';
 import BirthdayCalendar from '@/components/employee/BirthdayCalendar';
 import PointOfSales from '@/pages/PointOfSales';
 import SalesPage from '@/pages/Sales';
-import NotaDebito from '@/pages/NotaDebito';
-import NotaCredito from '@/pages/NotaCredito';
 import NotesDebitBySale from '@/components/notas/DebitNoteBySale';
 import NotesCreditBySale from '@/components/notas/CreditNoteBySale';
 import ContingenceSection from '@/pages/ContingenceSection';
@@ -74,7 +67,7 @@ import EditShopping from '@/components/shopping/edit-shopping';
 import AccountCatalogs from '@/pages/account-catalog';
 import AddAccountCatalogs from '@/components/account-catalogs/add-account-catalog';
 import UpdateAccountCatalogs from '@/components/account-catalogs/update-account-catalog';
-import TicketSales from '@/pages/TicketSales';
+import TicketSales from '@/pages/ticket-sales';
 import Test from "@/pages/Test";
 import pages_router from "@/pages/router"
 import EditTransmitterInfo from '@/pages/edit-transmitter-info';
@@ -218,10 +211,6 @@ export const router = () => {
       element: checkAuthorization('Ventas por Periodo', <VentasPorPeriodo />),
     },
     {
-      path: '/reports/sales-invalidation',
-      element: checkAuthorization('Ventas', <SalesInvalidationPage />),
-    },
-    {
       path: '/reports/sales-by-product',
       element: checkAuthorization('Ventas por Productos', <VentasPorProducto />),
     },
@@ -252,12 +241,6 @@ export const router = () => {
       path: '/correlative',
       element: checkAuthorization('Correlativos', <CorrelativePage />),
     },
-
-    {
-      path: '/homeSeller',
-      element: checkAuthorization('Inicio de ventas', <HomeSeller />),
-    },
-
     {
       path: '/charges',
       element: checkAuthorization('Cargos de Empleados', <Charges />),
@@ -270,14 +253,6 @@ export const router = () => {
     {
       path: '/expenses',
       element: checkAuthorization('Gastos', <Expenses />),
-    },
-    {
-      path: '/modules',
-      element: checkAuthorization('Modulos', <Views />),
-    },
-    {
-      path: '/newSales',
-      element: checkAuthorization('Ventas', <NewSales />),
     },
     {
       path: '/most-product-transmitter-selled',
@@ -295,11 +270,6 @@ export const router = () => {
       path: '/expenses-by-branch',
       element: checkAuthorization('Reportes', <ReportExpensesByBranchPage />),
     },
-    {
-      path: '/sales-reports',
-      element: checkAuthorization('Reporte de ventas', <SalesReportContigencePage />),
-    },
-
     {
       path: '/discounts',
       element: checkAuthorization('Descuentos', <Discount />),
@@ -385,14 +355,7 @@ export const router = () => {
       path: '/sales-ticket',
       element: checkAuthorization('Ventas Ticket', <TicketSales />),
     },
-    {
-      path: "/debit-note/:id",
-      element: <NotaDebito />,
-    },
-    {
-      path: "/credit-note/:id",
-      element: <NotaCredito />,
-    },
+
     {
       path: "/get-debit-note/:id",
       element: <NotesDebitBySale />,

@@ -1,12 +1,13 @@
 import FullPageLayout from '@/components/global/FullOverflowLayout';
-import useGlobalStyles from '@/components/global/global.styles';
 import Pagination from '@/components/global/Pagination';
-import { ThemeContext } from '@/hooks/useTheme';
 import useWindowSize from '@/hooks/useWindowSize';
 import Layout from '@/layout/Layout';
 import { get_ticket } from '@/services/ticket.service';
 import { useBranchesStore } from '@/store/branches.store';
 import { useTicketStore } from '@/store/ticket.store';
+import ButtonUi from '@/themes/ui/button-ui';
+import ThGlobal from '@/themes/ui/th-global';
+import { Colors } from '@/types/themes.types';
 import { DetailSale } from '@/types/ticket.types';
 import { formatDate } from '@/utils/dates';
 import { formatCurrency } from '@/utils/dte';
@@ -20,11 +21,11 @@ import {
   SelectItem,
   Spinner,
   useDisclosure,
-} from "@heroui/react";
+} from '@heroui/react';
 import classNames from 'classnames';
 import jsPDF from 'jspdf';
 import { CreditCard, Eye, Filter, Table2Icon, X } from 'lucide-react';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 function TicketSales() {
   const [dateInitial, setDateInitial] = useState(formatDate());
@@ -33,7 +34,6 @@ function TicketSales() {
   const [limit, setLimit] = useState(5);
 
   const { branch_list, getBranchesList } = useBranchesStore();
-  const { theme } = useContext(ThemeContext);
 
   const { windowSize } = useWindowSize();
   const [view, setView] = useState<'table' | 'grid'>(windowSize.width < 768 ? 'grid' : 'table');
@@ -48,7 +48,6 @@ function TicketSales() {
     onGetTickets(1, limit, dateInitial, endDate, branch);
   }, [dateInitial, endDate, branch, limit]);
 
-  const styles = useGlobalStyles();
   const showFullLayout = useDisclosure();
   const [pdf, setPdf] = useState('');
   const [loadingPdf, setLoadingPdf] = useState(false);
@@ -124,37 +123,26 @@ function TicketSales() {
                     }}
                   >
                     {branch_list.map((item) => (
-                      <SelectItem key={item.id}>
-                        {item.name}
-                      </SelectItem>
+                      <SelectItem key={item.id}>{item.name}</SelectItem>
                     ))}
                   </Select>
                 </div>
                 <div className="flex flex-row justify-between mt-6 w-full">
-                  <ButtonGroup className="border border-white rounded-xl">
-                    <Button
-                      className=""
+                  <ButtonGroup className="mt-4">
+                    <ButtonUi
+                      theme={view === 'table' ? Colors.Primary : Colors.Default}
                       isIconOnly
-                      color="secondary"
-                      style={{
-                        backgroundColor: view === 'table' ? theme.colors.third : '#e5e5e5',
-                        color: view === 'table' ? theme.colors.primary : '#3e3e3e',
-                      }}
-                      onClick={() => setView('table')}
+                      onPress={() => setView('table')}
                     >
                       <Table2Icon />
-                    </Button>
-                    <Button
+                    </ButtonUi>
+                    <ButtonUi
+                      theme={view === 'grid' ? Colors.Primary : Colors.Default}
                       isIconOnly
-                      color="default"
-                      style={{
-                        backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
-                        color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
-                      }}
-                      onClick={() => setView('grid')}
+                      onPress={() => setView('grid')}
                     >
                       <CreditCard />
-                    </Button>
+                    </ButtonUi>
                   </ButtonGroup>
                   <Select
                     className="w-44 dark:text-white border-white border rounded-xl"
@@ -226,24 +214,12 @@ function TicketSales() {
                 <table className="w-full">
                   <thead className="sticky top-0 z-20 bg-white">
                     <tr>
-                      <th style={styles.darkStyle} className="p-3 text-sm font-semibold text-left">
-                        Fecha - Hora
-                      </th>
-                      <th style={styles.darkStyle} className="p-3 text-sm font-semibold text-left">
-                        Número de control
-                      </th>
-                      <th style={styles.darkStyle} className="p-3 text-sm font-semibold text-left">
-                        Sucursal
-                      </th>
-                      <th style={styles.darkStyle} className="p-3 text-sm font-semibold text-left">
-                        Punto de venta
-                      </th>
-                      <th style={styles.darkStyle} className="p-3 text-sm font-semibold text-left">
-                        Monto total
-                      </th>
-                      <th style={styles.darkStyle} className="p-3 text-sm font-semibold text-left">
-                        Acciones
-                      </th>
+                      <ThGlobal className="text-left p-3">Fecha - hora</ThGlobal>
+                      <ThGlobal className="text-left p-3">Número de control</ThGlobal>
+                      <ThGlobal className="text-left p-3">Sucursal</ThGlobal>
+                      <ThGlobal className="text-left p-3">Punto de venta</ThGlobal>
+                      <ThGlobal className="text-left p-3">Monto total</ThGlobal>
+                      <ThGlobal className="text-left p-3">Acciones</ThGlobal>
                     </tr>
                   </thead>
                   <tbody className="max-h-[600px] w-full overflow-y-auto">
@@ -278,14 +254,13 @@ function TicketSales() {
                               {formatCurrency(Number(sale.montoTotalOperacion))}
                             </td>
                             <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                              <Button
-                               onPress={() => handleShowPdf(sale.id)}
+                              <ButtonUi
+                                theme={Colors.Info}
+                                onPress={() => handleShowPdf(sale.id)}
                                 isIconOnly
-                                style={styles.thirdStyle}
-                                className="border border-white"
                               >
                                 <Eye />
-                              </Button>
+                              </ButtonUi>
                             </td>
                           </tr>
                         ))}
@@ -318,14 +293,13 @@ function TicketSales() {
                             Punto de venta: {sale.box.correlative.code}
                           </p>
                         </div>
-                        <Button
-                          isIconOnly
+                        <ButtonUi
+                          theme={Colors.Info}
                           onPress={() => handleShowPdf(sale.id)}
-                          style={styles.thirdStyle}
-                          className="border border-white"
+                          isIconOnly
                         >
                           <Eye />
-                        </Button>
+                        </ButtonUi>
                       </div>
                     ))}
                   </div>
@@ -398,12 +372,9 @@ function generateTicket(details: DetailSale[]) {
   doc.text(`No. Reg.: ${transmitter.nrc}`, 105, 34, { align: 'center' });
   doc.text(`NIT: ${transmitter.nit}`, 105, 40, { align: 'center' });
   doc.text('GIRO: VENTA AL POR MENOR DE ROPA', 105, 52, { align: 'center' });
-  doc.text(
-    `FECHA: ${details[0].sale.fecEmi} - ${details[0].sale.horEmi}`,
-    105,
-    58,
-    { align: 'center' }
-  );
+  doc.text(`FECHA: ${details[0].sale.fecEmi} - ${details[0].sale.horEmi}`, 105, 58, {
+    align: 'center',
+  });
   doc.text(`TICKET: ${details[0].sale.numeroControl}   CAJA: ${details[0].sale.box.id}`, 105, 64, {
     align: 'center',
   });

@@ -1,8 +1,7 @@
 import { useContext, useState } from 'react';
 import BUSINESS from '../assets/bussines.jpg';
-import { Button, Input } from "@heroui/react";
+import { Input } from '@heroui/react';
 import { Eye, EyeOff } from 'lucide-react';
-import { ThemeContext } from '../hooks/useTheme';
 import LOGO from '../assets/fac3.png';
 import * as yup from 'yup';
 import { IAuthPayload } from '../types/auth.types';
@@ -11,11 +10,12 @@ import { useAuthStore } from '../store/auth.store';
 import { SessionContext } from '../hooks/useSession';
 import { delete_seller_mode } from '../storage/localStorage';
 import { useViewsStore } from '@/store/views.store';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
 
 function Auth() {
   const [showPassword, setShowPassword] = useState(false);
   const { postLogin } = useAuthStore();
-  const { theme } = useContext(ThemeContext);
   const { setToken, setIsAuth, setRolId } = useContext(SessionContext);
   const initialValues = {
     userName: '',
@@ -111,16 +111,13 @@ function Auth() {
                   )}
                 </div>
 
-                <Button
-                  style={{
-                    backgroundColor: theme.colors.dark,
-                    color: theme.colors.primary,
-                  }}
+                <ButtonUi
+                  theme={Colors.Primary}
                   className={' mt-10 w-full font-semibold'}
-                  onClick={() => handleSubmit()}
+                  onPress={() => handleSubmit()}
                 >
                   Iniciar Sesión
-                </Button>
+                </ButtonUi>
               </>
             )}
           </Formik>

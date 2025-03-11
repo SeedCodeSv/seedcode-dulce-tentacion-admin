@@ -16,12 +16,12 @@ import {
 } from "@heroui/react";
 import { ThemeContext } from '../hooks/useTheme';
 import { Box, ChevronDown, Home } from 'lucide-react';
-// import LOGO from "../assets/react.svg"
 
 export default function NavBar() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
-  const { theme } = useContext(ThemeContext);
+  
+  const { theme, context } = useContext(ThemeContext);
   return (
     <Navbar
       classNames={{ base: 'w-screen', wrapper: 'w-screen max-w-[100vw]' }}
@@ -30,8 +30,8 @@ export default function NavBar() {
       isBordered
       isBlurred
       style={{
-        backgroundColor: theme.colors.dark,
-        color: theme.colors.primary,
+        backgroundColor: theme.colors[context].menu.background,
+        color: theme.colors[context].menu.textColor,
       }}
     >
       <NavbarContent>

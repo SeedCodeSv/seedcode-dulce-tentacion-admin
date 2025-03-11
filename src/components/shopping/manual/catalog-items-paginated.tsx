@@ -1,9 +1,9 @@
-import useGlobalStyles from '@/components/global/global.styles';
 import Pagination from '@/components/global/Pagination';
 import { Items } from '@/pages/contablilidad/types/types';
 import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
+import ThGlobal from '@/themes/ui/th-global';
 import { AccountCatalog } from '@/types/accountCatalogs.types';
-import { Input, ModalBody, ModalFooter, ModalHeader } from "@heroui/react";
+import { Input, ModalBody, ModalFooter, ModalHeader } from '@heroui/react';
 import { Dispatch, SetStateAction, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -41,8 +41,6 @@ function CatalogItemsPaginated(props: PropsItems) {
     setCurrentPage(page);
   };
 
-  const styles = useGlobalStyles();
-
   const handleSelectItem = (item: AccountCatalog) => {
     if (item.subAccount) {
       toast.error('No se puede agregar una cuenta con sub-cuentas');
@@ -75,18 +73,8 @@ function CatalogItemsPaginated(props: PropsItems) {
             <table className="w-full">
               <thead className="sticky top-0 z-20 bg-white">
                 <tr>
-                  <th
-                    style={styles.darkStyle}
-                    className="p-3 whitespace-nowrap text-xs font-semibold text-left"
-                  >
-                    Code
-                  </th>
-                  <th
-                    style={styles.darkStyle}
-                    className="p-3 whitespace-nowrap text-xs font-semibold text-left"
-                  >
-                    Name
-                  </th>
+                  <ThGlobal className="text-left p-3">Código</ThGlobal>
+                  <ThGlobal className="text-left p-3">Nombre</ThGlobal>
                 </tr>
               </thead>
               <tbody>
