@@ -7,7 +7,7 @@ function Shopping() {
   const viewName = actions.find((v) => v.view.name == 'Compras');
   const actionView = viewName?.actions.name || [];
   return (
-    <Layout title="Compras">
+    <Layout title="Lista de compras">
       <ListShopping actions={actionView} />
     </Layout>
   );

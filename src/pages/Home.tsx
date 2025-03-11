@@ -42,7 +42,7 @@ function Home() {
         </div>
         <p className="my-3 text-lg font-semibold dark:text-white">Ventas del dia</p>
         <div className="w-full mt-5 max-h-[400px] md:max-h-full overflow-y-auto">
-          <div className="col-span-3 dark:border-gray-600 border p-5 rounded-lg dark:bg-gray-900 xl:mt-0 lg:mt-0 mb:mt-0 sm:mt-0">
+          <div className="col-span-3 dark:border-gray-500 border p-5 rounded-lg dark:bg-gray-900 xl:mt-0 lg:mt-0 mb:mt-0 sm:mt-0">
             {loading_sales_by_table_date ? (
               <>
                 <div className="flex flex-col items-center justify-center w-full h-64">
