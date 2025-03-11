@@ -1,7 +1,6 @@
 import {
     Autocomplete,
     AutocompleteItem,
-    Button,
     Checkbox,
     CheckboxGroup,
     Input,
@@ -11,9 +10,8 @@ import {
     Tooltip,
   } from "@heroui/react";
   import { Formik } from 'formik';
-  import { useContext, useEffect, useState } from 'react';
+  import { useEffect, useState } from 'react';
   import * as yup from 'yup';
-  import { ThemeContext } from '../../hooks/useTheme';
   import WeekSelector from './WeekSelector';
   import { useBranchesStore } from '../../store/branches.store';
   
@@ -21,6 +19,8 @@ import {
   import { Promotion } from '../../types/promotions.types';
   import { useBranchProductStore } from '../../store/branch_product.store';
   import { usePromotionsStore } from '../../store/promotions/promotions.store';
+import ButtonUi from "@/themes/ui/button-ui";
+import { Colors } from "@/types/themes.types";
   
   interface Props {
     reloadData: () => void;
@@ -51,15 +51,7 @@ import {
     const [selectedPriority, setPriority] = useState(promotion!.priority);
     const handlePriorityChange = (selectedValues: string[]) => {
       setPriority(selectedValues[0]);
-    };
-    const { theme } = useContext(ThemeContext);
-    const { colors } = theme;
-  
-    const style = {
-      backgroundColor: colors.third,
-      color: colors.primary,
-    };
-  
+    };  
     const [startDateUpdate, setStartDateUpdate] = useState(promotion?.startDate);
     const [endDateUpdate, setEndDateUpdate] = useState(promotion?.endDate);
     const validationSchema = yup.object().shape({
@@ -412,26 +404,7 @@ import {
                           </Checkbox>
                         ))}
                       </CheckboxGroup>
-                      {/* <CheckboxGroup
-                        classNames={{
-                          label: 'font-semibold text-black text-md',
-                        }}
-                        orientation="horizontal"
-                        defaultValue={
-                          promotion?.priority ? [promotion.priority.toString()] : undefined
-                        }
-                        onChange={handlePriorityChange}
-                        label="Prioridad"
-                        size="lg"
-                      >
-                        {priority.map((p) => (
-                          <Checkbox key={p} value={p}>
-                            <span style={{ color: priorityMap[p].color }}>
-                              {priorityMap[p].label}
-                            </span>
-                          </Checkbox>
-                        ))}
-                      </CheckboxGroup> */}
+                     
   
                       {errors.priority && touched.priority && (
                         <span className="text-sm font-semibold text-red-500">{errors.priority}</span>
@@ -440,13 +413,13 @@ import {
                   </div>
                 </div>
                 <div className="mt-4 flex flex-row justify-center">
-                  <Button
+                  <ButtonUi
                     type="submit"
-                    style={style}
-                    className="hidden w-44 font-semibold md:flex h-full py-2"
+                    theme={Colors.Primary}
+                    className="flex w-44 font-semibold h-full py-2"
                   >
                     Actualizar Promoción
-                  </Button>
+                  </ButtonUi>
                 </div>
               </form>
             )}

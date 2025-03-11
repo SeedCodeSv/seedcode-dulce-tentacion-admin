@@ -22,7 +22,6 @@ import AddStatusEmployee from './AddStatusEmployee';
 import { statusEmployee } from '../../../types/statusEmployee.types';
 import BottomDrawer from '@/components/global/BottomDrawer';
 import { ArrayAction } from '@/types/view.types';
-import NotAddButton from '@/components/global/NoAdd';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import ThGlobal from '@/themes/ui/th-global';
@@ -154,15 +153,13 @@ function ListStatusEmployee({ actions }: ArrayAction) {
               </BottomDrawer>
             </div>
             <div className="justify-end">
-              {actions.includes('Agregar') ? (
+              {actions.includes('Agregar') && (
                 <AddButton
                   onClick={() => {
                     setSelectedStatusEmployee(undefined);
                     modalAdd.onOpen();
                   }}
                 />
-              ) : (
-                <NotAddButton></NotAddButton>
               )}
             </div>
           </div>

@@ -11,7 +11,6 @@ import { Correlatives } from '@/types/correlatives/correlatives_types';
 import { CreditCard, EditIcon, Table as ITable, Search } from 'lucide-react';
 import CreateCorrelative from './CreateCorrelatives';
 import AddButton from '../global/AddButton';
-import NotAddButton from '../global/NoAdd';
 import useWindowSize from '@/hooks/useWindowSize';
 import MobileView from './mode_correlative/MobileView';
 import SearchCorrelative from './search_correlative/SearchCorrelative';
@@ -55,10 +54,8 @@ function CorrelativesList({ actions }: { actions: string[] }) {
               setFilter({ ...filter, correlativeType: name });
             }}
           ></SearchCorrelative>
-          {actions.includes('Agregar') ? (
+          {actions.includes('Agregar') && (
             <AddButton onClick={() => setModalOpenCreate(true)} />
-          ) : (
-            <NotAddButton></NotAddButton>
           )}
         </div>
 

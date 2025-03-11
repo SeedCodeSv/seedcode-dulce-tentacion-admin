@@ -28,7 +28,6 @@ import { StudyLevel } from '@/types/study_level.types';
 import BottomDrawer from '@/components/global/BottomDrawer';
 import TooltipGlobal from '@/components/global/TooltipGlobal';
 import { ArrayAction } from '@/types/view.types';
-import NotAddButton from '@/components/global/NoAdd';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import ThGlobal from '@/themes/ui/th-global';
@@ -112,15 +111,13 @@ function ListStudyLevel({ actions }: ArrayAction) {
 
           <div className="flex  mt-6">
             <div className="justify-end w-full">
-              {actions.includes('Agregar') ? (
+              {actions.includes('Agregar') && (
                 <AddButton
                   onClick={() => {
                     setSelectedStatusEmployee(undefined);
                     modalAdd.onOpen();
                   }}
                 />
-              ) : (
-                <NotAddButton></NotAddButton>
               )}
             </div>
             <div className="md:hidden justify-start ">

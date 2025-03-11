@@ -8,14 +8,13 @@ import {
   Textarea,
   useDisclosure,
 } from "@heroui/react";
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import WeekSelector from './WeekSelector';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { PromotionProducts } from '../../types/promotions.types';
 import { useProductsStore } from '../../store/products.store';
 import { useBranchesStore } from '../../store/branches.store';
-import { ThemeContext } from '../../hooks/useTheme';
 import { useBranchProductStore } from '../../store/branch_product.store';
 import { usePromotionsByCategoryStore } from '../../store/promotions/promotionsByCategory.store';
 import { operadores } from '../../utils/constants';
@@ -24,6 +23,8 @@ import HeadlessModal from '../global/HeadlessModal';
 import { DollarSign, ScrollText, Search, Truck } from 'lucide-react';
 import { Branches } from '../../types/branches.types';
 import { usePromotionsProductsStore } from '../../store/promotions/promotionsByProduct.store';
+import ButtonUi from "@/themes/ui/button-ui";
+import { Colors } from "@/types/themes.types";
 
 interface Props {
   id: number;
@@ -74,8 +75,6 @@ function UpdatePromotionsByProduct(props: Props) {
   const handleDaysSelected = (days: string[]) => {
     setSelectedDays(days);
   };
-
-  const { theme } = useContext(ThemeContext);
   const validationSchema = yup.object().shape({
     name: yup.string().required('**El nombre es requerido**'),
     price: yup
@@ -418,24 +417,24 @@ function UpdatePromotionsByProduct(props: Props) {
                       </div>
                     </div>
                     <div className="grid grid-cols-1 gap-5 mt-6">
-                      <Button onClick={vaul.onOpen} style={global_styles().thirdStyle}>
+                      <ButtonUi
+                        onClick={vaul.onOpen}
+                        theme={Colors.Info}
+                      >
                         Productos
-                      </Button>
+                      </ButtonUi>
                     </div>
                   </div>
                 </div>
                 <div className="flex flex-row justify-center mt-4">
-                  <Button
+                  <ButtonUi
                     onClick={() => handleSubmit()}
                     type="submit"
-                    className="hidden h-full py-2 font-semibold md:flex w-44"
-                    style={{
-                      backgroundColor: theme.colors.third,
-                      color: theme.colors.primary,
-                    }}
+                    className="h-full py-2 font-semibold w-44"
+                    theme={Colors.Primary}
                   >
                     Actualizar Promoción
-                  </Button>
+                  </ButtonUi>
                 </div>
               </form>
             </>

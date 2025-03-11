@@ -32,7 +32,6 @@ import TooltipGlobal from '@/components/global/TooltipGlobal';
 import BottomDrawer from '@/components/global/BottomDrawer';
 import classNames from 'classnames';
 import { ArrayAction } from '@/types/view.types';
-import NotAddButton from '@/components/global/NoAdd';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import ThGlobal from '@/themes/ui/th-global';
@@ -113,15 +112,13 @@ function ListContractType({ actions }: ArrayAction) {
 
             <div className="flex mt-6">
               <div className="w-full justify-end">
-                {actions.includes('Agregar') ? (
+                {actions.includes('Agregar') && (
                   <AddButton
                     onClick={() => {
                       setContractType(undefined);
                       modalAdd.onOpen();
                     }}
                   />
-                ) : (
-                  <NotAddButton></NotAddButton>
                 )}
               </div>
               <div className="block md:hidden">
