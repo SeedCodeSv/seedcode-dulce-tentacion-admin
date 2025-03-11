@@ -1,20 +1,18 @@
 import BottomDrawer from '@/components/global/BottomDrawer';
 import TooltipGlobal from '@/components/global/TooltipGlobal';
-import { ThemeContext } from '@/hooks/useTheme';
-
 import { global_styles } from '@/styles/global.styles';
 import { Autocomplete, AutocompleteItem, Button, Input } from "@heroui/react";
 import { Filter, Search } from 'lucide-react';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { IPropsSearchEmployee } from '../types/mobile-view.types';
 import { useBranchesStore } from '@/store/branches.store';
 import { useEmployeeStore } from '@/store/employee.store';
 import { useAuthStore } from '@/store/auth.store';
 import { fechaActualString } from '@/utils/dates';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
 function SearchEmployee(props: IPropsSearchEmployee) {
   const [openVaul, setOpenVaul] = useState(false);
-  const { theme } = useContext(ThemeContext);
-
   const { user } = useAuthStore();
   const { getBranchesList, branch_list } = useBranchesStore();
   const { getEmployeesPaginated } = useEmployeeStore();
@@ -209,15 +207,10 @@ function SearchEmployee(props: IPropsSearchEmployee) {
               ))}
             </Autocomplete>
 
-            <Button
-              style={{
-                backgroundColor: theme.colors.secondary,
-                color: theme.colors.primary,
-                fontSize: '16px',
-              }}
+            <ButtonUi
+             theme={Colors.Primary}
               className="mb-10 font-semibold"
-              color="primary"
-              onClick={() => {
+              onPress={() => {
                 getEmployeesPaginated(
                   Number(
                     user?.correlative?.branch.transmitterId ??
@@ -239,7 +232,7 @@ function SearchEmployee(props: IPropsSearchEmployee) {
               }}
             >
               Buscar
-            </Button>
+            </ButtonUi>
           </div>
         </BottomDrawer>
       </div>

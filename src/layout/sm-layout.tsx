@@ -1,5 +1,6 @@
+import { ThemeContext } from '@/hooks/useTheme';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useContext } from 'react';
 
 interface Props {
   isOpen: boolean;
@@ -8,6 +9,9 @@ interface Props {
 }
 
 export const SmLayout = ({ isOpen, setIsOpen, items }: Props) => {
+  
+  const {theme,context } = useContext(ThemeContext)
+  
   return (
     <>
       <AnimatePresence>
@@ -17,7 +21,11 @@ export const SmLayout = ({ isOpen, setIsOpen, items }: Props) => {
             animate={{ x: 0 }}
             exit={{ x: -300 }}
             transition={{ duration: 0.3 }}
-            className="fixed z-50 w-80 h-screen bg-white dark:bg-gray-900 dark:text-white shadow-2xl"
+            style={{
+              backgroundColor: theme.colors[context].menu.background,
+              color: theme.colors[context].menu.textColor
+            }}
+            className="fixed z-50 w-80 h-screen shadow-2xl"
           >
             {items()}
           </motion.div>
