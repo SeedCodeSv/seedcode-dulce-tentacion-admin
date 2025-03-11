@@ -7,8 +7,6 @@ import Customers from '../pages/Customers';
 import Branch from '../pages/Branch';
 import Error404 from '../pages/Error404';
 import Product from '../pages/Product';
-import ExpensesCategories from '../pages/ExpensesCategories';
-import Expenses from '../pages/Expenses';
 import ActionRol from '../pages/ActionRol';
 import Charges from '../pages/Charges';
 import SubCategories from '../pages/SubCategories';
@@ -16,12 +14,8 @@ import Configuration from '../pages/Configuration';
 import { useActionsRolStore } from '../store/actions_rol.store';
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '../store/auth.store';
-import ExpenseByDatesTransmitter from '../pages/ExpenseByDatesTransmitter';
 import Supplier from '../pages/Supplier';
-import ReportByBranchSalesByBranch from '../pages/ReportByBranchSalesByBranch';
-import ReportExpensesByBranchPage from '../pages/ReportExpenseByBranchPage';
 import PurchaseOrders from '../pages/PurchaseOrders';
-import MostProductTransmitterSelledPage from '../pages/MostProductTransmitterSelledPage';
 import Discount from '../pages/Promotions';
 import AddPromotions from '../components/discounts/AddPromotions';
 import StatusEmployee from '../pages/statusEmployee';
@@ -245,31 +239,6 @@ export const router = () => {
       path: '/charges',
       element: checkAuthorization('Cargos de Empleados', <Charges />),
     },
-
-    {
-      path: '/expensesCategories',
-      element: checkAuthorization('Categorias de Gastos', <ExpensesCategories />),
-    },
-    {
-      path: '/expenses',
-      element: checkAuthorization('Gastos', <Expenses />),
-    },
-    {
-      path: '/most-product-transmitter-selled',
-      element: checkAuthorization('Reportes', <MostProductTransmitterSelledPage />),
-    },
-    {
-      path: '/expenses-by-dates-transmitter',
-      element: checkAuthorization('Reportes', <ExpenseByDatesTransmitter />),
-    },
-    {
-      path: '/sales-by-branch',
-      element: checkAuthorization('Reportes', <ReportByBranchSalesByBranch />),
-    },
-    {
-      path: '/expenses-by-branch',
-      element: checkAuthorization('Reportes', <ReportExpensesByBranchPage />),
-    },
     {
       path: '/discounts',
       element: checkAuthorization('Descuentos', <Discount />),
@@ -287,11 +256,6 @@ export const router = () => {
       path: '/add-customer/:id/:type',
       element: checkAuthorization('Clientes', <AddCustomer />),
     },
-    // {
-    //   path: '/update-client/:id',
-    //   element: checkAuthorization('Clientes', <UpdateClientNormal />),
-    // },
-
     {
       path: '/add-client-contributor',
       element: checkAuthorization('Proveedores', <AddClientContributor />),

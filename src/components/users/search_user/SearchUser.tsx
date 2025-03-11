@@ -1,17 +1,17 @@
 import BottomDrawer from '@/components/global/BottomDrawer';
 import TooltipGlobal from '@/components/global/TooltipGlobal';
-import { ThemeContext } from '@/hooks/useTheme';
 import { useRolesStore } from '@/store/roles.store';
 import { useUsersStore } from '@/store/users.store';
-import { global_styles } from '@/styles/global.styles';
-import { Autocomplete, AutocompleteItem, Button, Input } from "@heroui/react";
+import { Autocomplete, AutocompleteItem, Input } from '@heroui/react';
 import { Filter, Search } from 'lucide-react';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { IPropsSearchUser } from '../types/mobile-view.types';
 import { useAuthStore } from '@/store/auth.store';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
+
 function SearchUser(props: IPropsSearchUser) {
   const [openVaul, setOpenVaul] = useState(false);
-  const { theme } = useContext(ThemeContext);
   const { roles_list, getRolesList } = useRolesStore();
   const { getUsersPaginated } = useUsersStore();
 
@@ -28,15 +28,15 @@ function SearchUser(props: IPropsSearchUser) {
     <div className="flex items-center gap-5">
       <div className="block md:hidden">
         <TooltipGlobal text="Buscar por filtros" color="primary">
-          <Button
+          <ButtonUi
             className="border border-white rounded-xl"
-            style={global_styles().thirdStyle}
+            theme={Colors.Info}
             isIconOnly
-            onClick={() => setOpenVaul(true)}
+            onPress={() => setOpenVaul(true)}
             type="button"
           >
             <Filter />
-          </Button>
+          </ButtonUi>
         </TooltipGlobal>
         <BottomDrawer
           title="Filtros disponibles"
@@ -112,15 +112,11 @@ function SearchUser(props: IPropsSearchUser) {
               ))}
             </Autocomplete>
 
-            <Button
-              style={{
-                backgroundColor: theme.colors.secondary,
-                color: theme.colors.primary,
-                fontSize: '16px',
-              }}
+            <ButtonUi
+              theme={Colors.Primary}
               className="mb-10 font-semibold"
               color="primary"
-              onClick={() => {
+              onPress={() => {
                 getUsersPaginated(
                   user?.correlative?.branch.transmitterId ??
                     user?.pointOfSale?.branch.transmitterId ??
@@ -135,7 +131,7 @@ function SearchUser(props: IPropsSearchUser) {
               }}
             >
               Buscar
-            </Button>
+            </ButtonUi>
           </div>
         </BottomDrawer>
       </div>
