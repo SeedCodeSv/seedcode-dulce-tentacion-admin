@@ -8,23 +8,19 @@ import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-} from "@heroui/react";
-import { useContext, useEffect, useState } from 'react';
+} from '@heroui/react';
+import { useEffect, useState } from 'react';
 import {
-  EditIcon,
   User,
-  TrashIcon,
   Table as ITable,
   CreditCard,
-  List,
   Filter,
-  RefreshCcw,
+  EditIcon,
+  Trash,
 } from 'lucide-react';
 import { useChargesStore } from '../../store/charges.store';
-import { ThemeContext } from '../../hooks/useTheme';
 import ChargesForm from './ChargesForm';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
+import NO_DATA from '@/assets/svg/no_data.svg';
 import AddButton from '../global/AddButton';
 import MobileView from './MobileView';
 import { ICharge } from '../../types/charges.types';
@@ -36,17 +32,19 @@ import Pagination from '../global/Pagination';
 import TooltipGlobal from '../global/TooltipGlobal';
 import useWindowSize from '@/hooks/useWindowSize';
 import BottomDrawer from '../global/BottomDrawer';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
+import ThGlobal from '@/themes/ui/th-global';
+import useThemeColors from '@/themes/use-theme-colors';
 
 interface IProps {
   actions: string[];
 }
 
 function ListCharges({ actions }: IProps) {
-  const { theme } = useContext(ThemeContext);
   const [openVaul, setOpenVaul] = useState(false);
   const { windowSize } = useWindowSize();
-  const { charges_paginated, getChargesPaginated, activateCharge } = 
-    useChargesStore();
+  const { charges_paginated, getChargesPaginated, activateCharge, loading } = useChargesStore();
 
   const [selectedCharge, setSelectedCharge] = useState<{ id: number; name: string } | undefined>();
 
@@ -64,12 +62,9 @@ function ListCharges({ actions }: IProps) {
 
   const modalAdd = useDisclosure();
 
-  const style = {
-    backgroundColor: theme.colors.dark,
-    color: theme.colors.primary,
-  };
-
-  const [view, setView] = useState<'table' | 'grid' | 'list'>(windowSize.width < 768 ? 'grid' : 'table');
+  const [view, setView] = useState<'table' | 'grid' | 'list'>(
+    windowSize.width < 768 ? 'grid' : 'table'
+  );
 
   const handleEdit = (item: ICharge) => {
     setSelectedCharge({
@@ -110,121 +105,92 @@ function ListCharges({ actions }: IProps) {
                   handleSearch('');
                 }}
               />
-              <Button
-                style={{
-                  backgroundColor: theme.colors.secondary,
-                  color: theme.colors.primary,
-                }}
+              <ButtonUi
+                theme={Colors.Primary}
                 className="mt-6 font-semibold"
-                color="primary"
-                onClick={() => handleSearch(undefined)}
+                onPress={() => handleSearch(undefined)}
               >
                 Buscar
-              </Button>
+              </ButtonUi>
             </div>
           </div>
           <div className="flex items-end justify-between w-full gap-10 lg:justify-end">
-            <ButtonGroup>
-              <Button
+            <ButtonGroup className="mt-4">
+              <ButtonUi
+                theme={view === 'table' ? Colors.Primary : Colors.Default}
                 isIconOnly
-                color="secondary"
-                style={{
-                  backgroundColor: view === 'table' ? theme.colors.third : '#e5e5e5',
-                  color: view === 'table' ? theme.colors.primary : '#3e3e3e',
-                }}
-                onClick={() => setView('table')}
+                onPress={() => setView('table')}
               >
                 <ITable />
-              </Button>
-              <Button
+              </ButtonUi>
+              <ButtonUi
+                theme={view === 'grid' ? Colors.Primary : Colors.Default}
                 isIconOnly
-                color="default"
-                style={{
-                  backgroundColor: view === 'grid' ? theme.colors.third : '#e5e5e5',
-                  color: view === 'grid' ? theme.colors.primary : '#3e3e3e',
-                }}
-                onClick={() => setView('grid')}
+                onPress={() => setView('grid')}
               >
                 <CreditCard />
-              </Button>
-              <Button
-                isIconOnly
-                color="default"
-                style={{
-                  backgroundColor: view === 'list' ? theme.colors.third : '#e5e5e5',
-                  color: view === 'list' ? theme.colors.primary : '#3e3e3e',
-                }}
-                onClick={() => setView('list')}
-              >
-                <List />
-              </Button>
+              </ButtonUi>
             </ButtonGroup>
             <div className="flex items-center gap-5">
               <div className="block md:hidden">
-               
-              <TooltipGlobal text="Buscar por filtros">
-                    <Button
-                      style={global_styles().thirdStyle}
-                      isIconOnly
-                      onClick={() => setOpenVaul(true)}
-                      type="button"
-                    >
-                      <Filter />
-                    </Button>
-                    </TooltipGlobal>
-                    <BottomDrawer
-                        open={openVaul}
-                        title="Filtros disponibles"
-                        onClose={() => setOpenVaul(false)}
+                <TooltipGlobal text="Buscar por filtros">
+                  <Button
+                    style={global_styles().thirdStyle}
+                    isIconOnly
+                    onClick={() => setOpenVaul(true)}
+                    type="button"
+                  >
+                    <Filter />
+                  </Button>
+                </TooltipGlobal>
+                <BottomDrawer
+                  open={openVaul}
+                  title="Filtros disponibles"
+                  onClose={() => setOpenVaul(false)}
+                >
+                  <div className="p-4 bg-white dark:bg-gray-800 rounded-t-[10px] flex-1">
+                    <div className="flex flex-col gap-3">
+                      <Input
+                        startContent={<User />}
+                        className="w-full xl:w-96 dark:text-white"
+                        variant="bordered"
+                        labelPlacement="outside"
+                        label="Nombre"
+                        classNames={{
+                          label: 'font-semibold text-gray-700',
+                          inputWrapper: 'pr-0',
+                        }}
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        placeholder="Escribe para buscar..."
+                        isClearable
+                        onClear={() => {
+                          setSearch('');
+                          handleSearch('');
+                        }}
+                      />
+                      <ButtonUi
+                        theme={Colors.Primary}
+                        className="mt-6 font-semibold"
+                        color="primary"
+                        onPress={() => {
+                          handleSearch(undefined);
+                          setOpenVaul(false);
+                        }}
                       >
-                      <div className="p-4 bg-white dark:bg-gray-800 rounded-t-[10px] flex-1">
-                       
-                        <div className="flex flex-col gap-3">
-                          <Input
-                            startContent={<User />}
-                            className="w-full xl:w-96 dark:text-white"
-                            variant="bordered"
-                            labelPlacement="outside"
-                            label="Nombre"
-                            classNames={{
-                              label: 'font-semibold text-gray-700',
-                              inputWrapper: 'pr-0',
-                            }}
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            placeholder="Escribe para buscar..."
-                            isClearable
-                            onClear={() => {
-                              setSearch('');
-                              handleSearch('');
-                            }}
-                          />
-                          <Button
-                            style={{
-                              backgroundColor: theme.colors.secondary,
-                              color: theme.colors.primary,
-                            }}
-                            className="mt-6 font-semibold"
-                            color="primary"
-                            onClick={() => {
-                              handleSearch(undefined);
-                              setOpenVaul(false);
-                            }}
-                          >
-                            Buscar
-                          </Button>
-                        </div>
-                      </div>
-                  </BottomDrawer>
-                
+                        Buscar
+                      </ButtonUi>
+                    </div>
+                  </div>
+                </BottomDrawer>
               </div>
-            <AddButton
-              onClick={() => {
-                setSelectedCharge(undefined);
-                modalAdd.onOpen();
-              }}
-            />
-             </div>
+              <AddButton
+                onClick={() => {
+                  setSelectedCharge(undefined);
+                  modalAdd.onOpen();
+                }}
+              />
+            </div>
           </div>
         </div>
         <div className="flex justify-end items-end w-full mb-5 gap-5">
@@ -247,13 +213,6 @@ function ListCharges({ actions }: IProps) {
               </SelectItem>
             ))}
           </Select>
-          {/* <div className="flex items-center">
-            <Switch onValueChange={(active) => setActive(active)} isSelected={active}>
-              <span className="text-sm sm:text-base whitespace-nowrap">
-                Mostrar {active ? 'inactivos' : 'activos'}
-              </span>
-            </Switch>
-          </div> */}
         </div>
         {(view === 'grid' || view === 'list') && (
           <MobileView
@@ -265,61 +224,67 @@ function ListCharges({ actions }: IProps) {
           />
         )}
         {view === 'table' && (
-          <DataTable
-            className="w-full shadow dark:text-white"
-            emptyMessage="No se encontraron resultados"
-            value={charges_paginated.charges}
-            tableStyle={{ minWidth: '50rem' }}
-            // loading={loading_categories}
-          >
-            <Column
-              headerClassName="text-sm font-semibold"
-              bodyClassName={'dark:text-white'}
-              headerStyle={{ ...style, borderTopLeftRadius: '10px' }}
-              field="id"
-              header="No."
-            />
-            <Column
-              headerClassName="text-sm font-semibold"
-              headerStyle={style}
-              bodyClassName={'dark:text-white'}
-              field="name"
-              header="Nombre"
-            />
-            <Column
-              headerStyle={{ ...style, borderTopRightRadius: '10px' }}
-              header="Acciones"
-              body={(item) => (
-                <div className="flex gap-6">
-                    <TooltipGlobal text="Editar">
-                    <Button
-                      onClick={() => handleEdit(item)}
-                      isIconOnly
-                      style={{
-                        backgroundColor: theme.colors.secondary,
-                      }}
-                    >
-                      <EditIcon style={{ color: theme.colors.primary }} size={20} />
-                    </Button>
-                  </TooltipGlobal>
-                    <>
-                      {item.isActive ? (
-                        <DeletePopUp charges={item} />
-                      ) : (
-                        <Button
-                          onClick={() => handleActivate(item.id)}
-                          isIconOnly
-                          style={global_styles().thirdStyle}
-                        >
-                          <RefreshCcw />
-                        </Button>
-                      )}
-                    </>
-                  
-                </div>
-              )}
-            />
-          </DataTable>
+          <div className="max-h-[400px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
+            <table className="w-full">
+              <thead className="sticky top-0 z-20 bg-white">
+                <tr>
+                  <ThGlobal className="text-left p-3">No.</ThGlobal>
+                  <ThGlobal className="text-left p-3">Nombre</ThGlobal>
+                  <ThGlobal className="text-left p-3">Acciones</ThGlobal>
+                </tr>
+              </thead>
+              <tbody className="max-h-[600px] w-full overflow-y-auto">
+                {loading ? (
+                  <tr>
+                    <td colSpan={5} className="p-3 text-sm text-center text-slate-500">
+                      <div className="flex flex-col items-center justify-center w-full h-64">
+                        <div className="loader"></div>
+                        <p className="mt-3 text-xl font-semibold">Cargando...</p>
+                      </div>
+                    </td>
+                  </tr>
+                ) : (
+                  <>
+                    {charges_paginated.charges.length > 0 ? (
+                      <>
+                        {charges_paginated.charges.map((item) => (
+                          <tr className="border-b border-slate-200">
+                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                              {item.id}
+                            </td>
+                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                              {item.name}
+                            </td>
+                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                              <div className="flex w-full gap-5">
+                                <ButtonUi
+                                  onPress={() => handleEdit(item)}
+                                  isIconOnly
+                                  theme={Colors.Success}
+                                >
+                                  <EditIcon size={20} />
+                                </ButtonUi>
+                                {item.isActive && <DeletePopUp charges={item} />}
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </>
+                    ) : (
+                      <tr>
+                        <td colSpan={5}>
+                          <div className="flex flex-col items-center justify-center w-full">
+                            <img src={NO_DATA} alt="X" className="w-32 h-32" />
+                            <p className="mt-3 text-xl">No se encontraron resultados</p>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </>
+                )}
+              </tbody>
+            </table>
+          </div>
         )}
         {charges_paginated.totalPag > 1 && (
           <>
@@ -369,56 +334,46 @@ interface Props {
 }
 
 const DeletePopUp = ({ charges }: Props) => {
-  const { theme } = useContext(ThemeContext);
-
   const { deleteCharge } = useChargesStore();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const deleteDisclosure = useDisclosure();
 
   const handleDelete = async () => {
     await deleteCharge(charges.id);
-    onClose();
+    deleteDisclosure.onClose();
   };
+
+  const style = useThemeColors({ name: Colors.Error });
 
   return (
     <>
-      <Popover isOpen={isOpen} onClose={onClose} backdrop="blur" showArrow>
+      <Popover
+        className="border border-white rounded-2xl"
+        {...deleteDisclosure}
+        backdrop="blur"
+        showArrow
+      >
         <PopoverTrigger>
-        
-          <Button
-            onClick={onOpen}
-            isIconOnly
-            style={{
-              backgroundColor: theme.colors.danger,
-            }}
-          >
-            <TooltipGlobal text="Eliminar">
-            <TrashIcon
-              style={{
-                color: theme.colors.primary,
-              }}
-              size={20}
-            />
-            </TooltipGlobal>
-        </Button>
+          <Button isIconOnly style={style}>
+            <Trash />
+          </Button>
         </PopoverTrigger>
         <PopoverContent>
-          <div className="w-full p-5">
+          <div className="flex flex-col items-center justify-center w-full p-5">
             <p className="font-semibold text-gray-600 dark:text-white">Eliminar {charges.name}</p>
             <p className="mt-3 text-center text-gray-600 dark:text-white w-72">
               ¿Estas seguro de eliminar este registro?
             </p>
-            <div className="mt-4">
-              <Button onClick={onClose}>No, cancelar</Button>
-              <Button
-                onClick={() => handleDelete()}
-                className="ml-5"
-                style={{
-                  backgroundColor: theme.colors.danger,
-                  color: theme.colors.primary,
-                }}
+            <div className="flex justify-center mt-4 gap-5">
+              <ButtonUi
+                theme={Colors.Default}
+                onPress={deleteDisclosure.onClose}
+                className="border border-white"
               >
+                No, cancelar
+              </ButtonUi>
+              <ButtonUi theme={Colors.Error} onPress={() => handleDelete()}>
                 Si, eliminar
-              </Button>
+              </ButtonUi>
             </div>
           </div>
         </PopoverContent>

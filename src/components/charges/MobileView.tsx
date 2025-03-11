@@ -6,17 +6,17 @@ import { global_styles } from '../../styles/global.styles';
 import { GridProps, MobileViewProps } from './types/mobile_view.types';
 import { useChargesStore } from '../../store/charges.store';
 import TooltipGlobal from '../global/TooltipGlobal';
+import ButtonUi from "@/themes/ui/button-ui";
+import { Colors } from "@/types/themes.types";
 
 function MobileView(props: MobileViewProps) {
   const { layout, deletePopover, handleEdit, actions, handleActive } = props;
   const { charges_paginated } = useChargesStore();
-  // const { paginated_categories, loading_categories } = useCategoriesStore();
   return (
     <div className="w-full pb-10">
       <DataView
         value={charges_paginated.charges}
         gutter
-        // loading={loading_categories}
         layout={layout}
         pt={{
           grid: () => ({
@@ -61,15 +61,15 @@ const GridItem = (props: GridProps) => {
           </div>
           <div className="flex justify-between mt-5 w-ful">
             {actions.includes('Editar') && (
-               <TooltipGlobal text="Editar">
-              <Button
-                onClick={() => handleEdit(charges)}
+               
+              <ButtonUi
+                onPress={() => handleEdit(charges)}
                 isIconOnly
-                style={global_styles().secondaryStyle}
+                theme={Colors.Success}
               >
                 <EditIcon size={20} />
-              </Button>
-              </TooltipGlobal>
+              </ButtonUi>
+     
             )}
             {actions.includes('Eliminar') && (
               <>

@@ -1,9 +1,9 @@
-import { Input, Button } from "@heroui/react";
+import { Input } from "@heroui/react";
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import { ThemeContext } from '../../hooks/useTheme';
-import { useContext } from 'react';
 import { useChargesStore } from '../../store/charges.store';
+import ButtonUi from "@/themes/ui/button-ui";
+import { Colors } from "@/types/themes.types";
 
 interface Props {
   closeModal: () => void;
@@ -14,8 +14,6 @@ interface Props {
 }
 
 const ChargesForm = (props: Props) => {
-  const { theme } = useContext(ThemeContext);
-
   const validationSchema = yup.object().shape({
     name: yup.string().required('**Debes especificar el nombre de la categoría**'),
   });
@@ -59,16 +57,13 @@ const ChargesForm = (props: Props) => {
                 </>
               )}
             </div>
-            <Button
-              onClick={() => handleSubmit()}
+            <ButtonUi
+              onPress={() => handleSubmit()}
               className="w-full mt-4 text-sm font-semibold"
-              style={{
-                backgroundColor: theme.colors.third,
-                color: theme.colors.primary,
-              }}
+              theme={Colors.Primary}
             >
               Guardar
-            </Button>
+            </ButtonUi>
           </>
         )}
       </Formik>

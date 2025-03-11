@@ -1,17 +1,18 @@
 import { isValidDUI } from '@avalontechsv/idsv';
-import { Input, Autocomplete, AutocompleteItem, Textarea, Button } from "@heroui/react";
+import { Input, Autocomplete, AutocompleteItem, Textarea } from "@heroui/react";
 import { Formik } from 'formik';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import {  useEffect, useMemo, useState } from 'react';
 import * as yup from 'yup';
 import { useBillingStore } from '../../store/facturation/billing.store';
 import { useCustomerStore } from '../../store/customers.store';
 import { CustomerDirection, PayloadCustomer } from '../../types/customers.types';
-import { ThemeContext } from '../../hooks/useTheme';
 import Layout from '@/layout/Layout';
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router';
 import { useBranchesStore } from '@/store/branches.store';
 import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
 
 interface Props {
   customer?: PayloadCustomer;
@@ -21,7 +22,6 @@ interface Props {
 }
 
 function AddClientContributor(props: Props) {
-  const { theme } = useContext(ThemeContext);
   const { id } = useParams<{ id: string }>();
   const isEditing = !!id;
   const { get_customer_by_id, user_by_id } = useCustomerStore();
@@ -612,16 +612,13 @@ function AddClientContributor(props: Props) {
                   </div>
                 </div>
                 <div className="pt-4 p-4">
-                  <Button
-                    onClick={() => handleSubmit()}
+                  <ButtonUi
+                    onPress={() => handleSubmit()}
                     className="w-full font-semibold"
-                    style={{
-                      backgroundColor: theme.colors.dark,
-                      color: theme.colors.primary,
-                    }}
+                    theme={Colors.Primary}
                   >
                     Guardar
-                  </Button>
+                  </ButtonUi>
                 </div>
               </>
             )}

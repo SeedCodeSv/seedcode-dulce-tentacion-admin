@@ -3,11 +3,12 @@ import TooltipGlobal from '@/components/global/TooltipGlobal';
 import { global_styles } from '@/styles/global.styles';
 import { Autocomplete, AutocompleteItem, Button, Input } from '@heroui/react';
 import { Filter, Mail, User } from 'lucide-react';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { IPropsSearchCustomer } from '../types/mobile-view.types';
 import { useBranchesStore } from '@/store/branches.store';
-import { ThemeContext } from '@/hooks/useTheme';
 import { useCustomerStore } from '@/store/customers.store';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
 
 function SearchClient(props: IPropsSearchCustomer) {
   const [filter, setFilter] = useState({
@@ -27,7 +28,6 @@ function SearchClient(props: IPropsSearchCustomer) {
       1
     );
   };
-  const { theme } = useContext(ThemeContext);
   const { branch_list, getBranchesList } = useBranchesStore();
   useEffect(() => {
     getBranchesList();
@@ -113,22 +113,17 @@ function SearchClient(props: IPropsSearchCustomer) {
                 </AutocompleteItem>
               ))}
             </Autocomplete>
-            <Button
-              style={{
-                backgroundColor: theme.colors.secondary,
-                color: theme.colors.primary,
-                fontSize: '16px',
-              }}
+            <ButtonUi
+              theme={Colors.Primary}
               className="mb-10 font-semibold"
-              color="primary"
-              onClick={() => {
+              onPress={() => {
                 setFilter({ ...filter, nameCustomer: '', nameBranch: '', emailCustomer: '' });
                 handleSearch();
                 setOpenVaul(false);
               }}
             >
               Buscar
-            </Button>
+            </ButtonUi>
           </div>
         </BottomDrawer>
       </div>

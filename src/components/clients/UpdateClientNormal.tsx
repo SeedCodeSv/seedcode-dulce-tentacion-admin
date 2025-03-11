@@ -1,16 +1,16 @@
 import * as yup from 'yup';
 import { Formik } from 'formik';
 import { CustomerDirection, PayloadCustomer } from '../../types/customers.types';
-import { Autocomplete, AutocompleteItem, Button, Input, Textarea } from "@heroui/react";
+import { Autocomplete, AutocompleteItem, Input, Textarea } from "@heroui/react";
 import { useCustomerStore } from '../../store/customers.store';
 import { useBillingStore } from '../../store/facturation/billing.store';
-import { useContext, useEffect, useMemo, useState } from 'react';
-import { ThemeContext } from '../../hooks/useTheme';
+import { useEffect, useMemo, useState } from 'react';
 import Layout from '@/layout/Layout';
 import { useNavigate, useParams } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
 import { useBranchesStore } from '@/store/branches.store';
-// import { Branch } from '@/types/auth.types';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
 
 interface Props {
   customer?: PayloadCustomer;
@@ -20,7 +20,6 @@ interface Props {
 }
 
 const UpdateClientNormal = (props: Props) => {
-  const { theme } = useContext(ThemeContext);
   const { id } = useParams<{ id: string }>();
   const isEditing = !!id;
   const { get_customer_by_id, user_by_id, getCustomersPagination } = useCustomerStore();
@@ -452,16 +451,13 @@ const UpdateClientNormal = (props: Props) => {
                         </span>
                       )}
                     </div>
-                    <Button
-                      onClick={() => handleSubmit()}
+                    <ButtonUi
+                      onPress={() => handleSubmit()}
                       className="w-full mt-4 text-sm font-semibold"
-                      style={{
-                        backgroundColor: theme.colors.dark,
-                        color: theme.colors.primary,
-                      }}
+                      theme={Colors.Primary}
                     >
                       Guardar
-                    </Button>
+                    </ButtonUi>
                   </div>
                 </>
               )}

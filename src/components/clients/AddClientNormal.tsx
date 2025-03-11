@@ -1,4 +1,4 @@
-import { Autocomplete, AutocompleteItem, Button, Input, Textarea } from "@heroui/react";
+import { Autocomplete, AutocompleteItem, Input, Textarea } from "@heroui/react";
 import { useCustomerStore } from '@/store/customers.store';
 import { useBillingStore } from '@/store/facturation/billing.store';
 import { useEffect, useRef, useState } from 'react';
@@ -10,8 +10,9 @@ import { Formik } from 'formik';
 import { Municipio } from '@/types/billing/cat-013-municipio.types';
 import { Departamento } from '@/types/billing/cat-012-departamento.types';
 import { Loader } from 'lucide-react';
-import useGlobalStyles from '@/components/global/global.styles';
 import { useBranchesStore } from '@/store/branches.store';
+import ButtonUi from "@/themes/ui/button-ui";
+import { Colors } from "@/types/themes.types";
 
 const AddClientNormal = () => {
   const { getBranchesList, branch_list } = useBranchesStore();
@@ -21,7 +22,6 @@ const AddClientNormal = () => {
   const { postCustomer, getCustomerById, customer, loading, patchCustomer } = useCustomerStore();
   const navigate = useNavigate();
   const { id } = useParams();
-  const styles = useGlobalStyles();
   const [selectedCodeDep, setSelectedCodeDep] = useState('0');
   const {
     getCat012Departamento,
@@ -416,7 +416,7 @@ const AddClientNormal = () => {
                           <Loader size={35} className="animate-spin dark:text-white" />
                         </div>
                       ) : (
-                        <Button
+                        <ButtonUi
                           onClick={async (e) => {
                             e.preventDefault();
                             const valid = await validateForm().then((error) => {
@@ -429,10 +429,10 @@ const AddClientNormal = () => {
                           }}
                           className="w-full md:w-96 font-semibold"
                           ref={button}
-                          style={styles.darkStyle}
+                          theme={Colors.Primary}
                         >
                           Guardar
-                        </Button>
+                        </ButtonUi>
                       )}
                     </div>
                   </div>
