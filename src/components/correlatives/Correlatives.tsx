@@ -59,7 +59,7 @@ function CorrelativesList({ actions }: { actions: string[] }) {
           )}
         </div>
 
-        <div className="grid grid-cols-3 gap-5  mb-3 hidden md:grid">
+        <div className="gap-5  mb-3 hidden md:grid grid-cols-3">
           <div className="w-full">
             <label className="dark:text-white font-semibold text-sm">Sucursal</label>
             <Autocomplete
