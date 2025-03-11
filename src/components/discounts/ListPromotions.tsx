@@ -2,13 +2,11 @@ import { useNavigate } from "react-router";
 import AddButton from "../global/AddButton";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { Table as ITable, CreditCard, List, EditIcon } from "lucide-react";
-import { useContext, useEffect, useState } from "react";
-import { ThemeContext } from "../../hooks/useTheme";
+import { Table as ITable, CreditCard, EditIcon } from "lucide-react";
+import { useEffect, useState } from "react";
 import {
   Autocomplete,
   AutocompleteItem,
-  Button,
   ButtonGroup,
   Input,
   Select,
@@ -30,10 +28,10 @@ import {
 import UpdatePromotionsBranch from "./UpdatePromotionBranch";
 import HeadlessModal from "../global/HeadlessModal";
 import { Branches } from "../../types/branches.types";
-
-import { global_styles } from "../../styles/global.styles";
 import TooltipGlobal from "../global/TooltipGlobal";
 import UpdatePromotionsProduct from "./UpdatePromotionsProduct";
+import ButtonUi from "@/themes/ui/button-ui";
+import { Colors } from "@/types/themes.types";
 
 interface Props {
   actions: string[];
@@ -66,13 +64,8 @@ function ListDiscount({ actions }: Props) {
     );
     getBranchesList();
   }, [limit]);
-  const { theme } = useContext(ThemeContext);
-  const [view, setView] = useState<"table" | "grid" | "list">("table");
 
-  const style = {
-    backgroundColor: theme.colors.dark,
-    color: theme.colors.primary,
-  };
+  const [view, setView] = useState<"table" | "grid" | "list">("table");
   const handleSearch = (searchParam: string | undefined) => {
     getPaginatedPromotions(
       page,
@@ -113,7 +106,6 @@ function ListDiscount({ actions }: Props) {
 
   <Column
     headerClassName="text-sm font-semibold"
-    headerStyle={style}
     header="Prioridad"
     body={(item: { priority: string }) => (
       <span>{priorityMapping[item.priority] || item.priority}</span>
@@ -194,17 +186,14 @@ function ListDiscount({ actions }: Props) {
                   label: "text-sm font-semibold dark:text-white",
                 }}
               />
-              <Button
-                style={{
-                  backgroundColor: theme.colors.secondary,
-                  color: theme.colors.primary,
-                }}
+              <ButtonUi
+                theme={Colors.Primary}
                 className="font-semibold"
                 color="primary"
-                onClick={() => handleSearch(undefined)}
+                onPress={() => handleSearch(undefined)}
               >
                 Buscar
-              </Button>
+              </ButtonUi>
             </div>
 
             <div className="flex w-full mt-4">
@@ -235,48 +224,22 @@ function ListDiscount({ actions }: Props) {
                   ))}
                 </Select>
                 <div className="mt-6">
-                  <ButtonGroup>
-                    <Button
-                      isIconOnly
-                      color="secondary"
-                      style={{
-                        backgroundColor:
-                          view === "table" ? theme.colors.third : "#e5e5e5",
-                        color:
-                          view === "table" ? theme.colors.primary : "#3e3e3e",
-                      }}
-                      onClick={() => setView("table")}
-                    >
-                      <ITable />
-                    </Button>
-
-                    <Button
-                      isIconOnly
-                      color="default"
-                      style={{
-                        backgroundColor:
-                          view === "grid" ? theme.colors.third : "#e5e5e5",
-                        color:
-                          view === "grid" ? theme.colors.primary : "#3e3e3e",
-                      }}
-                      onClick={() => setView("grid")}
-                    >
-                      <CreditCard />
-                    </Button>
-                    <Button
-                      isIconOnly
-                      color="default"
-                      style={{
-                        backgroundColor:
-                          view === "list" ? theme.colors.third : "#e5e5e5",
-                        color:
-                          view === "list" ? theme.colors.primary : "#3e3e3e",
-                      }}
-                      onClick={() => setView("list")}
-                    >
-                      <List />
-                    </Button>
-                  </ButtonGroup>
+                <ButtonGroup className="mt-4">
+                <ButtonUi
+                  theme={view === 'table' ? Colors.Primary : Colors.Default}
+                  isIconOnly
+                  onPress={() => setView('table')}
+                >
+                  <ITable />
+                </ButtonUi>
+                <ButtonUi
+                  theme={view === 'grid' ? Colors.Primary : Colors.Default}
+                  isIconOnly
+                  onPress={() => setView('grid')}
+                >
+                  <CreditCard />
+                </ButtonUi>
+              </ButtonGroup>
                 </div>
               </div>
 
@@ -323,32 +286,28 @@ function ListDiscount({ actions }: Props) {
               >
                 <Column
                   headerClassName="text-sm font-semibold"
-                  headerStyle={{ ...style, borderTopLeftRadius: "10px" }}
+                  headerStyle={{  borderTopLeftRadius: "10px" }}
                   field="id"
                   header="No."
                 />
                 <Column
                   headerClassName="text-sm font-semibold"
-                  headerStyle={style}
                   field="name"
                   header="Nombre"
                 />
                 <Column
                   headerClassName="text-sm font-semibold"
-                  headerStyle={style}
                   field="startDate"
                   header="Fecha Inicial"
                 />
                 <Column
                   headerClassName="text-sm font-semibold"
-                  headerStyle={style}
                   field="endDate"
                   header="Fecha Final"
                 />
 
                 <Column
                   headerClassName="text-sm font-semibold"
-                  headerStyle={style}
                   header="Descuento"
                   body={(item) => (
                     <span>
@@ -363,7 +322,6 @@ function ListDiscount({ actions }: Props) {
 
                 <Column
                   headerClassName="text-sm font-semibold"
-                  headerStyle={style}
                   header="Prioridad"
                   body={(item: { priority: Priority }) => (
                     <span style={{ display: "flex", alignItems: "center" }}>
@@ -384,49 +342,48 @@ function ListDiscount({ actions }: Props) {
 
                 <Column
                   headerClassName="text-sm font-semibold"
-                  headerStyle={style}
                   body={(item) => (
                     <div className="">
                       {type === "Categorias" && (
                         <TooltipGlobal text={"Editar Promoción"}>
-                          <Button
+                          <ButtonUi
                             onClick={() => {
                               setIsOpenPromotionCategory(true);
                               setPromotionId(item.id);
                               setDataPromotion(item);
                             }}
                             isIconOnly
-                            style={global_styles().secondaryStyle}
+                            theme={Colors.Primary}
                           >
-                            <EditIcon color={theme.colors.primary} size={20} />
-                          </Button>
+                            <EditIcon size={20} />
+                          </ButtonUi>
                         </TooltipGlobal>
                       )}
                       {type === "Productos" && (
-                        <Button
+                        <ButtonUi
                           onClick={() => {
                             setPromotionId(item.id);
                             setDataPromotionProduct(item);
                             setIsOpenPromotionProduct(true);
                           }}
                           isIconOnly
-                          style={global_styles().secondaryStyle}
+                          theme={Colors.Primary}
                         >
-                          <EditIcon color={theme.colors.primary} size={20} />
-                        </Button>
+                          <EditIcon size={20} />
+                        </ButtonUi>
                       )}
                       {type === "Sucursales" && (
-                        <Button
+                        <ButtonUi
                           onClick={() => {
                             setIsOpen(true);
                             setPromotionId(item.id);
                             setDataPromotionBranch(item);
                           }}
                           isIconOnly
-                          style={global_styles().secondaryStyle}
+                          theme={Colors.Primary}
                         >
-                          <EditIcon color={theme.colors.primary} size={20} />
-                        </Button>
+                          <EditIcon  size={20} />
+                        </ButtonUi>
                       )}
                     </div>
                   )}
