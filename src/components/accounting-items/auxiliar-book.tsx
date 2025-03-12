@@ -399,7 +399,7 @@ function AuxiliarBook({ disclosure }: Props) {
         <ModalContent>
           <>
             <ModalHeader>
-              <Pui>Generar libro diario mayor</Pui>
+              <Pui>Generar libro auxiliar de cuenta</Pui>
             </ModalHeader>
             <ModalBody>
               <Select
