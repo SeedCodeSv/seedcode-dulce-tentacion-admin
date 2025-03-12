@@ -114,7 +114,7 @@ function DailyMajorBook({ disclosure }: Props) {
       if (item.items.length > 0 || saldoAnterior !== 0) {
         const data = item.items.map((it) => {
           return [
-            formatDdMmYyyy(it.date),
+            formatDdMmYyyy(it.item.date),
             it.item.noPartida,
             it.accountCatalog.code,
             it.conceptOfTheTransaction ?? it.accountCatalog.name,
