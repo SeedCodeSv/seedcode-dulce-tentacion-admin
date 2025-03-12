@@ -4,6 +4,7 @@ import { RoleViewAction } from '../types/actions_rol.types';
 import { decryptData, encryptData } from '../plugins/crypto';
 import { ITransmitter } from '@/types/transmitter.types';
 import { formatDate } from '@/utils/dates';
+import { IGetIRoleAction, IRoleAction } from '@/types/role-actions.types';
 export const set_token = (token: string) => {
   localStorage.setItem('_NTE', token);
 };
@@ -157,4 +158,19 @@ export const get_accounting_item_search = () => {
     typeItem: '',
     typeOrder: ''
   }
+};
+
+export const save_role_actions = (rva: IGetIRoleAction) => {
+  return localStorage.setItem('__OGG', encryptData(rva.roleActions));
+};
+export const get_role_actions = () => {
+  const rva = localStorage.getItem('__OGG');
+
+  if (rva) {
+    const actions = decryptData(localStorage.getItem('__OGG') || '{}') as IRoleAction;
+
+    return actions;
+  }
+
+  return;
 };

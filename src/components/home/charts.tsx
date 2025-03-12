@@ -31,6 +31,10 @@ function Charts() {
     }));
   }, [sales_branch_month]);
 
+  const monthTotal = useMemo(() => {
+    return sales_branch_month.map((sm) => Number(sm.currentMonthSales)).reduce((a, b) => a + b, 0);
+  }, [sales_branch_month]);
+
   const dailyData = useMemo(() => {
     return sales_table_day.map((item) => ({
       name: item.branch,
@@ -89,7 +93,7 @@ function Charts() {
             <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 opacity-75" />
           </div>
           <p className="text-xl sm:text-3xl font-bold">
-            {loading_sales_by_branch_and_month ? <Spinner /> : formatCurrency(total)}
+            {loading_sales_by_branch_and_month ? <Spinner /> : formatCurrency(monthTotal)}
           </p>
         </div>
         <div className="absolute bottom-0 left-0 right-0 h-16 sm:h-20 opacity-30">

@@ -1,149 +1,351 @@
-import React, { useEffect, useRef } from 'react';
-import { Check } from 'lucide-react';
-import { toast } from 'sonner';
-import { useViewsStore } from '../../store/views.store';
-import { create_view, create_action_by_view } from '../../services/actions.service';
+import { useActionsRolStore } from '@/store/role-actions.store';
+import { useRolesStore } from '@/store/roles.store';
+import { Button, Card, Checkbox, Select, SelectItem, useDisclosure } from '@heroui/react';
+import React, { useContext, useEffect, useState } from 'react';
 import permissionss from '../../actions.json';
-import PermissionAddActionRol from './AddActionRol';
-import { useActionsRolStore } from '@/store/actions_rol.store';
-import { IUpdateActions } from '@/types/actions_rol.types';
-import ButtonUi from '@/themes/ui/button-ui';
-import { Colors } from '@/types/themes.types';
+import { create_action_by_view, create_view } from '@/services/actions.service';
+import { toast } from 'sonner';
+import { HiPrinter } from 'react-icons/hi2';
+import { FaEdit, FaEye, FaRegFilePdf, FaTrash } from 'react-icons/fa';
+import { BsDatabaseAdd } from 'react-icons/bs';
+import { FaArrowsRotate } from 'react-icons/fa6';
+import { PiMicrosoftExcelLogo } from 'react-icons/pi';
+import { IoBagCheck } from 'react-icons/io5';
+import { ActionR } from '@/types/actions_rol.types';
+import { create_many_actions } from '@/services/role-actions.service';
+import { useAuthStore } from '@/store/auth.store';
+import { PermissionContext } from '@/hooks/usePermission';
+import HeadlessModal from '../global/HeadlessModal';
+import useGlobalStyles from '../global/global.styles';
+import GlobalLoading from '../global/GlobalLoading';
+import useColors from '@/themes/use-colors';
+import { FileJson, Send } from 'lucide-react';
+import { GrDocumentCsv } from 'react-icons/gr';
+import { TiExportOutline } from 'react-icons/ti';
+import { MdOutlineCake, MdOutlineCancelScheduleSend } from "react-icons/md";
 
-const PermissionTable: React.FC = () => {
-  const { OnGetViewasAction, viewasAction } = useViewsStore();
-  const { OnUpdateActions } = useActionsRolStore();
-  const hasExecuted = useRef(false);
+function ListActionRol() {
+  const { roles_list, getRolesList } = useRolesStore();
 
-  const handleCreateOrUpdateViewsAndActions = async () => {
-    if (hasExecuted.current) return;
-    hasExecuted.current = true;
-    try {
-      const viewsInStore = new Set(viewasAction.map(({ view }) => view.name));
-      const viewsToCreate = permissionss.view_actions.filter(({ view }) => !viewsInStore.has(view));
+  const { user } = useAuthStore();
+  const [roleSelected, setRoleSelected] = useState(Number(user?.roleId ?? 0));
+  const styles = useGlobalStyles();
 
-      if (viewsToCreate.length > 0) {
-        const response = await create_view({
-          views: viewsToCreate.map(({ view }) => ({
-            name: view,
-            type: 'Drawer',
-          })),
-        });
+  const { setRoleActions } = useContext(PermissionContext);
 
-        if (response.data.ok === true && response.data.views) {
-          await Promise.all(
-            response.data.views.map(async (newView, index) => {
-              const actions = viewsToCreate[index].actions;
+  useEffect(() => {
+    getRolesList();
+  }, []);
 
-              if (newView && newView.id) {
-                try {
-                  await create_action_by_view({
-                    viewId: newView.id,
-                    names: actions.map((name) => ({ name })),
-                  });
-                } catch (error) {
-                  return;
-                }
-              } else {
-                return;
-              }
-            })
-          );
-          OnGetViewasAction(1, 5, '');
-        }
+  const { role_actions, getRoleActionsByRol, OnGetActionsByUserWithoutLoading } =
+    useActionsRolStore();
+
+  useEffect(() => {
+    roleSelected > 0 && getRoleActionsByRol(roleSelected);
+  }, [roleSelected]);
+
+  const modalNewView = useDisclosure();
+
+  useEffect(() => {
+    role_actions && handleCreateViews();
+  }, [role_actions]);
+
+  const handleCreateViews = () => {
+    const viewsToCreate = permissionss.view_actions.filter((viewAction) => {
+      const existingView = role_actions?.roleActions.views.find(
+        (v) => v.view.name === viewAction.view
+      );
+
+      if (!existingView) {
+        return true; // La vista no existe, se debe crear
       }
-      const actionsToUpdate: IUpdateActions[] = [];
-      viewasAction.forEach(({ view }) => {
-        const permissionView = permissionss.view_actions.find(
-          (permission) => permission.view === view.name
-        );
 
-        if (permissionView) {
-          const existingActions = new Set(
-            viewasAction.filter((va) => va.view.id === view.id).flatMap((va) => va.actions.name)
-          );
+      const actionsToCreate = viewAction.actions.filter(
+        (action) =>
+          !existingView.view.actions.some((existingAction) => existingAction.name === action)
+      );
 
-          const newActions = permissionView.actions.filter(
-            (action) => !existingActions.has(action)
-          );
+      if (actionsToCreate.length > 0) {
+        viewAction.actions = actionsToCreate;
+        return true; // Algunas acciones no existen, se deben crear
+      }
 
-          if (newActions.length > 0) {
-            newActions.forEach((action) => {
-              actionsToUpdate.push({
-                viewId: view.id,
-                name: action,
-              });
-            });
-          }
-        }
+      return false; // La vista y todas sus acciones ya existen
+    });
+
+    viewsToCreate.length > 0 && modalNewView.onOpen();
+  };
+
+  const [loading, setLoading] = useState(false);
+
+  const handleSave = async () => {
+    // setLoading(true);
+    const viewsToCreate = permissionss.view_actions.filter((viewAction) => {
+      const existingView = role_actions?.roleActions.views.find(
+        (v) => v.view.name === viewAction.view
+      );
+
+      if (!existingView) {
+        return true; // La vista no existe, se debe crear
+      }
+
+      const actionsToCreate = viewAction.actions.filter(
+        (action) =>
+          !existingView.view.actions.some((existingAction) => existingAction.name === action)
+      );
+
+      if (actionsToCreate.length > 0) {
+        viewAction.actions = actionsToCreate;
+        return true; // Algunas acciones no existen, se deben crear
+      }
+
+      return false; // La vista y todas sus acciones ya existen
+    });
+    if (viewsToCreate.length > 0) {
+      const response = await create_view({
+        views: viewsToCreate.map(({ view }) => ({
+          name: view,
+          type: 'Drawer',
+        })),
       });
 
-      if (actionsToUpdate.length > 0) {
-        await OnUpdateActions({ actions: actionsToUpdate });
-        OnGetViewasAction(1, 5, '');
+      if (response.data.ok === true && response.data.views) {
+        await Promise.all(
+          response.data.views.map(async (newView, index) => {
+            const actions = viewsToCreate[index].actions;
+
+            if (newView && newView.id) {
+              try {
+                await create_action_by_view({
+                  viewId: newView.id,
+                  names: actions.map((name) => ({ name })),
+                });
+              } catch (error) {
+                toast.error('Error al crear las acciones');
+              }
+            } else {
+              toast.error('Error al crear la vista');
+            }
+          })
+        )
+          .then(() => {
+            toast.success('Todas las vistas y acciones se han creado correctamente');
+            modalNewView.onClose();
+            getRoleActionsByRol(roleSelected);
+            setLoading(false);
+          })
+          .catch(() => {
+            toast.error('Error al crear las acciones');
+            modalNewView.onClose();
+            setLoading(false);
+          });
       }
-    } catch (error) {
-      toast.error('Error al crear o actualizar las vistas y acciones');
-      hasExecuted.current = false;
     }
   };
 
-  useEffect(() => {
-    const fetchViews = async () => {
-      const result = await OnGetViewasAction(1, 5, '');
-      if (result.ok === false && result.message === 'Error => There are no views') {
-        await handleCreateOrUpdateViewsAndActions();
-      }
-    };
-
-    fetchViews();
-  }, [OnGetViewasAction]);
-
-  useEffect(() => {
-    if (viewasAction.length > 0) {
-      handleCreateOrUpdateViewsAndActions();
+  const renderItem = (name: string) => {
+    if (name.toLocaleLowerCase().includes('agregar')) {
+      return <BsDatabaseAdd style={colors.textColor} size={20} />;
     }
-  }, [viewasAction]);
+    if (name.toLocaleLowerCase().includes('mostrar') || name.toLocaleLowerCase().includes('ver')) {
+      return <FaEye style={colors.textColor} size={20} />;
+    }
+    if (name.toLocaleLowerCase().includes('eliminar')) {
+      return <FaTrash style={colors.textColor} size={20} />;
+    }
+    if (name.toLocaleLowerCase().includes('editar')) {
+      return <FaEdit style={colors.textColor} size={20} />;
+    }
+    if (name.toLocaleLowerCase().includes('cambiar')) {
+      return <FaArrowsRotate style={colors.textColor} size={20} />;
+    }
+    if (name.toLocaleLowerCase().includes('excel')) {
+      return <PiMicrosoftExcelLogo style={colors.textColor} size={20} />;
+    }
+    if (name.toLocaleLowerCase().includes('pdf')) {
+      return <FaRegFilePdf style={colors.textColor} size={20} />;
+    }
+    if (name.toLocaleLowerCase().includes('json')) {
+      return <FileJson style={colors.textColor} size={20} />;
+    }
+    if (name.toLocaleLowerCase().includes('imprimir')) {
+      return <HiPrinter style={colors.textColor} size={20} />;
+    }
+    if (name.toLocaleLowerCase().includes('activar')) {
+      return <IoBagCheck style={colors.textColor} size={20} />;
+    }
+    if (name.toLocaleLowerCase().includes('reenviar correo')) {
+      return <Send style={colors.textColor} size={20} />;
+    }
+    if (name.toLocaleLowerCase().includes('csv')) {
+      return <GrDocumentCsv style={colors.textColor} size={20} />;
+    }
+    if (name.toLocaleLowerCase().includes('exportar')) {
+      return <TiExportOutline style={colors.textColor} size={20} />;
+    }
+    if (name.toLocaleLowerCase().includes('invalidar')) {
+      return <MdOutlineCancelScheduleSend style={colors.textColor} size={20} />;
+    }
+    if(name.toLocaleLowerCase().includes('cumpleaños')){
+      return <MdOutlineCake style={colors.textColor} size={20} />;
+    }
+    return <></>;
+  };
+
+  const handleSelectAction = (
+    viewId: number,
+    action: ActionR,
+    actions: ActionR[],
+    isSelected: boolean
+  ) => {
+    const viewsToCreate = actions.find((fnd) => fnd.name === 'Mostrar' && fnd.hasInRol);
+
+    const actions_s: string[] = [];
+
+    if (viewsToCreate) {
+      actions_s.push(action.name);
+    } else {
+      actions_s.push(action.name);
+      actions_s.push('Mostrar');
+    }
+
+    create_many_actions({
+      rolId: roleSelected,
+      viewId: viewId,
+      actions: actions_s,
+      hasDelete: isSelected,
+    }).then(() => {
+      getRoleActionsByRol(roleSelected);
+      if (roleSelected === user?.roleId) {
+        OnGetActionsByUserWithoutLoading(user.roleId).then((data) => {
+          data && setRoleActions(data.roleActions);
+          setRoleSelected(roleSelected);
+        });
+      }
+    });
+  };
+
+  const handleSelectionAll = (viewId: number, actions: ActionR[], isSelected: boolean) => {
+    let views: string[] = [];
+
+    if (!isSelected) {
+      const actions_f = actions.filter((fnd) => !fnd.hasInRol);
+      views = views.concat(actions_f.map((action) => action.name));
+    } else {
+      const actions_f = actions.filter((fnd) => fnd.hasInRol);
+      views = views.concat(actions_f.map((action) => action.name));
+    }
+
+    create_many_actions({
+      rolId: roleSelected,
+      viewId: viewId,
+      actions: views,
+      hasDelete: isSelected,
+    }).then(() => {
+      toast.success('Acciones actualizadas con éxito');
+      getRoleActionsByRol(roleSelected);
+      if (roleSelected === user?.roleId) {
+        OnGetActionsByUserWithoutLoading(user.roleId).then((data) => {
+          data && setRoleActions(data.roleActions);
+          setRoleSelected(roleSelected);
+        });
+      }
+    });
+  };
+
+  const colors = useColors();
 
   return (
     <>
-      <div className="flex flex-col lg:flex-row h-screen">
-        <div className="w-full lg:w-1/4  border border-slate-200 rounded-xl dark:bg-gray-900 p-4 mt-2">
-          <div className="p-2 ">
-            <ButtonUi
-               theme={Colors.Primary}
-              onPress={handleCreateOrUpdateViewsAndActions}
-              className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition disabled:opacity-50"
-            >
-              Actualizar
-            </ButtonUi>
-          </div>
-          <div className="overflow-y-auto custom-scrollbar1 max-h-64 lg:max-h-[calc(100vh-100px)]">
-            {viewasAction &&
-              viewasAction.map((view) => (
-                <div key={view.view.id}>
-                  <div
-                    onClick={() => {}}
-                    className="flex items-center justify-between px-4 py-2 border-b border-gray-200 dark:border-gray-700 cursor-pointer"
-                  >
-                    <span className="dark:text-white">{view.view.name}</span>
-
-                    <div className="rounded-full h-8 w-8 flex bg-green-500 items-center border-2 border-green-500 justify-center">
-                      <Check size={20} className="text-white" />
-                    </div>
-                  </div>
-                </div>
-              ))}
-          </div>
+      <GlobalLoading show={loading} />
+      <HeadlessModal
+        onClose={modalNewView.onClose}
+        isOpen={modalNewView.isOpen}
+        size="p-5 w-96"
+        title="Nuevas acciones"
+      >
+        <div className="w-full flex flex-col">
+          <p className="text-lg text-center mt-4">
+            Se encontraron nuevas vistas y acciones disponibles
+          </p>
+          <Button
+            onClick={handleSave}
+            style={styles.thirdStyle}
+            className="w-full mt-6 font-semibold"
+          >
+            Actualizar vistas
+          </Button>
         </div>
-        <div className="w-full lg:w-3/4 p-2  flex flex-col">
-          <div className="flex-grow overflow-y-auto border border-slate-200  custom-scrollbar1 dark:bg-gray-900 shadow-xl rounded-xl">
-            <PermissionAddActionRol />
+      </HeadlessModal>
+      <div className="w-full h-full p-4">
+        <div className="w-full h-full p-4 flex flex-col mt-2 rounded-xl overflow-y-auto bg-background/20 custom-scrollbar shadow border dark:border-gray-700">
+          <div>
+            <Select
+              className="w-96 dark:text-white"
+              label="Rol"
+              labelPlacement="outside"
+              placeholder="Selecciona el rol"
+              classNames={{ label: 'font-semibold' }}
+              variant="bordered"
+              selectedKeys={[roleSelected.toString()]}
+              onSelectionChange={(e) => {
+                setRoleSelected(Number(new Set(e).values().next().value));
+              }}
+            >
+              {roles_list.map((role) => (
+                <SelectItem className="dark:text-white" key={role.id}>
+                  {role.name}
+                </SelectItem>
+              ))}
+            </Select>
+          </div>
+          <div className="w-full mt-5">
+            <div className="w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              {role_actions &&
+                role_actions.roleActions.views.map(({ view }, index) => (
+                  <React.Fragment key={index}>
+                    <Card className="w-full border dark:border-gray-700 rounded-3xl p-8">
+                      <div className="w-full flex justify-between">
+                        <p style={colors.textColor} className="font-semibold text-lg">
+                          {view.name}
+                        </p>
+                        <Checkbox
+                          isSelected={view.actions.every((action) => action.hasInRol)}
+                          size="lg"
+                          onValueChange={(isSelected) =>
+                            handleSelectionAll(view.id, view.actions, !isSelected)
+                          }
+                        ></Checkbox>
+                      </div>
+                      <hr className="py-1 mt-2" />
+                      <div className="flex flex-col gap-4">
+                        {view.actions.map((action, index) => (
+                          <div className="flex justify-between gap-2 items-center" key={index}>
+                            <p
+                              style={colors.textColor}
+                              className="flex justify-center items-center gap-4 font-semibold text-sm"
+                            >
+                              {renderItem(action.name)} {action.name}
+                            </p>
+                            <Checkbox
+                              isSelected={action.hasInRol}
+                              onValueChange={(isSelected) =>
+                                handleSelectAction(view.id, action, view.actions, !isSelected)
+                              }
+                              size="lg"
+                            ></Checkbox>
+                          </div>
+                        ))}
+                      </div>
+                    </Card>
+                  </React.Fragment>
+                ))}
+            </div>
           </div>
         </div>
       </div>
     </>
   );
-};
+}
 
-export default PermissionTable;
+export default ListActionRol;

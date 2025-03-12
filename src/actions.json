@@ -306,7 +306,7 @@
       "actions": [
         "Mostrar",
         "Exportar",
-        "Exportar CVC"
+        "Exportar CSV"
       ]
     },
     {
@@ -314,7 +314,7 @@
       "actions": [
         "Mostrar",
         "Exportar",
-        "Exportar CVC"
+        "Exportar CSV"
       ]
     },
     {
@@ -322,7 +322,7 @@
       "actions": [
         "Mostrar",
         "Exportar",
-        "Exportar CVC"
+        "Exportar CSV"
       ]
     },
     {

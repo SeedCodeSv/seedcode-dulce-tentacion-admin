@@ -1,0 +1,264 @@
+import { create } from 'zustand';
+import { IActionsRolStore } from './types/role-actions.store.types';
+import {
+  get_actions_by_rol_and_view,
+  get_actions_by_role,
+  get_actions_role,
+  get_role_actions,
+  get_role_actions_user,
+  save_action_rol,
+  update_actions,
+} from '../services/role-actions.service';
+import { messages } from '../utils/constants';
+import { toast } from 'sonner';
+import { save_action } from '../services/actions.service';
+import { formatActionsRole } from '../utils';
+import { RoleViewAction } from '../types/role-actions.types';
+import { get_views } from '../services/views.service';
+import { get_rolId, save_role_actions } from '../storage/localStorage';
+export const useActionsRolStore = create<IActionsRolStore>((set, get) => ({
+  actions_by_view_and_rol: [],
+  actions_view: [],
+  actions_roles_grouped: [],
+  role_view_action: {} as RoleViewAction,
+  roleActions: [],
+  roleActionsPage: [],
+  loading_actions: true,
+  loading_role_actions: true,
+  role_actions: undefined,
+  role_actions_by_user: undefined,
+  getRoleActionsByRol(role_id) {
+    get_role_actions(role_id)
+      .then((role_actions) => {
+        set({ role_actions: role_actions.data });
+      })
+      .catch(() => {
+        set({ role_actions: undefined });
+      });
+  },
+  OnGetActionsByUser(rol_id) {
+    set({ loading_actions: true });
+    return get_role_actions_user(rol_id)
+      .then(({ data }) => {
+        save_role_actions(data);
+        set({
+          role_actions_by_user: data,
+          loading_actions: false,
+        });
+        return data;
+      })
+      .catch(() => {
+        set((state) => ({ ...state, loading_actions: false, role_actions_by_user: undefined }));
+        return undefined;
+      });
+  },
+  OnGetActionsByUserWithoutLoading(rol_id) {
+    return get_role_actions_user(rol_id)
+      .then(({ data }) => {
+        save_role_actions(data);
+        set({
+          role_actions_by_user: data,
+        });
+        return data;
+      })
+      .catch(() => {
+        set((state) => ({ ...state, role_actions_by_user: undefined }));
+        return undefined;
+      });
+  },
+  OnGetActionsByRolePage(idRol) {
+    set({ loading_actions: true });
+    get_actions_by_role(idRol)
+      .then(({ data }) => {
+        set({
+          roleActionsPage: data.roleActions,
+          loading_actions: false,
+        });
+      })
+      .catch(() => {
+        set((state) => ({ ...state, loading_actions: false, actions_by_view_and_rol: [] }));
+      });
+  },
+
+  getActionsByRolView(idRol, idView) {
+    get_actions_by_rol_and_view(idRol, idView)
+      .then(({ data }) => {
+        const actions = data.roleActions.map((action) => action.action.name);
+        set((state) => ({ ...state, actions_by_view_and_rol: actions }));
+      })
+      .catch(() => {
+        set((state) => ({ ...state, actions_by_view_and_rol: [] }));
+      });
+  },
+
+  async OnCreateActionsRol(payload, roleId) {
+    const verified = payload.names
+      .filter((action) => {
+        const actions = get().actions_view.find((ac) => ac.name === action.name);
+        return actions;
+      })
+      .map((action) => action.name);
+
+    const not_exit = payload.names
+      .filter((action) => {
+        const actions = verified.find((ac) => ac === action.name);
+        return !actions;
+      })
+      .map((val) => {
+        return {
+          name: val.name,
+        };
+      });
+    if (not_exit.length > 0) {
+      try {
+        const data = await save_action({ ...payload, names: not_exit });
+
+        const roles_action = {
+          roleId,
+          actionIds: data.data.actionsId.map((dt) => ({ id: dt.id })),
+        };
+        const res = await save_action_rol(roles_action);
+        if (res.data.ok) {
+          const roleId = get_rolId() ?? 0;
+          get().OnGetActionsByRole(roleId);
+          toast.success(messages.success);
+          return true;
+        } else {
+          return false;
+        }
+      } catch (error) {
+        toast.error(messages.error);
+        return false;
+      }
+    }
+    return true;
+  },
+
+  OnGetActionsRoleList() {
+    get_actions_role()
+      .then(({ data }) => {
+        if (data.ok) {
+          set({
+            roleActions: data.roleActions,
+          });
+        } else {
+          set((state) => {
+            return {
+              ...state,
+              actions_roles_grouped: [],
+            };
+          });
+        }
+      })
+      .catch(() => {
+        set((state) => {
+          return {
+            ...state,
+            actions_roles_grouped: [],
+          };
+        });
+      });
+  },
+
+  OnGetActionsByRole(rol_id) {
+    return get_actions_by_role(rol_id)
+      .then(async ({ data }) => {
+        if (data.ok) {
+          set((state) => {
+            return {
+              ...state,
+              actions_roles_grouped: formatActionsRole(data.roleActions),
+            };
+          });
+          const views = await get_views();
+          const role = data.roleActions[0].role.name;
+          const views_exist = views.data.views
+            .map((dt) => {
+              const actions = data.roleActions
+                .filter((rl) => rl.action.actionId === dt.id)
+                .map((dr) => {
+                  return { name: dr.action.name };
+                });
+              return {
+                name: dt.name,
+                actions: actions,
+              };
+            })
+            .filter((ac) => ac.actions.length > 0);
+
+          if (views_exist !== undefined) {
+            const new_eval: RoleViewAction = {
+              name: role,
+              roleId: rol_id,
+              view: views_exist,
+            };
+
+            set((state) => {
+              return {
+                ...state,
+                role_view_action: new_eval,
+              };
+            });
+
+            return new_eval;
+          }
+          return undefined;
+        } else {
+          set({
+            roleActions: [],
+          });
+          return undefined;
+        }
+      })
+      .catch(() => {
+        set({
+          roleActions: [],
+        });
+        return undefined;
+      });
+  },
+
+  OnGetActionsByRoleReturn(rol_id) {
+    return get_actions_by_role(rol_id).then(async ({ data }) => {
+      const views = await get_views();
+      const role = data.roleActions[0].role.name;
+
+      const views_exist = views.data.views
+        .map((dt) => {
+          const actions = data.roleActions
+            .filter((rl) => rl.action.view.id === dt.id)
+            .map((dr) => {
+              return { name: dr.action.name };
+            });
+
+          return {
+            name: dt.name,
+            actions: actions,
+          };
+        })
+        .filter((ac) => ac.actions.length > 0);
+
+      if (views_exist !== undefined) {
+        const new_eval: RoleViewAction = {
+          name: role,
+          roleId: rol_id,
+          view: views_exist,
+        };
+
+        return new_eval;
+      }
+      return undefined;
+    });
+  },
+  OnUpdateActions(payload) {
+    return update_actions(payload).then(({ data }) => {
+      if (data.ok) {
+        toast.success(messages.success);
+        return true;
+      } else {
+        toast.error(messages.error);
+        return false;
+      }
+    });
+  },
+}));

@@ -11,6 +11,7 @@ import { get_all_roles } from '../../services/roles.service';
 import { Search } from 'lucide-react';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
+
 const PermissionAddActionRol: React.FC = () => {
   const { OnGetViewasAction, viewasAction } = useViewsStore();
   const [selectedActions, setSelectedActions] = useState<{ [viewId: number]: string[] }>({});
