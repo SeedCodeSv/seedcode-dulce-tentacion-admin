@@ -5,7 +5,7 @@
    "type": "module",
    "scripts": {
       "dev": "vite --host",
-      "build:dev": "tsc && vite build",
+      "build:dev": "tsc -b && vite build",
       "build": "swc --no-swcrc --out-dir dist src/**/*.ts src/**/*.tsx && vite build --mode production",
       "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
       "preview": "vite preview",

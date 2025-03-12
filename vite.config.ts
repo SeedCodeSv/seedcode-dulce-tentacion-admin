@@ -33,13 +33,7 @@ export default defineConfig({
           purpose: 'any maskable',
         },
       ],
-    },
-    workbox: {
-      skipWaiting: true,
-      clientsClaim: true,
-      cleanupOutdatedCaches: true,
-      maximumFileSizeToCacheInBytes: 1024 * 1024 * 1024,
-    },
+    }
   })],
   server: {
     port: 5174
