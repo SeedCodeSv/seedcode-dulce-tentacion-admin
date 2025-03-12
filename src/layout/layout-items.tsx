@@ -85,7 +85,7 @@ export const LayoutItems = (props: Props) => {
     },
     {
       viewName: 'Sub Categorias',
-      to: '/subCategories',
+      to: '/sub-categories',
       icon: List,
       label: 'Sub Categorías',
     },
@@ -130,7 +130,7 @@ export const LayoutItems = (props: Props) => {
     },
     {
       viewName: 'Permisos',
-      to: '/actionRol',
+      to: '/action-rol',
       icon: FolderCheck,
       label: 'Permisos',
     },
@@ -142,7 +142,7 @@ export const LayoutItems = (props: Props) => {
     },
     {
       viewName: 'Puntos de Venta',
-      to: '/pointsOfSale',
+      to: '/points-of-sales',
       icon: MapPinned,
       label: 'Puntos de Venta',
     },
@@ -183,19 +183,19 @@ export const LayoutItems = (props: Props) => {
   const linkPlanification = [
     {
       viewName: 'Nivel de Estudio',
-      to: '/studyLevel',
+      to: '/study-level',
       icon: GraduationCap,
       label: 'Nivel de Estudio',
     },
     {
       viewName: 'Tipo de Contratacion',
-      to: '/contractTypes',
+      to: '/contract-types',
       icon: Handshake,
       label: 'Tipo de Contratacion',
     },
     {
       viewName: 'Estados del Empleado',
-      to: '/statusEmployee',
+      to: '/status-employee',
       icon: BookUser,
       label: 'Estados del Empleado',
     },
@@ -229,7 +229,7 @@ export const LayoutItems = (props: Props) => {
     },
     {
       viewName: 'Catalogos de Cuentas',
-      to: '/accountCatalogs',
+      to: '/account-catalogs',
       icon: BookCheck,
       label: 'Catálogos de Cuentas',
     },

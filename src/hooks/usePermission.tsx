@@ -12,7 +12,7 @@ interface Props {
   children: React.ReactNode;
 }
 
-export default function SessionProvider({ children }: Props) {
+export default function PermissionProvider({ children }: Props) {
   const [roleActions, setRoleActions] = useState<IRoleAction | undefined>(get_role_actions());
 
   const handleSetRoleActions = (roleActions: IRoleAction) => {

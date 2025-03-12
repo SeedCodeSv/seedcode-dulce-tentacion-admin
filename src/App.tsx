@@ -12,6 +12,7 @@ import { useEffect } from 'react';
 import { useViewsStore } from './store/views.store';
 import { useAuthStore } from './store/auth.store';
 import { AlertProvider } from './lib/alert';
+import PermissionProvider from './hooks/usePermission';
 
 function App() {
   const { OnGetActionsByRol, OnGetViewasAction } = useViewsStore();
@@ -30,7 +31,9 @@ function App() {
               <Toaster richColors />
               <HeroUIProvider labelPlacement="outside">
                 <ActionsProvider>
-                  <Main />
+                  <PermissionProvider>
+                    <Main />
+                  </PermissionProvider>
                 </ActionsProvider>
               </HeroUIProvider>
             </ThemeProvider>

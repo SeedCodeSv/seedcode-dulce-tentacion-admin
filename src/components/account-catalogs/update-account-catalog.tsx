@@ -82,7 +82,7 @@ function UpdateAccountCatalogs() {
           .then(() => {
             toast.success('Operación realizada con éxito');
             formikHelpers.setSubmitting(false);
-            navigate('/accountCatalogs');
+            navigate('/account-catalogs');
           })
           .catch(() => {
             toast.error('Error al guardar la compra');
@@ -112,13 +112,13 @@ function UpdateAccountCatalogs() {
   const navigate = useNavigate();
   return (
     <>
-      <Layout title="Catalogos de Cuentas">
+      <Layout title="Catálogos de Cuentas">
         <>
           <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
             <div className="w-full h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
               <div className="">
                 <Button
-                  onClick={() => navigate('/accountCatalogs')}
+                  onClick={() => navigate('/account-catalogs')}
                   className="bg-transparent dark:text-white flex"
                 >
                   <ArrowLeft /> Regresar

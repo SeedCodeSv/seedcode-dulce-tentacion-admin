@@ -1,340 +1,598 @@
-import { createBrowserRouter } from 'react-router-dom';
-import Home from '../pages/home';
-import ProductsCategories from '../pages/ProductsCategories';
-import Users from '../pages/Users';
-import Employees from '../pages/Employees';
-import Customers from '../pages/Customers';
-import Branch from '../pages/Branch';
-import Error404 from '../pages/Error404';
-import Product from '../pages/Product';
-import ActionRol from '../pages/ActionRol';
-import Charges from '../pages/Charges';
-import SubCategories from '../pages/SubCategories';
-import Configuration from '../pages/Configuration';
-import { useActionsRolStore } from '../store/actions_rol.store';
-import { useEffect, useState } from 'react';
-import { useAuthStore } from '../store/auth.store';
-import Supplier from '../pages/Supplier';
-import Discount from '../pages/Promotions';
-import AddPromotions from '../components/discounts/AddPromotions';
-import StatusEmployee from '../pages/statusEmployee';
-import ContratType from '../pages/ContratType';
-import AddEmployee from '../components/employee/AddEmployee';
-import VentasPorPeriodo from '../pages/reports/VentasPorPeriodo';
-import StudyLevel from '@/pages/StudyLevel';
-import AddActionRol from '@/components/Action_rol/AddActionRol';
-import AddProduct from '@/pages/add-product';
-import VentasPorProducto from '@/pages/reports/VentasPorProducto';
-import NoAuthorization from '../pages/NoAuthorization';
-import { JSX } from 'react/jsx-runtime';
-import CushCatsBigZ from '@/pages/CashCutsBigZ';
-import CashCutsX from '@/pages/CashCutsX';
-import CushCatsZ from '@/pages/CashCutsZ';
-import ShoppingBookIVA from '@/pages/iva/shopping-iva';
-import Shopping from '@/pages/shopping';
-import CreateShopping from '@/components/shopping/create-shopping-json';
-import CFFBookIVA from '@/pages/iva/CFFBookIVA';
-import FEBookIVA from '@/pages/iva/FEBookIVA';
-import CreateTheme from '@/components/configuration/CreateTheme';
-import AddClientContributor from '@/components/clients/AddClientContributor';
-import AddClientNormal from '@/components/clients/AddClientNormal';
-import AddNormalSupplier from '@/components/supplier/AddNormalSupplier';
-import AddTributeSupplier from '@/components/supplier/AddTributeSupplier';
-import UpdateNormalSupplier from '@/components/supplier/UpdateNormalSupplier';
-import CorrelativePage from '@/pages/CorrelativePage';
-import UpdateTributeSupplier from '@/components/supplier/UpdateTributeSupplier';
-import UpdateClientContributor from '@/components/clients/UpdateClientContributor';
-import AddCustomer from '@/pages/AddCustomer';
-import BirthdayCalendar from '@/components/employee/BirthdayCalendar';
-import PointOfSales from '@/pages/PointOfSales';
-import SalesPage from '@/pages/Sales';
-import NotesDebitBySale from '@/components/notas/DebitNoteBySale';
-import NotesCreditBySale from '@/components/notas/CreditNoteBySale';
-import ContingenceSection from '@/pages/ContingenceSection';
-import Annulation from '@/pages/Annulation';
-import anexos from "@/pages/anexos_iva/router"
-import accounting_items from "@/pages/contablilidad/router"
-import EditShopping from '@/components/shopping/edit-shopping';
-import AccountCatalogs from '@/pages/account-catalog';
-import AddAccountCatalogs from '@/components/account-catalogs/add-account-catalog';
-import UpdateAccountCatalogs from '@/components/account-catalogs/update-account-catalog';
-import TicketSales from '@/pages/ticket-sales';
-import Test from "@/pages/Test";
-import pages_router from "@/pages/router"
-import EditTransmitterInfo from '@/pages/edit-transmitter-info';
+import { createBrowserRouter, createRoutesFromElements, Route } from 'react-router-dom';
+import { lazy } from 'react';
+import { IRoleAction } from '@/types/role-actions.types';
+import AnimatedRoute from './animated-route';
 
-const Loading = () => {
-  return <div>Cargando...</div>;
-};
+const AccountingItems = lazy(() => import('@/pages/contablilidad/accounting-items'));
+const AddAccountingItems = lazy(() => import('@/pages/contablilidad/add-accounting-items'));
+const AddItemsBySales = lazy(() => import('@/pages/contablilidad/add-items-by-sales'));
+const EditAccountingItems = lazy(() => import('@/pages/contablilidad/edit-accounting-items'));
+const TypeAccountingItem = lazy(() => import('@/pages/contablilidad/type-accounting-item'));
+const Reports = lazy(() => import('@/pages/contablilidad/reports'));
+const AnexosCompras = lazy(() => import('@/pages/anexos_iva/anexos_compras'));
+const AnexoFe = lazy(() => import('@/pages/anexos_iva/anexo_fe'));
+const AnexoCcfe = lazy(() => import('@/pages/anexos_iva/anexo_ccfe'));
 
-/* eslint-disable react-hooks/rules-of-hooks */
-export const router = () => {
-  const { role_view_action, OnGetActionsByRole } = useActionsRolStore();
-  const { user } = useAuthStore();
-  const [loading, setLoading] = useState(true);
+const Supplier = lazy(() => import('../pages/Supplier'));
+const Discount = lazy(() => import('../pages/Promotions'));
+const AddPromotions = lazy(() => import('../components/discounts/AddPromotions'));
+const StatusEmployee = lazy(() => import('../pages/statusEmployee'));
+const ContratType = lazy(() => import('../pages/ContratType'));
+const AddEmployee = lazy(() => import('../components/employee/AddEmployee'));
+const VentasPorPeriodo = lazy(() => import('../pages/reports/VentasPorPeriodo'));
+const StudyLevel = lazy(() => import('../pages/StudyLevel'));
+const AddActionRol = lazy(() => import('../components/Action_rol/AddActionRol'));
+const AddProduct = lazy(() => import('../pages/add-product'));
+const VentasPorProducto = lazy(() => import('../pages/reports/VentasPorProducto'));
+const CushCatsBigZ = lazy(() => import('../pages/CashCutsBigZ'));
+const CashCutsX = lazy(() => import('../pages/CashCutsX'));
+const CushCatsZ = lazy(() => import('../pages/CashCutsZ'));
+const ShoppingBookIVA = lazy(() => import('../pages/iva/shopping-iva'));
+const Shopping = lazy(() => import('../pages/shopping'));
+const CreateShopping = lazy(() => import('../components/shopping/create-shopping-json'));
+const CFFBookIVA = lazy(() => import('../pages/iva/CFFBookIVA'));
+const FEBookIVA = lazy(() => import('../pages/iva/FEBookIVA'));
+const CreateTheme = lazy(() => import('../components/configuration/CreateTheme'));
+const AddClientContributor = lazy(() => import('../components/clients/AddClientContributor'));
+const AddClientNormal = lazy(() => import('../components/clients/AddClientNormal'));
+const AddNormalSupplier = lazy(() => import('../components/supplier/AddNormalSupplier'));
+const AddTributeSupplier = lazy(() => import('../components/supplier/AddTributeSupplier'));
+const UpdateNormalSupplier = lazy(() => import('../components/supplier/UpdateNormalSupplier'));
+const CorrelativePage = lazy(() => import('../pages/CorrelativePage'));
+const UpdateTributeSupplier = lazy(() => import('../components/supplier/UpdateTributeSupplier'));
+const UpdateClientContributor = lazy(() => import('../components/clients/UpdateClientContributor'));
+const AddCustomer = lazy(() => import('../pages/AddCustomer'));
+const BirthdayCalendar = lazy(() => import('../components/employee/BirthdayCalendar'));
+const PointOfSales = lazy(() => import('../pages/PointOfSales'));
+const SalesPage = lazy(() => import('../pages/Sales'));
+const NotesDebitBySale = lazy(() => import('../components/notas/DebitNoteBySale'));
+const NotesCreditBySale = lazy(() => import('../components/notas/CreditNoteBySale'));
+const ContingenceSection = lazy(() => import('../pages/ContingenceSection'));
+const Annulation = lazy(() => import('../pages/Annulation'));
+const EditShopping = lazy(() => import('../components/shopping/edit-shopping'));
+const AccountCatalogs = lazy(() => import('../pages/account-catalog'));
+const AddAccountCatalogs = lazy(() => import('../components/account-catalogs/add-account-catalog'));
+const UpdateAccountCatalogs = lazy(
+  () => import('../components/account-catalogs/update-account-catalog')
+);
+const TicketSales = lazy(() => import('../pages/ticket-sales'));
+const EditTransmitterInfo = lazy(() => import('../pages/edit-transmitter-info'));
+const Home = lazy(() => import('../pages/home'));
+const ProductsCategories = lazy(() => import('../pages/ProductsCategories'));
+const Users = lazy(() => import('../pages/Users'));
+const Employees = lazy(() => import('../pages/Employees'));
+const Customers = lazy(() => import('../pages/Customers'));
+const Branch = lazy(() => import('../pages/Branch'));
+const Error404 = lazy(() => import('../pages/Error404'));
+const Product = lazy(() => import('../pages/Product'));
+const ActionRol = lazy(() => import('../pages/ActionRol'));
+const Charges = lazy(() => import('../pages/Charges'));
+const SubCategories = lazy(() => import('../pages/SubCategories'));
+const Configuration = lazy(() => import('../pages/Configuration'));
 
-  useEffect(() => {
-    if (user) {
-      OnGetActionsByRole(user.roleId).then(() => setLoading(false));
-    }
-  }, [user]);
-
-  /* eslint-enable react-hooks/rules-of-hooks */
-  const views =
-    role_view_action && role_view_action.view && role_view_action.view.map((view) => view.name);
-
-  const checkAuthorization = (viewName: string, Component: JSX.Element) => {
-    if (loading) {
-      return <Loading />;
-    }
-    return views && views.includes(viewName) ? Component : <NoAuthorization />;
+export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
+  const handleCheckPermission = (name: string) => {
+    const find_view = roleActions?.views.find((r) => r.view.name === name);
+    if (find_view) return true;
+    return false;
   };
 
-  return createBrowserRouter([
-    //Gestion de Productos
-    {
-      path: '/test',
-      element: <Test />,
-    },
-    {
-      path: '/products',
-      element: checkAuthorization('Productos', <Product />),
-    },
-    {
-      path: '/add-product',
-      element: checkAuthorization('Productos', <AddProduct />),
-    },
-    {
-      path: '/add-account-catalog',
-      element: checkAuthorization('Catalogos de Cuentas', <AddAccountCatalogs />),
-    },
-    {
-      path: '/categories',
-      element: checkAuthorization('Categorias de Productos', <ProductsCategories />),
-    },
-    {
-      path: '/subCategories',
-      element: checkAuthorization('Sub Categorias', <SubCategories />),
-    },
-    {
-      path: '/shopping',
-      element: checkAuthorization('Compras', <Shopping />),
-    },
-    {
-      path: '/CreateShopping',
-      element: checkAuthorization('Compras', <CreateShopping />),
-    },
+  const mainRoutes = createRoutesFromElements(
+    <>
+      <Route
+        path="/"
+        element={
+          <AnimatedRoute>
+            <Home />
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/products"
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Productos') ? <Product /> : <Home />}
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/add-product"
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Productos') ? <AddProduct /> : <Home />}
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/add-account-catalog"
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Catalogos de Cuentas') ? <AddAccountCatalogs /> : <Home />}
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/categories"
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Categorias de Productos') ? <ProductsCategories /> : <Home />}
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/sub-categories"
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Sub Categorias') ? <SubCategories /> : <Home />}
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/shopping"
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Compras') ? <Shopping /> : <Home />}
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/create-shopping"
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Compras') ? <CreateShopping /> : <Home />}
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/users"
+        element={
+          <AnimatedRoute>{handleCheckPermission('Usuarios') ? <Users /> : <Home />}</AnimatedRoute>
+        }
+      />
+      <Route
+        path="/employees"
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Empleados') ? <Employees /> : <Home />}
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/add-employee"
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Empleados') ? <AddEmployee /> : <Home />}
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/suppliers"
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Proveedores') ? <Supplier /> : <Home />}
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/add-supplier-normal"
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Proveedores') ? <AddNormalSupplier /> : <Home />}
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/update-supplier-normal/:id"
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Proveedores') ? <UpdateNormalSupplier /> : <Home />}
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/add-supplier-tribute"
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Proveedores') ? <AddTributeSupplier /> : <Home />}
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/update-supplier-tribute/:id"
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Proveedores') ? <UpdateTributeSupplier /> : <Home />}
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/branches"
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Sucursales') ? <Branch /> : <Home />}
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/clients"
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Clientes') ? <Customers /> : <Home />}
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/points-of-sales"
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Puntos de Venta') ? <PointOfSales /> : <Home />}
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/action-rol"
+        element={
+          <AnimatedRoute>
+            <ActionRol />
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/birthday-calendar"
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Empleados') ? <BirthdayCalendar /> : <Home />}
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/sales-by-period"
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Ventas por Periodo') ? <VentasPorPeriodo /> : <Home />}
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/sales-by-product"
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Ventas por Productos') ? <VentasPorProducto /> : <Home />}
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/study-level"
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Nivel de Estudio') ? <StudyLevel /> : <Home />}
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/contract-types"
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Tipo de Contratacion') ? <ContratType /> : <Home />}
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/status-employee"
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Estados del Empleado') ? <StatusEmployee /> : <Home />}
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/correlative"
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Correlativos') ? <CorrelativePage /> : <Home />}
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/charges"
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Cargos de Empleados') ? <Charges /> : <Home />}
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/discounts"
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Descuentos') ? <Discount /> : <Home />}
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/configuration"
+        element={
+          <AnimatedRoute>
+            <Configuration />
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/add-client-contributor/:id"
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Clientes') ? <AddClientContributor /> : <Home />}
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/add-client"
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Clientes') ? <AddClientNormal /> : <Home />}
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/add-customer/:id/:type"
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Clientes') ? <AddCustomer /> : <Home />}
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/add-client-contributor"
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Proveedores') ? <AddClientContributor /> : <Home />}
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/update-client-contributor/:id"
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Proveedores') ? <UpdateClientContributor /> : <Home />}
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/add-promotions"
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Descuentos') ? <AddPromotions /> : <Home />}
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/add-action-rol"
+        element={
+          <AnimatedRoute>
+            <AddActionRol />
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/cash-cuts-big-z"
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Corte Gran Z') ? <CushCatsBigZ /> : <Home />}
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/account-catalogs"
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Catalogos de Cuentas') ? <AccountCatalogs /> : <Home />}
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/cash-cuts-x"
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Corte X') ? <CashCutsX /> : <Home />}
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/cash-cuts-z"
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Corte Z') ? <CushCatsZ /> : <Home />}
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/iva/shopping-book"
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('IVA de Compras') ? <ShoppingBookIVA /> : <Home />}
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/iva/ccf-book"
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('IVA de CCF') ? <CFFBookIVA /> : <Home />}
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/iva/fe-book"
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('IVA de FE') ? <FEBookIVA /> : <Home />}
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="*"
+        element={
+          <AnimatedRoute>
+            <Error404 />
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/add-theme"
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Configuración') ? <CreateTheme /> : <Home />}
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/sales"
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Ventas') ? <SalesPage /> : <Home />}
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/sales-ticket"
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Ventas Ticket') ? <TicketSales /> : <Home />}
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/get-debit-note/:id"
+        element={
+          <AnimatedRoute>
+            <NotesDebitBySale />
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/get-credit-note/:id"
+        element={
+          <AnimatedRoute>
+            <NotesCreditBySale />
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/contingence-section"
+        element={
+          <AnimatedRoute>
+            <ContingenceSection />
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/annulation/:tipoDte/:id"
+        element={
+          <AnimatedRoute>
+            <Annulation />
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/edit-shopping/:id/:controlNumber"
+        element={
+          <AnimatedRoute>
+            <EditShopping />
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/update-account-catalog/:id"
+        element={
+          <AnimatedRoute>
+            <UpdateAccountCatalogs />
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/edit-transmitter-info"
+        element={
+          <AnimatedRoute>
+            <EditTransmitterInfo />
+          </AnimatedRoute>
+        }
+      />
+      {/* Reportes contables */}
+      <Route
+        path="/accounting-items"
+        element={
+          <AnimatedRoute>
+            <AccountingItems />
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/add-accounting-items"
+        element={
+          <AnimatedRoute>
+            <AddAccountingItems />
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/add-item-by-sales"
+        element={
+          <AnimatedRoute>
+            <AddItemsBySales />
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/edit-accounting-items/:id"
+        element={
+          <AnimatedRoute>
+            <EditAccountingItems />
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/type-accounting"
+        element={
+          <AnimatedRoute>
+            <TypeAccountingItem />
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/report-accounting"
+        element={
+          <AnimatedRoute>
+            <Reports />
+          </AnimatedRoute>
+        }
+      />
+      {/* Anexos de IVA */}
+      <Route
+        path="/anexos-iva-compras"
+        element={
+          <AnimatedRoute>
+            <AnexosCompras />
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/anexos-fe"
+        element={
+          <AnimatedRoute>
+            <AnexoFe />
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/anexos-ccfe"
+        element={
+          <AnimatedRoute>
+            <AnexoCcfe />
+          </AnimatedRoute>
+        }
+      />
+    </>
+  );
 
-    //Administracion
-    {
-      path: '/users',
-      element: checkAuthorization('Usuarios', <Users />),
-    },
-    {
-      path: '/employees',
-      element: checkAuthorization('Empleados', <Employees />),
-    },
-    {
-      path: '/AddEmployee',
-      element: checkAuthorization('Empleados', <AddEmployee />),
-    },
-    {
-      path: '/suppliers',
-      element: checkAuthorization('Proveedores', <Supplier />),
-    },
-
-    {
-      path: '/add-supplier-normal',
-      element: checkAuthorization('Proveedores', <AddNormalSupplier />),
-    },
-    {
-      path: '/update-supplier-normal/:id',
-      element: checkAuthorization('Proveedores', <UpdateNormalSupplier />),
-    },
-
-    {
-      path: '/add-supplier-tribute',
-      element: checkAuthorization('Proveedores', <AddTributeSupplier />),
-    },
-
-    {
-      path: '/update-supplier-tribute/:id',
-      element: checkAuthorization('Proveedores', <UpdateTributeSupplier />),
-    },
-    {
-      path: '/branches',
-      element: checkAuthorization('Sucursales', <Branch />),
-    },
-
-    {
-      path: '/clients',
-      element: checkAuthorization('Clientes', <Customers />),
-    },
-    {
-      path: '/pointsOfSale',
-      element: checkAuthorization('Clientes', <PointOfSales />),
-    },
-    {
-      path: '/actionRol',
-      element: <ActionRol />,
-    },
-
-    {
-      path: '/birthday-calendar',
-      element: checkAuthorization('Empleados', <BirthdayCalendar />),
-    },
-
-    //Gestion de Reportes
-    {
-      path: '/reports/sales-by-period',
-      element: checkAuthorization('Ventas por Periodo', <VentasPorPeriodo />),
-    },
-    {
-      path: '/reports/sales-by-product',
-      element: checkAuthorization('Ventas por Productos', <VentasPorProducto />),
-    },
-    //Gestion de plantillas
-    {
-      path: '/studyLevel',
-      element: checkAuthorization('Nivel de Estudio', <StudyLevel />),
-    },
-    {
-      path: '/contractTypes',
-      element: checkAuthorization('Tipo de Contratacion', <ContratType />),
-    },
-    {
-      path: '/statusEmployee',
-      element: checkAuthorization('Estados del Empleado', <StatusEmployee />),
-    },
-    //Contabilidad
-
-    {
-      path: '/',
-      element: <Home />,
-    },
-    {
-      path: '/configuration',
-      element: <Configuration />,
-    },
-    {
-      path: '/correlative',
-      element: checkAuthorization('Correlativos', <CorrelativePage />),
-    },
-    {
-      path: '/charges',
-      element: checkAuthorization('Cargos de Empleados', <Charges />),
-    },
-    {
-      path: '/discounts',
-      element: checkAuthorization('Descuentos', <Discount />),
-    },
-
-    {
-      path: '/add-client-contributor/:id',
-      element: checkAuthorization('Clientes', <AddClientContributor />),
-    },
-    {
-      path: '/add-client',
-      element: checkAuthorization('Clientes', <AddClientNormal />),
-    },
-    {
-      path: '/add-customer/:id/:type',
-      element: checkAuthorization('Clientes', <AddCustomer />),
-    },
-    {
-      path: '/add-client-contributor',
-      element: checkAuthorization('Proveedores', <AddClientContributor />),
-    },
-    {
-      path: '/update-client-contributor/:id',
-      element: checkAuthorization('Proveedores', <UpdateClientContributor />),
-    },
-
-    {
-      path: '/AddPromotions',
-      element: checkAuthorization('Descuentos', <AddPromotions />),
-    },
-
-    {
-      path: '/AddActionRol',
-      element: <AddActionRol />,
-    },
-
-    {
-      path: '/cash-cuts-big-z',
-      element: checkAuthorization('Corte Gran Z', <CushCatsBigZ />),
-    },
-    {
-      path: '/accountCatalogs',
-      element: checkAuthorization('Catalogos de Cuentas', <AccountCatalogs />),
-    },
-    {
-      path: '/cash-cuts-x',
-      element: checkAuthorization('Corte X', <CashCutsX />),
-    },
-    {
-      path: '/cash-cuts-z',
-      element: checkAuthorization('Corte Z', <CushCatsZ />),
-    },
-    {
-      path: 'iva/shopping-book',
-      element: checkAuthorization('IVA de Compras', <ShoppingBookIVA />),
-    },
-    {
-      path: 'iva/ccf-book',
-      element: checkAuthorization('IVA de CCF', <CFFBookIVA />),
-    },
-    {
-      path: 'iva/fe-book',
-      element: checkAuthorization('IVA de FE', <FEBookIVA />),
-    },
-    {
-      path: '*',
-      element: <Error404 />,
-    },
-    {
-      path: '/add-theme',
-      element: checkAuthorization('Configuración', <CreateTheme />),
-    },
-    {
-      path: '/sales',
-      element: checkAuthorization('Ventas', <SalesPage />),
-    },
-    {
-      path: '/sales-ticket',
-      element: checkAuthorization('Ventas Ticket', <TicketSales />),
-    },
-
-    {
-      path: "/get-debit-note/:id",
-      element: <NotesDebitBySale />,
-    },
-    {
-      path: "/get-credit-note/:id",
-      element: <NotesCreditBySale />,
-    },
-    {
-      path: "/contingence-section",
-      element: <ContingenceSection />,
-    },
-    {
-      path: "/annulation/:tipoDte/:id",
-      element: <Annulation />
-    },
-    {
-      path: "/edit-shopping/:id/:controlNumber",
-      element: <EditShopping />
-    },
-    {
-      path: "/update-account-catalog/:id",
-      element: <UpdateAccountCatalogs />
-    },
-    {
-      path: "/edit-transmitter-info",
-      element: <EditTransmitterInfo />
-    },
-    ...anexos,
-    ...accounting_items,
-    ...pages_router
-  ]);
+  return createBrowserRouter([...mainRoutes]);
 };

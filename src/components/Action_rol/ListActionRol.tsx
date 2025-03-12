@@ -22,7 +22,10 @@ import useColors from '@/themes/use-colors';
 import { FileJson, Send } from 'lucide-react';
 import { GrDocumentCsv } from 'react-icons/gr';
 import { TiExportOutline } from 'react-icons/ti';
-import { MdOutlineCake, MdOutlineCancelScheduleSend } from "react-icons/md";
+import { MdOutlineCake, MdOutlineCancelScheduleSend } from 'react-icons/md';
+import { RiContractLine } from 'react-icons/ri';
+import { LiaFileContractSolid } from 'react-icons/lia';
+import { save_role_actions } from '@/storage/localStorage';
 
 function ListActionRol() {
   const { roles_list, getRolesList } = useRolesStore();
@@ -186,8 +189,14 @@ function ListActionRol() {
     if (name.toLocaleLowerCase().includes('invalidar')) {
       return <MdOutlineCancelScheduleSend style={colors.textColor} size={20} />;
     }
-    if(name.toLocaleLowerCase().includes('cumpleaños')){
+    if (name.toLocaleLowerCase().includes('cumpleaños')) {
       return <MdOutlineCake style={colors.textColor} size={20} />;
+    }
+    if (name.toLocaleLowerCase().includes('contrato')) {
+      return <RiContractLine style={colors.textColor} size={20} />;
+    }
+    if (name.toLocaleLowerCase().includes('constancia')) {
+      return <LiaFileContractSolid style={colors.textColor} size={20} />;
     }
     return <></>;
   };
@@ -218,7 +227,10 @@ function ListActionRol() {
       getRoleActionsByRol(roleSelected);
       if (roleSelected === user?.roleId) {
         OnGetActionsByUserWithoutLoading(user.roleId).then((data) => {
-          data && setRoleActions(data.roleActions);
+          if (data) {
+            save_role_actions(data);
+            setRoleActions(data.roleActions);
+          }
           setRoleSelected(roleSelected);
         });
       }
@@ -246,7 +258,10 @@ function ListActionRol() {
       getRoleActionsByRol(roleSelected);
       if (roleSelected === user?.roleId) {
         OnGetActionsByUserWithoutLoading(user.roleId).then((data) => {
-          data && setRoleActions(data.roleActions);
+          if (data) {
+            save_role_actions(data);
+            setRoleActions(data.roleActions);
+          }
           setRoleSelected(roleSelected);
         });
       }

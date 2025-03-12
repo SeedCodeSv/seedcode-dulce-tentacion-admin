@@ -87,7 +87,7 @@ function AddAccountCatalogs() {
           <div className="w-full h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
             <div className="">
               <Button
-                onClick={() => navigate('/accountCatalogs')}
+                onClick={() => navigate('/account-catalogs')}
                 className="bg-transparent dark:text-white flex"
               >
                 <ArrowLeft /> Regresar

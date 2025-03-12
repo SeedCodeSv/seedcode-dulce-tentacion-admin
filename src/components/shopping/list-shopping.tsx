@@ -261,7 +261,7 @@ function ShoppingPage({ actions }: ArrayAction) {
             </div>
             <div className="flex justify-end mt-0 flex-grow">
               {actions.includes('Agregar') && (
-                <AddButton onClick={() => navigate('/CreateShopping')} />
+                <AddButton onClick={() => navigate('/create-shopping')} />
               )}
             </div>
           </div>

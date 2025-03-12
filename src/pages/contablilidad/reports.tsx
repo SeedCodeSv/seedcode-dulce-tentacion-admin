@@ -37,7 +37,7 @@ function Reports() {
       },
     },
     {
-      name: 'Libro Auxiliar',
+      name: 'Libro Auxiliar de cuenta',
       icon: <Book size={20} className="text-blue-500" />,
       onPress: () => {
         modalAuxiliarBook.onOpen();

@@ -1,9 +1,9 @@
-import { ElementType, useContext } from 'react';
+import { ElementType, useContext, useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
 import { Lock } from 'lucide-react';
-import { useViewsStore } from '../../store/views.store';
 import { ThemeContext } from '@/hooks/useTheme';
 import { hexToRgba } from '@/layout/utils';
+import { PermissionContext } from '@/hooks/usePermission';
 
 export interface SidebarNavLinkProps {
   viewName: string;
@@ -13,9 +13,12 @@ export interface SidebarNavLinkProps {
 }
 
 const SidebarNavLink = ({ viewName, to, icon: Icon, label }: SidebarNavLinkProps) => {
-  const { viewasAction } = useViewsStore();
+  const { roleActions } = useContext(PermissionContext);
 
-  const isActive = viewasAction.some((r) => r.view.name === viewName);
+  const isActive = useMemo(() => {
+    const view = roleActions?.views.find((view) => view.view.name === viewName);
+    return !!view;
+  }, [roleActions, viewName]);
 
   const { theme, context } = useContext(ThemeContext);
 
