@@ -11,7 +11,7 @@ import {
 } from '@heroui/react';
 import { useAuthStore } from '@/store/auth.store';
 import { useItemsStore } from '@/store/items.store';
-import { formatDate } from '@/utils/dates';
+import { formatDate, formatDateForReports } from '@/utils/dates';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { formatMoney } from '@/utils/utils';
@@ -256,7 +256,7 @@ function MajorBook({ disclosure }: Props) {
             doc.setFont('helvetica', 'normal');
 
             doc.text(
-              'del 3 de Marzo de 2024 al 3 de Marzo de 2025',
+              formatDateForReports(startDate, endDate),
               doc.internal.pageSize.width / 2,
               20,
               {

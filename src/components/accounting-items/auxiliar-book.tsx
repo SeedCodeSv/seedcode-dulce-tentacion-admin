@@ -14,7 +14,7 @@ import {
 } from '@heroui/react';
 import { useAuthStore } from '@/store/auth.store';
 import { useItemsStore } from '@/store/items.store';
-import { formatDate } from '@/utils/dates';
+import { formatDate, formatDateForReports } from '@/utils/dates';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { formatMoney } from '@/utils/utils';
@@ -24,6 +24,7 @@ import { X } from 'lucide-react';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import Pui from '@/themes/ui/p-ui';
+import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
 
 type UseDisclosureReturn = ReturnType<typeof useDisclosure>;
 
@@ -37,16 +38,16 @@ function AuxiliarBook({ disclosure }: Props) {
   const [loadingPdf, setLoadingPdf] = useState(false);
   const [accounts, setAccounts] = useState<Selection>(new Set([]));
   const {
-    getMajorAccounts,
-    majorAccounts,
     getItemsByDailyMajorAccount,
     dailyMajorItemsAccount,
     loadingDailyMajorAccount,
     loadingMajorAccount,
   } = useItemsStore();
 
+  const { account_catalog_pagination, getAccountCatalogs } = useAccountCatalogsStore();
+
   useEffect(() => {
-    getMajorAccounts();
+    getAccountCatalogs('', '');
   }, []);
 
   const { user } = useAuthStore();
@@ -249,7 +250,7 @@ function AuxiliarBook({ disclosure }: Props) {
             doc.setFont('helvetica', 'normal');
 
             doc.text(
-              'del 3 de Marzo de 2024 al 3 de Marzo de 2025',
+              formatDateForReports(startDate, endDate),
               doc.internal.pageSize.width / 2,
               20,
               {
@@ -414,15 +415,17 @@ function AuxiliarBook({ disclosure }: Props) {
                 selectedKeys={accounts}
                 onSelectionChange={setAccounts}
               >
-                {majorAccounts.map((account) => (
-                  <SelectItem
-                    className="dark:text-white"
-                    key={account.code}
-                    textValue={`${account.code} - ${account.name}`}
-                  >
-                    {account.code} - {account.name}
-                  </SelectItem>
-                ))}
+                {account_catalog_pagination.accountCatalogs
+                  .sort((a, b) => a.code.localeCompare(b.code))
+                  .map((account) => (
+                    <SelectItem
+                      className="dark:text-white"
+                      key={account.code}
+                      textValue={`${account.code} - ${account.name}`}
+                    >
+                      {account.code} - {account.name}
+                    </SelectItem>
+                  ))}
               </Select>
               <div className="mt-5">
                 <Input

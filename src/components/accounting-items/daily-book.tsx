@@ -9,7 +9,7 @@ import {
   ModalHeader,
   useDisclosure,
 } from '@heroui/react';
-import { formatDate } from '@/utils/dates';
+import { formatDate, formatDateForReports } from '@/utils/dates';
 import { useState } from 'react';
 import { useItemsStore } from '@/store/items.store';
 import { useAuthStore } from '@/store/auth.store';
@@ -43,14 +43,6 @@ function DailyBook({ disclosure }: Props) {
       : (user?.pointOfSale?.branch.transmitter.id ?? 0);
 
     getItemsByDates(transId, startDate, endDate);
-  };
-
-  const formatFecha = (fecha: string) => {
-    return new Date(fecha).toLocaleDateString('es-ES', {
-      day: '2-digit',
-      month: 'long',
-      year: 'numeric',
-    });
   };
 
   const [hasIncludeSignature, setHasIncludeSignature] = useState(false);
@@ -121,7 +113,7 @@ function DailyBook({ disclosure }: Props) {
       });
       doc.setFont('helvetica', 'normal');
       doc.text(
-        item ? `del ${formatFecha(startDate)} al ${formatFecha(endDate)}` : '',
+        item ? formatDateForReports(startDate, endDate) : '',
         doc.internal.pageSize.getWidth() / 2,
         25,
         {

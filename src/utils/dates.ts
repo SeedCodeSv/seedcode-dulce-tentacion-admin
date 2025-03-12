@@ -1,13 +1,13 @@
 import moment from 'moment-timezone';
-import { format } from "@formkit/tempo"
+import { format } from '@formkit/tempo';
 import 'moment/locale/es';
+import { DateTime } from 'luxon';
 
-const l = "es"
+const l = 'es';
 
 export const formatDateShort = (date: string) => {
-
-  return format(new Date(date), "MMMM DD YYYY", l)
-}
+  return format(new Date(date), 'MMMM DD YYYY', l);
+};
 
 export const formatDate = () => {
   const date = new Date();
@@ -108,7 +108,6 @@ export function shortMonth(numero: number): string {
   }
 }
 
-
 const getFormattedDate = (date: Date): string => {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -126,18 +125,18 @@ export const getInitialAndEndDate = () => {
 };
 
 export function formatDateToMMDDYYYY(date: string) {
-  return moment.tz(date, "America/El_Salvador").format("MM/DD/YYYY")
+  return moment.tz(date, 'America/El_Salvador').format('MM/DD/YYYY');
 }
 
 export function formatDateMMDDYYYY(day: number, month: number, year?: number): string {
-  const currentYear = new Date().getFullYear()
-  const finalYear = year || currentYear
+  const currentYear = new Date().getFullYear();
+  const finalYear = year || currentYear;
 
   // Asegurar que el día y el mes tengan dos dígitos
-  const formattedDay = day < 10 ? `0${day}` : day.toString()
-  const formattedMonth = month < 10 ? `0${month}` : month.toString()
+  const formattedDay = day < 10 ? `0${day}` : day.toString();
+  const formattedMonth = month < 10 ? `0${month}` : month.toString();
 
-  return `${formattedMonth}/${formattedDay}/${finalYear}`
+  return `${formattedMonth}/${formattedDay}/${finalYear}`;
 }
 // export function formatDateMMDDYYYY(day: number, month: number): string {
 //   const date = new Date()
@@ -149,3 +148,9 @@ export function formatDateMMDDYYYY(day: number, month: number, year?: number): s
 
 //   return `${formattedMonth}/${formattedDay}/${year}`
 // }
+
+export const formatDateForReports = (startDate: string, endDate: string) => {
+  const formatDate = (date: DateTime) => date.setLocale('es').toFormat("d 'de' LLLL 'de' yyyy");
+  const formattedRange = `del ${formatDate(DateTime.fromISO(startDate))} al ${formatDate(DateTime.fromISO(endDate))}`;
+  return formattedRange;
+};
