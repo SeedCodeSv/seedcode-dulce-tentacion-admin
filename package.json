@@ -6,7 +6,7 @@
    "scripts": {
       "dev": "vite --host",
       "build:dev": "tsc && vite build",
-      "build": "tsc -b && vite build",
+      "build": "swc --no-swcrc --out-dir dist src/**/*.ts src/**/*.tsx && vite build --mode production",
       "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
       "preview": "vite preview",
       "format": "prettier . --write --ignore-path .gitignore",
@@ -22,7 +22,7 @@
       "@formkit/tempo": "^0.1.2",
       "@headlessui/react": "^1.7.19",
       "@heroui/react": "2.7.5",
-      "apexcharts": "^3.50.0",
+      "apexcharts": "^4.5.0",
       "axios": "^1.6.8",
       "browser-image-compression": "^2.0.2",
       "class-variance-authority": "^0.7.0",
@@ -50,7 +50,7 @@
       "qs": "^6.12.1",
       "react": "^18.2.0",
       "react-advanced-cropper": "^0.19.6",
-      "react-apexcharts": "^1.4.1",
+      "react-apexcharts": "^1.7.0",
       "react-dom": "^18.2.0",
       "react-helmet-async": "^2.0.5",
       "react-icons": "^5.3.0",
@@ -100,7 +100,7 @@
       "tailwindcss": "^3.4.1",
       "typescript": "^5.2.2",
       "vite": "^5.1.6",
-      "vite-plugin-pwa": "^0.20.0"
+      "vite-plugin-pwa": "^0.21.1"
    },
    "config": {
       "commitizen": {
