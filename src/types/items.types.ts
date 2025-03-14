@@ -108,7 +108,18 @@ export interface AccountCatalogDailyMajor {
   name: string;
 }
 
-export interface GetMajorAccounts{
-  ok: boolean,
-  majorAccounts: MajorAccount[]
+export interface GetMajorAccounts {
+  ok: boolean;
+  majorAccounts: MajorAccount[];
+}
+
+export interface AccountCatalogWithTotals extends AccountCatalog {
+  totalDebe: number;
+  totalHaber: number;
+  saldoAnterior: number;
+}
+
+export interface GetItemsForBalance {
+  accounts: AccountCatalogWithTotals[];
+  ok: boolean;
 }

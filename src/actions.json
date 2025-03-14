@@ -199,24 +199,6 @@
       ]
     },
     {
-      "view": "Inicio",
-      "actions": [
-        "Mostrar",
-        "Agregar",
-        "Editar",
-        "Eliminar"
-      ]
-    },
-    {
-      "view": "Inicio de ventas",
-      "actions": [
-        "Mostrar",
-        "Agregar",
-        "Editar",
-        "Eliminar"
-      ]
-    },
-    {
       "view": "Cargos de Empleados",
       "actions": [
         "Mostrar",

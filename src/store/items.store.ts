@@ -5,6 +5,7 @@ import {
   get_items_by_daily_major_account,
   get_items_by_dates,
   get_items_by_major,
+  get_items_for_balance,
   get_list_of_major,
 } from '@/services/items.service';
 
@@ -19,7 +20,25 @@ export const useItemsStore = create<IItemsState>((set) => ({
   loadingDailyMajorAccount: false,
   majorAccounts: [],
   loadingMajorAccounts: false,
-  getMajorAccounts(){
+  accounts: [],
+  loadingAccounts: false,
+  getItemsForBalance(transmitterId, startDate, endDate) {
+    set({ loadingAccounts: true });
+    return get_items_for_balance(transmitterId, startDate, endDate)
+      .then((res) => {
+        set({
+          accounts: res.data.accounts,
+          loadingAccounts: false,
+        });
+
+        return res.data.accounts;
+      })
+      .catch(() => {
+        set({ loadingAccounts: false });
+        return [];
+      });
+  },
+  getMajorAccounts() {
     set({ loadingMajorAccounts: true });
     get_list_of_major()
       .then((res) => {

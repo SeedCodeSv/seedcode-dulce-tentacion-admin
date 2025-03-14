@@ -1,4 +1,4 @@
-import { GetItemsByDailyMajor, GetItemsByMajor, GetMajorAccounts, IGetItemsDates } from '@/types/items.types';
+import { GetItemsByDailyMajor, GetItemsByMajor, GetItemsForBalance, GetMajorAccounts, IGetItemsDates } from '@/types/items.types';
 import { API_URL } from '@/utils/constants';
 import axios from 'axios';
 
@@ -46,5 +46,11 @@ export const get_items_by_daily_major_account = (
 export const get_list_of_major = () => {
   return axios.get<GetMajorAccounts>(
     API_URL + `/reports/listOfMajor`
+  );
+};
+
+export const get_items_for_balance = (transmitterId: number, startDate: string, endDate: string) => {
+  return axios.get<GetItemsForBalance>(
+    API_URL + `/reports/itemsByBalanceList/${transmitterId}?startDate=${startDate}&endDate=${endDate}`
   );
 };

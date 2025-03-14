@@ -1,4 +1,4 @@
-import { Item, MajorAccount, MajorAccountDailyMajor } from '@/types/items.types';
+import { AccountCatalogWithTotals, Item, MajorAccount, MajorAccountDailyMajor } from '@/types/items.types';
 
 export interface IItemsState {
   items: Item[];
@@ -11,6 +11,8 @@ export interface IItemsState {
   loadingDailyMajorAccount: boolean;
   majorAccounts: MajorAccount[];
   loadingMajorAccounts: boolean;
+  accounts: AccountCatalogWithTotals[];
+  loadingAccounts: boolean;
   getMajorAccounts: () => void;
   getItemsByMajor: (transId: number, startDate: string, endDate: string) => Promise<MajorAccount[]>;
   getItemsByDates: (transId: number, startDate: string, endDate: string) => Promise<Item[]>;
@@ -25,4 +27,5 @@ export interface IItemsState {
     endDate: string,
     account: string[]
   ) => Promise<MajorAccountDailyMajor[]>;
+  getItemsForBalance: (transmitterId: number, startDate: string, endDate: string) => Promise<AccountCatalogWithTotals[]>;
 }
