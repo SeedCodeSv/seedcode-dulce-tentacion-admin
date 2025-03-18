@@ -4,7 +4,7 @@ import ButtonUi from '@/themes/ui/button-ui';
 import Pui from '@/themes/ui/p-ui';
 import { AccountCatalogWithTotals } from '@/types/items.types';
 import { Colors } from '@/types/themes.types';
-import { formatDate } from '@/utils/dates';
+import { formatDate, formatDateForReports } from '@/utils/dates';
 import { formatMoney } from '@/utils/utils';
 import {
   Button,
@@ -366,7 +366,7 @@ function TrialBalance({ disclosure }: Props) {
           jsPdf.setFont('helvetica', 'normal');
 
           jsPdf.text(
-            'del 3 de Marzo de 2024 al 3 de Marzo de 2025',
+            formatDateForReports(startDate, endDate),
             jsPdf.internal.pageSize.width / 2,
             20,
             {
