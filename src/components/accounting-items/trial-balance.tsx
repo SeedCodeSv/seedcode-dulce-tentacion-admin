@@ -105,6 +105,11 @@ function TrialBalance({ disclosure }: Props) {
           totalDebe: isNormal ? totalDebe : 0,
           totalHaber: isNormal ? totalHaber : totalHaber - totalDebe,
         };
+      case '3':
+        return {
+          totalDebe: isNormal ? totalDebe : 0,
+          totalHaber: isNormal ? totalHaber : totalHaber - totalDebe,
+        };
       case '4':
         return {
           totalDebe: isNormal ? totalDebe : totalDebe - totalHaber,
@@ -129,18 +134,7 @@ function TrialBalance({ disclosure }: Props) {
     saldoAnterior: number,
     type: string
   ) => {
-    switch (type) {
-      case '1':
-        return calcSaldoDorH(totalDebe, totalHaber, type).totalDebe + saldoAnterior;
-      case '2':
-        return calcSaldoDorH(totalDebe, totalHaber, type).totalHaber + saldoAnterior;
-      case '4':
-        return calcSaldoDorH(totalDebe, totalHaber, type).totalDebe + saldoAnterior;
-      case '5':
-        return calcSaldoDorH(totalDebe, totalHaber, type).totalHaber + saldoAnterior;
-      default:
-        return 0;
-    }
+    return calcSaldoDorH(totalDebe, totalHaber, type).totalDebe + saldoAnterior;
   };
 
   const generatePDF = (type: 'show' | 'download') => {
@@ -164,7 +158,7 @@ function TrialBalance({ disclosure }: Props) {
 
           if (
             balanceComprobatorio &&
-            (it.code.slice(0, 1) === '2' || it.code.slice(0, 1) === '5')
+            (it.code.slice(0, 1) === '2' || it.code.slice(0, 1) === '5' || it.code.slice(0, 1) === '3')
           ) {
             const saldoAnterior = -Number(it.saldoAnterior);
 
@@ -247,6 +241,8 @@ function TrialBalance({ disclosure }: Props) {
             return 'Activo';
           case '2':
             return 'Pasivo';
+          case '3':
+            return 'Patrimonio';
           case '4':
             return 'Gastos';
           case '5':
