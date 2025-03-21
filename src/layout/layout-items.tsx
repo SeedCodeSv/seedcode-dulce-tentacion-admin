@@ -150,7 +150,7 @@ export const LayoutItems = (props: Props) => {
   const linkReports = [
     {
       viewName: 'Ventas por Periodo',
-      to: '/reports/sales-by-period',
+      to: '/sales-by-period',
       icon: Calendar,
       label: 'Ventas por Periodo',
     },
