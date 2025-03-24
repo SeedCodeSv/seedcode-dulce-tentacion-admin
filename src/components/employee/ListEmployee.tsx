@@ -39,7 +39,6 @@ import SmPagination from '../global/SmPagination';
 import HeadlessModal from '../global/HeadlessModal';
 import { useNavigate } from 'react-router';
 import UpdateEmployee from './update-employee';
-import TooltipGlobal from '../global/TooltipGlobal';
 import NO_DATA from '@/assets/svg/no_data.svg';
 import useWindowSize from '@/hooks/useWindowSize';
 import { useAuthStore } from '@/store/auth.store';
@@ -740,7 +739,7 @@ function ListEmployee({ actions }: Props) {
                   <AddButton
                     onClick={() => {
                       modalAdd.onOpen();
-                      navigate('/AddEmployee');
+                      navigate('/add-employee');
                       setSelectedEmployee(undefined);
                     }}
                   />
@@ -1032,18 +1031,16 @@ function ListEmployee({ actions }: Props) {
                                       <div className="flex w-full gap-5">
                                         {employee.isActive && actions.includes('Editar') && (
                                           <>
-                                            <TooltipGlobal text="Editar">
-                                              <ButtonUi
-                                                className="border border-white"
-                                                onClick={() => {
-                                                  setDataUpdate(employee);
-                                                }}
-                                                isIconOnly
-                                                theme={Colors.Success}
-                                              >
-                                                <EditIcon size={20} />
-                                              </ButtonUi>
-                                            </TooltipGlobal>
+                                            <ButtonUi
+                                              className="border border-white"
+                                              onClick={() => {
+                                                setDataUpdate(employee);
+                                              }}
+                                              isIconOnly
+                                              theme={Colors.Success}
+                                            >
+                                              <EditIcon size={20} />
+                                            </ButtonUi>
                                           </>
                                         )}
 
@@ -1052,31 +1049,27 @@ function ListEmployee({ actions }: Props) {
                                         )}
                                         {actions.includes('Contrato de Trabajo') &&
                                           employee.isActive && (
-                                            <TooltipGlobal text="Generar Contrato de Trabajo">
-                                              <ButtonUi
-                                                className="border border-white"
-                                                onPress={() => OpenPdf(employee)}
-                                                isIconOnly
-                                                theme={Colors.Info}
-                                              >
-                                                <FileText size={20} />
-                                              </ButtonUi>
-                                            </TooltipGlobal>
+                                            <ButtonUi
+                                              className="border border-white"
+                                              onPress={() => OpenPdf(employee)}
+                                              isIconOnly
+                                              theme={Colors.Info}
+                                            >
+                                              <FileText size={20} />
+                                            </ButtonUi>
                                           )}
 
                                         {!employee.isActive && (
                                           <>
                                             {actions.includes('Activar') && (
-                                              <TooltipGlobal text="Activar">
-                                                <Button
-                                                  className="border border-white"
-                                                  onPress={() => handleActivate(employee.id)}
-                                                  isIconOnly
-                                                  style={global_styles().thirdStyle}
-                                                >
-                                                  <RefreshCcw />
-                                                </Button>
-                                              </TooltipGlobal>
+                                              <Button
+                                                className="border border-white"
+                                                onPress={() => handleActivate(employee.id)}
+                                                isIconOnly
+                                                style={global_styles().thirdStyle}
+                                              >
+                                                <RefreshCcw />
+                                              </Button>
                                             )}
                                           </>
                                         )}

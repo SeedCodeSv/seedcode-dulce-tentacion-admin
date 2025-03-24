@@ -132,9 +132,16 @@ function TrialBalance({ disclosure }: Props) {
     totalDebe: number,
     totalHaber: number,
     saldoAnterior: number,
-    type: string
+    type: string,
+    isNormal: boolean = false,
+    isbalance: boolean = false
   ) => {
-    return calcSaldoDorH(totalDebe, totalHaber, type).totalDebe + saldoAnterior;
+    if (isNormal || isbalance) {
+      const result = calcSaldoDorH(totalDebe, totalHaber, type, isNormal);
+      const saldo = result.totalHaber - result.totalDebe + saldoAnterior;
+      return saldo;
+    }
+    return calcSaldoDorH(totalDebe, totalHaber, type, isNormal).totalDebe + saldoAnterior;
   };
 
   const generatePDF = (type: 'show' | 'download') => {
@@ -150,15 +157,19 @@ function TrialBalance({ disclosure }: Props) {
         .sort((a, b) => a.code.localeCompare(b.code))
         .map((it, index) => {
           const newSaldo = calcSaldoWithSaldoAnterior(
-            +it.totalDebe,
-            +it.totalHaber,
-            +it.saldoAnterior,
-            it.code.slice(0, 1)
+            Number(it.totalDebe),
+            Number(it.totalHaber),
+            Number(it.saldoAnterior),
+            it.code.slice(0, 1),
+            !balance && !balanceComprobatorio,
+            balance
           );
 
           if (
             balanceComprobatorio &&
-            (it.code.slice(0, 1) === '2' || it.code.slice(0, 1) === '5' || it.code.slice(0, 1) === '3')
+            (it.code.slice(0, 1) === '2' ||
+              it.code.slice(0, 1) === '5' ||
+              it.code.slice(0, 1) === '3')
           ) {
             const saldoAnterior = -Number(it.saldoAnterior);
 
@@ -187,6 +198,13 @@ function TrialBalance({ disclosure }: Props) {
           }
 
           if (balanceComprobatorio && index === 0) {
+            sInicialFinal = Number(it.saldoAnterior);
+            tDebeFinal = Number(it.totalDebe);
+            tHaberFinal = Number(it.totalHaber);
+            sFinalFinal = Number(newSaldo);
+          }
+
+          if(balance) {
             sInicialFinal = Number(it.saldoAnterior);
             tDebeFinal = Number(it.totalDebe);
             tHaberFinal = Number(it.totalHaber);
@@ -261,7 +279,9 @@ function TrialBalance({ disclosure }: Props) {
         +item.items[0].totalDebe,
         +item.items[0].totalHaber,
         +item.items[0].saldoAnterior,
-        item.code.slice(0, 1)
+        item.code.slice(0, 1),
+        !balance && !balanceComprobatorio,
+        balance
       );
 
       const foot = balanceComprobatorio
