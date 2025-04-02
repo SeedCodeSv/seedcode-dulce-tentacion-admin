@@ -13,7 +13,7 @@ import ButtonUi from '@/themes/ui/button-ui';
 
 function SearchProduct(props: IPropsSearchProduct) {
   const { getSubcategories, subcategories } = useSubCategoriesStore();
-  const [categoryId, setCategoryId] = useState(0);
+  const [categoryId, setCategoryId] = useState(0)
   const { sub_categories, getSubCategoriesList } = useSubCategoryStore();
 
   useEffect(() => {
@@ -52,13 +52,14 @@ function SearchProduct(props: IPropsSearchProduct) {
           <div className="flex flex-col  gap-2">
             <Input
               startContent={<SearchIcon />}
-              className="w-full border dark:border-white rounded-xl  dark:text-white"
+              className="w-full border text-black dark:border-white rounded-xl  dark:text-white"
               variant="bordered"
               labelPlacement="outside"
               label="Nombre"
               classNames={{
                 label: 'font-semibold text-gray-700',
                 inputWrapper: 'pr-0',
+            
               }}
               value={search}
               onChange={(e) => {
@@ -72,7 +73,7 @@ function SearchProduct(props: IPropsSearchProduct) {
             />
             <Input
               startContent={<SearchIcon />}
-              className="w-full border  dark:border-white rounded-xl dark:text-white"
+              className="w-full border text-black dark:border-white rounded-xl dark:text-white"
               variant="bordered"
               labelPlacement="outside"
               label="Código"
@@ -90,7 +91,7 @@ function SearchProduct(props: IPropsSearchProduct) {
                 setCode('');
               }}
             />
-            <label className="font-semibold dark:text-white text-gray-700">Categoría</label>
+           <label className="font-semibold dark:text-white text-gray-700">Categoría</label>
             <Autocomplete
               onSelectionChange={(key) => {
                 if (key) {

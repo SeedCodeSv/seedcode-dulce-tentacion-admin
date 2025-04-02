@@ -116,7 +116,7 @@ function ListProducts({ actions }: Props) {
             <div className="grid w-full grid-cols-5 gap-3 items-end">
               <Input
                 startContent={<SearchIcon />}
-                className="w-full dark:text-white border border-white rounded-xl"
+                className="w-full text-gray-900 dark:text-white  border border-white rounded-xl"
                 variant="bordered"
                 labelPlacement="outside"
                 label="Nombre"
