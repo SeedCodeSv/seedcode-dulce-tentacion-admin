@@ -13,7 +13,6 @@ import { useViewsStore } from '@/store/views.store';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { useShoppingStore } from '@/store/shopping.store';
-import { useAuthStore } from '@/store/auth.store';
 import { useExcludedSubjectStore } from '@/store/excluded_subjects.store';
 import { ArrowLeft, Printer, X } from 'lucide-react';
 import { generate_shopping_excel } from './excel_functions/shopping.excel';
@@ -23,6 +22,7 @@ import FullPageLayout from '@/components/global/FullOverflowLayout';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import ThGlobal from '@/themes/ui/th-global';
+import { get_user } from '@/storage/localStorage';
 
 function ShoppingBookIVA() {
   const [monthSelected, setMonthSelected] = useState(new Date().getMonth() + 1);
@@ -30,7 +30,8 @@ function ShoppingBookIVA() {
   const [loadingPdf, setLoadingPdf] = useState(false);
   const showFullLayout = useDisclosure();
   const [typeOverlay, setTypeOverlay] = useState(0);
-  const { user } = useAuthStore();
+
+  const transmiter = get_user();
 
   const currentYear = new Date().getFullYear();
   const years = [
@@ -44,11 +45,11 @@ function ShoppingBookIVA() {
   const { excluded_subjects_month, getExcludedSubjectByMonth } = useExcludedSubjectStore();
   useEffect(() => {
     onGetShoppingByMonth(
-      Number(user?.correlative?.branchId),
+      Number(transmiter?.pointOfSale?.branch.transmitter.id || transmiter?.correlative?.branch.transmitter.id),
       monthSelected <= 9 ? '0' + monthSelected : monthSelected.toString(),
       yearSelected
     );
-    getExcludedSubjectByMonth(Number(user?.correlative?.branchId), monthSelected, yearSelected);
+    getExcludedSubjectByMonth(Number(transmiter?.pointOfSale?.branch.transmitter.id || transmiter?.correlative?.branch.transmitter.id), monthSelected, yearSelected);
   }, [monthSelected, yearSelected]);
 
   const formatData = useMemo(() => {

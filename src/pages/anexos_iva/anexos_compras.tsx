@@ -3,17 +3,20 @@ import { formatCurrency } from '@/utils/dte';
 import { Button, Select, SelectItem } from "@heroui/react";
 import { useEffect, useState } from 'react';
 import { csvmaker } from './utils';
-import { useAuthStore } from '@/store/auth.store';
+// import { useAuthStore } from '@/store/auth.store';
 import { PiFileCsv, PiMicrosoftExcelLogoBold } from 'react-icons/pi';
 import { generate_anexe_shopping } from '@/utils/utils';
 import { months } from '@/utils/constants';
 import { useShoppingStore } from '@/store/shopping.store';
 import NO_DATA from "../../assets/no.png"
+import { get_user } from '@/storage/localStorage';
 
 function AnexosCompras() {
   const [monthSelected, setMonthSelected] = useState(new Date().getMonth() + 1)
   const { shopping_by_months, onGetShoppingByMonth, loading_shopping } = useShoppingStore()
-  const { user } = useAuthStore()
+  // const { user } = useAuthStore()
+
+  const transmiter = get_user();
 
   const currentYear = new Date().getFullYear();
   const years = [
@@ -24,7 +27,7 @@ function AnexosCompras() {
 
   useEffect(() => {
     onGetShoppingByMonth(
-      Number(user?.correlative?.branchId),
+      Number(transmiter?.pointOfSale?.branch.transmitter.id || transmiter?.correlative?.branch.transmitter.id),
       monthSelected <= 9 ? "0" + monthSelected : monthSelected.toString(), yearSelected
     )
   }, [monthSelected, yearSelected])
