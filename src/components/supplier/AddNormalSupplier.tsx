@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useBillingStore } from '../../store/facturation/billing.store';
-import { Autocomplete, AutocompleteItem, Button, Input, Textarea } from "@heroui/react";
+import { Autocomplete, AutocompleteItem, Button, Input, Textarea } from '@heroui/react';
 import { global_styles } from '../../styles/global.styles';
 import { useSupplierStore } from '../../store/supplier.store';
 import Layout from '@/layout/Layout';
@@ -23,11 +23,13 @@ function AddNormalSupplier() {
   } = useBillingStore();
 
   const { getAccountCatalogs } = useAccountCatalogsStore();
-
+  const { user } = useAuthStore();
   useEffect(() => {
     getCat022TipoDeDocumentoDeIde();
     getCat012Departamento();
-    getAccountCatalogs('', '');
+    const transId =
+      user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0;
+    getAccountCatalogs(transId, '', '');
   }, []);
   useEffect(() => {
     if (selectedCodeDep !== '0') {
@@ -35,7 +37,7 @@ function AddNormalSupplier() {
     }
     getCat013Municipios(selectedCodeDep);
   }, [selectedCodeDep]);
-  const { user } = useAuthStore();
+
   const { onPostSupplier } = useSupplierStore();
   const navigate = useNavigate();
   return (
@@ -157,10 +159,7 @@ function AddNormalSupplier() {
                     className="dark:text-white font-semibold"
                   >
                     {cat_022_tipo_de_documentoDeIde.map((dep) => (
-                      <AutocompleteItem
-                        key={dep.codigo}
-                        className="dark:text-white"
-                      >
+                      <AutocompleteItem key={dep.codigo} className="dark:text-white">
                         {dep.valores}
                       </AutocompleteItem>
                     ))}
@@ -230,10 +229,7 @@ function AddNormalSupplier() {
                     className="dark:text-white font-semibold"
                   >
                     {cat_012_departamento.map((dep) => (
-                      <AutocompleteItem
-                        key={dep.codigo}
-                        className="dark:text-white"
-                      >
+                      <AutocompleteItem key={dep.codigo} className="dark:text-white">
                         {dep.valores}
                       </AutocompleteItem>
                     ))}
@@ -264,10 +260,7 @@ function AddNormalSupplier() {
                     errorMessage={touched.municipio && errors.municipio}
                   >
                     {cat_013_municipios.map((dep) => (
-                      <AutocompleteItem
-                        key={dep.codigo}
-                        className="dark:text-white"
-                      >
+                      <AutocompleteItem key={dep.codigo} className="dark:text-white">
                         {dep.valores}
                       </AutocompleteItem>
                     ))}

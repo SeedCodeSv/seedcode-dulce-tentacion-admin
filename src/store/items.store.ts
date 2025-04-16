@@ -27,7 +27,7 @@ export const useItemsStore = create<IItemsState>((set) => ({
     return get_items_for_balance(transmitterId, startDate, endDate)
       .then((res) => {
         set({
-          accounts: res.data.accounts,
+          accounts: res.data.accounts,  
           loadingAccounts: false,
         });
 
@@ -38,9 +38,9 @@ export const useItemsStore = create<IItemsState>((set) => ({
         return [];
       });
   },
-  getMajorAccounts() {
+  getMajorAccounts(transId) {
     set({ loadingMajorAccounts: true });
-    get_list_of_major()
+    get_list_of_major(transId)
       .then((res) => {
         set({
           majorAccounts: res.data.majorAccounts,

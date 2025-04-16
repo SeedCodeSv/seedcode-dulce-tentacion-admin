@@ -5,6 +5,7 @@ export interface accountCatalogsStore {
     loading: boolean;
     account_catalog_pagination: IGetAccountCatalog;
     getAccountCatalogs: (
+        id:number,
         name : string,
         code: string,
     ) => void;

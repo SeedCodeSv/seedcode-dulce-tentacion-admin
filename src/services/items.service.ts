@@ -43,9 +43,9 @@ export const get_items_by_daily_major_account = (
   );
 };
 
-export const get_list_of_major = () => {
+export const get_list_of_major = (id: number) => {
   return axios.get<GetMajorAccounts>(
-    API_URL + `/reports/listOfMajor`
+    API_URL + `/reports/listOfMajor/${id}`
   );
 };
 

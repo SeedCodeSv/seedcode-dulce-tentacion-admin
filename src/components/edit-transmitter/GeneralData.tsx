@@ -7,7 +7,7 @@ import {
   ModalFooter,
   ModalHeader,
   useDisclosure,
-} from "@heroui/react";
+} from '@heroui/react';
 import { Search } from 'lucide-react';
 import useGlobalStyles from '../global/global.styles';
 import { useFormik } from 'formik';
@@ -47,7 +47,9 @@ function GeneralData() {
   const navigation = useNavigate();
 
   useEffect(() => {
-    getAccountCatalogs('', '');
+    const transmitterId =
+      user?.pointOfSale?.branch.transmitter.id ?? user?.correlative?.branch.transmitter.id;
+    getAccountCatalogs(transmitterId ?? 0, '', '');
   }, []);
 
   const formik = useFormik({

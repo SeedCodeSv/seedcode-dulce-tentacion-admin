@@ -2,6 +2,7 @@ import { createBrowserRouter, createRoutesFromElements, Route } from 'react-rout
 import { lazy } from 'react';
 import { IRoleAction } from '@/types/role-actions.types';
 import AnimatedRoute from './animated-route';
+import VerificadorCorrelativos from '@/pages/verificar-faltantes';
 
 const AccountingItems = lazy(() => import('@/pages/contablilidad/accounting-items'));
 const AddAccountingItems = lazy(() => import('@/pages/contablilidad/add-accounting-items'));
@@ -588,6 +589,14 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
         element={
           <AnimatedRoute>
             <AnexoCcfe />
+          </AnimatedRoute>
+        }
+      />
+      <Route
+        path="/verificar-faltantes"
+        element={
+          <AnimatedRoute>
+            <VerificadorCorrelativos />
           </AnimatedRoute>
         }
       />

@@ -3,7 +3,7 @@ import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
 import { useAuthStore } from '@/store/auth.store';
 import { useSupplierStore } from '@/store/supplier.store';
 import { global_styles } from '@/styles/global.styles';
-import { Autocomplete, AutocompleteItem, Button, Input, Textarea } from "@heroui/react";
+import { Autocomplete, AutocompleteItem, Button, Input, Textarea } from '@heroui/react';
 import { useFormik } from 'formik';
 import { ArrowLeft } from 'lucide-react';
 import { useEffect, useState, useMemo } from 'react';
@@ -29,7 +29,9 @@ function UpdateNormalSupplier() {
   const { getAccountCatalogs } = useAccountCatalogsStore();
 
   useEffect(() => {
-    getAccountCatalogs('', '');
+    const transId =
+      user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0;
+    getAccountCatalogs(transId, '', '');
   }, []);
 
   const municipios = useMemo(() => {
@@ -180,10 +182,7 @@ function UpdateNormalSupplier() {
                   errorMessage={formik.errors.tipoDocumento}
                 >
                   {services.get022TipoDeDocumentoDeIde().map((dep) => (
-                    <AutocompleteItem
-                      key={dep.codigo}
-                      className="dark:text-white"
-                    >
+                    <AutocompleteItem key={dep.codigo} className="dark:text-white">
                       {dep.valores}
                     </AutocompleteItem>
                   ))}
@@ -248,10 +247,7 @@ function UpdateNormalSupplier() {
                   errorMessage={formik.touched.departamento && formik.errors.departamento}
                 >
                   {services.get012Departamento().map((dep) => (
-                    <AutocompleteItem
-                      key={dep.codigo}
-                      className="dark:text-white"
-                    >
+                    <AutocompleteItem key={dep.codigo} className="dark:text-white">
                       {dep.valores}
                     </AutocompleteItem>
                   ))}
@@ -282,10 +278,7 @@ function UpdateNormalSupplier() {
                   errorMessage={formik.errors.municipio}
                 >
                   {municipios.map((mun) => (
-                    <AutocompleteItem
-                      key={mun.codigo}
-                      className="dark:text-white"
-                    >
+                    <AutocompleteItem key={mun.codigo} className="dark:text-white">
                       {mun.valores}
                     </AutocompleteItem>
                   ))}

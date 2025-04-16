@@ -1,10 +1,11 @@
 import { useFormikContext } from 'formik';
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
 import { EditSupplierPayload } from './types/edit-supplier';
-import { Autocomplete, AutocompleteItem, Input, Textarea } from "@heroui/react";
+import { Autocomplete, AutocompleteItem, Input, Textarea } from '@heroui/react';
 import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
 import { SelectedItem } from './select-account';
 import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
+import { useAuthStore } from '@/store/auth.store';
 
 interface Props {
   selectedDepartment: string | undefined;
@@ -16,8 +17,12 @@ function EditFormTributte({ selectedDepartment, setSelectedDepartment }: Props) 
   const services = useMemo(() => new SeedcodeCatalogosMhService(), []);
   const { getAccountCatalogs } = useAccountCatalogsStore();
 
+  const { user } = useAuthStore();
+
   useEffect(() => {
-    getAccountCatalogs('', '');
+    const transId =
+      user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0;
+    getAccountCatalogs(transId, '', '');
   }, []);
 
   const municipios = useMemo(() => {

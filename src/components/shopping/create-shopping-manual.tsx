@@ -1,7 +1,7 @@
 import { get_correlative_shopping } from '@/services/shopping.service';
 import { API_URL } from '@/utils/constants';
 import { formatDate } from '@/utils/dates';
-import { Modal, ModalContent, useDisclosure } from "@heroui/react";
+import { Modal, ModalContent, useDisclosure } from '@heroui/react';
 import axios from 'axios';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -59,7 +59,7 @@ function CreateShoppingManual() {
       user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0;
 
     getBranchesList();
-    getAccountCatalogs('', '');
+    getAccountCatalogs(trandId ?? 0, '', '');
     getFiscalDataAndParameter(trandId);
   }, []);
 
@@ -147,11 +147,11 @@ function CreateShoppingManual() {
       isExenta: false,
     },
   ]);
-  
+
   const [$exenta, setExenta] = useState('0');
   const addItem = (newItem?: Items, index?: number) => {
     const itemss = [...items];
-  
+
     if (newItem) {
       if (index !== undefined) {
         itemss[index] = newItem;
@@ -162,7 +162,7 @@ function CreateShoppingManual() {
         } else {
           newItem.codCuenta = '';
           newItem.descCuenta = '';
-          newItem.centroCosto = undefined
+          newItem.centroCosto = undefined;
           newItem.debe = '0';
           newItem.haber = '0';
           newItem.descTran = '';
@@ -171,7 +171,7 @@ function CreateShoppingManual() {
         }
         itemss.unshift(newItem);
       }
-      setItems([...itemss,]);
+      setItems([...itemss]);
     } else {
       itemss.unshift({
         no: items.length + 1,
@@ -208,30 +208,28 @@ function CreateShoppingManual() {
         return acc;
       }, 0)
       .toFixed(2);
-  
+
     return afecta;
   }, [items]);
 
   const $totalIva = useMemo(() => {
-    const iva = items
-      .slice(0, items.length - 2) 
-      .reduce((acc, item) => {
+    const iva =
+      items.slice(0, items.length - 2).reduce((acc, item) => {
         // Verificar si item.isExenta está en false
         if (!item.isExenta) {
           return acc + Number(item.debe) + Number(item.haber);
         }
         return acc;
-      }, 0) * 0.13; 
-  
-    return iva.toFixed(2); 
-  }, [items]);
+      }, 0) * 0.13;
 
+    return iva.toFixed(2);
+  }, [items]);
 
   const $totalItems = useMemo(() => {
     return (
       items
         .slice(0, items.length - 2)
-        .reduce((acc, item) => acc + Number(item.debe) + Number(item.haber), 0)  + +$totalIva
+        .reduce((acc, item) => acc + Number(item.debe) + Number(item.haber), 0) + +$totalIva
     ).toFixed(2);
   }, [items]);
 

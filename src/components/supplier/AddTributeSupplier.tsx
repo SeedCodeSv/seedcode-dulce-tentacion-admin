@@ -10,9 +10,8 @@ import {
   CardHeader,
   Input,
   Textarea,
-} from "@heroui/react";
+} from '@heroui/react';
 import { global_styles } from '../../styles/global.styles';
-import { get_user } from '../../storage/localStorage';
 import Layout from '@/layout/Layout';
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router';
@@ -22,6 +21,7 @@ import { supplierSchemaContribuyente } from './types/validation_supplier_yup.typ
 import { toast } from 'sonner';
 import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
 import { SelectedItem } from './select-account';
+import { useAuthStore } from '@/store/auth.store';
 function AddTributeSupplier() {
   const { getAccountCatalogs } = useAccountCatalogsStore();
 
@@ -36,18 +36,21 @@ function AddTributeSupplier() {
     getCat022TipoDeDocumentoDeIde,
     cat_022_tipo_de_documentoDeIde,
   } = useBillingStore();
+
+  const { user } = useAuthStore();
+
   useEffect(() => {
     getCat022TipoDeDocumentoDeIde();
     getCat012Departamento();
     getCat019CodigoActividadEconomica();
-
-    getAccountCatalogs('', '');
+    const transId =
+      user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0;
+    getAccountCatalogs(transId, '', '');
   }, []);
   const { onPostSupplier } = useSupplierStore();
   useEffect(() => {
     getCat013Municipios(selectedCodeDep);
   }, [selectedCodeDep]);
-  const user = get_user();
   const navigate = useNavigate();
 
   return (
@@ -167,10 +170,7 @@ function AddTributeSupplier() {
                         className="dark:text-white font-semibold"
                       >
                         {cat_022_tipo_de_documentoDeIde.map((dep) => (
-                          <AutocompleteItem
-                            key={dep.codigo}
-                            className="dark:text-white"
-                          >
+                          <AutocompleteItem key={dep.codigo} className="dark:text-white">
                             {dep.valores}
                           </AutocompleteItem>
                         ))}
@@ -272,10 +272,7 @@ function AddTributeSupplier() {
                         errorMessage={touched.descActividad && errors.descActividad}
                       >
                         {cat_019_codigo_de_actividad_economica.map((dep) => (
-                          <AutocompleteItem
-                            key={dep.codigo}
-                            className="dark:text-white"
-                          >
+                          <AutocompleteItem key={dep.codigo} className="dark:text-white">
                             {dep.valores}
                           </AutocompleteItem>
                         ))}
@@ -332,10 +329,7 @@ function AddTributeSupplier() {
                       errorMessage={touched.departamento && errors.departamento}
                     >
                       {cat_012_departamento.map((dep) => (
-                        <AutocompleteItem
-                          key={dep.codigo}
-                          className="dark:text-white"
-                        >
+                        <AutocompleteItem key={dep.codigo} className="dark:text-white">
                           {dep.valores}
                         </AutocompleteItem>
                       ))}
@@ -366,10 +360,7 @@ function AddTributeSupplier() {
                       }}
                     >
                       {cat_013_municipios.map((dep) => (
-                        <AutocompleteItem
-                          key={dep.codigo}
-                          className="dark:text-white"
-                        >
+                        <AutocompleteItem key={dep.codigo} className="dark:text-white">
                           {dep.valores}
                         </AutocompleteItem>
                       ))}

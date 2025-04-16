@@ -1,4 +1,4 @@
-import { Input, Button, Select, SelectItem, Switch } from "@heroui/react";
+import { Input, Button, Select, SelectItem, Switch } from '@heroui/react';
 import Layout from '@/layout/Layout';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -8,8 +8,9 @@ import { API_URL } from '@/utils/constants';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
-import ButtonUi from "@/themes/ui/button-ui";
-import { Colors } from "@/types/themes.types";
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
+import { useAuthStore } from '@/store/auth.store';
 
 function AddAccountCatalogs() {
   const navigate = useNavigate();
@@ -37,6 +38,8 @@ function AddAccountCatalogs() {
     { key: 'Gasto', value: 'Gasto', label: 'Gasto' },
   ];
 
+  const { user } = useAuthStore();
+
   const formik = useFormik({
     initialValues: {
       code: '',
@@ -60,8 +63,12 @@ function AddAccountCatalogs() {
     }),
     onSubmit(values, formikHelpers) {
       try {
+        const transmitterId =
+          user?.pointOfSale?.branch.transmitter.id ?? user?.correlative?.branch.transmitter.id;
+
         const payload: AccountCatalogPayload = {
           ...values,
+          transmitterId: Number(transmitterId ?? 0),
         };
         axios
           .post(API_URL + '/account-catalogs', payload)
@@ -181,9 +188,7 @@ function AddAccountCatalogs() {
                           errorMessage={formik.errors.type}
                         >
                           {AccountTypes.map((type) => (
-                            <SelectItem key={type.key}>
-                              {type.label}
-                            </SelectItem>
+                            <SelectItem key={type.key}>{type.label}</SelectItem>
                           ))}
                         </Select>
                       </div>
@@ -207,9 +212,7 @@ function AddAccountCatalogs() {
                           errorMessage={formik.errors.loadAs}
                         >
                           {UploadAS.map((type) => (
-                            <SelectItem key={type.key}>
-                              {type.label}
-                            </SelectItem>
+                            <SelectItem key={type.key}>{type.label}</SelectItem>
                           ))}
                         </Select>
                       </div>
@@ -233,9 +236,7 @@ function AddAccountCatalogs() {
                           errorMessage={formik.errors.item}
                         >
                           {Item.map((type) => (
-                            <SelectItem key={type.key}>
-                              {type.label}
-                            </SelectItem>
+                            <SelectItem key={type.key}>{type.label}</SelectItem>
                           ))}
                         </Select>
                       </div>
@@ -256,7 +257,12 @@ function AddAccountCatalogs() {
                       </div>
                     </div>
                     <div className="pt-6 pb-2 w-full flex justify-end">
-                      <ButtonUi theme={Colors.Primary} type="submit" isLoading={formik.isSubmitting} className="px-16">
+                      <ButtonUi
+                        theme={Colors.Primary}
+                        type="submit"
+                        isLoading={formik.isSubmitting}
+                        className="px-16"
+                      >
                         Guardar
                       </ButtonUi>
                     </div>

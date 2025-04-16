@@ -56,7 +56,7 @@ function AddItemsBySales() {
       : user?.pointOfSale?.branch.transmitter.id;
     getBranchesList();
     getFiscalDataAndParameter(transId ?? 0);
-    getAccountCatalogs('', '');
+    getAccountCatalogs(transId ?? 0, '', '');
     getListTypeOfAccount();
   }, []);
 
@@ -240,7 +240,12 @@ function AddItemsBySales() {
     }
 
     const listBranches = Array.from(branches) as number[];
-    const existsPeriod = await find_period(startDate, endDate, listBranches);
+
+    const transId = user?.correlative
+      ? user?.correlative.branch.transmitter.id
+      : user?.pointOfSale?.branch.transmitter.id;
+
+    const existsPeriod = await find_period(transId ?? 0, startDate, endDate, listBranches);
 
     if (existsPeriod && existsPeriod.data.period) {
       toast.warning('Ya existe un periodo para estas fechas', {

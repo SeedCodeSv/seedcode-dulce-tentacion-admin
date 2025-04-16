@@ -45,12 +45,13 @@ function AuxiliarBook({ disclosure }: Props) {
   } = useItemsStore();
 
   const { account_catalog_pagination, getAccountCatalogs } = useAccountCatalogsStore();
+  const { user } = useAuthStore();
 
   useEffect(() => {
-    getAccountCatalogs('', '');
+    const trandId =
+      user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0;
+    getAccountCatalogs(trandId, '', '');
   }, []);
-
-  const { user } = useAuthStore();
 
   const handleGetItems = () => {
     const transId = user?.correlative

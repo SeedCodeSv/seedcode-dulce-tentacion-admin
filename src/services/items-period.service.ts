@@ -3,7 +3,7 @@ import { IFindPeriod } from '@/types/items-period.types';
 import { API_URL } from '@/utils/constants';
 import axios from 'axios';
 
-export const find_period = (startDate: string, endDate: string, branches: number[]) => {
+export const find_period = (transId: number, startDate: string, endDate: string, branches: number[]) => {
   const params = new URLSearchParams();
   params.append('startDate', startDate);
   params.append('endDate', endDate);
@@ -11,7 +11,7 @@ export const find_period = (startDate: string, endDate: string, branches: number
   const token = get_token() ?? '';
 
   branches.forEach((branch) => params.append('branches', branch.toString()));
-  return axios.get<IFindPeriod>(API_URL + `/items-period/check-period?${params.toString()}`, {
+  return axios.get<IFindPeriod>(API_URL + `/items-period/check-period/${transId}?${params.toString()}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

@@ -13,7 +13,7 @@ export interface IItemsState {
   loadingMajorAccounts: boolean;
   accounts: AccountCatalogWithTotals[];
   loadingAccounts: boolean;
-  getMajorAccounts: () => void;
+  getMajorAccounts: (transId: number) => void;
   getItemsByMajor: (transId: number, startDate: string, endDate: string) => Promise<MajorAccount[]>;
   getItemsByDates: (transId: number, startDate: string, endDate: string) => Promise<Item[]>;
   getItemsByDailyMajor: (

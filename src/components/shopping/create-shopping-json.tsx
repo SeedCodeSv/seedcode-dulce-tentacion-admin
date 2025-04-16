@@ -123,7 +123,7 @@ const JSONMode = () => {
           ? user.pointOfSale.branch.transmitter.id
           : 0;
       getFiscalDataAndParameter(transId);
-      getAccountCatalogs('', '');
+      getAccountCatalogs(transId ?? 0, '', '');
       getBranchesList();
     }
   }, [user]);

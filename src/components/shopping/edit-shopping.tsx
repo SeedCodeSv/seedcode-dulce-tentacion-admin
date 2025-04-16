@@ -58,12 +58,15 @@ function EditShopping() {
   const isDisabled = controlNumber?.toUpperCase().startsWith('DTE');
   const { getFiscalDataAndParameter, fiscalDataAndParameter } = useFiscalDataAndParameterStore();
 
+  const { user } = useAuthStore();
+
   useEffect(() => {
     getShoppingDetails(Number(id));
     getBranchesList();
-    getAccountCatalogs('', '');
     const transmitterId =
       user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0;
+    getAccountCatalogs(transmitterId, '', '');
+
     getFiscalDataAndParameter(transmitterId);
   }, []);
 
@@ -78,8 +81,6 @@ function EditShopping() {
   const filteredTipoDoc = useMemo(() => {
     return tiposDoc.filter((item) => ['03', '06', '05'].includes(item.codigo));
   }, []);
-
-  const { user } = useAuthStore();
 
   const [hasDetails, setHasDetails] = useState(false);
 

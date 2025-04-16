@@ -38,6 +38,6 @@ export interface AccountCatalogPayload {
   majorAccount: string
   name: string
   type: string
-
+  transmitterId: number
 }
 

@@ -30,6 +30,7 @@ import Pagination from '@/components/global/Pagination';
 import ThGlobal from '@/themes/ui/th-global';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
+import { useAuthStore } from '@/store/auth.store';
 
 function EditAccountingItems() {
   const { getAccountCatalogs } = useAccountCatalogsStore();
@@ -40,8 +41,12 @@ function EditAccountingItems() {
   const [selectedType, setSelectedType] = useState(0);
   const [description, setDescription] = useState('');
 
+  const { user } = useAuthStore();
+
   useEffect(() => {
-    getAccountCatalogs('', '');
+    const transId =
+      user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0;
+    getAccountCatalogs(transId ?? 0, '', '');
     getBranchesList();
     getListTypeOfAccount();
   }, []);
@@ -465,7 +470,12 @@ function EditAccountingItems() {
                   </table>
                 </div>
                 <div className="flex justify-end mt-3">
-                  <ButtonUi className='px-20' isLoading={loading} theme={Colors.Primary} onPress={() => handleSave()}>
+                  <ButtonUi
+                    className="px-20"
+                    isLoading={loading}
+                    theme={Colors.Primary}
+                    onPress={() => handleSave()}
+                  >
                     Guardar
                   </ButtonUi>
                 </div>
@@ -658,8 +668,8 @@ export const ItemPaginated = (props: PropsItems) => {
             <table className="w-full">
               <thead className="sticky top-0 z-20 bg-white">
                 <tr>
-                <ThGlobal className="text-left p-3">Código</ThGlobal>
-                <ThGlobal className="text-left p-3">Nombre</ThGlobal>
+                  <ThGlobal className="text-left p-3">Código</ThGlobal>
+                  <ThGlobal className="text-left p-3">Nombre</ThGlobal>
                 </tr>
               </thead>
               <tbody>

@@ -15,6 +15,7 @@ import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import ThGlobal from '@/themes/ui/th-global';
 import useThemeColors from '@/themes/use-theme-colors';
+import { useAuthStore } from '@/store/auth.store';
 
 function AddAccountCatalogs() {
   const [name, setName] = useState('');
@@ -22,13 +23,19 @@ function AddAccountCatalogs() {
 
   const style = useThemeColors({ name: Colors.Error });
 
+  const { user } = useAuthStore();
+
   const { getAccountCatalogs, account_catalog_pagination, loading } = useAccountCatalogsStore();
   useEffect(() => {
-    getAccountCatalogs(name, code);
+    const transmitterId =
+      user?.pointOfSale?.branch.transmitter.id ?? user?.correlative?.branch.transmitter.id;
+    getAccountCatalogs(Number(transmitterId ?? 0), name, code);
   }, []);
 
   const handleSearch = (searchParam: string | undefined) => {
-    getAccountCatalogs(searchParam ?? name, searchParam ?? code);
+    const transmitterId =
+      user?.pointOfSale?.branch.transmitter.id ?? user?.correlative?.branch.transmitter.id;
+    getAccountCatalogs(Number(transmitterId ?? 0), searchParam ?? name, searchParam ?? code);
   };
   const exportAnnexes = async () => {
     const blob = await generate_catalog_de_cuentas(account_catalog_pagination.accountCatalogs);
@@ -44,7 +51,9 @@ function AddAccountCatalogs() {
     axios
       .delete(API_URL + '/account-catalogs/' + id)
       .then(() => {
-        getAccountCatalogs(name, code);
+        const transmitterId =
+          user?.pointOfSale?.branch.transmitter.id ?? user?.correlative?.branch.transmitter.id;
+        getAccountCatalogs(Number(transmitterId ?? 0), name, code);
         toast.success('Eliminado con éxito');
       })
       .catch(() => {

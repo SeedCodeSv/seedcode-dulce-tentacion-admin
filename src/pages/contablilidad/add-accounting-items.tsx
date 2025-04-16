@@ -71,13 +71,16 @@ function AddAccountingItems() {
   const [selectedType, setSelectedType] = useState(0);
   const [description, setDescription] = useState('');
 
+  const { user } = useAuthStore();
+
   useEffect(() => {
-    getAccountCatalogs('', '');
+    const transmitterId =
+      user?.pointOfSale?.branch.transmitter.id ?? user?.correlative?.branch.transmitter.id;
+
+    getAccountCatalogs(transmitterId ?? 0, '', '');
     getBranchesList();
     getListTypeOfAccount();
   }, []);
-
-  const { user } = useAuthStore();
 
   const [items, setItems] = useState<Items[]>([
     {
@@ -252,8 +255,12 @@ function AddAccountingItems() {
           toast.error('Ya existen partidas contables con esta cuenta');
           return;
         } else {
+          const transmitterId =
+            user?.pointOfSale?.branch.transmitter.id ?? user?.correlative?.branch.transmitter.id;
+
           const payload: AccountCatalogPayload = {
             ...values,
+            transmitterId: Number(transmitterId ?? 0),
           };
 
           try {
@@ -263,7 +270,7 @@ function AddAccountingItems() {
                 toast.success('Operación realizada con éxito');
                 formikHelpers.setSubmitting(false);
                 formikHelpers.resetForm();
-                getAccountCatalogs('', '');
+                getAccountCatalogs(transmitterId ?? 0, '', '');
                 addAccountModal.onClose();
               })
               .catch((error) => {
