@@ -22,7 +22,7 @@ function AnexosCompras() {
   const years = [
     { value: currentYear, name: currentYear.toString() },
     { value: currentYear - 1, name: (currentYear - 1).toString() }
-  ];
+  ]; 
   const [yearSelected, setYearSelected] = useState(currentYear);
 
   useEffect(() => {
