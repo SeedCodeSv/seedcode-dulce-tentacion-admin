@@ -138,7 +138,13 @@ function TrialBalance({ disclosure }: Props) {
   ) => {
     if (isNormal || isbalance) {
       const result = calcSaldoDorH(totalDebe, totalHaber, type, isNormal);
-      const saldo = result.totalHaber - result.totalDebe + saldoAnterior;
+
+      if (type === '1' || type === '4') {
+        const saldo = saldoAnterior + result.totalDebe - result.totalHaber;
+        return saldo;
+      }
+
+      const saldo = saldoAnterior + result.totalHaber - result.totalDebe;
       return saldo;
     }
     return calcSaldoDorH(totalDebe, totalHaber, type, isNormal).totalDebe + saldoAnterior;
@@ -204,7 +210,7 @@ function TrialBalance({ disclosure }: Props) {
             sFinalFinal = Number(newSaldo);
           }
 
-          if(balance) {
+          if (balance) {
             sInicialFinal = Number(it.saldoAnterior);
             tDebeFinal = Number(it.totalDebe);
             tHaberFinal = Number(it.totalHaber);
